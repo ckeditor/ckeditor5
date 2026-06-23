@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MediaRegistry } from '../src/mediaregistry.js';
 
 describe( 'MediaRegistry', () => {
@@ -19,7 +20,7 @@ describe( 'MediaRegistry', () => {
 			const mediaRegistry = new MediaRegistry( {}, { providers, removeProviders } );
 			const availableProviders = mediaRegistry.providerDefinitions.map( provider => provider.name );
 
-			expect( availableProviders ).to.deep.equal( [ 'dailymotion', 'youtube', 'vimeo' ] );
+			expect( availableProviders ).toEqual( [ 'dailymotion', 'youtube', 'vimeo' ] );
 		} );
 
 		it( 'allows extending providers using `extraProviders` option', () => {
@@ -35,11 +36,11 @@ describe( 'MediaRegistry', () => {
 			const mediaRegistry = new MediaRegistry( {}, { providers, extraProviders } );
 			const availableProviders = mediaRegistry.providerDefinitions.map( provider => provider.name );
 
-			expect( availableProviders ).to.deep.equal( [ 'dailymotion', 'youtube', 'vimeo', 'spotify' ] );
+			expect( availableProviders ).toEqual( [ 'dailymotion', 'youtube', 'vimeo', 'spotify' ] );
 		} );
 
 		it( 'logs a warning when provider\'s name is not defined', () => {
-			const consoleWarnStub = sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			const providers = [
 				{ url: [ /dailymotion\.com/ ] },
@@ -51,10 +52,12 @@ describe( 'MediaRegistry', () => {
 			const mediaRegistry = new MediaRegistry( {}, { providers } );
 			const availableProviders = mediaRegistry.providerDefinitions.map( provider => provider.name );
 
-			expect( availableProviders ).to.deep.equal( [ 'spotify', 'youtube', 'vimeo' ] );
-			expect( consoleWarnStub.calledOnce ).to.equal( true );
-			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name/ );
-			expect( consoleWarnStub.firstCall.args[ 1 ] ).to.deep.equal( { provider: { url: [ /dailymotion\.com/ ] } } );
+			expect( availableProviders ).toEqual( [ 'spotify', 'youtube', 'vimeo' ] );
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^media-embed-no-provider-name/ );
+			expect( consoleWarnStub.mock.calls[ 0 ][ 1 ] ).toEqual( { provider: { url: [ /dailymotion\.com/ ] } } );
+
+			vi.restoreAllMocks();
 		} );
 	} );
 
@@ -62,7 +65,7 @@ describe( 'MediaRegistry', () => {
 		let mediaRegistry, htmlSpy;
 
 		beforeEach( () => {
-			htmlSpy = sinon.spy();
+			htmlSpy = vi.fn();
 
 			mediaRegistry = new MediaRegistry( {}, {
 				providers: [
@@ -83,29 +86,29 @@ describe( 'MediaRegistry', () => {
 		it( 'works fine for url with sub-domain and the protocol', () => {
 			const media = mediaRegistry._getMedia( 'https://www.youtube.com/watch?v=euqbMkM-QQk' );
 
-			expect( media ).is.not.null;
-			expect( media.url ).to.equal( 'https://www.youtube.com/watch?v=euqbMkM-QQk' );
+			expect( media ).not.toBeNull();
+			expect( media.url ).toBe( 'https://www.youtube.com/watch?v=euqbMkM-QQk' );
 		} );
 
 		it( 'works fine for url with defined protocol', () => {
 			const media = mediaRegistry._getMedia( 'https://youtube.com/watch?v=euqbMkM-QQk' );
 
-			expect( media ).is.not.null;
-			expect( media.url ).to.equal( 'https://youtube.com/watch?v=euqbMkM-QQk' );
+			expect( media ).not.toBeNull();
+			expect( media.url ).toBe( 'https://youtube.com/watch?v=euqbMkM-QQk' );
 		} );
 
 		it( 'works fine for url with sub-domain without protocol', () => {
 			const media = mediaRegistry._getMedia( 'www.youtube.com/watch?v=euqbMkM-QQk' );
 
-			expect( media ).is.not.null;
-			expect( media.url ).to.equal( 'https://www.youtube.com/watch?v=euqbMkM-QQk' );
+			expect( media ).not.toBeNull();
+			expect( media.url ).toBe( 'https://www.youtube.com/watch?v=euqbMkM-QQk' );
 		} );
 
 		it( 'works fine for url without protocol', () => {
 			const media = mediaRegistry._getMedia( 'youtube.com/watch?v=euqbMkM-QQk' );
 
-			expect( media ).is.not.null;
-			expect( media.url ).to.equal( 'https://youtube.com/watch?v=euqbMkM-QQk' );
+			expect( media ).not.toBeNull();
+			expect( media.url ).toBe( 'https://youtube.com/watch?v=euqbMkM-QQk' );
 		} );
 
 		it( 'passes the entire match array to render function', () => {
@@ -113,8 +116,8 @@ describe( 'MediaRegistry', () => {
 
 			media._getPreviewHtml();
 
-			expect( htmlSpy.calledOnce ).to.equal( true );
-			expect( htmlSpy.firstCall.args[ 0 ] ).to.deep.equal( [
+			expect( htmlSpy ).toHaveBeenCalledOnce();
+			expect( Array.from( htmlSpy.mock.calls[ 0 ][ 0 ] ) ).toEqual( [
 				'youtube.com/watch?v=euqbMkM-QQk&t=93',
 				'euqbMkM-QQk',
 				'93'

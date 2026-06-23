@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
 	IconObjectSizeSmall,
 	IconObjectSizeMedium,
@@ -13,7 +14,6 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { DropdownView, ButtonView } from '@ckeditor/ckeditor5-ui';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 import { MediaEmbedEditing } from '../../src/mediaembedediting.js';
@@ -32,7 +32,9 @@ const RESIZE_OPTIONS = [
 describe( 'MediaEmbedResizeButtons', () => {
 	let plugin, command, editor, editorElement;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -62,25 +64,25 @@ describe( 'MediaEmbedResizeButtons', () => {
 
 	describe( 'plugin', () => {
 		it( 'should be named', () => {
-			expect( MediaEmbedResizeButtons.pluginName ).to.equal( 'MediaEmbedResizeButtons' );
+			expect( MediaEmbedResizeButtons.pluginName ).toBe( 'MediaEmbedResizeButtons' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( MediaEmbedResizeButtons.isOfficialPlugin ).to.be.true;
+			expect( MediaEmbedResizeButtons.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( MediaEmbedResizeButtons.isPremiumPlugin ).to.be.false;
+			expect( MediaEmbedResizeButtons.isPremiumPlugin ).toBe( false );
 		} );
 
 		it( 'should require MediaEmbedResizeEditing', () => {
-			expect( MediaEmbedResizeButtons.requires ).to.include( MediaEmbedResizeEditing );
+			expect( MediaEmbedResizeButtons.requires ).toContain( MediaEmbedResizeEditing );
 		} );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create `_resizeUnit` with default value of `%`', () => {
-			expect( plugin._resizeUnit ).to.equal( '%' );
+			expect( plugin._resizeUnit ).toBe( '%' );
 		} );
 	} );
 
@@ -88,27 +90,27 @@ describe( 'MediaEmbedResizeButtons', () => {
 		it( 'should be disabled when command is disabled', () => {
 			command.isEnabled = true;
 
-			expect( plugin.isEnabled ).to.be.true;
+			expect( plugin.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
 
-			expect( plugin.isEnabled ).to.be.false;
+			expect( plugin.isEnabled ).toBe( false );
 		} );
 	} );
 
 	describe( 'resize options dropdown', () => {
 		it( 'should register `resizeMediaEmbed` as a dropdown component', () => {
-			expect( editor.ui.componentFactory.create( 'resizeMediaEmbed' ) ).to.be.instanceof( DropdownView );
+			expect( editor.ui.componentFactory.create( 'resizeMediaEmbed' ) ).toBeInstanceOf( DropdownView );
 		} );
 
 		it( 'should have 5 resize options in the dropdown', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'resizeMediaEmbed' );
 
-			expect( dropdownView.listView ).to.be.undefined;
+			expect( dropdownView.listView ).toBeUndefined();
 
 			dropdownView.isOpen = true;
 
-			expect( dropdownView.listView.items.length ).to.equal( 5 );
+			expect( dropdownView.listView.items.length ).toBe( 5 );
 		} );
 
 		it( 'should have correct item labels', () => {
@@ -118,33 +120,33 @@ describe( 'MediaEmbedResizeButtons', () => {
 
 			const items = dropdownView.listView.items;
 
-			expect( items.first.element.textContent ).to.equal( 'Original' );
-			expect( items._items[ 1 ].element.textContent ).to.equal( 'Custom' );
-			expect( items._items[ 2 ].element.textContent ).to.equal( '25%' );
-			expect( items.last.element.textContent ).to.equal( '75%' );
+			expect( items.first.element.textContent ).toBe( 'Original' );
+			expect( items._items[ 1 ].element.textContent ).toBe( 'Custom' );
+			expect( items._items[ 2 ].element.textContent ).toBe( '25%' );
+			expect( items.last.element.textContent ).toBe( '75%' );
 		} );
 
 		it( 'should be disabled when plugin is disabled', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'resizeMediaEmbed' );
 
 			plugin.isEnabled = true;
-			expect( dropdownView.isEnabled ).to.be.true;
+			expect( dropdownView.isEnabled ).toBe( true );
 
 			plugin.isEnabled = false;
-			expect( dropdownView.isEnabled ).to.be.false;
+			expect( dropdownView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be created with a proper tooltip', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'resizeMediaEmbed' );
 
-			expect( dropdownView.buttonView.tooltip ).to.equal( 'Resize media' );
+			expect( dropdownView.buttonView.tooltip ).toBe( 'Resize media' );
 		} );
 
 		it( 'should be created with proper aria attributes for dropdown button', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'resizeMediaEmbed' );
 
-			expect( dropdownView.buttonView.ariaLabel ).to.equal( 'Resize media' );
-			expect( dropdownView.buttonView.ariaLabelledBy ).to.be.undefined;
+			expect( dropdownView.buttonView.ariaLabel ).toBe( 'Resize media' );
+			expect( dropdownView.buttonView.ariaLabelledBy ).toBeUndefined();
 		} );
 
 		it( 'should be created with a proper aria-label for list', () => {
@@ -152,7 +154,7 @@ describe( 'MediaEmbedResizeButtons', () => {
 
 			dropdownView.isOpen = true;
 
-			expect( dropdownView.listView.ariaLabel ).to.equal( 'Media resize list' );
+			expect( dropdownView.listView.ariaLabel ).toBe( 'Media resize list' );
 		} );
 
 		it( 'should be created with a proper role for list', () => {
@@ -160,12 +162,12 @@ describe( 'MediaEmbedResizeButtons', () => {
 
 			dropdownView.isOpen = true;
 
-			expect( dropdownView.listView.role ).to.equal( 'menu' );
+			expect( dropdownView.listView.role ).toBe( 'menu' );
 		} );
 
 		it( 'should execute resizeMediaEmbed command with proper value', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'resizeMediaEmbed' );
-			const commandSpy = sinon.spy( command, 'execute' );
+			const commandSpy = vi.spyOn( command, 'execute' );
 
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );
@@ -178,15 +180,15 @@ describe( 'MediaEmbedResizeButtons', () => {
 
 			resize25Button.fire( 'execute' );
 
-			sinon.assert.calledOnce( commandSpy );
-			expect( command.execute.getCall( 0 ).args[ 0 ] ).to.deep.equal( { width: '25%' } );
+			expect( commandSpy ).toHaveBeenCalledOnce();
+			expect( commandSpy.mock.calls[ 0 ][ 0 ] ).toEqual( { width: '25%' } );
 
 			dropdownView.element.remove();
 		} );
 
 		it( 'should execute resizeMediaEmbed command with null for original option', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'resizeMediaEmbed' );
-			const commandSpy = sinon.spy( command, 'execute' );
+			const commandSpy = vi.spyOn( command, 'execute' );
 
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );
@@ -199,8 +201,8 @@ describe( 'MediaEmbedResizeButtons', () => {
 
 			originalButton.fire( 'execute' );
 
-			sinon.assert.calledOnce( commandSpy );
-			expect( command.execute.getCall( 0 ).args[ 0 ] ).to.deep.equal( { width: null } );
+			expect( commandSpy ).toHaveBeenCalledOnce();
+			expect( commandSpy.mock.calls[ 0 ][ 0 ] ).toEqual( { width: null } );
 
 			dropdownView.element.remove();
 		} );
@@ -208,7 +210,7 @@ describe( 'MediaEmbedResizeButtons', () => {
 		it( 'should open custom resize balloon when custom option is selected', () => {
 			const customResizeUI = editor.plugins.get( 'MediaEmbedCustomResizeUI' );
 			const dropdownView = editor.ui.componentFactory.create( 'resizeMediaEmbed' );
-			const showFormSpy = sinon.stub( customResizeUI, '_showForm' );
+			const showFormSpy = vi.spyOn( customResizeUI, '_showForm' ).mockImplementation( () => {} );
 
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );
@@ -221,7 +223,7 @@ describe( 'MediaEmbedResizeButtons', () => {
 
 			customButton.fire( 'execute' );
 
-			sinon.assert.calledOnce( showFormSpy );
+			expect( showFormSpy ).toHaveBeenCalledOnce();
 
 			dropdownView.element.remove();
 		} );
@@ -229,75 +231,75 @@ describe( 'MediaEmbedResizeButtons', () => {
 
 	describe( 'resize option buttons (standalone)', () => {
 		it( 'should be an instance of `ButtonView` if component is created with a value suffix', () => {
-			expect( editor.ui.componentFactory.create( 'resizeMediaEmbed:50' ) ).to.be.instanceof( ButtonView );
+			expect( editor.ui.componentFactory.create( 'resizeMediaEmbed:50' ) ).toBeInstanceOf( ButtonView );
 		} );
 
 		it( 'should be bound to plugin `#isEnabled`', () => {
 			const buttonView = editor.ui.componentFactory.create( 'resizeMediaEmbed:50' );
 
 			plugin.isEnabled = true;
-			expect( buttonView.isEnabled ).to.be.true;
+			expect( buttonView.isEnabled ).toBe( true );
 
 			plugin.isEnabled = false;
-			expect( buttonView.isEnabled ).to.be.false;
+			expect( buttonView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should have a proper tooltip for preset option', () => {
 			const buttonView = editor.ui.componentFactory.create( 'resizeMediaEmbed:50' );
 
 			buttonView.render();
-			expect( buttonView.tooltip ).to.equal( 'Resize media to 50%' );
+			expect( buttonView.tooltip ).toBe( 'Resize media to 50%' );
 		} );
 
 		it( 'should have a proper tooltip for original option', () => {
 			const buttonView = editor.ui.componentFactory.create( 'resizeMediaEmbed:original' );
 
 			buttonView.render();
-			expect( buttonView.tooltip ).to.equal( 'Resize media to the original size' );
+			expect( buttonView.tooltip ).toBe( 'Resize media to the original size' );
 		} );
 
 		it( 'should have a proper tooltip for custom option', () => {
 			const buttonView = editor.ui.componentFactory.create( 'resizeMediaEmbed:custom' );
 
 			buttonView.render();
-			expect( buttonView.tooltip ).to.equal( 'Custom media size' );
+			expect( buttonView.tooltip ).toBe( 'Custom media size' );
 		} );
 
 		it( 'should execute `resizeMediaEmbed` command with "50%" value', () => {
 			const buttonView = editor.ui.componentFactory.create( 'resizeMediaEmbed:50' );
-			const commandSpy = sinon.spy( command, 'execute' );
+			const commandSpy = vi.spyOn( command, 'execute' );
 
 			command.isEnabled = true;
 
 			buttonView.fire( 'execute' );
 
-			sinon.assert.calledOnce( commandSpy );
-			expect( command.execute.getCall( 0 ).args[ 0 ] ).to.deep.equal( { width: '50%' } );
+			expect( commandSpy ).toHaveBeenCalledOnce();
+			expect( commandSpy.mock.calls[ 0 ][ 0 ] ).toEqual( { width: '50%' } );
 		} );
 
 		it( 'should execute `resizeMediaEmbed` command with null for original option', () => {
 			const buttonView = editor.ui.componentFactory.create( 'resizeMediaEmbed:original' );
-			const commandSpy = sinon.spy( command, 'execute' );
+			const commandSpy = vi.spyOn( command, 'execute' );
 
 			command.isEnabled = true;
 
 			buttonView.fire( 'execute' );
 
-			sinon.assert.calledOnce( commandSpy );
-			expect( command.execute.getCall( 0 ).args[ 0 ] ).to.deep.equal( { width: null } );
+			expect( commandSpy ).toHaveBeenCalledOnce();
+			expect( commandSpy.mock.calls[ 0 ][ 0 ] ).toEqual( { width: null } );
 		} );
 
 		it( 'should open custom size balloon on click custom button', () => {
 			const customResizeUI = editor.plugins.get( 'MediaEmbedCustomResizeUI' );
 			const buttonView = editor.ui.componentFactory.create( 'resizeMediaEmbed:custom' );
-			const commandSpy = sinon.spy( command, 'execute' );
-			const showFormSpy = sinon.stub( customResizeUI, '_showForm' );
+			const commandSpy = vi.spyOn( command, 'execute' );
+			const showFormSpy = vi.spyOn( customResizeUI, '_showForm' ).mockImplementation( () => {} );
 
 			command.isEnabled = true;
 			buttonView.fire( 'execute' );
 
-			expect( commandSpy ).not.to.be.called;
-			expect( showFormSpy ).to.be.called;
+			expect( commandSpy ).not.toHaveBeenCalled();
+			expect( showFormSpy ).toHaveBeenCalled();
 		} );
 
 		it( 'should set isOn to true when command value matches the button value', () => {
@@ -306,7 +308,7 @@ describe( 'MediaEmbedResizeButtons', () => {
 			command.isEnabled = true;
 			command.value = '50%';
 
-			expect( buttonView.isOn ).to.be.true;
+			expect( buttonView.isOn ).toBe( true );
 		} );
 
 		it( 'should set isOn to false when command value does not match', () => {
@@ -315,7 +317,7 @@ describe( 'MediaEmbedResizeButtons', () => {
 			command.isEnabled = true;
 			command.value = '25%';
 
-			expect( buttonView.isOn ).to.be.false;
+			expect( buttonView.isOn ).toBe( false );
 		} );
 
 		it( 'should set isOn to false when command is disabled', () => {
@@ -324,7 +326,7 @@ describe( 'MediaEmbedResizeButtons', () => {
 			command.isEnabled = false;
 			command.value = '50%';
 
-			expect( buttonView.isOn ).to.be.false;
+			expect( buttonView.isOn ).toBe( false );
 		} );
 
 		it( 'should set isOn to true for original button when command value is null', () => {
@@ -333,7 +335,7 @@ describe( 'MediaEmbedResizeButtons', () => {
 			command.isEnabled = true;
 			command.value = null;
 
-			expect( buttonView.isOn ).to.be.true;
+			expect( buttonView.isOn ).toBe( true );
 		} );
 
 		it( 'should have set a proper icon for each size option', () => {
@@ -342,10 +344,10 @@ describe( 'MediaEmbedResizeButtons', () => {
 			const button50 = editor.ui.componentFactory.create( 'resizeMediaEmbed:50' );
 			const button75 = editor.ui.componentFactory.create( 'resizeMediaEmbed:75' );
 
-			expect( buttonOriginal.icon ).to.deep.equal( IconObjectSizeFull );
-			expect( button25.icon ).to.deep.equal( IconObjectSizeSmall );
-			expect( button50.icon ).to.deep.equal( IconObjectSizeMedium );
-			expect( button75.icon ).to.deep.equal( IconObjectSizeLarge );
+			expect( buttonOriginal.icon ).toEqual( IconObjectSizeFull );
+			expect( button25.icon ).toEqual( IconObjectSizeSmall );
+			expect( button50.icon ).toEqual( IconObjectSizeMedium );
+			expect( button75.icon ).toEqual( IconObjectSizeLarge );
 		} );
 
 		it( 'should throw the CKEditorError if no `icon` is provided', async () => {
@@ -384,7 +386,7 @@ describe( 'MediaEmbedResizeButtons', () => {
 			const buttonView = customEditor.ui.componentFactory.create( 'resizeMediaEmbed:30' );
 			buttonView.render();
 
-			expect( buttonView.label ).to.equal( 'Resize media: 30%' );
+			expect( buttonView.label ).toBe( 'Resize media: 30%' );
 
 			await customEditor.destroy();
 		} );
@@ -400,7 +402,7 @@ describe( 'MediaEmbedResizeButtons', () => {
 					}
 				} );
 
-			expect( () => emptyEditor.ui.componentFactory.create( 'resizeMediaEmbed' ) ).to.not.throw();
+			expect( () => emptyEditor.ui.componentFactory.create( 'resizeMediaEmbed' ) ).not.toThrow();
 
 			await emptyEditor.destroy();
 		} );

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MediaEmbed } from '../src/mediaembed.js';
 import { AutoMediaEmbed } from '../src/automediaembed.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -39,47 +40,45 @@ describe( 'AutoMediaEmbed - integration', () => {
 	} );
 
 	it( 'should load Clipboard plugin', () => {
-		expect( editor.plugins.get( Clipboard ) ).to.instanceOf( Clipboard );
+		expect( editor.plugins.get( Clipboard ) ).toBeInstanceOf( Clipboard );
 	} );
 
 	it( 'should load Undo plugin', () => {
-		expect( editor.plugins.get( Undo ) ).to.instanceOf( Undo );
+		expect( editor.plugins.get( Undo ) ).toBeInstanceOf( Undo );
 	} );
 
 	it( 'has proper name', () => {
-		expect( AutoMediaEmbed.pluginName ).to.equal( 'AutoMediaEmbed' );
+		expect( AutoMediaEmbed.pluginName ).toBe( 'AutoMediaEmbed' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( AutoMediaEmbed.isOfficialPlugin ).to.be.true;
+		expect( AutoMediaEmbed.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( AutoMediaEmbed.isPremiumPlugin ).to.be.false;
+		expect( AutoMediaEmbed.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'use fake timers', () => {
-		let clock;
-
 		beforeEach( () => {
-			clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 		} );
 
 		afterEach( () => {
-			clock.restore();
+			vi.useRealTimers();
 		} );
 
 		it( 'replaces pasted text with media element after 100ms', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
 			);
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -88,15 +87,15 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
 			);
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			editor.commands.execute( 'undo' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
 			);
 		} );
@@ -105,22 +104,22 @@ describe( 'AutoMediaEmbed - integration', () => {
 			const viewDocument = editor.editing.view.document;
 			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
-				{ preventDefault: sinon.spy() },
+				{ preventDefault: vi.fn() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
 			);
 
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
 			);
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			viewDocument.fire( 'delete', deleteEvent );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
 			);
 		} );
@@ -129,9 +128,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -140,9 +139,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="https://youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -151,9 +150,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'http://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="http://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -162,9 +161,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'http://youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="http://youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -173,9 +172,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -184,9 +183,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -195,9 +194,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://twitter.com/ckeditor/status/1035181110140063749' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="https://twitter.com/ckeditor/status/1035181110140063749"></media>]'
 			);
 		} );
@@ -206,9 +205,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<a href="https://www.youtube.com/watch?v=H08tGjXNHO4">https://www.youtube.com/watch?v=H08tGjXNHO4</a>' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -217,9 +216,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<b>https://www.youtube.com/watch?v=H08tGjXNHO4</b>' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -228,9 +227,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[Foo]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -239,9 +238,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>Fo[o</paragraph><paragraph>Ba]r</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>Fo</paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]<paragraph>r</paragraph>'
 			);
 		} );
@@ -250,9 +249,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>Foo []Bar</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>Foo </paragraph>' +
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
 				'<paragraph>Bar</paragraph>'
@@ -263,9 +262,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>Foo [Bar] Baz</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>Foo </paragraph>' +
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
 				'<paragraph> Baz</paragraph>'
@@ -276,9 +275,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://youtube.com' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>https://youtube.com[]</paragraph>'
 			);
 		} );
@@ -287,9 +286,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4 https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4 https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
 			);
 		} );
@@ -298,9 +297,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'Foo bar https://www.youtube.com/watch?v=H08tGjXNHO4 bar foo.' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>Foo bar https://www.youtube.com/watch?v=H08tGjXNHO4 bar foo.[]</paragraph>'
 			);
 		} );
@@ -312,9 +311,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 				'<a href="https://www.youtube.com/watch?v=H08tGjXNHO4">https://www.youtube.com/watch?v=H08tGjXNHO4</a>'
 			);
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4 ' +
 				'<$text linkHref="https://www.youtube.com/watch?v=H08tGjXNHO4">https://www.youtube.com/watch?v=H08tGjXNHO4</$text>' +
 				'</paragraph>'
@@ -325,9 +324,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<p>https://www.youtube.com/watch?v=H08tGjXNHO4</p>' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
 			);
 		} );
@@ -336,9 +335,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<p>https://</p><p>youtube.com/watch?</p><p>v=H08tGjXNHO4</p>' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>https://</paragraph>' +
 				'<paragraph>youtube.com/watch?</paragraph>' +
 				'<paragraph>v=H08tGjXNHO4[]</paragraph>'
@@ -349,9 +348,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'youtube.com/watch?v=H08tGjXNHO4&amp;param=foo bar' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>youtube.com/watch?v=H08tGjXNHO4&param=foo bar[]</paragraph>'
 			);
 		} );
@@ -363,22 +362,22 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, invalidURL );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				`<paragraph>${ invalidURL }[]</paragraph>`
 			);
 		} );
 
 		// #47
 		it( 'does not transform a valid URL into a media if the element cannot be placed in the current position', () => {
-			_setModelData( editor.model, '<imageBlock src="/assets/sample.png"><caption>Foo.[]</caption></imageBlock>' );
+			_setModelData( editor.model, '<imageBlock src="/sample.png"><caption>Foo.[]</caption></imageBlock>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
-				'<imageBlock src="/assets/sample.png"><caption>Foo.https://www.youtube.com/watch?v=H08tGjXNHO4[]</caption></imageBlock>'
+			expect( _getModelData( editor.model ) ).toEqual(
+				'<imageBlock src="/sample.png"><caption>Foo.https://www.youtube.com/watch?v=H08tGjXNHO4[]</caption></imageBlock>'
 			);
 		} );
 
@@ -390,9 +389,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
@@ -407,9 +406,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
 				'<paragraph>Bar.</paragraph>'
@@ -428,9 +427,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 					_setModelData( newEditor.model, '<paragraph>[]</paragraph>' );
 					pasteHtml( newEditor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-					clock.tick( 100 );
+					vi.advanceTimersByTime( 100 );
 
-					expect( _getModelData( newEditor.model ) ).to.equal(
+					expect( _getModelData( newEditor.model ) ).toEqual(
 						'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
 					);
 
@@ -444,9 +443,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'http://youtube.com/watch?v=H08tGjXNHO4%2' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'[<media url="http://youtube.com/watch?v=H08tGjXNHO4%2"></media>]'
 			);
 		} );
@@ -455,27 +454,29 @@ describe( 'AutoMediaEmbed - integration', () => {
 	describe( 'use real timers', () => {
 		const characters = Array( 10 ).fill( 1 ).map( ( x, i ) => String.fromCharCode( 65 + i ) );
 
-		it( 'undo breaks the auto-media embed feature (undo was done before auto-media embed)', done => {
+		it( 'undo breaks the auto-media embed feature (undo was done before auto-media embed)', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
 			);
 
-			setTimeout( () => {
-				editor.commands.execute( 'undo' );
+			return new Promise( resolve => {
+				setTimeout( () => {
+					editor.commands.execute( 'undo' );
 
-				expect( _getModelData( editor.model ) ).to.equal(
-					'<paragraph>[]</paragraph>'
-				);
+					expect( _getModelData( editor.model ) ).toEqual(
+						'<paragraph>[]</paragraph>'
+					);
 
-				done();
+					resolve();
+				} );
 			} );
 		} );
 
 		// Checking whether paste+typing calls the auto-media handler once.
-		it( 'pasting handler should be executed once', done => {
+		it( 'pasting handler should be executed once', () => {
 			const autoMediaEmbedPlugin = editor.plugins.get( AutoMediaEmbed );
 			const autoMediaHandler = autoMediaEmbedPlugin._embedMediaBetweenPositions;
 			let counter = 0;
@@ -490,16 +491,18 @@ describe( 'AutoMediaEmbed - integration', () => {
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 			simulateTyping( 'Foo. Bar.' );
 
-			setTimeout( () => {
-				autoMediaEmbedPlugin._embedMediaBetweenPositions = autoMediaHandler;
+			return new Promise( resolve => {
+				setTimeout( () => {
+					autoMediaEmbedPlugin._embedMediaBetweenPositions = autoMediaHandler;
 
-				expect( counter ).to.equal( 1 );
+					expect( counter ).toEqual( 1 );
 
-				done();
-			}, 100 );
+					resolve();
+				}, 100 );
+			} );
 		} );
 
-		it( 'typing before pasted link during collaboration should not blow up', done => {
+		it( 'typing before pasted link during collaboration should not blow up', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
@@ -514,16 +517,18 @@ describe( 'AutoMediaEmbed - integration', () => {
 				}, i * 5 );
 			}
 
-			setTimeout( () => {
-				expect( _getModelData( editor.model ) ).to.equal(
-					'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]<paragraph>ABCDEFGHIJ</paragraph>'
-				);
+			return new Promise( resolve => {
+				setTimeout( () => {
+					expect( _getModelData( editor.model ) ).toEqual(
+						'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]<paragraph>ABCDEFGHIJ</paragraph>'
+					);
 
-				done();
-			}, 100 );
+					resolve();
+				}, 100 );
+			} );
 		} );
 
-		it( 'typing after pasted link during collaboration should not blow up', done => {
+		it( 'typing after pasted link during collaboration should not blow up', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
@@ -536,16 +541,18 @@ describe( 'AutoMediaEmbed - integration', () => {
 				}, i * 5 );
 			}
 
-			setTimeout( () => {
-				expect( _getModelData( editor.model ) ).to.equal(
-					'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]<paragraph>ABCDEFGHIJ</paragraph>'
-				);
+			return new Promise( resolve => {
+				setTimeout( () => {
+					expect( _getModelData( editor.model ) ).toEqual(
+						'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]<paragraph>ABCDEFGHIJ</paragraph>'
+					);
 
-				done();
-			}, 100 );
+					resolve();
+				}, 100 );
+			} );
 		} );
 
-		it( 'should insert the media element even if parent element where the URL was pasted has been deleted', done => {
+		it( 'should insert the media element even if parent element where the URL was pasted has been deleted', () => {
 			_setModelData( editor.model, '<paragraph>Foo.</paragraph><paragraph>Bar.[]</paragraph>' );
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
@@ -554,16 +561,18 @@ describe( 'AutoMediaEmbed - integration', () => {
 				writer.remove( writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ) );
 			} );
 
-			setTimeout( () => {
-				expect( _getModelData( editor.model ) ).to.equal(
-					'<paragraph>Foo.</paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
-				);
+			return new Promise( resolve => {
+				setTimeout( () => {
+					expect( _getModelData( editor.model ) ).toEqual(
+						'<paragraph>Foo.</paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+					);
 
-				done();
-			}, 100 );
+					resolve();
+				}, 100 );
+			} );
 		} );
 
-		it( 'should insert the media element even if new element appeared above the pasted URL', done => {
+		it( 'should insert the media element even if new element appeared above the pasted URL', () => {
 			_setModelData( editor.model, '<paragraph>Foo.</paragraph><paragraph>Bar.[]</paragraph>' );
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
@@ -582,19 +591,21 @@ describe( 'AutoMediaEmbed - integration', () => {
 				}, i * 5 );
 			}
 
-			setTimeout( () => {
-				expect( _getModelData( editor.model ) ).to.equal(
-					'<paragraph>Foo.</paragraph>' +
-					'<paragraph>ABCDEFGHIJ</paragraph>' +
-					'<paragraph>Bar.</paragraph>' +
-					'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
-				);
+			return new Promise( resolve => {
+				setTimeout( () => {
+					expect( _getModelData( editor.model ) ).toEqual(
+						'<paragraph>Foo.</paragraph>' +
+						'<paragraph>ABCDEFGHIJ</paragraph>' +
+						'<paragraph>Bar.</paragraph>' +
+						'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+					);
 
-				done();
-			}, 100 );
+					resolve();
+				}, 100 );
+			} );
 		} );
 
-		it( 'should insert the media element even if new element appeared below the pasted URL', done => {
+		it( 'should insert the media element even if new element appeared below the pasted URL', () => {
 			_setModelData( editor.model, '<paragraph>Foo.</paragraph><paragraph>Bar.[]</paragraph>' );
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
@@ -613,16 +624,18 @@ describe( 'AutoMediaEmbed - integration', () => {
 				}, i * 5 );
 			}
 
-			setTimeout( () => {
-				expect( _getModelData( editor.model ) ).to.equal(
-					'<paragraph>Foo.</paragraph>' +
-					'<paragraph>Bar.</paragraph>' +
-					'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
-					'<paragraph>ABCDEFGHIJ</paragraph>'
-				);
+			return new Promise( resolve => {
+				setTimeout( () => {
+					expect( _getModelData( editor.model ) ).toEqual(
+						'<paragraph>Foo.</paragraph>' +
+						'<paragraph>Bar.</paragraph>' +
+						'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
+						'<paragraph>ABCDEFGHIJ</paragraph>'
+					);
 
-				done();
-			}, 100 );
+					resolve();
+				}, 100 );
+			} );
 		} );
 	} );
 
@@ -643,7 +656,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 		pasteHtml( editor, '<table><tr><td>one</td><td>two</td></tr></table>' );
 
-		expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell><paragraph>one</paragraph></tableCell>' +
@@ -654,7 +667,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 		expect( () => {
 			editor.setData( '' );
-		} ).not.to.throw();
+		} ).not.toThrow();
 
 		await editor.destroy();
 	} );

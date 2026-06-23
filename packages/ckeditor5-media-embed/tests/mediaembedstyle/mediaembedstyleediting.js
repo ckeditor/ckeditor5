@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -37,28 +38,28 @@ describe( 'MediaEmbedStyleEditing', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( MediaEmbedStyleEditing.pluginName ).to.equal( 'MediaEmbedStyleEditing' );
+		expect( MediaEmbedStyleEditing.pluginName ).toBe( 'MediaEmbedStyleEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( MediaEmbedStyleEditing.isOfficialPlugin ).to.be.true;
+		expect( MediaEmbedStyleEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( MediaEmbedStyleEditing.isPremiumPlugin ).to.be.false;
+		expect( MediaEmbedStyleEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should require MediaEmbedEditing', () => {
-		expect( MediaEmbedStyleEditing.requires ).to.include( MediaEmbedEditing );
+		expect( MediaEmbedStyleEditing.requires ).toContain( MediaEmbedEditing );
 	} );
 
 	describe( 'schema', () => {
 		it( 'allows mediaStyle attribute on media', () => {
-			expect( model.schema.checkAttribute( [ '$root', 'media' ], 'mediaStyle' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'media' ], 'mediaStyle' ) ).toBe( true );
 		} );
 
 		it( 'marks mediaStyle as a formatting attribute', () => {
-			expect( model.schema.getAttributeProperties( 'mediaStyle' ) ).to.deep.include( {
+			expect( model.schema.getAttributeProperties( 'mediaStyle' ) ).toMatchObject( {
 				isFormatting: true
 			} );
 		} );
@@ -66,7 +67,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 	describe( 'command', () => {
 		it( 'registers the mediaStyle command', () => {
-			expect( editor.commands.get( 'mediaStyle' ) ).to.be.instanceOf( MediaEmbedStyleCommand );
+			expect( editor.commands.get( 'mediaStyle' ) ).toBeInstanceOf( MediaEmbedStyleCommand );
 		} );
 	} );
 
@@ -81,7 +82,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 				it( `produces "${ className }" on the figure for mediaStyle="${ value }"`, () => {
 					_setModelData( model, `<media mediaStyle="${ value }" url="${ YOUTUBE_URL }"></media>` );
 
-					expect( editor.getData() ).to.match(
+					expect( editor.getData() ).toMatch(
 						new RegExp( `^<figure class="media ${ className }">` )
 					);
 				} );
@@ -92,7 +93,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 				// If something sets it explicitly, the downcast still emits no class.
 				_setModelData( model, `<media mediaStyle="alignCenter" url="${ YOUTUBE_URL }"></media>` );
 
-				expect( editor.getData() ).to.match( /^<figure class="media">/ );
+				expect( editor.getData() ).toMatch( /^<figure class="media">/ );
 			} );
 
 			it( 'removes the old class and adds the new class when mediaStyle changes', () => {
@@ -105,8 +106,8 @@ describe( 'MediaEmbedStyleEditing', () => {
 				} );
 
 				const data = editor.getData();
-				expect( data ).to.match( /^<figure class="media media-style-block-align-right">/ );
-				expect( data ).not.to.match( /media-style-block-align-left/ );
+				expect( data ).toMatch( /^<figure class="media media-style-block-align-right">/ );
+				expect( data ).not.toMatch( /media-style-block-align-left/ );
 			} );
 
 			it( 'removes the class when mediaStyle is cleared', () => {
@@ -118,7 +119,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 					writer.removeAttribute( 'mediaStyle', mediaModel );
 				} );
 
-				expect( editor.getData() ).to.match( /^<figure class="media">/ );
+				expect( editor.getData() ).toMatch( /^<figure class="media">/ );
 			} );
 
 			it( 'does not write a class for an unknown mediaStyle value', () => {
@@ -127,7 +128,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 				// resolved options.
 				_setModelData( model, `<media mediaStyle="bogus" url="${ YOUTUBE_URL }"></media>` );
 
-				expect( editor.getData() ).to.match( /^<figure class="media">/ );
+				expect( editor.getData() ).toMatch( /^<figure class="media">/ );
 			} );
 
 			it( 'does not downcast if the event was already consumed', () => {
@@ -139,7 +140,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 				_setModelData( model, `<media mediaStyle="alignBlockLeft" url="${ YOUTUBE_URL }"></media>` );
 
-				expect( editor.getData() ).not.to.match( /media-style-block-align-left/ );
+				expect( editor.getData() ).not.toMatch( /media-style-block-align-left/ );
 			} );
 		} );
 
@@ -157,7 +158,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 					const mediaModel = model.document.getRoot().getChild( 0 );
 
-					expect( mediaModel.getAttribute( 'mediaStyle' ) ).to.equal( value );
+					expect( mediaModel.getAttribute( 'mediaStyle' ) ).toBe( value );
 				} );
 			}
 
@@ -166,7 +167,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 				const mediaModel = model.document.getRoot().getChild( 0 );
 
-				expect( mediaModel.hasAttribute( 'mediaStyle' ) ).to.be.false;
+				expect( mediaModel.hasAttribute( 'mediaStyle' ) ).toBe( false );
 			} );
 
 			it( 'when multiple alignment classes are present, the last one (in iteration order) wins', () => {
@@ -181,7 +182,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 				const mediaModel = model.document.getRoot().getChild( 0 );
 
-				expect( mediaModel.getAttribute( 'mediaStyle' ) ).to.equal( 'alignRight' );
+				expect( mediaModel.getAttribute( 'mediaStyle' ) ).toBe( 'alignRight' );
 			} );
 
 			it( 'iteration order follows the configured options — reversing the config flips the winner', async () => {
@@ -197,7 +198,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 				const mediaModel = reorderedEditor.model.document.getRoot().getChild( 0 );
 
-				expect( mediaModel.getAttribute( 'mediaStyle' ) ).to.equal( 'alignLeft' );
+				expect( mediaModel.getAttribute( 'mediaStyle' ) ).toBe( 'alignLeft' );
 
 				await reorderedEditor.destroy();
 			} );
@@ -216,8 +217,8 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 				const widget = model.document.getRoot().getChild( 0 );
 
-				expect( widget.name ).to.equal( 'customWidget' );
-				expect( widget.hasAttribute( 'mediaStyle' ) ).to.be.false;
+				expect( widget.name ).toBe( 'customWidget' );
+				expect( widget.hasAttribute( 'mediaStyle' ) ).toBe( false );
 			} );
 
 			it( 'returns early when no upcast produces a model range for the figure', () => {
@@ -225,7 +226,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 				// so `data.modelRange` is never set when our low-priority listener fires.
 				editor.setData( '<figure></figure>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).not.to.contain( '<media' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).not.toContain( '<media' );
 			} );
 		} );
 
@@ -241,11 +242,11 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 					editor.setData( input );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						`<media mediaStyle="${ value }" url="${ YOUTUBE_URL }"></media>`
 					);
 
-					expect( editor.getData() ).to.equal( input );
+					expect( editor.getData() ).toBe( input );
 				} );
 			}
 		} );
@@ -274,8 +275,8 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 			const data = previewEditor.getData();
 
-			expect( data ).to.match( /^<figure class="media media-style-block-align-left">/ );
-			expect( data ).to.match( /data-oembed-url="https:\/\/youtu\.be\/foo"/ );
+			expect( data ).toMatch( /^<figure class="media media-style-block-align-left">/ );
+			expect( data ).toMatch( /data-oembed-url="https:\/\/youtu\.be\/foo"/ );
 		} );
 
 		it( 'upcasts an alignment class even when preview HTML is present', () => {
@@ -289,13 +290,13 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 			const mediaModel = previewModel.document.getRoot().getChild( 0 );
 
-			expect( mediaModel.getAttribute( 'mediaStyle' ) ).to.equal( 'alignRight' );
+			expect( mediaModel.getAttribute( 'mediaStyle' ) ).toBe( 'alignRight' );
 		} );
 	} );
 
 	describe( 'config.mediaEmbed.styles', () => {
 		it( 'defaults to the canonical five-built-in list when no config is provided', () => {
-			expect( editor.config.get( 'mediaEmbed.styles' ) ).to.deep.equal( {
+			expect( editor.config.get( 'mediaEmbed.styles' ) ).toEqual( {
 				options: [ 'alignLeft', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'alignRight' ]
 			} );
 		} );
@@ -303,7 +304,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 		it( 'exposes the resolved normalizedStyles on the editing plugin', () => {
 			const editing = editor.plugins.get( MediaEmbedStyleEditing );
 
-			expect( editing.normalizedStyles.map( s => s.name ) ).to.deep.equal( [
+			expect( editing.normalizedStyles.map( s => s.name ) ).toEqual( [
 				'alignLeft', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'alignRight'
 			] );
 		} );
@@ -323,7 +324,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 			it( 'reflects the subset in normalizedStyles', () => {
 				const editing = subsetEditor.plugins.get( MediaEmbedStyleEditing );
 
-				expect( editing.normalizedStyles.map( s => s.name ) ).to.deep.equal( [
+				expect( editing.normalizedStyles.map( s => s.name ) ).toEqual( [
 					'alignBlockLeft', 'alignCenter', 'alignBlockRight'
 				] );
 			} );
@@ -331,7 +332,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 			it( 'downcast does not write a class for a filtered-out value', () => {
 				_setModelData( subsetModel, `<media mediaStyle="alignLeft" url="${ YOUTUBE_URL }"></media>` );
 
-				expect( subsetEditor.getData() ).to.match( /^<figure class="media">/ );
+				expect( subsetEditor.getData() ).toMatch( /^<figure class="media">/ );
 			} );
 
 			it( 'upcast does not set the attribute for a filtered-out class', () => {
@@ -341,13 +342,13 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 				const mediaModel = subsetModel.document.getRoot().getChild( 0 );
 
-				expect( mediaModel.hasAttribute( 'mediaStyle' ) ).to.be.false;
+				expect( mediaModel.hasAttribute( 'mediaStyle' ) ).toBe( false );
 			} );
 
 			it( 'downcast still writes the class for surviving styles', () => {
 				_setModelData( subsetModel, `<media mediaStyle="alignBlockLeft" url="${ YOUTUBE_URL }"></media>` );
 
-				expect( subsetEditor.getData() ).to.match( /^<figure class="media media-style-block-align-left">/ );
+				expect( subsetEditor.getData() ).toMatch( /^<figure class="media media-style-block-align-left">/ );
 			} );
 		} );
 
@@ -369,7 +370,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 			it( 'downcast writes the custom className for the custom style', () => {
 				_setModelData( customModel, `<media mediaStyle="side" url="${ YOUTUBE_URL }"></media>` );
 
-				expect( customEditor.getData() ).to.match( /^<figure class="media media-style-side">/ );
+				expect( customEditor.getData() ).toMatch( /^<figure class="media media-style-side">/ );
 			} );
 
 			it( 'upcast reads the custom className back into the model attribute', () => {
@@ -379,7 +380,7 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 				const mediaModel = customModel.document.getRoot().getChild( 0 );
 
-				expect( mediaModel.getAttribute( 'mediaStyle' ) ).to.equal( 'side' );
+				expect( mediaModel.getAttribute( 'mediaStyle' ) ).toBe( 'side' );
 			} );
 		} );
 
@@ -387,11 +388,11 @@ describe( 'MediaEmbedStyleEditing', () => {
 			let warnStub;
 
 			beforeEach( () => {
-				warnStub = sinon.stub( console, 'warn' );
+				warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 			} );
 
 			afterEach( () => {
-				warnStub.restore();
+				vi.restoreAllMocks();
 			} );
 
 			it( 'are filtered out of normalizedStyles and trigger a warning', async () => {
@@ -402,8 +403,8 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 				const editing = editorWithBadConfig.plugins.get( MediaEmbedStyleEditing );
 
-				expect( editing.normalizedStyles.map( s => s.name ) ).to.deep.equal( [ 'alignCenter' ] );
-				sinon.assert.calledWith( warnStub, sinon.match( /^media-style-configuration-definition-invalid/ ) );
+				expect( editing.normalizedStyles.map( s => s.name ) ).toEqual( [ 'alignCenter' ] );
+				expect( warnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^media-style-configuration-definition-invalid/ );
 
 				await editorWithBadConfig.destroy();
 			} );

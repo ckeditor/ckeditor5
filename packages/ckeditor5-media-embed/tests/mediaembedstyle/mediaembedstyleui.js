@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, DropdownView, SplitButtonView } from '@ckeditor/ckeditor5-ui';
@@ -67,36 +68,37 @@ describe( 'MediaEmbedStyleUI', () => {
 	} );
 
 	afterEach( async () => {
+		vi.restoreAllMocks();
 		editorElement.remove();
 		await editor.destroy();
 	} );
 
 	it( 'should be named', () => {
-		expect( MediaEmbedStyleUI.pluginName ).to.equal( 'MediaEmbedStyleUI' );
+		expect( MediaEmbedStyleUI.pluginName ).toBe( 'MediaEmbedStyleUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( MediaEmbedStyleUI.isOfficialPlugin ).to.be.true;
+		expect( MediaEmbedStyleUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( MediaEmbedStyleUI.isPremiumPlugin ).to.be.false;
+		expect( MediaEmbedStyleUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should require MediaEmbedStyleEditing', () => {
-		expect( MediaEmbedStyleUI.requires ).to.include( MediaEmbedStyleEditing );
+		expect( MediaEmbedStyleUI.requires ).toContain( MediaEmbedStyleEditing );
 	} );
 
 	describe( 'init()', () => {
 		it( 'should register all five alignment buttons', () => {
 			for ( const name of BUTTON_NAMES ) {
-				expect( factory.has( name ), name ).to.be.true;
+				expect( factory.has( name ), name ).toBe( true );
 			}
 		} );
 
 		it( 'should register the wrapText and breakText dropdowns', () => {
 			for ( const name of DROPDOWN_NAMES ) {
-				expect( factory.has( name ), name ).to.be.true;
+				expect( factory.has( name ), name ).toBe( true );
 			}
 		} );
 	} );
@@ -105,7 +107,7 @@ describe( 'MediaEmbedStyleUI', () => {
 		it( 'is a ButtonView instance', () => {
 			for ( const name of BUTTON_NAMES ) {
 				const button = factory.create( name );
-				expect( button, name ).to.be.instanceOf( ButtonView );
+				expect( button, name ).toBeInstanceOf( ButtonView );
 				button.destroy();
 			}
 		} );
@@ -113,10 +115,12 @@ describe( 'MediaEmbedStyleUI', () => {
 		it( 'has tooltip, isToggleable, label and icon', () => {
 			for ( const name of BUTTON_NAMES ) {
 				const button = factory.create( name );
-				expect( button.tooltip, `${ name } tooltip` ).to.be.true;
-				expect( button.isToggleable, `${ name } isToggleable` ).to.be.true;
-				expect( button.label, `${ name } label` ).to.be.a( 'string' ).and.not.empty;
-				expect( button.icon, `${ name } icon` ).to.be.a( 'string' ).and.not.empty;
+				expect( button.tooltip, `${ name } tooltip` ).toBe( true );
+				expect( button.isToggleable, `${ name } isToggleable` ).toBe( true );
+				expect( typeof button.label, `${ name } label` ).toBe( 'string' );
+				expect( button.label, `${ name } label not empty` ).toBeTruthy();
+				expect( typeof button.icon, `${ name } icon` ).toBe( 'string' );
+				expect( button.icon, `${ name } icon not empty` ).toBeTruthy();
 				button.destroy();
 			}
 		} );
@@ -126,10 +130,10 @@ describe( 'MediaEmbedStyleUI', () => {
 				const button = factory.create( name );
 
 				_setModelData( editor.model, `[<media url="${ URL }"></media>]` );
-				expect( button.isEnabled, `${ name } enabled on media selection` ).to.be.true;
+				expect( button.isEnabled, `${ name } enabled on media selection` ).toBe( true );
 
 				_setModelData( editor.model, '<paragraph>x[]</paragraph>' );
-				expect( button.isEnabled, `${ name } disabled outside media` ).to.be.false;
+				expect( button.isEnabled, `${ name } disabled outside media` ).toBe( false );
 
 				button.destroy();
 			}
@@ -139,10 +143,10 @@ describe( 'MediaEmbedStyleUI', () => {
 			const button = factory.create( 'mediaEmbed:alignLeft' );
 
 			_setModelData( editor.model, `[<media mediaStyle="alignLeft" url="${ URL }"></media>]` );
-			expect( button.isOn ).to.be.true;
+			expect( button.isOn ).toBe( true );
 
 			_setModelData( editor.model, `[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]` );
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 
 			button.destroy();
 		} );
@@ -152,34 +156,34 @@ describe( 'MediaEmbedStyleUI', () => {
 
 			_setModelData( editor.model, `[<media url="${ URL }"></media>]` );
 
-			expect( button.isOn ).to.be.true;
+			expect( button.isOn ).toBe( true );
 
 			button.destroy();
 		} );
 
 		it( 'fires the command with the right value when executed', () => {
 			const button = factory.create( 'mediaEmbed:alignBlockLeft' );
-			const executeSpy = sinon.spy( command, 'execute' );
+			const executeSpy = vi.spyOn( command, 'execute' );
 
 			_setModelData( editor.model, `[<media url="${ URL }"></media>]` );
 
 			button.fire( 'execute' );
 
-			expect( executeSpy.calledOnce ).to.be.true;
-			expect( executeSpy.firstCall.args[ 0 ] ).to.deep.equal( { value: 'alignBlockLeft' } );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( { value: 'alignBlockLeft' } );
 
 			button.destroy();
 		} );
 
 		it( 'refocuses the editing view after click', () => {
 			const button = factory.create( 'mediaEmbed:alignBlockLeft' );
-			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			_setModelData( editor.model, `[<media url="${ URL }"></media>]` );
 
 			button.fire( 'execute' );
 
-			expect( focusSpy.calledOnce ).to.be.true;
+			expect( focusSpy ).toHaveBeenCalledOnce();
 
 			button.destroy();
 		} );
@@ -189,9 +193,9 @@ describe( 'MediaEmbedStyleUI', () => {
 		it( 'is a DropdownView instance with a SplitButtonView and an enabled tooltip', () => {
 			for ( const name of DROPDOWN_NAMES ) {
 				const dropdown = factory.create( name );
-				expect( dropdown, name ).to.be.instanceOf( DropdownView );
-				expect( dropdown.buttonView, `${ name } buttonView` ).to.be.instanceOf( SplitButtonView );
-				expect( dropdown.buttonView.tooltip, `${ name } tooltip` ).to.be.true;
+				expect( dropdown, name ).toBeInstanceOf( DropdownView );
+				expect( dropdown.buttonView, `${ name } buttonView` ).toBeInstanceOf( SplitButtonView );
+				expect( dropdown.buttonView.tooltip, `${ name } tooltip` ).toBe( true );
 				dropdown.destroy();
 			}
 		} );
@@ -201,10 +205,10 @@ describe( 'MediaEmbedStyleUI', () => {
 				const dropdown = factory.create( name );
 
 				_setModelData( editor.model, `[<media url="${ URL }"></media>]` );
-				expect( dropdown.isEnabled, `${ name } enabled on media selection` ).to.be.true;
+				expect( dropdown.isEnabled, `${ name } enabled on media selection` ).toBe( true );
 
 				_setModelData( editor.model, '<paragraph>x[]</paragraph>' );
-				expect( dropdown.isEnabled, `${ name } disabled outside media` ).to.be.false;
+				expect( dropdown.isEnabled, `${ name } disabled outside media` ).toBe( false );
 
 				dropdown.destroy();
 			}
@@ -217,7 +221,7 @@ describe( 'MediaEmbedStyleUI', () => {
 
 			_setModelData( editor.model, `[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]` );
 
-			expect( dropdown.buttonView.isOn ).to.be.true;
+			expect( dropdown.buttonView.isOn ).toBe( true );
 
 			dropdown.destroy();
 		} );
@@ -228,7 +232,7 @@ describe( 'MediaEmbedStyleUI', () => {
 
 			_setModelData( editor.model, `[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]` );
 
-			expect( dropdown.buttonView.isOn ).to.be.false;
+			expect( dropdown.buttonView.isOn ).toBe( false );
 
 			dropdown.destroy();
 		} );
@@ -241,12 +245,12 @@ describe( 'MediaEmbedStyleUI', () => {
 			const dropdown = factory.create( 'mediaEmbed:breakText' );
 			dropdown.render();
 
-			const executeSpy = sinon.spy( command, 'execute' );
+			const executeSpy = vi.spyOn( command, 'execute' );
 
 			dropdown.buttonView.fire( 'execute' );
 
-			expect( executeSpy.calledOnce ).to.be.true;
-			expect( executeSpy.firstCall.args[ 0 ] ).to.deep.equal( { value: 'alignCenter' } );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( { value: 'alignCenter' } );
 
 			dropdown.destroy();
 		} );
@@ -258,12 +262,12 @@ describe( 'MediaEmbedStyleUI', () => {
 			// alignBlockLeft is one of breakText's children, so the dropdown's "any child on" state is true.
 			_setModelData( editor.model, `[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]` );
 
-			const executeSpy = sinon.spy( command, 'execute' );
+			const executeSpy = vi.spyOn( command, 'execute' );
 
 			dropdown.buttonView.fire( 'execute' );
 
-			expect( executeSpy.called, 'command should not be executed' ).to.be.false;
-			expect( dropdown.isOpen, 'dropdown should be open' ).to.be.true;
+			expect( executeSpy, 'command should not be executed' ).not.toHaveBeenCalled();
+			expect( dropdown.isOpen, 'dropdown should be open' ).toBe( true );
 
 			dropdown.destroy();
 		} );
@@ -272,13 +276,13 @@ describe( 'MediaEmbedStyleUI', () => {
 			const dropdown = factory.create( 'mediaEmbed:breakText' );
 			dropdown.render();
 
-			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			_setModelData( editor.model, `[<media url="${ URL }"></media>]` );
 
 			dropdown.fire( 'execute' );
 
-			expect( focusSpy.calledOnce ).to.be.true;
+			expect( focusSpy ).toHaveBeenCalledOnce();
 
 			dropdown.destroy();
 		} );
@@ -288,14 +292,14 @@ describe( 'MediaEmbedStyleUI', () => {
 		let configuredEditor, configuredEditorElement, warnStub;
 
 		beforeEach( async () => {
-			warnStub = sinon.stub( console, 'warn' );
+			warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			( { editor: configuredEditor, editorElement: configuredEditorElement } =
 				await createConfiguredEditor( [ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ] ) );
 		} );
 
 		afterEach( async () => {
-			warnStub.restore();
+			vi.restoreAllMocks();
 			configuredEditorElement.remove();
 			await configuredEditor.destroy();
 		} );
@@ -303,30 +307,30 @@ describe( 'MediaEmbedStyleUI', () => {
 		it( 'registers only the configured buttons', () => {
 			const factory = configuredEditor.ui.componentFactory;
 
-			expect( factory.has( 'mediaEmbed:alignBlockLeft' ) ).to.be.true;
-			expect( factory.has( 'mediaEmbed:alignCenter' ) ).to.be.true;
-			expect( factory.has( 'mediaEmbed:alignBlockRight' ) ).to.be.true;
+			expect( factory.has( 'mediaEmbed:alignBlockLeft' ) ).toBe( true );
+			expect( factory.has( 'mediaEmbed:alignCenter' ) ).toBe( true );
+			expect( factory.has( 'mediaEmbed:alignBlockRight' ) ).toBe( true );
 		} );
 
 		it( 'does not register buttons for filtered-out styles', () => {
 			const factory = configuredEditor.ui.componentFactory;
 
-			expect( factory.has( 'mediaEmbed:alignLeft' ) ).to.be.false;
-			expect( factory.has( 'mediaEmbed:alignRight' ) ).to.be.false;
+			expect( factory.has( 'mediaEmbed:alignLeft' ) ).toBe( false );
+			expect( factory.has( 'mediaEmbed:alignRight' ) ).toBe( false );
 		} );
 
 		it( 'skips wrapText (both items filtered out)', () => {
-			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:wrapText' ) ).to.be.false;
+			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:wrapText' ) ).toBe( false );
 		} );
 
 		it( 'keeps breakText (all three items present)', () => {
-			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:breakText' ) ).to.be.true;
+			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:breakText' ) ).toBe( true );
 		} );
 
 		it( 'does not warn about filtered built-in dropdowns (they auto-skip silently)', () => {
 			// `wrapText` lost both items here, but the integrator did not define `wrapText` —
 			// it is an auto-included built-in, so filtering it must not produce a warning.
-			sinon.assert.notCalled( warnStub );
+			expect( warnStub ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -346,7 +350,7 @@ describe( 'MediaEmbedStyleUI', () => {
 		} );
 
 		it( 'still registers breakText (two items survived)', () => {
-			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:breakText' ) ).to.be.true;
+			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:breakText' ) ).toBe( true );
 		} );
 
 		it( 'split-button action mirrors the first surviving item (defaultItem was filtered out)', () => {
@@ -359,11 +363,11 @@ describe( 'MediaEmbedStyleUI', () => {
 			// Click the action button. With no child currently `isOn`, it should fire the
 			// fallback defaultItem (alignBlockLeft — first surviving).
 			const command = configuredEditor.commands.get( 'mediaStyle' );
-			const executeSpy = sinon.spy( command, 'execute' );
+			const executeSpy = vi.spyOn( command, 'execute' );
 
 			dropdown.buttonView.fire( 'execute' );
 
-			expect( executeSpy.firstCall.args[ 0 ] ).to.deep.equal( { value: 'alignBlockLeft' } );
+			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( { value: 'alignBlockLeft' } );
 
 			dropdown.destroy();
 		} );
@@ -384,11 +388,11 @@ describe( 'MediaEmbedStyleUI', () => {
 		} );
 
 		it( 'skips the single-item breakText dropdown', () => {
-			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:breakText' ) ).to.be.false;
+			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:breakText' ) ).toBe( false );
 		} );
 
 		it( 'still registers the lone flat button', () => {
-			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:alignBlockLeft' ) ).to.be.true;
+			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:alignBlockLeft' ) ).toBe( true );
 		} );
 	} );
 
@@ -412,7 +416,7 @@ describe( 'MediaEmbedStyleUI', () => {
 		it( 'renders the overridden label on the button', () => {
 			const button = configuredEditor.ui.componentFactory.create( 'mediaEmbed:alignCenter' );
 
-			expect( button.label ).to.equal( 'Centerrrrred' );
+			expect( button.label ).toBe( 'Centerrrrred' );
 
 			button.destroy();
 		} );
@@ -420,7 +424,8 @@ describe( 'MediaEmbedStyleUI', () => {
 		it( 'inherits the icon from the built-in', () => {
 			const button = configuredEditor.ui.componentFactory.create( 'mediaEmbed:alignCenter' );
 
-			expect( button.icon ).to.be.a( 'string' ).and.not.empty;
+			expect( typeof button.icon ).toBe( 'string' );
+			expect( button.icon ).toBeTruthy();
 
 			button.destroy();
 		} );
@@ -444,14 +449,14 @@ describe( 'MediaEmbedStyleUI', () => {
 		} );
 
 		it( 'registers the custom button under the configured name', () => {
-			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:side' ) ).to.be.true;
+			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:side' ) ).toBe( true );
 		} );
 
 		it( 'renders the custom label and icon', () => {
 			const button = configuredEditor.ui.componentFactory.create( 'mediaEmbed:side' );
 
-			expect( button.label ).to.equal( 'Side media' );
-			expect( button.icon ).to.equal( sideSvg );
+			expect( button.label ).toBe( 'Side media' );
+			expect( button.icon ).toBe( sideSvg );
 
 			button.destroy();
 		} );
@@ -459,13 +464,13 @@ describe( 'MediaEmbedStyleUI', () => {
 		it( 'fires the command with the custom style name on click', () => {
 			const button = configuredEditor.ui.componentFactory.create( 'mediaEmbed:side' );
 			const command = configuredEditor.commands.get( 'mediaStyle' );
-			const executeSpy = sinon.spy( command, 'execute' );
+			const executeSpy = vi.spyOn( command, 'execute' );
 
 			_setModelData( configuredEditor.model, `[<media url="${ URL }"></media>]` );
 
 			button.fire( 'execute' );
 
-			expect( executeSpy.firstCall.args[ 0 ] ).to.deep.equal( { value: 'side' } );
+			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( { value: 'side' } );
 
 			button.destroy();
 		} );
@@ -492,7 +497,7 @@ describe( 'MediaEmbedStyleUI', () => {
 
 			_setModelData( configuredEditor.model, `[<media url="${ URL }"></media>]` );
 
-			expect( button.isOn ).to.be.true;
+			expect( button.isOn ).toBe( true );
 
 			button.destroy();
 		} );
@@ -523,12 +528,12 @@ describe( 'MediaEmbedStyleUI', () => {
 		} );
 
 		it( 'registers the custom dropdown under its declared name', () => {
-			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:myAlignments' ) ).to.be.true;
+			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:myAlignments' ) ).toBe( true );
 		} );
 
 		it( 'still registers the built-in dropdowns alongside the custom one', () => {
-			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:wrapText' ) ).to.be.true;
-			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:breakText' ) ).to.be.true;
+			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:wrapText' ) ).toBe( true );
+			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:breakText' ) ).toBe( true );
 		} );
 
 		it( 'creates a DropdownView whose split-button mirrors the active child', () => {
@@ -537,7 +542,7 @@ describe( 'MediaEmbedStyleUI', () => {
 
 			_setModelData( configuredEditor.model, `[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]` );
 
-			expect( dropdown.buttonView.isOn ).to.be.true;
+			expect( dropdown.buttonView.isOn ).toBe( true );
 
 			dropdown.destroy();
 		} );
@@ -549,11 +554,11 @@ describe( 'MediaEmbedStyleUI', () => {
 			dropdown.render();
 
 			const command = configuredEditor.commands.get( 'mediaStyle' );
-			const executeSpy = sinon.spy( command, 'execute' );
+			const executeSpy = vi.spyOn( command, 'execute' );
 
 			dropdown.buttonView.fire( 'execute' );
 
-			expect( executeSpy.firstCall.args[ 0 ] ).to.deep.equal( { value: 'alignBlockLeft' } );
+			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( { value: 'alignBlockLeft' } );
 
 			dropdown.destroy();
 		} );
@@ -566,7 +571,7 @@ describe( 'MediaEmbedStyleUI', () => {
 		let configuredEditor, configuredEditorElement, warnStub;
 
 		beforeEach( async () => {
-			warnStub = sinon.stub( console, 'warn' );
+			warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			( { editor: configuredEditor, editorElement: configuredEditorElement } =
 				await createConfiguredEditor(
@@ -582,17 +587,18 @@ describe( 'MediaEmbedStyleUI', () => {
 		} );
 
 		afterEach( async () => {
-			warnStub.restore();
+			vi.restoreAllMocks();
 			configuredEditorElement.remove();
 			await configuredEditor.destroy();
 		} );
 
 		it( 'warns that the custom dropdown was not fully honored', () => {
-			sinon.assert.calledWith( warnStub, sinon.match( /^media-style-configuration-definition-invalid/ ) );
+			expect( warnStub ).toHaveBeenCalled();
+			expect( warnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^media-style-configuration-definition-invalid/ );
 		} );
 
 		it( 'registers the dropdown with only the surviving items', () => {
-			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:mixedAlignments' ) ).to.be.true;
+			expect( configuredEditor.ui.componentFactory.has( 'mediaEmbed:mixedAlignments' ) ).toBe( true );
 		} );
 
 		it( 'falls back to the first surviving item when the configured defaultItem is filtered out', () => {
@@ -602,11 +608,11 @@ describe( 'MediaEmbedStyleUI', () => {
 			dropdown.render();
 
 			const command = configuredEditor.commands.get( 'mediaStyle' );
-			const executeSpy = sinon.spy( command, 'execute' );
+			const executeSpy = vi.spyOn( command, 'execute' );
 
 			dropdown.buttonView.fire( 'execute' );
 
-			expect( executeSpy.firstCall.args[ 0 ] ).to.deep.equal( { value: 'alignBlockLeft' } );
+			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( { value: 'alignBlockLeft' } );
 
 			dropdown.destroy();
 		} );
@@ -616,11 +622,11 @@ describe( 'MediaEmbedStyleUI', () => {
 		let warnStub;
 
 		beforeEach( () => {
-			warnStub = sinon.stub( console, 'warn' );
+			warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 		} );
 
 		afterEach( () => {
-			warnStub.restore();
+			vi.restoreAllMocks();
 		} );
 
 		// Each entry is a malformed dropdown definition that should be warned + skipped at
@@ -651,8 +657,9 @@ describe( 'MediaEmbedStyleUI', () => {
 					[ badEntry ]
 				);
 
-				expect( editor.ui.componentFactory.has( badEntry.name ) ).to.be.false;
-				sinon.assert.calledWith( warnStub, sinon.match( /^media-style-configuration-definition-invalid/ ) );
+				expect( editor.ui.componentFactory.has( badEntry.name ) ).toBe( false );
+				expect( warnStub ).toHaveBeenCalled();
+				expect( warnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^media-style-configuration-definition-invalid/ );
 
 				editorElement.remove();
 				await editor.destroy();
@@ -672,7 +679,7 @@ describe( 'MediaEmbedStyleUI', () => {
 				}
 			} );
 
-			sinon.assert.notCalled( warnStub );
+			expect( warnStub ).not.toHaveBeenCalled();
 
 			editorElement.remove();
 			await editor.destroy();
@@ -696,7 +703,7 @@ describe( 'MediaEmbedStyleUI', () => {
 				}
 			} );
 
-			sinon.assert.notCalled( warnStub );
+			expect( warnStub ).not.toHaveBeenCalled();
 
 			editorElement.remove();
 			await editor.destroy();

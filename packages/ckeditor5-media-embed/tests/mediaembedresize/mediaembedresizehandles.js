@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
@@ -31,6 +33,8 @@ describe( 'MediaEmbedResizeHandles', () => {
 	} );
 
 	afterEach( async () => {
+		vi.restoreAllMocks();
+
 		if ( editorElement ) {
 			editorElement.remove();
 		}
@@ -41,31 +45,31 @@ describe( 'MediaEmbedResizeHandles', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( MediaEmbedResizeHandles.pluginName ).to.equal( 'MediaEmbedResizeHandles' );
+		expect( MediaEmbedResizeHandles.pluginName ).toBe( 'MediaEmbedResizeHandles' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( MediaEmbedResizeHandles.isOfficialPlugin ).to.be.true;
+		expect( MediaEmbedResizeHandles.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( MediaEmbedResizeHandles.isPremiumPlugin ).to.be.false;
+		expect( MediaEmbedResizeHandles.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should require WidgetResize', () => {
-		expect( MediaEmbedResizeHandles.requires ).to.include( WidgetResize );
+		expect( MediaEmbedResizeHandles.requires ).toContain( WidgetResize );
 	} );
 
 	describe( 'resizer attachment', () => {
 		it( 'attaches a resizer to a media widget', async () => {
 			editor = await createEditor();
-			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
+			const attachToSpy = vi.spyOn( editor.plugins.get( WidgetResize ), 'attachTo' );
 
 			_setModelData( editor.model, `[<media url="${ YOUTUBE_URL }"></media>]` );
 
 			// change:data listener fires at low priority after conversion.
-			expect( attachToSpy.calledOnce ).to.be.true;
-			expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.property( 'unit', '%' );
+			expect( attachToSpy ).toHaveBeenCalledOnce();
+			expect( attachToSpy.mock.calls[ 0 ][ 0 ] ).toHaveProperty( 'unit', '%' );
 		} );
 
 		it( 'should use `mediaEmbed.resizeUnit` from config as the resizer unit', async () => {
@@ -77,12 +81,12 @@ describe( 'MediaEmbedResizeHandles', () => {
 			viewDocument = editor.editing.view.document;
 			await focusEditor( editor );
 
-			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
+			const attachToSpy = vi.spyOn( editor.plugins.get( WidgetResize ), 'attachTo' );
 
 			_setModelData( editor.model, `[<media url="${ YOUTUBE_URL }"></media>]` );
 
-			expect( attachToSpy.calledOnce ).to.be.true;
-			expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.property( 'unit', 'px' );
+			expect( attachToSpy ).toHaveBeenCalledOnce();
+			expect( attachToSpy.mock.calls[ 0 ][ 0 ] ).toHaveProperty( 'unit', 'px' );
 		} );
 
 		it( 'attaches resizers to media present in the initial data', async () => {
@@ -99,7 +103,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 			const mediaModel = root.getChild( 1 );
 			const viewElement = editor.editing.mapper.toViewElement( mediaModel );
 
-			expect( widgetResize.getResizerByViewElement( viewElement ) ).to.not.be.undefined;
+			expect( widgetResize.getResizerByViewElement( viewElement ) ).not.toBeUndefined();
 		} );
 
 		it( 'attaches a resizer to media nested inside an inserted block container', async () => {
@@ -124,7 +128,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 			const mediaModel = insertedBlockQuote.getChild( 0 );
 			const viewElement = editor.editing.mapper.toViewElement( mediaModel );
 
-			expect( widgetResize.getResizerByViewElement( viewElement ) ).to.not.be.undefined;
+			expect( widgetResize.getResizerByViewElement( viewElement ) ).not.toBeUndefined();
 		} );
 
 		it( 'does not attach a duplicate resizer when another element is inserted', async () => {
@@ -132,7 +136,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 
 			_setModelData( editor.model, `<media url="${ YOUTUBE_URL }"></media><paragraph>[]</paragraph>` );
 
-			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
+			const attachToSpy = vi.spyOn( editor.plugins.get( WidgetResize ), 'attachTo' );
 
 			// Insert another paragraph — triggers a change:data with an element insert,
 			// but the change-listener should skip media that already have a resizer attached.
@@ -140,7 +144,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 				writer.insertElement( 'paragraph', editor.model.document.getRoot(), 'end' );
 			} );
 
-			expect( attachToSpy.called ).to.be.false;
+			expect( attachToSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'binds the plugin isEnabled state to the resizeMediaEmbed command', async () => {
@@ -155,11 +159,11 @@ describe( 'MediaEmbedResizeHandles', () => {
 			}, { priority: 'highest' } );
 
 			command.refresh();
-			expect( plugin.isEnabled ).to.be.true;
+			expect( plugin.isEnabled ).toBe( true );
 
 			commandEnabled = false;
 			command.refresh();
-			expect( plugin.isEnabled ).to.be.false;
+			expect( plugin.isEnabled ).toBe( false );
 		} );
 
 		it( 'does not iterate media on text-only changes (typing)', async () => {
@@ -167,14 +171,14 @@ describe( 'MediaEmbedResizeHandles', () => {
 
 			_setModelData( editor.model, `<paragraph>x[]</paragraph><media url="${ YOUTUBE_URL }"></media>` );
 
-			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
+			const attachToSpy = vi.spyOn( editor.plugins.get( WidgetResize ), 'attachTo' );
 
 			// Type a character in the paragraph — a text-only data change.
 			editor.model.change( writer => {
 				writer.insertText( 'y', editor.model.document.selection.getFirstPosition() );
 			} );
 
-			expect( attachToSpy.called ).to.be.false;
+			expect( attachToSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'propagates plugin.isEnabled=false to existing resizers', async () => {
@@ -187,7 +191,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 			const mediaModel = editor.model.document.getRoot().getChild( 0 );
 			const resizer = widgetResize.getResizerByViewElement( editor.editing.mapper.toViewElement( mediaModel ) );
 
-			expect( resizer.isEnabled, 'resizer enabled while command is enabled' ).to.be.true;
+			expect( resizer.isEnabled, 'resizer enabled while command is enabled' ).toBe( true );
 
 			// Force the command off. plugin.isEnabled is bound to it, and each resizer's isEnabled is bound to the plugin.
 			command.on( 'set:isEnabled', evt => {
@@ -196,7 +200,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 			}, { priority: 'highest' } );
 			command.refresh();
 
-			expect( resizer.isEnabled, 'resizer disabled once command is disabled' ).to.be.false;
+			expect( resizer.isEnabled, 'resizer disabled once command is disabled' ).toBe( false );
 		} );
 
 		it( 'keeps the same resizer when the URL changes between providers', async () => {
@@ -211,19 +215,19 @@ describe( 'MediaEmbedResizeHandles', () => {
 
 			editor.model.change( writer => writer.setAttribute( 'url', 'https://vimeo.com/1234', mediaModel ) );
 
-			expect( widgetResize.getResizerByViewElement( viewElement ) ).to.equal( resizerBefore );
+			expect( widgetResize.getResizerByViewElement( viewElement ) ).toBe( resizerBefore );
 		} );
 
 		it( 'attaches a resizer even when the url attribute is missing', async () => {
 			editor = await createEditor();
-			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
+			const attachToSpy = vi.spyOn( editor.plugins.get( WidgetResize ), 'attachTo' );
 
 			editor.model.change( writer => {
 				const media = writer.createElement( 'media' );
 				writer.append( media, editor.model.document.getRoot() );
 			} );
 
-			expect( attachToSpy.calledOnce ).to.be.true;
+			expect( attachToSpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -240,16 +244,16 @@ describe( 'MediaEmbedResizeHandles', () => {
 		} );
 
 		it( 'executes the resizeMediaEmbed command on drag commit', () => {
-			const commandSpy = sinon.spy( editor.commands.get( 'resizeMediaEmbed' ), 'execute' );
+			const commandSpy = vi.spyOn( editor.commands.get( 'resizeMediaEmbed' ), 'execute' );
 			const widget = viewDocument.getRoot().getChild( 0 );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 			const finalPoint = getHandleCenterPoint( domParts.widget, 'bottom-right' ).moveBy( -20, -20 );
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPoint );
 
-			expect( commandSpy.calledOnce ).to.be.true;
-			expect( commandSpy.args[ 0 ][ 0 ] ).to.have.property( 'width' );
-			expect( commandSpy.args[ 0 ][ 0 ].width ).to.match( /\d+%/ );
+			expect( commandSpy ).toHaveBeenCalledOnce();
+			expect( commandSpy.mock.calls[ 0 ][ 0 ] ).toHaveProperty( 'width' );
+			expect( commandSpy.mock.calls[ 0 ][ 0 ].width ).toMatch( /\d+%/ );
 		} );
 
 		it( 'adds the media_resized class during drag', () => {
@@ -260,7 +264,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 			resizerMouseSimulator.down( editor, domParts.resizeHandle );
 			resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPoint.clone().moveBy( -10, -10 ) );
 
-			expect( widget.hasClass( 'media_resized' ) ).to.be.true;
+			expect( widget.hasClass( 'media_resized' ) ).toBe( true );
 
 			resizerMouseSimulator.up( editor );
 		} );
@@ -274,18 +278,18 @@ describe( 'MediaEmbedResizeHandles', () => {
 
 			// First move: adds the class.
 			resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPoint.clone().moveBy( -10, -10 ) );
-			expect( widget.hasClass( 'media_resized' ) ).to.be.true;
+			expect( widget.hasClass( 'media_resized' ) ).toBe( true );
 
 			// Second move: the branch `if (!hasClass)` should be false, nothing to add.
 			resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPoint.clone().moveBy( -20, -20 ) );
-			expect( widget.hasClass( 'media_resized' ) ).to.be.true;
+			expect( widget.hasClass( 'media_resized' ) ).toBe( true );
 
 			resizerMouseSimulator.up( editor );
 		} );
 
 		it( 'removes the media_resized class if the command is overridden and no attribute is set', () => {
 			// Stub execute to simulate the command being overridden (e.g. by Track Changes).
-			sinon.stub( editor.commands.get( 'resizeMediaEmbed' ), 'execute' );
+			vi.spyOn( editor.commands.get( 'resizeMediaEmbed' ), 'execute' ).mockImplementation( () => {} );
 
 			const widget = viewDocument.getRoot().getChild( 0 );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
@@ -293,7 +297,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPoint );
 
-			expect( widget.hasClass( 'media_resized' ) ).to.be.false;
+			expect( widget.hasClass( 'media_resized' ) ).toBe( false );
 		} );
 	} );
 
@@ -323,7 +327,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 		it( 'attaches a resizer to media widgets in every root (no "main" root)', () => {
 			// Guards the regression where `getRoot()` (defaulting to "main") would return null
 			// and skip resizer creation entirely, and where only the "main" root would be processed.
-			expect( multiRoot.model.document.getRoot( 'main' ) ).to.be.null;
+			expect( multiRoot.model.document.getRoot( 'main' ) ).toBeNull();
 
 			const widgetResize = multiRoot.plugins.get( WidgetResize );
 
@@ -339,8 +343,8 @@ describe( 'MediaEmbedResizeHandles', () => {
 			const fooViewElement = multiRoot.editing.mapper.toViewElement( fooMedia );
 			const barViewElement = multiRoot.editing.mapper.toViewElement( barMedia );
 
-			expect( widgetResize.getResizerByViewElement( fooViewElement ) ).to.not.be.undefined;
-			expect( widgetResize.getResizerByViewElement( barViewElement ) ).to.not.be.undefined;
+			expect( widgetResize.getResizerByViewElement( fooViewElement ) ).not.toBeUndefined();
+			expect( widgetResize.getResizerByViewElement( barViewElement ) ).not.toBeUndefined();
 		} );
 	} );
 

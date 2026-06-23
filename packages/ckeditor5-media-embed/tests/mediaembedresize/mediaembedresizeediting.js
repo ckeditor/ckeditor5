@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -27,32 +28,32 @@ describe( 'MediaEmbedResizeEditing', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( MediaEmbedResizeEditing.pluginName ).to.equal( 'MediaEmbedResizeEditing' );
+		expect( MediaEmbedResizeEditing.pluginName ).toBe( 'MediaEmbedResizeEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( MediaEmbedResizeEditing.isOfficialPlugin ).to.be.true;
+		expect( MediaEmbedResizeEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-		expect( MediaEmbedResizeEditing.isPremiumPlugin ).to.be.true;
+		expect( MediaEmbedResizeEditing.isPremiumPlugin ).toBe( true );
 	} );
 
 	it( 'should have `licenseFeatureCode` static flag set to `MER`', () => {
-		expect( MediaEmbedResizeEditing.licenseFeatureCode ).to.equal( 'MER' );
+		expect( MediaEmbedResizeEditing.licenseFeatureCode ).toBe( 'MER' );
 	} );
 
 	it( 'should require MediaEmbedEditing', () => {
-		expect( MediaEmbedResizeEditing.requires ).to.include( MediaEmbedEditing );
+		expect( MediaEmbedResizeEditing.requires ).toContain( MediaEmbedEditing );
 	} );
 
 	describe( 'schema', () => {
 		it( 'allows resizedWidth attribute on media', () => {
-			expect( model.schema.checkAttribute( [ '$root', 'media' ], 'resizedWidth' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'media' ], 'resizedWidth' ) ).toBe( true );
 		} );
 
 		it( 'marks resizedWidth as a formatting attribute', () => {
-			expect( model.schema.getAttributeProperties( 'resizedWidth' ) ).to.deep.include( {
+			expect( model.schema.getAttributeProperties( 'resizedWidth' ) ).toMatchObject( {
 				isFormatting: true
 			} );
 		} );
@@ -60,7 +61,7 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 	describe( 'command', () => {
 		it( 'registers the resizeMediaEmbed command', () => {
-			expect( editor.commands.get( 'resizeMediaEmbed' ) ).to.be.instanceOf( ResizeMediaEmbedCommand );
+			expect( editor.commands.get( 'resizeMediaEmbed' ) ).toBeInstanceOf( ResizeMediaEmbedCommand );
 		} );
 	} );
 
@@ -69,7 +70,7 @@ describe( 'MediaEmbedResizeEditing', () => {
 			it( 'converts resizedWidth to inline style and media_resized class on the figure', () => {
 				_setModelData( model, '<media resizedWidth="50%" url="https://youtu.be/foo"></media>' );
 
-				expect( editor.getData() ).to.match(
+				expect( editor.getData() ).toMatch(
 					/^<figure class="media media_resized" style="width:50%;"><oembed url="https:\/\/youtu\.be\/foo">/
 				);
 			} );
@@ -85,9 +86,9 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.match( /^<figure class="media">/ );
-				expect( data ).not.to.match( /media_resized/ );
-				expect( data ).not.to.match( /style=/ );
+				expect( data ).toMatch( /^<figure class="media">/ );
+				expect( data ).not.toMatch( /media_resized/ );
+				expect( data ).not.toMatch( /style=/ );
 			} );
 
 			it( 'does not downcast resizedWidth if the event was already consumed', () => {
@@ -101,8 +102,8 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 				const data = editor.getData();
 
-				expect( data ).not.to.match( /media_resized/ );
-				expect( data ).not.to.match( /style=/ );
+				expect( data ).not.toMatch( /media_resized/ );
+				expect( data ).not.toMatch( /style=/ );
 			} );
 		} );
 
@@ -114,7 +115,7 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 				const mediaModel = model.document.getRoot().getChild( 0 );
 
-				expect( mediaModel.getAttribute( 'resizedWidth' ) ).to.equal( '50%' );
+				expect( mediaModel.getAttribute( 'resizedWidth' ) ).toBe( '50%' );
 			} );
 
 			it( 'upcasts px widths', () => {
@@ -124,12 +125,12 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 				const mediaModel = model.document.getRoot().getChild( 0 );
 
-				expect( mediaModel.getAttribute( 'resizedWidth' ) ).to.equal( '400px' );
+				expect( mediaModel.getAttribute( 'resizedWidth' ) ).toBe( '400px' );
 			} );
 
 			it( 'consumes the media_resized class so it does not remain unhandled', () => {
-				const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
-					expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'media_resized' ] } ) ).to.be.false;
+				const consumeSpy = vi.fn( ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'media_resized' ] } ) ).toBe( false );
 				} );
 
 				editor.data.upcastDispatcher.on( 'element:figure', consumeSpy, { priority: 'lowest' } );
@@ -140,7 +141,7 @@ describe( 'MediaEmbedResizeEditing', () => {
 					'</figure>'
 				);
 
-				expect( consumeSpy.calledOnce ).to.be.true;
+				expect( consumeSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'does not set resizedWidth when width is not present', () => {
@@ -150,7 +151,7 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 				const mediaModel = model.document.getRoot().getChild( 0 );
 
-				expect( mediaModel.hasAttribute( 'resizedWidth' ) ).to.be.false;
+				expect( mediaModel.hasAttribute( 'resizedWidth' ) ).toBe( false );
 			} );
 
 			it( 'does not set resizedWidth on a non-media figure that upcasts to another model element', () => {
@@ -171,8 +172,8 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 				const widget = model.document.getRoot().getChild( 0 );
 
-				expect( widget.name ).to.equal( 'customWidget' );
-				expect( widget.hasAttribute( 'resizedWidth' ), 'resizedWidth not set on non-media figure' ).to.be.false;
+				expect( widget.name ).toBe( 'customWidget' );
+				expect( widget.hasAttribute( 'resizedWidth' ), 'resizedWidth not set on non-media figure' ).toBe( false );
 			} );
 		} );
 
@@ -184,11 +185,11 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 				editor.setData( input );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<media resizedWidth="50%" url="https://youtu.be/foo"></media>'
 				);
 
-				expect( editor.getData() ).to.equal( input );
+				expect( editor.getData() ).toBe( input );
 			} );
 		} );
 	} );
@@ -217,10 +218,10 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 				const data = previewEditor.getData();
 
-				expect( data ).to.match( /^<figure class="media media_resized" style="width:50%;">/ );
-				expect( data ).to.match( /data-oembed-url="https:\/\/youtu\.be\/foo"/ );
-				expect( data ).to.match( /<iframe/ );
-				expect( data ).to.match( /aspect-ratio: ?16 ?\/ ?9/ );
+				expect( data ).toMatch( /^<figure class="media media_resized" style="width:50%;">/ );
+				expect( data ).toMatch( /data-oembed-url="https:\/\/youtu\.be\/foo"/ );
+				expect( data ).toMatch( /<iframe/ );
+				expect( data ).toMatch( /aspect-ratio: ?16 ?\/ ?9/ );
 			} );
 		} );
 
@@ -239,8 +240,8 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 				const mediaModel = previewModel.document.getRoot().getChild( 0 );
 
-				expect( mediaModel.getAttribute( 'resizedWidth' ) ).to.equal( '50%' );
-				expect( mediaModel.getAttribute( 'url' ) ).to.equal( 'https://youtu.be/foo' );
+				expect( mediaModel.getAttribute( 'resizedWidth' ) ).toBe( '50%' );
+				expect( mediaModel.getAttribute( 'url' ) ).toBe( 'https://youtu.be/foo' );
 			} );
 		} );
 
@@ -263,12 +264,12 @@ describe( 'MediaEmbedResizeEditing', () => {
 				const output = previewEditor.getData();
 
 				// Legacy markup must be gone.
-				expect( output ).not.to.match( /padding-bottom/ );
-				expect( output ).not.to.match( /position: ?absolute/ );
+				expect( output ).not.toMatch( /padding-bottom/ );
+				expect( output ).not.toMatch( /position: ?absolute/ );
 
 				// New markup must be present.
-				expect( output ).to.match( /aspect-ratio: ?16 ?\/ ?9/ );
-				expect( output ).to.match( /data-oembed-url="https:\/\/youtu\.be\/foo"/ );
+				expect( output ).toMatch( /aspect-ratio: ?16 ?\/ ?9/ );
+				expect( output ).toMatch( /data-oembed-url="https:\/\/youtu\.be\/foo"/ );
 			} );
 
 			it( 'preserves resizedWidth when migrating legacy format', () => {
@@ -287,49 +288,49 @@ describe( 'MediaEmbedResizeEditing', () => {
 				previewEditor.setData( legacyResized );
 
 				const mediaModel = previewModel.document.getRoot().getChild( 0 );
-				expect( mediaModel.getAttribute( 'resizedWidth' ) ).to.equal( '60%' );
+				expect( mediaModel.getAttribute( 'resizedWidth' ) ).toBe( '60%' );
 
 				const output = previewEditor.getData();
-				expect( output ).to.match( /^<figure class="media media_resized" style="width:60%;">/ );
-				expect( output ).to.match( /aspect-ratio: ?16 ?\/ ?9/ );
+				expect( output ).toMatch( /^<figure class="media media_resized" style="width:60%;">/ );
+				expect( output ).toMatch( /aspect-ratio: ?16 ?\/ ?9/ );
 			} );
 		} );
 	} );
 
 	describe( 'config defaults', () => {
 		it( 'should define `mediaEmbed.resizeUnit` default as `%`', () => {
-			expect( editor.config.get( 'mediaEmbed.resizeUnit' ) ).to.equal( '%' );
+			expect( editor.config.get( 'mediaEmbed.resizeUnit' ) ).toBe( '%' );
 		} );
 
 		it( 'should define `mediaEmbed.resizeOptions` default with 5 entries', () => {
 			const resizeOptions = editor.config.get( 'mediaEmbed.resizeOptions' );
 
-			expect( resizeOptions ).to.have.length( 5 );
+			expect( resizeOptions ).toHaveLength( 5 );
 		} );
 
 		it( 'should include the original option with null value', () => {
 			const resizeOptions = editor.config.get( 'mediaEmbed.resizeOptions' );
 			const originalOption = resizeOptions.find( option => option.value === null );
 
-			expect( originalOption ).to.exist;
-			expect( originalOption.name ).to.equal( 'resizeMediaEmbed:original' );
-			expect( originalOption.icon ).to.equal( 'original' );
+			expect( originalOption ).toBeDefined();
+			expect( originalOption.name ).toBe( 'resizeMediaEmbed:original' );
+			expect( originalOption.icon ).toBe( 'original' );
 		} );
 
 		it( 'should include the custom option', () => {
 			const resizeOptions = editor.config.get( 'mediaEmbed.resizeOptions' );
 			const customOption = resizeOptions.find( option => option.value === 'custom' );
 
-			expect( customOption ).to.exist;
-			expect( customOption.name ).to.equal( 'resizeMediaEmbed:custom' );
-			expect( customOption.icon ).to.equal( 'custom' );
+			expect( customOption ).toBeDefined();
+			expect( customOption.name ).toBe( 'resizeMediaEmbed:custom' );
+			expect( customOption.icon ).toBe( 'custom' );
 		} );
 
 		it( 'should include preset size options (25, 50, 75)', () => {
 			const resizeOptions = editor.config.get( 'mediaEmbed.resizeOptions' );
 			const values = resizeOptions.map( option => option.value );
 
-			expect( values ).to.include.members( [ '25', '50', '75' ] );
+			expect( values ).toEqual( expect.arrayContaining( [ '25', '50', '75' ] ) );
 		} );
 
 		it( 'should allow overriding resizeUnit via config', async () => {
@@ -340,7 +341,7 @@ describe( 'MediaEmbedResizeEditing', () => {
 				}
 			} );
 
-			expect( pxEditor.config.get( 'mediaEmbed.resizeUnit' ) ).to.equal( 'px' );
+			expect( pxEditor.config.get( 'mediaEmbed.resizeUnit' ) ).toBe( 'px' );
 
 			await pxEditor.destroy();
 		} );

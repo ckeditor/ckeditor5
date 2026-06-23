@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest';
+
 import { MediaEmbed } from '../src/mediaembed.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
@@ -10,17 +12,17 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { _getViewData, enableViewPlaceholder } from '@ckeditor/ckeditor5-engine';
 
 describe( 'MediaEmbed integration', () => {
-	let element, clock;
+	let element;
 
 	beforeEach( () => {
-		clock = sinon.useFakeTimers();
+		vi.useFakeTimers();
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 	} );
 
 	afterEach( () => {
 		element.remove();
-		clock.restore();
+		vi.useRealTimers();
 	} );
 
 	describe( 'with the placeholder feature', () => {
@@ -48,9 +50,9 @@ describe( 'MediaEmbed integration', () => {
 				preventDefault() {}
 			} );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getViewData( editor.editing.view ) ).to.equal(
+			expect( _getViewData( editor.editing.view ) ).toBe(
 				'[<figure class="ck-widget ck-widget_selected media" contenteditable="false" data-placeholder="foo">' +
 					'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=H08tGjXNHO4"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +

@@ -3,12 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
-
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { MediaEmbedEditing } from '../../src/mediaembedediting.js';
 import { MediaEmbedResizeEditing } from '../../src/mediaembedresize/mediaembedresizeediting.js';
@@ -20,7 +19,9 @@ const YOUTUBE_URL = 'https://www.youtube.com/watch?v=foo';
 describe( 'MediaEmbedCustomResizeUI', () => {
 	let element, model, modelRoot, editor, dropdown, button, plugin, balloon;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -54,60 +55,65 @@ describe( 'MediaEmbedCustomResizeUI', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( MediaEmbedCustomResizeUI.pluginName ).to.equal( 'MediaEmbedCustomResizeUI' );
+		expect( MediaEmbedCustomResizeUI.pluginName ).toBe( 'MediaEmbedCustomResizeUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( MediaEmbedCustomResizeUI.isOfficialPlugin ).to.be.true;
+		expect( MediaEmbedCustomResizeUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( MediaEmbedCustomResizeUI.isPremiumPlugin ).to.be.false;
+		expect( MediaEmbedCustomResizeUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should require ContextualBalloon', () => {
 		const ContextualBalloon = editor.plugins.get( 'ContextualBalloon' ).constructor;
 
-		expect( MediaEmbedCustomResizeUI.requires ).to.include( ContextualBalloon );
+		expect( MediaEmbedCustomResizeUI.requires ).toContain( ContextualBalloon );
 	} );
 
 	describe( 'custom button in dropdown', () => {
 		it( 'should be present in media resize dropdown', () => {
-			expect( button ).not.to.be.undefined;
+			expect( button ).not.toBeUndefined();
 		} );
 
 		it( 'should open balloon panel on click', () => {
 			selectFirstNode();
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 
 			button.fire( 'execute' );
 
-			expect( balloon.visibleView ).to.equal( plugin._form );
-			expect( plugin._isVisible ).to.be.true;
+			expect( balloon.visibleView ).toBe( plugin._form );
+			expect( plugin._isVisible ).toBe( true );
 		} );
 
 		it( 'should open with empty value if media was not resized', () => {
 			_setModelData( model, `<media url="${ YOUTUBE_URL }"></media>` );
 			plugin._createForm( '%' );
 
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 
 			button.fire( 'execute' );
 
-			expect( plugin._form.labeledInput.fieldView.value ).to.equal( '' );
+			expect( plugin._form.labeledInput.fieldView.value ).toBe( '' );
 		} );
 
 		it( 'should disable CSS transitions before showing the form to avoid unnecessary animations', () => {
 			selectFirstNode();
 			plugin._createForm( '%' );
 
-			const addSpy = sinon.spy( balloon, 'add' );
-			const disableCssTransitionsSpy = sinon.spy( plugin._form, 'disableCssTransitions' );
-			const enableCssTransitionsSpy = sinon.spy( plugin._form, 'enableCssTransitions' );
+			const addSpy = vi.spyOn( balloon, 'add' );
+			const disableCssTransitionsSpy = vi.spyOn( plugin._form, 'disableCssTransitions' );
+			const enableCssTransitionsSpy = vi.spyOn( plugin._form, 'enableCssTransitions' );
 
 			button.fire( 'execute' );
 
-			sinon.assert.callOrder( disableCssTransitionsSpy, addSpy, enableCssTransitionsSpy );
+			const addOrder = addSpy.mock.invocationCallOrder[ 0 ];
+			const disableOrder = disableCssTransitionsSpy.mock.invocationCallOrder[ 0 ];
+			const enableOrder = enableCssTransitionsSpy.mock.invocationCallOrder[ 0 ];
+
+			expect( disableOrder ).toBeLessThan( addOrder );
+			expect( addOrder ).toBeLessThan( enableOrder );
 		} );
 	} );
 
@@ -118,7 +124,7 @@ describe( 'MediaEmbedCustomResizeUI', () => {
 
 		it( 'should implement the CSS transition disabling feature', () => {
 			plugin._createForm( '%' );
-			expect( plugin._form.disableCssTransitions ).to.be.a( 'function' );
+			expect( typeof plugin._form.disableCssTransitions ).toBe( 'function' );
 		} );
 
 		it( 'should make sure the input always stays in sync with the command value', () => {
@@ -128,36 +134,36 @@ describe( 'MediaEmbedCustomResizeUI', () => {
 			plugin._form.fire( 'cancel' );
 
 			button.fire( 'execute' );
-			expect( plugin._form.labeledInput.fieldView.element.value ).to.equal( '50.0' );
+			expect( plugin._form.labeledInput.fieldView.element.value ).toBe( '50.0' );
 		} );
 
 		it( 'should not reset input value if #_showForm called on already visible balloon', () => {
 			plugin._showForm( '%' );
 
-			const resetMethodSpy = sinon.spy( plugin._form.labeledInput.fieldView, 'set' );
+			const resetMethodSpy = vi.spyOn( plugin._form.labeledInput.fieldView, 'set' );
 
 			plugin._showForm( '%' );
-			expect( resetMethodSpy ).not.to.be.called;
+			expect( resetMethodSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not remove from balloon if form is not there', () => {
 			plugin._createForm( '%' );
 			plugin._hideForm();
 
-			const removeSpy = sinon.spy( plugin._balloon, 'remove' );
+			const removeSpy = vi.spyOn( plugin._balloon, 'remove' );
 			plugin._hideForm();
-			expect( removeSpy ).not.to.be.called;
+			expect( removeSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should execute resizeMediaEmbed command on submit', () => {
 			plugin._showForm( '%' );
 
-			const spy = sinon.spy( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' );
 
 			plugin._form.labeledInput.fieldView.value = '60';
 			plugin._form.fire( 'submit' );
 
-			sinon.assert.calledWithExactly( spy, 'resizeMediaEmbed', {
+			expect( spy ).toHaveBeenCalledExactlyOnceWith( 'resizeMediaEmbed', {
 				width: '60%'
 			} );
 		} );
@@ -168,7 +174,7 @@ describe( 'MediaEmbedCustomResizeUI', () => {
 				fillFormSize( '' );
 				plugin._form.fire( 'submit' );
 
-				expect( plugin._form.labeledInput.errorText ).to.equal( 'The value must not be empty.' );
+				expect( plugin._form.labeledInput.errorText ).toBe( 'The value must not be empty.' );
 			} );
 
 			it( 'should show error when submitted with non-numeric value', () => {
@@ -176,18 +182,18 @@ describe( 'MediaEmbedCustomResizeUI', () => {
 				fillFormSize( 'abc' );
 				plugin._form.fire( 'submit' );
 
-				expect( plugin._form.labeledInput.errorText ).to.equal( 'The value should be a plain number.' );
+				expect( plugin._form.labeledInput.errorText ).toBe( 'The value should be a plain number.' );
 			} );
 
 			it( 'should clear error after valid submission', () => {
 				plugin._showForm( '%' );
 				fillFormSize( 'abc' );
 				plugin._form.fire( 'submit' );
-				expect( plugin._form.labeledInput.errorText ).to.not.be.null;
+				expect( plugin._form.labeledInput.errorText ).not.toBeNull();
 
 				fillFormSize( '50' );
 				plugin._form.fire( 'submit' );
-				expect( plugin._form.labeledInput.errorText ).to.be.null;
+				expect( plugin._form.labeledInput.errorText ).toBeNull();
 			} );
 
 			it( 'should reset form status on show', () => {
@@ -195,11 +201,11 @@ describe( 'MediaEmbedCustomResizeUI', () => {
 				fillFormSize( 'abc' );
 				plugin._form.fire( 'submit' );
 
-				expect( plugin._form.labeledInput.errorText ).to.not.be.null;
+				expect( plugin._form.labeledInput.errorText ).not.toBeNull();
 
 				plugin._hideForm();
 				plugin._showForm( '%' );
-				expect( plugin._form.labeledInput.errorText ).to.be.null;
+				expect( plugin._form.labeledInput.errorText ).toBeNull();
 			} );
 		} );
 
@@ -209,32 +215,35 @@ describe( 'MediaEmbedCustomResizeUI', () => {
 			} );
 
 			it( 'should focus save button before hiding the view when form is focused', () => {
-				const editableFocusSpy = sinon.spy( editor.editing.view, 'focus' );
-				const buttonFocusSpy = sinon.spy( plugin._form.saveButtonView, 'focus' );
+				const editableFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+				const buttonFocusSpy = vi.spyOn( plugin._form.saveButtonView, 'focus' );
 
 				plugin._form.focusTracker.isFocused = true;
 				plugin._form.fire( 'submit' );
 
-				expect( buttonFocusSpy.calledBefore( editableFocusSpy ) ).to.equal( true );
+				const editableOrder = editableFocusSpy.mock.invocationCallOrder[ 0 ];
+				const buttonOrder = buttonFocusSpy.mock.invocationCallOrder[ 0 ];
+
+				expect( buttonOrder ).toBeLessThan( editableOrder );
 			} );
 
 			it( 'should not focus save button if form was not focused on cancel', () => {
-				const buttonFocusSpy = sinon.spy( plugin._form.saveButtonView, 'focus' );
+				const buttonFocusSpy = vi.spyOn( plugin._form.saveButtonView, 'focus' );
 
 				plugin._form.focusTracker.isFocused = false;
 				plugin._form.fire( 'cancel' );
 
-				sinon.assert.notCalled( buttonFocusSpy );
+				expect( buttonFocusSpy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should hide the panel on cancel and focus the editing view', () => {
-				const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
-				expect( balloon.visibleView ).to.equal( plugin._form );
+				expect( balloon.visibleView ).toBe( plugin._form );
 
 				plugin._form.fire( 'cancel' );
-				expect( balloon.visibleView ).to.be.null;
-				sinon.assert.calledOnce( focusSpy );
+				expect( balloon.visibleView ).toBeNull();
+				expect( focusSpy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -242,36 +251,36 @@ describe( 'MediaEmbedCustomResizeUI', () => {
 			let hideSpy, focusSpy;
 
 			beforeEach( () => {
-				expect( balloon.visibleView ).to.be.null;
+				expect( balloon.visibleView ).toBeNull();
 				button.fire( 'execute' );
-				expect( balloon.visibleView ).not.to.be.null;
+				expect( balloon.visibleView ).not.toBeNull();
 
-				hideSpy = sinon.spy( plugin, '_hideForm' );
-				focusSpy = sinon.spy( editor.editing.view, 'focus' );
+				hideSpy = vi.spyOn( plugin, '_hideForm' );
+				focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 			} );
 
 			it( 'should close upon Esc key press and focus the editing view', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.esc,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				plugin._form.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( hideSpy );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( focusSpy );
+				expect( hideSpy ).toHaveBeenCalledOnce();
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( focusSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should close and not focus editable on click outside the panel', () => {
 				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
-				sinon.assert.called( hideSpy );
-				sinon.assert.notCalled( focusSpy );
+				expect( hideSpy ).toHaveBeenCalled();
+				expect( focusSpy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not close on click inside the panel', () => {
 				plugin._form.element.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
-				sinon.assert.notCalled( hideSpy );
+				expect( hideSpy ).not.toHaveBeenCalled();
 			} );
 		} );
 	} );
@@ -280,10 +289,10 @@ describe( 'MediaEmbedCustomResizeUI', () => {
 		it( 'should destroy the form view if it was created', () => {
 			plugin._createForm( '%' );
 
-			const destroySpy = sinon.spy( plugin._form, 'destroy' );
+			const destroySpy = vi.spyOn( plugin._form, 'destroy' );
 
 			return editor.destroy().then( () => {
-				sinon.assert.calledOnce( destroySpy );
+				expect( destroySpy ).toHaveBeenCalledOnce();
 				element.remove();
 			} );
 		} );

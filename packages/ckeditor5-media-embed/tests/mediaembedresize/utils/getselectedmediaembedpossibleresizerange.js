@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -16,8 +16,6 @@ const YOUTUBE_URL = 'https://www.youtube.com/watch?v=foo';
 
 describe( 'getSelectedMediaEmbedPossibleResizeRange()', () => {
 	let editor, model, editorElement;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -31,6 +29,7 @@ describe( 'getSelectedMediaEmbedPossibleResizeRange()', () => {
 	} );
 
 	afterEach( async () => {
+		vi.restoreAllMocks();
 		editorElement.remove();
 		await editor.destroy();
 	} );
@@ -38,7 +37,7 @@ describe( 'getSelectedMediaEmbedPossibleResizeRange()', () => {
 	it( 'should return null if no media embed is selected', () => {
 		_setModelData( model, '<paragraph>foo</paragraph>' );
 
-		expect( getSelectedMediaEmbedPossibleResizeRange( editor, '%' ) ).to.be.null;
+		expect( getSelectedMediaEmbedPossibleResizeRange( editor, '%' ) ).toBeNull();
 	} );
 
 	it( 'should return range object with the correct unit when media is selected', () => {
@@ -46,10 +45,10 @@ describe( 'getSelectedMediaEmbedPossibleResizeRange()', () => {
 
 		const result = getSelectedMediaEmbedPossibleResizeRange( editor, '%' );
 
-		expect( result ).to.not.be.null;
-		expect( result ).to.have.property( 'unit', '%' );
-		expect( result ).to.have.property( 'lower' );
-		expect( result ).to.have.property( 'upper' );
+		expect( result ).not.toBeNull();
+		expect( result ).toHaveProperty( 'unit', '%' );
+		expect( result ).toHaveProperty( 'lower' );
+		expect( result ).toHaveProperty( 'upper' );
 	} );
 
 	it( 'should return a non-negative lower bound', () => {
@@ -57,8 +56,8 @@ describe( 'getSelectedMediaEmbedPossibleResizeRange()', () => {
 
 		const result = getSelectedMediaEmbedPossibleResizeRange( editor, '%' );
 
-		expect( result ).to.not.be.null;
-		expect( result.lower ).to.be.at.least( 0 );
+		expect( result ).not.toBeNull();
+		expect( result.lower ).toBeGreaterThanOrEqual( 0 );
 	} );
 
 	it( 'should return range with px unit when requested', () => {
@@ -66,8 +65,8 @@ describe( 'getSelectedMediaEmbedPossibleResizeRange()', () => {
 
 		const result = getSelectedMediaEmbedPossibleResizeRange( editor, 'px' );
 
-		expect( result ).to.not.be.null;
-		expect( result.unit ).to.equal( 'px' );
+		expect( result ).not.toBeNull();
+		expect( result.unit ).toBe( 'px' );
 	} );
 
 	it( 'should fall back to 1px minimum when minWidth style cannot be parsed', () => {
@@ -78,8 +77,10 @@ describe( 'getSelectedMediaEmbedPossibleResizeRange()', () => {
 		);
 		const mediaDOMElement = editor.editing.view.domConverter.mapViewToDom( mediaViewElement );
 
-		sinon.stub( window, 'getComputedStyle' ).callsFake( function( el ) {
-			const realStyle = window.getComputedStyle.wrappedMethod.call( window, el );
+		const originalGetComputedStyle = window.getComputedStyle.bind( window );
+
+		vi.spyOn( window, 'getComputedStyle' ).mockImplementation( function( el ) {
+			const realStyle = originalGetComputedStyle( el );
 
 			if ( el === mediaDOMElement ) {
 				return { minWidth: 'none', width: realStyle.width };
@@ -90,7 +91,7 @@ describe( 'getSelectedMediaEmbedPossibleResizeRange()', () => {
 
 		const result = getSelectedMediaEmbedPossibleResizeRange( editor, '%' );
 
-		expect( result ).to.not.be.null;
-		expect( result.lower ).to.be.at.least( 0 );
+		expect( result ).not.toBeNull();
+		expect( result.lower ).toBeGreaterThanOrEqual( 0 );
 	} );
 } );

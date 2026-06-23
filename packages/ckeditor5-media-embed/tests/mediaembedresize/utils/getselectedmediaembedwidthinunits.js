@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -32,13 +33,13 @@ describe( 'getSelectedMediaEmbedWidthInUnits()', () => {
 	it( 'should return null if no media embed is selected', () => {
 		_setModelData( model, '<paragraph>foo</paragraph>' );
 
-		expect( getSelectedMediaEmbedWidthInUnits( editor, '%' ) ).to.be.null;
+		expect( getSelectedMediaEmbedWidthInUnits( editor, '%' ) ).toBeNull();
 	} );
 
 	it( 'should return null if media embed has no resizedWidth attribute', () => {
 		_setModelData( model, `[<media url="${ YOUTUBE_URL }"></media>]` );
 
-		expect( getSelectedMediaEmbedWidthInUnits( editor, '%' ) ).to.be.null;
+		expect( getSelectedMediaEmbedWidthInUnits( editor, '%' ) ).toBeNull();
 	} );
 
 	it( 'should return the % value when unit matches', () => {
@@ -46,7 +47,7 @@ describe( 'getSelectedMediaEmbedWidthInUnits()', () => {
 
 		const result = getSelectedMediaEmbedWidthInUnits( editor, '%' );
 
-		expect( result ).to.deep.equal( { value: 50, unit: '%' } );
+		expect( result ).toEqual( { value: 50, unit: '%' } );
 	} );
 
 	it( 'should return the px value when unit matches', () => {
@@ -54,7 +55,7 @@ describe( 'getSelectedMediaEmbedWidthInUnits()', () => {
 
 		const result = getSelectedMediaEmbedWidthInUnits( editor, 'px' );
 
-		expect( result ).to.deep.equal( { value: 200, unit: 'px' } );
+		expect( result ).toEqual( { value: 200, unit: 'px' } );
 	} );
 } );
 
@@ -82,8 +83,8 @@ describe( 'getSelectedMediaEmbedWidthInUnits() — unit conversion', () => {
 
 		const result = getSelectedMediaEmbedWidthInUnits( editor, '%' );
 
-		expect( result ).to.not.be.null;
-		expect( result.unit ).to.equal( '%' );
-		expect( result.value ).to.be.a( 'number' );
+		expect( result ).not.toBeNull();
+		expect( result.unit ).toBe( '%' );
+		expect( result.value ).toBeTypeOf( 'number' );
 	} );
 } );

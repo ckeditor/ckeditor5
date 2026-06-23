@@ -136,6 +136,7 @@ export class MediaEmbedCustomResizeUI extends Plugin {
 		this._form!.disableCssTransitions();
 		this._form!.resetFormStatus();
 
+		/* v8 ignore else -- @preserve */
 		if ( !this._isInBalloon ) {
 			this._balloon!.add( {
 				view: this._form!,

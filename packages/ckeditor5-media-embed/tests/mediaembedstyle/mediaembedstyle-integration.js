@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -37,9 +38,9 @@ describe( 'MediaEmbedStyle integration', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.match( /media_resized/ );
-			expect( data ).to.match( /media-style-block-align-left/ );
-			expect( data ).to.match( /style="width:50%;"/ );
+			expect( data ).toMatch( /media_resized/ );
+			expect( data ).toMatch( /media-style-block-align-left/ );
+			expect( data ).toMatch( /style="width:50%;"/ );
 		} );
 
 		it( 'preserves a wrap alignment alongside resize', () => {
@@ -49,9 +50,9 @@ describe( 'MediaEmbedStyle integration', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.match( /media-style-align-left/ );
-			expect( data ).to.match( /media_resized/ );
-			expect( data ).to.match( /style="width:40%;"/ );
+			expect( data ).toMatch( /media-style-align-left/ );
+			expect( data ).toMatch( /media_resized/ );
+			expect( data ).toMatch( /style="width:40%;"/ );
 		} );
 
 		it( 'emits no alignment class for the default style (alignCenter), even when resized', () => {
@@ -59,9 +60,9 @@ describe( 'MediaEmbedStyle integration', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.match( /media_resized/ );
-			expect( data ).to.match( /style="width:50%;"/ );
-			expect( data ).not.to.match( /media-style-/ );
+			expect( data ).toMatch( /media_resized/ );
+			expect( data ).toMatch( /style="width:50%;"/ );
+			expect( data ).not.toMatch( /media-style-/ );
 		} );
 
 		it( 'preserves alignment when URL changes between resizable providers', () => {
@@ -73,8 +74,8 @@ describe( 'MediaEmbedStyle integration', () => {
 
 			model.change( writer => writer.setAttribute( 'url', VIMEO_URL, mediaModel ) );
 
-			expect( mediaModel.getAttribute( 'mediaStyle' ) ).to.equal( 'alignBlockLeft' );
-			expect( editor.getData() ).to.match( /media-style-block-align-left/ );
+			expect( mediaModel.getAttribute( 'mediaStyle' ) ).toBe( 'alignBlockLeft' );
+			expect( editor.getData() ).toMatch( /media-style-block-align-left/ );
 		} );
 	} );
 
@@ -102,7 +103,7 @@ describe( 'MediaEmbedStyle integration', () => {
 			it( `applies ${ value } correctly without MediaEmbedResize loaded`, () => {
 				_setModelData( model, `<media mediaStyle="${ value }" url="${ YOUTUBE_URL }"></media>` );
 
-				expect( editor.getData() ).to.match( new RegExp( className ) );
+				expect( editor.getData() ).toMatch( new RegExp( className ) );
 			} );
 		}
 
@@ -111,8 +112,8 @@ describe( 'MediaEmbedStyle integration', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.match( /media-style-block-align-left/ );
-			expect( data ).not.to.match( /media_resized/ );
+			expect( data ).toMatch( /media-style-block-align-left/ );
+			expect( data ).not.toMatch( /media_resized/ );
 		} );
 	} );
 
@@ -139,8 +140,8 @@ describe( 'MediaEmbedStyle integration', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.match( /^<figure class="media media-style-block-align-left">/ );
-			expect( data ).to.match( /<oembed url="https:\/\/youtu\.be\/foo">/ );
+			expect( data ).toMatch( /^<figure class="media media-style-block-align-left">/ );
+			expect( data ).toMatch( /<oembed url="https:\/\/youtu\.be\/foo">/ );
 		} );
 
 		it( 'emits both alignment class and resize style on the <figure>', () => {
@@ -150,10 +151,10 @@ describe( 'MediaEmbedStyle integration', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.match( /media_resized/ );
-			expect( data ).to.match( /media-style-align-left/ );
-			expect( data ).to.match( /style="width:50%;"/ );
-			expect( data ).to.match( /<oembed url=/ );
+			expect( data ).toMatch( /media_resized/ );
+			expect( data ).toMatch( /media-style-align-left/ );
+			expect( data ).toMatch( /style="width:50%;"/ );
+			expect( data ).toMatch( /<oembed url=/ );
 		} );
 
 		it( 'preserves a resized + aligned figure through semantic round-trip', () => {
@@ -164,15 +165,15 @@ describe( 'MediaEmbedStyle integration', () => {
 
 			editor.setData( input );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				`<media mediaStyle="alignLeft" resizedWidth="50%" url="${ YOUTUBE_URL }"></media>`
 			);
 
 			const output = editor.getData();
-			expect( output ).to.match( /media_resized/ );
-			expect( output ).to.match( /media-style-align-left/ );
-			expect( output ).to.match( /style="width:50%;"/ );
-			expect( output ).to.match( /<oembed url="https:\/\/youtu\.be\/foo">/ );
+			expect( output ).toMatch( /media_resized/ );
+			expect( output ).toMatch( /media-style-align-left/ );
+			expect( output ).toMatch( /style="width:50%;"/ );
+			expect( output ).toMatch( /<oembed url="https:\/\/youtu\.be\/foo">/ );
 		} );
 	} );
 } );

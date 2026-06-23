@@ -82,11 +82,12 @@ export class MediaEmbedResizeHandles extends Plugin {
 
 					const viewElement = editor.editing.mapper.toViewElement( item ) as ViewContainerElement | undefined;
 
-					/* istanbul ignore if: paranoid check — conversion has run at this point -- @preserve */
+					/* v8 ignore next -- @preserve */
 					if ( !viewElement ) {
 						continue;
 					}
 
+					/* v8 ignore else -- @preserve */
 					if ( !widgetResize.getResizerByViewElement( viewElement ) ) {
 						this._attachResizer( item, viewElement );
 					}
