@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
@@ -37,34 +38,34 @@ describe( 'EmptyBlock', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( EmptyBlock.pluginName ).to.equal( 'EmptyBlock' );
+		expect( EmptyBlock.pluginName ).toBe( 'EmptyBlock' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EmptyBlock.isOfficialPlugin ).to.be.true;
+		expect( EmptyBlock.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( EmptyBlock ) ).to.be.instanceOf( EmptyBlock );
+		expect( editor.plugins.get( EmptyBlock ) ).toBeInstanceOf( EmptyBlock );
 	} );
 
 	describe( 'schema', () => {
 		it( 'should allow htmlEmptyBlock attribute on block elements', () => {
-			expect( model.schema.checkAttribute( [ 'paragraph' ], 'htmlEmptyBlock' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ 'heading1' ], 'htmlEmptyBlock' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ 'paragraph' ], 'htmlEmptyBlock' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ 'heading1' ], 'htmlEmptyBlock' ) ).toBe( true );
 		} );
 
 		it( 'should not allow htmlEmptyBlock attribute on inline elements', () => {
 			model.schema.register( 'testInline', { isInline: true } );
-			expect( model.schema.checkAttribute( [ 'testInline' ], 'htmlEmptyBlock' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ 'testInline' ], 'htmlEmptyBlock' ) ).toBe( false );
 		} );
 
 		it( 'should allow htmlEmptyBlock attribute on $block', () => {
-			expect( model.schema.checkAttribute( [ '$block' ], 'htmlEmptyBlock' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$block' ], 'htmlEmptyBlock' ) ).toBe( true );
 		} );
 
 		it( 'should allow htmlEmptyBlock attribute on $container', () => {
-			expect( model.schema.checkAttribute( [ '$container' ], 'htmlEmptyBlock' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$container' ], 'htmlEmptyBlock' ) ).toBe( true );
 		} );
 	} );
 
@@ -74,11 +75,11 @@ describe( 'EmptyBlock', () => {
 				'<p>foo</p>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph>foo</paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>foo</p>'
 			);
 		} );
@@ -88,11 +89,11 @@ describe( 'EmptyBlock', () => {
 				'<p>&nbsp;</p>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph></paragraph>'
 			);
 
-			expect( editor.getData( { trim: false } ) ).to.equal(
+			expect( editor.getData( { trim: false } ) ).toBe(
 				'<p>&nbsp;</p>'
 			);
 		} );
@@ -102,11 +103,11 @@ describe( 'EmptyBlock', () => {
 				'<p>   &nbsp;   </p>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph></paragraph>'
 			);
 
-			expect( editor.getData( { trim: false } ) ).to.equal(
+			expect( editor.getData( { trim: false } ) ).toBe(
 				'<p>&nbsp;</p>'
 			);
 		} );
@@ -116,11 +117,11 @@ describe( 'EmptyBlock', () => {
 				'<p></p>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph htmlEmptyBlock="true"></paragraph>'
 			);
 
-			expect( editor.getData( { trim: false } ) ).to.equal(
+			expect( editor.getData( { trim: false } ) ).toBe(
 				'<p></p>'
 			);
 		} );
@@ -130,11 +131,11 @@ describe( 'EmptyBlock', () => {
 				'<p> </p>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph htmlEmptyBlock="true"></paragraph>'
 			);
 
-			expect( editor.getData( { trim: false } ) ).to.equal(
+			expect( editor.getData( { trim: false } ) ).toBe(
 				'<p></p>'
 			);
 		} );
@@ -150,7 +151,7 @@ describe( 'EmptyBlock', () => {
 				'</p>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph>Hello<placeholder></placeholder>World</paragraph>'
 			);
 		} );
@@ -164,12 +165,12 @@ describe( 'EmptyBlock', () => {
 				}, { priority: 'highest' } );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph htmlEmptyBlock="true"></paragraph>' +
 				'<paragraph>foo</paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal( '<p>&nbsp;</p><p>foo</p>' );
+			expect( editor.getData() ).toBe( '<p>&nbsp;</p><p>foo</p>' );
 		} );
 
 		describe( 'table integration', () => {
@@ -178,13 +179,13 @@ describe( 'EmptyBlock', () => {
 					'<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<table><tableRow>' +
 						'<tableCell htmlEmptyBlock="true"><paragraph htmlEmptyBlock="true"></paragraph></tableCell>' +
 					'</tableRow></table>'
 				);
 
-				expect( editor.getData() ).to.equal( '<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>' );
+				expect( editor.getData() ).toBe( '<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>' );
 			} );
 
 			it( 'should preserve empty cells mixed with non-empty ones', () => {
@@ -192,7 +193,7 @@ describe( 'EmptyBlock', () => {
 					'<figure class="table"><table><tbody><tr><td>foo</td><td></td><td>&nbsp;</td></tr></tbody></table></figure>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>foo</paragraph></tableCell>' +
@@ -202,7 +203,7 @@ describe( 'EmptyBlock', () => {
 					'</table>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<figure class="table"><table><tbody><tr><td>foo</td><td></td><td>&nbsp;</td></tr></tbody></table></figure>'
 				);
 			} );
@@ -210,7 +211,7 @@ describe( 'EmptyBlock', () => {
 			it( 'should preserve empty cells on table cell with whitespace', () => {
 				editor.setData( '<figure class="table"><table><tbody><tr><td> </td></tr></tbody></table></figure>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell htmlEmptyBlock="true"><paragraph htmlEmptyBlock="true"></paragraph></tableCell>' +
@@ -218,7 +219,7 @@ describe( 'EmptyBlock', () => {
 					'</table>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<figure class="table"><table><tbody><tr><td></td></tr></tbody></table></figure>'
 				);
 			} );
@@ -228,7 +229,7 @@ describe( 'EmptyBlock', () => {
 					'<figure class="table"><table><tbody><tr><td><p>&nbsp;</p></td><td><p></p></td></tr></tbody></table></figure>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<table>' +
 						'<tableRow>' +
 						'<tableCell><paragraph></paragraph></tableCell>' +
@@ -237,7 +238,7 @@ describe( 'EmptyBlock', () => {
 					'</table>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<figure class="table"><table><tbody><tr><td>&nbsp;</td><td></td></tr></tbody></table></figure>'
 				);
 			} );
@@ -254,7 +255,7 @@ describe( 'EmptyBlock', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 					'<ul>' +
 						'<li>foo</li>' +
 						'<li>&nbsp;</li>' +
@@ -274,14 +275,14 @@ describe( 'EmptyBlock', () => {
 					'<h2>&nbsp;</h2>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<heading1>foo</heading1>' +
 					'<heading1 htmlEmptyBlock="true"></heading1>' +
 					'<heading1 htmlEmptyBlock="true"></heading1>' +
 					'<heading1></heading1>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<h2>foo</h2>' +
 					'<h2></h2>' +
 					'<h2></h2>' +
@@ -300,7 +301,7 @@ describe( 'EmptyBlock', () => {
 					'</blockquote>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<paragraph>foo</paragraph>' +
 					'<blockQuote>' +
 						'<paragraph htmlEmptyBlock="true"></paragraph>' +
@@ -310,7 +311,7 @@ describe( 'EmptyBlock', () => {
 					'</blockQuote>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foo</p>' +
 					'<blockquote>' +
 						'<p></p>' +
@@ -338,7 +339,7 @@ describe( 'EmptyBlock', () => {
 
 			const domRoot = editor.editing.view.getDomRoot();
 
-			expect( domRoot.innerHTML ).to.equal(
+			expect( domRoot.innerHTML ).toBe(
 				'<p>' + _VIEW_INLINE_FILLER + '</p>' +
                 '<p>foo</p>'
 			);
@@ -358,7 +359,7 @@ describe( 'EmptyBlock', () => {
 
 			const domRoot = editor.editing.view.getDomRoot();
 
-			expect( domRoot.innerHTML ).to.equal(
+			expect( domRoot.innerHTML ).toBe(
 				'<p><br data-cke-filler="true"></p>' +
                 '<p>foo</p>'
 			);
@@ -375,10 +376,36 @@ describe( 'EmptyBlock', () => {
 
 			const domRoot = editor.editing.view.getDomRoot();
 
-			expect( domRoot.innerHTML ).to.equal(
+			expect( domRoot.innerHTML ).toBe(
 				'<p><br data-cke-filler="true"></p>' +
                 '<p>foo</p>'
 			);
+		} );
+
+		it( 'should not update filler offset when htmlEmptyBlock attribute is removed in editing view mode', async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, TableEditing, EmptyBlock, Heading, ListEditing, BlockQuote, Clipboard ],
+				htmlSupport: {
+					preserveEmptyBlocksInEditingView: true
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+
+			editor.setData( '<p></p><p>foo</p>' );
+
+			const paragraph = model.document.getRoot().getChild( 0 );
+
+			// Remove the htmlEmptyBlock attribute — the editing downcast fires with attributeNewValue = null,
+			// which covers the false branch of if ( viewElement && data.attributeNewValue ).
+			model.change( writer => {
+				writer.removeAttribute( 'htmlEmptyBlock', paragraph );
+			} );
+
+			expect( paragraph.getAttribute( 'htmlEmptyBlock' ) ).toBeUndefined();
 		} );
 	} );
 
@@ -390,7 +417,7 @@ describe( 'EmptyBlock', () => {
 				plugins: [ EmptyBlock ]
 			} );
 
-			expect( editor.plugins.get( 'EmptyBlock' ) ).to.be.instanceOf( EmptyBlock );
+			expect( editor.plugins.get( 'EmptyBlock' ) ).toBeInstanceOf( EmptyBlock );
 		} );
 
 		describe( 'copying content', () => {
@@ -404,10 +431,10 @@ describe( 'EmptyBlock', () => {
 
 				view.document.fire( 'copy', {
 					dataTransfer: dataTransferMock,
-					preventDefault: sinon.spy()
+					preventDefault: vi.fn()
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe(
 					'<p></p><p>&nbsp;</p>'
 				);
 			} );
@@ -427,12 +454,12 @@ describe( 'EmptyBlock', () => {
 					method: 'paste'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph htmlEmptyBlock="true"></paragraph>' +
 					'<paragraph>Foo[]</paragraph>'
 				);
 
-				expect( editor.getData() ).to.equal( '<p></p><p>Foo</p>' );
+				expect( editor.getData() ).toBe( '<p></p><p>Foo</p>' );
 			} );
 
 			it( 'should add block filler if paste from another editor', () => {
@@ -448,12 +475,12 @@ describe( 'EmptyBlock', () => {
 					method: 'paste'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph></paragraph>' +
 					'<paragraph>Foo[]</paragraph>'
 				);
 
-				expect( editor.getData() ).to.equal( '<p>&nbsp;</p><p>Foo</p>' );
+				expect( editor.getData() ).toBe( '<p>&nbsp;</p><p>Foo</p>' );
 			} );
 		} );
 	} );
@@ -480,14 +507,52 @@ describe( 'EmptyBlock', () => {
 				'<div></div><div>foo</div>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<htmlDivParagraph htmlEmptyBlock="true"></htmlDivParagraph>' +
 				'<htmlDivParagraph>foo</htmlDivParagraph>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<div></div><div>foo</div>'
 			);
+		} );
+
+		it( 'should not mark a non-paragraph child of an empty element as an empty block', () => {
+			model.schema.register( 'htmlSectionWithHeading', {
+				inheritAllFrom: '$blockObject',
+				allowAttributes: [ 'htmlEmptyBlock' ],
+				allowChildren: [ 'heading1' ]
+			} );
+
+			editor.conversion.for( 'upcast' ).elementToElement( {
+				view: 'section',
+				model: ( viewElement, { writer } ) => {
+					const section = writer.createElement( 'htmlSectionWithHeading' );
+
+					writer.insertElement( 'heading1', section, 0 );
+
+					return section;
+				},
+				converterPriority: 'high'
+			} );
+
+			editor.conversion.for( 'dataDowncast' ).elementToElement( {
+				model: 'htmlSectionWithHeading',
+				view: ( modelElement, { writer } ) => writer.createContainerElement( 'section' )
+			} );
+
+			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+				model: 'htmlSectionWithHeading',
+				view: ( modelElement, { writer } ) => writer.createContainerElement( 'section' )
+			} );
+
+			editor.setData( '<section></section>' );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
+				'<htmlSectionWithHeading htmlEmptyBlock="true"><heading1></heading1></htmlSectionWithHeading>'
+			);
+
+			expect( editor.getData() ).toBe( '<section><h2>&nbsp;</h2></section>' );
 		} );
 	} );
 

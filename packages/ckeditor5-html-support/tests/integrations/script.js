@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
@@ -14,7 +15,7 @@ describe( 'ScriptElementSupport', () => {
 	const CODE = 'console.log( "Hello World" )';
 	const CODE_CPP = 'cout << "Hello World" << endl;';
 
-	let editor, model, editorElement, dataFilter, warnStub;
+	let editor, model, editorElement, dataFilter;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -28,36 +29,36 @@ describe( 'ScriptElementSupport', () => {
 
 		dataFilter.allowElement( 'script' );
 
-		warnStub = sinon.stub( console, 'warn' );
+		vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 	} );
 
 	afterEach( () => {
-		warnStub.restore();
+		vi.restoreAllMocks();
 		editorElement.remove();
 
 		return editor.destroy();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ScriptElementSupport.isOfficialPlugin ).to.be.true;
+		expect( ScriptElementSupport.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ScriptElementSupport.isPremiumPlugin ).to.be.false;
+		expect( ScriptElementSupport.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be named', () => {
-		expect( editor.plugins.has( 'ScriptElementSupport' ) ).to.be.true;
+		expect( editor.plugins.has( 'ScriptElementSupport' ) ).toBe( true );
 	} );
 
 	it( 'should allow element', () => {
 		editor.setData( `<p>Foo</p><script>${ CODE }</script>` );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			`<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE }"></htmlScript>`
 		);
 
-		expect( editor.getData() ).to.equal( `<p>Foo</p><script>${ CODE }</script>` );
+		expect( editor.getData() ).toBe( `<p>Foo</p><script>${ CODE }</script>` );
 	} );
 
 	it( 'should allow attributes', () => {
@@ -65,7 +66,7 @@ describe( 'ScriptElementSupport', () => {
 
 		editor.setData( `<p>Foo</p><script type="c++" nonce="qwerty">${ CODE_CPP }</script>` );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
 				1: {
@@ -77,7 +78,7 @@ describe( 'ScriptElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( `<p>Foo</p><script type="c++" nonce="qwerty">${ CODE_CPP }</script>` );
+		expect( editor.getData() ).toBe( `<p>Foo</p><script type="c++" nonce="qwerty">${ CODE_CPP }</script>` );
 	} );
 
 	it( 'should disallow attributes', () => {
@@ -86,7 +87,7 @@ describe( 'ScriptElementSupport', () => {
 
 		editor.setData( `<p>Foo</p><script type="c++" nonce="qwerty">${ CODE_CPP }</script>` );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
 				1: {
@@ -97,18 +98,18 @@ describe( 'ScriptElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( `<p>Foo</p><script type="c++">${ CODE_CPP }</script>` );
+		expect( editor.getData() ).toBe( `<p>Foo</p><script type="c++">${ CODE_CPP }</script>` );
 	} );
 
 	// See: https://github.com/ckeditor/ckeditor5/issues/11247
 	it( 'should allow element in the empty editor', () => {
 		editor.setData( `<script>${ CODE }</script>` );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			`<htmlScript htmlContent="${ CODE }"></htmlScript>`
 		);
 
-		expect( editor.getData() ).to.equal( `<script>${ CODE }</script>` );
+		expect( editor.getData() ).toBe( `<script>${ CODE }</script>` );
 	} );
 
 	describe( 'element position', () => {
@@ -148,9 +149,9 @@ describe( 'ScriptElementSupport', () => {
 
 				editor.setData( data );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( modelData );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( modelData );
 
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toBe( data );
 			} );
 		}
 	} );
@@ -166,14 +167,14 @@ describe( 'ScriptElementSupport', () => {
 
 		editor.setData( `<p>Foo</p><script nonce="qwerty">${ CODE }</script>` );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
 				1: { attributes: { nonce: 'qwerty' } }
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( `<p>Foo</p><script>${ CODE }</script>` );
+		expect( editor.getData() ).toBe( `<p>Foo</p><script>${ CODE }</script>` );
 	} );
 
 	it( 'should not consume attributes already consumed (upcast)', () => {
@@ -187,7 +188,7 @@ describe( 'ScriptElementSupport', () => {
 
 		editor.setData( `<p>Foo</p><script type="c++" nonce="qwerty">${ CODE_CPP }</script>` );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
 				1: { attributes: { type: 'c++' } }

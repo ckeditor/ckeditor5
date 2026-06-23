@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -52,7 +53,7 @@ describe( 'HtmlComment integration', () => {
 		it( 'should work if comment is in an empty blockquote', async () => {
 			editor = await createEditor( '<blockquote><!-- c1 --></blockquote>' );
 
-			expect( editor.getData() ).to.equal( '' );
+			expect( editor.getData() ).toBe( '' );
 		} );
 
 		it( 'should work if comments are between tags', async () => {
@@ -66,7 +67,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c4 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<blockquote>' +
 					'<!-- c2 -->' +
@@ -101,7 +102,7 @@ describe( 'HtmlComment integration', () => {
 				'</pre>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<pre>' +
 					'<code class="language-plaintext">' +
 						'<!-- c1 -->' +
@@ -126,7 +127,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c6 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<!-- c2 -->' +
 				'<pre>' +
@@ -162,7 +163,7 @@ describe( 'HtmlComment integration', () => {
 				'<h2><!-- c2 --></h2>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<h2><!-- c1 -->&nbsp;</h2>' +
 				'<h2><!-- c2 -->&nbsp;</h2>'
 			);
@@ -185,7 +186,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c7 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<h2>' +
 					'<!-- c2 -->' +
@@ -231,7 +232,7 @@ describe( 'HtmlComment integration', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<!-- c1 -->' +
 					'&nbsp;' +
@@ -265,7 +266,7 @@ describe( 'HtmlComment integration', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<!-- c1 -->' +
 					'<!-- c2 -->' +
@@ -311,7 +312,7 @@ describe( 'HtmlComment integration', () => {
 				'</div>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<div class="raw-html-embed">' +
 					'<!-- c1 -->' +
 				'</div>'
@@ -331,7 +332,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c4 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<div class="raw-html-embed">' +
 					'<!-- c2 -->' +
@@ -364,7 +365,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c1 -->' +
 				'<figure class="image">' +
 					'<!-- c2 -->' +
-					'<img src="/assets/sample.png" alt="Example image">' +
+					'<img src="/sample.png" alt="Example image">' +
 					'<!-- c3 -->' +
 					'<figcaption>' +
 						'<!-- c4 -->' +
@@ -376,12 +377,12 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c7 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<figure class="image">' +
 					'<!-- c2 -->' +
 					'<!-- c3 -->' +
-					'<img src="/assets/sample.png" alt="Example image">' +
+					'<img src="/sample.png" alt="Example image">' +
 					'<figcaption>' +
 						'<!-- c4 -->' +
 						'image caption' +
@@ -396,16 +397,16 @@ describe( 'HtmlComment integration', () => {
 		it( 'should work if comment is in an empty image caption', async () => {
 			editor = await createEditor(
 				'<figure class="image">' +
-					'<img src="/assets/sample.png" alt="Example image">' +
+					'<img src="/sample.png" alt="Example image">' +
 					'<figcaption>' +
 						'<!-- c1 -->' +
 					'</figcaption>' +
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
-					'<img src="/assets/sample.png" alt="Example image">' +
+					'<img src="/sample.png" alt="Example image">' +
 					'<figcaption>' +
 						'<!-- c1 -->' +
 						'&nbsp;' +
@@ -419,17 +420,17 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c1 -->' +
 				'<p>' +
 					'<!-- c2 -->' +
-					'<img src="/assets/sample.png" alt="Example image">' +
+					'<img src="/sample.png" alt="Example image">' +
 					'<!-- c3 -->' +
 				'</p>' +
 				'<!-- c4 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<p>' +
 					'<!-- c2 -->' +
-					'<img src="/assets/sample.png" alt="Example image">' +
+					'<img src="/sample.png" alt="Example image">' +
 					'<!-- c3 -->' +
 				'</p>' +
 				'<!-- c4 -->'
@@ -458,7 +459,7 @@ describe( 'HtmlComment integration', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p style="margin-left:40px;">' +
 					'<!-- c1 -->' +
 					'&nbsp;' +
@@ -477,7 +478,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c4 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<p style="margin-left:40px;">' +
 					'<!-- c2 -->' +
@@ -515,7 +516,7 @@ describe( 'HtmlComment integration', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal( '<p><!-- c1 -->&nbsp;</p>' );
+			expect( editor.getData() ).toBe( '<p><!-- c1 -->&nbsp;</p>' );
 		} );
 
 		it( 'should work if comments are between tags', async () => {
@@ -531,7 +532,7 @@ describe( 'HtmlComment integration', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<!-- c1 -->' +
 					'<!-- c2 -->' +
@@ -551,19 +552,19 @@ describe( 'HtmlComment integration', () => {
 						'<!-- c1 -->' +
 						'Link with inline image: ' +
 						'<!-- c2 -->' +
-						'<img src="/assets/sample.png" alt="Example image">' +
+						'<img src="/sample.png" alt="Example image">' +
 						'<!-- c3 -->' +
 					'</a>' +
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<!-- c1 -->' +
 					'<a href="path/to/resource">' +
 						'Link with inline image: ' +
 						'<!-- c2 -->' +
-						'<img src="/assets/sample.png" alt="Example image">' +
+						'<img src="/sample.png" alt="Example image">' +
 					'</a>' +
 					'<!-- c3 -->' +
 				'</p>'
@@ -577,19 +578,19 @@ describe( 'HtmlComment integration', () => {
 						'<!-- c1 -->' +
 						'External link with inline image: ' +
 						'<!-- c2 -->' +
-						'<img src="/assets/sample.png" alt="Example image">' +
+						'<img src="/sample.png" alt="Example image">' +
 						'<!-- c3 -->' +
 					'</a>' +
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<!-- c1 -->' +
 					'<a target="_blank" rel="noopener noreferrer" href="http://example.com">' +
 						'External link with inline image: ' +
 						'<!-- c2 -->' +
-						'<img src="/assets/sample.png" alt="Example image">' +
+						'<img src="/sample.png" alt="Example image">' +
 					'</a>' +
 					'<!-- c3 -->' +
 				'</p>'
@@ -617,7 +618,7 @@ describe( 'HtmlComment integration', () => {
 				'<ul><li><!-- c2 --></li></ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<ol><li><!-- c1 -->&nbsp;</li></ol>' +
 				'<ul><li><!-- c2 -->&nbsp;</li></ul>'
 			);
@@ -654,7 +655,7 @@ describe( 'HtmlComment integration', () => {
 			// repositioned during conversion since <ol>/<ul> are not model elements but view attribute elements.
 			// Comments inside <li> elements (c3, c4, c8, c9) and comments outside lists (c1, c6, c11) are preserved
 			// but may appear in different positions.
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<!-- c1 -->' +
 				'<!-- c2 -->' +
 				'<ol>' +
@@ -702,7 +703,7 @@ describe( 'HtmlComment integration', () => {
 			// but may be repositioned. Comments in list items that contain only nested lists (c1, c7) are
 			// converted to markers on empty paragraph blocks. These empty paragraphs with markers are preserved
 			// as bogus paragraphs in the data output (wrapped in <p> tags with &nbsp;).
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<ul>' +
 					'<li>' +
 						'<p><!-- c1 --><!-- c2 -->&nbsp;</p>' +
@@ -740,7 +741,7 @@ describe( 'HtmlComment integration', () => {
 			// Currently, if input element in a to-do list is preceded by a comment, a to-do list is not created.
 			// See https://github.com/ckeditor/ckeditor5/issues/10129.
 			//
-			// expect( editor.getData() ).to.equal(
+			// expect( editor.getData() ).toBe(
 			// 	'<ul class="todo-list">' +
 			// 		'<li>' +
 			// 			'<label class="todo-list__label">' +
@@ -765,7 +766,7 @@ describe( 'HtmlComment integration', () => {
 			// 	'</ul>'
 			// );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<ul>' +
 					'<li>' +
 						'<!-- c1 -->' +
@@ -792,7 +793,7 @@ describe( 'HtmlComment integration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<ul style="list-style-type:circle;">' +
 					'<li>' +
 						'<!-- c1 -->' +
@@ -831,7 +832,7 @@ describe( 'HtmlComment integration', () => {
 		it( 'should work if comment is in an empty media wrapper tag', async () => {
 			editor = await createEditor( '<figure class="media"><!-- c1 --></figure>' );
 
-			expect( editor.getData() ).to.equal( '' );
+			expect( editor.getData() ).toBe( '' );
 		} );
 
 		it( 'should work if comment is in an empty non-semantic media', async () => {
@@ -843,7 +844,7 @@ describe( 'HtmlComment integration', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<!-- c1 -->' +
 					'<div data-oembed-url="https://example.com/1234">' +
@@ -864,7 +865,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c4 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<!-- c2 -->' +
 				'<figure class="media">' +
@@ -890,7 +891,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c5 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<!-- c2 -->' +
 				'<figure class="media">' +
@@ -922,7 +923,7 @@ describe( 'HtmlComment integration', () => {
 		it( 'should work if comment is in an empty paragraph', async () => {
 			editor = await createEditor( '<p><!-- c1 --></p>' );
 
-			expect( editor.getData() ).to.equal( '<p><!-- c1 -->&nbsp;</p>' );
+			expect( editor.getData() ).toBe( '<p><!-- c1 -->&nbsp;</p>' );
 		} );
 
 		it( 'should work if comments are between tags', async () => {
@@ -936,7 +937,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c4 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<p>' +
 					'<!-- c2 -->' +
@@ -978,7 +979,7 @@ describe( 'HtmlComment integration', () => {
 
 			// The following output could be considered as the correct and expected one,
 			// but currently the comment 4 is not removed, because it is not located at the limit element's boundary:
-			// expect( editor.getData() ).to.equal(
+			// expect( editor.getData() ).toBe(
 			// 	'<p>' +
 			// 		'<!-- comment 1 -->' +
 			// 		'Foo' +
@@ -986,7 +987,7 @@ describe( 'HtmlComment integration', () => {
 			// 	'</p>'
 			// );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<!-- comment 1 -->' +
 					'Foo' +
@@ -1027,7 +1028,7 @@ describe( 'HtmlComment integration', () => {
 			const domRoot = editor.editing.view.getDomRoot();
 			const textarea = domRoot.nextSibling.children[ 0 ];
 
-			expect( textarea.value ).to.equal(
+			expect( textarea.value ).toBe(
 				'<p>\n' +
 				'    <!-- comment 1 -->Foo<!-- comment 2 -->\n' +
 				'</p>'
@@ -1049,7 +1050,7 @@ describe( 'HtmlComment integration', () => {
 
 			toggleSourceEditingModeButton.fire( 'execute' );
 
-			expect( editor.getData() ).to.equal( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p>' );
+			expect( editor.getData() ).toBe( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p>' );
 		} );
 
 		it( 'should add comments at boundary positions using the source editing mode', async () => {
@@ -1067,7 +1068,7 @@ describe( 'HtmlComment integration', () => {
 
 			toggleSourceEditingModeButton.fire( 'execute' );
 
-			expect( editor.getData() ).to.equal( '<!-- comment 1 --><p>Foo</p><!-- comment 2 -->' );
+			expect( editor.getData() ).toBe( '<!-- comment 1 --><p>Foo</p><!-- comment 2 -->' );
 		} );
 
 		it( 'should properly handle existing and newly added comments after exiting from the source editing mode', async () => {
@@ -1091,7 +1092,7 @@ describe( 'HtmlComment integration', () => {
 
 			toggleSourceEditingModeButton.fire( 'execute' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- comment 1 -->' +
 				'<p>' +
 					'<!-- comment 2 -->' +
@@ -1132,7 +1133,7 @@ describe( 'HtmlComment integration', () => {
 				'</table>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -1161,7 +1162,7 @@ describe( 'HtmlComment integration', () => {
 				'</table>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -1190,7 +1191,7 @@ describe( 'HtmlComment integration', () => {
 				'</table>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -1231,7 +1232,7 @@ describe( 'HtmlComment integration', () => {
 				'</table>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -1299,7 +1300,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c18 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<!-- c1 -->' +
 				'<figure class="table">' +
 					'<table>' +
@@ -1356,7 +1357,7 @@ describe( 'HtmlComment integration', () => {
 				'</table>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -1388,7 +1389,7 @@ describe( 'HtmlComment integration', () => {
 				'</table>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -1438,7 +1439,7 @@ describe( 'HtmlComment integration', () => {
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<!-- c1 -->' +
 					'paragraph' +
@@ -1471,7 +1472,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work for multiple roots', async () => {
-			expect( editor.getData( { rootName: 'main' } ) ).to.equal(
+			expect( editor.getData( { rootName: 'main' } ) ).toBe(
 				'<!-- c1 -->' +
 				'<p>' +
 				'<!-- c2 -->' +
@@ -1481,7 +1482,7 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c4 -->'
 			);
 
-			expect( editor.getData( { rootName: 'second' } ) ).to.equal(
+			expect( editor.getData( { rootName: 'second' } ) ).toBe(
 				'<!-- c1 -->' +
 				'<p>' +
 				'<!-- c2 -->' +

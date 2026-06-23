@@ -626,7 +626,7 @@ export class DataFilter extends Plugin {
 
 		schema.register( modelName, definition.modelSchema );
 
-		/* istanbul ignore next: paranoid check -- @preserve */
+		/* v8 ignore next: paranoid check -- @preserve */
 		if ( !viewName ) {
 			return;
 		}

@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { DataSchema } from '../src/dataschema.js';
 
 describe( 'DataSchema', () => {
 	let editor, dataSchema;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -29,11 +27,11 @@ describe( 'DataSchema', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( DataSchema.isOfficialPlugin ).to.be.true;
+		expect( DataSchema.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( DataSchema.isPremiumPlugin ).to.be.false;
+		expect( DataSchema.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'registerInlineElement()', () => {
@@ -42,7 +40,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( 'def' );
 
-			expect( Array.from( result ) ).to.deep.equal( [ {
+			expect( Array.from( result ) ).toEqual( [ {
 				model: 'htmlDef',
 				view: 'def',
 				isInline: true
@@ -56,12 +54,12 @@ describe( 'DataSchema', () => {
 			const result1 = dataSchema.getDefinitionsForView( 'def1' );
 			const result2 = dataSchema.getDefinitionsForView( 'def2' );
 
-			expect( Array.from( result1 ) ).to.deep.equal( [ {
+			expect( Array.from( result1 ) ).toEqual( [ {
 				model: 'htmlDef',
 				view: 'def1',
 				isInline: true
 			} ] );
-			expect( Array.from( result2 ) ).to.deep.equal( [ {
+			expect( Array.from( result2 ) ).toEqual( [ {
 				model: 'htmlDef',
 				view: 'def2',
 				isInline: true
@@ -79,7 +77,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( 'def' );
 
-			expect( Array.from( result ) ).to.deep.equal( [ {
+			expect( Array.from( result ) ).toEqual( [ {
 				model: 'htmlDef',
 				view: 'def',
 				attributeProperties: {
@@ -94,7 +92,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( 'def' );
 
-			expect( Array.from( result ) ).to.deep.equal( [ {
+			expect( Array.from( result ) ).toEqual( [ {
 				model: 'htmlDef',
 				view: 'def',
 				priority: 7,
@@ -155,7 +153,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( 'def1' );
 
-			expect( Array.from( result ) ).to.deep.equal( getExpectedFakeDefinitions( 'def1' ) );
+			expect( Array.from( result ) ).toEqual( getExpectedFakeDefinitions( 'def1' ) );
 		} );
 
 		it( 'should allow registering multiple view elements with a single model representation', () => {
@@ -171,14 +169,14 @@ describe( 'DataSchema', () => {
 			const result1 = dataSchema.getDefinitionsForView( 'def1' );
 			const result2 = dataSchema.getDefinitionsForView( 'def2' );
 
-			expect( Array.from( result1 ) ).to.deep.equal( [
+			expect( Array.from( result1 ) ).toEqual( [
 				{
 					isBlock: true,
 					view: 'def1',
 					model: 'htmlDef'
 				}
 			] );
-			expect( Array.from( result2 ) ).to.deep.equal( [
+			expect( Array.from( result2 ) ).toEqual( [
 				{
 					isBlock: true,
 					view: 'def2',
@@ -212,7 +210,7 @@ describe( 'DataSchema', () => {
 			const result1 = dataSchema.getDefinitionsForView( 'def1', true );
 			const result2 = dataSchema.getDefinitionsForView( 'def2', true );
 
-			expect( Array.from( result1 ) ).to.deep.equal( [
+			expect( Array.from( result1 ) ).toEqual( [
 				{
 					isBlock: true,
 					model: 'htmlBase',
@@ -229,7 +227,7 @@ describe( 'DataSchema', () => {
 					}
 				}
 			] );
-			expect( Array.from( result2 ) ).to.deep.equal( [
+			expect( Array.from( result2 ) ).toEqual( [
 				{
 					isBlock: true,
 					model: 'htmlBase',
@@ -253,7 +251,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( 'def2' );
 
-			expect( Array.from( result ) ).to.deep.equal( getExpectedFakeDefinitions( 'def2' ) );
+			expect( Array.from( result ) ).toEqual( getExpectedFakeDefinitions( 'def2' ) );
 		} );
 
 		it( 'should allow resolving definitions by view name (RegExp)', () => {
@@ -261,7 +259,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( /^(def1|def2)$/ );
 
-			expect( Array.from( result ) ).to.deep.equal( getExpectedFakeDefinitions( 'def1', 'def2' ) );
+			expect( Array.from( result ) ).toEqual( getExpectedFakeDefinitions( 'def1', 'def2' ) );
 		} );
 
 		it( 'should allow resolving definitions by view name including references (inheritAllFrom)', () => {
@@ -269,7 +267,32 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( 'def2', true );
 
-			expect( Array.from( result ) ).to.deep.equal( getExpectedFakeDefinitions( 'def1', 'def2' ) );
+			expect( Array.from( result ) ).toEqual( getExpectedFakeDefinitions( 'def1', 'def2' ) );
+		} );
+
+		it( 'should skip self-referencing definitions when resolving references', () => {
+			// Register a definition whose modelSchema references itself (circular reference guard).
+			dataSchema.registerBlockElement( {
+				view: 'selfref',
+				model: 'htmlSelfRef',
+				modelSchema: {
+					inheritAllFrom: 'htmlSelfRef'
+				}
+			} );
+
+			// getDefinitionsForView with includeReferences calls _getReferences( 'htmlSelfRef' ).
+			// Inside _getReferences, inheritAllFrom = 'htmlSelfRef' === modelName 'htmlSelfRef',
+			// so the if ( referenceName !== modelName ) condition is false and the definition is skipped.
+			const result = dataSchema.getDefinitionsForView( 'selfref', true );
+
+			expect( Array.from( result ) ).toEqual( [ {
+				isBlock: true,
+				view: 'selfref',
+				model: 'htmlSelfRef',
+				modelSchema: {
+					inheritAllFrom: 'htmlSelfRef'
+				}
+			} ] );
 		} );
 
 		it( 'should allow resolving definitions by view name including references (inheritTypes)', () => {
@@ -277,7 +300,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( 'def3', true );
 
-			expect( Array.from( result ) ).to.deep.equal( getExpectedFakeDefinitions( 'def1', 'def2', 'def3' ) );
+			expect( Array.from( result ) ).toEqual( getExpectedFakeDefinitions( 'def1', 'def2', 'def3' ) );
 		} );
 
 		it( 'should allow resolving definitions by view name including references (allowWhere)', () => {
@@ -285,7 +308,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( 'def4', true );
 
-			expect( Array.from( result ) ).to.deep.equal( getExpectedFakeDefinitions( 'def1', 'def2', 'def3', 'def4' ) );
+			expect( Array.from( result ) ).toEqual( getExpectedFakeDefinitions( 'def1', 'def2', 'def3', 'def4' ) );
 		} );
 
 		it( 'should allow resolving definitions by view name including references (allowContentOf)', () => {
@@ -293,7 +316,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( 'def5', true );
 
-			expect( Array.from( result ) ).to.deep.equal( getExpectedFakeDefinitions( 'def1', 'def2', 'def3', 'def4', 'def5' ) );
+			expect( Array.from( result ) ).toEqual( getExpectedFakeDefinitions( 'def1', 'def2', 'def3', 'def4', 'def5' ) );
 		} );
 
 		it( 'should allow resolving definitions by view name including references (allowAttributesOf)', () => {
@@ -301,7 +324,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( 'def6', true );
 
-			expect( Array.from( result ) ).to.deep.equal( getExpectedFakeDefinitions( 'def1', 'def2', 'def3', 'def4', 'def5', 'def6' ) );
+			expect( Array.from( result ) ).toEqual( getExpectedFakeDefinitions( 'def1', 'def2', 'def3', 'def4', 'def5', 'def6' ) );
 		} );
 
 		it( 'should return nothing for invalid view name', () => {
@@ -309,7 +332,7 @@ describe( 'DataSchema', () => {
 
 			const result = dataSchema.getDefinitionsForView( null );
 
-			expect( result.size ).to.equal( 0 );
+			expect( result.size ).toBe( 0 );
 		} );
 
 		function registerMany( dataSchema, definitions ) {
@@ -341,7 +364,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).toEqual( [ {
 				model: 'modelName',
 				view: 'viewName',
 				paragraphLikeModel: 'htmlDivParagraph',
@@ -370,7 +393,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).toEqual( [ {
 				model: 'modelName',
 				view: 'viewName',
 				paragraphLikeModel: 'htmlDivParagraph',
@@ -380,7 +403,7 @@ describe( 'DataSchema', () => {
 				isBlock: true
 			} ] );
 
-			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName2' ) ) ).to.deep.equal( [ {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName2' ) ) ).toEqual( [ {
 				model: 'modelName',
 				view: 'viewName2',
 				paragraphLikeModel: 'htmlDivParagraph',
@@ -408,7 +431,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).toEqual( [ {
 				model: 'modelName',
 				view: 'viewName',
 				modelSchema: {
@@ -429,7 +452,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).toEqual( [ {
 				model: 'modelName',
 				view: 'viewName',
 				paragraphLikeModel: 'htmlDivParagraph',
@@ -456,7 +479,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( originalSchema ).to.deep.equal( {
+			expect( originalSchema ).toEqual( {
 				model: 'modelName',
 				view: 'viewName',
 				isBlock: true
@@ -479,7 +502,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).toEqual( [ {
 				model: 'modelName',
 				view: 'viewName',
 				priority: 1,
@@ -507,7 +530,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).toEqual( [ {
 				model: 'modelName',
 				view: 'viewName',
 				modelSchema: {
@@ -528,7 +551,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).toEqual( [ {
 				model: 'modelName',
 				view: 'viewName',
 				priority: 1,
@@ -555,7 +578,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( originalSchema ).to.deep.equal( {
+			expect( originalSchema ).toEqual( {
 				model: 'modelName',
 				view: 'viewName',
 				isInline: true
