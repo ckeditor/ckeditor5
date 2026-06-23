@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll, afterAll, beforeEach, afterEach, describe, it, expect, vi } from 'vitest';
 import { IconRemoveFormat } from '@ckeditor/ckeditor5-icons';
 import { RemoveFormat } from '../src/removeformat.js';
 import { RemoveFormatUI } from '../src/removeformatui.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import {
 	_clearTranslations,
@@ -17,9 +17,11 @@ import {
 describe( 'RemoveFormatUI', () => {
 	let editor, element, button;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
-	before( () => {
+	beforeAll( () => {
 		addTranslations( 'en', {
 			'Remove Format': 'Remove Format'
 		} );
@@ -29,7 +31,7 @@ describe( 'RemoveFormatUI', () => {
 		} );
 	} );
 
-	after( () => {
+	afterAll( () => {
 		_clearTranslations();
 	} );
 
@@ -93,14 +95,15 @@ describe( 'RemoveFormatUI', () => {
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
-			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
-			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
+			const executeSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
-			sinon.assert.calledOnce( focusSpy );
-			sinon.assert.callOrder( executeSpy, focusSpy );
+			expect( executeSpy ).toHaveBeenCalledExactlyOnceWith( featureName );
+			expect( focusSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy.mock.invocationCallOrder[ 0 ] )
+				.toBeLessThan( focusSpy.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		it( `should bind #isEnabled to ${ featureName } command`, () => {
