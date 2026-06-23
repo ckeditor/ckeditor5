@@ -479,6 +479,12 @@ export class MultiRootEditor extends Editor {
 		// Persist editable options as a root attribute so they are available on other RTC clients.
 		setRootEditableOptions( modelAttributes, options );
 
+		// Store `description` as the `$description` root attribute (inside `modelAttributes`, like the editable options
+		// above) so it is registered, set on the new root, and synchronized to other real-time collaboration clients.
+		if ( options.description != null && !( '$description' in modelAttributes ) ) {
+			modelAttributes.$description = options.description;
+		}
+
 		const _addRoot = ( writer: ModelWriter ) => {
 			const root = writer.addRoot( rootName, modelElement );
 

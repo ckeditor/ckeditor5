@@ -190,6 +190,66 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 			bar: 3
 		} );
 	} );
+
+	it( 'should register and set `$description` from `root.description`', async () => {
+		editor = await CustomEditor.create( {
+			root: {
+				description: 'My description'
+			}
+		} );
+
+		const root = editor.model.document.getRoot();
+
+		expect( root.getAttribute( '$description' ) ).toBe( 'My description' );
+		expect( editor.getRootAttributes() ).toEqual( { $description: 'My description' } );
+	} );
+
+	it( 'should register and set `$description` for each root from `roots.<rootName>.description`', async () => {
+		editor = await CustomEditor.create( {
+			roots: {
+				main: {
+					description: 'Main description'
+				},
+				second: {
+					description: 'Second description'
+				}
+			}
+		} );
+
+		expect( editor.getRootAttributes( 'main' ) ).toEqual( { $description: 'Main description' } );
+		expect( editor.getRootAttributes( 'second' ) ).toEqual( { $description: 'Second description' } );
+	} );
+
+	it( 'should not register `$description` when no description is configured', async () => {
+		editor = await CustomEditor.create( {
+			root: {
+				modelAttributes: { foo: 1 }
+			}
+		} );
+
+		expect( editor.getRootAttributes() ).toEqual( { foo: 1 } );
+	} );
+
+	it( 'should store `description` in `modelAttributes` so it ships through the RTC initial-data path', async () => {
+		editor = await CustomEditor.create( {
+			root: {
+				description: 'My description'
+			}
+		} );
+
+		expect( editor.config.get( 'roots' ).main.modelAttributes ).toEqual( { $description: 'My description' } );
+	} );
+
+	it( 'should not override a `$description` already provided in `modelAttributes`', async () => {
+		editor = await CustomEditor.create( {
+			root: {
+				description: 'Configured description',
+				modelAttributes: { $description: 'Restored description' }
+			}
+		} );
+
+		expect( editor.getRootAttributes() ).toEqual( { $description: 'Restored description' } );
+	} );
 } );
 
 class CustomEditor extends ElementApiMixin( Editor ) {

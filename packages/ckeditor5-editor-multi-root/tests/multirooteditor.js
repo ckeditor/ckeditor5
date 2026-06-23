@@ -1603,6 +1603,25 @@ describe( 'MultiRootEditor', () => {
 			expect( root.getAttribute( '$rootEditableOptions' ) ).toEqual( { label: 'My label' } );
 		} );
 
+		it( 'should set description as a dedicated `$description` root attribute', () => {
+			editor.addRoot( 'bar', { description: 'My description' } );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.getAttribute( '$description' ) ).to.equal( 'My description' );
+
+			// The description must not leak into `$rootEditableOptions` (the editable options bag).
+			expect( root.getAttribute( '$rootEditableOptions' ) ).to.deep.equal( {} );
+		} );
+
+		it( 'should not set `$description` when no description is provided', () => {
+			editor.addRoot( 'bar', { label: 'My label' } );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.hasAttribute( '$description' ) ).to.be.false;
+		} );
+
 		it( 'should set both placeholder and label as root editable options', () => {
 			editor.addRoot( 'bar', { placeholder: 'Type here...', label: 'My label' } );
 
