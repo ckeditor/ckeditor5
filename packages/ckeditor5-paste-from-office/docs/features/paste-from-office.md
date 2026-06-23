@@ -40,6 +40,8 @@ Refer to the {@link features/paste-from-office-enhanced#content-formatting-suppo
 
 Thanks to the paste from Office feature, you can copy and paste Microsoft Word documents into CKEditor&nbsp;5 and maintain basic text styling, heading levels, links, lists, tables, and images.
 
+Footnotes from the pasted document are also converted, as long as the {@link features/footnotes footnotes} feature is enabled in your editor.
+
 When the plugin is enabled, it automatically detects Microsoft Word content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
 
 The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Google Docs. See the {@link features/paste-from-google-docs pasting content from Google Docs guide} to learn more.
