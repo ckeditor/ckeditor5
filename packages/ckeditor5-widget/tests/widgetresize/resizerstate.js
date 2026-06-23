@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { WidgetResizeState } from '../../src/widgetresize/resizerstate.js';
 
 describe( 'ResizerState', () => {
@@ -10,30 +11,30 @@ describe( 'ResizerState', () => {
 		it( 'sets up proper default values', () => {
 			const state = new WidgetResizeState();
 
-			expect( state.activeHandlePosition, 'activeHandlePosition' ).to.be.null;
-			expect( state.proposedWidthPercents, 'proposedWidthPercents' ).to.be.null;
-			expect( state.proposedWidth, 'proposedWidth' ).to.be.null;
-			expect( state.proposedHeight, 'proposedHeight' ).to.be.null;
-			expect( state.proposedHandleHostWidth, 'proposedHandleHostWidth' ).to.be.null;
-			expect( state.proposedHandleHostHeight, 'proposedHandleHostHeight' ).to.be.null;
+			expect( state.activeHandlePosition, 'activeHandlePosition' ).toBeNull();
+			expect( state.proposedWidthPercents, 'proposedWidthPercents' ).toBeNull();
+			expect( state.proposedWidth, 'proposedWidth' ).toBeNull();
+			expect( state.proposedHeight, 'proposedHeight' ).toBeNull();
+			expect( state.proposedHandleHostWidth, 'proposedHandleHostWidth' ).toBeNull();
+			expect( state.proposedHandleHostHeight, 'proposedHandleHostHeight' ).toBeNull();
 		} );
 
 		it( 'sets up observable properties', () => {
 			const state = new WidgetResizeState();
 
-			expect( isObservable( 'activeHandlePosition' ), 'activeHandlePosition' ).to.be.true;
-			expect( isObservable( 'proposedWidthPercents' ), 'proposedWidthPercents' ).to.be.true;
-			expect( isObservable( 'proposedWidth' ), 'proposedWidth' ).to.be.true;
-			expect( isObservable( 'proposedHeight' ), 'proposedHeight' ).to.be.true;
-			expect( isObservable( 'proposedHandleHostWidth' ), 'proposedHandleHostWidth' ).to.be.true;
-			expect( isObservable( 'proposedHandleHostHeight' ), 'proposedHandleHostHeight' ).to.be.true;
+			expect( isObservable( 'activeHandlePosition' ), 'activeHandlePosition' ).toBe( true );
+			expect( isObservable( 'proposedWidthPercents' ), 'proposedWidthPercents' ).toBe( true );
+			expect( isObservable( 'proposedWidth' ), 'proposedWidth' ).toBe( true );
+			expect( isObservable( 'proposedHeight' ), 'proposedHeight' ).toBe( true );
+			expect( isObservable( 'proposedHandleHostWidth' ), 'proposedHandleHostWidth' ).toBe( true );
+			expect( isObservable( 'proposedHandleHostHeight' ), 'proposedHandleHostHeight' ).toBe( true );
 
 			function isObservable( propertyName ) {
-				const listener = sinon.stub();
+				const listener = vi.fn();
 				state.on( `change:${ propertyName }`, listener );
 				state[ propertyName ] = true;
 
-				return listener.calledOnce;
+				return listener.mock.calls.length === 1;
 			}
 		} );
 	} );
@@ -41,7 +42,7 @@ describe( 'ResizerState', () => {
 	describe( 'begin()', () => {
 		const domContentWrapper = document.createElement( 'div' );
 
-		before( () => {
+		beforeAll( () => {
 			const htmlMockup = `<div class="dom-element" style="width: 25%;">
 				<div class="ck ck-reset_all ck-widget__resizer" style="width: 400px; height: 200px;">
 					<div class="ck-widget__resizer__handle ck-widget__resizer__handle-bottom-right"></div>
@@ -53,7 +54,7 @@ describe( 'ResizerState', () => {
 			document.body.append( domContentWrapper );
 		} );
 
-		after( () => {
+		afterAll( () => {
 			domContentWrapper.remove();
 		} );
 
@@ -65,21 +66,21 @@ describe( 'ResizerState', () => {
 			const state = new WidgetResizeState();
 			state.begin( domResizeHandle, domHandleHost, domResizeHost );
 
-			expect( state.activeHandlePosition, 'activeHandlePosition' ).to.equal( 'bottom-right' );
+			expect( state.activeHandlePosition, 'activeHandlePosition' ).toBe( 'bottom-right' );
 
-			expect( state.originalWidth, 'originalWidth' ).to.equal( 400 );
-			expect( state.originalHeight, 'originalHeight' ).to.equal( 200 );
+			expect( state.originalWidth, 'originalWidth' ).toBe( 400 );
+			expect( state.originalHeight, 'originalHeight' ).toBe( 200 );
 
-			expect( state.aspectRatio, 'aspectRatio' ).to.equal( 2 );
+			expect( state.aspectRatio, 'aspectRatio' ).toBe( 2 );
 
-			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.equal( 25 );
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).toBe( 25 );
 		} );
 	} );
 
 	describe( 'width percents calculations ', () => {
 		const domContentWrapper = document.createElement( 'span' );
 
-		before( () => {
+		beforeAll( () => {
 			const htmlMockup = `<div class="dom-element">
 				<div class="ck ck-reset_all ck-widget__resizer" style="width: 400px; height: 200px;">
 					<div class="ck-widget__resizer__handle ck-widget__resizer__handle-bottom-right"></div>
@@ -100,8 +101,8 @@ describe( 'ResizerState', () => {
 			const state = new WidgetResizeState();
 			state.begin( domResizeHandle, domHandleHost, domResizeHost );
 
-			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.not.be.NaN;
-			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.equal( 100 );
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).not.toBeNaN();
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).toBe( 100 );
 			domContentWrapper.remove();
 		} );
 
@@ -121,8 +122,8 @@ describe( 'ResizerState', () => {
 			const state = new WidgetResizeState();
 			state.begin( domResizeHandle, domHandleHost, domResizeHost );
 
-			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.not.be.NaN;
-			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.equal( 0 );
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).not.toBeNaN();
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).toBe( 0 );
 			elem.remove();
 		} );
 	} );
@@ -139,11 +140,11 @@ describe( 'ResizerState', () => {
 				handleHostHeight: 160
 			} );
 
-			expect( state.proposedWidthPercents, 'proposedWidthPercents' ).to.equal( 25 );
-			expect( state.proposedWidth, 'proposedWidth' ).to.equal( 100 );
-			expect( state.proposedHeight, 'proposedHeight' ).to.equal( 200 );
-			expect( state.proposedHandleHostWidth, 'proposedHandleHostWidth' ).to.equal( 80 );
-			expect( state.proposedHandleHostHeight, 'proposedHandleHostHeight' ).to.equal( 160 );
+			expect( state.proposedWidthPercents, 'proposedWidthPercents' ).toBe( 25 );
+			expect( state.proposedWidth, 'proposedWidth' ).toBe( 100 );
+			expect( state.proposedHeight, 'proposedHeight' ).toBe( 200 );
+			expect( state.proposedHandleHostWidth, 'proposedHandleHostWidth' ).toBe( 80 );
+			expect( state.proposedHandleHostHeight, 'proposedHandleHostHeight' ).toBe( 160 );
 		} );
 	} );
 } );

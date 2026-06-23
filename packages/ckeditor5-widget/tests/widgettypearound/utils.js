@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ModelSelection } from '@ckeditor/ckeditor5-engine';
 import {
 	TYPE_AROUND_SELECTION_ATTRIBUTE,
@@ -18,7 +19,7 @@ describe( 'widget type around utils', () => {
 
 	describe( 'TYPE_AROUND_SELECTION_ATTRIBUTE', () => {
 		it( 'should be defined', () => {
-			expect( TYPE_AROUND_SELECTION_ATTRIBUTE ).to.equal( 'widget-type-around' );
+			expect( TYPE_AROUND_SELECTION_ATTRIBUTE ).toBe( 'widget-type-around' );
 		} );
 	} );
 
@@ -26,17 +27,17 @@ describe( 'widget type around utils', () => {
 		it( 'should return "before" if the model selection attribute is "before"', () => {
 			selection.setAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
 
-			expect( getTypeAroundFakeCaretPosition( selection ) ).to.equal( 'before' );
+			expect( getTypeAroundFakeCaretPosition( selection ) ).toBe( 'before' );
 		} );
 
 		it( 'should return "after" if the model selection attribute is "after"', () => {
 			selection.setAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
 
-			expect( getTypeAroundFakeCaretPosition( selection ) ).to.equal( 'after' );
+			expect( getTypeAroundFakeCaretPosition( selection ) ).toBe( 'after' );
 		} );
 
 		it( 'should return undefined if the model selection attribute is not set', () => {
-			expect( getTypeAroundFakeCaretPosition( selection ) ).to.be.undefined;
+			expect( getTypeAroundFakeCaretPosition( selection ) ).toBeUndefined();
 		} );
 	} );
 } );
