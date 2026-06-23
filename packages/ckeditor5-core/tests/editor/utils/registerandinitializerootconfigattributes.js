@@ -250,6 +250,80 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 
 		expect( editor.getRootAttributes() ).toEqual( { $description: 'Restored description' } );
 	} );
+
+	it( 'should register and set `$title` from `root.title`', async () => {
+		editor = await CustomEditor.create( {
+			root: {
+				title: 'My title'
+			}
+		} );
+
+		const root = editor.model.document.getRoot();
+
+		expect( root.getAttribute( '$title' ) ).toBe( 'My title' );
+		expect( editor.getRootAttributes() ).toEqual( { $title: 'My title' } );
+	} );
+
+	it( 'should register and set `$title` for each root from `roots.<rootName>.title`', async () => {
+		editor = await CustomEditor.create( {
+			roots: {
+				main: {
+					title: 'Main title'
+				},
+				second: {
+					title: 'Second title'
+				}
+			}
+		} );
+
+		expect( editor.getRootAttributes( 'main' ) ).toEqual( { $title: 'Main title' } );
+		expect( editor.getRootAttributes( 'second' ) ).toEqual( { $title: 'Second title' } );
+	} );
+
+	it( 'should not register `$title` when no title is configured', async () => {
+		editor = await CustomEditor.create( {
+			root: {
+				modelAttributes: { foo: 1 }
+			}
+		} );
+
+		expect( editor.getRootAttributes() ).toEqual( { foo: 1 } );
+	} );
+
+	it( 'should store `title` in `modelAttributes` so it ships through the RTC initial-data path', async () => {
+		editor = await CustomEditor.create( {
+			root: {
+				title: 'My title'
+			}
+		} );
+
+		expect( editor.config.get( 'roots' ).main.modelAttributes ).toEqual( { $title: 'My title' } );
+	} );
+
+	it( 'should not override a `$title` already provided in `modelAttributes`', async () => {
+		editor = await CustomEditor.create( {
+			root: {
+				title: 'Configured title',
+				modelAttributes: { $title: 'Restored title' }
+			}
+		} );
+
+		expect( editor.getRootAttributes() ).toEqual( { $title: 'Restored title' } );
+	} );
+
+	it( 'should register and set both `$description` and `$title` from the root config', async () => {
+		editor = await CustomEditor.create( {
+			root: {
+				description: 'My description',
+				title: 'My title'
+			}
+		} );
+
+		expect( editor.getRootAttributes() ).toEqual( {
+			$description: 'My description',
+			$title: 'My title'
+		} );
+	} );
 } );
 
 class CustomEditor extends ElementApiMixin( Editor ) {

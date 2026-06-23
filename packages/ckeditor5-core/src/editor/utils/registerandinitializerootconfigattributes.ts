@@ -9,35 +9,46 @@
 
 import type { Editor, EditorRootAttributes } from '../editor.js';
 
+// Root config fields persisted as dedicated `$`-prefixed root attributes, so they sync over real-time collaboration.
+const CONFIG_FIELDS_AS_ROOT_ATTRIBUTES = [
+	[ 'description', '$description' ],
+	[ 'title', '$title' ]
+] as const;
+
 /**
  * Registers and initializes root attributes from the editor configuration:
  *
  * * the attributes from
  * {@link module:core/editor/editorconfig~RootConfig#modelAttributes `config.root(s).<rootName>.modelAttributes`}, and
- * * the {@link module:core/editor/editorconfig~RootConfig#description `description`} field, stored as the
- * `$description` root attribute.
+ * * the {@link module:core/editor/editorconfig~RootConfig#description `description`} and
+ * {@link module:core/editor/editorconfig~RootConfig#title `title`} fields, stored as the `$description` and `$title`
+ * root attributes respectively.
  *
  * @internal
  */
 export function registerAndInitializeRootConfigAttributes( editor: Editor ): void {
 	const rootsConfig = editor.config.get( 'roots' )!;
 
-	// Store the `description` configuration as the `$description` key inside `modelAttributes`.
-	// This way it is broadcasted through RTC and persisted in revision history.
-	// If `$description` is already present in roots attributes (e.g. restored from saved root attributes)
-	// it takes precedence over config value and is left untouched.
+	// Copy `description`/`title` config into `modelAttributes` so they ship through the RTC initial-data path (like
+	// `$rootEditableOptions`). A value already in `modelAttributes` (e.g. restored from saved attributes) wins.
 	for ( const [ rootName, rootConfig ] of Object.entries( rootsConfig ) ) {
-		if ( rootConfig.description == null || ( rootConfig.modelAttributes && '$description' in rootConfig.modelAttributes ) ) {
-			continue;
+		let modelAttributes: EditorRootAttributes | null = null;
+
+		for ( const [ configField, attributeKey ] of CONFIG_FIELDS_AS_ROOT_ATTRIBUTES ) {
+			if ( rootConfig[ configField ] == null || ( rootConfig.modelAttributes && attributeKey in rootConfig.modelAttributes ) ) {
+				continue;
+			}
+
+			modelAttributes = modelAttributes || { ...rootConfig.modelAttributes };
+			modelAttributes[ attributeKey ] = rootConfig[ configField ];
 		}
 
-		editor.config.set( `roots.${ rootName }.modelAttributes`, {
-			...rootConfig.modelAttributes,
-			$description: rootConfig.description
-		} as EditorRootAttributes );
+		if ( modelAttributes ) {
+			editor.config.set( `roots.${ rootName }.modelAttributes`, modelAttributes );
+		}
 	}
 
-	// Re-read the configuration so the loops below pick up the `$description` injected above.
+	// Re-read the configuration so the loops below pick up the attributes injected above.
 	const normalizedRootsConfig = editor.config.get( 'roots' )!;
 	let hasRootAttributes = false;
 

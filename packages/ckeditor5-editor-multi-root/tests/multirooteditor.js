@@ -1622,6 +1622,33 @@ describe( 'MultiRootEditor', () => {
 			expect( root.hasAttribute( '$description' ) ).to.be.false;
 		} );
 
+		it( 'should set title as a dedicated `$title` root attribute', () => {
+			editor.addRoot( 'bar', { title: 'My title' } );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.getAttribute( '$title' ) ).to.equal( 'My title' );
+
+			// The title must not leak into `$rootEditableOptions` (the editable options bag).
+			expect( root.getAttribute( '$rootEditableOptions' ) ).to.deep.equal( {} );
+		} );
+
+		it( 'should register `$title` as a root attribute', () => {
+			vi.spyOn( editor, 'registerRootAttribute' );
+
+			editor.addRoot( 'bar', { title: 'My title' } );
+
+			expect( editor.registerRootAttribute ).toHaveBeenCalledWith( '$title' );
+		} );
+
+		it( 'should not set `$title` when no title is provided', () => {
+			editor.addRoot( 'bar', { label: 'My label' } );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.hasAttribute( '$title' ) ).to.be.false;
+		} );
+
 		it( 'should set both placeholder and label as root editable options', () => {
 			editor.addRoot( 'bar', { placeholder: 'Type here...', label: 'My label' } );
 
