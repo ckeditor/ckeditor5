@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
@@ -53,7 +54,7 @@ describe( 'ImageUploadEditing', () => {
 
 		document.body.appendChild( editorElement );
 
-		sinon.stub( window, 'FileReader' ).callsFake( () => {
+		vi.spyOn( window, 'FileReader' ).mockImplementation( function() {
 			nativeReaderMock = new NativeFileReaderMock();
 
 			return nativeReaderMock;
@@ -75,44 +76,44 @@ describe( 'ImageUploadEditing', () => {
 				viewDocument = view.document;
 
 				// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-				sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
+				vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 			} );
 	} );
 
 	afterEach( () => {
 		editorElement.remove();
-		sinon.restore();
+		vi.restoreAllMocks();
 		adapterMocks = [];
 
 		return editor.destroy();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageUploadEditing.isOfficialPlugin ).to.be.true;
+		expect( ImageUploadEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageUploadEditing.isPremiumPlugin ).to.be.false;
+		expect( ImageUploadEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should register proper schema rules when both ImageBlock and ImageInline are enabled', () => {
-		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).toBe( true );
 	} );
 
 	it( 'should register proper schema rules for image style when ImageBlock plugin is enabled', async () => {
 		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlockEditing, ImageUploadEditing ] } );
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).to.be.true;
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).toBe( true );
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).toBe( true );
 		await newEditor.destroy();
 	} );
 
 	it( 'should register proper schema rules for image style when ImageInline plugin is enabled', async () => {
 		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInlineEditing, ImageUploadEditing ] } );
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).toBe( true );
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).toBe( true );
 		await newEditor.destroy();
 	} );
 
@@ -124,20 +125,20 @@ describe( 'ImageUploadEditing', () => {
 			]
 		} );
 
-		expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).to.be.true;
-		expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).to.be.true;
-		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
-		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).toBe( true );
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).toBe( true );
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).toBe( true );
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).toBe( true );
 
 		await editor.destroy();
 	} );
 
 	it( 'should register the uploadImage command', () => {
-		expect( editor.commands.get( 'uploadImage' ) ).to.be.instanceOf( UploadImageCommand );
+		expect( editor.commands.get( 'uploadImage' ) ).toBeInstanceOf( UploadImageCommand );
 	} );
 
 	it( 'should register the imageUpload command as an alias for the uploadImage command', () => {
-		expect( editor.commands.get( 'imageUpload' ) ).to.equal( editor.commands.get( 'uploadImage' ) );
+		expect( editor.commands.get( 'imageUpload' ) ).toBe( editor.commands.get( 'uploadImage' ) );
 	} );
 
 	it( 'should load Clipboard plugin', () => {
@@ -149,7 +150,7 @@ describe( 'ImageUploadEditing', () => {
 				]
 			} )
 			.then( editor => {
-				expect( editor.plugins.get( ClipboardPipeline ) ).to.be.instanceOf( ClipboardPipeline );
+				expect( editor.plugins.get( ClipboardPipeline ) ).toBeInstanceOf( ClipboardPipeline );
 			} );
 	} );
 
@@ -162,10 +163,10 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( eventInfo, { dataTransfer, targetRanges: null } );
 
 		const id = fileRepository.getLoader( fileMock ).id;
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			`<paragraph>foo[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]</paragraph>`
 		);
-		expect( eventInfo.stop.called ).to.be.true;
+		expect( eventInfo.stop.called ).toBe( true );
 	} );
 
 	it( 'should insert image when is dropped', () => {
@@ -180,10 +181,10 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( eventInfo, { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		const id = fileRepository.getLoader( fileMock ).id;
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			`<paragraph>foo</paragraph>[<imageBlock uploadId="${ id }" uploadStatus="reading"></imageBlock>]`
 		);
-		expect( eventInfo.stop.called ).to.be.true;
+		expect( eventInfo.stop.called ).toBe( true );
 	} );
 
 	it( 'should insert image at optimized position when is pasted', () => {
@@ -202,7 +203,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		const id = fileRepository.getLoader( fileMock ).id;
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			`<paragraph>f[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]oo</paragraph>`
 		);
 	} );
@@ -227,7 +228,7 @@ describe( 'ImageUploadEditing', () => {
 		const id1 = fileRepository.getLoader( files[ 0 ] ).id;
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			'<paragraph>' +
 				`foo<imageInline uploadId="${ id1 }" uploadStatus="reading"></imageInline>` +
 				`[<imageInline uploadId="${ id2 }" uploadStatus="reading"></imageInline>]` +
@@ -248,14 +249,15 @@ describe( 'ImageUploadEditing', () => {
 		const id1 = fileRepository.getLoader( files[ 0 ] ).id;
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			'<paragraph></paragraph>' +
 			`<imageBlock uploadId="${ id1 }" uploadStatus="reading"></imageBlock>` +
 			`[<imageBlock uploadId="${ id2 }" uploadStatus="reading"></imageBlock>]`
 		);
 	} );
 
-	it( 'should display notification when no permission to upload from computer.', done => {
+	it( 'should display notification when no permission to upload from computer.', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
 		const dataTransfer = new ViewDataTransfer( { files, types: [ 'Files' ] } );
 		const uploadImageCommand = editor.commands.get( 'uploadImage' );
@@ -263,7 +265,7 @@ describe( 'ImageUploadEditing', () => {
 
 		notification.on( 'show:warning', ( evt, data ) => {
 			tryExpect( done, () => {
-				expect( data.message ).to.equal( 'You have no image upload permissions.' );
+				expect( data.message ).toBe( 'You have no image upload permissions.' );
 				evt.stop();
 			} );
 		}, { priority: 'high' } );
@@ -276,7 +278,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
-	} );
+	} ) );
 
 	it( 'should insert image when is pasted on allowed position when UploadImageCommand is enabled', () => {
 		_setModelData( model, '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
@@ -286,7 +288,7 @@ describe( 'ImageUploadEditing', () => {
 
 		const command = editor.commands.get( 'uploadImage' );
 
-		expect( command.isEnabled ).to.be.true;
+		expect( command.isEnabled ).toBe( true );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 0 ), model.createPositionAt( doc.getRoot(), 0 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
@@ -294,7 +296,7 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		const id = fileRepository.getLoader( fileMock ).id;
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			`[<imageBlock uploadId="${ id }" uploadStatus="reading"></imageBlock>]<paragraph>foo</paragraph><imageBlock></imageBlock>`
 		);
 	} );
@@ -318,7 +320,7 @@ describe( 'ImageUploadEditing', () => {
 
 			inlineModel = inlineEditor.model;
 
-			sinon.stub( inlineEditor.editing.view, 'scrollToTheSelection' ).callsFake( () => {} );
+			vi.spyOn( inlineEditor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		} );
 
 		afterEach( async () => {
@@ -327,7 +329,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		it( 'should enable the uploadImage command', () => {
-			expect( inlineEditor.commands.get( 'uploadImage' ).isEnabled ).to.be.true;
+			expect( inlineEditor.commands.get( 'uploadImage' ).isEnabled ).toBe( true );
 		} );
 
 		it( 'should upload as an inline image because a block image cannot land', () => {
@@ -339,7 +341,7 @@ describe( 'ImageUploadEditing', () => {
 
 			const id = inlineEditor.plugins.get( FileRepository ).getLoader( fileMock ).id;
 
-			expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( inlineModel, { withoutSelection: true } ) ).toBe(
 				`foo<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>bar`
 			);
 		} );
@@ -366,7 +368,7 @@ describe( 'ImageUploadEditing', () => {
 
 				editor.editing.view.document.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+				expect( _getModelData( editor.model ) ).toBe( '<paragraph>[]foo</paragraph>' );
 
 				return editor.destroy();
 			} );
@@ -396,8 +398,8 @@ describe( 'ImageUploadEditing', () => {
 			content: dataTransfer.getData( 'text/html' )
 		} );
 
-		expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
-		expect( eventInfo.stop.called ).to.be.undefined;
+		expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph>' );
+		expect( eventInfo.stop.called ).toBeUndefined();
 	} );
 
 	it( 'should not insert image when file is not an configured image type', () => {
@@ -424,8 +426,8 @@ describe( 'ImageUploadEditing', () => {
 			content: dataTransfer.getData( 'text/html' )
 		} );
 
-		expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
-		expect( eventInfo.stop.called ).to.be.undefined;
+		expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph>' );
+		expect( eventInfo.stop.called ).toBeUndefined();
 	} );
 
 	it( 'should not insert image when file is null', () => {
@@ -443,7 +445,7 @@ describe( 'ImageUploadEditing', () => {
 			content: dataTransfer.getData( 'text/html' )
 		} );
 
-		expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+		expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph>' );
 	} );
 
 	it( 'should not insert image when there is non-empty HTML content pasted', () => {
@@ -464,7 +466,7 @@ describe( 'ImageUploadEditing', () => {
 			content: dataTransfer.getData( 'text/html' )
 		} );
 
-		expect( _getModelData( model ) ).to.equal( '<paragraph>SomeData[]foo</paragraph>' );
+		expect( _getModelData( model ) ).toBe( '<paragraph>SomeData[]foo</paragraph>' );
 	} );
 
 	it( 'should not insert image nor crash when pasted image could not be inserted', () => {
@@ -492,13 +494,13 @@ describe( 'ImageUploadEditing', () => {
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
-		expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
+		expect( _getModelData( model ) ).toBe( '<other>[]</other>' );
 	} );
 
 	it( 'should not throw when upload adapter is not set (FileRepository will log an warn anyway) when image is pasted', () => {
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
-		const consoleWarnStub = sinon.stub( console, 'warn' );
+		const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -509,10 +511,10 @@ describe( 'ImageUploadEditing', () => {
 
 		expect( () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
-		} ).to.not.throw();
+		} ).not.toThrow();
 
-		expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
-		sinon.assert.calledOnce( consoleWarnStub );
+		expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph>' );
+		expect( consoleWarnStub ).toHaveBeenCalledTimes( 1 );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5-upload/issues/70
@@ -538,7 +540,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		// Well, there's no clipboard plugin, so nothing happens.
-		expect( _getModelData( model ) ).to.equal( '<paragraph>SomeData[]foo</paragraph>' );
+		expect( _getModelData( model ) ).toBe( '<paragraph>SomeData[]foo</paragraph>' );
 	} );
 
 	it( 'should not convert image\'s uploadId attribute if is consumed already', () => {
@@ -548,34 +550,35 @@ describe( 'ImageUploadEditing', () => {
 
 		_setModelData( model, '<imageBlock uploadId="1234"></imageBlock>' );
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'[<figure class="ck-widget image" contenteditable="false">' +
 			'<img></img>' +
 			'</figure>]' );
 	} );
 
-	it( 'should not use read data once it is present', done => {
+	it( 'should not use read data once it is present', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		const file = createNativeFileMock();
 		_setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'uploadImage', { file } );
 
 		model.document.once( 'change', () => {
 			tryExpect( done, () => {
-				expect( _getViewData( view ) ).to.equal(
+				expect( _getViewData( view ) ).toBe(
 					'<p>[<span class="ck-widget image-inline" contenteditable="false">' +
 						// Rendering the image data is left to a upload progress converter.
 						'<img></img>' +
 					'</span>}foo bar</p>'
 				);
 
-				expect( loader.status ).to.equal( 'uploading' );
+				expect( loader.status ).toBe( 'uploading' );
 			} );
 		} );
 
-		expect( loader.status ).to.equal( 'reading' );
+		expect( loader.status ).toBe( 'reading' );
 
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
-	} );
+	} ) );
 
 	it( 'should replace read data with server response once it is present', async () => {
 		const file = createNativeFileMock();
@@ -592,10 +595,10 @@ describe( 'ImageUploadEditing', () => {
 			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'assets/sample.png' } ) );
 		} );
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>}foo bar</p>'
 		);
-		expect( loader.status ).to.equal( 'idle' );
+		expect( loader.status ).toBe( 'idle' );
 	} );
 
 	it( 'should set image width and height after server response', async () => {
@@ -610,13 +613,13 @@ describe( 'ImageUploadEditing', () => {
 
 		await new Promise( res => {
 			model.document.once( 'change', res, { priority: 'lowest' } );
-			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png' } ) );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/sample.png' } ) );
 		} );
 
 		await timeout( 100 );
 
-		expect( _getModelData( model ) ).to.equal(
-			'<paragraph>[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]foo bar</paragraph>'
+		expect( _getModelData( model ) ).toBe(
+			'<paragraph>[<imageInline height="96" src="/sample.png" width="96"></imageInline>]foo bar</paragraph>'
 		);
 	} );
 
@@ -647,7 +650,7 @@ describe( 'ImageUploadEditing', () => {
 
 		await timeout( 100 );
 
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			'[<imageBlock src="/assets/sample.png" srcset="/assets/sample2.png 800w" width="50"></imageBlock>]<paragraph>foo</paragraph>'
 		);
 	} );
@@ -679,7 +682,7 @@ describe( 'ImageUploadEditing', () => {
 
 		await timeout( 100 );
 
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			'[<imageBlock height="50" src="/assets/sample.png" srcset="/assets/sample2.png 800w"></imageBlock>]<paragraph>foo</paragraph>'
 		);
 	} );
@@ -699,20 +702,21 @@ describe( 'ImageUploadEditing', () => {
 			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { urls: { default: 'assets/sample.png' } } ) );
 		} );
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>}foo bar</p>'
 		);
-		expect( loader.status ).to.equal( 'idle' );
+		expect( loader.status ).toBe( 'idle' );
 	} );
 
-	it( 'should fire notification event in case of error', done => {
+	it( 'should fire notification event in case of error', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		const notification = editor.plugins.get( Notification );
 		const file = createNativeFileMock();
 
 		notification.on( 'show:warning', ( evt, data ) => {
 			tryExpect( done, () => {
-				expect( data.message ).to.equal( 'Reading error.' );
-				expect( data.title ).to.equal( 'Upload failed' );
+				expect( data.message ).toBe( 'Reading error.' );
+				expect( data.title ).toBe( 'Upload failed' );
 				evt.stop();
 			} );
 		}, { priority: 'high' } );
@@ -721,12 +725,12 @@ describe( 'ImageUploadEditing', () => {
 		editor.execute( 'uploadImage', { file } );
 
 		loader.file.then( () => nativeReaderMock.mockError( 'Reading error.' ) );
-	} );
+	} ) );
 
-	it( 'should not fire notification on abort', done => {
+	it( 'should not fire notification on abort', () => new Promise( resolve => {
 		const notification = editor.plugins.get( Notification );
 		const file = createNativeFileMock();
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		notification.on( 'show:warning', evt => {
 			spy();
@@ -740,18 +744,18 @@ describe( 'ImageUploadEditing', () => {
 			nativeReaderMock.abort();
 
 			setTimeout( () => {
-				sinon.assert.notCalled( spy );
-				done();
+				expect( spy ).not.toHaveBeenCalled();
+				resolve();
 			}, 0 );
 		} );
-	} );
+	} ) );
 
-	it( 'should throw when other error happens during upload', done => {
+	it( 'should throw when other error happens during upload', () => new Promise( resolve => {
 		const file = createNativeFileMock();
 		const error = new Error( 'Foo bar baz' );
 		const uploadEditing = editor.plugins.get( ImageUploadEditing );
-		const loadSpy = sinon.spy( uploadEditing, '_readAndUpload' );
-		const catchSpy = sinon.spy();
+		const loadSpy = vi.spyOn( uploadEditing, '_readAndUpload' );
+		const catchSpy = vi.fn();
 
 		// Throw an error when async attribute change occur.
 		editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:imageInline', ( evt, data ) => {
@@ -763,9 +767,9 @@ describe( 'ImageUploadEditing', () => {
 		_setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'uploadImage', { file } );
 
-		sinon.assert.calledOnce( loadSpy );
+		expect( loadSpy ).toHaveBeenCalledTimes( 1 );
 
-		const promise = loadSpy.returnValues[ 0 ];
+		const promise = loadSpy.mock.results[ 0 ].value;
 
 		// Check if error can be caught.
 		promise.catch( catchSpy );
@@ -774,27 +778,28 @@ describe( 'ImageUploadEditing', () => {
 			nativeReaderMock.mockSuccess();
 
 			setTimeout( () => {
-				sinon.assert.calledOnce( catchSpy );
-				const error = catchSpy.getCall( 0 ).args[ 0 ];
+				expect( catchSpy ).toHaveBeenCalledTimes( 1 );
+				const error = catchSpy.mock.calls[ 0 ][ 0 ];
 
 				assertCKEditorError( error, 'Foo bar baz' );
 
-				done();
+				resolve();
 			}, 0 );
 		} );
-	} );
+	} ) );
 
 	it( 'should do nothing if image does not have uploadId', () => {
 		_setModelData( model, '<imageBlock src="assets/sample.png"></imageBlock>' );
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'[<figure class="ck-widget image" contenteditable="false"><img src="assets/sample.png"></img></figure>]'
 		);
 	} );
 
-	it( 'should remove image in case of upload error', done => {
+	it( 'should remove image in case of upload error', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		const file = createNativeFileMock();
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		const notification = editor.plugins.get( Notification );
 		_setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 
@@ -808,23 +813,23 @@ describe( 'ImageUploadEditing', () => {
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
 				tryExpect( done, () => {
-					expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
-					sinon.assert.calledOnce( spy );
+					expect( _getModelData( model ) ).toBe( '<paragraph>[]foo bar</paragraph>' );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 		} );
 
 		loader.file.then( () => nativeReaderMock.mockError( 'Upload error.' ) );
-	} );
+	} ) );
 
 	it( 'should abort upload if image is removed', () => {
 		const file = createNativeFileMock();
 		_setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'uploadImage', { file } );
 
-		const abortSpy = sinon.spy( loader, 'abort' );
+		const abortSpy = vi.spyOn( loader, 'abort' );
 
-		expect( loader.status ).to.equal( 'reading' );
+		expect( loader.status ).toBe( 'reading' );
 
 		return loader.file.then( () => {
 			nativeReaderMock.mockSuccess( base64Sample );
@@ -834,8 +839,8 @@ describe( 'ImageUploadEditing', () => {
 				writer.remove( image );
 			} );
 
-			expect( loader.status ).to.equal( 'aborted' );
-			sinon.assert.calledOnce( abortSpy );
+			expect( loader.status ).toBe( 'aborted' );
+			expect( abortSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
@@ -844,8 +849,8 @@ describe( 'ImageUploadEditing', () => {
 		_setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'uploadImage', { file } );
 
-		const abortSpy = sinon.spy( loader, 'abort' );
-		const loadSpy = sinon.spy( loader, 'read' );
+		const abortSpy = vi.spyOn( loader, 'abort' );
+		const loadSpy = vi.spyOn( loader, 'read' );
 
 		const paragraph = doc.getRoot().getChild( 0 );
 		const image = paragraph.getChild( 0 );
@@ -854,8 +859,8 @@ describe( 'ImageUploadEditing', () => {
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( paragraph, 2 ) );
 		} );
 
-		expect( abortSpy.called ).to.be.false;
-		expect( loadSpy.called ).to.be.false;
+		expect( abortSpy ).not.toHaveBeenCalled();
+		expect( loadSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not abort if an image changed type (but with the same uploadId value)', async () => {
@@ -865,9 +870,9 @@ describe( 'ImageUploadEditing', () => {
 		editor.execute( 'uploadImage', { file } );
 
 		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
-		const abortSpy = sinon.spy( loader, 'abort' );
+		const abortSpy = vi.spyOn( loader, 'abort' );
 		const id = fileRepository.getLoader( file ).id;
-		const uploadCompleteSpy = sinon.spy();
+		const uploadCompleteSpy = vi.fn();
 
 		imageUploadEditing.on( 'uploadComplete', uploadCompleteSpy );
 
@@ -876,13 +881,13 @@ describe( 'ImageUploadEditing', () => {
 			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 		} );
 
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			`<paragraph>[<imageInline uploadId="${ id }" uploadStatus="uploading"></imageInline>]foo bar</paragraph>`
 		);
 
 		editor.execute( 'imageTypeBlock' );
 
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			`[<imageBlock uploadId="${ id }" uploadStatus="uploading"></imageBlock>]<paragraph>foo bar</paragraph>`
 		);
 
@@ -891,12 +896,39 @@ describe( 'ImageUploadEditing', () => {
 			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'assets/sample.png' } ) );
 		} );
 
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			'[<imageBlock src="assets/sample.png"></imageBlock>]<paragraph>foo bar</paragraph>'
 		);
 
-		sinon.assert.notCalled( abortSpy );
-		sinon.assert.calledTwice( uploadCompleteSpy );
+		expect( abortSpy ).not.toHaveBeenCalled();
+		expect( uploadCompleteSpy ).toHaveBeenCalledTimes( 2 );
+	} );
+
+	it( 'should not abort the loader when only one of two images sharing the same uploadId is moved to graveyard', async () => {
+		// This test covers the false-branch of `allImagesThatShareUploaderInGraveyard`:
+		// after `imageTypeBlock` the original inline element goes to graveyard but the new block element
+		// is still in the document, so `allImagesThatShareUploaderInGraveyard` is false and the loader
+		// must NOT be aborted.
+		const file = createNativeFileMock();
+
+		_setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'uploadImage', { file } );
+
+		const abortSpy = vi.spyOn( loader, 'abort' );
+
+		// Let the read phase complete so the image transitions to "uploading" status.
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		// Swap inline → block: the inline element lands in graveyard, a new block element is inserted.
+		// Both share the same uploadId and are tracked in _uploadImageElements.
+		editor.execute( 'imageTypeBlock' );
+
+		// The document-change listener fires; it sees the inline element in graveyard but the block
+		// element is still active, so `allImagesThatShareUploaderInGraveyard` is false.
+		expect( abortSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should abort if an image changed type and then was removed', async () => {
@@ -906,9 +938,9 @@ describe( 'ImageUploadEditing', () => {
 		editor.execute( 'uploadImage', { file } );
 
 		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
-		const abortSpy = sinon.spy( loader, 'abort' );
+		const abortSpy = vi.spyOn( loader, 'abort' );
 		const id = fileRepository.getLoader( file ).id;
-		const uploadCompleteSpy = sinon.spy();
+		const uploadCompleteSpy = vi.fn();
 
 		imageUploadEditing.on( 'uploadComplete', uploadCompleteSpy );
 
@@ -918,23 +950,23 @@ describe( 'ImageUploadEditing', () => {
 
 		editor.execute( 'imageTypeBlock' );
 
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			`[<imageBlock uploadId="${ id }" uploadStatus="reading"></imageBlock>]<paragraph>foo bar</paragraph>`
 		);
 
-		sinon.assert.notCalled( abortSpy );
+		expect( abortSpy ).not.toHaveBeenCalled();
 
 		model.change( writer => {
 			writer.remove( model.document.selection.getSelectedElement() );
 		} );
 
-		sinon.assert.calledOnce( abortSpy );
-		sinon.assert.notCalled( uploadCompleteSpy );
+		expect( abortSpy ).toHaveBeenCalledTimes( 1 );
+		expect( uploadCompleteSpy ).not.toHaveBeenCalled();
 
-		expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+		expect( _getModelData( model ) ).toBe( '<paragraph>[]foo bar</paragraph>' );
 	} );
 
-	it( 'image should be permanently removed if it is removed by user during upload', done => {
+	it( 'image should be permanently removed if it is removed by user during upload', () => new Promise( resolve => {
 		const file = createNativeFileMock();
 		const notification = editor.plugins.get( Notification );
 		_setModelData( model, '<paragraph>{}foo bar</paragraph>' );
@@ -946,30 +978,31 @@ describe( 'ImageUploadEditing', () => {
 
 		editor.execute( 'uploadImage', { file } );
 
-		const stub = sinon.stub();
-		model.document.on( 'change', stub );
+		let stubCallCount = 0;
+		const stub = vi.fn( () => {
+			stubCallCount++;
+			if ( stubCallCount === 2 ) {
+				expect( _getModelData( model ) ).toBe( '<paragraph>[]foo bar</paragraph>' );
 
-		// The first `change` event is fired after the "manual" remove.
-		// The second `change` event is fired after cleaning attributes.
-		stub.onSecondCall().callsFake( () => {
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+				editor.execute( 'undo' );
 
-			editor.execute( 'undo' );
+				// Expect that the image has not been brought back.
+				expect( _getModelData( model ) ).toBe( '<paragraph>[]foo bar</paragraph>' );
 
-			// Expect that the image has not been brought back.
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
-
-			done();
+				resolve();
+			}
 		} );
+		model.document.on( 'change', stub );
 
 		const image = doc.getRoot().getChild( 0 ).getChild( 0 );
 
 		model.change( writer => {
 			writer.remove( image );
 		} );
-	} );
+	} ) );
 
-	it( 'should create responsive image if the server returns multiple images', done => {
+	it( 'should create responsive image if the server returns multiple images', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		const file = createNativeFileMock();
 		_setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'uploadImage', { file } );
@@ -977,13 +1010,13 @@ describe( 'ImageUploadEditing', () => {
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
 				tryExpect( done, () => {
-					expect( _getViewData( view ) ).to.equal(
+					expect( _getViewData( view ) ).toBe(
 						'<p>[<span class="ck-widget image-inline" contenteditable="false">' +
 							'<img sizes="100vw" src="assets/sample.png" ' +
 							'srcset="assets/sample2.png 500w, assets/sample3.png 800w" width="800"></img>' +
 						'</span>}foo bar</p>'
 					);
-					expect( loader.status ).to.equal( 'idle' );
+					expect( loader.status ).toBe( 'idle' );
 				} );
 			}, { priority: 'lowest' } );
 
@@ -997,7 +1030,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
-	} );
+	} ) );
 
 	describe( 'uploadComplete event', () => {
 		it( 'should be fired when the upload adapter resolves with the image data', async () => {
@@ -1005,7 +1038,7 @@ describe( 'ImageUploadEditing', () => {
 			_setModelData( model, '<paragraph>[]foo bar</paragraph>' );
 
 			const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
-			const uploadCompleteSpy = sinon.spy();
+			const uploadCompleteSpy = vi.fn();
 
 			imageUploadEditing.on( 'uploadComplete', uploadCompleteSpy );
 
@@ -1016,20 +1049,20 @@ describe( 'ImageUploadEditing', () => {
 				loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 			} );
 
-			sinon.assert.notCalled( uploadCompleteSpy );
+			expect( uploadCompleteSpy ).not.toHaveBeenCalled();
 
 			await new Promise( res => {
 				model.document.once( 'change', res, { priority: 'lowest' } );
 				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'assets/sample.png' } ) );
 			} );
 
-			sinon.assert.calledOnce( uploadCompleteSpy );
+			expect( uploadCompleteSpy ).toHaveBeenCalledTimes( 1 );
 
-			const eventArgs = uploadCompleteSpy.firstCall.args[ 1 ];
+			const eventArgs = uploadCompleteSpy.mock.calls[ 0 ][ 1 ];
 
-			expect( eventArgs ).to.be.an( 'object' );
-			expect( eventArgs.imageElement.is( 'model:element', 'imageInline' ) ).to.be.true;
-			expect( eventArgs.data ).to.deep.equal( { default: 'assets/sample.png' } );
+			expect( typeof eventArgs ).toBe( 'object' );
+			expect( eventArgs.imageElement.is( 'model:element', 'imageInline' ) ).toBe( true );
+			expect( eventArgs.data ).toEqual( { default: 'assets/sample.png' } );
 		} );
 
 		it( 'should allow modifying the image element once the original image is uploaded', async () => {
@@ -1073,26 +1106,26 @@ describe( 'ImageUploadEditing', () => {
 			} );
 
 			// Make sure the custom attribute was set in the same non-undoable batch as the default handling (setting src and status).
-			expect( batch.isUndoable ).to.be.false;
-			expect( batch.operations.length ).to.equal( 3 );
+			expect( batch.isUndoable ).toBe( false );
+			expect( batch.operations.length ).toBe( 3 );
 
-			expect( batch.operations[ 0 ].type ).to.equal( 'changeAttribute' );
-			expect( batch.operations[ 0 ].key ).to.equal( 'uploadStatus' );
-			expect( batch.operations[ 0 ].newValue ).to.equal( 'complete' );
+			expect( batch.operations[ 0 ].type ).toBe( 'changeAttribute' );
+			expect( batch.operations[ 0 ].key ).toBe( 'uploadStatus' );
+			expect( batch.operations[ 0 ].newValue ).toBe( 'complete' );
 
-			expect( batch.operations[ 1 ].type ).to.equal( 'addAttribute' );
-			expect( batch.operations[ 1 ].key ).to.equal( 'data-original' );
-			expect( batch.operations[ 1 ].newValue ).to.equal( 'original.jpg' );
+			expect( batch.operations[ 1 ].type ).toBe( 'addAttribute' );
+			expect( batch.operations[ 1 ].key ).toBe( 'data-original' );
+			expect( batch.operations[ 1 ].newValue ).toBe( 'original.jpg' );
 
-			expect( batch.operations[ 2 ].type ).to.equal( 'addAttribute' );
-			expect( batch.operations[ 2 ].key ).to.equal( 'src' );
-			expect( batch.operations[ 2 ].newValue ).to.equal( 'assets/sample.png' );
+			expect( batch.operations[ 2 ].type ).toBe( 'addAttribute' );
+			expect( batch.operations[ 2 ].key ).toBe( 'src' );
+			expect( batch.operations[ 2 ].newValue ).toBe( 'assets/sample.png' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>[<imageInline data-original="original.jpg" src="assets/sample.png"></imageInline>]foo bar</paragraph>'
 			);
 
-			expect( _getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).toBe(
 				'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>}foo bar</p>'
 			);
 		} );
@@ -1128,29 +1161,29 @@ describe( 'ImageUploadEditing', () => {
 			} );
 
 			// Make sure the custom attribute was set in the non-undoable batch as the default handling (setting src and status).
-			expect( batch.isUndoable ).to.be.false;
-			expect( batch.operations.length ).to.equal( 2 );
+			expect( batch.isUndoable ).toBe( false );
+			expect( batch.operations.length ).toBe( 2 );
 
-			expect( batch.operations[ 0 ].type ).to.equal( 'changeAttribute' );
-			expect( batch.operations[ 0 ].key ).to.equal( 'uploadStatus' );
-			expect( batch.operations[ 0 ].newValue ).to.equal( 'complete' );
+			expect( batch.operations[ 0 ].type ).toBe( 'changeAttribute' );
+			expect( batch.operations[ 0 ].key ).toBe( 'uploadStatus' );
+			expect( batch.operations[ 0 ].newValue ).toBe( 'complete' );
 
-			expect( batch.operations[ 1 ].type ).to.equal( 'addAttribute' );
-			expect( batch.operations[ 1 ].key ).to.equal( 'src' );
-			expect( batch.operations[ 1 ].newValue ).to.equal( 'assets/sample.png' );
+			expect( batch.operations[ 1 ].type ).toBe( 'addAttribute' );
+			expect( batch.operations[ 1 ].key ).toBe( 'src' );
+			expect( batch.operations[ 1 ].newValue ).toBe( 'assets/sample.png' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>[<imageInline src="assets/sample.png"></imageInline>]foo bar</paragraph>'
 			);
 
-			expect( _getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).toBe(
 				'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>}foo bar</p>'
 			);
 		} );
 	} );
 
 	it( 'should prevent from browser redirecting when an image is dropped on another image', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		const dataTransfer = mockDataTransfer( '' );
 
 		editor.editing.view.document.fire( 'dragover', {
@@ -1159,10 +1192,11 @@ describe( 'ImageUploadEditing', () => {
 			preventDefault: spy
 		} );
 
-		expect( spy.called ).to.equal( true );
+		expect( spy ).toHaveBeenCalled();
 	} );
 
-	it( 'should upload image with base64 src', done => {
+	it( 'should upload image with base64 src', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />`;
@@ -1185,9 +1219,10 @@ describe( 'ImageUploadEditing', () => {
 			'</paragraph>';
 
 		expectModel( done, _getModelData( model ), expected );
-	} );
+	} ) );
 
-	it( 'should upload image with blob src', done => {
+	it( 'should upload image with blob src', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
@@ -1205,10 +1240,11 @@ describe( 'ImageUploadEditing', () => {
 			'</paragraph>';
 
 		expectModel( done, _getModelData( model ), expected );
-	} );
+	} ) );
 
-	it( 'should not upload image if no loader available', done => {
-		sinon.stub( fileRepository, 'createLoader' ).callsFake( () => null );
+	it( 'should not upload image if no loader available', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
+		vi.spyOn( fileRepository, 'createLoader' ).mockImplementation( () => null );
 
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -1223,9 +1259,10 @@ describe( 'ImageUploadEditing', () => {
 		const expected = `<paragraph><imageInline src="${ base64Sample }"></imageInline>[]foo</paragraph>`;
 
 		expectModel( done, _getModelData( model ), expected );
-	} );
+	} ) );
 
-	it( 'should not upload and remove image if fetch failed', done => {
+	it( 'should not upload and remove image if fetch failed', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		const notification = editor.plugins.get( Notification );
 
 		// Prevent popping up alert window.
@@ -1239,7 +1276,7 @@ describe( 'ImageUploadEditing', () => {
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		// Stub `fetch` so it can be rejected.
-		sinon.stub( window, 'fetch' ).callsFake( () => {
+		vi.spyOn( window, 'fetch' ).mockImplementation( () => {
 			return new Promise( ( res, rej ) => rej( 'could not fetch' ) );
 		} );
 
@@ -1261,9 +1298,10 @@ describe( 'ImageUploadEditing', () => {
 			done,
 			false
 		);
-	} );
+	} ) );
 
-	it( 'should upload only images which were successfully fetched and remove failed ones', done => {
+	it( 'should upload only images which were successfully fetched and remove failed ones', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		const notification = editor.plugins.get( Notification );
 
 		// Prevent popping up alert window.
@@ -1299,7 +1337,7 @@ describe( 'ImageUploadEditing', () => {
 		// Stub `fetch` in a way that 2 first calls are successful and 3rd fails.
 		let counter = 0;
 		const fetch = window.fetch;
-		sinon.stub( window, 'fetch' ).callsFake( src => {
+		vi.spyOn( window, 'fetch' ).mockImplementation( src => {
 			counter++;
 			if ( counter < 3 ) {
 				return fetch( src );
@@ -1326,9 +1364,9 @@ describe( 'ImageUploadEditing', () => {
 			content,
 			done
 		);
-	} );
+	} ) );
 
-	it( 'should not upload and remove image when `File` constructor is not present', done => {
+	it( 'should not upload and remove image when `File` constructor is not present', () => new Promise( ( resolve, reject ) => {
 		const fileFn = window.File;
 
 		window.File = undefined;
@@ -1368,14 +1406,17 @@ describe( 'ImageUploadEditing', () => {
 			content,
 			err => {
 				window.File = fileFn;
-				done( err );
+				err ? reject( err ) : resolve();
 			},
 			false
 		);
-	} );
+	} ) );
 
-	it( 'should not upload and remove image when `File` constructor is not supported', done => {
-		sinon.stub( window, 'File' ).throws( 'Function expected.' );
+	it( 'should not upload and remove image when `File` constructor is not supported', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
+		vi.spyOn( window, 'File' ).mockImplementation( () => {
+			throw new Error( 'Function expected.' );
+		} );
 
 		const notification = editor.plugins.get( Notification );
 
@@ -1412,9 +1453,10 @@ describe( 'ImageUploadEditing', () => {
 			done,
 			false
 		);
-	} );
+	} ) );
 
-	it( 'should get file extension from base64 string', done => {
+	it( 'should get file extension from base64 string', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<img src=${ base64Sample } />`;
@@ -1424,7 +1466,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		// Stub `fetch` to return custom blob without type.
-		sinon.stub( window, 'fetch' ).callsFake( () => {
+		vi.spyOn( window, 'fetch' ).mockImplementation( () => {
 			return new Promise( res => res( {
 				blob() {
 					return new Promise( res => res( new Blob( [ 'foo', 'bar' ] ) ) );
@@ -1439,11 +1481,12 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		tryExpect( done, () => {
-			loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'png' ) );
+			loader.file.then( file => expect( file.name.split( '.' ).pop() ).toBe( 'png' ) );
 		} );
-	} );
+	} ) );
 
-	it( 'should use fallback file extension', done => {
+	it( 'should use fallback file extension', () => new Promise( ( resolve, reject ) => {
+		const done = err => err ? reject( err ) : resolve();
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
@@ -1453,7 +1496,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		// Stub `fetch` to return custom blob without type.
-		sinon.stub( window, 'fetch' ).callsFake( () => {
+		vi.spyOn( window, 'fetch' ).mockImplementation( () => {
 			return new Promise( res => res( {
 				blob() {
 					return new Promise( res => res( new Blob( [ 'foo', 'bar' ] ) ) );
@@ -1468,11 +1511,11 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		tryExpect( done, () => {
-			loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'jpeg' ) );
+			loader.file.then( file => expect( file.name.split( '.' ).pop() ).toBe( 'jpeg' ) );
 		} );
-	} );
+	} ) );
 
-	it( 'should not show notification when file loader failed with no error', done => {
+	it( 'should not show notification when file loader failed with no error', () => new Promise( resolve => {
 		const notification = editor.plugins.get( Notification );
 
 		let notificationsCount = 0;
@@ -1491,7 +1534,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		// Stub `fetch` in a way that it always fails.
-		sinon.stub( window, 'fetch' ).callsFake( () => Promise.reject() );
+		vi.spyOn( window, 'fetch' ).mockImplementation( () => Promise.reject() );
 
 		viewDocument.fire( 'clipboardInput', {
 			dataTransfer,
@@ -1504,20 +1547,21 @@ describe( 'ImageUploadEditing', () => {
 		} ).catch( () => {
 			// Deffer so the promise could be resolved.
 			setTimeout( () => {
-				expect( notificationsCount ).to.equal( 0 );
-				done();
+				expect( notificationsCount ).toBe( 0 );
+				resolve();
 			} );
 		} );
-	} );
+	} ) );
 
 	describe( 'accessibility', () => {
 		let announcerSpy;
 
 		beforeEach( async () => {
-			announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
+			announcerSpy = vi.spyOn( editor.ui.ariaLiveAnnouncer, 'announce' );
 		} );
 
-		it( 'should announce error in aria live', done => {
+		it( 'should announce error in aria live', () => new Promise( ( resolve, reject ) => {
+			const done = err => err ? reject( err ) : resolve();
 			const notification = editor.plugins.get( Notification );
 			const file = createNativeFileMock();
 
@@ -1532,9 +1576,10 @@ describe( 'ImageUploadEditing', () => {
 			editor.execute( 'uploadImage', { file } );
 
 			loader.file.then( () => nativeReaderMock.mockError( 'Reading error.' ) );
-		} );
+		} ) );
 
-		it( 'should announce uploading image in aria live', done => {
+		it( 'should announce uploading image in aria live', () => new Promise( ( resolve, reject ) => {
+			const done = err => err ? reject( err ) : resolve();
 			const file = createNativeFileMock();
 			_setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 			editor.execute( 'uploadImage', { file } );
@@ -1545,17 +1590,17 @@ describe( 'ImageUploadEditing', () => {
 				} );
 			} );
 
-			expect( loader.status ).to.equal( 'reading' );
+			expect( loader.status ).toBe( 'reading' );
 
 			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
-		} );
+		} ) );
 
 		it( 'should allow modifying the image element once the original image is uploaded', async () => {
 			const file = createNativeFileMock();
 			_setModelData( model, '<paragraph>[]foo bar</paragraph>' );
 
 			const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
-			const uploadCompleteSpy = sinon.spy();
+			const uploadCompleteSpy = vi.fn();
 
 			imageUploadEditing.on( 'uploadComplete', uploadCompleteSpy );
 
@@ -1566,7 +1611,7 @@ describe( 'ImageUploadEditing', () => {
 				loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 			} );
 
-			sinon.assert.notCalled( uploadCompleteSpy );
+			expect( uploadCompleteSpy ).not.toHaveBeenCalled();
 
 			await new Promise( res => {
 				model.document.once( 'change', res, { priority: 'lowest' } );
@@ -1577,7 +1622,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		function expectAnnounce( message ) {
-			expect( announcerSpy ).to.be.calledWithExactly( message );
+			expect( announcerSpy ).toHaveBeenCalledWith( message );
 		}
 	} );
 
@@ -1585,12 +1630,12 @@ describe( 'ImageUploadEditing', () => {
 		// The following one simulates strict Content Security Policy (CSP) rules
 		// that would make fetch() fail so that the the fallback procedure is triggered.
 		beforeEach( () => {
-			sinon.stub( window, 'fetch' ).callsFake( () => Promise.reject( new TypeError() ) );
+			vi.spyOn( window, 'fetch' ).mockImplementation( () => Promise.reject( new TypeError() ) );
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/7957.
-		it( 'should upload image using canvas conversion', done => {
-			const spy = sinon.spy();
+		it( 'should upload image using canvas conversion', () => new Promise( resolve => {
+			const spy = vi.fn();
 			const notification = editor.plugins.get( Notification );
 
 			notification.on( 'show:warning', evt => {
@@ -1614,24 +1659,25 @@ describe( 'ImageUploadEditing', () => {
 
 			adapterMocks[ 0 ].loader.file.then( () => {
 				setTimeout( () => {
-					sinon.assert.notCalled( spy );
-					done();
+					expect( spy ).not.toHaveBeenCalled();
+					resolve();
 				} );
 			} ).catch( () => {
 				setTimeout( () => {
 					expect.fail( 'Promise should be resolved.' );
 				} );
 			} );
-		} );
+		} ) );
 
-		it( 'should not upload and remove image if canvas conversion failed', done => {
+		it( 'should not upload and remove image if canvas conversion failed', () => new Promise( ( resolve, reject ) => {
+			const done = err => err ? reject( err ) : resolve();
 			_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 			const clipboardHtml = `<img src=${ base64Sample } />`;
 			const dataTransfer = mockDataTransfer( clipboardHtml );
 
 			// Stub `HTMLCanvasElement#toBlob` to return invalid blob, so image conversion always fails.
-			sinon.stub( HTMLCanvasElement.prototype, 'toBlob' ).callsFake( fn => fn( null ) );
+			vi.spyOn( HTMLCanvasElement.prototype, 'toBlob' ).mockImplementation( fn => fn( null ) );
 
 			let content = null;
 			editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
@@ -1651,10 +1697,10 @@ describe( 'ImageUploadEditing', () => {
 				done,
 				false
 			);
-		} );
+		} ) );
 
-		it( 'should not show notification when image could not be loaded', done => {
-			const spy = sinon.spy();
+		it( 'should not show notification when image could not be loaded', () => new Promise( resolve => {
+			const spy = vi.fn();
 			const notification = editor.plugins.get( Notification );
 
 			notification.on( 'show:warning', evt => {
@@ -1680,13 +1726,14 @@ describe( 'ImageUploadEditing', () => {
 				expect.fail( 'Promise should be rejected.' );
 			} ).catch( () => {
 				setTimeout( () => {
-					sinon.assert.notCalled( spy );
-					done();
+					expect( spy ).not.toHaveBeenCalled();
+					resolve();
 				} );
 			} );
-		} );
+		} ) );
 
-		it( 'should not remove image when it is already in graveyard', done => {
+		it( 'should not remove image when it is already in graveyard', () => new Promise( ( resolve, reject ) => {
+			const done = err => err ? reject( err ) : resolve();
 			const notification = editor.plugins.get( Notification );
 			const file = createNativeFileMock();
 
@@ -1701,25 +1748,28 @@ describe( 'ImageUploadEditing', () => {
 
 			editor.execute( 'undo' );
 
-			const removeMock = sinon.spy( ModelWriter.prototype, 'remove' );
+			const removeMock = vi.spyOn( ModelWriter.prototype, 'remove' );
 
 			model.document.once( 'change', () => {
 				tryExpect( done, () => {
-					expect( image.root.rootName ).to.equal( '$graveyard' );
-					sinon.assert.notCalled( removeMock );
+					expect( image.root.rootName ).toBe( '$graveyard' );
+					expect( removeMock ).not.toHaveBeenCalled();
 				} );
 			} );
 
-			loader.file.then( () => nativeReaderMock.mockError( 'Upload error.' ) );
-		} );
+			loader.file.then( () => {
+				nativeReaderMock.onerror = () => {};
+				nativeReaderMock.mockError( 'Upload error.' );
+			} );
+		} ) );
 	} );
 
 	describe( 'data downcast conversion of images with uploading state', () => {
 		it( 'should dump the `data-ck-upload-id` into the data', async () => {
-			const onDispatch = sinon.spy( ( evt, data, conversionApi ) => {
+			const onDispatch = vi.fn( ( evt, data, conversionApi ) => {
 				const wasConsumed = conversionApi.consumable.test( data.item, 'attribute:uploadId:imageInline' );
 
-				expect( wasConsumed ).to.be.true;
+				expect( wasConsumed ).toBe( true );
 			} );
 
 			editor.conversion.for( 'downcast' ).add( dispatcher =>
@@ -1736,12 +1786,12 @@ describe( 'ImageUploadEditing', () => {
 
 			const uploadId = adapterMocks[ 0 ].loader.id;
 
-			expect( _getModelData( editor.model ) ).to.be.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				`<paragraph>[<imageInline uploadId="${ uploadId }" uploadStatus="uploading"></imageInline>]foo</paragraph>`
 			);
 
-			expect( onDispatch ).to.be.calledOnce;
-			expect( editor.getData() ).to.be.equal(
+			expect( onDispatch ).toHaveBeenCalledTimes( 1 );
+			expect( editor.getData() ).toBe(
 				`<p><img data-ck-upload-id="${ uploadId }">foo</p>`
 			);
 		} );
@@ -1757,16 +1807,13 @@ describe( 'ImageUploadEditing', () => {
 
 			const uploadId = adapterMocks[ 0 ].loader.id;
 
-			sinon
-				.stub( fileRepository.loaders, 'get' )
-				.withArgs( uploadId )
-				.returns( null );
+			vi.spyOn( fileRepository.loaders, 'get' ).mockImplementation( id => id === uploadId ? null : undefined );
 
-			expect( _getModelData( editor.model ) ).to.be.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				`<paragraph>[<imageInline uploadId="${ uploadId }" uploadStatus="uploading"></imageInline>]foo</paragraph>`
 			);
 
-			expect( editor.getData() ).to.be.equal( '<p><img>foo</p>' );
+			expect( editor.getData() ).toBe( '<p><img>foo</p>' );
 		} );
 
 		it( 'should not downcast consumed uploadId image attribute', async () => {
@@ -1786,11 +1833,11 @@ describe( 'ImageUploadEditing', () => {
 
 			const uploadId = adapterMocks[ 0 ].loader.id;
 
-			expect( _getModelData( editor.model ) ).to.be.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				`<paragraph>[<imageInline uploadId="${ uploadId }" uploadStatus="uploading"></imageInline>]foo</paragraph>`
 			);
 
-			expect( editor.getData() ).to.be.equal( '<p><img>foo</p>' );
+			expect( editor.getData() ).toBe( '<p><img>foo</p>' );
 		} );
 
 		it( 'should restore image from `_uploadedImages` if it was pasted from clipboard', async () => {
@@ -1804,7 +1851,7 @@ describe( 'ImageUploadEditing', () => {
 
 			// Let's copy image in uploading state.
 			const uploadId = adapterMocks[ 0 ].loader.id;
-			expect( _getModelData( editor.model ) ).to.be.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				`<paragraph>[<imageInline uploadId="${ uploadId }" uploadStatus="uploading"></imageInline>]foo</paragraph>`
 			);
 
@@ -1816,7 +1863,7 @@ describe( 'ImageUploadEditing', () => {
 			};
 
 			viewDocument.fire( 'copy', data );
-			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( `<img data-ck-upload-id="${ uploadId }">` );
+			expect( data.dataTransfer.getData( 'text/html' ) ).toBe( `<img data-ck-upload-id="${ uploadId }">` );
 
 			// Let's resolve uploading status and ensure that image is loaded.
 			await new Promise( res => {
@@ -1824,12 +1871,12 @@ describe( 'ImageUploadEditing', () => {
 				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'assets/sample2.png' } ) );
 			} );
 
-			expect( editor.getData() ).to.be.equal(
+			expect( editor.getData() ).toBe(
 				'<p><img src="/assets/sample.png" srcset="assets/sample2.png 800w" sizes="100vw" width="800">foo</p>'
 			);
 
 			// Make sure it's no longer present in registry, so image upload is completed.
-			expect( fileRepository.loaders.get( uploadId ) ).to.be.null;
+			expect( fileRepository.loaders.get( uploadId ) ).toBeNull();
 
 			// Let's paste the image from clipboard, it has upload id, which should be stored in plugin cache.
 			_setModelData( model, '<paragraph>hello[]</paragraph>' );
@@ -1840,7 +1887,7 @@ describe( 'ImageUploadEditing', () => {
 				stopPropagation: () => {}
 			} );
 
-			expect( editor.getData() ).to.be.equal(
+			expect( editor.getData() ).toBe(
 				'<p>hello<img src="/assets/sample.png" srcset="assets/sample2.png 800w" sizes="100vw" width="800"></p>'
 			);
 		} );
@@ -1850,7 +1897,7 @@ describe( 'ImageUploadEditing', () => {
 		it( 'should upcast `data-ck-upload-id` attribute', () => {
 			editor.setData( '<p><img data-ck-upload-id="123"></p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><imageInline uploadId="123"></imageInline></paragraph>'
 			);
 		} );
@@ -1858,7 +1905,7 @@ describe( 'ImageUploadEditing', () => {
 		it( 'should not upcast empty `data-ck-upload-id` attribute', () => {
 			editor.setData( '<p><img data-ck-upload-id=""></p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><imageInline></imageInline></paragraph>'
 			);
 		} );
@@ -1870,7 +1917,7 @@ describe( 'ImageUploadEditing', () => {
 
 			expect( () => {
 				editor.setData( '<p><img src="/assets/sample.png" data-ck-upload-id="123"></p>' );
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should not upcast already consumed element', () => {
@@ -1882,20 +1929,21 @@ describe( 'ImageUploadEditing', () => {
 
 			editor.setData( '<p><img data-ck-upload-id="123"></p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><imageInline></imageInline></paragraph>'
 			);
 		} );
 
 		it( 'should upcast `uploadStatus` if image is present in registry', () => {
-			sinon.stub( fileRepository.loaders, 'get' ).withArgs( '123' ).returns( {
-				status: 'uploading',
-				data: {}
+			vi.spyOn( fileRepository.loaders, 'get' ).mockImplementation( id => {
+				if ( id === '123' ) {
+					return { status: 'uploading', data: {} };
+				}
 			} );
 
 			editor.setData( '<p><img data-ck-upload-id="123"></p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><imageInline uploadId="123" uploadStatus="uploading"></imageInline></paragraph>'
 			);
 		} );
@@ -1918,9 +1966,9 @@ describe( 'ImageUploadEditing', () => {
 		const finalModelData = injectLoaderId( expectedModelOnFile, adapterMocks );
 
 		if ( clipboardData.length ) {
-			expect( _stringifyView( content ) ).to.equal( clipboardData );
+			expect( _stringifyView( content ) ).toBe( clipboardData );
 		}
-		expect( _getModelData( model ) ).to.equal( modelData );
+		expect( _getModelData( model ) ).toBe( modelData );
 
 		if ( onSuccess !== false ) {
 			adapterMocks[ 0 ].loader.file.then( () => {
@@ -1971,7 +2019,7 @@ function injectLoaderId( data, adapters ) {
 // @param {String} expected Expected model data.
 function expectModel( done, actual, expected ) {
 	tryExpect( done, () => {
-		expect( actual ).to.equal( expected );
+		expect( actual ).toBe( expected );
 	} );
 }
 

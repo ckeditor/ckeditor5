@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -41,19 +42,19 @@ describe( 'InsertImageCommand', () => {
 				_setModelData( model, '[]' );
 
 				command.refresh();
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
 		it( 'should be true when the selection is in empty block', () => {
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection directly in a paragraph', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection directly in a block', () => {
@@ -61,13 +62,13 @@ describe( 'InsertImageCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			_setModelData( model, '<block>foo[]</block>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection is on another image', () => {
 			_setModelData( model, '[<imageBlock></imageBlock>]' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false when the selection is inside another image', () => {
@@ -80,7 +81,7 @@ describe( 'InsertImageCommand', () => {
 
 			_setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true when the selection is on another object', () => {
@@ -89,7 +90,7 @@ describe( 'InsertImageCommand', () => {
 
 			_setModelData( model, '[<object></object>]' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection is inside block element inside isLimit element which allows image', () => {
@@ -103,7 +104,7 @@ describe( 'InsertImageCommand', () => {
 
 			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false when schema disallows image', () => {
@@ -119,7 +120,7 @@ describe( 'InsertImageCommand', () => {
 
 			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -131,7 +132,7 @@ describe( 'InsertImageCommand', () => {
 
 			command.execute( { source: imgSrc } );
 
-			expect( _getModelData( model ) ).to.equal( `<paragraph>f[<imageInline src="${ imgSrc }"></imageInline>]o</paragraph>` );
+			expect( _getModelData( model ) ).toBe( `<paragraph>f[<imageInline src="${ imgSrc }"></imageInline>]o</paragraph>` );
 		} );
 
 		it( 'should be possible to specify image type as image (imageBlock)', () => {
@@ -144,7 +145,7 @@ describe( 'InsertImageCommand', () => {
 				source: imgSrc
 			} );
 
-			expect( _getModelData( model ) ).to.equal( `[<imageBlock src="${ imgSrc }"></imageBlock>]<paragraph>foo</paragraph>` );
+			expect( _getModelData( model ) ).toBe( `[<imageBlock src="${ imgSrc }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should be possible to specify image type as image (imageInline)', () => {
@@ -159,7 +160,7 @@ describe( 'InsertImageCommand', () => {
 			} );
 
 			expect( _getModelData( model ) )
-				.to.equal(
+				.toBe(
 					`<paragraph><imageInline src="${ imgSrc1 }"></imageInline>` +
 					`[<imageInline src="${ imgSrc2 }"></imageInline>]</paragraph>`
 				);
@@ -176,7 +177,7 @@ describe( 'InsertImageCommand', () => {
 				breakBlock: true
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				`<paragraph>f</paragraph>[<imageBlock src="${ imgSrc }"></imageBlock>]<paragraph>oo</paragraph>`
 			);
 		} );
@@ -190,7 +191,7 @@ describe( 'InsertImageCommand', () => {
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
 			expect( _getModelData( model ) )
-				.to.equal(
+				.toBe(
 					'<paragraph>' +
 						`f<imageInline src="${ imgSrc1 }"></imageInline>[<imageInline src="${ imgSrc2 }"></imageInline>]o` +
 					'</paragraph>'
@@ -206,7 +207,7 @@ describe( 'InsertImageCommand', () => {
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
 			expect( _getModelData( model ) )
-				.to.equal( `<imageBlock src="${ imgSrc1 }"></imageBlock>[<imageBlock src="${ imgSrc2 }"></imageBlock>]` );
+				.toBe( `<imageBlock src="${ imgSrc1 }"></imageBlock>[<imageBlock src="${ imgSrc2 }"></imageBlock>]` );
 		} );
 
 		it( 'should not insert image nor crash when image could not be inserted', () => {
@@ -224,7 +225,7 @@ describe( 'InsertImageCommand', () => {
 
 			command.execute( { source: imgSrc } );
 
-			expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
+			expect( _getModelData( model ) ).toBe( '<other>[]</other>' );
 		} );
 
 		it( 'should replace an existing selected object with an image', () => {
@@ -235,7 +236,7 @@ describe( 'InsertImageCommand', () => {
 
 			command.execute( { source: 'assets/sample.png' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>foo</paragraph>[<imageBlock src="assets/sample.png"></imageBlock>]<paragraph>bar</paragraph>'
 			);
 		} );
@@ -251,7 +252,7 @@ describe( 'InsertImageCommand', () => {
 
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>foo</paragraph>' +
 				`<imageBlock src="${ imgSrc1 }"></imageBlock>[<imageBlock src="${ imgSrc2 }"></imageBlock>]<paragraph>bar</paragraph>`
 			);
@@ -272,7 +273,7 @@ describe( 'InsertImageCommand', () => {
 
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>foo' +
 					`<imageInline src="${ imgSrc1 }"></imageInline>[<imageInline src="${ imgSrc2 }"></imageInline>]` +
 				'bar</paragraph>'
@@ -287,7 +288,7 @@ describe( 'InsertImageCommand', () => {
 
 			command.execute( { source: 'assets/sample2.png' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>foo</paragraph>[<imageBlock src="assets/sample2.png"></imageBlock>]<paragraph>bar</paragraph>'
 			);
 		} );
@@ -297,7 +298,7 @@ describe( 'InsertImageCommand', () => {
 
 			command.execute( { source: 'assets/sample2.png' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>foo[<imageInline src="assets/sample2.png"></imageInline>]bar</paragraph>'
 			);
 		} );
@@ -311,7 +312,7 @@ describe( 'InsertImageCommand', () => {
 
 			command.execute( { source: imgSrc } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<$text bar="b" baz="c" foo="a">f</$text>' +
 					'[<imageInline bar="b" baz="c" foo="a" src="assets/sample.png"></imageInline>]' +
@@ -336,7 +337,7 @@ describe( 'InsertImageCommand', () => {
 				}
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>f' +
 					`[<imageInline foo="foo-value" src="${ imgSrc }"></imageInline>]` +
 				'o</paragraph>'
@@ -366,7 +367,7 @@ describe( 'InsertImageCommand', () => {
 				]
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>f' +
 					`<imageInline foo="foo-value" src="${ imgSrc1 }"></imageInline>` +
 					`[<imageInline bar="bar-value" src="${ imgSrc2 }"></imageInline>]` +
@@ -493,7 +494,7 @@ describe( 'InsertImageCommand', () => {
 
 				inlineEditor.execute( 'insertImage', { source: 'assets/sample.png' } );
 
-				expect( _getModelData( inlineModel ) ).to.equal(
+				expect( _getModelData( inlineModel ) ).toBe(
 					'foo[<imageInline src="assets/sample.png"></imageInline>]bar'
 				);
 			} );
@@ -505,7 +506,7 @@ describe( 'InsertImageCommand', () => {
 
 				inlineEditor.execute( 'insertImage', { source: 'assets/sample.png' } );
 
-				expect( _getModelData( inlineModel ) ).to.equal(
+				expect( _getModelData( inlineModel ) ).toBe(
 					'foo[<imageInline src="assets/sample.png"></imageInline>]bar'
 				);
 			} );
@@ -517,7 +518,7 @@ describe( 'InsertImageCommand', () => {
 
 				inlineEditor.execute( 'insertImage', { source: 'assets/sample.png' } );
 
-				expect( _getModelData( inlineModel ) ).to.equal(
+				expect( _getModelData( inlineModel ) ).toBe(
 					'foo[<imageInline src="assets/sample.png"></imageInline>]bar'
 				);
 			} );
@@ -533,7 +534,7 @@ describe( 'InsertImageCommand', () => {
 				// The schema rejects imageBlock inside $inlineRoot, so insertContent leaves the root unchanged.
 				// The key assertion is that no imageInline was inserted - the explicit caller choice is respected
 				// over the inline-root override.
-				expect( _getModelData( inlineModel ) ).to.not.match( /imageInline/ );
+				expect( _getModelData( inlineModel ) ).not.toMatch( /imageInline/ );
 			} );
 
 			it( 'should insert an inline image when the root is empty', () => {
@@ -541,7 +542,7 @@ describe( 'InsertImageCommand', () => {
 
 				inlineEditor.execute( 'insertImage', { source: 'assets/sample.png' } );
 
-				expect( _getModelData( inlineModel ) ).to.equal(
+				expect( _getModelData( inlineModel ) ).toBe(
 					'[<imageInline src="assets/sample.png"></imageInline>]'
 				);
 			} );
@@ -577,7 +578,7 @@ describe( 'InsertImageCommand', () => {
 
 				editor.execute( 'insertImage', { source: 'assets/sample.png' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<inlineOnlyContainer>' +
 						'<paragraph>foo[<imageInline src="assets/sample.png"></imageInline>]bar</paragraph>' +
 					'</inlineOnlyContainer>'

@@ -143,6 +143,7 @@ export class ImageUploadEditing extends Plugin {
 				const [ modelElement ] = Array.from( data.modelRange.getItems( { shallow: true } ) );
 				const loader = fileRepository.loaders.get( uploadId as string );
 
+				/* v8 ignore else -- @preserve */
 				if ( modelElement ) {
 					// Handle case when `uploadId` is set on the image element but the loader is not present in the registry.
 					// It may happen when the image was successfully uploaded and the loader was removed from the registry.
@@ -303,6 +304,7 @@ export class ImageUploadEditing extends Plugin {
 									.from( this._uploadImageElements.get( uploadId )! )
 									.every( element => element.root.rootName == '$graveyard' );
 
+								/* v8 ignore else -- @preserve */
 								if ( allImagesThatShareUploaderInGraveyard ) {
 									loader.abort();
 								}
@@ -400,6 +402,7 @@ export class ImageUploadEditing extends Plugin {
 			.then( () => {
 				const promise = loader.upload();
 
+				/* v8 ignore else -- @preserve */
 				if ( editor.ui ) {
 					editor.ui.ariaLiveAnnouncer.announce( t( 'Uploading image' ) );
 				}
@@ -450,6 +453,7 @@ export class ImageUploadEditing extends Plugin {
 						this.fire<ImageUploadCompleteEvent>( 'uploadComplete', { data, imageElement } );
 					}
 
+					/* v8 ignore else -- @preserve */
 					if ( editor.ui ) {
 						editor.ui.ariaLiveAnnouncer.announce( t( 'Image upload complete' ) );
 					}
@@ -460,6 +464,7 @@ export class ImageUploadEditing extends Plugin {
 				clean();
 			} )
 			.catch( error => {
+				/* v8 ignore else -- @preserve */
 				if ( editor.ui ) {
 					editor.ui.ariaLiveAnnouncer.announce( t( 'Error during image upload' ) );
 				}
@@ -576,6 +581,7 @@ export class ImageUploadEditing extends Plugin {
 				const viewElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 				const img = imageUtils.findViewImgElement( viewElement );
 
+				/* v8 ignore else -- @preserve */
 				if ( img ) {
 					conversionApi.consumable.consume( data.item, evt.name );
 					conversionApi.writer.setAttribute( 'data-ck-upload-id', loader.id, img );

@@ -3,18 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ImageInsertFormView } from '../../../src/imageinsert/ui/imageinsertformview.js';
 import { ImageInsertUrlView } from '../../../src/imageinsert/ui/imageinserturlview.js';
 import { ButtonView, FocusCycler, ViewCollection, CollapsibleView } from '@ckeditor/ckeditor5-ui';
 
 import { keyCodes, KeystrokeHandler, FocusTracker } from '@ckeditor/ckeditor5-utils';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'ImageInsertFormView', () => {
 	let view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		view = new ImageInsertFormView( { t: val => val } );
@@ -29,23 +30,23 @@ describe( 'ImageInsertFormView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create #focusTracker instance', () => {
-			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( view.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'should create #keystrokes instance', () => {
-			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( view.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 
 		it( 'should create #_focusCycler instance', () => {
-			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+			expect( view._focusCycler ).toBeInstanceOf( FocusCycler );
 		} );
 
 		it( 'should create #_focusables view collection', () => {
-			expect( view._focusables ).to.be.instanceOf( ViewCollection );
+			expect( view._focusables ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should have #children view collection', () => {
-			expect( view.children ).to.be.instanceOf( ViewCollection );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
 		} );
 	} );
 
@@ -57,13 +58,15 @@ describe( 'ImageInsertFormView', () => {
 				inputIntegrationView
 			] );
 
-			expect( view._focusables.map( f => f ) ).to.have.members( [
-				inputIntegrationView
-			] );
+			expect( view._focusables.map( f => f ) ).toEqual(
+				expect.arrayContaining( [ inputIntegrationView ] )
+			);
+			expect( view._focusables.map( f => f ) ).toHaveLength( 1 );
 
-			expect( view.children.map( f => f ) ).to.have.members( [
-				inputIntegrationView
-			] );
+			expect( view.children.map( f => f ) ).toEqual(
+				expect.arrayContaining( [ inputIntegrationView ] )
+			);
+			expect( view.children.map( f => f ) ).toHaveLength( 1 );
 		} );
 
 		it( 'multiple integrations', () => {
@@ -75,15 +78,15 @@ describe( 'ImageInsertFormView', () => {
 				inputIntegrationView
 			] );
 
-			expect( view._focusables.map( f => f ) ).to.have.members( [
-				buttonIntegrationView,
-				inputIntegrationView
-			] );
+			expect( view._focusables.map( f => f ) ).toEqual(
+				expect.arrayContaining( [ buttonIntegrationView, inputIntegrationView ] )
+			);
+			expect( view._focusables.map( f => f ) ).toHaveLength( 2 );
 
-			expect( view.children.map( f => f ) ).to.have.members( [
-				buttonIntegrationView,
-				inputIntegrationView
-			] );
+			expect( view.children.map( f => f ) ).toEqual(
+				expect.arrayContaining( [ buttonIntegrationView, inputIntegrationView ] )
+			);
+			expect( view.children.map( f => f ) ).toHaveLength( 2 );
 		} );
 
 		it( 'integrations with collapsible view', () => {
@@ -98,40 +101,39 @@ describe( 'ImageInsertFormView', () => {
 				collapsibleIntegrationView
 			] );
 
-			expect( view._focusables.map( f => f ) ).to.have.members( [
-				buttonIntegrationView,
-				collapsibleIntegrationView,
-				inputIntegrationView
-			] );
+			expect( view._focusables.map( f => f ) ).toEqual(
+				expect.arrayContaining( [ buttonIntegrationView, collapsibleIntegrationView, inputIntegrationView ] )
+			);
+			expect( view._focusables.map( f => f ) ).toHaveLength( 3 );
 
-			expect( view.children.map( f => f ) ).to.have.members( [
-				buttonIntegrationView,
-				collapsibleIntegrationView
-			] );
+			expect( view.children.map( f => f ) ).toEqual(
+				expect.arrayContaining( [ buttonIntegrationView, collapsibleIntegrationView ] )
+			);
+			expect( view.children.map( f => f ) ).toHaveLength( 2 );
 		} );
 	} );
 
 	describe( 'template', () => {
 		it( 'should create element from the template', () => {
-			expect( view.element.tagName ).to.equal( 'FORM' );
-			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-image-insert-form' ) ).to.true;
-			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+			expect( view.element.tagName ).toBe( 'FORM' );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-image-insert-form' ) ).toBe( true );
+			expect( view.element.getAttribute( 'tabindex' ) ).toBe( '-1' );
 		} );
 
 		it( 'should bind #children', () => {
-			expect( view.template.children[ 0 ] ).to.equal( view.children );
+			expect( view.template.children[ 0 ] ).toBe( view.children );
 		} );
 	} );
 
 	describe( 'render()', () => {
 		it( 'should handle and delegate DOM submit event', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			view.on( 'submit', spy );
 			view.element.dispatchEvent( new Event( 'submit' ) );
 
-			expect( spy.calledOnce ).to.true;
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should register focusables in #focusTracker', () => {
@@ -146,14 +148,14 @@ describe( 'ImageInsertFormView', () => {
 				collapsibleIntegrationView
 			] );
 
-			const spy = sinon.spy( view.focusTracker, 'add' );
+			const spy = vi.spyOn( view.focusTracker, 'add' );
 
 			view.render();
 
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), buttonIntegrationView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), collapsibleIntegrationView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), inputIntegrationView.element );
-			sinon.assert.calledThrice( spy );
+			expect( spy ).toHaveBeenNthCalledWith( 1, buttonIntegrationView.element );
+			expect( spy ).toHaveBeenNthCalledWith( 2, collapsibleIntegrationView.element );
+			expect( spy ).toHaveBeenNthCalledWith( 3, inputIntegrationView.element );
+			expect( spy ).toHaveBeenCalledTimes( 3 );
 
 			view.destroy();
 		} );
@@ -182,91 +184,91 @@ describe( 'ImageInsertFormView', () => {
 			it( 'so "tab" focuses the next focusable item', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				// Mock the first integration focused.
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = firstIntegrationView.element;
 
-				const spy = sinon.spy( secondIntegrationView, 'focus' );
+				const spy = vi.spyOn( secondIntegrationView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'so "shift + tab" focuses the previous focusable item', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					shiftKey: true,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				// Mock the cancel button is focused.
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = secondIntegrationView.element;
 
-				const spy = sinon.spy( firstIntegrationView, 'focus' );
+				const spy = vi.spyOn( firstIntegrationView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'intercepts the arrow* events and overrides the default toolbar behavior', () => {
 				const keyEvtData = {
-					stopPropagation: sinon.spy()
+					stopPropagation: vi.fn()
 				};
 
 				keyEvtData.keyCode = keyCodes.arrowdown;
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 				keyEvtData.keyCode = keyCodes.arrowup;
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledTwice( keyEvtData.stopPropagation );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
 
 				keyEvtData.keyCode = keyCodes.arrowleft;
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledThrice( keyEvtData.stopPropagation );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 3 );
 
 				keyEvtData.keyCode = keyCodes.arrowright;
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.callCount( keyEvtData.stopPropagation, 4 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 4 );
 			} );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
-			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+			const destroySpy = vi.spyOn( view.focusTracker, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should destroy the KeystrokeHandler instance', () => {
-			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+			const destroySpy = vi.spyOn( view.keystrokes, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'should focus first focusable', () => {
-			const spy = sinon.spy( view._focusCycler, 'focusFirst' );
+			const spy = vi.spyOn( view._focusCycler, 'focusFirst' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -297,30 +299,30 @@ describe( 'ImageInsertFormView', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					shiftKey: false,
-					stopPropagation: sinon.spy(),
-					preventDefault: sinon.spy()
+					stopPropagation: vi.fn(),
+					preventDefault: vi.fn()
 				};
 
 				view.focus();
-				expect( view.focusTracker.focusedElement ).to.equal( buttonIntegrationView.element );
+				expect( view.focusTracker.focusedElement ).toBe( buttonIntegrationView.element );
 
 				view.keystrokes.press( keyEvtData );
-				expect( view.focusTracker.focusedElement ).to.equal( buttonIntegrationView.element );
+				expect( view.focusTracker.focusedElement ).toBe( buttonIntegrationView.element );
 			} );
 
 			it( 'backward cycling', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					shiftKey: true,
-					stopPropagation: sinon.spy(),
-					preventDefault: sinon.spy()
+					stopPropagation: vi.fn(),
+					preventDefault: vi.fn()
 				};
 
 				view.focus();
-				expect( view.focusTracker.focusedElement ).to.equal( buttonIntegrationView.element );
+				expect( view.focusTracker.focusedElement ).toBe( buttonIntegrationView.element );
 
 				view.keystrokes.press( keyEvtData );
-				expect( view.focusTracker.focusedElement ).to.equal( buttonIntegrationView.element );
+				expect( view.focusTracker.focusedElement ).toBe( buttonIntegrationView.element );
 			} );
 		} );
 
@@ -344,36 +346,36 @@ describe( 'ImageInsertFormView', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					shiftKey: false,
-					stopPropagation: sinon.spy(),
-					preventDefault: sinon.spy()
+					stopPropagation: vi.fn(),
+					preventDefault: vi.fn()
 				};
 
 				view.focus();
-				expect( view.focusTracker.focusedElement ).to.equal( buttonIntegrationView.element );
+				expect( view.focusTracker.focusedElement ).toBe( buttonIntegrationView.element );
 
 				view.keystrokes.press( keyEvtData );
-				expect( view.focusTracker.focusedElement ).to.equal( otherButtonIntegrationView.element );
+				expect( view.focusTracker.focusedElement ).toBe( otherButtonIntegrationView.element );
 
 				view.keystrokes.press( keyEvtData );
-				expect( view.focusTracker.focusedElement ).to.equal( buttonIntegrationView.element );
+				expect( view.focusTracker.focusedElement ).toBe( buttonIntegrationView.element );
 			} );
 
 			it( 'backward cycling', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					shiftKey: true,
-					stopPropagation: sinon.spy(),
-					preventDefault: sinon.spy()
+					stopPropagation: vi.fn(),
+					preventDefault: vi.fn()
 				};
 
 				view.focus();
-				expect( view.focusTracker.focusedElement ).to.equal( buttonIntegrationView.element );
+				expect( view.focusTracker.focusedElement ).toBe( buttonIntegrationView.element );
 
 				view.keystrokes.press( keyEvtData );
-				expect( view.focusTracker.focusedElement ).to.equal( otherButtonIntegrationView.element );
+				expect( view.focusTracker.focusedElement ).toBe( otherButtonIntegrationView.element );
 
 				view.keystrokes.press( keyEvtData );
-				expect( view.focusTracker.focusedElement ).to.equal( buttonIntegrationView.element );
+				expect( view.focusTracker.focusedElement ).toBe( buttonIntegrationView.element );
 			} );
 		} );
 	} );

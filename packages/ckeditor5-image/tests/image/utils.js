@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import {
@@ -94,37 +95,37 @@ describe( 'image utils', () => {
 		it( 'should return "image" when there is no selected block in the selection', () => {
 			_setModelData( model, 'f[]oo' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageBlock' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).toBe( 'imageBlock' );
 		} );
 
 		it( 'should return "image" when the selected block in the selection is empty', () => {
 			_setModelData( model, '<block>[]</block>' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageBlock' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).toBe( 'imageBlock' );
 		} );
 
 		it( 'should return "imageInline" when the selected listItem in the selection is empty', () => {
 			_setModelData( model, '<listItem>[]</listItem>' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).toBe( 'imageInline' );
 		} );
 
 		it( 'should return "image" when the selected block is an object (a widget)', () => {
 			_setModelData( model, '[<blockWidget></blockWidget>]' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageBlock' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).toBe( 'imageBlock' );
 		} );
 
 		it( 'should return "imageInline" when selected block in the selection has some content', () => {
 			_setModelData( model, '<block>[]a</block>' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).toBe( 'imageInline' );
 		} );
 
 		it( 'should return "imageInline" when an inline widget is selected', () => {
 			_setModelData( model, '<block>[<inlineWidget></inlineWidget>]</block>' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).toBe( 'imageInline' );
 		} );
 	} );
 
@@ -143,54 +144,55 @@ describe( 'image utils', () => {
 			} );
 
 			afterEach( async () => {
+				vi.restoreAllMocks();
 				editor.destroy();
 			} );
 
 			it( 'should return a matcher pattern for an img element if ImageBlockEditing plugin is not loaded', () => {
-				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
+				vi.spyOn( editor.plugins, 'has' ).mockImplementation( pluginName => pluginName !== 'ImageBlockEditing' );
 
-				element = writer.createElement( 'img', { src: 'assets/sample.png' } );
+				element = writer.createElement( 'img', { src: '/sample.png' } );
 				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
-				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
+				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).toEqual( {
 					name: true,
 					attributes: [ 'src' ]
 				} );
 
-				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).to.deep.equal( {
+				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).toEqual( {
 					name: true,
 					attributes: [ 'src' ]
 				} );
 			} );
 
 			it( 'should return a matcher pattern for an img element if ImageInlineEditing plugin is not loaded', () => {
-				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
+				vi.spyOn( editor.plugins, 'has' ).mockImplementation( pluginName => pluginName !== 'ImageInlineEditing' );
 
-				element = writer.createElement( 'img', { src: 'assets/sample.png' } );
+				element = writer.createElement( 'img', { src: '/sample.png' } );
 				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
-				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
+				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).toEqual( {
 					name: true,
 					attributes: [ 'src' ]
 				} );
 
-				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).to.deep.equal( {
+				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).toEqual( {
 					name: true,
 					attributes: [ 'src' ]
 				} );
 			} );
 
 			it( 'should not include "src" in the matcher pattern if the image has no "src"', () => {
-				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
+				vi.spyOn( editor.plugins, 'has' ).mockImplementation( pluginName => pluginName !== 'ImageInlineEditing' );
 
 				element = writer.createElement( 'img' );
 				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
-				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
+				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).toEqual( {
 					name: true
 				} );
 
-				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).to.deep.equal( {
+				expect( getImgViewElementMatcher( editor, 'imageInline' )( element ) ).toEqual( {
 					name: true
 				} );
 			} );
@@ -224,51 +226,51 @@ describe( 'image utils', () => {
 					} );
 
 					it( 'should return a function', () => {
-						expect( matcherPattern ).to.be.a( 'function' );
+						expect( matcherPattern ).toBeTypeOf( 'function' );
 					} );
 
 					it( 'should return null if the element is not an image', () => {
-						element = writer.createElement( 'media', { src: 'assets/sample.png' } );
+						element = writer.createElement( 'media', { src: '/sample.png' } );
 
-						expect( matcherPattern( element ) ).to.be.null;
+						expect( matcherPattern( element ) ).toBeNull();
 					} );
 
 					it( 'should return null if the element has no src property', () => {
 						element = writer.createElement( 'img' );
 
-						expect( matcherPattern( element ) ).to.be.null;
+						expect( matcherPattern( element ) ).toBeNull();
 					} );
 
 					it( 'should return null if the element is an "imageInline"', () => {
-						element = writer.createElement( 'img', { src: 'assets/sample.png' } );
+						element = writer.createElement( 'img', { src: '/sample.png' } );
 
-						expect( matcherPattern( element ) ).to.be.null;
+						expect( matcherPattern( element ) ).toBeNull();
 					} );
 
 					it( 'should return null if the element is an "imageInline" in a table', () => {
 						const fragment = _parseView(
 							'<figure><table><tbody><tr><td>' +
-								'[<img src="assets/sample.png"></img>]' +
+								'[<img src="/sample.png"></img>]' +
 							'</td></tr></tbody></table></figure>'
 						);
 
-						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.be.null;
+						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).toBeNull();
 					} );
 
 					it( 'should return a matcherPattern object if the element is an "image"', () => {
-						element = writer.createElement( 'img', { src: 'assets/sample.png' } );
+						element = writer.createElement( 'img', { src: '/sample.png' } );
 						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
-						expect( matcherPattern( element ) ).to.deep.equal( {
+						expect( matcherPattern( element ) ).toEqual( {
 							name: true,
 							attributes: [ 'src' ]
 						} );
 					} );
 
 					it( 'should return a matcherPattern object if the element has `display:block` style', () => {
-						element = writer.createElement( 'img', { src: 'assets/sample.png', style: 'display:block' } );
+						element = writer.createElement( 'img', { src: '/sample.png', style: 'display:block' } );
 
-						expect( matcherPattern( element ) ).to.deep.equal( {
+						expect( matcherPattern( element ) ).toEqual( {
 							name: true,
 							attributes: [ 'src' ]
 						} );
@@ -278,7 +280,7 @@ describe( 'image utils', () => {
 						element = writer.createElement( 'img' );
 						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
-						expect( matcherPattern( element ) ).to.deep.equal( {
+						expect( matcherPattern( element ) ).toEqual( {
 							name: true
 						} );
 					} );
@@ -290,30 +292,30 @@ describe( 'image utils', () => {
 					} );
 
 					it( 'should return a function', () => {
-						expect( matcherPattern ).to.be.a( 'function' );
+						expect( matcherPattern ).toBeTypeOf( 'function' );
 					} );
 
 					it( 'should return null if the element is not an "image"', () => {
-						expect( matcherPattern( element ) ).to.be.null;
+						expect( matcherPattern( element ) ).toBeNull();
 					} );
 
 					it( 'should return null if the element has no src property', () => {
-						element = writer.createElement( 'media', { src: 'assets/sample.png' } );
+						element = writer.createElement( 'media', { src: '/sample.png' } );
 
-						expect( matcherPattern( element ) ).to.be.null;
+						expect( matcherPattern( element ) ).toBeNull();
 					} );
 
 					it( 'should return null if the element is an "image"', () => {
-						element = writer.createElement( 'img', { src: 'assets/sample.png' } );
+						element = writer.createElement( 'img', { src: '/sample.png' } );
 						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
-						expect( matcherPattern( element ) ).to.be.null;
+						expect( matcherPattern( element ) ).toBeNull();
 					} );
 
 					it( 'should return a matcherPattern object if the element is an "imageInline"', () => {
-						element = writer.createElement( 'img', { src: 'assets/sample.png' } );
+						element = writer.createElement( 'img', { src: '/sample.png' } );
 
-						expect( matcherPattern( element ) ).to.deep.equal( {
+						expect( matcherPattern( element ) ).toEqual( {
 							name: true,
 							attributes: [ 'src' ]
 						} );
@@ -322,11 +324,11 @@ describe( 'image utils', () => {
 					it( 'should return a matcherPattern object if the element is an "imageInline" in a table', () => {
 						const fragment = _parseView(
 							'<figure><table><tbody><tr><td>' +
-								'[<img src="assets/sample.png"></img>]' +
+								'[<img src="/sample.png"></img>]' +
 							'</td></tr></tbody></table></figure>'
 						);
 
-						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.deep.equal( {
+						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).toEqual( {
 							name: true,
 							attributes: [ 'src' ]
 						} );
@@ -335,7 +337,7 @@ describe( 'image utils', () => {
 					it( 'should not include "src" in the matcher pattern if the image has no "src"', () => {
 						element = writer.createElement( 'img' );
 
-						expect( matcherPattern( element ) ).to.deep.equal( {
+						expect( matcherPattern( element ) ).toEqual( {
 							name: true
 						} );
 					} );
@@ -352,18 +354,22 @@ describe( 'image utils', () => {
 			writer = new ViewDowncastWriter( document );
 		} );
 
+		afterEach( () => {
+			vi.restoreAllMocks();
+		} );
+
 		it( 'should create a figure element for "image" type', () => {
-			sinon.stub( writer, 'createSlot' ).callsFake( function createSlot() {
+			vi.spyOn( writer, 'createSlot' ).mockImplementation( function createSlot() {
 				return writer.createEmptyElement( '$slot' );
 			} );
 
 			const element = createBlockImageViewElement( writer );
 
-			expect( element.is( 'element', 'figure' ) ).to.be.true;
-			expect( element.hasClass( 'image' ) ).to.be.true;
-			expect( element.childCount ).to.equal( 2 );
-			expect( element.getChild( 0 ).is( 'emptyElement', 'img' ) ).to.be.true;
-			expect( element.getChild( 1 ).is( 'emptyElement', '$slot' ) ).to.be.true;
+			expect( element.is( 'element', 'figure' ) ).toBe( true );
+			expect( element.hasClass( 'image' ) ).toBe( true );
+			expect( element.childCount ).toBe( 2 );
+			expect( element.getChild( 0 ).is( 'emptyElement', 'img' ) ).toBe( true );
+			expect( element.getChild( 1 ).is( 'emptyElement', '$slot' ) ).toBe( true );
 		} );
 	} );
 
@@ -378,10 +384,10 @@ describe( 'image utils', () => {
 		it( 'should create a span element for "imageInline" type', () => {
 			const element = createInlineImageViewElement( writer );
 
-			expect( element.is( 'element', 'span' ) ).to.be.true;
-			expect( element.hasClass( 'image-inline' ) ).to.be.true;
-			expect( element.childCount ).to.equal( 1 );
-			expect( element.getChild( 0 ).is( 'emptyElement', 'img' ) ).to.be.true;
+			expect( element.is( 'element', 'span' ) ).toBe( true );
+			expect( element.hasClass( 'image-inline' ) ).toBe( true );
+			expect( element.childCount ).toBe( 1 );
+			expect( element.getChild( 0 ).is( 'emptyElement', 'img' ) ).toBe( true );
 		} );
 
 		it( 'should create a span element for "imageInline" type that does not break the parent attribute element', () => {
@@ -393,7 +399,7 @@ describe( 'image utils', () => {
 			writer.insert( writer.createPositionAt( paragraph, 0 ), writer.createText( 'foo' ) );
 			writer.wrap( writer.createRangeIn( paragraph ), attributeElement );
 
-			expect( _stringifyView( paragraph ) ).to.equal(
+			expect( _stringifyView( paragraph ) ).toBe(
 				'<p><a foo="bar">foo<span class="image-inline"><img></img></span></a></p>'
 			);
 		} );

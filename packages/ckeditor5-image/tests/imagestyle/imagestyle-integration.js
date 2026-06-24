@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Image } from '../../src/image.js';
 import { ImageStyle } from '../../src/imagestyle.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -44,7 +45,7 @@ describe( 'ImageStyle integration', () => {
 			document.body.appendChild( editorElement2 );
 
 			originalErrorHandler = window.onerror;
-			window.onerror = sinon.spy();
+			window.onerror = vi.fn();
 		} );
 
 		afterEach( async () => {
@@ -55,7 +56,7 @@ describe( 'ImageStyle integration', () => {
 			editorElement1.remove();
 			editorElement2.remove();
 
-			sinon.restore();
+			vi.restoreAllMocks();
 		} );
 
 		it( 'should only restart the editor in which the error occurred', async () => {
@@ -81,9 +82,9 @@ describe( 'ImageStyle integration', () => {
 			const oldEditor1 = watchdog.getItem( 'editor1' );
 			const oldEditor2 = watchdog.getItem( 'editor2' );
 
-			const mainWatchdogRestartSpy = sinon.spy();
-			const editorWatchdog1RestartSpy = sinon.spy();
-			const editorWatchdog2RestartSpy = sinon.spy();
+			const mainWatchdogRestartSpy = vi.fn();
+			const editorWatchdog1RestartSpy = vi.fn();
+			const editorWatchdog2RestartSpy = vi.fn();
 
 			watchdog.on( 'restart', mainWatchdogRestartSpy );
 			editorWatchdog1.on( 'restart', editorWatchdog1RestartSpy );
@@ -95,14 +96,14 @@ describe( 'ImageStyle integration', () => {
 			await waitCycle();
 
 			// Only editor1 should be restarted.
-			expect( editorWatchdog1RestartSpy.callCount ).to.equal( 1 );
-			expect( editorWatchdog2RestartSpy.callCount ).to.equal( 0 );
-			expect( mainWatchdogRestartSpy.callCount ).to.equal( 0 );
+			expect( editorWatchdog1RestartSpy ).toHaveBeenCalledTimes( 1 );
+			expect( editorWatchdog2RestartSpy ).toHaveBeenCalledTimes( 0 );
+			expect( mainWatchdogRestartSpy ).toHaveBeenCalledTimes( 0 );
 
-			expect( oldEditor1 ).to.not.equal( editorWatchdog1.editor );
-			expect( oldEditor2 ).to.equal( editorWatchdog2.editor );
+			expect( oldEditor1 ).not.toBe( editorWatchdog1.editor );
+			expect( oldEditor2 ).toBe( editorWatchdog2.editor );
 
-			expect( watchdog.context ).to.equal( oldContext );
+			expect( watchdog.context ).toBe( oldContext );
 		} );
 	} );
 } );

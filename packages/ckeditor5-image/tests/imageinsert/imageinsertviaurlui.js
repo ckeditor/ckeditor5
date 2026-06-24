@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { UIModel, SplitButtonView, ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import { IconImageUrl } from '@ckeditor/ckeditor5-icons';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Image } from '../../src/image.js';
 import { ImageInsertViaUrlUI } from '../../src/imageinsert/imageinsertviaurlui.js';
@@ -16,7 +16,9 @@ import { ImageInsertViaUrl } from '../../src/index.js';
 describe( 'ImageInsertViaUrlUI', () => {
 	let editor, editorElement, insertImageUI, button;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	afterEach( async () => {
 		if ( editorElement ) {
@@ -29,15 +31,15 @@ describe( 'ImageInsertViaUrlUI', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ImageInsertViaUrlUI.pluginName ).to.equal( 'ImageInsertViaUrlUI' );
+		expect( ImageInsertViaUrlUI.pluginName ).toBe( 'ImageInsertViaUrlUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageInsertViaUrlUI.isOfficialPlugin ).to.be.true;
+		expect( ImageInsertViaUrlUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageInsertViaUrlUI.isPremiumPlugin ).to.be.false;
+		expect( ImageInsertViaUrlUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/15869
@@ -64,17 +66,17 @@ describe( 'ImageInsertViaUrlUI', () => {
 			testButton( ButtonView, 'Insert image via URL' );
 
 			it( 'should bind button label to ImageInsertUI#isImageSelected', () => {
-				expect( button.label ).to.equal( 'Insert image via URL' );
+				expect( button.label ).toBe( 'Insert image via URL' );
 
 				insertImageUI.isImageSelected = true;
-				expect( button.label ).to.equal( 'Update image URL' );
+				expect( button.label ).toBe( 'Update image URL' );
 
 				insertImageUI.isImageSelected = false;
-				expect( button.label ).to.equal( 'Insert image via URL' );
+				expect( button.label ).toBe( 'Insert image via URL' );
 			} );
 
 			it( 'should have a tooltip', () => {
-				expect( button.tooltip ).to.be.true;
+				expect( button.tooltip ).toBe( true );
 			} );
 		} );
 
@@ -111,32 +113,32 @@ describe( 'ImageInsertViaUrlUI', () => {
 		} );
 
 		it( 'has two action buttons', () => {
-			expect( dialog.view.actionsView.children ).to.have.length( 2 );
-			expect( dialog.view.actionsView.children.get( 0 ).label ).to.equal( 'Cancel' );
-			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Insert' );
+			expect( dialog.view.actionsView.children ).toHaveLength( 2 );
+			expect( dialog.view.actionsView.children.get( 0 ).label ).toBe( 'Cancel' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).toBe( 'Insert' );
 		} );
 
 		it( 'has submittable form', () => {
-			expect( dialog.view.element.querySelector( 'form.ck-image-insert-url' ) ).to.exist;
+			expect( dialog.view.element.querySelector( 'form.ck-image-insert-url' ) ).toBeTruthy();
 		} );
 
 		it( 'should bind #isImageSelected', () => {
-			expect( urlView.isImageSelected ).to.be.false;
+			expect( urlView.isImageSelected ).toBe( false );
 
 			insertImageUI.isImageSelected = true;
-			expect( urlView.isImageSelected ).to.be.true;
+			expect( urlView.isImageSelected ).toBe( true );
 
 			insertImageUI.isImageSelected = false;
-			expect( urlView.isImageSelected ).to.be.false;
+			expect( urlView.isImageSelected ).toBe( false );
 		} );
 
 		it( 'should have a title', () => {
-			const sinonSpy = sinon.spy( dialog, 'show' );
+			const showSpy = vi.spyOn( dialog, 'show' );
 
 			dialog.hide();
 			openDialog();
 
-			expect( sinonSpy ).to.have.been.calledWithMatch( { title: 'Image via URL' } );
+			expect( showSpy ).toHaveBeenCalledWith( expect.objectContaining( { title: 'Image via URL' } ) );
 		} );
 
 		it( 'should show save button if image is selected', () => {
@@ -144,7 +146,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 			insertImageUI.isImageSelected = true;
 			openDialog();
 
-			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Save' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).toBe( 'Save' );
 		} );
 
 		it( 'should show insert button if image is not selected', () => {
@@ -152,7 +154,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 			insertImageUI.isImageSelected = false;
 			openDialog();
 
-			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Insert' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).toBe( 'Insert' );
 		} );
 
 		it( 'should bind #isEnabled', () => {
@@ -161,23 +163,23 @@ describe( 'ImageInsertViaUrlUI', () => {
 
 			replaceImageSourceCommand.isEnabled = false;
 			insertImageCommand.isEnabled = false;
-			expect( urlView.isEnabled ).to.be.false;
+			expect( urlView.isEnabled ).toBe( false );
 
 			replaceImageSourceCommand.isEnabled = true;
 			insertImageCommand.isEnabled = false;
-			expect( urlView.isEnabled ).to.be.true;
+			expect( urlView.isEnabled ).toBe( true );
 
 			replaceImageSourceCommand.isEnabled = false;
 			insertImageCommand.isEnabled = true;
-			expect( urlView.isEnabled ).to.be.true;
+			expect( urlView.isEnabled ).toBe( true );
 
 			replaceImageSourceCommand.isEnabled = true;
 			insertImageCommand.isEnabled = true;
-			expect( urlView.isEnabled ).to.be.true;
+			expect( urlView.isEnabled ).toBe( true );
 		} );
 
 		it( 'should set #imageURLInputValue at open', () => {
-			expect( urlView.imageURLInputValue ).to.equal( 'foobar' );
+			expect( urlView.imageURLInputValue ).toBe( 'foobar' );
 		} );
 
 		it( 'should reset #imageURLInputValue on dialog reopen', () => {
@@ -186,17 +188,17 @@ describe( 'ImageInsertViaUrlUI', () => {
 			replaceImageSourceCommand.value = 'abc';
 			dialog.hide();
 			openDialog();
-			expect( urlView.imageURLInputValue ).to.equal( 'abc' );
+			expect( urlView.imageURLInputValue ).toBe( 'abc' );
 
 			replaceImageSourceCommand.value = '123';
 			dialog.hide();
 			openDialog();
-			expect( urlView.imageURLInputValue ).to.equal( '123' );
+			expect( urlView.imageURLInputValue ).toBe( '123' );
 
 			replaceImageSourceCommand.value = undefined;
 			dialog.hide();
 			openDialog();
-			expect( urlView.imageURLInputValue ).to.equal( '' );
+			expect( urlView.imageURLInputValue ).toBe( '' );
 		} );
 
 		testSubmit( 'accept button', () => acceptButton.fire( 'execute' ) );
@@ -212,49 +214,49 @@ describe( 'ImageInsertViaUrlUI', () => {
 			describe( suiteName, () => {
 				it( 'should execute replaceImageSource command and close dialog', () => {
 					const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
-					const stubExecute = sinon.stub( editor, 'execute' );
-					const stubFocus = sinon.stub( editor.editing.view, 'focus' );
+					const stubExecute = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
+					const stubFocus = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 
 					replaceImageSourceCommand.isEnabled = true;
 					urlView.imageURLInputValue = 'foo';
 
 					action();
 
-					expect( stubExecute.calledOnce ).to.be.true;
-					expect( stubExecute.firstCall.args[ 0 ] ).to.equal( 'replaceImageSource' );
-					expect( stubExecute.firstCall.args[ 1 ] ).to.deep.equal( { source: 'foo' } );
-					expect( stubFocus.calledOnce ).to.be.true;
-					expect( dialog.id ).to.be.null;
+					expect( stubExecute ).toHaveBeenCalledOnce();
+					expect( stubExecute.mock.calls[ 0 ][ 0 ] ).toBe( 'replaceImageSource' );
+					expect( stubExecute.mock.calls[ 0 ][ 1 ] ).toEqual( { source: 'foo' } );
+					expect( stubFocus ).toHaveBeenCalledOnce();
+					expect( dialog.id ).toBeNull();
 				} );
 
 				it( 'should execute insertImage command', () => {
 					const replaceImageSourceCommand = editor.commands.get( 'insertImage' );
-					const stubExecute = sinon.stub( editor, 'execute' );
-					const stubFocus = sinon.stub( editor.editing.view, 'focus' );
+					const stubExecute = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
+					const stubFocus = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 
 					replaceImageSourceCommand.isEnabled = true;
 					urlView.imageURLInputValue = 'foo';
 
 					action();
 
-					expect( stubExecute.calledOnce ).to.be.true;
-					expect( stubExecute.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
-					expect( stubExecute.firstCall.args[ 1 ] ).to.deep.equal( { source: 'foo' } );
-					expect( stubFocus.calledOnce ).to.be.true;
-					expect( dialog.id ).to.be.null;
+					expect( stubExecute ).toHaveBeenCalledOnce();
+					expect( stubExecute.mock.calls[ 0 ][ 0 ] ).toBe( 'insertImage' );
+					expect( stubExecute.mock.calls[ 0 ][ 1 ] ).toEqual( { source: 'foo' } );
+					expect( stubFocus ).toHaveBeenCalledOnce();
+					expect( dialog.id ).toBeNull();
 				} );
 			} );
 		}
 
 		it( 'should close dropdown', () => {
-			const stubExecute = sinon.stub( editor, 'execute' );
-			const stubFocus = sinon.stub( editor.editing.view, 'focus' );
+			const stubExecute = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
+			const stubFocus = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 
 			cancelButton.fire( 'execute' );
 
-			expect( stubExecute.notCalled ).to.be.true;
-			expect( stubFocus.calledOnce ).to.be.true;
-			expect( dialog.id ).to.be.null;
+			expect( stubExecute ).not.toHaveBeenCalled();
+			expect( stubFocus ).toHaveBeenCalledOnce();
+			expect( dialog.id ).toBeNull();
 		} );
 	} );
 
@@ -274,17 +276,17 @@ describe( 'ImageInsertViaUrlUI', () => {
 				testButton( ButtonView, 'Insert image via URL' );
 
 				it( 'should bind button label to ImageInsertUI#isImageSelected', () => {
-					expect( button.label ).to.equal( 'Insert image via URL' );
+					expect( button.label ).toBe( 'Insert image via URL' );
 
 					insertImageUI.isImageSelected = true;
-					expect( button.label ).to.equal( 'Update image URL' );
+					expect( button.label ).toBe( 'Update image URL' );
 
 					insertImageUI.isImageSelected = false;
-					expect( button.label ).to.equal( 'Insert image via URL' );
+					expect( button.label ).toBe( 'Insert image via URL' );
 				} );
 
 				it( 'should have a tooltip', () => {
-					expect( button.tooltip ).to.be.true;
+					expect( button.tooltip ).toBe( true );
 				} );
 			} );
 
@@ -341,27 +343,27 @@ describe( 'ImageInsertViaUrlUI', () => {
 				it( 'should create toolbar split button view', () => {
 					const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-					expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
-					expect( dropdown.buttonView.tooltip ).to.be.true;
-					expect( dropdown.buttonView.label ).to.equal( 'Insert image' );
-					expect( dropdown.buttonView.actionView.icon ).to.equal( IconImageUrl );
-					expect( dropdown.buttonView.actionView.tooltip ).to.be.true;
-					expect( dropdown.buttonView.actionView.label ).to.equal( 'Insert image via URL' );
+					expect( dropdown.buttonView ).toBeInstanceOf( SplitButtonView );
+					expect( dropdown.buttonView.tooltip ).toBe( true );
+					expect( dropdown.buttonView.label ).toBe( 'Insert image' );
+					expect( dropdown.buttonView.actionView.icon ).toBe( IconImageUrl );
+					expect( dropdown.buttonView.actionView.tooltip ).toBe( true );
+					expect( dropdown.buttonView.actionView.label ).toBe( 'Insert image via URL' );
 				} );
 
 				it( 'should bind button label to ImageInsertUI#isImageSelected', () => {
 					const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-					expect( dropdown.buttonView.label ).to.equal( 'Insert image' );
-					expect( dropdown.buttonView.actionView.label ).to.equal( 'Insert image via URL' );
+					expect( dropdown.buttonView.label ).toBe( 'Insert image' );
+					expect( dropdown.buttonView.actionView.label ).toBe( 'Insert image via URL' );
 
 					insertImageUI.isImageSelected = true;
-					expect( dropdown.buttonView.label ).to.equal( 'Replace image' );
-					expect( dropdown.buttonView.actionView.label ).to.equal( 'Update image URL' );
+					expect( dropdown.buttonView.label ).toBe( 'Replace image' );
+					expect( dropdown.buttonView.actionView.label ).toBe( 'Update image URL' );
 
 					insertImageUI.isImageSelected = false;
-					expect( dropdown.buttonView.label ).to.equal( 'Insert image' );
-					expect( dropdown.buttonView.actionView.label ).to.equal( 'Insert image via URL' );
+					expect( dropdown.buttonView.label ).toBe( 'Insert image' );
+					expect( dropdown.buttonView.actionView.label ).toBe( 'Insert image via URL' );
 				} );
 			} );
 
@@ -378,13 +380,13 @@ describe( 'ImageInsertViaUrlUI', () => {
 				testButton( ButtonView, 'Insert via URL' );
 
 				it( 'should bind button label to ImageInsertUI#isImageSelected', () => {
-					expect( button.label ).to.equal( 'Insert via URL' );
+					expect( button.label ).toBe( 'Insert via URL' );
 
 					insertImageUI.isImageSelected = true;
-					expect( button.label ).to.equal( 'Update image URL' );
+					expect( button.label ).toBe( 'Update image URL' );
 
 					insertImageUI.isImageSelected = false;
-					expect( button.label ).to.equal( 'Insert via URL' );
+					expect( button.label ).toBe( 'Insert via URL' );
 				} );
 			} );
 
@@ -410,40 +412,40 @@ describe( 'ImageInsertViaUrlUI', () => {
 
 	function testButton( expectedType, expectedInsertLabel ) {
 		it( 'should add the component to the factory', () => {
-			expect( button ).to.be.instanceOf( expectedType );
+			expect( button ).toBeInstanceOf( expectedType );
 		} );
 
 		it( 'should set a #label of the #buttonView', () => {
-			expect( button.label ).to.equal( expectedInsertLabel );
+			expect( button.label ).toBe( expectedInsertLabel );
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( IconImageUrl );
+			expect( button.icon ).toBe( IconImageUrl );
 		} );
 
 		it( 'should open insert image via url dialog', () => {
 			const dialogPlugin = editor.plugins.get( 'Dialog' );
-			expect( dialogPlugin.id ).to.be.null;
+			expect( dialogPlugin.id ).toBeNull();
 
 			button.fire( 'execute' );
 
-			expect( dialogPlugin.id ).to.equal( 'insertImageViaUrl' );
+			expect( dialogPlugin.id ).toBe( 'insertImageViaUrl' );
 		} );
 
 		it( 'should create the dialog form view only once', () => {
 			const dialogPlugin = editor.plugins.get( 'Dialog' );
-			sinon.spy( dialogPlugin, 'show' );
+			const showSpy = vi.spyOn( dialogPlugin, 'show' );
 
 			button.fire( 'execute' );
 			dialogPlugin.hide();
 			button.fire( 'execute' );
 
-			expect( dialogPlugin.show.calledTwice );
+			expect( showSpy ).toHaveBeenCalledTimes( 2 );
 
-			const view1 = dialogPlugin.show.getCall( 0 ).args[ 0 ].content;
-			const view2 = dialogPlugin.show.getCall( 1 ).args[ 0 ].content;
+			const view1 = showSpy.mock.calls[ 0 ][ 0 ].content;
+			const view2 = showSpy.mock.calls[ 1 ][ 0 ].content;
 
-			expect( view1 ).to.equal( view2 );
+			expect( view1 ).toBe( view2 );
 		} );
 	}
 } );

@@ -3,18 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { LabeledFieldView, InputTextView } from '@ckeditor/ckeditor5-ui';
 
 import { ImageInsertUrlView } from '../../../src/imageinsert/ui/imageinserturlview.js';
 
 import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'ImageInsertUrlView', () => {
 	let view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		view = new ImageInsertUrlView( { t: val => val } );
@@ -29,129 +31,129 @@ describe( 'ImageInsertUrlView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should have #imageURLInputValue', () => {
-			expect( view.imageURLInputValue ).to.equal( '' );
+			expect( view.imageURLInputValue ).toBe( '' );
 		} );
 
 		it( 'should have #isImageSelected', () => {
-			expect( view.isImageSelected ).to.be.false;
+			expect( view.isImageSelected ).toBe( false );
 		} );
 
 		it( 'should have #isEnabled', () => {
-			expect( view.isEnabled ).to.be.true;
+			expect( view.isEnabled ).toBe( true );
 		} );
 
 		it( 'should create #keystrokes instance', () => {
-			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( view.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 	} );
 
 	describe( 'template', () => {
 		it( 'should create element from the template', () => {
-			expect( view.element.tagName ).to.equal( 'FORM' );
-			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-image-insert-url' ) ).to.true;
+			expect( view.element.tagName ).toBe( 'FORM' );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-image-insert-url' ) ).toBe( true );
 
 			const childNodes = view.element.childNodes;
 
-			expect( childNodes[ 0 ] ).to.equal( view.urlInputView.element );
-			expect( childNodes[ 1 ].tagName ).to.equal( 'DIV' );
-			expect( childNodes[ 1 ].classList.contains( 'ck' ) ).to.be.true;
-			expect( childNodes[ 1 ].classList.contains( 'ck-image-insert-url__action-row' ) ).to.be.true;
+			expect( childNodes[ 0 ] ).toBe( view.urlInputView.element );
+			expect( childNodes[ 1 ].tagName ).toBe( 'DIV' );
+			expect( childNodes[ 1 ].classList.contains( 'ck' ) ).toBe( true );
+			expect( childNodes[ 1 ].classList.contains( 'ck-image-insert-url__action-row' ) ).toBe( true );
 		} );
 
 		it( 'should use dedicated views', () => {
-			expect( view.template.children[ 0 ] ).to.equal( view.urlInputView );
-			expect( view.template.children[ 1 ].children[ 0 ] ).to.equal( view.insertButtonView );
-			expect( view.template.children[ 1 ].children[ 1 ] ).to.equal( view.cancelButtonView );
+			expect( view.template.children[ 0 ] ).toBe( view.urlInputView );
+			expect( view.template.children[ 1 ].children[ 0 ] ).toBe( view.insertButtonView );
+			expect( view.template.children[ 1 ].children[ 1 ] ).toBe( view.cancelButtonView );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy the KeystrokeHandler instance', () => {
-			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+			const destroySpy = vi.spyOn( view.keystrokes, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'should focus the url input', () => {
-			const spy = sinon.spy( view.urlInputView, 'focus' );
+			const spy = vi.spyOn( view.urlInputView, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( '#urlInputView', () => {
 		it( 'should be an instance of the LabeledFieldView', () => {
-			expect( view.urlInputView ).to.be.instanceOf( LabeledFieldView );
+			expect( view.urlInputView ).toBeInstanceOf( LabeledFieldView );
 		} );
 
 		it( 'should accept text', () => {
-			expect( view.urlInputView.fieldView ).to.be.instanceOf( InputTextView );
+			expect( view.urlInputView.fieldView ).toBeInstanceOf( InputTextView );
 		} );
 
 		it( 'should bind label to #isImageSelected', () => {
 			view.isImageSelected = false;
 
-			expect( view.urlInputView.label ).to.equal( 'Insert image via URL' );
+			expect( view.urlInputView.label ).toBe( 'Insert image via URL' );
 
 			view.isImageSelected = true;
 
-			expect( view.urlInputView.label ).to.equal( 'Update image URL' );
+			expect( view.urlInputView.label ).toBe( 'Update image URL' );
 		} );
 
 		it( 'should bind isEnabled to #isEnabled', () => {
 			view.isEnabled = false;
 
-			expect( view.urlInputView.isEnabled ).to.be.false;
+			expect( view.urlInputView.isEnabled ).toBe( false );
 
 			view.isEnabled = true;
 
-			expect( view.urlInputView.isEnabled ).to.be.true;
+			expect( view.urlInputView.isEnabled ).toBe( true );
 		} );
 
 		it( 'should set placeholder', () => {
-			expect( view.urlInputView.placeholder ).to.equal( 'https://example.com/image.png' );
-			expect( view.urlInputView.fieldView.placeholder ).to.equal( 'https://example.com/image.png' );
+			expect( view.urlInputView.placeholder ).toBe( 'https://example.com/image.png' );
+			expect( view.urlInputView.fieldView.placeholder ).toBe( 'https://example.com/image.png' );
 		} );
 
 		it( 'should bind value to #imageURLInputValue', () => {
 			view.imageURLInputValue = 'abc';
 
-			expect( view.urlInputView.fieldView.value ).to.equal( 'abc' );
+			expect( view.urlInputView.fieldView.value ).toBe( 'abc' );
 
 			view.imageURLInputValue = null;
 
-			expect( view.urlInputView.fieldView.value ).to.equal( '' );
+			expect( view.urlInputView.fieldView.value ).toBe( '' );
 		} );
 
 		it( 'should be bound with #imageURLInputValue', () => {
 			view.urlInputView.fieldView.element.value = 'abc';
 			view.urlInputView.fieldView.fire( 'input' );
 
-			expect( view.imageURLInputValue ).to.equal( 'abc' );
+			expect( view.imageURLInputValue ).toBe( 'abc' );
 
 			view.urlInputView.fieldView.element.value = 'xyz';
 			view.urlInputView.fieldView.fire( 'input' );
 
-			expect( view.imageURLInputValue ).to.equal( 'xyz' );
+			expect( view.imageURLInputValue ).toBe( 'xyz' );
 		} );
 
 		it( 'should trim input value', () => {
 			view.urlInputView.fieldView.element.value = '   ';
 			view.urlInputView.fieldView.fire( 'input' );
 
-			expect( view.imageURLInputValue ).to.equal( '' );
+			expect( view.imageURLInputValue ).toBe( '' );
 
 			view.urlInputView.fieldView.element.value = '   test   ';
 			view.urlInputView.fieldView.fire( 'input' );
 
-			expect( view.imageURLInputValue ).to.equal( 'test' );
+			expect( view.imageURLInputValue ).toBe( 'test' );
 		} );
 	} );
 } );

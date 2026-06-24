@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Image } from '../../src/image.js';
 import { ImageCaption } from '../../src/imagecaption.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -49,21 +50,21 @@ describe( 'ImageCaption integration', () => {
 			_setModelData(
 				model,
 				'<paragraph>Foo.</paragraph>' +
-				'<imageBlock src="/assets/sample.png"><caption>Foo.[]</caption></imageBlock>' +
+				'<imageBlock src="/sample.png"><caption>Foo.[]</caption></imageBlock>' +
 				'<paragraph>Bar.</paragraph>'
 			);
 
 			const domEvent = new ViewDocumentDomEventData( viewDocument, getDomEvent(), { isSoft: true } );
-			const preventDefaultOriginal = domEvent.preventDefault;
-			const preventDefaultStub = sinon.stub( domEvent, 'preventDefault' ).callsFake( preventDefaultOriginal );
+			const preventDefaultOriginal = domEvent.preventDefault.bind( domEvent );
+			const preventDefaultStub = vi.spyOn( domEvent, 'preventDefault' ).mockImplementation( preventDefaultOriginal );
 
 			viewDocument.fire( 'enter', domEvent );
 
-			expect( preventDefaultStub.callCount ).to.equal( 1 );
+			expect( preventDefaultStub.mock.calls.length ).toBe( 1 );
 
 			assertModelData(
 				'<paragraph>Foo.</paragraph>' +
-				'<imageBlock src="/assets/sample.png">' +
+				'<imageBlock src="/sample.png">' +
 					'<caption>Foo.[]</caption>' +
 				'</imageBlock>' +
 				'<paragraph>Bar.</paragraph>'
@@ -95,22 +96,22 @@ describe( 'ImageCaption integration', () => {
 			_setModelData(
 				model,
 				'<paragraph>Foo.</paragraph>' +
-				'<imageBlock src="/assets/sample.png"><caption>Foo.[]</caption></imageBlock>' +
+				'<imageBlock src="/sample.png"><caption>Foo.[]</caption></imageBlock>' +
 				'<paragraph>Bar.</paragraph>'
 			);
 
 			const domEvent = new ViewDocumentDomEventData( viewDocument, getDomEvent(), { isSoft: true } );
-			const preventDefaultOriginal = domEvent.preventDefault;
-			const preventDefaultStub = sinon.stub( domEvent, 'preventDefault' ).callsFake( preventDefaultOriginal );
+			const preventDefaultOriginal = domEvent.preventDefault.bind( domEvent );
+			const preventDefaultStub = vi.spyOn( domEvent, 'preventDefault' ).mockImplementation( preventDefaultOriginal );
 
 			viewDocument.fire( 'enter', domEvent );
 
 			// One call comes from Enter plugin, the second one from ShiftEnter.
-			expect( preventDefaultStub.callCount ).to.equal( 2 );
+			expect( preventDefaultStub.mock.calls.length ).toBe( 2 );
 
 			assertModelData(
 				'<paragraph>Foo.</paragraph>' +
-					'<imageBlock src="/assets/sample.png">' +
+					'<imageBlock src="/sample.png">' +
 						'<caption>Foo.<softBreak></softBreak>[]</caption>' +
 					'</imageBlock>' +
 				'<paragraph>Bar.</paragraph>'
@@ -120,11 +121,11 @@ describe( 'ImageCaption integration', () => {
 
 	function getDomEvent() {
 		return {
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		};
 	}
 
 	function assertModelData( output ) {
-		expect( _getModelData( model ) ).to.equal( output );
+		expect( _getModelData( model ) ).toBe( output );
 	}
 } );

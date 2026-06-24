@@ -3,13 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { UIModel, DropdownView, ButtonView, SplitButtonView, MenuBarMenuListItemButtonView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Image } from '../../src/image.js';
 import { ImageInsertUI } from '../../src/imageinsert/imageinsertui.js';
@@ -18,7 +19,9 @@ import { ImageInsertFormView } from '../../src/imageinsert/ui/imageinsertformvie
 describe( 'ImageInsertUI', () => {
 	let editor, editorElement, insertImageUI;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	afterEach( async () => {
 		if ( editorElement ) {
@@ -31,15 +34,15 @@ describe( 'ImageInsertUI', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ImageInsertUI.pluginName ).to.equal( 'ImageInsertUI' );
+		expect( ImageInsertUI.pluginName ).toBe( 'ImageInsertUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageInsertUI.isOfficialPlugin ).to.be.true;
+		expect( ImageInsertUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageInsertUI.isPremiumPlugin ).to.be.false;
+		expect( ImageInsertUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( '#constructor()', () => {
@@ -48,7 +51,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should define config', () => {
-			expect( editor.config.get( 'image.insert.integrations' ) ).to.deep.equal( [
+			expect( editor.config.get( 'image.insert.integrations' ) ).toEqual( [
 				'upload',
 				'assetManager',
 				'url'
@@ -62,16 +65,16 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should register component in component factory', () => {
-			expect( editor.ui.componentFactory.has( 'insertImage' ) ).to.be.true;
-			expect( editor.ui.componentFactory.has( 'imageInsert' ) ).to.be.true;
-			expect( editor.ui.componentFactory.has( 'menuBar:insertImage' ) ).to.be.true;
+			expect( editor.ui.componentFactory.has( 'insertImage' ) ).toBe( true );
+			expect( editor.ui.componentFactory.has( 'imageInsert' ) ).toBe( true );
+			expect( editor.ui.componentFactory.has( 'menuBar:insertImage' ) ).toBe( true );
 		} );
 
 		it( 'should register "imageInsert" dropdown as an alias for the "insertImage" dropdown', () => {
 			const dropdownCreator = editor.ui.componentFactory._components.get( 'insertImage'.toLowerCase() );
 			const dropdownAliasCreator = editor.ui.componentFactory._components.get( 'imageInsert'.toLowerCase() );
 
-			expect( dropdownCreator.callback ).to.equal( dropdownAliasCreator.callback );
+			expect( dropdownCreator.callback ).toBe( dropdownAliasCreator.callback );
 		} );
 	} );
 
@@ -88,13 +91,13 @@ describe( 'ImageInsertUI', () => {
 				'<imageBlock></imageBlock>'
 			);
 
-			expect( insertImageUI.isImageSelected ).to.be.false;
+			expect( insertImageUI.isImageSelected ).toBe( false );
 
 			editor.model.change( writer => {
 				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'end' );
 			} );
 
-			expect( insertImageUI.isImageSelected ).to.be.false;
+			expect( insertImageUI.isImageSelected ).toBe( false );
 		} );
 
 		it( 'should be true if block image is selected', () => {
@@ -103,7 +106,7 @@ describe( 'ImageInsertUI', () => {
 				'[<imageBlock></imageBlock>]'
 			);
 
-			expect( insertImageUI.isImageSelected ).to.be.true;
+			expect( insertImageUI.isImageSelected ).toBe( true );
 		} );
 
 		it( 'should change on selection change', () => {
@@ -112,19 +115,19 @@ describe( 'ImageInsertUI', () => {
 				'<imageBlock></imageBlock>'
 			);
 
-			expect( insertImageUI.isImageSelected ).to.be.false;
+			expect( insertImageUI.isImageSelected ).toBe( false );
 
 			editor.model.change( writer => {
 				writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 'on' );
 			} );
 
-			expect( insertImageUI.isImageSelected ).to.be.true;
+			expect( insertImageUI.isImageSelected ).toBe( true );
 
 			editor.model.change( writer => {
 				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'end' );
 			} );
 
-			expect( insertImageUI.isImageSelected ).to.be.false;
+			expect( insertImageUI.isImageSelected ).toBe( false );
 		} );
 	} );
 
@@ -147,15 +150,15 @@ describe( 'ImageInsertUI', () => {
 				menuBarButtonViewCreator
 			} );
 
-			expect( insertImageUI._integrations.has( 'foobar' ) ).to.be.true;
+			expect( insertImageUI._integrations.has( 'foobar' ) ).toBe( true );
 
 			const integrationData = insertImageUI._integrations.get( 'foobar' );
 
-			expect( integrationData.observable ).to.equal( observable );
-			expect( integrationData.buttonViewCreator ).to.equal( buttonViewCreator );
-			expect( integrationData.formViewCreator ).to.equal( formViewCreator );
-			expect( integrationData.menuBarButtonViewCreator ).to.equal( menuBarButtonViewCreator );
-			expect( integrationData.requiresForm ).to.be.false;
+			expect( integrationData.observable ).toBe( observable );
+			expect( integrationData.buttonViewCreator ).toBe( buttonViewCreator );
+			expect( integrationData.formViewCreator ).toBe( formViewCreator );
+			expect( integrationData.menuBarButtonViewCreator ).toBe( menuBarButtonViewCreator );
+			expect( integrationData.requiresForm ).toBe( false );
 		} );
 
 		it( 'should store the integration definition (with optional data)', () => {
@@ -173,15 +176,15 @@ describe( 'ImageInsertUI', () => {
 				requiresForm: true
 			} );
 
-			expect( insertImageUI._integrations.has( 'foobar' ) ).to.be.true;
+			expect( insertImageUI._integrations.has( 'foobar' ) ).toBe( true );
 
 			const integrationData = insertImageUI._integrations.get( 'foobar' );
 
-			expect( integrationData.observable ).to.equal( observable );
-			expect( integrationData.buttonViewCreator ).to.equal( buttonViewCreator );
-			expect( integrationData.formViewCreator ).to.equal( formViewCreator );
-			expect( integrationData.menuBarButtonViewCreator ).to.equal( menuBarButtonViewCreator );
-			expect( integrationData.requiresForm ).to.be.true;
+			expect( integrationData.observable ).toBe( observable );
+			expect( integrationData.buttonViewCreator ).toBe( buttonViewCreator );
+			expect( integrationData.formViewCreator ).toBe( formViewCreator );
+			expect( integrationData.menuBarButtonViewCreator ).toBe( menuBarButtonViewCreator );
+			expect( integrationData.requiresForm ).toBe( true );
 		} );
 
 		it( 'should warn if multiple integrations with the same name are registered', () => {
@@ -189,7 +192,7 @@ describe( 'ImageInsertUI', () => {
 			const buttonViewCreator = () => {};
 			const formViewCreator = () => {};
 			const menuBarButtonViewCreator = () => {};
-			const warnStub = sinon.stub( console, 'warn' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			insertImageUI.registerIntegration( {
 				name: 'foobar',
@@ -200,7 +203,7 @@ describe( 'ImageInsertUI', () => {
 				requiresForm: true
 			} );
 
-			expect( warnStub.notCalled ).to.be.true;
+			expect( warnStub ).not.toHaveBeenCalled();
 
 			insertImageUI.registerIntegration( {
 				name: 'foobar',
@@ -211,8 +214,8 @@ describe( 'ImageInsertUI', () => {
 				requiresForm: true
 			} );
 
-			expect( warnStub.calledOnce ).to.be.true;
-			expect( warnStub.firstCall.args[ 0 ] ).to.equal( 'image-insert-integration-exists' );
+			expect( warnStub ).toHaveBeenCalledOnce();
+			expect( warnStub.mock.calls[ 0 ][ 0 ] ).toBe( 'image-insert-integration-exists' );
 		} );
 	} );
 
@@ -226,42 +229,42 @@ describe( 'ImageInsertUI', () => {
 		it( 'should warn if empty list of integrations is configured', () => {
 			editor.config.set( 'image.insert.integrations', [] );
 
-			const warnStub = sinon.stub( console, 'warn' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-			expect( dropdown ).to.be.null;
-			expect( warnStub.calledOnce ).to.be.true;
-			expect( warnStub.firstCall.args[ 0 ] ).to.equal( 'image-insert-integrations-not-specified' );
+			expect( dropdown ).toBeNull();
+			expect( warnStub ).toHaveBeenCalledOnce();
+			expect( warnStub.mock.calls[ 0 ][ 0 ] ).toBe( 'image-insert-integrations-not-specified' );
 
 			const menuComponent = editor.ui.componentFactory.create( 'menuBar:insertImage' );
 
-			expect( menuComponent ).to.be.null;
-			expect( warnStub.calledTwice ).to.be.true;
-			expect( warnStub.secondCall.args[ 0 ] ).to.equal( 'image-insert-integrations-not-specified' );
+			expect( menuComponent ).toBeNull();
+			expect( warnStub ).toHaveBeenCalledTimes( 2 );
+			expect( warnStub.mock.calls[ 1 ][ 0 ] ).toBe( 'image-insert-integrations-not-specified' );
 		} );
 
 		it( 'should warn if unknown integration is requested by config', () => {
 			editor.config.set( 'image.insert.integrations', [ 'foo' ] );
 
-			const warnStub = sinon.stub( console, 'warn' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-			expect( dropdown ).to.be.null;
-			expect( warnStub.calledTwice ).to.be.true;
-			expect( warnStub.firstCall.args[ 0 ] ).to.equal( 'image-insert-unknown-integration' );
-			expect( warnStub.firstCall.args[ 1 ].item ).to.equal( 'foo' );
-			expect( warnStub.secondCall.args[ 0 ] ).to.equal( 'image-insert-integrations-not-registered' );
+			expect( dropdown ).toBeNull();
+			expect( warnStub ).toHaveBeenCalledTimes( 2 );
+			expect( warnStub.mock.calls[ 0 ][ 0 ] ).toBe( 'image-insert-unknown-integration' );
+			expect( warnStub.mock.calls[ 0 ][ 1 ].item ).toBe( 'foo' );
+			expect( warnStub.mock.calls[ 1 ][ 0 ] ).toBe( 'image-insert-integrations-not-registered' );
 		} );
 
 		it( 'should not warn if known but not registered integration is requested by config', () => {
 			editor.config.set( 'image.insert.integrations', [ 'url', 'assetManager', 'upload' ] );
 
-			const warnStub = sinon.stub( console, 'warn' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-			expect( dropdown ).to.be.null;
-			expect( warnStub.calledOnce ).to.be.true;
-			expect( warnStub.firstCall.args[ 0 ] ).to.equal( 'image-insert-integrations-not-registered' );
+			expect( dropdown ).toBeNull();
+			expect( warnStub ).toHaveBeenCalledOnce();
+			expect( warnStub.mock.calls[ 0 ][ 0 ] ).toBe( 'image-insert-integrations-not-registered' );
 		} );
 
 		describe( 'single integration without form view required', () => {
@@ -272,8 +275,8 @@ describe( 'ImageInsertUI', () => {
 			it( 'should create a toolbar button', () => {
 				const button = editor.ui.componentFactory.create( 'insertImage' );
 
-				expect( button ).to.be.instanceOf( ButtonView );
-				expect( button.label ).to.equal( 'button upload single' );
+				expect( button ).toBeInstanceOf( ButtonView );
+				expect( button.label ).toBe( 'button upload single' );
 			} );
 		} );
 
@@ -285,46 +288,46 @@ describe( 'ImageInsertUI', () => {
 			it( 'should create a toolbar dropdown', () => {
 				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-				expect( dropdown ).to.be.instanceOf( DropdownView );
-				expect( dropdown.buttonView.label ).to.equal( 'button url single' );
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown ).toBeInstanceOf( DropdownView );
+				expect( dropdown.buttonView.label ).toBe( 'button url single' );
+				expect( dropdown.isEnabled ).toBe( true );
 			} );
 
 			it( 'should bind isEnabled state to observable', () => {
 				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
 				observableUrl.isEnabled = false;
-				expect( dropdown.isEnabled ).to.be.false;
+				expect( dropdown.isEnabled ).toBe( false );
 
 				observableUrl.isEnabled = true;
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown.isEnabled ).toBe( true );
 			} );
 
 			it( 'should create panel view on dropdown first open', () => {
 				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-				expect( dropdown.panelView.children.length ).to.equal( 0 );
+				expect( dropdown.panelView.children.length ).toBe( 0 );
 
 				dropdown.isOpen = true;
-				expect( dropdown.panelView.children.length ).to.equal( 1 );
+				expect( dropdown.panelView.children.length ).toBe( 1 );
 
 				const formView = dropdown.panelView.children.get( 0 );
-				expect( formView ).to.be.instanceOf( ImageInsertFormView );
-				expect( formView.children.get( 0 ) ).to.be.instanceOf( ButtonView );
-				expect( formView.children.get( 0 ).label ).to.equal( 'dropdown url single' );
+				expect( formView ).toBeInstanceOf( ImageInsertFormView );
+				expect( formView.children.get( 0 ) ).toBeInstanceOf( ButtonView );
+				expect( formView.children.get( 0 ).label ).toBe( 'dropdown url single' );
 			} );
 
 			it( 'should create a menu bar button', () => {
 				const menu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
 
-				expect( menu ).to.be.instanceOf( MenuBarMenuView );
+				expect( menu ).toBeInstanceOf( MenuBarMenuView );
 
 				const submenuList = menu.panelView.children.get( 0 );
 				const button = submenuList.items.get( 0 ).children.get( 0 );
 
-				expect( button ).to.be.instanceOf( MenuBarMenuListItemButtonView );
-				expect( button.label ).to.equal( 'button url' );
-				expect( button.isEnabled ).to.be.true;
+				expect( button ).toBeInstanceOf( MenuBarMenuListItemButtonView );
+				expect( button.label ).toBe( 'button url' );
+				expect( button.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -337,10 +340,10 @@ describe( 'ImageInsertUI', () => {
 				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
 				observableUrl.isEnabled = false;
-				expect( dropdown.isEnabled ).to.be.false;
+				expect( dropdown.isEnabled ).toBe( false );
 
 				observableUrl.isEnabled = true;
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -353,25 +356,25 @@ describe( 'ImageInsertUI', () => {
 			it( 'should create a toolbar split button dropdown', () => {
 				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-				expect( dropdown ).to.be.instanceOf( DropdownView );
-				expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
-				expect( dropdown.buttonView.label ).to.equal( 'Insert image' );
-				expect( dropdown.buttonView.tooltip ).to.be.true;
-				expect( dropdown.buttonView.actionView.label ).to.equal( 'button upload multiple' );
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown ).toBeInstanceOf( DropdownView );
+				expect( dropdown.buttonView ).toBeInstanceOf( SplitButtonView );
+				expect( dropdown.buttonView.label ).toBe( 'Insert image' );
+				expect( dropdown.buttonView.tooltip ).toBe( true );
+				expect( dropdown.buttonView.actionView.label ).toBe( 'button upload multiple' );
+				expect( dropdown.isEnabled ).toBe( true );
 			} );
 
 			it( 'should bind split button label to #isImageSelected', () => {
 				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-				expect( insertImageUI.isImageSelected ).to.be.false;
-				expect( dropdown.buttonView.label ).to.equal( 'Insert image' );
+				expect( insertImageUI.isImageSelected ).toBe( false );
+				expect( dropdown.buttonView.label ).toBe( 'Insert image' );
 
 				insertImageUI.isImageSelected = true;
-				expect( dropdown.buttonView.label ).to.equal( 'Replace image' );
+				expect( dropdown.buttonView.label ).toBe( 'Replace image' );
 
 				insertImageUI.isImageSelected = false;
-				expect( dropdown.buttonView.label ).to.equal( 'Insert image' );
+				expect( dropdown.buttonView.label ).toBe( 'Insert image' );
 			} );
 
 			it( 'should bind isEnabled state to observables', () => {
@@ -379,48 +382,48 @@ describe( 'ImageInsertUI', () => {
 
 				observableUrl.isEnabled = false;
 				observableUpload.isEnabled = false;
-				expect( dropdown.isEnabled ).to.be.false;
+				expect( dropdown.isEnabled ).toBe( false );
 
 				observableUrl.isEnabled = true;
 				observableUpload.isEnabled = false;
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown.isEnabled ).toBe( true );
 
 				observableUrl.isEnabled = false;
 				observableUpload.isEnabled = true;
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown.isEnabled ).toBe( true );
 
 				observableUrl.isEnabled = true;
 				observableUpload.isEnabled = true;
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown.isEnabled ).toBe( true );
 			} );
 
 			it( 'should create panel view on dropdown first open', () => {
 				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-				expect( dropdown.panelView.children.length ).to.equal( 0 );
+				expect( dropdown.panelView.children.length ).toBe( 0 );
 
 				dropdown.isOpen = true;
-				expect( dropdown.panelView.children.length ).to.equal( 1 );
+				expect( dropdown.panelView.children.length ).toBe( 1 );
 
 				const formView = dropdown.panelView.children.get( 0 );
-				expect( formView ).to.be.instanceOf( ImageInsertFormView );
+				expect( formView ).toBeInstanceOf( ImageInsertFormView );
 
-				expect( formView.children.length ).to.equal( 2 );
-				expect( formView.children.get( 0 ) ).to.be.instanceOf( ButtonView );
-				expect( formView.children.get( 0 ).label ).to.equal( 'dropdown upload multiple' );
-				expect( formView.children.get( 1 ) ).to.be.instanceOf( ButtonView );
-				expect( formView.children.get( 1 ).label ).to.equal( 'dropdown url multiple' );
+				expect( formView.children.length ).toBe( 2 );
+				expect( formView.children.get( 0 ) ).toBeInstanceOf( ButtonView );
+				expect( formView.children.get( 0 ).label ).toBe( 'dropdown upload multiple' );
+				expect( formView.children.get( 1 ) ).toBeInstanceOf( ButtonView );
+				expect( formView.children.get( 1 ).label ).toBe( 'dropdown url multiple' );
 			} );
 
 			it( 'should create a menu bar sub menu', () => {
 				const menu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
 
-				expect( menu ).to.be.instanceOf( MenuBarMenuView );
+				expect( menu ).toBeInstanceOf( MenuBarMenuView );
 
 				const submenuList = menu.panelView.children.get( 0 );
 
-				expect( submenuList.items.get( 0 ).children.get( 0 ).label ).to.equal( 'button upload' );
-				expect( submenuList.items.get( 1 ).children.get( 0 ).label ).to.equal( 'button url' );
+				expect( submenuList.items.get( 0 ).children.get( 0 ).label ).toBe( 'button upload' );
+				expect( submenuList.items.get( 1 ).children.get( 0 ).label ).toBe( 'button url' );
 			} );
 		} );
 
@@ -435,19 +438,19 @@ describe( 'ImageInsertUI', () => {
 
 				observableUrl.isEnabled = false;
 				observableUpload.isEnabled = false;
-				expect( dropdown.isEnabled ).to.be.false;
+				expect( dropdown.isEnabled ).toBe( false );
 
 				observableUrl.isEnabled = true;
 				observableUpload.isEnabled = false;
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown.isEnabled ).toBe( true );
 
 				observableUrl.isEnabled = false;
 				observableUpload.isEnabled = true;
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown.isEnabled ).toBe( true );
 
 				observableUrl.isEnabled = true;
 				observableUpload.isEnabled = true;
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown.isEnabled ).toBe( true );
 			} );
 		} );
 

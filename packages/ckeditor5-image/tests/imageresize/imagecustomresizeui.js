@@ -3,10 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table } from '@ckeditor/ckeditor5-table';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
+import { View } from '@ckeditor/ckeditor5-ui';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { ImageCustomResizeUI } from '../../src/imageresize/imagecustomresizeui.js';
@@ -49,86 +51,92 @@ describe( 'ImageCustomResizeUI', () => {
 	afterEach( async () => {
 		await editor.destroy();
 		element.remove();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should be named', () => {
-		expect( ImageCustomResizeUI.pluginName ).to.equal( 'ImageCustomResizeUI' );
+		expect( ImageCustomResizeUI.pluginName ).toBe( 'ImageCustomResizeUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageCustomResizeUI.isOfficialPlugin ).to.be.true;
+		expect( ImageCustomResizeUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageCustomResizeUI.isPremiumPlugin ).to.be.false;
+		expect( ImageCustomResizeUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'dropdown button', () => {
 		it( 'should be present in image resize dropdown', () => {
-			expect( button ).not.to.be.undefined;
+			expect( button ).not.toBeUndefined();
 		} );
 
 		it( 'should be enabled when there are not any images', () => {
 			_setModelData( model, '' );
 
-			expect( button.isEnabled ).to.be.false;
+			expect( button.isEnabled ).toBe( false );
 		} );
 
 		it( 'should have isEnabled property bind to command\'s isEnabled property', () => {
 			command.isEnabled = true;
-			expect( button.isEnabled ).to.be.true;
+			expect( button.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( button.isEnabled ).to.be.false;
+			expect( button.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be enabled if selected image', () => {
 			selectFirstNode();
-			expect( button.isEnabled ).to.be.true;
+			expect( button.isEnabled ).toBe( true );
 		} );
 
 		it( 'should open balloon panel on click', () => {
 			selectFirstNode();
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 
 			button.fire( 'execute' );
 
-			expect( balloon.visibleView ).to.equal( plugin._form );
-			expect( plugin._isVisible ).to.be.true;
+			expect( balloon.visibleView ).toBe( plugin._form );
+			expect( plugin._isVisible ).toBe( true );
 		} );
 
 		it( 'should open with empty value if image was not resized', () => {
 			_setModelData( model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>` );
 			plugin._createForm();
 
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 
 			button.fire( 'execute' );
 
-			expect( plugin._form.labeledInput.fieldView.value ).equals( '' );
+			expect( plugin._form.labeledInput.fieldView.value ).toBe( '' );
 		} );
 
 		it( 'should open with image resize value', () => {
 			selectFirstNode();
 			plugin._createForm();
 
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 
 			button.fire( 'execute' );
-			expect( plugin._form.labeledInput.fieldView.value ).equals( '50.0' );
+			expect( plugin._form.labeledInput.fieldView.value ).toBe( '50.0' );
 		} );
 
 		it( 'should disable CSS transitions before showing the form to avoid unnecessary animations (and then enable them again)', () => {
 			selectFirstNode();
 			plugin._createForm();
 
-			const addSpy = sinon.spy( balloon, 'add' );
-			const disableCssTransitionsSpy = sinon.spy( plugin._form, 'disableCssTransitions' );
-			const enableCssTransitionsSpy = sinon.spy( plugin._form, 'enableCssTransitions' );
+			const addSpy = vi.spyOn( balloon, 'add' );
+			const disableCssTransitionsSpy = vi.spyOn( plugin._form, 'disableCssTransitions' );
+			const enableCssTransitionsSpy = vi.spyOn( plugin._form, 'enableCssTransitions' );
 
 			button.fire( 'execute' );
 
-			sinon.assert.callOrder( disableCssTransitionsSpy, addSpy, enableCssTransitionsSpy );
+			const addOrder = addSpy.mock.invocationCallOrder[ 0 ];
+			const disableOrder = disableCssTransitionsSpy.mock.invocationCallOrder[ 0 ];
+			const enableOrder = enableCssTransitionsSpy.mock.invocationCallOrder[ 0 ];
+
+			expect( disableOrder ).toBeLessThan( addOrder );
+			expect( addOrder ).toBeLessThan( enableOrder );
 		} );
 	} );
 
@@ -139,7 +147,7 @@ describe( 'ImageCustomResizeUI', () => {
 
 		it( 'should implement the CSS transition disabling feature', () => {
 			plugin._createForm();
-			expect( plugin._form.disableCssTransitions ).to.be.a( 'function' );
+			expect( typeof plugin._form.disableCssTransitions ).toBe( 'function' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-image/issues/114
@@ -152,36 +160,56 @@ describe( 'ImageCustomResizeUI', () => {
 			plugin._form.fire( 'cancel' );
 
 			button.fire( 'execute' );
-			expect( plugin._form.labeledInput.fieldView.element.value ).to.equal( '50.0' );
+			expect( plugin._form.labeledInput.fieldView.element.value ).toBe( '50.0' );
 		} );
 
 		it( 'should not reset input value if #_showForm called on already visible balloon', () => {
 			plugin._showForm( '%' );
 
-			const resetMethodSpy = sinon.spy( plugin._form.labeledInput.fieldView, 'set' );
+			const resetMethodSpy = vi.spyOn( plugin._form.labeledInput.fieldView, 'set' );
 
 			plugin._showForm( '%' );
-			expect( resetMethodSpy ).not.to.be.called;
+			expect( resetMethodSpy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'should not add the form to the balloon if it is already there', () => {
+			plugin._showForm( '%' );
+
+			balloon.add( {
+				stackId: 'custom',
+				view: new View(),
+				position: {
+					target: editor.ui.view.editable.element
+				}
+			} );
+
+			balloon.showStack( 'custom' );
+
+			const addSpy = vi.spyOn( balloon, 'add' );
+
+			plugin._showForm( '%' );
+
+			expect( addSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not remove from balloon if form is not there', () => {
 			plugin._createForm();
 			plugin._hideForm();
 
-			const resetMethodSpy = sinon.spy( plugin._balloon, 'remove' );
+			const resetMethodSpy = vi.spyOn( plugin._balloon, 'remove' );
 			plugin._hideForm();
-			expect( resetMethodSpy ).not.to.be.called;
+			expect( resetMethodSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should execute command on submit', () => {
 			plugin._showForm( '%' );
 
-			const spy = sinon.spy( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' );
 
 			plugin._form.labeledInput.fieldView.value = '123';
 			plugin._form.fire( 'submit' );
 
-			sinon.assert.calledWithExactly( spy, 'resizeImage', {
+			expect( spy ).toHaveBeenCalledExactlyOnceWith( 'resizeImage', {
 				width: '123%'
 			} );
 		} );
@@ -191,14 +219,14 @@ describe( 'ImageCustomResizeUI', () => {
 				plugin._showForm();
 				fillFormSize( '' );
 				plugin._form.fire( 'submit' );
-				expect( getErrorLabel() ).to.be.equal( 'The value must not be empty.' );
+				expect( getErrorLabel() ).toBe( 'The value must not be empty.' );
 			} );
 
 			it( 'should show error form status if passed incorrect size', () => {
 				plugin._showForm();
 				fillFormSize( 'for sure incorrect value' );
 				plugin._form.fire( 'submit' );
-				expect( getErrorLabel() ).to.be.equal( 'The value should be a plain number.' );
+				expect( getErrorLabel() ).toBe( 'The value should be a plain number.' );
 			} );
 
 			it( 'should reset error form status after filling empty link', () => {
@@ -206,11 +234,11 @@ describe( 'ImageCustomResizeUI', () => {
 
 				fillFormSize( 'for sure incorrect value' );
 				plugin._form.fire( 'submit' );
-				expect( getErrorLabel() ).not.to.be.null;
+				expect( getErrorLabel() ).not.toBeNull();
 
 				fillFormSize( '123456' );
 				plugin._form.fire( 'submit' );
-				expect( getErrorLabel() ).to.be.null;
+				expect( getErrorLabel() ).toBeNull();
 			} );
 
 			it( 'should reset form status on show', () => {
@@ -218,24 +246,24 @@ describe( 'ImageCustomResizeUI', () => {
 				fillFormSize( 'for sure incorrect value' );
 				plugin._form.fire( 'submit' );
 
-				expect( getErrorLabel() ).not.to.be.null;
+				expect( getErrorLabel() ).not.toBeNull();
 
 				plugin._hideForm();
 				plugin._showForm();
-				expect( getErrorLabel() ).to.be.null;
+				expect( getErrorLabel() ).toBeNull();
 			} );
 
 			it( 'should update ui on error due to change ballon position', () => {
-				const updateSpy = sinon.spy( editor.ui, 'update' );
+				const updateSpy = vi.spyOn( editor.ui, 'update' );
 
 				plugin._showForm();
 				fillFormSize( 'for sure incorrect value' );
 
-				expect( updateSpy ).not.to.be.called;
+				expect( updateSpy ).not.toHaveBeenCalled();
 
 				plugin._form.fire( 'submit' );
 
-				expect( updateSpy ).to.be.calledOnce;
+				expect( updateSpy ).toHaveBeenCalledOnce();
 			} );
 
 			function getErrorLabel() {
@@ -258,33 +286,36 @@ describe( 'ImageCustomResizeUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5/issues/1501
 			it( 'should input element before hiding the view', () => {
-				const editableFocusSpy = sinon.spy( editor.editing.view, 'focus' );
-				const buttonFocusSpy = sinon.spy( plugin._form.saveButtonView, 'focus' );
+				const editableFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+				const buttonFocusSpy = vi.spyOn( plugin._form.saveButtonView, 'focus' );
 
 				plugin._form.focusTracker.isFocused = true;
 				plugin._form.fire( 'submit' );
 
-				expect( buttonFocusSpy.calledBefore( editableFocusSpy ) ).to.equal( true );
+				const buttonOrder = buttonFocusSpy.mock.invocationCallOrder[ 0 ];
+				const editableOrder = editableFocusSpy.mock.invocationCallOrder[ 0 ];
+
+				expect( buttonOrder ).toBeLessThan( editableOrder );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-image/issues/299
 			it( 'should not blur input element before hiding the view when view was not focused', () => {
-				const buttonFocusSpy = sinon.spy( plugin._form.saveButtonView, 'focus' );
+				const buttonFocusSpy = vi.spyOn( plugin._form.saveButtonView, 'focus' );
 
 				plugin._form.focusTracker.isFocused = false;
 				plugin._form.fire( 'cancel' );
 
-				sinon.assert.notCalled( buttonFocusSpy );
+				expect( buttonFocusSpy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should hide the panel on cancel and focus the editing view', () => {
-				const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
-				expect( balloon.visibleView ).to.equal( plugin._form );
+				expect( balloon.visibleView ).toBe( plugin._form );
 
 				plugin._form.fire( 'cancel' );
-				expect( balloon.visibleView ).to.be.null;
-				sinon.assert.calledOnce( focusSpy );
+				expect( balloon.visibleView ).toBeNull();
+				expect( focusSpy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -292,36 +323,36 @@ describe( 'ImageCustomResizeUI', () => {
 			let hideSpy, focusSpy;
 
 			beforeEach( () => {
-				expect( balloon.visibleView ).to.be.null;
+				expect( balloon.visibleView ).toBeNull();
 				button.fire( 'execute' );
-				expect( balloon.visibleView ).not.to.be.null;
+				expect( balloon.visibleView ).not.toBeNull();
 
-				hideSpy = sinon.spy( plugin, '_hideForm' );
-				focusSpy = sinon.spy( editor.editing.view, 'focus' );
+				hideSpy = vi.spyOn( plugin, '_hideForm' );
+				focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 			} );
 
 			it( 'should close upon Esc key press and focus the editing view', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.esc,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				plugin._form.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( hideSpy );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( focusSpy );
+				expect( hideSpy ).toHaveBeenCalledOnce();
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( focusSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should close and not focus editable on click outside the panel', () => {
 				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
-				sinon.assert.called( hideSpy );
-				sinon.assert.notCalled( focusSpy );
+				expect( hideSpy ).toHaveBeenCalled();
+				expect( focusSpy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not close on click inside the panel', () => {
 				plugin._form.element.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
-				sinon.assert.notCalled( hideSpy );
+				expect( hideSpy ).not.toHaveBeenCalled();
 			} );
 		} );
 	} );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Plugin } from '@ckeditor/ckeditor5-core';
@@ -50,49 +50,50 @@ describe( 'ImageStyleUI', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
 		editorElement.remove();
 		return editor.destroy();
 	} );
 
 	it( 'should be named', () => {
-		expect( ImageStyleUI.pluginName ).to.equal( 'ImageStyleUI' );
+		expect( ImageStyleUI.pluginName ).toBe( 'ImageStyleUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageStyleUI.isOfficialPlugin ).to.be.true;
+		expect( ImageStyleUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageStyleUI.isPremiumPlugin ).to.be.false;
+		expect( ImageStyleUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should require ImageStyleEditing plugin', () => {
-		expect( ImageStyleUI.requires ).to.deep.equal( [ ImageStyleEditing ] );
+		expect( ImageStyleUI.requires ).toEqual( [ ImageStyleEditing ] );
 	} );
 
 	describe( 'init()', () => {
 		it( 'should register a button for each of the provided styles', () => {
 			allStyles.forEach( ( { name } ) => {
-				expect( factory.has( `imageStyle:${ name }` ) ).to.be.true;
+				expect( factory.has( `imageStyle:${ name }` ) ).toBe( true );
 			} );
 		} );
 
 		it( 'should register a drop-down for each of the default provided dropdowns', () => {
 			defaultDropdowns.forEach( ( { name } ) => {
-				expect( factory.has( name ) ).to.be.true;
+				expect( factory.has( name ) ).toBe( true );
 			} );
 		} );
 
 		it( 'should register a drop-down for each of the custom defined dropdowns', () => {
 			customDropdowns.forEach( ( { name } ) => {
-				expect( factory.has( name ) ).to.be.true;
+				expect( factory.has( name ) ).toBe( true );
 			} );
 		} );
 	} );
 
 	describe( 'localizedDefaultStylesTitles()', () => {
 		it( 'should return localized titles of default styles', () => {
-			expect( editor.plugins.get( ImageStyleUI ).localizedDefaultStylesTitles ).to.deep.equal( {
+			expect( editor.plugins.get( ImageStyleUI ).localizedDefaultStylesTitles ).toEqual( {
 				'Full size image': 'Full size image',
 				'Side image': 'Side image',
 				'Left aligned image': 'Left aligned image',
@@ -117,11 +118,11 @@ describe( 'ImageStyleUI', () => {
 
 		it( 'should set the button properties properly', () => {
 			for ( const { config, buttonView } of buttons ) {
-				expect( buttonView ).to.be.instanceOf( ButtonView );
-				expect( buttonView.label ).to.equal( config.title );
-				expect( buttonView.icon ).to.equal( config.icon );
-				expect( buttonView.tooltip ).to.be.true;
-				expect( buttonView.isToggleable ).to.be.true;
+				expect( buttonView ).toBeInstanceOf( ButtonView );
+				expect( buttonView.label ).toBe( config.title );
+				expect( buttonView.icon ).toBe( config.icon );
+				expect( buttonView.tooltip ).toBe( true );
+				expect( buttonView.isToggleable ).toBe( true );
 			}
 		} );
 
@@ -132,7 +133,7 @@ describe( 'ImageStyleUI', () => {
 			_setModelData( editor.model, '[<imageBlock src=""></imageBlock>]' );
 
 			for ( const { buttonView } of buttons ) {
-				expect( buttonView.isEnabled, buttonView.label ).to.be.true;
+				expect( buttonView.isEnabled, buttonView.label ).toBe( true );
 			}
 		} );
 
@@ -142,7 +143,7 @@ describe( 'ImageStyleUI', () => {
 			editor.commands.get( 'imageStyle' ).isEnabled = false;
 
 			for ( const { buttonView } of buttons ) {
-				expect( buttonView.isEnabled, buttonView.label ).to.be.false;
+				expect( buttonView.isEnabled, buttonView.label ).toBe( false );
 			}
 		} );
 
@@ -151,26 +152,26 @@ describe( 'ImageStyleUI', () => {
 
 			for ( const { config, buttonView } of buttons ) {
 				command.value = config.name;
-				expect( buttonView.isOn ).to.be.true;
+				expect( buttonView.isOn ).toBe( true );
 				command.value = false;
-				expect( buttonView.isOn ).to.be.false;
+				expect( buttonView.isOn ).toBe( false );
 				command.value = 'someCustomValue';
-				expect( buttonView.isOn ).to.be.false;
+				expect( buttonView.isOn ).toBe( false );
 			}
 		} );
 
 		it( 'should execute the command when the button is being clicked', () => {
-			const commandSpy = sinon.spy( editor, 'execute' );
-			const focusSpy = sinon.stub( editor.editing.view, 'focus' );
+			const commandSpy = vi.spyOn( editor, 'execute' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 
 			for ( const { config, buttonView } of buttons ) {
 				buttonView.fire( 'execute' );
 
-				sinon.assert.calledOnce( commandSpy );
-				sinon.assert.calledWithExactly( commandSpy, 'imageStyle', { value: config.name } );
-				sinon.assert.called( focusSpy );
+				expect( commandSpy ).toHaveBeenCalledOnce();
+				expect( commandSpy ).toHaveBeenCalledWith( 'imageStyle', { value: config.name } );
+				expect( focusSpy ).toHaveBeenCalled();
 
-				commandSpy.resetHistory();
+				commandSpy.mockClear();
 			}
 		} );
 
@@ -187,7 +188,7 @@ describe( 'ImageStyleUI', () => {
 					}
 				} );
 
-			expect( customEditor.config.get( 'image.toolbar' ) ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( customEditor.config.get( 'image.toolbar' ) ).toEqual( [ 'foo', 'bar' ] );
 
 			customEditorElement.remove();
 			await customEditor.destroy();
@@ -198,7 +199,7 @@ describe( 'ImageStyleUI', () => {
 			global.document.body.appendChild( customEditorElement );
 
 			class TranslationMock extends Plugin {
-				init() { sinon.stub( this.editor, 't' ).returns( 'Default title' ); }
+				init() { vi.spyOn( this.editor, 't' ).mockReturnValue( 'Default title' ); }
 			}
 
 			const customEditor = await ClassicTestEditor.create( customEditorElement, {
@@ -211,7 +212,7 @@ describe( 'ImageStyleUI', () => {
 
 			const buttonView = customEditor.ui.componentFactory.create( 'imageStyle:alignLeft' );
 
-			expect( buttonView.label ).to.equal( 'Default title' );
+			expect( buttonView.label ).toBe( 'Default title' );
 
 			customEditorElement.remove();
 			await customEditor.destroy();
@@ -232,7 +233,7 @@ describe( 'ImageStyleUI', () => {
 
 			const buttonView = customEditor.ui.componentFactory.create( 'imageStyle:foo' );
 
-			expect( buttonView.label ).to.equal( 'Custom title' );
+			expect( buttonView.label ).toBe( 'Custom title' );
 
 			customEditorElement.remove();
 			await customEditor.destroy();
@@ -242,8 +243,6 @@ describe( 'ImageStyleUI', () => {
 	describe( 'drop-downs', () => {
 		let dropdowns;
 
-		testUtils.createSinonSandbox();
-
 		beforeEach( () => {
 			dropdowns = [ ...defaultDropdowns, ...customDropdowns ].map( dropdown => {
 				const view = factory.create( dropdown.name );
@@ -252,7 +251,7 @@ describe( 'ImageStyleUI', () => {
 				global.document.body.appendChild( view.element );
 
 				// Make sure that toolbar view is not created before first dropdown open.
-				expect( view.toolbarView ).to.be.undefined;
+				expect( view.toolbarView ).toBeUndefined();
 
 				// Trigger toolbar view creation (lazy init).
 				view.isOpen = true;
@@ -271,20 +270,20 @@ describe( 'ImageStyleUI', () => {
 				const defaultItem = allStyles.find( style => style.name === config.defaultItem.replace( 'imageStyle:', '' ) );
 				const expectedLabel = ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title;
 
-				expect( view ).to.be.instanceOf( DropdownView );
-				expect( buttonView ).to.be.instanceOf( SplitButtonView );
+				expect( view ).toBeInstanceOf( DropdownView );
+				expect( buttonView ).toBeInstanceOf( SplitButtonView );
 
-				expect( buttonView.label ).to.equal( expectedLabel );
-				expect( buttonView.tooltip ).to.be.true;
-				expect( buttonView.class ).to.be.undefined;
+				expect( buttonView.label ).toBe( expectedLabel );
+				expect( buttonView.tooltip ).toBe( true );
+				expect( buttonView.class ).toBeUndefined();
 
-				expect( buttonView.arrowView.label ).to.equal( config.title );
-				expect( buttonView.arrowView.tooltip ).to.be.true;
+				expect( buttonView.arrowView.label ).toBe( config.title );
+				expect( buttonView.arrowView.tooltip ).toBe( true );
 
-				expect( view.toolbarView.items ).to.have.lengthOf( config.items.length );
+				expect( view.toolbarView.items ).toHaveLength( config.items.length );
 
 				view.toolbarView.items.map( item => {
-					expect( item ).to.be.instanceOf( ButtonView );
+					expect( item ).toBeInstanceOf( ButtonView );
 				} );
 			}
 		} );
@@ -292,11 +291,11 @@ describe( 'ImageStyleUI', () => {
 		it( 'should focus the first active button when dropdown is opened', () => {
 			for ( const { view } of dropdowns ) {
 				const secondButton = view.toolbarView.items.get( 1 );
-				const spy = sinon.spy( secondButton, 'focus' );
+				const spy = vi.spyOn( secondButton, 'focus' );
 
 				secondButton.isOn = true;
 				view.isOpen = true;
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			}
 		} );
 
@@ -304,17 +303,17 @@ describe( 'ImageStyleUI', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'imageStyle:breakText' );
 
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdownView.toolbarView ).to.be.undefined;
+			expect( dropdownView.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			dropdownView.isOpen = true;
 
-			expect( dropdownView.buttonView.arrowView.label ).to.equal( 'Default title' );
+			expect( dropdownView.buttonView.arrowView.label ).toBe( 'Default title' );
 
 			// Simulate the user changing the style of an image.
 			dropdownView.toolbarView.items.get( 0 ).isOn = true;
 
-			expect( dropdownView.buttonView.arrowView.label ).to.equal( 'Default title' );
+			expect( dropdownView.buttonView.arrowView.label ).toBe( 'Default title' );
 		} );
 
 		it( 'should translate the drop-down title if taken from default styles', async () => {
@@ -322,7 +321,7 @@ describe( 'ImageStyleUI', () => {
 			global.document.body.appendChild( customEditorElement );
 
 			class TranslationMock extends Plugin {
-				init() { sinon.stub( this.editor, 't' ).returns( 'Default title' ); }
+				init() { vi.spyOn( this.editor, 't' ).mockReturnValue( 'Default title' ); }
 			}
 
 			const customEditor = await ClassicTestEditor.create( customEditorElement, {
@@ -335,7 +334,7 @@ describe( 'ImageStyleUI', () => {
 
 			const dropdownView = customEditor.ui.componentFactory.create( 'imageStyle:wrapText' );
 
-			expect( dropdownView.buttonView.label ).to.equal( 'Default title: Default title' );
+			expect( dropdownView.buttonView.label ).toBe( 'Default title: Default title' );
 
 			customEditorElement.remove();
 			await customEditor.destroy();
@@ -355,14 +354,14 @@ describe( 'ImageStyleUI', () => {
 
 			const dropdownView = customEditor.ui.componentFactory.create( 'imageStyle:custom' );
 
-			expect( dropdownView.buttonView.label ).to.equal( 'Custom title: In line' );
+			expect( dropdownView.buttonView.label ).toBe( 'Custom title: In line' );
 
 			customEditorElement.remove();
 			await customEditor.destroy();
 		} );
 
 		it( 'should warn and filter out the items that are not defined as the styles while creating a toolbar', async () => {
-			sinon.stub( console, 'warn' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			const customEditorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( customEditorElement );
@@ -385,17 +384,17 @@ describe( 'ImageStyleUI', () => {
 			const toolbar = customEditor.plugins.get( 'WidgetToolbarRepository' )._toolbarDefinitions.get( 'image' ).view;
 
 			// Make sure that toolbar is empty before first show.
-			expect( toolbar.items.length ).to.equal( 0 );
+			expect( toolbar.items.length ).toBe( 0 );
 
 			customEditor.ui.focusTracker.isFocused = true;
 
 			_setModelData( customEditor.model, '[<imageBlock src=""></imageBlock>]' );
 
-			sinon.assert.calledOnce( console.warn );
-			sinon.assert.calledWithExactly( console.warn,
-				sinon.match( /^image-style-configuration-definition-invalid/ ),
+			expect( console.warn ).toHaveBeenCalledOnce();
+			expect( console.warn ).toHaveBeenCalledWith(
+				expect.stringMatching( /^image-style-configuration-definition-invalid/ ),
 				{ dropdown },
-				sinon.match.string // Link to the documentation
+				expect.any( String ) // Link to the documentation
 			);
 
 			customEditorElement.remove();
@@ -403,7 +402,7 @@ describe( 'ImageStyleUI', () => {
 		} );
 
 		it( 'should warn and filter out the items that are not supported by the loaded plugins while creating a toolbar', async () => {
-			sinon.stub( console, 'warn' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			const customEditorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( customEditorElement );
@@ -428,25 +427,25 @@ describe( 'ImageStyleUI', () => {
 			const toolbar = customEditor.plugins.get( 'WidgetToolbarRepository' )._toolbarDefinitions.get( 'image' ).view;
 
 			// Make sure that toolbar is empty before first show.
-			expect( toolbar.items.length ).to.equal( 0 );
+			expect( toolbar.items.length ).toBe( 0 );
 
 			customEditor.ui.focusTracker.isFocused = true;
 
 			_setModelData( customEditor.model, '[<imageBlock src=""></imageBlock>]' );
 
-			sinon.assert.calledTwice( console.warn );
-			sinon.assert.calledWithExactly( console.warn,
-				sinon.match( /^image-style-missing-dependency/ ),
+			expect( console.warn ).toHaveBeenCalledTimes( 2 );
+			expect( console.warn ).toHaveBeenCalledWith(
+				expect.stringMatching( /^image-style-missing-dependency/ ),
 				{
 					style: { name: 'foo', modelElements: [ 'imageInline' ], icon: '' },
 					missingPlugins: [ 'ImageInlineEditing' ]
 				},
-				sinon.match.string // Link to the documentation
+				expect.any( String ) // Link to the documentation
 			);
-			sinon.assert.calledWithExactly( console.warn,
-				sinon.match( /^image-style-configuration-definition-invalid/ ),
+			expect( console.warn ).toHaveBeenCalledWith(
+				expect.stringMatching( /^image-style-configuration-definition-invalid/ ),
 				{ dropdown },
-				sinon.match.string // Link to the documentation
+				expect.any( String ) // Link to the documentation
 			);
 
 			customEditorElement.remove();
@@ -466,38 +465,38 @@ describe( 'ImageStyleUI', () => {
 
 			it( 'should inherit the icon, state and label from the active nested button', () => {
 				for ( const { config, buttonView, activeButton } of dropdowns ) {
-					expect( buttonView.icon ).to.equal( activeButton.icon );
-					expect( buttonView.label ).to.equal( ( config.title ? `${ config.title }: ` : '' ) + activeButton.label );
-					expect( buttonView.isOn ).to.be.true;
+					expect( buttonView.icon ).toBe( activeButton.icon );
+					expect( buttonView.label ).toBe( ( config.title ? `${ config.title }: ` : '' ) + activeButton.label );
+					expect( buttonView.isOn ).toBe( true );
 				}
 			} );
 
 			it( 'should have the "ck-splitbutton_flatten" class', () => {
 				for ( const { buttonView } of dropdowns ) {
-					expect( buttonView.class ).to.equal( 'ck-splitbutton_flatten' );
+					expect( buttonView.class ).toBe( 'ck-splitbutton_flatten' );
 				}
 			} );
 
 			it( 'it should open the dropDown view when the button is being clicked', () => {
-				const commandSpy = sinon.spy( editor, 'execute' );
+				const commandSpy = vi.spyOn( editor, 'execute' );
 
 				for ( const { view, buttonView } of dropdowns ) {
 					buttonView.fire( 'execute' );
 
-					sinon.assert.notCalled( commandSpy );
-					expect( view.isOpen ).to.be.true;
+					expect( commandSpy ).not.toHaveBeenCalled();
+					expect( view.isOpen ).toBe( true );
 				}
 			} );
 
 			it( 'it should close the open dropDown view when the button is being clicked', () => {
-				const commandSpy = sinon.spy( editor, 'execute' );
+				const commandSpy = vi.spyOn( editor, 'execute' );
 
 				for ( const { view, buttonView } of dropdowns ) {
 					buttonView.fire( 'execute' );
 					buttonView.fire( 'execute' );
 
-					sinon.assert.notCalled( commandSpy );
-					expect( view.isOpen ).to.be.false;
+					expect( commandSpy ).not.toHaveBeenCalled();
+					expect( view.isOpen ).toBe( false );
 				}
 			} );
 		} );
@@ -507,31 +506,31 @@ describe( 'ImageStyleUI', () => {
 				for ( const { buttonView, config } of dropdowns ) {
 					const defaultItem = DEFAULT_OPTIONS[ config.defaultItem.replace( 'imageStyle:', '' ) ];
 
-					expect( buttonView.icon ).to.equal( defaultItem.icon );
-					expect( buttonView.label ).to.equal( ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title );
+					expect( buttonView.icon ).toBe( defaultItem.icon );
+					expect( buttonView.label ).toBe( ( config.title ? `${ config.title }: ` : '' ) + defaultItem.title );
 				}
 			} );
 
 			it( 'should not have the "ck-splitbutton_flatten" class', () => {
 				for ( const { buttonView } of dropdowns ) {
-					expect( buttonView.class ).to.be.undefined;
+					expect( buttonView.class ).toBeUndefined();
 				}
 			} );
 
 			it( 'it should execute the command with proper value when the button is being clicked', () => {
-				const commandSpy = sinon.spy( editor, 'execute' );
-				const focusSpy = sinon.stub( editor.editing.view, 'focus' );
+				const commandSpy = vi.spyOn( editor, 'execute' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 
 				for ( const { buttonView, config, view } of dropdowns ) {
 					buttonView.fire( 'execute' );
 
-					expect( view.isOpen ).to.be.false;
+					expect( view.isOpen ).toBe( false );
 
-					sinon.assert.calledOnce( commandSpy );
-					sinon.assert.calledWithExactly( commandSpy, 'imageStyle', { value: config.defaultItem.replace( 'imageStyle:', '' ) } );
-					sinon.assert.called( focusSpy );
+					expect( commandSpy ).toHaveBeenCalledOnce();
+					expect( commandSpy ).toHaveBeenCalledWith( 'imageStyle', { value: config.defaultItem.replace( 'imageStyle:', '' ) } );
+					expect( focusSpy ).toHaveBeenCalled();
 
-					commandSpy.resetHistory();
+					commandSpy.mockClear();
 				}
 			} );
 		} );
@@ -548,7 +547,7 @@ describe( 'ImageStyleUI', () => {
 			}
 
 			for ( const { buttonView, config } of dropdowns ) {
-				expect( buttonView.isEnabled, `Failing dropdown name: "${ config.name }"` ).to.be.true;
+				expect( buttonView.isEnabled, `Failing dropdown name: "${ config.name }"` ).toBe( true );
 			}
 		} );
 
@@ -562,7 +561,7 @@ describe( 'ImageStyleUI', () => {
 			}
 
 			for ( const { buttonView, config } of dropdowns ) {
-				expect( buttonView.isEnabled, `Failing dropdown name: "${ config.name }"` ).to.be.false;
+				expect( buttonView.isEnabled, `Failing dropdown name: "${ config.name }"` ).toBe( false );
 			}
 		} );
 	} );

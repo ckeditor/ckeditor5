@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ImageEditing } from '../../src/image/imageediting.js';
 import {
 	upcastImageFigure,
@@ -15,12 +16,13 @@ import {
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { _getViewData, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Image converters', () => {
 	let editor, model, document, viewDocument;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
@@ -74,7 +76,7 @@ describe( 'Image converters', () => {
 
 	describe( 'upcastImageFigure', () => {
 		function expectModel( data ) {
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( data );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( data );
 		}
 
 		let schema, imgConverterCalled;
@@ -103,10 +105,10 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should find img element among children and convert it using already defined converters', () => {
-			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+			editor.setData( '<figure class="image"><img src="/sample.png" /></figure>' );
 
-			expectModel( '<imageBlock src="/assets/sample.png"></imageBlock>' );
-			expect( imgConverterCalled ).to.be.true;
+			expectModel( '<imageBlock src="/sample.png"></imageBlock>' );
+			expect( imgConverterCalled ).toBe( true );
 		} );
 
 		it( 'should not crash when the image cannot be inserted into the current context', () => {
@@ -114,8 +116,8 @@ describe( 'Image converters', () => {
 			schema.addChildCheck( () => false, 'imageBlock' );
 
 			expect( () => {
-				editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
-			} ).to.not.throw();
+				editor.setData( '<figure class="image"><img src="/sample.png" /></figure>' );
+			} ).not.toThrow();
 		} );
 
 		it( 'should convert children allowed by schema and omit disallowed', () => {
@@ -126,10 +128,10 @@ describe( 'Image converters', () => {
 			// Is allowed in root, but should not try to split image element.
 			schema.register( 'bar', { allowIn: '$root' } );
 
-			editor.setData( '<figure class="image">x<img src="/assets/sample.png" />y<foo></foo><bar></bar></figure>' );
+			editor.setData( '<figure class="image">x<img src="/sample.png" />y<foo></foo><bar></bar></figure>' );
 
 			// Element bar not converted because schema does not allow it.
-			expectModel( '<imageBlock src="/assets/sample.png">xy<foo></foo></imageBlock>' );
+			expectModel( '<imageBlock src="/sample.png">xy<foo></foo></imageBlock>' );
 		} );
 
 		it( 'should split parent element when image is not allowed - in the middle', () => {
@@ -202,18 +204,18 @@ describe( 'Image converters', () => {
 				data.modelCursor = data.modelRange.end;
 			}, { priority: 'high' } );
 
-			editor.setData( '<figure class="image"><img src="/assets/sample.png" />xyz</figure>' );
+			editor.setData( '<figure class="image"><img src="/sample.png" />xyz</figure>' );
 
-			expectModel( '<myImage data="{"src":"/assets/sample.png"}"></myImage>' );
+			expectModel( '<myImage data="{"src":"/sample.png"}"></myImage>' );
 		} );
 
 		// Test exactly what figure converter does, which is putting it's children element to image element.
 		// If this has not been done, it means that figure converter was not used.
 		it( 'should not convert if figure do not have class="image" attribute', () => {
-			editor.setData( '<figure><img src="/assets/sample.png" />xyz</figure>' );
+			editor.setData( '<figure><img src="/sample.png" />xyz</figure>' );
 
 			// Default image converter will be fired.
-			expectModel( '<imageBlock src="/assets/sample.png"></imageBlock>' );
+			expectModel( '<imageBlock src="/sample.png"></imageBlock>' );
 		} );
 
 		it( 'should convert image with missing src attribute', () => {
@@ -243,26 +245,26 @@ describe( 'Image converters', () => {
 			}, { priority: 'high' } );
 
 			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).toBe( true );
 			}, { priority: 'low' } );
 
-			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+			editor.setData( '<figure class="image"><img src="/sample.png" /></figure>' );
 		} );
 
 		it( 'should not left unconsumed figure media element', () => {
 			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.false;
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).toBe( false );
 			}, { priority: 'low' } );
 
-			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+			editor.setData( '<figure class="image"><img src="/sample.png" /></figure>' );
 		} );
 
 		it( 'should consume the figure element before the img conversion starts', () => {
 			editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem.parent, { name: true, classes: 'image' } ) ).to.be.false;
+				expect( conversionApi.consumable.test( data.viewItem.parent, { name: true, classes: 'image' } ) ).toBe( false );
 			}, { priority: 'low' } );
 
-			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+			editor.setData( '<figure class="image"><img src="/sample.png" /></figure>' );
 		} );
 	} );
 
@@ -276,7 +278,7 @@ describe( 'Image converters', () => {
 				writer.setAttribute( 'alt', 'foo bar', image );
 			} );
 
-			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img></figure>'
 			);
 		} );
@@ -289,7 +291,7 @@ describe( 'Image converters', () => {
 				writer.removeAttribute( 'src', image );
 			} );
 
-			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img></figure>'
 			);
 		} );
@@ -302,7 +304,7 @@ describe( 'Image converters', () => {
 				writer.removeAttribute( 'alt', image );
 			} );
 
-			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="" src=""></img></figure>'
 			);
 		} );
@@ -315,7 +317,7 @@ describe( 'Image converters', () => {
 				writer.setAttribute( 'alt', 'baz quix', image );
 			} );
 
-			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="baz quix" src=""></img></figure>'
 			);
 		} );
@@ -327,7 +329,7 @@ describe( 'Image converters', () => {
 
 			_setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 
-			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget image" contenteditable="false"><img src=""></img></figure>'
 			);
 		} );
@@ -345,7 +347,7 @@ describe( 'Image converters', () => {
 				writer.setAttribute( 'alt', 'foo bar', image );
 			} );
 
-			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img><foo></foo></figure>'
 			);
 		} );

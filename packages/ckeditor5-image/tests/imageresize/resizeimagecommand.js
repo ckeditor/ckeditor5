@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
@@ -35,19 +36,19 @@ describe( 'ResizeImageCommand', () => {
 		it( 'is true when image is selected', () => {
 			_setModelData( model, '<paragraph>x</paragraph>[<imageBlock resizedWidth="50px"></imageBlock>]<paragraph>x</paragraph>' );
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'is true when the selection is inside a block image caption', () => {
 			_setModelData( model, '<imageBlock resizedWidth="50px"><caption>[F]oo</caption></imageBlock>' );
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'is false when image is not selected', () => {
 			_setModelData( model, '<paragraph>x[]</paragraph><imageBlock resizedWidth="50px"></imageBlock>' );
 
-			expect( command ).to.have.property( 'isEnabled', false );
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'is false when more than one image is selected', () => {
@@ -58,7 +59,7 @@ describe( 'ResizeImageCommand', () => {
 				'<imageBlock resizedWidth="50px"></imageBlock>]'
 			);
 
-			expect( command ).to.have.property( 'isEnabled', false );
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -66,25 +67,25 @@ describe( 'ResizeImageCommand', () => {
 		it( 'is null when image is not selected', () => {
 			_setModelData( model, '<paragraph>x[]</paragraph><imageBlock resizedWidth="50px"></imageBlock>' );
 
-			expect( command ).to.have.property( 'value', null );
+			expect( command.value ).toBeNull();
 		} );
 
 		it( 'is set to an object with a width property (and height set to null) when a block image is selected', () => {
 			_setModelData( model, '<paragraph>x</paragraph>[<imageBlock resizedWidth="50px"></imageBlock>]<paragraph>x</paragraph>' );
 
-			expect( command ).to.have.deep.property( 'value', { width: '50px', height: null } );
+			expect( command.value ).toEqual( { width: '50px', height: null } );
 		} );
 
 		it( 'is set to an object with a width property (and height set to null) when the selection is in a block image caption', () => {
 			_setModelData( model, '<imageBlock resizedWidth="50px"><caption>[]Foo</caption></imageBlock>' );
 
-			expect( command ).to.have.deep.property( 'value', { width: '50px', height: null } );
+			expect( command.value ).toEqual( { width: '50px', height: null } );
 		} );
 
 		it( 'is set to null if image does not have the resizedWidth set', () => {
 			_setModelData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>x</paragraph>' );
 
-			expect( command ).to.have.property( 'value', null );
+			expect( command.value ).toBeNull();
 		} );
 	} );
 
@@ -94,7 +95,7 @@ describe( 'ResizeImageCommand', () => {
 
 			command.execute( { width: '100%' } );
 
-			expect( _getModelData( model ) ).to.equal( '[<imageBlock resizedWidth="100%"></imageBlock>]' );
+			expect( _getModelData( model ) ).toBe( '[<imageBlock resizedWidth="100%"></imageBlock>]' );
 		} );
 
 		it( 'sets image resizedWidth when selection is in a block image caption', () => {
@@ -102,7 +103,7 @@ describe( 'ResizeImageCommand', () => {
 
 			command.execute( { width: '100%' } );
 
-			expect( _getModelData( model ) ).to.equal( '<imageBlock resizedWidth="100%"><caption>F[o]o</caption></imageBlock>' );
+			expect( _getModelData( model ) ).toBe( '<imageBlock resizedWidth="100%"><caption>F[o]o</caption></imageBlock>' );
 		} );
 
 		it( 'removes image resizedWidth when null passed', () => {
@@ -110,8 +111,8 @@ describe( 'ResizeImageCommand', () => {
 
 			command.execute( { width: null } );
 
-			expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
-			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'resizedWidth' ) ).to.be.false;
+			expect( _getModelData( model ) ).toBe( '[<imageBlock></imageBlock>]' );
+			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'resizedWidth' ) ).toBe( false );
 		} );
 
 		it( 'removes image resizedHeight', () => {
@@ -119,8 +120,8 @@ describe( 'ResizeImageCommand', () => {
 
 			command.execute( { width: '100%' } );
 
-			expect( _getModelData( model ) ).to.equal( '[<imageBlock resizedWidth="100%"></imageBlock>]' );
-			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'resizedHeight' ) ).to.be.false;
+			expect( _getModelData( model ) ).toBe( '[<imageBlock resizedWidth="100%"></imageBlock>]' );
+			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'resizedHeight' ) ).toBe( false );
 		} );
 
 		describe( 'image width and height attributes', () => {
@@ -148,7 +149,7 @@ describe( 'ResizeImageCommand', () => {
 			} );
 
 			it( 'should set width and height when resizedWidth is set (and be undoable in single step)', async () => {
-				const initialData = '[<imageBlock src="/assets/sample.png"></imageBlock>]';
+				const initialData = '[<imageBlock src="/sample.png"></imageBlock>]';
 
 				_setModelData( model, initialData );
 
@@ -156,7 +157,7 @@ describe( 'ResizeImageCommand', () => {
 				await timeout( 100 );
 
 				expect( _getModelData( model ) ).to.equal(
-					'[<imageBlock height="96" resizedWidth="100%" src="/assets/sample.png" width="96"></imageBlock>]'
+					'[<imageBlock height="96" resizedWidth="100%" src="/sample.png" width="96"></imageBlock>]'
 				);
 
 				editor.execute( 'undo' );
@@ -165,14 +166,14 @@ describe( 'ResizeImageCommand', () => {
 			} );
 
 			it( 'should set width and height when resizedWidth is removed (and be undoable in single step)', async () => {
-				const initialData = '[<imageBlock resizedWidth="50px" src="/assets/sample.png"></imageBlock>]';
+				const initialData = '[<imageBlock resizedWidth="50px" src="/sample.png"></imageBlock>]';
 
 				_setModelData( model, initialData );
 
 				command.execute( { width: null } );
 				await timeout( 100 );
 
-				expect( _getModelData( model ) ).to.equal( '[<imageBlock height="96" src="/assets/sample.png" width="96"></imageBlock>]' );
+				expect( _getModelData( model ) ).to.equal( '[<imageBlock height="96" src="/sample.png" width="96"></imageBlock>]' );
 
 				editor.execute( 'undo' );
 

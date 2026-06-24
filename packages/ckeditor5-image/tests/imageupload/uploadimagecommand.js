@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
@@ -47,14 +48,14 @@ describe( 'UploadImageCommand', () => {
 	} );
 
 	afterEach( () => {
-		sinon.restore();
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should set `isAccessAllowed` on `true` when initialized', () => {
-			expect( command.isAccessAllowed ).to.be.true;
+			expect( command.isAccessAllowed ).toBe( true );
 		} );
 	} );
 
@@ -64,19 +65,19 @@ describe( 'UploadImageCommand', () => {
 				_setModelData( model, '[]' );
 
 				command.refresh();
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
 		it( 'should be true when the selection is in empty block', () => {
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection directly in a paragraph', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection directly in a block', () => {
@@ -85,12 +86,12 @@ describe( 'UploadImageCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			_setModelData( model, '<block>foo[]</block>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection is on other image', () => {
 			_setModelData( model, '[<imageBlock></imageBlock>]' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false when the selection is inside other image', () => {
@@ -102,7 +103,7 @@ describe( 'UploadImageCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
 			_setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true when the selection is on other object', () => {
@@ -110,7 +111,7 @@ describe( 'UploadImageCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 			_setModelData( model, '[<object></object>]' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection is inside block element inside isLimit element which allows image', () => {
@@ -141,7 +142,7 @@ describe( 'UploadImageCommand', () => {
 
 			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -154,7 +155,7 @@ describe( 'UploadImageCommand', () => {
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( _getModelData( model ) )
-				.to.equal( `<paragraph>f[<imageInline uploadId="${ id }"></imageInline>]o</paragraph>` );
+				.toBe( `<paragraph>f[<imageInline uploadId="${ id }"></imageInline>]o</paragraph>` );
 		} );
 
 		it( 'should insert multiple images at selection position, one after another', () => {
@@ -167,7 +168,7 @@ describe( 'UploadImageCommand', () => {
 			const idB = fileRepository.getLoader( file[ 1 ] ).id;
 			const idC = fileRepository.getLoader( file[ 2 ] ).id;
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>f' +
 					`<imageInline uploadId="${ idA }"></imageInline>` +
 					`<imageInline uploadId="${ idB }"></imageInline>` +
@@ -182,11 +183,11 @@ describe( 'UploadImageCommand', () => {
 			_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 			model.change( writer => {
-				expect( writer.batch.operations ).to.length( 0 );
+				expect( writer.batch.operations ).toHaveLength( 0 );
 
 				command.execute( { file } );
 
-				expect( writer.batch.operations ).to.length.above( 0 );
+				expect( writer.batch.operations.length ).toBeGreaterThan( 0 );
 			} );
 		} );
 
@@ -205,7 +206,7 @@ describe( 'UploadImageCommand', () => {
 
 			command.execute( { file } );
 
-			expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
+			expect( _getModelData( model ) ).toBe( '<other>[]</other>' );
 		} );
 
 		it( 'should not throw when upload adapter is not set (FileRepository will log an warn anyway)', () => {
@@ -213,16 +214,16 @@ describe( 'UploadImageCommand', () => {
 
 			fileRepository.createUploadAdapter = undefined;
 
-			const consoleWarnStub = sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 			expect( () => {
 				command.execute( { file } );
-			} ).to.not.throw();
+			} ).not.toThrow();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
-			sinon.assert.calledOnce( consoleWarnStub );
+			expect( _getModelData( model ) ).toBe( '<paragraph>fo[]o</paragraph>' );
+			expect( consoleWarnStub ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should set document selection attributes on an image to maintain attribute continuity in downcast (e.g. links)', () => {
@@ -235,7 +236,7 @@ describe( 'UploadImageCommand', () => {
 
 			const id = fileRepository.getLoader( file ).id;
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<$text bar="b" baz="c" foo="a">f</$text>' +
 					`[<imageInline bar="b" baz="c" foo="a" uploadId="${ id }"></imageInline>]` +
@@ -256,7 +257,7 @@ describe( 'UploadImageCommand', () => {
 			const idB = fileRepository.getLoader( file[ 1 ] ).id;
 			const idC = fileRepository.getLoader( file[ 2 ] ).id;
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<$text bar="b" baz="c" foo="a">f</$text>' +
 					`<imageInline bar="b" baz="c" foo="a" uploadId="${ idA }"></imageInline>` +

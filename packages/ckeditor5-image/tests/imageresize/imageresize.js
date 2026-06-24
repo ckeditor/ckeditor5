@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { ImageResize } from '../../src/imageresize.js';
 import { ImageResizeButtons } from '../../src/imageresize/imageresizebuttons.js';
 import { ImageResizeEditing } from '../../src/imageresize/imageresizeediting.js';
@@ -11,18 +12,18 @@ import { ImageCustomResizeUI } from '../../src/imageresize/imagecustomresizeui.j
 
 describe( 'ImageResize', () => {
 	it( 'should require "ImageResizeEditing", "ImageResizeHandles", "ImageCustomResizeUI", and "ImageResizeButtons"', () => {
-		expect( ImageResize.requires ).to.deep.equal( [ ImageResizeEditing, ImageResizeHandles, ImageCustomResizeUI, ImageResizeButtons ] );
+		expect( ImageResize.requires ).toEqual( [ ImageResizeEditing, ImageResizeHandles, ImageCustomResizeUI, ImageResizeButtons ] );
 	} );
 
 	it( 'should be named', () => {
-		expect( ImageResize.pluginName ).to.equal( 'ImageResize' );
+		expect( ImageResize.pluginName ).toBe( 'ImageResize' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageResize.isOfficialPlugin ).to.be.true;
+		expect( ImageResize.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageResize.isPremiumPlugin ).to.be.false;
+		expect( ImageResize.isPremiumPlugin ).toBe( false );
 	} );
 } );
