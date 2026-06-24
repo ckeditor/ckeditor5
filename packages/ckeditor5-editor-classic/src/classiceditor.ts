@@ -21,10 +21,13 @@ import {
 	verifyRootElements,
 	type EditorConfig,
 	type EditorReadyEvent,
-	type ViewRootElementDefinition
+	type ViewRootElementDefinition,
+	type ElementApiMixinConstructor
 } from '@ckeditor/ckeditor5-core';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
+
+const ClassicEditorBase: ElementApiMixinConstructor<typeof Editor> = /* #__PURE__ */ ElementApiMixin( Editor );
 
 /**
  * The classic editor implementation. It uses an inline editable and a sticky toolbar, all enclosed in a boxed UI.
@@ -33,7 +36,7 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  * In order to create a classic editor instance, use the static
  * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`} method.
  */
-export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+export class ClassicEditor extends ClassicEditorBase {
 	/**
 	 * @inheritDoc
 	 */

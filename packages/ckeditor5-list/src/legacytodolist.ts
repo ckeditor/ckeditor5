@@ -9,7 +9,7 @@
 
 import { LegacyTodoListEditing } from './legacytodolist/legacytodolistediting.js';
 import { TodoListUI } from './todolist/todolistui.js';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import '../theme/todolist.css';
 
 /**
@@ -22,8 +22,8 @@ export class LegacyTodoList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ LegacyTodoListEditing, TodoListUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ LegacyTodoListEditing, TodoListUI ]> {
+		return [ LegacyTodoListEditing, TodoListUI ];
 	}
 
 	/**

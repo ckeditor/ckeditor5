@@ -24,7 +24,7 @@ export {
 	type EnvFeaturesType
 } from './env.js';
 
-export { diff, type DiffResult } from './diff.js';
+export { diff, type Diff, type DiffResult } from './diff.js';
 export { fastDiff } from './fastdiff.js';
 export { diffToChanges, type InsertChange, type DeleteChange, type Change } from './difftochanges.js';
 
@@ -38,6 +38,7 @@ export {
 	_getEmitterId,
 	EmitterMixin,
 	type Emitter,
+	type EmitterMixinConstructor,
 	type BaseEvent,
 	type CallbackOptions,
 	type EmitterMixinDelegateChain,
@@ -52,6 +53,7 @@ export { EventInfo } from './eventinfo.js';
 export {
 	ObservableMixin,
 	type Observable,
+	type ObservableMixinConstructor,
 	type DecoratedMethodEvent,
 	type ObservableChangeEvent,
 	type ObservableSetEvent,
@@ -70,7 +72,7 @@ export { compareArrays, type ArrayRelation } from './comparearrays.js';
 export { createElement, type HTMLElementAttributes, type SVGElementAttributes, type ChildrenElements } from './dom/createelement.js';
 export { Config, type GetSubConfig, type OnlyObject } from './config.js';
 export { isIterable } from './isiterable.js';
-export { DomEmitterMixin, type DomEmitter, type DomEventMap } from './dom/emittermixin.js';
+export { DomEmitterMixin, type DomEmitter, type DomEmitterMixinConstructor, type DomEventMap } from './dom/emittermixin.js';
 export { findClosestScrollableAncestor } from './dom/findclosestscrollableancestor.js';
 export { global, type GlobalType } from './dom/global.js';
 export { getAncestors } from './dom/getancestors.js';
@@ -172,5 +174,11 @@ export {
 
 export { decodeLicenseKey } from './decodelicensekey.js';
 export { isFeatureBlockedByLicenseKey } from './isfeatureblockedbylicensekey.js';
+
+export {
+	tryParseDimensionWithUnit as _tryParseDimensionWithUnit,
+	tryCastDimensionsToUnit as _tryCastDimensionsToUnit,
+	type DimensionWithUnit as _DimensionWithUnit
+} from './parsedimensionwithunit.js';
 
 export { version, releaseDate } from './version.js';

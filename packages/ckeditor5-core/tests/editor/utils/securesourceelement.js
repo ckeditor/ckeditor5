@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { secureSourceElement } from '../../../src/editor/utils/securesourceelement.js';
 import { Editor } from '../../../src/editor/editor.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -28,13 +29,13 @@ describe( 'secureSourceElement()', () => {
 	it( 'does not throw if the editor was initialized using the element for the first time', () => {
 		expect( () => {
 			secureSourceElement( editor, sourceElement );
-		} ).to.not.throw();
+		} ).not.toThrow();
 	} );
 
 	it( 'sets the property after initializing the editor', () => {
 		secureSourceElement( editor, sourceElement );
 
-		expect( sourceElement.ckeditorInstance ).to.equal( editor );
+		expect( sourceElement.ckeditorInstance ).toBe( editor );
 	} );
 
 	it( 'removes the property after destroying the editor', () => {
@@ -44,7 +45,7 @@ describe( 'secureSourceElement()', () => {
 			.then( () => {
 				editor = null;
 
-				expect( sourceElement.ckeditorInstance ).to.be.undefined;
+				expect( sourceElement.ckeditorInstance ).toBeUndefined();
 			} );
 	} );
 

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { IconCheck } from '@ckeditor/ckeditor5-icons';
 import { View } from '../../src/view.js';
 import { ViewCollection } from '../../src/viewcollection.js';
@@ -24,29 +25,29 @@ describe( 'FormHeaderView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should set view#locale', () => {
-			expect( view.locale ).to.equal( locale );
+			expect( view.locale ).toBe( locale );
 		} );
 
 		it( 'should create view#children collection', () => {
-			expect( view.children ).to.be.instanceOf( ViewCollection );
-			expect( view.children ).to.have.length( 1 );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
+			expect( view.children ).toHaveLength( 1 );
 		} );
 
 		it( 'should set view#label', () => {
-			expect( view.label ).to.equal( '' );
+			expect( view.label ).toBe( '' );
 		} );
 
 		it( 'should set view#class', () => {
-			expect( view.class ).to.be.null;
+			expect( view.class ).toBeNull();
 		} );
 
 		it( 'should set the template', () => {
-			expect( view.template.attributes.class ).to.include( 'ck' );
-			expect( view.template.attributes.class ).to.include( 'ck-form__header' );
+			expect( view.template.attributes.class ).toContain( 'ck' );
+			expect( view.template.attributes.class ).toContain( 'ck-form__header' );
 		} );
 
 		it( 'should set view#tag', () => {
-			expect( view.children.first.template.tag ).to.equal( 'h2' );
+			expect( view.children.first.template.tag ).toBe( 'h2' );
 		} );
 
 		describe( 'options', () => {
@@ -54,7 +55,7 @@ describe( 'FormHeaderView', () => {
 				const view = new FormHeaderView( locale, {
 					class: 'foo'
 				} );
-				expect( view.class ).to.equal( 'foo' );
+				expect( view.class ).toBe( 'foo' );
 
 				view.destroy();
 			} );
@@ -66,10 +67,10 @@ describe( 'FormHeaderView', () => {
 
 				view.render();
 
-				expect( view.element.firstChild.classList.contains( 'ck' ) ).to.be.true;
-				expect( view.element.firstChild.classList.contains( 'ck-form__header__label' ) ).to.be.true;
-				expect( view.element.firstChild.role ).to.equal( 'presentation' );
-				expect( view.element.firstChild.textContent ).to.equal( 'foo' );
+				expect( view.element.firstChild.classList.contains( 'ck' ) ).toBe( true );
+				expect( view.element.firstChild.classList.contains( 'ck-form__header__label' ) ).toBe( true );
+				expect( view.element.firstChild.role ).toBe( 'presentation' );
+				expect( view.element.firstChild.textContent ).toBe( 'foo' );
 
 				view.destroy();
 			} );
@@ -82,16 +83,16 @@ describe( 'FormHeaderView', () => {
 
 				view.render();
 
-				expect( view.element.lastChild.classList.contains( 'ck' ) ).to.be.true;
-				expect( view.element.lastChild.classList.contains( 'ck-form__header__label' ) ).to.be.true;
-				expect( view.element.lastChild.textContent ).to.equal( 'foo' );
+				expect( view.element.lastChild.classList.contains( 'ck' ) ).toBe( true );
+				expect( view.element.lastChild.classList.contains( 'ck-form__header__label' ) ).toBe( true );
+				expect( view.element.lastChild.textContent ).toBe( 'foo' );
 
-				expect( view.element.firstChild.classList.contains( 'ck' ) ).to.be.true;
-				expect( view.element.firstChild.classList.contains( 'ck-icon' ) ).to.be.true;
+				expect( view.element.firstChild.classList.contains( 'ck' ) ).toBe( true );
+				expect( view.element.firstChild.classList.contains( 'ck-icon' ) ).toBe( true );
 
-				expect( view.iconView ).to.be.instanceOf( IconView );
-				expect( view.iconView.content ).to.equal( IconCheck );
-				expect( view.iconView.element ).to.equal( view.element.firstChild );
+				expect( view.iconView ).toBeInstanceOf( IconView );
+				expect( view.iconView.content ).toBe( IconCheck );
+				expect( view.iconView.element ).toBe( view.element.firstChild );
 
 				view.destroy();
 			} );
@@ -100,15 +101,15 @@ describe( 'FormHeaderView', () => {
 		describe( 'template bindings', () => {
 			it( 'should bind #class to the template', () => {
 				view.class = 'foo';
-				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+				expect( view.element.classList.contains( 'foo' ) ).toBe( true );
 			} );
 
 			it( 'should bind #label to the template', () => {
 				view.label = 'bar';
-				expect( view.element.firstChild.textContent ).to.equal( 'bar' );
+				expect( view.element.firstChild.textContent ).toBe( 'bar' );
 
 				view.label = 'baz';
-				expect( view.element.firstChild.textContent ).to.equal( 'baz' );
+				expect( view.element.firstChild.textContent ).toBe( 'baz' );
 			} );
 
 			it( 'should bind #children to the template', () => {
@@ -117,7 +118,7 @@ describe( 'FormHeaderView', () => {
 
 				view.children.add( child );
 
-				expect( view.element.childNodes[ 1 ] ).to.equal( child.element );
+				expect( view.element.childNodes[ 1 ] ).toBe( child.element );
 
 				view.destroy();
 			} );

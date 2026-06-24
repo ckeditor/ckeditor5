@@ -3,15 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { submitHandler } from '../../src/bindings/submithandler.js';
 
 import { View } from '../../src/view.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'submitHandler', () => {
 	let view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		view = new View();
@@ -23,15 +25,17 @@ describe( 'submitHandler', () => {
 		submitHandler( { view } );
 	} );
 
-	it( 'should fire #submit event on the view and prevent the native DOM #submit', done => {
-		const evt = new Event( 'submit' );
-		const spy = sinon.spy( evt, 'preventDefault' );
+	it( 'should fire #submit event on the view and prevent the native DOM #submit', () => {
+		return new Promise( resolve => {
+			const evt = new Event( 'submit' );
+			const spy = vi.spyOn( evt, 'preventDefault' );
 
-		view.on( 'submit', () => {
-			sinon.assert.calledOnce( spy );
-			done();
+			view.on( 'submit', () => {
+				expect( spy ).toHaveBeenCalledOnce();
+				resolve();
+			} );
+
+			view.element.child.dispatchEvent( evt );
 		} );
-
-		view.element.child.dispatchEvent( evt );
 	} );
 } );

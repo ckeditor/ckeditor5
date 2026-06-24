@@ -22,6 +22,8 @@ import { ImageCaption } from '../../src/imagecaption.js';
 import { ImageLoadObserver } from '../../src/image/imageloadobserver.js';
 import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 import { ImageResizeEditing } from '../../src/imageresize/imageresizeediting.js';
+import { ImageTextAlternativeEditing } from '../../src/imagetextalternative/imagetextalternativeediting.js';
+import { ImageSizeAttributes } from '../../src/imagesizeattributes.js';
 
 describe( 'ImageInlineEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -86,17 +88,17 @@ describe( 'ImageInlineEditing', () => {
 			expect( model.schema.checkChild( [ '$root', 'caption' ], 'imageInline' ) ).to.be.false;
 		} );
 
-		it( 'should disallow imageInline in $inlineRoot (inline-only root)', () => {
-			expect( model.schema.checkChild( [ '$inlineRoot' ], 'imageInline' ) ).to.be.false;
+		it( 'should allow imageInline in $inlineRoot (inline-only root)', () => {
+			expect( model.schema.checkChild( [ '$inlineRoot' ], 'imageInline' ) ).to.be.true;
 		} );
 
-		it( 'should disallow imageInline in a custom inline-only root registered by a plugin', () => {
+		it( 'should allow imageInline in a custom inline-only root registered by a plugin', () => {
 			model.schema.register( 'customInlineRoot', {
 				isLimit: true,
 				allowContentOf: '$inlineRoot'
 			} );
 
-			expect( model.schema.checkChild( [ 'customInlineRoot' ], 'imageInline' ) ).to.be.false;
+			expect( model.schema.checkChild( [ 'customInlineRoot' ], 'imageInline' ) ).to.be.true;
 		} );
 
 		it( 'should allow imageInline in a custom block-accepting root registered by a plugin', () => {
@@ -105,19 +107,15 @@ describe( 'ImageInlineEditing', () => {
 				allowContentOf: '$root'
 			} );
 
-			// The new rule only fires for limit elements that disallow `$block`. A custom root that accepts blocks
-			// must continue to host inline images in its block descendants (e.g. paragraphs).
 			expect( model.schema.checkChild( [ 'customBlockRoot', '$block' ], 'imageInline' ) ).to.be.true;
 		} );
 
-		it( 'should still allow imageInline inside non-limit block elements (e.g. paragraph)', () => {
-			// Regression check: the new structural rule must not affect `$block`-like containers that are not limits.
+		it( 'should allow imageInline inside non-limit block elements (e.g. paragraph)', () => {
 			expect( model.schema.checkChild( [ '$root', '$block' ], 'imageInline' ) ).to.be.true;
 		} );
 
-		it( 'should still allow imageInline inside a limit element that accepts $block (e.g. table cell)', () => {
-			// Mimics a table-cell-like limit: it is a limit element but explicitly accepts block content,
-			// so the new structural rule must not fire.
+		it( 'should allow imageInline inside a limit element that accepts $block (e.g. table cell)', () => {
+			// Mimics a table-cell-like limit: it is a limit element but explicitly accepts block content.
 			model.schema.register( 'cellLike', {
 				isLimit: true,
 				allowIn: '$root',
@@ -1051,6 +1049,152 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( _getModelData( model ) ).to.equal(
 				'<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>'
+			);
+		} );
+	} );
+
+	describe( 'inside $inlineRoot', () => {
+		let inlineEditorElement, inlineEditor, inlineModel, inlineViewDocument;
+
+		beforeEach( async () => {
+			inlineEditorElement = document.createElement( 'div' );
+			document.body.appendChild( inlineEditorElement );
+
+			inlineEditor = await ClassicTestEditor.create( inlineEditorElement, {
+				plugins: [ ImageInlineEditing, ImageBlockEditing, ImageSizeAttributes, ImageCaption, Clipboard, Paragraph ],
+				root: { modelElement: '$inlineRoot' }
+			} );
+
+			inlineModel = inlineEditor.model;
+			inlineViewDocument = inlineEditor.editing.view.document;
+		} );
+
+		afterEach( async () => {
+			await inlineEditor.destroy();
+			inlineEditorElement.remove();
+		} );
+
+		it( 'should unwrap a pasted block image as inline when imageBlock cannot land', () => {
+			const dataTransfer = new ViewDataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+			} );
+
+			_setModelData( inlineModel, 'foo[]bar' );
+
+			inlineViewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
+
+			expect( _getModelData( inlineModel ) ).to.equal(
+				'foo<imageInline src="/assets/sample.png"></imageInline>[]bar'
+			);
+		} );
+
+		it( 'should upcast a block image (figure) from data as an inline image', () => {
+			inlineEditor.setData( 'foo<figure class="image"><img src="/assets/sample.png" alt="bar"></figure>baz' );
+
+			expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
+				'foo<imageInline alt="bar" src="/assets/sample.png"></imageInline>baz'
+			);
+		} );
+
+		it( 'should upcast an <img> with display:block from data as an inline image', () => {
+			inlineEditor.setData( 'foo<img src="/assets/sample.png" style="display:block">baz' );
+
+			expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
+				'foo<imageInline src="/assets/sample.png"></imageInline>baz'
+			);
+		} );
+
+		it( 'should preserve the image attributes when a block image degrades to an inline image', () => {
+			inlineEditor.setData(
+				'foo<figure class="image">' +
+					'<img src="/assets/sample.png" alt="bar" srcset="small.png 148w, big.png 1024w" width="100" height="200">' +
+				'</figure>baz'
+			);
+
+			expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
+				'foo<imageInline alt="bar" height="200" src="/assets/sample.png" ' +
+				'srcset="small.png 148w, big.png 1024w" width="100"></imageInline>baz'
+			);
+		} );
+
+		it( 'should upcast a captioned block image as an inline image and keep the caption as text', () => {
+			inlineEditor.setData(
+				'foo<figure class="image">' +
+					'<img src="/assets/sample.png" alt="bar">' +
+					'<figcaption>cap</figcaption>' +
+				'</figure>baz'
+			);
+
+			expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
+				'foo<imageInline alt="bar" src="/assets/sample.png"></imageInline>capbaz'
+			);
+		} );
+	} );
+
+	describe( 'attribute commands on an inline image inside $inlineRoot', () => {
+		// The attribute commands (`replaceImageSource`, `imageTextAlternative`, `resizeImage`) operate on the
+		// currently selected image and only touch attributes shared by both image types. They must remain
+		// enabled and functional for an inline image living in an inline root, where `imageBlock` cannot land.
+		let inlineEditorElement, inlineEditor, inlineModel;
+
+		beforeEach( async () => {
+			inlineEditorElement = document.createElement( 'div' );
+			document.body.appendChild( inlineEditorElement );
+
+			inlineEditor = await ClassicTestEditor.create( inlineEditorElement, {
+				plugins: [
+					ImageInlineEditing, ImageBlockEditing, ImageTextAlternativeEditing, ImageResizeEditing, Paragraph
+				],
+				root: { modelElement: '$inlineRoot' }
+			} );
+
+			inlineModel = inlineEditor.model;
+
+			_setModelData( inlineModel, 'foo[<imageInline src="/assets/sample.png" alt="old"></imageInline>]bar' );
+		} );
+
+		afterEach( async () => {
+			await inlineEditor.destroy();
+			inlineEditorElement.remove();
+		} );
+
+		it( 'should enable replaceImageSource and replace the src', () => {
+			const command = inlineEditor.commands.get( 'replaceImageSource' );
+
+			expect( command.isEnabled ).to.be.true;
+
+			command.execute( { source: '/assets/other.png' } );
+
+			expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
+				'foo<imageInline src="/assets/other.png"></imageInline>bar'
+			);
+		} );
+
+		it( 'should enable imageTextAlternative and set the alt attribute', () => {
+			const command = inlineEditor.commands.get( 'imageTextAlternative' );
+
+			expect( command.isEnabled ).to.be.true;
+
+			command.execute( { newValue: 'new alt' } );
+
+			expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
+				'foo<imageInline alt="new alt" src="/assets/sample.png"></imageInline>bar'
+			);
+		} );
+
+		it( 'should enable resizeImage and set the resizedWidth attribute', () => {
+			const command = inlineEditor.commands.get( 'resizeImage' );
+
+			expect( command.isEnabled ).to.be.true;
+
+			command.execute( { width: '50%' } );
+
+			expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
+				'foo<imageInline alt="old" resizedWidth="50%" src="/assets/sample.png"></imageInline>bar'
 			);
 		} );
 	} );

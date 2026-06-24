@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
@@ -15,7 +17,6 @@ import { CKBoxEditing } from '../src/ckboxediting.js';
 import { CKBoxUploadAdapter } from '../src/ckboxuploadadapter.js';
 
 import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 
 import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
@@ -31,7 +32,9 @@ describe( 'CKBoxUploadAdapter', () => {
 
 	const jwtToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -39,7 +42,11 @@ describe( 'CKBoxUploadAdapter', () => {
 
 		TokenMock.initialToken = jwtToken;
 
-		sinon.stub( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).resolves();
+		// `CKBoxEditing#init()` fires an unawaited upload permission request. Stub the network layer out so
+		// the request does not end up as an unhandled rejection that fails the Vitest run. Tests exercising
+		// uploads replace `window.XMLHttpRequest` with a fake server, so they are not affected.
+		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
+		vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).mockResolvedValue();
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -80,25 +87,25 @@ describe( 'CKBoxUploadAdapter', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( CKBoxUploadAdapter.pluginName ).to.equal( 'CKBoxUploadAdapter' );
+		expect( CKBoxUploadAdapter.pluginName ).toBe( 'CKBoxUploadAdapter' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CKBoxUploadAdapter.isOfficialPlugin ).to.be.true;
+		expect( CKBoxUploadAdapter.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CKBoxUploadAdapter.isPremiumPlugin ).to.be.false;
+		expect( CKBoxUploadAdapter.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should require its dependencies', () => {
-		expect( CKBoxUploadAdapter.requires ).to.deep.equal( [
+		expect( CKBoxUploadAdapter.requires ).toEqual( [
 			ImageUploadEditing, ImageUploadProgress, FileRepository, CKBoxEditing
 		] );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( CKBoxUploadAdapter ) ).to.be.instanceOf( CKBoxUploadAdapter );
+		expect( editor.plugins.get( CKBoxUploadAdapter ) ).toBeInstanceOf( CKBoxUploadAdapter );
 	} );
 
 	describe( 'initialization', () => {
@@ -138,7 +145,7 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			const fileRepositoryPlugin = editor.plugins.get( FileRepository );
 
-			expect( fileRepositoryPlugin.createUploadAdapter ).to.equal( uploadAdapterCreator );
+			expect( fileRepositoryPlugin.createUploadAdapter ).toBe( uploadAdapterCreator );
 
 			editorElement.remove();
 			return editor.destroy();
@@ -171,8 +178,8 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			const fileRepositoryPlugin = editor.plugins.get( FileRepository );
 
-			expect( fileRepositoryPlugin.createUploadAdapter ).to.be.a( 'function' );
-			expect( fileRepositoryPlugin.createUploadAdapter ).not.to.equal( uploadAdapterCreator );
+			expect( fileRepositoryPlugin.createUploadAdapter ).toBeInstanceOf( Function );
+			expect( fileRepositoryPlugin.createUploadAdapter ).not.toBe( uploadAdapterCreator );
 
 			editorElement.remove();
 			return editor.destroy();
@@ -208,8 +215,8 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			const fileRepositoryPlugin = editor.plugins.get( FileRepository );
 
-			expect( fileRepositoryPlugin.createUploadAdapter ).to.be.a( 'function' );
-			expect( fileRepositoryPlugin.createUploadAdapter ).not.to.equal( uploadAdapterCreator );
+			expect( fileRepositoryPlugin.createUploadAdapter ).toBeInstanceOf( Function );
+			expect( fileRepositoryPlugin.createUploadAdapter ).not.toBe( uploadAdapterCreator );
 
 			window.CKBox = originalCKBox;
 			editorElement.remove();
@@ -218,7 +225,7 @@ describe( 'CKBoxUploadAdapter', () => {
 	} );
 
 	describe( 'Adapter', () => {
-		let adapter, file, loader, sinonXHR, ckboxUtils;
+		let adapter, file, loader, fakeXHRServer, ckboxUtils;
 
 		beforeEach( () => {
 			file = createNativeFileMock();
@@ -228,27 +235,26 @@ describe( 'CKBoxUploadAdapter', () => {
 			adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loader );
 			ckboxUtils = editor.plugins.get( CKBoxUtils );
 
-			sinonXHR = testUtils.sinon.useFakeServer();
-			sinonXHR.autoRespond = true;
+			fakeXHRServer = createFakeXHRServer();
 		} );
 
 		afterEach( () => {
-			sinonXHR.restore();
+			fakeXHRServer.restore();
 		} );
 
 		it( 'crateAdapter method should be registered and have upload and abort methods', () => {
-			expect( adapter ).to.not.be.undefined;
-			expect( adapter.upload ).to.be.a( 'function' );
-			expect( adapter.abort ).to.be.a( 'function' );
+			expect( adapter ).not.toBeUndefined();
+			expect( adapter.upload ).toBeInstanceOf( Function );
+			expect( adapter.abort ).toBeInstanceOf( Function );
 		} );
 
 		it( 'should abort the upload if cannot determine a category due to network error', () => {
-			sinon.stub( console, 'error' );
+			vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', xhr => {
-				expect( xhr.requestHeaders ).to.be.an( 'object' );
-				expect( xhr.requestHeaders ).to.contain.property( 'Authorization', jwtToken );
-				expect( xhr.requestHeaders ).to.contain.property( 'CKBox-Version', 'CKEditor 5' );
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', xhr => {
+				expect( xhr.requestHeaders ).toBeInstanceOf( Object );
+				expect( xhr.requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
+				expect( xhr.requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
 
 				return xhr.error();
 			} );
@@ -257,17 +263,17 @@ describe( 'CKBoxUploadAdapter', () => {
 				.then( () => {
 					throw new Error( 'Expected to be rejected.' );
 				}, error => {
-					expect( console.error.callCount ).to.equal( 1 );
-					expect( console.error.firstCall.args[ 0 ] ).to.match( /^ckbox-fetch-category-http-error/ );
+					expect( console.error ).toHaveBeenCalledTimes( 1 );
+					expect( console.error.mock.calls[ 0 ][ 0 ] ).toMatch( /^ckbox-fetch-category-http-error/ );
 
-					expect( error ).to.equal( 'Cannot determine a category for the uploaded file.' );
+					expect( error ).toBe( 'Cannot determine a category for the uploaded file.' );
 				} );
 		} );
 
 		it( 'should abort the upload if fetching available categories ended with the authorization error', () => {
-			sinon.stub( console, 'error' );
+			vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				401,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { message: 'Invalid token.', statusCode: 401 } )
@@ -277,18 +283,18 @@ describe( 'CKBoxUploadAdapter', () => {
 				.then( () => {
 					throw new Error( 'Expected to be rejected.' );
 				}, error => {
-					expect( console.error.callCount ).to.equal( 1 );
-					expect( console.error.firstCall.args[ 0 ] ).to.match( /^ckbox-fetch-category-http-error/ );
+					expect( console.error ).toHaveBeenCalledTimes( 1 );
+					expect( console.error.mock.calls[ 0 ][ 0 ] ).toMatch( /^ckbox-fetch-category-http-error/ );
 
-					expect( sinonXHR.requests[ 0 ].requestHeaders ).to.be.an( 'object' );
-					expect( sinonXHR.requests[ 0 ].requestHeaders ).to.contain.property( 'Authorization', jwtToken );
-					expect( sinonXHR.requests[ 0 ].requestHeaders ).to.contain.property( 'CKBox-Version', 'CKEditor 5' );
-					expect( error ).to.equal( 'Cannot determine a category for the uploaded file.' );
+					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toBeInstanceOf( Object );
+					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
+					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
+					expect( error ).toBe( 'Cannot determine a category for the uploaded file.' );
 				} );
 		} );
 
 		it( 'should abort the upload if a list of available categories is empty', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { items: [], offset: 0, limit: 50, totalCount: 0 } )
@@ -298,15 +304,15 @@ describe( 'CKBoxUploadAdapter', () => {
 				.then( () => {
 					throw new Error( 'Expected to be rejected.' );
 				}, err => {
-					expect( sinonXHR.requests[ 0 ].requestHeaders ).to.be.an( 'object' );
-					expect( sinonXHR.requests[ 0 ].requestHeaders ).to.contain.property( 'Authorization', jwtToken );
-					expect( sinonXHR.requests[ 0 ].requestHeaders ).to.contain.property( 'CKBox-Version', 'CKEditor 5' );
-					expect( err ).to.equal( 'Cannot determine a category for the uploaded file.' );
+					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toBeInstanceOf( Object );
+					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
+					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
+					expect( err ).toBe( 'Cannot determine a category for the uploaded file.' );
 				} );
 		} );
 
 		it( 'should abort the upload if any category does not accept a jpg file', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -322,12 +328,12 @@ describe( 'CKBoxUploadAdapter', () => {
 				.then( () => {
 					throw new Error( 'Expected to be rejected.' );
 				}, err => {
-					expect( err ).to.equal( 'Cannot determine a category for the uploaded file.' );
+					expect( err ).toBe( 'Cannot determine a category for the uploaded file.' );
 				} );
 		} );
 
 		it( 'should abort the upload if the provided configuration uses a non-existing category', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -348,25 +354,25 @@ describe( 'CKBoxUploadAdapter', () => {
 				.then( () => {
 					throw new Error( 'Expected to be rejected.' );
 				}, err => {
-					expect( err ).to.equal( 'Cannot determine a category for the uploaded file.' );
+					expect( err ).toBe( 'Cannot determine a category for the uploaded file.' );
 				} );
 		} );
 
 		it( 'should fetch all categories if API limits their results', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
 					items: [], offset: 0, limit: 50, totalCount: 101
 				} )
 			] );
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=50&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=50&workspaceId=workspace1', [
 				200, { 'Content-Type': 'application/json' },
 				JSON.stringify( {
 					items: [], offset: 50, limit: 50, totalCount: 101
 				} )
 			] );
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=100&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=100&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -376,21 +382,21 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.catch( () => {
-					expect( sinonXHR.requests ).to.lengthOf( 3 );
-					expect( sinonXHR.requests[ 0 ].requestHeaders ).to.be.an( 'object' );
-					expect( sinonXHR.requests[ 0 ].requestHeaders ).to.contain.property( 'Authorization', jwtToken );
-					expect( sinonXHR.requests[ 0 ].requestHeaders ).to.contain.property( 'CKBox-Version', 'CKEditor 5' );
-					expect( sinonXHR.requests[ 1 ].requestHeaders ).to.be.an( 'object' );
-					expect( sinonXHR.requests[ 1 ].requestHeaders ).to.contain.property( 'Authorization', jwtToken );
-					expect( sinonXHR.requests[ 1 ].requestHeaders ).to.contain.property( 'CKBox-Version', 'CKEditor 5' );
-					expect( sinonXHR.requests[ 2 ].requestHeaders ).to.be.an( 'object' );
-					expect( sinonXHR.requests[ 2 ].requestHeaders ).to.contain.property( 'Authorization', jwtToken );
-					expect( sinonXHR.requests[ 2 ].requestHeaders ).to.contain.property( 'CKBox-Version', 'CKEditor 5' );
+					expect( fakeXHRServer.requests ).toHaveLength( 3 );
+					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toBeInstanceOf( Object );
+					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
+					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
+					expect( fakeXHRServer.requests[ 1 ].requestHeaders ).toBeInstanceOf( Object );
+					expect( fakeXHRServer.requests[ 1 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
+					expect( fakeXHRServer.requests[ 1 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
+					expect( fakeXHRServer.requests[ 2 ].requestHeaders ).toBeInstanceOf( Object );
+					expect( fakeXHRServer.requests[ 2 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
+					expect( fakeXHRServer.requests[ 2 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
 				} );
 		} );
 
 		it( 'should abort if the provided configuration is not in sync with server', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -402,7 +408,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets&workspaceId=workspace1', [
 				400,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -417,18 +423,18 @@ describe( 'CKBoxUploadAdapter', () => {
 				'id-category-3': [ 'gif', 'jpg' ]
 			} );
 
-			sinon.stub( console, 'warn' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			return adapter.upload()
 				.then( () => {
 					throw new Error( 'Expected to be rejected.' );
 				}, err => {
-					expect( err ).to.equal( 'Cannot upload file: image.jpg.' );
+					expect( err ).toBe( 'Cannot upload file: image.jpg.' );
 				} );
 		} );
 
 		it( 'should abort the upload if server results with an error while sending an image', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -438,7 +444,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				401,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -451,12 +457,12 @@ describe( 'CKBoxUploadAdapter', () => {
 				.then( () => {
 					throw new Error( 'Expected to be rejected.' );
 				}, err => {
-					expect( err ).to.equal( 'Cannot upload file: image.jpg.' );
+					expect( err ).toBe( 'Cannot upload file: image.jpg.' );
 				} );
 		} );
 
 		it( 'should take the first category if many of them accepts a jpg file', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -468,7 +474,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -482,22 +488,22 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.then( data => {
-					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
-					expect( data ).to.contain.property(
+					expect( data ).toHaveProperty( 'ckboxImageId', 'image-1' );
+					expect( data ).toHaveProperty(
 						'default',
 						'https://ckbox.cloud/workspace1/assets/image-1/images/100.jpeg'
 					);
 
-					const uploadRequest = sinonXHR.requests[ 1 ];
-					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-2' );
-					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+					const uploadRequest = fakeXHRServer.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).toBe( 'id-category-2' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).toBe( true );
 				} );
 		} );
 
 		it( 'should take the first category if many of them accepts a jpg file (uppercase file extension)', () => {
 			file.name = 'image.JPG';
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -509,7 +515,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -523,20 +529,20 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.then( data => {
-					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
-					expect( data ).to.contain.property(
+					expect( data ).toHaveProperty( 'ckboxImageId', 'image-1' );
+					expect( data ).toHaveProperty(
 						'default',
 						'https://ckbox.cloud/workspace1/assets/image-1/images/100.jpeg'
 					);
 
-					const uploadRequest = sinonXHR.requests[ 1 ];
-					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-2' );
-					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+					const uploadRequest = fakeXHRServer.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).toBe( 'id-category-2' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).toBe( true );
 				} );
 		} );
 
 		it( 'should take the first category if many of them accepts a JPG file', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -548,7 +554,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -562,20 +568,20 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.then( data => {
-					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
-					expect( data ).to.contain.property(
+					expect( data ).toHaveProperty( 'ckboxImageId', 'image-1' );
+					expect( data ).toHaveProperty(
 						'default',
 						'https://ckbox.cloud/workspace1/assets/image-1/images/100.jpeg'
 					);
 
-					const uploadRequest = sinonXHR.requests[ 1 ];
-					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-2' );
-					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+					const uploadRequest = fakeXHRServer.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).toBe( 'id-category-2' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).toBe( true );
 				} );
 		} );
 
 		it( 'should take the first category that allows uploading the file if provided configuration is empty', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -587,7 +593,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -606,20 +612,20 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.then( data => {
-					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
-					expect( data ).to.contain.property(
+					expect( data ).toHaveProperty( 'ckboxImageId', 'image-1' );
+					expect( data ).toHaveProperty(
 						'default',
 						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
-					const uploadRequest = sinonXHR.requests[ 1 ];
-					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-1' );
-					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+					const uploadRequest = fakeXHRServer.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).toBe( 'id-category-1' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).toBe( true );
 				} );
 		} );
 
 		it( 'should take the first category matching with the configuration (category specified as a name)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -631,7 +637,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -649,20 +655,20 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.then( data => {
-					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
-					expect( data ).to.contain.property(
+					expect( data ).toHaveProperty( 'ckboxImageId', 'image-1' );
+					expect( data ).toHaveProperty(
 						'default',
 						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
-					const uploadRequest = sinonXHR.requests[ 1 ];
-					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-3' );
-					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+					const uploadRequest = fakeXHRServer.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).toBe( 'id-category-3' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).toBe( true );
 				} );
 		} );
 
 		it( 'should take the first category matching with the configuration (category specified as ID)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -674,7 +680,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -692,22 +698,22 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.then( data => {
-					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
-					expect( data ).to.contain.property(
+					expect( data ).toHaveProperty( 'ckboxImageId', 'image-1' );
+					expect( data ).toHaveProperty(
 						'default',
 						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
-					const uploadRequest = sinonXHR.requests[ 1 ];
-					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-3' );
-					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+					const uploadRequest = fakeXHRServer.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).toBe( 'id-category-3' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).toBe( true );
 				} );
 		} );
 
 		it( 'should take the first category matching with the configuration (uppercase file extension)', () => {
 			file.name = 'image.JPG';
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -719,7 +725,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -737,20 +743,20 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.then( data => {
-					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
-					expect( data ).to.contain.property(
+					expect( data ).toHaveProperty( 'ckboxImageId', 'image-1' );
+					expect( data ).toHaveProperty(
 						'default',
 						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
-					const uploadRequest = sinonXHR.requests[ 1 ];
-					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-3' );
-					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+					const uploadRequest = fakeXHRServer.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).toBe( 'id-category-3' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).toBe( true );
 				} );
 		} );
 
 		it( 'should take the first category matching with the configuration (uppercase configuration)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -762,7 +768,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -780,20 +786,20 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.then( data => {
-					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
-					expect( data ).to.contain.property(
+					expect( data ).toHaveProperty( 'ckboxImageId', 'image-1' );
+					expect( data ).toHaveProperty(
 						'default',
 						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
-					const uploadRequest = sinonXHR.requests[ 1 ];
-					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-3' );
-					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+					const uploadRequest = fakeXHRServer.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).toBe( 'id-category-3' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).toBe( true );
 				} );
 		} );
 
 		it( 'should take the first allowed category for a file not covered by the plugin configuration', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -805,7 +811,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -823,20 +829,20 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.then( data => {
-					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
-					expect( data ).to.contain.property(
+					expect( data ).toHaveProperty( 'ckboxImageId', 'image-1' );
+					expect( data ).toHaveProperty(
 						'default',
 						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
-					const uploadRequest = sinonXHR.requests[ 1 ];
-					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-2' );
-					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+					const uploadRequest = fakeXHRServer.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).toBe( 'id-category-2' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).toBe( true );
 				} );
 		} );
 
 		it( 'should resolve an object contains responsive URLs', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -848,7 +854,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -869,9 +875,9 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			return adapter.upload()
 				.then( data => {
-					expect( data ).to.contain.property( 'sources' );
-					expect( data.sources ).to.be.an( 'array' );
-					expect( data.sources ).to.deep.equal( [
+					expect( data ).toHaveProperty( 'sources' );
+					expect( data.sources ).toBeInstanceOf( Array );
+					expect( data.sources ).toEqual( [
 						{
 							srcset: 'https://ckbox.cloud/workspace1/assets/image-1/images/500.webp 500w,' +
 								'https://ckbox.cloud/workspace1/assets/image-1/images/1000.webp 1000w,' +
@@ -889,7 +895,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should throw an error on abort (while fetching categories)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -906,7 +912,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					throw new Error( 'Promise should throw.' );
 				} )
 				.catch( () => {
-					expect( adapter.controller.signal.aborted ).to.equal( true );
+					expect( adapter.controller.signal.aborted ).toBe( true );
 				} );
 
 			loader.file.then( () => {
@@ -917,9 +923,9 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should throw an error on abort (while uploading)', () => {
-			sinon.stub( ckboxUtils, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
+			vi.spyOn( ckboxUtils, 'getCategoryIdForFile' ).mockResolvedValue( 'id-category-2' );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
 				adapter.abort();
 
 				xhr.error();
@@ -930,15 +936,15 @@ describe( 'CKBoxUploadAdapter', () => {
 					throw new Error( 'Promise should throw.' );
 				} )
 				.catch( () => {
-					expect( adapter.controller.signal.aborted ).to.equal( true );
+					expect( adapter.controller.signal.aborted ).toBe( true );
 				} );
 		} );
 
 		it( 'should throw an error on generic request error (while uploading)', () => {
-			sinon.stub( console, 'error' );
-			sinon.stub( ckboxUtils, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
+			vi.spyOn( console, 'error' ).mockImplementation( () => {} );
+			vi.spyOn( ckboxUtils, 'getCategoryIdForFile' ).mockResolvedValue( 'id-category-2' );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
 				xhr.error();
 			} );
 
@@ -947,24 +953,24 @@ describe( 'CKBoxUploadAdapter', () => {
 					throw new Error( 'Promise should throw.' );
 				} )
 				.catch( msg => {
-					expect( msg ).to.equal( 'Cannot upload file: image.jpg.' );
+					expect( msg ).toBe( 'Cannot upload file: image.jpg.' );
 				} );
 		} );
 
 		it( 'abort should not throw before upload', () => {
 			expect( () => {
 				adapter.abort();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should update progress', () => {
-			sinon.stub( ckboxUtils, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
+			vi.spyOn( ckboxUtils, 'getCategoryIdForFile' ).mockResolvedValue( 'id-category-2' );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
+			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
 				xhr.uploadProgress( { loaded: 4, total: 10 } );
 
-				expect( loader.uploadTotal ).to.equal( 10 );
-				expect( loader.uploaded ).to.equal( 4 );
+				expect( loader.uploadTotal ).toBe( 10 );
+				expect( loader.uploaded ).toBe( 4 );
 
 				return xhr.respond(
 					201,
@@ -1003,7 +1009,7 @@ describe( 'CKBoxUploadAdapter', () => {
 						TokenMock.initialToken = createToken( tokenClaims );
 						( await ckboxUtils._token ).refreshToken();
 
-						sinonXHR.respondWith( 'GET', /\/categories/, [
+						fakeXHRServer.respondWith( 'GET', /\/categories/, [
 							200,
 							{ 'Content-Type': 'application/json' },
 							JSON.stringify( {
@@ -1013,7 +1019,7 @@ describe( 'CKBoxUploadAdapter', () => {
 							} )
 						] );
 
-						sinonXHR.respondWith( 'POST', /\/assets/, [
+						fakeXHRServer.respondWith( 'POST', /\/assets/, [
 							201,
 							{ 'Content-Type': 'application/json' },
 							JSON.stringify( {
@@ -1027,12 +1033,12 @@ describe( 'CKBoxUploadAdapter', () => {
 
 						return adapter.upload()
 							.then( () => {
-								const categoriesRequest = sinonXHR.requests[ 0 ];
-								const uploadRequest = sinonXHR.requests[ 1 ];
+								const categoriesRequest = fakeXHRServer.requests[ 0 ];
+								const uploadRequest = fakeXHRServer.requests[ 1 ];
 
-								expect( categoriesRequest.url ).to.equal(
+								expect( categoriesRequest.url ).toBe(
 									CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=' + workspaceId );
-								expect( uploadRequest.url ).to.equal(
+								expect( uploadRequest.url ).toBe(
 									CKBOX_API_URL + '/assets?workspaceId=' + workspaceId );
 							} );
 					} );
@@ -1044,7 +1050,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					TokenMock.initialToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1', 'workspace2' ] } } } );
 					( await ckboxUtils._token ).refreshToken();
 
-					sinonXHR.respondWith( 'GET', /\/categories/, [
+					fakeXHRServer.respondWith( 'GET', /\/categories/, [
 						200,
 						{ 'Content-Type': 'application/json' },
 						JSON.stringify( {
@@ -1054,7 +1060,7 @@ describe( 'CKBoxUploadAdapter', () => {
 						} )
 					] );
 
-					sinonXHR.respondWith( 'POST', /\/assets/, [
+					fakeXHRServer.respondWith( 'POST', /\/assets/, [
 						201,
 						{ 'Content-Type': 'application/json' },
 						JSON.stringify( {
@@ -1070,12 +1076,12 @@ describe( 'CKBoxUploadAdapter', () => {
 
 					return adapter.upload()
 						.then( () => {
-							const categoriesRequest = sinonXHR.requests[ 0 ];
-							const uploadRequest = sinonXHR.requests[ 1 ];
+							const categoriesRequest = fakeXHRServer.requests[ 0 ];
+							const uploadRequest = fakeXHRServer.requests[ 1 ];
 
-							expect( categoriesRequest.url ).to.equal(
+							expect( categoriesRequest.url ).toBe(
 								CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace2' );
-							expect( uploadRequest.url ).to.equal(
+							expect( uploadRequest.url ).toBe(
 								CKBOX_API_URL + '/assets?workspaceId=workspace2' );
 						} );
 				} );
@@ -1084,7 +1090,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					TokenMock.initialToken = createToken( { auth: { ckbox: { role: 'superadmin' } } } );
 					( await ckboxUtils._token ).refreshToken();
 
-					sinonXHR.respondWith( 'GET', /\/categories/, [
+					fakeXHRServer.respondWith( 'GET', /\/categories/, [
 						200,
 						{ 'Content-Type': 'application/json' },
 						JSON.stringify( {
@@ -1094,7 +1100,7 @@ describe( 'CKBoxUploadAdapter', () => {
 						} )
 					] );
 
-					sinonXHR.respondWith( 'POST', /\/assets/, [
+					fakeXHRServer.respondWith( 'POST', /\/assets/, [
 						201,
 						{ 'Content-Type': 'application/json' },
 						JSON.stringify( {
@@ -1110,23 +1116,23 @@ describe( 'CKBoxUploadAdapter', () => {
 
 					return adapter.upload()
 						.then( () => {
-							const categoriesRequest = sinonXHR.requests[ 0 ];
-							const uploadRequest = sinonXHR.requests[ 1 ];
+							const categoriesRequest = fakeXHRServer.requests[ 0 ];
+							const uploadRequest = fakeXHRServer.requests[ 1 ];
 
-							expect( categoriesRequest.url ).to.equal(
+							expect( categoriesRequest.url ).toBe(
 								CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1' );
-							expect( uploadRequest.url ).to.equal(
+							expect( uploadRequest.url ).toBe(
 								CKBOX_API_URL + '/assets?workspaceId=workspace1' );
 						} );
 				} );
 
 				it( 'should throw an error when default workspace is not listed in the token', async () => {
-					sinon.stub( console, 'error' );
+					vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
 					TokenMock.initialToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1', 'workspace2' ] } } } );
 					( await ckboxUtils._token ).refreshToken();
 
-					sinonXHR.respondWith( 'GET', /\/categories/, [
+					fakeXHRServer.respondWith( 'GET', /\/categories/, [
 						200,
 						{ 'Content-Type': 'application/json' },
 						JSON.stringify( {
@@ -1142,9 +1148,9 @@ describe( 'CKBoxUploadAdapter', () => {
 						.then( () => {
 							throw new Error( 'Expected to be rejected.' );
 						}, err => {
-							expect( console.error.callCount ).to.equal( 1 );
-							expect( console.error.firstCall.args[ 0 ] ).to.match( /^ckbox-access-default-workspace-error/ );
-							expect( err ).to.equal( 'Cannot access default workspace.' );
+							expect( console.error ).toHaveBeenCalledTimes( 1 );
+							expect( console.error.mock.calls[ 0 ][ 0 ] ).toMatch( /^ckbox-access-default-workspace-error/ );
+							expect( err ).toBe( 'Cannot access default workspace.' );
 						} );
 				} );
 			} );
@@ -1159,7 +1165,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		file.name = 'image.jpg';
 
 		it( 'should add the "ckboxImageId" attribute to the uploaded image by default', async () => {
-			sinon.stub( window, 'FileReader' ).callsFake( () => {
+			vi.stubGlobal( 'FileReader', function() {
 				nativeReaderMock = new NativeFileReaderMock();
 
 				return nativeReaderMock;
@@ -1189,7 +1195,7 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			await new Promise( resolve => {
 				editor.model.document.once( 'change', () => {
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						`[<imageBlock ckboxImageId="id" src="${ imgPath }" uploadId="${ loader.id }" uploadStatus="complete">` +
 						'</imageBlock>]'
 					);
@@ -1228,7 +1234,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					}
 				} );
 
-			sinon.stub( window, 'FileReader' ).callsFake( () => {
+			vi.stubGlobal( 'FileReader', function() {
 				nativeReaderMock = new NativeFileReaderMock();
 
 				return nativeReaderMock;
@@ -1259,7 +1265,7 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			await new Promise( resolve => {
 				editor.model.document.once( 'change', () => {
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						`[<imageBlock src="${ imgPath }" uploadId="${ loader.id }" uploadStatus="complete"></imageBlock>]`
 					);
 
@@ -1283,3 +1289,161 @@ describe( 'CKBoxUploadAdapter', () => {
 		].join( '.' );
 	}
 } );
+
+// Minimal fake XHR server used in this file:
+// - `respondWith( method, url, [ status, headers, body ] )` — register an immediate response.
+// - `respondWith( method, url, callback( xhr ) )` — register a callback responder.
+//   The callback receives the request and may call `xhr.respond( ... )`, `xhr.error()`, or `xhr.uploadProgress( ... )`.
+// - `url` may be a string (exact match) or a RegExp.
+// - `requests` — array of issued requests.
+// - `restore()` — revert the `XMLHttpRequest` global.
+//
+// Responses fire from `send()`.
+function createFakeXHRServer() {
+	const responses = [];
+	const requests = [];
+	const OriginalXMLHttpRequest = window.XMLHttpRequest;
+
+	class FakeXMLHttpRequestUpload {
+		constructor() {
+			this.listeners = new Map();
+		}
+
+		addEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+			callbacks.push( callback );
+			this.listeners.set( event, callbacks );
+		}
+
+		removeEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+			const index = callbacks.indexOf( callback );
+
+			if ( index !== -1 ) {
+				callbacks.splice( index, 1 );
+			}
+		}
+
+		_dispatchEvent( event, data ) {
+			for ( const callback of this.listeners.get( event ) || [] ) {
+				callback( data );
+			}
+		}
+	}
+
+	class FakeXMLHttpRequest {
+		constructor() {
+			this.listeners = new Map();
+			this.requestHeaders = {};
+			this.upload = new FakeXMLHttpRequestUpload();
+			this.status = 0;
+			this.response = null;
+			this.responseText = '';
+			this.responseType = '';
+			this.aborted = false;
+		}
+
+		open( method, url ) {
+			this.method = method;
+			this.url = url;
+		}
+
+		setRequestHeader( name, value ) {
+			this.requestHeaders[ name ] = value;
+		}
+
+		addEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+			callbacks.push( callback );
+			this.listeners.set( event, callbacks );
+		}
+
+		removeEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+			const index = callbacks.indexOf( callback );
+
+			if ( index !== -1 ) {
+				callbacks.splice( index, 1 );
+			}
+		}
+
+		abort() {
+			this.aborted = true;
+			this._dispatchEvent( 'abort' );
+		}
+
+		send( body ) {
+			this.requestBody = body;
+			requests.push( this );
+
+			this._dispatchEvent( 'loadstart' );
+
+			const match = responses.find( entry => {
+				if ( entry.method !== this.method ) {
+					return false;
+				}
+
+				if ( entry.url instanceof RegExp ) {
+					return entry.url.test( this.url );
+				}
+
+				return entry.url === this.url;
+			} );
+
+			if ( !match ) {
+				this.status = 404;
+				this._dispatchEvent( 'load' );
+				this._dispatchEvent( 'loadend' );
+				return;
+			}
+
+			if ( typeof match.response === 'function' ) {
+				match.response( this );
+				return;
+			}
+
+			const [ status, headers, responseBody ] = match.response;
+			this.respond( status, headers, responseBody );
+		}
+
+		respond( status, headers, body ) {
+			this.status = status;
+			this.responseHeaders = headers;
+			this.responseText = body;
+			this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
+
+			this._dispatchEvent( 'load' );
+			this._dispatchEvent( 'loadend' );
+		}
+
+		error() {
+			this._dispatchEvent( 'error' );
+			this._dispatchEvent( 'loadend' );
+		}
+
+		uploadProgress( event ) {
+			this.upload._dispatchEvent( 'progress', {
+				lengthComputable: true,
+				...event
+			} );
+		}
+
+		_dispatchEvent( event, data ) {
+			for ( const callback of this.listeners.get( event ) || [] ) {
+				callback( data );
+			}
+		}
+	}
+
+	window.XMLHttpRequest = FakeXMLHttpRequest;
+
+	return {
+		requests,
+		respondWith( method, url, response ) {
+			responses.push( { method, url, response } );
+		},
+		restore() {
+			window.XMLHttpRequest = OriginalXMLHttpRequest;
+		}
+	};
+}

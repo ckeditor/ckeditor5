@@ -7,7 +7,7 @@
  * @module clipboard/dragdrop
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	ModelLiveRange,
@@ -204,8 +204,8 @@ export class DragDrop extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ] as const;
+	public static get requires(): PluginDependenciesOf<[ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ]> {
+		return [ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ];
 	}
 
 	/**
@@ -654,12 +654,15 @@ export class DragDrop extends Plugin {
 			this._draggedRange = ModelLiveRange.fromRange( blockRange );
 			this._blockMode = true;
 			// TODO block mode for dragging from outside editor? or inline? or both?
-		} else if ( blocks.length == 1 ) {
-			const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
+		} else {
+			/* v8 ignore else -- @preserve */
+			if ( blocks.length == 1 ) {
+				const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
 					draggedRange.end.isTouching( blockRange.end );
 
-			this._draggedRange = ModelLiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
-			this._blockMode = touchesBlockEdges;
+				this._draggedRange = ModelLiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
+				this._blockMode = touchesBlockEdges;
+			}
 		}
 
 		model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );

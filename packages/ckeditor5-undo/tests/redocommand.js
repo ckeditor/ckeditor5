@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Batch } from '@ckeditor/ckeditor5-engine';
 import { UndoCommand } from '../src/undocommand.js';
@@ -274,103 +275,103 @@ describe( 'RedoCommand', () => {
 			it( 'should pass redoing batch to enqueueChange method', () => {
 				undo.execute( batch2 );
 
-				const enqueueChangeSpy = sinon.spy( model, 'enqueueChange' );
-				const undoSpy = sinon.spy( redo, '_undo' );
+				const enqueueChangeSpy = vi.spyOn( model, 'enqueueChange' );
+				const undoSpy = vi.spyOn( redo, '_undo' );
 
 				redo.execute();
 
-				sinon.assert.calledOnce( enqueueChangeSpy );
-				sinon.assert.calledOnce( undoSpy );
+				expect( enqueueChangeSpy ).toHaveBeenCalledTimes( 1 );
+				expect( undoSpy ).toHaveBeenCalledTimes( 1 );
 
-				const redoingBatch = enqueueChangeSpy.firstCall.args[ 0 ];
+				const redoingBatch = enqueueChangeSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( redoingBatch instanceof Batch ).to.be.true;
-				expect( undoSpy.firstCall.args[ 1 ] ).to.equal( redoingBatch );
+				expect( undoSpy.mock.calls[ 0 ][ 1 ] ).to.equal( redoingBatch );
 			} );
 		} );
 
 		it( 'should clear stack on DataController set()', () => {
-			const spy = sinon.stub( redo, 'clearStack' );
+			const spy = vi.spyOn( redo, 'clearStack' );
 
 			editor.setData( 'foo' );
 
-			sinon.assert.called( spy );
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'should clear stack on DataController set() when the batch is set as not undoable', () => {
-			const spy = sinon.stub( redo, 'clearStack' );
+			const spy = vi.spyOn( redo, 'clearStack' );
 
 			editor.data.set( 'foo', { batchType: { isUndoable: false } } );
 
-			sinon.assert.called( spy );
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'should not clear stack on DataController#set() when the batch is set as undoable', () => {
-			const spy = sinon.spy( redo, 'clearStack' );
+			const spy = vi.spyOn( redo, 'clearStack' );
 
 			editor.data.set( 'foo', { batchType: { isUndoable: true } } );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should override the batch type when the batch type is not set', () => {
-			const dataSetSpy = sinon.spy();
+			const dataSetSpy = vi.fn();
 
 			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
 
 			editor.data.set( 'foo' );
 
-			const firstCall = dataSetSpy.firstCall;
-			const data = firstCall.args[ 1 ];
+			const data = dataSetSpy.mock.calls[ 0 ][ 1 ];
 
 			expect( data[ 1 ] ).to.be.an( 'object' );
 			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: false } );
 		} );
 
 		it( 'should not override the batch type in editor.data.set() when the batch type is set', () => {
-			const dataSetSpy = sinon.spy();
+			const dataSetSpy = vi.fn();
 
 			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
 
 			editor.data.set( 'foo', { batchType: { isUndoable: true } } );
 
-			const firstCall = dataSetSpy.firstCall;
-			const data = firstCall.args[ 1 ];
+			const data = dataSetSpy.mock.calls[ 0 ][ 1 ];
 
 			expect( data[ 1 ] ).to.be.an( 'object' );
 			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: true } );
 		} );
 
-		it( 'should fire `revert` event when executed', done => {
-			const batch = model.createBatch();
-			undo.addBatch( batch );
+		it( 'should fire `revert` event when executed', () => {
+			return new Promise( resolve => {
+				const batch = model.createBatch();
+				undo.addBatch( batch );
 
-			model.enqueueChange( batch, writer => {
-				writer.insertText( 'foo', root, 0 );
+				model.enqueueChange( batch, writer => {
+					writer.insertText( 'foo', root, 0 );
+				} );
+
+				let undoBatch;
+
+				// Save batch that undone the operations. In redo callback we will see if that batch was reverted.
+				undo.on( 'revert', ( evt, undoneBatch, undoingBatch ) => {
+					undoBatch = undoingBatch;
+
+					redo.addBatch( undoBatch );
+				} );
+
+				undo.execute();
+
+				redo.on( 'revert', ( evt, undoneBatch, redoingBatch ) => {
+					// Check if `undoneBatch` is a batch previously created by undo command.
+					expect( undoneBatch ).to.be.equal( undoBatch );
+
+					// Check if `redoingBatch` is the last batch that made changes in the editor.
+					expect( redoingBatch ).to.be.equal( editor.model.document.history.lastOperation.batch );
+
+					resolve();
+				} );
+
+				redo.execute();
 			} );
-
-			let undoBatch;
-
-			// Save batch that undone the operations. In redo callback we will see if that batch was reverted.
-			undo.on( 'revert', ( evt, undoneBatch, undoingBatch ) => {
-				undoBatch = undoingBatch;
-
-				redo.addBatch( undoBatch );
-			} );
-
-			undo.execute();
-
-			redo.on( 'revert', ( evt, undoneBatch, redoingBatch ) => {
-				// Check if `undoneBatch` is a batch previously created by undo command.
-				expect( undoneBatch ).to.be.equal( undoBatch );
-
-				// Check if `redoingBatch` is the last batch that made changes in the editor.
-				expect( redoingBatch ).to.be.equal( editor.model.document.history.lastOperation.batch );
-
-				done();
-			} );
-
-			redo.execute();
 		} );
 	} );
 } );

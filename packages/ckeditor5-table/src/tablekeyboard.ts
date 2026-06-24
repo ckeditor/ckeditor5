@@ -11,7 +11,7 @@ import { TableSelection } from './tableselection.js';
 import { TableWalker } from './tablewalker.js';
 import { TableUtils } from './tableutils.js';
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	getLocalizedArrowKeyCodeDirection,
 	type EventInfo,
@@ -51,8 +51,8 @@ export class TableKeyboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ TableSelection, TableUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ TableSelection, TableUtils ]> {
+		return [ TableSelection, TableUtils ];
 	}
 
 	/**

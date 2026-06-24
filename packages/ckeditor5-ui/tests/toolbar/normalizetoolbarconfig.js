@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { normalizeToolbarConfig } from '../../src/toolbar/normalizetoolbarconfig.js';
 
 describe( 'normalizeToolbarConfig()', () => {
@@ -10,8 +11,8 @@ describe( 'normalizeToolbarConfig()', () => {
 		const items = [ 'foo', 'bar' ];
 		const normalized = normalizeToolbarConfig( items );
 
-		expect( normalized ).to.be.an( 'object' );
-		expect( normalized ).to.deep.equal(
+		expect( normalized ).toBeTypeOf( 'object' );
+		expect( normalized ).toEqual(
 			{
 				items,
 				removeItems: []
@@ -26,7 +27,7 @@ describe( 'normalizeToolbarConfig()', () => {
 		};
 		const normalized = normalizeToolbarConfig( cfg );
 
-		expect( normalized ).to.deep.equal(
+		expect( normalized ).toEqual(
 			Object.assign( { removeItems: [] }, cfg )
 		);
 	} );
@@ -38,19 +39,21 @@ describe( 'normalizeToolbarConfig()', () => {
 
 		const normalized = normalizeToolbarConfig( cfg );
 
-		expect( normalized ).to.deep.equal( {
+		expect( normalized ).toEqual( {
 			items: [],
 			removeItems: [],
 			foo: 'bar'
 		} );
-		expect( normalized ).to.not.equal( cfg ); // Make sure we don't modify an existing obj.
+		expect( normalized ).not.toBe( cfg ); // Make sure we don't modify an existing obj.
 	} );
 
 	it( 'returns an empty config if config is not defined', () => {
 		const normalized = normalizeToolbarConfig();
 
-		expect( normalized ).to.be.an( 'object' );
-		expect( normalized.items ).to.be.an( 'array' ).of.length( 0 );
-		expect( normalized.removeItems ).to.be.an( 'array' ).of.length( 0 );
+		expect( normalized ).toBeTypeOf( 'object' );
+		expect( normalized.items ).toBeInstanceOf( Array );
+		expect( normalized.items ).toHaveLength( 0 );
+		expect( normalized.removeItems ).toBeInstanceOf( Array );
+		expect( normalized.removeItems ).toHaveLength( 0 );
 	} );
 } );

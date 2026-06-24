@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -66,25 +67,25 @@ describe( 'StyleEditing', () => {
 	} );
 
 	it( 'should have a name', () => {
-		expect( StyleEditing.pluginName ).to.equal( 'StyleEditing' );
+		expect( StyleEditing.pluginName ).toBe( 'StyleEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( StyleEditing.isOfficialPlugin ).to.be.true;
+		expect( StyleEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( StyleEditing.isPremiumPlugin ).to.be.false;
+		expect( StyleEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should require the GHS plugin, and require utils, and integrations', () => {
-		expect( StyleEditing.requires ).to.deep.equal( [
+		expect( StyleEditing.requires ).toEqual( [
 			GeneralHtmlSupport, StyleUtils, ListStyleSupport, TableStyleSupport, LinkStyleSupport
 		] );
 	} );
 
 	it( 'should register the "style" command', () => {
-		expect( editor.commands.get( 'style' ) ).to.be.instanceOf( StyleCommand );
+		expect( editor.commands.get( 'style' ) ).toBeInstanceOf( StyleCommand );
 	} );
 
 	describe( 'integration with the GHS DataFilter', () => {
@@ -92,14 +93,14 @@ describe( 'StyleEditing', () => {
 			const data = '<h2 class="big-heading red-heading">foo</h2>';
 
 			editor.setData( data );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toBe( data );
 		} );
 
 		it( 'should allow inline styles configuration', () => {
 			const data = '<p>foo<span class="marker typewriter deleted class-one class-two">bar</span></p>';
 
 			editor.setData( data );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toBe( data );
 		} );
 	} );
 } );

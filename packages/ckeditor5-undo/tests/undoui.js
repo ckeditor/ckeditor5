@@ -9,12 +9,14 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { UndoEditing } from '../src/undoediting.js';
 import { UndoUI } from '../src/undoui.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe( 'UndoUI', () => {
 	let editor, editorElement, button;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -155,12 +157,12 @@ describe( 'UndoUI', () => {
 			expect( button.icon ).to.match( /<svg / ); } );
 
 		it( `should execute ${ featureName } command on model execute event`, () => {
-			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
+			const executeSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, featureName );
+			expect( executeSpy ).toHaveBeenCalledTimes( 1 );
+			expect( executeSpy ).toHaveBeenCalledWith( featureName );
 		} );
 
 		it( `should bind model to ${ featureName } command`, () => {

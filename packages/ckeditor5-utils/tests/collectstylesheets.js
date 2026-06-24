@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { collectStylesheets } from '../src/collectstylesheets.js';
 
 describe( 'collectStylesheets', () => {
@@ -39,15 +40,15 @@ describe( 'collectStylesheets', () => {
 			}
 		];
 
-		sinon.stub( document, 'styleSheets' ).get( () => styleSheetsMock );
+		vi.spyOn( document, 'styleSheets', 'get' ).mockImplementation( () => styleSheetsMock );
 	} );
 
 	afterEach( () => {
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should not return any styles if no paths to stylesheets provided', async () => {
-		expect( await collectStylesheets( undefined ) ).to.equal( '' );
+		expect( await collectStylesheets( undefined ) ).toBe( '' );
 	} );
 
 	it( 'should log into the console when ".ck-content" styles are missing', async () => {
@@ -60,50 +61,49 @@ describe( 'collectStylesheets', () => {
 			]
 		} ];
 
-		const consoleSpy = sinon.stub( console, 'warn' );
+		const consoleSpy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 		await collectStylesheets( [ 'EDITOR_STYLES' ] );
 
-		sinon.assert.calledOnce( consoleSpy );
+		expect( consoleSpy ).toHaveBeenCalledTimes( 1 );
 	} );
 
 	it( 'should get ".ck-content" styles when "EDITOR_STYLES" token is provided', async () => {
-		const consoleSpy = sinon.stub( console, 'warn' );
+		const consoleSpy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
-		sinon.stub( window, 'fetch' ).resolves( new Response( '.custom { color: blue; }' ) );
+		vi.spyOn( window, 'fetch' ).mockResolvedValue( new Response( '.custom { color: blue; }' ) );
 
 		const styles = await collectStylesheets( [ './custom.css', 'EDITOR_STYLES' ] );
 
-		sinon.assert.notCalled( consoleSpy );
+		expect( consoleSpy ).not.toHaveBeenCalled();
 
-		expect( styles.length > 0 ).to.be.true;
-		expect( styles.indexOf( '.ck-content' ) !== -1 ).to.be.true;
+		expect( styles.length > 0 ).toBe( true );
+		expect( styles.indexOf( '.ck-content' ) !== -1 ).toBe( true );
 	} );
 
 	it( 'should get styles from multiple stylesheets with data-cke attribute', async () => {
 		const styles = await collectStylesheets( [ 'EDITOR_STYLES' ] );
 
-		expect( styles ).to.include( ':root { --variable1: white; }' );
-		expect( styles ).to.include( ':root { --variable2: blue; }' );
-		expect( styles ).to.include( '.ck-content { color: black }' );
-		expect( styles ).to.include( '.ck-content { background: white }' );
+		expect( styles ).toContain( ':root { --variable1: white; }' );
+		expect( styles ).toContain( ':root { --variable2: blue; }' );
+		expect( styles ).toContain( '.ck-content { color: black }' );
+		expect( styles ).toContain( '.ck-content { background: white }' );
 	} );
 
 	it( 'should collect all :root styles from stylesheets with data-cke attribute', async () => {
 		const styles = await collectStylesheets( [ 'EDITOR_STYLES' ] );
 
-		expect( styles ).to.include( '--variable1: white' );
-		expect( styles ).to.include( '--variable2: blue' );
+		expect( styles ).toContain( '--variable1: white' );
+		expect( styles ).toContain( '--variable2: blue' );
 	} );
 
 	it( 'should fetch stylesheets from the provided paths and return concat result', async () => {
-		sinon
-			.stub( window, 'fetch' )
-			.onFirstCall().resolves( new Response( '.first { color: green; }' ) )
-			.onSecondCall().resolves( new Response( '.second { color: red; }' ) );
+		vi.spyOn( window, 'fetch' )
+			.mockResolvedValueOnce( new Response( '.first { color: green; }' ) )
+			.mockResolvedValueOnce( new Response( '.second { color: red; }' ) );
 
 		const styles = await collectStylesheets( [ './first.css', './second.css' ] );
 
-		expect( styles ).to.equal( '.first { color: green; } .second { color: red; }' );
+		expect( styles ).toBe( '.first { color: green; } .second { color: red; }' );
 	} );
 } );

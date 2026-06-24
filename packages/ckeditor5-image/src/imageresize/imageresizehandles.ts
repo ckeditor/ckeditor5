@@ -8,7 +8,7 @@
  */
 
 import type { ModelElement, ViewElement } from '@ckeditor/ckeditor5-engine';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { WidgetResize } from '@ckeditor/ckeditor5-widget';
 import { ImageUtils } from '../imageutils.js';
 
@@ -35,8 +35,8 @@ export class ImageResizeHandles extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ WidgetResize, ImageUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ WidgetResize, ImageUtils ]> {
+		return [ WidgetResize, ImageUtils ];
 	}
 
 	/**

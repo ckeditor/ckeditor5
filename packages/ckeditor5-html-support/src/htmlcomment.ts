@@ -266,7 +266,7 @@ export class HtmlComment extends Plugin {
 	 * @param options.skipBoundaries When set to `true` the range boundaries will be skipped.
 	 * @returns HTML comment IDs
 	 */
-	public getHtmlCommentsInRange( range: ModelRange, { skipBoundaries = false } = {} ): Array<string> {
+	public getHtmlCommentsInRange( range: ModelRange, { skipBoundaries = false }: { skipBoundaries?: boolean } = {} ): Array<string> {
 		const includeBoundaries = !skipBoundaries;
 
 		// Unfortunately, MarkerCollection#getMarkersAtPosition() filters out collapsed markers.

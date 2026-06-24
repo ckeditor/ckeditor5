@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ButtonLabelView } from '../../src/index.js';
 
 describe( 'ButtonLabelView', () => {
 	let view;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new ButtonLabelView();
@@ -22,32 +20,32 @@ describe( 'ButtonLabelView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'sets default properties', () => {
-			expect( view.style ).to.be.undefined;
-			expect( view.text ).to.be.undefined;
-			expect( view.id ).to.be.undefined;
+			expect( view.style ).toBeUndefined();
+			expect( view.text ).toBeUndefined();
+			expect( view.id ).toBeUndefined();
 		} );
 
 		it( 'creates an element with CSS classes', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-button__label' ) ).to.true;
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-button__label' ) ).toBe( true );
 		} );
 
 		it( 'creates a DOM binding for style', () => {
 			view.style = 'color: red';
 
-			expect( view.element.style.color ).to.equal( 'red' );
+			expect( view.element.style.color ).toBe( 'red' );
 		} );
 
 		it( 'creates a DOM binding for #text', () => {
 			view.text = 'foobar';
 
-			expect( view.element.innerHTML ).to.equal( 'foobar' );
+			expect( view.element.innerHTML ).toBe( 'foobar' );
 		} );
 
 		it( 'creates a DOM binding for #id', () => {
 			view.id = 'foobar';
 
-			expect( view.id ).to.equal( 'foobar' );
+			expect( view.id ).toBe( 'foobar' );
 		} );
 	} );
 } );

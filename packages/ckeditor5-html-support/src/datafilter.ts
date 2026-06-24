@@ -7,7 +7,7 @@
  * @module html-support/datafilter
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	Matcher,
@@ -165,8 +165,8 @@ export class DataFilter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ DataSchema, Widget ] as const;
+	public static get requires(): PluginDependenciesOf<[ DataSchema, Widget ]> {
+		return [ DataSchema, Widget ];
 	}
 
 	/**
@@ -626,7 +626,7 @@ export class DataFilter extends Plugin {
 
 		schema.register( modelName, definition.modelSchema );
 
-		/* istanbul ignore next: paranoid check -- @preserve */
+		/* v8 ignore next: paranoid check -- @preserve */
 		if ( !viewName ) {
 			return;
 		}

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Plugin } from '@ckeditor/ckeditor5-core';
@@ -10,7 +11,6 @@ import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { RemoveFormatEditing } from '@ckeditor/ckeditor5-remove-format';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { stubUid } from './list/_utils/uid.js';
 import { ListFormatting } from '../src/listformatting.js';
@@ -23,7 +23,9 @@ import { ListItemFontColorIntegration } from '../src/listformatting/listitemfont
 describe( 'ListFormatting', () => {
 	let editor, model, docSelection;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {

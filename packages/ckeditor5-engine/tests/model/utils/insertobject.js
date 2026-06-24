@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { insertObject } from '../../../src/model/utils/insertobject.js';
 import { ModelElement } from '../../../src/model/element.js';
@@ -10,14 +11,15 @@ import { ModelText } from '../../../src/model/text.js';
 import { _setModelData, _getModelData } from '../../../src/dev-utils/model.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'insertObject()', () => {
 	let model, doc, root, schema;
 	let insertContentSpy;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -25,7 +27,7 @@ describe( 'insertObject()', () => {
 		root = doc.createRoot();
 		schema = model.schema;
 
-		insertContentSpy = sinon.spy( model, 'insertContent' );
+		insertContentSpy = vi.spyOn( model, 'insertContent' );
 
 		schema.register( 'blockWidget', {
 			isObject: true,
@@ -54,7 +56,7 @@ describe( 'insertObject()', () => {
 
 			expect( () => {
 				insertObject( model, widget );
-			} ).to.not.throw( CKEditorError, /insertobject-element-not-an-object/ );
+			} ).not.toThrow( CKEditorError, /insertobject-element-not-an-object/ );
 		} );
 
 		it( 'should throw an error if element is not an object', () => {
@@ -73,10 +75,10 @@ describe( 'insertObject()', () => {
 
 				insertObject( model, widget, undefined, { findOptimalPosition: 'before' } );
 
-				const selectableArg = insertContentSpy.getCall( 0 ).args[ 1 ];
+				const selectableArg = insertContentSpy.mock.calls[ 0 ][ 1 ];
 
-				expect( selectableArg ).to.not.equal( model.document.selection );
-				expect( selectableArg.anchor.path ).to.deep.equal( [ 0 ] );
+				expect( selectableArg ).not.toBe( model.document.selection );
+				expect( selectableArg.anchor.path ).toEqual( [ 0 ] );
 			} );
 
 			it( 'should call insert content with selection from optimal insertion range when no selection was passed (after)', () => {
@@ -86,10 +88,10 @@ describe( 'insertObject()', () => {
 
 				insertObject( model, widget, undefined, { findOptimalPosition: 'after' } );
 
-				const selectableArg = insertContentSpy.getCall( 0 ).args[ 1 ];
+				const selectableArg = insertContentSpy.mock.calls[ 0 ][ 1 ];
 
-				expect( selectableArg ).to.not.equal( model.document.selection );
-				expect( selectableArg.anchor.path ).to.deep.equal( [ 1 ] );
+				expect( selectableArg ).not.toBe( model.document.selection );
+				expect( selectableArg.anchor.path ).toEqual( [ 1 ] );
 			} );
 
 			it( 'should call insert content with selection from optimal insertion range when no selection was passed (auto)', () => {
@@ -99,10 +101,10 @@ describe( 'insertObject()', () => {
 
 				insertObject( model, widget, undefined, { findOptimalPosition: 'auto' } );
 
-				const selectableArg = insertContentSpy.getCall( 0 ).args[ 1 ];
+				const selectableArg = insertContentSpy.mock.calls[ 0 ][ 1 ];
 
-				expect( selectableArg ).to.not.equal( model.document.selection );
-				expect( selectableArg.anchor.path ).to.deep.equal( [ 0 ] );
+				expect( selectableArg ).not.toBe( model.document.selection );
+				expect( selectableArg.anchor.path ).toEqual( [ 0 ] );
 			} );
 		} );
 
@@ -112,9 +114,9 @@ describe( 'insertObject()', () => {
 
 				insertObject( model, widget );
 
-				const selectableArg = insertContentSpy.getCall( 0 ).args[ 1 ];
+				const selectableArg = insertContentSpy.mock.calls[ 0 ][ 1 ];
 
-				expect( selectableArg ).to.equal( model.document.selection );
+				expect( selectableArg ).toBe( model.document.selection );
 			} );
 
 			it( 'should call insert content with selection it was called with', () => {
@@ -127,9 +129,9 @@ describe( 'insertObject()', () => {
 
 				insertObject( model, widget, selection );
 
-				const selectableArg = insertContentSpy.getCall( 0 ).args[ 1 ];
+				const selectableArg = insertContentSpy.mock.calls[ 0 ][ 1 ];
 
-				expect( selectableArg ).to.equal( selection );
+				expect( selectableArg ).toBe( selection );
 			} );
 		} );
 	} );
@@ -140,7 +142,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph><inlineWidget></inlineWidget>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><inlineWidget></inlineWidget>[]</paragraph>' );
 		} );
 
 		it( 'should not auto-paragraph an element if it is not allowed in given position but also when in paragraph', () => {
@@ -163,7 +165,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget, selection );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( '<container></container>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<container></container>' );
 		} );
 	} );
 
@@ -204,7 +206,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '[<blockWidget a="true" b="true"></blockWidget>]' );
+			expect( _getModelData( model ) ).toBe( '[<blockWidget a="true" b="true"></blockWidget>]' );
 		} );
 
 		it( 'should not copy attributes without copyOnReplace property when inserting it in place of another', () => {
@@ -222,7 +224,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '[<blockWidget a="true"></blockWidget>]' );
+			expect( _getModelData( model ) ).toBe( '[<blockWidget a="true"></blockWidget>]' );
 		} );
 
 		it( 'should not copy attribute if it is not allowed on inserted object', () => {
@@ -240,7 +242,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '[<blockWidget a="true"></blockWidget>]' );
+			expect( _getModelData( model ) ).toBe( '[<blockWidget a="true"></blockWidget>]' );
 		} );
 
 		it( 'should copy attributes on inline widget', () => {
@@ -254,7 +256,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '[<inlineWidget a="true" b="true"></inlineWidget>]' );
+			expect( _getModelData( model ) ).toBe( '[<inlineWidget a="true" b="true"></inlineWidget>]' );
 		} );
 
 		it( 'should copy attributes on paragraph if inline object was autoparagraphed', () => {
@@ -264,7 +266,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph a="true" b="true">' +
 					'<inlineWidget></inlineWidget>[]' +
 				'</paragraph>'
@@ -278,7 +280,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<blockWidget></blockWidget>' +
 				'<paragraph>[]</paragraph>'
 			);
@@ -291,7 +293,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<blockWidget></blockWidget>' +
 				'<paragraph>[]Foo</paragraph>'
 			);
@@ -302,7 +304,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<inlineWidget></inlineWidget>[]' +
 				'</paragraph>'
@@ -316,7 +318,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Fo' +
 					'<inlineWidget></inlineWidget>[]' +
 				'o</paragraph>'
@@ -328,7 +330,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget, undefined, { setSelection: 'on' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'[<blockWidget></blockWidget>]'
 			);
 		} );
@@ -346,7 +348,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<nonParagraph>[<blockWidget></blockWidget>]</nonParagraph>'
 			);
 		} );
@@ -356,7 +358,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget, undefined, { setSelection: 'on' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'[<inlineWidget></inlineWidget>]' +
 				'</paragraph>'
@@ -375,7 +377,7 @@ describe( 'insertObject()', () => {
 
 	describe( 'returned affected range of insert operation', () => {
 		it( 'should return collapsed range when object could not be inserted', () => {
-			testUtils.sinon.stub( console, 'warn' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			schema.register( 'disallowedBlockWidget', {
 				isObject: true
@@ -385,8 +387,8 @@ describe( 'insertObject()', () => {
 
 			const affectedRange = insertObject( model, widget );
 
-			expect( affectedRange.isCollapsed ).to.be.true;
-			expect( _getModelData( model ) ).to.equalMarkup( '[]' );
+			expect( affectedRange.isCollapsed ).toBe( true );
+			expect( _getModelData( model ) ).toBe( '[]' );
 		} );
 
 		it( 'should return affected range when inserting block object', () => {
@@ -394,9 +396,9 @@ describe( 'insertObject()', () => {
 
 			const affectedRange = insertObject( model, widget );
 
-			expect( affectedRange.start.path ).to.deep.equal( [ 0 ] );
-			expect( affectedRange.end.path ).to.deep.equal( [ 1 ] );
-			expect( _getModelData( model ) ).to.equalMarkup( '[<blockWidget></blockWidget>]' );
+			expect( affectedRange.start.path ).toEqual( [ 0 ] );
+			expect( affectedRange.end.path ).toEqual( [ 1 ] );
+			expect( _getModelData( model ) ).toBe( '[<blockWidget></blockWidget>]' );
 		} );
 	} );
 
@@ -408,7 +410,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<inlineWidget></inlineWidget>[]' +
 				'</paragraph>'
@@ -426,7 +428,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '[<blockWidget></blockWidget>]' );
+			expect( _getModelData( model ) ).toBe( '[<blockWidget></blockWidget>]' );
 		} );
 
 		it( 'should delete selection spaning multiple paragraphs when inserting block object', () => {
@@ -441,7 +443,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Fo</paragraph>' +
 					'[<blockWidget></blockWidget>]' +
 				'<paragraph>o</paragraph>'
@@ -460,7 +462,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Fo<inlineWidget></inlineWidget>[]o</paragraph>'
 			);
 		} );
@@ -477,7 +479,7 @@ describe( 'insertObject()', () => {
 
 			insertObject( model, widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>F</paragraph>' +
 				'[<blockWidget></blockWidget>]' +
 				'<paragraph>o</paragraph>'
@@ -497,16 +499,16 @@ describe( 'insertObject()', () => {
 				isObject: true
 			} );
 
-			testUtils.sinon.stub( console, 'warn' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			const widget = new ModelElement( 'anotherBlockWidget', [], [] );
 
 			model.insertObject( widget );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '[]' );
+			expect( _getModelData( model ) ).toBe( '[]' );
 
-			sinon.assert.calledOnce( insertContentSpy );
-			sinon.assert.calledWith( insertContentSpy, widget, model.document.selection );
+			expect( insertContentSpy ).toHaveBeenCalledTimes( 1 );
+			expect( insertContentSpy ).toHaveBeenCalledWith( widget, model.document.selection );
 		} );
 
 		it( 'should insert an object in an empty document', () => {
@@ -514,10 +516,10 @@ describe( 'insertObject()', () => {
 
 			model.insertObject( widget );
 
-			sinon.assert.calledOnce( insertContentSpy );
-			sinon.assert.calledWith( insertContentSpy, widget, model.document.selection );
+			expect( insertContentSpy ).toHaveBeenCalledTimes( 1 );
+			expect( insertContentSpy ).toHaveBeenCalledWith( widget, model.document.selection );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '[<blockWidget></blockWidget>]' );
+			expect( _getModelData( model ) ).toBe( '[<blockWidget></blockWidget>]' );
 		} );
 
 		it( 'should wrap an inline object in a paragraph', () => {
@@ -525,17 +527,17 @@ describe( 'insertObject()', () => {
 
 			model.insertObject( widget );
 
-			sinon.assert.calledOnce( insertContentSpy );
+			expect( insertContentSpy ).toHaveBeenCalledTimes( 1 );
 
-			const insertContentCall = insertContentSpy.getCall( 0 );
+			const insertContentCall = { args: insertContentSpy.mock.calls[ 0 ] };
 			const content = insertContentCall.args[ 0 ];
 			const selectable = insertContentCall.args[ 1 ];
 
-			expect( content.name ).to.equal( 'paragraph' );
-			expect( content.getChild( 0 ) ).to.equal( widget );
-			expect( selectable ).to.equal( model.document.selection );
+			expect( content.name ).toBe( 'paragraph' );
+			expect( content.getChild( 0 ) ).toBe( widget );
+			expect( selectable ).toBe( model.document.selection );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<inlineWidget></inlineWidget>[]' +
 				'</paragraph>'
@@ -549,10 +551,10 @@ describe( 'insertObject()', () => {
 
 			model.insertObject( widget );
 
-			sinon.assert.calledOnce( insertContentSpy );
-			sinon.assert.calledWith( insertContentSpy, widget, model.document.selection );
+			expect( insertContentSpy ).toHaveBeenCalledTimes( 1 );
+			expect( insertContentSpy ).toHaveBeenCalledWith( widget, model.document.selection );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '[<blockWidget></blockWidget>]' );
+			expect( _getModelData( model ) ).toBe( '[<blockWidget></blockWidget>]' );
 		} );
 
 		it( 'should insert an object in given range', () => {
@@ -567,16 +569,16 @@ describe( 'insertObject()', () => {
 
 			model.insertObject( widget, range );
 
-			const insertContentCall = insertContentSpy.getCall( 0 );
+			const insertContentCall = { args: insertContentSpy.mock.calls[ 0 ] };
 			const content = insertContentCall.args[ 0 ];
 			const selectable = insertContentCall.args[ 1 ];
 
-			sinon.assert.calledOnce( insertContentSpy );
+			expect( insertContentSpy ).toHaveBeenCalledTimes( 1 );
 
-			expect( content ).to.equal( widget );
-			expect( selectable.anchor.path ).to.deep.equal( [ 1 ] );
-			expect( selectable.focus.path ).to.deep.equal( [ 2 ] );
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( content ).toBe( widget );
+			expect( selectable.anchor.path ).toEqual( [ 1 ] );
+			expect( selectable.focus.path ).toEqual( [ 2 ] );
+			expect( _getModelData( model ) ).toBe(
 				'<block>[Foo]</block>' +
 				'<blockWidget></blockWidget>'
 			);
@@ -587,7 +589,9 @@ describe( 'insertObject()', () => {
 describe( 'findOptimalInsertionRange()', () => {
 	let model, doc, schema;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -640,8 +644,8 @@ describe( 'findOptimalInsertionRange()', () => {
 		const selection = model.document.selection;
 		const optimalRange = schema.findOptimalInsertionRange( selection, 'before' );
 
-		expect( optimalRange.isCollapsed ).to.be.true;
-		expect( optimalRange.start.path ).to.deep.equal( [ 0 ] );
+		expect( optimalRange.isCollapsed ).toBe( true );
+		expect( optimalRange.start.path ).toEqual( [ 0 ] );
 	} );
 
 	it( 'should create a range after object if block object is selected', () => {
@@ -650,8 +654,8 @@ describe( 'findOptimalInsertionRange()', () => {
 		const selection = model.document.selection;
 		const optimalRange = schema.findOptimalInsertionRange( selection, 'after' );
 
-		expect( optimalRange.isCollapsed ).to.be.true;
-		expect( optimalRange.start.path ).to.deep.equal( [ 1 ] );
+		expect( optimalRange.isCollapsed ).toBe( true );
+		expect( optimalRange.start.path ).toEqual( [ 1 ] );
 	} );
 
 	it( 'should create a range on object if block object is selected', () => {
@@ -660,9 +664,9 @@ describe( 'findOptimalInsertionRange()', () => {
 		const selection = model.document.selection;
 		const optimalRange = schema.findOptimalInsertionRange( selection, 'auto' );
 
-		expect( optimalRange.isCollapsed ).to.be.false;
-		expect( optimalRange.start.path ).to.deep.equal( [ 0 ] );
-		expect( optimalRange.end.path ).to.deep.equal( [ 1 ] );
+		expect( optimalRange.isCollapsed ).toBe( false );
+		expect( optimalRange.start.path ).toEqual( [ 0 ] );
+		expect( optimalRange.end.path ).toEqual( [ 1 ] );
 	} );
 
 	it( 'should create a range on object by default if block object is selected', () => {
@@ -671,9 +675,9 @@ describe( 'findOptimalInsertionRange()', () => {
 		const selection = model.document.selection;
 		const optimalRange = schema.findOptimalInsertionRange( selection );
 
-		expect( optimalRange.isCollapsed ).to.be.false;
-		expect( optimalRange.start.path ).to.deep.equal( [ 0 ] );
-		expect( optimalRange.end.path ).to.deep.equal( [ 1 ] );
+		expect( optimalRange.isCollapsed ).toBe( false );
+		expect( optimalRange.start.path ).toEqual( [ 0 ] );
+		expect( optimalRange.end.path ).toEqual( [ 1 ] );
 	} );
 
 	it( 'should create a collapsed range at the end of a selection if no block elements are selected', () => {
@@ -686,8 +690,8 @@ describe( 'findOptimalInsertionRange()', () => {
 		const selection = model.document.selection;
 		const optimalRange = schema.findOptimalInsertionRange( selection, 'auto' );
 
-		expect( optimalRange.isCollapsed ).to.be.true;
-		expect( optimalRange.start.path ).to.deep.equal( [ 1, 3 ] );
+		expect( optimalRange.isCollapsed ).toBe( true );
+		expect( optimalRange.start.path ).toEqual( [ 1, 3 ] );
 	} );
 
 	it( 'should create a range at the beginning of block', () => {
@@ -696,8 +700,8 @@ describe( 'findOptimalInsertionRange()', () => {
 		const selection = model.document.selection;
 		const optimalRange = schema.findOptimalInsertionRange( selection, 'auto' );
 
-		expect( optimalRange.isCollapsed ).to.be.true;
-		expect( optimalRange.start.path ).to.deep.equal( [ 0, 0 ] );
+		expect( optimalRange.isCollapsed ).toBe( true );
+		expect( optimalRange.start.path ).toEqual( [ 0, 0 ] );
 	} );
 
 	it( 'should create a range at the beginning of first block', () => {
@@ -710,8 +714,8 @@ describe( 'findOptimalInsertionRange()', () => {
 		const selection = model.document.selection;
 		const optimalRange = schema.findOptimalInsertionRange( selection, 'auto' );
 
-		expect( optimalRange.isCollapsed ).to.be.true;
-		expect( optimalRange.start.path ).to.deep.equal( [ 0, 0 ] );
+		expect( optimalRange.isCollapsed ).toBe( true );
+		expect( optimalRange.start.path ).toEqual( [ 0, 0 ] );
 	} );
 
 	it( 'returns a collapsed range after selected element', () => {
@@ -719,8 +723,8 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		const range = schema.findOptimalInsertionRange( doc.selection );
 
-		expect( range.start.path ).to.deep.equal( [ 1 ] );
-		expect( range.end.path ).to.deep.equal( [ 2 ] );
+		expect( range.start.path ).toEqual( [ 1 ] );
+		expect( range.end.path ).toEqual( [ 2 ] );
 	} );
 
 	it( 'returns a collapsed range before parent block if an inline object is selected', () => {
@@ -734,8 +738,8 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		const range = schema.findOptimalInsertionRange( doc.selection );
 
-		expect( range.start.path ).to.deep.equal( [ 1 ] );
-		expect( range.end.path ).to.deep.equal( [ 1 ] );
+		expect( range.start.path ).toEqual( [ 1 ] );
+		expect( range.end.path ).toEqual( [ 1 ] );
 	} );
 
 	it( 'should return a collapsed range inside empty block', () => {
@@ -743,8 +747,8 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		const range = schema.findOptimalInsertionRange( doc.selection );
 
-		expect( range.start.path ).to.deep.equal( [ 1, 0 ] );
-		expect( range.end.path ).to.deep.equal( [ 1, 0 ] );
+		expect( range.start.path ).toEqual( [ 1, 0 ] );
+		expect( range.end.path ).toEqual( [ 1, 0 ] );
 	} );
 
 	it( 'should return a collapsed range before block if at the beginning of that block', () => {
@@ -752,8 +756,8 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		const range = schema.findOptimalInsertionRange( doc.selection );
 
-		expect( range.start.path ).to.deep.equal( [ 1 ] );
-		expect( range.end.path ).to.deep.equal( [ 1 ] );
+		expect( range.start.path ).toEqual( [ 1 ] );
+		expect( range.end.path ).toEqual( [ 1 ] );
 	} );
 
 	it( 'should return a collapsed range before block if in the middle of that block (collapsed selection)', () => {
@@ -761,8 +765,8 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		const range = schema.findOptimalInsertionRange( doc.selection );
 
-		expect( range.start.path ).to.deep.equal( [ 1 ] );
-		expect( range.end.path ).to.deep.equal( [ 1 ] );
+		expect( range.start.path ).toEqual( [ 1 ] );
+		expect( range.end.path ).toEqual( [ 1 ] );
 	} );
 
 	it( 'should return a collapsed range before block if in the middle of that block (non-collapsed selection)', () => {
@@ -770,8 +774,8 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		const range = schema.findOptimalInsertionRange( doc.selection );
 
-		expect( range.start.path ).to.deep.equal( [ 1 ] );
-		expect( range.end.path ).to.deep.equal( [ 1 ] );
+		expect( range.start.path ).toEqual( [ 1 ] );
+		expect( range.end.path ).toEqual( [ 1 ] );
 	} );
 
 	it( 'should return a collapsed range after block if at the end of that block', () => {
@@ -779,8 +783,8 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		const range = schema.findOptimalInsertionRange( doc.selection );
 
-		expect( range.start.path ).to.deep.equal( [ 2 ] );
-		expect( range.end.path ).to.deep.equal( [ 2 ] );
+		expect( range.start.path ).toEqual( [ 2 ] );
+		expect( range.end.path ).toEqual( [ 2 ] );
 	} );
 
 	// Checking if isTouching() was used.
@@ -789,8 +793,8 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		const range = schema.findOptimalInsertionRange( doc.selection );
 
-		expect( range.start.path ).to.deep.equal( [ 2 ] );
-		expect( range.end.path ).to.deep.equal( [ 2 ] );
+		expect( range.start.path ).toEqual( [ 2 ] );
+		expect( range.end.path ).toEqual( [ 2 ] );
 	} );
 
 	it( 'should return selection focus if not in a block', () => {
@@ -799,7 +803,7 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		const range = schema.findOptimalInsertionRange( doc.selection );
 
-		expect( range.start.path ).to.deep.equal( [ 3 ] );
-		expect( range.end.path ).to.deep.equal( [ 3 ] );
+		expect( range.start.path ).toEqual( [ 3 ] );
+		expect( range.end.path ).toEqual( [ 3 ] );
 	} );
 } );

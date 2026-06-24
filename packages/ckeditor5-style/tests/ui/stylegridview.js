@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { Locale, FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
 
@@ -48,90 +50,93 @@ describe( 'StyleGridView', () => {
 
 	afterEach( async () => {
 		grid.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should have #focusTracker', () => {
-			expect( grid.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( grid.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'should have #keystrokes', () => {
-			expect( grid.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( grid.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 
 		it( 'should set #children', () => {
-			expect( grid.children ).to.be.instanceOf( ViewCollection );
+			expect( grid.children ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should set #activeStyles', () => {
-			expect( grid.activeStyles ).to.deep.equal( [] );
+			expect( grid.activeStyles ).toEqual( [] );
 		} );
 
 		it( 'should set #enabledStyles', () => {
-			expect( grid.enabledStyles ).to.deep.equal( [] );
+			expect( grid.enabledStyles ).toEqual( [] );
 		} );
 
 		it( 'should delegate #execute from #children', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			grid.on( 'execute', spy );
 			grid.children.first.fire( 'execute', 'foo' );
 
-			sinon.assert.calledOnceWithExactly( spy, sinon.match.object, 'foo' );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( expect.any( Object ) );
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toBe( 'foo' );
 		} );
 
 		it( 'should create #children from style definitions', () => {
 			for ( const child of grid.children ) {
-				expect( child ).to.be.instanceOf( StyleGridButtonView );
+				expect( child ).toBeInstanceOf( StyleGridButtonView );
 			}
 
-			expect( grid.children.map( ( { label } ) => label ) ).to.deep.equal( [ 'Red heading', 'Large heading' ] );
+			expect( grid.children.map( ( { label } ) => label ) ).toEqual( [ 'Red heading', 'Large heading' ] );
 		} );
 
 		it( 'should change #isOn state of #children depending on #activeStyles', () => {
 			grid.activeStyles = [];
 
-			expect( grid.children.map( ( { isOn } ) => isOn ) ).to.deep.equal( [ false, false ] );
+			expect( grid.children.map( ( { isOn } ) => isOn ) ).toEqual( [ false, false ] );
 
 			grid.activeStyles = [ 'Large heading' ];
 
-			expect( grid.children.map( ( { isOn } ) => isOn ) ).to.deep.equal( [ false, true ] );
+			expect( grid.children.map( ( { isOn } ) => isOn ) ).toEqual( [ false, true ] );
 		} );
 
 		it( 'should change #isEnabled state of #children depending on #enabledStyles', () => {
 			grid.enabledStyles = [];
 
-			expect( grid.children.map( ( { isEnabled } ) => isEnabled ) ).to.deep.equal( [ false, false ] );
+			expect( grid.children.map( ( { isEnabled } ) => isEnabled ) ).toEqual( [ false, false ] );
 
 			grid.enabledStyles = [ 'Large heading' ];
 
-			expect( grid.children.map( ( { isEnabled } ) => isEnabled ) ).to.deep.equal( [ false, true ] );
+			expect( grid.children.map( ( { isEnabled } ) => isEnabled ) ).toEqual( [ false, true ] );
 		} );
 
 		it( 'should be a <div>', () => {
 			grid.render();
 
-			expect( grid.element.tagName ).to.equal( 'DIV' );
+			expect( grid.element.tagName ).toBe( 'DIV' );
 		} );
 
 		it( 'should have a static CSS class', () => {
 			grid.render();
 
-			expect( grid.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( grid.element.classList.contains( 'ck-style-grid' ) ).to.be.true;
+			expect( grid.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( grid.element.classList.contains( 'ck-style-grid' ) ).toBe( true );
 		} );
 
 		it( 'should have a role attribute', () => {
 			grid.render();
 
-			expect( grid.element.getAttribute( 'role' ) ).to.equal( 'listbox' );
+			expect( grid.element.getAttribute( 'role' ) ).toBe( 'listbox' );
 		} );
 
 		it( 'should have children in DOM', () => {
 			grid.render();
 
-			expect( grid.element.firstChild ).to.equal( grid.children.first.element );
-			expect( grid.element.lastChild ).to.equal( grid.children.last.element );
+			expect( grid.element.firstChild ).toBe( grid.children.first.element );
+			expect( grid.element.lastChild ).toBe( grid.children.last.element );
 		} );
 	} );
 
@@ -168,12 +173,12 @@ describe( 'StyleGridView', () => {
 				}
 			] );
 
-			const spyView = sinon.spy( grid.focusTracker, 'add' );
+			const spyView = vi.spyOn( grid.focusTracker, 'add' );
 
 			grid.render();
 
-			sinon.assert.calledWithExactly( spyView.getCall( 0 ), grid.children.first.element );
-			sinon.assert.calledWithExactly( spyView.getCall( 1 ), grid.children.last.element );
+			expect( spyView ).toHaveBeenNthCalledWith( 1, grid.children.first.element );
+			expect( spyView ).toHaveBeenNthCalledWith( 2, grid.children.last.element );
 
 			grid.destroy();
 		} );
@@ -246,44 +251,45 @@ describe( 'StyleGridView', () => {
 
 			afterEach( async () => {
 				grid.destroy();
+				vi.restoreAllMocks();
 			} );
 
 			it( '"arrow right" should focus the next focusable style', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowright,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				// Mock the first color button is focused.
 				grid.focusTracker.isFocused = true;
 				grid.focusTracker.focusedElement = grid.children.first.element;
 
-				const spy = sinon.spy( grid.children.get( 1 ), 'focus' );
+				const spy = vi.spyOn( grid.children.get( 1 ), 'focus' );
 
 				grid.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( '"arrow down" should focus the focusable style in the second row', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowdown,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				// Mock the first color button is focused.
 				grid.focusTracker.isFocused = true;
 				grid.focusTracker.focusedElement = grid.children.first.element;
 
-				const spy = sinon.spy( grid.children.get( 3 ), 'focus' );
+				const spy = vi.spyOn( grid.children.get( 3 ), 'focus' );
 
 				grid.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
@@ -319,12 +325,12 @@ describe( 'StyleGridView', () => {
 				}
 			] );
 
-			const spy = sinon.spy( grid.keystrokes, 'listenTo' );
+			const spy = vi.spyOn( grid.keystrokes, 'listenTo' );
 
 			grid.render();
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, grid.element );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledWith( grid.element );
 
 			grid.destroy();
 		} );
@@ -332,29 +338,29 @@ describe( 'StyleGridView', () => {
 
 	describe( 'focus()', () => {
 		it( 'should focus the first style', () => {
-			const spy = sinon.spy( grid.children.first, 'focus' );
+			const spy = vi.spyOn( grid.children.first, 'focus' );
 
 			grid.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
-			const destroySpy = sinon.spy( grid.focusTracker, 'destroy' );
+			const destroySpy = vi.spyOn( grid.focusTracker, 'destroy' );
 
 			grid.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should destroy the KeystrokeHandler instance', () => {
-			const destroySpy = sinon.spy( grid.keystrokes, 'destroy' );
+			const destroySpy = vi.spyOn( grid.keystrokes, 'destroy' );
 
 			grid.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 } );

@@ -112,6 +112,9 @@ export class BalloonEditor extends BalloonEditorBase {
 				'mergeTableCells'
 			]
 		},
+		list: {
+			enableSkipLevelLists: true
+		},
 		language: 'en'
 	};
 }
@@ -160,6 +163,9 @@ export class ClassicEditor extends ClassicEditorBase {
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		list: {
+			enableSkipLevelLists: true
 		},
 		language: 'en'
 	};

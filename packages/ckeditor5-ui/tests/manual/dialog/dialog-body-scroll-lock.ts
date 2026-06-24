@@ -77,11 +77,12 @@ const form = document.querySelector( 'form' )!;
 
 form.addEventListener( 'change', () => {
 	const elements = form.elements as FormElements;
+	const wrapper: HTMLElement = document.querySelector( '.manual-test-container' ) || document.body;
 
-	document.body.style.height = elements.isScrollable.value === 'yes' ? '3000px' : '';
-	document.body.style.width = elements.isScrollable.value === 'yes' ? '3000px' : '';
+	wrapper.style.height = elements.isScrollable.value === 'yes' ? '3000px' : '';
+	wrapper.style.width = elements.isScrollable.value === 'yes' ? '3000px' : '';
 
-	document.body.style.position = elements.hasPosition.value === 'yes' ? 'absolute' : '';
-	document.body.style.top = elements.hasPosition.value === 'yes' ? '100px' : '';
-	document.body.style.left = elements.hasPosition.value === 'yes' ? '100px' : '';
+	wrapper.style.position = elements.hasPosition.value === 'yes' ? 'absolute' : '';
+	wrapper.style.top = elements.hasPosition.value === 'yes' ? '100px' : '';
+	wrapper.style.left = elements.hasPosition.value === 'yes' ? '100px' : '';
 } );

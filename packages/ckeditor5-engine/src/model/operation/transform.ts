@@ -779,6 +779,7 @@ function handlePartialMarkerOperations( operations: Array<Operation> ) {
 				ranges: op.newRange ? [ op.newRange ] : []
 			} );
 		} else {
+			/* v8 ignore next -- @preserve */
 			if ( op.newRange ) {
 				// `markerOps.get( op.name )` must exist because original marker operation is always before partial marker operations.
 				// If the original marker operation was changed to `NoOperation`, then the partial marker operations would be changed

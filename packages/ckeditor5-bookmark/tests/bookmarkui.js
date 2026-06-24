@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -14,7 +16,6 @@ import { IconBookmark, IconPencil, IconRemove, IconBookmarkSmall, IconBookmarkMe
 import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 import { indexOf, isRange, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { BookmarkFormView } from '../src/ui/bookmarkformview.js';
 import { BookmarkEditing } from '../src/bookmarkediting.js';
@@ -22,8 +23,6 @@ import { BookmarkUI } from '../src/bookmarkui.js';
 
 describe( 'BookmarkUI', () => {
 	let editor, element, button, balloon, bookmarkUIFeature, formView, widgetToolbarRepository, toolbarView;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -39,42 +38,58 @@ describe( 'BookmarkUI', () => {
 		toolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'bookmark' ).view;
 
 		// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-		testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
-		testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
+		vi.spyOn( balloon.view, 'attachTo' ).mockReturnValue( {} );
+		vi.spyOn( balloon.view, 'pin' ).mockReturnValue( {} );
 	} );
 
 	afterEach( () => {
 		element.remove();
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( BookmarkUI.requires ).to.deep.equal( [ BookmarkEditing, ContextualBalloon, WidgetToolbarRepository ] );
+		expect( BookmarkUI.requires ).toEqual( [ BookmarkEditing, ContextualBalloon, WidgetToolbarRepository ] );
 	} );
 
 	it( 'should be correctly named', () => {
-		expect( BookmarkUI.pluginName ).to.equal( 'BookmarkUI' );
+		expect( BookmarkUI.pluginName ).toBe( 'BookmarkUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( BookmarkUI.isOfficialPlugin ).to.be.true;
+		expect( BookmarkUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( BookmarkUI.isPremiumPlugin ).to.be.false;
+		expect( BookmarkUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should load ContextualBalloon', () => {
-		expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
+		expect( editor.plugins.get( ContextualBalloon ) ).toBeInstanceOf( ContextualBalloon );
 	} );
 
 	it( 'should not create #formView', () => {
-		expect( bookmarkUIFeature.formView ).to.be.null;
+		expect( bookmarkUIFeature.formView ).toBeNull();
 	} );
 
 	it( 'should not create #actionsView', () => {
-		expect( bookmarkUIFeature.actionsView ).to.be.undefined;
+		expect( bookmarkUIFeature.actionsView ).toBeUndefined();
+	} );
+
+	it( 'should initialize without the Link plugin loaded', async () => {
+		const standaloneElement = document.createElement( 'div' );
+		document.body.appendChild( standaloneElement );
+
+		const standaloneEditor = await ClassicTestEditor.create( standaloneElement, {
+			plugins: [ BookmarkUI, BookmarkEditing, Essentials, Paragraph ]
+		} );
+
+		expect( standaloneEditor.plugins.has( 'LinkUI' ) ).toBe( false );
+		expect( standaloneEditor.plugins.get( BookmarkUI ) ).toBeInstanceOf( BookmarkUI );
+
+		standaloneElement.remove();
+		await standaloneEditor.destroy();
 	} );
 
 	describe( 'the "bookmark" toolbar button', () => {
@@ -85,42 +100,42 @@ describe( 'BookmarkUI', () => {
 		testButton( 'bookmark', 'Bookmark', ButtonView );
 
 		it( 'should have tooltip', () => {
-			expect( button.tooltip ).to.be.true;
+			expect( button.tooltip ).toBe( true );
 		} );
 
 		it( 'should have an icon', () => {
-			expect( button.icon ).to.equal( IconBookmark );
+			expect( button.icon ).toBe( IconBookmark );
 		} );
 
 		it( 'should scroll to the selection when executed', () => {
-			const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+			const scrollSpy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnce( scrollSpy );
+			expect( scrollSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should bind #isEnabled to insert and update command', () => {
 			const insertBookmark = editor.commands.get( 'insertBookmark' );
 			const updateBookmark = editor.commands.get( 'updateBookmark' );
 
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 
 			insertBookmark.isEnabled = true;
 			updateBookmark.isEnabled = true;
-			expect( button.isEnabled ).to.equal( true );
+			expect( button.isEnabled ).toBe( true );
 
 			insertBookmark.isEnabled = true;
 			updateBookmark.isEnabled = false;
-			expect( button.isEnabled ).to.equal( true );
+			expect( button.isEnabled ).toBe( true );
 
 			insertBookmark.isEnabled = false;
 			updateBookmark.isEnabled = true;
-			expect( button.isEnabled ).to.equal( true );
+			expect( button.isEnabled ).toBe( true );
 
 			insertBookmark.isEnabled = false;
 			updateBookmark.isEnabled = false;
-			expect( button.isEnabled ).to.equal( false );
+			expect( button.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -132,48 +147,48 @@ describe( 'BookmarkUI', () => {
 		testButton( 'bookmark', 'Bookmark', MenuBarMenuListItemButtonView );
 
 		it( 'should scroll to the selection when executed', () => {
-			const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+			const scrollSpy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnce( scrollSpy );
+			expect( scrollSpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	function testButton( featureName, label, Component ) {
 		it( 'should register feature component', () => {
-			expect( button ).to.be.instanceOf( Component );
+			expect( button ).toBeInstanceOf( Component );
 		} );
 
 		it( 'should create UI component with correct attribute values', () => {
-			expect( button.isOn ).to.be.false;
-			expect( button.label ).to.equal( label );
+			expect( button.isOn ).toBe( false );
+			expect( button.label ).toBe( label );
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
-			const spy = testUtils.sinon.spy( bookmarkUIFeature, '_showFormView' );
+			const spy = vi.spyOn( bookmarkUIFeature, '_showFormView' );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should toggle the balloon UI with hidden back button (if not updating)', () => {
 			const updateBookmark = editor.commands.get( 'updateBookmark' );
 
-			sinon.stub( updateBookmark, 'isEnabled' ).get( () => false );
+			vi.spyOn( updateBookmark, 'isEnabled', 'get' ).mockReturnValue( false );
 			button.fire( 'execute' );
 
-			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.false;
+			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).toBe( false );
 		} );
 
 		it( 'should toggle the balloon UI with visible back button (if updating)', () => {
 			const updateBookmark = editor.commands.get( 'updateBookmark' );
 
-			sinon.stub( updateBookmark, 'isEnabled' ).get( () => true );
+			vi.spyOn( updateBookmark, 'isEnabled', 'get' ).mockReturnValue( true );
 			button.fire( 'execute' );
 
-			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.true;
+			expect( bookmarkUIFeature.formView.backButtonView.isVisible ).toBe( true );
 		} );
 	}
 
@@ -186,23 +201,23 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should be a LabelView', () => {
-				expect( label ).to.be.instanceOf( LabelView );
+				expect( label ).toBeInstanceOf( LabelView );
 			} );
 
 			it( 'should have bookmark preview css classes set', () => {
 				label.render();
 
-				expect( label.element.classList.contains( 'ck-bookmark-toolbar__preview' ) ).to.be.true;
+				expect( label.element.classList.contains( 'ck-bookmark-toolbar__preview' ) ).toBe( true );
 			} );
 
 			it( 'should bind text to the UpdateBookmarkCommand value', () => {
 				const updateBookmarkCommand = editor.commands.get( 'updateBookmark' );
 
 				updateBookmarkCommand.value = 'foo';
-				expect( label.text ).to.equal( 'foo' );
+				expect( label.text ).toBe( 'foo' );
 
 				updateBookmarkCommand.value = 'bar';
-				expect( label.text ).to.equal( 'bar' );
+				expect( label.text ).toBe( 'bar' );
 			} );
 		} );
 
@@ -212,49 +227,49 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should be a ButtonView', () => {
-				expect( button ).to.be.instanceOf( ButtonView );
+				expect( button ).toBeInstanceOf( ButtonView );
 			} );
 
 			it( 'should have a label', () => {
-				expect( button.label ).to.equal( 'Edit bookmark' );
+				expect( button.label ).toBe( 'Edit bookmark' );
 			} );
 
 			it( 'should have a tooltip', () => {
-				expect( button.tooltip ).to.be.true;
+				expect( button.tooltip ).toBe( true );
 			} );
 
 			it( 'should have an icon', () => {
-				expect( button.icon ).to.equal( IconPencil );
+				expect( button.icon ).toBe( IconPencil );
 			} );
 
 			it( 'should bind #isEnabled to the UpdateBookmarkCommand', () => {
 				const updateBookmarkCommand = editor.commands.get( 'updateBookmark' );
 
 				updateBookmarkCommand.isEnabled = false;
-				expect( button.isEnabled ).to.equal( false );
+				expect( button.isEnabled ).toBe( false );
 
 				updateBookmarkCommand.isEnabled = true;
-				expect( button.isEnabled ).to.equal( true );
+				expect( button.isEnabled ).toBe( true );
 
 				updateBookmarkCommand.isEnabled = false;
-				expect( button.isEnabled ).to.equal( false );
+				expect( button.isEnabled ).toBe( false );
 			} );
 
 			it( 'should toggle the balloon UI with visible back button', () => {
 				const updateBookmarkCommand = editor.commands.get( 'updateBookmark' );
 
-				sinon.stub( updateBookmarkCommand, 'isEnabled' ).get( () => true );
+				vi.spyOn( updateBookmarkCommand, 'isEnabled', 'get' ).mockReturnValue( true );
 				button.fire( 'execute' );
 
-				expect( bookmarkUIFeature.formView.backButtonView.isVisible ).to.be.true;
+				expect( bookmarkUIFeature.formView.backButtonView.isVisible ).toBe( true );
 			} );
 
 			it( 'should trigger #_showFormView() on execute', () => {
-				const spy = sinon.stub( bookmarkUIFeature, '_showFormView' );
+				const spy = vi.spyOn( bookmarkUIFeature, '_showFormView' ).mockImplementation( () => {} );
 
 				button.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -264,49 +279,49 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should be a ButtonView', () => {
-				expect( button ).to.be.instanceOf( ButtonView );
+				expect( button ).toBeInstanceOf( ButtonView );
 			} );
 
 			it( 'should have a label', () => {
-				expect( button.label ).to.equal( 'Remove bookmark' );
+				expect( button.label ).toBe( 'Remove bookmark' );
 			} );
 
 			it( 'should have a tooltip', () => {
-				expect( button.tooltip ).to.be.true;
+				expect( button.tooltip ).toBe( true );
 			} );
 
 			it( 'should have an icon', () => {
-				expect( button.icon ).to.equal( IconRemove );
+				expect( button.icon ).toBe( IconRemove );
 			} );
 
 			it( 'should bind #isEnabled to the DeleteCommand', () => {
 				const deleteCommand = editor.commands.get( 'delete' );
 
 				deleteCommand.isEnabled = false;
-				expect( button.isEnabled ).to.equal( false );
+				expect( button.isEnabled ).toBe( false );
 
 				deleteCommand.isEnabled = true;
-				expect( button.isEnabled ).to.equal( true );
+				expect( button.isEnabled ).toBe( true );
 
 				deleteCommand.isEnabled = false;
-				expect( button.isEnabled ).to.equal( false );
+				expect( button.isEnabled ).toBe( false );
 			} );
 
 			it( 'should trigger DeleteCommand on execute', () => {
 				const deleteCommand = editor.commands.get( 'delete' );
-				const spy = sinon.spy( deleteCommand, 'execute' );
+				const spy = vi.spyOn( deleteCommand, 'execute' );
 
 				button.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should return focus to editable after executing a command', () => {
-				const spy = sinon.spy( editor.editing.view, 'focus' );
+				const spy = vi.spyOn( editor.editing.view, 'focus' );
 
 				button.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );
@@ -314,40 +329,42 @@ describe( 'BookmarkUI', () => {
 	describe( 'toolbar', () => {
 		it( 'should use the config.bookmark.toolbar to create items', () => {
 			// Make sure that toolbar is empty before first show.
-			expect( toolbarView.items.length ).to.equal( 0 );
+			expect( toolbarView.items.length ).toBe( 0 );
 
 			editor.ui.focusTracker.isFocused = true;
 
 			_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
-			expect( toolbarView.items ).to.have.length( 4 );
-			expect( toolbarView.items.get( 0 ).text ).to.equal( 'foo' );
-			expect( toolbarView.items.get( 2 ).label ).to.equal( 'Edit bookmark' );
-			expect( toolbarView.items.get( 3 ).label ).to.equal( 'Remove bookmark' );
+			expect( toolbarView.items ).toHaveLength( 4 );
+			expect( toolbarView.items.get( 0 ).text ).toBe( 'foo' );
+			expect( toolbarView.items.get( 2 ).label ).toBe( 'Edit bookmark' );
+			expect( toolbarView.items.get( 3 ).label ).toBe( 'Remove bookmark' );
 		} );
 
 		it( 'should set proper CSS classes', () => {
-			const spy = sinon.spy( balloon, 'add' );
+			const spy = vi.spyOn( balloon, 'add' );
 
 			editor.ui.focusTracker.isFocused = true;
 
 			_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
-			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
-				return view === toolbarView && balloonClassName === 'ck-bookmark-balloon ck-toolbar-container';
-			} ) );
+			expect( spy ).toHaveBeenCalled();
+			const matched = spy.mock.calls.some( ( [ arg ] ) => {
+				return arg && arg.view === toolbarView && arg.balloonClassName === 'ck-bookmark-balloon ck-toolbar-container';
+			} );
+			expect( matched ).toBe( true );
 		} );
 
 		it( 'should set aria-label attribute', () => {
 			toolbarView.render();
 
-			expect( toolbarView.element.getAttribute( 'aria-label' ) ).to.equal( 'Bookmark toolbar' );
+			expect( toolbarView.element.getAttribute( 'aria-label' ) ).toBe( 'Bookmark toolbar' );
 
 			toolbarView.destroy();
 		} );
 
 		it( 'should override the default balloon position to match the form view positions', () => {
-			const spy = sinon.spy( balloon, 'add' );
+			const spy = vi.spyOn( balloon, 'add' );
 			editor.ui.focusTracker.isFocused = true;
 
 			_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
@@ -355,9 +372,9 @@ describe( 'BookmarkUI', () => {
 			const bookmarkElement = editor.editing.view.getDomRoot().querySelector( 'a' );
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			sinon.assert.calledWithExactly( spy, {
+			expect( spy ).toHaveBeenCalledWith( {
 				view: toolbarView,
 				position: {
 					target: bookmarkElement,
@@ -387,11 +404,11 @@ describe( 'BookmarkUI', () => {
 			it( 'should show the toolbar on ui#update when the bookmark is selected', () => {
 				_setModelData( editor.model, '<paragraph>[]<bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-				expect( balloon.visibleView ).to.be.null;
+				expect( balloon.visibleView ).toBeNull();
 
 				editor.ui.fire( 'update' );
 
-				expect( balloon.visibleView ).to.be.null;
+				expect( balloon.visibleView ).toBeNull();
 
 				editor.model.change( writer => {
 					writer.setSelection(
@@ -399,18 +416,18 @@ describe( 'BookmarkUI', () => {
 					);
 				} );
 
-				expect( balloon.visibleView ).to.equal( toolbarView );
+				expect( balloon.visibleView ).toBe( toolbarView );
 
 				// Make sure successive change does not throw, e.g. attempting
 				// to insert the toolbar twice.
 				editor.ui.fire( 'update' );
-				expect( balloon.visibleView ).to.equal( toolbarView );
+				expect( balloon.visibleView ).toBe( toolbarView );
 			} );
 
 			it( 'should hide the toolbar on ui#update if the bookmark is de–selected', () => {
 				_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
-				expect( balloon.visibleView ).to.equal( toolbarView );
+				expect( balloon.visibleView ).toBe( toolbarView );
 
 				editor.model.change( writer => {
 					writer.setSelection(
@@ -418,12 +435,12 @@ describe( 'BookmarkUI', () => {
 					);
 				} );
 
-				expect( balloon.visibleView ).to.be.null;
+				expect( balloon.visibleView ).toBeNull();
 
 				// Make sure successive change does not throw, e.g. attempting
 				// to remove the toolbar twice.
 				editor.ui.fire( 'update' );
-				expect( balloon.visibleView ).to.be.null;
+				expect( balloon.visibleView ).toBeNull();
 			} );
 		} );
 	} );
@@ -441,10 +458,10 @@ describe( 'BookmarkUI', () => {
 		it( 'should register proper link provider', () => {
 			const found = linkUI._linksProviders.find( provider => provider.label === t( 'Bookmarks' ) );
 
-			expect( found.emptyListPlaceholder ).to.equal( t( 'No bookmarks available.' ) );
-			expect( found.navigate ).to.be.a( 'function' );
-			expect( found.getItem ).to.be.instanceOf( Function );
-			expect( found.getListItems ).to.be.instanceOf( Function );
+			expect( found.emptyListPlaceholder ).toBe( t( 'No bookmarks available.' ) );
+			expect( typeof found.navigate ).toBe( 'function' );
+			expect( found.getItem ).toBeInstanceOf( Function );
+			expect( found.getListItems ).toBeInstanceOf( Function );
 		} );
 
 		it( 'should be able to open "Bookmark" tab in the link panel even if the list is empty', () => {
@@ -452,8 +469,8 @@ describe( 'BookmarkUI', () => {
 
 			const button = clickNthLinksProvider( 0 );
 
-			expect( button ).not.to.be.undefined;
-			expect( button.label ).to.equal( t( 'Bookmarks' ) );
+			expect( button ).toBeDefined();
+			expect( button.label ).toBe( t( 'Bookmarks' ) );
 
 			expectedShownItems( [] );
 			expectShownEmptyPlaceholder( t( 'No bookmarks available.' ) );
@@ -500,15 +517,15 @@ describe( 'BookmarkUI', () => {
 
 			linkCommand.value = '#zzz';
 
-			expect( button.icon ).to.equal( IconBookmarkSmall );
-			expect( button.tooltip ).to.equal( t( 'Scroll to bookmark' ) );
+			expect( button.icon ).toBe( IconBookmarkSmall );
+			expect( button.tooltip ).toBe( t( 'Scroll to bookmark' ) );
 
 			button.destroy();
 
 			linkCommand.value = '#other_non_bookmark';
 
-			expect( button.icon ).not.to.be.equal( IconBookmarkSmall );
-			expect( button.tooltip ).not.to.be.equal( t( 'Scroll to bookmark' ) );
+			expect( button.icon ).not.toBe( IconBookmarkSmall );
+			expect( button.tooltip ).not.toBe( t( 'Scroll to bookmark' ) );
 		} );
 
 		it( 'should scroll to the bookmark when the link preview button is clicked', () => {
@@ -519,7 +536,7 @@ describe( 'BookmarkUI', () => {
 			);
 
 			const button = editor.ui.componentFactory.create( 'linkPreview' );
-			const scrollStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+			const scrollStub = vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 
 			linkCommand.value = '#zzz';
 			button.render();
@@ -527,9 +544,9 @@ describe( 'BookmarkUI', () => {
 
 			const selectedElement = editor.model.document.selection.getSelectedElement();
 
-			expect( selectedElement.is( 'element', 'bookmark' ) ).to.be.true;
-			expect( selectedElement.getAttribute( 'bookmarkId' ) ).to.equal( 'zzz' );
-			expect( scrollStub.calledOnce ).to.be.true;
+			expect( selectedElement.is( 'element', 'bookmark' ) ).toBe( true );
+			expect( selectedElement.getAttribute( 'bookmarkId' ) ).toBe( 'zzz' );
+			expect( scrollStub ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should perform default browser action if tried to scroll to non-existing bookmark', () => {
@@ -541,18 +558,16 @@ describe( 'BookmarkUI', () => {
 
 			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
 			const button = editor.ui.componentFactory.create( 'linkPreview' );
-			const scrollStub = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+			const scrollStub = vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 
 			// Let's assume that command somehow managed to be set to non-existing bookmark.
 			linkCommand.value = '#zzz';
-			sinon
-				.stub( bookmarkEditing, 'getElementForBookmarkId' )
-				.returns( null );
+			vi.spyOn( bookmarkEditing, 'getElementForBookmarkId' ).mockReturnValue( null );
 
 			button.render();
 			button.element.dispatchEvent( new Event( 'click' ) );
 
-			expect( scrollStub.calledOnce ).to.be.false;
+			expect( scrollStub ).not.toHaveBeenCalled();
 		} );
 
 		function clickNthLinksProvider( nth ) {
@@ -560,7 +575,7 @@ describe( 'BookmarkUI', () => {
 				.template.children[ 0 ]
 				.find( child => child.template.attributes.class.includes( 'ck-link-form__providers-list' ) );
 
-			expect( providersList ).not.to.be.undefined;
+			expect( providersList ).toBeDefined();
 
 			const button = providersList
 				.template.children[ 0 ]
@@ -575,7 +590,7 @@ describe( 'BookmarkUI', () => {
 		function expectShownEmptyPlaceholder( placeholder ) {
 			const emptyListInformation = linkUI.linkProviderItemsView.emptyListInformation;
 
-			expect( emptyListInformation.element.innerText ).to.equal( placeholder );
+			expect( emptyListInformation.element.innerText ).toBe( placeholder );
 		}
 
 		function expectedShownItems( expectedItems ) {
@@ -586,7 +601,7 @@ describe( 'BookmarkUI', () => {
 					icon: child.icon
 				} ) );
 
-			expect( items ).to.be.deep.equal( expectedItems );
+			expect( items ).toEqual( expectedItems );
 		}
 	} );
 
@@ -594,7 +609,7 @@ describe( 'BookmarkUI', () => {
 		let balloonAddSpy;
 
 		beforeEach( () => {
-			balloonAddSpy = testUtils.sinon.spy( balloon, 'add' );
+			balloonAddSpy = vi.spyOn( balloon, 'add' );
 			editor.editing.view.document.isFocused = true;
 		} );
 
@@ -603,7 +618,7 @@ describe( 'BookmarkUI', () => {
 
 			bookmarkUIFeature._showFormView();
 
-			expect( bookmarkUIFeature.formView ).to.be.instanceOf( BookmarkFormView );
+			expect( bookmarkUIFeature.formView ).toBeInstanceOf( BookmarkFormView );
 		} );
 
 		it( 'should not throw if the UI is already visible', () => {
@@ -613,7 +628,7 @@ describe( 'BookmarkUI', () => {
 
 			expect( () => {
 				bookmarkUIFeature._showFormView();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
@@ -624,15 +639,16 @@ describe( 'BookmarkUI', () => {
 
 			const expectedRange = getMarkersRange( editor );
 
-			expect( balloon.visibleView ).to.equal( formView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
+			expect( balloon.visibleView ).toBe( formView );
+
+			expect( balloonAddSpy ).toHaveBeenCalledWith( {
 				view: formView,
 				position: {
-					target: sinon.match( isRange )
+					target: expect.toSatisfy( isRange )
 				}
 			} );
 
-			assertDomRange( expectedRange, balloonAddSpy.args[ 0 ][ 0 ].position.target );
+			assertDomRange( expectedRange, balloonAddSpy.mock.calls[ 0 ][ 0 ].position.target );
 		} );
 
 		it( 'should bind idInputView #isEnabled to insert and update command', () => {
@@ -644,19 +660,19 @@ describe( 'BookmarkUI', () => {
 
 			insertBookmark.isEnabled = true;
 			updateBookmark.isEnabled = true;
-			expect( idInputView.isEnabled ).to.equal( true );
+			expect( idInputView.isEnabled ).toBe( true );
 
 			insertBookmark.isEnabled = true;
 			updateBookmark.isEnabled = false;
-			expect( idInputView.isEnabled ).to.equal( true );
+			expect( idInputView.isEnabled ).toBe( true );
 
 			insertBookmark.isEnabled = false;
 			updateBookmark.isEnabled = true;
-			expect( idInputView.isEnabled ).to.equal( true );
+			expect( idInputView.isEnabled ).toBe( true );
 
 			insertBookmark.isEnabled = false;
 			updateBookmark.isEnabled = false;
-			expect( idInputView.isEnabled ).to.equal( false );
+			expect( idInputView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should bind saveButtonView #isEnabled to insert and update command', () => {
@@ -668,19 +684,19 @@ describe( 'BookmarkUI', () => {
 
 			insertBookmark.isEnabled = true;
 			updateBookmark.isEnabled = true;
-			expect( buttonView.isEnabled ).to.equal( true );
+			expect( buttonView.isEnabled ).toBe( true );
 
 			insertBookmark.isEnabled = true;
 			updateBookmark.isEnabled = false;
-			expect( buttonView.isEnabled ).to.equal( true );
+			expect( buttonView.isEnabled ).toBe( true );
 
 			insertBookmark.isEnabled = false;
 			updateBookmark.isEnabled = true;
-			expect( buttonView.isEnabled ).to.equal( true );
+			expect( buttonView.isEnabled ).toBe( true );
 
 			insertBookmark.isEnabled = false;
 			updateBookmark.isEnabled = false;
-			expect( buttonView.isEnabled ).to.equal( false );
+			expect( buttonView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should add #formView to the balloon when bookmark is selected and bookmark toolbar is already visible', () => {
@@ -689,19 +705,19 @@ describe( 'BookmarkUI', () => {
 
 			editor.ui.update();
 
-			expect( balloon.visibleView ).to.equal( toolbarView );
+			expect( balloon.visibleView ).toBe( toolbarView );
 
-			const addSpyFirstCallArgs = balloonAddSpy.firstCall.args[ 0 ];
+			const addSpyFirstCallArgs = balloonAddSpy.mock.calls[ 0 ][ 0 ];
 
-			expect( addSpyFirstCallArgs.view ).to.equal( toolbarView );
+			expect( addSpyFirstCallArgs.view ).toBe( toolbarView );
 
 			bookmarkUIFeature._showFormView();
 
-			const addSpyCallSecondCallArgs = balloonAddSpy.secondCall.args[ 0 ];
+			const addSpyCallSecondCallArgs = balloonAddSpy.mock.calls[ 1 ][ 0 ];
 
-			expect( addSpyCallSecondCallArgs.view ).to.equal( bookmarkUIFeature.formView );
-			expect( addSpyCallSecondCallArgs.position.target ).to.be.a( 'function' );
-			expect( addSpyCallSecondCallArgs.position.target() ).to.equal( bookmarkElement );
+			expect( addSpyCallSecondCallArgs.view ).toBe( bookmarkUIFeature.formView );
+			expect( typeof addSpyCallSecondCallArgs.position.target ).toBe( 'function' );
+			expect( addSpyCallSecondCallArgs.position.target() ).toBe( bookmarkElement );
 		} );
 
 		it( 'should force `main` stack to be visible', () => {
@@ -718,7 +734,7 @@ describe( 'BookmarkUI', () => {
 
 			bookmarkUIFeature._showFormView();
 
-			expect( balloon.visibleView ).to.equal( formView );
+			expect( balloon.visibleView ).toBe( formView );
 		} );
 
 		it( 'should update balloon position when is switched in rotator to a visible panel', () => {
@@ -732,8 +748,8 @@ describe( 'BookmarkUI', () => {
 			const BookmarkViewElement = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 1 );
 			const BookmarkDomElement = editor.editing.view.domConverter.mapViewToDom( BookmarkViewElement );
 
-			expect( balloon.visibleView ).to.equal( toolbarView );
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( BookmarkDomElement );
+			expect( balloon.visibleView ).toBe( toolbarView );
+			expect( balloon.view.pin.mock.calls.at( -1 )[ 0 ].target ).toBe( BookmarkDomElement );
 
 			balloon.add( {
 				stackId: 'custom',
@@ -743,20 +759,20 @@ describe( 'BookmarkUI', () => {
 
 			balloon.showStack( 'custom' );
 
-			expect( balloon.visibleView ).to.equal( customView );
-			expect( balloon.hasView( toolbarView ) ).to.equal( true );
+			expect( balloon.visibleView ).toBe( customView );
+			expect( balloon.hasView( toolbarView ) ).toBe( true );
 
 			editor.execute( 'blockQuote' );
 			balloon.showStack( 'main' );
 
-			expect( balloon.visibleView ).to.equal( toolbarView );
-			expect( balloon.hasView( customView ) ).to.equal( true );
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.not.equal( BookmarkDomElement );
+			expect( balloon.visibleView ).toBe( toolbarView );
+			expect( balloon.hasView( customView ) ).toBe( true );
+			expect( balloon.view.pin.mock.calls.at( -1 )[ 0 ].target ).not.toBe( BookmarkDomElement );
 
 			const newBookmarkViewElement = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 1 );
 			const newBookmarkDomElement = editor.editing.view.domConverter.mapViewToDom( newBookmarkViewElement );
 
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( newBookmarkDomElement );
+			expect( balloon.view.pin.mock.calls.at( -1 )[ 0 ].target ).toBe( newBookmarkDomElement );
 		} );
 
 		it( 'should force `main` stack to be visible while bookmark is selected', () => {
@@ -773,7 +789,7 @@ describe( 'BookmarkUI', () => {
 
 			bookmarkUIFeature._showFormView();
 
-			expect( balloon.visibleView ).to.equal( formView );
+			expect( balloon.visibleView ).toBe( formView );
 		} );
 
 		it( 'should add #formView to the balloon and attach the balloon to the marker element when selection is collapsed', () => {
@@ -784,18 +800,18 @@ describe( 'BookmarkUI', () => {
 
 			const expectedRange = getMarkersRange( editor );
 
-			expect( balloon.visibleView ).to.equal( formView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
+			expect( balloon.visibleView ).toBe( formView );
+			expect( balloonAddSpy ).toHaveBeenCalledWith( {
 				view: formView,
 				position: {
-					target: sinon.match( isRange )
+					target: expect.toSatisfy( isRange )
 				}
 			} );
-			assertDomRange( expectedRange, balloonAddSpy.args[ 0 ][ 0 ].position.target );
+			assertDomRange( expectedRange, balloonAddSpy.mock.calls[ 0 ][ 0 ].position.target );
 		} );
 
 		it( 'should update the id when bookmark selected', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			const executeSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 			bookmarkUIFeature._showFormView();
@@ -805,14 +821,14 @@ describe( 'BookmarkUI', () => {
 			formView.idInputView.fieldView.value = id;
 
 			formView.fire( 'submit' );
-			expect( executeSpy.calledOnce ).to.be.true;
-			expect( executeSpy.calledWith( 'updateBookmark', {
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( 'updateBookmark', {
 				bookmarkId: id
-			} ) ).to.be.true;
+			} );
 		} );
 
 		it( 'should focus editor on submit', () => {
-			const updateSpy = sinon.spy( editor.editing.view, 'focus' );
+			const updateSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			bookmarkUIFeature._createViews();
 			formView = bookmarkUIFeature.formView;
@@ -823,14 +839,14 @@ describe( 'BookmarkUI', () => {
 
 			formView.idInputView.fieldView.value = 'id_1';
 
-			expect( updateSpy ).not.to.be.called;
+			expect( updateSpy ).not.toHaveBeenCalled();
 			formView.fire( 'submit' );
-			expect( updateSpy ).to.be.called;
+			expect( updateSpy ).toHaveBeenCalled();
 		} );
 
 		describe( 'form status', () => {
 			it( 'should update ui on error due to change balloon position', () => {
-				const updateSpy = sinon.spy( editor.ui, 'update' );
+				const updateSpy = vi.spyOn( editor.ui, 'update' );
 
 				bookmarkUIFeature._createViews();
 				formView = bookmarkUIFeature.formView;
@@ -842,9 +858,9 @@ describe( 'BookmarkUI', () => {
 
 				formView.idInputView.fieldView.value = 'name with space';
 
-				expect( updateSpy ).not.to.be.called;
+				expect( updateSpy ).not.toHaveBeenCalled();
 				formView.fire( 'submit' );
-				expect( updateSpy ).to.be.calledOnce;
+				expect( updateSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should show error form status if passed bookmark name is empty', () => {
@@ -859,7 +875,7 @@ describe( 'BookmarkUI', () => {
 
 				formView.fire( 'submit' );
 
-				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark must not be empty.' );
+				expect( formView.idInputView.errorText ).toBe( 'Bookmark must not be empty.' );
 			} );
 
 			it( 'should show error form status if passed bookmark name containing spaces', () => {
@@ -875,7 +891,7 @@ describe( 'BookmarkUI', () => {
 
 				formView.fire( 'submit' );
 
-				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark name cannot contain space characters.' );
+				expect( formView.idInputView.errorText ).toBe( 'Bookmark name cannot contain space characters.' );
 			} );
 
 			it( 'should show error form status if passed bookmark name already exists', () => {
@@ -890,7 +906,7 @@ describe( 'BookmarkUI', () => {
 
 				formView.fire( 'submit' );
 
-				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark name already exists.' );
+				expect( formView.idInputView.errorText ).toBe( 'Bookmark name already exists.' );
 			} );
 
 			it( 'should reset form status on show', () => {
@@ -905,11 +921,11 @@ describe( 'BookmarkUI', () => {
 
 				formView.fire( 'submit' );
 
-				expect( formView.idInputView.errorText ).to.be.equal( 'Bookmark name cannot contain space characters.' );
+				expect( formView.idInputView.errorText ).toBe( 'Bookmark name cannot contain space characters.' );
 
 				bookmarkUIFeature._hideFormView();
 				bookmarkUIFeature._showFormView();
-				expect( formView.idInputView.errorText ).to.be.null;
+				expect( formView.idInputView.errorText ).toBeNull();
 			} );
 		} );
 
@@ -917,9 +933,9 @@ describe( 'BookmarkUI', () => {
 			it( 'should not duplicate #update listeners', () => {
 				_setModelData( editor.model, '<paragraph>f[<bookmark bookmarkId="id"></bookmark>]oo</paragraph>' );
 
-				expect( balloon.visibleView ).to.equal( toolbarView );
+				expect( balloon.visibleView ).toBe( toolbarView );
 
-				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
+				const spy = vi.spyOn( balloon, 'updatePosition' ).mockReturnValue( {} );
 
 				bookmarkUIFeature._showFormView();
 				editor.ui.fire( 'update' );
@@ -928,14 +944,14 @@ describe( 'BookmarkUI', () => {
 				bookmarkUIFeature._showFormView();
 				editor.ui.fire( 'update' );
 
-				sinon.assert.calledThrice( spy );
+				expect( spy ).toHaveBeenCalledTimes( 3 );
 			} );
 
 			it( 'updates the position of the panel – creating a new bookmark, then the selection moved', () => {
 				_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				bookmarkUIFeature._showFormView();
-				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
+				const spy = vi.spyOn( balloon, 'updatePosition' ).mockReturnValue( {} );
 				const root = editor.model.document.getRoot();
 
 				editor.model.change( writer => {
@@ -944,12 +960,12 @@ describe( 'BookmarkUI', () => {
 
 				const expectedRange = getMarkersRange( editor );
 
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, {
-					target: sinon.match( isRange )
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( {
+					target: expect.toSatisfy( isRange )
 				} );
 
-				assertDomRange( expectedRange, spy.args[ 0 ][ 0 ].target );
+				assertDomRange( expectedRange, spy.mock.calls[ 0 ][ 0 ].target );
 			} );
 
 			it( 'not update the position when is in not visible stack (bookmark selected)', () => {
@@ -971,14 +987,14 @@ describe( 'BookmarkUI', () => {
 
 				balloon.showStack( 'custom' );
 
-				expect( balloon.visibleView ).to.equal( customView );
-				expect( balloon.hasView( toolbarView ) ).to.equal( true );
+				expect( balloon.visibleView ).toBe( customView );
+				expect( balloon.hasView( toolbarView ) ).toBe( true );
 
-				const spy = testUtils.sinon.spy( balloon, 'updatePosition' );
+				const spy = vi.spyOn( balloon, 'updatePosition' );
 
 				editor.ui.fire( 'update' );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'not update the position when is in not visible stack', () => {
@@ -999,13 +1015,13 @@ describe( 'BookmarkUI', () => {
 
 				balloon.showStack( 'custom' );
 
-				expect( balloon.visibleView ).to.equal( customView );
+				expect( balloon.visibleView ).toBe( customView );
 
-				const spy = testUtils.sinon.spy( balloon, 'updatePosition' );
+				const spy = vi.spyOn( balloon, 'updatePosition' );
 
 				editor.ui.fire( 'update' );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'hides of the panel – editing a bookmark, then the selection moved out of the bookmark', () => {
@@ -1013,8 +1029,8 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showFormView();
 
-				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
-				const spyHide = testUtils.sinon.spy( bookmarkUIFeature, '_hideFormView' );
+				const spyUpdate = vi.spyOn( balloon, 'updatePosition' ).mockReturnValue( {} );
+				const spyHide = vi.spyOn( bookmarkUIFeature, '_hideFormView' );
 
 				const root = editor.model.document.getRoot();
 
@@ -1023,8 +1039,8 @@ describe( 'BookmarkUI', () => {
 					writer.setSelection( root.getChild( 0 ), 2 );
 				} );
 
-				sinon.assert.calledOnce( spyHide );
-				sinon.assert.notCalled( spyUpdate );
+				expect( spyHide ).toHaveBeenCalledOnce();
+				expect( spyUpdate ).not.toHaveBeenCalled();
 			} );
 
 			it( 'hides the panel – editing a bookmark, then the selection expands', () => {
@@ -1032,8 +1048,8 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showFormView();
 
-				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
-				const spyHide = testUtils.sinon.spy( bookmarkUIFeature, '_hideFormView' );
+				const spyUpdate = vi.spyOn( balloon, 'updatePosition' ).mockReturnValue( {} );
+				const spyHide = vi.spyOn( bookmarkUIFeature, '_hideFormView' );
 
 				const root = editor.model.document.getRoot();
 
@@ -1045,8 +1061,8 @@ describe( 'BookmarkUI', () => {
 					), true );
 				} );
 
-				sinon.assert.calledOnce( spyHide );
-				sinon.assert.notCalled( spyUpdate );
+				expect( spyHide ).toHaveBeenCalledOnce();
+				expect( spyUpdate ).not.toHaveBeenCalled();
 			} );
 
 			it( 'hides the panel – creating a new bookmark, then the selection moved to another parent', () => {
@@ -1054,8 +1070,8 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showFormView();
 
-				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
-				const spyHide = testUtils.sinon.spy( bookmarkUIFeature, '_hideFormView' );
+				const spyUpdate = vi.spyOn( balloon, 'updatePosition' ).mockReturnValue( {} );
+				const spyHide = vi.spyOn( bookmarkUIFeature, '_hideFormView' );
 
 				const root = editor.model.document.getRoot();
 
@@ -1067,8 +1083,8 @@ describe( 'BookmarkUI', () => {
 					), true );
 				} );
 
-				sinon.assert.calledOnce( spyHide );
-				sinon.assert.notCalled( spyUpdate );
+				expect( spyHide ).toHaveBeenCalledOnce();
+				expect( spyUpdate ).not.toHaveBeenCalled();
 			} );
 		} );
 
@@ -1079,7 +1095,7 @@ describe( 'BookmarkUI', () => {
 
 					bookmarkUIFeature._showFormView();
 
-					expect( editor.model.markers.has( 'bookmark-ui' ) ).to.be.true;
+					expect( editor.model.markers.has( 'bookmark-ui' ) ).toBe( true );
 
 					const paragraph = editor.model.document.getRoot().getChild( 0 );
 					const expectedRange = editor.model.createRange(
@@ -1088,12 +1104,12 @@ describe( 'BookmarkUI', () => {
 					);
 					const markerRange = editor.model.markers.get( 'bookmark-ui' ).getRange();
 
-					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+					expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 
-					expect( _getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).toBe(
 						'<p>f{<span class="ck-fake-bookmark-selection">o</span>}o</p>'
 					);
-					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+					expect( editor.getData() ).toBe( '<p>foo</p>' );
 				} );
 
 				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
@@ -1102,7 +1118,7 @@ describe( 'BookmarkUI', () => {
 
 					bookmarkUIFeature._showFormView();
 
-					expect( editor.model.markers.has( 'bookmark-ui' ) ).to.be.true;
+					expect( editor.model.markers.has( 'bookmark-ui' ) ).toBe( true );
 
 					const secondParagraph = editor.model.document.getRoot().getChild( 1 );
 					const expectedRange = editor.model.createRange(
@@ -1112,13 +1128,13 @@ describe( 'BookmarkUI', () => {
 
 					const markerRange = editor.model.markers.get( 'bookmark-ui' ).getRange();
 
-					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+					expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 
-					expect( _getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).toBe(
 						'<p>[</p>' +
 						'<p><span class="ck-fake-bookmark-selection">foo</span>]</p>'
 					);
-					expect( editor.getData() ).to.equal( '<p>&nbsp;</p><p>foo</p>' );
+					expect( editor.getData() ).toBe( '<p>&nbsp;</p><p>foo</p>' );
 				} );
 
 				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
@@ -1127,7 +1143,7 @@ describe( 'BookmarkUI', () => {
 
 					bookmarkUIFeature._showFormView();
 
-					expect( editor.model.markers.has( 'bookmark-ui' ) ).to.be.true;
+					expect( editor.model.markers.has( 'bookmark-ui' ) ).toBe( true );
 
 					const secondParagraph = editor.model.document.getRoot().getChild( 1 );
 					const expectedRange = editor.model.createRange(
@@ -1137,13 +1153,13 @@ describe( 'BookmarkUI', () => {
 
 					const markerRange = editor.model.markers.get( 'bookmark-ui' ).getRange();
 
-					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+					expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 
-					expect( _getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).toBe(
 						'<p>foo{</p>' +
 						'<p><span class="ck-fake-bookmark-selection">bar</span>]</p>'
 					);
-					expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+					expect( editor.getData() ).toBe( '<p>foo</p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on first text node in non-empty element when selection contains few empty elements', () => {
@@ -1157,7 +1173,7 @@ describe( 'BookmarkUI', () => {
 
 					bookmarkUIFeature._showFormView();
 
-					expect( editor.model.markers.has( 'bookmark-ui' ) ).to.be.true;
+					expect( editor.model.markers.has( 'bookmark-ui' ) ).toBe( true );
 
 					const firstNonEmptyElementInTheSelection = editor.model.document.getRoot().getChild( 3 );
 					const rangeEnd = editor.model.document.selection.getFirstRange().end;
@@ -1168,7 +1184,7 @@ describe( 'BookmarkUI', () => {
 
 					const markerRange = editor.model.markers.get( 'bookmark-ui' ).getRange();
 
-					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+					expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 
 					const expectedViewData = '<p>foo{</p>' +
 						'<p></p>' +
@@ -1178,8 +1194,8 @@ describe( 'BookmarkUI', () => {
 						'<p></p>' +
 						'<p>}baz</p>';
 
-					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
-					expect( editor.getData() ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).toBe( expectedViewData );
+					expect( editor.getData() ).toBe(
 						'<p>foo</p>' +
 						'<p>&nbsp;</p><p>&nbsp;</p>' +
 						'<p>bar</p>' +
@@ -1195,7 +1211,7 @@ describe( 'BookmarkUI', () => {
 
 					bookmarkUIFeature._showFormView();
 
-					expect( editor.model.markers.has( 'bookmark-ui' ) ).to.be.true;
+					expect( editor.model.markers.has( 'bookmark-ui' ) ).toBe( true );
 
 					const paragraph = editor.model.document.getRoot().getChild( 0 );
 					const expectedRange = editor.model.createRange(
@@ -1204,12 +1220,12 @@ describe( 'BookmarkUI', () => {
 					);
 					const markerRange = editor.model.markers.get( 'bookmark-ui' ).getRange();
 
-					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+					expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 
-					expect( _getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).toBe(
 						'<p>f{}<span class="ck-fake-bookmark-selection ck-fake-bookmark-selection_collapsed"></span>o</p>'
 					);
-					expect( editor.getData() ).to.equal( '<p>fo</p>' );
+					expect( editor.getData() ).toBe( '<p>fo</p>' );
 				} );
 
 				it( 'should be displayed on selection focus when selection contains only one empty element ' +
@@ -1220,7 +1236,7 @@ describe( 'BookmarkUI', () => {
 
 					bookmarkUIFeature._showFormView();
 
-					expect( editor.model.markers.has( 'bookmark-ui' ) ).to.be.true;
+					expect( editor.model.markers.has( 'bookmark-ui' ) ).toBe( true );
 
 					const focus = editor.model.document.selection.focus;
 					const expectedRange = editor.model.createRange(
@@ -1229,14 +1245,14 @@ describe( 'BookmarkUI', () => {
 
 					const markerRange = editor.model.markers.get( 'bookmark-ui' ).getRange();
 
-					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+					expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 
 					const expectedViewData = '<p>foo{</p>' +
 						'<p></p>' +
 						'<p>]<span class="ck-fake-bookmark-selection ck-fake-bookmark-selection_collapsed"></span>bar</p>';
 
-					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
-					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
+					expect( _getViewData( editor.editing.view ) ).toBe( expectedViewData );
+					expect( editor.getData() ).toBe( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on selection focus when selection contains few empty elements ' +
@@ -1248,7 +1264,7 @@ describe( 'BookmarkUI', () => {
 
 					bookmarkUIFeature._showFormView();
 
-					expect( editor.model.markers.has( 'bookmark-ui' ) ).to.be.true;
+					expect( editor.model.markers.has( 'bookmark-ui' ) ).toBe( true );
 
 					const focus = editor.model.document.selection.focus;
 					const expectedRange = editor.model.createRange(
@@ -1257,15 +1273,15 @@ describe( 'BookmarkUI', () => {
 
 					const markerRange = editor.model.markers.get( 'bookmark-ui' ).getRange();
 
-					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+					expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 
 					const expectedViewData = '<p>foo{</p>' +
 						'<p></p>' +
 						'<p></p>' +
 						'<p>]<span class="ck-fake-bookmark-selection ck-fake-bookmark-selection_collapsed"></span>bar</p>';
 
-					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
-					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
+					expect( _getViewData( editor.editing.view ) ).toBe( expectedViewData );
+					expect( editor.getData() ).toBe( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on selection focus when selection contains few empty elements ' +
@@ -1277,7 +1293,7 @@ describe( 'BookmarkUI', () => {
 
 					bookmarkUIFeature._showFormView();
 
-					expect( editor.model.markers.has( 'bookmark-ui' ) ).to.be.true;
+					expect( editor.model.markers.has( 'bookmark-ui' ) ).toBe( true );
 
 					const focus = editor.model.document.selection.focus;
 					const expectedRange = editor.model.createRange(
@@ -1286,15 +1302,15 @@ describe( 'BookmarkUI', () => {
 
 					const markerRange = editor.model.markers.get( 'bookmark-ui' ).getRange();
 
-					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+					expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 
 					const expectedViewData = '<p>foo{</p>' +
 						'<p></p>' +
 						'<p>]<span class="ck-fake-bookmark-selection ck-fake-bookmark-selection_collapsed"></span></p>' +
 						'<p>bar</p>';
 
-					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
-					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
+					expect( _getViewData( editor.editing.view ) ).toBe( expectedViewData );
+					expect( editor.getData() ).toBe( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 			} );
 		} );
@@ -1310,7 +1326,7 @@ describe( 'BookmarkUI', () => {
 
 			bookmarkUIFeature._addFormView();
 
-			expect( bookmarkUIFeature.formView ).to.be.instanceOf( BookmarkFormView );
+			expect( bookmarkUIFeature.formView ).toBeInstanceOf( BookmarkFormView );
 		} );
 
 		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
@@ -1319,7 +1335,7 @@ describe( 'BookmarkUI', () => {
 			bookmarkUIFeature._addFormView();
 			formView = bookmarkUIFeature.formView;
 
-			expect( balloon.visibleView ).to.equal( formView );
+			expect( balloon.visibleView ).toBe( formView );
 		} );
 
 		it( 'should implement the CSS transition disabling feature', () => {
@@ -1327,7 +1343,7 @@ describe( 'BookmarkUI', () => {
 
 			bookmarkUIFeature._addFormView();
 
-			expect( bookmarkUIFeature.formView.disableCssTransitions ).to.be.a( 'function' );
+			expect( typeof bookmarkUIFeature.formView.disableCssTransitions ).toBe( 'function' );
 		} );
 
 		describe( 'button label', () => {
@@ -1335,7 +1351,7 @@ describe( 'BookmarkUI', () => {
 				bookmarkUIFeature._addFormView();
 				formView = bookmarkUIFeature.formView;
 
-				expect( formView.saveButtonView.label ).to.equal( 'Insert' );
+				expect( formView.saveButtonView.label ).toBe( 'Insert' );
 			} );
 
 			it( 'should have "Insert" label when bookmark is not selected', () => {
@@ -1346,7 +1362,7 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showFormView();
 
-				expect( formView.saveButtonView.label ).to.equal( 'Insert' );
+				expect( formView.saveButtonView.label ).toBe( 'Insert' );
 			} );
 
 			it( 'should have "Save" label when bookmark is selected', () => {
@@ -1357,7 +1373,7 @@ describe( 'BookmarkUI', () => {
 
 				bookmarkUIFeature._showFormView();
 
-				expect( formView.saveButtonView.label ).to.equal( 'Save' );
+				expect( formView.saveButtonView.label ).toBe( 'Save' );
 			} );
 
 			it( 'should have "Save" label when bookmark already inserted but balloon is not closed.', () => {
@@ -1365,14 +1381,14 @@ describe( 'BookmarkUI', () => {
 				bookmarkUIFeature._showFormView();
 				formView = bookmarkUIFeature.formView;
 
-				expect( formView.saveButtonView.label ).to.equal( 'Insert' );
+				expect( formView.saveButtonView.label ).toBe( 'Insert' );
 
 				formView.idInputView.fieldView.value = 'new_id';
 
 				formView.fire( 'submit' );
 				bookmarkUIFeature._showFormView();
 
-				expect( formView.saveButtonView.label ).to.equal( 'Save' );
+				expect( formView.saveButtonView.label ).toBe( 'Save' );
 			} );
 		} );
 	} );
@@ -1385,29 +1401,34 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should remove the UI from the balloon', () => {
-			expect( balloon.hasView( formView ) ).to.be.true;
+			expect( balloon.hasView( formView ) ).toBe( true );
 
 			bookmarkUIFeature._hideFormView();
 
-			expect( balloon.hasView( formView ) ).to.be.false;
+			expect( balloon.hasView( formView ) ).toBe( false );
 		} );
 
 		it( 'should focus the `editable` by default', () => {
-			const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const spy = vi.spyOn( editor.editing.view, 'focus' );
 
 			bookmarkUIFeature._hideFormView();
 
 			// First call is from _removeFormView.
-			sinon.assert.calledTwice( spy );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 		} );
 
 		it( 'should focus the `editable` before before removing elements from the balloon', () => {
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-			const removeSpy = testUtils.sinon.spy( balloon, 'remove' );
+			const order = [];
+			vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {
+				order.push( 'focus' );
+			} );
+			vi.spyOn( balloon, 'remove' ).mockImplementation( () => {
+				order.push( 'remove' );
+			} );
 
 			bookmarkUIFeature._hideFormView();
 
-			expect( focusSpy.calledBefore( removeSpy ) ).to.equal( true );
+			expect( order.indexOf( 'focus' ) ).toBeLessThan( order.indexOf( 'remove' ) );
 		} );
 
 		it( 'should not throw an error when views are not in the `balloon`', () => {
@@ -1415,25 +1436,25 @@ describe( 'BookmarkUI', () => {
 
 			expect( () => {
 				bookmarkUIFeature._hideFormView();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should clear ui#update listener from the ViewDocument', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			bookmarkUIFeature.listenTo( editor.ui, 'update', spy );
 			bookmarkUIFeature._hideFormView();
 			editor.ui.fire( 'update' );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should clear the fake visual selection from a selected text fragment', () => {
-			expect( editor.model.markers.has( 'bookmark-ui' ) ).to.be.true;
+			expect( editor.model.markers.has( 'bookmark-ui' ) ).toBe( true );
 
 			bookmarkUIFeature._hideFormView();
 
-			expect( editor.model.markers.has( 'bookmark-ui' ) ).to.be.false;
+			expect( editor.model.markers.has( 'bookmark-ui' ) ).toBe( false );
 		} );
 
 		it( 'should not throw if selection includes soft break before text item', () => {
@@ -1445,49 +1466,49 @@ describe( 'BookmarkUI', () => {
 
 			expect( () => {
 				bookmarkUIFeature._hideFormView();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should be called when the back button is clicked', () => {
-			const spy = testUtils.sinon.spy( bookmarkUIFeature, '_hideFormView' );
+			const spy = vi.spyOn( bookmarkUIFeature, '_hideFormView' );
 
 			bookmarkUIFeature._showFormView();
 			formView.backButtonView.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'keyboard support', () => {
 		beforeEach( () => {
 			// Make sure that forms are lazy initiated.
-			expect( bookmarkUIFeature.formView ).to.be.null;
+			expect( bookmarkUIFeature.formView ).toBeNull();
 
 			bookmarkUIFeature._createViews();
 			formView = bookmarkUIFeature.formView;
 		} );
 
 		it( 'should hide the UI after Esc key press (from editor) and not focus the editable', () => {
-			const spy = testUtils.sinon.spy( bookmarkUIFeature, '_hideFormView' );
+			const spy = vi.spyOn( bookmarkUIFeature, '_hideFormView' );
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
 			// Balloon is visible.
 			bookmarkUIFeature._showFormView();
 			editor.keystrokes.press( keyEvtData );
 
-			sinon.assert.calledWithExactly( spy );
+			expect( spy ).toHaveBeenCalledWith();
 		} );
 
 		it( 'should hide the UI after Esc key press when form has focus', () => {
-			const spy = testUtils.sinon.spy( bookmarkUIFeature, '_hideFormView' );
+			const spy = vi.spyOn( bookmarkUIFeature, '_hideFormView' );
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
 			bookmarkUIFeature._createViews();
@@ -1497,12 +1518,12 @@ describe( 'BookmarkUI', () => {
 			bookmarkUIFeature._removeFormView();
 
 			formView.keystrokes.press( keyEvtData );
-			expect( balloon.visibleView ).to.equal( null );
-			expect( spy.calledOnce ).to.be.true;
+			expect( balloon.visibleView ).toBeNull();
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not hide the UI after Esc key press (from editor) when UI is open but is not visible', () => {
-			const spy = testUtils.sinon.spy( bookmarkUIFeature, '_hideFormView' );
+			const spy = vi.spyOn( bookmarkUIFeature, '_hideFormView' );
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
 				preventDefault: () => {},
@@ -1521,35 +1542,35 @@ describe( 'BookmarkUI', () => {
 			balloon.add( { view: viewMock } );
 			editor.keystrokes.press( keyEvtData );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 
 	describe( 'mouse support', () => {
 		beforeEach( () => {
 			// Make sure that forms are lazy initiated.
-			expect( bookmarkUIFeature.formView ).to.be.null;
+			expect( bookmarkUIFeature.formView ).toBeNull();
 
 			bookmarkUIFeature._createViews();
 			formView = bookmarkUIFeature.formView;
 		} );
 
 		it( 'should hide the UI and not focus editable upon clicking outside the UI', () => {
-			const spy = testUtils.sinon.spy( bookmarkUIFeature, '_hideFormView' );
+			const spy = vi.spyOn( bookmarkUIFeature, '_hideFormView' );
 
 			bookmarkUIFeature._showFormView();
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			sinon.assert.calledWithExactly( spy, false );
+			expect( spy ).toHaveBeenCalledWith( false );
 		} );
 
 		it( 'should not hide the UI upon clicking inside the the UI', () => {
-			const spy = testUtils.sinon.spy( bookmarkUIFeature, '_hideFormView' );
+			const spy = vi.spyOn( bookmarkUIFeature, '_hideFormView' );
 
 			bookmarkUIFeature._showFormView();
 			balloon.view.element.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -1565,9 +1586,9 @@ describe( 'BookmarkUI', () => {
 	}
 
 	function assertDomRange( expected, actual ) {
-		expect( actual, 'startContainer' ).to.have.property( 'startContainer', expected.startContainer );
-		expect( actual, 'startOffset' ).to.have.property( 'startOffset', expected.startOffset );
-		expect( actual, 'endContainer' ).to.have.property( 'endContainer', expected.endContainer );
-		expect( actual, 'endOffset' ).to.have.property( 'endOffset', expected.endOffset );
+		expect( actual.startContainer, 'startContainer' ).toBe( expected.startContainer );
+		expect( actual.startOffset, 'startOffset' ).toBe( expected.startOffset );
+		expect( actual.endContainer, 'endContainer' ).toBe( expected.endContainer );
+		expect( actual.endOffset, 'endOffset' ).toBe( expected.endOffset );
 	}
 } );

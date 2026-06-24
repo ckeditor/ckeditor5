@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ModelDocumentFragment, ModelPosition, ModelRange, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
@@ -16,7 +16,9 @@ import { ClipboardMarkersUtils } from '../src/clipboardmarkersutils.js';
 describe( 'Clipboard Markers Utils', () => {
 	let editor, model, modelRoot, element, viewDocument, clipboardMarkersUtils, getUniqueMarkerNameStub;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -32,11 +34,11 @@ describe( 'Clipboard Markers Utils', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ClipboardMarkersUtils.isOfficialPlugin ).to.be.true;
+		expect( ClipboardMarkersUtils.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ClipboardMarkersUtils.isPremiumPlugin ).to.be.false;
+		expect( ClipboardMarkersUtils.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'Check markers selection intersection', () => {
@@ -393,7 +395,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'copy', data );
 
-			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( 'Foo Bar Test' );
+			expect( data.dataTransfer.getData( 'text/html' ) ).toBe( 'Foo Bar Test' );
 		} );
 	} );
 
@@ -429,7 +431,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			expect( model.markers.has( 'comment:test:pasted' ) ).to.true;
+			expect( model.markers.has( 'comment:test:pasted' ) ).toBe( true );
 		} );
 
 		it( 'should not be possible to copy partially selected markers if `copyPartiallySelected` is set to `false`', () => {
@@ -459,7 +461,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
+			expect( model.markers.has( 'comment:test:pasted' ) ).toBe( false );
 		} );
 	} );
 
@@ -504,7 +506,7 @@ describe( 'Clipboard Markers Utils', () => {
 			editor.execute( 'undo' );
 
 			// pasted comment is removed
-			expect( editor.model.markers.get( 'comment:test:pasted' ) ).to.be.null;
+			expect( editor.model.markers.get( 'comment:test:pasted' ) ).toBeNull();
 		} );
 
 		it( 'should not insert marker with the same name on paste if `duplicateOnPaste` is set to `false`', () => {
@@ -547,8 +549,8 @@ describe( 'Clipboard Markers Utils', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			expect( model.markers.has( 'comment:test' ) ).to.true;
-			expect( model.markers.has( 'comment:test:pasted' ) ).to.false;
+			expect( model.markers.has( 'comment:test' ) ).toBe( true );
+			expect( model.markers.has( 'comment:test:pasted' ) ).toBe( false );
 		} );
 
 		it( 'should insert marker with the same name on paste if `duplicateOnPaste` is set to `true`', () => {
@@ -581,7 +583,7 @@ describe( 'Clipboard Markers Utils', () => {
 			} );
 
 			let pasteIndex = 0;
-			getUniqueMarkerNameStub = getUniqueMarkerNameStub.callsFake( () => `comment:test:${ pasteIndex++ }` );
+			getUniqueMarkerNameStub.mockImplementation( () => `comment:test:${ pasteIndex++ }` );
 
 			viewDocument.fire( 'paste', data );
 			model.change( writer => {
@@ -592,8 +594,8 @@ describe( 'Clipboard Markers Utils', () => {
 			} );
 
 			viewDocument.fire( 'paste', data );
-			expect( model.markers.has( 'comment:test:0' ) ).to.true;
-			expect( model.markers.has( 'comment:test:1' ) ).to.true;
+			expect( model.markers.has( 'comment:test:0' ) ).toBe( true );
+			expect( model.markers.has( 'comment:test:1' ) ).toBe( true );
 		} );
 	} );
 
@@ -617,7 +619,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 				const markers = clipboardMarkersUtils._removeFakeMarkersInsideElement( writer, fragment );
 
-				expect( Object.keys( markers ) ).deep.equal( [ 'comment:123', 'comment:123:pasted' ] );
+				expect( Object.keys( markers ) ).toEqual( [ 'comment:123', 'comment:123:pasted' ] );
 			} );
 		} );
 
@@ -640,7 +642,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 				const markers = clipboardMarkersUtils._removeFakeMarkersInsideElement( writer, fragment );
 
-				expect( Object.keys( markers ) ).deep.equal( [ 'comment:123' ] );
+				expect( Object.keys( markers ) ).toEqual( [ 'comment:123' ] );
 			} );
 		} );
 
@@ -661,14 +663,14 @@ describe( 'Clipboard Markers Utils', () => {
 			} );
 
 			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
-				expect( getMarkerRestrictions() ).deep.equal( {
+				expect( getMarkerRestrictions() ).toEqual( {
 					allowedActions: 'all',
 					duplicateOnPaste: true,
 					copyPartiallySelected: true
 				} );
 			} );
 
-			expect( getMarkerRestrictions() ).deep.equal( {
+			expect( getMarkerRestrictions() ).toEqual( {
 				allowedActions: [ 'cut' ],
 				copyPartiallySelected: true
 			} );
@@ -765,7 +767,7 @@ describe( 'Clipboard Markers Utils', () => {
 		it( 'returns false on non existing clipboard markers', () => {
 			const result = clipboardMarkersUtils._isMarkerCopyable( 'Hello', 'cut' );
 
-			expect( result ).to.false;
+			expect( result ).toBe( false );
 		} );
 	} );
 
@@ -787,7 +789,7 @@ describe( 'Clipboard Markers Utils', () => {
 				writer => clipboardMarkersUtils._getCopyableMarkersFromSelection( writer, writer.model.document.selection, 'dragstart' )
 			);
 
-			expect( result[ 0 ].name ).to.equal( 'comment:test:pasted' );
+			expect( result[ 0 ].name ).toBe( 'comment:test:pasted' );
 		} );
 	} );
 
@@ -799,9 +801,9 @@ describe( 'Clipboard Markers Utils', () => {
 
 			const result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( copyMarkers );
 
-			expect( result ).be.deep.equal( [
-				{ name: 'unknown-marker', range: copyMarkers.get( 'unknown-marker' ) }
-			] );
+			expect( result ).toHaveLength( 1 );
+			expect( result[ 0 ].name ).toBe( 'unknown-marker' );
+			expect( result[ 0 ].range ).toBe( copyMarkers.get( 'unknown-marker' ) );
 		} );
 
 		it( 'properly filters markers Map instance', () => {
@@ -813,13 +815,14 @@ describe( 'Clipboard Markers Utils', () => {
 			} );
 
 			let result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( copyMarkers, 'copy' );
-			expect( result ).be.deep.equal( [] );
+			expect( result ).toHaveLength( 0 );
 
 			result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( copyMarkers, 'cut' );
-			expect( result ).be.deep.equal( [
-				{ name: 'comment:a', range: copyMarkers.get( 'comment:a' ) },
-				{ name: 'comment:b', range: copyMarkers.get( 'comment:b' ) }
-			] );
+			expect( result ).toHaveLength( 2 );
+			expect( result[ 0 ].name ).toBe( 'comment:a' );
+			expect( result[ 0 ].range ).toBe( copyMarkers.get( 'comment:a' ) );
+			expect( result[ 1 ].name ).toBe( 'comment:b' );
+			expect( result[ 1 ].range ).toBe( copyMarkers.get( 'comment:b' ) );
 		} );
 
 		it( 'properly filters markers Record instance', () => {
@@ -833,38 +836,39 @@ describe( 'Clipboard Markers Utils', () => {
 			);
 
 			let result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( markers, 'copy' );
-			expect( result ).be.deep.equal( [] );
+			expect( result ).toHaveLength( 0 );
 
 			result = clipboardMarkersUtils._getPasteMarkersFromRangeMap( markers, 'cut' );
-			expect( result ).be.deep.equal( [
-				{ name: 'comment:a', range: markers[ 'comment:a' ] },
-				{ name: 'comment:b', range: markers[ 'comment:b' ] }
-			] );
+			expect( result ).toHaveLength( 2 );
+			expect( result[ 0 ].name ).toBe( 'comment:a' );
+			expect( result[ 0 ].range ).toBe( markers[ 'comment:a' ] );
+			expect( result[ 1 ].name ).toBe( 'comment:b' );
+			expect( result[ 1 ].range ).toBe( markers[ 'comment:b' ] );
 		} );
 	} );
 
 	describe( '_getUniqueMarkerName', () => {
 		it( 'replaces only ID part of three segmented marker name', () => {
-			getUniqueMarkerNameStub.restore();
+			vi.restoreAllMocks();
 
 			const firstResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread:123123' );
 			const secondResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread:123123' );
 
-			expect( firstResult.startsWith( 'comment:thread:' ) ).to.be.true;
-			expect( firstResult ).not.to.eq( 'comment:thread:123123' );
+			expect( firstResult.startsWith( 'comment:thread:' ) ).toBe( true );
+			expect( firstResult ).not.toBe( 'comment:thread:123123' );
 
-			expect( firstResult ).not.to.eq( secondResult );
+			expect( firstResult ).not.toBe( secondResult );
 		} );
 
 		it( 'replaces only ID part of two segmented marker name', () => {
-			getUniqueMarkerNameStub.restore();
+			vi.restoreAllMocks();
 
 			const firstResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread' );
 			const secondResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread' );
 
-			expect( firstResult.startsWith( 'comment:thread' ) ).to.be.true;
-			expect( firstResult ).not.to.eq( 'comment:thread' );
-			expect( firstResult ).not.to.eq( secondResult );
+			expect( firstResult.startsWith( 'comment:thread' ) ).toBe( true );
+			expect( firstResult ).not.toBe( 'comment:thread' );
+			expect( firstResult ).not.toBe( secondResult );
 		} );
 	} );
 
@@ -961,6 +965,33 @@ describe( 'Clipboard Markers Utils', () => {
 				end: [ 0, 11 ]
 			} );
 		} );
+
+		it( 'should skip adding a marker that already exists in the model', () => {
+			_setModelData( model, wrapWithTag( 'paragraph', 'Existing' ) );
+
+			appendMarker( 'comment:existing', { start: [ 0, 0 ], end: [ 0, 4 ] } );
+
+			const originalRange = model.markers.get( 'comment:existing' ).getRange();
+
+			const copiedFragment = createFragment( wrapWithTag( 'paragraph', 'Hello world' ) );
+			const copyMarkers = createCopyableMarkersMap(
+				copiedFragment,
+				{
+					'comment:existing': { start: [ 0, 0 ], end: [ 0, 5 ] }
+				}
+			);
+
+			clipboardMarkersUtils._pasteMarkersIntoTransformedElement(
+				copyMarkers,
+				writer => {
+					writer.insert( copiedFragment, modelRoot, 1 );
+					return editor.model.document.getRoot().getChild( 1 );
+				}
+			);
+
+			// The existing marker should remain unchanged because the guard skips adding a duplicate.
+			expect( model.markers.get( 'comment:existing' ).getRange().isEqual( originalRange ) ).toBe( true );
+		} );
 	} );
 
 	async function createEditor() {
@@ -975,9 +1006,9 @@ describe( 'Clipboard Markers Utils', () => {
 		clipboardMarkersUtils = editor.plugins.get( 'ClipboardMarkersUtils' );
 		clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ ] } );
 
-		getUniqueMarkerNameStub = sinon
-			.stub( clipboardMarkersUtils, '_getUniqueMarkerName' )
-			.callsFake( markerName => `${ markerName }:pasted` );
+		getUniqueMarkerNameStub = vi
+			.spyOn( clipboardMarkersUtils, '_getUniqueMarkerName' )
+			.mockImplementation( markerName => `${ markerName }:pasted` );
 
 		editor.conversion.for( 'downcast' ).markerToData( {
 			model: 'comment'
@@ -1038,15 +1069,15 @@ describe( 'Clipboard Markers Utils', () => {
 	function checkMarker( name, range ) {
 		const marker = editor.model.markers.get( name );
 
-		expect( marker ).to.not.be.null;
+		expect( marker ).not.toBeNull();
 
 		if ( range instanceof ModelRange ) {
-			expect( marker.getRange().isEqual( range ) ).to.be.true;
+			expect( marker.getRange().isEqual( range ) ).toBe( true );
 		} else {
 			const markerRange = marker.getRange();
 
-			expect( markerRange.start.path ).to.deep.equal( range.start );
-			expect( markerRange.end.path ).to.deep.equal( range.end );
+			expect( markerRange.start.path ).toEqual( range.start );
+			expect( markerRange.end.path ).toEqual( range.end );
 		}
 	}
 

@@ -7,7 +7,7 @@
  * @module list/listproperties/listpropertiesediting
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import type {
 	Consumables,
@@ -58,8 +58,8 @@ export class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ListEditing, ListPropertiesUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ ListEditing, ListPropertiesUtils ]> {
+		return [ ListEditing, ListPropertiesUtils ];
 	}
 
 	/**

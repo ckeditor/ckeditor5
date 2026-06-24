@@ -16,3 +16,7 @@
 *.png		-text
 *.gif		-text
 *.jpg		-text
+
+# Linguist: mark test fixtures as generated to exclude them from language
+# stats and collapse them in diffs by default.
+packages/*/tests/_data/** linguist-generated=true

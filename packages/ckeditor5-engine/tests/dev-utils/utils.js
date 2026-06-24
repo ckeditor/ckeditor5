@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
 	convertMapToTags,
 	convertMapToStringifiedObject,
@@ -13,7 +14,7 @@ import {
 
 describe( 'dev-utils/utils', () => {
 	afterEach( () => {
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'convertMapToTags()', () => {
@@ -21,7 +22,7 @@ describe( 'dev-utils/utils', () => {
 			const map = new Map();
 			const result = convertMapToTags( map );
 
-			expect( result ).to.equal( '' );
+			expect( result ).toBe( '' );
 		} );
 
 		it( 'should convert map with string values', () => {
@@ -31,7 +32,7 @@ describe( 'dev-utils/utils', () => {
 			] );
 			const result = convertMapToTags( map );
 
-			expect( result ).to.equal( ' foo="bar" baz="qux"' );
+			expect( result ).toBe( ' foo="bar" baz="qux"' );
 		} );
 
 		it( 'should convert map with number values', () => {
@@ -41,7 +42,7 @@ describe( 'dev-utils/utils', () => {
 			] );
 			const result = convertMapToTags( map );
 
-			expect( result ).to.equal( ' count=42 index=0' );
+			expect( result ).toBe( ' count=42 index=0' );
 		} );
 
 		it( 'should convert map with boolean values', () => {
@@ -51,7 +52,7 @@ describe( 'dev-utils/utils', () => {
 			] );
 			const result = convertMapToTags( map );
 
-			expect( result ).to.equal( ' enabled=true disabled=false' );
+			expect( result ).toBe( ' enabled=true disabled=false' );
 		} );
 
 		it( 'should convert map with object values', () => {
@@ -61,7 +62,7 @@ describe( 'dev-utils/utils', () => {
 			] );
 			const result = convertMapToTags( map );
 
-			expect( result ).to.equal( ' config={"x":1,"y":2} data=["a","b"]' );
+			expect( result ).toBe( ' config={"x":1,"y":2} data=["a","b"]' );
 		} );
 
 		it( 'should convert map with null and undefined values', () => {
@@ -71,7 +72,7 @@ describe( 'dev-utils/utils', () => {
 			] );
 			const result = convertMapToTags( map );
 
-			expect( result ).to.equal( ' nullValue=null undefinedValue=undefined' );
+			expect( result ).toBe( ' nullValue=null undefinedValue=undefined' );
 		} );
 
 		it( 'should work with iterable that is not a Map', () => {
@@ -81,7 +82,7 @@ describe( 'dev-utils/utils', () => {
 			];
 			const result = convertMapToTags( iterable );
 
-			expect( result ).to.equal( ' key1="value1" key2="value2"' );
+			expect( result ).toBe( ' key1="value1" key2="value2"' );
 		} );
 	} );
 
@@ -90,7 +91,7 @@ describe( 'dev-utils/utils', () => {
 			const map = new Map();
 			const result = convertMapToStringifiedObject( map );
 
-			expect( result ).to.equal( '{}' );
+			expect( result ).toBe( '{}' );
 		} );
 
 		it( 'should convert map with string values', () => {
@@ -101,7 +102,7 @@ describe( 'dev-utils/utils', () => {
 			const result = convertMapToStringifiedObject( map );
 			const parsed = JSON.parse( result );
 
-			expect( parsed ).to.deep.equal( { foo: 'bar', baz: 'qux' } );
+			expect( parsed ).toEqual( { foo: 'bar', baz: 'qux' } );
 		} );
 
 		it( 'should convert map with mixed value types', () => {
@@ -116,7 +117,7 @@ describe( 'dev-utils/utils', () => {
 			const result = convertMapToStringifiedObject( map );
 			const parsed = JSON.parse( result );
 
-			expect( parsed ).to.deep.equal( {
+			expect( parsed ).toEqual( {
 				string: 'value',
 				number: 42,
 				boolean: true,
@@ -134,7 +135,7 @@ describe( 'dev-utils/utils', () => {
 			const result = convertMapToStringifiedObject( iterable );
 			const parsed = JSON.parse( result );
 
-			expect( parsed ).to.deep.equal( { key1: 'value1', key2: 123 } );
+			expect( parsed ).toEqual( { key1: 'value1', key2: 123 } );
 		} );
 
 		it( 'should handle keys that override object properties', () => {
@@ -145,7 +146,7 @@ describe( 'dev-utils/utils', () => {
 			const result = convertMapToStringifiedObject( map );
 			const parsed = JSON.parse( result );
 
-			expect( parsed ).to.deep.equal( { toString: 'custom', constructor: 'value' } );
+			expect( parsed ).toEqual( { toString: 'custom', constructor: 'value' } );
 		} );
 	} );
 
@@ -153,14 +154,14 @@ describe( 'dev-utils/utils', () => {
 		let mockDocument, mockRoot1, mockRoot2, consoleLogStub;
 
 		beforeEach( () => {
-			consoleLogStub = sinon.stub( console, 'log' );
+			consoleLogStub = vi.spyOn( console, 'log' ).mockImplementation( () => {} );
 
 			mockRoot1 = {
-				printTree: sinon.stub().returns( 'tree1\ncontent' )
+				printTree: vi.fn().mockReturnValue( 'tree1\ncontent' )
 			};
 
 			mockRoot2 = {
-				printTree: sinon.stub().returns( 'tree2\ncontent' )
+				printTree: vi.fn().mockReturnValue( 'tree2\ncontent' )
 			};
 
 			mockDocument = {
@@ -174,11 +175,11 @@ describe( 'dev-utils/utils', () => {
 
 				// The function uses a Symbol, so we check if any Symbol property was added
 				const symbols = Object.getOwnPropertySymbols( mockDocument );
-				expect( symbols ).to.have.length( 1 );
+				expect( symbols ).toHaveLength( 1 );
 
 				const treeDumpSymbol = symbols[ 0 ];
-				expect( mockDocument[ treeDumpSymbol ] ).to.be.an( 'array' );
-				expect( mockDocument[ treeDumpSymbol ] ).to.be.empty;
+				expect( mockDocument[ treeDumpSymbol ] ).toBeInstanceOf( Array );
+				expect( mockDocument[ treeDumpSymbol ] ).toHaveLength( 0 );
 			} );
 		} );
 
@@ -193,36 +194,36 @@ describe( 'dev-utils/utils', () => {
 			it( 'should log document and version', () => {
 				dumpTrees( mockDocument, 1 );
 
-				sinon.assert.calledWith( consoleLogStub, mockDocument, 1 );
+				expect( consoleLogStub ).toHaveBeenCalledWith( mockDocument, 1 );
 			} );
 
 			it( 'should call printTree on all roots', () => {
 				dumpTrees( mockDocument, 1 );
 
-				sinon.assert.calledOnce( mockRoot1.printTree );
-				sinon.assert.calledOnce( mockRoot2.printTree );
+				expect( mockRoot1.printTree ).toHaveBeenCalledOnce();
+				expect( mockRoot2.printTree ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should store concatenated tree output', () => {
 				dumpTrees( mockDocument, 1 );
 
-				expect( mockDocument[ treeDumpSymbol ][ 1 ] ).to.equal( 'tree1\ncontent\ntree2\ncontent' );
+				expect( mockDocument[ treeDumpSymbol ][ 1 ] ).toBe( 'tree1\ncontent\ntree2\ncontent' );
 			} );
 
 			it( 'should remove trailing newline', () => {
-				mockRoot1.printTree.returns( 'tree1' );
-				mockRoot2.printTree.returns( 'tree2' );
+				mockRoot1.printTree.mockReturnValue( 'tree1' );
+				mockRoot2.printTree.mockReturnValue( 'tree2' );
 
 				dumpTrees( mockDocument, 1 );
 
-				expect( mockDocument[ treeDumpSymbol ][ 1 ] ).to.equal( 'tree1\ntree2' );
+				expect( mockDocument[ treeDumpSymbol ][ 1 ] ).toBe( 'tree1\ntree2' );
 			} );
 
 			it( 'should handle single root', () => {
 				mockDocument.roots = [ mockRoot1 ];
 				dumpTrees( mockDocument, 1 );
 
-				expect( mockDocument[ treeDumpSymbol ][ 1 ] ).to.equal( 'tree1\ncontent' );
+				expect( mockDocument[ treeDumpSymbol ][ 1 ] ).toBe( 'tree1\ncontent' );
 			} );
 
 			it( 'should limit tree dump length and remove overflow', () => {
@@ -231,8 +232,8 @@ describe( 'dev-utils/utils', () => {
 					dumpTrees( mockDocument, i );
 				}
 
-				expect( mockDocument[ treeDumpSymbol ].length ).to.equal( 25 );
-				expect( mockDocument[ treeDumpSymbol ][ 4 ] ).to.be.null; // overflow - 1 = 5 - 1 = 4
+				expect( mockDocument[ treeDumpSymbol ].length ).toBe( 25 );
+				expect( mockDocument[ treeDumpSymbol ][ 4 ] ).toBeNull(); // overflow - 1 = 5 - 1 = 4
 			} );
 
 			it( 'should store multiple versions', () => {
@@ -240,9 +241,9 @@ describe( 'dev-utils/utils', () => {
 				dumpTrees( mockDocument, 5 );
 				dumpTrees( mockDocument, 10 );
 
-				expect( mockDocument[ treeDumpSymbol ][ 0 ] ).to.equal( 'tree1\ncontent\ntree2\ncontent' );
-				expect( mockDocument[ treeDumpSymbol ][ 5 ] ).to.equal( 'tree1\ncontent\ntree2\ncontent' );
-				expect( mockDocument[ treeDumpSymbol ][ 10 ] ).to.equal( 'tree1\ncontent\ntree2\ncontent' );
+				expect( mockDocument[ treeDumpSymbol ][ 0 ] ).toBe( 'tree1\ncontent\ntree2\ncontent' );
+				expect( mockDocument[ treeDumpSymbol ][ 5 ] ).toBe( 'tree1\ncontent\ntree2\ncontent' );
+				expect( mockDocument[ treeDumpSymbol ][ 10 ] ).toBe( 'tree1\ncontent\ntree2\ncontent' );
 			} );
 		} );
 
@@ -257,7 +258,7 @@ describe( 'dev-utils/utils', () => {
 			it( 'should log separator', () => {
 				logDocument( mockDocument, 1 );
 
-				sinon.assert.calledWith( consoleLogStub, '--------------------' );
+				expect( consoleLogStub ).toHaveBeenCalledWith( '--------------------' );
 			} );
 
 			it( 'should log tree dump if available', () => {
@@ -265,21 +266,21 @@ describe( 'dev-utils/utils', () => {
 
 				logDocument( mockDocument, 5 );
 
-				sinon.assert.calledWith( consoleLogStub, '--------------------' );
-				sinon.assert.calledWith( consoleLogStub, 'stored tree dump' );
+				expect( consoleLogStub ).toHaveBeenCalledWith( '--------------------' );
+				expect( consoleLogStub ).toHaveBeenCalledWith( 'stored tree dump' );
 			} );
 
 			it( 'should log unavailable message if dump not found', () => {
 				logDocument( mockDocument, 999 );
 
-				sinon.assert.calledWith( consoleLogStub, '--------------------' );
-				sinon.assert.calledWith( consoleLogStub, 'Tree log unavailable for given version: 999' );
+				expect( consoleLogStub ).toHaveBeenCalledWith( '--------------------' );
+				expect( consoleLogStub ).toHaveBeenCalledWith( 'Tree log unavailable for given version: 999' );
 			} );
 
 			it( 'should handle undefined version', () => {
 				logDocument( mockDocument, undefined );
 
-				sinon.assert.calledWith( consoleLogStub, 'Tree log unavailable for given version: undefined' );
+				expect( consoleLogStub ).toHaveBeenCalledWith( 'Tree log unavailable for given version: undefined' );
 			} );
 
 			it( 'should handle null tree dump entry', () => {
@@ -287,7 +288,7 @@ describe( 'dev-utils/utils', () => {
 
 				logDocument( mockDocument, 3 );
 
-				sinon.assert.calledWith( consoleLogStub, 'Tree log unavailable for given version: 3' );
+				expect( consoleLogStub ).toHaveBeenCalledWith( 'Tree log unavailable for given version: 3' );
 			} );
 		} );
 
@@ -304,10 +305,10 @@ describe( 'dev-utils/utils', () => {
 				logDocument( mockDocument, 0 );
 
 				// Verify calls
-				sinon.assert.calledWith( consoleLogStub, mockDocument, 0 );
-				sinon.assert.calledWith( consoleLogStub, mockDocument, 1 );
-				sinon.assert.calledWith( consoleLogStub, '--------------------' );
-				sinon.assert.calledWith( consoleLogStub, 'tree1\ncontent\ntree2\ncontent' );
+				expect( consoleLogStub ).toHaveBeenCalledWith( mockDocument, 0 );
+				expect( consoleLogStub ).toHaveBeenCalledWith( mockDocument, 1 );
+				expect( consoleLogStub ).toHaveBeenCalledWith( '--------------------' );
+				expect( consoleLogStub ).toHaveBeenCalledWith( 'tree1\ncontent\ntree2\ncontent' );
 			} );
 		} );
 	} );

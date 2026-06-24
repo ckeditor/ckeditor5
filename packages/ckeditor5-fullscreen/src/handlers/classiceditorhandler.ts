@@ -38,7 +38,7 @@ export class FullscreenClassicEditorHandler extends FullscreenAbstractEditorHand
 		const editorUIView = editorUI.view;
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
 			this.moveToFullscreen(
 				editorUI.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'

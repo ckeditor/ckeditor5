@@ -3,21 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { AccessibilityHelp, ButtonView, MenuBarMenuListItemButtonView } from '../../../src/index.js';
 import { env, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { AccessibilityHelpContentView } from '../../../src/editorui/accessibilityhelp/accessibilityhelpcontentview.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 describe( 'AccessibilityHelp', () => {
 	let editor, plugin, dialogPlugin, domElement;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( async () => {
-		testUtils.sinon.stub( env, 'isMac' ).value( false );
+		vi.spyOn( env, 'isMac', 'get' ).mockReturnValue( false );
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );
 
@@ -34,44 +32,45 @@ describe( 'AccessibilityHelp', () => {
 	afterEach( async () => {
 		domElement.remove();
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should have a name', () => {
-		expect( AccessibilityHelp.pluginName ).to.equal( 'AccessibilityHelp' );
+		expect( AccessibilityHelp.pluginName ).toBe( 'AccessibilityHelp' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( AccessibilityHelp.isOfficialPlugin ).to.be.true;
+		expect( AccessibilityHelp.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( AccessibilityHelp.isPremiumPlugin ).to.be.false;
+		expect( AccessibilityHelp.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should have #contentView', () => {
-			expect( plugin.contentView ).to.be.null;
+			expect( plugin.contentView ).toBeNull();
 		} );
 	} );
 
 	describe( 'init()', () => {
 		it( 'should register Alt+0 keystroke that shows the dialog and cancels the event', () => {
-			const dialogShowSpy = sinon.spy();
+			const dialogShowSpy = vi.fn();
 			const keyEventData = {
 				keyCode: keyCodes[ '0' ],
 				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
 			dialogPlugin.on( 'show:accessibilityHelp', dialogShowSpy );
 
 			const wasHandled = editor.keystrokes.press( keyEventData );
 
-			expect( wasHandled ).to.be.true;
-			expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+			expect( wasHandled ).toBe( true );
+			expect( keyEventData.preventDefault ).toHaveBeenCalledOnce();
 
-			sinon.assert.calledOnce( dialogShowSpy );
+			expect( dialogShowSpy ).toHaveBeenCalledOnce();
 		} );
 
 		describe( 'UI buttons', () => {
@@ -85,7 +84,7 @@ describe( 'AccessibilityHelp', () => {
 				testButton( 'Accessibility help', 'Alt+0', ButtonView );
 
 				it( 'should have tooltip', () => {
-					expect( button.tooltip ).to.be.true;
+					expect( button.tooltip ).toBe( true );
 				} );
 			} );
 
@@ -99,38 +98,38 @@ describe( 'AccessibilityHelp', () => {
 
 			function testButton( label, featureKeystroke, Component ) {
 				it( 'should register feature component', () => {
-					expect( button ).to.be.instanceOf( Component );
+					expect( button ).toBeInstanceOf( Component );
 				} );
 
 				it( 'should create UI component with correct attribute values', () => {
-					expect( button.isOn ).to.be.false;
-					expect( button.label ).to.equal( label );
-					expect( button.icon ).to.match( /<svg / );
+					expect( button.isOn ).toBe( false );
+					expect( button.label ).toBe( label );
+					expect( button.icon ).toMatch( /<svg / );
 				} );
 
 				it( 'should show dialog  on model execute event', () => {
-					const dialogShowSpy = sinon.spy();
+					const dialogShowSpy = vi.fn();
 					dialogPlugin.on( 'show:accessibilityHelp', dialogShowSpy );
 
 					button.fire( 'execute' );
 
-					sinon.assert.calledOnce( dialogShowSpy );
+					expect( dialogShowSpy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should set keystroke in the model', () => {
-					expect( button.keystroke ).to.equal( featureKeystroke );
+					expect( button.keystroke ).toBe( featureKeystroke );
 				} );
 
 				it( 'should set isOn=true if dialog is visible', () => {
 					button.fire( 'execute' );
 
-					expect( dialogPlugin.id ).to.be.equal( 'accessibilityHelp' );
-					expect( button.isOn ).to.be.true;
+					expect( dialogPlugin.id ).toBe( 'accessibilityHelp' );
+					expect( button.isOn ).toBe( true );
 
 					button.fire( 'execute' );
 
-					expect( dialogPlugin.id ).to.be.null;
-					expect( button.isOn ).to.be.false;
+					expect( dialogPlugin.id ).toBeNull();
+					expect( button.isOn ).toBe( false );
 				} );
 			}
 		} );
@@ -140,7 +139,7 @@ describe( 'AccessibilityHelp', () => {
 				const viewRoot = editor.editing.view.document.getRoot( 'main' );
 				const ariaLabel = viewRoot.getAttribute( 'aria-label' );
 
-				expect( ariaLabel ).to.equal( 'Rich Text Editor. Editing area: main. Press Alt+0 for help.' );
+				expect( ariaLabel ).toBe( 'Rich Text Editor. Editing area: main. Press Alt+0 for help.' );
 			} );
 
 			it( 'should inject a label into a root with no aria-label', async () => {
@@ -154,7 +153,7 @@ describe( 'AccessibilityHelp', () => {
 				const viewRoot = editor.editing.view.document.getRoot( 'main' );
 				const ariaLabel = viewRoot.getAttribute( 'aria-label' );
 
-				expect( ariaLabel ).to.equal( 'Press Alt+0 for help.' );
+				expect( ariaLabel ).toBe( 'Press Alt+0 for help.' );
 
 				await editor.destroy();
 			} );
@@ -228,7 +227,7 @@ describe( 'AccessibilityHelp', () => {
 					const viewRoot = editor.editing.view.document.getRoot( rootName );
 					const ariaLabel = viewRoot.getAttribute( 'aria-label' );
 
-					expect( ariaLabel ).to.equal( `Rich Text Editor. Editing area: ${ rootName }. Press Alt+0 for help.` );
+					expect( ariaLabel ).toBe( `Rich Text Editor. Editing area: ${ rootName }. Press Alt+0 for help.` );
 				}
 			}
 		} );
@@ -236,11 +235,11 @@ describe( 'AccessibilityHelp', () => {
 
 	describe( 'showing the dialog for the first time', () => {
 		it( 'should create #contentView', () => {
-			expect( plugin.contentView ).to.be.null;
+			expect( plugin.contentView ).toBeNull();
 
 			plugin._toggleDialog();
 
-			expect( plugin.contentView ).to.be.instanceof( AccessibilityHelpContentView );
+			expect( plugin.contentView ).toBeInstanceOf( AccessibilityHelpContentView );
 		} );
 	} );
 } );

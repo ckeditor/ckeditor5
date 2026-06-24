@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { LegacyListUtils } from '../../src/legacylist/legacylistutils.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
@@ -17,30 +18,30 @@ describe( 'LegacyListUtils', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( LegacyListUtils.pluginName ).to.equal( 'LegacyListUtils' );
+		expect( LegacyListUtils.pluginName ).toBe( 'LegacyListUtils' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( LegacyListUtils.isOfficialPlugin ).to.be.true;
+		expect( LegacyListUtils.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( LegacyListUtils.isPremiumPlugin ).to.be.false;
+		expect( LegacyListUtils.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'coverage checks', () => {
 		it( 'getListTypeFromListStyleType', () => {
 			const mock = 'mock';
-			expect( plugin.getListTypeFromListStyleType( mock ) ).to.equal( null );
+			expect( plugin.getListTypeFromListStyleType( mock ) ).toBe( null );
 		} );
 
 		it( 'getSelectedListItems', () => {
-			expect( plugin.getSelectedListItems( editor.model ) ).to.be.an( 'array' );
+			expect( Array.isArray( plugin.getSelectedListItems( editor.model ) ) ).toBe( true );
 		} );
 
 		it( 'getSiblingNodes', () => {
 			const position = editor.model.createPositionAt( editor.model.document.getRoot(), 0 );
-			expect( plugin.getSiblingNodes( position, 'forward' ) ).to.be.an( 'array' );
+			expect( Array.isArray( plugin.getSiblingNodes( position, 'forward' ) ) ).toBe( true );
 		} );
 	} );
 } );

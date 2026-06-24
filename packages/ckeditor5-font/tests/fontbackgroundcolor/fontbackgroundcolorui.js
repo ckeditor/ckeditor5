@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { IconFontBackground } from '@ckeditor/ckeditor5-icons';
 import { FontBackgroundColorEditing } from './../../src/fontbackgroundcolor/fontbackgroundcolorediting.js';
 import { FontBackgroundColorUI } from './../../src/fontbackgroundcolor/fontbackgroundcolorui.js';
@@ -32,16 +33,16 @@ describe( 'FontBckgroundColorUI', () => {
 	} );
 
 	it( 'is FontColorUIBase', () => {
-		expect( FontBackgroundColorUI.prototype ).to.be.instanceOf( FontColorUIBase );
+		expect( FontBackgroundColorUI.prototype ).toBeInstanceOf( FontColorUIBase );
 	} );
 
 	it( 'has properly set initial values', () => {
 		const fontBackgroundColorUIPlugin = editor.plugins.get( 'FontBackgroundColorUI' );
 
-		expect( fontBackgroundColorUIPlugin.commandName ).to.equal( 'fontBackgroundColor' );
-		expect( fontBackgroundColorUIPlugin.componentName ).to.equal( 'fontBackgroundColor' );
-		expect( fontBackgroundColorUIPlugin.icon ).to.equal( IconFontBackground );
-		expect( fontBackgroundColorUIPlugin.dropdownLabel ).to.equal( 'Font Background Color' );
-		expect( fontBackgroundColorUIPlugin.columns ).to.equal( 5 );
+		expect( fontBackgroundColorUIPlugin.commandName ).toEqual( 'fontBackgroundColor' );
+		expect( fontBackgroundColorUIPlugin.componentName ).toEqual( 'fontBackgroundColor' );
+		expect( fontBackgroundColorUIPlugin.icon ).toEqual( IconFontBackground );
+		expect( fontBackgroundColorUIPlugin.dropdownLabel ).toEqual( 'Font Background Color' );
+		expect( fontBackgroundColorUIPlugin.columns ).toEqual( 5 );
 	} );
 } );

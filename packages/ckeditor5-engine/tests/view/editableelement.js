@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
 
 import { ViewEditableElement } from '../../src/view/editableelement.js';
@@ -15,41 +16,41 @@ describe( 'ViewEditableElement', () => {
 	describe( 'is', () => {
 		let el;
 
-		before( () => {
+		beforeEach( () => {
 			el = new ViewEditableElement( new ViewDocument( new StylesProcessor() ), 'div' );
 		} );
 
 		it( 'should return true for containerElement/editable/element, also with correct name and element name', () => {
-			expect( el.is( 'containerElement' ) ).to.be.true;
-			expect( el.is( 'view:containerElement' ) ).to.be.true;
-			expect( el.is( 'containerElement', 'div' ) ).to.be.true;
-			expect( el.is( 'view:containerElement', 'div' ) ).to.be.true;
-			expect( el.is( 'editableElement' ) ).to.be.true;
-			expect( el.is( 'view:editableElement' ) ).to.be.true;
-			expect( el.is( 'editableElement', 'div' ) ).to.be.true;
-			expect( el.is( 'view:editableElement', 'div' ) ).to.be.true;
-			expect( el.is( 'element' ) ).to.be.true;
-			expect( el.is( 'view:element' ) ).to.be.true;
-			expect( el.is( 'element', 'div' ) ).to.be.true;
-			expect( el.is( 'view:element', 'div' ) ).to.be.true;
-			expect( el.is( 'element', 'div' ) ).to.be.true;
+			expect( el.is( 'containerElement' ) ).toBe( true );
+			expect( el.is( 'view:containerElement' ) ).toBe( true );
+			expect( el.is( 'containerElement', 'div' ) ).toBe( true );
+			expect( el.is( 'view:containerElement', 'div' ) ).toBe( true );
+			expect( el.is( 'editableElement' ) ).toBe( true );
+			expect( el.is( 'view:editableElement' ) ).toBe( true );
+			expect( el.is( 'editableElement', 'div' ) ).toBe( true );
+			expect( el.is( 'view:editableElement', 'div' ) ).toBe( true );
+			expect( el.is( 'element' ) ).toBe( true );
+			expect( el.is( 'view:element' ) ).toBe( true );
+			expect( el.is( 'element', 'div' ) ).toBe( true );
+			expect( el.is( 'view:element', 'div' ) ).toBe( true );
+			expect( el.is( 'element', 'div' ) ).toBe( true );
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( el.is( 'rootElement', 'p' ) ).to.be.false;
-			expect( el.is( 'view:rootElement', 'p' ) ).to.be.false;
-			expect( el.is( 'containerElement', 'p' ) ).to.be.false;
-			expect( el.is( 'view:containerElement', 'p' ) ).to.be.false;
-			expect( el.is( 'element', 'p' ) ).to.be.false;
-			expect( el.is( 'view:element', 'p' ) ).to.be.false;
-			expect( el.is( 'element', 'p' ) ).to.be.false;
-			expect( el.is( 'view:p' ) ).to.be.false;
-			expect( el.is( '$text' ) ).to.be.false;
-			expect( el.is( '$textProxy' ) ).to.be.false;
-			expect( el.is( 'attributeElement' ) ).to.be.false;
-			expect( el.is( 'uiElement' ) ).to.be.false;
-			expect( el.is( 'emptyElement' ) ).to.be.false;
-			expect( el.is( 'documentFragment' ) ).to.be.false;
+			expect( el.is( 'rootElement', 'p' ) ).toBe( false );
+			expect( el.is( 'view:rootElement', 'p' ) ).toBe( false );
+			expect( el.is( 'containerElement', 'p' ) ).toBe( false );
+			expect( el.is( 'view:containerElement', 'p' ) ).toBe( false );
+			expect( el.is( 'element', 'p' ) ).toBe( false );
+			expect( el.is( 'view:element', 'p' ) ).toBe( false );
+			expect( el.is( 'element', 'p' ) ).toBe( false );
+			expect( el.is( 'view:p' ) ).toBe( false );
+			expect( el.is( '$text' ) ).toBe( false );
+			expect( el.is( '$textProxy' ) ).toBe( false );
+			expect( el.is( 'attributeElement' ) ).toBe( false );
+			expect( el.is( 'uiElement' ) ).toBe( false );
+			expect( el.is( 'emptyElement' ) ).toBe( false );
+			expect( el.is( 'documentFragment' ) ).toBe( false );
 		} );
 	} );
 
@@ -68,17 +69,17 @@ describe( 'ViewEditableElement', () => {
 		it( 'should be observable', () => {
 			const root = new ViewEditableElement( docMock, 'div' );
 
-			expect( root.isFocused ).to.be.false;
+			expect( root.isFocused ).toBe( false );
 
-			const isFocusedSpy = sinon.spy();
+			const isFocusedSpy = vi.fn();
 
 			root.on( 'change:isFocused', isFocusedSpy );
 
 			root.isFocused = true;
 
-			expect( root.isFocused ).to.be.true;
+			expect( root.isFocused ).toBe( true );
 
-			expect( isFocusedSpy.calledOnce ).to.be.true;
+			expect( isFocusedSpy.mock.calls.length === 1 ).toBe( true );
 		} );
 
 		it( 'should change isFocused when selection changes', () => {
@@ -87,13 +88,13 @@ describe( 'ViewEditableElement', () => {
 			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
-			expect( viewMain.isFocused ).to.be.true;
-			expect( viewHeader.isFocused ).to.be.false;
+			expect( viewMain.isFocused ).toBe( true );
+			expect( viewHeader.isFocused ).toBe( false );
 
 			docMock.selection._setTo( [ rangeHeader ] );
 
-			expect( viewMain.isFocused ).to.be.false;
-			expect( viewHeader.isFocused ).to.be.true;
+			expect( viewMain.isFocused ).toBe( false );
+			expect( viewHeader.isFocused ).toBe( true );
 		} );
 
 		it( 'should change isFocused when document.isFocus changes', () => {
@@ -102,18 +103,18 @@ describe( 'ViewEditableElement', () => {
 			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
-			expect( viewMain.isFocused ).to.be.true;
-			expect( viewHeader.isFocused ).to.be.false;
+			expect( viewMain.isFocused ).toBe( true );
+			expect( viewHeader.isFocused ).toBe( false );
 
 			docMock.isFocused = false;
 
-			expect( viewMain.isFocused ).to.be.false;
-			expect( viewHeader.isFocused ).to.be.false;
+			expect( viewMain.isFocused ).toBe( false );
+			expect( viewHeader.isFocused ).toBe( false );
 
 			docMock.selection._setTo( [ rangeHeader ] );
 
-			expect( viewMain.isFocused ).to.be.false;
-			expect( viewHeader.isFocused ).to.be.false;
+			expect( viewMain.isFocused ).toBe( false );
+			expect( viewHeader.isFocused ).toBe( false );
 		} );
 	} );
 
@@ -127,17 +128,17 @@ describe( 'ViewEditableElement', () => {
 		it( 'should be observable', () => {
 			const root = new ViewEditableElement( docMock, 'div' );
 
-			expect( root.isReadOnly ).to.be.false;
+			expect( root.isReadOnly ).toBe( false );
 
-			const isReadOnlySpy = sinon.spy();
+			const isReadOnlySpy = vi.fn();
 
 			root.on( 'change:isReadOnly', isReadOnlySpy );
 
 			root.isReadOnly = true;
 
-			expect( root.isReadOnly ).to.be.true;
+			expect( root.isReadOnly ).toBe( true );
 
-			expect( isReadOnlySpy.calledOnce ).to.be.true;
+			expect( isReadOnlySpy.mock.calls.length === 1 ).toBe( true );
 		} );
 
 		it( 'should be bound to the document#isReadOnly', () => {
@@ -145,11 +146,11 @@ describe( 'ViewEditableElement', () => {
 
 			root.document.isReadOnly = false;
 
-			expect( root.isReadOnly ).to.false;
+			expect( root.isReadOnly ).toBe( false );
 
 			root.document.isReadOnly = true;
 
-			expect( root.isReadOnly ).to.true;
+			expect( root.isReadOnly ).toBe( true );
 		} );
 	} );
 
@@ -164,7 +165,7 @@ describe( 'ViewEditableElement', () => {
 		it( 'should be cloned properly', () => {
 			const newElement = element._clone();
 
-			expect( newElement.document ).to.equal( docMock );
+			expect( newElement.document ).toBe( docMock );
 		} );
 	} );
 
@@ -180,7 +181,7 @@ describe( 'ViewEditableElement', () => {
 			const json = JSON.stringify( editable );
 			const parsed = JSON.parse( json );
 
-			expect( parsed ).to.deep.equal( {
+			expect( parsed ).toEqual( {
 				name: 'p',
 				path: [ 0 ],
 				root: 'main',

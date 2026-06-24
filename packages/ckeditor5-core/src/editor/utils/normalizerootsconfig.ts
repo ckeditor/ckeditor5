@@ -21,7 +21,7 @@ import {
 	type Config
 } from '@ckeditor/ckeditor5-utils';
 
-import { isElement as _isElement } from 'es-toolkit/compat';
+import { isElement as _isElement, isPlainObject } from 'es-toolkit/compat';
 
 /**
  * Normalizes the editor roots configuration. It ensures that all root configurations are defined in `config.roots`
@@ -43,6 +43,33 @@ export function normalizeRootsConfig(
 ): void {
 	const mainRootConfig = config.get( 'root' );
 	const rootsConfig: Record<string, RootConfig> = config.get( 'roots' ) || Object.create( null );
+
+	if ( !isPlainObject( rootsConfig ) ) {
+		/**
+		 * The {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots`} option
+		 * must be a plain object (an object literal or `Object.create( null )`). Objects with a
+		 * custom prototype (e.g. created via `Object.create( someProto )`) or class instances
+		 * are not accepted, because internal configuration processing relies on a known
+		 * prototype chain to detect nested configuration objects.
+		 *
+		 * Replace the value with a plain object before passing it to the editor:
+		 *
+		 * ```ts
+		 * // Wrong
+		 * MultiRootEditor.create( {
+		 *     roots: Object.assign( Object.create( {} ), { intro: { ... } } )
+		 * } );
+		 *
+		 * // Right
+		 * MultiRootEditor.create( {
+		 *     roots: { intro: { ... } }
+		 * } );
+		 * ```
+		 *
+		 * @error editor-create-roots-not-plain-object
+		 */
+		throw new CKEditorError( 'editor-create-roots-not-plain-object', null );
+	}
 
 	// Avoid mixing `config.root` and `config.roots.main`.
 	if ( mainRootConfig ) {
@@ -90,7 +117,7 @@ export function normalizeRootsConfig(
 		rootsConfig[ defaultRootName ] = mainRootConfig || Object.create( null );
 	}
 
-	const sourceElementIsPlainObject = isPlainObject( sourceElementsOrData );
+	const sourceElementIsPlainObject = isSourceElementsOrDataRecord( sourceElementsOrData );
 
 	// Collect legacy configuration values for `initialData`, `placeholder`, and `label` from the config.
 	const legacyInitialData = getLegacyInitialData( config, sourceElementIsPlainObject, defaultRootName );
@@ -338,9 +365,9 @@ export function normalizeMultiRootEditorConstructorParams(
 }
 
 /**
- * Type guard to check if the provided value is a plain object.
+ * Type guard to check if the provided value is a plain object containing source elements or data.
  */
-function isPlainObject(
+function isSourceElementsOrDataRecord(
 	sourceElementsOrData: HTMLElement | string | Record<string, HTMLElement> | Record<string, string>
 ): sourceElementsOrData is Record<string, HTMLElement> | Record<string, string> {
 	return (
@@ -503,15 +530,33 @@ function tokenizeClasses( value: string | Array<string> | undefined ): Array<str
 }
 
 /**
- * Throws when the given tag name cannot be used as an editable root.
+ * Throws when the given value cannot be used as an editable root tag name.
  *
- * The `<textarea>` and `<input>` elements are form fields and cannot contain other HTML elements,
- * so the editor cannot render rich-text content inside them.
+ * Rejects values that are not a valid HTML tag name (non-strings, empty strings, names with whitespace,
+ * angle brackets, slashes, or other invalid characters) with `editor-wrong-element-name`.
+ *
+ * Also rejects the `<textarea>` and `<input>` tags with `editor-wrong-element` - they are form fields
+ * and cannot contain other HTML elements, so the editor cannot render rich-text content inside them.
  *
  * To fix the error, use a tag that can contain other elements - for example `'div'`, `'section'`, `'article'`,
  * or a heading like `'h1'`. You can also omit the `name` field to use the default `'div'`.
  */
-function assertAllowedTagName( name: string ): void {
+function assertAllowedTagName( name: unknown ): void {
+	if ( typeof name !== 'string' || !/^[A-Za-z][A-Za-z0-9_-]*$/.test( name ) ) {
+		/**
+		 * The value supplied as the editable root tag name in
+		 * {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`} or
+		 * `config.roots.<rootName>.element` is not a valid HTML tag name.
+		 *
+		 * Valid HTML tag names start with a letter and contain only letters, digits, hyphens, or underscores
+		 * (e.g. `'div'`, `'h1'`, `'my-element'`; uppercase variants such as `'DIV'` and `'H1'` are also accepted).
+		 * Whitespace, angle brackets, slashes, empty strings, and non-string values are not allowed.
+		 *
+		 * @error editor-wrong-element-name
+		 */
+		throw new CKEditorError( 'editor-wrong-element-name', null, { name } );
+	}
+
 	if ( [ 'textarea', 'input' ].includes( name.toLowerCase() ) ) {
 		/**
 		 * The DOM tag name specified in {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}

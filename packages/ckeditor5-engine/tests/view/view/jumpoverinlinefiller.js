@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { EditingView } from '../../../src/view/view.js';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler.js';
 
@@ -50,14 +51,14 @@ describe( 'View', () => {
 			// will render it on "foo^<b>...". Both options are correct.
 
 			if ( domSelection.anchorNode.data == 'foo' ) {
-				expect( domSelection.anchorNode.data ).to.equal( 'foo' );
-				expect( domSelection.anchorOffset ).to.equal( 3 );
+				expect( domSelection.anchorNode.data ).toBe( 'foo' );
+				expect( domSelection.anchorOffset ).toBe( 3 );
 			} else {
-				expect( isInlineFiller( domSelection.anchorNode ) ).to.be.true;
-				expect( domSelection.anchorOffset ).to.equal( 0 );
+				expect( isInlineFiller( domSelection.anchorNode ) ).toBe( true );
+				expect( domSelection.anchorOffset ).toBe( 0 );
 			}
 
-			expect( domSelection.isCollapsed ).to.be.true;
+			expect( domSelection.isCollapsed ).toBe( true );
 		} );
 
 		it( 'should do nothing when another key is pressed', () => {
@@ -68,9 +69,9 @@ describe( 'View', () => {
 
 			const domSelection = document.getSelection();
 
-			expect( isInlineFiller( domSelection.anchorNode ) ).to.be.true;
-			expect( domSelection.anchorOffset ).to.equal( INLINE_FILLER_LENGTH );
-			expect( domSelection.isCollapsed ).to.be.true;
+			expect( isInlineFiller( domSelection.anchorNode ) ).toBe( true );
+			expect( domSelection.anchorOffset ).toBe( INLINE_FILLER_LENGTH );
+			expect( domSelection.isCollapsed ).toBe( true );
 		} );
 
 		it( 'should do nothing if range is not collapsed', () => {
@@ -81,10 +82,10 @@ describe( 'View', () => {
 
 			const domSelection = document.getSelection();
 
-			expect( domSelection.anchorNode.data ).to.equal( 'x' );
-			expect( domSelection.anchorOffset ).to.equal( 0 );
-			expect( domSelection.focusNode.data ).to.equal( 'x' );
-			expect( domSelection.focusOffset ).to.equal( 1 );
+			expect( domSelection.anchorNode.data ).toBe( 'x' );
+			expect( domSelection.anchorOffset ).toBe( 0 );
+			expect( domSelection.focusNode.data ).toBe( 'x' );
+			expect( domSelection.focusOffset ).toBe( 1 );
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5-engine/issues/664
@@ -127,9 +128,9 @@ describe( 'View', () => {
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: view.domRoots.get( 'main' ) } );
 
-			expect( startsWithFiller( domSelection.anchorNode ) ).to.be.true;
-			expect( domSelection.anchorOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
-			expect( domSelection.isCollapsed ).to.be.true;
+			expect( startsWithFiller( domSelection.anchorNode ) ).toBe( true );
+			expect( domSelection.anchorOffset ).toBe( INLINE_FILLER_LENGTH + 1 );
+			expect( domSelection.isCollapsed ).toBe( true );
 		} );
 	} );
 } );

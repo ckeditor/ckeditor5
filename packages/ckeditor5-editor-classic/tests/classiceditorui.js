@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { View, EditorUI, ContextualBalloon, Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -14,15 +15,12 @@ import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'es-toolkit/compat';
 import { normalizeRootsConfig, Plugin } from '@ckeditor/ckeditor5-core';
 
 describe( 'ClassicEditorUI', () => {
 	let editor, view, ui, viewElement;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualClassicTestEditor
@@ -40,34 +38,35 @@ describe( 'ClassicEditorUI', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'extends EditorUI', () => {
-			expect( ui ).to.instanceof( EditorUI );
+			expect( ui ).toBeInstanceOf( EditorUI );
 		} );
 	} );
 
 	describe( 'init()', () => {
 		it( 'renders the #view', () => {
-			expect( view.isRendered ).to.be.true;
+			expect( view.isRendered ).toBe( true );
 		} );
 
 		describe( 'stickyPanel', () => {
 			it( 'binds view.stickyToolbar#isActive to editor.focusTracker#isFocused', () => {
 				ui.focusTracker.isFocused = false;
-				expect( view.stickyPanel.isActive ).to.be.false;
+				expect( view.stickyPanel.isActive ).toBe( false );
 
 				ui.focusTracker.isFocused = true;
-				expect( view.stickyPanel.isActive ).to.be.true;
+				expect( view.stickyPanel.isActive ).toBe( true );
 			} );
 
 			it( 'sets view.stickyToolbar#limiterElement', () => {
-				expect( view.stickyPanel.limiterElement ).to.equal( view.element );
+				expect( view.stickyPanel.limiterElement ).toBe( view.element );
 			} );
 
 			it( 'doesn\'t set view.stickyToolbar#viewportTopOffset, if not specified in the config', () => {
-				expect( view.stickyPanel.viewportTopOffset ).to.equal( 0 );
+				expect( view.stickyPanel.viewportTopOffset ).toBe( 0 );
 			} );
 
 			it( 'sets view.stickyPanel#viewportTopOffset, when specified in the config', () => {
@@ -80,15 +79,15 @@ describe( 'ClassicEditorUI', () => {
 						}
 					} )
 					.then( editor => {
-						expect( editor.ui.viewportOffset.top ).to.equal( 100 );
-						expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 100 );
+						expect( editor.ui.viewportOffset.top ).toBe( 100 );
+						expect( editor.ui.view.stickyPanel.viewportTopOffset ).toBe( 100 );
 
 						return editor.destroy();
 					} );
 			} );
 
 			it( 'sets view.stickyPanel#viewportTopOffset if legacy toolbar.vierportTopOffset specified', () => {
-				sinon.stub( console, 'warn' );
+				vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 				return VirtualClassicTestEditor
 					.create( 'foo', {
@@ -97,15 +96,15 @@ describe( 'ClassicEditorUI', () => {
 						}
 					} )
 					.then( editor => {
-						expect( editor.ui.viewportOffset.top ).to.equal( 100 );
-						expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 100 );
+						expect( editor.ui.viewportOffset.top ).toBe( 100 );
+						expect( editor.ui.view.stickyPanel.viewportTopOffset ).toBe( 100 );
 
 						return editor.destroy();
 					} );
 			} );
 
 			it( 'warns if legacy toolbar.vierportTopOffset specified', () => {
-				const spy = sinon.stub( console, 'warn' );
+				const spy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 				return VirtualClassicTestEditor
 					.create( 'foo', {
@@ -114,7 +113,8 @@ describe( 'ClassicEditorUI', () => {
 						}
 					} )
 					.then( editor => {
-						sinon.assert.calledWithMatch( spy, 'editor-ui-deprecated-viewport-offset-config' );
+						expect( spy ).toHaveBeenCalled();
+						expect( spy.mock.calls[ 0 ][ 0 ] ).toContain( 'editor-ui-deprecated-viewport-offset-config' );
 
 						return editor.destroy();
 					} );
@@ -124,28 +124,28 @@ describe( 'ClassicEditorUI', () => {
 				ui.viewportOffset = { top: 70 };
 
 				let offsetTop = 0;
-				sinon.stub( env, 'isiOS' ).get( () => true );
-				sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+				vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
+				vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockImplementation( () => offsetTop );
 
 				offsetTop = 0;
 				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
 
-				expect( ui.view.stickyPanel.viewportTopOffset ).to.equal( 70 );
+				expect( ui.view.stickyPanel.viewportTopOffset ).toBe( 70 );
 
 				offsetTop = 10;
 				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
 
-				expect( ui.view.stickyPanel.viewportTopOffset ).to.equal( 60 );
+				expect( ui.view.stickyPanel.viewportTopOffset ).toBe( 60 );
 
 				offsetTop = 50;
 				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
 
-				expect( ui.view.stickyPanel.viewportTopOffset ).to.equal( 20 );
+				expect( ui.view.stickyPanel.viewportTopOffset ).toBe( 20 );
 
 				offsetTop = 80;
 				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
 
-				expect( ui.view.stickyPanel.viewportTopOffset ).to.equal( 0 );
+				expect( ui.view.stickyPanel.viewportTopOffset ).toBe( 0 );
 			} );
 		} );
 
@@ -154,7 +154,7 @@ describe( 'ClassicEditorUI', () => {
 				ui.focusTracker.isFocused = false;
 
 				view.editable.element.dispatchEvent( new Event( 'focus' ) );
-				expect( ui.focusTracker.isFocused ).to.true;
+				expect( ui.focusTracker.isFocused ).toBe( true );
 			} );
 
 			it( 'binds view.editable#isFocused', () => {
@@ -171,13 +171,13 @@ describe( 'ClassicEditorUI', () => {
 			it( 'set view.editable#name', () => {
 				const editable = editor.editing.view.document.getRoot();
 
-				expect( view.editable.name ).to.equal( editable.rootName );
+				expect( view.editable.name ).toBe( editable.rootName );
 			} );
 
 			describe( 'inline root', () => {
 				it( 'leaves view.editable#isInlineRoot false for a block root', () => {
-					expect( view.editable.isInlineRoot ).to.be.false;
-					expect( view.editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+					expect( view.editable.isInlineRoot ).toBe( false );
+					expect( view.editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( false );
 				} );
 
 				it( 'sets view.editable#isInlineRoot to true when the root is $inlineRoot', () => {
@@ -188,8 +188,8 @@ describe( 'ClassicEditorUI', () => {
 						.then( newEditor => {
 							const editable = newEditor.ui.view.editable;
 
-							expect( editable.isInlineRoot ).to.be.true;
-							expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+							expect( editable.isInlineRoot ).toBe( true );
+							expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( true );
 
 							return newEditor.destroy();
 						} );
@@ -213,8 +213,8 @@ describe( 'ClassicEditorUI', () => {
 						.then( newEditor => {
 							const editable = newEditor.ui.view.editable;
 
-							expect( editable.isInlineRoot ).to.be.false;
-							expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+							expect( editable.isInlineRoot ).toBe( false );
+							expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( false );
 
 							return newEditor.destroy();
 						} );
@@ -238,8 +238,8 @@ describe( 'ClassicEditorUI', () => {
 						.then( newEditor => {
 							const editable = newEditor.ui.view.editable;
 
-							expect( editable.isInlineRoot ).to.be.true;
-							expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+							expect( editable.isInlineRoot ).toBe( true );
+							expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( true );
 
 							return newEditor.destroy();
 						} );
@@ -257,7 +257,7 @@ describe( 'ClassicEditorUI', () => {
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).toBe( 'placeholder-text' );
 
 						return newEditor.destroy();
 					} );
@@ -275,7 +275,7 @@ describe( 'ClassicEditorUI', () => {
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).toBe( 'placeholder-text' );
 
 						return newEditor.destroy();
 					} );
@@ -294,7 +294,7 @@ describe( 'ClassicEditorUI', () => {
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).toBe( 'config takes precedence' );
 
 						return newEditor.destroy();
 					} );
@@ -310,7 +310,7 @@ describe( 'ClassicEditorUI', () => {
 
 						// Inline roots have no block children, so the placeholder is hosted on the root itself
 						// (isDirectHost: true) rather than on the first child.
-						expect( root.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+						expect( root.getAttribute( 'data-placeholder' ) ).toBe( 'placeholder-text' );
 
 						return newEditor.destroy();
 					} );
@@ -327,7 +327,7 @@ describe( 'ClassicEditorUI', () => {
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).toBe( 'placeholder-text' );
 
 						return newEditor.destroy();
 					} );
@@ -345,7 +345,7 @@ describe( 'ClassicEditorUI', () => {
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).toBe( 'placeholder-text' );
 
 						return newEditor.destroy();
 					} );
@@ -364,7 +364,7 @@ describe( 'ClassicEditorUI', () => {
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).toBe( 'config takes precedence' );
 
 						return newEditor.destroy();
 					} );
@@ -381,8 +381,8 @@ describe( 'ClassicEditorUI', () => {
 						.then( editor => {
 							const items = editor.ui.view.toolbar.items;
 
-							expect( items.get( 0 ).name ).to.equal( 'foo' );
-							expect( items.get( 1 ).name ).to.equal( 'bar' );
+							expect( items.get( 0 ).name ).toBe( 'foo' );
+							expect( items.get( 1 ).name ).toBe( 'bar' );
 
 							return editor.destroy();
 						} );
@@ -398,8 +398,8 @@ describe( 'ClassicEditorUI', () => {
 						.then( editor => {
 							const items = editor.ui.view.toolbar.items;
 
-							expect( items.get( 0 ).name ).to.equal( 'foo' );
-							expect( items.get( 1 ).name ).to.equal( 'bar' );
+							expect( items.get( 0 ).name ).toBe( 'foo' );
+							expect( items.get( 1 ).name ).toBe( 'bar' );
 
 							return editor.destroy();
 						} );
@@ -416,8 +416,8 @@ describe( 'ClassicEditorUI', () => {
 						.then( editor => {
 							const items = editor.ui.view.toolbar.items;
 
-							expect( items.get( 0 ).name ).to.equal( 'foo' );
-							expect( items.length ).to.equal( 1 );
+							expect( items.get( 0 ).name ).toBe( 'foo' );
+							expect( items.length ).toBe( 1 );
 
 							return editor.destroy();
 						} );
@@ -442,12 +442,12 @@ describe( 'ClassicEditorUI', () => {
 
 				contextualBalloon = editorWithUi.plugins.get( 'ContextualBalloon' );
 
-				sinon.stub( editorWithUi.ui.view.stickyPanel.element, 'getBoundingClientRect' ).returns( {
+				vi.spyOn( editorWithUi.ui.view.stickyPanel.element, 'getBoundingClientRect' ).mockReturnValue( {
 					height: 50,
 					bottom: 50
 				} );
 
-				sinon.stub( editorWithUi.ui.view.editable.element, 'getBoundingClientRect' ).returns( {
+				vi.spyOn( editorWithUi.ui.view.editable.element, 'getBoundingClientRect' ).mockReturnValue( {
 					top: 0,
 					right: 300,
 					bottom: 100,
@@ -463,9 +463,9 @@ describe( 'ClassicEditorUI', () => {
 			} );
 
 			it( 'should handle BalloonPlugin#getPositionOptions returning undefined value', () => {
-				sinon.stub( contextualBalloon, '_visibleStack' ).get( () => ( { values: () => [ { position: undefined } ] } ) );
+				vi.spyOn( contextualBalloon, '_visibleStack', 'get' ).mockReturnValue( { values: () => [ { position: undefined } ] } );
 
-				expect( contextualBalloon.getPositionOptions() ).to.be.undefined;
+				expect( contextualBalloon.getPositionOptions() ).toBeUndefined();
 			} );
 
 			it( 'should set proper viewportOffsetConfig top offset when sticky panel is visible', () => {
@@ -473,7 +473,7 @@ describe( 'ClassicEditorUI', () => {
 
 				_setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
 
-				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const pinSpy = vi.spyOn( contextualBalloon.view, 'pin' );
 				const contentView = new View( editorWithUi.locale );
 
 				contentView.setTemplate( {
@@ -486,8 +486,8 @@ describe( 'ClassicEditorUI', () => {
 					position: getBalloonPositionData()
 				} );
 
-				expect( pinSpy ).to.be.calledOnce;
-				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 50 );
+				expect( pinSpy ).toHaveBeenCalledTimes( 1 );
+				expect( pinSpy.mock.calls[ 0 ][ 0 ].viewportOffsetConfig.top ).toBe( 50 );
 			} );
 
 			it( 'should summarize ui viewportOffset and sticky panel height in the viewportOffset option', () => {
@@ -498,7 +498,7 @@ describe( 'ClassicEditorUI', () => {
 
 				_setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
 
-				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const pinSpy = vi.spyOn( contextualBalloon.view, 'pin' );
 				const contentView = new View( editorWithUi.locale );
 
 				contentView.setTemplate( {
@@ -511,16 +511,16 @@ describe( 'ClassicEditorUI', () => {
 					position: getBalloonPositionData()
 				} );
 
-				expect( pinSpy ).to.be.calledOnce;
-				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 150 );
+				expect( pinSpy ).toHaveBeenCalledTimes( 1 );
+				expect( pinSpy.mock.calls[ 0 ][ 0 ].viewportOffsetConfig.top ).toBe( 150 );
 
 				// Handle change of viewport offset.
 				editorWithUi.ui.viewportOffset = {
 					top: 200
 				};
 
-				expect( pinSpy ).to.be.calledTwice;
-				expect( pinSpy.getCall( 1 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 250 );
+				expect( pinSpy ).toHaveBeenCalledTimes( 2 );
+				expect( pinSpy.mock.calls[ 1 ][ 0 ].viewportOffsetConfig.top ).toBe( 250 );
 			} );
 
 			it( 'should set proper viewportOffsetConfig top offset when sticky panel is not visible', () => {
@@ -528,7 +528,7 @@ describe( 'ClassicEditorUI', () => {
 
 				_setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
 
-				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const pinSpy = vi.spyOn( contextualBalloon.view, 'pin' );
 				const contentView = new View( editorWithUi.locale );
 
 				contentView.setTemplate( {
@@ -541,14 +541,14 @@ describe( 'ClassicEditorUI', () => {
 					position: getBalloonPositionData()
 				} );
 
-				expect( pinSpy ).to.be.calledOnce;
-				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 0 );
+				expect( pinSpy ).toHaveBeenCalledTimes( 1 );
+				expect( pinSpy.mock.calls[ 0 ][ 0 ].viewportOffsetConfig.top ).toBe( 0 );
 			} );
 
 			it( 'should update viewportOffsetConfig top offset when sticky panel becomes visible', () => {
 				_setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
 
-				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const pinSpy = vi.spyOn( contextualBalloon.view, 'pin' );
 				const contentView = new View( editorWithUi.locale );
 
 				editorWithUi.ui.view.stickyPanel.isSticky = false;
@@ -563,19 +563,19 @@ describe( 'ClassicEditorUI', () => {
 					position: getBalloonPositionData()
 				} );
 
-				expect( pinSpy ).to.be.calledOnce;
-				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 0 );
+				expect( pinSpy ).toHaveBeenCalledTimes( 1 );
+				expect( pinSpy.mock.calls[ 0 ][ 0 ].viewportOffsetConfig.top ).toBe( 0 );
 
 				editorWithUi.ui.view.stickyPanel.isSticky = true;
 
-				expect( pinSpy.getCall( 1 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 50 );
+				expect( pinSpy.mock.calls[ 1 ][ 0 ].viewportOffsetConfig.top ).toBe( 50 );
 			} );
 
 			it( 'should not update viewportOffsetConfig top offset when sticky panel becomes visible', () => {
 				_setModelData( editorWithUi.model, '<paragraph>foo[]</paragraph>' );
 				editorWithUi.ui.view.stickyPanel.isSticky = true;
 
-				const pinSpy = sinon.spy( contextualBalloon.view, 'pin' );
+				const pinSpy = vi.spyOn( contextualBalloon.view, 'pin' );
 				const contentView = new View( editorWithUi.locale );
 
 				const targetElement = document.createElement( 'div' );
@@ -600,8 +600,8 @@ describe( 'ClassicEditorUI', () => {
 					}
 				} );
 
-				expect( pinSpy ).to.be.calledOnce;
-				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 0 );
+				expect( pinSpy ).toHaveBeenCalledTimes( 1 );
+				expect( pinSpy.mock.calls[ 0 ][ 0 ].viewportOffsetConfig.top ).toBe( 0 );
 
 				targetElement.remove();
 				limiterElement.remove();
@@ -644,12 +644,12 @@ describe( 'ClassicEditorUI', () => {
 					}
 				} );
 
-				sinon.stub( editorWithUi.ui.view.stickyPanel.contentPanelElement, 'getBoundingClientRect' ).returns( {
+				vi.spyOn( editorWithUi.ui.view.stickyPanel.contentPanelElement, 'getBoundingClientRect' ).mockReturnValue( {
 					height: 50,
 					bottom: 50
 				} );
 
-				sinon.stub( editorWithUi.ui.view.editable.element, 'getBoundingClientRect' ).returns( {
+				vi.spyOn( editorWithUi.ui.view.editable.element, 'getBoundingClientRect' ).mockReturnValue( {
 					top: 0,
 					right: 300,
 					bottom: 100,
@@ -673,7 +673,7 @@ describe( 'ClassicEditorUI', () => {
 					position: DialogViewPosition.EDITOR_TOP_SIDE
 				} );
 
-				sinon.stub( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).returns( {
+				vi.spyOn( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).mockReturnValue( {
 					top: 0,
 					right: 100,
 					bottom: 50,
@@ -685,8 +685,8 @@ describe( 'ClassicEditorUI', () => {
 				// Automatic positioning of the dialog on first show takes a while.
 				await wait( 20 );
 
-				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
-				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '65px' );
+				expect( dialogPlugin.view.element.firstChild.style.left ).toBe( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).toBe( '65px' );
 			} );
 
 			it( 'should not move the dialog if the panel is not currently sticky', async () => {
@@ -698,7 +698,7 @@ describe( 'ClassicEditorUI', () => {
 					position: DialogViewPosition.EDITOR_TOP_SIDE
 				} );
 
-				sinon.stub( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).returns( {
+				vi.spyOn( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).mockReturnValue( {
 					top: 0,
 					right: 100,
 					bottom: 50,
@@ -710,8 +710,38 @@ describe( 'ClassicEditorUI', () => {
 				// Automatic positioning of the dialog on first show takes a while.
 				await wait( 20 );
 
-				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
-				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '15px' );
+				expect( dialogPlugin.view.element.firstChild.style.left ).toBe( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).toBe( '15px' );
+			} );
+
+			it( 'should not move the dialog if it already respects the sticky toolbar offset', async () => {
+				editorWithUi.ui.view.stickyPanel.isSticky = true;
+
+				editorWithUi.ui.view.stickyPanel.contentPanelElement.getBoundingClientRect.mockReturnValue( {
+					height: 0,
+					bottom: 0
+				} );
+
+				dialogPlugin.show( {
+					label: 'Foo',
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				vi.spyOn( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).mockReturnValue( {
+					top: 0,
+					right: 100,
+					bottom: 50,
+					left: 0,
+					width: 100,
+					height: 50
+				} );
+
+				// Automatic positioning of the dialog on first show takes a while.
+				await wait( 20 );
+
+				expect( dialogPlugin.view.element.firstChild.style.left ).toBe( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).toBe( '15px' );
 			} );
 
 			it( 'should not move the dialog away from the sticky toolbar if the user has already moved the dialog', async () => {
@@ -723,7 +753,7 @@ describe( 'ClassicEditorUI', () => {
 					position: DialogViewPosition.EDITOR_TOP_SIDE
 				} );
 
-				sinon.stub( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).returns( {
+				vi.spyOn( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).mockReturnValue( {
 					top: 0,
 					right: 100,
 					bottom: 50,
@@ -735,8 +765,8 @@ describe( 'ClassicEditorUI', () => {
 				// Automatic positioning of the dialog on first show takes a while.
 				await wait( 20 );
 
-				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
-				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '65px' );
+				expect( dialogPlugin.view.element.firstChild.style.left ).toBe( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).toBe( '65px' );
 
 				// Sticky panel could've unstuck in the meantime (document scroll). Let's make sure it stays sticky.
 				editorWithUi.ui.view.stickyPanel.isSticky = true;
@@ -749,8 +779,8 @@ describe( 'ClassicEditorUI', () => {
 				dialogPlugin.view.fire( 'drag', { deltaX: 0, deltaY: -10 } );
 				dialogPlugin.view.fire( 'drag', { deltaX: 0, deltaY: -10 } );
 
-				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
-				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '5px' );
+				expect( dialogPlugin.view.element.firstChild.style.left ).toBe( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).toBe( '5px' );
 			} );
 
 			it( 'should not move the dialog if it is a modal', async () => {
@@ -763,7 +793,7 @@ describe( 'ClassicEditorUI', () => {
 					position: DialogViewPosition.EDITOR_TOP_SIDE
 				} );
 
-				sinon.stub( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).returns( {
+				vi.spyOn( dialogPlugin.view.element.firstChild, 'getBoundingClientRect' ).mockReturnValue( {
 					top: 0,
 					right: 100,
 					bottom: 50,
@@ -775,8 +805,8 @@ describe( 'ClassicEditorUI', () => {
 				// Automatic positioning of the dialog on first show takes a while.
 				await wait( 20 );
 
-				expect( dialogPlugin.view.element.firstChild.style.left ).to.equal( '185px' );
-				expect( dialogPlugin.view.element.firstChild.style.top ).to.equal( '15px' );
+				expect( dialogPlugin.view.element.firstChild.style.left ).toBe( '185px' );
+				expect( dialogPlugin.view.element.firstChild.style.top ).toBe( '15px' );
 			} );
 		} );
 	} );
@@ -785,12 +815,14 @@ describe( 'ClassicEditorUI', () => {
 		it( 'detaches the DOM root then destroys the UI view', () => {
 			return VirtualClassicTestEditor.create( '' )
 				.then( newEditor => {
-					const destroySpy = sinon.spy( newEditor.ui.view, 'destroy' );
-					const detachSpy = sinon.spy( newEditor.editing.view, 'detachDomRoot' );
+					const destroySpy = vi.spyOn( newEditor.ui.view, 'destroy' );
+					const detachSpy = vi.spyOn( newEditor.editing.view, 'detachDomRoot' );
 
 					return newEditor.destroy()
 						.then( () => {
-							sinon.assert.callOrder( detachSpy, destroySpy );
+							expect( detachSpy ).toHaveBeenCalled();
+							expect( destroySpy ).toHaveBeenCalled();
+							expect( detachSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( destroySpy.mock.invocationCallOrder[ 0 ] );
 						} );
 				} );
 		} );
@@ -812,7 +844,7 @@ describe( 'ClassicEditorUI', () => {
 								attributes[ attribute.name ] = attribute.value;
 							}
 
-							expect( attributes ).to.deep.equal( {
+							expect( attributes ).toEqual( {
 								foo: 'bar',
 								'data-baz': 'qux',
 								class: 'foo-class'
@@ -825,12 +857,14 @@ describe( 'ClassicEditorUI', () => {
 			const newEditor = await VirtualClassicTestEditor.create( '' );
 			const parentEditorUIPrototype = Object.getPrototypeOf( newEditor.ui.constructor.prototype );
 
-			const parentDestroySpy = testUtils.sinon.spy( parentEditorUIPrototype, 'destroy' );
-			const viewDestroySpy = testUtils.sinon.spy( newEditor.ui.view, 'destroy' );
+			const parentDestroySpy = vi.spyOn( parentEditorUIPrototype, 'destroy' );
+			const viewDestroySpy = vi.spyOn( newEditor.ui.view, 'destroy' );
 
 			await newEditor.destroy();
 
-			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
+			expect( parentDestroySpy ).toHaveBeenCalled();
+			expect( viewDestroySpy ).toHaveBeenCalled();
+			expect( parentDestroySpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( viewDestroySpy.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		it( 'should not crash if called twice', async () => {
@@ -843,27 +877,27 @@ describe( 'ClassicEditorUI', () => {
 
 	describe( 'view()', () => {
 		it( 'returns view instance', () => {
-			expect( ui.view ).to.equal( view );
+			expect( ui.view ).toBe( view );
 		} );
 	} );
 
 	describe( 'element()', () => {
 		it( 'returns correct element instance', () => {
-			expect( ui.element ).to.equal( viewElement );
+			expect( ui.element ).toBe( viewElement );
 		} );
 	} );
 
 	describe( 'getEditableElement()', () => {
 		it( 'returns editable element (default)', () => {
-			expect( ui.getEditableElement() ).to.equal( view.editable.element );
+			expect( ui.getEditableElement() ).toBe( view.editable.element );
 		} );
 
 		it( 'returns editable element (root name passed)', () => {
-			expect( ui.getEditableElement( 'main' ) ).to.equal( view.editable.element );
+			expect( ui.getEditableElement( 'main' ) ).toBe( view.editable.element );
 		} );
 
 		it( 'returns undefined if editable with the given name is absent', () => {
-			expect( ui.getEditableElement( 'absent' ) ).to.be.undefined;
+			expect( ui.getEditableElement( 'absent' ) ).toBeUndefined();
 		} );
 	} );
 
@@ -884,14 +918,14 @@ describe( 'ClassicEditorUI', () => {
 			} );
 
 			editor.ui.view.stickyPanel.isSticky = true;
-			sinon.stub( editor.ui.view.stickyPanel.element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( editor.ui.view.stickyPanel.element, 'getBoundingClientRect' ).mockReturnValue( {
 				height: 50
 			} );
 
 			editor.editing.view.once( 'scrollToTheSelection', ( evt, data ) => {
 				const range = editor.editing.view.document.selection.getFirstRange();
 
-				expect( data ).to.deep.equal( {
+				expect( data ).toEqual( {
 					target: editor.editing.view.domConverter.viewRangeToDom( range ),
 					viewportOffset: {
 						top: 160,
@@ -928,11 +962,11 @@ describe( 'ClassicEditorUI', () => {
 			} );
 
 			editor.ui.view.stickyPanel.isSticky = false;
-			sinon.stub( editor.ui.view.stickyPanel.element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( editor.ui.view.stickyPanel.element, 'getBoundingClientRect' ).mockReturnValue( {
 				height: 50
 			} );
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.editing.view.on( 'scrollToTheSelection', spy );
 			editor.editing.view.scrollToTheSelection( { viewportOffset: 100 } );
@@ -940,7 +974,7 @@ describe( 'ClassicEditorUI', () => {
 			const range = editor.editing.view.document.selection.getFirstRange();
 
 			// The first call will trigger another one shortly once the panel becomes sticky.
-			sinon.assert.calledWith( spy.firstCall, sinon.match.object, {
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toMatchObject( {
 				target: editor.editing.view.domConverter.viewRangeToDom( range ),
 				alignToTop: undefined,
 				forceScroll: undefined,
@@ -952,7 +986,7 @@ describe( 'ClassicEditorUI', () => {
 			editor.ui.view.stickyPanel.isSticky = true;
 
 			// This is the second and final scroll that considers the geometry of a now-sticky panel.
-			sinon.assert.calledWith( spy.secondCall, sinon.match.object, {
+			expect( spy.mock.calls[ 1 ][ 1 ] ).toMatchObject( {
 				target: editor.editing.view.domConverter.viewRangeToDom( range ),
 				alignToTop: undefined,
 				forceScroll: undefined,
@@ -981,11 +1015,11 @@ describe( 'ClassicEditorUI', () => {
 			} );
 
 			editor.ui.view.stickyPanel.isSticky = false;
-			sinon.stub( editor.ui.view.stickyPanel.element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( editor.ui.view.stickyPanel.element, 'getBoundingClientRect' ).mockReturnValue( {
 				height: 50
 			} );
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.editing.view.on( 'scrollToTheSelection', spy );
 			editor.editing.view.scrollToTheSelection( { viewportOffset: 100 } );
@@ -993,7 +1027,7 @@ describe( 'ClassicEditorUI', () => {
 			const range = editor.editing.view.document.selection.getFirstRange();
 
 			// The first call can trigger another one shortly once the panel becomes sticky.
-			sinon.assert.calledWith( spy.firstCall, sinon.match.object, {
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toMatchObject( {
 				target: editor.editing.view.domConverter.viewRangeToDom( range ),
 				alignToTop: undefined,
 				forceScroll: undefined,
@@ -1005,13 +1039,13 @@ describe( 'ClassicEditorUI', () => {
 			// If the panel hasn't become sticky yet as a result of window getting scrolled chances are this will never happen.
 			await wait( 30 );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 
 			editor.ui.view.stickyPanel.isSticky = true;
 
 			// There was no second scroll even though the panel became sticky. Too much time has passed and the change of its state
 			// cannot be attributed to doings of scrollToTheSelection() anymore.
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 
 			editorElement.remove();
 			await editor.destroy();
@@ -1021,8 +1055,6 @@ describe( 'ClassicEditorUI', () => {
 
 describe( 'Focus handling and navigation between editing root and editor toolbar', () => {
 	let editorElement, editor, ui, toolbarView, domRoot;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
@@ -1043,6 +1075,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
 		editorElement.remove();
 
 		return editor.destroy();
@@ -1055,7 +1088,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 		} );
 
 		it( 'should focus the main toolbar when the focus is in the editing root', () => {
-			const spy = testUtils.sinon.spy( toolbarView, 'focus' );
+			const spy = vi.spyOn( toolbarView, 'focus' );
 
 			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
@@ -1064,12 +1097,12 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 
 			pressAltF10( editor );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should do nothing if the toolbar is already focused', () => {
-			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
+			const domRootFocusSpy = vi.spyOn( domRoot, 'focus' );
+			const toolbarFocusSpy = vi.spyOn( toolbarView, 'focus' );
 
 			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
@@ -1080,16 +1113,16 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			// Try Alt+F10 again.
 			pressAltF10( editor );
 
-			sinon.assert.calledOnce( toolbarFocusSpy );
-			sinon.assert.notCalled( domRootFocusSpy );
+			expect( toolbarFocusSpy ).toHaveBeenCalledTimes( 1 );
+			expect( domRootFocusSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should prioritize widget toolbar over the global toolbar', () => {
 			const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
 			const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
 
-			const toolbarSpy = testUtils.sinon.spy( toolbarView, 'focus' );
-			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
+			const toolbarSpy = vi.spyOn( toolbarView, 'focus' );
+			const imageToolbarSpy = vi.spyOn( imageToolbar, 'focus' );
 
 			_setModelData( editor.model,
 				'<paragraph>foo</paragraph>' +
@@ -1101,8 +1134,8 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			pressAltF10( editor );
 			ui.focusTracker.focusedElement = imageToolbar.element;
 
-			sinon.assert.calledOnce( imageToolbarSpy );
-			sinon.assert.notCalled( toolbarSpy );
+			expect( imageToolbarSpy ).toHaveBeenCalledTimes( 1 );
+			expect( toolbarSpy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -1113,8 +1146,8 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 		} );
 
 		it( 'should move the focus back from the main toolbar to the editing root', () => {
-			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
+			const domRootFocusSpy = vi.spyOn( domRoot, 'focus' );
+			const toolbarFocusSpy = vi.spyOn( toolbarView, 'focus' );
 
 			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
@@ -1124,19 +1157,21 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 
 			pressEsc( editor );
 
-			sinon.assert.callOrder( toolbarFocusSpy, domRootFocusSpy );
+			expect( toolbarFocusSpy ).toHaveBeenCalled();
+			expect( domRootFocusSpy ).toHaveBeenCalled();
+			expect( toolbarFocusSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( domRootFocusSpy.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		it( 'should do nothing if it was pressed when no toolbar was focused', () => {
-			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
+			const domRootFocusSpy = vi.spyOn( domRoot, 'focus' );
+			const toolbarFocusSpy = vi.spyOn( toolbarView, 'focus' );
 
 			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			pressEsc( editor );
 
-			sinon.assert.notCalled( domRootFocusSpy );
-			sinon.assert.notCalled( toolbarFocusSpy );
+			expect( domRootFocusSpy ).not.toHaveBeenCalled();
+			expect( toolbarFocusSpy ).not.toHaveBeenCalled();
 		} );
 	} );
 } );
@@ -1145,16 +1180,16 @@ function pressAltF10( editor ) {
 	editor.keystrokes.press( {
 		keyCode: keyCodes.f10,
 		altKey: true,
-		preventDefault: sinon.spy(),
-		stopPropagation: sinon.spy()
+		preventDefault: vi.fn(),
+		stopPropagation: vi.fn()
 	} );
 }
 
 function pressEsc( editor ) {
 	editor.keystrokes.press( {
 		keyCode: keyCodes.esc,
-		preventDefault: sinon.spy(),
-		stopPropagation: sinon.spy()
+		preventDefault: vi.fn(),
+		stopPropagation: vi.fn()
 	} );
 }
 

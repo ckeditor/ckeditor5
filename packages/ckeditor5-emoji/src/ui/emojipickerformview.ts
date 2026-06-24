@@ -38,12 +38,12 @@ export class EmojiPickerFormView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */
-	public readonly focusTracker = new FocusTracker();
+	public readonly focusTracker: FocusTracker = new FocusTracker();
 
 	/**
 	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 	 */
-	public readonly keystrokes = new KeystrokeHandler();
+	public readonly keystrokes: KeystrokeHandler = new KeystrokeHandler();
 
 	/**
 	 * A collection of child views.

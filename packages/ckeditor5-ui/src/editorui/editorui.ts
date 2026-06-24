@@ -28,7 +28,8 @@ import {
 	type CollectionAddEvent,
 	type CollectionRemoveEvent,
 	type ObservableSetEvent,
-	type DomEmitter
+	type DomEmitter,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import type { Editor, ViewportOffsetConfig } from '@ckeditor/ckeditor5-core';
@@ -41,10 +42,12 @@ import type {
 } from '../menubar/menubarview.js';
 import { normalizeMenuBarConfig } from '../menubar/utils.js';
 
+const EditorUIBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
  */
-export abstract class EditorUI extends /* #__PURE__ */ ObservableMixin() {
+export abstract class EditorUI extends EditorUIBase {
 	/**
 	 * The editor that the UI belongs to.
 	 */

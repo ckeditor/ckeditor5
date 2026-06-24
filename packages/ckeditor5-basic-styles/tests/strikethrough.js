@@ -3,24 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { Strikethrough } from '../src/strikethrough.js';
 import { StrikethroughEditing } from '../src/strikethrough/strikethroughediting.js';
 import { StrikethroughUI } from '../src/strikethrough/strikethroughui.js';
 
 describe( 'Strikethrough', () => {
 	it( 'should require StrikethroughEditing and StrikethroughUI', () => {
-		expect( Strikethrough.requires ).to.deep.equal( [ StrikethroughEditing, StrikethroughUI ] );
+		expect( Strikethrough.requires ).toEqual( [ StrikethroughEditing, StrikethroughUI ] );
 	} );
 
 	it( 'should be named', () => {
-		expect( Strikethrough.pluginName ).to.equal( 'Strikethrough' );
+		expect( Strikethrough.pluginName ).toBe( 'Strikethrough' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Strikethrough.isOfficialPlugin ).to.be.true;
+		expect( Strikethrough.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Strikethrough.isPremiumPlugin ).to.be.false;
+		expect( Strikethrough.isPremiumPlugin ).toBe( false );
 	} );
 } );

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { AttributeCommand } from '../src/attributecommand.js';
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
@@ -298,7 +300,7 @@ describe( 'AttributeCommand', () => {
 			let spy;
 
 			beforeEach( () => {
-				spy = sinon.spy();
+				spy = vi.fn();
 			} );
 
 			it( 'collapsed selection in non-empty parent', () => {
@@ -308,7 +310,7 @@ describe( 'AttributeCommand', () => {
 
 				command.execute();
 
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'non-collapsed selection', () => {
@@ -318,7 +320,7 @@ describe( 'AttributeCommand', () => {
 
 				command.execute();
 
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'in empty parent', () => {
@@ -328,7 +330,7 @@ describe( 'AttributeCommand', () => {
 
 				command.execute();
 
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 		} );
 

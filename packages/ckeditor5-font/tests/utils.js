@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
 	FONT_COLOR,
 	FONT_BACKGROUND_COLOR,
@@ -10,11 +11,12 @@ import {
 	renderDowncastElement
 } from './../src/utils.js';
 import { createDropdown, ColorSelectorView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'utils', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	it( 'plugin names has proper values', () => {
 		expect( FONT_COLOR ).to.equal( 'fontColor' );
@@ -58,12 +60,12 @@ describe( 'utils', () => {
 	describe( 'renderDowncastElement()', () => {
 		it( 'should create function executes viewWriter with proper arguments', () => {
 			const downcastViewConverterFn = renderDowncastElement( 'color' );
-			const fake = testUtils.sinon.fake();
+			const fake = vi.fn();
 			const fakeViewWriter = { createAttributeElement: fake };
 
 			downcastViewConverterFn( 'blue', { writer: fakeViewWriter } );
 
-			sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
+			expect( fake ).toHaveBeenCalledWith( 'span', { style: 'color:blue' }, { priority: 7 } );
 		} );
 	} );
 } );

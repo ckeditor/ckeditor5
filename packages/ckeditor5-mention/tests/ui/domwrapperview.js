@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { MentionDomWrapperView } from '../../src/ui/domwrapperview.js';
 
@@ -20,49 +21,49 @@ describe( 'MentionDomWrapperView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should add CSS class to the element', () => {
-			expect( domElement.classList.contains( 'ck-button' ) ).to.be.true;
+			expect( domElement.classList.contains( 'ck-button' ) ).toBe( true );
 		} );
 
 		it( 'should set #isOn observable property with a CSS class binding', () => {
-			expect( view.isOn ).to.be.false;
+			expect( view.isOn ).toBe( false );
 
 			// TODO: This is actually a bug because the initial state is not set correctly.
-			expect( domElement.classList.contains( 'ck-on' ) ).to.be.false;
-			expect( domElement.classList.contains( 'ck-off' ) ).to.be.false;
+			expect( domElement.classList.contains( 'ck-on' ) ).toBe( false );
+			expect( domElement.classList.contains( 'ck-off' ) ).toBe( false );
 
 			view.isOn = true;
-			expect( domElement.classList.contains( 'ck-on' ) ).to.be.true;
-			expect( domElement.classList.contains( 'ck-off' ) ).to.be.false;
+			expect( domElement.classList.contains( 'ck-on' ) ).toBe( true );
+			expect( domElement.classList.contains( 'ck-off' ) ).toBe( false );
 
 			view.isOn = false;
-			expect( domElement.classList.contains( 'ck-on' ) ).to.be.false;
-			expect( domElement.classList.contains( 'ck-off' ) ).to.be.true;
+			expect( domElement.classList.contains( 'ck-on' ) ).toBe( false );
+			expect( domElement.classList.contains( 'ck-off' ) ).toBe( true );
 		} );
 
 		it( 'should fire #execute on DOM element click', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			view.on( 'execute', spy );
 
 			domElement.dispatchEvent( new Event( 'click' ) );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'render()', () => {
 		it( 'should assign passed element to #element', () => {
 			view.render();
-			expect( view.element ).to.equal( domElement );
+			expect( view.element ).toBe( domElement );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'focuses the #domElement', () => {
-			const spy = sinon.spy( domElement, 'focus' );
+			const spy = vi.spyOn( domElement, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 } );

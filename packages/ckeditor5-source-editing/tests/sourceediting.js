@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { SourceEditing } from '../src/sourceediting.js';
 
 import { Plugin, PendingActions } from '@ckeditor/ckeditor5-core';
@@ -15,7 +17,6 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup.js';
 import { _getEmitterListenedTo, _getEmitterId, env, keyCodes } from '@ckeditor/ckeditor5-utils';
@@ -24,7 +25,9 @@ import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 describe( 'SourceEditing', () => {
 	let editor, editorElement, plugin, button;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
@@ -96,7 +99,7 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should display a warning in the console once if one or more collaboration plugins are loaded', async () => {
-			sinon.stub( console, 'warn' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			class CommentsEditing extends Plugin {
 				static get pluginName() {
@@ -125,8 +128,8 @@ describe( 'SourceEditing', () => {
 				initialData: '<p>Foo</p>'
 			} );
 
-			expect( console.warn.calledOnce ).to.be.true;
-			expect( console.warn.firstCall.args[ 0 ] ).to.equal(
+			expect( warnStub ).toHaveBeenCalledOnce();
+			expect( warnStub.mock.calls[ 0 ][ 0 ] ).to.equal(
 				'You initialized the editor with the source editing feature and at least one of the collaboration features. ' +
 				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
 				'that contains markers created by the collaboration features.'
@@ -138,7 +141,7 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should not throw nor display a warning for collaboration plugins if `allowCollaborationPlugins` flag is set', async () => {
-			sinon.stub( console, 'warn' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			class RealTimeCollaborativeEditing extends Plugin {
 				static get pluginName() {
@@ -176,7 +179,7 @@ describe( 'SourceEditing', () => {
 				initialData: '<p>Foo</p>'
 			} );
 
-			expect( console.warn.called ).to.be.false;
+			expect( warnStub ).not.toHaveBeenCalled();
 
 			editorElement.remove();
 
@@ -184,7 +187,7 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should display a warning in the console if restricted editing plugin is loaded', async () => {
-			sinon.stub( console, 'warn' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			class RestrictedEditingModeEditing extends Plugin {
 				static get pluginName() {
@@ -199,8 +202,8 @@ describe( 'SourceEditing', () => {
 				initialData: '<p>Foo</p>'
 			} );
 
-			expect( console.warn.calledOnce ).to.be.true;
-			expect( console.warn.firstCall.args[ 0 ] ).to.equal(
+			expect( warnStub ).toHaveBeenCalledOnce();
+			expect( warnStub.mock.calls[ 0 ][ 0 ] ).to.equal(
 				'You initialized the editor with the source editing feature and restricted editing feature. ' +
 				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
 				'that contains markers created by the restricted editing feature.'
@@ -263,21 +266,21 @@ describe( 'SourceEditing', () => {
 			} );
 
 			it( 'should toggle the plugin property after execution', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				plugin.on( 'change:isSourceEditingMode', spy );
 
 				button.fire( 'execute' );
 
 				expect( plugin.isSourceEditingMode ).to.be.true;
-				expect( spy.calledOnce ).to.be.true;
-				expect( spy.firstCall.args[ 2 ] ).to.be.true;
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy.mock.calls[ 0 ][ 2 ] ).to.be.true;
 
 				button.fire( 'execute' );
 
 				expect( plugin.isSourceEditingMode ).to.be.false;
-				expect( spy.calledTwice ).to.be.true;
-				expect( spy.secondCall.args[ 2 ] ).to.be.false;
+				expect( spy ).toHaveBeenCalledTimes( 2 );
+				expect( spy.mock.calls[ 1 ][ 2 ] ).to.be.false;
 			} );
 		}
 	} );
@@ -413,11 +416,11 @@ describe( 'SourceEditing', () => {
 				cancelable: true
 			} );
 
-			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+			const spy = vi.spyOn( keydownEvent, 'stopImmediatePropagation' );
 
 			textarea.dispatchEvent( keydownEvent );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not block native redo keystroke in the textarea', () => {
@@ -433,11 +436,11 @@ describe( 'SourceEditing', () => {
 				cancelable: true
 			} );
 
-			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+			const spy = vi.spyOn( keydownEvent, 'stopImmediatePropagation' );
 
 			textarea.dispatchEvent( keydownEvent );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not block native undo keystroke with meta key in the textarea', () => {
@@ -453,11 +456,11 @@ describe( 'SourceEditing', () => {
 				cancelable: true
 			} );
 
-			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+			const spy = vi.spyOn( keydownEvent, 'stopImmediatePropagation' );
 
 			textarea.dispatchEvent( keydownEvent );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not block native undo keystroke with caps lock in the textarea', () => {
@@ -473,11 +476,11 @@ describe( 'SourceEditing', () => {
 				cancelable: true
 			} );
 
-			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+			const spy = vi.spyOn( keydownEvent, 'stopImmediatePropagation' );
 
 			textarea.dispatchEvent( keydownEvent );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not block native redo keystroke with caps lock in the textarea', () => {
@@ -493,11 +496,11 @@ describe( 'SourceEditing', () => {
 				cancelable: true
 			} );
 
-			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+			const spy = vi.spyOn( keydownEvent, 'stopImmediatePropagation' );
 
 			textarea.dispatchEvent( keydownEvent );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should trigger native redo on Cmd+Y in the textarea on macOS', () => {
@@ -518,16 +521,16 @@ describe( 'SourceEditing', () => {
 					cancelable: true
 				} );
 
-				const preventDefaultSpy = sinon.spy( keydownEvent, 'preventDefault' );
-				execCommandSpy = sinon.spy( textarea.ownerDocument, 'execCommand' );
+				const preventDefaultSpy = vi.spyOn( keydownEvent, 'preventDefault' );
+				execCommandSpy = vi.spyOn( textarea.ownerDocument, 'execCommand' );
 
 				textarea.dispatchEvent( keydownEvent );
 
-				expect( preventDefaultSpy.calledOnce ).to.be.true;
-				expect( execCommandSpy.calledWith( 'redo' ) ).to.be.true;
+				expect( preventDefaultSpy ).toHaveBeenCalledOnce();
+				expect( execCommandSpy ).toHaveBeenCalledWith( 'redo' );
 			} finally {
 				if ( execCommandSpy ) {
-					execCommandSpy.restore();
+					execCommandSpy.mockRestore();
 				}
 
 				env.isMac = originalIsMac;
@@ -552,16 +555,16 @@ describe( 'SourceEditing', () => {
 					cancelable: true
 				} );
 
-				const preventDefaultSpy = sinon.spy( keydownEvent, 'preventDefault' );
-				execCommandSpy = sinon.spy( textarea.ownerDocument, 'execCommand' );
+				const preventDefaultSpy = vi.spyOn( keydownEvent, 'preventDefault' );
+				execCommandSpy = vi.spyOn( textarea.ownerDocument, 'execCommand' );
 
 				textarea.dispatchEvent( keydownEvent );
 
-				expect( preventDefaultSpy.called ).to.be.false;
-				expect( execCommandSpy.called ).to.be.false;
+				expect( preventDefaultSpy ).not.toHaveBeenCalled();
+				expect( execCommandSpy ).not.toHaveBeenCalled();
 			} finally {
 				if ( execCommandSpy ) {
-					execCommandSpy.restore();
+					execCommandSpy.mockRestore();
 				}
 
 				env.isMac = originalIsMac;
@@ -581,11 +584,11 @@ describe( 'SourceEditing', () => {
 				cancelable: true
 			} );
 
-			const stopImmediatePropagationSpy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+			const stopImmediatePropagationSpy = vi.spyOn( keydownEvent, 'stopImmediatePropagation' );
 
 			textarea.dispatchEvent( keydownEvent );
 
-			expect( stopImmediatePropagationSpy.called ).to.be.false;
+			expect( stopImmediatePropagationSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should disable textarea if editor is in read-only mode', () => {
@@ -651,20 +654,20 @@ describe( 'SourceEditing', () => {
 
 				dialog.show( {} );
 
-				const spy = sinon.spy( dialog, 'hide' );
+				const spy = vi.spyOn( dialog, 'hide' );
 
 				button.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not attempt to hide a hidden dialog after switching to the source editing mode', () => {
 				const dialog = editor.plugins.get( 'Dialog' );
-				const spy = sinon.spy( dialog, 'hide' );
+				const spy = vi.spyOn( dialog, 'hide' );
 
 				button.fire( 'execute' );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not throw if the Dialog plugin is not loaded', async () => {
@@ -689,13 +692,13 @@ describe( 'SourceEditing', () => {
 
 				dialog.show( {} );
 
-				const spy = sinon.spy( dialog, 'show' );
+				const spy = vi.spyOn( dialog, 'show' );
 
 				// Exit and reenter the source editing mode.
 				button.fire( 'execute' );
 				button.fire( 'execute' );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 		} );
 
@@ -738,16 +741,16 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should focus the editing view after switching back from the source editing mode', () => {
-			const spy = sinon.spy( editor.editing.view, 'focus' );
+			const spy = vi.spyOn( editor.editing.view, 'focus' );
 
 			button.fire( 'execute' );
 			button.fire( 'execute' );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should update the editor data after switching back from the source editing mode if value has been changed', () => {
-			const setDataSpy = sinon.spy();
+			const setDataSpy = vi.fn();
 
 			editor.data.on( 'set', setDataSpy );
 
@@ -762,8 +765,8 @@ describe( 'SourceEditing', () => {
 
 			button.fire( 'execute' );
 
-			expect( setDataSpy.calledOnce ).to.be.true;
-			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
+			expect( setDataSpy ).toHaveBeenCalledOnce();
+			expect( setDataSpy.mock.calls[ 0 ][ 1 ] ).to.deep.equal( [
 				{ main: '<p>Foo</p><p>bar</p>' },
 				{ batchType: { isUndoable: true }, suppressErrorInCollaboration: true }
 			] );
@@ -771,7 +774,7 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should not overwrite the editor data after switching back from the source editing mode if value has not been changed', () => {
-			const setData = sinon.stub( editor.data, 'set' ).callThrough();
+			const setData = vi.spyOn( editor.data, 'set' );
 
 			button.fire( 'execute' );
 
@@ -786,12 +789,12 @@ describe( 'SourceEditing', () => {
 
 			button.fire( 'execute' );
 
-			expect( setData.callCount ).to.equal( 0 );
+			expect( setData ).toHaveBeenCalledTimes( 0 );
 			expect( editor.data.get() ).to.equal( '<p>Foo</p>' );
 		} );
 
 		it( 'should update the editor data after calling editor.getData() in the source editing mode', () => {
-			const setDataSpy = sinon.spy();
+			const setDataSpy = vi.fn();
 
 			editor.data.on( 'set', setDataSpy );
 
@@ -812,12 +815,12 @@ describe( 'SourceEditing', () => {
 			// Exit source editing mode.
 			button.fire( 'execute' );
 
-			expect( setDataSpy.calledTwice ).to.be.true;
-			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
+			expect( setDataSpy ).toHaveBeenCalledTimes( 2 );
+			expect( setDataSpy.mock.calls[ 0 ][ 1 ] ).to.deep.equal( [
 				{ main: 'foo' },
 				{ batchType: { isUndoable: true }, suppressErrorInCollaboration: true }
 			] );
-			expect( setDataSpy.secondCall.args[ 1 ] ).to.deep.equal( [
+			expect( setDataSpy.mock.calls[ 1 ][ 1 ] ).to.deep.equal( [
 				{ main: 'bar' },
 				{ batchType: { isUndoable: true }, suppressErrorInCollaboration: true }
 			] );
@@ -825,7 +828,7 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should not overwrite the editor data after calling editor.getData() if value has not been changed', () => {
-			const setData = sinon.stub( editor.data, 'set' ).callThrough();
+			const setData = vi.spyOn( editor.data, 'set' );
 
 			button.fire( 'execute' );
 
@@ -841,12 +844,12 @@ describe( 'SourceEditing', () => {
 			// Trigger getData() while in the source editing mode.
 			expect( editor.getData() ).to.equal( '<p>Foo</p>' );
 
-			expect( setData.callCount ).to.equal( 0 );
+			expect( setData ).toHaveBeenCalledTimes( 0 );
 			expect( editor.data.get() ).to.equal( '<p>Foo</p>' );
 		} );
 
 		it( 'should not overwrite the editor data after subsequent calls of editor.getData()', () => {
-			const setDataSpy = sinon.spy();
+			const setDataSpy = vi.fn();
 
 			editor.data.on( 'set', setDataSpy );
 
@@ -872,12 +875,12 @@ describe( 'SourceEditing', () => {
 			// Exit source editing mode.
 			button.fire( 'execute' );
 
-			expect( setDataSpy.callCount ).to.equal( 2 );
-			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
+			expect( setDataSpy ).toHaveBeenCalledTimes( 2 );
+			expect( setDataSpy.mock.calls[ 0 ][ 1 ] ).to.deep.equal( [
 				{ main: 'foo' },
 				{ batchType: { isUndoable: true }, suppressErrorInCollaboration: true }
 			] );
-			expect( setDataSpy.secondCall.args[ 1 ] ).to.deep.equal( [
+			expect( setDataSpy.mock.calls[ 1 ][ 1 ] ).to.deep.equal( [
 				{ main: 'bar' },
 				{ batchType: { isUndoable: true }, suppressErrorInCollaboration: true }
 			] );
@@ -964,7 +967,7 @@ describe( 'SourceEditing', () => {
 
 	describe( 'integration with EditorUI', () => {
 		it( 'should call EditorUI#update() on every DOM input event', () => {
-			const updateSpy = sinon.spy();
+			const updateSpy = vi.fn();
 
 			button.fire( 'execute' );
 
@@ -976,12 +979,12 @@ describe( 'SourceEditing', () => {
 			textarea.value = 'bar';
 			textarea.dispatchEvent( new Event( 'input' ) );
 
-			sinon.assert.calledOnce( updateSpy );
+			expect( updateSpy ).toHaveBeenCalledOnce();
 
 			textarea.value = 'barX';
 			textarea.dispatchEvent( new Event( 'input' ) );
 
-			sinon.assert.calledTwice( updateSpy );
+			expect( updateSpy ).toHaveBeenCalledTimes( 2 );
 		} );
 	} );
 
@@ -1086,15 +1089,15 @@ describe( 'SourceEditing', () => {
 				toolbar: [ 'heading' ]
 			} );
 
-			const spy = sinon.spy( editor.plugins.get( 'Annotations' ), 'refreshVisibility' );
+			const spy = vi.spyOn( editor.plugins.get( 'Annotations' ), 'refreshVisibility' );
 
 			editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = false;
 
-			sinon.assert.calledTwice( spy );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 
 			editorElement.remove();
 
@@ -1106,7 +1109,9 @@ describe( 'SourceEditing', () => {
 describe( 'SourceEditing - integration with Markdown', () => {
 	let editor, editorElement, button;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
@@ -1153,7 +1158,9 @@ describe( 'SourceEditing - integration with Markdown', () => {
 describe( 'Focus handling and navigation between source editing and editor toolbar', () => {
 	let editorElement, editor, ui, toolbarView, domRoot, sourceEditingButton;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
@@ -1188,7 +1195,7 @@ describe( 'Focus handling and navigation between source editing and editor toolb
 	} );
 
 	it( 'should focus the editing root when leaving the source mode', () => {
-		const viewFocusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+		const viewFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 		sourceEditingButton.fire( 'execute' );
 
@@ -1197,11 +1204,11 @@ describe( 'Focus handling and navigation between source editing and editor toolb
 		sourceEditingButton.fire( 'execute' );
 
 		expect( editor.ui.focusTracker.isFocused ).to.be.true;
-		sinon.assert.calledOnce( viewFocusSpy );
+		expect( viewFocusSpy ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'Alt+F10 should focus the main toolbar when the focus is in the editing root', () => {
-		const spy = testUtils.sinon.spy( toolbarView, 'focus' );
+		const spy = vi.spyOn( toolbarView, 'focus' );
 
 		sourceEditingButton.fire( 'execute' );
 
@@ -1210,7 +1217,7 @@ describe( 'Focus handling and navigation between source editing and editor toolb
 
 		pressAltF10();
 
-		sinon.assert.calledOnce( spy );
+		expect( spy ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'Esc should move the focus back from the main toolbar to the source editing', () => {
@@ -1218,8 +1225,8 @@ describe( 'Focus handling and navigation between source editing and editor toolb
 
 		ui.focusTracker.focusedElement = domRoot.nextSibling.children[ 0 ];
 
-		const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
-		const sourceEditingTextareaFocusSpy = testUtils.sinon.spy( domRoot.nextSibling.children[ 0 ], 'focus' );
+		const toolbarFocusSpy = vi.spyOn( toolbarView, 'focus' );
+		const sourceEditingTextareaFocusSpy = vi.spyOn( domRoot.nextSibling.children[ 0 ], 'focus' );
 
 		// Focus the toolbar.
 		pressAltF10();
@@ -1227,23 +1234,24 @@ describe( 'Focus handling and navigation between source editing and editor toolb
 
 		pressEsc();
 
-		sinon.assert.callOrder( toolbarFocusSpy, sourceEditingTextareaFocusSpy );
+		expect( toolbarFocusSpy.mock.invocationCallOrder[ 0 ] )
+			.to.be.lessThan( sourceEditingTextareaFocusSpy.mock.invocationCallOrder[ 0 ] );
 	} );
 
 	function pressAltF10() {
 		editor.keystrokes.press( {
 			keyCode: keyCodes.f10,
 			altKey: true,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+			preventDefault: vi.fn(),
+			stopPropagation: vi.fn()
 		} );
 	}
 
 	function pressEsc() {
 		editor.keystrokes.press( {
 			keyCode: keyCodes.esc,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+			preventDefault: vi.fn(),
+			stopPropagation: vi.fn()
 		} );
 	}
 } );

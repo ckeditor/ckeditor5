@@ -8,15 +8,17 @@ import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData } from '../../src/dev-utils/model.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { stringifyBlocks } from '../model/_utils/utils.js';
 
 describe( '#11585', () => {
 	let model, doc, root, liveRange;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -65,36 +67,36 @@ describe( '#11585', () => {
 	it( 'does not return the first block if none of its contents is selected', () => {
 		_setModelData( model, '<p>a[</p><p>b</p><p>c]</p>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#b', 'p#c' ] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p#b', 'p#c' ] );
 	} );
 
 	it( 'returns the first block if at least one of its child nodes is selected', () => {
 		_setModelData( model, '<p>a[<imageBlock></imageBlock></p><p>b</p><p>c]</p>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p#a', 'p#b', 'p#c' ] );
 	} );
 
 	it( 'returns the block if it has a collapsed selection at the beginning', () => {
 		_setModelData( model, '<p>[]a</p><p>b</p>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p#a' ] );
 	} );
 
 	it( 'returns the block if it has a collapsed selection at the end', () => {
 		_setModelData( model, '<p>a[]</p><p>b</p>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p#a' ] );
 	} );
 
 	it( 'does not return first and last blocks if no content is selected', () => {
 		_setModelData( model, '<p>a[</p><p>]b</p>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [] );
 	} );
 
 	it( 'returns the first and last blocks if no content is selected but both blocks are empty', () => {
 		_setModelData( model, '<p>[</p><p>]</p>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p', 'p' ] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p', 'p' ] );
 	} );
 } );

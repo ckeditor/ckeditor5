@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeEach, describe, expect, it } from 'vitest';
 import { mapsEqual } from '../src/mapsequal.js';
 
 describe( 'utils', () => {

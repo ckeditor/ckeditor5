@@ -10,8 +10,8 @@ import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { FontColorEditing } from '@ckeditor/ckeditor5-font';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DataFilter } from '../src/datafilter.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import {
 	_getModelData,
@@ -30,7 +30,9 @@ import { GeneralHtmlSupport } from '../src/generalhtmlsupport.js';
 describe( 'DataFilter', () => {
 	let editor, model, editorElement, dataFilter, dataSchema, htmlSupport;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -57,11 +59,31 @@ describe( 'DataFilter', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( DataFilter.isOfficialPlugin ).to.be.true;
+		expect( DataFilter.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( DataFilter.isPremiumPlugin ).to.be.false;
+		expect( DataFilter.isPremiumPlugin ).toBe( false );
+	} );
+
+	it( 'should skip non-block definitions when resolving appliesToBlock', () => {
+		const dataSchema = editor.plugins.get( 'DataSchema' );
+
+		dataSchema.registerInlineElement( {
+			model: 'htmlCustomTargetInline',
+			view: 'customtarget'
+		} );
+
+		// Register an inline element with appliesToBlock pointing to an inline model (not a block).
+		// When _addAllowedElement is called, getDefinitionsForModel('htmlCustomTargetInline') returns
+		// the inline definition (isBlock is undefined/falsy), so it must be skipped.
+		dataSchema.registerInlineElement( {
+			model: 'htmlCustomAttrInline',
+			view: 'customattr',
+			appliesToBlock: 'htmlCustomTargetInline'
+		} );
+
+		expect( () => dataFilter.allowElement( 'customattr' ) ).not.toThrow();
 	} );
 
 	describe( 'initialization', () => {
@@ -91,21 +113,21 @@ describe( 'DataFilter', () => {
 		it( 'should allow element registered in init() method', () => {
 			initEditor.setData( '<article><p>foobar</p></article>' );
 
-			expect( _getModelData( initModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( initModel, { withoutSelection: true } ) ).toBe(
 				'<htmlArticle><paragraph>foobar</paragraph></htmlArticle>'
 			);
 
-			expect( initEditor.getData() ).to.equal( '<article><p>foobar</p></article>' );
+			expect( initEditor.getData() ).toBe( '<article><p>foobar</p></article>' );
 		} );
 
 		it( 'should allow element registered in afterInit() method', () => {
 			initEditor.setData( '<section><p>foobar</p></section>' );
 
-			expect( _getModelData( initModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( initModel, { withoutSelection: true } ) ).toBe(
 				'<htmlSection><paragraph>foobar</paragraph></htmlSection>'
 			);
 
-			expect( initEditor.getData() ).to.equal( '<section><p>foobar</p></section>' );
+			expect( initEditor.getData() ).toBe( '<section><p>foobar</p></section>' );
 		} );
 
 		it( 'should allow element registered after editor initialization', () => {
@@ -115,14 +137,14 @@ describe( 'DataFilter', () => {
 
 			initEditor.setData( '<p><span>foobar</span></p>' );
 
-			expect( getModelDataWithAttributes( initModel, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( initModel, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlSpan="(1)">foobar</$text></paragraph>',
 				attributes: {
 					1: {}
 				}
 			} );
 
-			expect( initEditor.getData() ).to.equal( '<p><span>foobar</span></p>' );
+			expect( initEditor.getData() ).toBe( '<p><span>foobar</span></p>' );
 		} );
 
 		class FakeRTCPlugin extends Plugin {
@@ -165,11 +187,11 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input></p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><htmlInput htmlContent=""></htmlInput></paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal( '<p><input></p>' );
+			expect( editor.getData() ).toBe( '<p><input></p>' );
 		} );
 
 		it( 'should allow element content', () => {
@@ -180,14 +202,14 @@ describe( 'DataFilter', () => {
 				' Your browser does not support the video tag.</video>' +
 				'</p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph>' +
 				'<htmlVideo htmlContent="<source src="https://example.com/video.mp4" type="video/mp4">' +
 				' Your browser does not support the video tag."></htmlVideo>' +
 				'</paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal( '<p><video>' +
+			expect( editor.getData() ).toBe( '<p><video>' +
 				'<source src="https://example.com/video.mp4" type="video/mp4">' +
 				' Your browser does not support the video tag.</video>' +
 				'</p>'
@@ -195,9 +217,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should filter the editing view', () => {
-			testUtils.sinon.stub( console, 'warn' )
-				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
-				.callsFake( () => {} );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			dataFilter.allowElement( 'video' );
 
@@ -206,7 +226,7 @@ describe( 'DataFilter', () => {
 					'Your browser does not support the video tag.</video>' +
 				'</p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph>' +
 					'<htmlVideo htmlContent="<source src="https://example.com/video.mp4" type="video/mp4" onclick="action()">' +
 					'Your browser does not support the video tag."></htmlVideo>' +
@@ -217,7 +237,7 @@ describe( 'DataFilter', () => {
 				withoutSelection: true,
 				renderRawElements: true,
 				domConverter: editor.editing.view.domConverter
-			} ) ).to.equal(
+			} ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<video class="html-object-embed__content">' +
@@ -243,11 +263,11 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<xyz>foobar</xyz>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<htmlXyz htmlContent="foobar"></htmlXyz>'
 			);
 
-			expect( editor.getData() ).to.equal( '<xyz>foobar</xyz>' );
+			expect( editor.getData() ).toBe( '<xyz>foobar</xyz>' );
 		} );
 
 		it( 'should allow attributes', () => {
@@ -256,7 +276,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input type="text"></p>' );
 
-			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 				attributes: {
 					1: {
@@ -267,7 +287,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><input type="text"></p>' );
+			expect( editor.getData() ).toBe( '<p><input type="text"></p>' );
 		} );
 
 		it( 'should allow attributes (styles)', () => {
@@ -276,7 +296,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input style="color:red;"></p>' );
 
-			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 				attributes: {
 					1: {
@@ -287,7 +307,27 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><input style="color:red;"></p>' );
+			expect( editor.getData() ).toBe( '<p><input style="color:red;"></p>' );
+		} );
+
+		it( 'should skip matched related styles that are not set on the element', () => {
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
+
+			dataFilter.allowAttributes( { name: 'p', styles: 'border-left' } );
+
+			const viewElement = editor.data.processor.toView( '<p style="border-left:1px solid;"></p>' ).getChild( 0 );
+			const viewAttributes = dataFilter.processViewAttributes( viewElement, {
+				consumable: {
+					consume: vi.fn( () => true )
+				}
+			} );
+
+			expect( viewAttributes ).toEqual( {
+				styles: {
+					'border-left-style': 'solid',
+					'border-left-width': '1px'
+				}
+			} );
 		} );
 
 		it( 'should allow attributes (classes)', () => {
@@ -296,7 +336,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input class="foobar"></p>' );
 
-			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 				attributes: {
 					1: {
@@ -305,7 +345,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><input class="foobar"></p>' );
+			expect( editor.getData() ).toBe( '<p><input class="foobar"></p>' );
 		} );
 
 		it( 'should disallow attributes', () => {
@@ -315,7 +355,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input type="text"><input type="hidden"></p>' );
 
-			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 				'<htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput>' +
 				'<htmlInput htmlContent=""></htmlInput>' +
@@ -329,7 +369,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><input type="text"><input></p>' );
+			expect( editor.getData() ).toBe( '<p><input type="text"><input></p>' );
 		} );
 
 		it( 'should disallow attributes (styles)', () => {
@@ -339,7 +379,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input style="color:blue;"><input style="color:red;"</p>' );
 
-			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 				'<htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput>' +
 				'<htmlInput htmlContent=""></htmlInput>' +
@@ -353,7 +393,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><input style="color:blue;"><input></p>' );
+			expect( editor.getData() ).toBe( '<p><input style="color:blue;"><input></p>' );
 		} );
 
 		it( 'should disallow attributes (classes)', () => {
@@ -363,7 +403,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input class="foo bar"><input class="bar"></p>' );
 
-			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 				'<htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput>' +
 				'<htmlInput htmlContent=""></htmlInput>' +
@@ -375,7 +415,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><input class="foo"><input></p>' );
+			expect( editor.getData() ).toBe( '<p><input class="foo"><input></p>' );
 		} );
 
 		it( 'should apply attributes to correct editing element', () => {
@@ -389,7 +429,7 @@ describe( 'DataFilter', () => {
 				.getChild( 0 ) // <span>
 				.getChild( 0 ); // <input>
 
-			expect( input.getAttribute( 'type' ) ).to.equal( 'number' );
+			expect( input.getAttribute( 'type' ) ).toBe( 'number' );
 		} );
 
 		it( 'should consume htmlXAttributes attribute (editing downcast)', () => {
@@ -406,7 +446,8 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input type="number"/></p>' );
 
-			expect( consumable.test( model.document.getRoot().getChild( 0 ).getChild( 0 ), 'attribute:htmlInputAttributes' ) ).to.be.false;
+			const inputElement = model.document.getRoot().getChild( 0 ).getChild( 0 );
+			expect( consumable.test( inputElement, 'attribute:htmlInputAttributes' ) ).toBe( false );
 		} );
 
 		it( 'should add widget label', () => {
@@ -416,7 +457,7 @@ describe( 'DataFilter', () => {
 
 			const element = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 0 );
 
-			expect( getLabel( element ) ).to.equal( 'HTML object' );
+			expect( getLabel( element ) ).toBe( 'HTML object' );
 		} );
 
 		function getObjectModelDataWithAttributes( model, options ) {
@@ -434,11 +475,11 @@ describe( 'DataFilter', () => {
 				'<section><paragraph>section2</paragraph></section></article>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<htmlArticle><paragraph>section1section2</paragraph></htmlArticle>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<article><p>section1section2</p></article>'
 			);
 
@@ -449,13 +490,13 @@ describe( 'DataFilter', () => {
 				'<section><paragraph>section2</paragraph></section></article>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<htmlArticle>' +
 				'<htmlSection><paragraph>section1</paragraph></htmlSection>' +
 				'<htmlSection><paragraph>section2</paragraph></htmlSection></htmlArticle>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<article>' +
 				'<section><p>section1</p></section>' +
 				'<section><p>section2</p></section></article>'
@@ -472,14 +513,14 @@ describe( 'DataFilter', () => {
 				'</section></section></section>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<htmlSection><paragraph>1</paragraph>' +
 				'<htmlSection><paragraph>2</paragraph>' +
 				'<htmlSection><paragraph>3</paragraph>' +
 				'</htmlSection></htmlSection></htmlSection>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<section><p>1</p>' +
 				'<section><p>2</p>' +
 				'<section><p>3</p>' +
@@ -492,18 +533,18 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<hr>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<htmlHr></htmlHr>'
 			);
 
-			expect( editor.getData() ).to.equal( '<hr>' );
+			expect( editor.getData() ).toBe( '<hr>' );
 
 			expect( _getViewData( editor.editing.view, {
 				withoutSelection: true,
 				renderRawElements: true,
 				showType: true,
 				domConverter: editor.editing.view.domConverter
-			} ) ).to.equal(
+			} ) ).toBe(
 				'<empty:hr></empty:hr>'
 			);
 		} );
@@ -519,7 +560,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<section data-foo="foobar"><p>foobar</p></section>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 				attributes: {
 					1: {
@@ -530,7 +571,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<section data-foo="foobar"><p>foobar</p></section>'
 			);
 		} );
@@ -543,12 +584,12 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<section data-foo="foobar"><p>foobar</p></section>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<section><p>foobar</p></section>'
 			);
 		} );
@@ -565,7 +606,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<section style="background-color:blue;color:red;"><p>foobar</p></section>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 				attributes: {
 					1: {
@@ -577,7 +618,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<section style="background-color:blue;color:red;"><p>foobar</p></section>'
 			);
 		} );
@@ -588,14 +629,14 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 				attributes: {
 					1: { classes: [ 'foo', 'bar' ] }
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<section class="foo bar"><p>foobar</p></section>'
 			);
 		} );
@@ -610,7 +651,7 @@ describe( 'DataFilter', () => {
 				'</article>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlArticle htmlArticleAttributes="(1)">' +
 					'<htmlSection htmlSectionAttributes="(2)"><paragraph>section1</paragraph></htmlSection>' +
 					'<htmlSection htmlSectionAttributes="(3)"><paragraph>section2</paragraph></htmlSection>' +
@@ -646,7 +687,7 @@ describe( 'DataFilter', () => {
 				'<article data-bar="bar"><p>bar</p></article>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foo</paragraph></htmlSection>' +
 					'<htmlArticle htmlArticleAttributes="(2)"><paragraph>bar</paragraph></htmlArticle>',
 				attributes: {
@@ -663,7 +704,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<section data-foo="foo"><p>foo</p></section>' +
 				'<article data-bar="bar"><p>bar</p></article>'
 			);
@@ -678,13 +719,13 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<section data-foo="a" data-bar="b"><p>foobar</p></section>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.deep.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 				'<htmlSection htmlSectionAttributes="{"attributes":{"data-foo":"a","data-bar":"b"}}">' +
 					'<paragraph>foobar</paragraph>' +
 				'</htmlSection>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<section data-foo="a" data-bar="b"><p>foobar</p></section>'
 			);
 		} );
@@ -699,7 +740,7 @@ describe( 'DataFilter', () => {
 				'<section data-foo="bar"><p>bar</p></section>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foo</paragraph></htmlSection>' +
 					'<htmlSection><paragraph>bar</paragraph></htmlSection>',
 				attributes: {
@@ -711,7 +752,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<section data-foo="foo"><p>foo</p></section>' +
 				'<section><p>bar</p></section>'
 			);
@@ -727,7 +768,7 @@ describe( 'DataFilter', () => {
 				'<section style="color:red"><p>bar</p></section>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foo</paragraph></htmlSection>' +
 					'<htmlSection><paragraph>bar</paragraph></htmlSection>',
 				attributes: {
@@ -739,7 +780,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<section style="color:blue;"><p>foo</p></section>' +
 				'<section><p>bar</p></section>'
 			);
@@ -755,7 +796,7 @@ describe( 'DataFilter', () => {
 				'<section class="bar"><p>bar</p></section>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foo</paragraph></htmlSection>' +
 					'<htmlSection><paragraph>bar</paragraph></htmlSection>',
 				attributes: {
@@ -765,7 +806,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<section class="foo"><p>foo</p></section>' +
 				'<section><p>bar</p></section>'
 			);
@@ -783,7 +824,7 @@ describe( 'DataFilter', () => {
 
 			expect( () => {
 				dataFilter.allowElement( 'xyz' );
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should not consume attribute already consumed (upcast)', () => {
@@ -798,12 +839,12 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<section data-foo><p>foo</p></section>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlSection><paragraph>foo</paragraph></htmlSection>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
+			expect( editor.getData() ).toBe( '<section><p>foo</p></section>' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/11000
@@ -820,7 +861,7 @@ describe( 'DataFilter', () => {
 			editor.data.upcastDispatcher.on( 'element:input', ( evt, data, conversionApi ) => {
 				const areConsumable = conversionApi.consumable.test( data.viewItem, { attributes: [ 'type', 'disabled' ] } );
 
-				expect( areConsumable ).to.be.true;
+				expect( areConsumable ).toBe( true );
 			}, { priority: 'lowest' } );
 
 			editor.setData( '<p>foo<input type="checkbox" disabled="disabled">bar</p>' );
@@ -842,12 +883,12 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<a href="example.com"><p>foo</p></a>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>foo</paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( editor.getData() ).toBe( '<p>foo</p>' );
 		} );
 
 		it( 'should not consume attribute already consumed (downcast)', () => {
@@ -862,7 +903,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<section data-foo><p>foo</p></section>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foo</paragraph></htmlSection>',
 				// At this point, attribute should still be in the model, as we are testing downcast conversion.
 				attributes: {
@@ -874,7 +915,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
+			expect( editor.getData() ).toBe( '<section><p>foo</p></section>' );
 		} );
 
 		it( 'should not convert attributes if the model schema item definition is not registered', () => {
@@ -889,7 +930,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<xyz>foo</xyz>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>foo</paragraph>',
 				attributes: {}
 			} );
@@ -908,7 +949,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<xyz>foo</xyz>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph>foo</paragraph>' );
 		} );
 
 		it( 'should not register converters for non registered builtin features (register only fallbacks)', () => {
@@ -928,9 +969,9 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<xyz>foo</xyz>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<htmlXyz>foo</htmlXyz>' );
-			expect( model.schema.isRegistered( 'xyz' ), 'xyz' ).to.be.false;
-			expect( model.schema.isRegistered( 'htmlXyz' ), 'htmlXyz' ).to.be.true;
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<htmlXyz>foo</htmlXyz>' );
+			expect( model.schema.isRegistered( 'xyz' ), 'xyz' ).toBe( false );
+			expect( model.schema.isRegistered( 'htmlXyz' ), 'htmlXyz' ).toBe( true );
 		} );
 
 		it( 'should not register view converters for existing features if a view has not been provided', () => {
@@ -954,7 +995,7 @@ describe( 'DataFilter', () => {
 
 				// Apply filtering rules added after initial data load.
 				editor.setData( '' );
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should not allow invalid attributes', () => {
@@ -967,7 +1008,7 @@ describe( 'DataFilter', () => {
 			// eslint-disable-next-line no-useless-escape
 			editor.setData( '<p zzz="a" \="2">x</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">x</paragraph>',
 				attributes: {
 					1: {
@@ -978,7 +1019,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p zzz="a">x</p>'
 			);
 		} );
@@ -998,7 +1039,7 @@ describe( 'DataFilter', () => {
 			// eslint-disable-next-line no-useless-escape
 			editor.setData( '<p zzz="a" \="2">x</p><p foo="a" bar' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">x</paragraph><paragraph htmlPAttributes="(2)"></paragraph>',
 				attributes: {
 					1: {
@@ -1016,7 +1057,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p zzz="a">x</p><p foo="a" bar<="" body="">&nbsp;</p>'
 			);
 		} );
@@ -1028,14 +1069,14 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><cite>foobar</cite></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 				attributes: {
 					1: {}
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><cite>foobar</cite></p>' );
+			expect( editor.getData() ).toBe( '<p><cite>foobar</cite></p>' );
 		} );
 
 		it( 'should allow deeply nested structure', () => {
@@ -1043,7 +1084,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><cite>foo<cite>bar<cite>baz</cite></cite></cite>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlCite="(1)">foobarbaz</$text></paragraph>',
 				attributes: {
 					1: {},
@@ -1052,7 +1093,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><cite>foobarbaz</cite></p>' );
+			expect( editor.getData() ).toBe( '<p><cite>foobarbaz</cite></p>' );
 		} );
 
 		it( 'should allow attributes', () => {
@@ -1066,7 +1107,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><cite data-foo="foobar">foobar</cite></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -1077,7 +1118,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><cite data-foo="foobar">foobar</cite></p>' );
+			expect( editor.getData() ).toBe( '<p><cite data-foo="foobar">foobar</cite></p>' );
 		} );
 
 		it( 'should allow attributes (styles)', () => {
@@ -1092,7 +1133,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><cite style="background-color:blue;color:red;">foobar</cite></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -1104,7 +1145,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><cite style="background-color:blue;color:red;">foobar</cite></p>'
 			);
 		} );
@@ -1115,14 +1156,14 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><cite class="foo bar">foobar</cite></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 				attributes: {
 					1: { classes: [ 'foo', 'bar' ] }
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><cite class="foo bar">foobar</cite></p>' );
+			expect( editor.getData() ).toBe( '<p><cite class="foo bar">foobar</cite></p>' );
 		} );
 
 		it( 'should allow nested attributes', () => {
@@ -1136,7 +1177,7 @@ describe( 'DataFilter', () => {
 				'</cite></p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 					'<$text htmlCite="(1)">cite</$text>' +
 					'<$text htmlCite="(2)" htmlSpan="(3)">span</$text>' +
@@ -1161,7 +1202,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>' +
+			expect( editor.getData() ).toBe( '<p>' +
 				'<cite data-foo="foo" data-bar="bar">cite</cite>' +
 				'<cite data-foo="foo"><span data-bar="bar">span</span></cite>' +
 				'</p>' );
@@ -1174,7 +1215,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><cite data-foo="foo">foo</cite><cite data-bar="bar">bar</cite></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlCite="(1)">foo</$text><$text htmlCite="(2)">bar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -1186,7 +1227,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><cite data-foo="foo">foo</cite><cite>bar</cite></p>' );
+			expect( editor.getData() ).toBe( '<p><cite data-foo="foo">foo</cite><cite>bar</cite></p>' );
 		} );
 
 		it( 'should disallow attributes (styles)', () => {
@@ -1201,7 +1242,7 @@ describe( 'DataFilter', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlCite="(1)">foo</$text><$text htmlCite="(2)">bar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -1213,7 +1254,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><cite style="color:blue;">foo</cite><cite>bar</cite></p>'
 			);
 		} );
@@ -1230,7 +1271,7 @@ describe( 'DataFilter', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlCite="(1)">foo</$text><$text htmlCite="(2)">bar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -1240,7 +1281,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><cite class="foo">foo</cite><cite>bar</cite></p>' );
+			expect( editor.getData() ).toBe( '<p><cite class="foo">foo</cite><cite>bar</cite></p>' );
 		} );
 
 		it( 'should not consume attribute already consumed (upcast)', () => {
@@ -1255,14 +1296,14 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><cite data-foo>foo</cite></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlCite="(1)">foo</$text></paragraph>',
 				attributes: {
 					1: {}
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><cite>foo</cite></p>' );
+			expect( editor.getData() ).toBe( '<p><cite>foo</cite></p>' );
 		} );
 
 		it( 'should not convert element already consumed (upcast)', () => {
@@ -1282,14 +1323,14 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><a href="example.com">foo <span>bar</span></a></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>foo <$text htmlSpan="(1)">bar</$text></paragraph>',
 				attributes: {
 					1: {}
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo <span>bar</span></p>' );
+			expect( editor.getData() ).toBe( '<p>foo <span>bar</span></p>' );
 		} );
 
 		it( 'should not consume attribute already consumed (downcast)', () => {
@@ -1304,7 +1345,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><cite data-foo>foo</cite></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlCite="(1)">foo</$text></paragraph>',
 				// At this point, attribute should still be in the model, as we are testing downcast conversion.
 				attributes: {
@@ -1316,7 +1357,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( editor.getData() ).toBe( '<p>foo</p>' );
 		} );
 
 		it( 'should correctly merge class names', () => {
@@ -1325,7 +1366,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><span class="foo">foo<span class="bar">bar<span class="baz">baz</span></span></span></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">foo</$text>' +
 						'<$text htmlSpan="(2)">bar</$text>' +
@@ -1354,7 +1395,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><span>foo<span class="test">bar</span></span></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">foo</$text>' +
 						'<$text htmlSpan="(2)">bar</$text>' +
@@ -1383,7 +1424,7 @@ describe( 'DataFilter', () => {
 				// Apply filtering rules added after initial data load.
 				editor.setData( '' );
 
-				expect( editor.model.schema.getAttributeProperties( 'htmlXyz' ) ).to.deep.equal( { copyOnEnter: true } );
+				expect( editor.model.schema.getAttributeProperties( 'htmlXyz' ) ).toEqual( { copyOnEnter: true } );
 			} );
 
 			it( 'should not set if missing', () => {
@@ -1397,7 +1438,7 @@ describe( 'DataFilter', () => {
 				// Apply filtering rules added after initial data load.
 				editor.setData( '' );
 
-				expect( editor.model.schema.getAttributeProperties( 'htmlXyz' ) ).to.deep.equal( {} );
+				expect( editor.model.schema.getAttributeProperties( 'htmlXyz' ) ).toEqual( {} );
 			} );
 		} );
 
@@ -1420,7 +1461,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><xyz>foobar</xyz></p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph>foobar</paragraph>' );
 
 			editor.getData( '<p>foobar</p>' );
 		} );
@@ -1436,7 +1477,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><xyz>foobar</xyz></p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph>foobar</paragraph>' );
 
 			editor.getData( '<p>foobar</p>' );
 		} );
@@ -1450,7 +1491,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><a href="example.com" data-foo="foo">link</a></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlA="(1)" linkHref="example.com">link</$text></paragraph>',
 				attributes: {
 					1: {
@@ -1461,7 +1502,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><a href="example.com" data-foo="foo">link</a></p>' );
+			expect( editor.getData() ).toBe( '<p><a href="example.com" data-foo="foo">link</a></p>' );
 		} );
 	} );
 
@@ -1473,7 +1514,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p>foo <i class="x"></i> bar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>foo <htmlEmptyElement htmlI="(1)"></htmlEmptyElement> bar</paragraph>',
 				attributes: {
 					1: {
@@ -1482,7 +1523,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo <i class="x"></i> bar</p>' );
+			expect( editor.getData() ).toBe( '<p>foo <i class="x"></i> bar</p>' );
 		} );
 
 		it( 'should allow attributes (styles)', () => {
@@ -1492,7 +1533,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p>foo <i style="color:red;"></i> bar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>foo <htmlEmptyElement htmlI="(1)"></htmlEmptyElement> bar</paragraph>',
 				attributes: {
 					1: {
@@ -1503,7 +1544,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo <i style="color:red;"></i> bar</p>' );
+			expect( editor.getData() ).toBe( '<p>foo <i style="color:red;"></i> bar</p>' );
 		} );
 
 		it( 'should allow attributes (classes)', () => {
@@ -1513,7 +1554,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p>foo <i class="foobar"></i> bar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>foo <htmlEmptyElement htmlI="(1)"></htmlEmptyElement> bar</paragraph>',
 				attributes: {
 					1: {
@@ -1522,7 +1563,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo <i class="foobar"></i> bar</p>' );
+			expect( editor.getData() ).toBe( '<p>foo <i class="foobar"></i> bar</p>' );
 		} );
 
 		it( 'should disallow attributes', () => {
@@ -1533,7 +1574,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p>foo <i data-type="text"></i> bar <i data-type="hidden" data-x="y"></i> baz</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'foo <htmlEmptyElement htmlI="(1)"></htmlEmptyElement> bar <htmlEmptyElement htmlI="(2)"></htmlEmptyElement> baz' +
 					'</paragraph>',
@@ -1551,7 +1592,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo <i data-type="text"></i> bar <i data-x="y"></i> baz</p>' );
+			expect( editor.getData() ).toBe( '<p>foo <i data-type="text"></i> bar <i data-x="y"></i> baz</p>' );
 		} );
 
 		it( 'should disallow attributes (styles)', () => {
@@ -1562,7 +1603,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><i style="color:blue;"></i><i style="color:red;background:pink;"></i></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>' +
 						'<htmlEmptyElement htmlI="(2)"></htmlEmptyElement>' +
@@ -1581,7 +1622,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><i style="color:blue;"></i><i style="background:pink;"></i></p>' );
+			expect( editor.getData() ).toBe( '<p><i style="color:blue;"></i><i style="background:pink;"></i></p>' );
 		} );
 
 		it( 'should disallow attributes (classes)', () => {
@@ -1592,7 +1633,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><i class="foo bar"></i><i class="bar abc"></i></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>' +
 						'<htmlEmptyElement htmlI="(2)"></htmlEmptyElement>' +
@@ -1607,7 +1648,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><i class="foo"></i><i class="abc"></i></p>' );
+			expect( editor.getData() ).toBe( '<p><i class="foo"></i><i class="abc"></i></p>' );
 		} );
 
 		it( 'should disallow element if all attributes are disallowed (classes)', () => {
@@ -1618,7 +1659,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><i class="foo bar"></i><i class="bar"></i></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>' +
 					'</paragraph>',
@@ -1629,7 +1670,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><i class="foo"></i></p>' );
+			expect( editor.getData() ).toBe( '<p><i class="foo"></i></p>' );
 		} );
 
 		it( 'should not convert empty inline element without any attributes', () => {
@@ -1639,14 +1680,14 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p>foo <i></i> bar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'foo bar' +
 					'</paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo bar</p>' );
+			expect( editor.getData() ).toBe( '<p>foo bar</p>' );
 		} );
 
 		it( 'should apply attributes to correct editing element', () => {
@@ -1660,7 +1701,7 @@ describe( 'DataFilter', () => {
 				.getChild( 0 ) // <p>
 				.getChild( 0 ); // <i>
 
-			expect( Array.from( empty.getClassNames() ) ).to.deep.equal( [ 'foo', 'ck-widget' ] );
+			expect( Array.from( empty.getClassNames() ) ).toEqual( [ 'foo', 'ck-widget' ] );
 		} );
 
 		it( 'should not insert if not allowed by model schema', () => {
@@ -1675,12 +1716,12 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p>foo <i class="abc"></i> bar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>foo  bar</paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo &nbsp;bar</p>' );
+			expect( editor.getData() ).toBe( '<p>foo &nbsp;bar</p>' );
 		} );
 
 		describe( 'remove element on removal all of attributes', () => {
@@ -1691,7 +1732,7 @@ describe( 'DataFilter', () => {
 
 				editor.setData( '<p>foo<i class="a"></i>bar</p>' );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>bar</paragraph>',
 					attributes: {
 						1: {
@@ -1707,12 +1748,12 @@ describe( 'DataFilter', () => {
 					writer.removeAttribute( 'htmlI', htmlEmptyElement );
 				} );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foobar</paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+				expect( editor.getData() ).toBe( '<p>foobar</p>' );
 			} );
 
 			it( 'should not remove htmlEmptyElement when it still has html* attributes', () => {
@@ -1725,7 +1766,7 @@ describe( 'DataFilter', () => {
 
 				editor.setData( '<p>foo<i class="a"></i>bar</p>' );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>bar</paragraph>',
 					attributes: {
 						1: {
@@ -1742,7 +1783,7 @@ describe( 'DataFilter', () => {
 					writer.setAttribute( 'htmlSpan', { classes: [ 'b' ] }, htmlEmptyElement );
 				} );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foo<htmlEmptyElement htmlSpan="(1)"></htmlEmptyElement>bar</paragraph>',
 					attributes: {
 						1: {
@@ -1759,7 +1800,7 @@ describe( 'DataFilter', () => {
 
 				editor.setData( '<p><i class="a">foo</i><i></i></p>' );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlI="(1)">foo</$text></paragraph>',
 					attributes: {
 						1: {
@@ -1775,12 +1816,12 @@ describe( 'DataFilter', () => {
 					writer.removeAttribute( 'htmlI', textNode );
 				} );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foo</paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal( '<p>foo</p>' );
+				expect( editor.getData() ).toBe( '<p>foo</p>' );
 			} );
 
 			it( 'should not affect elements other than htmlEmptyElement when removing non-html attributes', () => {
@@ -1792,7 +1833,7 @@ describe( 'DataFilter', () => {
 
 				editor.setData( '<p>foo<i></i></p>' );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foo</paragraph>',
 					attributes: {}
 				} );
@@ -1807,7 +1848,7 @@ describe( 'DataFilter', () => {
 					writer.removeAttribute( 'myAttribute', paragraph );
 				} );
 
-				expect( editor.getData() ).to.equal( '<p>foo</p>' );
+				expect( editor.getData() ).toBe( '<p>foo</p>' );
 			} );
 
 			it( 'should handle multiple html* attributes on htmlEmptyElement', () => {
@@ -1819,7 +1860,7 @@ describe( 'DataFilter', () => {
 
 				editor.setData( '<p>foo<i class="a"></i>bar</p>' );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>bar</paragraph>',
 					attributes: {
 						1: {
@@ -1842,7 +1883,7 @@ describe( 'DataFilter', () => {
 					writer.removeAttribute( 'htmlI', htmlEmptyElement );
 				} );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foo<htmlEmptyElement htmlSpan="(1)"></htmlEmptyElement>bar</paragraph>',
 					attributes: {
 						1: {
@@ -1858,13 +1899,30 @@ describe( 'DataFilter', () => {
 					writer.removeAttribute( 'htmlSpan', htmlEmptyElement );
 				} );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foobar</paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+				expect( editor.getData() ).toBe( '<p>foobar</p>' );
 			} );
+		} );
+
+		it( 'should skip non-inline definitions when allowing empty element', () => {
+			const dataSchema = editor.plugins.get( 'DataSchema' );
+
+			dataSchema.registerInlineElement( {
+				model: 'htmlCustomInline',
+				view: 'custominline',
+				modelSchema: {
+					allowWhere: 'htmlP'
+				}
+			} );
+
+			// 'htmlP' is a block element. getDefinitionsForView( 'custominline', true ) includes
+			// the 'htmlP' block definition (via allowWhere reference). The block definition has
+			// isInline undefined (falsy) — allowEmptyElement must skip it without error.
+			expect( () => dataFilter.allowEmptyElement( 'custominline' ) ).not.toThrow();
 		} );
 
 		it( 'should not insert empty element if has no attributes', async () => {
@@ -1935,7 +1993,7 @@ describe( 'DataFilter', () => {
 				'<p><b>ABC</b><span class="test"></span></p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<constrainedBox><paragraph><$text bold="true">ABC</$text></paragraph></constrainedBox>' +
 					'<paragraph><$text bold="true">ABC</$text><htmlEmptyElement htmlSpan="(1)"></htmlEmptyElement></paragraph>',
@@ -1961,7 +2019,7 @@ describe( 'DataFilter', () => {
 				method: 'paste'
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<div class="constrained-box"><p>A &nbsp;b<strong>ABC</strong></p></div>' +
 				'<p><strong>ABC</strong><span class="test"></span></p>'
 			);
@@ -1993,7 +2051,7 @@ describe( 'DataFilter', () => {
 					color: 'red'
 				}, root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2005,7 +2063,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input style="background-color:blue;color:red;"></p>'
 				);
 			} );
@@ -2017,7 +2075,7 @@ describe( 'DataFilter', () => {
 					'font-size': '10px'
 				}, root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2030,7 +2088,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input style="background-color:blue;color:red;font-size:10px;"></p>'
 				);
 			} );
@@ -2042,7 +2100,7 @@ describe( 'DataFilter', () => {
 					'background-color': 'green'
 				}, root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2054,7 +2112,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input style="background-color:green;color:red;"></p>'
 				);
 			} );
@@ -2064,7 +2122,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlStyles( 'input', 'color', root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2076,7 +2134,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input style="background-color:blue;font-size:10px;"></p>'
 				);
 			} );
@@ -2090,12 +2148,12 @@ describe( 'DataFilter', () => {
 					'font-size'
 				], root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent=""></htmlInput></paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input></p>'
 				);
 			} );
@@ -2109,7 +2167,7 @@ describe( 'DataFilter', () => {
 					'font-size': '10px'
 				}, root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2126,7 +2184,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo bar" style="background-color:blue;color:red;font-size:10px;" data-foo="bar"></p>'
 				);
 			} );
@@ -2138,7 +2196,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlStyles( 'input', 'color', root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2154,7 +2212,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo bar" style="background-color:blue;font-size:10px;" data-foo="bar"></p>'
 				);
 			} );
@@ -2170,7 +2228,7 @@ describe( 'DataFilter', () => {
 					'font-size'
 				], root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2182,7 +2240,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo bar" data-foo="bar"></p>'
 				);
 			} );
@@ -2195,7 +2253,7 @@ describe( 'DataFilter', () => {
 					'bar'
 				], root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2204,7 +2262,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo bar"></p>'
 				);
 			} );
@@ -2214,7 +2272,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'input', 'bar', root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2223,7 +2281,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo bar"></p>'
 				);
 			} );
@@ -2233,7 +2291,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'input', 'baz', root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2242,7 +2300,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo bar baz"></p>'
 				);
 			} );
@@ -2252,7 +2310,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'input', 'bar', root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2261,7 +2319,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo baz"></p>'
 				);
 			} );
@@ -2274,12 +2332,12 @@ describe( 'DataFilter', () => {
 					'bar'
 				], root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent=""></htmlInput></paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input></p>'
 				);
 			} );
@@ -2291,7 +2349,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'input', 'bar', root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2307,7 +2365,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo bar" style="background-color:blue;color:red;" data-foo="bar"></p>'
 				);
 			} );
@@ -2319,7 +2377,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'input', 'bar', root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2336,7 +2394,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo" style="background-color:blue;color:red;font-size:10px;" data-foo="bar"></p>'
 				);
 			} );
@@ -2351,7 +2409,7 @@ describe( 'DataFilter', () => {
 					'bar'
 				], root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2367,7 +2425,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input style="background-color:blue;color:red;font-size:10px;" data-foo="bar"></p>'
 				);
 			} );
@@ -2380,7 +2438,7 @@ describe( 'DataFilter', () => {
 					'data-bar': 'baz'
 				}, root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2392,7 +2450,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input data-foo="bar" data-bar="baz"></p>'
 				);
 			} );
@@ -2404,7 +2462,7 @@ describe( 'DataFilter', () => {
 					'data-bar': 'baz'
 				}, root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2416,7 +2474,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input data-foo="bar" data-bar="baz"></p>'
 				);
 			} );
@@ -2429,7 +2487,7 @@ describe( 'DataFilter', () => {
 					'data-bar': 'bar'
 				}, root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2441,7 +2499,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input data-foo="baz" data-bar="bar"></p>'
 				);
 			} );
@@ -2451,7 +2509,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'input', 'data-bar', root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2462,7 +2520,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input data-foo="bar"></p>'
 				);
 			} );
@@ -2475,12 +2533,12 @@ describe( 'DataFilter', () => {
 					'data-bar'
 				], root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent=""></htmlInput></paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input></p>'
 				);
 			} );
@@ -2495,7 +2553,7 @@ describe( 'DataFilter', () => {
 					'data-bar': 'baz'
 				}, root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2512,7 +2570,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz"></p>'
 				);
 			} );
@@ -2524,7 +2582,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'input', 'data-bar', root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2540,7 +2598,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo bar" style="background-color:blue;font-size:10px;" data-foo="bar"></p>'
 				);
 			} );
@@ -2552,7 +2610,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'input', 'data-foo', root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><htmlInput htmlContent="" htmlInputAttributes="(1)"></htmlInput></paragraph>',
 					attributes: {
 						1: {
@@ -2565,7 +2623,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><input class="foo bar" style="background-color:blue;font-size:10px;"></p>'
 				);
 			} );
@@ -2589,7 +2647,7 @@ describe( 'DataFilter', () => {
 					color: 'red'
 				}, root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2601,7 +2659,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section style="background-color:blue;color:red;"><p>foobar</p></section>'
 				);
 			} );
@@ -2613,7 +2671,7 @@ describe( 'DataFilter', () => {
 					'font-size': '10px'
 				}, root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2626,7 +2684,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section style="background-color:blue;color:red;font-size:10px;"><p>foobar</p></section>'
 				);
 			} );
@@ -2638,7 +2696,7 @@ describe( 'DataFilter', () => {
 					'background-color': 'green'
 				}, root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2650,7 +2708,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section style="background-color:green;color:red;"><p>foobar</p></section>'
 				);
 			} );
@@ -2660,7 +2718,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlStyles( 'section', 'color', root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2672,7 +2730,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section style="background-color:blue;font-size:10px;"><p>foobar</p></section>'
 				);
 			} );
@@ -2682,12 +2740,12 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlStyles( 'section', [ 'background-color', 'color', 'font-size' ], root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section><p>foobar</p></section>'
 				);
 			} );
@@ -2701,7 +2759,7 @@ describe( 'DataFilter', () => {
 					'font-size': '10px'
 				}, root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2718,7 +2776,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo bar" style="background-color:blue;color:red;font-size:10px;" data-foo="bar">' +
 						'<p>foobar</p>' +
 					'</section>'
@@ -2732,7 +2790,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlStyles( 'section', [ 'color' ], root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2748,7 +2806,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo" style="background-color:blue;font-size:10px;" data-foo="bar">' +
 						'<p>foobar</p>' +
 					'</section>'
@@ -2762,7 +2820,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlStyles( 'section', [ 'background-color', 'color', 'font-size' ], root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2774,7 +2832,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo" data-foo="bar"><p>foobar</p></section>'
 				);
 			} );
@@ -2784,7 +2842,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'section', [ 'foo', 'bar' ], root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2793,7 +2851,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo bar"><p>foobar</p></section>'
 				);
 			} );
@@ -2803,14 +2861,14 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'section', 'baz', root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: { classes: [ 'foo', 'bar', 'baz' ] }
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo bar baz"><p>foobar</p></section>'
 				);
 			} );
@@ -2821,14 +2879,14 @@ describe( 'DataFilter', () => {
 				htmlSupport.addModelHtmlClass( 'section', 'baz', root.getChild( 0 ), 'htmlSectionAttributes' );
 				htmlSupport.removeModelHtmlClass( 'section', 'bar', root.getChild( 0 ), 'htmlSectionAttributes' );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: { classes: [ 'foo', 'baz' ] }
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo baz"><p>foobar</p></section>'
 				);
 			} );
@@ -2838,14 +2896,14 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'section', 'bar', root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: { classes: [ 'foo', 'baz' ] }
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo baz"><p>foobar</p></section>'
 				);
 			} );
@@ -2855,12 +2913,12 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'section', [ 'foo', 'bar', 'baz' ], root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section><p>foobar</p></section>'
 				);
 			} );
@@ -2873,7 +2931,7 @@ describe( 'DataFilter', () => {
 				htmlSupport.addModelHtmlClass( 'section', 'baz', root.getChild( 0 ) );
 				htmlSupport.removeModelHtmlClass( 'section', 'bar', root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2889,7 +2947,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo baz" style="background-color:blue;color:red;" data-foo="bar">' +
 						'<p>foobar</p>' +
 					'</section>'
@@ -2903,7 +2961,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'section', [ 'bar', 'baz' ], root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2919,7 +2977,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo" style="background-color:blue;color:red;" data-foo="bar">' +
 						'<p>foobar</p>' +
 					'</section>'
@@ -2933,7 +2991,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'section', [ 'foo', 'bar', 'baz' ], root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2948,7 +3006,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section style="background-color:blue;color:red;" data-foo="bar">' +
 						'<p>foobar</p>' +
 					'</section>'
@@ -2960,7 +3018,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.setModelHtmlAttributes( 'section', { 'data-foo': 'bar' }, root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2969,7 +3027,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section data-foo="bar"><p>foobar</p></section>'
 				);
 			} );
@@ -2979,7 +3037,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.setModelHtmlAttributes( 'section', { 'data-bar': 'baz' }, root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -2991,7 +3049,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section data-foo="bar" data-bar="baz"><p>foobar</p></section>'
 				);
 			} );
@@ -3004,7 +3062,7 @@ describe( 'DataFilter', () => {
 					'data-bar': 'baz bar'
 				}, root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -3016,7 +3074,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section data-foo="bar baz" data-bar="baz bar"><p>foobar</p></section>'
 				);
 			} );
@@ -3026,7 +3084,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'section', 'data-bar', root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -3037,7 +3095,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section data-foo="bar"><p>foobar</p></section>'
 				);
 			} );
@@ -3047,12 +3105,12 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'section', [ 'data-bar', 'data-foo' ], root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section><p>foobar</p></section>'
 				);
 			} );
@@ -3064,7 +3122,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.setModelHtmlAttributes( 'section', { 'data-bar': 'baz' }, root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -3081,7 +3139,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz">' +
 						'<p>foobar</p>' +
 					'</section>'
@@ -3097,7 +3155,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'section', 'data-bar', root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -3113,7 +3171,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo bar" style="background-color:blue;color:red;" data-foo="bar">' +
 						'<p>foobar</p>' +
 					'</section>'
@@ -3129,7 +3187,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'section', [ 'data-bar', 'data-foo' ], root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection htmlSectionAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {
 						1: {
@@ -3142,7 +3200,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<section class="foo bar" style="background-color:blue;color:red;">' +
 						'<p>foobar</p>' +
 					'</section>'
@@ -3156,12 +3214,12 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'section', 'data-bar', root.getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal( '<section><p>foobar</p></section>' );
+				expect( editor.getData() ).toBe( '<section><p>foobar</p></section>' );
 			} );
 		} );
 
@@ -3186,7 +3244,7 @@ describe( 'DataFilter', () => {
 					color: 'red'
 				}, model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3198,7 +3256,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite style="background-color:blue;color:red;">foobar</cite></p>'
 				);
 			} );
@@ -3211,7 +3269,7 @@ describe( 'DataFilter', () => {
 					color: 'red'
 				}, model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3223,7 +3281,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite style="background-color:blue;color:red;">foobar</cite></p>'
 				);
 			} );
@@ -3240,7 +3298,7 @@ describe( 'DataFilter', () => {
 				}, model.document.selection );
 				htmlSupport.removeModelHtmlStyles( 'cite', [], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3252,7 +3310,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite style="background-color:blue;color:red;">foobar</cite></p>'
 				);
 			} );
@@ -3266,7 +3324,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlStyles( 'cite', [ 'color' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3278,7 +3336,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite style="background-color:blue;font-size:10px;">foobar</cite></p>'
 				);
 			} );
@@ -3292,12 +3350,12 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlStyles( 'cite', [ 'background-color', 'color', 'font-size' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foobar</paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foobar</p>'
 				);
 			} );
@@ -3315,7 +3373,7 @@ describe( 'DataFilter', () => {
 					'font-size': '10px'
 				}, model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3332,7 +3390,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar" style="background-color:blue;color:red;font-size:10px;" data-foo="bar">foobar</cite></p>'
 				);
 			} );
@@ -3348,7 +3406,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlStyles( 'cite', [ 'color' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3364,7 +3422,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar" style="background-color:blue;font-size:10px;" data-foo="bar">foobar</cite></p>'
 				);
 			} );
@@ -3380,7 +3438,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlStyles( 'cite', [ 'background-color', 'color', 'font-size' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3392,7 +3450,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar" data-foo="bar">foobar</cite></p>'
 				);
 			} );
@@ -3402,7 +3460,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3411,7 +3469,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar">foobar</cite></p>'
 				);
 			} );
@@ -3421,11 +3479,11 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
-				expect( _getModelData( model ) ).to.deep.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>foo<$text htmlCite="{"classes":["foo","bar"]}">[]</$text>bar</paragraph>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foobar</p>'
 				);
 			} );
@@ -3441,11 +3499,11 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'cite', 'bar', model.document.selection );
 
-				expect( _getModelData( model ) ).to.deep.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>foo<$text htmlCite="{"classes":["foo"]}">[]</$text>bar</paragraph>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foobar</p>'
 				);
 			} );
@@ -3461,11 +3519,11 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
-				expect( _getModelData( model ) ).to.deep.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>foo[]bar</paragraph>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foobar</p>'
 				);
 			} );
@@ -3475,7 +3533,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3484,7 +3542,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar">foobar</cite></p>'
 				);
 			} );
@@ -3498,7 +3556,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'cite', 'bar', model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3507,7 +3565,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar">foobar</cite></p>'
 				);
 			} );
@@ -3521,7 +3579,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'cite', 'bar', model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3530,7 +3588,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo baz">foobar</cite></p>'
 				);
 			} );
@@ -3544,12 +3602,12 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foobar</paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foobar</p>'
 				);
 			} );
@@ -3565,7 +3623,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'cite', [ 'baz' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3581,7 +3639,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar baz" style="background-color:blue;color:red;" data-foo="bar">foobar</cite></p>'
 				);
 			} );
@@ -3597,7 +3655,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'cite', [ 'bar' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3613,7 +3671,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo" style="background-color:blue;font-size:10px;" data-foo="bar">foobar</cite></p>'
 				);
 			} );
@@ -3629,7 +3687,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3645,7 +3703,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite style="background-color:blue;color:red;font-size:10px;" data-foo="bar">foobar</cite></p>'
 				);
 			} );
@@ -3658,7 +3716,7 @@ describe( 'DataFilter', () => {
 					'data-bar': 'baz'
 				}, model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3670,7 +3728,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite data-foo="bar" data-bar="baz">foobar</cite></p>'
 				);
 			} );
@@ -3683,7 +3741,7 @@ describe( 'DataFilter', () => {
 					'data-bar': 'baz'
 				}, model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3695,7 +3753,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite data-foo="bar" data-bar="baz">foobar</cite></p>'
 				);
 			} );
@@ -3711,7 +3769,7 @@ describe( 'DataFilter', () => {
 					'data-foo': 'bar baz'
 				}, model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3722,7 +3780,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite data-foo="bar baz">foobar</cite></p>'
 				);
 			} );
@@ -3736,7 +3794,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'cite', [ 'data-bar' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3747,7 +3805,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite data-foo="bar">foobar</cite></p>'
 				);
 			} );
@@ -3761,12 +3819,12 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'cite', [ 'data-foo', 'data-bar' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foobar</paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foobar</p>'
 				);
 			} );
@@ -3784,7 +3842,7 @@ describe( 'DataFilter', () => {
 					'data-bar': 'baz'
 				}, model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3801,7 +3859,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar" style="background-color:blue;color:red;" data-foo="bar" data-bar="baz">foobar</cite></p>'
 				);
 			} );
@@ -3817,7 +3875,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'cite', [ 'data-bar' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3833,7 +3891,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar" style="background-color:blue;color:red;" data-foo="bar">foobar</cite></p>'
 				);
 			} );
@@ -3849,7 +3907,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlAttributes( 'cite', [ 'data-foo' ], model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3862,7 +3920,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar" style="background-color:blue;font-size:10px;">foobar</cite></p>'
 				);
 			} );
@@ -3881,12 +3939,12 @@ describe( 'DataFilter', () => {
 					color: 'red'
 				}, root.getChild( 0 ).getChild( 0 ) );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foobar</paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foobar</p>'
 				);
 			} );
@@ -3905,12 +3963,12 @@ describe( 'DataFilter', () => {
 					color: 'red'
 				}, model.document.selection );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foobar</paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foobar</p>'
 				);
 			} );
@@ -3920,12 +3978,12 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], null );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph>foobar</paragraph>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foobar</p>'
 				);
 			} );
@@ -3941,7 +3999,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'cite', [ 'foo', 'bar' ], null );
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
 					attributes: {
 						1: {
@@ -3950,7 +4008,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p><cite class="foo bar">foobar</cite></p>'
 				);
 			} );
@@ -3973,7 +4031,7 @@ describe( 'DataFilter', () => {
 						model.createPositionAt( root.getChild( 0 ), 4 )
 					) );
 
-					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 						data: '<paragraph>f<$text htmlCite="(1)">oob</$text>ar</paragraph>',
 						attributes: {
 							1: {
@@ -3982,7 +4040,7 @@ describe( 'DataFilter', () => {
 						}
 					} );
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<p>f<cite class="foo bar">oob</cite>ar</p>'
 					);
 				} );
@@ -3995,7 +4053,7 @@ describe( 'DataFilter', () => {
 						model.createPositionAt( root.getChild( 0 ), 6 )
 					) );
 
-					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 						data: '<paragraph><$text htmlCite="(1)">f</$text>oobar</paragraph>',
 						attributes: {
 							1: {
@@ -4004,7 +4062,7 @@ describe( 'DataFilter', () => {
 						}
 					} );
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<p><cite class="foo">f</cite>oobar</p>'
 					);
 				} );
@@ -4023,7 +4081,7 @@ describe( 'DataFilter', () => {
 						)
 					] );
 
-					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 						data: '<paragraph>f<$text htmlCite="(1)">o</$text>o<$text htmlCite="(2)">b</$text>ar</paragraph>',
 						attributes: {
 							1: {
@@ -4035,7 +4093,7 @@ describe( 'DataFilter', () => {
 						}
 					} );
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<p>f<cite class="foo bar">o</cite>o<cite class="foo bar">b</cite>ar</p>'
 					);
 				} );
@@ -4054,7 +4112,7 @@ describe( 'DataFilter', () => {
 						)
 					] );
 
-					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 						data: '<paragraph>fo<$text htmlCite="(1)">o</$text>bar</paragraph>',
 						attributes: {
 							1: {
@@ -4063,7 +4121,7 @@ describe( 'DataFilter', () => {
 						}
 					} );
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<p>fo<cite class="foo">o</cite>bar</p>'
 					);
 				} );
@@ -4077,7 +4135,7 @@ describe( 'DataFilter', () => {
 
 		editor.setData( '<p><span style="font-weight:700;"><span style="font-weight:400;">foobar</span></span>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<paragraph><$text htmlSpan="(1)">foobar</$text></paragraph>',
 			attributes: {
 				1: {
@@ -4086,7 +4144,7 @@ describe( 'DataFilter', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><span style="font-weight:400;">foobar</span></p>' );
+		expect( editor.getData() ).toBe( '<p><span style="font-weight:400;">foobar</span></p>' );
 	} );
 
 	it( 'should allow using attributes by other features', () => {
@@ -4096,7 +4154,7 @@ describe( 'DataFilter', () => {
 		editor.setData( '<p><span style="color:blue;font-size:30px;">foobar</span></p>' );
 
 		// Font feature should take over color CSS property.
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<paragraph><$text fontColor="blue" htmlSpan="(1)">foobar</$text></paragraph>',
 			attributes: {
 				1: {
@@ -4105,7 +4163,7 @@ describe( 'DataFilter', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span style="font-size:30px;">foobar</span></span></p>' );
+		expect( editor.getData() ).toBe( '<p><span style="color:blue;"><span style="font-size:30px;">foobar</span></span></p>' );
 	} );
 
 	describe( 'existing features', () => {
@@ -4115,7 +4173,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p data-foo="foo">foo</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foo</paragraph>',
 				attributes: {
 					1: {
@@ -4124,7 +4182,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p data-foo="foo">foo</p>' );
+			expect( editor.getData() ).toBe( '<p data-foo="foo">foo</p>' );
 		} );
 
 		it( 'should allow additional attributes (classes)', () => {
@@ -4133,7 +4191,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p class="foo">foo</p><p class="bar">bar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foo</paragraph><paragraph htmlPAttributes="(2)">bar</paragraph>',
 				attributes: {
 					1: {
@@ -4145,7 +4203,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p class="foo">foo</p><p class="bar">bar</p>' );
+			expect( editor.getData() ).toBe( '<p class="foo">foo</p><p class="bar">bar</p>' );
 		} );
 
 		it( 'should allow additional attributes (styles)', () => {
@@ -4154,7 +4212,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="color:red;">foo</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foo</paragraph>',
 				attributes: {
 					1: {
@@ -4163,7 +4221,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="color:red;">foo</p>' );
+			expect( editor.getData() ).toBe( '<p style="color:red;">foo</p>' );
 		} );
 
 		it( 'should disallow attributes', () => {
@@ -4173,7 +4231,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p data-foo="foo">foo</p><p data-foo="bar">bar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foo</paragraph><paragraph>bar</paragraph>',
 				attributes: {
 					1: {
@@ -4184,7 +4242,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p data-foo="foo">foo</p><p>bar</p>' );
+			expect( editor.getData() ).toBe( '<p data-foo="foo">foo</p><p>bar</p>' );
 		} );
 
 		it( 'should disallow attributes (styles)', () => {
@@ -4194,7 +4252,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="color:blue;">foo</p><p style="color:red">bar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foo</paragraph><paragraph>bar</paragraph>',
 				attributes: {
 					1: {
@@ -4205,7 +4263,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="color:blue;">foo</p><p>bar</p>' );
+			expect( editor.getData() ).toBe( '<p style="color:blue;">foo</p><p>bar</p>' );
 		} );
 
 		it( 'should disallow attributes (classes)', () => {
@@ -4215,7 +4273,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p class="foo bar">foo</p><p class="bar">bar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foo</paragraph><paragraph>bar</paragraph>',
 				attributes: {
 					1: {
@@ -4224,7 +4282,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p class="foo">foo</p><p>bar</p>' );
+			expect( editor.getData() ).toBe( '<p class="foo">foo</p><p>bar</p>' );
 		} );
 
 		it( 'should preserve partially consumed attributes by other features', () => {
@@ -4239,7 +4297,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><span data-foo data-bar>foobar</span></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlSpan="(1)">foobar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -4250,7 +4308,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><span data-bar="">foobar</span></p>' );
+			expect( editor.getData() ).toBe( '<p><span data-bar="">foobar</span></p>' );
 		} );
 	} );
 
@@ -4262,7 +4320,7 @@ describe( 'DataFilter', () => {
 		editor.setData( '<p><span style="color:blue;" class="foo bar">foobar</span></p>' );
 
 		// Font feature should take over color CSS property.
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<paragraph><$text fontColor="blue" htmlSpan="(1)">foobar</$text></paragraph>',
 			attributes: {
 				1: {
@@ -4271,7 +4329,7 @@ describe( 'DataFilter', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span class="foo bar">foobar</span></span></p>' );
+		expect( editor.getData() ).toBe( '<p><span style="color:blue;"><span class="foo bar">foobar</span></span></p>' );
 	} );
 
 	it( 'should throw error if definition has no specified element type', () => {
@@ -4280,7 +4338,7 @@ describe( 'DataFilter', () => {
 			model: 'htmlXyz'
 		};
 
-		sinon.stub( dataSchema, 'getDefinitionsForView' ).returns( new Set( [ definition ] ) );
+		vi.spyOn( dataSchema, 'getDefinitionsForView' ).mockReturnValue( new Set( [ definition ] ) );
 
 		expectToThrowCKEditorError( () => {
 			dataFilter.allowElement( 'xyz' );
@@ -4299,7 +4357,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="background:red;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4310,7 +4368,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="background:red;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="background:red;">foobar</p>' );
 		} );
 
 		it( 'should handle longhand style for shorthand filter (background vs background-color)', () => {
@@ -4321,7 +4379,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="background:red;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4332,7 +4390,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="background:red;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="background:red;">foobar</p>' );
 		} );
 
 		it( 'should handle shorthand style for longhand filter (background vs background-color)', () => {
@@ -4343,7 +4401,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="background-color:red;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4354,7 +4412,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="background-color:red;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="background-color:red;">foobar</p>' );
 		} );
 
 		it( 'should handle partial padding for generic padding filter (single box side)', () => {
@@ -4365,7 +4423,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="padding-left:10px;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4376,7 +4434,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="padding-left:10px;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="padding-left:10px;">foobar</p>' );
 		} );
 
 		it( 'should handle partial padding for specific full padding filter (single box side)', () => {
@@ -4387,7 +4445,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="padding:10px;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4398,7 +4456,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="padding-left:10px;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="padding-left:10px;">foobar</p>' );
 		} );
 
 		it( 'should handle partial padding for generic padding filter (multiple sides)', () => {
@@ -4409,7 +4467,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="padding-left: 10px; padding-bottom: 20px;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4421,7 +4479,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="padding-bottom:20px;padding-left:10px;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="padding-bottom:20px;padding-left:10px;">foobar</p>' );
 		} );
 
 		it( 'should handle partial padding for generic padding filter (box top side)', () => {
@@ -4432,7 +4490,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="padding-top: 10px;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4443,7 +4501,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="padding-top:10px;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="padding-top:10px;">foobar</p>' );
 		} );
 
 		it( 'should handle partial border for generic border filter (box bottom side)', () => {
@@ -4454,7 +4512,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="border-bottom: 3px dotted red;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4465,7 +4523,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="border-bottom:3px dotted red;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="border-bottom:3px dotted red;">foobar</p>' );
 		} );
 
 		it( 'should handle partial border for generic border filter (box bottom side style only)', () => {
@@ -4476,7 +4534,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="border-bottom: dotted;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4487,7 +4545,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="border-bottom-style:dotted;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="border-bottom-style:dotted;">foobar</p>' );
 		} );
 
 		it( 'should handle partial border for generic border filter (box bottom side style and color)', () => {
@@ -4498,7 +4556,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="border-bottom: dotted red;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4510,7 +4568,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="border-bottom-color:red;border-bottom-style:dotted;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="border-bottom-color:red;border-bottom-style:dotted;">foobar</p>' );
 		} );
 
 		it( 'should handle partial border for generic border filter (missing border color)', () => {
@@ -4521,7 +4579,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="border-left: 1px solid;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4533,7 +4591,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="border-left-style:solid;border-left-width:1px;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="border-left-style:solid;border-left-width:1px;">foobar</p>' );
 		} );
 
 		it( 'should handle partial border for partial border filter (box bottom side)', () => {
@@ -4544,7 +4602,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="border: 3px dotted red;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4555,7 +4613,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="border-bottom:3px dotted red;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="border-bottom:3px dotted red;">foobar</p>' );
 		} );
 
 		it( 'should handle partial border for partial border filter (color only)', () => {
@@ -4566,7 +4624,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="border: 3px dotted red;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4577,7 +4635,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="border-color:red;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="border-color:red;">foobar</p>' );
 		} );
 
 		it( 'should handle partial border for generic border filter (mixed)', () => {
@@ -4588,7 +4646,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="border-bottom-width: 3px; border-color: red; border-style: dotted;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4601,7 +4659,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="border-bottom-width:3px;border-color:red;border-style:dotted;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="border-bottom-width:3px;border-color:red;border-style:dotted;">foobar</p>' );
 		} );
 
 		it( 'should handle partial border for generic border filter (partly consumed)', () => {
@@ -4618,7 +4676,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="border: 3px dotted red;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4633,7 +4691,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p style="' +
 					'border-bottom-width:3px;' +
 					'border-color:red;' +
@@ -4672,7 +4730,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p style="margin: 20px;">foobar</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)" indent="40px">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4685,7 +4743,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="margin:20px 20px 20px 40px;">foobar</p>' );
+			expect( editor.getData() ).toBe( '<p style="margin:20px 20px 20px 40px;">foobar</p>' );
 		} );
 
 		it( 'should store only reduced styles in model attribute (without duplicated long and shorthand)', () => {
@@ -4698,7 +4756,7 @@ describe( 'DataFilter', () => {
 				'<p style="border-bottom: 2px solid red;">foobar</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph htmlPAttributes="(1)">foobar</paragraph>',
 				attributes: {
 					1: {
@@ -4709,7 +4767,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p style="border-bottom:2px solid red;">foobar</p>'
 			);
 		} );
@@ -4726,7 +4784,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><a href="foo" class="bar">foobar</a></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlA="(1)" linkHref="foo">foobar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -4735,7 +4793,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><a class="bar" href="foo">foobar</a></p>' );
+			expect( editor.getData() ).toBe( '<p><a class="bar" href="foo">foobar</a></p>' );
 
 			model.change( writer => {
 				const root = model.document.getRoot();
@@ -4747,7 +4805,7 @@ describe( 'DataFilter', () => {
 				writer.removeAttribute( 'linkHref', range );
 			} );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlA="(1)" linkHref="foo">foo</$text>bar</paragraph>',
 				attributes: {
 					1: {
@@ -4756,7 +4814,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><a class="bar" href="foo">foo</a>bar</p>' );
+			expect( editor.getData() ).toBe( '<p><a class="bar" href="foo">foo</a>bar</p>' );
 		} );
 
 		it( 'should not remove other GHS attribute when other coupled one is removed', () => {
@@ -4769,7 +4827,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><span style="color:red;text-transform:uppercase;"><strong>foobar</strong></span></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text fontColor="red" htmlSpan="(1)" htmlStrong="(2)">foobar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -4781,7 +4839,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><span style="color:red;"><span style="text-transform:uppercase;"><strong>foobar</strong></span></span></p>'
 			);
 
@@ -4795,7 +4853,7 @@ describe( 'DataFilter', () => {
 				writer.removeAttribute( 'fontColor', range );
 			} );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<paragraph>' +
 						'<$text htmlSpan="(1)" htmlStrong="(2)">foo</$text>' +
@@ -4817,7 +4875,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span style="text-transform:uppercase;"><strong>foo</strong></span>' +
 					'<span style="color:red;"><span style="text-transform:uppercase;"><strong>bar</strong></span></span>' +
@@ -4835,7 +4893,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><a href="foo" class="bar">foobar</a></p>' );
 
-			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model ) ).toEqual( {
 				data: '<paragraph><$text htmlA="(1)" linkHref="foo">[]foobar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -4844,16 +4902,16 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( model.document.selection.getAttribute( 'linkHref' ) ).to.deep.equal( 'foo' );
-			expect( model.document.selection.getAttribute( 'htmlA' ) ).to.deep.equal( { classes: [ 'bar' ] } );
+			expect( model.document.selection.getAttribute( 'linkHref' ) ).toEqual( 'foo' );
+			expect( model.document.selection.getAttribute( 'htmlA' ) ).toEqual( { classes: [ 'bar' ] } );
 
-			expect( editor.getData() ).to.equal( '<p><a class="bar" href="foo">foobar</a></p>' );
+			expect( editor.getData() ).toBe( '<p><a class="bar" href="foo">foobar</a></p>' );
 
 			model.change( writer => {
 				writer.removeSelectionAttribute( 'linkHref' );
 			} );
 
-			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model ) ).toEqual( {
 				data: '<paragraph>[]<$text htmlA="(1)" linkHref="foo">foobar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -4862,10 +4920,10 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( model.document.selection.getAttribute( 'linkHref' ) ).to.be.undefined;
-			expect( model.document.selection.getAttribute( 'htmlA' ) ).to.be.undefined;
+			expect( model.document.selection.getAttribute( 'linkHref' ) ).toBeUndefined();
+			expect( model.document.selection.getAttribute( 'htmlA' ) ).toBeUndefined();
 
-			expect( editor.getData() ).to.equal( '<p><a class="bar" href="foo">foobar</a></p>' );
+			expect( editor.getData() ).toBe( '<p><a class="bar" href="foo">foobar</a></p>' );
 		} );
 
 		it( 'should not remove other GHS selection attribute when other coupled one is removed', () => {
@@ -4878,7 +4936,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><span style="color:red;text-transform:uppercase;"><strong>foobar</strong></span></p>' );
 
-			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model ) ).toEqual( {
 				data: '<paragraph><$text fontColor="red" htmlSpan="(1)" htmlStrong="(2)">[]foobar</$text></paragraph>',
 				attributes: {
 					1: {
@@ -4890,11 +4948,11 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( model.document.selection.getAttribute( 'fontColor' ) ).to.deep.equal( 'red' );
-			expect( model.document.selection.getAttribute( 'htmlSpan' ) ).to.deep.equal( { styles: { 'text-transform': 'uppercase' } } );
-			expect( model.document.selection.getAttribute( 'htmlStrong' ) ).to.deep.equal( {} );
+			expect( model.document.selection.getAttribute( 'fontColor' ) ).toEqual( 'red' );
+			expect( model.document.selection.getAttribute( 'htmlSpan' ) ).toEqual( { styles: { 'text-transform': 'uppercase' } } );
+			expect( model.document.selection.getAttribute( 'htmlStrong' ) ).toEqual( {} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><span style="color:red;"><span style="text-transform:uppercase;"><strong>foobar</strong></span></span></p>'
 			);
 
@@ -4902,7 +4960,7 @@ describe( 'DataFilter', () => {
 				writer.removeSelectionAttribute( 'fontColor' );
 			} );
 
-			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model ) ).toEqual( {
 				data:
 					'<paragraph>' +
 						'<$text htmlSpan="(1)" htmlStrong="(2)">[]</$text>' +
@@ -4918,11 +4976,11 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( model.document.selection.getAttribute( 'fontColor' ) ).to.be.undefined;
-			expect( model.document.selection.getAttribute( 'htmlSpan' ) ).to.deep.equal( { styles: { 'text-transform': 'uppercase' } } );
-			expect( model.document.selection.getAttribute( 'htmlStrong' ) ).to.deep.equal( {} );
+			expect( model.document.selection.getAttribute( 'fontColor' ) ).toBeUndefined();
+			expect( model.document.selection.getAttribute( 'htmlSpan' ) ).toEqual( { styles: { 'text-transform': 'uppercase' } } );
+			expect( model.document.selection.getAttribute( 'htmlStrong' ) ).toEqual( {} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span style="color:red;"><span style="text-transform:uppercase;"><strong>foobar</strong></span></span>' +
 				'</p>'
@@ -4946,7 +5004,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p>foo<i class="a"></i>bar<b class="b"></b>baz</p>' );
 
-			expect( getModelDataWithAttributes( editor.model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( editor.model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>barbaz</paragraph>',
 				attributes: {
 					1: {
@@ -4954,7 +5012,7 @@ describe( 'DataFilter', () => {
 					}
 				}
 			} );
-			expect( editor.getData() ).to.equal( '<p>foo<i class="a"></i>barbaz</p>' );
+			expect( editor.getData() ).toBe( '<p>foo<i class="a"></i>barbaz</p>' );
 
 			editorElement.remove();
 			await editor.destroy();
@@ -4975,7 +5033,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p>foo<i class="a"></i>bar<b class="b"></b>baz</p>' );
 
-			expect( getModelDataWithAttributes( editor.model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( editor.model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<paragraph>' +
 						'foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>bar<htmlEmptyElement htmlB="(2)"></htmlEmptyElement>baz' +
@@ -4989,7 +5047,7 @@ describe( 'DataFilter', () => {
 					}
 				}
 			} );
-			expect( editor.getData() ).to.equal( '<p>foo<i class="a"></i>bar<b class="b"></b>baz</p>' );
+			expect( editor.getData() ).toBe( '<p>foo<i class="a"></i>bar<b class="b"></b>baz</p>' );
 
 			editorElement.remove();
 			await editor.destroy();
@@ -5012,8 +5070,8 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<xyz>foobar</xyz>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<htmlXyz>foobar</htmlXyz>' );
-			expect( editor.getData() ).to.equal( '<xyz>foobar</xyz>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<htmlXyz>foobar</htmlXyz>' );
+			expect( editor.getData() ).toBe( '<xyz>foobar</xyz>' );
 		} );
 
 		it( 'should load config and match whenever a single match has been found', () => {
@@ -5037,7 +5095,7 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaa</$text>' +
 						'<$text htmlSpan="(2)">bbb</$text>' +
@@ -5056,7 +5114,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span class="foo bar">aaa</span>' +
 					'<span data-foo="foo data">bbb</span>' +
@@ -5088,7 +5146,7 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaa</$text>' +
 						'<$text htmlSpan="(2)">bbb</$text>' +
@@ -5118,7 +5176,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span class="foo bar" style="font-weight:400;line-height:1em;">aaa</span>' +
 					'<span data-foo="foo data">bbb</span>' +
@@ -5146,7 +5204,7 @@ describe( 'DataFilter', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaa</$text>' +
 						'<$text htmlSpan="(2)">bbb</$text>' +
@@ -5168,7 +5226,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span class="foo bar">aaa</span>' +
 					'<span class="foo">bbb</span>' +
@@ -5199,7 +5257,7 @@ describe( 'DataFilter', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaa</$text>' +
 						'<$text htmlSpan="(2)">bbb</$text>' +
@@ -5230,7 +5288,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span style="position:absolute;visibility:hidden;">aaa</span>' +
 					'<span style="position:absolute;">bbb</span>' +
@@ -5261,7 +5319,7 @@ describe( 'DataFilter', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaa</$text>' +
 						'<$text htmlSpan="(2)">bbb</$text>' +
@@ -5292,7 +5350,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span style="position:absolute;visibility:hidden;">aaa</span>' +
 					'<span style="position:absolute;">bbb</span>' +
@@ -5320,7 +5378,7 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaa</$text>' +
 						'<$text htmlSpan="(2)">bbb</$text>' +
@@ -5337,7 +5395,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span>aaa</span>' +
 					'<span data-foo="foo data">bbb</span>' +
@@ -5365,7 +5423,7 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaa</$text>' +
 						'<$text htmlSpan="(2)">bbbccc</$text>' +
@@ -5379,7 +5437,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span class="foo bar">aaa</span>' +
 					'<span>bbbccc</span>' +
@@ -5405,7 +5463,7 @@ describe( 'DataFilter', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaa</$text>' +
 						'<$text htmlSpan="(2)">bbb</$text>' +
@@ -5426,7 +5484,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span style="line-height:1em;">aaa</span>' +
 					'<span>bbb</span>' +
@@ -5461,7 +5519,7 @@ describe( 'DataFilter', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaabbbccc</$text>' +
 					'</paragraph>',
@@ -5472,7 +5530,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span>aaabbbccc</span>' +
 				'</p>'
@@ -5506,7 +5564,7 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaabbbccc</$text>' +
 					'</paragraph>',
@@ -5517,7 +5575,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span>aaabbbccc</span>' +
 				'</p>'
@@ -5547,7 +5605,7 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaabbbccc</$text>' +
 					'</paragraph>',
@@ -5558,7 +5616,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span>aaabbbccc</span>' +
 				'</p>'
@@ -5589,7 +5647,7 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><$text htmlSpan="(1)">aaa</$text><$text htmlSpan="(2)">bbb</$text></paragraph>',
 				attributes: {
 					1: {},
@@ -5601,7 +5659,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span>aaa</span>' +
 					'<span data-bar="bar data">bbb</span>' +
@@ -5637,7 +5695,7 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaa</$text>' +
 						'<$text htmlSpan="(2)">bbb</$text>' +
@@ -5658,7 +5716,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span>aaa</span>' +
 					'<span data-foo="foo data">bbb</span>' +
@@ -5698,7 +5756,7 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>' +
 						'<$text htmlSpan="(1)">aaa</$text>' +
 						'<$text htmlSpan="(2)">bbb</$text>' +
@@ -5719,7 +5777,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<span>aaa</span>' +
 					'<span data-foo="foo data">bbb</span>' +
@@ -5753,7 +5811,7 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<paragraph>foo</paragraph>' +
 					'<paragraph>bar</paragraph>' +
@@ -5761,7 +5819,7 @@ describe( 'DataFilter', () => {
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>foo</p>' +
 				'<p>bar</p>' +
 				'<p>baz</p>'
@@ -5791,12 +5849,12 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>foo bar baz</paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>foo bar baz</p>'
 			);
 		} );
@@ -5824,12 +5882,12 @@ describe( 'DataFilter', () => {
 			);
 
 			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph>foo bar baz</paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>foo bar baz</p>'
 			);
 		} );

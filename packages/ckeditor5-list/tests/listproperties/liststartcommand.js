@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -44,7 +45,7 @@ describe( 'ListStartCommand', () => {
 		it( 'should be false if selected a paragraph', () => {
 			_setModelData( model, modelList( [ 'Foo[]' ] ) );
 
-			expect( listStartCommand.isEnabled ).to.be.false;
+			expect( listStartCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection starts in a paragraph and ends in a list item', () => {
@@ -53,43 +54,43 @@ describe( 'ListStartCommand', () => {
 				# Bar] {start:1}
 			` ) );
 
-			expect( listStartCommand.isEnabled ).to.be.false;
+			expect( listStartCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection is inside a listItem (listType: bulleted)', () => {
 			_setModelData( model, modelList( [ '* Foo[]' ] ) );
 
-			expect( listStartCommand.isEnabled ).to.be.false;
+			expect( listStartCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection is inside a listItem (listType: todo)', () => {
 			_setModelData( model, '<paragraph listType="todo" listItemId="a" listIndent="0">foo[]</paragraph>' );
 
-			expect( listStartCommand.isEnabled ).to.be.false;
+			expect( listStartCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection is inside a listItem (listType: customBulleted)', () => {
 			_setModelData( model, '<paragraph listType="customBulleted" listStart="1" listItemId="a" listIndent="0">foo[]</paragraph>' );
 
-			expect( listStartCommand.isEnabled ).to.be.false;
+			expect( listStartCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if selection is inside a listItem (listType: customNumbered)', () => {
 			_setModelData( model, '<paragraph listType="customNumbered" listStart="1" listItemId="a" listIndent="0">foo[]</paragraph>' );
 
-			expect( listStartCommand.isEnabled ).to.be.true;
+			expect( listStartCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if selection is inside a listItem (collapsed selection)', () => {
 			_setModelData( model, modelList( [ '# Foo[] {start:2}' ] ) );
 
-			expect( listStartCommand.isEnabled ).to.be.true;
+			expect( listStartCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if selection is inside a listItem (non-collapsed selection)', () => {
 			_setModelData( model, modelList( [ '# [Foo] {start:1}' ] ) );
 
-			expect( listStartCommand.isEnabled ).to.be.true;
+			expect( listStartCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true attribute if selected more elements in the same list', () => {
@@ -99,7 +100,7 @@ describe( 'ListStartCommand', () => {
 				# 3.
 			` ) );
 
-			expect( listStartCommand.isEnabled ).to.be.true;
+			expect( listStartCommand.isEnabled ).toBe( true );
 		} );
 	} );
 
@@ -107,7 +108,7 @@ describe( 'ListStartCommand', () => {
 		it( 'should return null if selected a paragraph', () => {
 			_setModelData( model, modelList( [ 'Foo' ] ) );
 
-			expect( listStartCommand.value ).to.equal( null );
+			expect( listStartCommand.value ).toBe( null );
 		} );
 
 		it( 'should return null if selection starts in a paragraph and ends in a list item', () => {
@@ -116,37 +117,37 @@ describe( 'ListStartCommand', () => {
 				* Bar]
 			` ) );
 
-			expect( listStartCommand.value ).to.equal( null );
+			expect( listStartCommand.value ).toBe( null );
 		} );
 
 		it( 'should return null if selection is inside a listItem (listType: bulleted)', () => {
 			_setModelData( model, modelList( [ '* Foo[]' ] ) );
 
-			expect( listStartCommand.value ).to.be.null;
+			expect( listStartCommand.value ).toBeNull();
 		} );
 
 		it( 'should return null if selection is inside a listItem (listType: customBulleted)', () => {
 			_setModelData( model, '<paragraph listType="customBulleted" listStart="1" listItemId="a" listIndent="0">foo[]</paragraph>' );
 
-			expect( listStartCommand.value ).to.be.null;
+			expect( listStartCommand.value ).toBeNull();
 		} );
 
 		it( 'should return the value if selection is inside a listItem (listType: customNumbered)', () => {
 			_setModelData( model,	'<paragraph listType="customNumbered" listStart="1" listItemId="a" listIndent="0">foo[]</paragraph>' );
 
-			expect( listStartCommand.value ).to.equal( 1 );
+			expect( listStartCommand.value ).toBe( 1 );
 		} );
 
 		it( 'should return the value of `listStart` attribute if selection is inside a list item (collapsed selection)', () => {
 			_setModelData( model, modelList( [ '# Foo[] {start:2}' ] ) );
 
-			expect( listStartCommand.value ).to.equal( 2 );
+			expect( listStartCommand.value ).toBe( 2 );
 		} );
 
 		it( 'should return the value of `listStart` attribute if selection is inside a list item (non-collapsed selection)', () => {
 			_setModelData( model, modelList( [ '# [Foo] {start:3}' ] ) );
 
-			expect( listStartCommand.value ).to.equal( 3 );
+			expect( listStartCommand.value ).toBe( 3 );
 		} );
 
 		it( 'should return the value of `listStart` attribute if selected more elements in the same list', () => {
@@ -156,7 +157,7 @@ describe( 'ListStartCommand', () => {
 				# 3.
 			` ) );
 
-			expect( listStartCommand.value ).to.equal( 3 );
+			expect( listStartCommand.value ).toBe( 3 );
 		} );
 
 		it( 'should return the value of `listStart` attribute for the selection inside a nested list', () => {
@@ -166,7 +167,7 @@ describe( 'ListStartCommand', () => {
 				# 2.
 			` ) );
 
-			expect( listStartCommand.value ).to.equal( 3 );
+			expect( listStartCommand.value ).toBe( 3 );
 		} );
 
 		it( 'should return the value of `listStart` attribute from a list where the selection starts (selection over nested list)', () => {
@@ -176,7 +177,7 @@ describe( 'ListStartCommand', () => {
 				# 2. Third]
 			` ) );
 
-			expect( listStartCommand.value ).to.equal( 3 );
+			expect( listStartCommand.value ).toBe( 3 );
 		} );
 	} );
 

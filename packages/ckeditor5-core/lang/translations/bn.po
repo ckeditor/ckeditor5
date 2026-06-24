@@ -162,3 +162,19 @@ msgstr "টেক্সট মোড়ানো"
 msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "টেক্সট ভেঙ্গে ফেলুন"
+
+msgctxt "The label for the resize option that allows the user to enter a custom size."
+msgid "Custom"
+msgstr "কাস্টম"
+
+msgctxt "The default label for the resize option that resets the size."
+msgid "Original"
+msgstr "মূল"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with a blank value."
+msgid "The value must not be empty."
+msgstr "মানটি খালি রাখা যাবে না।"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with an incorrect value."
+msgid "The value should be a plain number."
+msgstr "মানটি একটি সরল সংখ্যা হতে হবে।"

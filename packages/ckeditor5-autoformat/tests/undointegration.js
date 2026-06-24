@@ -5,8 +5,10 @@
 
 import { Autoformat } from '../src/autoformat.js';
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing, _ListItemUid as ListItemUid } from '@ckeditor/ckeditor5-list';
 import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 import { BoldEditing, CodeEditing, StrikethroughEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
@@ -18,20 +20,22 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { _setModelData, _getModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'Autoformat undo integration', () => {
 	let editor, model, doc;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
-		stubUid();
+		let uidNum = 0xa00;
+
+		vi.spyOn( ListItemUid, 'next' ).mockImplementation( () => ( uidNum++ ).toString( 16 ).padStart( 3, '000' ) );
 	} );
 
-	afterEach( () => {
-		return editor.destroy();
+	afterEach( async () => {
+		if ( editor ) {
+			await editor.destroy();
+		}
+
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'inline', () => {
@@ -43,9 +47,9 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>**foobar**[]</paragraph>' );
 		} );
 
 		it( 'should undo replacing "__" with bold', () => {
@@ -54,9 +58,9 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( '_', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>__foobar__[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>__foobar__[]</paragraph>' );
 		} );
 
 		it( 'should undo replacing "*" with italic', () => {
@@ -65,9 +69,9 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>*foobar*[]</paragraph>' );
 		} );
 
 		it( 'should undo replacing "_" with italic', () => {
@@ -76,9 +80,9 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( '_', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>_foobar_[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>_foobar_[]</paragraph>' );
 		} );
 
 		it( 'should undo replacing "`" with code', () => {
@@ -87,9 +91,9 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( '`', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>`foobar`[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>`foobar`[]</paragraph>' );
 		} );
 
 		it( 'should undo replacing "~~" with strikethrough', () => {
@@ -98,9 +102,9 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( '~', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text strikethrough="true">foobar</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text strikethrough="true">foobar</$text>[]</paragraph>' );
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>~~foobar~~[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>~~foobar~~[]</paragraph>' );
 		} );
 	} );
 
@@ -113,10 +117,10 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>* []</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>* []</paragraph>' );
 		} );
 
 		it( 'should work when replacing minus character', () => {
@@ -125,10 +129,10 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>- []</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>- []</paragraph>' );
 		} );
 
 		it( 'should work when replacing digit with numbered list item using the dot format', () => {
@@ -137,10 +141,10 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>1. []</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>1. []</paragraph>' );
 		} );
 
 		it( 'should work when replacing digit with numbered list item using the parenthesis format', () => {
@@ -149,9 +153,9 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>' );
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>1) []</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>1) []</paragraph>' );
 		} );
 
 		it( 'should work when replacing hash character with heading', () => {
@@ -160,9 +164,9 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( _getModelData( model ) ).toBe( '<heading1>[]</heading1>' );
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph># []</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph># []</paragraph>' );
 		} );
 
 		it( 'should work when replacing two hash characters with heading level 2', () => {
@@ -171,9 +175,9 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<heading2>[]</heading2>' );
+			expect( _getModelData( model ) ).toBe( '<heading2>[]</heading2>' );
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>## []</paragraph>' );
 		} );
 
 		it( 'should work when replacing greater-than character with block quote', () => {
@@ -182,9 +186,9 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
+			expect( _getModelData( model ) ).toBe( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
 			editor.execute( 'undo' );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>> []</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>> []</paragraph>' );
 		} );
 	} );
 
@@ -210,7 +214,7 @@ describe( 'Autoformat undo integration', () => {
 			viewDocument = editor.editing.view.document;
 			deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
-				{ preventDefault: sinon.spy() },
+				{ preventDefault: vi.fn() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
 			);
 		} );
@@ -221,11 +225,11 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
 
 			viewDocument.fire( 'delete', deleteEvent );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>**foobar**[]</paragraph>' );
 		} );
 
 		it( 'should undo after block autoformat', () => {
@@ -234,11 +238,11 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>' );
 
 			viewDocument.fire( 'delete', deleteEvent );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>- []</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>- []</paragraph>' );
 		} );
 
 		it( 'should not undo after selection has changed', () => {
@@ -247,7 +251,7 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
 
 			model.change( writer => {
 				const selection = model.createSelection();
@@ -257,7 +261,7 @@ describe( 'Autoformat undo integration', () => {
 			viewDocument.fire( 'delete', deleteEvent );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text bold="true">foobar</$text></paragraph>' );
+				.toBe( '<paragraph><$text bold="true">foobar</$text></paragraph>' );
 		} );
 	} );
 

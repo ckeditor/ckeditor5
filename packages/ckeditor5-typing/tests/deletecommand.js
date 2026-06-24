@@ -10,14 +10,17 @@ import { TypingChangeBuffer } from '../src/utils/changebuffer.js';
 import { ParagraphCommand } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
+
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe( 'DeleteCommand', () => {
 	let editor, model, doc;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
@@ -43,7 +46,7 @@ describe( 'DeleteCommand', () => {
 	it( 'has direction', () => {
 		const command = new DeleteCommand( editor, 'forward' );
 
-		expect( command ).to.have.property( 'direction', 'forward' );
+		expect( command.direction ).toBe( 'forward' );
 	} );
 
 	describe( 'buffer', () => {
@@ -52,7 +55,7 @@ describe( 'DeleteCommand', () => {
 		} );
 
 		it( 'has a buffer limit configured to default value of 20', () => {
-			expect( editor.commands.get( 'delete' ).buffer ).to.have.property( 'limit', 20 );
+			expect( editor.commands.get( 'delete' ).buffer.limit ).toBe( 20 );
 		} );
 
 		it( 'has a buffer configured to config.typing.undoStep', () => {
@@ -64,7 +67,7 @@ describe( 'DeleteCommand', () => {
 					}
 				} )
 				.then( editor => {
-					expect( editor.commands.get( 'delete' ).buffer ).to.have.property( 'limit', 5 );
+					expect( editor.commands.get( 'delete' ).buffer.limit ).toBe( 5 );
 				} );
 		} );
 	} );
@@ -78,7 +81,7 @@ describe( 'DeleteCommand', () => {
 
 				// We expect that command is executed in enqueue changes block. Since we are already in
 				// an enqueued block, the command execution will be postponed. Hence, no changes.
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			// After all enqueued changes are done, the command execution is reflected.
@@ -89,13 +92,13 @@ describe( 'DeleteCommand', () => {
 			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			const buffer = editor.commands.get( 'delete' )._buffer;
-			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
-			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
+			const lockSpy = vi.spyOn( buffer, 'lock' );
+			const unlockSpy = vi.spyOn( buffer, 'unlock' );
 
 			editor.execute( 'delete' );
 
-			expect( lockSpy.calledOnce ).to.be.true;
-			expect( unlockSpy.calledOnce ).to.be.true;
+			expect( lockSpy ).toHaveBeenCalledOnce();
+			expect( unlockSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not execute when selection is in non-editable place', () => {
@@ -159,7 +162,7 @@ describe( 'DeleteCommand', () => {
 		} );
 
 		it( 'does not try to delete when selection is at the boundary', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.model.on( 'deleteContent', spy );
 			_setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -167,11 +170,11 @@ describe( 'DeleteCommand', () => {
 			editor.execute( 'delete' );
 
 			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
-			expect( spy.callCount ).to.equal( 0 );
+			expect( spy.mock.calls.length ).to.equal( 0 );
 		} );
 
 		it( 'passes options to modifySelection', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.model.on( 'modifySelection', spy );
 			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
@@ -180,44 +183,44 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete', { unit: 'word' } );
 
-			expect( spy.callCount ).to.equal( 1 );
+			expect( spy.mock.calls.length ).to.equal( 1 );
 
-			const modifyOpts = spy.args[ 0 ][ 1 ][ 1 ];
+			const modifyOpts = spy.mock.calls[ 0 ][ 1 ][ 1 ];
 			expect( modifyOpts ).to.have.property( 'direction', 'forward' );
 			expect( modifyOpts ).to.have.property( 'unit', 'word' );
 			expect( modifyOpts ).to.have.property( 'treatEmojiAsSingleUnit', true );
 		} );
 
 		it( 'passes options to deleteContent #1', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.model.on( 'deleteContent', spy );
 			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			editor.execute( 'delete' );
 
-			expect( spy.callCount ).to.equal( 1 );
+			expect( spy.mock.calls.length ).to.equal( 1 );
 
-			const deleteOpts = spy.args[ 0 ][ 1 ][ 1 ];
+			const deleteOpts = spy.mock.calls[ 0 ][ 1 ][ 1 ];
 			expect( deleteOpts ).to.have.property( 'doNotResetEntireContent', true );
 		} );
 
 		it( 'passes options to deleteContent #2', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.model.on( 'deleteContent', spy );
 			_setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 			editor.execute( 'delete' );
 
-			expect( spy.callCount ).to.equal( 1 );
+			expect( spy.mock.calls.length ).to.equal( 1 );
 
-			const deleteOpts = spy.args[ 0 ][ 1 ][ 1 ];
+			const deleteOpts = spy.mock.calls[ 0 ][ 1 ][ 1 ];
 			expect( deleteOpts ).to.have.property( 'doNotResetEntireContent', false );
 		} );
 
 		it( 'should pass the "direction" option to Model#deleteContent method', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const forwardCommand = new DeleteCommand( editor, 'forward' );
 			editor.commands.add( 'deleteForward', forwardCommand );
 
@@ -226,16 +229,16 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( spy.callCount ).to.equal( 1 );
+			expect( spy.mock.calls.length ).to.equal( 1 );
 
-			let deleteOpts = spy.args[ 0 ][ 1 ][ 1 ];
+			let deleteOpts = spy.mock.calls[ 0 ][ 1 ][ 1 ];
 			expect( deleteOpts ).to.have.property( 'direction', 'backward' );
 
 			editor.execute( 'deleteForward' );
 
-			expect( spy.callCount ).to.equal( 2 );
+			expect( spy.mock.calls.length ).to.equal( 2 );
 
-			deleteOpts = spy.args[ 1 ][ 1 ][ 1 ];
+			deleteOpts = spy.mock.calls[ 1 ][ 1 ][ 1 ];
 			expect( deleteOpts ).to.have.property( 'direction', 'forward' );
 		} );
 
@@ -354,7 +357,7 @@ describe( 'DeleteCommand', () => {
 
 				editor.execute( 'delete' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
 			} );
 
 			it( 'does not replace an element when Backspace key is held', () => {
@@ -364,7 +367,7 @@ describe( 'DeleteCommand', () => {
 					editor.execute( 'delete', { sequence } );
 				}
 
-				expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1><paragraph>bar</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<heading1>[]</heading1><paragraph>bar</paragraph>' );
 			} );
 
 			it( 'does not replace with paragraph in another paragraph already occurs in limit element', () => {
@@ -375,7 +378,7 @@ describe( 'DeleteCommand', () => {
 				editor.execute( 'delete' );
 
 				expect( element ).is.equal( doc.getRoot().getNodeByPath( [ 0 ] ) );
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
 			} );
 
 			it( 'does not replace an element if a paragraph is not allowed in current position', () => {
@@ -389,7 +392,7 @@ describe( 'DeleteCommand', () => {
 
 				editor.execute( 'delete' );
 
-				expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1><heading1>foo</heading1>' );
+				expect( _getModelData( model ) ).toEqual( '<heading1>[]</heading1><heading1>foo</heading1>' );
 			} );
 
 			it( 'does not replace an element if it\'s not empty', () => {
@@ -397,7 +400,7 @@ describe( 'DeleteCommand', () => {
 
 				editor.execute( 'delete' );
 
-				expect( _getModelData( model ) ).to.equal( '<heading1>[]foo</heading1><paragraph>bar</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<heading1>[]foo</heading1><paragraph>bar</paragraph>' );
 			} );
 
 			it( 'does not replace an element if it\'s wrapped with some other element', () => {
@@ -410,7 +413,7 @@ describe( 'DeleteCommand', () => {
 
 				editor.execute( 'delete' );
 
-				expect( _getModelData( model ) ).to.equal( '<blockQuote><heading1>[]</heading1></blockQuote><paragraph>bar</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<blockQuote><heading1>[]</heading1></blockQuote><paragraph>bar</paragraph>' );
 			} );
 		} );
 	} );

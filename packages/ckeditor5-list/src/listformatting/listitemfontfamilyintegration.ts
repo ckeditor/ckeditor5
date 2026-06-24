@@ -7,7 +7,7 @@
  * @module list/listformatting/listitemfontfamilyintegration
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { type ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import { ListEditing } from '../list/listediting.js';
@@ -34,8 +34,8 @@ export class ListItemFontFamilyIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ListEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ ListEditing ]> {
+		return [ ListEditing ];
 	}
 
 	/**
@@ -61,6 +61,7 @@ export class ListItemFontFamilyIntegration extends Plugin {
 
 			setAttributeOnDowncast( writer, value, viewElement ) {
 				// There is no need of removing the style because downcast strategies handles it automatically.
+				/* v8 ignore next -- Downcast callbacks are only registered for meaningful list marker formatting values. */
 				if ( value ) {
 					writer.addClass( 'ck-list-marker-font-family', viewElement );
 					writer.setStyle( '--ck-content-list-marker-font-family', value as string, viewElement );

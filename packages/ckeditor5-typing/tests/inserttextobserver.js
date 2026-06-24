@@ -3,19 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { InsertTextObserver } from '../src/inserttextobserver.js';
 import { fireBeforeInputDomEvent, fireCompositionEndDomEvent } from './_utils/utils.js';
 
 import { EditingView, _setViewData } from '@ckeditor/ckeditor5-engine';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 
 describe( 'InsertTextObserver', () => {
 	let view, viewDocument, insertTextEventSpy;
 	let domRoot;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		domRoot = document.createElement( 'div' );
@@ -26,7 +29,7 @@ describe( 'InsertTextObserver', () => {
 		view.attachDomRoot( domRoot );
 		view.addObserver( InsertTextObserver );
 
-		insertTextEventSpy = testUtils.sinon.spy();
+		insertTextEventSpy = vi.fn();
 		viewDocument.on( 'insertText', insertTextEventSpy );
 	} );
 
@@ -44,7 +47,7 @@ describe( 'InsertTextObserver', () => {
 			view.addObserver( InsertTextObserver );
 
 			view.destroy();
-		} ).to.not.throw();
+		} ).not.toThrow();
 	} );
 
 	it( 'should not work if the observer is disabled (beforeinput)', () => {
@@ -54,7 +57,7 @@ describe( 'InsertTextObserver', () => {
 			inputType: 'insertParagraph'
 		} );
 
-		sinon.assert.notCalled( insertTextEventSpy );
+		expect( insertTextEventSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not work if the observer is disabled (composition)', () => {
@@ -64,7 +67,7 @@ describe( 'InsertTextObserver', () => {
 			data: 'foo'
 		} );
 
-		sinon.assert.notCalled( insertTextEventSpy );
+		expect( insertTextEventSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should ignore other input types', () => {
@@ -72,7 +75,7 @@ describe( 'InsertTextObserver', () => {
 			inputType: 'anyInputType'
 		} );
 
-		sinon.assert.notCalled( insertTextEventSpy );
+		expect( insertTextEventSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should stop the beforeinput event propagation if insertText event was stopped', () => {
@@ -90,7 +93,7 @@ describe( 'InsertTextObserver', () => {
 			inputType: 'insertText'
 		} );
 
-		expect( interceptedEventInfo.stop.called ).to.be.true;
+		expect( interceptedEventInfo.stop.called ).toBe( true );
 	} );
 
 	it( 'should not stop the beforeinput event propagation if insertText event was not stopped', () => {
@@ -104,7 +107,7 @@ describe( 'InsertTextObserver', () => {
 			inputType: 'insertText'
 		} );
 
-		expect( interceptedEventInfo.stop.called ).to.be.undefined;
+		expect( interceptedEventInfo.stop.called ).toBeUndefined();
 	} );
 
 	it( 'should never preventDefault() the beforeinput event', () => {
@@ -117,7 +120,7 @@ describe( 'InsertTextObserver', () => {
 
 		viewDocument.on( 'beforeinput', ( evt, data ) => {
 			interceptedEventData = data;
-			sinon.spy( interceptedEventData, 'preventDefault' );
+			vi.spyOn( interceptedEventData, 'preventDefault' );
 		}, { priority: Number.POSITIVE_INFINITY } );
 
 		fireBeforeInputDomEvent( domRoot, {
@@ -126,7 +129,7 @@ describe( 'InsertTextObserver', () => {
 			data: 'bar'
 		} );
 
-		sinon.assert.notCalled( interceptedEventData.preventDefault );
+		expect( interceptedEventData.preventDefault ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should handle the insertText input type and fire the insertText event', () => {
@@ -142,13 +145,13 @@ describe( 'InsertTextObserver', () => {
 			data: 'bar'
 		} );
 
-		sinon.assert.calledOnce( insertTextEventSpy );
+		expect( insertTextEventSpy ).toHaveBeenCalledOnce();
 
-		const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+		const firstCallArgs = insertTextEventSpy.mock.calls[ 0 ][ 1 ];
 
-		expect( firstCallArgs.text ).to.equal( 'bar' );
-		expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
-		expect( firstCallArgs.isComposing ).to.be.undefined;
+		expect( firstCallArgs.text ).toEqual( 'bar' );
+		expect( firstCallArgs.selection.isEqual( viewSelection ) ).toBe( true );
+		expect( firstCallArgs.isComposing ).toBeUndefined();
 	} );
 
 	it( 'should handle the insertText input type and fire the insertText event while composing', () => {
@@ -165,13 +168,13 @@ describe( 'InsertTextObserver', () => {
 			isComposing: true
 		} );
 
-		sinon.assert.calledOnce( insertTextEventSpy );
+		expect( insertTextEventSpy ).toHaveBeenCalledOnce();
 
-		const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+		const firstCallArgs = insertTextEventSpy.mock.calls[ 0 ][ 1 ];
 
-		expect( firstCallArgs.text ).to.equal( 'bar' );
-		expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
-		expect( firstCallArgs.isComposing ).to.be.true;
+		expect( firstCallArgs.text ).toEqual( 'bar' );
+		expect( firstCallArgs.selection.isEqual( viewSelection ) ).toBe( true );
+		expect( firstCallArgs.isComposing ).toBe( true );
 	} );
 
 	it( 'should handle the insertReplacementText input type and fire the insertText event', () => {
@@ -187,12 +190,12 @@ describe( 'InsertTextObserver', () => {
 			data: 'bar'
 		} );
 
-		sinon.assert.calledOnce( insertTextEventSpy );
+		expect( insertTextEventSpy ).toHaveBeenCalledOnce();
 
-		const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+		const firstCallArgs = insertTextEventSpy.mock.calls[ 0 ][ 1 ];
 
-		expect( firstCallArgs.text ).to.equal( 'bar' );
-		expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
+		expect( firstCallArgs.text ).toEqual( 'bar' );
+		expect( firstCallArgs.selection.isEqual( viewSelection ) ).toBe( true );
 	} );
 
 	it( 'should handle the compositionend event and fire the insertText event', () => {
@@ -202,13 +205,13 @@ describe( 'InsertTextObserver', () => {
 			data: 'bar'
 		} );
 
-		sinon.assert.calledOnce( insertTextEventSpy );
+		expect( insertTextEventSpy ).toHaveBeenCalledOnce();
 
-		const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+		const firstCallArgs = insertTextEventSpy.mock.calls[ 0 ][ 1 ];
 
-		expect( firstCallArgs.text ).to.equal( 'bar' );
-		expect( firstCallArgs.selection ).to.be.undefined;
-		expect( firstCallArgs.isComposing ).to.be.true;
+		expect( firstCallArgs.text ).toEqual( 'bar' );
+		expect( firstCallArgs.selection ).toBeUndefined();
+		expect( firstCallArgs.isComposing ).toBe( true );
 	} );
 
 	it( 'should ignore the empty compositionend event (without any data)', () => {
@@ -218,14 +221,14 @@ describe( 'InsertTextObserver', () => {
 			data: ''
 		} );
 
-		sinon.assert.notCalled( insertTextEventSpy );
+		expect( insertTextEventSpy ).not.toHaveBeenCalled();
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5/issues/14569.
 	it( 'should flush focus observer to enable selection rendering', () => {
 		_setViewData( view, '<p>fo{}o</p>' );
 
-		const flushSpy = testUtils.sinon.spy( view.getObserver( InsertTextObserver ).focusObserver, 'flush' );
+		const flushSpy = vi.spyOn( view.getObserver( InsertTextObserver ).focusObserver, 'flush' );
 
 		const viewRange = view.document.selection.getFirstRange();
 		const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -237,13 +240,13 @@ describe( 'InsertTextObserver', () => {
 			data: 'bar'
 		} );
 
-		sinon.assert.calledOnce( insertTextEventSpy );
-		sinon.assert.calledOnce( flushSpy );
+		expect( insertTextEventSpy ).toHaveBeenCalledOnce();
+		expect( flushSpy ).toHaveBeenCalledOnce();
 
-		const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+		const firstCallArgs = insertTextEventSpy.mock.calls[ 0 ][ 1 ];
 
-		expect( firstCallArgs.text ).to.equal( 'bar' );
-		expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
+		expect( firstCallArgs.text ).toEqual( 'bar' );
+		expect( firstCallArgs.selection.isEqual( viewSelection ) ).toBe( true );
 	} );
 
 	describe( 'in Android environment', () => {
@@ -251,7 +254,7 @@ describe( 'InsertTextObserver', () => {
 		let domRoot;
 
 		beforeEach( () => {
-			testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+			vi.spyOn( env, 'isAndroid', 'get' ).mockReturnValue( true );
 
 			domRoot = document.createElement( 'div' );
 
@@ -261,7 +264,7 @@ describe( 'InsertTextObserver', () => {
 			view.attachDomRoot( domRoot );
 			view.addObserver( InsertTextObserver );
 
-			insertTextEventSpy = testUtils.sinon.spy();
+			insertTextEventSpy = vi.fn();
 			viewDocument.on( 'insertText', insertTextEventSpy );
 		} );
 
@@ -282,18 +285,18 @@ describe( 'InsertTextObserver', () => {
 				data: 'bar'
 			} );
 
-			sinon.assert.calledOnce( insertTextEventSpy );
+			expect( insertTextEventSpy ).toHaveBeenCalledOnce();
 
-			const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+			const firstCallArgs = insertTextEventSpy.mock.calls[ 0 ][ 1 ];
 
-			expect( firstCallArgs.text ).to.equal( 'bar' );
-			expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
+			expect( firstCallArgs.text ).toEqual( 'bar' );
+			expect( firstCallArgs.selection.isEqual( viewSelection ) ).toBe( true );
 		} );
 	} );
 
 	it( 'should implement empty #stopObserving() method', () => {
 		expect( () => {
 			view.getObserver( InsertTextObserver ).stopObserving();
-		} ).to.not.throw();
+		} ).not.toThrow();
 	} );
 } );

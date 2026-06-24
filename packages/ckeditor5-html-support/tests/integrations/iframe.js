@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
@@ -46,15 +47,15 @@ describe( 'IframeElementSupport', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( IframeElementSupport.isOfficialPlugin ).to.be.true;
+		expect( IframeElementSupport.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( IframeElementSupport.isPremiumPlugin ).to.be.false;
+		expect( IframeElementSupport.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be named', () => {
-		expect( editor.plugins.has( 'IframeElementSupport' ) ).to.be.true;
+		expect( editor.plugins.has( 'IframeElementSupport' ) ).toBe( true );
 	} );
 
 	it( 'should allow attributes but not modify them in data pipeline', () => {
@@ -62,7 +63,7 @@ describe( 'IframeElementSupport', () => {
 
 		editor.setData( '<p><iframe data-foo="bar"></iframe></p>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<paragraph><htmlIframe htmlContent="" htmlIframeAttributes="(1)"></htmlIframe></paragraph>',
 			attributes: {
 				1: {
@@ -73,7 +74,7 @@ describe( 'IframeElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><iframe data-foo="bar"></iframe></p>' );
+		expect( editor.getData() ).toBe( '<p><iframe data-foo="bar"></iframe></p>' );
 	} );
 
 	it( 'should allow classes', () => {
@@ -81,7 +82,7 @@ describe( 'IframeElementSupport', () => {
 
 		editor.setData( '<p><iframe class="foo bar"></iframe></p>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<paragraph><htmlIframe htmlContent="" htmlIframeAttributes="(1)"></htmlIframe></paragraph>',
 			attributes: {
 				1: {
@@ -90,7 +91,7 @@ describe( 'IframeElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><iframe class="foo bar"></iframe></p>' );
+		expect( editor.getData() ).toBe( '<p><iframe class="foo bar"></iframe></p>' );
 	} );
 
 	it( 'should allow styles', () => {
@@ -98,7 +99,7 @@ describe( 'IframeElementSupport', () => {
 
 		editor.setData( '<p><iframe style="width: 100px; height: 200px;"></iframe></p>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<paragraph><htmlIframe htmlContent="" htmlIframeAttributes="(1)"></htmlIframe></paragraph>',
 			attributes: {
 				1: {
@@ -110,7 +111,7 @@ describe( 'IframeElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<p><iframe style="height:200px;width:100px;"></iframe></p>'
 		);
 	} );
@@ -121,12 +122,12 @@ describe( 'IframeElementSupport', () => {
 
 		editor.setData( '<p><iframe data-foo="bar"></iframe></p>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<paragraph><htmlIframe htmlContent=""></htmlIframe></paragraph>',
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><iframe></iframe></p>' );
+		expect( editor.getData() ).toBe( '<p><iframe></iframe></p>' );
 	} );
 
 	it( 'should disallow certain classes', () => {
@@ -135,7 +136,7 @@ describe( 'IframeElementSupport', () => {
 
 		editor.setData( '<p><iframe class="foo bar"></iframe></p>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<paragraph><htmlIframe htmlContent="" htmlIframeAttributes="(1)"></htmlIframe></paragraph>',
 			attributes: {
 				1: {
@@ -144,7 +145,7 @@ describe( 'IframeElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><iframe class="bar"></iframe></p>' );
+		expect( editor.getData() ).toBe( '<p><iframe class="bar"></iframe></p>' );
 	} );
 
 	it( 'should disallow certain styles', () => {
@@ -153,7 +154,7 @@ describe( 'IframeElementSupport', () => {
 
 		editor.setData( '<p><iframe style="width: 100px; height: 200px;"></iframe></p>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<paragraph><htmlIframe htmlContent="" htmlIframeAttributes="(1)"></htmlIframe></paragraph>',
 			attributes: {
 				1: {
@@ -164,7 +165,7 @@ describe( 'IframeElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><iframe style="height:200px;"></iframe></p>' );
+		expect( editor.getData() ).toBe( '<p><iframe style="height:200px;"></iframe></p>' );
 	} );
 
 	it( 'should not remove allow-scripts from sandbox attribute in data pipeline', () => {
@@ -173,7 +174,7 @@ describe( 'IframeElementSupport', () => {
 
 		editor.setData( '<p><iframe sandbox="allow-scripts"></iframe></p>' );
 
-		expect( editor.getData() ).to.equal( '<p><iframe sandbox="allow-scripts"></iframe></p>' );
+		expect( editor.getData() ).toBe( '<p><iframe sandbox="allow-scripts"></iframe></p>' );
 	} );
 
 	it( 'should not remove allow-scripts from sandbox attribute while keeping other values in data pipeline', () => {
@@ -182,7 +183,7 @@ describe( 'IframeElementSupport', () => {
 
 		editor.setData( '<p><iframe sandbox="allow-scripts allow-same-origin"></iframe></p>' );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<p><iframe sandbox="allow-scripts allow-same-origin"></iframe></p>'
 		);
 	} );
@@ -195,7 +196,7 @@ describe( 'IframeElementSupport', () => {
 		it( 'should add default sandbox attribute (empty) to iframe with src in editing view', () => {
 			editor.setData( '<p><iframe></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 				'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 					'<iframe class="html-object-embed__content" sandbox=""></iframe>' +
@@ -214,7 +215,7 @@ describe( 'IframeElementSupport', () => {
 			dataFilter.allowAttributes( { name: 'iframe', attributes: true } );
 			editor.setData( '<p><iframe sandbox="allow-scripts allow-popups"></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 				'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 					'<iframe class="html-object-embed__content" sandbox="allow-popups"></iframe>' +
@@ -226,7 +227,7 @@ describe( 'IframeElementSupport', () => {
 		it( 'should not override empty sandbox attribute', () => {
 			editor.setData( '<p><iframe sandbox=""></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<iframe class="html-object-embed__content" sandbox=""></iframe>' +
@@ -245,7 +246,7 @@ describe( 'IframeElementSupport', () => {
 			dataFilter.allowAttributes( { name: 'iframe', attributes: true } );
 			editor.setData( '<p><iframe sandbox="allow-forms allow-forms"></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<iframe class="html-object-embed__content" sandbox="allow-forms"></iframe>' +
@@ -271,7 +272,7 @@ describe( 'IframeElementSupport', () => {
 
 			editor.setData( '<p><iframe></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<iframe class="html-object-embed__content" sandbox="allow-forms allow-popups">' +
@@ -280,7 +281,7 @@ describe( 'IframeElementSupport', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal( '<p><iframe></iframe></p>' );
+			expect( editor.getData() ).toBe( '<p><iframe></iframe></p>' );
 
 			editorElement.remove();
 		} );
@@ -296,7 +297,7 @@ describe( 'IframeElementSupport', () => {
 
 			editor.setData( '<p><iframe sandbox="allow-forms allow-scripts"></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<iframe class="html-object-embed__content" sandbox="allow-forms"></iframe>' +
@@ -304,7 +305,7 @@ describe( 'IframeElementSupport', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><iframe sandbox="allow-forms allow-scripts"></iframe></p>'
 			);
 
@@ -322,7 +323,7 @@ describe( 'IframeElementSupport', () => {
 
 			editor.setData( '<p><iframe></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<iframe class="html-object-embed__content"></iframe>' +
@@ -330,7 +331,7 @@ describe( 'IframeElementSupport', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal( '<p><iframe></iframe></p>' );
+			expect( editor.getData() ).toBe( '<p><iframe></iframe></p>' );
 
 			editorElement.remove();
 		} );
@@ -346,7 +347,7 @@ describe( 'IframeElementSupport', () => {
 
 			editor.setData( '<p><iframe sandbox="allow-scripts allow-same-origin"></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<iframe class="html-object-embed__content" sandbox="allow-scripts allow-same-origin">' +
@@ -355,7 +356,7 @@ describe( 'IframeElementSupport', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><iframe sandbox="allow-scripts allow-same-origin"></iframe></p>'
 			);
 
@@ -373,7 +374,7 @@ describe( 'IframeElementSupport', () => {
 
 			editor.setData( '<p><iframe></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<iframe class="html-object-embed__content" sandbox=""></iframe>' +
@@ -381,7 +382,7 @@ describe( 'IframeElementSupport', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal( '<p><iframe></iframe></p>' );
+			expect( editor.getData() ).toBe( '<p><iframe></iframe></p>' );
 
 			editorElement.remove();
 		} );
@@ -397,7 +398,7 @@ describe( 'IframeElementSupport', () => {
 
 			editor.setData( '<p><iframe sandbox="allow-scripts allow-same-origin"></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<iframe class="html-object-embed__content" sandbox=""></iframe>' +
@@ -405,7 +406,7 @@ describe( 'IframeElementSupport', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><iframe sandbox="allow-scripts allow-same-origin"></iframe></p>'
 			);
 
@@ -419,12 +420,12 @@ describe( 'IframeElementSupport', () => {
 
 			const initialConfig = editor.config.get( 'htmlSupport.htmlIframeSandbox' );
 
-			expect( initialConfig ).to.be.equal( true );
+			expect( initialConfig ).toBe( true );
 
 			editor.config.set( 'htmlSupport.htmlIframeSandbox', [ 'allow-forms' ] );
 			editor.setData( '<p><iframe></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 				'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 					'<iframe class="html-object-embed__content" sandbox="">' +
@@ -445,12 +446,12 @@ describe( 'IframeElementSupport', () => {
 
 			const initialConfig = editor.config.get( 'htmlSupport.htmlIframeSandbox' );
 
-			expect( initialConfig ).to.be.deep.equal( [ 'allow-forms' ] );
+			expect( initialConfig ).toEqual( [ 'allow-forms' ] );
 
 			initialConfig.push( 'allow-scripts' );
 			editor.setData( '<p><iframe sandbox="allow-scripts allow-forms"></iframe></p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 				'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 					'<iframe class="html-object-embed__content" sandbox="allow-forms">' +

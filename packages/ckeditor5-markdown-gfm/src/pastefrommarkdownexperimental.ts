@@ -7,7 +7,7 @@
  * @module markdown-gfm/pastefrommarkdownexperimental
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ClipboardPipeline, type ClipboardInputTransformationEvent } from '@ckeditor/ckeditor5-clipboard';
 import { MarkdownGfmDataProcessor } from './gfmdataprocessor.js';
 import type { ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
@@ -51,8 +51,8 @@ export class PasteFromMarkdownExperimental extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ClipboardPipeline ] as const;
+	public static get requires(): PluginDependenciesOf<[ ClipboardPipeline ]> {
+		return [ ClipboardPipeline ];
 	}
 
 	/**

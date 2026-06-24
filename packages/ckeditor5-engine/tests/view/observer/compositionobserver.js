@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CompositionObserver } from '../../../src/view/observer/compositionobserver.js';
 import { EditingView } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -21,47 +22,47 @@ describe( 'CompositionObserver', () => {
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.deep.equal( [ 'compositionstart', 'compositionupdate', 'compositionend' ] );
+		expect( observer.domEventType ).toEqual( [ 'compositionstart', 'compositionupdate', 'compositionend' ] );
 	} );
 
 	describe( 'onDomEvent', () => {
 		it( 'should fire compositionstart with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'compositionstart', spy );
 
 			observer.onDomEvent( { type: 'compositionstart', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 
 		it( 'should fire compositionupdate with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'compositionupdate', spy );
 
 			observer.onDomEvent( { type: 'compositionupdate', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 
 		it( 'should fire compositionend with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'compositionend', spy );
 
 			observer.onDomEvent( { type: 'compositionend', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 	} );
 
@@ -75,35 +76,35 @@ describe( 'CompositionObserver', () => {
 		it( 'should set isComposing to true on compositionstart', () => {
 			observer.onDomEvent( { type: 'compositionstart', target: domMain } );
 
-			expect( viewDocument.isComposing ).to.equal( true );
+			expect( viewDocument.isComposing ).toBe( true );
 		} );
 
 		it( 'should set isComposing to false on compositionend', () => {
 			observer.onDomEvent( { type: 'compositionstart', target: domMain } );
 
-			expect( viewDocument.isComposing ).to.equal( true );
+			expect( viewDocument.isComposing ).toBe( true );
 
 			observer.onDomEvent( { type: 'compositionend', target: domMain } );
 
-			expect( viewDocument.isComposing ).to.equal( false );
+			expect( viewDocument.isComposing ).toBe( false );
 		} );
 
 		it( 'should not change isComposing on compositionupdate during composition', () => {
 			observer.onDomEvent( { type: 'compositionstart', target: domMain } );
 
-			expect( viewDocument.isComposing ).to.equal( true );
+			expect( viewDocument.isComposing ).toBe( true );
 
 			observer.onDomEvent( { type: 'compositionupdate', target: domMain } );
 
-			expect( viewDocument.isComposing ).to.equal( true );
+			expect( viewDocument.isComposing ).toBe( true );
 		} );
 
 		it( 'should not change isComposing on compositionupdate outside composition', () => {
-			expect( viewDocument.isComposing ).to.equal( false );
+			expect( viewDocument.isComposing ).toBe( false );
 
 			observer.onDomEvent( { type: 'compositionupdate', target: domMain } );
 
-			expect( viewDocument.isComposing ).to.equal( false );
+			expect( viewDocument.isComposing ).toBe( false );
 		} );
 	} );
 } );

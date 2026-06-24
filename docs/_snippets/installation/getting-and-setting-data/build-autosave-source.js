@@ -24,4 +24,3 @@ export class AutosaveEditor extends ClassicEditor {
 		AutoImage
 	];
 }
-

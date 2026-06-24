@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -17,4 +17,16 @@
 /* Hide the resize outline and handles in the drag preview. */
 .ck .ck-widget.media:-webkit-drag > .ck-widget__resizer {
 	display: none;
+}
+
+[dir="ltr"] .ck.ck-button.ck-button_with-text.ck-resize-media-embed-button .ck-button__icon {
+	margin-right: var(--ck-spacing-standard);
+}
+
+[dir="rtl"] .ck.ck-button.ck-button_with-text.ck-resize-media-embed-button .ck-button__icon {
+	margin-left: var(--ck-spacing-standard);
+}
+
+.ck.ck-dropdown .ck-button.ck-resize-media-embed-button .ck-button__label {
+	width: 4em;
 }

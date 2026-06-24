@@ -776,5 +776,45 @@ describe( 'ImageBlockEditing', () => {
 				done();
 			}, 100 );
 		} );
+
+		describe( 'inside $inlineRoot', () => {
+			let inlineEditorElement, inlineEditor, inlineModel, inlineViewDocument;
+
+			beforeEach( async () => {
+				inlineEditorElement = document.createElement( 'div' );
+				document.body.appendChild( inlineEditorElement );
+
+				inlineEditor = await ClassicTestEditor.create( inlineEditorElement, {
+					plugins: [ ImageInlineEditing, ImageBlockEditing, ImageCaption, Clipboard, Paragraph ],
+					root: { modelElement: '$inlineRoot' }
+				} );
+
+				inlineModel = inlineEditor.model;
+				inlineViewDocument = inlineEditor.editing.view.document;
+			} );
+
+			afterEach( async () => {
+				await inlineEditor.destroy();
+				inlineEditorElement.remove();
+			} );
+
+			it( 'should not wrap a pasted inline image as block when imageBlock cannot land', () => {
+				const dataTransfer = new ViewDataTransfer( {
+					types: [ 'text/html' ],
+					getData: () => '<img src="/assets/sample.png" />'
+				} );
+
+				_setModelData( inlineModel, 'foo[]bar' );
+
+				inlineViewDocument.fire( 'clipboardInput', {
+					dataTransfer,
+					content: dataTransfer.getData()
+				} );
+
+				expect( _getModelData( inlineModel ) ).to.equal(
+					'foo<imageInline src="/assets/sample.png"></imageInline>[]bar'
+				);
+			} );
+		} );
 	} );
 } );

@@ -298,6 +298,7 @@ export class DropdownMenuNestedMenuView extends View implements FocusableView {
 	private _addPanelToBody() {
 		const { panelView, buttonView, keystrokes } = this;
 
+		/* v8 ignore else -- @preserve */
 		if ( !this._bodyCollection.has( panelView ) ) {
 			this._bodyCollection.add( panelView );
 

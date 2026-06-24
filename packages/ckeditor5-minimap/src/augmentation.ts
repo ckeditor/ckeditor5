@@ -23,4 +23,3 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ Minimap.pluginName ]: Minimap;
 	}
 }
-

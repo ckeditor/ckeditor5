@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { range } from 'es-toolkit/compat';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -40,15 +41,15 @@ describe( 'ImageElementSupport', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( editor.plugins.has( 'ImageElementSupport' ) ).to.be.true;
+		expect( editor.plugins.has( 'ImageElementSupport' ) ).toBe( true );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageElementSupport.isOfficialPlugin ).to.be.true;
+		expect( ImageElementSupport.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageElementSupport.isPremiumPlugin ).to.be.false;
+		expect( ImageElementSupport.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'BlockImage', () => {
@@ -65,7 +66,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 				attributes: {
 					1: {
@@ -81,7 +82,44 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
+		} );
+
+		it( 'should update image attributes when model attribute is changed programmatically', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			editor.setData( '<figure class="image"><img src="/assets/sample.png"></figure>' );
+
+			const imageElement = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'htmlImgAttributes', { attributes: { 'data-foo': 'bar' } }, imageElement );
+			} );
+
+			expect( editor.getData() ).toBe(
+				'<figure class="image"><img src="/assets/sample.png" data-foo="bar"></figure>'
+			);
+		} );
+
+		it( 'should not update link attributes when image has no link wrapper', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|a)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			// Insert an image without a link.
+			editor.setData( '<figure class="image"><img src="/assets/sample.png"></figure>' );
+
+			const imageElement = model.document.getRoot().getChild( 0 );
+
+			// Setting htmlLinkAttributes on a non-linked image triggers the false branch of if ( viewElement )
+			// because getDescendantElement does not find an <a> wrapper in the view.
+			expect( () => model.change( writer => {
+				writer.setAttribute( 'htmlLinkAttributes', { attributes: { 'data-foo': 'bar' } }, imageElement );
+			} ) ).not.toThrow();
 		} );
 
 		it( 'should allow classes', () => {
@@ -97,7 +135,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
@@ -107,7 +145,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow styles', () => {
@@ -123,7 +161,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
@@ -135,7 +173,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should disallow attributes', () => {
@@ -155,12 +193,12 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 					'<img src="/assets/sample.png">' +
 				'</figure>'
@@ -184,12 +222,12 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 					'<img src="/assets/sample.png">' +
 				'</figure>'
@@ -213,12 +251,12 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 					'<img src="/assets/sample.png">' +
 				'</figure>'
@@ -241,7 +279,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>' +
 					'<htmlFigure htmlFigureAttributes="(3)">' +
@@ -271,7 +309,7 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should not double convert figure element', () => {
@@ -289,7 +327,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
@@ -316,7 +354,7 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image"><img src="/assets/sample.png"></figure>'
 			);
 		} );
@@ -339,7 +377,7 @@ describe( 'ImageElementSupport', () => {
                 '</figure>'
 			);
 
-			expect( editor.getData() ).to.deep.equal(
+			expect( editor.getData() ).toEqual(
 				'<figure class="image" foo="bar">' +
 					'<img src="/assets/sample.png" data-foo="foo">' +
                 '</figure>'
@@ -347,8 +385,8 @@ describe( 'ImageElementSupport', () => {
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
-			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+			expect( marker.getStart().path ).toEqual( [ 0 ] );
+			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 
 		describe( 'BlockImage without LinkImage', () => {
@@ -390,12 +428,12 @@ describe( 'ImageElementSupport', () => {
 					'</figure>'
 				);
 
-				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 					data: '<imageBlock src="/assets/sample.png"></imageBlock>',
 					attributes: {}
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<figure class="image">' +
 						'<img src="/assets/sample.png">' +
 					'</figure>'
@@ -444,7 +482,7 @@ describe( 'ImageElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data: '<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 		// 		attributes: {
 		// 			1: {
@@ -470,7 +508,7 @@ describe( 'ImageElementSupport', () => {
 		// 		}
 		// 	} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 		'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
 		// 				' style="font-size:12px;text-align:center">' +
 		// 			'<img class="bar baz" data-image="xyz" src="/assets/sample.png" style="background-color:blue;color:red"></img>' +
@@ -478,7 +516,7 @@ describe( 'ImageElementSupport', () => {
 		// 		'</figure>'
 		// 	);
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
 		// 			'<img class="bar baz" style="background-color:blue;color:red;" src="/assets/sample.png" data-image="xyz">' +
 		// 		'</figure>'
@@ -516,19 +554,19 @@ describe( 'ImageElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', null );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data: '<imageBlock src="/assets/sample.png"></imageBlock>',
 		// 		attributes: {}
 		// 	} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 		'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 		// 			'<img src="/assets/sample.png"></img>' +
 		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 		// 		'</figure>'
 		// 	);
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<figure class="image">' +
 		// 			'<img src="/assets/sample.png">' +
 		// 		'</figure>'
@@ -550,7 +588,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 						'linkHref="www.example.com" src="/assets/sample.png">' +
@@ -574,7 +612,7 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow classes', () => {
@@ -592,7 +630,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 						'linkHref="www.example.com" src="/assets/sample.png">' +
@@ -605,7 +643,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow styles', () => {
@@ -623,7 +661,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 						'linkHref="www.example.com" src="/assets/sample.png">' +
@@ -638,7 +676,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should disallow attributes', () => {
@@ -660,12 +698,12 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock linkHref="www.example.com" src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 					'<a href="www.example.com">' +
 						'<img src="/assets/sample.png">' +
@@ -693,12 +731,12 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock linkHref="www.example.com" src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 					'<a href="www.example.com">' +
 						'<img src="/assets/sample.png">' +
@@ -726,12 +764,12 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock linkHref="www.example.com" src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 					'<a href="www.example.com">' +
 						'<img src="/assets/sample.png">' +
@@ -758,7 +796,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 						'linkHref="www.example.com" src="/assets/sample.png">' +
@@ -795,7 +833,7 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
@@ -822,7 +860,7 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image"><img src="/assets/sample.png"></figure>'
 			);
 		} );
@@ -847,7 +885,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 						'linkHref="www.example.com" src="/assets/sample.png">' +
@@ -914,7 +952,7 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should create a marker before GHS converts attributes', () => {
@@ -937,15 +975,15 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock linkHref="www.example.com" src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
-			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+			expect( marker.getStart().path ).toEqual( [ 0 ] );
+			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 
 		it( 'should upcast `href` attribute if LinkImage plugin is available', () => {
@@ -963,12 +1001,12 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock linkHref="www.example.com" src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes', () => {
@@ -1021,7 +1059,7 @@ describe( 'ImageElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'classes', [ 'baz', 'foo', 'bar' ] );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 			'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 		// 				'linkHref="www.example.com" src="/assets/sample.png">' +
@@ -1059,7 +1097,7 @@ describe( 'ImageElementSupport', () => {
 		// 		}
 		// 	} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 		'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
 		// 				' style="font-size:12px;text-align:center">' +
 		// 			'<a class="bar baz foo" data-link="xxx" href="www.example.com" style="color:green">' +
@@ -1069,7 +1107,7 @@ describe( 'ImageElementSupport', () => {
 		// 		'</figure>'
 		// 	);
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
 		// 			'<a class="baz foo bar" style="color:green;" href="www.example.com" data-link="xxx">' +
 		// 				'<img class="bar baz" style="background-color:blue;color:red;" src="/assets/sample.png" data-image="xyz">' +
@@ -1114,12 +1152,12 @@ describe( 'ImageElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'classes', null );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data: '<imageBlock linkHref="www.example.com" src="/assets/sample.png"></imageBlock>',
 		// 		attributes: {}
 		// 	} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 		'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 		// 			'<a href="www.example.com">' +
 		// 				'<img src="/assets/sample.png"></img>' +
@@ -1128,7 +1166,7 @@ describe( 'ImageElementSupport', () => {
 		// 		'</figure>'
 		// 	);
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<figure class="image">' +
 		// 			'<a href="www.example.com">' +
 		// 				'<img src="/assets/sample.png">' +
@@ -1153,7 +1191,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png">' +
 						'<caption htmlFigcaptionAttributes="(3)">A caption</caption>' +
@@ -1177,7 +1215,7 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow classes', () => {
@@ -1194,7 +1232,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png">' +
 						'<caption htmlFigcaptionAttributes="(3)">A caption</caption>' +
@@ -1207,7 +1245,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow styles', () => {
@@ -1224,7 +1262,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png">' +
 						'<caption htmlFigcaptionAttributes="(3)">A caption</caption>' +
@@ -1239,7 +1277,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should disallow attributes', () => {
@@ -1260,12 +1298,12 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock src="/assets/sample.png"><caption>A caption</caption></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 					'<img src="/assets/sample.png">' +
 					'<figcaption>A caption</figcaption>' +
@@ -1291,12 +1329,12 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock src="/assets/sample.png"><caption>A caption</caption></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 					'<img src="/assets/sample.png">' +
 					'<figcaption>A caption</figcaption>' +
@@ -1322,12 +1360,12 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock src="/assets/sample.png"><caption>A caption</caption></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 					'<img src="/assets/sample.png">' +
 					'<figcaption>A caption</figcaption>' +
@@ -1351,7 +1389,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>' +
 					'<htmlFigure htmlFigureAttributes="(3)">' +
@@ -1381,7 +1419,7 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
@@ -1409,7 +1447,7 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 					'<img src="/assets/sample.png">' +
 					'<figcaption>A caption</figcaption>' +
@@ -1440,7 +1478,7 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png">' +
 						'<caption htmlFigcaptionAttributes="(3)">A caption</caption>' +
@@ -1459,7 +1497,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image allow" style="color:red;" data-allow="allow">' +
 					'<img class="allow" style="color:red;" src="/assets/sample.png" data-allow="allow">' +
 					'<figcaption class="allow" style="color:red;" data-allow="allow">A caption</figcaption>' +
@@ -1487,12 +1525,12 @@ describe( 'ImageElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<imageBlock src="/assets/sample.png"><caption>A caption</caption></imageBlock>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="image">' +
 						'<img src="/assets/sample.png">' +
 						'<figcaption>A caption</figcaption>' +
@@ -1501,8 +1539,8 @@ describe( 'ImageElementSupport', () => {
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
-			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+			expect( marker.getStart().path ).toEqual( [ 0 ] );
+			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes', () => {
@@ -1556,7 +1594,7 @@ describe( 'ImageElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'classes', [ 'baz', 'foo', 'bar' ] );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 			'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
 		// 				'<caption htmlAttributes="(3)">A caption</caption>' +
@@ -1594,7 +1632,7 @@ describe( 'ImageElementSupport', () => {
 		// 		}
 		// 	} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 		'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
 		// 				' style="font-size:12px;text-align:center">' +
 		// 			'<img class="bar baz" data-image="xyz" src="/assets/sample.png" style="background-color:blue;color:red"></img>' +
@@ -1604,7 +1642,7 @@ describe( 'ImageElementSupport', () => {
 		// 		'</figure>'
 		// 	);
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
 		// 			'<img class="bar baz" style="background-color:blue;color:red;" src="/assets/sample.png" data-image="xyz">' +
 		// 			'<figcaption class="baz foo bar" style="color:green;" data-figcaption="xxx">A caption</figcaption>' +
@@ -1649,7 +1687,7 @@ describe( 'ImageElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'classes', null );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 			'<imageBlock src="/assets/sample.png">' +
 		// 				'<caption>A caption</caption>' +
@@ -1657,7 +1695,7 @@ describe( 'ImageElementSupport', () => {
 		// 		attributes: {}
 		// 	} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 		'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 		// 			'<img src="/assets/sample.png"></img>' +
 		// 			'<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
@@ -1666,7 +1704,7 @@ describe( 'ImageElementSupport', () => {
 		// 		'</figure>'
 		// 	);
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<figure class="image">' +
 		// 			'<img src="/assets/sample.png">' +
 		// 			'<figcaption>A caption</figcaption>' +
@@ -1686,7 +1724,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<paragraph htmlPAttributes="(1)">' +
 						'<imageInline htmlImgAttributes="(2)" src="/assets/sample.png"></imageInline>' +
@@ -1705,7 +1743,7 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow classes', () => {
@@ -1718,7 +1756,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<paragraph htmlPAttributes="(1)">' +
 						'<imageInline htmlImgAttributes="(2)" src="/assets/sample.png"></imageInline>' +
@@ -1731,7 +1769,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow styles', () => {
@@ -1744,7 +1782,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<paragraph htmlPAttributes="(1)">' +
 						'<imageInline htmlImgAttributes="(2)" src="/assets/sample.png"></imageInline>' +
@@ -1759,7 +1797,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should disallow attributes', () => {
@@ -1777,12 +1815,12 @@ describe( 'ImageElementSupport', () => {
 				'<p data-paragraph="paragraph"><img data-image="image" src="/assets/sample.png"></p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><img src="/assets/sample.png"></p>'
 			);
 		} );
@@ -1802,12 +1840,12 @@ describe( 'ImageElementSupport', () => {
 				'<p class="foobar"><image class="foobar" src="/assets/sample.png"></p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><img src="/assets/sample.png"></p>'
 			);
 		} );
@@ -1829,12 +1867,12 @@ describe( 'ImageElementSupport', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p>' +
 					'<img src="/assets/sample.png">' +
 				'</p>'
@@ -1865,13 +1903,13 @@ describe( 'ImageElementSupport', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><img src="/assets/sample.png"></p>'
 			);
 		} );
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/10703.
-		it( 'should not break inside <dir> element if image contains an attribute', () => {
+		it( 'should hoist an image with attributes out of a <dir> element as a block image', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: 'img',
 				attributes: true
@@ -1881,12 +1919,46 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( '<dir><img data-foo="bar">' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<htmlDir></htmlDir>',
-				attributes: {}
+			// A `<dir>` (represented by GHS as `htmlDir`) does not accept image content. The image cannot land
+			// there as an inline image, so it degrades to a block image and is hoisted out of the (then empty,
+			// removed) `htmlDir`, keeping its GHS attributes.
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data: '<imageBlock htmlImgAttributes="(1)"></imageBlock>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'bar'
+						}
+					}
+				}
 			} );
 
-			expect( editor.getData() ).to.equal( '' );
+			expect( editor.getData() ).toBe( '<figure class="image"><img data-foo="bar"></figure>' );
+		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/10703.
+		it( 'should not crash when an <img> with attributes cannot be converted to any model element', () => {
+			// Force the `<img>` to have no valid model representation: disallow both image types and the GHS generic
+			// `<htmlImg>` fallback. The upcast then yields a `null` model range. The GHS image attribute converter
+			// used to call `writer.setAttribute()` with that `null` range and crash; it must skip setting the
+			// attribute instead.
+			model.schema.addChildCheck( () => false, 'imageBlock' );
+			model.schema.addChildCheck( () => false, 'imageInline' );
+			model.schema.addChildCheck( () => false, 'htmlImg' );
+
+			dataFilter.loadAllowedConfig( [ {
+				name: 'img',
+				attributes: true
+			} ] );
+
+			expect( () => {
+				editor.setData( '<p><img src="/assets/sample.png" data-foo="bar"></p>' );
+			} ).not.toThrow();
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data: '<paragraph></paragraph>',
+				attributes: {}
+			} );
 		} );
 
 		it( 'should create a marker before GHS converts attributes', () => {
@@ -1905,19 +1977,19 @@ describe( 'ImageElementSupport', () => {
 				'<p><img data-commented-end-after="foo:id" data-commented-start-before="foo:id" src="/assets/sample.png"></p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><img src="/assets/sample.png"></p>'
 			);
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
-			expect( marker.getStart().path ).to.deep.equal( [ 0, 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 0, 1 ] );
+			expect( marker.getStart().path ).toEqual( [ 0, 0 ] );
+			expect( marker.getEnd().path ).toEqual( [ 0, 1 ] );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes', () => {
@@ -1947,7 +2019,7 @@ describe( 'ImageElementSupport', () => {
 		// 		} );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 			'<paragraph htmlPAttributes="(1)">' +
 		// 				'<imageInline htmlImgAttributes="(2)" src="/assets/sample.png"></imageInline>' +
@@ -1973,7 +2045,7 @@ describe( 'ImageElementSupport', () => {
 
 		// 	// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view.
 		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 	// 	'<p data-paragraph="paragraph">' +
 		// 	// 		'<span class="ck-widget image-inline" contenteditable="false">' +
 		// 	// 			'<img src="/assets/sample.png" class="bar baz" style="background-color:blue;color:red;" data-image="xxx"></img>' +
@@ -1981,7 +2053,7 @@ describe( 'ImageElementSupport', () => {
 		// 	// 	'</p>'
 		// 	// );
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<p data-paragraph="paragraph">' +
 		// 			'<img class="bar baz" style="background-color:blue;color:green;" src="/assets/sample.png" data-image="xxx">' +
 		// 		'</p>'
@@ -2010,7 +2082,7 @@ describe( 'ImageElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', null );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 			'<paragraph htmlPAttributes="(1)">' +
 		// 				'<imageInline src="/assets/sample.png"></imageInline>' +
@@ -2024,7 +2096,7 @@ describe( 'ImageElementSupport', () => {
 		// 		}
 		// 	} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 		'<p data-paragraph="paragraph">' +
 		// 			'<span class="ck-widget image-inline" contenteditable="false">' +
 		// 				'<img src="/assets/sample.png"></img>' +
@@ -2032,7 +2104,7 @@ describe( 'ImageElementSupport', () => {
 		// 		'</p>'
 		// 	);
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<p data-paragraph="paragraph">' +
 		// 			'<img src="/assets/sample.png">' +
 		// 		'</p>'
@@ -2056,7 +2128,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<paragraph htmlPAttributes="(1)">' +
 						'<imageInline htmlA="(2)" htmlImgAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png">' +
@@ -2081,7 +2153,7 @@ describe( 'ImageElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow classes', () => {
@@ -2099,7 +2171,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<paragraph htmlPAttributes="(1)">' +
 						'<imageInline htmlA="(2)" htmlImgAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png">' +
@@ -2113,7 +2185,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow styles', () => {
@@ -2131,7 +2203,7 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<paragraph htmlPAttributes="(1)">' +
 						'<imageInline htmlA="(2)" htmlImgAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png">' +
@@ -2147,7 +2219,7 @@ describe( 'ImageElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should disallow attributes', () => {
@@ -2169,12 +2241,12 @@ describe( 'ImageElementSupport', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><imageInline linkHref="www.example.com" src="/assets/sample.png"></imageInline></paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><a href="www.example.com"><img src="/assets/sample.png"></a></p>'
 			);
 		} );
@@ -2194,12 +2266,12 @@ describe( 'ImageElementSupport', () => {
 				'<p class="foobar"><a class="foobar" href="www.example.com"><img class="foobar" src="/assets/sample.png"></a></p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><imageInline linkHref="www.example.com" src="/assets/sample.png"></imageInline></paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><a href="www.example.com"><img src="/assets/sample.png"></a></p>'
 			);
 		} );
@@ -2223,12 +2295,12 @@ describe( 'ImageElementSupport', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><imageInline linkHref="www.example.com" src="/assets/sample.png"></imageInline></paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><a href="www.example.com"><img src="/assets/sample.png"></a></p>'
 			);
 		} );
@@ -2255,7 +2327,7 @@ describe( 'ImageElementSupport', () => {
 				'<p><a href="www.example.com"><img src="/assets/sample.png" data-foo="foo"></a></p>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><a href="www.example.com"><img src="/assets/sample.png"></a></p>'
 			);
 		} );
@@ -2280,19 +2352,19 @@ describe( 'ImageElementSupport', () => {
 				'</p>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data: '<paragraph><imageInline linkHref="www.example.com" src="/assets/sample.png"></imageInline></paragraph>',
 				attributes: { }
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><a href="www.example.com"><img src="/assets/sample.png"></a></p>'
 			);
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
-			expect( marker.getStart().path ).to.deep.equal( [ 0, 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 0, 1 ] );
+			expect( marker.getStart().path ).toEqual( [ 0, 0 ] );
+			expect( marker.getEnd().path ).toEqual( [ 0, 1 ] );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes', () => {
@@ -2333,7 +2405,7 @@ describe( 'ImageElementSupport', () => {
 		// 		} );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 			'<paragraph htmlPAttributes="(1)">' +
 		// 				'<imageInline htmlA="(2)" htmlAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png"></imageInline>' +
@@ -2369,7 +2441,7 @@ describe( 'ImageElementSupport', () => {
 
 		// 	// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view.
 		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 	// 	'<p data-paragraph="paragraph">' +
 		// 	// 		'<span class="foo" data-link="zzz" href="www.example.com" style="background:red;color:pink">' +
 		// 	// 			'<span class="ck-widget image-inline" contenteditable="false">' +
@@ -2380,7 +2452,7 @@ describe( 'ImageElementSupport', () => {
 		// 	// 	'</p>'
 		// 	// );
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<p data-paragraph="paragraph">' +
 		// 			'<a class="foo" style="background:red;color:pink;" href="www.example.com" data-link="zzz">' +
 		// 				'<img class="bar baz" style="background-color:blue;color:green;" src="/assets/sample.png" data-image="xxx">' +
@@ -2416,7 +2488,7 @@ describe( 'ImageElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, image, 'htmlA', 'attributes', null );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 			'<paragraph htmlPAttributes="(1)">' +
 		// 				'<imageInline linkHref="www.example.com" src="/assets/sample.png"></imageInline>' +
@@ -2430,7 +2502,7 @@ describe( 'ImageElementSupport', () => {
 		// 		}
 		// 	} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 		'<p data-paragraph="paragraph">' +
 		// 			'<a href="www.example.com">' +
 		// 				'<span class="ck-widget image-inline" contenteditable="false">' +
@@ -2440,7 +2512,7 @@ describe( 'ImageElementSupport', () => {
 		// 		'</p>'
 		// 	);
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<p data-paragraph="paragraph">' +
 		// 			'<a href="www.example.com">' +
 		// 				'<img src="/assets/sample.png">' +
@@ -2474,7 +2546,7 @@ describe( 'ImageElementSupport', () => {
 					// Apply filtering rules added after initial data load.
 					editor.setData( '' );
 
-					expect( schema.getDefinition( 'imageBlock' ).allowAttributes ).to.deep.equal( [
+					expect( schema.getDefinition( 'imageBlock' ).allowAttributes ).toEqual( [
 						'alt',
 						'src',
 						'srcset',
@@ -2487,7 +2559,7 @@ describe( 'ImageElementSupport', () => {
 						'htmlLinkAttributes'
 					] );
 
-					expect( schema.getDefinition( 'imageInline' ) ).to.be.undefined;
+					expect( schema.getDefinition( 'imageInline' ) ).toBeUndefined();
 				} );
 		} );
 
@@ -2512,7 +2584,7 @@ describe( 'ImageElementSupport', () => {
 					// Apply filtering rules added after initial data load.
 					editor.setData( '' );
 
-					expect( schema.getDefinition( 'imageInline' ).allowAttributes ).to.deep.equal( [
+					expect( schema.getDefinition( 'imageInline' ).allowAttributes ).toEqual( [
 						'alt',
 						'src',
 						'srcset',
@@ -2523,7 +2595,7 @@ describe( 'ImageElementSupport', () => {
 						'htmlImgAttributes'
 					] );
 
-					expect( schema.getDefinition( 'imageBlock' ) ).to.be.undefined;
+					expect( schema.getDefinition( 'imageBlock' ) ).toBeUndefined();
 				} );
 		} );
 
@@ -2548,8 +2620,8 @@ describe( 'ImageElementSupport', () => {
 					// Apply filtering rules added after initial data load.
 					editor.setData( '' );
 
-					expect( schema.getDefinition( 'imageBlock' ) ).to.be.undefined;
-					expect( schema.getDefinition( 'imageInline' ) ).to.be.undefined;
+					expect( schema.getDefinition( 'imageBlock' ) ).toBeUndefined();
+					expect( schema.getDefinition( 'imageInline' ) ).toBeUndefined();
 				} );
 		} );
 

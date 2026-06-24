@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Editor } from '../../src/editor/editor.js';
 import { Context } from '../../src/context.js';
 import { Plugin } from '../../src/plugin.js';
@@ -13,7 +14,6 @@ import { CommandCollection } from '../../src/commandcollection.js';
 import { Command } from '../../src/command.js';
 import { EditingKeystrokeHandler } from '../../src/editingkeystrokehandler.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { testUtils } from '../../tests/_utils/utils.js';
 import { Accessibility } from '../../src/accessibility.js';
 import { EditorWatchdog, ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
@@ -36,8 +36,8 @@ class TestEditor extends Editor {
 class PluginA extends Plugin {
 	constructor( editor ) {
 		super( editor );
-		this.init = sinon.spy().named( 'A' );
-		this.afterInit = sinon.spy().named( 'A-after' );
+		this.init = vi.fn();
+		this.afterInit = vi.fn();
 	}
 
 	static get pluginName() {
@@ -48,8 +48,8 @@ class PluginA extends Plugin {
 class PluginB extends Plugin {
 	constructor( editor ) {
 		super( editor );
-		this.init = sinon.spy().named( 'B' );
-		this.afterInit = sinon.spy().named( 'B-after' );
+		this.init = vi.fn();
+		this.afterInit = vi.fn();
 	}
 
 	static get pluginName() {
@@ -60,8 +60,8 @@ class PluginB extends Plugin {
 class PluginC extends Plugin {
 	constructor( editor ) {
 		super( editor );
-		this.init = sinon.spy().named( 'C' );
-		this.afterInit = sinon.spy().named( 'C-after' );
+		this.init = vi.fn();
+		this.afterInit = vi.fn();
 	}
 
 	static get pluginName() {
@@ -76,8 +76,8 @@ class PluginC extends Plugin {
 class PluginD extends Plugin {
 	constructor( editor ) {
 		super( editor );
-		this.init = sinon.spy().named( 'D' );
-		this.afterInit = sinon.spy().named( 'D-after' );
+		this.init = vi.fn();
+		this.afterInit = vi.fn();
 	}
 
 	static get pluginName() {
@@ -92,7 +92,7 @@ class PluginD extends Plugin {
 class PluginE {
 	constructor( editor ) {
 		this.editor = editor;
-		this.init = sinon.spy().named( 'E' );
+		this.init = vi.fn();
 	}
 
 	static get pluginName() {
@@ -103,7 +103,7 @@ class PluginE {
 class PluginF {
 	constructor( editor ) {
 		this.editor = editor;
-		this.afterInit = sinon.spy().named( 'F-after' );
+		this.afterInit = vi.fn();
 	}
 
 	static get pluginName() {
@@ -116,27 +116,27 @@ describe( 'Editor', () => {
 		delete TestEditor.builtinPlugins;
 		delete TestEditor.defaultConfig;
 
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'imports the version helper', () => {
-		expect( window.CKEDITOR_VERSION ).to.be.a( 'string' );
+		expect( typeof window.CKEDITOR_VERSION ).toBe( 'string' );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create a new editor instance', () => {
 			const editor = new TestEditor();
 
-			expect( editor.accessibility ).to.be.an.instanceof( Accessibility );
-			expect( editor.config ).to.be.an.instanceof( Config );
-			expect( editor.commands ).to.be.an.instanceof( CommandCollection );
-			expect( editor.editing ).to.be.instanceof( EditingController );
-			expect( editor.keystrokes ).to.be.instanceof( EditingKeystrokeHandler );
+			expect( editor.accessibility ).toBeInstanceOf( Accessibility );
+			expect( editor.config ).toBeInstanceOf( Config );
+			expect( editor.commands ).toBeInstanceOf( CommandCollection );
+			expect( editor.editing ).toBeInstanceOf( EditingController );
+			expect( editor.keystrokes ).toBeInstanceOf( EditingKeystrokeHandler );
 
-			expect( editor.plugins ).to.be.an.instanceof( PluginCollection );
-			expect( getPlugins( editor ) ).to.be.empty;
+			expect( editor.plugins ).toBeInstanceOf( PluginCollection );
+			expect( getPlugins( editor ) ).toHaveLength( 0 );
 
-			expect( editor.model._config ).to.equal( editor.config );
+			expect( editor.model._config ).toBe( editor.config );
 		} );
 
 		it( 'should extend an editor configuration using built in config', () => {
@@ -154,13 +154,13 @@ describe( 'Editor', () => {
 				}
 			} );
 
-			expect( editor.config.get( 'foo' ) ).to.deep.equal( {
+			expect( editor.config.get( 'foo' ) ).toEqual( {
 				a: 1,
 				b: 2,
 				c: 3
 			} );
 
-			expect( editor.config.get( 'bar' ) ).to.equal( 'foo' );
+			expect( editor.config.get( 'bar' ) ).toBe( 'foo' );
 		} );
 
 		it( 'should not have access to translations', () => {
@@ -174,7 +174,7 @@ describe( 'Editor', () => {
 				}
 			} );
 
-			expect( editor.config.get( 'translations' ) ).to.equal( undefined );
+			expect( editor.config.get( 'translations' ) ).toBeUndefined();
 		} );
 
 		it( 'should use translations set as the defaultConfig option on the constructor', () => {
@@ -190,28 +190,28 @@ describe( 'Editor', () => {
 
 			const editor = new TestEditor();
 
-			expect( editor.config.get( 'translations' ) ).to.equal( undefined );
+			expect( editor.config.get( 'translations' ) ).toBeUndefined();
 		} );
 
 		it( 'should bind editing.view.document#isReadOnly to the editor#isReadOnly', () => {
 			const editor = new TestEditor();
 
-			expect( editor.editing.view.document.isReadOnly ).to.false;
+			expect( editor.editing.view.document.isReadOnly ).toBe( false );
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			expect( editor.editing.view.document.isReadOnly ).to.true;
+			expect( editor.editing.view.document.isReadOnly ).toBe( true );
 
 			editor.disableReadOnlyMode( 'unit-test' );
 
-			expect( editor.editing.view.document.isReadOnly ).to.false;
+			expect( editor.editing.view.document.isReadOnly ).toBe( false );
 		} );
 
 		it( 'should activate #keystrokes', () => {
-			const spy = sinon.spy( EditingKeystrokeHandler.prototype, 'listenTo' );
+			const spy = vi.spyOn( EditingKeystrokeHandler.prototype, 'listenTo' );
 			const editor = new TestEditor();
 
-			sinon.assert.calledWith( spy, editor.editing.view.document );
+			expect( spy ).toHaveBeenCalledWith( editor.editing.view.document );
 		} );
 
 		it( 'should throw if `config.sanitizeHtml` is passed', () => {
@@ -237,14 +237,14 @@ describe( 'Editor', () => {
 		it( 'should create a new context when it is not provided through config', () => {
 			const editor = new TestEditor();
 
-			expect( editor._context ).to.be.an.instanceof( Context );
+			expect( editor._context ).toBeInstanceOf( Context );
 		} );
 
 		it( 'should use context given through config', async () => {
 			const context = await Context.create();
 			const editor = new TestEditor( { context } );
 
-			expect( editor._context ).to.equal( context );
+			expect( editor._context ).toBe( context );
 		} );
 
 		it( 'should throw when try to use context created by one editor with the other editor', () => {
@@ -258,23 +258,23 @@ describe( 'Editor', () => {
 
 		it( 'should destroy context created by the editor at the end of the editor destroy chain', async () => {
 			const editor = await TestEditor.create();
-			const editorPluginsDestroySpy = sinon.spy( editor.plugins, 'destroy' );
-			const contextDestroySpy = sinon.spy( editor._context, 'destroy' );
+			const editorPluginsDestroySpy = vi.spyOn( editor.plugins, 'destroy' );
+			const contextDestroySpy = vi.spyOn( editor._context, 'destroy' );
 
 			await editor.destroy();
 
-			sinon.assert.calledOnce( contextDestroySpy );
-			expect( editorPluginsDestroySpy.calledBefore( contextDestroySpy ) ).to.true;
+			expect( contextDestroySpy ).toHaveBeenCalledOnce();
+			expect( editorPluginsDestroySpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( contextDestroySpy.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		it( 'should not destroy context along with the editor when context was injected to the editor', async () => {
 			const context = await Context.create();
 			const editor = await TestEditor.create( { context } );
-			const contextDestroySpy = sinon.spy( editor._context, 'destroy' );
+			const contextDestroySpy = vi.spyOn( editor._context, 'destroy' );
 
 			await editor.destroy();
 
-			sinon.assert.notCalled( contextDestroySpy );
+			expect( contextDestroySpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should add context plugins to the editor plugins', async () => {
@@ -287,21 +287,21 @@ describe( 'Editor', () => {
 			const context = await Context.create( { plugins: [ ContextPlugin ] } );
 			const editor = new TestEditor( { context } );
 
-			expect( editor.plugins._contextPlugins.has( ContextPlugin ) ).to.equal( true );
+			expect( editor.plugins._contextPlugins.has( ContextPlugin ) ).toBe( true );
 		} );
 
 		it( 'should get configuration from the context', async () => {
 			const context = await Context.create( { cfoo: 'bar' } );
 			const editor = await TestEditor.create( { context } );
 
-			expect( editor.config.get( 'cfoo' ) ).to.equal( 'bar' );
+			expect( editor.config.get( 'cfoo' ) ).toBe( 'bar' );
 		} );
 
 		it( 'should not overwrite the default configuration', async () => {
 			const context = await Context.create( { cfoo: 'bar' } );
 			const editor = await TestEditor.create( { context, 'cfoo': 'bom' } );
 
-			expect( editor.config.get( 'cfoo' ) ).to.equal( 'bom' );
+			expect( editor.config.get( 'cfoo' ) ).toBe( 'bom' );
 		} );
 
 		it( 'should not copy plugins configuration', async () => {
@@ -314,7 +314,7 @@ describe( 'Editor', () => {
 			const context = await Context.create( { plugins: [ ContextPlugin ] } );
 			const editor = await TestEditor.create( { context } );
 
-			expect( editor.config.get( 'plugins' ) ).to.be.empty;
+			expect( editor.config.get( 'plugins' ) ).toHaveLength( 0 );
 		} );
 
 		it( 'should copy builtin plugins', async () => {
@@ -329,8 +329,8 @@ describe( 'Editor', () => {
 			const context = await Context.create( { plugins: [ ContextPlugin ] } );
 			const editor = await TestEditor.create( { context } );
 
-			expect( editor.config.get( 'plugins' ) ).to.deep.equal( [ PluginA ] );
-			expect( editor.config.get( 'plugins' ) ).to.not.equal( TestEditor.builtinPlugins );
+			expect( editor.config.get( 'plugins' ) ).toEqual( [ PluginA ] );
+			expect( editor.config.get( 'plugins' ) ).not.toBe( TestEditor.builtinPlugins );
 		} );
 
 		it( 'should pass DOM element using reference, not copy', async () => {
@@ -338,7 +338,7 @@ describe( 'Editor', () => {
 			const context = await Context.create( { efoo: element } );
 			const editor = await TestEditor.create( { context } );
 
-			expect( editor.config.get( 'efoo' ) ).to.equal( element );
+			expect( editor.config.get( 'efoo' ) ).toBe( element );
 		} );
 	} );
 
@@ -346,7 +346,7 @@ describe( 'Editor', () => {
 		it( 'should be empty on new editor', () => {
 			const editor = new TestEditor();
 
-			expect( getPlugins( editor ) ).to.be.empty;
+			expect( getPlugins( editor ) ).toHaveLength( 0 );
 		} );
 	} );
 
@@ -354,8 +354,9 @@ describe( 'Editor', () => {
 		it( 'should use Context#locale and Context#t', () => {
 			const editor = new TestEditor();
 
-			expect( editor.locale ).to.equal( editor._context.locale ).to.instanceof( Locale );
-			expect( editor.t ).to.equal( editor._context.t );
+			expect( editor.locale ).toBe( editor._context.locale );
+			expect( editor.locale ).toBeInstanceOf( Locale );
+			expect( editor.t ).toBe( editor._context.t );
 		} );
 
 		it( 'should use locale instance with a proper configuration passed as the argument to the constructor', () => {
@@ -363,8 +364,8 @@ describe( 'Editor', () => {
 				language: 'pl'
 			} );
 
-			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
-			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+			expect( editor.locale ).toHaveProperty( 'uiLanguage', 'pl' );
+			expect( editor.locale ).toHaveProperty( 'contentLanguage', 'pl' );
 		} );
 
 		it( 'should use locale instance with a proper configuration set as the defaultConfig option on the constructor', () => {
@@ -374,8 +375,8 @@ describe( 'Editor', () => {
 
 			const editor = new TestEditor();
 
-			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
-			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+			expect( editor.locale ).toHaveProperty( 'uiLanguage', 'pl' );
+			expect( editor.locale ).toHaveProperty( 'contentLanguage', 'pl' );
 		} );
 
 		it( 'should prefer the language passed as the argument to the constructor instead of the defaultConfig if both are set', () => {
@@ -387,8 +388,8 @@ describe( 'Editor', () => {
 				language: 'pl'
 			} );
 
-			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
-			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+			expect( editor.locale ).toHaveProperty( 'uiLanguage', 'pl' );
+			expect( editor.locale ).toHaveProperty( 'contentLanguage', 'pl' );
 		} );
 
 		it( 'should prefer the language from the context instead of the constructor config or defaultConfig if all are set', async () => {
@@ -399,8 +400,8 @@ describe( 'Editor', () => {
 			const context = await Context.create( { language: 'pl' } );
 			const editor = new TestEditor( { context, language: 'ru' } );
 
-			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
-			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+			expect( editor.locale ).toHaveProperty( 'uiLanguage', 'pl' );
+			expect( editor.locale ).toHaveProperty( 'contentLanguage', 'pl' );
 		} );
 	} );
 
@@ -408,12 +409,12 @@ describe( 'Editor', () => {
 		it( 'is `initializing` initially', () => {
 			const editor = new TestEditor();
 
-			expect( editor.state ).to.equal( 'initializing' );
+			expect( editor.state ).toBe( 'initializing' );
 		} );
 
 		it( 'is `ready` after initialization chain', () => {
 			return TestEditor.create().then( editor => {
-				expect( editor.state ).to.equal( 'ready' );
+				expect( editor.state ).toBe( 'ready' );
 
 				return editor.destroy();
 			} );
@@ -422,46 +423,50 @@ describe( 'Editor', () => {
 		it( 'is `destroyed` after editor destroy', () => {
 			return TestEditor.create().then( editor => {
 				return editor.destroy().then( () => {
-					expect( editor.state ).to.equal( 'destroyed' );
+					expect( editor.state ).toBe( 'destroyed' );
 				} );
 			} );
 		} );
 
 		it( 'is observable', () => {
 			const editor = new TestEditor();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.on( 'change:state', spy );
 
 			editor.state = 'ready';
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
-		it( 'reacts on #ready event', done => {
+		it( 'reacts on #ready event', () => {
 			const editor = new TestEditor();
 
-			expect( editor.state ).to.equal( 'initializing' );
+			expect( editor.state ).toBe( 'initializing' );
 
-			editor.on( 'ready', () => {
-				expect( editor.state ).to.equal( 'ready' );
-				done();
+			return new Promise( resolve => {
+				editor.on( 'ready', () => {
+					expect( editor.state ).toBe( 'ready' );
+					resolve();
+				} );
+
+				editor.fire( 'ready' );
 			} );
-
-			editor.fire( 'ready' );
 		} );
 
-		it( 'reacts on #destroy event', done => {
+		it( 'reacts on #destroy event', () => {
 			const editor = new TestEditor();
 
-			expect( editor.state ).to.equal( 'initializing' );
+			expect( editor.state ).toBe( 'initializing' );
 
-			editor.on( 'destroy', () => {
-				expect( editor.state ).to.equal( 'destroyed' );
-				done();
+			return new Promise( resolve => {
+				editor.on( 'destroy', () => {
+					expect( editor.state ).toBe( 'destroyed' );
+					resolve();
+				} );
+
+				editor.fire( 'destroy' );
 			} );
-
-			editor.fire( 'destroy' );
 		} );
 	} );
 
@@ -469,7 +474,7 @@ describe( 'Editor', () => {
 		it( 'should be set to false initially', () => {
 			const editor = new TestEditor();
 
-			expect( editor.isReadOnly ).to.be.false;
+			expect( editor.isReadOnly ).toBe( false );
 		} );
 
 		it( 'isReadOnly property should throw an error when set directly', () => {
@@ -488,11 +493,11 @@ describe( 'Editor', () => {
 
 			editor.disableReadOnlyMode( 'lock-1' );
 
-			expect( editor.isReadOnly ).to.be.true;
+			expect( editor.isReadOnly ).toBe( true );
 
 			editor.disableReadOnlyMode( 'lock-2' );
 
-			expect( editor.isReadOnly ).to.be.false;
+			expect( editor.isReadOnly ).toBe( false );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -509,11 +514,11 @@ describe( 'Editor', () => {
 
 			editor.disableReadOnlyMode( s1 );
 
-			expect( editor.isReadOnly ).to.be.true;
+			expect( editor.isReadOnly ).toBe( true );
 
 			editor.disableReadOnlyMode( s2 );
 
-			expect( editor.isReadOnly ).to.be.false;
+			expect( editor.isReadOnly ).toBe( false );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -523,15 +528,15 @@ describe( 'Editor', () => {
 		// the behavior is the same as when the `isReadOnly` would be a normal observable prop.
 		it( 'should be observable', async () => {
 			const editor = new TestEditor();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.on( 'change:isReadOnly', spy );
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			expect( spy.firstCall.args.slice( 1 ) ).to.deep.equal( [
+			expect( spy.mock.calls[ 0 ].slice( 1 ) ).toEqual( [
 				'isReadOnly',
 				true,
 				false
@@ -539,9 +544,9 @@ describe( 'Editor', () => {
 
 			editor.disableReadOnlyMode( 'unit-test' );
 
-			sinon.assert.calledTwice( spy );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 
-			expect( spy.secondCall.args.slice( 1 ) ).to.deep.equal( [
+			expect( spy.mock.calls[ 1 ].slice( 1 ) ).toEqual( [
 				'isReadOnly',
 				false,
 				true
@@ -566,11 +571,11 @@ describe( 'Editor', () => {
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			expect( customPlugin.isEditorReadOnly ).to.equal( true );
+			expect( customPlugin.isEditorReadOnly ).toBe( true );
 
 			editor.disableReadOnlyMode( 'unit-test' );
 
-			expect( customPlugin.isEditorReadOnly ).to.equal( false );
+			expect( customPlugin.isEditorReadOnly ).toBe( false );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -582,11 +587,11 @@ describe( 'Editor', () => {
 			editor.enableReadOnlyMode( 'lock' );
 			editor.enableReadOnlyMode( 'lock' );
 
-			expect( editor.isReadOnly ).to.be.true;
+			expect( editor.isReadOnly ).toBe( true );
 
 			editor.disableReadOnlyMode( 'lock' );
 
-			expect( editor.isReadOnly ).to.be.false;
+			expect( editor.isReadOnly ).toBe( false );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -597,16 +602,16 @@ describe( 'Editor', () => {
 
 			editor.disableReadOnlyMode( 'lock' );
 
-			expect( editor.isReadOnly ).to.be.false;
+			expect( editor.isReadOnly ).toBe( false );
 
 			editor.enableReadOnlyMode( 'lock' );
 
-			expect( editor.isReadOnly ).to.be.true;
+			expect( editor.isReadOnly ).toBe( true );
 
 			editor.disableReadOnlyMode( 'lock' );
 			editor.disableReadOnlyMode( 'lock' );
 
-			expect( editor.isReadOnly ).to.be.false;
+			expect( editor.isReadOnly ).toBe( false );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -647,7 +652,7 @@ describe( 'Editor', () => {
 		it( 'should have conversion property', async () => {
 			const editor = new TestEditor();
 
-			expect( editor ).to.have.property( 'conversion' );
+			expect( editor ).toHaveProperty( 'conversion' );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -662,7 +667,7 @@ describe( 'Editor', () => {
 				editor.conversion.for( 'editingDowncast' );
 				editor.conversion.for( 'dataDowncast' );
 				editor.conversion.for( 'upcast' );
-			} ).not.to.throw();
+			} ).not.toThrow();
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -672,52 +677,51 @@ describe( 'Editor', () => {
 	describe( 'destroy()', () => {
 		it( 'should fire "destroy"', () => {
 			return TestEditor.create().then( editor => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				editor.on( 'destroy', spy );
 
 				return editor.destroy().then( () => {
-					expect( spy.calledOnce ).to.be.true;
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 			} );
 		} );
 
 		it( 'should destroy all components it initialized', () => {
 			return TestEditor.create().then( editor => {
-				const dataDestroySpy = sinon.spy( editor.data, 'destroy' );
-				const modelDestroySpy = sinon.spy( editor.model, 'destroy' );
-				const editingDestroySpy = sinon.spy( editor.editing, 'destroy' );
-				const pluginsDestroySpy = sinon.spy( editor.plugins, 'destroy' );
-				const keystrokesDestroySpy = sinon.spy( editor.keystrokes, 'destroy' );
+				const dataDestroySpy = vi.spyOn( editor.data, 'destroy' );
+				const modelDestroySpy = vi.spyOn( editor.model, 'destroy' );
+				const editingDestroySpy = vi.spyOn( editor.editing, 'destroy' );
+				const pluginsDestroySpy = vi.spyOn( editor.plugins, 'destroy' );
+				const keystrokesDestroySpy = vi.spyOn( editor.keystrokes, 'destroy' );
 
 				return editor.destroy()
 					.then( () => {
-						sinon.assert.calledOnce( dataDestroySpy );
-						sinon.assert.calledOnce( modelDestroySpy );
-						sinon.assert.calledOnce( editingDestroySpy );
-						sinon.assert.calledOnce( pluginsDestroySpy );
-						sinon.assert.calledOnce( keystrokesDestroySpy );
+						expect( dataDestroySpy ).toHaveBeenCalledOnce();
+						expect( modelDestroySpy ).toHaveBeenCalledOnce();
+						expect( editingDestroySpy ).toHaveBeenCalledOnce();
+						expect( pluginsDestroySpy ).toHaveBeenCalledOnce();
+						expect( keystrokesDestroySpy ).toHaveBeenCalledOnce();
 					} );
 			} );
 		} );
 
-		it( 'should wait for the full init before destroying', done => {
-			const spy = sinon.spy();
+		it( 'should wait for the full init before destroying', () => {
+			const spy = vi.fn();
 			const editor = new TestEditor();
 
 			editor.on( 'destroy', () => {
 				spy();
 			} );
 
-			editor
-				.destroy()
-				.then( () => {
-					done();
-				} );
+			const destroyPromise = editor.destroy();
 
-			setTimeout( () => {
-				sinon.assert.notCalled( spy );
-				editor.fire( 'ready' );
+			return new Promise( resolve => {
+				setTimeout( () => {
+					expect( spy ).not.toHaveBeenCalled();
+					editor.fire( 'ready' );
+					destroyPromise.then( resolve );
+				} );
 			} );
 		} );
 	} );
@@ -731,12 +735,12 @@ describe( 'Editor', () => {
 			const editor = new TestEditor();
 
 			const command = new SomeCommand( editor );
-			sinon.spy( command, 'execute' );
+			vi.spyOn( command, 'execute' );
 
 			editor.commands.add( 'someCommand', command );
 			editor.execute( 'someCommand' );
 
-			expect( command.execute.calledOnce ).to.be.true;
+			expect( command.execute ).toHaveBeenCalledOnce();
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -751,14 +755,14 @@ describe( 'Editor', () => {
 			const command = new SomeCommand( editor );
 
 			const commandResult = { foo: 'bar' };
-			sinon.stub( command, 'execute' ).returns( commandResult );
+			vi.spyOn( command, 'execute' ).mockReturnValue( commandResult );
 
 			editor.commands.add( 'someCommand', command );
 
 			const editorResult = editor.execute( 'someCommand' );
 
-			expect( editorResult, 'editor.execute()' ).to.equal( commandResult );
-			expect( editorResult, 'editor.execute()' ).to.deep.equal( { foo: 'bar' } );
+			expect( editorResult ).toBe( commandResult );
+			expect( editorResult ).toEqual( { foo: 'bar' } );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -793,7 +797,7 @@ describe( 'Editor', () => {
 
 			expect( () => {
 				editor.execute( 'someCommand' );
-			} ).to.throw( TypeError, /foo/ );
+			} ).toThrow( TypeError );
 		} );
 
 		it( 'should rethrow custom CKEditorError errors', async () => {
@@ -824,12 +828,12 @@ describe( 'Editor', () => {
 	describe( 'focus()', () => {
 		it( 'should call view\'s focus() method', async () => {
 			const editor = new TestEditor();
-			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			editor.editing.view.document.isFocused = true;
 			editor.focus();
 
-			expect( focusSpy.calledOnce ).to.be.true;
+			expect( focusSpy ).toHaveBeenCalledOnce();
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -837,10 +841,14 @@ describe( 'Editor', () => {
 	} );
 
 	describe( 'create()', () => {
+		it( 'should throw when called on the base Editor class directly', () => {
+			expect( () => Editor.create() ).toThrow( 'This is an abstract method.' );
+		} );
+
 		it( 'should return a promise that resolves properly', async () => {
 			const promise = TestEditor.create();
 
-			expect( promise ).to.be.an.instanceof( Promise );
+			expect( promise ).toBeInstanceOf( Promise );
 
 			await promise.then( editor => editor.destroy() );
 		} );
@@ -848,9 +856,9 @@ describe( 'Editor', () => {
 		it( 'loads plugins', () => {
 			return TestEditor.create( { plugins: [ PluginA ] } )
 				.then( editor => {
-					expect( getPlugins( editor ).length ).to.equal( 1 );
+					expect( getPlugins( editor ).length ).toBe( 1 );
 
-					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginA ) ).toBeInstanceOf( Plugin );
 
 					return editor.destroy();
 				} );
@@ -871,7 +879,7 @@ describe( 'Editor', () => {
 
 			return TestEditor.create( { plugins: [ EventWatcher ] } )
 				.then( editor => {
-					expect( fired ).to.deep.equal( [ 'ready' ] );
+					expect( fired ).toEqual( [ 'ready' ] );
 
 					return editor.destroy();
 				} );
@@ -884,13 +892,13 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginB ]
 			} );
 
-			expect( getPlugins( editor ) ).to.be.empty;
+			expect( getPlugins( editor ) ).toHaveLength( 0 );
 
 			return editor.initPlugins().then( () => {
-				expect( getPlugins( editor ).length ).to.equal( 2 );
+				expect( getPlugins( editor ).length ).toBe( 2 );
 
-				expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
-				expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+				expect( editor.plugins.get( PluginA ) ).toBeInstanceOf( Plugin );
+				expect( editor.plugins.get( PluginB ) ).toBeInstanceOf( Plugin );
 
 				editor.fire( 'ready' );
 				return editor.destroy();
@@ -904,16 +912,22 @@ describe( 'Editor', () => {
 
 			return editor.initPlugins()
 				.then( () => {
-					sinon.assert.callOrder(
-						editor.plugins.get( PluginA ).init,
-						editor.plugins.get( PluginB ).init,
-						editor.plugins.get( PluginC ).init,
-						editor.plugins.get( PluginD ).init,
-						editor.plugins.get( PluginA ).afterInit,
-						editor.plugins.get( PluginB ).afterInit,
-						editor.plugins.get( PluginC ).afterInit,
-						editor.plugins.get( PluginD ).afterInit
-					);
+					const pluginAInit = editor.plugins.get( PluginA ).init;
+					const pluginBInit = editor.plugins.get( PluginB ).init;
+					const pluginCInit = editor.plugins.get( PluginC ).init;
+					const pluginDInit = editor.plugins.get( PluginD ).init;
+					const pluginAAfterInit = editor.plugins.get( PluginA ).afterInit;
+					const pluginBAfterInit = editor.plugins.get( PluginB ).afterInit;
+					const pluginCAfterInit = editor.plugins.get( PluginC ).afterInit;
+					const pluginDAfterInit = editor.plugins.get( PluginD ).afterInit;
+
+					expect( pluginAInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginBInit.mock.invocationCallOrder[ 0 ] );
+					expect( pluginBInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginCInit.mock.invocationCallOrder[ 0 ] );
+					expect( pluginCInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginDInit.mock.invocationCallOrder[ 0 ] );
+					expect( pluginDInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginAAfterInit.mock.invocationCallOrder[ 0 ] );
+					expect( pluginAAfterInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginBAfterInit.mock.invocationCallOrder[ 0 ] );
+					expect( pluginBAfterInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginCAfterInit.mock.invocationCallOrder[ 0 ] );
+					expect( pluginCAfterInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginDAfterInit.mock.invocationCallOrder[ 0 ] );
 
 					editor.fire( 'ready' );
 					return editor.destroy();
@@ -921,13 +935,13 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should initialize plugins in the right order, waiting for asynchronous init()', () => {
-			const asyncSpy = sinon.spy().named( 'async-call-spy' );
+			const asyncSpy = vi.fn();
 
 			// Synchronous plugin that depends on an asynchronous one.
 			class PluginSync extends Plugin {
 				constructor( editor ) {
 					super( editor );
-					this.init = sinon.spy().named( 'sync' );
+					this.init = vi.fn();
 				}
 
 				static get requires() {
@@ -939,7 +953,7 @@ describe( 'Editor', () => {
 				constructor( editor ) {
 					super( editor );
 
-					this.init = sinon.spy( () => {
+					this.init = vi.fn( () => {
 						return new Promise( resolve => {
 							setTimeout( () => {
 								asyncSpy();
@@ -956,13 +970,12 @@ describe( 'Editor', () => {
 
 			return editor.initPlugins()
 				.then( () => {
-					sinon.assert.callOrder(
-						editor.plugins.get( PluginA ).init,
-						editor.plugins.get( PluginAsync ).init,
-						// This one is called with delay by the async init.
-						asyncSpy,
-						editor.plugins.get( PluginSync ).init
-					);
+					const pluginAInit = editor.plugins.get( PluginA ).init;
+					const pluginAsyncInit = editor.plugins.get( PluginAsync ).init;
+					const pluginSyncInit = editor.plugins.get( PluginSync ).init;
+
+					expect( pluginAInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginAsyncInit.mock.invocationCallOrder[ 0 ] );
+					expect( asyncSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginSyncInit.mock.invocationCallOrder[ 0 ] );
 
 					editor.fire( 'ready' );
 					return editor.destroy();
@@ -970,13 +983,13 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should initialize plugins in the right order, waiting for asynchronous afterInit()', () => {
-			const asyncSpy = sinon.spy().named( 'async-call-spy' );
+			const asyncSpy = vi.fn();
 
 			// Synchronous plugin that depends on an asynchronous one.
 			class PluginSync extends Plugin {
 				constructor( editor ) {
 					super( editor );
-					this.afterInit = sinon.spy().named( 'sync' );
+					this.afterInit = vi.fn();
 				}
 
 				static get requires() {
@@ -988,7 +1001,7 @@ describe( 'Editor', () => {
 				constructor( editor ) {
 					super( editor );
 
-					this.afterInit = sinon.spy( () => {
+					this.afterInit = vi.fn( () => {
 						return new Promise( resolve => {
 							setTimeout( () => {
 								asyncSpy();
@@ -1005,14 +1018,14 @@ describe( 'Editor', () => {
 
 			return editor.initPlugins()
 				.then( () => {
-					sinon.assert.callOrder(
-						editor.plugins.get( PluginA ).afterInit,
-						editor.plugins.get( PluginAsync ).afterInit,
+					const pluginAAfterInit = editor.plugins.get( PluginA ).afterInit;
+					const pluginAsyncAfterInit = editor.plugins.get( PluginAsync ).afterInit;
+					const pluginSyncAfterInit = editor.plugins.get( PluginSync ).afterInit;
 
-						// This one is called with delay by the async init.
-						asyncSpy,
-						editor.plugins.get( PluginSync ).afterInit
-					);
+					expect( pluginAAfterInit.mock.invocationCallOrder[ 0 ] )
+						.toBeLessThan( pluginAsyncAfterInit.mock.invocationCallOrder[ 0 ] );
+					expect( asyncSpy.mock.invocationCallOrder[ 0 ] )
+						.toBeLessThan( pluginSyncAfterInit.mock.invocationCallOrder[ 0 ] );
 
 					editor.fire( 'ready' );
 					return editor.destroy();
@@ -1026,11 +1039,11 @@ describe( 'Editor', () => {
 
 			return editor.initPlugins()
 				.then( () => {
-					expect( getPlugins( editor ).length ).to.equal( 3 );
+					expect( getPlugins( editor ).length ).toBe( 3 );
 
-					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginA ) ).toBeInstanceOf( Plugin );
+					expect( editor.plugins.get( PluginB ) ).toBeInstanceOf( Plugin );
+					expect( editor.plugins.get( PluginC ) ).toBeInstanceOf( Plugin );
 
 					editor.fire( 'ready' );
 					return editor.destroy();
@@ -1048,9 +1061,9 @@ describe( 'Editor', () => {
 
 			return editor.initPlugins()
 				.then( () => {
-					expect( getPlugins( editor ).length ).to.equal( 1 );
+					expect( getPlugins( editor ).length ).toBe( 1 );
 
-					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginA ) ).toBeInstanceOf( Plugin );
 
 					editor.fire( 'ready' );
 					return editor.destroy();
@@ -1073,12 +1086,12 @@ describe( 'Editor', () => {
 
 			return editor.initPlugins()
 				.then( () => {
-					expect( getPlugins( editor ).length ).to.equal( 4 );
+					expect( getPlugins( editor ).length ).toBe( 4 );
 
-					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PrivatePlugin ) ).to.be.an.instanceof( PrivatePlugin );
+					expect( editor.plugins.get( PluginA ) ).toBeInstanceOf( Plugin );
+					expect( editor.plugins.get( PluginB ) ).toBeInstanceOf( Plugin );
+					expect( editor.plugins.get( PluginC ) ).toBeInstanceOf( Plugin );
+					expect( editor.plugins.get( PrivatePlugin ) ).toBeInstanceOf( PrivatePlugin );
 
 					editor.fire( 'ready' );
 					return editor.destroy();
@@ -1098,11 +1111,11 @@ describe( 'Editor', () => {
 
 			return editor.initPlugins()
 				.then( () => {
-					expect( getPlugins( editor ).length ).to.equal( 3 );
+					expect( getPlugins( editor ).length ).toBe( 3 );
 
-					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginD ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginB ) ).toBeInstanceOf( Plugin );
+					expect( editor.plugins.get( PluginC ) ).toBeInstanceOf( Plugin );
+					expect( editor.plugins.get( PluginD ) ).toBeInstanceOf( Plugin );
 
 					editor.fire( 'ready' );
 					return editor.destroy();
@@ -1122,11 +1135,11 @@ describe( 'Editor', () => {
 
 			return editor.initPlugins()
 				.then( () => {
-					expect( getPlugins( editor ).length ).to.equal( 3 );
+					expect( getPlugins( editor ).length ).toBe( 3 );
 
-					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginD ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginB ) ).toBeInstanceOf( Plugin );
+					expect( editor.plugins.get( PluginC ) ).toBeInstanceOf( Plugin );
+					expect( editor.plugins.get( PluginD ) ).toBeInstanceOf( Plugin );
 
 					editor.fire( 'ready' );
 					return editor.destroy();
@@ -1142,8 +1155,8 @@ describe( 'Editor', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						expect( getPlugins( editor ).length ).to.equal( 1 );
-						expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+						expect( getPlugins( editor ).length ).toBe( 1 );
+						expect( editor.plugins.get( PluginA ) ).toBeInstanceOf( Plugin );
 
 						editor.fire( 'ready' );
 						return editor.destroy();
@@ -1159,8 +1172,8 @@ describe( 'Editor', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						expect( getPlugins( editor ).length ).to.equal( 1 );
-						expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+						expect( getPlugins( editor ).length ).toBe( 1 );
+						expect( editor.plugins.get( PluginA ) ).toBeInstanceOf( Plugin );
 
 						editor.fire( 'ready' );
 						return editor.destroy();
@@ -1178,8 +1191,8 @@ describe( 'Editor', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						expect( getPlugins( editor ).length ).to.equal( 1 );
-						expect( editor.plugins.get( PluginA ) ).to.not.be.undefined;
+						expect( getPlugins( editor ).length ).toBe( 1 );
+						expect( editor.plugins.get( PluginA ) ).not.toBeUndefined();
 
 						editor.fire( 'ready' );
 						return editor.destroy();
@@ -1196,8 +1209,8 @@ describe( 'Editor', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						expect( getPlugins( editor ).length ).to.equal( 3 );
-						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+						expect( getPlugins( editor ).length ).toBe( 3 );
+						expect( editor.plugins.get( PluginB ) ).toBeInstanceOf( Plugin );
 
 						editor.fire( 'ready' );
 						return editor.destroy();
@@ -1212,8 +1225,8 @@ describe( 'Editor', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						expect( getPlugins( editor ).length ).to.equal( 2 );
-						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+						expect( getPlugins( editor ).length ).toBe( 2 );
+						expect( editor.plugins.get( PluginB ) ).toBeInstanceOf( Plugin );
 
 						editor.fire( 'ready' );
 						return editor.destroy();
@@ -1229,8 +1242,8 @@ describe( 'Editor', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						expect( getPlugins( editor ).length ).to.equal( 2 );
-						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+						expect( getPlugins( editor ).length ).toBe( 2 );
+						expect( editor.plugins.get( PluginB ) ).toBeInstanceOf( Plugin );
 
 						editor.fire( 'ready' );
 						return editor.destroy();
@@ -1248,8 +1261,8 @@ describe( 'Editor', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						expect( getPlugins( editor ).length ).to.equal( 2 );
-						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+						expect( getPlugins( editor ).length ).toBe( 2 );
+						expect( editor.plugins.get( PluginB ) ).toBeInstanceOf( Plugin );
 
 						editor.fire( 'ready' );
 						return editor.destroy();
@@ -1286,9 +1299,9 @@ describe( 'Editor', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						expect( getPlugins( editor ).length ).to.equal( 1 );
-						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
-						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+						expect( getPlugins( editor ).length ).toBe( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).toBeInstanceOf( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).toBeInstanceOf( NoErrorPlugin );
 
 						editor.fire( 'ready' );
 						return editor.destroy();
@@ -1323,9 +1336,9 @@ describe( 'Editor', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						expect( getPlugins( editor ).length ).to.equal( 1 );
-						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
-						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+						expect( getPlugins( editor ).length ).toBe( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).toBeInstanceOf( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).toBeInstanceOf( NoErrorPlugin );
 
 						editor.fire( 'ready' );
 						return editor.destroy();
@@ -1363,9 +1376,9 @@ describe( 'Editor', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						expect( getPlugins( editor ).length ).to.equal( 1 );
-						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
-						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+						expect( getPlugins( editor ).length ).toBe( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).toBeInstanceOf( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).toBeInstanceOf( NoErrorPlugin );
 
 						Editor.builtinPlugins = originalBuiltinPlugins;
 
@@ -1382,11 +1395,12 @@ describe( 'Editor', () => {
 
 			return editor.initPlugins()
 				.then( () => {
-					sinon.assert.callOrder(
-						editor.plugins.get( PluginA ).init,
-						editor.plugins.get( PluginE ).init,
-						editor.plugins.get( PluginA ).afterInit
-					);
+					const pluginAInit = editor.plugins.get( PluginA ).init;
+					const pluginEInit = editor.plugins.get( PluginE ).init;
+					const pluginAAfterInit = editor.plugins.get( PluginA ).afterInit;
+
+					expect( pluginAInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginEInit.mock.invocationCallOrder[ 0 ] );
+					expect( pluginEInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginAAfterInit.mock.invocationCallOrder[ 0 ] );
 
 					editor.fire( 'ready' );
 					return editor.destroy();
@@ -1400,11 +1414,12 @@ describe( 'Editor', () => {
 
 			return editor.initPlugins()
 				.then( () => {
-					sinon.assert.callOrder(
-						editor.plugins.get( PluginA ).init,
-						editor.plugins.get( PluginA ).afterInit,
-						editor.plugins.get( PluginF ).afterInit
-					);
+					const pluginAInit = editor.plugins.get( PluginA ).init;
+					const pluginAAfterInit = editor.plugins.get( PluginA ).afterInit;
+					const pluginFAfterInit = editor.plugins.get( PluginF ).afterInit;
+
+					expect( pluginAInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginAAfterInit.mock.invocationCallOrder[ 0 ] );
+					expect( pluginAAfterInit.mock.invocationCallOrder[ 0 ] ).toBeLessThan( pluginFAfterInit.mock.invocationCallOrder[ 0 ] );
 
 					editor.fire( 'ready' );
 					return editor.destroy();
@@ -1431,45 +1446,49 @@ describe( 'Editor', () => {
 
 		describe( 'setData()', () => {
 			it( 'should be added to editor interface', () => {
-				expect( editor ).have.property( 'setData' ).to.be.a( 'function' );
+				expect( editor ).toHaveProperty( 'setData' );
+				expect( typeof editor.setData ).toBe( 'function' );
 			} );
 
 			it( 'should set data of the first root', () => {
 				editor.setData( 'foo' );
 
-				expect( _getModelData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
+				expect( _getModelData( editor.model, { rootName: 'main', withoutSelection: true } ) ).toBe( 'foo' );
 			} );
 		} );
 
 		describe( 'getData()', () => {
-			testUtils.createSinonSandbox();
+			afterEach( () => {
+				vi.restoreAllMocks();
+			} );
 
 			it( 'should be added to editor interface', () => {
-				expect( editor ).have.property( 'getData' ).to.be.a( 'function' );
+				expect( editor ).toHaveProperty( 'getData' );
+				expect( typeof editor.getData ).toBe( 'function' );
 			} );
 
 			it( 'should get data of the first root', () => {
 				_setModelData( editor.model, 'foo' );
 
-				expect( editor.getData() ).to.equal( 'foo' );
+				expect( editor.getData() ).toBe( 'foo' );
 			} );
 
 			it( 'should get data of the second root', () => {
 				_setModelData( editor.model, 'bar', { rootName: 'secondRoot' } );
 
-				expect( editor.getData( { rootName: 'secondRoot' } ) ).to.equal( 'bar' );
+				expect( editor.getData( { rootName: 'secondRoot' } ) ).toBe( 'bar' );
 			} );
 
 			it( 'should pass options object to data.get() method internally', () => {
-				const spy = testUtils.sinon.spy( editor.data, 'get' );
+				const spy = vi.spyOn( editor.data, 'get' );
 				const options = { rootName: 'main', trim: 'none' };
 
 				_setModelData( editor.model, 'foo' );
 
-				expect( editor.getData( options ) ).to.equal( 'foo' );
+				expect( editor.getData( options ) ).toBe( 'foo' );
 
-				testUtils.sinon.assert.calledOnce( spy );
-				testUtils.sinon.assert.calledWith( spy, options );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( options );
 			} );
 		} );
 	} );
@@ -1487,20 +1506,20 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should extend root schema with allowed attribute', () => {
-			expect( model.schema.checkAttribute( '$root', 'foo' ) ).to.be.false;
+			expect( model.schema.checkAttribute( '$root', 'foo' ) ).toBe( false );
 
 			editor.registerRootAttribute( 'foo' );
 
-			expect( model.schema.checkAttribute( '$root', 'foo' ) ).to.be.true;
+			expect( model.schema.checkAttribute( '$root', 'foo' ) ).toBe( true );
 		} );
 
 		it( 'should not crash if registered the same attribute twice', () => {
-			expect( model.schema.checkAttribute( '$root', 'bar' ) ).to.be.false;
+			expect( model.schema.checkAttribute( '$root', 'bar' ) ).toBe( false );
 
 			editor.registerRootAttribute( 'bar' );
 			editor.registerRootAttribute( 'bar' );
 
-			expect( model.schema.checkAttribute( '$root', 'bar' ) ).to.be.true;
+			expect( model.schema.checkAttribute( '$root', 'bar' ) ).toBe( true );
 		} );
 	} );
 
@@ -1518,7 +1537,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should not crash if there are no attributes registered', () => {
-			expect( editor.getRootAttributes() ).to.be.deep.equal( {} );
+			expect( editor.getRootAttributes() ).toEqual( {} );
 		} );
 
 		it( 'should throw exception when accessing non existing root', () => {
@@ -1535,22 +1554,22 @@ describe( 'Editor', () => {
 				writer.setAttribute( 'bar', 1, root );
 			} );
 
-			expect( root.getAttribute( 'bar' ) ).to.be.equal( 1 );
-			expect( editor.getRootAttributes() ).to.be.deep.equal( {} );
+			expect( root.getAttribute( 'bar' ) ).toBe( 1 );
+			expect( editor.getRootAttributes() ).toEqual( {} );
 
 			editor.registerRootAttribute( 'bar' );
 
-			expect( editor.getRootAttributes() ).to.be.deep.equal( {
+			expect( editor.getRootAttributes() ).toEqual( {
 				bar: 1
 			} );
 		} );
 
 		it( 'should return `null` if registered attribute is not present on the root', () => {
-			expect( editor.getRootAttributes() ).to.be.deep.equal( {} );
+			expect( editor.getRootAttributes() ).toEqual( {} );
 
 			editor.registerRootAttribute( 'bar' );
 
-			expect( editor.getRootAttributes() ).to.be.deep.equal( {
+			expect( editor.getRootAttributes() ).toEqual( {
 				bar: null
 			} );
 		} );
@@ -1563,11 +1582,11 @@ describe( 'Editor', () => {
 				writer.setAttribute( 'bar', 1, model.document.getRoot( 'second' ) );
 			} );
 
-			expect( editor.getRootAttributes() ).to.be.deep.equal( {
+			expect( editor.getRootAttributes() ).toEqual( {
 				bar: null
 			} );
 
-			expect( editor.getRootAttributes( 'second' ) ).to.be.deep.equal( {
+			expect( editor.getRootAttributes( 'second' ) ).toEqual( {
 				bar: 1
 			} );
 		} );
@@ -1575,15 +1594,15 @@ describe( 'Editor', () => {
 
 	describe( 'static fields', () => {
 		it( 'Editor.Context', () => {
-			expect( Editor.Context ).to.equal( Context );
+			expect( Editor.Context ).toBe( Context );
 		} );
 
 		it( 'Editor.EditorWatchdog', () => {
-			expect( Editor.EditorWatchdog ).to.equal( EditorWatchdog );
+			expect( Editor.EditorWatchdog ).toBe( EditorWatchdog );
 		} );
 
 		it( 'Editor.ContextWatchdog', () => {
-			expect( Editor.ContextWatchdog ).to.equal( ContextWatchdog );
+			expect( Editor.ContextWatchdog ).toBe( ContextWatchdog );
 		} );
 	} );
 } );

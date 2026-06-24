@@ -110,8 +110,10 @@ export class ListItemGroupView extends View {
 	 * Focuses the list item (which is not a separator).
 	 */
 	public focus(): void {
+		/* v8 ignore else -- @preserve */
 		if ( this.items ) {
 			const firstListItem = this.items.find( item => !( item instanceof ListSeparatorView ) ) as ListItemView | ListItemGroupView;
+
 			if ( firstListItem ) {
 				firstListItem.focus();
 			}

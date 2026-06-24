@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, expect, it } from 'vitest';
 import { toMap } from '../src/tomap.js';
 import { count } from '../src/count.js';
 

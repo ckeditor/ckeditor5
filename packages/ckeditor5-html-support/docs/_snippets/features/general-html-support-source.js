@@ -64,6 +64,9 @@ export class GHSEditor extends ClassicEditor {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
+		},
+		list: {
+			enableSkipLevelLists: true
 		}
 	};
 }

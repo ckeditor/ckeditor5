@@ -7,7 +7,7 @@
  * @module list/listformatting/listitemfontcolorintegration
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { type ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import { ListEditing } from '../list/listediting.js';
@@ -34,8 +34,8 @@ export class ListItemFontColorIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ListEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ ListEditing ]> {
+		return [ ListEditing ];
 	}
 
 	/**
@@ -60,6 +60,7 @@ export class ListItemFontColorIntegration extends Plugin {
 			attributeName: 'listItemFontColor',
 
 			setAttributeOnDowncast( writer, value, viewElement ) {
+				/* v8 ignore next -- Downcast callbacks are only registered for meaningful list marker formatting values. */
 				if ( value ) {
 					writer.addClass( 'ck-list-marker-color', viewElement );
 					writer.setStyle( '--ck-content-list-marker-color', value as string, viewElement );

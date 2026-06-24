@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -44,7 +45,7 @@ describe( 'ListReversedCommand', () => {
 		it( 'should be false if selected a paragraph', () => {
 			_setModelData( model, modelList( [ 'Foo[]' ] ) );
 
-			expect( listReversedCommand.isEnabled ).to.be.false;
+			expect( listReversedCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection starts in a paragraph and ends in a list item', () => {
@@ -53,31 +54,31 @@ describe( 'ListReversedCommand', () => {
 				# Bar] {reversed:true}
 			` ) );
 
-			expect( listReversedCommand.isEnabled ).to.be.false;
+			expect( listReversedCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection is inside a listItem (listType: bulleted)', () => {
 			_setModelData( model, modelList( [ '* Foo[]' ] ) );
 
-			expect( listReversedCommand.isEnabled ).to.be.false;
+			expect( listReversedCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection is inside a to-do list item', () => {
 			_setModelData( model, '<paragraph listType="todo" listItemId="a" listIndent="0">foo[]</paragraph>' );
 
-			expect( listReversedCommand.isEnabled ).to.be.false;
+			expect( listReversedCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if selection is inside a listItem (collapsed selection)', () => {
 			_setModelData( model, modelList( [ '# Foo[] {reversed:true}' ] ) );
 
-			expect( listReversedCommand.isEnabled ).to.be.true;
+			expect( listReversedCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if selection is inside a listItem (non-collapsed selection)', () => {
 			_setModelData( model, modelList( [ '# [Foo] {reversed:false}' ] ) );
 
-			expect( listReversedCommand.isEnabled ).to.be.true;
+			expect( listReversedCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true attribute if selected more elements in the same list', () => {
@@ -87,7 +88,7 @@ describe( 'ListReversedCommand', () => {
 				# 3.
 			` ) );
 
-			expect( listReversedCommand.isEnabled ).to.be.true;
+			expect( listReversedCommand.isEnabled ).toBe( true );
 		} );
 	} );
 
@@ -95,7 +96,7 @@ describe( 'ListReversedCommand', () => {
 		it( 'should return null if selected a paragraph', () => {
 			_setModelData( model, modelList( [ 'Foo' ] ) );
 
-			expect( listReversedCommand.value ).to.equal( null );
+			expect( listReversedCommand.value ).toBeNull();
 		} );
 
 		it( 'should return null if selection starts in a paragraph and ends in a list item', () => {
@@ -104,33 +105,33 @@ describe( 'ListReversedCommand', () => {
 				# Bar]
 			` ) );
 
-			expect( listReversedCommand.value ).to.equal( null );
+			expect( listReversedCommand.value ).toBeNull();
 		} );
 
 		it( 'should return null if selection is inside a listItem (listType: bulleted)', () => {
 			_setModelData( model, modelList( [ '* Foo[]' ] ) );
 
-			expect( listReversedCommand.value ).to.be.null;
+			expect( listReversedCommand.value ).toBeNull();
 		} );
 
 		it( 'should return the value of `listReversed` attribute if selection is inside a list item (collapsed selection)', () => {
 			_setModelData( model, modelList( [ '# Foo[] {reversed:true}' ] ) );
 
-			expect( listReversedCommand.value ).to.be.true;
+			expect( listReversedCommand.value ).toBe( true );
 
 			_setModelData( model, modelList( [ '# Foo[] {reversed:false}' ] ) );
 
-			expect( listReversedCommand.value ).to.be.false;
+			expect( listReversedCommand.value ).toBe( false );
 		} );
 
 		it( 'should return the value of `listReversed` attribute if selection is inside a list item (non-collapsed selection)', () => {
 			_setModelData( model, modelList( [ '# [Foo] {reversed:false}' ] ) );
 
-			expect( listReversedCommand.value ).to.be.false;
+			expect( listReversedCommand.value ).toBe( false );
 
 			_setModelData( model, modelList( [ '# [Foo] {reversed:true}' ] ) );
 
-			expect( listReversedCommand.value ).to.be.true;
+			expect( listReversedCommand.value ).toBe( true );
 		} );
 
 		it( 'should return the value of `listReversed` attribute if selected more elements in the same list', () => {
@@ -140,7 +141,7 @@ describe( 'ListReversedCommand', () => {
 				# 3.
 			` ) );
 
-			expect( listReversedCommand.value ).to.be.true;
+			expect( listReversedCommand.value ).toBe( true );
 		} );
 
 		it( 'should return the value of `listReversed` attribute for the selection inside a nested list', () => {
@@ -150,7 +151,7 @@ describe( 'ListReversedCommand', () => {
 				# 2.
 			` ) );
 
-			expect( listReversedCommand.value ).to.be.true;
+			expect( listReversedCommand.value ).toBe( true );
 		} );
 
 		it( 'should return the value of `listReversed` attribute from a list where the selection starts (selection over nested list)',
@@ -161,7 +162,7 @@ describe( 'ListReversedCommand', () => {
 					# 2.]
 				` ) );
 
-				expect( listReversedCommand.value ).to.be.true;
+				expect( listReversedCommand.value ).toBe( true );
 			}
 		);
 	} );

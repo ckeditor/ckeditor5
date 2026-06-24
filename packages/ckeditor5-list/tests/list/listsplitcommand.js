@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ListSplitCommand } from '../../src/list/listsplitcommand.js';
 import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
@@ -10,13 +12,13 @@ import { modelList } from './_utils/utils.js';
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'ListSplitCommand', () => {
 	let editor, command, model, doc, root;
 	let changedBlocks;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editor = new Editor();
@@ -54,7 +56,7 @@ describe( 'ListSplitCommand', () => {
 					'[]'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection is not collapsed in a list item', () => {
@@ -63,7 +65,7 @@ describe( 'ListSplitCommand', () => {
 					'  [b]'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection is in the first block of a list item', () => {
@@ -71,7 +73,7 @@ describe( 'ListSplitCommand', () => {
 					'* a[]'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true if selection is collapsed in a non-first block of a list item', () => {
@@ -80,28 +82,28 @@ describe( 'ListSplitCommand', () => {
 					'  []'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 
 				_setModelData( model, modelList( [
 					'* a',
 					'  b[]'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 
 				_setModelData( model, modelList( [
 					'* a',
 					'  []b'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 
 				_setModelData( model, modelList( [
 					'* a',
 					'  b[]c'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 
 				_setModelData( model, modelList( [
 					'* a',
@@ -109,7 +111,7 @@ describe( 'ListSplitCommand', () => {
 					'  d'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -121,11 +123,11 @@ describe( 'ListSplitCommand', () => {
 				] ) );
 
 				model.change( writer => {
-					expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
+					expect( writer.batch.operations.length, 'before' ).toBe( 0 );
 
 					command.execute();
 
-					expect( writer.batch.operations.length, 'after' ).to.be.above( 0 );
+					expect( writer.batch.operations.length, 'after' ).toBeGreaterThan( 0 );
 				} );
 			} );
 
@@ -142,7 +144,7 @@ describe( 'ListSplitCommand', () => {
 					'* [] {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 1 )
 				] );
 			} );
@@ -162,7 +164,7 @@ describe( 'ListSplitCommand', () => {
 					'* [] {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 2 )
 				] );
 			} );
@@ -184,7 +186,7 @@ describe( 'ListSplitCommand', () => {
 					'* '
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 2 )
 				] );
 			} );
@@ -206,7 +208,7 @@ describe( 'ListSplitCommand', () => {
 					'  * [] {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 3 )
 				] );
 			} );
@@ -230,7 +232,7 @@ describe( 'ListSplitCommand', () => {
 					'    e'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 3 ),
 					root.getChild( 4 )
 				] );
@@ -259,7 +261,7 @@ describe( 'ListSplitCommand', () => {
 					'* g'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 3 ),
 					root.getChild( 4 )
 				] );
@@ -282,7 +284,7 @@ describe( 'ListSplitCommand', () => {
 					'[]'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection is not collapsed in a list item', () => {
@@ -291,7 +293,7 @@ describe( 'ListSplitCommand', () => {
 					'  [b]'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection is in the first empty block of a list item not followed by another block', () => {
@@ -299,7 +301,7 @@ describe( 'ListSplitCommand', () => {
 					'* []'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection is in the first block of a list item not followed by another block', () => {
@@ -307,7 +309,7 @@ describe( 'ListSplitCommand', () => {
 					'* a[]'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true if selection is collapsed in a block followed by another block in the same list item', () => {
@@ -316,7 +318,7 @@ describe( 'ListSplitCommand', () => {
 					'  a'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 
 				_setModelData( model, modelList( [
 					'* a',
@@ -324,7 +326,7 @@ describe( 'ListSplitCommand', () => {
 					'  b'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 
 				_setModelData( model, modelList( [
 					'* a',
@@ -332,7 +334,7 @@ describe( 'ListSplitCommand', () => {
 					'  d'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -344,11 +346,11 @@ describe( 'ListSplitCommand', () => {
 				] ) );
 
 				model.change( writer => {
-					expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
+					expect( writer.batch.operations.length, 'before' ).toBe( 0 );
 
 					command.execute();
 
-					expect( writer.batch.operations.length, 'after' ).to.be.above( 0 );
+					expect( writer.batch.operations.length, 'after' ).toBeGreaterThan( 0 );
 				} );
 			} );
 
@@ -365,7 +367,7 @@ describe( 'ListSplitCommand', () => {
 					'* a {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 1 )
 				] );
 			} );
@@ -385,7 +387,7 @@ describe( 'ListSplitCommand', () => {
 					'* c {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 2 )
 				] );
 			} );
@@ -407,7 +409,7 @@ describe( 'ListSplitCommand', () => {
 					'* '
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 2 )
 				] );
 			} );
@@ -429,7 +431,7 @@ describe( 'ListSplitCommand', () => {
 					'  * b {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 3 )
 				] );
 			} );
@@ -453,7 +455,7 @@ describe( 'ListSplitCommand', () => {
 					'  * e {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 4 )
 				] );
 			} );
@@ -481,7 +483,7 @@ describe( 'ListSplitCommand', () => {
 					'* g'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					root.getChild( 4 )
 				] );
 			} );

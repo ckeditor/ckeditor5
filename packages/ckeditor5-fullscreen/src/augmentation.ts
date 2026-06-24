@@ -31,4 +31,3 @@ declare module '@ckeditor/ckeditor5-core' {
 		toggleFullscreen: FullscreenCommand;
 	}
 }
-

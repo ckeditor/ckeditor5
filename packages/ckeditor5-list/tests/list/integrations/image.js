@@ -3,12 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ListEditing } from '../../../src/list/listediting.js';
 import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
 
 import { Image } from '@ckeditor/ckeditor5-image';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import {
@@ -20,9 +21,11 @@ describe( 'image plugin integration', () => {
 	let element;
 	let editor, model;
 
-	const imgSrc = 'assets/sample.png';
+	const imgSrc = 'sample.png';
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -61,7 +64,7 @@ describe( 'image plugin integration', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]`
 				);
 			} );
@@ -73,7 +76,7 @@ describe( 'image plugin integration', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]`
 				);
@@ -86,7 +89,7 @@ describe( 'image plugin integration', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]` +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>'
 				);
@@ -99,7 +102,7 @@ describe( 'image plugin integration', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Fo</paragraph>' +
 					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]` +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">oo</paragraph>'
@@ -114,7 +117,7 @@ describe( 'image plugin integration', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]`
 				);
@@ -128,7 +131,7 @@ describe( 'image plugin integration', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Bar </paragraph>' +
 					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]`
@@ -143,7 +146,7 @@ describe( 'image plugin integration', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]` +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted"> Bar</paragraph>'
@@ -158,7 +161,7 @@ describe( 'image plugin integration', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Bar </paragraph>' +
 					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]` +
@@ -175,7 +178,7 @@ describe( 'image plugin integration', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">' +
 						`[<imageInline src="${ imgSrc }"></imageInline>]` +
 					'</paragraph>'
@@ -190,7 +193,7 @@ describe( 'image plugin integration', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">' +
 						`[<imageInline src="${ imgSrc }"></imageInline>]` +
@@ -207,7 +210,7 @@ describe( 'image plugin integration', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">' +
 						`[<imageInline src="${ imgSrc }"></imageInline>]` +

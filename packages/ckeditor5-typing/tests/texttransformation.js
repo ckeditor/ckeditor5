@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 
@@ -32,22 +33,22 @@ describe( 'Text transformation feature', () => {
 
 	it( 'should be loaded', () => {
 		return createEditorInstance().then( () => {
-			expect( editor.plugins.get( TextTransformation ) ).to.instanceOf( TextTransformation );
+			expect( editor.plugins.get( TextTransformation ) ).toBeInstanceOf( TextTransformation );
 		} );
 	} );
 
 	it( 'has proper name', () => {
 		return createEditorInstance().then( () => {
-			expect( TextTransformation.pluginName ).to.equal( 'TextTransformation' );
+			expect( TextTransformation.pluginName ).toEqual( 'TextTransformation' );
 		} );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TextTransformation.isOfficialPlugin ).to.be.true;
+		expect( TextTransformation.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TextTransformation.isPremiumPlugin ).to.be.false;
+		expect( TextTransformation.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( '#isEnabled', () => {
@@ -64,12 +65,12 @@ describe( 'Text transformation feature', () => {
 		} );
 
 		it( 'should be enabled after initialization', () => {
-			expect( plugin.isEnabled ).to.be.true;
+			expect( plugin.isEnabled ).toBe( true );
 		} );
 	} );
 
 	describe( 'transformations', () => {
-		beforeEach( createEditorInstance );
+		beforeEach( () => createEditorInstance() );
 
 		it( 'should not work for selection changes', () => {
 			_setModelData( model, '<paragraph>foo bar(tm) baz[]</paragraph>' );
@@ -78,7 +79,7 @@ describe( 'Text transformation feature', () => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 11 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm) baz</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>foo bar(tm) baz</paragraph>' );
 		} );
 
 		it( 'should not work for deletion changes', () => {
@@ -91,7 +92,7 @@ describe( 'Text transformation feature', () => {
 				model.deleteContent( selection, { doNotResetEntireContent: true } );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm)</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>foo bar(tm)</paragraph>' );
 		} );
 
 		it( 'should not work for merging changes', () => {
@@ -102,7 +103,7 @@ describe( 'Text transformation feature', () => {
 				writer.merge( writer.createPositionAfter( doc.getRoot().getChild( 0 ) ) );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm) baz</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>foo bar(tm) baz</paragraph>' );
 		} );
 
 		describe( 'symbols', () => {
@@ -155,7 +156,7 @@ describe( 'Text transformation feature', () => {
 			simulateTyping( '"' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>Foo “<$text bold="true">Bar”</$text></paragraph>' );
+				.toEqual( '<paragraph>Foo “<$text bold="true">Bar”</$text></paragraph>' );
 		} );
 
 		it( 'should keep styles of the replaced text #1', () => {
@@ -168,7 +169,7 @@ describe( 'Text transformation feature', () => {
 			simulateTyping( '"' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>Foo <$text bold="true">“</$text>Bar<$text bold="true">”</$text></paragraph>' );
+				.toEqual( '<paragraph>Foo <$text bold="true">“</$text>Bar<$text bold="true">”</$text></paragraph>' );
 		} );
 
 		it( 'should keep styles of the replaced text #2', () => {
@@ -177,7 +178,7 @@ describe( 'Text transformation feature', () => {
 			simulateTyping( '"' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>F<$text bold="true">oo “B</$text>ar”</paragraph>' );
+				.toEqual( '<paragraph>F<$text bold="true">oo “B</$text>ar”</paragraph>' );
 		} );
 
 		it( 'should work with soft breaks in parent', () => {
@@ -186,7 +187,7 @@ describe( 'Text transformation feature', () => {
 			simulateTyping( '"' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>"Foo <softBreak></softBreak>“Bar”</paragraph>' );
+				.toEqual( '<paragraph>"Foo <softBreak></softBreak>“Bar”</paragraph>' );
 		} );
 
 		it( 'should be disabled inside code blocks', () => {
@@ -196,9 +197,9 @@ describe( 'Text transformation feature', () => {
 
 			const plugin = editor.plugins.get( 'TextTransformation' );
 
-			expect( plugin.isEnabled ).to.be.false;
+			expect( plugin.isEnabled ).toBe( false );
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<codeBlock language="plaintext">some 1/2 code</codeBlock>' );
+				.toEqual( '<codeBlock language="plaintext">some 1/2 code</codeBlock>' );
 		} );
 
 		it( 'should be disabled inside inline code', () => {
@@ -208,9 +209,9 @@ describe( 'Text transformation feature', () => {
 
 			const plugin = editor.plugins.get( 'TextTransformation' );
 
-			expect( plugin.isEnabled ).to.be.false;
+			expect( plugin.isEnabled ).toBe( false );
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text code="true">some -- inline code</$text></paragraph>' );
+				.toEqual( '<paragraph><$text code="true">some -- inline code</$text></paragraph>' );
 		} );
 
 		it( 'can undo transformation', () => {
@@ -221,14 +222,14 @@ describe( 'Text transformation feature', () => {
 			editor.commands.execute( 'undo' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>Foo(c)</paragraph>' );
+				.toEqual( '<paragraph>Foo(c)</paragraph>' );
 		} );
 
 		it( 'can undo transformation by pressing backspace', () => {
 			const viewDocument = editor.editing.view.document;
 			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
-				{ preventDefault: sinon.spy() },
+				{ preventDefault: vi.fn() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
 			);
 
@@ -239,7 +240,7 @@ describe( 'Text transformation feature', () => {
 			viewDocument.fire( 'delete', deleteEvent );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>Foo(c)</paragraph>' );
+				.toEqual( '<paragraph>Foo(c)</paragraph>' );
 		} );
 
 		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
@@ -249,7 +250,7 @@ describe( 'Text transformation feature', () => {
 				simulateTyping( transformFrom );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( `<paragraph>${ textInParagraph }${ transformTo }</paragraph>` );
+					.toEqual( `<paragraph>${ textInParagraph }${ transformTo }</paragraph>` );
 			} );
 
 			it( `should not transform "${ transformFrom }" to "${ transformTo }" inside text`, () => {
@@ -266,7 +267,7 @@ describe( 'Text transformation feature', () => {
 				} );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } bar </paragraph>` );
+					.toEqual( `<paragraph>${ textInParagraph }${ transformFrom } bar </paragraph>` );
 			} );
 
 			it( `should not transform "${ transformFrom }" to "${ transformTo } if not right before selection"`, () => {
@@ -280,7 +281,7 @@ describe( 'Text transformation feature', () => {
 				simulateTyping( ' ' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } </paragraph>` );
+					.toEqual( `<paragraph>${ textInParagraph }${ transformFrom } </paragraph>` );
 			} );
 		}
 
@@ -291,7 +292,7 @@ describe( 'Text transformation feature', () => {
 				simulateTyping( transformFrom );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( `<paragraph>${ transformFrom }</paragraph>` );
+					.toEqual( `<paragraph>${ transformFrom }</paragraph>` );
 			} );
 		}
 	} );
@@ -311,7 +312,7 @@ describe( 'Text transformation feature', () => {
 
 				simulateTyping( 'CKE' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>CKEditor</paragraph>' );
 			} );
 		} );
 
@@ -329,7 +330,7 @@ describe( 'Text transformation feature', () => {
 
 				simulateTyping( 'user@example.com' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>user.at.example.com</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>user.at.example.com</paragraph>' );
 			} );
 		} );
 
@@ -347,7 +348,7 @@ describe( 'Text transformation feature', () => {
 
 				simulateTyping( 'b' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo. B</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>Foo. B</paragraph>' );
 			} );
 		} );
 
@@ -365,11 +366,11 @@ describe( 'Text transformation feature', () => {
 
 				simulateTyping( 'CKE' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>CKEditor</paragraph>' );
 
 				simulateTyping( '(tm)' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor™</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>CKEditor™</paragraph>' );
 			} );
 		} );
 
@@ -387,11 +388,11 @@ describe( 'Text transformation feature', () => {
 
 				simulateTyping( 'CKE' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>CKEditor</paragraph>' );
 
 				simulateTyping( '(tm)' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor(tm)</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>CKEditor(tm)</paragraph>' );
 			} );
 		} );
 
@@ -408,11 +409,11 @@ describe( 'Text transformation feature', () => {
 
 				simulateTyping( '(tm)' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>(tm)</paragraph>' );
 
 				simulateTyping( '(r)' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)®</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>(tm)®</paragraph>' );
 			} );
 		} );
 
@@ -429,11 +430,11 @@ describe( 'Text transformation feature', () => {
 
 				simulateTyping( '(tm)' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>(tm)</paragraph>' );
 
 				simulateTyping( '...' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)…</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>(tm)…</paragraph>' );
 			} );
 		} );
 
@@ -459,7 +460,7 @@ describe( 'Text transformation feature', () => {
 
 				simulateTyping( '(tm)' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>™</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>™</paragraph>' );
 			} );
 		} );
 	} );

@@ -3,18 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { CodeEditing } from '../../src/code/codeediting.js';
 import { CodeUI } from '../../src/code/codeui.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'CodeUI', () => {
 	let editor, codeView, editorElement;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -31,6 +29,8 @@ describe( 'CodeUI', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
@@ -83,12 +83,12 @@ describe( 'CodeUI', () => {
 		} );
 
 		it( 'should execute code command on model execute event', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			const executeSpy = vi.spyOn( editor, 'execute' );
 
 			codeView.fire( 'execute' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'code' );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( 'code' );
 		} );
 
 		it( 'should bind `isEnabled` to code command', () => {

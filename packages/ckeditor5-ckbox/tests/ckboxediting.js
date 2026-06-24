@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { LinkEditing, LinkImageEditing } from '@ckeditor/ckeditor5-link';
 import {
@@ -16,8 +17,8 @@ import {
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { ModelElement, _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
+import { CommandCollection } from '@ckeditor/ckeditor5-core';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 
 import { CKBoxEditing } from '../src/ckboxediting.js';
@@ -30,12 +31,18 @@ import { CKBoxUtils } from '../src/ckboxutils.js';
 describe( 'CKBoxEditing', () => {
 	let editor, model, view, originalCKBox, replaceImageSourceCommand;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		TokenMock.initialToken = 'ckbox-token';
 
-		sinon.stub( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).resolves();
+		// `CKBoxEditing#init()` fires an unawaited upload permission request. Stub the network layer out so
+		// the request does not end up as an unhandled rejection that fails the Vitest run. Tests exercising
+		// the permission request replace `window.XMLHttpRequest` with a fake server, so they are not affected.
+		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
+		vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).mockResolvedValue();
 
 		originalCKBox = window.CKBox;
 		window.CKBox = {};
@@ -57,27 +64,27 @@ describe( 'CKBoxEditing', () => {
 	} );
 
 	it( 'should have proper name', () => {
-		expect( CKBoxEditing.pluginName ).to.equal( 'CKBoxEditing' );
+		expect( CKBoxEditing.pluginName ).toEqual( 'CKBoxEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CKBoxEditing.isOfficialPlugin ).to.be.true;
+		expect( CKBoxEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CKBoxEditing.isPremiumPlugin ).to.be.false;
+		expect( CKBoxEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( CKBoxEditing ) ).to.be.instanceOf( CKBoxEditing );
+		expect( editor.plugins.get( CKBoxEditing ) ).toBeInstanceOf( CKBoxEditing );
 	} );
 
 	it( 'should load link and picture features', () => {
-		expect( CKBoxEditing.requires ).to.deep.equal( [ LinkEditing, PictureEditing, CKBoxUploadAdapter, CKBoxUtils ] );
+		expect( CKBoxEditing.requires ).toEqual( [ LinkEditing, PictureEditing, CKBoxUploadAdapter, CKBoxUtils ] );
 	} );
 
 	it( 'should register the "ckbox" command if CKBox lib is loaded', () => {
-		expect( editor.commands.get( 'ckbox' ) ).to.be.instanceOf( CKBoxCommand );
+		expect( editor.commands.get( 'ckbox' ) ).toBeInstanceOf( CKBoxCommand );
 	} );
 
 	it( 'should not register the "ckbox" command if CKBox lib is missing', async () => {
@@ -89,7 +96,7 @@ describe( 'CKBoxEditing', () => {
 			}
 		} );
 
-		expect( editor.commands.get( 'ckbox' ) ).to.be.undefined;
+		expect( editor.commands.get( 'ckbox' ) ).toBeUndefined();
 	} );
 
 	describe( 'schema', () => {
@@ -97,19 +104,19 @@ describe( 'CKBoxEditing', () => {
 			const linkedImageBlockElement = new ModelElement( 'imageBlock', { linkHref: 'http://cs.example.com' } );
 			const linkedImageInlineElement = new ModelElement( 'imageInline', { linkHref: 'http://cs.example.com' } );
 
-			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxImageId' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', linkedImageBlockElement ], 'ckboxLinkId' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxImageId' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', '$block', linkedImageInlineElement ], 'ckboxLinkId' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxImageId' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', linkedImageBlockElement ], 'ckboxLinkId' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxImageId' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', '$block', linkedImageInlineElement ], 'ckboxLinkId' ) ).toBe( true );
 		} );
 
 		it( 'should extend the schema rules for link', () => {
 			const linkElement = new ModelElement( '$text', { linkHref: 'http://cs.example.com' } );
 
-			expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', '$block', linkElement ], 'ckboxLinkId' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', '$block', linkElement ], 'ckboxLinkId' ) ).toBe( true );
 		} );
 
 		it( 'should not extend the schema rules for image if ID insertion is disabled', async () => {
@@ -125,12 +132,12 @@ describe( 'CKBoxEditing', () => {
 			const linkedImageBlockElement = new ModelElement( 'imageBlock', { linkHref: 'http://cs.example.com' } );
 			const linkedImageInlineElement = new ModelElement( 'imageInline', { linkHref: 'http://cs.example.com' } );
 
-			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxImageId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', linkedImageBlockElement ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxImageId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', '$block', linkedImageInlineElement ], 'ckboxLinkId' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxImageId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', linkedImageBlockElement ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxImageId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', '$block', linkedImageInlineElement ], 'ckboxLinkId' ) ).toBe( false );
 
 			await editor.destroy();
 		} );
@@ -149,12 +156,12 @@ describe( 'CKBoxEditing', () => {
 			const linkedImageBlockElement = new ModelElement( 'imageBlock', { linkHref: 'http://cs.example.com' } );
 			const linkedImageInlineElement = new ModelElement( 'imageInline', { linkHref: 'http://cs.example.com' } );
 
-			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxImageId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', linkedImageBlockElement ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxImageId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', '$block', linkedImageInlineElement ], 'ckboxLinkId' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxImageId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', linkedImageBlockElement ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxImageId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', '$block', linkedImageInlineElement ], 'ckboxLinkId' ) ).toBe( false );
 
 			await editor.destroy();
 		} );
@@ -171,8 +178,8 @@ describe( 'CKBoxEditing', () => {
 
 			const linkElement = new ModelElement( '$text', { linkHref: 'http://cs.example.com' } );
 
-			expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', '$block', linkElement ], 'ckboxLinkId' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', '$block', linkElement ], 'ckboxLinkId' ) ).toBe( false );
 
 			await editor.destroy();
 		} );
@@ -190,8 +197,8 @@ describe( 'CKBoxEditing', () => {
 
 			const linkElement = new ModelElement( '$text', { linkHref: 'http://cs.example.com' } );
 
-			expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'ckboxLinkId' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', '$block', linkElement ], 'ckboxLinkId' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'ckboxLinkId' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', '$block', linkElement ], 'ckboxLinkId' ) ).toBe( false );
 
 			await editor.destroy();
 		} );
@@ -221,8 +228,8 @@ describe( 'CKBoxEditing', () => {
 
 			// https://github.com/ckeditor/ckeditor5/issues/15581
 			it( 'should extend the schema rules for imageBlock and imageInline', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxImageId' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxImageId' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'ckboxImageId' ) ).toBe( true );
+				expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxImageId' ) ).toBe( true );
 			} );
 		} );
 	} );
@@ -232,7 +239,7 @@ describe( 'CKBoxEditing', () => {
 			it( 'should convert "data-ckbox-resource-id" attribute from a link', () => {
 				editor.setData( '<p><a href="/assets/file" data-ckbox-resource-id="link-id">foo</a>bar</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><$text ckboxLinkId="link-id" linkHref="/assets/file">foo</$text>bar</paragraph>'
 				);
 			} );
@@ -248,7 +255,7 @@ describe( 'CKBoxEditing', () => {
 					'</p>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>' +
 						'<imageInline ' +
 							'ckboxImageId="image-id" ' +
@@ -273,7 +280,7 @@ describe( 'CKBoxEditing', () => {
 					'</p>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>' +
 						'<$text ckboxLinkId="link-id" linkHref="/assets/sample.png">Foobar</$text>' +
 						'<imageInline ' +
@@ -298,7 +305,7 @@ describe( 'CKBoxEditing', () => {
 					'</figure>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<imageBlock ' +
 						'ckboxImageId="image-id" ' +
 						'sources="[object Object],[object Object]" ' +
@@ -320,7 +327,7 @@ describe( 'CKBoxEditing', () => {
 					'</figure>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<imageBlock ' +
 						'ckboxImageId="image-id" ' +
 						'ckboxLinkId="link-id" ' +
@@ -347,7 +354,7 @@ describe( 'CKBoxEditing', () => {
 					'</figure>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<imageBlock ' +
 						'ckboxImageId="image-id" ' +
 						'sources="[object Object],[object Object]" ' +
@@ -364,7 +371,7 @@ describe( 'CKBoxEditing', () => {
 			it( 'should not convert "data-ckbox-resource-id" attribute from disallowed element', () => {
 				editor.setData( '<p data-ckbox-resource-id="id-foo"><a data-ckbox-resource-id="id-bar">foo</a>bar</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>foobar</paragraph>' );
 			} );
 
 			it( 'should not consume the "data-ckbox-resource-id" attribute from link elements if already consumed (<a>)', () => {
@@ -378,7 +385,7 @@ describe( 'CKBoxEditing', () => {
 
 				editor.setData( '<p><a href="/assets/file" data-ckbox-resource-id="link-id">foo</a>bar</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><$text linkHref="/assets/file">foo</$text>bar</paragraph>'
 				);
 			} );
@@ -406,7 +413,7 @@ describe( 'CKBoxEditing', () => {
 					'</p>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>' +
 						'<$text linkHref="/assets/sample.png">Foobar</$text>' +
 						'<imageInline ' +
@@ -442,7 +449,7 @@ describe( 'CKBoxEditing', () => {
 					'</p>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>' +
 						'<imageInline ' +
 							'ckboxImageId="image-id" ' +
@@ -477,7 +484,7 @@ describe( 'CKBoxEditing', () => {
 					'</figure>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<imageBlock ' +
 						'ckboxImageId="image-id" ' +
 						'linkHref="/assets/sample.png" ' +
@@ -491,7 +498,7 @@ describe( 'CKBoxEditing', () => {
 			it( 'should not convert the "data-ckbox-resource-id" attribute if empty', () => {
 				editor.setData( '<p><a href="/assets/file" data-ckbox-resource-id>foo</a>bar</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><$text linkHref="/assets/file">foo</$text>bar</paragraph>'
 				);
 			} );
@@ -507,7 +514,7 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData( '<p><a href="/assets/file" data-ckbox-resource-id="link-id">foo</a>bar</p>' );
 
-					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph><$text linkHref="/assets/file">foo</$text>bar</paragraph>'
 					);
 
@@ -524,7 +531,7 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData( '<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' );
 
-					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
 					);
 
@@ -551,7 +558,7 @@ describe( 'CKBoxEditing', () => {
 						'</p>'
 					);
 
-					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>' +
 							'<imageInline ' +
 								'linkHref="/assets/sample.png" ' +
@@ -584,7 +591,7 @@ describe( 'CKBoxEditing', () => {
 						'</figure>'
 					);
 
-					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<imageBlock ' +
 							'linkHref="/assets/sample.png" ' +
 							'sources="[object Object],[object Object]" ' +
@@ -606,7 +613,7 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData( '<p><a href="/assets/file" data-ckbox-resource-id="link-id">foo</a>bar</p>' );
 
-					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph><$text linkHref="/assets/file">foo</$text>bar</paragraph>'
 					);
 
@@ -618,7 +625,7 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData( '<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' );
 
-					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
 					);
 
@@ -640,7 +647,7 @@ describe( 'CKBoxEditing', () => {
 						'</p>'
 					);
 
-					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>' +
 							'<imageInline ' +
 								'linkHref="/assets/sample.png" ' +
@@ -668,7 +675,7 @@ describe( 'CKBoxEditing', () => {
 						'</figure>'
 					);
 
-					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<imageBlock ' +
 							'linkHref="/assets/sample.png" ' +
 							'sources="[object Object],[object Object]" ' +
@@ -688,7 +695,7 @@ describe( 'CKBoxEditing', () => {
 						'<p><a data-ckbox-resource-id="link-id" href="/assets/file">foo</a>bar</p>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p><a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/file">foo</a>bar</p>'
 					);
 				} );
@@ -704,7 +711,7 @@ describe( 'CKBoxEditing', () => {
 						'</p>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p>' +
 							'<span class="ck-widget image-inline" contenteditable="false" data-ckbox-resource-id="image-id">' +
 								'<picture>' +
@@ -731,7 +738,7 @@ describe( 'CKBoxEditing', () => {
 						'</p>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p>' +
 							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
 								'Foobar' +
@@ -758,7 +765,7 @@ describe( 'CKBoxEditing', () => {
 						'</figure>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
 								'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
@@ -785,7 +792,7 @@ describe( 'CKBoxEditing', () => {
 						'</figure>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
 								'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
@@ -818,7 +825,7 @@ describe( 'CKBoxEditing', () => {
 						'</figure>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
 							'<a data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
 								'<picture>' +
@@ -834,7 +841,7 @@ describe( 'CKBoxEditing', () => {
 				it( 'should not convert "data-ckbox-resource-id" attribute from disallowed element', () => {
 					editor.setData( '<p data-ckbox-resource-id="id"><a data-ckbox-resource-id="id">foo</a>bar</p>' );
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal( '<p>foobar</p>' );
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<p>foobar</p>' );
 				} );
 
 				it( 'should not add the "data-ckbox-resource-id" attribute when removed from the model element (<imageBlock>)', () => {
@@ -855,7 +862,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'ckboxLinkId', imageBlock );
 					} );
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
 							'<a href="/assets/sample.png">' +
 								'<picture>' +
@@ -887,7 +894,7 @@ describe( 'CKBoxEditing', () => {
 							writer.setAttribute( 'ckboxLinkId', 'foo-bar-test', imageBlock );
 						} );
 
-						expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+						expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 							'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
 						'<a data-ckbox-resource-id="foo-bar-test" href="/assets/sample.png">' +
 						'<picture>' +
@@ -919,7 +926,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'linkHref', imageBlock );
 					} );
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
 								'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
@@ -949,7 +956,7 @@ describe( 'CKBoxEditing', () => {
 						'</figure>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
 							'<a href="/assets/sample.png">' +
 								'<picture>' +
@@ -981,7 +988,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'ckboxLinkId', imageInline );
 					} );
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p>' +
 							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
 								'Foobar' +
@@ -1019,7 +1026,7 @@ describe( 'CKBoxEditing', () => {
 							writer.setAttribute( 'ckboxLinkId', 'foo-bar-test', imageInline );
 						} );
 
-						expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+						expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 							'<p>' +
 							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
 								'Foobar' +
@@ -1057,7 +1064,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'linkHref', imageInline );
 					} );
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p>' +
 							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
 								'Foobar' +
@@ -1093,7 +1100,7 @@ describe( 'CKBoxEditing', () => {
 						'</p>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p>' +
 							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
 								'Foobar' +
@@ -1121,7 +1128,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'ckboxLinkId', textNode );
 					} );
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p><a class="ck-link_selected" href="/assets/file">foo</a>bar</p>'
 					);
 				} );
@@ -1137,7 +1144,7 @@ describe( 'CKBoxEditing', () => {
 							writer.setAttribute( 'ckboxLinkId', 'foo-bar-test', textNode );
 						} );
 
-						expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+						expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 							'<p><a class="ck-link_selected" data-ckbox-resource-id="foo-bar-test" href="/assets/file">foo</a>bar</p>'
 						);
 					}
@@ -1153,7 +1160,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'linkHref', textNode );
 					} );
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p>foobar</p>'
 					);
 				} );
@@ -1169,7 +1176,7 @@ describe( 'CKBoxEditing', () => {
 						'<p><a data-ckbox-resource-id="link-id" href="/assets/file">foo</a>bar</p>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p><a class="ck-link_selected" href="/assets/file">foo</a>bar</p>'
 					);
 				} );
@@ -1181,7 +1188,7 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData( data );
 
-					expect( editor.getData() ).to.equal( data );
+					expect( editor.getData() ).toEqual( data );
 				} );
 
 				it( 'should convert "data-ckbox-resource-id" attribute from an inline image', () => {
@@ -1196,7 +1203,7 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData( data );
 
-					expect( editor.getData() ).to.equal( data );
+					expect( editor.getData() ).toEqual( data );
 				} );
 
 				it( 'should convert both "data-ckbox-resource-id" attributes from a linked inline image', () => {
@@ -1214,7 +1221,7 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData( data );
 
-					expect( editor.getData() ).to.equal( data );
+					expect( editor.getData() ).toEqual( data );
 				} );
 
 				it( 'should convert "data-ckbox-resource-id" attribute from a block image', () => {
@@ -1229,7 +1236,7 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData( data );
 
-					expect( editor.getData() ).to.equal( data );
+					expect( editor.getData() ).toEqual( data );
 				} );
 
 				it( 'should convert both "data-ckbox-resource-id" attributes from a linked block image', () => {
@@ -1249,13 +1256,13 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData( data );
 
-					expect( editor.getData() ).to.equal( data );
+					expect( editor.getData() ).toEqual( data );
 				} );
 
 				it( 'should not convert "data-ckbox-resource-id" attribute from disallowed element', () => {
 					editor.setData( '<p data-ckbox-resource-id="id"><a data-ckbox-resource-id="id">foo</a>bar</p>' );
 
-					expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+					expect( editor.getData() ).toEqual( '<p>foobar</p>' );
 				} );
 
 				it( 'should not add the "data-ckbox-resource-id" attribute when removed from the model element (<imageBlock>)', () => {
@@ -1276,7 +1283,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'ckboxLinkId', imageBlock );
 					} );
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toEqual(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
 							'<a href="/assets/sample.png">' +
 								'<picture>' +
@@ -1308,7 +1315,7 @@ describe( 'CKBoxEditing', () => {
 							writer.setAttribute( 'ckboxLinkId', 'foo-bar-test', imageBlock );
 						} );
 
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toEqual(
 							'<figure class="image" data-ckbox-resource-id="image-id">' +
 							'<a href="/assets/sample.png" data-ckbox-resource-id="foo-bar-test">' +
 								'<picture>' +
@@ -1340,7 +1347,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'linkHref', imageBlock );
 					} );
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toEqual(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
 								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
@@ -1370,7 +1377,7 @@ describe( 'CKBoxEditing', () => {
 						'</figure>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toEqual(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
 							'<a href="/assets/sample.png">' +
 								'<picture>' +
@@ -1402,7 +1409,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'ckboxLinkId', imageInline );
 					} );
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toEqual(
 						'<p>' +
 							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
 							'Foobar' +
@@ -1438,7 +1445,7 @@ describe( 'CKBoxEditing', () => {
 							writer.setAttribute( 'ckboxLinkId', 'foo-bar-test', imageInline );
 						} );
 
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toEqual(
 							'<p>' +
 							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
@@ -1474,7 +1481,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'linkHref', imageInline );
 					} );
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toEqual(
 						'<p>' +
 							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
@@ -1508,7 +1515,7 @@ describe( 'CKBoxEditing', () => {
 						'</p>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toEqual(
 						'<p>' +
 							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
 							'Foobar' +
@@ -1534,7 +1541,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'ckboxLinkId', textNode );
 					} );
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toEqual(
 						'<p><a href="/assets/file">foo</a>bar</p>'
 					);
 				} );
@@ -1550,7 +1557,7 @@ describe( 'CKBoxEditing', () => {
 							writer.setAttribute( 'ckboxLinkId', 'foo-bar-test', textNode );
 						} );
 
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toEqual(
 							'<p><a href="/assets/file" data-ckbox-resource-id="foo-bar-test">foo</a>bar</p>'
 						);
 					}
@@ -1566,7 +1573,7 @@ describe( 'CKBoxEditing', () => {
 						writer.removeAttribute( 'linkHref', textNode );
 					} );
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toEqual(
 						'<p>foobar</p>'
 					);
 				} );
@@ -1582,7 +1589,7 @@ describe( 'CKBoxEditing', () => {
 						'<p><a data-ckbox-resource-id="link-id" href="/assets/file">foo</a>bar</p>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toEqual(
 						'<p><a href="/assets/file">foo</a>bar</p>'
 					);
 				} );
@@ -1641,7 +1648,7 @@ describe( 'CKBoxEditing', () => {
 				);
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>' +
 					'<$text ' +
 						'ckboxLinkId="link-id" ' +
@@ -1681,7 +1688,7 @@ describe( 'CKBoxEditing', () => {
 				);
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>' +
 					'<$text linkHref="https://cksource.com/assets/link-id/file?download=true">[]foo</$text>' +
 					'<imageInline src="https://cksource.com/assets/image-id/images/200.png"></imageInline>' +
@@ -1709,7 +1716,7 @@ describe( 'CKBoxEditing', () => {
 				);
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>' +
 					'<$text ' +
 						'ckboxLinkId="link-id" ' +
@@ -1738,7 +1745,7 @@ describe( 'CKBoxEditing', () => {
 				);
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>' +
 					'<$text linkHref="https://cksource.com/assets/link-id/file?download=true">[]foo</$text>' +
 					'<imageInline ' +
@@ -1760,7 +1767,7 @@ describe( 'CKBoxEditing', () => {
 
 			viewDocument.fire( 'keydown', eventData );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>[]<$text ckboxLinkId="link-id" linkHref="/assets/file">foo</$text></paragraph>'
 			);
 		} );
@@ -1793,7 +1800,7 @@ describe( 'CKBoxEditing', () => {
 
 			viewDocument.fire( 'keydown', eventData );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph><$text ckboxLinkId="link-id" linkHref="/assets/file">foo[]</$text></paragraph>'
 			);
 
@@ -1805,7 +1812,7 @@ describe( 'CKBoxEditing', () => {
 
 			editor.execute( 'unlink' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]foo</paragraph>' );
 		} );
 	} );
 
@@ -1814,7 +1821,7 @@ describe( 'CKBoxEditing', () => {
 			it( 'should not copy the "ckboxLinkId" attribute form text node when auto-paragrapinh', () => {
 				editor.setData( '<a href="/asset/file" data-ckbox-resource-id="link-id">Example link</a>' );
 
-				expect( _getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).toEqual(
 					'<paragraph>' +
 						'<$text ckboxLinkId="link-id" linkHref="/asset/file">[]Example link</$text>' +
 					'</paragraph>'
@@ -1833,30 +1840,28 @@ describe( 'CKBoxEditing', () => {
 
 		const element = model.document.selection.getSelectedElement();
 
-		expect( element.getAttribute( 'ckboxImageId' ) ).to.equal( 'id' );
+		expect( element.getAttribute( 'ckboxImageId' ) ).toEqual( 'id' );
 
 		replaceImageSourceCommand.execute( { source: '/assets/sample.png' } );
 
-		expect( element.getAttribute( 'ckboxImageId' ) ).to.be.undefined;
+		expect( element.getAttribute( 'ckboxImageId' ) ).toBeUndefined();
 	} );
 
 	describe( 'permissions', () => {
-		let sinonXHR;
+		let fakeServer;
 		const CKBOX_API_URL = 'https://upload.example.com';
 		const CKBOX_TOKEN_URL = 'http://cs.example.com';
 
 		beforeEach( () => {
-			sinonXHR = testUtils.sinon.useFakeServer();
-			sinonXHR.autoRespond = true;
-			sinonXHR.respondImmediately = true;
+			fakeServer = createFakeXHRServer();
 		} );
 
 		afterEach( () => {
-			sinonXHR.restore();
+			fakeServer.restore();
 		} );
 
 		it( 'should not disable image upload command if access allowed', async () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+			fakeServer.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -1875,14 +1880,14 @@ describe( 'CKBoxEditing', () => {
 
 			const uploadImageCommand = editor.commands.get( 'uploadImage' );
 
-			expect( uploadImageCommand.isEnabled ).to.be.true;
-			expect( uploadImageCommand.isAccessAllowed ).to.be.true;
+			expect( uploadImageCommand.isEnabled ).toBe( true );
+			expect( uploadImageCommand.isAccessAllowed ).toBe( true );
 
 			await editor.destroy();
 		} );
 
 		it( 'should disable image upload command if access not allowed', async () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+			fakeServer.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -1901,14 +1906,14 @@ describe( 'CKBoxEditing', () => {
 
 			const uploadImageCommand = editor.commands.get( 'uploadImage' );
 
-			expect( uploadImageCommand.isEnabled ).to.be.false;
-			expect( uploadImageCommand.isAccessAllowed ).to.be.false;
+			expect( uploadImageCommand.isEnabled ).toBe( false );
+			expect( uploadImageCommand.isAccessAllowed ).toBe( false );
 
 			await editor.destroy();
 		} );
 
 		it( 'should not disable image upload command if access allowed ( CKBox loaded first )', async () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+			fakeServer.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -1927,14 +1932,14 @@ describe( 'CKBoxEditing', () => {
 
 			const uploadImageCommand = editor.commands.get( 'uploadImage' );
 
-			expect( uploadImageCommand.isEnabled ).to.be.true;
-			expect( uploadImageCommand.isAccessAllowed ).to.be.true;
+			expect( uploadImageCommand.isEnabled ).toBe( true );
+			expect( uploadImageCommand.isAccessAllowed ).toBe( true );
 
 			await editor.destroy();
 		} );
 
 		it( 'should disable image upload command if access not allowed ( CKBox loaded first )', async () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+			fakeServer.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -1953,11 +1958,116 @@ describe( 'CKBoxEditing', () => {
 
 			const uploadImageCommand = editor.commands.get( 'uploadImage' );
 
-			expect( uploadImageCommand.isEnabled ).to.be.false;
-			expect( uploadImageCommand.isAccessAllowed ).to.be.false;
+			expect( uploadImageCommand.isEnabled ).toBe( false );
+			expect( uploadImageCommand.isAccessAllowed ).toBe( false );
 
 			await editor.destroy();
 		} );
+
+		it( 'should not throw when blocking commands and "uploadImage" is missing', async () => {
+			fakeServer.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					'id1': {
+						'asset:create': false
+					}
+				} )
+			] );
+
+			// `ImageUploadEditing` is required transitively by `CKBoxUploadAdapter`, so the
+			// only way to exercise the missing-command path is to hide the command at lookup time.
+			const originalGet = CommandCollection.prototype.get;
+
+			vi.spyOn( CommandCollection.prototype, 'get' ).mockImplementation( function( name ) {
+				if ( name === 'uploadImage' ) {
+					return undefined;
+				}
+
+				return originalGet.call( this, name );
+			} );
+
+			const editor = await createTestEditor( {
+				ckbox: {
+					tokenUrl: CKBOX_TOKEN_URL,
+					serviceOrigin: CKBOX_API_URL
+				}
+			} );
+
+			// `ckboxImageEdit` is still blocked while `uploadImage` is silently skipped.
+			expect( editor.commands.get( 'uploadImage' ) ).toBeUndefined();
+			expect( editor.commands.get( 'ckboxImageEdit' ).isEnabled ).toBe( false );
+
+			await editor.destroy();
+		} );
+
+		it( 'should not throw when blocking commands and "ckboxImageEdit" plugin is not loaded', async () => {
+			fakeServer.respondWith( 'GET', CKBOX_API_URL + '/permissions', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					'id1': {
+						'asset:create': false
+					}
+				} )
+			] );
+
+			// `CKBoxImageEditEditing` is optional, so we omit it from the plugin list to make
+			// the `ckboxImageEdit` command absent.
+			const editor = await VirtualTestEditor.create( {
+				plugins: [
+					Paragraph,
+					ImageBlockEditing,
+					ImageInlineEditing,
+					ImageCaptionEditing,
+					LinkEditing,
+					LinkImageEditing,
+					PictureEditing,
+					ImageUploadEditing,
+					ImageUploadProgress,
+					CloudServices,
+					CKBoxUploadAdapter,
+					CKBoxEditing
+				],
+				substitutePlugins: [
+					CloudServicesCoreMock
+				],
+				ckbox: {
+					tokenUrl: CKBOX_TOKEN_URL,
+					serviceOrigin: CKBOX_API_URL
+				}
+			} );
+
+			expect( editor.commands.get( 'ckboxImageEdit' ) ).toBeUndefined();
+			expect( editor.commands.get( 'uploadImage' ).isEnabled ).toBe( false );
+
+			await editor.destroy();
+		} );
+	} );
+
+	it( 'should not register the "cleanupImage" listener when the "replaceImageSource" command is missing', async () => {
+		// `replaceImageSource` is registered by `ImageEditing`, which is transitively required
+		// by `PictureEditing`, so the only way to hit the defensive branch is to hide the
+		// command at lookup time.
+		const originalGet = CommandCollection.prototype.get;
+
+		vi.spyOn( CommandCollection.prototype, 'get' ).mockImplementation( function( name ) {
+			if ( name === 'replaceImageSource' ) {
+				return undefined;
+			}
+
+			return originalGet.call( this, name );
+		} );
+
+		const editor = await createTestEditor( {
+			ckbox: {
+				tokenUrl: 'http://cs.example.com'
+			}
+		} );
+
+		expect( editor.commands.get( 'replaceImageSource' ) ).toBeUndefined();
+
+		await editor.destroy();
 	} );
 } );
 
@@ -1990,4 +2100,99 @@ function createTestEditor( config = {}, loadCKBoxFirst = false ) {
 		],
 		...config
 	} );
+}
+
+// Minimal fake XHR server used in this file:
+// - `respondWith( method, url, [ status, headers, body ] )` — register an immediate response.
+// - `restore()` — revert the `XMLHttpRequest` global.
+//
+// Responses fire synchronously from `send()`.
+function createFakeXHRServer() {
+	const responses = [];
+	const OriginalXMLHttpRequest = window.XMLHttpRequest;
+
+	class FakeXMLHttpRequest {
+		constructor() {
+			this.listeners = new Map();
+			this.requestHeaders = {};
+			this.upload = {
+				addEventListener: () => {},
+				removeEventListener: () => {}
+			};
+			this.status = 0;
+			this.response = null;
+			this.responseText = '';
+			this.responseType = '';
+			this.aborted = false;
+		}
+
+		open( method, url ) {
+			this.method = method;
+			this.url = url;
+		}
+
+		setRequestHeader( name, value ) {
+			this.requestHeaders[ name ] = value;
+		}
+
+		addEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+			callbacks.push( callback );
+			this.listeners.set( event, callbacks );
+		}
+
+		removeEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+			const index = callbacks.indexOf( callback );
+
+			if ( index !== -1 ) {
+				callbacks.splice( index, 1 );
+			}
+		}
+
+		abort() {
+			this.aborted = true;
+			this._dispatchEvent( 'abort' );
+		}
+
+		send() {
+			this._dispatchEvent( 'loadstart' );
+
+			const match = responses.find( entry => entry.method === this.method && entry.url === this.url );
+
+			if ( !match ) {
+				this.status = 404;
+				this._dispatchEvent( 'load' );
+				this._dispatchEvent( 'loadend' );
+				return;
+			}
+
+			const [ status, headers, body ] = match.response;
+
+			this.status = status;
+			this.responseHeaders = headers;
+			this.responseText = body;
+			this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
+
+			this._dispatchEvent( 'load' );
+			this._dispatchEvent( 'loadend' );
+		}
+
+		_dispatchEvent( event, data ) {
+			for ( const callback of this.listeners.get( event ) || [] ) {
+				callback( data );
+			}
+		}
+	}
+
+	window.XMLHttpRequest = FakeXMLHttpRequest;
+
+	return {
+		respondWith( method, url, response ) {
+			responses.push( { method, url, response } );
+		},
+		restore() {
+			window.XMLHttpRequest = OriginalXMLHttpRequest;
+		}
+	};
 }

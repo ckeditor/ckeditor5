@@ -8,6 +8,8 @@ import { InsertParagraphCommand } from '../src/insertparagraphcommand.js';
 
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 describe( 'InsertParagraphCommand', () => {
 	let editor, model, document, command, root, schema;
 
@@ -41,8 +43,8 @@ describe( 'InsertParagraphCommand', () => {
 				position: model.createPositionBefore( root.getChild( 0 ) )
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><heading1>foo</heading1>' );
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph><heading1>foo</heading1>' );
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		it( 'should not execute when selection is in non-editable place', () => {
@@ -51,8 +53,8 @@ describe( 'InsertParagraphCommand', () => {
 			model.document.isReadOnly = true;
 			const result = command.execute( { position: model.createPositionBefore( root.getChild( 0 ) ) } );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>foo[]</heading1>' );
-			expect( result ).to.be.null;
+			expect( _getModelData( model ) ).toEqual( '<heading1>foo[]</heading1>' );
+			expect( result ).toBeNull();
 		} );
 
 		it( 'should split ancestors down to a limit where a paragraph is allowed', () => {
@@ -63,14 +65,14 @@ describe( 'InsertParagraphCommand', () => {
 				position: model.createPositionAt( root.getChild( 0 ).getChild( 0 ), 2 )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<allowP>' +
 					'<disallowP>fo</disallowP>' +
 					'<paragraph>[]</paragraph>' +
 					'<disallowP>o</disallowP>' +
 				'</allowP>'
 			);
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		it( 'should insert paragraph when position is at the end of line', () => {
@@ -80,11 +82,11 @@ describe( 'InsertParagraphCommand', () => {
 				position: model.document.selection.getFirstPosition()
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>[]</paragraph>'
 			);
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		it( 'should insert paragraph when position is at the end of line with an inline widget', () => {
@@ -95,11 +97,11 @@ describe( 'InsertParagraphCommand', () => {
 				position: model.document.selection.getFirstPosition()
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph><inlineWidget></inlineWidget></paragraph>' +
 				'<paragraph>[]</paragraph>'
 			);
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		it( 'should insert paragraph when position is at the start of line', () => {
@@ -109,11 +111,11 @@ describe( 'InsertParagraphCommand', () => {
 				position: model.document.selection.getLastPosition()
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>[]</paragraph>' +
 				'<paragraph>foo</paragraph>'
 			);
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		it( 'should insert paragraph when position is at the start of line with an inline widget', () => {
@@ -124,11 +126,11 @@ describe( 'InsertParagraphCommand', () => {
 				position: model.document.selection.getLastPosition()
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>[]</paragraph>' +
 				'<paragraph><inlineWidget></inlineWidget></paragraph>'
 			);
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		it( 'should insert paragraph bellow when paragraph is empty', () => {
@@ -138,11 +140,11 @@ describe( 'InsertParagraphCommand', () => {
 				position: model.document.selection.getLastPosition()
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph></paragraph>' +
 				'<paragraph>[]</paragraph>'
 			);
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/14714.
@@ -160,13 +162,13 @@ describe( 'InsertParagraphCommand', () => {
 				position: model.document.selection.getLastPosition()
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<blockContainer>' +
 					'<blockWidget></blockWidget>' +
 					'<paragraph>[]</paragraph>' +
 				'</blockContainer>'
 			);
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/14714.
@@ -196,7 +198,7 @@ describe( 'InsertParagraphCommand', () => {
 				position: model.document.selection.getLastPosition()
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -206,7 +208,7 @@ describe( 'InsertParagraphCommand', () => {
 					'</tableRow>' +
 				'</table>'
 			);
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		it( 'should do nothing if the paragraph is not allowed at the provided position', () => {
@@ -223,8 +225,8 @@ describe( 'InsertParagraphCommand', () => {
 				position: model.createPositionBefore( root.getChild( 0 ) )
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>foo[]</heading1>' );
-			expect( result ).to.be.null;
+			expect( _getModelData( model ) ).toEqual( '<heading1>foo[]</heading1>' );
+			expect( result ).toBeNull();
 		} );
 
 		it( 'should insert a paragraph with given attribute', () => {
@@ -239,8 +241,8 @@ describe( 'InsertParagraphCommand', () => {
 				attributes: { foo: true }
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>foo</heading1><paragraph foo="true">[]</paragraph>' );
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( _getModelData( model ) ).toEqual( '<heading1>foo</heading1><paragraph foo="true">[]</paragraph>' );
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		it( 'should insert a paragraph with given attributes', () => {
@@ -255,8 +257,8 @@ describe( 'InsertParagraphCommand', () => {
 				attributes: { foo: true, bar: true }
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>foo</heading1><paragraph bar="true" foo="true">[]</paragraph>' );
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( _getModelData( model ) ).toEqual( '<heading1>foo</heading1><paragraph bar="true" foo="true">[]</paragraph>' );
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		it( 'should insert a paragraph with given attributes but discard disallowed ones', () => {
@@ -271,8 +273,8 @@ describe( 'InsertParagraphCommand', () => {
 				attributes: { foo: true, bar: true, yar: true }
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>foo</heading1><paragraph bar="true" foo="true">[]</paragraph>' );
-			expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+			expect( _getModelData( model ) ).toEqual( '<heading1>foo</heading1><paragraph bar="true" foo="true">[]</paragraph>' );
+			expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 		} );
 
 		describe( 'interation with existing paragraphs in the content', () => {
@@ -283,8 +285,8 @@ describe( 'InsertParagraphCommand', () => {
 					position: model.createPositionBefore( root.getChild( 0 ) )
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
-				expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+				expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 			} );
 
 			it( 'should insert a paragraph after another paragraph', () => {
@@ -294,8 +296,8 @@ describe( 'InsertParagraphCommand', () => {
 					position: model.createPositionAfter( root.getChild( 0 ) )
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]</paragraph>' );
-				expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo</paragraph><paragraph>[]</paragraph>' );
+				expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 			} );
 
 			it( 'should not merge with a paragraph that precedes the position at which a new paragraph is inserted', () => {
@@ -305,8 +307,8 @@ describe( 'InsertParagraphCommand', () => {
 					position: model.createPositionBefore( root.getChild( 1 ) )
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>bar</paragraph><paragraph>[]</paragraph><heading1>foo</heading1>' );
-				expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+				expect( _getModelData( model ) ).toEqual( '<paragraph>bar</paragraph><paragraph>[]</paragraph><heading1>foo</heading1>' );
+				expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 			} );
 
 			it( 'should not merge with a paragraph that follows the position at which a new paragraph is inserted', () => {
@@ -316,8 +318,8 @@ describe( 'InsertParagraphCommand', () => {
 					position: model.createPositionAfter( root.getChild( 0 ) )
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph><paragraph>bar</paragraph>' );
-				expect( result.isEqual( document.selection.getFirstPosition() ) ).to.be.true;
+				expect( _getModelData( model ) ).toEqual( '<heading1>foo</heading1><paragraph>[]</paragraph><paragraph>bar</paragraph>' );
+				expect( result.isEqual( document.selection.getFirstPosition() ) ).toBe( true );
 			} );
 		} );
 	} );

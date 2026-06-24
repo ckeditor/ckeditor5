@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ListEditing } from '../../src/list/listediting.js';
@@ -10,13 +12,14 @@ import { ListIndentCommand } from '../../src/list/listindentcommand.js';
 import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ListIndentCommand (multiBlock=false)', () => {
 	let editor, model, root;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -61,7 +64,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'* 6'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if selection starts in first list item', () => {
@@ -75,7 +78,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'* 6'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection starts in first list item at given indent', () => {
@@ -87,7 +90,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'    * 4'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection starts in first list item (different list type)', () => {
@@ -99,7 +102,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'* []4'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection is in first list item with different type than previous list', () => {
@@ -108,7 +111,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'# []1'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection starts in a list item that has higher indent than it\'s previous sibling', () => {
@@ -122,7 +125,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'* 6'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection starts before a list item', () => {
@@ -132,7 +135,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'* 2'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
@@ -149,11 +152,11 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 				] ) );
 
 				model.change( writer => {
-					expect( writer.batch.operations.length ).to.equal( 0 );
+					expect( writer.batch.operations.length ).toBe( 0 );
 
 					command.execute();
 
-					expect( writer.batch.operations.length ).to.be.above( 0 );
+					expect( writer.batch.operations.length ).toBeGreaterThan( 0 );
 				} );
 			} );
 
@@ -435,7 +438,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 				} );
 			} );
 
-			it( 'should fire "afterExecute" event after finish all operations with all changed items', done => {
+			it( 'should fire "afterExecute" event after finish all operations with all changed items', () => {
 				_setModelData( model, modelList( [
 					'* 0',
 					'* []1',
@@ -446,19 +449,21 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'* 6'
 				] ) );
 
-				command.on( 'afterExecute', ( evt, data ) => {
-					expect( data ).to.deep.equal( [
-						root.getChild( 1 ),
-						root.getChild( 2 ),
-						root.getChild( 3 ),
-						root.getChild( 4 ),
-						root.getChild( 5 )
-					] );
+				let afterExecuteData;
 
-					done();
+				command.on( 'afterExecute', ( evt, data ) => {
+					afterExecuteData = data;
 				} );
 
 				command.execute();
+
+				expect( afterExecuteData ).toEqual( [
+					root.getChild( 1 ),
+					root.getChild( 2 ),
+					root.getChild( 3 ),
+					root.getChild( 4 ),
+					root.getChild( 5 )
+				] );
 			} );
 		} );
 	} );
@@ -486,7 +491,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'* 6'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if selection starts in first list item', () => {
@@ -500,7 +505,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'* 6'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if selection starts in a list item that has higher indent than it\'s previous sibling', () => {
@@ -514,7 +519,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'* 6'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if selection starts before a list', () => {
@@ -524,7 +529,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'  * 2'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true with selection in the middle block of a list item', () => {
@@ -534,7 +539,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'  2'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true with selection in the last block of a list item', () => {
@@ -544,7 +549,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					'  []2'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 

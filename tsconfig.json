@@ -27,7 +27,10 @@
     "sourceMap": true,
     "moduleResolution": "bundler",
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "isolatedModules": true,
+    "isolatedDeclarations": true
   },
   "include": [
     "./packages/*/src/**/*.ts",

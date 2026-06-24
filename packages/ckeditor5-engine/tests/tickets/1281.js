@@ -8,6 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ModelPosition } from '../../src/model/position.js';
 
 import { _setModelData, _getModelData } from '../../src/dev-utils/model.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe( 'Bug ckeditor5-engine#1281', () => {
 	let element, editor, model;
@@ -43,7 +44,7 @@ describe( 'Bug ckeditor5-engine#1281', () => {
 		const fourthParagraph = root.getNodeByPath( [ 3 ] );
 		const selRanges = Array.from( model.document.selection.getRanges() );
 
-		expect( selRanges.length ).to.equal( 2 );
+		expect( selRanges.length ).toBe( 2 );
 
 		assertPositions( ModelPosition._createAt( thirdParagraph, 0 ), selRanges[ 0 ].start );
 		assertPositions( ModelPosition._createAt( thirdParagraph, 'end' ), selRanges[ 0 ].end );
@@ -66,7 +67,7 @@ describe( 'Bug ckeditor5-engine#1281', () => {
 
 			expect( () => {
 				writer.remove( firstParagraph );
-			} ).to.not.throw();
+			} ).not.toThrow();
 
 			assertOutput(
 				'<paragraph>Paragraph 2.</paragraph>' +
@@ -91,7 +92,7 @@ describe( 'Bug ckeditor5-engine#1281', () => {
 
 			expect( () => {
 				writer.remove( firstParagraph );
-			} ).to.not.throw();
+			} ).not.toThrow();
 
 			assertOutput(
 				'<paragraph>Paragraph 2.</paragraph>' +
@@ -117,7 +118,7 @@ describe( 'Bug ckeditor5-engine#1281', () => {
 
 			expect( () => {
 				writer.remove( lastParagraph );
-			} ).to.not.throw();
+			} ).not.toThrow();
 
 			assertOutput(
 				'<paragraph>[Paragraph 1.]</paragraph>' +
@@ -143,7 +144,7 @@ describe( 'Bug ckeditor5-engine#1281', () => {
 
 			expect( () => {
 				writer.remove( lastParagraph );
-			} ).to.not.throw();
+			} ).not.toThrow();
 
 			assertOutput(
 				'<paragraph>Paragraph 1.</paragraph>' +
@@ -168,7 +169,7 @@ describe( 'Bug ckeditor5-engine#1281', () => {
 
 			expect( () => {
 				writer.remove( thirdParagraph );
-			} ).to.not.throw();
+			} ).not.toThrow();
 
 			assertOutput(
 				'<paragraph>Paragraph 1.</paragraph>' +
@@ -193,7 +194,7 @@ describe( 'Bug ckeditor5-engine#1281', () => {
 
 			expect( () => {
 				writer.remove( thirdParagraph );
-			} ).to.not.throw();
+			} ).not.toThrow();
 
 			assertOutput(
 				'<paragraph>Paragraph 1.</paragraph>' +
@@ -205,10 +206,10 @@ describe( 'Bug ckeditor5-engine#1281', () => {
 	} );
 
 	function assertPositions( firstPosition, secondPosition ) {
-		expect( firstPosition.isEqual( secondPosition ) ).to.be.true;
+		expect( firstPosition.isEqual( secondPosition ) ).toBe( true );
 	}
 
 	function assertOutput( output ) {
-		expect( _getModelData( model ) ).to.equal( output );
+		expect( _getModelData( model ) ).toBe( output );
 	}
 } );

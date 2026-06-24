@@ -46,4 +46,3 @@ document.getElementById( 'button2' ).addEventListener( 'click', () => {
 
 	view.focus();
 } );
-

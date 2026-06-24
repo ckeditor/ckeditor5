@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
@@ -34,18 +36,18 @@ describe( 'ReplaceAllCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should be enabled in empty document', () => {
 			_setModelData( model, '[]' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled by default', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 	} );
 
 	describe( 'state', () => {
 		it( 'is set to plugin\'s state', () => {
-			expect( command._state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
+			expect( command._state ).toBe( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 
@@ -55,7 +57,7 @@ describe( 'ReplaceAllCommand', () => {
 
 			editor.execute( 'replaceAll', 'new', 'bar' );
 
-			expect( editor.getData() ).to.equal( '<p>Foo new baz</p><p>Foo new baz</p>' );
+			expect( editor.getData() ).toBe( '<p>Foo new baz</p><p>Foo new baz</p>' );
 		} );
 
 		it( 'should not change model if nothing was matched', () => {
@@ -63,7 +65,7 @@ describe( 'ReplaceAllCommand', () => {
 
 			editor.execute( 'replaceAll', 'new', 'baar' );
 
-			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo bar baz</p>' );
+			expect( editor.getData() ).toBe( '<p>Foo bar baz</p><p>Foo bar baz</p>' );
 		} );
 
 		it( 'should replace all passed results in the document', () => {
@@ -90,7 +92,7 @@ describe( 'ReplaceAllCommand', () => {
 
 			editor.execute( 'replaceAll', 'new', results );
 
-			expect( editor.getData() ).to.equal( '<p>Foo bar newaz</p><p>new bar baz</p>' );
+			expect( editor.getData() ).toBe( '<p>Foo bar newaz</p><p>new bar baz</p>' );
 		} );
 
 		it( 'should work with empty document', () => {
@@ -98,7 +100,7 @@ describe( 'ReplaceAllCommand', () => {
 
 			editor.execute( 'replaceAll', 'new', 'bar' );
 
-			expect( editor.getData() ).to.equal( '' );
+			expect( editor.getData() ).toBe( '' );
 		} );
 
 		it( 'should replace all occurrences in multiple roots', async () => {
@@ -120,8 +122,8 @@ describe( 'ReplaceAllCommand', () => {
 
 			multiRootEditor.execute( 'replaceAll', 'r', results );
 
-			expect( multiRootEditor.getData() ).to.equal( '<p>Foo bar bar</p>' );
-			expect( multiRootEditor.getData( { rootName: 'second' } ) ).to.equal( '<p>Foo bar bar</p>' );
+			expect( multiRootEditor.getData() ).toBe( '<p>Foo bar bar</p>' );
+			expect( multiRootEditor.getData( { rootName: 'second' } ) ).toBe( '<p>Foo bar bar</p>' );
 
 			await multiRootEditor.destroy();
 		} );
@@ -148,11 +150,11 @@ describe( 'ReplaceAllCommand', () => {
 				editor.execute( 'replaceAll', 'aa', results );
 			} );
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa  Daa</paragraph>' );
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe( '<paragraph>Aaa  Daa</paragraph>' );
 
 			editor.execute( 'undo' );
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
 		} );
 
 		it( 'should restore every text occurrences replaced by `replace all` in the document at one undo step', () => {
@@ -162,11 +164,11 @@ describe( 'ReplaceAllCommand', () => {
 
 			editor.execute( 'replaceAll', 'new', 'bar' );
 
-			expect( editor.getData() ).to.equal( '<p>Foo new baz</p><p>Foo new baz</p><p>Foo new baz</p>' );
+			expect( editor.getData() ).toBe( '<p>Foo new baz</p><p>Foo new baz</p><p>Foo new baz</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo bar baz</p><p>Foo bar baz</p>' );
+			expect( editor.getData() ).toBe( '<p>Foo bar baz</p><p>Foo bar baz</p><p>Foo bar baz</p>' );
 		} );
 
 		it( 'should restore every text occurrences replaced by `replace all` in multiple roots at one undo step', async () => {
@@ -188,13 +190,13 @@ describe( 'ReplaceAllCommand', () => {
 
 			multiRootEditor.execute( 'replaceAll', 'r', results );
 
-			expect( multiRootEditor.getData( { rootName: 'main' } ) ).to.equal( '<p>Foo bar bar</p>' );
-			expect( multiRootEditor.getData( { rootName: 'second' } ) ).to.equal( '<p>Ra bar bar</p>' );
+			expect( multiRootEditor.getData( { rootName: 'main' } ) ).toBe( '<p>Foo bar bar</p>' );
+			expect( multiRootEditor.getData( { rootName: 'second' } ) ).toBe( '<p>Ra bar bar</p>' );
 
 			multiRootEditor.execute( 'undo' );
 
-			expect( multiRootEditor.getData( { rootName: 'main' } ) ).to.equal( '<p>Foo bar baz</p>' );
-			expect( multiRootEditor.getData( { rootName: 'second' } ) ).to.equal( '<p>Ra baz baz</p>' );
+			expect( multiRootEditor.getData( { rootName: 'main' } ) ).toBe( '<p>Foo bar baz</p>' );
+			expect( multiRootEditor.getData( { rootName: 'second' } ) ).toBe( '<p>Ra baz baz</p>' );
 
 			await multiRootEditor.destroy();
 		} );

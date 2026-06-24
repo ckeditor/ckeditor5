@@ -7,7 +7,7 @@
  * @module image/imagestyle/imagestyleui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf, type Command } from '@ckeditor/ckeditor5-core';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from '@ckeditor/ckeditor5-ui';
 import { isObject, identity } from 'es-toolkit/compat';
 import { ImageStyleEditing } from './imagestyleediting.js';
@@ -28,8 +28,8 @@ export class ImageStyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageStyleEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageStyleEditing ]> {
+		return [ ImageStyleEditing ];
 	}
 
 	/**
@@ -195,7 +195,8 @@ export class ImageStyleUI extends Plugin {
 		const buttonName = buttonConfig.name;
 
 		this.editor.ui.componentFactory.add( getUIComponentName( buttonName ), locale => {
-			const command: ImageStyleCommand = this.editor.commands.get( 'imageStyle' )!;
+			const editor = this.editor;
+			const command: ImageStyleCommand = editor.commands.get( 'imageStyle' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -205,7 +206,21 @@ export class ImageStyleUI extends Plugin {
 				isToggleable: true
 			} );
 
-			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+			// Per-style applicability lives on the command (`isStyleEnabled`). The binding observes
+			// every command whose state can affect that answer (`imageStyle` itself plus the type
+			// commands that may be triggered internally) so the button re-evaluates on each refresh.
+			const reactiveSources: Array<Command> = [ command ];
+			const imageTypeBlock = editor.commands.get( 'imageTypeBlock' );
+			const imageTypeInline = editor.commands.get( 'imageTypeInline' );
+
+			if ( imageTypeBlock ) {
+				reactiveSources.push( imageTypeBlock );
+			}
+			if ( imageTypeInline ) {
+				reactiveSources.push( imageTypeInline );
+			}
+
+			view.bind( 'isEnabled' ).toMany( reactiveSources, 'isEnabled', () => command.isStyleEnabled( buttonName ) );
 			view.bind( 'isOn' ).to( command, 'value', value => value === buttonName );
 			view.on( 'execute', this._executeCommand.bind( this, buttonName ) );
 

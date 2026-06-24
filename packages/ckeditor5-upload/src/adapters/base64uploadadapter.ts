@@ -7,7 +7,7 @@
  * @module upload/adapters/base64uploadadapter
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { FileRepository, type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository.js';
 
 type DomFileReader = globalThis.FileReader;
@@ -26,8 +26,8 @@ export class Base64UploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ FileRepository ] as const;
+	public static get requires(): PluginDependenciesOf<[ FileRepository ]> {
+		return [ FileRepository ];
 	}
 
 	/**

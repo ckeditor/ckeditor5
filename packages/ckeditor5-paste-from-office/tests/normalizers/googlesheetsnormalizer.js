@@ -21,15 +21,15 @@ describe( 'GoogleSheetsNormalizer', () => {
 						'</table>' +
 					'<google-sheets-html-origin>'
 				)
-			).to.be.true;
+			).toBe( true );
 		} );
 
 		it( 'should return false for regular tables', () => {
-			expect( normalizer.isActive( '<table><tr><td>123</td></tr></table>' ) ).to.be.false;
+			expect( normalizer.isActive( '<table><tr><td>123</td></tr></table>' ) ).toBe( false );
 		} );
 
 		it( 'should return false for content form other sources', () => {
-			expect( normalizer.isActive( '<p>foo</p>' ) ).to.be.false;
+			expect( normalizer.isActive( '<p>foo</p>' ) ).toBe( false );
 		} );
 	} );
 } );

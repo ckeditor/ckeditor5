@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { InlineEditorUIView } from '../src/inlineeditoruiview.js';
 import { EditingView } from '@ckeditor/ckeditor5-engine';
 import { ToolbarView, BalloonPanelView, InlineEditableUIView, MenuBarView } from '@ckeditor/ckeditor5-ui';
@@ -11,13 +12,9 @@ import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/cre
 
 const toPx = toUnit( 'px' );
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'InlineEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;
 	let resizeCallback;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale();
@@ -31,32 +28,33 @@ describe( 'InlineEditorUIView', () => {
 		// in DOM, the following DOM mock will have no effect.
 		ResizeObserver._observerInstance = null;
 
-		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+		vi.spyOn( global.window, 'ResizeObserver' ).mockImplementation( function( callback ) {
 			resizeCallback = callback;
 
 			return {
-				observe: sinon.spy(),
-				unobserve: sinon.spy()
+				observe: vi.fn(),
+				unobserve: vi.fn()
 			};
 		} );
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
 		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
 		describe( '#toolbar', () => {
 			it( 'is created', () => {
-				expect( view.toolbar ).to.be.instanceof( ToolbarView );
+				expect( view.toolbar ).toBeInstanceOf( ToolbarView );
 			} );
 
 			it( 'is given a locale object', () => {
-				expect( view.toolbar.locale ).to.equal( locale );
+				expect( view.toolbar.locale ).toBe( locale );
 			} );
 
 			it( 'is not rendered', () => {
-				expect( view.toolbar.isRendered ).to.be.false;
+				expect( view.toolbar.isRendered ).toBe( false );
 			} );
 
 			it( 'should have the shouldGroupWhenFull option set based on constructor options', () => {
@@ -64,47 +62,47 @@ describe( 'InlineEditorUIView', () => {
 					shouldToolbarGroupWhenFull: true
 				} );
 
-				expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+				expect( view.toolbar.options.shouldGroupWhenFull ).toBe( true );
 
 				view.destroy();
 			} );
 
 			it( 'should have the isFloating option set to true', () => {
-				expect( view.toolbar.options.isFloating ).to.be.true;
+				expect( view.toolbar.options.isFloating ).toBe( true );
 			} );
 		} );
 
 		describe( '#panel', () => {
 			it( 'is created', () => {
-				expect( view.panel ).to.be.instanceof( BalloonPanelView );
+				expect( view.panel ).toBeInstanceOf( BalloonPanelView );
 			} );
 
 			it( 'is given a locale object', () => {
-				expect( view.panel.locale ).to.equal( locale );
+				expect( view.panel.locale ).toBe( locale );
 			} );
 
 			it( 'is not rendered', () => {
-				expect( view.panel.isRendered ).to.be.false;
+				expect( view.panel.isRendered ).toBe( false );
 			} );
 		} );
 
 		describe( '#editable', () => {
 			it( 'is created', () => {
-				expect( view.editable ).to.be.instanceof( InlineEditableUIView );
+				expect( view.editable ).toBeInstanceOf( InlineEditableUIView );
 			} );
 
 			it( 'is given a locale object', () => {
-				expect( view.editable.locale ).to.equal( locale );
+				expect( view.editable.locale ).toBe( locale );
 			} );
 
 			it( 'is not rendered', () => {
-				expect( view.editable.isRendered ).to.be.false;
+				expect( view.editable.isRendered ).toBe( false );
 			} );
 
 			it( 'creates an editing root with the default aria-label', () => {
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Rich Text Editor. Editing area: main' );
 
 				view.destroy();
 			} );
@@ -118,7 +116,7 @@ describe( 'InlineEditorUIView', () => {
 				view.editable.name = editingViewRoot.rootName;
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Foo' );
 
 				view.destroy();
 			} );
@@ -134,7 +132,7 @@ describe( 'InlineEditorUIView', () => {
 				view.editable.name = editingViewRoot.rootName;
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Foo' );
 
 				view.destroy();
 			} );
@@ -142,14 +140,13 @@ describe( 'InlineEditorUIView', () => {
 
 		describe( '#menuBarView', () => {
 			it( 'is not created', () => {
-				expect( view.menuBarView ).to.be.undefined;
+				expect( view.menuBarView ).toBeUndefined();
 			} );
 		} );
 	} );
 
 	describe( 'with menu bar', () => {
 		let viewWithMenuBar;
-		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
 			viewWithMenuBar = new InlineEditorUIView( locale, editingView, undefined, { useMenuBar: true } );
@@ -163,16 +160,16 @@ describe( 'InlineEditorUIView', () => {
 
 		describe( '#menuBarView', () => {
 			it( 'is created', () => {
-				expect( viewWithMenuBar.menuBarView ).to.be.instanceof( MenuBarView );
+				expect( viewWithMenuBar.menuBarView ).toBeInstanceOf( MenuBarView );
 			} );
 
 			it( 'is given a locale object', () => {
-				expect( viewWithMenuBar.menuBarView.locale ).to.equal( locale );
+				expect( viewWithMenuBar.menuBarView.locale ).toBe( locale );
 			} );
 
 			it( 'is put into the "panel.content" collection', () => {
-				expect( viewWithMenuBar.panel.content.get( 0 ) ).to.equal( viewWithMenuBar.menuBarView );
-				expect( viewWithMenuBar.panel.content.get( 1 ) ).to.equal( viewWithMenuBar.toolbar );
+				expect( viewWithMenuBar.panel.content.get( 0 ) ).toBe( viewWithMenuBar.menuBarView );
+				expect( viewWithMenuBar.panel.content.get( 1 ) ).toBe( viewWithMenuBar.toolbar );
 			} );
 		} );
 	} );
@@ -184,7 +181,7 @@ describe( 'InlineEditorUIView', () => {
 
 		describe( '#toolbar', () => {
 			it( 'sets the default value of the #viewportTopOffset attribute', () => {
-				expect( view.viewportTopOffset ).to.equal( 0 );
+				expect( view.viewportTopOffset ).toBe( 0 );
 			} );
 
 			describe( 'automatic resizing when shouldToolbarGroupWhenFull is "true"', () => {
@@ -212,7 +209,7 @@ describe( 'InlineEditorUIView', () => {
 					} ] );
 
 					// Include paddings.
-					expect( view.toolbar.maxWidth ).to.equal( toPx( new Rect( editableElement ).width ) );
+					expect( view.toolbar.maxWidth ).toBe( toPx( new Rect( editableElement ).width ) );
 
 					editableElement.style.width = '200px';
 
@@ -222,7 +219,7 @@ describe( 'InlineEditorUIView', () => {
 					} ] );
 
 					// Include paddings.
-					expect( view.toolbar.maxWidth ).to.equal( toPx( new Rect( editableElement ).width ) );
+					expect( view.toolbar.maxWidth ).toBe( toPx( new Rect( editableElement ).width ) );
 
 					editableElement.remove();
 					view.destroy();
@@ -232,20 +229,20 @@ describe( 'InlineEditorUIView', () => {
 
 		describe( '#panel', () => {
 			it( 'is given the right CSS class', () => {
-				expect( view.panel.element.classList.contains( 'ck-toolbar-container' ) ).to.be.true;
+				expect( view.panel.element.classList.contains( 'ck-toolbar-container' ) ).toBe( true );
 			} );
 
 			it( 'is put into the #body collection', () => {
-				expect( view.body.get( 0 ) ).to.equal( view.panel );
+				expect( view.body.get( 0 ) ).toBe( view.panel );
 			} );
 		} );
 
 		describe( '#editable', () => {
 			it( 'is registered as a child', () => {
-				const spy = sinon.spy( view.editable, 'destroy' );
+				const spy = vi.spyOn( view.editable, 'destroy' );
 
 				view.destroy();
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 	} );
@@ -257,10 +254,10 @@ describe( 'InlineEditorUIView', () => {
 
 			view.editable.name = editingViewRoot.rootName;
 
-			expect( view.panel.content ).to.have.length( 0 );
+			expect( view.panel.content ).toHaveLength( 0 );
 
 			view.render();
-			expect( view.panel.content.get( 0 ) ).to.equal( view.toolbar );
+			expect( view.panel.content.get( 0 ) ).toBe( view.toolbar );
 
 			view.destroy();
 		} );
@@ -285,9 +282,9 @@ describe( 'InlineEditorUIView', () => {
 				height: 50
 			};
 
-			expect( positions ).to.have.length( 2 );
-			expect( positions[ 0 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_west' );
-			expect( positions[ 1 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_east' );
+			expect( positions ).toHaveLength( 2 );
+			expect( positions[ 0 ]( editableRect, panelRect ).name ).toBe( 'toolbar_west' );
+			expect( positions[ 1 ]( editableRect, panelRect ).name ).toBe( 'toolbar_east' );
 		} );
 
 		it( 'returns the positions in the right order (uiLanguageDirection="rtl")', () => {
@@ -308,9 +305,9 @@ describe( 'InlineEditorUIView', () => {
 				height: 50
 			};
 
-			expect( positions ).to.have.length( 2 );
-			expect( positions[ 0 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_east' );
-			expect( positions[ 1 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_west' );
+			expect( positions ).toHaveLength( 2 );
+			expect( positions[ 0 ]( editableRect, panelRect ).name ).toBe( 'toolbar_east' );
+			expect( positions[ 1 ]( editableRect, panelRect ).name ).toBe( 'toolbar_west' );
 		} );
 
 		it( 'returned positions ahould have no arrow', () => {
@@ -329,9 +326,9 @@ describe( 'InlineEditorUIView', () => {
 				height: 50
 			};
 
-			expect( positions ).to.have.length( 2 );
-			expect( positions[ 0 ]( editableRect, panelRect ).config.withArrow ).to.be.false;
-			expect( positions[ 1 ]( editableRect, panelRect ).config.withArrow ).to.be.false;
+			expect( positions ).toHaveLength( 2 );
+			expect( positions[ 0 ]( editableRect, panelRect ).config.withArrow ).toBe( false );
+			expect( positions[ 1 ]( editableRect, panelRect ).config.withArrow ).toBe( false );
 		} );
 
 		describe( 'west', () => {
@@ -360,8 +357,8 @@ describe( 'InlineEditorUIView', () => {
 
 				const { top, left } = position( editableRect, panelRect );
 
-				expect( top ).to.equal( 1 );
-				expect( left ).to.equal( expectedLeft );
+				expect( top ).toBe( 1 );
+				expect( left ).toBe( expectedLeft );
 			} );
 
 			it( 'positions the panel over the editable when there\'s not enough space above (1)', () => {
@@ -381,8 +378,8 @@ describe( 'InlineEditorUIView', () => {
 
 				const { top, left } = position( editableRect, panelRect );
 
-				expect( top ).to.equal( 0 );
-				expect( left ).to.equal( expectedLeft );
+				expect( top ).toBe( 0 );
+				expect( left ).toBe( expectedLeft );
 			} );
 
 			it( 'positions the panel over the editable when there\'s not enough space above (2)', () => {
@@ -402,8 +399,8 @@ describe( 'InlineEditorUIView', () => {
 
 				const { top, left } = position( editableRect, panelRect );
 
-				expect( top ).to.equal( 0 );
-				expect( left ).to.equal( expectedLeft );
+				expect( top ).toBe( 0 );
+				expect( left ).toBe( expectedLeft );
 			} );
 
 			it( 'positions the panel over the editable when there\'s not enough space above (3)', () => {
@@ -423,8 +420,8 @@ describe( 'InlineEditorUIView', () => {
 
 				const { top, left } = position( editableRect, panelRect );
 
-				expect( top ).to.equal( 0 );
-				expect( left ).to.equal( expectedLeft );
+				expect( top ).toBe( 0 );
+				expect( left ).toBe( expectedLeft );
 			} );
 
 			it( 'positions the panel below the editable when there\'s not enough space above/over', () => {
@@ -444,8 +441,8 @@ describe( 'InlineEditorUIView', () => {
 
 				const { top, left } = position( editableRect, panelRect );
 
-				expect( top ).to.equal( 150 );
-				expect( left ).to.equal( expectedLeft );
+				expect( top ).toBe( 150 );
+				expect( left ).toBe( expectedLeft );
 			} );
 
 			describe( 'view#viewportTopOffset', () => {
@@ -468,8 +465,8 @@ describe( 'InlineEditorUIView', () => {
 
 					const { top, left } = position( editableRect, panelRect );
 
-					expect( top ).to.equal( 50 );
-					expect( left ).to.equal( expectedLeft );
+					expect( top ).toBe( 50 );
+					expect( left ).toBe( expectedLeft );
 				} );
 
 				it( 'positions the panel below the editable when there\'s not enough space above/over', () => {
@@ -491,8 +488,8 @@ describe( 'InlineEditorUIView', () => {
 
 					const { top, left } = position( editableRect, panelRect );
 
-					expect( top ).to.equal( 150 );
-					expect( left ).to.equal( expectedLeft );
+					expect( top ).toBe( 150 );
+					expect( left ).toBe( expectedLeft );
 				} );
 			} );
 		}

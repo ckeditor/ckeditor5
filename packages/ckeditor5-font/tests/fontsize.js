@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { FontSize } from './../src/fontsize.js';
 import { FontSizeEditing } from './../src/fontsize/fontsizeediting.js';
 import { FontSizeUI } from './../src/fontsize/fontsizeui.js';
@@ -25,7 +26,7 @@ describe( 'FontSize', () => {
 
 		document.body.removeChild( element );
 
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'requires FontSizeEditing & FontSizeUI', () => {

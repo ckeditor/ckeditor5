@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
@@ -10,17 +12,15 @@ import { Image, ImageUpload } from '@ckeditor/ckeditor5-image';
 import { CKFinderUploadAdapter } from '../src/uploadadapter.js';
 import { FileRepository } from '@ckeditor/ckeditor5-upload';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'CKFinderUploadAdapter', () => {
-	let editor, sinonXHR, fileRepository, editorElement;
-	testUtils.createSinonSandbox();
+	let editor, fakeXHR, fileRepository, editorElement;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		sinonXHR = testUtils.sinon.useFakeServer();
+		fakeXHR = createFakeXHRServer();
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -36,7 +36,7 @@ describe( 'CKFinderUploadAdapter', () => {
 	} );
 
 	afterEach( () => {
-		sinonXHR.restore();
+		vi.unstubAllGlobals();
 
 		if ( editorElement ) {
 			editorElement.remove();
@@ -48,15 +48,15 @@ describe( 'CKFinderUploadAdapter', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CKFinderUploadAdapter.isOfficialPlugin ).to.be.true;
+		expect( CKFinderUploadAdapter.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CKFinderUploadAdapter.isPremiumPlugin ).to.be.false;
+		expect( CKFinderUploadAdapter.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( CKFinderUploadAdapter ) ).to.be.instanceOf( CKFinderUploadAdapter );
+		expect( editor.plugins.get( CKFinderUploadAdapter ) ).toBeInstanceOf( CKFinderUploadAdapter );
 	} );
 
 	describe( 'UploadAdapter', () => {
@@ -72,9 +72,9 @@ describe( 'CKFinderUploadAdapter', () => {
 		} );
 
 		it( 'crateAdapter method should be registered and have upload and abort methods', () => {
-			expect( adapter ).to.not.be.undefined;
-			expect( adapter.upload ).to.be.a( 'function' );
-			expect( adapter.abort ).to.be.a( 'function' );
+			expect( adapter ).not.toBeUndefined();
+			expect( adapter.upload ).toBeInstanceOf( Function );
+			expect( adapter.abort ).toBeInstanceOf( Function );
 		} );
 
 		it( 'should not set the FileRepository.createUploadAdapter factory if not configured', () => {
@@ -88,7 +88,7 @@ describe( 'CKFinderUploadAdapter', () => {
 				.then( editor => {
 					const fileRepository = editor.plugins.get( FileRepository );
 
-					expect( fileRepository ).to.not.have.property( 'createUploadAdapter' );
+					expect( fileRepository ).not.toHaveProperty( 'createUploadAdapter' );
 
 					editorElement.remove();
 
@@ -98,7 +98,7 @@ describe( 'CKFinderUploadAdapter', () => {
 
 		describe( 'upload', () => {
 			it( 'should return promise', () => {
-				expect( adapter.upload() ).to.be.instanceof( Promise );
+				expect( adapter.upload() ).toBeInstanceOf( Promise );
 			} );
 
 			it( 'should call url from config', () => {
@@ -110,10 +110,10 @@ describe( 'CKFinderUploadAdapter', () => {
 				adapter.upload();
 
 				return loader.file.then( () => {
-					request = sinonXHR.requests[ 0 ];
+					request = fakeXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
-					expect( request.url ).to.equal( 'http://example.com' );
+					expect( request.url ).toBe( 'http://example.com' );
 				} );
 			} );
 
@@ -123,11 +123,11 @@ describe( 'CKFinderUploadAdapter', () => {
 						throw new Error( 'Promise should throw.' );
 					} )
 					.catch( msg => {
-						expect( msg ).to.equal( 'Cannot upload file: image.jpeg.' );
+						expect( msg ).toBe( 'Cannot upload file: image.jpeg.' );
 					} );
 
 				loader.file.then( () => {
-					const request = sinonXHR.requests[ 0 ];
+					const request = fakeXHR.requests[ 0 ];
 					request.error();
 				} );
 
@@ -146,11 +146,11 @@ describe( 'CKFinderUploadAdapter', () => {
 						throw new Error( 'Promise should throw.' );
 					} )
 					.catch( msg => {
-						expect( msg ).to.equal( 'Foo bar baz.' );
+						expect( msg ).toBe( 'Foo bar baz.' );
 					} );
 
 				loader.file.then( () => {
-					const request = sinonXHR.requests[ 0 ];
+					const request = fakeXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 				} );
 
@@ -167,11 +167,11 @@ describe( 'CKFinderUploadAdapter', () => {
 						throw new Error( 'Promise should throw.' );
 					} )
 					.catch( msg => {
-						expect( msg ).to.equal( 'Cannot upload file: image.jpeg.' );
+						expect( msg ).toBe( 'Cannot upload file: image.jpeg.' );
 					} );
 
 				loader.file.then( () => {
-					const request = sinonXHR.requests[ 0 ];
+					const request = fakeXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 				} );
 
@@ -186,11 +186,11 @@ describe( 'CKFinderUploadAdapter', () => {
 						throw new Error( 'Promise should throw.' );
 					} )
 					.catch( () => {
-						expect( request.aborted ).to.be.true;
+						expect( request.aborted ).toBe( true );
 					} );
 
 				loader.file.then( () => {
-					request = sinonXHR.requests[ 0 ];
+					request = fakeXHR.requests[ 0 ];
 					adapter.abort();
 				} );
 
@@ -200,20 +200,118 @@ describe( 'CKFinderUploadAdapter', () => {
 			it( 'abort should not throw before upload', () => {
 				expect( () => {
 					adapter.abort();
-				} ).to.not.throw();
+				} ).not.toThrow();
 			} );
 
 			it( 'should update progress', () => {
 				adapter.upload();
 
 				return loader.file.then( () => {
-					const request = sinonXHR.requests[ 0 ];
+					const request = fakeXHR.requests[ 0 ];
 					request.uploadProgress( { loaded: 4, total: 10 } );
 
-					expect( loader.uploadTotal ).to.equal( 10 );
-					expect( loader.uploaded ).to.equal( 4 );
+					expect( loader.uploadTotal ).toBe( 10 );
+					expect( loader.uploaded ).toBe( 4 );
+				} );
+			} );
+
+			it( 'should not update progress when progress event length is not computable', () => {
+				adapter.upload();
+
+				return loader.file.then( () => {
+					const request = fakeXHR.requests[ 0 ];
+
+					request.uploadProgress( { lengthComputable: false, loaded: 4, total: 10 } );
+
+					expect( loader.uploadTotal ).toBeNull();
+					expect( loader.uploaded ).toBe( 0 );
 				} );
 			} );
 		} );
 	} );
 } );
+
+function createFakeXHRServer() {
+	const requests = [];
+
+	class FakeXMLHttpRequest {
+		constructor() {
+			this.aborted = false;
+			this.listeners = new Map();
+			this.upload = new FakeXMLHttpRequestUpload();
+
+			requests.push( this );
+		}
+
+		open( method, url, async ) {
+			this.method = method;
+			this.url = url;
+			this.async = async;
+		}
+
+		send( body ) {
+			this.requestBody = body;
+		}
+
+		abort() {
+			this.aborted = true;
+			this.dispatchEvent( 'abort' );
+		}
+
+		addEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+
+			callbacks.push( callback );
+			this.listeners.set( event, callbacks );
+		}
+
+		respond( status, headers, body ) {
+			this.status = status;
+			this.responseHeaders = headers;
+			this.responseText = body;
+			this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
+
+			this.dispatchEvent( 'load' );
+		}
+
+		error() {
+			this.dispatchEvent( 'error' );
+		}
+
+		uploadProgress( event ) {
+			this.upload.dispatchEvent( 'progress', {
+				lengthComputable: true,
+				...event
+			} );
+		}
+
+		dispatchEvent( event, data ) {
+			for ( const callback of this.listeners.get( event ) || [] ) {
+				callback( data );
+			}
+		}
+	}
+
+	class FakeXMLHttpRequestUpload {
+		constructor() {
+			this.listeners = new Map();
+		}
+
+		addEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+
+			callbacks.push( callback );
+			this.listeners.set( event, callbacks );
+		}
+
+		dispatchEvent( event, data ) {
+			for ( const callback of this.listeners.get( event ) || [] ) {
+				callback( data );
+			}
+		}
+	}
+
+	vi.stubGlobal( 'XMLHttpRequest', FakeXMLHttpRequest );
+
+	return { requests };
+}

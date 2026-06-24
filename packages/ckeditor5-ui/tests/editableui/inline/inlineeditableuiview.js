@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { EditingView, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 import { InlineEditableUIView } from '../../../src/editableui/inline/inlineeditableuiview.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
@@ -29,7 +30,7 @@ describe( 'InlineEditableUIView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'accepts locale', () => {
-			expect( view.locale ).to.equal( locale );
+			expect( view.locale ).toBe( locale );
 		} );
 
 		it( 'accepts editableElement', () => {
@@ -39,24 +40,49 @@ describe( 'InlineEditableUIView', () => {
 
 			view.render();
 
-			expect( view._editableElement ).to.equal( editableElement );
+			expect( view._editableElement ).toBe( editableElement );
 
 			view.destroy();
 		} );
 
 		it( 'creates view#element from template when no editableElement provided', () => {
-			expect( view.template ).to.be.an( 'object' );
+			expect( view.template ).toBeTypeOf( 'object' );
 		} );
 	} );
 
 	describe( 'editableElement', () => {
 		it( 'has proper accessibility role', () => {
-			expect( view.element.attributes.getNamedItem( 'role' ).value ).to.equal( 'textbox' );
+			expect( view.element.attributes.getNamedItem( 'role' ).value ).toBe( 'textbox' );
 		} );
 
 		describe( 'aria-label', () => {
 			it( 'should fall back to the default value when no option was provided', () => {
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Rich Text Editor. Editing area: main' );
+			} );
+
+			it( 'should fall back to the default value before the editable element is rendered', () => {
+				const view = new InlineEditableUIView( locale, editingView );
+
+				view.name = 'custom-name';
+
+				expect( view.getEditableAriaLabel() ).toBe( 'Rich Text Editor. Editing area: custom-name' );
+			} );
+
+			it( 'should fall back to the default value when editable element has no existing aria-label', () => {
+				const editingViewRoot = new ViewRootEditableElement( editingView.document, 'div' );
+				editingViewRoot.rootName = 'custom-name';
+				editingView.document.roots.add( editingViewRoot );
+				const editableElement = document.createElement( 'div' );
+
+				const view = new InlineEditableUIView( locale, editingView, editableElement );
+
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Rich Text Editor. Editing area: custom-name' );
+
+				view.destroy();
 			} );
 
 			it( 'should use the existing aria-label value of the editable element (no configured value)', () => {
@@ -73,7 +99,7 @@ describe( 'InlineEditableUIView', () => {
 
 				view.render();
 
-				expect( editableElement.getAttribute( 'aria-label' ) ).to.equal( 'Existing label' );
+				expect( editableElement.getAttribute( 'aria-label' ) ).toBe( 'Existing label' );
 
 				view.destroy();
 			} );
@@ -91,7 +117,7 @@ describe( 'InlineEditableUIView', () => {
 
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label: custom-name' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Custom label: custom-name' );
 
 				view.destroy();
 			} );
@@ -109,7 +135,7 @@ describe( 'InlineEditableUIView', () => {
 
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Custom label' );
 
 				view.destroy();
 			} );
@@ -129,7 +155,7 @@ describe( 'InlineEditableUIView', () => {
 
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Custom label' );
 
 				view.destroy();
 			} );
@@ -147,15 +173,15 @@ describe( 'InlineEditableUIView', () => {
 
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label: custom-name' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Custom label: custom-name' );
 
 				view.destroy();
 			} );
 		} );
 
 		it( 'has proper class name', () => {
-			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-editor__editable_inline' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-editor__editable' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-editor__editable_inline' ) ).toBe( true );
 		} );
 	} );
 } );

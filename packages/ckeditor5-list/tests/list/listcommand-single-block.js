@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ListCommand } from '../../src/list/listcommand.js';
@@ -11,13 +12,14 @@ import { ListEditing } from '../../src/list/listediting.js';
 import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ListCommand (multiBlock=false)', () => {
 	let editor, command, model, root, changedBlocks;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -56,8 +58,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			it( 'should create list command with given type and value set to false', () => {
 				_setModelData( model, '<paragraph>[]</paragraph>' );
 
-				expect( command.type ).to.equal( 'bulleted' );
-				expect( command.value ).to.be.false;
+				expect( command.type ).toBe( 'bulleted' );
+				expect( command.value ).toBe( false );
 			} );
 		} );
 
@@ -68,7 +70,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'* 1'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if first position in selection is in a list item of different type', () => {
@@ -77,7 +79,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'# 1'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list after list)', () => {
@@ -86,7 +88,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'1]'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list before list)', () => {
@@ -95,7 +97,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'* 1]'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list between lists)', () => {
@@ -105,7 +107,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'* 2]'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if any of selected blocks is not a same type list item', () => {
@@ -114,7 +116,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'# 1]'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be true if first position in selection is in a list item of same type', () => {
@@ -123,7 +125,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'* 1'
 				] ) );
 
-				expect( command.value ).to.be.true;
+				expect( command.value ).toBe( true );
 			} );
 
 			it( 'should be true if first position in selection is in a following block of the list item', () => {
@@ -132,19 +134,19 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'  1[]'
 				] ) );
 
-				expect( command.value ).to.be.true;
+				expect( command.value ).toBe( true );
 			} );
 		} );
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if entire selection is in a list', () => {
 				_setModelData( model, modelList( [ '* [a]' ] ) );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if entire selection is in a block which can be turned into a list', () => {
 				_setModelData( model, '<paragraph>[a]</paragraph>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if any of the selected blocks can be converted to a list (the last element does not allow)', () => {
@@ -156,7 +158,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'<block></block>]'
 				);
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if any of the selected blocks can be converted to a list (the first element does not allow)', () => {
@@ -168,7 +170,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'<paragraph>b]</paragraph>'
 				);
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if all of the selected blocks cannot be converted to a list', () => {
@@ -180,7 +182,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'<paragraph>b</paragraph>'
 				);
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
@@ -189,11 +191,11 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				_setModelData( model, '<paragraph>[0]</paragraph>' );
 
 				model.change( writer => {
-					expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
+					expect( writer.batch.operations.length, 'before' ).toBe( 0 );
 
 					command.execute();
 
-					expect( writer.batch.operations.length, 'after' ).to.be.above( 0 );
+					expect( writer.batch.operations.length, 'after' ).toBeGreaterThan( 0 );
 				} );
 			} );
 
@@ -257,7 +259,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'* fo[]o {id:a00}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 )
 					] );
 				} );
@@ -273,7 +275,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'* fo[]o'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 )
 					] );
 				} );
@@ -291,8 +293,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'* ba]r {id:a01}'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 2 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 2 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 ),
 						root.getChild( 1 )
 					] );
@@ -317,8 +319,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'e'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 2 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 2 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 1 ),
 						root.getChild( 3 )
 					] );
@@ -341,8 +343,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'# d'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 2 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 2 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 ),
 						root.getChild( 1 )
 					] );
@@ -367,8 +369,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'* e'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 2 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 2 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 1 ),
 						root.getChild( 3 )
 					] );
@@ -387,8 +389,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'fo[]o'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 1 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 1 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 )
 					] );
 				} );
@@ -408,8 +410,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'* baz'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 1 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 1 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 )
 					] );
 				} );
@@ -429,8 +431,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'* baz'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 1 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 1 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 1 )
 					] );
 				} );
@@ -450,8 +452,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'b[]az'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 1 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 1 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 2 )
 					] );
 				} );
@@ -474,8 +476,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 							'  * qux'
 						] ) );
 
-						expect( changedBlocks.length ).to.equal( 4 );
-						expect( changedBlocks ).to.deep.equal( [
+						expect( changedBlocks.length ).toBe( 4 );
+						expect( changedBlocks ).toEqual( [
 							root.getChild( 0 ),
 							root.getChild( 1 ),
 							root.getChild( 2 ),
@@ -500,8 +502,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 							'  * qux'
 						] ) );
 
-						expect( changedBlocks.length ).to.equal( 3 );
-						expect( changedBlocks ).to.deep.equal( [
+						expect( changedBlocks.length ).toBe( 3 );
+						expect( changedBlocks ).toEqual( [
 							root.getChild( 1 ),
 							root.getChild( 2 ),
 							root.getChild( 3 )
@@ -549,8 +551,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 							'    * 14'
 						] ) );
 
-						expect( changedBlocks.length ).to.equal( 9 );
-						expect( changedBlocks ).to.deep.equal( [
+						expect( changedBlocks.length ).toBe( 9 );
+						expect( changedBlocks ).toEqual( [
 							root.getChild( 3 ),
 							root.getChild( 4 ),
 							root.getChild( 5 ),
@@ -584,8 +586,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			it( 'should create list command with given type and value set to false', () => {
 				_setModelData( model, '<paragraph>[]</paragraph>' );
 
-				expect( command.type ).to.equal( 'numbered' );
-				expect( command.value ).to.be.false;
+				expect( command.type ).toBe( 'numbered' );
+				expect( command.value ).toBe( false );
 			} );
 		} );
 
@@ -596,7 +598,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'# 1'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if first position in selection is in a list item of different type', () => {
@@ -605,7 +607,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'* 1'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list after list)', () => {
@@ -614,7 +616,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'1]'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list before list)', () => {
@@ -623,7 +625,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'# 1]'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list between lists)', () => {
@@ -633,7 +635,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'# 2]'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if any of selected blocks is not a same type list item', () => {
@@ -642,7 +644,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'* 1]'
 				] ) );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be true if first position in selection is in a list item of same type', () => {
@@ -651,7 +653,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'# 1'
 				] ) );
 
-				expect( command.value ).to.be.true;
+				expect( command.value ).toBe( true );
 			} );
 
 			it( 'should be true if first position in selection is in a following block of the list item', () => {
@@ -660,19 +662,19 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'  1[]'
 				] ) );
 
-				expect( command.value ).to.be.true;
+				expect( command.value ).toBe( true );
 			} );
 		} );
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if entire selection is in a list', () => {
 				_setModelData( model, modelList( [ '# [a]' ] ) );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if entire selection is in a block which can be turned into a list', () => {
 				_setModelData( model, '<paragraph>[a]</paragraph>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if any of the selected blocks can be converted into a list (the last element does not allow)', () => {
@@ -684,7 +686,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'<block></block>]'
 				);
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if any of the selected blocks acan be converted into a list (the first element does not allow)', () => {
@@ -696,7 +698,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'<paragraph>b]</paragraph>'
 				);
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if all of the selected blocks do not allow converting to a list', () => {
@@ -708,7 +710,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					'<paragraph>b</paragraph>'
 				);
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
@@ -717,11 +719,11 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				_setModelData( model, '<paragraph>[0]</paragraph>' );
 
 				model.change( writer => {
-					expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
+					expect( writer.batch.operations.length, 'before' ).toBe( 0 );
 
 					command.execute();
 
-					expect( writer.batch.operations.length, 'after' ).to.be.above( 0 );
+					expect( writer.batch.operations.length, 'after' ).toBeGreaterThan( 0 );
 				} );
 			} );
 
@@ -785,7 +787,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'# fo[]o {id:a00}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 )
 					] );
 				} );
@@ -801,7 +803,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'# fo[]o'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 )
 					] );
 				} );
@@ -819,8 +821,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'# ba]r {id:a01}'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 2 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 2 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 ),
 						root.getChild( 1 )
 					] );
@@ -845,8 +847,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'e'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 2 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 2 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 1 ),
 						root.getChild( 3 )
 					] );
@@ -869,8 +871,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'* d'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 2 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 2 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 ),
 						root.getChild( 1 )
 					] );
@@ -895,8 +897,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'# e'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 2 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 2 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 1 ),
 						root.getChild( 3 )
 					] );
@@ -915,8 +917,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'fo[]o'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 1 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 1 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 )
 					] );
 				} );
@@ -936,8 +938,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'# baz'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 1 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 1 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 0 )
 					] );
 				} );
@@ -957,8 +959,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'# baz'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 1 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 1 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 1 )
 					] );
 				} );
@@ -978,8 +980,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 						'b[]az'
 					] ) );
 
-					expect( changedBlocks.length ).to.equal( 1 );
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks.length ).toBe( 1 );
+					expect( changedBlocks ).toEqual( [
 						root.getChild( 2 )
 					] );
 				} );
@@ -1002,8 +1004,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 							'  # qux'
 						] ) );
 
-						expect( changedBlocks.length ).to.equal( 4 );
-						expect( changedBlocks ).to.deep.equal( [
+						expect( changedBlocks.length ).toBe( 4 );
+						expect( changedBlocks ).toEqual( [
 							root.getChild( 0 ),
 							root.getChild( 1 ),
 							root.getChild( 2 ),
@@ -1028,8 +1030,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 							'  # qux'
 						] ) );
 
-						expect( changedBlocks.length ).to.equal( 3 );
-						expect( changedBlocks ).to.deep.equal( [
+						expect( changedBlocks.length ).toBe( 3 );
+						expect( changedBlocks ).toEqual( [
 							root.getChild( 1 ),
 							root.getChild( 2 ),
 							root.getChild( 3 )
@@ -1077,8 +1079,8 @@ describe( 'ListCommand (multiBlock=false)', () => {
 							'    # 14'
 						] ) );
 
-						expect( changedBlocks.length ).to.equal( 9 );
-						expect( changedBlocks ).to.deep.equal( [
+						expect( changedBlocks.length ).toBe( 9 );
+						expect( changedBlocks ).toEqual( [
 							root.getChild( 3 ),
 							root.getChild( 4 ),
 							root.getChild( 5 ),

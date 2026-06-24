@@ -7,7 +7,7 @@
  * @module essentials/essentials
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter';
@@ -37,8 +37,8 @@ export class Essentials extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ AccessibilityHelp, Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo ] as const;
+	public static get requires(): PluginDependenciesOf<[ AccessibilityHelp, Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo ]> {
+		return [ AccessibilityHelp, Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo ];
 	}
 
 	/**

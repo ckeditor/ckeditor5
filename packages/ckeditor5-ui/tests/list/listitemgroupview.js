@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ListItemView } from '../../src/list/listitemview.js';
 import { ListItemGroupView } from '../../src/list/listitemgroupview.js';
 import { ViewCollection } from '../../src/viewcollection.js';
@@ -24,52 +25,52 @@ describe( 'ListItemGroupView', () => {
 	describe( 'constructor()', () => {
 		describe( 'template', () => {
 			it( 'creates a list element', () => {
-				expect( view.element.tagName ).to.equal( 'LI' );
-				expect( view.element.role ).to.equal( 'presentation' );
+				expect( view.element.tagName ).toBe( 'LI' );
+				expect( view.element.role ).toBe( 'presentation' );
 			} );
 
 			it( 'sets CSS classes', () => {
-				expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-list__group' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-list__group' ) ).toBe( true );
 			} );
 
 			it( 'creates a #labelView element as a first child', () => {
-				expect( view.children.first ).to.equal( view.labelView );
+				expect( view.children.first ).toBe( view.labelView );
 			} );
 
 			it( 'should have #children view collection with a label and a nested list', () => {
-				expect( view.children ).to.be.instanceOf( ViewCollection );
-				expect( view.children.first.element.textContent ).to.equal( 'Foo' );
-				expect( view.children.last.items ).to.equal( view.items );
+				expect( view.children ).toBeInstanceOf( ViewCollection );
+				expect( view.children.first.element.textContent ).toBe( 'Foo' );
+				expect( view.children.last.items ).toBe( view.items );
 			} );
 
 			describe( 'nested list', () => {
 				it( 'is created as a last child', () => {
 					const listElement = view.element.lastChild;
 
-					expect( listElement.tagName ).to.equal( 'UL' );
-					expect( listElement.role ).to.equal( 'group' );
-					expect( listElement.classList.contains( 'ck' ) ).to.be.true;
-					expect( listElement.classList.contains( 'ck-list' ) ).to.be.true;
+					expect( listElement.tagName ).toBe( 'UL' );
+					expect( listElement.role ).toBe( 'group' );
+					expect( listElement.classList.contains( 'ck' ) ).toBe( true );
+					expect( listElement.classList.contains( 'ck-list' ) ).toBe( true );
 				} );
 
 				it( 'is described using an ARIA attribute for assistive technologies', () => {
 					const listElement = view.element.lastChild;
 
-					expect( listElement.attributes[ 'aria-labelledby' ].value ).to.equal( view.element.firstChild.id );
+					expect( listElement.attributes[ 'aria-labelledby' ].value ).toBe( view.element.firstChild.id );
 				} );
 			} );
 
 			describe( '#labelView', () => {
 				it( 'uses LabelView by default', () => {
-					expect( view.labelView ).to.be.instanceOf( LabelView );
+					expect( view.labelView ).toBeInstanceOf( LabelView );
 
 					view.set( {
 						label: 'bar'
 					} );
 
-					expect( view.labelView.id ).to.equal( view.children.last.element.getAttribute( 'aria-labelledby' ) );
-					expect( view.labelView.element.textContent ).to.equal( 'bar' );
+					expect( view.labelView.id ).toBe( view.children.last.element.getAttribute( 'aria-labelledby' ) );
+					expect( view.labelView.element.textContent ).toBe( 'bar' );
 				} );
 
 				it( 'accepts a custom label instance that implements the same label interface', () => {
@@ -104,10 +105,10 @@ describe( 'ListItemGroupView', () => {
 
 					view.render();
 
-					expect( view.labelView ).to.be.instanceOf( CustomLabel );
-					expect( view.labelView.element.id ).to.equal( view.children.last.element.getAttribute( 'aria-labelledby' ) );
-					expect( view.children.last.element.getAttribute( 'aria-labelledby' ) ).to.equal( '1234' );
-					expect( view.labelView.element.textContent ).to.equal( 'bar' );
+					expect( view.labelView ).toBeInstanceOf( CustomLabel );
+					expect( view.labelView.element.id ).toBe( view.children.last.element.getAttribute( 'aria-labelledby' ) );
+					expect( view.children.last.element.getAttribute( 'aria-labelledby' ) ).toBe( '1234' );
+					expect( view.labelView.element.textContent ).toBe( 'bar' );
 
 					view.destroy();
 				} );
@@ -116,36 +117,36 @@ describe( 'ListItemGroupView', () => {
 
 		describe( 'view#items collection', () => {
 			it( 'exists', () => {
-				expect( view.items ).to.be.instanceOf( ViewCollection );
+				expect( view.items ).toBeInstanceOf( ViewCollection );
 			} );
 
 			it( 'populates the nested list', () => {
-				expect( view.items ).to.be.instanceOf( ViewCollection );
+				expect( view.items ).toBeInstanceOf( ViewCollection );
 			} );
 		} );
 
 		it( 'sets the #isVisible property', () => {
-			expect( view.isVisible ).to.be.true;
+			expect( view.isVisible ).toBe( true );
 		} );
 
 		describe( 'DOM element bindings', () => {
 			describe( 'isVisible', () => {
 				it( 'reacts on view#isVisible', () => {
 					view.isVisible = true;
-					expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+					expect( view.element.classList.contains( 'ck-hidden' ) ).toBe( false );
 
 					view.isVisible = false;
-					expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+					expect( view.element.classList.contains( 'ck-hidden' ) ).toBe( true );
 				} );
 			} );
 
 			describe( 'label', () => {
 				it( 'reacts on view#label', () => {
 					view.label = 'foo';
-					expect( view.element.firstChild.textContent ).to.equal( 'foo' );
+					expect( view.element.firstChild.textContent ).toBe( 'foo' );
 
 					view.label = 'bar';
-					expect( view.element.firstChild.textContent ).to.equal( 'bar' );
+					expect( view.element.firstChild.textContent ).toBe( 'bar' );
 				} );
 			} );
 		} );
@@ -156,10 +157,10 @@ describe( 'ListItemGroupView', () => {
 			const childListItemView = new ListItemView();
 			view.items.add( childListItemView );
 
-			const spy = sinon.spy( childListItemView, 'focus' );
+			const spy = vi.spyOn( childListItemView, 'focus' );
 
 			view.focus();
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'focuses the first view in #items which is not a separator', () => {
@@ -169,10 +170,10 @@ describe( 'ListItemGroupView', () => {
 			const childListItemView = new ListItemView();
 			view.items.add( childListItemView );
 
-			const spyItem = sinon.spy( childListItemView, 'focus' );
+			const spyItem = vi.spyOn( childListItemView, 'focus' );
 
 			view.focus();
-			sinon.assert.calledOnce( spyItem );
+			expect( spyItem ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'does not throw if #items include only a separator', () => {
@@ -181,13 +182,13 @@ describe( 'ListItemGroupView', () => {
 				view.items.add( childListSeparatorView );
 
 				view.focus();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'does not throw if #items are empty', () => {
 			expect( () => {
 				view.focus();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
 } );

@@ -8,7 +8,7 @@
  */
 
 import type { ModelDocumentSelection, ModelElement, ModelSelection, ViewElement, Match } from '@ckeditor/ckeditor5-engine';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { ImageUtils } from '../imageutils.js';
 
@@ -33,8 +33,8 @@ export class ImageCaptionUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageUtils ]> {
+		return [ ImageUtils ];
 	}
 
 	/**

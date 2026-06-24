@@ -23,7 +23,8 @@ import {
 	type Locale,
 	type LocaleTranslate,
 	type ObservableChangeEvent,
-	type CRCData
+	type CRCData,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import {
@@ -54,6 +55,8 @@ declare global {
 	var CKEDITOR_WARNING_SUPPRESSIONS: Record<string, boolean>;
 }
 
+const EditorBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * The class representing a basic, generic editor.
  *
@@ -72,7 +75,7 @@ declare global {
  * the specific editor implements also the {@link ~Editor#ui} property
  * (as most editor implementations do).
  */
-export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
+export abstract class Editor extends EditorBase {
 	/**
 	 * A required name of the editor class. The name should reflect the constructor name.
 	 */
@@ -301,7 +304,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
 	 *  or {@link module:core/editor/editorconfig~EditorConfig#root `config.root.modelAttributes`}.
 	 */
-	protected readonly _registeredRootsAttributesKeys = new Set<string>();
+	protected readonly _registeredRootsAttributesKeys: Set<string> = new Set<string>();
 
 	/**
 	 * `Editor` class is commonly put in `config.plugins` array.
@@ -931,7 +934,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			return this.commands.execute( commandName, ...commandParams );
 		} catch ( err: any ) {
 			// @if CK_DEBUG // throw err;
-			/* istanbul ignore next -- @preserve */
+			/* v8 ignore next -- @preserve */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
@@ -1004,7 +1007,6 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		return rootAttributes;
 	}
 
-	/* istanbul ignore next -- @preserve */
 	/**
 	 * Creates and initializes a new editor instance.
 	 *
@@ -1026,21 +1028,21 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * Exposed as static editor field for easier access in editor builds.
 	 */
-	public static Context = Context;
+	public static Context: typeof Context = Context;
 
 	/**
 	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
 	 *
 	 * Exposed as static editor field for easier access in editor builds.
 	 */
-	public static EditorWatchdog = EditorWatchdog;
+	public static EditorWatchdog: typeof EditorWatchdog = EditorWatchdog;
 
 	/**
 	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
 	 *
 	 * Exposed as static editor field for easier access in editor builds.
 	 */
-	public static ContextWatchdog = ContextWatchdog;
+	public static ContextWatchdog: typeof ContextWatchdog = ContextWatchdog;
 
 	protected _showLicenseError( reason: LicenseErrorReason, name?: string ): void {
 		setTimeout( () => {
@@ -1165,6 +1167,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				throw new CKEditorError( 'license-key-usage-limit' );
 			}
 
+			/* v8 ignore else -- @preserve */
 			if ( reason == 'distributionChannel' ) {
 				/**
 				 * Your license does not allow the current distribution channel.
@@ -1193,9 +1196,8 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				throw new CKEditorError( 'license-key-invalid-distribution-channel' );
 			}
 
-			/* istanbul ignore next -- @preserve */
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const unreachable: never = reason;
+			/* v8 ignore next -- @preserve */
+			const unreachable: never = reason; // eslint-disable-line @typescript-eslint/no-unused-vars
 		}, 0 );
 
 		this._showLicenseError = () => {};

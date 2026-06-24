@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createMockLocale } from './_utils/dropdowntreemock.js';
 
 import { DropdownMenuNestedMenuPanelView } from '../../../src/dropdown/menu/dropdownmenunestedmenupanelview.js';
@@ -27,7 +28,7 @@ describe( 'DropdownMenuNestedMenuPanelView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should have #content view collection', () => {
-			expect( panelView.content ).to.be.instanceOf( ViewCollection );
+			expect( panelView.content ).toBeInstanceOf( ViewCollection );
 
 			const view = new View();
 
@@ -37,31 +38,33 @@ describe( 'DropdownMenuNestedMenuPanelView', () => {
 			panelView.render();
 			panelView.content.add( view );
 
-			expect( panelView.element.firstChild ).to.equal( view.element );
+			expect( panelView.element.firstChild ).toBe( view.element );
 		} );
 
 		it( 'should have #isVisible set to false by default', () => {
-			expect( panelView.isVisible ).to.be.false;
+			expect( panelView.isVisible ).toBe( false );
 		} );
 
 		it( 'should have #position set to "se" by default', () => {
-			expect( panelView.position ).to.equal( 'se' );
+			expect( panelView.position ).toBe( 'se' );
 		} );
 
 		it( 'should set add additional CSS classes to the template', () => {
 			panelView.render();
 			panelView.class = 'FooBar';
 
-			expect( panelView.element.classList.contains( 'FooBar' ) ).to.be.true;
+			expect( panelView.element.classList.contains( 'FooBar' ) ).toBe( true );
 		} );
 
 		describe( 'template and DOM element', () => {
 			it( 'should have CSS classes', () => {
-				expect( panelView.template.attributes.class ).to.include.members( [ 'ck-reset', 'ck-dropdown-menu__nested-menu__panel' ] );
+				expect( panelView.template.attributes.class ).toEqual(
+					expect.arrayContaining( [ 'ck-reset', 'ck-dropdown-menu__nested-menu__panel' ] )
+				);
 			} );
 
 			it( 'should have tabindex attribute value set', () => {
-				expect( panelView.template.attributes.tabindex ).to.have.members( [ '-1' ] );
+				expect( panelView.template.attributes.tabindex ).toEqual( [ '-1' ] );
 			} );
 
 			it( 'should preventDefault the selectstart event to avoid breaking the selection in the editor', () => {
@@ -71,16 +74,16 @@ describe( 'DropdownMenuNestedMenuPanelView', () => {
 					bubbles: true,
 					cancelable: true
 				} );
-				const spy = sinon.spy( selectStartEvent, 'preventDefault' );
+				const spy = vi.spyOn( selectStartEvent, 'preventDefault' );
 				const labeledInput = new LabeledFieldView( { t: () => {} }, createLabeledInputText );
 
 				panelView.element.dispatchEvent( selectStartEvent );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 
 				panelView.content.add( labeledInput );
 
 				labeledInput.fieldView.element.dispatchEvent( selectStartEvent );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -91,13 +94,13 @@ describe( 'DropdownMenuNestedMenuPanelView', () => {
 
 				panelView.content.addMany( [ firstChildView, lastChildView ] );
 
-				firstChildView.focus = sinon.spy();
-				lastChildView.focus = sinon.spy();
+				firstChildView.focus = vi.fn();
+				lastChildView.focus = vi.fn();
 
 				panelView.focus();
 
-				sinon.assert.calledOnce( firstChildView.focus );
-				sinon.assert.notCalled( lastChildView.focus );
+				expect( firstChildView.focus ).toHaveBeenCalledOnce();
+				expect( lastChildView.focus ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should focus the last child if the argument was passed', () => {
@@ -106,13 +109,17 @@ describe( 'DropdownMenuNestedMenuPanelView', () => {
 
 				panelView.content.addMany( [ firstChildView, lastChildView ] );
 
-				firstChildView.focus = sinon.spy();
-				lastChildView.focus = sinon.spy();
+				firstChildView.focus = vi.fn();
+				lastChildView.focus = vi.fn();
 
 				panelView.focus( -1 );
 
-				sinon.assert.notCalled( firstChildView.focus );
-				sinon.assert.calledOnce( lastChildView.focus );
+				expect( firstChildView.focus ).not.toHaveBeenCalled();
+				expect( lastChildView.focus ).toHaveBeenCalledOnce();
+			} );
+
+			it( 'should not throw when content is empty', () => {
+				expect( () => panelView.focus() ).not.toThrow();
 			} );
 		} );
 	} );

@@ -89,6 +89,9 @@ const config = {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
 		tableToolbar: [ 'bold', 'italic' ]
 	},
+	list: {
+		enableSkipLevelLists: true
+	},
 	heading: {
 		options: [
 			{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },

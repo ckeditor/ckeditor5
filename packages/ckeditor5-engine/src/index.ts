@@ -340,6 +340,7 @@ export { ViewDocumentDomEventData as ViewDocumentDomEventData } from './view/obs
 export {
 	type BubblingEvent,
 	type BubblingEmitter,
+	type BubblingEmitterMixinConstructor,
 	type BubblingEventContextFunction,
 	type BubblingCallbackOptions,
 	BubblingEmitterMixin

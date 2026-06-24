@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
@@ -38,15 +39,15 @@ describe( 'MediaEmbedElementSupport', () => {
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( MediaEmbedElementSupport.isOfficialPlugin ).to.be.true;
+			expect( MediaEmbedElementSupport.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( MediaEmbedElementSupport.isPremiumPlugin ).to.be.false;
+			expect( MediaEmbedElementSupport.isPremiumPlugin ).toBe( false );
 		} );
 
 		it( 'should be named', () => {
-			expect( editor.plugins.has( 'MediaEmbedElementSupport' ) ).to.be.true;
+			expect( editor.plugins.has( 'MediaEmbedElementSupport' ) ).toBe( true );
 		} );
 
 		it( 'should allow attributes', () => {
@@ -62,7 +63,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<media htmlFigureAttributes="(1)" htmlOembedAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">' +
 					'</media>',
@@ -80,7 +81,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow classes', () => {
@@ -96,7 +97,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media htmlFigureAttributes="(1)" htmlOembedAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
@@ -107,7 +108,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow styles', () => {
@@ -123,7 +124,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media htmlFigureAttributes="(1)" htmlOembedAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
@@ -136,7 +137,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should disallow attributes', () => {
@@ -156,13 +157,13 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 				'</figure>'
@@ -186,13 +187,13 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 				'</figure>'
@@ -216,13 +217,13 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 				'</figure>'
@@ -239,7 +240,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media htmlOembedAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: {
@@ -252,7 +253,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed>' +
 				'</figure>'
@@ -275,7 +276,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media htmlFigureAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>' +
 				'<htmlFigure htmlFigureAttributes="(2)">' +
@@ -300,7 +301,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should not double convert figure element', () => {
@@ -318,7 +319,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should not consume media figure element that is already consumed (upcast)', () => {
@@ -341,7 +342,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal( '' );
+			expect( editor.getData() ).toBe( '' );
 		} );
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
@@ -369,7 +370,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 				'</figure>'
@@ -394,7 +395,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 				'</figure>'
@@ -402,8 +403,8 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
-			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+			expect( marker.getStart().path ).toEqual( [ 0 ] );
+			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 
 		it( 'should create a marker before GHS converts attributes (without the figure element)', () => {
@@ -423,7 +424,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				' data-commented-end-after="foo:id" data-commented-start-before="foo:id"></oembed>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 				'</figure>'
@@ -431,8 +432,8 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
-			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+			expect( marker.getStart().path ).toEqual( [ 0 ] );
+			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 	} );
 
@@ -477,7 +478,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<media' +
 						' htmlCustomOembedAttributes="(1)"' +
@@ -499,7 +500,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow classes', () => {
@@ -515,7 +516,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<media' +
 						' htmlCustomOembedAttributes="(1)"' +
@@ -531,7 +532,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should allow styles', () => {
@@ -547,7 +548,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<media' +
 						' htmlCustomOembedAttributes="(1)"' +
@@ -565,7 +566,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should disallow attributes', () => {
@@ -585,13 +586,13 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
 				'</figure>'
@@ -615,13 +616,13 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
 				'</figure>'
@@ -645,13 +646,13 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
 				'</figure>'
@@ -668,7 +669,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<media' +
 						' htmlCustomOembedAttributes="(1)"' +
@@ -685,7 +686,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
 				'</figure>'
@@ -708,7 +709,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<media htmlFigureAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>' +
 				'<htmlFigure htmlFigureAttributes="(2)">' +
@@ -733,7 +734,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( expectedHtml );
+			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
 		it( 'should not consume media figure element that is already consumed (upcast)', () => {
@@ -756,7 +757,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal( '' );
+			expect( editor.getData() ).toBe( '' );
 		} );
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
@@ -784,7 +785,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
 				'</figure>'
@@ -809,7 +810,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media" data-foo="foo">' +
 					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
 				'</figure>'
@@ -817,8 +818,8 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
-			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+			expect( marker.getStart().path ).toEqual( [ 0 ] );
+			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 
 		it( 'should create a marker before GHS converts attributes(without figure)', () => {
@@ -838,7 +839,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				' data-foo="foo" data-commented-end-after="foo:id" data-commented-start-before="foo:id"></custom-oembed>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media">' +
 					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
 				'</figure>'
@@ -846,8 +847,8 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
-			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+			expect( marker.getStart().path ).toEqual( [ 0 ] );
+			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes ', () => {
@@ -888,7 +889,7 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 			'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 		// 		attributes: {
@@ -917,7 +918,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 		// 	// TODO: this should pass, but oembed attributes are not applied in the editing view.
 		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 	// 	'<figure class="ck-widget ck-widget_selected media foobar" contenteditable="false"' +
 		// 	// 			' style="font-size:12px;text-align:center;" data-figure="bar">' +
 		// 	// 		'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
@@ -927,7 +928,7 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 	// 	'</figure>'
 		// 	// );
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<figure class="media foobar" style="font-size:12px;text-align:center;" data-figure="bar">' +
 		// 			'<custom-oembed class="bar baz" style="background-color:blue;color:red;"' +
 		// 			' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
@@ -962,13 +963,13 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'classes', null );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 			'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 		// 		attributes: {}
 		// 	} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 		'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 		// 			'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">' +
 		// 			'</div>' +
@@ -976,7 +977,7 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 		'</figure>'
 		// 	);
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<figure class="media">' +
 		// 			'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
 		// 		'</figure>'
@@ -1023,7 +1024,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<htmlFigure htmlFigureAttributes="(1)">' +
 					'<paragraph>' +
@@ -1044,7 +1045,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure data-figure="data-figure-value">' +
 					'<p>' +
 						'<oembed data-oembed="data-oembed-value"></oembed>' +
@@ -1065,7 +1066,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<htmlFigure htmlFigureAttributes="(1)">' +
 					'<paragraph>' +
@@ -1082,7 +1083,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media foobar"><p><oembed class="foobar"></oembed></p></figure>'
 			);
 		} );
@@ -1100,7 +1101,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( inputHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<htmlFigure htmlFigureAttributes="(1)">' +
 					'<paragraph>' +
@@ -1117,7 +1118,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure style="color:red;"><p><oembed style="color:red;"></oembed></p></figure>'
 			);
 		} );
@@ -1139,13 +1140,13 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<htmlFigure><paragraph><htmlOembed htmlContent=""></htmlOembed></paragraph></htmlFigure>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure><p><oembed></oembed></p></figure>'
 			);
 		} );
@@ -1167,13 +1168,13 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<htmlFigure><paragraph><htmlOembed htmlContent=""></htmlOembed></paragraph></htmlFigure>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure><p><oembed></oembed></p></figure>'
 			);
 		} );
@@ -1195,13 +1196,13 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<htmlFigure><paragraph><htmlOembed htmlContent=""></htmlOembed></paragraph></htmlFigure>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure><p><oembed></oembed></p></figure>'
 			);
 		} );
@@ -1216,7 +1217,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<paragraph><htmlOembed htmlContent="" htmlOembedAttributes="(1)"></htmlOembed></paragraph>',
 				attributes: {
@@ -1229,7 +1230,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<p><oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed></p>'
 			);
 		} );
@@ -1250,7 +1251,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			editor.setData( expectedHtml );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 				'<htmlFigure htmlFigureAttributes="(1)">' +
 					'<paragraph>' +
@@ -1279,7 +1280,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure data-figure="oembed">' +
 					'<p>' +
 						'<oembed></oembed>' +
@@ -1321,7 +1322,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure><p><oembed></oembed></p></figure>'
 			);
 		} );
@@ -1347,7 +1348,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="media" data-foo="foo">' +
 					'<p><oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed></p>' +
 				'</figure>'
@@ -1355,8 +1356,8 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
-			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+			expect( marker.getStart().path ).toEqual( [ 0 ] );
+			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes ', () => {
@@ -1398,7 +1399,7 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, figureElement, 'htmlAttributes', 'classes', [ 'foobar' ] );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 		'<htmlFigure htmlAttributes="(1)">' +
 		// 			'<paragraph>' +
@@ -1432,7 +1433,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 		// 	// TODO: this should pass, but oembed attributes are not applied in the editing view.
 		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 	// 	'<figure class="ck-widget ck-widget_selected foobar" contenteditable="false"' +
 		// 	// 			' style="font-size:12px;text-align:center;" data-figure="bar">' +
 		// 	// 		'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
@@ -1442,7 +1443,7 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 	// 	'</figure>'
 		// 	// );
 
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<figure class="foobar" style="font-size:12px;text-align:center;" data-figure="bar">' +
 		// 			'<p><oembed class="bar baz" style="background-color:blue;color:red;"' +
 		// 			' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
@@ -1478,7 +1479,7 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 		setModelHtmlAttribute( writer, figureElement, 'htmlAttributes', 'classes', null );
 		// 	} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 		// 		data:
 		// 			'<htmlFigure>' +
 		// 				'<paragraph>' +
@@ -1491,7 +1492,7 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 	} );
 
 		// 	// TODO: This test passes, but I think it's wrong.
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 		// 		'<figure>' +
 		// 			'<p>' +
 		// 				'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
@@ -1502,7 +1503,7 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 	);
 
 		// 	// TODO: This test fails, but shouldn't.
-		// 	expect( editor.getData() ).to.equal(
+		// 	expect( editor.getData() ).toBe(
 		// 		'<figure class="media">' +
 		// 			'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 		// 		'</figure>'

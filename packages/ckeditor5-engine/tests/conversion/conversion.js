@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Conversion } from '../../src/conversion/conversion.js';
 
 import { UpcastDispatcher } from '../../src/conversion/upcastdispatcher.js';
@@ -49,8 +50,8 @@ describe( 'Conversion', () => {
 
 	describe( 'for()', () => {
 		it( 'should return ConversionHelpers', () => {
-			expect( conversion.for( 'upcast' ) ).to.be.instanceof( ConversionHelpers );
-			expect( conversion.for( 'downcast' ) ).to.be.instanceof( ConversionHelpers );
+			expect( conversion.for( 'upcast' ) ).toBeInstanceOf( ConversionHelpers );
+			expect( conversion.for( 'downcast' ) ).toBeInstanceOf( ConversionHelpers );
 		} );
 
 		it( 'should throw if non-existing group name has been used', () => {
@@ -60,15 +61,15 @@ describe( 'Conversion', () => {
 		} );
 
 		it( 'should return proper helpers for group', () => {
-			expect( conversion.for( 'upcast' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'upcast' ) ).toBeInstanceOf( UpcastHelpers );
 
 			conversion.addAlias( 'foo', upcastDispaA );
-			expect( conversion.for( 'foo' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'foo' ) ).toBeInstanceOf( UpcastHelpers );
 
-			expect( conversion.for( 'downcast' ) ).to.be.instanceof( DowncastHelpers );
+			expect( conversion.for( 'downcast' ) ).toBeInstanceOf( DowncastHelpers );
 
 			conversion.addAlias( 'bar', downcastDispB );
-			expect( conversion.for( 'bar' ) ).to.be.instanceof( DowncastHelpers );
+			expect( conversion.for( 'bar' ) ).toBeInstanceOf( DowncastHelpers );
 		} );
 	} );
 
@@ -76,45 +77,45 @@ describe( 'Conversion', () => {
 		let helperA, helperB;
 
 		beforeEach( () => {
-			helperA = sinon.stub();
-			helperB = sinon.stub();
+			helperA = vi.fn();
+			helperB = vi.fn();
 		} );
 
 		it( 'should be chainable', () => {
 			const helpers = conversion.for( 'upcast' );
 			const addResult = helpers.add( () => {} );
 
-			expect( addResult ).to.equal( helpers );
+			expect( addResult ).toBe( helpers );
 		} );
 
 		it( 'should fire given helper for every dispatcher in given group', () => {
 			conversion.for( 'downcast' ).add( helperA );
 
-			expect( helperA.calledWithExactly( downcastDispA ) ).to.be.true;
-			expect( helperA.calledWithExactly( downcastDispB ) ).to.be.true;
-			expect( helperA.calledWithExactly( upcastDispaA ) ).to.be.false;
+			expect( helperA ).toHaveBeenCalledWith( downcastDispA );
+			expect( helperA ).toHaveBeenCalledWith( downcastDispB );
+			expect( helperA ).not.toHaveBeenCalledWith( upcastDispaA );
 
 			conversion.for( 'upcast' ).add( helperB );
 
-			expect( helperB.calledWithExactly( downcastDispA ) ).to.be.false;
-			expect( helperB.calledWithExactly( downcastDispB ) ).to.be.false;
-			expect( helperB.calledWithExactly( upcastDispaA ) ).to.be.true;
+			expect( helperB ).not.toHaveBeenCalledWith( downcastDispA );
+			expect( helperB ).not.toHaveBeenCalledWith( downcastDispB );
+			expect( helperB ).toHaveBeenCalledWith( upcastDispaA );
 		} );
 	} );
 
 	it( 'constructor() should be able to take singular objects instead of arrays', () => {
-		const helperA = sinon.stub();
-		const helperB = sinon.stub();
+		const helperA = vi.fn();
+		const helperB = vi.fn();
 
 		conversion = new Conversion( downcastDispA, upcastDispaA );
 
 		conversion.for( 'downcast' ).add( helperA );
 
-		expect( helperA.calledWithExactly( downcastDispA ) ).to.be.true;
+		expect( helperA ).toHaveBeenCalledWith( downcastDispA );
 
 		conversion.for( 'upcast' ).add( helperB );
 
-		expect( helperB.calledWithExactly( upcastDispaA ) ).to.be.true;
+		expect( helperB ).toHaveBeenCalledWith( upcastDispaA );
 	} );
 
 	describe( 'converters', () => {
@@ -719,8 +720,8 @@ describe( 'Conversion', () => {
 		function testConversion( input, expectedModel, expectedView = null ) {
 			loadData( input );
 
-			expect( _stringifyModel( model.document.getRoot() ) ).to.equal( expectedModel );
-			expect( _stringifyView( viewRoot, null, { ignoreRoot: true } ) ).to.equal( expectedView || input );
+			expect( _stringifyModel( model.document.getRoot() ) ).toBe( expectedModel );
+			expect( _stringifyView( viewRoot, null, { ignoreRoot: true } ) ).toBe( expectedView || input );
 		}
 
 		function loadData( input ) {

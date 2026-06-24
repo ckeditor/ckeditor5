@@ -8,6 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 
 import { _getModelData, _setModelData } from '../../src/dev-utils/model.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe( 'Bug ckeditor5#5564', () => {
 	let editor;
@@ -27,7 +28,7 @@ describe( 'Bug ckeditor5#5564', () => {
 	it( 'does not create an excessive new line when loading <p>x</p><p><br></p><p>x</p>', () => {
 		editor.setData( '<p>x</p><p><br></p><p>x</p>' );
 
-		expect( _getModelData( editor.model ) ).to.equal(
+		expect( _getModelData( editor.model ) ).toBe(
 			'<paragraph>[]x</paragraph><paragraph></paragraph><paragraph>x</paragraph>'
 		);
 	} );
@@ -38,12 +39,12 @@ describe( 'Bug ckeditor5#5564', () => {
 		const expectedData = '<p>x</p><p><br>&nbsp;</p><p>x</p>';
 		const actualData = editor.getData();
 
-		expect( actualData ).to.equal( expectedData );
+		expect( actualData ).toBe( expectedData );
 
 		// Loading this data into the editor will actually create an excessive space as &nbsp; here isn't recognized as a filler.
 		// It's a known issue.
 		editor.setData( actualData );
 
-		expect( editor.getData() ).to.equal( expectedData );
+		expect( editor.getData() ).toBe( expectedData );
 	} );
 } );

@@ -3,12 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { IconFindReplace } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { DropdownView, ButtonView, MenuBarMenuListItemButtonView, DialogView } from '@ckeditor/ckeditor5-ui';
 import { global, keyCodes, env } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { FindAndReplaceUI } from '../src/findandreplaceui.js';
 import { FindAndReplace } from '../src/findandreplace.js';
 import { FindAndReplaceFormView } from '../src/ui/findandreplaceformview.js';
@@ -16,18 +17,20 @@ import { FindAndReplaceFormView } from '../src/ui/findandreplaceformview.js';
 describe( 'FindAndReplaceUI', () => {
 	let editorElement, editor, dropdown, findCommand, form, plugin;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	it( 'should be named', () => {
-		expect( FindAndReplaceUI.pluginName ).to.equal( 'FindAndReplaceUI' );
+		expect( FindAndReplaceUI.pluginName ).toBe( 'FindAndReplaceUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FindAndReplaceUI.isOfficialPlugin ).to.be.true;
+		expect( FindAndReplaceUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( FindAndReplaceUI.isPremiumPlugin ).to.be.false;
+		expect( FindAndReplaceUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'init()', () => {
@@ -67,23 +70,23 @@ describe( 'FindAndReplaceUI', () => {
 			} );
 
 			it( 'should add keystroke accessibility info', () => {
-				expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+				expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).toContainEqual( {
 					label: 'Find in the document',
 					keystroke: 'CTRL+F'
 				} );
 			} );
 
 			it( 'should register a button UI compontent', () => {
-				expect( toolbarButtonView ).to.be.instanceOf( ButtonView );
+				expect( toolbarButtonView ).toBeInstanceOf( ButtonView );
 			} );
 
 			it( 'should register a menu bar button UI compontent', () => {
-				expect( menuBarButtonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+				expect( menuBarButtonView ).toBeInstanceOf( MenuBarMenuListItemButtonView );
 			} );
 
 			it( 'should display a form inside a dialog', () => {
-				expect( dialogView ).to.be.instanceOf( DialogView );
-				expect( form ).to.be.instanceOf( FindAndReplaceFormView );
+				expect( dialogView ).toBeInstanceOf( DialogView );
+				expect( form ).toBeInstanceOf( FindAndReplaceFormView );
 			} );
 
 			it( 'should not create the form until the user opened the dialog (performance enhancement)', async () => {
@@ -93,11 +96,11 @@ describe( 'FindAndReplaceUI', () => {
 				const plugin = editor.plugins.get( 'FindAndReplaceUI' );
 				const toolbarButtonView = editor.ui.componentFactory.create( 'findAndReplace' );
 
-				expect( plugin.formView ).to.be.null;
+				expect( plugin.formView ).toBeNull();
 
 				toolbarButtonView.fire( 'execute' );
 
-				expect( plugin.formView ).to.be.instanceOf( FindAndReplaceFormView );
+				expect( plugin.formView ).toBeInstanceOf( FindAndReplaceFormView );
 
 				await editor.destroy();
 			} );
@@ -111,7 +114,7 @@ describe( 'FindAndReplaceUI', () => {
 					} );
 
 					it( 'should set a #tooltip of the #buttonView', () => {
-						expect( button.tooltip ).to.be.true;
+						expect( button.tooltip ).toBe( true );
 					} );
 
 					testButton();
@@ -125,7 +128,7 @@ describe( 'FindAndReplaceUI', () => {
 					testButton();
 
 					it( 'should have proper role set', () => {
-						expect( button.role ).to.be.equal( 'menuitemcheckbox' );
+						expect( button.role ).toBe( 'menuitemcheckbox' );
 					} );
 				} );
 
@@ -133,49 +136,52 @@ describe( 'FindAndReplaceUI', () => {
 					describe( 'upon dialog open', () => {
 						it( 'CSS transitions should be disabled to avoid unnecessary animations (and then enable them again)', () => {
 							// (https://github.com/ckeditor/ckeditor5/issues/10008)
-							const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
-							const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
-							const selectSpy = sinon.spy( form._findInputView.fieldView, 'select' );
+							const disableCssTransitionsSpy = vi.spyOn( form, 'disableCssTransitions' );
+							const enableCssTransitionsSpy = vi.spyOn( form, 'enableCssTransitions' );
+							const selectSpy = vi.spyOn( form._findInputView.fieldView, 'select' );
 
 							// Reopen the dialog.
 							button.fire( 'execute' );
 							button.fire( 'execute' );
 
-							sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
+							expect( disableCssTransitionsSpy.mock.invocationCallOrder[ 0 ] )
+								.toBeLessThan( selectSpy.mock.invocationCallOrder[ 0 ] );
+							expect( selectSpy.mock.invocationCallOrder[ 0 ] )
+								.toBeLessThan( enableCssTransitionsSpy.mock.invocationCallOrder[ 0 ] );
 						} );
 
 						it( 'should be bound to dialog id', () => {
 							dialogPlugin.id = 'findAndReplace';
 
-							expect( button.isOn ).to.be.true;
+							expect( button.isOn ).toBe( true );
 
 							dialogPlugin.id = null;
 
-							expect( button.isOn ).to.be.false;
+							expect( button.isOn ).toBe( false );
 						} );
 
 						it( 'the form should be reset', () => {
-							const spy = sinon.spy( form, 'reset' );
+							const spy = vi.spyOn( form, 'reset' );
 
 							// Reopen the dialog.
 							button.fire( 'execute' );
 							button.fire( 'execute' );
 
-							sinon.assert.calledOnce( spy );
+							expect( spy ).toHaveBeenCalledTimes( 1 );
 						} );
 
 						it( 'the find input content should be selected', () => {
-							const spy = sinon.spy( form._findInputView.fieldView, 'select' );
+							const spy = vi.spyOn( form._findInputView.fieldView, 'select' );
 
 							// Reopen the dialog.
 							button.fire( 'execute' );
 							button.fire( 'execute' );
 
-							sinon.assert.calledOnce( spy );
+							expect( spy ).toHaveBeenCalledTimes( 1 );
 						} );
 
 						it( 'the form input content should be focused', async () => {
-							const spy = sinon.spy( form, 'focus' );
+							const spy = vi.spyOn( form, 'focus' );
 
 							// Reopen the dialog.
 							button.fire( 'execute' );
@@ -184,17 +190,15 @@ describe( 'FindAndReplaceUI', () => {
 							// Wait until it's not transparent.
 							await wait( 20 );
 
-							sinon.assert.calledOnce( spy );
+							expect( spy ).toHaveBeenCalledTimes( 1 );
 						} );
 
 						it( 'all actions should be executed using the "low" priority to let the default open lister act first',
 							async () => {
-								const spy = sinon.spy();
-								const selectSpy = sinon.spy( form._findInputView.fieldView, 'select' );
+								const spy = vi.fn();
+								const selectSpy = vi.spyOn( form._findInputView.fieldView, 'select' );
 
-								dialogPlugin.on( 'show', () => {
-									spy();
-								} );
+								dialogPlugin.on( 'show', spy );
 
 								// Reopen the dialog.
 								button.fire( 'execute' );
@@ -203,41 +207,41 @@ describe( 'FindAndReplaceUI', () => {
 								// Wait until it's not transparent.
 								await wait( 20 );
 
-								sinon.assert.callOrder( spy, selectSpy );
+								expect( spy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( selectSpy.mock.invocationCallOrder[ 0 ] );
 							} );
 					} );
 
 					describe( 'upon dialog close', () => {
 						it( 'the #searchReseted event should be emitted', () => {
-							const spy = sinon.spy();
+							const spy = vi.fn();
 
 							plugin.on( 'searchReseted', spy );
 
 							// Close the dialog.
 							button.fire( 'execute' );
 
-							sinon.assert.calledOnce( spy );
+							expect( spy ).toHaveBeenCalledTimes( 1 );
 						} );
 					} );
 
 					it( 'should be disabled when find command is disabled', () => {
 						findCommand.isEnabled = true;
-						expect( toolbarButtonView ).to.have.property( 'isEnabled', true );
+						expect( toolbarButtonView ).toHaveProperty( 'isEnabled', true );
 
 						findCommand.isEnabled = false;
-						expect( toolbarButtonView ).to.have.property( 'isEnabled', false );
+						expect( toolbarButtonView ).toHaveProperty( 'isEnabled', false );
 					} );
 
 					it( 'should set an #icon of the #buttonView', () => {
-						expect( button.icon ).to.equal( IconFindReplace );
+						expect( button.icon ).toBe( IconFindReplace );
 					} );
 
 					it( 'should set a #label of the #buttonView', () => {
-						expect( button.label ).to.equal( 'Find and replace' );
+						expect( button.label ).toBe( 'Find and replace' );
 					} );
 
 					it( 'should set a #keystroke of the #buttonView', () => {
-						expect( button.keystroke ).to.equal( 'CTRL+F' );
+						expect( button.keystroke ).toBe( 'CTRL+F' );
 					} );
 
 					it( 'should not open the dialog when command is disabled and CTRL+F was pressed', () => {
@@ -246,72 +250,72 @@ describe( 'FindAndReplaceUI', () => {
 
 						findCommand.isEnabled = false;
 
-						expect( dialogPlugin.isOpen ).to.be.false;
-						expect( button.isEnabled ).to.be.false;
+						expect( dialogPlugin.isOpen ).toBe( false );
+						expect( button.isEnabled ).toBe( false );
 
 						const keyEventData = ( {
 							keyCode: keyCodes.f,
 							ctrlKey: !env.isMac,
 							metaKey: env.isMac,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						} );
 
 						const wasHandled = editor.keystrokes.press( keyEventData );
 
-						expect( wasHandled ).to.be.true;
-						expect( keyEventData.preventDefault.notCalled ).to.be.true;
+						expect( wasHandled ).toBe( true );
+						expect( keyEventData.preventDefault ).not.toHaveBeenCalled();
 
-						expect( dialogPlugin.isOpen ).to.be.false;
+						expect( dialogPlugin.isOpen ).toBe( false );
 					} );
 
 					it( 'should open the dialog if dialog was closed and CTRL+F was pressed', () => {
 						// Close the dialog.
 						dialogPlugin.hide();
 
-						const spy = sinon.spy( form._findInputView.fieldView, 'select' );
+						const spy = vi.spyOn( form._findInputView.fieldView, 'select' );
 
-						expect( dialogPlugin.isOpen ).to.be.false;
+						expect( dialogPlugin.isOpen ).toBe( false );
 
 						const keyEventData = ( {
 							keyCode: keyCodes.f,
 							ctrlKey: !env.isMac,
 							metaKey: env.isMac,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						} );
 
 						const wasHandled = editor.keystrokes.press( keyEventData );
 
-						expect( wasHandled ).to.be.true;
-						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+						expect( wasHandled ).toBe( true );
+						expect( keyEventData.preventDefault ).toHaveBeenCalledTimes( 1 );
 
-						expect( dialogPlugin.isOpen ).to.be.true;
-						sinon.assert.calledOnce( spy );
+						expect( dialogPlugin.isOpen ).toBe( true );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'should focus the dialog if dialog was open but blurred and CTRL+F was pressed', () => {
-						const spy = sinon.spy( dialogPlugin.view, 'focus' );
+						const spy = vi.spyOn( dialogPlugin.view, 'focus' );
 
 						editor.editing.view.focus();
 
-						expect( dialogPlugin.isOpen ).to.be.true;
+						expect( dialogPlugin.isOpen ).toBe( true );
 
 						const keyEventData = ( {
 							keyCode: keyCodes.f,
 							ctrlKey: !env.isMac,
 							metaKey: env.isMac,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						} );
 
 						const wasHandled = editor.keystrokes.press( keyEventData );
 
-						expect( wasHandled ).to.be.true;
-						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+						expect( wasHandled ).toBe( true );
+						expect( keyEventData.preventDefault ).toHaveBeenCalledTimes( 1 );
 
-						expect( dialogPlugin.isOpen ).to.be.true;
-						sinon.assert.calledOnce( spy );
+						expect( dialogPlugin.isOpen ).toBe( true );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'should not change the focus if dialog was open and focused and CTRL+F was pressed', () => {
@@ -321,17 +325,17 @@ describe( 'FindAndReplaceUI', () => {
 							keyCode: keyCodes.f,
 							ctrlKey: !env.isMac,
 							metaKey: env.isMac,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						} );
 
 						const wasHandled = editor.keystrokes.press( keyEventData );
 
-						expect( wasHandled ).to.be.true;
-						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+						expect( wasHandled ).toBe( true );
+						expect( keyEventData.preventDefault ).toHaveBeenCalledTimes( 1 );
 
-						expect( dialogPlugin.isOpen ).to.be.true;
-						expect( form._focusTracker.focusedElement ).to.equal( form._findButtonView );
+						expect( dialogPlugin.isOpen ).toBe( true );
+						expect( form._focusTracker.focusedElement ).toBe( form._findButtonView );
 					} );
 				}
 			} );
@@ -347,7 +351,7 @@ describe( 'FindAndReplaceUI', () => {
 				it( 'should bind form #highlightOffset to FindAndReplaceState#highlightedResult', () => {
 					findAndReplaceEditing.state.highlightedResult = null;
 
-					expect( form.highlightOffset ).to.equal( 0 );
+					expect( form.highlightOffset ).toBe( 0 );
 
 					editor.setData( '<p>foo</p>' );
 
@@ -391,13 +395,13 @@ describe( 'FindAndReplaceUI', () => {
 					findAndReplaceEditing.state.results.add( resultB, resultA );
 					findAndReplaceEditing.state.highlightedResult = resultB;
 
-					expect( form.highlightOffset ).to.equal( 1 );
+					expect( form.highlightOffset ).toBe( 1 );
 				} );
 
 				it( 'should update form #matchCount when FindAndReplaceState#results change', () => {
 					editor.setData( '<p>foo</p>' );
 
-					expect( form.matchCount ).to.equal( 0 );
+					expect( form.matchCount ).toBe( 0 );
 
 					const firstParagraph = editor.model.document.getRoot().getChild( 0 );
 					let marker;
@@ -422,13 +426,13 @@ describe( 'FindAndReplaceUI', () => {
 					findAndReplaceEditing.state.results.add( highlightedResult );
 					findAndReplaceEditing.state.highlightedResult = highlightedResult;
 
-					expect( form.matchCount ).to.equal( 1 );
+					expect( form.matchCount ).toBe( 1 );
 				} );
 
 				it( 'should bind form\'s #_areCommandsEnabled to various editor commands', () => {
 					const commands = editor.commands;
 
-					expect( form._areCommandsEnabled ).to.deep.equal( {
+					expect( form._areCommandsEnabled ).toEqual( {
 						findNext: false,
 						findPrevious: false,
 						replace: true,
@@ -440,7 +444,7 @@ describe( 'FindAndReplaceUI', () => {
 					commands.get( 'replace' ).isEnabled = false;
 					commands.get( 'replaceAll' ).isEnabled = false;
 
-					expect( form._areCommandsEnabled ).to.deep.equal( {
+					expect( form._areCommandsEnabled ).toEqual( {
 						findNext: true,
 						findPrevious: true,
 						replace: false,
@@ -449,10 +453,10 @@ describe( 'FindAndReplaceUI', () => {
 				} );
 
 				it( 'should delegate various form events to the UI', () => {
-					const findNextSpy = sinon.spy();
-					const findPreviousSpy = sinon.spy();
-					const replaceSpy = sinon.spy();
-					const replaceAllSpy = sinon.spy();
+					const findNextSpy = vi.fn();
+					const findPreviousSpy = vi.fn();
+					const replaceSpy = vi.fn();
+					const replaceAllSpy = vi.fn();
 
 					plugin.on( 'findNext', findNextSpy );
 					plugin.on( 'findPrevious', findPreviousSpy );
@@ -464,24 +468,24 @@ describe( 'FindAndReplaceUI', () => {
 					form.fire( 'replace', { searchText: 'foo' } );
 					form.fire( 'replaceAll', { searchText: 'foo' } );
 
-					sinon.assert.calledOnce( findNextSpy );
-					sinon.assert.calledOnce( findPreviousSpy );
-					sinon.assert.calledOnce( replaceSpy );
-					sinon.assert.calledOnce( replaceAllSpy );
+					expect( findNextSpy ).toHaveBeenCalledTimes( 1 );
+					expect( findPreviousSpy ).toHaveBeenCalledTimes( 1 );
+					expect( replaceSpy ).toHaveBeenCalledTimes( 1 );
+					expect( replaceAllSpy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( 'should fire #searchReseted when the form becomes dirty', () => {
 					form.isDirty = false;
 
-					const spy = sinon.spy();
+					const spy = vi.fn();
 
 					plugin.on( 'searchReseted', spy );
 
 					form.isDirty = true;
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 
 					form.isDirty = false;
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 		} );
@@ -523,14 +527,14 @@ describe( 'FindAndReplaceUI', () => {
 			} );
 
 			it( 'should add keystroke accessibility info', () => {
-				expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+				expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).toContainEqual( {
 					label: 'Find in the document',
 					keystroke: 'CTRL+F'
 				} );
 			} );
 
 			it( 'should create a dropdown UI component', () => {
-				expect( dropdown ).to.be.instanceOf( DropdownView );
+				expect( dropdown ).toBeInstanceOf( DropdownView );
 			} );
 
 			it( 'should allow creating two instances of the findAndReplace dropdown', () => {
@@ -538,71 +542,72 @@ describe( 'FindAndReplaceUI', () => {
 
 				expect( function createSecondInstance() {
 					secondInstance = editor.ui.componentFactory.create( 'findAndReplace' );
-				} ).not.to.throw();
+				} ).not.toThrow();
 
-				expect( dropdown ).to.not.equal( secondInstance );
+				expect( dropdown ).not.toBe( secondInstance );
 			} );
 
 			it( 'should implement the CSS transition disabling feature', () => {
-				expect( form.disableCssTransitions ).to.be.a( 'function' );
+				expect( form.disableCssTransitions ).toEqual( expect.any( Function ) );
 			} );
 
 			describe( 'findAndReplace dropdown', () => {
 				it( 'should not enable dropdown when find command is disabled', () => {
 					findCommand.isEnabled = true;
-					expect( dropdown ).to.have.property( 'isEnabled', true );
+					expect( dropdown ).toHaveProperty( 'isEnabled', true );
 
 					findCommand.isEnabled = false;
-					expect( dropdown ).to.have.property( 'isEnabled', false );
+					expect( dropdown ).toHaveProperty( 'isEnabled', false );
 				} );
 
 				describe( 'upon dropdown open', () => {
 					it( 'CSS transitions should be disabled to avoid unnecessary animations (and then enable them again)', () => {
 						// (https://github.com/ckeditor/ckeditor5/issues/10008)
-						const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
-						const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
-						const selectSpy = sinon.spy( form._findInputView.fieldView, 'select' );
+						const disableCssTransitionsSpy = vi.spyOn( form, 'disableCssTransitions' );
+						const enableCssTransitionsSpy = vi.spyOn( form, 'enableCssTransitions' );
+						const selectSpy = vi.spyOn( form._findInputView.fieldView, 'select' );
 
 						dropdown.isOpen = true;
 
-						sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
+						expect( disableCssTransitionsSpy.mock.invocationCallOrder[ 0 ] )
+							.toBeLessThan( selectSpy.mock.invocationCallOrder[ 0 ] );
+						expect( selectSpy.mock.invocationCallOrder[ 0 ] )
+							.toBeLessThan( enableCssTransitionsSpy.mock.invocationCallOrder[ 0 ] );
 					} );
 
 					it( 'the form should be reset', () => {
-						const spy = sinon.spy( form, 'reset' );
+						const spy = vi.spyOn( form, 'reset' );
 
 						dropdown.isOpen = true;
 
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'the find input content should be selected', () => {
-						const spy = sinon.spy( form._findInputView.fieldView, 'select' );
+						const spy = vi.spyOn( form._findInputView.fieldView, 'select' );
 
 						dropdown.isOpen = true;
 
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'the form input content should be focused', () => {
-						const spy = sinon.spy( form, 'focus' );
+						const spy = vi.spyOn( form, 'focus' );
 
 						dropdown.isOpen = true;
 
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'all actions should be executed using the "low" priority to let the default open lister act first', () => {
-						const spy = sinon.spy();
-						const selectSpy = sinon.spy( form._findInputView.fieldView, 'select' );
+						const spy = vi.fn();
+						const selectSpy = vi.spyOn( form._findInputView.fieldView, 'select' );
 
-						dropdown.on( 'change:isOpen', () => {
-							spy();
-						} );
+						dropdown.on( 'change:isOpen', spy );
 
 						dropdown.isOpen = true;
 
-						sinon.assert.callOrder( spy, selectSpy );
+						expect( spy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( selectSpy.mock.invocationCallOrder[ 0 ] );
 					} );
 				} );
 
@@ -610,75 +615,75 @@ describe( 'FindAndReplaceUI', () => {
 					it( 'the #searchReseted event should be emitted', () => {
 						dropdown.isOpen = true;
 
-						const spy = sinon.spy();
+						const spy = vi.fn();
 
 						plugin.on( 'searchReseted', spy );
 
 						dropdown.isOpen = false;
 
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 				} );
 
 				describe( 'button', () => {
 					it( 'should set an #icon of the #buttonView', () => {
-						expect( dropdown.buttonView.icon ).to.equal( IconFindReplace );
+						expect( dropdown.buttonView.icon ).toBe( IconFindReplace );
 					} );
 
 					it( 'should set a #label of the #buttonView', () => {
-						expect( dropdown.buttonView.label ).to.equal( 'Find and replace' );
+						expect( dropdown.buttonView.label ).toBe( 'Find and replace' );
 					} );
 
 					it( 'should set a #tooltip of the #buttonView', () => {
-						expect( dropdown.buttonView.tooltip ).to.be.true;
+						expect( dropdown.buttonView.tooltip ).toBe( true );
 					} );
 
 					it( 'should set a #keystroke of the #buttonView', () => {
-						expect( dropdown.buttonView.keystroke ).to.equal( 'CTRL+F' );
+						expect( dropdown.buttonView.keystroke ).toBe( 'CTRL+F' );
 					} );
 
 					it( 'should not open the dropdown when command is disabled and CTRL+F was pressed', () => {
 						findCommand.isEnabled = false;
 
-						expect( dropdown.isOpen ).to.be.false;
-						expect( dropdown.isEnabled ).to.be.false;
+						expect( dropdown.isOpen ).toBe( false );
+						expect( dropdown.isEnabled ).toBe( false );
 
 						const keyEventData = ( {
 							keyCode: keyCodes.f,
 							ctrlKey: !env.isMac,
 							metaKey: env.isMac,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						} );
 
 						const wasHandled = editor.keystrokes.press( keyEventData );
 
-						expect( wasHandled ).to.be.true;
-						expect( keyEventData.preventDefault.notCalled ).to.be.true;
+						expect( wasHandled ).toBe( true );
+						expect( keyEventData.preventDefault ).not.toHaveBeenCalled();
 
-						expect( dropdown.isOpen ).to.be.false;
+						expect( dropdown.isOpen ).toBe( false );
 					} );
 
 					it( 'should open the dropdown when CTRL+F was pressed', () => {
-						const spy = sinon.spy( form._findInputView.fieldView, 'select' );
+						const spy = vi.spyOn( form._findInputView.fieldView, 'select' );
 
-						expect( dropdown.isOpen ).to.be.false;
+						expect( dropdown.isOpen ).toBe( false );
 
 						const keyEventData = ( {
 							keyCode: keyCodes.f,
 							ctrlKey: !env.isMac,
 							metaKey: env.isMac,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						} );
 
 						const wasHandled = editor.keystrokes.press( keyEventData );
 
-						expect( wasHandled ).to.be.true;
-						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+						expect( wasHandled ).toBe( true );
+						expect( keyEventData.preventDefault ).toHaveBeenCalledTimes( 1 );
 
-						expect( dropdown.isOpen ).to.be.true;
-						sinon.assert.calledOnce( spy );
+						expect( dropdown.isOpen ).toBe( true );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'should not close the dropdown if it was open when CTRL+F was pressed', () => {
@@ -688,16 +693,16 @@ describe( 'FindAndReplaceUI', () => {
 							keyCode: keyCodes.f,
 							ctrlKey: !env.isMac,
 							metaKey: env.isMac,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						} );
 
 						const wasHandled = editor.keystrokes.press( keyEventData );
 
-						expect( wasHandled ).to.be.true;
-						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+						expect( wasHandled ).toBe( true );
+						expect( keyEventData.preventDefault ).toHaveBeenCalledTimes( 1 );
 
-						expect( dropdown.isOpen ).to.be.true;
+						expect( dropdown.isOpen ).toBe( true );
 					} );
 
 					it( 'should not change the focus if dropdown was open and CTRL+F was pressed', () => {
@@ -709,15 +714,15 @@ describe( 'FindAndReplaceUI', () => {
 							keyCode: keyCodes.f,
 							ctrlKey: !env.isMac,
 							metaKey: env.isMac,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						} );
 
 						const wasHandled = editor.keystrokes.press( keyEventData );
 
-						expect( wasHandled ).to.be.true;
-						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
-						expect( form._focusTracker.focusedElement ).to.equal( form._findButtonView );
+						expect( wasHandled ).toBe( true );
+						expect( keyEventData.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( form._focusTracker.focusedElement ).toBe( form._findButtonView );
 					} );
 				} );
 			} );
@@ -733,7 +738,7 @@ describe( 'FindAndReplaceUI', () => {
 				it( 'should bind form #highlightOffset to FindAndReplaceState#highlightedResult', () => {
 					findAndReplaceEditing.state.highlightedResult = null;
 
-					expect( form.highlightOffset ).to.equal( 0 );
+					expect( form.highlightOffset ).toBe( 0 );
 
 					editor.setData( '<p>foo</p>' );
 
@@ -777,13 +782,13 @@ describe( 'FindAndReplaceUI', () => {
 					findAndReplaceEditing.state.results.add( resultB, resultA );
 					findAndReplaceEditing.state.highlightedResult = resultB;
 
-					expect( form.highlightOffset ).to.equal( 1 );
+					expect( form.highlightOffset ).toBe( 1 );
 				} );
 
 				it( 'should update form #matchCount when FindAndReplaceState#results change', () => {
 					editor.setData( '<p>foo</p>' );
 
-					expect( form.matchCount ).to.equal( 0 );
+					expect( form.matchCount ).toBe( 0 );
 
 					const firstParagraph = editor.model.document.getRoot().getChild( 0 );
 					let marker;
@@ -808,13 +813,13 @@ describe( 'FindAndReplaceUI', () => {
 					findAndReplaceEditing.state.results.add( highlightedResult );
 					findAndReplaceEditing.state.highlightedResult = highlightedResult;
 
-					expect( form.matchCount ).to.equal( 1 );
+					expect( form.matchCount ).toBe( 1 );
 				} );
 
 				it( 'should bind form\'s #_areCommandsEnabled to various editor commands', () => {
 					const commands = editor.commands;
 
-					expect( form._areCommandsEnabled ).to.deep.equal( {
+					expect( form._areCommandsEnabled ).toEqual( {
 						findNext: false,
 						findPrevious: false,
 						replace: true,
@@ -826,7 +831,7 @@ describe( 'FindAndReplaceUI', () => {
 					commands.get( 'replace' ).isEnabled = false;
 					commands.get( 'replaceAll' ).isEnabled = false;
 
-					expect( form._areCommandsEnabled ).to.deep.equal( {
+					expect( form._areCommandsEnabled ).toEqual( {
 						findNext: true,
 						findPrevious: true,
 						replace: false,
@@ -835,10 +840,10 @@ describe( 'FindAndReplaceUI', () => {
 				} );
 
 				it( 'should delegate various form events to the UI', () => {
-					const findNextSpy = sinon.spy();
-					const findPreviousSpy = sinon.spy();
-					const replaceSpy = sinon.spy();
-					const replaceAllSpy = sinon.spy();
+					const findNextSpy = vi.fn();
+					const findPreviousSpy = vi.fn();
+					const replaceSpy = vi.fn();
+					const replaceAllSpy = vi.fn();
 
 					plugin.on( 'findNext', findNextSpy );
 					plugin.on( 'findPrevious', findPreviousSpy );
@@ -850,24 +855,24 @@ describe( 'FindAndReplaceUI', () => {
 					form.fire( 'replace', { searchText: 'foo' } );
 					form.fire( 'replaceAll', { searchText: 'foo' } );
 
-					sinon.assert.calledOnce( findNextSpy );
-					sinon.assert.calledOnce( findPreviousSpy );
-					sinon.assert.calledOnce( replaceSpy );
-					sinon.assert.calledOnce( replaceAllSpy );
+					expect( findNextSpy ).toHaveBeenCalledTimes( 1 );
+					expect( findPreviousSpy ).toHaveBeenCalledTimes( 1 );
+					expect( replaceSpy ).toHaveBeenCalledTimes( 1 );
+					expect( replaceAllSpy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( 'should fire #searchReseted when the form becomes dirty', () => {
 					form.isDirty = false;
 
-					const spy = sinon.spy();
+					const spy = vi.fn();
 
 					plugin.on( 'searchReseted', spy );
 
 					form.isDirty = true;
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 
 					form.isDirty = false;
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 		} );

@@ -7,7 +7,7 @@
  * @module typing/typing
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { Input } from './input.js';
 import { Delete } from './delete.js';
 
@@ -18,8 +18,8 @@ import { Delete } from './delete.js';
  * plugins.
  */
 export class Typing extends Plugin {
-	public static get requires() {
-		return [ Input, Delete ] as const;
+	public static get requires(): PluginDependenciesOf<[ Input, Delete ]> {
+		return [ Input, Delete ];
 	}
 
 	/**

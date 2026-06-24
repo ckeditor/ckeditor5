@@ -10,6 +10,7 @@ import { ModelText } from '../../src/model/text.js';
 
 import { MarkerOperation } from '../../src/model/operation/markeroperation.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe( 'Bug ckeditor5-engine@1323', () => {
 	describe( 'constructor()', () => {
@@ -28,7 +29,7 @@ describe( 'Bug ckeditor5-engine@1323', () => {
 		} );
 
 		it( 'should not fire view#render event before initial model#change block is finished', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editing.view.on( 'render', spy );
 
@@ -39,7 +40,7 @@ describe( 'Bug ckeditor5-engine@1323', () => {
 				// Remove marker.
 				model.applyOperation( new MarkerOperation( 'name', range, null, model.markers, false, 1 ) );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 		} );
 	} );

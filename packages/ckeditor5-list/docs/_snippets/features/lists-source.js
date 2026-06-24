@@ -25,4 +25,12 @@ export class ListEditor extends ClassicEditor {
 		CKBox,
 		CKBoxImageEdit
 	];
+
+	// Keep the dedicated lists demos off so the "Skip-level lists" guide can highlight the opt-in behavior on its own.
+	static defaultConfig = {
+		...ClassicEditor.defaultConfig,
+		list: {
+			enableSkipLevelLists: false
+		}
+	};
 }

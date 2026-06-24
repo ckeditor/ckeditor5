@@ -92,6 +92,9 @@ export class ClassicEditor extends ClassicEditorBase {
 				'mergeTableCells'
 			]
 		},
+		list: {
+			enableSkipLevelLists: true
+		},
 		language: 'en'
 	};
 }

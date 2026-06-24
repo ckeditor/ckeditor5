@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
@@ -29,26 +30,26 @@ describe( 'ResizeMediaEmbedCommand', () => {
 	} );
 
 	it( 'is an instance of ResizeMediaEmbedCommand', () => {
-		expect( command ).to.be.instanceOf( ResizeMediaEmbedCommand );
+		expect( command ).toBeInstanceOf( ResizeMediaEmbedCommand );
 	} );
 
 	describe( '#isEnabled', () => {
 		it( 'is true when a media element is selected', () => {
 			_setModelData( model, '<paragraph>x</paragraph>[<media url="https://youtu.be/foo"></media>]' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'is false when no media is selected', () => {
 			_setModelData( model, '<paragraph>x[]</paragraph><media url="https://youtu.be/foo"></media>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'is false when selection is inside a paragraph', () => {
 			_setModelData( model, '<paragraph>x[]y</paragraph>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -56,25 +57,25 @@ describe( 'ResizeMediaEmbedCommand', () => {
 		it( 'is null when no media is selected', () => {
 			_setModelData( model, '<paragraph>x[]</paragraph><media url="https://youtu.be/foo"></media>' );
 
-			expect( command.value ).to.be.null;
+			expect( command.value ).toBeNull();
 		} );
 
 		it( 'is null when the selected media has no resizedWidth', () => {
 			_setModelData( model, '[<media url="https://youtu.be/foo"></media>]' );
 
-			expect( command.value ).to.be.null;
+			expect( command.value ).toBeNull();
 		} );
 
 		it( 'is the resizedWidth value when the selected media is resized', () => {
 			_setModelData( model, '[<media resizedWidth="50%" url="https://youtu.be/foo"></media>]' );
 
-			expect( command.value ).to.equal( '50%' );
+			expect( command.value ).toBe( '50%' );
 		} );
 
 		it( 'preserves an empty-string resizedWidth value (does not coerce to null)', () => {
 			_setModelData( model, '[<media resizedWidth="" url="https://youtu.be/foo"></media>]' );
 
-			expect( command.value ).to.equal( '' );
+			expect( command.value ).toBe( '' );
 		} );
 	} );
 
@@ -84,7 +85,7 @@ describe( 'ResizeMediaEmbedCommand', () => {
 
 			command.execute( { width: '60%' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'[<media resizedWidth="60%" url="https://youtu.be/foo"></media>]'
 			);
 		} );
@@ -94,7 +95,7 @@ describe( 'ResizeMediaEmbedCommand', () => {
 
 			command.execute( { width: '75%' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'[<media resizedWidth="75%" url="https://youtu.be/foo"></media>]'
 			);
 		} );
@@ -104,7 +105,7 @@ describe( 'ResizeMediaEmbedCommand', () => {
 
 			command.execute( { width: null } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'[<media url="https://youtu.be/foo"></media>]'
 			);
 		} );
@@ -114,7 +115,7 @@ describe( 'ResizeMediaEmbedCommand', () => {
 
 			command.execute( { width: '' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'[<media resizedWidth="" url="https://youtu.be/foo"></media>]'
 			);
 		} );
@@ -124,7 +125,7 @@ describe( 'ResizeMediaEmbedCommand', () => {
 
 			command.execute( { width: '300px' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'[<media resizedWidth="300px" url="https://youtu.be/foo"></media>]'
 			);
 		} );
@@ -134,7 +135,7 @@ describe( 'ResizeMediaEmbedCommand', () => {
 
 			command.execute( { width: 'not-a-css-value' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'[<media resizedWidth="not-a-css-value" url="https://youtu.be/foo"></media>]'
 			);
 		} );
@@ -144,7 +145,7 @@ describe( 'ResizeMediaEmbedCommand', () => {
 
 			command.execute( { width: '50%' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>x[]</paragraph><media url="https://youtu.be/foo"></media>'
 			);
 		} );
@@ -155,7 +156,7 @@ describe( 'ResizeMediaEmbedCommand', () => {
 			command.execute( { width: '50%' } );
 			editor.execute( 'undo' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'[<media url="https://youtu.be/foo"></media>]'
 			);
 		} );

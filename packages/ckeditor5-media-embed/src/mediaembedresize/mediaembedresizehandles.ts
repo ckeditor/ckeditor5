@@ -8,7 +8,7 @@
  */
 
 import type { ModelElement, ViewContainerElement } from '@ckeditor/ckeditor5-engine';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { WidgetResize } from '@ckeditor/ckeditor5-widget';
 import type { ResizeMediaEmbedCommand } from './resizemediaembedcommand.js';
 import { RESIZED_MEDIA_CLASS } from './constants.js';
@@ -22,8 +22,8 @@ export class MediaEmbedResizeHandles extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ WidgetResize ] as const;
+	public static get requires(): PluginDependenciesOf<[ WidgetResize ]> {
+		return [ WidgetResize ];
 	}
 
 	/**
@@ -82,11 +82,12 @@ export class MediaEmbedResizeHandles extends Plugin {
 
 					const viewElement = editor.editing.mapper.toViewElement( item ) as ViewContainerElement | undefined;
 
-					/* istanbul ignore if: paranoid check — conversion has run at this point -- @preserve */
+					/* v8 ignore next -- @preserve */
 					if ( !viewElement ) {
 						continue;
 					}
 
+					/* v8 ignore else -- @preserve */
 					if ( !widgetResize.getResizerByViewElement( viewElement ) ) {
 						this._attachResizer( item, viewElement );
 					}
@@ -103,7 +104,7 @@ export class MediaEmbedResizeHandles extends Plugin {
 		const editingView = editor.editing.view;
 
 		const resizer = editor.plugins.get( WidgetResize ).attachTo( {
-			unit: '%',
+			unit: editor.config.get( 'mediaEmbed.resizeUnit' )!,
 			modelElement,
 			viewElement: widgetView,
 			editor,

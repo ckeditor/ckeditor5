@@ -162,3 +162,19 @@ msgstr "Αναδίπλωση κειμένου"
 msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "Κατάτμηση κειμένου"
+
+msgctxt "The label for the resize option that allows the user to enter a custom size."
+msgid "Custom"
+msgstr "Προσαρμοσμένο"
+
+msgctxt "The default label for the resize option that resets the size."
+msgid "Original"
+msgstr "Αρχικό"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with a blank value."
+msgid "The value must not be empty."
+msgstr "Η τιμή δεν μπορεί να είναι κενή."
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with an incorrect value."
+msgid "The value should be a plain number."
+msgstr "Η τιμή θα πρέπει να είναι ένας απλός αριθμός."

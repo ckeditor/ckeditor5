@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -35,7 +36,7 @@ describe( 'LegacyListReversedCommand', () => {
 		it( 'should be false if selected a paragraph', () => {
 			_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
-			expect( listReversedCommand.isEnabled ).to.be.false;
+			expect( listReversedCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection starts in a paragraph and ends in a list item', () => {
@@ -44,25 +45,25 @@ describe( 'LegacyListReversedCommand', () => {
 				'<listItem listIndent="0" listType="numbered" listReversed="true">Foo]</listItem>'
 			);
 
-			expect( listReversedCommand.isEnabled ).to.be.false;
+			expect( listReversedCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection is inside a listItem (listType: bulleted)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
 
-			expect( listReversedCommand.isEnabled ).to.be.false;
+			expect( listReversedCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if selection is inside a listItem (collapsed selection)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="numbered" listReversed="true">Foo[]</listItem>' );
 
-			expect( listReversedCommand.isEnabled ).to.be.true;
+			expect( listReversedCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if selection is inside a listItem (non-collapsed selection)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="numbered" listReversed="false">[Foo]</listItem>' );
 
-			expect( listReversedCommand.isEnabled ).to.be.true;
+			expect( listReversedCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true attribute if selected more elements in the same list', () => {
@@ -72,7 +73,7 @@ describe( 'LegacyListReversedCommand', () => {
 				'<listItem listIndent="0" listType="numbered" listReversed="true">3.</listItem>'
 			);
 
-			expect( listReversedCommand.isEnabled ).to.be.true;
+			expect( listReversedCommand.isEnabled ).toBe( true );
 		} );
 	} );
 
@@ -80,7 +81,7 @@ describe( 'LegacyListReversedCommand', () => {
 		it( 'should return null if selected a paragraph', () => {
 			_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
-			expect( listReversedCommand.value ).to.be.null;
+			expect( listReversedCommand.value ).toBeNull();
 		} );
 
 		it( 'should return null if selection starts in a paragraph and ends in a list item', () => {
@@ -89,25 +90,25 @@ describe( 'LegacyListReversedCommand', () => {
 				'<listItem listIndent="0" listType="numbered" listReversed="true">Foo]</listItem>'
 			);
 
-			expect( listReversedCommand.value ).to.be.null;
+			expect( listReversedCommand.value ).toBeNull();
 		} );
 
 		it( 'should return null if selection is inside a listItem (listType: bulleted)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
 
-			expect( listReversedCommand.value ).to.be.null;
+			expect( listReversedCommand.value ).toBeNull();
 		} );
 
 		it( 'should return the value of `listReversed` attribute if selection is inside a listItem (collapsed selection)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="numbered" listReversed="true">Foo[]</listItem>' );
 
-			expect( listReversedCommand.value ).to.be.true;
+			expect( listReversedCommand.value ).toBe( true );
 		} );
 
 		it( 'should return the value of `listReversed` attribute if selection is inside a listItem (non-collapsed selection)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="numbered" listReversed="false">[Foo]</listItem>' );
 
-			expect( listReversedCommand.value ).to.be.false;
+			expect( listReversedCommand.value ).toBe( false );
 		} );
 
 		it( 'should return the value of `listReversed` attribute if selected more elements in the same list', () => {
@@ -117,7 +118,7 @@ describe( 'LegacyListReversedCommand', () => {
 				'<listItem listIndent="0" listType="numbered" listReversed="true">3.</listItem>'
 			);
 
-			expect( listReversedCommand.value ).to.be.true;
+			expect( listReversedCommand.value ).toBe( true );
 		} );
 
 		it( 'should return the value of `listReversed` attribute for the selection inside a nested list', () => {
@@ -127,7 +128,7 @@ describe( 'LegacyListReversedCommand', () => {
 				'<listItem listIndent="0" listType="numbered" listReversed="false">2.</listItem>'
 			);
 
-			expect( listReversedCommand.value ).to.be.true;
+			expect( listReversedCommand.value ).toBe( true );
 		} );
 
 		it(
@@ -139,7 +140,7 @@ describe( 'LegacyListReversedCommand', () => {
 					'<listItem listIndent="0" listType="numbered" listReversed="false">2.]</listItem>'
 				);
 
-				expect( listReversedCommand.value ).to.be.true;
+				expect( listReversedCommand.value ).toBe( true );
 			}
 		);
 	} );
@@ -152,7 +153,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>'
 			);
 		} );
@@ -164,7 +165,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: false } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listReversed="false" listType="numbered">[1.]</listItem>'
 			);
 		} );
@@ -178,7 +179,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
@@ -197,7 +198,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 				'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
@@ -221,7 +222,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 				listReversedCommand.execute( { reversed: true } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 					'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>' +
 					'<listItem listIndent="1" listReversed="true" listType="numbered">2.1.[]</listItem>' +
@@ -242,7 +243,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
@@ -260,7 +261,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
@@ -278,7 +279,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
@@ -296,7 +297,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">[3.</listItem>' +
@@ -311,7 +312,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listReversed="false" listType="numbered">1.[]</listItem>'
 			);
 		} );
@@ -323,7 +324,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute( {} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listReversed="false" listType="numbered">1.[]</listItem>'
 			);
 		} );
@@ -360,7 +361,7 @@ describe( 'LegacyListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 				'<listItem listIndent="0" listReversed="true" listType="numbered">[2.</listItem>' +
 				'<listItem listIndent="1" listReversed="true" listType="numbered">2.1.</listItem>' +

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { EnterCommand } from '../src/entercommand.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -44,14 +45,18 @@ describe( 'EnterCommand', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
+
 	describe( 'EnterCommand', () => {
 		it( 'splits a block using parent batch', () => {
 			_setModelData( model, '<p>foo[]</p>' );
 
 			model.change( writer => {
-				expect( writer.batch.operations ).to.length( 0 );
+				expect( writer.batch.operations ).toHaveLength( 0 );
 				editor.execute( 'enter' );
-				expect( writer.batch.operations ).to.length.above( 0 );
+				expect( writer.batch.operations.length ).toBeGreaterThan( 0 );
 			} );
 		} );
 	} );
@@ -60,27 +65,29 @@ describe( 'EnterCommand', () => {
 		it( 'uses enterBlock()', () => {
 			_setModelData( model, '<p>foo[]bar</p>' );
 
-			sinon.spy( command, 'enterBlock' );
+			const spy = vi.spyOn( command, 'enterBlock' );
 
 			editor.execute( 'enter' );
 
-			expect( command.enterBlock.called ).to.be.true;
+			expect( spy ).toHaveBeenCalled();
 		} );
 
-		it( 'fires afterExecute() event with the current writer as a parameter', done => {
+		it( 'fires afterExecute() event with the current writer as a parameter', () => {
 			_setModelData( model, '<p>foo[]bar</p>' );
 
 			let currentWriter;
 
-			command.on( 'afterExecute', ( evt, { writer } ) => {
-				expect( writer ).to.equal( currentWriter );
+			return new Promise( resolve => {
+				command.on( 'afterExecute', ( evt, { writer } ) => {
+					expect( writer ).toBe( currentWriter );
 
-				done();
-			} );
+					resolve();
+				} );
 
-			model.change( writer => {
-				currentWriter = writer;
-				editor.execute( 'enter' );
+				model.change( writer => {
+					currentWriter = writer;
+					editor.execute( 'enter' );
+				} );
 			} );
 		} );
 	} );
@@ -195,7 +202,7 @@ describe( 'EnterCommand', () => {
 						command.enterBlock( writer );
 					} );
 
-					expect( _getModelData( model ) ).to.equal( '<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>' );
+					expect( _getModelData( model ) ).toBe( '<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>' );
 				} );
 			} );
 
@@ -214,11 +221,11 @@ describe( 'EnterCommand', () => {
 					command.enterBlock( writer );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<p>[]</p>' );
+				expect( _getModelData( model ) ).toBe( '<p>[]</p>' );
 			} );
 
 			it( 'uses DataController.deleteContent', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				editor.model.on( 'deleteContent', spy );
 
@@ -228,7 +235,7 @@ describe( 'EnterCommand', () => {
 					command.enterBlock( writer );
 				} );
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
@@ -240,7 +247,7 @@ describe( 'EnterCommand', () => {
 					command.enterBlock( writer );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( output );
+				expect( _getModelData( model ) ).toBe( output );
 			} );
 		}
 	} );

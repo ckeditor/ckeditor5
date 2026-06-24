@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { DecoupledEditor } from '../src/decouplededitor.js';
 import { DecoupledEditorUI } from '../src/decouplededitorui.js';
 import { DecoupledEditorUIView } from '../src/decouplededitoruiview.js';
@@ -15,8 +16,6 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
@@ -24,10 +23,12 @@ const editorData = '<p><strong>foo</strong> bar</p>';
 describe( 'DecoupledEditor', () => {
 	let editor;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
-		testUtils.sinon.stub( console, 'warn' ).callsFake( () => {} );
+		vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+	} );
+
+	afterEach( () => {
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
@@ -41,21 +42,21 @@ describe( 'DecoupledEditor', () => {
 		} );
 
 		it( 'uses HTMLDataProcessor', () => {
-			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+			expect( editor.data.processor ).toBeInstanceOf( HtmlDataProcessor );
 		} );
 
 		it( 'it\'s possible to extract editor name from editor instance', () => {
-			expect( Object.getPrototypeOf( editor ).constructor.editorName ).to.be.equal( 'DecoupledEditor' );
+			expect( Object.getPrototypeOf( editor ).constructor.editorName ).toBe( 'DecoupledEditor' );
 		} );
 
 		it( 'has a Data Interface', () => {
-			expect( DecoupledEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
-			expect( DecoupledEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
+			expect( DecoupledEditor.prototype ).toHaveProperty( 'setData', expect.any( Function ) );
+			expect( DecoupledEditor.prototype ).toHaveProperty( 'getData', expect.any( Function ) );
 		} );
 
 		it( 'creates main root element', () => {
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
-			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( '$root' );
+			expect( editor.model.document.getRoot( 'main' ) ).toBeInstanceOf( ModelRootElement );
+			expect( editor.model.document.getRoot( 'main' ).name ).toBe( '$root' );
 		} );
 
 		it( 'creates main root element with the given modelElement name', () => {
@@ -66,7 +67,7 @@ describe( 'DecoupledEditor', () => {
 				}
 			} );
 
-			expect( customEditor.model.document.getRoot( 'main' ).name ).to.equal( 'customRoot' );
+			expect( customEditor.model.document.getRoot( 'main' ).name ).toBe( 'customRoot' );
 
 			customEditor.fire( 'ready' );
 
@@ -77,8 +78,8 @@ describe( 'DecoupledEditor', () => {
 			it( 'is created', () => {
 				editor.ui.init();
 
-				expect( editor.ui ).to.be.instanceof( DecoupledEditorUI );
-				expect( editor.ui.view ).to.be.instanceof( DecoupledEditorUIView );
+				expect( editor.ui ).toBeInstanceOf( DecoupledEditorUI );
+				expect( editor.ui.view ).toBeInstanceOf( DecoupledEditorUIView );
 
 				editor.ui.destroy();
 			} );
@@ -88,7 +89,7 @@ describe( 'DecoupledEditor', () => {
 					const editorElement = document.createElement( 'div' );
 					const editor = new DecoupledEditor( editorElement );
 
-					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).toBe( true );
 
 					editorElement.remove();
 
@@ -104,7 +105,7 @@ describe( 'DecoupledEditor', () => {
 						}
 					} );
 
-					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.false;
+					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).toBe( false );
 
 					editorElement.remove();
 
@@ -131,7 +132,7 @@ describe( 'DecoupledEditor', () => {
 						plugins: [ Paragraph, Bold ]
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).toBe(
 						'Rich Text Editor. Editing area: main'
 					);
 
@@ -144,7 +145,7 @@ describe( 'DecoupledEditor', () => {
 						label: 'Custom label'
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).toBe(
 						'Custom label'
 					);
 
@@ -159,7 +160,7 @@ describe( 'DecoupledEditor', () => {
 						}
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).toBe(
 						'Custom label'
 					);
 
@@ -172,13 +173,13 @@ describe( 'DecoupledEditor', () => {
 						plugins: [ Paragraph, Bold ]
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Keep value' ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Keep value' ).toBe(
 						'Pre-existing value'
 					);
 
 					await editor.destroy();
 
-					expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
+					expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).toBe( 'Pre-existing value' );
 				} );
 
 				it( 'should override the existing value from the source DOM element (legacy config.label)', async () => {
@@ -188,13 +189,13 @@ describe( 'DecoupledEditor', () => {
 						label: 'Custom label'
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).toBe(
 						'Custom label'
 					);
 
 					await editor.destroy();
 
-					expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
+					expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).toBe( 'Pre-existing value' );
 				} );
 
 				it( 'should use default label when creating an editor from initial data rather than a DOM element', async () => {
@@ -202,7 +203,7 @@ describe( 'DecoupledEditor', () => {
 						plugins: [ Paragraph, Bold ]
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).toBe(
 						'Rich Text Editor. Editing area: main'
 					);
 
@@ -215,7 +216,7 @@ describe( 'DecoupledEditor', () => {
 						label: 'Custom label'
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).toBe(
 						'Custom label'
 					);
 
@@ -228,7 +229,7 @@ describe( 'DecoupledEditor', () => {
 						root: { label: 'Root label' }
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).toBe(
 						'Root label'
 					);
 
@@ -241,7 +242,7 @@ describe( 'DecoupledEditor', () => {
 						root: { initialData: '<p>Foo</p>', label: 'Root label' }
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).toBe(
 						'Root label'
 					);
 
@@ -257,7 +258,7 @@ describe( 'DecoupledEditor', () => {
 
 				const editor = new DecoupledEditor( editorElement );
 
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -266,7 +267,7 @@ describe( 'DecoupledEditor', () => {
 			it( 'if not set, is set using data passed in constructor', async () => {
 				const editor = new DecoupledEditor( '<p>Foo</p>' );
 
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -278,7 +279,7 @@ describe( 'DecoupledEditor', () => {
 
 				const editor = new DecoupledEditor( editorElement, { initialData: '<p>Bar</p>' } );
 
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Bar</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -288,21 +289,21 @@ describe( 'DecoupledEditor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new DecoupledEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new DecoupledEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
-				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new DecoupledEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
-				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root and config.roots.main is set', () => {
@@ -315,7 +316,7 @@ describe( 'DecoupledEditor', () => {
 						root: { initialData: '<p>abc</p>' },
 						roots: { main: { initialData: '<p>Bar</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-with-main' );
+				} ).toThrow( CKEditorError, 'editor-create-roots-with-main' );
 			} );
 
 			it( 'it should throw if legacy config.initialData and config.root.initialData is set', () => {
@@ -328,7 +329,7 @@ describe( 'DecoupledEditor', () => {
 						initialData: '<p>abc</p>',
 						root: { initialData: '<p>abc</p>' }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
@@ -341,7 +342,7 @@ describe( 'DecoupledEditor', () => {
 						initialData: '<p>abc</p>',
 						roots: { main: { initialData: '<p>abc</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if source element and config.root.element are both set', () => {
@@ -353,7 +354,7 @@ describe( 'DecoupledEditor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new DecoupledEditor( sourceElement, { root: { element: existingElement } } );
-				} ).to.throw( CKEditorError, 'editor-create-root-element-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-root-element-overspecified' );
 			} );
 		} );
 
@@ -363,7 +364,7 @@ describe( 'DecoupledEditor', () => {
 					root: { placeholder: 'Type here...' }
 				} );
 
-				expect( editor.config.get( 'roots.main.placeholder' ) ).to.equal( 'Type here...' );
+				expect( editor.config.get( 'roots.main.placeholder' ) ).toBe( 'Type here...' );
 			} );
 
 			it( 'should normalize legacy config.placeholder to config.roots.main.placeholder (legacy)', () => {
@@ -371,7 +372,7 @@ describe( 'DecoupledEditor', () => {
 					placeholder: 'Type here...'
 				} );
 
-				expect( editor.config.get( 'roots.main.placeholder' ) ).to.equal( 'Type here...' );
+				expect( editor.config.get( 'roots.main.placeholder' ) ).toBe( 'Type here...' );
 			} );
 		} );
 
@@ -381,7 +382,7 @@ describe( 'DecoupledEditor', () => {
 					root: { label: 'Custom label' }
 				} );
 
-				expect( editor.config.get( 'roots.main.label' ) ).to.equal( 'Custom label' );
+				expect( editor.config.get( 'roots.main.label' ) ).toBe( 'Custom label' );
 			} );
 
 			it( 'should normalize legacy config.label to config.roots.main.label (legacy)', () => {
@@ -389,7 +390,7 @@ describe( 'DecoupledEditor', () => {
 					label: 'Custom label'
 				} );
 
-				expect( editor.config.get( 'roots.main.label' ) ).to.equal( 'Custom label' );
+				expect( editor.config.get( 'roots.main.label' ) ).toBe( 'Custom label' );
 			} );
 		} );
 
@@ -408,10 +409,10 @@ describe( 'DecoupledEditor', () => {
 
 				const root = editor.model.document.getRoot();
 
-				expect( root.getAttribute( 'foo' ) ).to.be.equal( 1 );
-				expect( root.getAttribute( 'bar' ) ).to.be.equal( 2 );
+				expect( root.getAttribute( 'foo' ) ).toBe( 1 );
+				expect( root.getAttribute( 'bar' ) ).toBe( 2 );
 
-				expect( editor.getRootAttributes() ).to.be.deep.equal( {
+				expect( editor.getRootAttributes() ).toEqual( {
 					foo: 1,
 					bar: 2
 				} );
@@ -433,10 +434,10 @@ describe( 'DecoupledEditor', () => {
 
 				const root = editor.model.document.getRoot();
 
-				expect( root.getAttribute( 'foo' ) ).to.be.equal( 1 );
-				expect( root.getAttribute( 'bar' ) ).to.be.equal( 2 );
+				expect( root.getAttribute( 'foo' ) ).toBe( 1 );
+				expect( root.getAttribute( 'bar' ) ).toBe( 2 );
 
-				expect( editor.getRootAttributes() ).to.be.deep.equal( {
+				expect( editor.getRootAttributes() ).toEqual( {
 					foo: 1,
 					bar: 2
 				} );
@@ -453,7 +454,7 @@ describe( 'DecoupledEditor', () => {
 					}
 				} );
 
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -469,8 +470,8 @@ describe( 'DecoupledEditor', () => {
 					}
 				} );
 
-				expect( editor.sourceElement ).to.equal( el );
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
+				expect( editor.sourceElement ).toBe( el );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Bar</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -487,8 +488,8 @@ describe( 'DecoupledEditor', () => {
 					}
 				} );
 
-				expect( editor.sourceElement ).to.equal( el );
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
+				expect( editor.sourceElement ).toBe( el );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Bar</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -505,7 +506,7 @@ describe( 'DecoupledEditor', () => {
 							initialData: '<p>Foo</p>'
 						}
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-attachto-ignored' );
+				} ).toThrow( CKEditorError, 'editor-create-attachto-ignored' );
 			} );
 
 			it( 'should throw when config.root.element is a textarea', () => {
@@ -516,7 +517,7 @@ describe( 'DecoupledEditor', () => {
 							element: document.createElement( 'textarea' )
 						}
 					} );
-				} ).to.throw( CKEditorError, 'editor-wrong-element' );
+				} ).toThrow( CKEditorError, 'editor-wrong-element' );
 			} );
 
 			it( 'should throw when config.root.element is an input', () => {
@@ -527,7 +528,7 @@ describe( 'DecoupledEditor', () => {
 							element: document.createElement( 'input' )
 						}
 					} );
-				} ).to.throw( CKEditorError, 'editor-wrong-element' );
+				} ).toThrow( CKEditorError, 'editor-wrong-element' );
 			} );
 		} );
 
@@ -539,7 +540,7 @@ describe( 'DecoupledEditor', () => {
 						root: { element: 'h1' }
 					} );
 
-					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'H1' );
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).toBe( 'H1' );
 
 					await newEditor.destroy();
 				} );
@@ -550,7 +551,7 @@ describe( 'DecoupledEditor', () => {
 						root: { element: 'h1' }
 					} );
 
-					expect( newEditor.editing.view.document.getRoot( 'main' ).name ).to.equal( 'h1' );
+					expect( newEditor.editing.view.document.getRoot( 'main' ).name ).toBe( 'h1' );
 
 					await newEditor.destroy();
 				} );
@@ -561,7 +562,7 @@ describe( 'DecoupledEditor', () => {
 						root: { element: 'h1' }
 					} );
 
-					expect( newEditor.sourceElement ).to.be.undefined;
+					expect( newEditor.sourceElement ).toBeUndefined();
 
 					await newEditor.destroy();
 				} );
@@ -572,7 +573,7 @@ describe( 'DecoupledEditor', () => {
 						root: { element: 'h1' }
 					} );
 
-					expect( newEditor.getData() ).to.equal( '' );
+					expect( newEditor.getData() ).toBe( '' );
 
 					await newEditor.destroy();
 				} );
@@ -583,7 +584,7 @@ describe( 'DecoupledEditor', () => {
 						root: { element: 'h1' }
 					} );
 
-					expect( newEditor.getData() ).to.equal( '<p>Hello</p>' );
+					expect( newEditor.getData() ).toBe( '<p>Hello</p>' );
 
 					await newEditor.destroy();
 				} );
@@ -592,14 +593,14 @@ describe( 'DecoupledEditor', () => {
 					expect( () => {
 						// eslint-disable-next-line no-new
 						new DecoupledEditor( { root: { element: 'textarea' } } );
-					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+					} ).toThrow( CKEditorError, 'editor-wrong-element' );
 				} );
 
 				it( 'should throw when the tag name is `input`', () => {
 					expect( () => {
 						// eslint-disable-next-line no-new
 						new DecoupledEditor( { root: { element: 'input' } } );
-					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+					} ).toThrow( CKEditorError, 'editor-wrong-element' );
 				} );
 
 				it( 'should allow two editors with the same tag name', async () => {
@@ -612,9 +613,9 @@ describe( 'DecoupledEditor', () => {
 						root: { element: 'h1' }
 					} );
 
-					expect( a.ui.getEditableElement( 'main' ).tagName ).to.equal( 'H1' );
-					expect( b.ui.getEditableElement( 'main' ).tagName ).to.equal( 'H1' );
-					expect( a.ui.getEditableElement( 'main' ) ).to.not.equal( b.ui.getEditableElement( 'main' ) );
+					expect( a.ui.getEditableElement( 'main' ).tagName ).toBe( 'H1' );
+					expect( b.ui.getEditableElement( 'main' ).tagName ).toBe( 'H1' );
+					expect( a.ui.getEditableElement( 'main' ) ).not.toBe( b.ui.getEditableElement( 'main' ) );
 
 					await a.destroy();
 					await b.destroy();
@@ -628,7 +629,7 @@ describe( 'DecoupledEditor', () => {
 						root: { element: { name: 'section' } }
 					} );
 
-					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'SECTION' );
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).toBe( 'SECTION' );
 
 					await newEditor.destroy();
 				} );
@@ -647,9 +648,9 @@ describe( 'DecoupledEditor', () => {
 
 					const viewRoot = newEditor.editing.view.document.getRoot( 'main' );
 
-					expect( viewRoot.name ).to.equal( 'section' );
-					expect( viewRoot.hasClass( 'foo' ) ).to.be.true;
-					expect( viewRoot.getAttribute( 'data-id' ) ).to.equal( '123' );
+					expect( viewRoot.name ).toBe( 'section' );
+					expect( viewRoot.hasClass( 'foo' ) ).toBe( true );
+					expect( viewRoot.getAttribute( 'data-id' ) ).toBe( '123' );
 
 					await newEditor.destroy();
 				} );
@@ -662,10 +663,10 @@ describe( 'DecoupledEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.classList.contains( 'ck' ) ).to.be.true;
-					expect( editable.classList.contains( 'ck-content' ) ).to.be.true;
-					expect( editable.classList.contains( 'foo' ) ).to.be.true;
-					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+					expect( editable.classList.contains( 'ck' ) ).toBe( true );
+					expect( editable.classList.contains( 'ck-content' ) ).toBe( true );
+					expect( editable.classList.contains( 'foo' ) ).toBe( true );
+					expect( editable.classList.contains( 'bar' ) ).toBe( true );
 
 					await newEditor.destroy();
 				} );
@@ -678,8 +679,8 @@ describe( 'DecoupledEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.classList.contains( 'foo' ) ).to.be.true;
-					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+					expect( editable.classList.contains( 'foo' ) ).toBe( true );
+					expect( editable.classList.contains( 'bar' ) ).toBe( true );
 
 					await newEditor.destroy();
 				} );
@@ -697,8 +698,8 @@ describe( 'DecoupledEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.style.color ).to.equal( 'rgb(255, 0, 0)' );
-					expect( editable.style.fontWeight ).to.equal( 'bold' );
+					expect( editable.style.color ).toBe( 'rgb(255, 0, 0)' );
+					expect( editable.style.fontWeight ).toBe( 'bold' );
 
 					await newEditor.destroy();
 				} );
@@ -716,8 +717,8 @@ describe( 'DecoupledEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.getAttribute( 'data-id' ) ).to.equal( '123' );
-					expect( editable.getAttribute( 'data-role' ) ).to.equal( 'editor' );
+					expect( editable.getAttribute( 'data-id' ) ).toBe( '123' );
+					expect( editable.getAttribute( 'data-role' ) ).toBe( 'editor' );
 
 					await newEditor.destroy();
 				} );
@@ -735,8 +736,8 @@ describe( 'DecoupledEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.classList.contains( 'foo' ) ).to.be.true;
-					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+					expect( editable.classList.contains( 'foo' ) ).toBe( true );
+					expect( editable.classList.contains( 'bar' ) ).toBe( true );
 
 					await newEditor.destroy();
 				} );
@@ -754,8 +755,8 @@ describe( 'DecoupledEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.style.color ).to.equal( 'rgb(255, 0, 0)' );
-					expect( editable.style.fontWeight ).to.equal( 'bold' );
+					expect( editable.style.color ).toBe( 'rgb(255, 0, 0)' );
+					expect( editable.style.fontWeight ).toBe( 'bold' );
 
 					await newEditor.destroy();
 				} );
@@ -774,8 +775,8 @@ describe( 'DecoupledEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.classList.contains( 'foo' ) ).to.be.true;
-					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+					expect( editable.classList.contains( 'foo' ) ).toBe( true );
+					expect( editable.classList.contains( 'bar' ) ).toBe( true );
 
 					await newEditor.destroy();
 				} );
@@ -794,7 +795,7 @@ describe( 'DecoupledEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.style.color ).to.equal( 'rgb(0, 128, 0)' );
+					expect( editable.style.color ).toBe( 'rgb(0, 128, 0)' );
 
 					await newEditor.destroy();
 				} );
@@ -803,14 +804,14 @@ describe( 'DecoupledEditor', () => {
 					expect( () => {
 						// eslint-disable-next-line no-new
 						new DecoupledEditor( { root: { element: { name: 'textarea' } } } );
-					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+					} ).toThrow( CKEditorError, 'editor-wrong-element' );
 				} );
 
 				it( 'should throw when the name is `input`', () => {
 					expect( () => {
 						// eslint-disable-next-line no-new
 						new DecoupledEditor( { root: { element: { name: 'input' } } } );
-					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+					} ).toThrow( CKEditorError, 'editor-wrong-element' );
 				} );
 
 				it( 'should leave editor.sourceElement undefined', async () => {
@@ -819,7 +820,7 @@ describe( 'DecoupledEditor', () => {
 						root: { element: { name: 'section' } }
 					} );
 
-					expect( newEditor.sourceElement ).to.be.undefined;
+					expect( newEditor.sourceElement ).toBeUndefined();
 
 					await newEditor.destroy();
 				} );
@@ -832,7 +833,7 @@ describe( 'DecoupledEditor', () => {
 						root: { initialData: '<p>Foo</p>' }
 					} );
 
-					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'DIV' );
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).toBe( 'DIV' );
 
 					await newEditor.destroy();
 				} );
@@ -841,8 +842,8 @@ describe( 'DecoupledEditor', () => {
 	} );
 
 	describe( 'create()', () => {
-		it( 'should properly handled async data initialization', done => {
-			const spy = sinon.spy();
+		it( 'should properly handled async data initialization', async () => {
+			const spy = vi.fn();
 			let resolver;
 
 			class AsyncDataInit extends Plugin {
@@ -863,17 +864,19 @@ describe( 'DecoupledEditor', () => {
 				}
 			}
 
-			DecoupledEditor.create( '<p>foo bar</p>', {
+			const editorPromise = DecoupledEditor.create( '<p>foo bar</p>', {
 				plugins: [ Paragraph, Bold, AsyncDataInit ]
-			} ).then( editor => {
-				sinon.assert.calledWith( spy.firstCall, 'asyncInit' );
-				sinon.assert.calledWith( spy.secondCall, 'ready' );
-
-				editor.destroy().then( done );
 			} );
 
 			// Resolve init promise in next cycle to hold data initialization.
 			setTimeout( () => resolver() );
+
+			const editor = await editorPromise;
+
+			expect( spy ).toHaveBeenNthCalledWith( 1, 'asyncInit' );
+			expect( spy ).toHaveBeenNthCalledWith( 2, 'ready' );
+
+			await editor.destroy();
 		} );
 
 		it( 'should reject if a root element is not a limit element', async () => {
@@ -890,8 +893,8 @@ describe( 'DecoupledEditor', () => {
 				} );
 				expect.fail( 'Promise should have been rejected' );
 			} catch ( err ) {
-				expect( err ).to.be.instanceof( CKEditorError );
-				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+				expect( err ).toBeInstanceOf( CKEditorError );
+				expect( err.message ).toMatch( /editor-root-element-is-not-limit/ );
 			}
 		} );
 
@@ -915,7 +918,7 @@ describe( 'DecoupledEditor', () => {
 				initialData: '<p>Hello world!</p>',
 				plugins: [ Paragraph ]
 			} ).then( editor => {
-				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+				expect( editor.getData() ).toBe( '<p>Hello world!</p>' );
 
 				return editor.destroy();
 			} );
@@ -927,20 +930,20 @@ describe( 'DecoupledEditor', () => {
 				initialData: '',
 				plugins: [ Paragraph ]
 			} ).then( editor => {
-				expect( editor.getData() ).to.equal( '' );
+				expect( editor.getData() ).toBe( '' );
 
 				return editor.destroy();
 			} );
 		} );
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/746
-		it( 'should throw when trying to create the editor using the same source element more than once', done => {
+		it( 'should throw when trying to create the editor using the same source element more than once', () => {
 			const sourceElement = document.createElement( 'div' );
 
 			// eslint-disable-next-line no-new
 			new DecoupledEditor( sourceElement );
 
-			DecoupledEditor.create( sourceElement )
+			return DecoupledEditor.create( sourceElement )
 				.then(
 					() => {
 						expect.fail( 'Decoupled editor should not initialize on an element already used by other instance.' );
@@ -948,13 +951,11 @@ describe( 'DecoupledEditor', () => {
 					err => {
 						assertCKEditorError( err, 'editor-source-element-already-used' );
 					}
-				)
-				.then( done )
-				.catch( done );
+				);
 		} );
 
-		it( 'throws error if it is initialized in textarea', done => {
-			DecoupledEditor.create( document.createElement( 'textarea' ) )
+		it( 'throws error if it is initialized in textarea', () => {
+			return DecoupledEditor.create( document.createElement( 'textarea' ) )
 				.then(
 					() => {
 						expect.fail( 'Decoupled editor should throw an error when is initialized in textarea.' );
@@ -962,13 +963,11 @@ describe( 'DecoupledEditor', () => {
 					err => {
 						assertCKEditorError( err, 'editor-wrong-element', null );
 					}
-				)
-				.then( done )
-				.catch( done );
+				);
 		} );
 
-		it( 'throws error if it is initialized in input', done => {
-			DecoupledEditor.create( document.createElement( 'input' ) )
+		it( 'throws error if it is initialized in input', () => {
+			return DecoupledEditor.create( document.createElement( 'input' ) )
 				.then(
 					() => {
 						expect.fail( 'Decoupled editor should throw an error when is initialized in input.' );
@@ -976,9 +975,7 @@ describe( 'DecoupledEditor', () => {
 					err => {
 						assertCKEditorError( err, 'editor-wrong-element', null );
 					}
-				)
-				.then( done )
-				.catch( done );
+				);
 		} );
 
 		it( 'creates editor from config-only', () => {
@@ -988,8 +985,8 @@ describe( 'DecoupledEditor', () => {
 					plugins: [ Paragraph ]
 				} )
 				.then( newEditor => {
-					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
-					expect( newEditor.sourceElement ).to.be.undefined;
+					expect( newEditor.getData() ).toBe( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).toBeUndefined();
 
 					return newEditor.destroy();
 				} );
@@ -1006,8 +1003,8 @@ describe( 'DecoupledEditor', () => {
 					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => {
-					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
-					expect( newEditor.sourceElement ).to.equal( el );
+					expect( newEditor.getData() ).toBe( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).toBe( el );
 
 					return newEditor.destroy();
 				} )
@@ -1027,8 +1024,8 @@ describe( 'DecoupledEditor', () => {
 					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => {
-					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
-					expect( newEditor.sourceElement ).to.equal( el );
+					expect( newEditor.getData() ).toBe( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).toBe( el );
 
 					return newEditor.destroy();
 				} )
@@ -1044,7 +1041,7 @@ describe( 'DecoupledEditor', () => {
 						plugins: [ Paragraph, Bold ]
 					} )
 					.then( newEditor => {
-						expect( newEditor ).to.be.instanceof( DecoupledEditor );
+						expect( newEditor ).toBeInstanceOf( DecoupledEditor );
 
 						return newEditor.destroy();
 					} );
@@ -1056,7 +1053,7 @@ describe( 'DecoupledEditor', () => {
 						plugins: [ Paragraph, Bold ]
 					} )
 					.then( newEditor => {
-						expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+						expect( newEditor.getData() ).toBe( '<p><strong>foo</strong> bar</p>' );
 
 						return newEditor.destroy();
 					} );
@@ -1069,7 +1066,7 @@ describe( 'DecoupledEditor', () => {
 
 				return CustomDecoupledEditor.create( getElementOrData() )
 					.then( newEditor => {
-						expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+						expect( newEditor.getData() ).toBe( '<p><strong>foo</strong> bar</p>' );
 
 						return newEditor.destroy();
 					} );
@@ -1084,10 +1081,10 @@ describe( 'DecoupledEditor', () => {
 						plugins: [ Paragraph, Bold ]
 					} )
 					.then( newEditor => {
-						expect( newEditor ).to.be.instanceof( CustomDecoupledEditor );
-						expect( newEditor ).to.be.instanceof( DecoupledEditor );
+						expect( newEditor ).toBeInstanceOf( CustomDecoupledEditor );
+						expect( newEditor ).toBeInstanceOf( DecoupledEditor );
 
-						expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+						expect( newEditor.getData() ).toBe( '<p><strong>foo</strong> bar</p>' );
 
 						return newEditor.destroy();
 					} );
@@ -1105,7 +1102,7 @@ describe( 'DecoupledEditor', () => {
 					}
 
 					init() {
-						dataInitSpy = sinon.spy( this.editor.data, 'init' );
+						dataInitSpy = vi.spyOn( this.editor.data, 'init' );
 					}
 				}
 
@@ -1114,7 +1111,7 @@ describe( 'DecoupledEditor', () => {
 						plugins: [ Paragraph, Bold, DataInitAssertPlugin ]
 					} )
 					.then( newEditor => {
-						sinon.assert.calledOnce( dataInitSpy );
+						expect( dataInitSpy ).toHaveBeenCalledTimes( 1 );
 
 						return newEditor.destroy();
 					} );
@@ -1141,7 +1138,7 @@ describe( 'DecoupledEditor', () => {
 							plugins: [ EventWatcher ]
 						} )
 						.then( newEditor => {
-							expect( fired ).to.deep.equal( [
+							expect( fired ).toEqual( [
 								'ready-decouplededitorui',
 								'ready-datacontroller',
 								'ready-decouplededitor'
@@ -1167,7 +1164,7 @@ describe( 'DecoupledEditor', () => {
 							plugins: [ EventWatcher ]
 						} )
 						.then( newEditor => {
-							expect( isReady ).to.be.true;
+							expect( isReady ).toBe( true );
 
 							return newEditor.destroy();
 						} );
@@ -1209,7 +1206,7 @@ describe( 'DecoupledEditor', () => {
 
 				return editor.destroy()
 					.then( () => {
-						expect( editableElement.innerHTML ).to.equal( '' );
+						expect( editableElement.innerHTML ).toBe( '' );
 					} );
 			} );
 
@@ -1221,7 +1218,7 @@ describe( 'DecoupledEditor', () => {
 
 				return editor.destroy()
 					.then( () => {
-						expect( editableElement.innerHTML ).to.equal( '<p>foo</p>' );
+						expect( editableElement.innerHTML ).toBe( '<p>foo</p>' );
 					} );
 			} );
 
@@ -1230,11 +1227,11 @@ describe( 'DecoupledEditor', () => {
 
 		function test() {
 			it( 'destroys the UI', () => {
-				const spy = sinon.spy( editor.ui, 'destroy' );
+				const spy = vi.spyOn( editor.ui, 'destroy' );
 
 				return editor.destroy()
 					.then( () => {
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 			} );
 		}
@@ -1242,15 +1239,15 @@ describe( 'DecoupledEditor', () => {
 
 	describe( 'static fields', () => {
 		it( 'DecoupledEditor.Context', () => {
-			expect( DecoupledEditor.Context ).to.equal( Context );
+			expect( DecoupledEditor.Context ).toBe( Context );
 		} );
 
 		it( 'DecoupledEditor.EditorWatchdog', () => {
-			expect( DecoupledEditor.EditorWatchdog ).to.equal( EditorWatchdog );
+			expect( DecoupledEditor.EditorWatchdog ).toBe( EditorWatchdog );
 		} );
 
 		it( 'DecoupledEditor.ContextWatchdog', () => {
-			expect( DecoupledEditor.ContextWatchdog ).to.equal( ContextWatchdog );
+			expect( DecoupledEditor.ContextWatchdog ).toBe( ContextWatchdog );
 		} );
 	} );
 } );

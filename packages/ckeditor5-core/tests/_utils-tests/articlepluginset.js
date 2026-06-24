@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { ArticlePluginSet } from '../_utils/articlepluginset.js';
 import { ClassicTestEditor } from '../_utils/classictesteditor.js';
 
@@ -41,26 +43,26 @@ describe( 'ArticlePluginSet', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ArticlePluginSet ) ).to.be.instanceOf( ArticlePluginSet );
+		expect( editor.plugins.get( ArticlePluginSet ) ).toBeInstanceOf( ArticlePluginSet );
 	} );
 
 	it( 'should load all its dependencies', () => {
-		expect( editor.plugins.get( Essentials ) ).to.be.instanceOf( Essentials );
+		expect( editor.plugins.get( Essentials ) ).toBeInstanceOf( Essentials );
 
-		expect( editor.plugins.get( Autoformat ) ).to.be.instanceOf( Autoformat );
-		expect( editor.plugins.get( Bold ) ).to.be.instanceOf( Bold );
-		expect( editor.plugins.get( Heading ) ).to.be.instanceOf( Heading );
-		expect( editor.plugins.get( Image ) ).to.be.instanceOf( Image );
-		expect( editor.plugins.get( ImageCaption ) ).to.be.instanceOf( ImageCaption );
-		expect( editor.plugins.get( ImageStyle ) ).to.be.instanceOf( ImageStyle );
-		expect( editor.plugins.get( ImageToolbar ) ).to.be.instanceOf( ImageToolbar );
-		expect( editor.plugins.get( Italic ) ).to.be.instanceOf( Italic );
-		expect( editor.plugins.get( Link ) ).to.be.instanceOf( Link );
-		expect( editor.plugins.get( List ) ).to.be.instanceOf( List );
-		expect( editor.plugins.get( MediaEmbed ) ).to.be.instanceOf( MediaEmbed );
-		expect( editor.plugins.get( Paragraph ) ).to.be.instanceOf( Paragraph );
-		expect( editor.plugins.get( Table ) ).to.be.instanceOf( Table );
-		expect( editor.plugins.get( TableToolbar ) ).to.be.instanceOf( TableToolbar );
+		expect( editor.plugins.get( Autoformat ) ).toBeInstanceOf( Autoformat );
+		expect( editor.plugins.get( Bold ) ).toBeInstanceOf( Bold );
+		expect( editor.plugins.get( Heading ) ).toBeInstanceOf( Heading );
+		expect( editor.plugins.get( Image ) ).toBeInstanceOf( Image );
+		expect( editor.plugins.get( ImageCaption ) ).toBeInstanceOf( ImageCaption );
+		expect( editor.plugins.get( ImageStyle ) ).toBeInstanceOf( ImageStyle );
+		expect( editor.plugins.get( ImageToolbar ) ).toBeInstanceOf( ImageToolbar );
+		expect( editor.plugins.get( Italic ) ).toBeInstanceOf( Italic );
+		expect( editor.plugins.get( Link ) ).toBeInstanceOf( Link );
+		expect( editor.plugins.get( List ) ).toBeInstanceOf( List );
+		expect( editor.plugins.get( MediaEmbed ) ).toBeInstanceOf( MediaEmbed );
+		expect( editor.plugins.get( Paragraph ) ).toBeInstanceOf( Paragraph );
+		expect( editor.plugins.get( Table ) ).toBeInstanceOf( Table );
+		expect( editor.plugins.get( TableToolbar ) ).toBeInstanceOf( TableToolbar );
 	} );
 
 	it( 'loads data', () => {
@@ -137,6 +139,6 @@ describe( 'ArticlePluginSet', () => {
 
 		editor.setData( data );
 
-		expect( normalizeHtml( editor.getData() ) ).to.equal( expectedOutput );
+		expect( normalizeHtml( editor.getData() ) ).toBe( expectedOutput );
 	} );
 } );

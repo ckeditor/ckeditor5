@@ -7,17 +7,21 @@
  * @module image/image/imageblockediting
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	ClipboardPipeline,
 	type ClipboardInputTransformationEvent,
 	type ClipboardContentInsertionEvent
 } from '@ckeditor/ckeditor5-clipboard';
-import { ViewUpcastWriter, type ViewElement } from '@ckeditor/ckeditor5-engine';
+import {
+	ViewUpcastWriter,
+	type ViewElement
+} from '@ckeditor/ckeditor5-engine';
 
 import {
 	downcastImageAttribute,
 	downcastSrcsetAttribute,
+	upcastImg,
 	upcastImageFigure
 } from './converters.js';
 
@@ -26,9 +30,9 @@ import { ImageSizeAttributes } from '../imagesizeattributes.js';
 import { ImageTypeCommand } from './imagetypecommand.js';
 import { ImageUtils } from '../imageutils.js';
 import {
-	getImgViewElementMatcher,
 	createBlockImageViewElement,
-	determineImageTypeForInsertionAtSelection
+	determineImageTypeForInsertionAtSelection,
+	isImageTypePlaceable
 } from './utils.js';
 import { ImagePlaceholder } from './imageplaceholder.js';
 
@@ -46,8 +50,20 @@ export class ImageBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ImagePlaceholder, ClipboardPipeline ] as const;
+	public static get requires(): PluginDependenciesOf<[
+		ImageEditing,
+		ImageSizeAttributes,
+		ImageUtils,
+		ImagePlaceholder,
+		ClipboardPipeline
+	]> {
+		return [
+			ImageEditing,
+			ImageSizeAttributes,
+			ImageUtils,
+			ImagePlaceholder,
+			ClipboardPipeline
+		];
 	}
 
 	/**
@@ -117,13 +133,7 @@ export class ImageBlockEditing extends Plugin {
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
-			.elementToElement( {
-				view: getImgViewElementMatcher( editor, 'imageBlock' ),
-				model: ( viewImage, { writer } ) => writer.createElement(
-					'imageBlock',
-					viewImage.hasAttribute( 'src' ) ? { src: viewImage.getAttribute( 'src' ) } : undefined
-				)
-			} )
+			.add( upcastImg( 'imageBlock', imageUtils ) )
 			.add( upcastImageFigure( imageUtils ) );
 	}
 
@@ -177,8 +187,18 @@ export class ImageBlockEditing extends Plugin {
 				const selection = model.createSelection( modelRange );
 
 				// Convert inline images into block images only when the currently selected block is empty
-				// (e.g. an empty paragraph) or some object is selected (to replace it).
-				if ( determineImageTypeForInsertionAtSelection( model.schema, selection ) === 'imageBlock' ) {
+				// (e.g. an empty paragraph) or some object is selected (to replace it). Additionally verify
+				// that `imageBlock` can actually land somewhere reachable from the drop target - inside
+				// `$inlineRoot` or another limit container that disallows block content the heuristic
+				// returns `'imageBlock'` for a blockless selection, but wrapping the pasted `<img>` would
+				// just be upcast-stripped.
+				const selectionPosition = selection.getFirstPosition();
+				const canPlaceBlock = !!selectionPosition && isImageTypePlaceable( model.schema, selectionPosition, 'imageBlock' );
+
+				if (
+					canPlaceBlock &&
+					determineImageTypeForInsertionAtSelection( model.schema, selection ) === 'imageBlock'
+				) {
 					const writer = new ViewUpcastWriter( editingView.document );
 
 					// Wrap <img ... /> -> <figure class="image"><img .../></figure>

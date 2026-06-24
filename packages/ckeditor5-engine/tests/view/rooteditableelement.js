@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewEditableElement } from '../../src/view/editableelement.js';
 import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
@@ -21,75 +22,75 @@ describe( 'RootEditableElement', () => {
 		it( 'should create an element with default root name', () => {
 			const root = new ViewRootEditableElement( document, 'div' );
 
-			expect( root ).to.be.instanceof( ViewEditableElement );
-			expect( root ).to.be.instanceof( ViewContainerElement );
+			expect( root ).toBeInstanceOf( ViewEditableElement );
+			expect( root ).toBeInstanceOf( ViewContainerElement );
 
-			expect( root.rootName ).to.equal( 'main' );
-			expect( root.name ).to.equal( 'div' );
+			expect( root.rootName ).toBe( 'main' );
+			expect( root.name ).toBe( 'div' );
 
-			expect( root.isFocused ).to.be.false;
-			expect( root.isReadOnly ).to.be.false;
+			expect( root.isFocused ).toBe( false );
+			expect( root.isReadOnly ).toBe( false );
 		} );
 
 		it( 'should create an element with custom root name', () => {
 			const root = new ViewRootEditableElement( document, 'h1' );
 			root.rootName = 'header';
 
-			expect( root.rootName ).to.equal( 'header' );
-			expect( root.name ).to.equal( 'h1' );
+			expect( root.rootName ).toBe( 'header' );
+			expect( root.name ).toBe( 'h1' );
 
-			expect( root.isFocused ).to.be.false;
-			expect( root.isReadOnly ).to.be.false;
+			expect( root.isFocused ).toBe( false );
+			expect( root.isReadOnly ).toBe( false );
 		} );
 	} );
 
 	describe( 'is()', () => {
 		let el;
 
-		before( () => {
+		beforeAll( () => {
 			el = new ViewRootEditableElement( document, 'div' );
 		} );
 
 		it( 'should return true for rootElement/containerElement/editable/element, also with correct name and element name', () => {
-			expect( el.is( 'rootElement' ) ).to.be.true;
-			expect( el.is( 'view:rootElement' ) ).to.be.true;
-			expect( el.is( 'rootElement', 'div' ) ).to.be.true;
-			expect( el.is( 'view:rootElement', 'div' ) ).to.be.true;
-			expect( el.is( 'containerElement' ) ).to.be.true;
-			expect( el.is( 'view:containerElement' ) ).to.be.true;
-			expect( el.is( 'containerElement', 'div' ) ).to.be.true;
-			expect( el.is( 'view:containerElement', 'div' ) ).to.be.true;
-			expect( el.is( 'editableElement' ) ).to.be.true;
-			expect( el.is( 'view:editableElement' ) ).to.be.true;
-			expect( el.is( 'editableElement', 'div' ) ).to.be.true;
-			expect( el.is( 'view:editableElement', 'div' ) ).to.be.true;
-			expect( el.is( 'element' ) ).to.be.true;
-			expect( el.is( 'view:element' ) ).to.be.true;
-			expect( el.is( 'element', 'div' ) ).to.be.true;
-			expect( el.is( 'view:element', 'div' ) ).to.be.true;
+			expect( el.is( 'rootElement' ) ).toBe( true );
+			expect( el.is( 'view:rootElement' ) ).toBe( true );
+			expect( el.is( 'rootElement', 'div' ) ).toBe( true );
+			expect( el.is( 'view:rootElement', 'div' ) ).toBe( true );
+			expect( el.is( 'containerElement' ) ).toBe( true );
+			expect( el.is( 'view:containerElement' ) ).toBe( true );
+			expect( el.is( 'containerElement', 'div' ) ).toBe( true );
+			expect( el.is( 'view:containerElement', 'div' ) ).toBe( true );
+			expect( el.is( 'editableElement' ) ).toBe( true );
+			expect( el.is( 'view:editableElement' ) ).toBe( true );
+			expect( el.is( 'editableElement', 'div' ) ).toBe( true );
+			expect( el.is( 'view:editableElement', 'div' ) ).toBe( true );
+			expect( el.is( 'element' ) ).toBe( true );
+			expect( el.is( 'view:element' ) ).toBe( true );
+			expect( el.is( 'element', 'div' ) ).toBe( true );
+			expect( el.is( 'view:element', 'div' ) ).toBe( true );
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( el.is( 'rootElement', 'p' ) ).to.be.false;
-			expect( el.is( 'view:rootElement', 'p' ) ).to.be.false;
-			expect( el.is( 'containerElement', 'p' ) ).to.be.false;
-			expect( el.is( 'view:containerElement', 'p' ) ).to.be.false;
-			expect( el.is( 'element', 'p' ) ).to.be.false;
-			expect( el.is( 'view:element', 'p' ) ).to.be.false;
-			expect( el.is( 'element', 'p' ) ).to.be.false;
-			expect( el.is( 'view:p' ) ).to.be.false;
-			expect( el.is( '$text' ) ).to.be.false;
-			expect( el.is( 'view:$text' ) ).to.be.false;
-			expect( el.is( '$textProxy' ) ).to.be.false;
-			expect( el.is( 'attributeElement' ) ).to.be.false;
-			expect( el.is( 'uiElement' ) ).to.be.false;
-			expect( el.is( 'emptyElement' ) ).to.be.false;
-			expect( el.is( 'documentFragment' ) ).to.be.false;
-			expect( el.is( 'model:rootElement' ) ).to.be.false;
-			expect( el.is( 'div' ) ).to.be.false;
-			expect( el.is( 'view:div' ) ).to.be.false;
-			expect( el.is( 'node', 'div' ) ).to.be.false;
-			expect( el.is( 'view:node', 'div' ) ).to.be.false;
+			expect( el.is( 'rootElement', 'p' ) ).toBe( false );
+			expect( el.is( 'view:rootElement', 'p' ) ).toBe( false );
+			expect( el.is( 'containerElement', 'p' ) ).toBe( false );
+			expect( el.is( 'view:containerElement', 'p' ) ).toBe( false );
+			expect( el.is( 'element', 'p' ) ).toBe( false );
+			expect( el.is( 'view:element', 'p' ) ).toBe( false );
+			expect( el.is( 'element', 'p' ) ).toBe( false );
+			expect( el.is( 'view:p' ) ).toBe( false );
+			expect( el.is( '$text' ) ).toBe( false );
+			expect( el.is( 'view:$text' ) ).toBe( false );
+			expect( el.is( '$textProxy' ) ).toBe( false );
+			expect( el.is( 'attributeElement' ) ).toBe( false );
+			expect( el.is( 'uiElement' ) ).toBe( false );
+			expect( el.is( 'emptyElement' ) ).toBe( false );
+			expect( el.is( 'documentFragment' ) ).toBe( false );
+			expect( el.is( 'model:rootElement' ) ).toBe( false );
+			expect( el.is( 'div' ) ).toBe( false );
+			expect( el.is( 'view:div' ) ).toBe( false );
+			expect( el.is( 'node', 'div' ) ).toBe( false );
+			expect( el.is( 'view:node', 'div' ) ).toBe( false );
 		} );
 	} );
 
@@ -97,11 +98,11 @@ describe( 'RootEditableElement', () => {
 		it( 'should set new name to element', () => {
 			const el = new ViewRootEditableElement( document, '$root' );
 
-			expect( el.name ).to.equal( '$root' );
+			expect( el.name ).toBe( '$root' );
 
 			el._name = 'div';
 
-			expect( el.name ).to.equal( 'div' );
+			expect( el.name ).toBe( 'div' );
 		} );
 	} );
 
@@ -111,8 +112,8 @@ describe( 'RootEditableElement', () => {
 
 		const newRoot = root._clone();
 
-		expect( newRoot.document ).to.equal( root.document );
-		expect( newRoot.rootName ).to.equal( root.rootName );
+		expect( newRoot.document ).toBe( root.document );
+		expect( newRoot.rootName ).toBe( root.rootName );
 	} );
 
 	describe( 'toJSON()', () => {
@@ -126,7 +127,7 @@ describe( 'RootEditableElement', () => {
 			const json = JSON.stringify( root );
 			const parsed = JSON.parse( json );
 
-			expect( parsed ).to.equal( 'main' );
+			expect( parsed ).toBe( 'main' );
 		} );
 	} );
 } );

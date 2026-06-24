@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { InputView } from '../../src/input/inputview.js';
 import { InputTextView } from '../../src/inputtext/inputtextview.js';
 
@@ -20,13 +21,13 @@ describe( 'InputTextView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should extend InputView', () => {
-			expect( view ).to.be.instanceOf( InputView );
+			expect( view ).toBeInstanceOf( InputView );
 		} );
 
 		it( 'should creates element from template', () => {
-			expect( view.element.getAttribute( 'type' ) ).to.equal( 'text' );
-			expect( view.element.type ).to.equal( 'text' );
-			expect( view.element.classList.contains( 'ck-input-text' ) ).to.be.true;
+			expect( view.element.getAttribute( 'type' ) ).toBe( 'text' );
+			expect( view.element.type ).toBe( 'text' );
+			expect( view.element.classList.contains( 'ck-input-text' ) ).toBe( true );
 		} );
 	} );
 } );

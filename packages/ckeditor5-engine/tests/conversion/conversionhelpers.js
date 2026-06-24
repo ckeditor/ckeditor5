@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi } from 'vitest';
 import { ConversionHelpers } from '../../src/conversion/conversionhelpers.js';
 
 describe( 'ConversionHelpers', () => {
@@ -11,31 +12,31 @@ describe( 'ConversionHelpers', () => {
 		const dispB = Symbol( 'dispB' );
 
 		it( 'should call a helper for one defined dispatcher', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const helpers = new ConversionHelpers( [ dispA ] );
 
 			helpers.add( spy );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, dispA );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( dispA );
 		} );
 
 		it( 'should call helper for all defined dispatcherers', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const helpers = new ConversionHelpers( [ dispA, dispB ] );
 
 			helpers.add( spy );
 
-			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWithExactly( spy, dispA );
-			sinon.assert.calledWithExactly( spy, dispB );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+			expect( spy ).toHaveBeenCalledWith( dispA );
+			expect( spy ).toHaveBeenCalledWith( dispB );
 		} );
 
 		it( 'should be chainable', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const helpers = new ConversionHelpers( [ dispA ] );
 
-			expect( helpers.add( spy ) ).to.equal( helpers );
+			expect( helpers.add( spy ) ).toBe( helpers );
 		} );
 	} );
 } );

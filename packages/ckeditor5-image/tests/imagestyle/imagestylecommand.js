@@ -240,6 +240,88 @@ describe( 'ImageStyleCommand', () => {
 		} );
 	} );
 
+	describe( 'isStyleEnabled()', () => {
+		it( 'should return false when no image is selected', () => {
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+			expect( command.isStyleEnabled( anyImage.name ) ).to.be.false;
+		} );
+
+		it( 'should return false for an unknown style name', () => {
+			_setModelData( model, '[<imageBlock></imageBlock>]' );
+
+			expect( command.isStyleEnabled( 'thisStyleDoesNotExist' ) ).to.be.false;
+		} );
+
+		it( 'should return true for a style that supports the current image type without conversion', () => {
+			_setModelData( model, `<paragraph>[<imageInline src="${ anyImage.name }"></imageInline>]</paragraph>` );
+
+			// `alignLeft` (anyImage) supports both block and inline, so applying it to an inline image is direct.
+			expect( command.isStyleEnabled( anyImage.name ) ).to.be.true;
+		} );
+
+		it( 'should return true for a type-only style when the required type conversion is allowed', () => {
+			_setModelData( model, '<paragraph>[<imageInline src="x"></imageInline>]</paragraph>' );
+
+			// `alignCenter` (onlyBlock) requires converting the inline image to block - allowed in `$root`.
+			expect( command.isStyleEnabled( onlyBlock.name ) ).to.be.true;
+		} );
+
+		describe( 'in $inlineRoot', () => {
+			let inlineEditor, inlineElement, inlineCommand;
+
+			beforeEach( async () => {
+				inlineElement = document.createElement( 'div' );
+				document.body.appendChild( inlineElement );
+
+				inlineEditor = await ClassicTestEditor.create( inlineElement, {
+					plugins: [ ArticlePluginSet ],
+					image: {
+						styles: { options: [ 'block', 'inline', 'alignLeft', 'alignCenter' ] },
+						toolbar: [ 'imageStyle:block' ]
+					},
+					root: { modelElement: '$inlineRoot' }
+				} );
+
+				inlineCommand = inlineEditor.commands.get( 'imageStyle' );
+			} );
+
+			afterEach( async () => {
+				inlineElement.remove();
+				await inlineEditor.destroy();
+			} );
+
+			it( 'should return false for a block-only style applied to an inline image (conversion blocked)', () => {
+				_setModelData( inlineEditor.model, 'foo[<imageInline src="x"></imageInline>]bar' );
+
+				// `alignCenter` is block-only, so applying it requires converting to a block image - which
+				// the schema rejects inside `$inlineRoot`.
+				expect( inlineCommand.isStyleEnabled( onlyBlock.name ) ).to.be.false;
+			} );
+
+			it( 'should return true for a dual-type style applied to an inline image (no conversion needed)', () => {
+				_setModelData( inlineEditor.model, 'foo[<imageInline src="x"></imageInline>]bar' );
+
+				expect( inlineCommand.isStyleEnabled( anyImage.name ) ).to.be.true;
+			} );
+
+			it( 'should return true for an inline-only style applied to an inline image', () => {
+				_setModelData( inlineEditor.model, 'foo[<imageInline src="x"></imageInline>]bar' );
+
+				expect( inlineCommand.isStyleEnabled( onlyInline.name ) ).to.be.true;
+			} );
+
+			it( 'should no-op when execute() is called with a style that requires a blocked conversion', () => {
+				_setModelData( inlineEditor.model, 'foo[<imageInline src="x"></imageInline>]bar' );
+
+				const before = _getModelData( inlineEditor.model );
+				inlineCommand.execute( { value: onlyBlock.name } );
+
+				expect( _getModelData( inlineEditor.model ) ).to.equal( before );
+			} );
+		} );
+	} );
+
 	describe( 'execute()', () => {
 		const imgSrc = 'assets/sample.png';
 

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { ToolbarView } from '../../src/toolbar/toolbarview.js';
 import { ToolbarSeparatorView } from '../../src/toolbar/toolbarseparatorview.js';
 import {
 	KeystrokeHandler,
 	FocusTracker,
 	keyCodes,
-	global,
 	add as addTranslations,
 	_clearTranslations,
 	Rect,
@@ -20,7 +20,6 @@ import { ComponentFactory } from '../../src/componentfactory.js';
 import { FocusCycler } from '../../src/focuscycler.js';
 import { ViewCollection } from '../../src/viewcollection.js';
 import { View } from '../../src/view.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ToolbarLineBreakView } from '../../src/toolbar/toolbarlinebreakview.js';
 import { DropdownView } from '../../src/dropdown/dropdownview.js';
 import {
@@ -36,9 +35,11 @@ import {
 describe( 'ToolbarView', () => {
 	let locale, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
-	before( () => {
+	beforeAll( () => {
 		addTranslations( 'pl', {
 			'Editor toolbar': 'Pasek narzędzi edytora'
 		} );
@@ -47,7 +48,7 @@ describe( 'ToolbarView', () => {
 		} );
 	} );
 
-	after( () => {
+	afterAll( () => {
 		_clearTranslations();
 
 		// Clean up after the ResizeObserver stub in beforeEach(). Even though the global.window.ResizeObserver
@@ -70,16 +71,16 @@ describe( 'ToolbarView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should set view#locale', () => {
-			expect( view.locale ).to.equal( locale );
+			expect( view.locale ).toBe( locale );
 		} );
 
 		it( 'should set view#isCompact', () => {
-			expect( view.isCompact ).to.be.false;
+			expect( view.isCompact ).toBe( false );
 		} );
 
 		describe( '#options', () => {
 			it( 'should be an empty object if none were passed', () => {
-				expect( view.options ).to.deep.equal( {} );
+				expect( view.options ).toEqual( {} );
 			} );
 
 			it( 'should be an empty object if other options were passed', () => {
@@ -89,51 +90,51 @@ describe( 'ToolbarView', () => {
 
 				const toolbar = new ToolbarView( locale, options );
 
-				expect( toolbar.options ).to.equal( options );
+				expect( toolbar.options ).toBe( options );
 
 				toolbar.destroy();
 			} );
 		} );
 
 		it( 'should create view#items collection', () => {
-			expect( view.items ).to.be.instanceOf( ViewCollection );
+			expect( view.items ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'creates #focusTracker instance', () => {
-			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( view.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'creates #keystrokes instance', () => {
-			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( view.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 
 		it( 'should create view#itemsView', () => {
-			expect( view.itemsView ).to.be.instanceOf( View );
+			expect( view.itemsView ).toBeInstanceOf( View );
 		} );
 
 		it( 'should create view#children collection', () => {
-			expect( view.children ).to.be.instanceOf( ViewCollection );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'creates #_focusCycler instance', () => {
-			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+			expect( view._focusCycler ).toBeInstanceOf( FocusCycler );
 		} );
 
 		it( 'creates #_behavior', () => {
-			expect( view._behavior ).to.be.an( 'object' );
+			expect( view._behavior ).toBeTypeOf( 'object' );
 		} );
 	} );
 
 	describe( 'template', () => {
 		it( 'should create element from template', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-toolbar' ) ).to.true;
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-toolbar' ) ).toBe( true );
 		} );
 
 		it( 'should create #itemsView from template', () => {
-			expect( view.element.firstChild ).to.equal( view.itemsView.element );
-			expect( view.itemsView.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.itemsView.element.classList.contains( 'ck-toolbar__items' ) ).to.true;
+			expect( view.element.firstChild ).toBe( view.itemsView.element );
+			expect( view.itemsView.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.itemsView.element.classList.contains( 'ck-toolbar__items' ) ).toBe( true );
 		} );
 
 		it( 'should include the ck-toolbar_floating class if "shouldGroupWhenFull" and "isFloating" options are on,' +
@@ -144,7 +145,7 @@ describe( 'ToolbarView', () => {
 			} );
 			viewWithOptions.render();
 
-			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).toBe( true );
 
 			viewWithOptions = new ToolbarView( locale, {
 				shouldGroupWhenFull: false,
@@ -152,7 +153,7 @@ describe( 'ToolbarView', () => {
 			} );
 			viewWithOptions.render();
 
-			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).toBe( false );
 
 			viewWithOptions = new ToolbarView( locale, {
 				shouldGroupWhenFull: true,
@@ -160,7 +161,7 @@ describe( 'ToolbarView', () => {
 			} );
 			viewWithOptions.render();
 
-			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).toBe( false );
 
 			viewWithOptions = new ToolbarView( locale, {
 				shouldGroupWhenFull: false,
@@ -168,16 +169,16 @@ describe( 'ToolbarView', () => {
 			} );
 			viewWithOptions.render();
 
-			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).toBe( false );
 
 			viewWithOptions.destroy();
 		} );
 
 		describe( 'attributes', () => {
 			it( 'should be defined', () => {
-				expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
-				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Editor toolbar' );
-				expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+				expect( view.element.getAttribute( 'role' ) ).toBe( 'toolbar' );
+				expect( view.element.getAttribute( 'aria-label' ) ).toBe( 'Editor toolbar' );
+				expect( view.element.getAttribute( 'tabindex' ) ).toBe( '-1' );
 			} );
 
 			it( 'should allow a custom aria-label', () => {
@@ -187,7 +188,7 @@ describe( 'ToolbarView', () => {
 
 				view.render();
 
-				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+				expect( view.element.getAttribute( 'aria-label' ) ).toBe( 'Custom label' );
 
 				view.destroy();
 			} );
@@ -197,13 +198,13 @@ describe( 'ToolbarView', () => {
 
 				view.render();
 
-				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Pasek narzędzi edytora' );
+				expect( view.element.getAttribute( 'aria-label' ) ).toBe( 'Pasek narzędzi edytora' );
 
 				view.destroy();
 			} );
 
 			it( 'should have proper ARIA properties', () => {
-				expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
+				expect( view.element.getAttribute( 'role' ) ).toBe( 'toolbar' );
 			} );
 
 			it( 'should allow customizing toolbar role', () => {
@@ -212,7 +213,7 @@ describe( 'ToolbarView', () => {
 
 				view.render();
 
-				expect( view.element.getAttribute( 'role' ) ).to.equal( 'radiogroup' );
+				expect( view.element.getAttribute( 'role' ) ).toBe( 'radiogroup' );
 
 				view.destroy();
 			} );
@@ -221,10 +222,10 @@ describe( 'ToolbarView', () => {
 		describe( 'event listeners', () => {
 			it( 'prevent default on #mousedown', () => {
 				const evt = new Event( 'mousedown', { bubbles: true } );
-				const spy = sinon.spy( evt, 'preventDefault' );
+				const spy = vi.spyOn( evt, 'preventDefault' );
 
 				view.element.dispatchEvent( evt );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );
@@ -233,38 +234,38 @@ describe( 'ToolbarView', () => {
 		describe( 'class', () => {
 			it( 'reacts on view#class', () => {
 				view.class = 'foo';
-				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+				expect( view.element.classList.contains( 'foo' ) ).toBe( true );
 
 				view.class = 'bar';
-				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
+				expect( view.element.classList.contains( 'bar' ) ).toBe( true );
 
 				view.class = false;
-				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
-				expect( view.element.classList.contains( 'bar' ) ).to.be.false;
+				expect( view.element.classList.contains( 'foo' ) ).toBe( false );
+				expect( view.element.classList.contains( 'bar' ) ).toBe( false );
 			} );
 
 			it( 'reacts on view#isCompact', () => {
 				view.isCompact = false;
-				expect( view.element.classList.contains( 'ck-toolbar_compact' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-toolbar_compact' ) ).toBe( false );
 
 				view.isCompact = true;
-				expect( view.element.classList.contains( 'ck-toolbar_compact' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-toolbar_compact' ) ).toBe( true );
 			} );
 		} );
 
 		describe( 'style', () => {
 			it( 'reacts on view#maxWidth', () => {
 				view.maxWidth = '100px';
-				expect( view.element.style.maxWidth ).to.equal( '100px' );
+				expect( view.element.style.maxWidth ).toBe( '100px' );
 
 				view.maxWidth = undefined;
-				expect( view.element.style.maxWidth ).to.equal( '' );
+				expect( view.element.style.maxWidth ).toBe( '' );
 
 				view.maxWidth = null;
-				expect( view.element.style.maxWidth ).to.equal( '' );
+				expect( view.element.style.maxWidth ).toBe( '' );
 
 				view.maxWidth = '200px';
-				expect( view.element.style.maxWidth ).to.equal( '200px' );
+				expect( view.element.style.maxWidth ).toBe( '200px' );
 			} );
 		} );
 	} );
@@ -272,15 +273,16 @@ describe( 'ToolbarView', () => {
 	describe( 'render()', () => {
 		it( 'registers itself in #focusTracker', () => {
 			const view = new ToolbarView( locale );
-			const spyAdd = sinon.spy( view.focusTracker, 'add' );
-			const spyRemove = sinon.spy( view.focusTracker, 'remove' );
+			const spyAdd = vi.spyOn( view.focusTracker, 'add' );
+			const spyRemove = vi.spyOn( view.focusTracker, 'remove' );
 
-			sinon.assert.notCalled( spyAdd );
+			expect( spyAdd ).not.toHaveBeenCalled();
 
 			view.render();
 
-			sinon.assert.calledOnceWithExactly( spyAdd, view.element );
-			sinon.assert.notCalled( spyRemove );
+			expect( spyAdd ).toHaveBeenCalledOnce();
+			expect( spyAdd ).toHaveBeenCalledWith( view.element );
+			expect( spyRemove ).not.toHaveBeenCalled();
 
 			view.destroy();
 		} );
@@ -290,36 +292,37 @@ describe( 'ToolbarView', () => {
 			'multiple DOM sub-trees',
 		() => {
 			const view = new ToolbarView( locale );
-			const spyAdd = sinon.spy( view.focusTracker, 'add' );
-			const spyRemove = sinon.spy( view.focusTracker, 'remove' );
+			const spyAdd = vi.spyOn( view.focusTracker, 'add' );
+			const spyRemove = vi.spyOn( view.focusTracker, 'remove' );
 
 			const focusableViewA = focusable();
 			const focusableViewB = focusable();
 
 			view.items.add( focusableViewA );
 			view.items.add( focusableViewB );
-			sinon.assert.notCalled( spyAdd );
+			expect( spyAdd ).not.toHaveBeenCalled();
 
 			view.render();
 
 			// 2 for items and 1 for toolbar itself.
-			sinon.assert.calledThrice( spyAdd );
-			sinon.assert.calledWithExactly( spyAdd.secondCall, focusableViewA );
-			sinon.assert.calledWithExactly( spyAdd.thirdCall, focusableViewB );
+			expect( spyAdd ).toHaveBeenCalledTimes( 3 );
+			expect( spyAdd.mock.calls[ 1 ][ 0 ] ).toBe( focusableViewA );
+			expect( spyAdd.mock.calls[ 2 ][ 0 ] ).toBe( focusableViewB );
 
 			view.items.remove( 1 );
-			sinon.assert.calledOnceWithExactly( spyRemove, focusableViewB );
+			expect( spyRemove ).toHaveBeenCalledOnce();
+			expect( spyRemove ).toHaveBeenCalledWith( focusableViewB );
 
 			view.destroy();
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
 			const view = new ToolbarView( new Locale() );
-			const spy = sinon.spy( view.keystrokes, 'listenTo' );
+			const spy = vi.spyOn( view.keystrokes, 'listenTo' );
 
 			view.render();
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, view.element );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( view.element );
 
 			view.destroy();
 		} );
@@ -330,16 +333,16 @@ describe( 'ToolbarView', () => {
 
 				// No children to focus.
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
 
 				view.items.add( nonFocusable() );
 				view.items.add( nonFocusable() );
 
 				// No focusable children.
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledTwice( keyEvtData.preventDefault );
-				sinon.assert.calledTwice( keyEvtData.stopPropagation );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 2 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
 
 				view.items.add( focusable() );
 				view.items.add( nonFocusable() );
@@ -351,9 +354,9 @@ describe( 'ToolbarView', () => {
 
 				view.keystrokes.press( keyEvtData );
 
-				sinon.assert.calledThrice( keyEvtData.preventDefault );
-				sinon.assert.calledThrice( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( view.items.get( 2 ).focus );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 3 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 3 );
+				expect( view.items.get( 2 ).focus ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'so "arrowleft" focuses previous focusable item', () => {
@@ -368,7 +371,7 @@ describe( 'ToolbarView', () => {
 				view.focusTracker.focusedElement = view.items.get( 2 ).element;
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( view.items.get( 0 ).focus );
+				expect( view.items.get( 0 ).focus ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'so "arrowdown" focuses next focusable item', () => {
@@ -376,16 +379,16 @@ describe( 'ToolbarView', () => {
 
 				// No children to focus.
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
 
 				view.items.add( nonFocusable() );
 				view.items.add( nonFocusable() );
 
 				// No focusable children.
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledTwice( keyEvtData.preventDefault );
-				sinon.assert.calledTwice( keyEvtData.stopPropagation );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 2 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
 
 				view.items.add( focusable() );
 				view.items.add( nonFocusable() );
@@ -397,9 +400,9 @@ describe( 'ToolbarView', () => {
 
 				view.keystrokes.press( keyEvtData );
 
-				sinon.assert.calledThrice( keyEvtData.preventDefault );
-				sinon.assert.calledThrice( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( view.items.get( 2 ).focus );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 3 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 3 );
+				expect( view.items.get( 2 ).focus ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'so "arrowright" focuses next focusable item', () => {
@@ -414,7 +417,7 @@ describe( 'ToolbarView', () => {
 				view.focusTracker.focusedElement = view.items.get( 0 ).element;
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( view.items.get( 2 ).focus );
+				expect( view.items.get( 2 ).focus ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -447,7 +450,7 @@ describe( 'ToolbarView', () => {
 				view.focusTracker.focusedElement = view.items.get( 0 ).element;
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( view.items.get( 2 ).focus );
+				expect( view.items.get( 2 ).focus ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'so "arrowright" focuses previous focusable item', () => {
@@ -463,17 +466,17 @@ describe( 'ToolbarView', () => {
 				view.focusTracker.focusedElement = view.items.get( 0 ).element;
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( view.items.get( 3 ).focus );
+				expect( view.items.get( 3 ).focus ).toHaveBeenCalledOnce();
 			} );
 		} );
 
 		it( 'calls _behavior#render()', () => {
 			const view = new ToolbarView( locale );
-			sinon.spy( view._behavior, 'render' );
+			vi.spyOn( view._behavior, 'render' );
 
 			view.render();
-			sinon.assert.calledOnce( view._behavior.render );
-			sinon.assert.calledWithExactly( view._behavior.render, view );
+			expect( view._behavior.render ).toHaveBeenCalledOnce();
+			expect( view._behavior.render ).toHaveBeenCalledWith( view );
 
 			view.destroy();
 		} );
@@ -481,34 +484,34 @@ describe( 'ToolbarView', () => {
 
 	describe( 'destroy()', () => {
 		it( 'destroys the feature', () => {
-			sinon.spy( view._behavior, 'destroy' );
+			vi.spyOn( view._behavior, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( view._behavior.destroy );
+			expect( view._behavior.destroy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'calls _behavior#destroy()', () => {
-			sinon.spy( view._behavior, 'destroy' );
+			vi.spyOn( view._behavior, 'destroy' );
 
 			view.destroy();
-			sinon.assert.calledOnce( view._behavior.destroy );
+			expect( view._behavior.destroy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should destroy the FocusTracker instance', () => {
-			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+			const destroySpy = vi.spyOn( view.focusTracker, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should destroy the KeystrokeHandler instance', () => {
-			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+			const destroySpy = vi.spyOn( view.keystrokes, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -524,7 +527,7 @@ describe( 'ToolbarView', () => {
 
 			view.focus();
 
-			sinon.assert.calledOnce( view.items.get( 1 ).focus );
+			expect( view.items.get( 1 ).focus ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -542,7 +545,7 @@ describe( 'ToolbarView', () => {
 
 			view.focusLast();
 
-			sinon.assert.calledOnce( view.items.get( 3 ).focus );
+			expect( view.items.get( 3 ).focus ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -561,22 +564,22 @@ describe( 'ToolbarView', () => {
 			view.fillFromConfig( [ 'foo', '-', 'bar', '|', 'foo' ], factory );
 
 			const items = view.items;
-			expect( items ).to.have.length( 5 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
-			expect( items.get( 2 ).name ).to.equal( 'bar' );
-			expect( items.get( 3 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( items.get( 4 ).name ).to.equal( 'foo' );
+			expect( items ).toHaveLength( 5 );
+			expect( items.get( 0 ).name ).toBe( 'foo' );
+			expect( items.get( 1 ) ).toBeInstanceOf( ToolbarLineBreakView );
+			expect( items.get( 2 ).name ).toBe( 'bar' );
+			expect( items.get( 3 ) ).toBeInstanceOf( ToolbarSeparatorView );
+			expect( items.get( 4 ).name ).toBe( 'foo' );
 		} );
 
 		it( 'accepts configuration object', () => {
 			view.fillFromConfig( { items: [ 'foo', 'bar', 'foo' ] }, factory );
 
 			const items = view.items;
-			expect( items ).to.have.length( 3 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ).name ).to.equal( 'bar' );
-			expect( items.get( 2 ).name ).to.equal( 'foo' );
+			expect( items ).toHaveLength( 3 );
+			expect( items.get( 0 ).name ).toBe( 'foo' );
+			expect( items.get( 1 ).name ).toBe( 'bar' );
+			expect( items.get( 2 ).name ).toBe( 'foo' );
 		} );
 
 		it( 'removes items listed in `removeItems`', () => {
@@ -589,8 +592,8 @@ describe( 'ToolbarView', () => {
 			);
 
 			const items = view.items;
-			expect( items ).to.have.length( 1 );
-			expect( items.get( 0 ).name ).to.equal( 'bar' );
+			expect( items ).toHaveLength( 1 );
+			expect( items.get( 0 ).name ).toBe( 'bar' );
 		} );
 
 		it( 'deduplicates consecutive separators after removing items listed in `removeItems` - the vertical separator case (`|`)', () => {
@@ -604,10 +607,10 @@ describe( 'ToolbarView', () => {
 
 			const items = view.items;
 
-			expect( items ).to.have.length( 3 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( items.get( 2 ).name ).to.equal( 'foo' );
+			expect( items ).toHaveLength( 3 );
+			expect( items.get( 0 ).name ).toBe( 'foo' );
+			expect( items.get( 1 ) ).toBeInstanceOf( ToolbarSeparatorView );
+			expect( items.get( 2 ).name ).toBe( 'foo' );
 		} );
 
 		it( 'deduplicates consecutive separators after removing items listed in `removeItems` - the line break case (`-`)', () => {
@@ -621,10 +624,10 @@ describe( 'ToolbarView', () => {
 
 			const items = view.items;
 
-			expect( items ).to.have.length( 3 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
-			expect( items.get( 2 ).name ).to.equal( 'foo' );
+			expect( items ).toHaveLength( 3 );
+			expect( items.get( 0 ).name ).toBe( 'foo' );
+			expect( items.get( 1 ) ).toBeInstanceOf( ToolbarLineBreakView );
+			expect( items.get( 2 ).name ).toBe( 'foo' );
 		} );
 
 		it( 'removes trailing and leading separators from the item list - the vertical separator case (`|`)', () => {
@@ -637,10 +640,10 @@ describe( 'ToolbarView', () => {
 
 			const items = view.items;
 
-			expect( items ).to.have.length( 3 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( items.get( 2 ).name ).to.equal( 'bar' );
+			expect( items ).toHaveLength( 3 );
+			expect( items.get( 0 ).name ).toBe( 'foo' );
+			expect( items.get( 1 ) ).toBeInstanceOf( ToolbarSeparatorView );
+			expect( items.get( 2 ).name ).toBe( 'bar' );
 		} );
 
 		it( 'removes trailing and leading separators from the item list - the line break case (`-`)', () => {
@@ -653,48 +656,44 @@ describe( 'ToolbarView', () => {
 
 			const items = view.items;
 
-			expect( items ).to.have.length( 3 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
-			expect( items.get( 2 ).name ).to.equal( 'bar' );
+			expect( items ).toHaveLength( 3 );
+			expect( items.get( 0 ).name ).toBe( 'foo' );
+			expect( items.get( 1 ) ).toBeInstanceOf( ToolbarLineBreakView );
+			expect( items.get( 2 ).name ).toBe( 'bar' );
 		} );
 
 		it( 'warns if there is no such component in the factory', () => {
 			const items = view.items;
-			const consoleWarnStub = sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			view.fillFromConfig( [ 'foo', 'bar', 'non-existing' ], factory );
 
-			expect( items ).to.have.length( 2 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ).name ).to.equal( 'bar' );
+			expect( items ).toHaveLength( 2 );
+			expect( items.get( 0 ).name ).toBe( 'foo' );
+			expect( items.get( 1 ).name ).toBe( 'bar' );
 
-			sinon.assert.calledOnce( consoleWarnStub );
-			sinon.assert.calledWithExactly( consoleWarnStub,
-				sinon.match( /^toolbarview-item-unavailable/ ),
-				sinon.match( { item: 'non-existing' } ),
-				sinon.match.string // Link to the documentation.
-			);
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^toolbarview-item-unavailable/ );
+			expect( consoleWarnStub.mock.calls[ 0 ][ 1 ] ).toMatchObject( { item: 'non-existing' } );
+			expect( consoleWarnStub.mock.calls[ 0 ][ 2 ] ).toBeTypeOf( 'string' );
 		} );
 
 		it( 'warns if the line separator is used when the button grouping option is enabled', () => {
-			const consoleWarnStub = sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 			view.options.shouldGroupWhenFull = true;
 
 			view.fillFromConfig( [ 'foo', '-', 'bar' ], factory );
 
-			sinon.assert.calledOnce( consoleWarnStub );
-			sinon.assert.calledWithExactly( consoleWarnStub,
-				sinon.match( /^toolbarview-line-break-ignored-when-grouping-items/ ),
-				sinon.match.array,
-				sinon.match.string // Link to the documentation.
-			);
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^toolbarview-line-break-ignored-when-grouping-items/ );
+			expect( Array.isArray( consoleWarnStub.mock.calls[ 0 ][ 1 ] ) ).toBe( true );
+			expect( consoleWarnStub.mock.calls[ 0 ][ 2 ] ).toBeTypeOf( 'string' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/8582
 		it( 'does not render line separator when the button grouping option is enabled', () => {
 			// Catch warn to stop tests from failing in production mode.
-			sinon.stub( console, 'warn' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			view.options.shouldGroupWhenFull = true;
 
@@ -702,9 +701,9 @@ describe( 'ToolbarView', () => {
 
 			const items = view.items;
 
-			expect( items ).to.have.length( 2 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ).name ).to.equal( 'bar' );
+			expect( items ).toHaveLength( 2 );
+			expect( items.get( 0 ).name ).toBe( 'foo' );
+			expect( items.get( 1 ).name ).toBe( 'bar' );
 		} );
 
 		describe( 'nested drop-downs with toolbar', () => {
@@ -722,7 +721,7 @@ describe( 'ToolbarView', () => {
 				dropdownView = view.items.get( 1 );
 
 				// Make sure that toolbar view is not created before first dropdown open.
-				expect( dropdownView.toolbarView ).to.be.undefined;
+				expect( dropdownView.toolbarView ).toBeUndefined();
 
 				// Trigger toolbar view creation (lazy init).
 				dropdownView.isOpen = true;
@@ -731,20 +730,20 @@ describe( 'ToolbarView', () => {
 
 				const items = view.items;
 
-				expect( items ).to.have.length( 2 );
-				expect( items.get( 0 ).name ).to.equal( 'foo' );
-				expect( items.get( 1 ) ).to.be.instanceOf( DropdownView );
+				expect( items ).toHaveLength( 2 );
+				expect( items.get( 0 ).name ).toBe( 'foo' );
+				expect( items.get( 1 ) ).toBeInstanceOf( DropdownView );
 
-				expect( dropdownView.buttonView.label, 'label' ).to.equal( 'Some label' );
-				expect( dropdownView.buttonView.withText, 'withText' ).to.be.false;
-				expect( dropdownView.buttonView.icon, 'icon' ).to.equal( IconThreeVerticalDots );
-				expect( dropdownView.buttonView.tooltip, 'tooltip' ).to.be.true;
+				expect( dropdownView.buttonView.label, 'label' ).toBe( 'Some label' );
+				expect( dropdownView.buttonView.withText, 'withText' ).toBe( false );
+				expect( dropdownView.buttonView.icon, 'icon' ).toBe( IconThreeVerticalDots );
+				expect( dropdownView.buttonView.tooltip, 'tooltip' ).toBe( true );
 
 				const nestedToolbarItems = toolbarView.items;
 
-				expect( nestedToolbarItems.get( 0 ).name ).to.equal( 'bar' );
-				expect( nestedToolbarItems.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
-				expect( nestedToolbarItems.get( 2 ).name ).to.equal( 'foo' );
+				expect( nestedToolbarItems.get( 0 ).name ).toBe( 'bar' );
+				expect( nestedToolbarItems.get( 1 ) ).toBeInstanceOf( ToolbarSeparatorView );
+				expect( nestedToolbarItems.get( 2 ).name ).toBe( 'foo' );
 			} );
 
 			it( 'should set proper CSS class on the drop-down', () => {
@@ -759,7 +758,7 @@ describe( 'ToolbarView', () => {
 
 				dropdownView = view.items.get( 1 );
 
-				expect( dropdownView.class ).to.equal( 'ck-toolbar__nested-toolbar-dropdown' );
+				expect( dropdownView.class ).toBe( 'ck-toolbar__nested-toolbar-dropdown' );
 			} );
 
 			it( 'should allow configuring the drop-down\'s label', () => {
@@ -774,7 +773,7 @@ describe( 'ToolbarView', () => {
 
 				dropdownView = view.items.get( 1 );
 
-				expect( dropdownView.buttonView.label ).to.equal( 'Some label' );
+				expect( dropdownView.buttonView.label ).toBe( 'Some label' );
 			} );
 
 			it( 'should allow configuring the drop-down\'s label visibility', () => {
@@ -790,7 +789,7 @@ describe( 'ToolbarView', () => {
 
 				dropdownView = view.items.get( 1 );
 
-				expect( dropdownView.buttonView.withText ).to.be.true;
+				expect( dropdownView.buttonView.withText ).toBe( true );
 			} );
 
 			it( 'should allow configuring the drop-down\'s icon by SVG string', () => {
@@ -805,7 +804,7 @@ describe( 'ToolbarView', () => {
 
 				dropdownView = view.items.get( 1 );
 
-				expect( dropdownView.buttonView.icon ).to.equal( '<svg viewBox="0 0 68 64" xmlns="http://www.w3.org/2000/svg"></svg>' );
+				expect( dropdownView.buttonView.icon ).toBe( '<svg viewBox="0 0 68 64" xmlns="http://www.w3.org/2000/svg"></svg>' );
 			} );
 
 			it( 'should allow disabling the drop-down\'s icon by passing false (text label shows up instead)', () => {
@@ -820,8 +819,8 @@ describe( 'ToolbarView', () => {
 
 				dropdownView = view.items.get( 1 );
 
-				expect( dropdownView.buttonView.icon ).to.be.undefined;
-				expect( dropdownView.buttonView.withText ).to.be.true;
+				expect( dropdownView.buttonView.icon ).toBeUndefined();
+				expect( dropdownView.buttonView.withText ).toBe( true );
 			} );
 
 			describe( 'pre-configured icons', () => {
@@ -847,7 +846,7 @@ describe( 'ToolbarView', () => {
 
 						dropdownView = view.items.get( 0 );
 
-						expect( dropdownView.buttonView.icon ).to.equal( icon );
+						expect( dropdownView.buttonView.icon ).toBe( icon );
 					} );
 				}
 			} );
@@ -863,8 +862,8 @@ describe( 'ToolbarView', () => {
 
 				dropdownView = view.items.get( 1 );
 
-				expect( dropdownView.buttonView.icon ).to.equal( IconThreeVerticalDots );
-				expect( dropdownView.buttonView.withText ).to.be.false;
+				expect( dropdownView.buttonView.icon ).toBe( IconThreeVerticalDots );
+				expect( dropdownView.buttonView.withText ).toBe( false );
 			} );
 
 			it( 'should allow configuring the drop-down\'s tooltip', () => {
@@ -880,7 +879,7 @@ describe( 'ToolbarView', () => {
 
 				dropdownView = view.items.get( 1 );
 
-				expect( dropdownView.buttonView.tooltip ).to.equal( 'Foo bar' );
+				expect( dropdownView.buttonView.tooltip ).toBe( 'Foo bar' );
 			} );
 
 			it( 'should allow deep nested structures', () => {
@@ -905,7 +904,7 @@ describe( 'ToolbarView', () => {
 				const level0DropdownView = view.items.get( 1 );
 
 				// Make sure that toolbar view is not created before first dropdown open.
-				expect( level0DropdownView.toolbarView ).to.be.undefined;
+				expect( level0DropdownView.toolbarView ).toBeUndefined();
 
 				// Trigger toolbar view creation (lazy init).
 				level0DropdownView.isOpen = true;
@@ -913,17 +912,17 @@ describe( 'ToolbarView', () => {
 				const level1DropdownView = level0DropdownView.toolbarView.items.get( 2 );
 
 				// Make sure that toolbar view is not created before first dropdown open.
-				expect( level1DropdownView.toolbarView ).to.be.undefined;
+				expect( level1DropdownView.toolbarView ).toBeUndefined();
 
 				// Trigger toolbar view creation (lazy init).
 				level1DropdownView.isOpen = true;
 
-				expect( level1DropdownView.toolbarView.items.length ).to.equal( 1 );
-				expect( level1DropdownView.toolbarView.items.get( 0 ).name ).to.equal( 'bar' );
+				expect( level1DropdownView.toolbarView.items.length ).toBe( 1 );
+				expect( level1DropdownView.toolbarView.items.get( 0 ).name ).toBe( 'bar' );
 			} );
 
 			it( 'should warn when the drop-down has no label', () => {
-				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 				const brokenDefinition = {
 					items: [ 'bar', '|', 'foo' ],
 					icon: 'plus',
@@ -932,12 +931,10 @@ describe( 'ToolbarView', () => {
 
 				view.fillFromConfig( [ 'foo', brokenDefinition ], factory );
 
-				sinon.assert.calledOnce( warnStub );
-				sinon.assert.calledWithExactly( warnStub,
-					sinon.match( /^toolbarview-nested-toolbar-dropdown-missing-label/ ),
-					brokenDefinition,
-					sinon.match.string // Link to the documentation
-				);
+				expect( warnStub ).toHaveBeenCalledOnce();
+				expect( warnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^toolbarview-nested-toolbar-dropdown-missing-label/ );
+				expect( warnStub.mock.calls[ 0 ][ 1 ] ).toBe( brokenDefinition );
+				expect( warnStub.mock.calls[ 0 ][ 2 ] ).toBeTypeOf( 'string' );
 			} );
 
 			describe( 'toolbar.removeItems support', () => {
@@ -956,7 +953,7 @@ describe( 'ToolbarView', () => {
 					dropdownView = view.items.get( 1 );
 
 					// Make sure that toolbar view is not created before first dropdown open.
-					expect( dropdownView.toolbarView ).to.be.undefined;
+					expect( dropdownView.toolbarView ).toBeUndefined();
 
 					// Trigger toolbar view creation (lazy init).
 					dropdownView.isOpen = true;
@@ -964,8 +961,8 @@ describe( 'ToolbarView', () => {
 
 					const nestedToolbarItems = toolbarView.items;
 
-					expect( nestedToolbarItems.length ).to.equal( 1 );
-					expect( nestedToolbarItems.get( 0 ).name ).to.equal( 'foo' );
+					expect( nestedToolbarItems.length ).toBe( 1 );
+					expect( nestedToolbarItems.get( 0 ).name ).toBe( 'foo' );
 				} );
 
 				it( 'should allow removing items from the nested toolbar deep in the structure', () => {
@@ -991,7 +988,7 @@ describe( 'ToolbarView', () => {
 					const level0DropdownView = view.items.get( 1 );
 
 					// Make sure that toolbar view is not created before first dropdown open.
-					expect( level0DropdownView.toolbarView ).to.be.undefined;
+					expect( level0DropdownView.toolbarView ).toBeUndefined();
 
 					// Trigger toolbar view creation (lazy init).
 					level0DropdownView.isOpen = true;
@@ -999,7 +996,7 @@ describe( 'ToolbarView', () => {
 					const level1DropdownView = level0DropdownView.toolbarView.items.get( 0 );
 
 					// Make sure that toolbar view is not created before first dropdown open.
-					expect( level1DropdownView.toolbarView ).to.be.undefined;
+					expect( level1DropdownView.toolbarView ).toBeUndefined();
 
 					// Trigger toolbar view creation (lazy init).
 					level1DropdownView.isOpen = true;
@@ -1007,12 +1004,12 @@ describe( 'ToolbarView', () => {
 					const level0NestedToolbarItems = level0DropdownView.toolbarView.items;
 					const level1NestedToolbarItems = level1DropdownView.toolbarView.items;
 
-					expect( level0NestedToolbarItems.length ).to.equal( 1 );
-					expect( level0NestedToolbarItems.get( 0 ) ).to.be.instanceOf( DropdownView );
-					expect( level0NestedToolbarItems.get( 0 ).buttonView.label ).to.equal( 'Level 1' );
+					expect( level0NestedToolbarItems.length ).toBe( 1 );
+					expect( level0NestedToolbarItems.get( 0 ) ).toBeInstanceOf( DropdownView );
+					expect( level0NestedToolbarItems.get( 0 ).buttonView.label ).toBe( 'Level 1' );
 
-					expect( level1NestedToolbarItems.length ).to.equal( 1 );
-					expect( level1NestedToolbarItems.get( 0 ).name ).to.equal( 'foo' );
+					expect( level1NestedToolbarItems.length ).toBe( 1 );
+					expect( level1NestedToolbarItems.get( 0 ).name ).toBe( 'foo' );
 				} );
 
 				it( 'should remove the nested drop-down if all its toolbar items have also been removed', () => {
@@ -1029,8 +1026,8 @@ describe( 'ToolbarView', () => {
 
 					const items = view.items;
 
-					expect( items.length ).to.equal( 1 );
-					expect( items.get( 0 ).name ).to.equal( 'foo' );
+					expect( items.length ).toBe( 1 );
+					expect( items.get( 0 ).name ).toBe( 'foo' );
 				} );
 
 				it( 'should remove the nested drop-down if all its toolbar items (but separators) have also been removed', () => {
@@ -1047,8 +1044,8 @@ describe( 'ToolbarView', () => {
 
 					const items = view.items;
 
-					expect( items.length ).to.equal( 1 );
-					expect( items.get( 0 ).name ).to.equal( 'foo' );
+					expect( items.length ).toBe( 1 );
+					expect( items.get( 0 ).name ).toBe( 'foo' );
 				} );
 			} );
 		} );
@@ -1057,7 +1054,7 @@ describe( 'ToolbarView', () => {
 	describe( 'toolbar with static items', () => {
 		describe( 'constructor()', () => {
 			it( 'should set view#isVertical', () => {
-				expect( view.isVertical ).to.be.false;
+				expect( view.isVertical ).toBe( false );
 			} );
 
 			it( 'binds itemsView#children to #items', () => {
@@ -1069,7 +1066,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemB );
 				view.items.add( itemC );
 
-				expect( view.itemsView.children.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
+				expect( view.itemsView.children.map( i => i ) ).toEqual( [ itemA, itemB, itemC ] );
 			} );
 
 			it( 'binds #focusables to #items', () => {
@@ -1081,7 +1078,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemB );
 				view.items.add( itemC );
 
-				expect( view.focusables.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
+				expect( view.focusables.map( i => i ) ).toEqual( [ itemA, itemB, itemC ] );
 			} );
 		} );
 
@@ -1089,31 +1086,31 @@ describe( 'ToolbarView', () => {
 			describe( 'class', () => {
 				it( 'reacts on view#isVertical', () => {
 					view.isVertical = false;
-					expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.false;
+					expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).toBe( false );
 
 					view.isVertical = true;
-					expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.true;
+					expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).toBe( true );
 				} );
 			} );
 		} );
 
 		describe( '#switchBehavior()', () => {
 			it( 'should do nothing if changed to `static`', () => {
-				const spy = sinon.spy( view._behavior, 'render' );
+				const spy = vi.spyOn( view._behavior, 'render' );
 
 				view.switchBehavior( 'static' );
 
-				expect( view.isGrouping ).to.be.false;
-				sinon.assert.notCalled( spy );
+				expect( view.isGrouping ).toBe( false );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should replace #_behavior with dynamic layout', () => {
-				const spy = sinon.spy( view._behavior, 'destroy' );
+				const spy = vi.spyOn( view._behavior, 'destroy' );
 
 				view.switchBehavior( 'dynamic' );
 
-				expect( view.isGrouping ).to.be.true;
-				sinon.assert.calledOnce( spy );
+				expect( view.isGrouping ).toBe( true );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should update the bindings in the new behavior', () => {
@@ -1138,15 +1135,15 @@ describe( 'ToolbarView', () => {
 		let resizeCallback, observeSpy, unobserveSpy;
 
 		beforeEach( () => {
-			observeSpy = sinon.spy();
-			unobserveSpy = sinon.spy();
+			observeSpy = vi.fn();
+			unobserveSpy = vi.fn();
 
 			// Make sure other tests of the editor do not affect tests that follow.
 			// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
 			// in DOM, the following DOM mock will have no effect.
 			ResizeObserver._observerInstance = null;
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			vi.stubGlobal( 'ResizeObserver', function( callback ) {
 				resizeCallback = callback;
 
 				return {
@@ -1170,18 +1167,19 @@ describe( 'ToolbarView', () => {
 		} );
 
 		afterEach( () => {
-			testUtils.sinon.restore();
+			vi.unstubAllGlobals();
+			vi.restoreAllMocks();
 			view.element.remove();
 			view.destroy();
 		} );
 
 		describe( 'constructor()', () => {
 			it( 'extends the template with the CSS class', () => {
-				expect( view.element.classList.contains( 'ck-toolbar_grouping' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-toolbar_grouping' ) ).toBe( true );
 			} );
 
 			it( 'updates the UI as new #items are added', () => {
-				sinon.spy( view._behavior, '_updateGrouping' );
+				vi.spyOn( view._behavior, '_updateGrouping' );
 
 				const itemA = focusable();
 				const itemB = focusable();
@@ -1193,24 +1191,24 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemA );
 				view.items.add( itemB );
 
-				sinon.assert.calledTwice( view._behavior._updateGrouping );
+				expect( view._behavior._updateGrouping ).toHaveBeenCalledTimes( 2 );
 
-				expect( ungroupedItems ).to.have.length( 2 );
-				expect( groupedItems ).to.have.length( 0 );
+				expect( ungroupedItems ).toHaveLength( 2 );
+				expect( groupedItems ).toHaveLength( 0 );
 
 				view.items.add( itemC );
 
 				// The dropdown took some extra space.
-				expect( ungroupedItems ).to.have.length( 1 );
-				expect( groupedItems ).to.have.length( 2 );
+				expect( ungroupedItems ).toHaveLength( 1 );
+				expect( groupedItems ).toHaveLength( 2 );
 
 				view.items.add( itemD, 2 );
 
-				expect( ungroupedItems ).to.have.length( 1 );
-				expect( groupedItems ).to.have.length( 3 );
+				expect( ungroupedItems ).toHaveLength( 1 );
+				expect( groupedItems ).toHaveLength( 3 );
 
-				expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
-				expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemD, itemC ] );
+				expect( ungroupedItems.map( i => i ) ).toEqual( [ itemA ] );
+				expect( groupedItems.map( i => i ) ).toEqual( [ itemB, itemD, itemC ] );
 			} );
 
 			it( 'updates the UI as #items are removed', () => {
@@ -1226,18 +1224,18 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemC );
 				view.items.add( itemD );
 
-				sinon.spy( view._behavior, '_updateGrouping' );
+				vi.spyOn( view._behavior, '_updateGrouping' );
 				view.items.remove( 2 );
 
-				expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
-				expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemD ] );
+				expect( ungroupedItems.map( i => i ) ).toEqual( [ itemA ] );
+				expect( groupedItems.map( i => i ) ).toEqual( [ itemB, itemD ] );
 
-				sinon.assert.calledOnce( view._behavior._updateGrouping );
+				expect( view._behavior._updateGrouping ).toHaveBeenCalledOnce();
 
 				view.items.remove( 0 );
-				sinon.assert.calledTwice( view._behavior._updateGrouping );
+				expect( view._behavior._updateGrouping ).toHaveBeenCalledTimes( 2 );
 
-				expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemD ] );
+				expect( ungroupedItems.map( i => i ) ).toEqual( [ itemB, itemD ] );
 			} );
 
 			it( 'doesn\'t throw when removing the first of grouped items', () => { // (https://github.com/ckeditor/ckeditor5/issues/7655)
@@ -1247,8 +1245,8 @@ describe( 'ToolbarView', () => {
 
 				view.items.remove( 1 );
 
-				expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ items[ 0 ] ] );
-				expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ items[ 2 ], items[ 3 ] ] );
+				expect( ungroupedItems.map( i => i ) ).toEqual( [ items[ 0 ] ] );
+				expect( groupedItems.map( i => i ) ).toEqual( [ items[ 2 ], items[ 3 ] ] );
 			} );
 		} );
 
@@ -1263,12 +1261,12 @@ describe( 'ToolbarView', () => {
 			view.items.add( itemC );
 			view.items.add( itemD );
 
-			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
-			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemC, itemD ] );
-			expect( view.children ).to.have.length( 3 );
-			expect( view.children.get( 0 ) ).to.equal( view.itemsView );
-			expect( view.children.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( view.children.get( 2 ) ).to.equal( groupedItemsDropdown );
+			expect( ungroupedItems.map( i => i ) ).toEqual( [ itemA ] );
+			expect( groupedItems.map( i => i ) ).toEqual( [ itemB, itemC, itemD ] );
+			expect( view.children ).toHaveLength( 3 );
+			expect( view.children.get( 0 ) ).toBe( view.itemsView );
+			expect( view.children.get( 1 ) ).toBeInstanceOf( ToolbarSeparatorView );
+			expect( view.children.get( 2 ) ).toBe( groupedItemsDropdown );
 		} );
 
 		it( 'ungroups items if there is enough space to display them (all)', () => {
@@ -1282,16 +1280,16 @@ describe( 'ToolbarView', () => {
 			view.items.add( itemC );
 			view.items.add( itemD );
 
-			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
-			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemC, itemD ] );
+			expect( ungroupedItems.map( i => i ) ).toEqual( [ itemA ] );
+			expect( groupedItems.map( i => i ) ).toEqual( [ itemB, itemC, itemD ] );
 
 			view.element.style.width = '350px';
 
 			// Some grouped items cannot be ungrouped because there is not enough space and they will
 			// land back in #_behavior.groupedItems after an attempt was made.
 			view._behavior._updateGrouping();
-			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
-			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemD ] );
+			expect( ungroupedItems.map( i => i ) ).toEqual( [ itemA, itemB, itemC ] );
+			expect( groupedItems.map( i => i ) ).toEqual( [ itemD ] );
 		} );
 
 		it( 'ungroups items if there is enough space to display them (some)', () => {
@@ -1303,17 +1301,17 @@ describe( 'ToolbarView', () => {
 			view.items.add( itemB );
 			view.items.add( itemC );
 
-			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
-			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemC ] );
+			expect( ungroupedItems.map( i => i ) ).toEqual( [ itemA ] );
+			expect( groupedItems.map( i => i ) ).toEqual( [ itemB, itemC ] );
 
 			view.element.style.width = '350px';
 
 			// All grouped items will be ungrouped because they fit just alright in the main space.
 			view._behavior._updateGrouping();
-			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
-			expect( groupedItems ).to.have.length( 0 );
-			expect( view.children ).to.have.length( 1 );
-			expect( view.children.get( 0 ) ).to.equal( view.itemsView );
+			expect( ungroupedItems.map( i => i ) ).toEqual( [ itemA, itemB, itemC ] );
+			expect( groupedItems ).toHaveLength( 0 );
+			expect( view.children ).toHaveLength( 1 );
+			expect( view.children.get( 0 ) ).toBe( view.itemsView );
 		} );
 
 		describe( 'render()', () => {
@@ -1324,8 +1322,8 @@ describe( 'ToolbarView', () => {
 					shouldGroupWhenFull: true
 				} );
 
-				observeSpy.resetHistory();
-				unobserveSpy.resetHistory();
+				observeSpy.mockReset();
+				unobserveSpy.mockReset();
 
 				view.render();
 
@@ -1341,8 +1339,8 @@ describe( 'ToolbarView', () => {
 			} );
 
 			it( 'starts observing toolbar resize immediatelly after render', () => {
-				sinon.assert.calledOnce( observeSpy );
-				sinon.assert.calledWithExactly( observeSpy, view.element );
+				expect( observeSpy ).toHaveBeenCalledOnce();
+				expect( observeSpy ).toHaveBeenCalledWith( view.element );
 			} );
 
 			it( 'updates the UI when the toolbar is being resized (expanding)', () => {
@@ -1358,8 +1356,8 @@ describe( 'ToolbarView', () => {
 					target: view.element,
 					contentRect: new Rect( view.element )
 				} ] );
-				expect( ungroupedItems ).to.have.length( 1 );
-				expect( groupedItems ).to.have.length( 4 );
+				expect( ungroupedItems ).toHaveLength( 1 );
+				expect( groupedItems ).toHaveLength( 4 );
 
 				view.element.style.width = '500px';
 				resizeCallback( [ {
@@ -1367,8 +1365,8 @@ describe( 'ToolbarView', () => {
 					contentRect: new Rect( view.element )
 				} ] );
 
-				expect( ungroupedItems ).to.have.length( 5 );
-				expect( groupedItems ).to.have.length( 0 );
+				expect( ungroupedItems ).toHaveLength( 5 );
+				expect( groupedItems ).toHaveLength( 0 );
 			} );
 
 			it( 'updates the UI when the toolbar is being resized (narrowing)', () => {
@@ -1384,8 +1382,8 @@ describe( 'ToolbarView', () => {
 					target: view.element,
 					contentRect: new Rect( view.element )
 				} ] );
-				expect( ungroupedItems ).to.have.length( 5 );
-				expect( groupedItems ).to.have.length( 0 );
+				expect( ungroupedItems ).toHaveLength( 5 );
+				expect( groupedItems ).toHaveLength( 0 );
 
 				view.element.style.width = '200px';
 				resizeCallback( [ {
@@ -1393,8 +1391,8 @@ describe( 'ToolbarView', () => {
 					contentRect: new Rect( view.element )
 				} ] );
 
-				expect( ungroupedItems ).to.have.length( 1 );
-				expect( groupedItems ).to.have.length( 4 );
+				expect( ungroupedItems ).toHaveLength( 1 );
+				expect( groupedItems ).toHaveLength( 4 );
 			} );
 
 			it( 'does not react to changes in height', () => {
@@ -1407,33 +1405,33 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				sinon.spy( view._behavior, '_updateGrouping' );
+				vi.spyOn( view._behavior, '_updateGrouping' );
 				view.element.style.width = '500px';
 				resizeCallback( [ {
 					target: view.element,
 					contentRect: new Rect( view.element )
 				} ] );
 
-				sinon.assert.calledOnce( view._behavior._updateGrouping );
+				expect( view._behavior._updateGrouping ).toHaveBeenCalledOnce();
 				view.element.style.height = '500px';
 				resizeCallback( [ {
 					target: view.element,
 					contentRect: new Rect( view.element )
 				} ] );
 
-				sinon.assert.calledOnce( view._behavior._updateGrouping );
+				expect( view._behavior._updateGrouping ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'updates the state of grouped items upon resize', () => {
-				testUtils.sinon.spy( view._behavior, '_updateGrouping' );
-				sinon.assert.notCalled( view._behavior._updateGrouping );
+				vi.spyOn( view._behavior, '_updateGrouping' );
+				expect( view._behavior._updateGrouping ).not.toHaveBeenCalled();
 
 				resizeCallback( [ {
 					target: view.element,
 					contentRect: new Rect( view.element )
 				} ] );
 
-				sinon.assert.calledOnce( view._behavior._updateGrouping );
+				expect( view._behavior._updateGrouping ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'does not update the state of grouped items if invisible', () => {
@@ -1446,14 +1444,14 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				expect( ungroupedItems ).to.have.length( 5 );
-				expect( groupedItems ).to.have.length( 0 );
+				expect( ungroupedItems ).toHaveLength( 5 );
+				expect( groupedItems ).toHaveLength( 0 );
 
 				view.element.style.display = 'none';
 				view.maxWidth = '100px';
 
-				expect( ungroupedItems ).to.have.length( 5 );
-				expect( groupedItems ).to.have.length( 0 );
+				expect( ungroupedItems ).toHaveLength( 5 );
+				expect( groupedItems ).toHaveLength( 0 );
 			} );
 
 			it( 'should queue the update of the grouped items state when invisible (and execute it when visible again)', () => {
@@ -1465,8 +1463,8 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				expect( ungroupedItems ).to.have.length( 1 );
-				expect( groupedItems ).to.have.length( 4 );
+				expect( ungroupedItems ).toHaveLength( 1 );
+				expect( groupedItems ).toHaveLength( 4 );
 
 				view.element.style.display = 'none';
 
@@ -1478,8 +1476,8 @@ describe( 'ToolbarView', () => {
 				// Response to this change will be queued.
 				view.maxWidth = '500px';
 
-				expect( ungroupedItems ).to.have.length( 1 );
-				expect( groupedItems ).to.have.length( 4 );
+				expect( ungroupedItems ).toHaveLength( 1 );
+				expect( groupedItems ).toHaveLength( 4 );
 
 				// The queued items state should happen after that.
 				view.element.style.display = 'flex';
@@ -1489,12 +1487,12 @@ describe( 'ToolbarView', () => {
 					contentRect: new Rect( view.element )
 				} ] );
 
-				expect( ungroupedItems ).to.have.length( 5 );
-				expect( groupedItems ).to.have.length( 0 );
+				expect( ungroupedItems ).toHaveLength( 5 );
+				expect( groupedItems ).toHaveLength( 0 );
 			} );
 
 			it( 'should fire the "groupedItemsUpdate" event on the toolbar when some item is grouped or ungrouped', () => {
-				const updateSpy = sinon.spy();
+				const updateSpy = vi.fn();
 
 				view.on( 'groupedItemsUpdate', updateSpy );
 
@@ -1511,7 +1509,7 @@ describe( 'ToolbarView', () => {
 					contentRect: new Rect( view.element )
 				} ] );
 
-				sinon.assert.calledOnce( updateSpy );
+				expect( updateSpy ).toHaveBeenCalledOnce();
 
 				// This 10px is not enough to ungroup an item.
 				view.element.style.width = '210px';
@@ -1521,7 +1519,7 @@ describe( 'ToolbarView', () => {
 					contentRect: new Rect( view.element )
 				} ] );
 
-				sinon.assert.calledOnce( updateSpy );
+				expect( updateSpy ).toHaveBeenCalledOnce();
 
 				// But this is not enough to ungroup some items.
 				view.element.style.width = '300px';
@@ -1531,7 +1529,7 @@ describe( 'ToolbarView', () => {
 					contentRect: new Rect( view.element )
 				} ] );
 
-				sinon.assert.calledTwice( updateSpy );
+				expect( updateSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 		} );
 
@@ -1549,7 +1547,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemC );
 				view.items.add( itemD );
 
-				sinon.spy( groupedItemsDropdown, 'destroy' );
+				vi.spyOn( groupedItemsDropdown, 'destroy' );
 
 				view.element.style.width = '500px';
 
@@ -1557,7 +1555,7 @@ describe( 'ToolbarView', () => {
 				view._behavior._updateGrouping();
 
 				view.destroy();
-				sinon.assert.calledOnce( groupedItemsDropdown.destroy );
+				expect( groupedItemsDropdown.destroy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should destroy the #resizeObserver', () => {
@@ -1573,10 +1571,10 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemC );
 				view.items.add( itemD );
 
-				sinon.spy( view._behavior.resizeObserver, 'destroy' );
+				vi.spyOn( view._behavior.resizeObserver, 'destroy' );
 
 				view.destroy();
-				sinon.assert.calledOnce( view._behavior.resizeObserver.destroy );
+				expect( view._behavior.resizeObserver.destroy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -1587,9 +1585,9 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				expect( view.children.has( groupedItemsDropdown ) ).to.be.true;
+				expect( view.children.has( groupedItemsDropdown ) ).toBe( true );
 				expect( groupedItemsDropdown.element.classList.contains( 'ck-toolbar__grouped-dropdown' ) );
-				expect( groupedItemsDropdown.buttonView.label ).to.equal( 'Show more items' );
+				expect( groupedItemsDropdown.buttonView.label ).toBe( 'Show more items' );
 			} );
 
 			it( 'tooltip has the proper position depending on the UI language direction (LTR UI)', () => {
@@ -1597,7 +1595,7 @@ describe( 'ToolbarView', () => {
 				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
 				view.render();
 
-				expect( view._behavior.groupedItemsDropdown.buttonView.tooltipPosition ).to.equal( 'sw' );
+				expect( view._behavior.groupedItemsDropdown.buttonView.tooltipPosition ).toBe( 'sw' );
 
 				view.destroy();
 			} );
@@ -1607,7 +1605,7 @@ describe( 'ToolbarView', () => {
 				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
 				view.render();
 
-				expect( view._behavior.groupedItemsDropdown.buttonView.tooltipPosition ).to.equal( 'se' );
+				expect( view._behavior.groupedItemsDropdown.buttonView.tooltipPosition ).toBe( 'se' );
 
 				view.destroy();
 			} );
@@ -1621,7 +1619,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 
 				expect( groupedItemsDropdown.toolbarView.items.map( i => i ) )
-					.to.have.ordered.members( groupedItems.map( i => i ) );
+					.toEqual( groupedItems.map( i => i ) );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/5608
@@ -1630,7 +1628,7 @@ describe( 'ToolbarView', () => {
 				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
 				view.render();
 
-				expect( view._behavior.groupedItemsDropdown.panelPosition ).to.equal( 'sw' );
+				expect( view._behavior.groupedItemsDropdown.panelPosition ).toBe( 'sw' );
 
 				view.destroy();
 			} );
@@ -1641,7 +1639,7 @@ describe( 'ToolbarView', () => {
 				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
 				view.render();
 
-				expect( view._behavior.groupedItemsDropdown.panelPosition ).to.equal( 'se' );
+				expect( view._behavior.groupedItemsDropdown.panelPosition ).toBe( 'se' );
 
 				view.destroy();
 			} );
@@ -1657,7 +1655,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				expect( view._behavior.groupedItems ).to.have.length( 1 );
+				expect( view._behavior.groupedItems ).toHaveLength( 1 );
 			} );
 
 			it( 'considers the left padding of the toolbar (RTL UI)', () => {
@@ -1683,7 +1681,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				expect( view._behavior.groupedItems ).to.have.length( 1 );
+				expect( view._behavior.groupedItems ).toHaveLength( 1 );
 
 				view.destroy();
 				view.element.remove();
@@ -1691,8 +1689,24 @@ describe( 'ToolbarView', () => {
 		} );
 
 		describe( 'focus management', () => {
+			it( 'should not add non-focusable items to focusables', () => {
+				view.element.style.width = '300px';
+
+				const itemA = focusable();
+				const separator = new ToolbarSeparatorView();
+
+				view.items.add( itemA );
+
+				// Add a non-focusable item directly to ungroupedItems to verify _updateFocusCyclableItems
+				// skips items without a focus() method.
+				view._behavior.ungroupedItems.add( separator );
+
+				expect( view.focusables.map( i => i ) ).toEqual( [ itemA ] );
+				expect( view.focusables.map( i => i ) ).not.toContain( separator );
+			} );
+
 			it( '#focus() focuses the dropdown when it is the only focusable', () => {
-				sinon.spy( groupedItemsDropdown, 'focus' );
+				vi.spyOn( groupedItemsDropdown, 'focus' );
 				view.element.style.width = '10px';
 
 				const itemA = focusable();
@@ -1701,14 +1715,14 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemA );
 				view.items.add( itemB );
 
-				expect( view.focusables.map( i => i ) ).to.have.ordered.members( [ groupedItemsDropdown ] );
+				expect( view.focusables.map( i => i ) ).toEqual( [ groupedItemsDropdown ] );
 
 				view.focus();
-				sinon.assert.calledOnce( groupedItemsDropdown.focus );
+				expect( groupedItemsDropdown.focus ).toHaveBeenCalledOnce();
 			} );
 
 			it( '#focusLast() focuses the dropdown when present', () => {
-				sinon.spy( groupedItemsDropdown, 'focus' );
+				vi.spyOn( groupedItemsDropdown, 'focus' );
 				view.element.style.width = '200px';
 
 				const itemA = focusable();
@@ -1719,11 +1733,11 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemB );
 				view.items.add( itemC );
 
-				expect( view.focusables.map( i => i ) ).to.have.ordered.members( [ itemA, groupedItemsDropdown ] );
+				expect( view.focusables.map( i => i ) ).toEqual( [ itemA, groupedItemsDropdown ] );
 
 				view.focusLast();
 
-				sinon.assert.calledOnce( groupedItemsDropdown.focus );
+				expect( groupedItemsDropdown.focus ).toHaveBeenCalledOnce();
 
 				view.element.remove();
 			} );
@@ -1731,21 +1745,21 @@ describe( 'ToolbarView', () => {
 
 		describe( '#switchBehavior()', () => {
 			it( 'should do nothing if changed to `dynamic`', () => {
-				const spy = sinon.spy( view._behavior, 'render' );
+				const spy = vi.spyOn( view._behavior, 'render' );
 
 				view.switchBehavior( 'dynamic' );
 
-				expect( view.isGrouping ).to.be.true;
-				sinon.assert.notCalled( spy );
+				expect( view.isGrouping ).toBe( true );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should replace #_behavior with static layout', () => {
-				const spy = sinon.spy( view._behavior, 'destroy' );
+				const spy = vi.spyOn( view._behavior, 'destroy' );
 
 				view.switchBehavior( 'static' );
 
-				expect( view.isGrouping ).to.be.false;
-				sinon.assert.calledOnce( spy );
+				expect( view.isGrouping ).toBe( false );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );
@@ -1755,7 +1769,7 @@ function focusable() {
 	const view = nonFocusable();
 
 	view.label = 'focusable';
-	view.focus = sinon.stub().callsFake( () => {
+	view.focus = vi.fn().mockImplementation( () => {
 		view.element.focus();
 	} );
 
@@ -1810,7 +1824,7 @@ function namedFactory( name ) {
 function getArrowKeyData( arrow ) {
 	return {
 		keyCode: keyCodes[ arrow ],
-		preventDefault: sinon.spy(),
-		stopPropagation: sinon.spy()
+		preventDefault: vi.fn(),
+		stopPropagation: vi.fn()
 	};
 }

@@ -30,6 +30,31 @@ import { type ViewNode } from '../view/node.js';
 import { type ViewText } from '../view/text.js';
 import { type ViewDomConverter } from '../view/domconverter.js';
 
+type GetViewDataOptions = {
+	withoutSelection?: boolean;
+	rootName?: string;
+	showType?: boolean;
+	showPriority?: boolean;
+	renderUIElements?: boolean;
+	renderRawElements?: boolean;
+	domConverter?: ViewDomConverter;
+	skipListItemIds?: boolean;
+};
+
+type GetViewData = {
+	( view: EditingView, options?: GetViewDataOptions ): string;
+	_stringify: typeof _stringifyView;
+};
+
+type SetViewDataOptions = {
+	rootName?: string;
+};
+
+type SetViewData = {
+	( view: EditingView, data: string, options?: SetViewDataOptions ): void;
+	_parse: typeof _parseView;
+};
+
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
 const TEXT_RANGE_START_TOKEN = '{';
@@ -70,44 +95,39 @@ const domConverterStub: ViewDomConverter = {
  * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns The stringified data.
  */
-export function _getViewData(
-	view: EditingView,
-	options: {
-		withoutSelection?: boolean;
-		rootName?: string;
-		showType?: boolean;
-		showPriority?: boolean;
-		renderUIElements?: boolean;
-		renderRawElements?: boolean;
-		domConverter?: ViewDomConverter;
-		skipListItemIds?: boolean;
-	} = {}
-): string {
-	if ( !( view instanceof EditingView ) ) {
-		throw new TypeError( 'View needs to be an instance of module:engine/view/view~EditingView.' );
-	}
+export const _getViewData: GetViewData = /* #__PURE__ */ ( () => {
+	const getViewData = function(
+		view: EditingView,
+		options: GetViewDataOptions = {}
+	): string {
+		if ( !( view instanceof EditingView ) ) {
+			throw new TypeError( 'View needs to be an instance of module:engine/view/view~EditingView.' );
+		}
 
-	const document = view.document;
-	const withoutSelection = !!options.withoutSelection;
-	const rootName = options.rootName || 'main';
-	const root = document.getRoot( rootName )!;
-	const stringifyOptions = {
-		showType: options.showType,
-		showPriority: options.showPriority,
-		renderUIElements: options.renderUIElements,
-		renderRawElements: options.renderRawElements,
-		ignoreRoot: true,
-		domConverter: options.domConverter,
-		skipListItemIds: options.skipListItemIds
-	};
+		const document = view.document;
+		const withoutSelection = !!options.withoutSelection;
+		const rootName = options.rootName || 'main';
+		const root = document.getRoot( rootName )!;
+		const stringifyOptions = {
+			showType: options.showType,
+			showPriority: options.showPriority,
+			renderUIElements: options.renderUIElements,
+			renderRawElements: options.renderRawElements,
+			ignoreRoot: true,
+			domConverter: options.domConverter,
+			skipListItemIds: options.skipListItemIds
+		};
 
-	return withoutSelection ?
-		_getViewData._stringify( root, null, stringifyOptions ) :
-		_getViewData._stringify( root, document.selection, stringifyOptions );
-}
+		return withoutSelection ?
+			getViewData._stringify( root, null, stringifyOptions ) :
+			getViewData._stringify( root, document.selection, stringifyOptions );
+	} as GetViewData;
 
-// Set stringify as getData private method - needed for testing/spying.
-_getViewData._stringify = _stringifyView;
+	// Set stringify as getData private method - needed for testing/spying.
+	getViewData._stringify = _stringifyView;
+
+	return getViewData;
+} )();
 
 /**
  * Sets the content of a view {@link module:engine/view/document~ViewDocument document} provided as an HTML-like string.
@@ -116,30 +136,34 @@ _getViewData._stringify = _stringifyView;
  * @param options.rootName The root name where _parseViewd data will be stored. If not provided,
  * the default `main` name will be used.
  */
-export function _setViewData(
-	view: EditingView,
-	data: string,
-	options: { rootName?: string } = {}
-): void {
-	if ( !( view instanceof EditingView ) ) {
-		throw new TypeError( 'View needs to be an instance of module:engine/view/view~EditingView.' );
-	}
-
-	const document = view.document;
-	const rootName = options.rootName || 'main';
-	const root = document.getRoot( rootName )!;
-
-	view.change( writer => {
-		const result: any = _setViewData._parse( data, { rootElement: root } );
-
-		if ( result.view && result.selection ) {
-			writer.setSelection( result.selection );
+export const _setViewData: SetViewData = /* #__PURE__ */ ( () => {
+	const setViewData = function(
+		view: EditingView,
+		data: string,
+		options: SetViewDataOptions = {}
+	): void {
+		if ( !( view instanceof EditingView ) ) {
+			throw new TypeError( 'View needs to be an instance of module:engine/view/view~EditingView.' );
 		}
-	} );
-}
 
-// Set _parseView as _setViewData private method - needed for testing/spying.
-_setViewData._parse = _parseView;
+		const document = view.document;
+		const rootName = options.rootName || 'main';
+		const root = document.getRoot( rootName )!;
+
+		view.change( writer => {
+			const result: any = setViewData._parse( data, { rootElement: root } );
+
+			if ( result.view && result.selection ) {
+				writer.setSelection( result.selection );
+			}
+		} );
+	} as SetViewData;
+
+	// Set _parseView as _setViewData private method - needed for testing/spying.
+	setViewData._parse = _parseView;
+
+	return setViewData;
+} )();
 
 /**
  * Converts view elements to HTML-like string representation.

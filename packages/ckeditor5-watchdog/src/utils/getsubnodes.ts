@@ -10,7 +10,7 @@
 /**
  * @internal
  */
-export function getSubNodes( head: unknown, excludedProperties = new Set() ): Set<unknown> {
+export function getSubNodes( head: unknown, excludedProperties: Set<unknown> = new Set() ): Set<unknown> {
 	const nodes = [ head ];
 
 	// @if CK_DEBUG_WATCHDOG // const prevNodeMap = new Map();

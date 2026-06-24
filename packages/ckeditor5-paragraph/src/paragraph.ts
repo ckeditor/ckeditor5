@@ -106,7 +106,7 @@ export class Paragraph extends Plugin {
 	 * Note: The `<td>` containing two `<li>` elements was ignored as the innermost paragraph-like elements
 	 * have a priority upon conversion.
 	 */
-	public static paragraphLikeElements = new Set( [
+	public static paragraphLikeElements: Set<string> = new Set( [
 		'blockquote',
 		'dd',
 		'div',

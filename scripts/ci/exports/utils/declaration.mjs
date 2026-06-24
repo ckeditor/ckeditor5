@@ -17,7 +17,8 @@ export class Declaration {
 		ambient = false,
 		fileName,
 		lineNumber,
-		baseClasses = []
+		baseClasses = [],
+		mixinBaseHelperCandidate = false
 	} ) {
 		this.localName = localName;
 		this.type = type;
@@ -30,9 +31,11 @@ export class Declaration {
 		this.fileName = fileName;
 		this.lineNumber = lineNumber;
 		this.baseClasses = baseClasses;
+		this.mixinBaseHelperCandidate = mixinBaseHelperCandidate;
+		this.isMixinBaseHelper = false;
 	}
 
-	static create( { localName, type, internal, node, baseClasses = [] } ) {
+	static create( { localName, type, internal, node, baseClasses = [], mixinBaseHelperCandidate = false } ) {
 		const explicitInternal = isInternalNode( node );
 
 		return new Declaration( {
@@ -43,7 +46,8 @@ export class Declaration {
 			ambient: node.declare === true,
 			fileName: node.loc.filename,
 			lineNumber: node.loc.start.line,
-			baseClasses
+			baseClasses,
+			mixinBaseHelperCandidate
 		} );
 	}
 

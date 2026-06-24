@@ -3,21 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll, afterAll, beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { IconFontSize } from '@ckeditor/ckeditor5-icons';
 import { FontSizeEditing } from '../../src/fontsize/fontsizeediting.js';
 import { FontSizeUI } from '../../src/fontsize/fontsizeui.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
 import { normalizeOptions } from '../../src/fontsize/utils.js';
 
 describe( 'FontSizeUI', () => {
 	let editor, command, element;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
-	before( () => {
+	beforeAll( () => {
 		addTranslations( 'en', {
 			'Font Size': 'Font Size',
 			'Default': 'Default',
@@ -37,7 +39,7 @@ describe( 'FontSizeUI', () => {
 		} );
 	} );
 
-	after( () => {
+	afterAll( () => {
 		_clearTranslations();
 	} );
 
@@ -91,12 +93,12 @@ describe( 'FontSizeUI', () => {
 		} );
 
 		it( 'should focus view after command execution', () => {
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			dropdown.commandName = 'fontSize';
 			dropdown.fire( 'execute' );
 
-			sinon.assert.calledOnce( focusSpy );
+			expect( focusSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should activate current option in dropdown', () => {
@@ -345,14 +347,14 @@ describe( 'FontSizeUI', () => {
 			} );
 
 			it( 'should focus view after command execution', () => {
-				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-				const executeSpy = sinon.stub( editor, 'execute' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
+				const executeSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 				buttonSmall.fire( 'execute' );
 
-				sinon.assert.calledOnce( focusSpy );
-				sinon.assert.calledOnce( executeSpy );
-				sinon.assert.calledWithExactly( executeSpy.firstCall, 'fontSize', {
+				expect( focusSpy ).toHaveBeenCalledOnce();
+				expect( executeSpy ).toHaveBeenCalledOnce();
+				expect( executeSpy ).toHaveBeenNthCalledWith( 1, 'fontSize', {
 					value: 'small'
 				} );
 			} );

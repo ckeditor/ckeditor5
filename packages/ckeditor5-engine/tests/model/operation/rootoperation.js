@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { RootOperation } from '../../../src/model/operation/rootoperation.js';
 
@@ -18,81 +19,81 @@ describe( 'RootOperation', () => {
 		it( 'should be addRoot for adding a root', () => {
 			const op = new RootOperation( 'new', '$root', true, doc, doc.version );
 
-			expect( op.type ).to.equal( 'addRoot' );
+			expect( op.type ).toBe( 'addRoot' );
 		} );
 
 		it( 'should be detachRoot for detaching a root', () => {
 			const op = new RootOperation( 'new', '$root', false, doc, doc.version );
 
-			expect( op.type ).to.equal( 'detachRoot' );
+			expect( op.type ).toBe( 'detachRoot' );
 		} );
 	} );
 
 	it( 'should create a detached root in the model as the operation is created, if the model does not have such root', () => {
-		expect( model.document.getRoot( 'new' ) ).to.be.null;
+		expect( model.document.getRoot( 'new' ) ).toBeNull();
 
 		// eslint-disable-next-line
 		new RootOperation( 'new', '$root', true, doc, doc.version );
 
 		const root = model.document.getRoot( 'new' );
-		expect( root ).not.to.be.null;
-		expect( root.isAttached() ).to.be.false;
+		expect( root ).not.toBeNull();
+		expect( root.isAttached() ).toBe( false );
 
 		expect( () => {
 			// Should not throw because the operation should not try to create the root again.
 			// eslint-disable-next-line
 			new RootOperation( 'new', '$root', true, doc, doc.version );
-		} ).not.to.throw();
+		} ).not.toThrow();
 	} );
 
 	it( 'should return the root element on affectedSelectable', () => {
 		const op = new RootOperation( 'new', '$root', true, doc, doc.version );
-		expect( op.affectedSelectable ).to.equal( doc.getRoot( 'new' ) );
+		expect( op.affectedSelectable ).toBe( doc.getRoot( 'new' ) );
 	} );
 
 	it( 'should attach a model in the root', () => {
 		const op = new RootOperation( 'new', '$root', true, doc, doc.version );
 		const root = model.document.getRoot( 'new' );
 
-		expect( root.isAttached() ).to.be.false;
+		expect( root.isAttached() ).toBe( false );
 
 		model.applyOperation( op );
 
-		expect( root.isAttached() ).to.be.true;
+		expect( root.isAttached() ).toBe( true );
 	} );
 
 	it( 'should detach a model in the root', () => {
 		const root = doc.createRoot( '$root', 'new' );
 
-		expect( root.isAttached() ).to.be.true;
+		expect( root.isAttached() ).toBe( true );
 
 		const op = new RootOperation( 'new', '$root', false, doc, doc.version );
 
 		model.applyOperation( op );
 
-		expect( root.isAttached() ).to.be.false;
+		expect( root.isAttached() ).toBe( false );
 	} );
 
 	it( 'should create a RootOperation as a reverse', () => {
 		const operation = new RootOperation( 'new', '$root', true, doc, doc.version );
 		const reverse = operation.getReversed();
 
-		expect( reverse ).to.be.an.instanceof( RootOperation );
-		expect( reverse.baseVersion ).to.equal( doc.version + 1 );
-		expect( reverse.rootName ).to.equal( 'new' );
-		expect( reverse.elementName ).to.equal( '$root' );
-		expect( reverse.isAdd ).to.equal( false );
+		expect( reverse ).toBeInstanceOf( RootOperation );
+		expect( reverse.baseVersion ).toBe( doc.version + 1 );
+		expect( reverse.rootName ).toBe( 'new' );
+		expect( reverse.elementName ).toBe( '$root' );
+		expect( reverse.isAdd ).toBe( false );
 	} );
 
 	it( 'should create a correct operation when cloned', () => {
 		const operation = new RootOperation( 'new', '$root', true, doc, doc.version );
 		const clone = operation.clone();
 
-		expect( clone ).to.be.an.instanceof( RootOperation );
-		expect( clone.baseVersion ).to.equal( doc.version );
-		expect( clone.rootName ).to.equal( 'new' );
-		expect( clone.elementName ).to.equal( '$root' );
-		expect( clone.isAdd ).to.equal( true );
+		expect( clone ).toBeInstanceOf( RootOperation );
+		expect( clone.baseVersion ).toBe( doc.version );
+		expect( clone.rootName ).toBe( 'new' );
+		expect( clone.elementName ).toBe( '$root' );
+		expect( clone.isAdd ).toBe( true );
 	} );
 
 	describe( 'toJSON', () => {
@@ -100,8 +101,8 @@ describe( 'RootOperation', () => {
 			const op = new RootOperation( 'new', '$root', true, doc, doc.version );
 			const serialized = op.toJSON();
 
-			expect( serialized.__className ).to.equal( 'RootOperation' );
-			expect( serialized ).to.deep.equal( {
+			expect( serialized.__className ).toBe( 'RootOperation' );
+			expect( serialized ).toEqual( {
 				__className: 'RootOperation',
 				baseVersion: 0,
 				rootName: 'new',
@@ -117,7 +118,7 @@ describe( 'RootOperation', () => {
 			const serialized = op.toJSON();
 			const deserialized = RootOperation.fromJSON( serialized, doc );
 
-			expect( deserialized ).to.deep.equal( op );
+			expect( deserialized ).toEqual( op );
 		} );
 	} );
 } );

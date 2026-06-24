@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ViewContainerElement, ViewDowncastWriter, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
@@ -30,20 +31,20 @@ describe( 'legacy utils', () => {
 		it( 'should create ViewContainerElement', () => {
 			const item = createViewListItemElement( writer );
 
-			expect( item ).to.be.instanceof( ViewContainerElement );
+			expect( item ).toBeInstanceOf( ViewContainerElement );
 		} );
 
 		it( 'should have li name', () => {
 			const item = createViewListItemElement( writer );
 
-			expect( item.name ).to.equal( 'li' );
+			expect( item.name ).toBe( 'li' );
 		} );
 
 		describe( 'getFillerOffset', () => {
 			it( 'should return 0 if item is empty', () => {
 				const item = createViewListItemElement( writer );
 
-				expect( item.getFillerOffset() ).to.equal( 0 );
+				expect( item.getFillerOffset() ).toBe( 0 );
 			} );
 
 			it( 'should return 0 if item has only lists as children', () => {
@@ -68,7 +69,7 @@ describe( 'legacy utils', () => {
 				const outerListItem = createViewListItemElement( writer );
 				writer.insert( writer.createPositionAt( outerListItem, 0 ), innerList );
 
-				expect( outerListItem.getFillerOffset() ).to.equal( 0 );
+				expect( outerListItem.getFillerOffset() ).toBe( 0 );
 			} );
 
 			it( 'should return null if item has non-list contents', () => {
@@ -79,7 +80,7 @@ describe( 'legacy utils', () => {
 					writer.createText( 'foo' )
 				);
 
-				expect( item.getFillerOffset() ).to.be.null;
+				expect( item.getFillerOffset() ).toBeNull();
 			} );
 
 			// Block filler is required after the `<br>` element if the element is the last child in the container.
@@ -90,7 +91,7 @@ describe( 'legacy utils', () => {
 
 					writer.insert( writer.createPositionAt( item, 0 ), writer.createEmptyElement( 'br' ) );
 
-					expect( item.getFillerOffset() ).to.equal( 1 );
+					expect( item.getFillerOffset() ).toBe( 1 );
 				} );
 
 				it( 'returns offset of the last child which is the <br> element (2)', () => {
@@ -99,7 +100,7 @@ describe( 'legacy utils', () => {
 					writer.insert( writer.createPositionAt( item, 0 ), writer.createEmptyElement( 'br' ) );
 					writer.insert( writer.createPositionAt( item, 1 ), writer.createEmptyElement( 'br' ) );
 
-					expect( item.getFillerOffset() ).to.equal( 2 );
+					expect( item.getFillerOffset() ).toBe( 2 );
 				} );
 
 				it( 'always returns the last <br> element in the container', () => {
@@ -109,7 +110,7 @@ describe( 'legacy utils', () => {
 					writer.insert( writer.createPositionAt( item, 1 ), writer.createEmptyElement( 'br' ) );
 					writer.insert( writer.createPositionAt( item, 2 ), writer.createEmptyElement( 'br' ) );
 
-					expect( item.getFillerOffset() ).to.equal( 3 );
+					expect( item.getFillerOffset() ).toBe( 3 );
 				} );
 
 				it( 'works fine with non-empty container with multi <br> elements', () => {
@@ -120,7 +121,7 @@ describe( 'legacy utils', () => {
 					writer.insert( writer.createPositionAt( item, 2 ), writer.createText( 'bar' ) );
 					writer.insert( writer.createPositionAt( item, 3 ), writer.createEmptyElement( 'br' ) );
 
-					expect( item.getFillerOffset() ).to.equal( 4 );
+					expect( item.getFillerOffset() ).toBe( 4 );
 				} );
 
 				it( 'ignores the ui elements', () => {
@@ -129,7 +130,7 @@ describe( 'legacy utils', () => {
 					writer.insert( writer.createPositionAt( item, 0 ), writer.createUIElement( 'span' ) );
 					writer.insert( writer.createPositionAt( item, 1 ), writer.createEmptyElement( 'br' ) );
 
-					expect( item.getFillerOffset() ).to.equal( 2 );
+					expect( item.getFillerOffset() ).toBe( 2 );
 				} );
 
 				it( 'empty element must be the <br> element', () => {
@@ -140,7 +141,7 @@ describe( 'legacy utils', () => {
 						writer.createEmptyElement( 'img' )
 					);
 
-					expect( item.getFillerOffset() ).to.be.null;
+					expect( item.getFillerOffset() ).toBeNull();
 				} );
 			} );
 		} );
@@ -175,7 +176,7 @@ describe( 'legacy utils', () => {
 				listIndent: 0
 			} );
 
-			expect( foundElement ).to.equal( document.getRoot().getChild( 1 ) );
+			expect( foundElement ).toBe( document.getRoot().getChild( 1 ) );
 		} );
 
 		it( 'should return the passed element if it matches the criteria (sameIndent, listIndent=0, direction="forward")', () => {
@@ -192,7 +193,7 @@ describe( 'legacy utils', () => {
 				direction: 'forward'
 			} );
 
-			expect( foundElement ).to.equal( document.getRoot().getChild( 1 ) );
+			expect( foundElement ).toBe( document.getRoot().getChild( 1 ) );
 		} );
 
 		it( 'should return the first listItem that matches criteria (sameIndent, listIndent=1)', () => {
@@ -212,7 +213,7 @@ describe( 'legacy utils', () => {
 				listIndent: 1
 			} );
 
-			expect( foundElement ).to.equal( document.getRoot().getChild( 3 ) );
+			expect( foundElement ).toBe( document.getRoot().getChild( 3 ) );
 		} );
 
 		it( 'should return the first listItem that matches criteria (sameIndent, listIndent=1, direction="forward")', () => {
@@ -231,7 +232,7 @@ describe( 'legacy utils', () => {
 				direction: 'forward'
 			} );
 
-			expect( foundElement ).to.equal( document.getRoot().getChild( 3 ) );
+			expect( foundElement ).toBe( document.getRoot().getChild( 3 ) );
 		} );
 
 		it( 'should return the first listItem that matches criteria (smallerIndent, listIndent=1)', () => {
@@ -249,7 +250,7 @@ describe( 'legacy utils', () => {
 				listIndent: 1
 			} );
 
-			expect( foundElement ).to.equal( document.getRoot().getChild( 2 ) );
+			expect( foundElement ).toBe( document.getRoot().getChild( 2 ) );
 		} );
 
 		it( 'should return the first listItem that matches criteria (smallerIndent, listIndent=1, direction="forward")', () => {
@@ -268,7 +269,7 @@ describe( 'legacy utils', () => {
 				direction: 'forward'
 			} );
 
-			expect( foundElement ).to.equal( document.getRoot().getChild( 4 ) );
+			expect( foundElement ).toBe( document.getRoot().getChild( 4 ) );
 		} );
 	} );
 
@@ -297,7 +298,7 @@ describe( 'legacy utils', () => {
 				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
 			);
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).toEqual( [
 				document.getRoot().getChild( 0 ),
 				document.getRoot().getChild( 1 ),
 				document.getRoot().getChild( 2 )
@@ -313,7 +314,7 @@ describe( 'legacy utils', () => {
 				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
 			);
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).toEqual( [
 				document.getRoot().getChild( 2 ),
 				document.getRoot().getChild( 3 ),
 				document.getRoot().getChild( 4 )
@@ -330,7 +331,7 @@ describe( 'legacy utils', () => {
 				'<listItem listType="bulleted" listIndent="0">4.[].</listItem>'
 			);
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).toEqual( [
 				document.getRoot().getChild( 3 ),
 				document.getRoot().getChild( 4 ),
 				document.getRoot().getChild( 5 )
@@ -347,7 +348,7 @@ describe( 'legacy utils', () => {
 				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
 			);
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).toEqual( [
 				document.getRoot().getChild( 0 ),
 				document.getRoot().getChild( 1 ),
 				document.getRoot().getChild( 2 )
@@ -364,7 +365,7 @@ describe( 'legacy utils', () => {
 				'<listItem listType="bulleted" listIndent="0">[]4.</listItem>'
 			);
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).toEqual( [
 				document.getRoot().getChild( 4 ),
 				document.getRoot().getChild( 5 )
 			] );
@@ -380,7 +381,7 @@ describe( 'legacy utils', () => {
 				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
 			);
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).toEqual( [
 				document.getRoot().getChild( 0 ),
 				document.getRoot().getChild( 1 ),
 				document.getRoot().getChild( 2 )
@@ -397,7 +398,7 @@ describe( 'legacy utils', () => {
 				'<listItem listType="bulleted" listStyle="disc" listIndent="0">[]4.</listItem>'
 			);
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).toEqual( [
 				document.getRoot().getChild( 4 ),
 				document.getRoot().getChild( 5 )
 			] );
@@ -413,7 +414,7 @@ describe( 'legacy utils', () => {
 				'<listItem listType="bulleted" listStyle="disc" listIndent="0">4.</listItem>'
 			);
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).toEqual( [
 				document.getRoot().getChild( 0 ),
 				document.getRoot().getChild( 1 ),
 				document.getRoot().getChild( 2 )
@@ -433,7 +434,7 @@ describe( 'legacy utils', () => {
 				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
 			);
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).toEqual( [
 				document.getRoot().getChild( 0 ),
 				document.getRoot().getChild( 1 ),
 				document.getRoot().getChild( 2 ),
@@ -453,7 +454,7 @@ describe( 'legacy utils', () => {
 				'<listItem listType="bulleted" listIndent="0">3.</listItem>'
 			);
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).toEqual( [
 				document.getRoot().getChild( 2 ),
 				document.getRoot().getChild( 3 ),
 				document.getRoot().getChild( 4 )
@@ -474,7 +475,7 @@ describe( 'legacy utils', () => {
 
 			const blockQuoteElement = document.getRoot().getChild( 2 );
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).toEqual( [
 				blockQuoteElement.getChild( 0 )
 			] );
 		} );
@@ -493,9 +494,33 @@ describe( 'legacy utils', () => {
 
 			const blockQuoteElement = document.getRoot().getChild( 2 );
 
-			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).toEqual( [
 				blockQuoteElement.getChild( 0 ),
 				blockQuoteElement.getChild( 1 )
+			] );
+		} );
+
+		it( 'should break searching when spotted a listItem with different listReversed attribute', () => {
+			_setModelData( model,
+				'<listItem listType="numbered" listIndent="0" listReversed="false">0.</listItem>' +
+				'<listItem listType="numbered" listIndent="0" listReversed="true">[]1.</listItem>' +
+				'<listItem listType="numbered" listIndent="0" listReversed="false">2.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).toEqual( [
+				document.getRoot().getChild( 1 )
+			] );
+		} );
+
+		it( 'should break searching when spotted a listItem with different listStart attribute', () => {
+			_setModelData( model,
+				'<listItem listType="numbered" listIndent="0" listStart="1">0.</listItem>' +
+				'<listItem listType="numbered" listIndent="0" listStart="5">[]1.</listItem>' +
+				'<listItem listType="numbered" listIndent="0" listStart="5">2.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).toEqual( [
+				document.getRoot().getChild( 1 )
 			] );
 		} );
 	} );
@@ -517,7 +542,7 @@ describe( 'legacy utils', () => {
 
 		for ( const [ style, type ] of testData ) {
 			it( `shoud return "${ type }" for "${ style }" style`, () => {
-				expect( getListTypeFromListStyleType( style ) ).to.equal( type );
+				expect( getListTypeFromListStyleType( style ) ).toBe( type );
 			} );
 		}
 	} );

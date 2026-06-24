@@ -17,6 +17,7 @@ import type { ViewUpcastWriter, ViewDocumentFragment } from '@ckeditor/ckeditor5
  */
 export function removeGoogleSheetsTag( documentFragment: ViewDocumentFragment, writer: ViewUpcastWriter ): void {
 	for ( const child of documentFragment.getChildren() ) {
+		/* v8 ignore else -- @preserve */
 		if ( child.is( 'element', 'google-sheets-html-origin' ) ) {
 			const childIndex = documentFragment.getChildIndex( child );
 

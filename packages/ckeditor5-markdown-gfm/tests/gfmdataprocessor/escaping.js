@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { MarkdownGfmDataProcessor } from '../../src/gfmdataprocessor.js';
 import { _stringifyView, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { testDataProcessor } from '../../tests/_utils/utils.js';
@@ -41,32 +42,32 @@ describe( 'MarkdownGfmDataProcessor', () => {
 				it( `should escape ${ key }`, () => {
 					const documentFragment = dataProcessor.toView( test );
 
-					expect( _stringifyView( documentFragment ) ).to.equal( `<p>${ result }</p>` );
+					expect( _stringifyView( documentFragment ) ).toEqual( `<p>${ result }</p>` );
 				} );
 
 				it( `should not escape ${ key } in code blocks`, () => {
 					const documentFragment = dataProcessor.toView( `	${ test }` );
 
-					expect( _stringifyView( documentFragment ) ).to.equal( `<pre><code>${ test }</code></pre>` );
+					expect( _stringifyView( documentFragment ) ).toEqual( `<pre><code>${ test }</code></pre>` );
 				} );
 
 				it( `should not escape ${ key } in code spans`, () => {
 					const documentFragment = dataProcessor.toView( '`' + test + '`' );
 
-					expect( _stringifyView( documentFragment ) ).to.equal( `<p><code>${ test }</code></p>` );
+					expect( _stringifyView( documentFragment ) ).toEqual( `<p><code>${ test }</code></p>` );
 				} );
 			}
 
 			it( 'should escape backtick', () => {
 				const documentFragment = dataProcessor.toView( '\\`' );
 
-				expect( _stringifyView( documentFragment ) ).to.equal( '<p>`</p>' );
+				expect( _stringifyView( documentFragment ) ).toEqual( '<p>`</p>' );
 			} );
 
 			it( 'should not escape backtick in code blocks', () => {
 				const documentFragment = dataProcessor.toView( '	\\`' );
 
-				expect( _stringifyView( documentFragment ) ).to.equal( '<pre><code>\\`</code></pre>' );
+				expect( _stringifyView( documentFragment ) ).toEqual( '<pre><code>\\`</code></pre>' );
 			} );
 		} );
 

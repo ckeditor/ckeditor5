@@ -7,9 +7,11 @@
  * @module widget/highlightstack
  */
 
-import { EmitterMixin, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import { EmitterMixin, type ArrayOrItem, type EmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
 
 import type { ViewDowncastWriter, DowncastHighlightDescriptor } from '@ckeditor/ckeditor5-engine';
+
+const WidgetHighlightStackBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
 
 /**
  * Class used to handle the correct order of highlights on elements.
@@ -22,7 +24,7 @@ import type { ViewDowncastWriter, DowncastHighlightDescriptor } from '@ckeditor/
  *
  * This way, highlight will be applied with the same rules it is applied on texts.
  */
-export class WidgetHighlightStack extends /* #__PURE__ */ EmitterMixin() {
+export class WidgetHighlightStack extends WidgetHighlightStackBase {
 	private readonly _stack: Array<DowncastHighlightDescriptor> = [];
 
 	/**

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { EditorUIView } from '@ckeditor/ckeditor5-ui';
 import { removeEditorBodyOrphans } from '../_utils/cleanup.js';
@@ -18,12 +19,12 @@ describe( 'cleanup util', () => {
 			}
 
 			// Body collection reuses its wrapper, hence 1.
-			expect( document.querySelectorAll( '.ck-body-wrapper' ) ).to.have.length( 1 );
+			expect( document.querySelectorAll( '.ck-body-wrapper' ) ).toHaveLength( 1 );
 
 			removeEditorBodyOrphans();
 
-			expect( document.querySelectorAll( '.ck-body-wrapper' ) ).to.have.length( 0 );
-			expect( document.querySelectorAll( '.ck-body' ) ).to.have.length( 0 );
+			expect( document.querySelectorAll( '.ck-body-wrapper' ) ).toHaveLength( 0 );
+			expect( document.querySelectorAll( '.ck-body' ) ).toHaveLength( 0 );
 		} );
 
 		// Right now, body collection should reuse its wrapper, but it doesn't cost us much to
@@ -37,7 +38,7 @@ describe( 'cleanup util', () => {
 
 			removeEditorBodyOrphans();
 
-			expect( document.querySelectorAll( '.ck-body-wrapper' ) ).to.have.length( 0 );
+			expect( document.querySelectorAll( '.ck-body-wrapper' ) ).toHaveLength( 0 );
 		} );
 	} );
 } );

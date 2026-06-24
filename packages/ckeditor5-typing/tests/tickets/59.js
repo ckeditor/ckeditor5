@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Typing } from '../../src/typing.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -42,7 +43,7 @@ describe( 'Bug ckeditor5-typing#59', () => {
 			editor.execute( 'delete' );
 		}
 
-		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+		expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
 	} );
 
 	// This is something that came to my mind after I worked on ckeditor/ckeditor5-engine#659.
@@ -58,6 +59,6 @@ describe( 'Bug ckeditor5-typing#59', () => {
 			editor.execute( 'bold' );
 		}
 
-		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+		expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
 	} );
 } );

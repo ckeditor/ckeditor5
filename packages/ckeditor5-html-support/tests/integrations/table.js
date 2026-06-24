@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Typing } from '@ckeditor/ckeditor5-typing';
@@ -46,15 +47,15 @@ describe( 'TableElementSupport', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TableElementSupport.isOfficialPlugin ).to.be.true;
+		expect( TableElementSupport.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TableElementSupport.isPremiumPlugin ).to.be.false;
+		expect( TableElementSupport.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be named', () => {
-		expect( editor.plugins.has( 'TableElementSupport' ) ).to.be.true;
+		expect( editor.plugins.has( 'TableElementSupport' ) ).toBe( true );
 	} );
 
 	it( 'should allow attributes', () => {
@@ -97,7 +98,7 @@ describe( 'TableElementSupport', () => {
 
 		editor.setData( expectedHtml );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table footerRows="1" headingRows="1" htmlFigureAttributes="(1)" htmlTableAttributes="(2)" ' +
 					'htmlTbodyAttributes="(3)" htmlTfootAttributes="(4)" htmlTheadAttributes="(5)">' +
@@ -255,7 +256,7 @@ describe( 'TableElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( expectedHtml );
+		expect( editor.getData() ).toBe( expectedHtml );
 	} );
 
 	it( 'should allow classes', () => {
@@ -298,7 +299,7 @@ describe( 'TableElementSupport', () => {
 
 		editor.setData( expectedHtml );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table footerRows="1" headingRows="1" htmlFigureAttributes="(1)" htmlTableAttributes="(2)" ' +
 					'htmlTbodyAttributes="(3)" htmlTfootAttributes="(4)" htmlTheadAttributes="(5)">' +
@@ -355,7 +356,7 @@ describe( 'TableElementSupport', () => {
 			}, {} )
 		} );
 
-		expect( editor.getData() ).to.equal( expectedHtml );
+		expect( editor.getData() ).toBe( expectedHtml );
 	} );
 
 	it( 'should allow styles', () => {
@@ -398,7 +399,7 @@ describe( 'TableElementSupport', () => {
 
 		editor.setData( expectedHtml );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table footerRows="1" headingRows="1" htmlFigureAttributes="(1)" htmlTableAttributes="(2)" ' +
 					'htmlTbodyAttributes="(3)" htmlTfootAttributes="(4)" htmlTheadAttributes="(5)">' +
@@ -457,7 +458,7 @@ describe( 'TableElementSupport', () => {
 			}, {} )
 		} );
 
-		expect( editor.getData() ).to.equal( expectedHtml );
+		expect( editor.getData() ).toBe( expectedHtml );
 	} );
 
 	it( 'should allow enabling only tbody attributes', () => {
@@ -483,7 +484,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table headingRows="1" ' +
 					'htmlTbodyAttributes="(1)">' +
@@ -507,7 +508,7 @@ describe( 'TableElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table>' +
 					'<thead>' +
@@ -548,7 +549,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table headingRows="1" ' +
 					'htmlTheadAttributes="(1)">' +
@@ -572,7 +573,7 @@ describe( 'TableElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table>' +
 					'<thead style="color:red;">' +
@@ -618,7 +619,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table footerRows="1" headingRows="1" ' +
 					'htmlTfootAttributes="(1)">' +
@@ -647,7 +648,7 @@ describe( 'TableElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table>' +
 					'<thead>' +
@@ -693,7 +694,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table headingRows="1" ' +
 					'htmlFigureAttributes="(1)">' +
@@ -717,7 +718,7 @@ describe( 'TableElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table" style="color:red;">' +
 				'<table>' +
 					'<thead>' +
@@ -779,7 +780,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table footerRows="1" headingRows="1">' +
 					'<tableRow>' +
@@ -830,7 +831,7 @@ describe( 'TableElementSupport', () => {
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table>' +
 					'<thead>' +
@@ -908,7 +909,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table footerRows="1" headingRows="1">' +
 					'<tableRow>' +
@@ -959,7 +960,7 @@ describe( 'TableElementSupport', () => {
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table>' +
 					'<thead>' +
@@ -1043,7 +1044,7 @@ describe( 'TableElementSupport', () => {
 			htmlSupport.removeModelHtmlClass( 'td', 'foo-td', root.getNodeByPath( [ 0, 1, 0 ] ) );
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table added-figure">' +
 				'<table class="foobar added-table">' +
 					'<thead class="foobar added-thead">' +
@@ -1108,7 +1109,7 @@ describe( 'TableElementSupport', () => {
 			htmlSupport.removeModelHtmlClass( 'td', 'foobar', root.getNodeByPath( [ 0, 1, 0 ] ) );
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table>' +
 					'<thead>' +
@@ -1175,7 +1176,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table footerRows="1" headingRows="1">' +
 					'<tableRow>' +
@@ -1226,7 +1227,7 @@ describe( 'TableElementSupport', () => {
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table>' +
 					'<thead>' +
@@ -1278,7 +1279,7 @@ describe( 'TableElementSupport', () => {
 			'</table>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table htmlTableAttributes="(1)">' +
 					'<tableRow>' +
@@ -1300,7 +1301,7 @@ describe( 'TableElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table data-foo="foo">' +
 					'<tbody>' +
@@ -1339,7 +1340,7 @@ describe( 'TableElementSupport', () => {
 
 		editor.setData( expectedHtml );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table htmlFigureAttributes="(1)">' +
 					'<tableRow>' +
@@ -1376,7 +1377,7 @@ describe( 'TableElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( expectedHtml );
+		expect( editor.getData() ).toBe( expectedHtml );
 	} );
 
 	it( 'should not double convert figure element', () => {
@@ -1400,7 +1401,7 @@ describe( 'TableElementSupport', () => {
 
 		editor.setData( expectedHtml );
 
-		expect( editor.getData() ).to.equal( expectedHtml );
+		expect( editor.getData() ).toBe( expectedHtml );
 	} );
 
 	it( 'should not consume attributes already consumed (downcast)', () => {
@@ -1452,7 +1453,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table>' +
 					'<thead>' +
@@ -1516,7 +1517,7 @@ describe( 'TableElementSupport', () => {
 			'</table>'
 		);
 
-		expect( editor.getData() ).to.equalMarkup(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table>' +
 					'<thead align="right" dir="ltr" lang="en" valign="bottom">' +
@@ -1563,7 +1564,7 @@ describe( 'TableElementSupport', () => {
 			'</table>'
 		);
 
-		expect( editor.getData() ).to.equalMarkup(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table class="ck-table-resized">' +
 					'<colgroup data-foo="bar">' +
@@ -1619,7 +1620,7 @@ describe( 'TableElementSupport', () => {
 			'</custom-element>'
 		);
 
-		expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe(
 			'<paragraph>' +
 				'<htmlCustomElement ' +
 					'htmlContent="<table dir="ltr"><tbody><tr><td>Foo</td></tr></tbody></table>" ' +
@@ -1660,7 +1661,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table barAttr="100">' +
 					'<tableRow>' +
@@ -1704,7 +1705,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table htmlFigureAttributes="(1)">' +
 					'<tableRow>' +
@@ -1743,7 +1744,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table>' +
 					'<tableRow>' +
@@ -1757,8 +1758,8 @@ describe( 'TableElementSupport', () => {
 
 		const marker = model.markers.get( 'commented:foo:id' );
 
-		expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+		expect( marker.getStart().path ).toEqual( [ 0 ] );
+		expect( marker.getEnd().path ).toEqual( [ 1 ] );
 	} );
 
 	it( 'should convert markers on the table element', () => {
@@ -1783,7 +1784,7 @@ describe( 'TableElementSupport', () => {
 			'</table>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table>' +
 					'<tableRow>' +
@@ -1797,8 +1798,8 @@ describe( 'TableElementSupport', () => {
 
 		const marker = model.markers.get( 'commented:foo:id' );
 
-		expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+		expect( marker.getStart().path ).toEqual( [ 0 ] );
+		expect( marker.getEnd().path ).toEqual( [ 1 ] );
 	} );
 
 	it( 'should upcast custom attributes with marker', () => {
@@ -1825,7 +1826,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table htmlFigureAttributes="(1)">' +
 					'<tableRow>' +
@@ -1845,8 +1846,8 @@ describe( 'TableElementSupport', () => {
 
 		const marker = model.markers.get( 'commented:foo:id' );
 
-		expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+		expect( marker.getStart().path ).toEqual( [ 0 ] );
+		expect( marker.getEnd().path ).toEqual( [ 1 ] );
 	} );
 
 	it( 'should upcast `table` CSS class to figure element and consume it on table element', () => {
@@ -1869,7 +1870,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table">' +
 				'<table>' +
 					'<tbody>' +
@@ -1901,7 +1902,7 @@ describe( 'TableElementSupport', () => {
 			'</table>'
 		);
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table" style="height:100px;max-height:100px;max-width:49%;min-height:100px;min-width:49%;width:100%;">' +
 				'<table style="background-color:red;">' +
 					'<tbody>' +
@@ -1913,7 +1914,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table htmlTableAttributes="(1)">' +
 					'<tableRow>' +
@@ -1956,7 +1957,7 @@ describe( 'TableElementSupport', () => {
 			'</table>'
 		);
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table" style="width:100%;">' +
 				'<table style="background-color:red;">' +
 					'<tbody>' +
@@ -1968,7 +1969,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table htmlTableAttributes="(1)">' +
 					'<tableRow>' +
@@ -2001,7 +2002,7 @@ describe( 'TableElementSupport', () => {
 			writer.setAttribute( 'htmlTableAttributes', newTableAttributes, table );
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<figure class="table" style="width:30%;">' +
 				'<table style="background-color:red;">' +
 					'<tbody>' +
@@ -2013,7 +2014,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table htmlTableAttributes="(1)">' +
 					'<tableRow>' +
@@ -2056,7 +2057,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table headingRows="1" htmlTbodyAttributes="(1)" htmlTheadAttributes="(2)">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
@@ -2080,7 +2081,7 @@ describe( 'TableElementSupport', () => {
 			writer.removeAttribute( 'headingRows', model.document.getRoot().getChild( 0 ) );
 		} );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table htmlTbodyAttributes="(1)">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
@@ -2119,7 +2120,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table headingRows="1" htmlTbodyAttributes="(1)" htmlTheadAttributes="(2)">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
@@ -2143,7 +2144,7 @@ describe( 'TableElementSupport', () => {
 			writer.setAttribute( 'headingRows', 2, model.document.getRoot().getChild( 0 ) );
 		} );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table headingRows="2" htmlTheadAttributes="(1)">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
@@ -2182,7 +2183,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table footerRows="1" htmlTbodyAttributes="(1)" htmlTfootAttributes="(2)">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
@@ -2206,7 +2207,7 @@ describe( 'TableElementSupport', () => {
 			writer.removeAttribute( 'footerRows', model.document.getRoot().getChild( 0 ) );
 		} );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table htmlTbodyAttributes="(1)">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
@@ -2245,7 +2246,7 @@ describe( 'TableElementSupport', () => {
 			'</figure>'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table footerRows="1" headingRows="1" htmlTfootAttributes="(1)" htmlTheadAttributes="(2)">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
@@ -2270,7 +2271,7 @@ describe( 'TableElementSupport', () => {
 			writer.setAttribute( 'headingRows', 2, model.document.getRoot().getChild( 0 ) );
 		} );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data:
 				'<table headingRows="2" htmlTheadAttributes="(1)">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
@@ -2313,7 +2314,7 @@ describe( 'TableElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<table>' +
 						'<tableRow>' +
@@ -2338,7 +2339,7 @@ describe( 'TableElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -2386,7 +2387,7 @@ describe( 'TableElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<table>' +
 						'<tableRow>' +
@@ -2405,7 +2406,7 @@ describe( 'TableElementSupport', () => {
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -2444,7 +2445,7 @@ describe( 'TableElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<table>' +
 						'<tableRow>' +
@@ -2469,7 +2470,7 @@ describe( 'TableElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -2515,7 +2516,7 @@ describe( 'TableElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<table>' +
 						'<tableRow>' +
@@ -2534,7 +2535,7 @@ describe( 'TableElementSupport', () => {
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -2599,7 +2600,7 @@ describe( 'TableElementSupport', () => {
 				'</figure>'
 			);
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 				data:
 					'<table footerRows="1" headingRows="1" htmlFigureAttributes="(1)" htmlTableAttributes="(2)" htmlTbodyAttributes="(3)" htmlTfootAttributes="(4)" htmlTheadAttributes="(5)">' +
 						'<tableRow htmlTrAttributes="(6)">' +
@@ -2661,7 +2662,7 @@ describe( 'TableElementSupport', () => {
 				}, {} )
 			} );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<figure class="table allow" style="color:red;" data-allow="allow">' +
 					'<table class="allow" style="color:red;" data-allow="allow">' +
 						'<thead class="allow" style="color:red;" data-allow="allow">' +

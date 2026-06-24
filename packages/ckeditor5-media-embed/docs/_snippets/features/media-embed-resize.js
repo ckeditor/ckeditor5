@@ -28,6 +28,16 @@ MediaEditor
 				top: getViewportTopOffsetConfig()
 			}
 		},
+		mediaEmbed: {
+			toolbar: [ 'resizeMediaEmbed' ],
+			resizeOptions: [
+				{ name: 'resizeMediaEmbed:original', value: null, icon: 'original' },
+				{ name: 'resizeMediaEmbed:custom', value: 'custom', icon: 'custom' },
+				{ name: 'resizeMediaEmbed:25', value: '25', icon: 'small' },
+				{ name: 'resizeMediaEmbed:50', value: '50', icon: 'medium' },
+				{ name: 'resizeMediaEmbed:75', value: '75', icon: 'large' }
+			]
+		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],

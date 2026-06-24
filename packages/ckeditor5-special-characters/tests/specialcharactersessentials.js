@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { SpecialCharactersEssentials } from '../src/specialcharactersessentials.js';
 
 import { SpecialCharactersCurrency } from '../src/specialcharacterscurrency.js';

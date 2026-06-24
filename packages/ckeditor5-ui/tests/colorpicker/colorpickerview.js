@@ -3,36 +3,34 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ColorPickerView } from './../../src/colorpicker/colorpickerview.js';
 import { env, Locale } from '@ckeditor/ckeditor5-utils';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'ColorPickerView', () => {
-	let locale, view, clock;
+	let locale, view;
 
 	beforeEach( () => {
 		locale = new Locale();
 		view = new ColorPickerView( locale, { format: 'hex' } );
-		clock = sinon.useFakeTimers();
+		vi.useFakeTimers();
 		view.render();
 	} );
 
 	afterEach( () => {
 		view.destroy();
-		clock.restore();
+		vi.useRealTimers();
+		vi.restoreAllMocks();
 	} );
-
-	testUtils.createSinonSandbox();
 
 	describe( 'constructor()', () => {
 		it( 'creates element from template', () => {
-			expect( [ ...view.element.classList ] ).to.include( 'ck-color-picker', 'ck' );
+			expect( [ ...view.element.classList ] ).toContain( 'ck-color-picker' );
 		} );
 
 		it( 'should create input', () => {
 			const input = view.element.children[ 1 ].children[ 1 ];
-			expect( [ ...input.classList ] ).to.include( 'color-picker-hex-input' );
+			expect( [ ...input.classList ] ).toContain( 'color-picker-hex-input' );
 		} );
 
 		it( 'uses a default color format (HSL)', () => {
@@ -41,7 +39,7 @@ describe( 'ColorPickerView', () => {
 
 			view.color = 'red';
 
-			expect( view.color ).to.equal( 'hsl(0, 100%, 50%)' );
+			expect( view.color ).toBe( 'hsl(0, 100%, 50%)' );
 
 			view.destroy();
 		} );
@@ -51,18 +49,29 @@ describe( 'ColorPickerView', () => {
 		it( 'should get value updated if picker\'s state property was changed', () => {
 			view.color = '#0000ff';
 
-			clock.tick( 200 );
+			vi.advanceTimersByTime( 200 );
 
-			expect( view.hexInputRow.children.get( 1 ).fieldView.value ).to.equal( '0000ff' );
+			expect( view.hexInputRow.children.get( 1 ).fieldView.value ).toBe( '0000ff' );
+		} );
+
+		it( 'should not update color when input is empty', () => {
+			view.color = '#0000ff';
+			const spy = vi.spyOn( view, '_debounceColorPickerEvent' );
+
+			const inputField = view.hexInputRow.children.get( 1 ).fieldView;
+			inputField.element.value = '';
+			inputField.fire( 'input' );
+
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should update color property after getting an input', () => {
 			view.hexInputRow.children.get( 1 ).fieldView.value = '#ff0000';
 			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
 
-			clock.tick( 200 );
+			vi.advanceTimersByTime( 200 );
 
-			expect( view.color ).to.equal( '#ff0000' );
+			expect( view.color ).toBe( '#ff0000' );
 		} );
 
 		it( 'should trim whitespace from the beginning of the string', () => {
@@ -72,9 +81,9 @@ describe( 'ColorPickerView', () => {
 			view.hexInputRow.children.get( 1 ).fieldView.value = '   000000';
 			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
 
-			clock.tick( 200 );
+			vi.advanceTimersByTime( 200 );
 
-			expect( view.color ).to.equal( '#000000' );
+			expect( view.color ).toBe( '#000000' );
 		} );
 
 		it( 'should trim whitespace from the end of the string', () => {
@@ -84,9 +93,9 @@ describe( 'ColorPickerView', () => {
 			view.hexInputRow.children.get( 1 ).fieldView.value = '000000   ';
 			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
 
-			clock.tick( 200 );
+			vi.advanceTimersByTime( 200 );
 
-			expect( view.color ).to.equal( '#000000' );
+			expect( view.color ).toBe( '#000000' );
 		} );
 
 		it( 'should trim whitespace from both the beginning and the end of the string', () => {
@@ -96,9 +105,9 @@ describe( 'ColorPickerView', () => {
 			view.hexInputRow.children.get( 1 ).fieldView.value = '   000000   ';
 			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
 
-			clock.tick( 200 );
+			vi.advanceTimersByTime( 200 );
 
-			expect( view.color ).to.equal( '#000000' );
+			expect( view.color ).toBe( '#000000' );
 		} );
 
 		it( 'should trim whitespace before the hash if it was passed', () => {
@@ -108,9 +117,9 @@ describe( 'ColorPickerView', () => {
 			view.hexInputRow.children.get( 1 ).fieldView.value = '   #000000';
 			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
 
-			clock.tick( 200 );
+			vi.advanceTimersByTime( 200 );
 
-			expect( view.color ).to.equal( '#000000' );
+			expect( view.color ).toBe( '#000000' );
 		} );
 
 		describe( 'should update color property', () => {
@@ -183,7 +192,7 @@ describe( 'ColorPickerView', () => {
 			it( 'should not set any color directly to color picker HTML when its focused', () => {
 				document.body.appendChild( view.picker );
 
-				const spy = sinon.spy( view.picker, 'setAttribute' );
+				const spy = vi.spyOn( view.picker, 'setAttribute' );
 
 				view.focus();
 
@@ -195,16 +204,16 @@ describe( 'ColorPickerView', () => {
 
 				view.picker.dispatchEvent( event );
 
-				clock.tick( 200 );
+				vi.advanceTimersByTime( 200 );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 
 				// Cleanup DOM
 				view.picker.remove();
 			} );
 
 			it( 'should set color in color picker HTML when change was caused by input', () => {
-				const spy = sinon.spy( view.picker, 'setAttribute' );
+				const spy = vi.spyOn( view.picker, 'setAttribute' );
 
 				const fieldView = view.hexInputRow.children.get( 1 ).fieldView;
 
@@ -212,9 +221,9 @@ describe( 'ColorPickerView', () => {
 				fieldView.value = '#ffffff';
 				fieldView.fire( 'input' );
 
-				clock.tick( 200 );
+				vi.advanceTimersByTime( 200 );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -228,9 +237,9 @@ describe( 'ColorPickerView', () => {
 
 				view.color = '#aaaaaa';
 
-				clock.tick( 200 );
+				vi.advanceTimersByTime( 200 );
 
-				expect( view.hexInputRow.children.get( 1 ).fieldView.value ).to.equal( '#ffffff' );
+				expect( view.hexInputRow.children.get( 1 ).fieldView.value ).toBe( '#ffffff' );
 			} );
 
 			describe( 'when set incorrect color', () => {
@@ -299,11 +308,11 @@ describe( 'ColorPickerView', () => {
 
 	describe( 'render()', () => {
 		it( 'should register the hex-color-picker custom element', () => {
-			expect( customElements.get( 'hex-color-picker' ) ).to.be.a( 'function' );
+			expect( customElements.get( 'hex-color-picker' ) ).toBeTypeOf( 'function' );
 		} );
 
 		it( 'should render color picker component', () => {
-			expect( view.picker.tagName ).to.equal( document.createElement( 'hex-color-picker' ).tagName );
+			expect( view.picker.tagName ).toBe( document.createElement( 'hex-color-picker' ).tagName );
 		} );
 
 		it( 'should listen to 3rd party picker color change event', () => {
@@ -315,9 +324,9 @@ describe( 'ColorPickerView', () => {
 
 			view.picker.dispatchEvent( event );
 
-			clock.tick( 200 );
+			vi.advanceTimersByTime( 200 );
 
-			expect( view.color ).to.equal( '#ff0000' );
+			expect( view.color ).toBe( '#ff0000' );
 		} );
 
 		it( 'should render without input if "hideInput" is set on true', () => {
@@ -325,7 +334,7 @@ describe( 'ColorPickerView', () => {
 
 			view.render();
 
-			expect( view.element.children.length ).to.equal( 1 );
+			expect( view.element.children.length ).toBe( 1 );
 		} );
 	} );
 
@@ -333,11 +342,11 @@ describe( 'ColorPickerView', () => {
 		it( 'should focus slider', () => {
 			const slider = view.slidersView.first;
 
-			const spy = sinon.spy( slider.element, 'focus' );
+			const spy = vi.spyOn( slider.element, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not throw on Firefox/Safari/iOS if the input was hidden via config', () => {
@@ -346,23 +355,27 @@ describe( 'ColorPickerView', () => {
 			view.render();
 			document.body.appendChild( view.element );
 
-			testUtils.sinon.stub( env, 'isGecko' ).value( true );
-			testUtils.sinon.stub( env, 'isiOS' ).value( false );
-			testUtils.sinon.stub( env, 'isSafari' ).value( false );
+			vi.spyOn( env, 'isGecko', 'get' ).mockReturnValue( true );
+			vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( false );
+			vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( false );
 
-			expect( () => view.focus() ).to.not.throw();
+			expect( () => view.focus() ).not.toThrow();
 
-			testUtils.sinon.stub( env, 'isGecko' ).value( false );
-			testUtils.sinon.stub( env, 'isiOS' ).value( true );
-			testUtils.sinon.stub( env, 'isSafari' ).value( false );
+			vi.restoreAllMocks();
 
-			expect( () => view.focus() ).to.not.throw();
+			vi.spyOn( env, 'isGecko', 'get' ).mockReturnValue( false );
+			vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
+			vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( false );
 
-			testUtils.sinon.stub( env, 'isGecko' ).value( false );
-			testUtils.sinon.stub( env, 'isiOS' ).value( false );
-			testUtils.sinon.stub( env, 'isSafari' ).value( true );
+			expect( () => view.focus() ).not.toThrow();
 
-			expect( () => view.focus() ).to.not.throw();
+			vi.restoreAllMocks();
+
+			vi.spyOn( env, 'isGecko', 'get' ).mockReturnValue( false );
+			vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( false );
+			vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
+
+			expect( () => view.focus() ).not.toThrow();
 
 			view.destroy();
 			view.element.remove();
@@ -375,25 +388,28 @@ describe( 'ColorPickerView', () => {
 			const inputField = view.hexInputRow.children.get( 1 );
 			const slider = view.slidersView.first;
 
-			const inputSpy = sinon.spy( inputField, 'focus' );
-			const sliderSpy = sinon.spy( slider.element, 'focus' );
-
 			buggyBrowsers.forEach( browser => {
-				inputSpy.resetHistory();
-				sliderSpy.resetHistory();
+				vi.restoreAllMocks();
+
+				const inputSpy = vi.spyOn( inputField, 'focus' );
+				const sliderSpy = vi.spyOn( slider.element, 'focus' );
 
 				mockBrowser( browser );
 
 				view.focus();
 
-				sinon.assert.callOrder( inputSpy, sliderSpy );
-				sinon.assert.calledOnce( inputSpy );
-				sinon.assert.calledOnce( sliderSpy );
+				expect( inputSpy ).toHaveBeenCalledOnce();
+				expect( sliderSpy ).toHaveBeenCalledOnce();
+
+				const inputCallOrder = inputSpy.mock.invocationCallOrder[ 0 ];
+				const sliderCallOrder = sliderSpy.mock.invocationCallOrder[ 0 ];
+
+				expect( inputCallOrder ).toBeLessThan( sliderCallOrder );
 			} );
 
 			function mockBrowser( mockFlag ) {
 				for ( const flag of buggyBrowsers ) {
-					testUtils.sinon.stub( env, flag ).get( () => flag === mockFlag );
+					vi.spyOn( env, flag, 'get' ).mockReturnValue( flag === mockFlag );
 				}
 			}
 		} );
@@ -409,13 +425,13 @@ describe( 'ColorPickerView', () => {
 		it( 'should return true for a valid color', () => {
 			hexInputElement.value = '#000';
 
-			expect( view.isValid() ).to.be.true;
+			expect( view.isValid() ).toBe( true );
 		} );
 
 		it( 'should return false for an invalid color', () => {
 			hexInputElement.value = 'Foo Bar';
 
-			expect( view.isValid() ).to.be.false;
+			expect( view.isValid() ).toBe( false );
 		} );
 
 		it( 'should return true if the hex input is not shown', () => {
@@ -423,7 +439,7 @@ describe( 'ColorPickerView', () => {
 
 			view.render();
 
-			expect( view.isValid() ).to.be.true;
+			expect( view.isValid() ).toBe( true );
 
 			view.destroy();
 		} );
@@ -431,17 +447,17 @@ describe( 'ColorPickerView', () => {
 
 	describe( 'color property', () => {
 		it( 'should be initialized with a proper value', () => {
-			expect( view.color ).to.be.equal( '' );
+			expect( view.color ).toBe( '' );
 		} );
 
 		it( 'should be observable', () => {
-			const observableSpy = testUtils.sinon.spy();
+			const observableSpy = vi.fn();
 
 			view.on( 'change:color', observableSpy );
 
 			view.color = '#ff0000';
 
-			expect( observableSpy.callCount ).to.equal( 1 );
+			expect( observableSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		describe( 'output format integration', () => {
@@ -474,7 +490,7 @@ describe( 'ColorPickerView', () => {
 				view.render();
 
 				view.color = inputColor;
-				expect( view.color ).to.equal( outputColor );
+				expect( view.color ).toBe( outputColor );
 
 				view.destroy();
 			}
@@ -489,7 +505,7 @@ describe( 'ColorPickerView', () => {
 			// So _hexColor change event was not triggered, thus no format was enforced.
 			view.color = 'red';
 
-			expect( view.color ).to.equal( '#FF0000' );
+			expect( view.color ).toBe( '#FF0000' );
 		} );
 	} );
 
@@ -498,77 +514,77 @@ describe( 'ColorPickerView', () => {
 			it( 'reflects a hex value', () => {
 				view.color = '#ff0000';
 
-				expect( view._hexColor ).to.equal( '#ff0000' );
+				expect( view._hexColor ).toBe( '#ff0000' );
 			} );
 
 			it( 'forces hex value in a lowercased format', () => {
 				view.color = '#0000FF';
 
-				expect( view._hexColor ).to.equal( '#0000ff' );
+				expect( view._hexColor ).toBe( '#0000ff' );
 			} );
 
 			it( 'normalizes shorten hex value', () => {
 				view.color = '#00F';
 
-				expect( view._hexColor ).to.equal( '#0000ff' );
+				expect( view._hexColor ).toBe( '#0000ff' );
 			} );
 
 			it( 'properly converts rgb format', () => {
 				view.color = 'rgb(0, 255, 0)';
 
-				expect( view._hexColor ).to.equal( '#00ff00' );
+				expect( view._hexColor ).toBe( '#00ff00' );
 			} );
 
 			it( 'properly converts hsl format', () => {
 				view.color = 'hsl(42, 100%, 52%)';
 
-				expect( view._hexColor ).to.equal( '#ffb60a' );
+				expect( view._hexColor ).toBe( '#ffb60a' );
 			} );
 
 			it( 'properly converts keyword format', () => {
 				view.color = 'red';
 
-				expect( view._hexColor ).to.equal( '#ff0000' );
+				expect( view._hexColor ).toBe( '#ff0000' );
 			} );
 
 			it( 'unfolds a shortened hex format', () => {
 				view.color = '#00f';
 
-				expect( view._hexColor ).to.equal( '#0000ff' );
+				expect( view._hexColor ).toBe( '#0000ff' );
 			} );
 
 			it( 'handles an empty value', () => {
 				view.color = '#fff';
 				view.color = '';
 
-				expect( view._hexColor ).to.equal( '#000000' );
+				expect( view._hexColor ).toBe( '#000000' );
 			} );
 
 			it( 'gracefully handles an invalid value', () => {
 				view.color = '#fff';
 				view.color = 'lorem ipsum dolor';
 
-				expect( view._hexColor ).to.equal( '#000000' );
+				expect( view._hexColor ).toBe( '#000000' );
 			} );
 
 			it( 'doesn\'t trigger multiple changes if changed to a same color in different format', () => {
 				view._hexColor = '#00ff00';
 
-				const observableSpy = sinon.spy();
+				const observableSpy = vi.fn();
 
 				view.on( 'change:_hexColor', observableSpy );
 
 				view.color = '#00ff00';
 
-				expect( observableSpy.callCount, 'first attempt' ).to.equal( 0 );
+				expect( observableSpy.mock.calls.length, 'first attempt' ).toBe( 0 );
 
 				view.color = '#00FF00';
 
-				expect( observableSpy.callCount, 'second attempt' ).to.equal( 0 );
+				expect( observableSpy.mock.calls.length, 'second attempt' ).toBe( 0 );
 
 				view.color = 'rgb(0, 255, 0)';
 
-				expect( observableSpy.callCount, 'third attempt' ).to.equal( 0 );
+				expect( observableSpy.mock.calls.length, 'third attempt' ).toBe( 0 );
 			} );
 		} );
 
@@ -576,7 +592,7 @@ describe( 'ColorPickerView', () => {
 			it( 'propagates a simple hex value change', () => {
 				view._hexColor = '#f1e2a3';
 
-				expect( view.color ).to.equal( '#f1e2a3' );
+				expect( view.color ).toBe( '#f1e2a3' );
 			} );
 		} );
 	} );
@@ -585,11 +601,11 @@ describe( 'ColorPickerView', () => {
 		it( 'focuses the slider in DOM', () => {
 			const slider = view.slidersView.first;
 
-			const spy = sinon.spy( slider.element, 'focus' );
+			const spy = vi.spyOn( slider.element, 'focus' );
 
 			slider.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -602,10 +618,10 @@ describe( 'ColorPickerView', () => {
 			fieldView.value = options.inputValue;
 			fieldView.fire( 'input' );
 
-			clock.tick( 200 );
+			vi.advanceTimersByTime( 200 );
 
-			expect( fieldView.value, 'Wrong input value' ).to.equal( options.expectedInput );
-			expect( view.color, 'Wrong color property value' ).to.equal( options.expectedColorProperty );
+			expect( fieldView.value, 'Wrong input value' ).toBe( options.expectedInput );
+			expect( view.color, 'Wrong color property value' ).toBe( options.expectedColorProperty );
 		} );
 	}
 } );

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { InsertTextCommand } from '../src/inserttextcommand.js';
 import { TypingChangeBuffer } from '../src/utils/changebuffer.js';
@@ -14,7 +14,9 @@ import { Input } from '../src/input.js';
 describe( 'InsertTextCommand', () => {
 	let editor, model, doc, buffer, inputCommand;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
@@ -41,11 +43,11 @@ describe( 'InsertTextCommand', () => {
 
 	describe( 'buffer', () => {
 		it( 'has buffer getter', () => {
-			expect( editor.commands.get( 'insertText' ).buffer ).to.be.an.instanceof( TypingChangeBuffer );
+			expect( editor.commands.get( 'insertText' ).buffer ).toBeInstanceOf( TypingChangeBuffer );
 		} );
 
 		it( 'has a buffer limit configured to default value of 20', () => {
-			expect( editor.commands.get( 'insertText' )._buffer ).to.have.property( 'limit', 20 );
+			expect( editor.commands.get( 'insertText' )._buffer ).toHaveProperty( 'limit', 20 );
 		} );
 
 		it( 'has a buffer configured to config.typing.undoStep', () => {
@@ -57,7 +59,7 @@ describe( 'InsertTextCommand', () => {
 					}
 				} )
 				.then( editor => {
-					expect( editor.commands.get( 'insertText' )._buffer ).to.have.property( 'limit', 5 );
+					expect( editor.commands.get( 'insertText' )._buffer ).toHaveProperty( 'limit', 5 );
 				} );
 		} );
 	} );
@@ -71,25 +73,25 @@ describe( 'InsertTextCommand', () => {
 
 				// We expect that command is executed in enqueue changes block. Since we are already in
 				// an enqueued block, the command execution will be postponed. Hence, no changes.
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			// After all enqueued changes are done, the command execution is reflected.
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foox[]bar</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foox[]bar</paragraph>' );
 		} );
 
 		it( 'should lock and unlock buffer', () => {
 			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-			const spyLock = testUtils.sinon.spy( buffer, 'lock' );
-			const spyUnlock = testUtils.sinon.spy( buffer, 'unlock' );
+			const spyLock = vi.spyOn( buffer, 'lock' );
+			const spyUnlock = vi.spyOn( buffer, 'unlock' );
 
 			editor.execute( 'insertText', {
 				text: ''
 			} );
 
-			expect( spyLock.calledOnce ).to.be.true;
-			expect( spyUnlock.calledOnce ).to.be.true;
+			expect( spyLock ).toHaveBeenCalledTimes( 1 );
+			expect( spyUnlock ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'inserts text for collapsed range', () => {
@@ -104,8 +106,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foobar[]</paragraph>' );
-			expect( buffer.size ).to.equal( 3 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foobar[]</paragraph>' );
+			expect( buffer.size ).toEqual( 3 );
 		} );
 
 		it( 'should not execute when selection is in non-editable place', () => {
@@ -115,7 +117,7 @@ describe( 'InsertTextCommand', () => {
 
 			editor.execute( 'insertText', {	text: 'bar'	} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo[]bar</paragraph>' );
 		} );
 
 		it( 'should insert text for a collapsed selection', () => {
@@ -132,8 +134,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foobar[]</paragraph>' );
-			expect( buffer.size ).to.equal( 3 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foobar[]</paragraph>' );
+			expect( buffer.size ).toEqual( 3 );
 		} );
 
 		it( 'replaces text for range within single element on the beginning', () => {
@@ -148,8 +150,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>rab[]r</paragraph>' );
-			expect( buffer.size ).to.equal( 3 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>rab[]r</paragraph>' );
+			expect( buffer.size ).toEqual( 3 );
 		} );
 
 		it( 'should replace text for range within single element on the beginning', () => {
@@ -166,8 +168,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>rab[]r</paragraph>' );
-			expect( buffer.size ).to.equal( 3 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>rab[]r</paragraph>' );
+			expect( buffer.size ).toEqual( 3 );
 		} );
 
 		it( 'replaces text for range within single element in the middle', () => {
@@ -182,8 +184,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fobazz[]r</paragraph>' );
-			expect( buffer.size ).to.equal( 4 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>fobazz[]r</paragraph>' );
+			expect( buffer.size ).toEqual( 4 );
 		} );
 
 		it( 'should replace text for range within single element in the middle', () => {
@@ -200,8 +202,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fobazz[]r</paragraph>' );
-			expect( buffer.size ).to.equal( 4 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>fobazz[]r</paragraph>' );
+			expect( buffer.size ).toEqual( 4 );
 		} );
 
 		it( 'replaces text for range within single element on the end', () => {
@@ -216,8 +218,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foobazzz[]</paragraph>' );
-			expect( buffer.size ).to.equal( 3 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foobazzz[]</paragraph>' );
+			expect( buffer.size ).toEqual( 3 );
 		} );
 
 		it( 'should replace text for range within single element on the end', () => {
@@ -234,8 +236,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foobazzz[]</paragraph>' );
-			expect( buffer.size ).to.equal( 3 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foobazzz[]</paragraph>' );
+			expect( buffer.size ).toEqual( 3 );
 		} );
 
 		it( 'replaces text for range within multiple elements', () => {
@@ -250,8 +252,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>Funny c[]ar</heading1>' );
-			expect( buffer.size ).to.equal( 6 );
+			expect( _getModelData( model ) ).toEqual( '<heading1>Funny c[]ar</heading1>' );
+			expect( buffer.size ).toEqual( 6 );
 		} );
 
 		it( 'should replace text for range within multiple elements', () => {
@@ -268,8 +270,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>Funny c[]ar</heading1>' );
-			expect( buffer.size ).to.equal( 6 );
+			expect( _getModelData( model ) ).toEqual( '<heading1>Funny c[]ar</heading1>' );
+			expect( buffer.size ).toEqual( 6 );
 		} );
 
 		it( 'uses current selection when range is not given', () => {
@@ -279,8 +281,8 @@ describe( 'InsertTextCommand', () => {
 				text: 'az'
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foobaz[]</paragraph>' );
-			expect( buffer.size ).to.equal( 2 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foobaz[]</paragraph>' );
+			expect( buffer.size ).toEqual( 2 );
 		} );
 
 		it( 'only removes content when empty text given', () => {
@@ -291,8 +293,8 @@ describe( 'InsertTextCommand', () => {
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]obar</paragraph>' );
-			expect( buffer.size ).to.equal( 0 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]obar</paragraph>' );
+			expect( buffer.size ).toEqual( 0 );
 		} );
 
 		it( 'should set selection according to passed resultRange (collapsed)', () => {
@@ -303,8 +305,8 @@ describe( 'InsertTextCommand', () => {
 				resultRange: editor.model.createRange( editor.model.createPositionFromPath( doc.getRoot(), [ 0, 5 ] ) )
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>newba[]r</paragraph>' );
-			expect( buffer.size ).to.equal( 3 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>newba[]r</paragraph>' );
+			expect( buffer.size ).toEqual( 3 );
 		} );
 
 		it( 'should set selection according to passed resultRange (non-collapsed)', () => {
@@ -318,8 +320,8 @@ describe( 'InsertTextCommand', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>new[bar]</paragraph>' );
-			expect( buffer.size ).to.equal( 3 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>new[bar]</paragraph>' );
+			expect( buffer.size ).toEqual( 3 );
 		} );
 
 		it( 'only removes content when no text given (with default non-collapsed range)', () => {
@@ -327,8 +329,8 @@ describe( 'InsertTextCommand', () => {
 
 			editor.execute( 'insertText' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]obar</paragraph>' );
-			expect( buffer.size ).to.equal( 0 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]obar</paragraph>' );
+			expect( buffer.size ).toEqual( 0 );
 		} );
 
 		it( 'does not change selection and content when no text given (with default collapsed range)', () => {
@@ -336,8 +338,8 @@ describe( 'InsertTextCommand', () => {
 
 			editor.execute( 'insertText' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]obar</paragraph>' );
-			expect( buffer.size ).to.equal( 0 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>fo[]obar</paragraph>' );
+			expect( buffer.size ).toEqual( 0 );
 		} );
 
 		it( 'does not create insert delta when no text given', () => {
@@ -347,7 +349,7 @@ describe( 'InsertTextCommand', () => {
 
 			editor.execute( 'insertText' );
 
-			expect( doc.version ).to.equal( version );
+			expect( doc.version ).toEqual( version );
 		} );
 
 		it( 'handles multi-range selection', () => {
@@ -394,7 +396,7 @@ describe( 'InsertTextCommand', () => {
 				text: 'foo'
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>x</paragraph>' +
 				'<paragraph></paragraph>' +
 				'<paragraph>y</paragraph>' +
@@ -406,25 +408,25 @@ describe( 'InsertTextCommand', () => {
 		it( 'uses typing batch while removing and inserting the content', () => {
 			let currentBatch = getCurrentBatch();
 
-			expect( currentBatch.isTyping, 'batch before typing' ).to.equal( false );
+			expect( currentBatch.isTyping, 'batch before typing' ).toEqual( false );
 
 			model.on( 'deleteContent', () => {
 				currentBatch = getCurrentBatch();
 
-				expect( currentBatch.isTyping, 'batch when deleting content' ).to.equal( true );
+				expect( currentBatch.isTyping, 'batch when deleting content' ).toEqual( true );
 			}, { priority: 'highest' } );
 
 			model.on( 'insertContent', () => {
 				currentBatch = getCurrentBatch();
 
-				expect( currentBatch.isTyping, 'batch when inserting content' ).to.equal( true );
+				expect( currentBatch.isTyping, 'batch when inserting content' ).toEqual( true );
 			}, { priority: 'lowest' } );
 
 			_setModelData( model, '<paragraph>[foo]</paragraph>' );
 
 			editor.execute( 'insertText', { text: 'bar' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>bar[]</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>bar[]</paragraph>' );
 
 			function getCurrentBatch() {
 				return editor.model.change( writer => writer.batch );
@@ -439,13 +441,13 @@ describe( 'InsertTextCommand', () => {
 					writer.setSelectionAttribute( 'bold', true );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo<$text bold="true">[]</$text></paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo<$text bold="true">[]</$text></paragraph>' );
 
 				editor.execute( 'insertText', {
 					text: 'bar'
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo<$text bold="true">bar[]</$text></paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo<$text bold="true">bar[]</$text></paragraph>' );
 			} );
 
 			it( 'insert using a static selection as insertText target', () => {
@@ -455,14 +457,14 @@ describe( 'InsertTextCommand', () => {
 					writer.setSelectionAttribute( 'bold', true );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo<$text bold="true">[]</$text></paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo<$text bold="true">[]</$text></paragraph>' );
 
 				editor.execute( 'insertText', {
 					text: 'bar',
 					selection: model.createSelection( doc.getRoot().getChild( 0 ), 0 )
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><$text bold="true">bar[]</$text>foo</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph><$text bold="true">bar[]</$text>foo</paragraph>' );
 			} );
 
 			it( 'replace using the ModelDocumentSelection as insertText target', () => {
@@ -472,7 +474,7 @@ describe( 'InsertTextCommand', () => {
 					text: 'abc'
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo<$text bold="true">abc[]</$text></paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo<$text bold="true">abc[]</$text></paragraph>' );
 			} );
 
 			it( 'replace using a static selection as insertText target', () => {
@@ -483,7 +485,7 @@ describe( 'InsertTextCommand', () => {
 					selection: model.createSelection( doc.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo<$text bold="true">abc[]</$text></paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo<$text bold="true">abc[]</$text></paragraph>' );
 			} );
 		} );
 	} );
@@ -491,11 +493,11 @@ describe( 'InsertTextCommand', () => {
 	describe( 'destroy()', () => {
 		it( 'should destroy change buffer', () => {
 			const command = editor.commands.get( 'insertText' );
-			const destroy = command._buffer.destroy = testUtils.sinon.spy();
+			const destroy = command._buffer.destroy = vi.fn();
 
 			command.destroy();
 
-			expect( destroy.calledOnce ).to.be.true;
+			expect( destroy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 } );

@@ -3,18 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { RestrictedEditingExceptionAutoCommand, StandardEditingModeEditing } from '../src/index.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Command } from '@ckeditor/ckeditor5-core';
 
 describe( 'RestrictedEditingExceptionAutoCommand', () => {
 	let editor, model, command, blockCommand, inlineCommand, editorExecuteSpy;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -42,17 +41,18 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 				inlineCommand = editor.commands.get( 'restrictedEditingException' );
 				blockCommand = editor.commands.get( 'restrictedEditingExceptionBlock' );
 
-				editorExecuteSpy = sinon.stub( editor, 'execute' );
+				editorExecuteSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 			} );
 	} );
 
 	afterEach( async () => {
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'is a command', () => {
-		expect( RestrictedEditingExceptionAutoCommand.prototype ).to.be.instanceOf( Command );
-		expect( command ).to.be.instanceOf( Command );
+		expect( RestrictedEditingExceptionAutoCommand.prototype ).toBeInstanceOf( Command );
+		expect( command ).toBeInstanceOf( Command );
 	} );
 
 	describe( 'value', () => {
@@ -62,7 +62,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 
 			command.refresh();
 
-			expect( command ).to.have.property( 'value', false );
+			expect( command ).toHaveProperty( 'value', false );
 		} );
 
 		it( 'is true when inline command have value = true and block command value = false', () => {
@@ -71,7 +71,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 
 			command.refresh();
 
-			expect( command ).to.have.property( 'value', true );
+			expect( command ).toHaveProperty( 'value', true );
 		} );
 
 		it( 'is true when inline command have value = false and block command value = true', () => {
@@ -80,7 +80,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 
 			command.refresh();
 
-			expect( command ).to.have.property( 'value', true );
+			expect( command ).toHaveProperty( 'value', true );
 		} );
 
 		it( 'is true when both commands have value = true', () => {
@@ -89,7 +89,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 
 			command.refresh();
 
-			expect( command ).to.have.property( 'value', true );
+			expect( command ).toHaveProperty( 'value', true );
 		} );
 	} );
 
@@ -100,7 +100,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 
 			command.refresh();
 
-			expect( command ).to.have.property( 'isEnabled', false );
+			expect( command ).toHaveProperty( 'isEnabled', false );
 		} );
 
 		it( 'is true when inline command is enabled and block command is disabled', () => {
@@ -109,7 +109,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 
 			command.refresh();
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 		} );
 
 		it( 'is true when inline command is disabled and block command is enabled', () => {
@@ -118,7 +118,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 
 			command.refresh();
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 		} );
 
 		it( 'is true when both commands are enabled', () => {
@@ -127,7 +127,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 
 			command.refresh();
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 		} );
 	} );
 
@@ -139,7 +139,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 			command.refresh();
 			command.execute( 'restrictedEditingExceptionAuto' );
 
-			expect( editorExecuteSpy.calledOnceWithExactly( 'restrictedEditingException' ) ).to.be.true;
+			expect( editorExecuteSpy ).toHaveBeenCalledExactlyOnceWith( 'restrictedEditingException' );
 		} );
 
 		it( 'should execute block exception command if it has value = true', () => {
@@ -149,7 +149,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 			command.refresh();
 			command.execute( 'restrictedEditingExceptionAuto' );
 
-			expect( editorExecuteSpy.calledOnceWithExactly( 'restrictedEditingExceptionBlock' ) ).to.be.true;
+			expect( editorExecuteSpy ).toHaveBeenCalledExactlyOnceWith( 'restrictedEditingExceptionBlock' );
 		} );
 
 		it( 'should execute inline exception command if only it is enabled', () => {
@@ -159,7 +159,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 			command.refresh();
 			command.execute( 'restrictedEditingExceptionAuto' );
 
-			expect( editorExecuteSpy.calledOnceWithExactly( 'restrictedEditingException' ) ).to.be.true;
+			expect( editorExecuteSpy ).toHaveBeenCalledExactlyOnceWith( 'restrictedEditingException' );
 		} );
 
 		it( 'should execute block exception command if only it is enabled', () => {
@@ -169,7 +169,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 			command.refresh();
 			command.execute( 'restrictedEditingExceptionAuto' );
 
-			expect( editorExecuteSpy.calledOnceWithExactly( 'restrictedEditingExceptionBlock' ) ).to.be.true;
+			expect( editorExecuteSpy ).toHaveBeenCalledExactlyOnceWith( 'restrictedEditingExceptionBlock' );
 		} );
 
 		it( 'should execute block exception command when selection is collapsed', () => {
@@ -178,7 +178,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 			command.refresh();
 			command.execute( 'restrictedEditingExceptionAuto' );
 
-			expect( editorExecuteSpy.calledOnceWithExactly( 'restrictedEditingExceptionBlock' ) ).to.be.true;
+			expect( editorExecuteSpy ).toHaveBeenCalledExactlyOnceWith( 'restrictedEditingExceptionBlock' );
 		} );
 
 		it( 'should execute block exception command when block widget is selected', () => {
@@ -187,7 +187,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 			command.refresh();
 			command.execute( 'restrictedEditingExceptionAuto' );
 
-			expect( editorExecuteSpy.calledOnceWithExactly( 'restrictedEditingExceptionBlock' ) ).to.be.true;
+			expect( editorExecuteSpy ).toHaveBeenCalledExactlyOnceWith( 'restrictedEditingExceptionBlock' );
 		} );
 
 		it( 'should execute inline exception command when inline widget is selected', () => {
@@ -196,7 +196,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 			command.refresh();
 			command.execute( 'restrictedEditingExceptionAuto' );
 
-			expect( editorExecuteSpy.calledOnceWithExactly( 'restrictedEditingException' ) ).to.be.true;
+			expect( editorExecuteSpy ).toHaveBeenCalledExactlyOnceWith( 'restrictedEditingException' );
 		} );
 
 		it( 'should execute block exception command when multiple blocks are selected', () => {
@@ -205,7 +205,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 			command.refresh();
 			command.execute( 'restrictedEditingExceptionAuto' );
 
-			expect( editorExecuteSpy.calledOnceWithExactly( 'restrictedEditingExceptionBlock' ) ).to.be.true;
+			expect( editorExecuteSpy ).toHaveBeenCalledExactlyOnceWith( 'restrictedEditingExceptionBlock' );
 		} );
 
 		it( 'should execute inline exception command when text is selected', () => {
@@ -214,7 +214,7 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 			command.refresh();
 			command.execute( 'restrictedEditingExceptionAuto' );
 
-			expect( editorExecuteSpy.calledOnceWithExactly( 'restrictedEditingException' ) ).to.be.true;
+			expect( editorExecuteSpy ).toHaveBeenCalledExactlyOnceWith( 'restrictedEditingException' );
 		} );
 	} );
 } );

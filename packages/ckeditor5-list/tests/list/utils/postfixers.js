@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import {
 	findAndAddListHeadToMap,
 	fixListIndents,
@@ -15,12 +17,13 @@ import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
 
 import { Model, _stringifyModel, _parseModel } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'List - utils - postfixers', () => {
 	let model, schema;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -48,8 +51,8 @@ describe( 'List - utils - postfixers', () => {
 
 			const heads = Array.from( itemToListHead.values() );
 
-			expect( heads.length ).to.equal( 1 );
-			expect( heads[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( heads.length ).toBe( 1 );
+			expect( heads[ 0 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should find list that starts just before the given position', () => {
@@ -68,8 +71,8 @@ describe( 'List - utils - postfixers', () => {
 
 			const heads = Array.from( itemToListHead.values() );
 
-			expect( heads.length ).to.equal( 1 );
-			expect( heads[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( heads.length ).toBe( 1 );
+			expect( heads[ 0 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should find list that ends just before the given position', () => {
@@ -88,8 +91,8 @@ describe( 'List - utils - postfixers', () => {
 
 			const heads = Array.from( itemToListHead.values() );
 
-			expect( heads.length ).to.equal( 1 );
-			expect( heads[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( heads.length ).toBe( 1 );
+			expect( heads[ 0 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should reuse data from map if first item was previously mapped to head', () => {
@@ -111,8 +114,8 @@ describe( 'List - utils - postfixers', () => {
 
 			const heads = Array.from( itemToListHead.values() );
 
-			expect( heads.length ).to.equal( 1 );
-			expect( heads[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( heads.length ).toBe( 1 );
+			expect( heads[ 0 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should reuse data from map if found some item that was previously mapped to head', () => {
@@ -134,8 +137,8 @@ describe( 'List - utils - postfixers', () => {
 
 			const heads = Array.from( itemToListHead.values() );
 
-			expect( heads.length ).to.equal( 1 );
-			expect( heads[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( heads.length ).toBe( 1 );
+			expect( heads[ 0 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should not mix 2 lists separated by some non-list element', () => {
@@ -155,8 +158,8 @@ describe( 'List - utils - postfixers', () => {
 
 			const heads = Array.from( itemToListHead.values() );
 
-			expect( heads.length ).to.equal( 1 );
-			expect( heads[ 0 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( heads.length ).toBe( 1 );
+			expect( heads[ 0 ] ).toBe( fragment.getChild( 2 ) );
 		} );
 
 		it( 'should find list head even for mixed indents, ids, and types', () => {
@@ -177,8 +180,8 @@ describe( 'List - utils - postfixers', () => {
 
 			const heads = Array.from( itemToListHead.values() );
 
-			expect( heads.length ).to.equal( 1 );
-			expect( heads[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( heads.length ).toBe( 1 );
+			expect( heads[ 0 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should not find a list if position is between plain paragraphs', () => {
@@ -200,7 +203,7 @@ describe( 'List - utils - postfixers', () => {
 
 			const heads = Array.from( itemToListHead.values() );
 
-			expect( heads.length ).to.equal( 0 );
+			expect( heads.length ).toBe( 0 );
 		} );
 	} );
 
@@ -217,7 +220,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 1 ) ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'foo',
 				'* a'
 			] ) );
@@ -236,7 +239,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* a',
 				'  * b',
 				'  * c'
@@ -256,7 +259,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* a',
 				'  * b',
 				'  * c'
@@ -276,7 +279,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* a',
 				'* b',
 				'  * c'
@@ -297,7 +300,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* a',
 				'  * b',
 				'  * c',
@@ -322,7 +325,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* a',
 				'  * b',
 				'    * c',
@@ -349,7 +352,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'# e',
 				'* f',
 				'  * g',
@@ -375,7 +378,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 1 ).getChild( 0 ) ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal(
+			expect( _stringifyModel( fragment ) ).toBe(
 				'<paragraph>foo</paragraph>' +
 				'<blockQuote listIndent="0" listItemId="a02" listType="bulleted">' +
 					modelList( [
@@ -403,7 +406,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* 0',
 				'  * 1'
 			] ) );
@@ -425,7 +428,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* 0',
 				'  * 1',
 				'  2'
@@ -448,7 +451,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* 0',
 				'  * 1',
 				'    2'
@@ -471,7 +474,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* 0 {id:a}',
 				'# 1 {id:a00}',
 				'* 2 {id:a01}'
@@ -494,7 +497,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* 0 {id:a}',
 				'# 1 {id:a00}',
 				'  2'
@@ -518,7 +521,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* 0 {id:a}',
 				'# 1 {id:a00}',
 				'  * 2 {id:b}',
@@ -547,7 +550,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* 0{id:a}',
 				'  1',
 				'# 2{id:a00}',
@@ -577,7 +580,7 @@ describe( 'List - utils - postfixers', () => {
 				fixListItemIds( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), seenIds, writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toBe( modelList( [
 				'* 0{id:a}',
 				'  * 1{id:a00}',
 				'  2'

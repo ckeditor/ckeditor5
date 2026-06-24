@@ -16,8 +16,8 @@ import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ImageBlockEditing, ImageInlineEditing } from '@ckeditor/ckeditor5-image';
 import { Widget } from '@ckeditor/ckeditor5-widget';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
+import { describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	_getModelData,
@@ -30,7 +30,9 @@ import { stubUid } from '../_utils/uid.js';
 describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste', () => {
 	let element, editor, model, modelDoc, modelRoot, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -57,7 +59,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => { } );
+		vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		stubUid();
 		modelList.defaultBlock = 'listItem';
 	} );
@@ -83,7 +85,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const viewFragment = editor.data.toView( modelFragment, { skipListItemIds: true } );
 			const data = editor.data.htmlProcessor.toData( viewFragment );
 
-			expect( data ).to.equal(
+			expect( data ).toBe(
 				'<ul>' +
 					'<li>B1</li>' +
 					'<li>B2' +
@@ -108,7 +110,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const viewFragment = editor.data.toView( modelFragment, { skipListItemIds: true } );
 			const data = editor.data.htmlProcessor.toData( viewFragment );
 
-			expect( data ).to.equal(
+			expect( data ).toBe(
 				'<ul>' +
 					'<li>C1</li>' +
 					'<li>C2</li>' +
@@ -126,8 +128,8 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
 
-					expect( modelFragment.childCount ).to.equal( 2 );
-					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.true;
+					expect( modelFragment.childCount ).toBe( 2 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).toBe( true );
 				} );
 
 				it( 'should return a list structure, if a nested items were included in the selection', () => {
@@ -139,8 +141,8 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
 
-					expect( modelFragment.childCount ).to.equal( 3 );
-					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.true;
+					expect( modelFragment.childCount ).toBe( 3 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).toBe( true );
 				} );
 
 				// Note: This test also verifies support for arbitrary selection passed to getSelectedContent().
@@ -158,8 +160,8 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 					// * Bar]
 					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
 
-					expect( modelFragment.childCount ).to.equal( 2 );
-					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.true;
+					expect( modelFragment.childCount ).toBe( 2 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).toBe( true );
 				} );
 			} );
 		} );
@@ -181,7 +183,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				)
 			);
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="2" listItemId="y" listType="bulleted">Y[]</listItem>' +
@@ -208,7 +210,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				)
 			);
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">B[]X</listItem>' +
 				'<listItem listIndent="2" listItemId="y" listType="bulleted">Y</listItem>' +
@@ -231,7 +233,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				model.insertContent( item );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BX[]</listItem>' +
 				'<listItem listIndent="2" listItemId="c" listType="bulleted">C</listItem>'
@@ -250,7 +252,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				model.insertContent( writer.createText( 'X' ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BX[]</listItem>' +
 				'<listItem listIndent="2" listItemId="c" listType="bulleted">C</listItem>'
@@ -270,7 +272,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="2" listItemId="a00" listType="bulleted">Y[]</listItem>' +
@@ -291,7 +293,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				content: _parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BW</listItem>' +
 				'<listItem listIndent="2" listItemId="a00" listType="bulleted">X</listItem>' +
@@ -314,7 +316,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				content: _parseView( '<p>X</p><ul><li>Y</li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="1" listItemId="a00" listType="bulleted">Y[]</listItem>' +
@@ -339,7 +341,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">B</listItem>' +
 				'<listItem listIndent="1" listItemId="a01" listType="bulleted">X</listItem>' +
@@ -360,7 +362,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">AX</listItem>' +
 				'<listItem listIndent="1" listItemId="a00" listType="bulleted">Y[]</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">B</listItem>'
@@ -379,7 +381,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>AX</paragraph>' +
 				'<listItem listIndent="0" listItemId="a00" listType="bulleted">Y[]</listItem>' +
 				'<paragraph>B</paragraph>'
@@ -393,7 +395,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				model.change( writer => {
 					editor.model.insertContent( writer.createDocumentFragment() );
 				} );
-			} ).not.to.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should correctly handle item that is pasted between list items without its parent', () => {
@@ -416,7 +418,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
@@ -446,7 +448,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
@@ -476,7 +478,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
@@ -504,7 +506,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
@@ -527,7 +529,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				content: _parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BW</listItem>' +
 				'<listItem listIndent="2" listItemId="a00" listType="bulleted">X</listItem>' +
@@ -550,7 +552,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				content: _parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">AW</listItem>' +
 				'<listItem listIndent="1" listItemId="a00" listType="bulleted">X</listItem>' +
 				'<listItem listIndent="1" listItemId="a02" listType="bulleted">Y</listItem>' +
@@ -573,7 +575,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				content: _parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">AW</listItem>' +
 				'<listItem listIndent="0" listItemId="a00" listType="bulleted">X</listItem>' +
 				'<listItem listIndent="0" listItemId="a02" listType="bulleted">Y</listItem>' +
@@ -607,7 +609,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				content: _parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">Aa</listItem>' +
 				'<splitBlock></splitBlock>' +
 				'<listItem listIndent="0" listItemId="a00" listType="bulleted">b</listItem>' +

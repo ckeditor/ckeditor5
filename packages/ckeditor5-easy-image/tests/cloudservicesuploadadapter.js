@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { CloudServicesUploadAdapter } from '../src/cloudservicesuploadadapter.js';
 import { FileRepository } from '@ckeditor/ckeditor5-upload';
@@ -38,11 +39,11 @@ describe( 'CloudServicesUploadAdapter', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CloudServicesUploadAdapter.isOfficialPlugin ).to.be.true;
+		expect( CloudServicesUploadAdapter.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CloudServicesUploadAdapter.isPremiumPlugin ).to.be.false;
+		expect( CloudServicesUploadAdapter.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'init()', () => {
@@ -60,7 +61,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 					}
 				} )
 				.then( editor => {
-					expect( UploadGatewayMock.lastUploadUrl ).to.equal( 'http://upload.mock.url/' );
+					expect( UploadGatewayMock.lastUploadUrl ).toBe( 'http://upload.mock.url/' );
 
 					return editor.destroy();
 				} );
@@ -75,7 +76,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 					substitutePlugins: [ CloudServicesCoreMock ]
 				} )
 				.then( editor => {
-					expect( UploadGatewayMock.lastToken ).to.be.undefined;
+					expect( UploadGatewayMock.lastToken ).toBeUndefined();
 
 					return editor.destroy();
 				} );
@@ -105,34 +106,38 @@ describe( 'CloudServicesUploadAdapter', () => {
 		} );
 
 		describe( 'upload()', () => {
-			it( 'should mock upload', done => {
-				const loader = fileRepository.createLoader( createNativeFileMock() );
+			it( 'should mock upload', () => {
+				return new Promise( ( resolve, reject ) => {
+					const loader = fileRepository.createLoader( createNativeFileMock() );
 
-				loader.upload()
-					.then( response => {
-						expect( response.default ).to.equal( 'http://image.mock.url/' );
-						done();
-					} )
-					.catch( err => done( err ) );
+					loader.upload()
+						.then( response => {
+							expect( response.default ).toBe( 'http://image.mock.url/' );
+							resolve();
+						} )
+						.catch( err => reject( err ) );
 
-				// Wait for the promise from the mock.getUploader().
-				setTimeout( () => {
-					upload._uploadGateway.resolveLastUpload();
+					// Wait for the promise from the mock.getUploader().
+					setTimeout( () => {
+						upload._uploadGateway.resolveLastUpload();
+					} );
 				} );
 			} );
 
-			it( 'should update the progress', done => {
-				const loader = fileRepository.createLoader( createNativeFileMock() );
-				loader.upload();
+			it( 'should update the progress', () => {
+				return new Promise( resolve => {
+					const loader = fileRepository.createLoader( createNativeFileMock() );
+					loader.upload();
 
-				// Wait for the `loader.file` promise.
-				setTimeout( () => {
-					upload._uploadGateway.lastFileUploader.fire( 'progress', { uploaded: 50, total: 100 } );
+					// Wait for the `loader.file` promise.
+					setTimeout( () => {
+						upload._uploadGateway.lastFileUploader.fire( 'progress', { uploaded: 50, total: 100 } );
 
-					expect( loader.uploaded ).to.equal( 50 );
-					expect( loader.uploadTotal ).to.equal( 100 );
+						expect( loader.uploaded ).toBe( 50 );
+						expect( loader.uploadTotal ).toBe( 100 );
 
-					done();
+						resolve();
+					} );
 				} );
 			} );
 		} );
@@ -142,25 +147,27 @@ describe( 'CloudServicesUploadAdapter', () => {
 				const loader = fileRepository.createLoader( createNativeFileMock() );
 
 				expect( () => {
-					loader.upload();
+					loader.upload().catch( () => {} );
 					loader.abort();
-				} ).to.not.throw();
+				} ).not.toThrow();
 
-				expect( upload._uploadGateway.lastFileUploader ).to.be.undefined;
+				expect( upload._uploadGateway.lastFileUploader ).toBeUndefined();
 			} );
 
-			it( 'should call abort on the CSS uploader (`loader.file` resolved)', done => {
-				const loader = fileRepository.createLoader( createNativeFileMock() );
+			it( 'should call abort on the CSS uploader (`loader.file` resolved)', () => {
+				return new Promise( resolve => {
+					const loader = fileRepository.createLoader( createNativeFileMock() );
 
-				loader.upload();
+					loader.upload().catch( () => {} );
 
-				// Wait for the `loader.file` promise.
-				setTimeout( () => {
-					loader.abort();
+					// Wait for the `loader.file` promise.
+					setTimeout( () => {
+						loader.abort();
 
-					expect( upload._uploadGateway.lastFileUploader.aborted ).to.be.true;
+						expect( upload._uploadGateway.lastFileUploader.aborted ).toBe( true );
 
-					done();
+						resolve();
+					} );
 				} );
 			} );
 		} );

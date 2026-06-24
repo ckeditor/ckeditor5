@@ -98,7 +98,7 @@ export function createListElement(
 	writer: ViewDowncastWriter,
 	indent: number,
 	type: ListType,
-	id = getViewElementIdForListType( type, indent )
+	id: string = getViewElementIdForListType( type, indent )
 ): ViewAttributeElement {
 	// Negative priorities so that restricted editing attribute won't wrap lists.
 	return writer.createAttributeElement( getViewElementNameForListType( type ), null, {

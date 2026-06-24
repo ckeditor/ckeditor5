@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, expect, it } from 'vitest';
 import { setDataInElement } from '../../src/dom/setdatainelement.js';
 import { getDataFromElement } from '../../src/dom/getdatafromelement.js';
 

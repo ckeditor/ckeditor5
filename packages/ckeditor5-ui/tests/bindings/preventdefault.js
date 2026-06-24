@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi } from 'vitest';
 import { preventDefault } from '../../src/bindings/preventdefault.js';
 import { View } from '../../src/view.js';
 
@@ -19,13 +20,13 @@ describe( 'preventDefault', () => {
 		} );
 
 		const evt = new Event( 'foo', { bubbles: true } );
-		const spy = sinon.spy( evt, 'preventDefault' );
+		const spy = vi.spyOn( evt, 'preventDefault' );
 
 		// Render to enable bubbling.
 		view.render();
 
 		view.element.dispatchEvent( evt );
-		sinon.assert.calledOnce( spy );
+		expect( spy ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'prevents only when target is view#element', () => {
@@ -49,12 +50,12 @@ describe( 'preventDefault', () => {
 		} );
 
 		const evt = new Event( 'foo', { bubbles: true } );
-		const spy = sinon.spy( evt, 'preventDefault' );
+		const spy = vi.spyOn( evt, 'preventDefault' );
 
 		// Render to enable bubbling.
 		view.render();
 
 		child.element.dispatchEvent( evt );
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 } );

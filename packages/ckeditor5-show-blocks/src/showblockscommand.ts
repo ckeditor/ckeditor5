@@ -38,7 +38,7 @@ const SHOW_BLOCKS_LABELS = /* #__PURE__ */ ( () => [
 	[ 'p', 'P' ],
 	[ 'section', 'SECTION' ],
 	[ 'figcaption', 'FIGCAPTION' ]
-] as const )();
+] )();
 
 const SHOW_BLOCKS_LABEL_SVG_TEMPLATE: Record<ShowBlocksLabelDirection, string> = /* #__PURE__ */ ( () => ( {
 	// eslint-disable-next-line @stylistic/max-len

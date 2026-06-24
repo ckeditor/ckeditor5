@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CodeBlockEditing } from '../src/codeblockediting.js';
 import { IndentCodeBlockCommand } from '../src/indentcodeblockcommand.js';
 
@@ -13,12 +14,9 @@ import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'IndentCodeBlockCommand', () => {
 	let editor, model, indentCommand;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return ModelTestEditor
@@ -33,6 +31,8 @@ describe( 'IndentCodeBlockCommand', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
+
 		return editor.destroy();
 	} );
 
@@ -40,25 +40,25 @@ describe( 'IndentCodeBlockCommand', () => {
 		it( 'should be true when the first selected block is a codeBlock #1', () => {
 			_setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
 
-			expect( indentCommand.isEnabled ).to.be.true;
+			expect( indentCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the first selected block is a codeBlock #2', () => {
 			_setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><paragraph>ba]r</paragraph>' );
 
-			expect( indentCommand.isEnabled ).to.be.true;
+			expect( indentCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false when there is no code block in the selection', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-			expect( indentCommand.isEnabled ).to.be.false;
+			expect( indentCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false when the selection is not anchored in the code block', () => {
 			_setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="foo">bar</codeBlock><paragraph>ba]z</paragraph>' );
 
-			expect( indentCommand.isEnabled ).to.be.false;
+			expect( indentCommand.isEnabled ).toBe( false );
 		} );
 
 		describe( 'config.codeBlock.indentSequence', () => {
@@ -77,7 +77,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 						_setModelData( model, '<codeBlock language="foo">[]foo</codeBlock>' );
 
-						expect( indentCommand.isEnabled ).to.be.false;
+						expect( indentCommand.isEnabled ).toBe( false );
 
 						return editor.destroy();
 					} );
@@ -91,7 +91,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 			indentCommand.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">	[]</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">	[]</codeBlock>' );
 		} );
 
 		it( 'should indent when a selection is collapsed', () => {
@@ -99,7 +99,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 			indentCommand.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">f	[]oo</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">f	[]oo</codeBlock>' );
 		} );
 
 		it( 'should indent a whole line when a selection is expanded', () => {
@@ -107,7 +107,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 			indentCommand.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">	f[o]o</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">	f[o]o</codeBlock>' );
 		} );
 
 		it( 'should indent multiple lines when a selection is expanded', () => {
@@ -115,7 +115,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 			indentCommand.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">	f[oo<softBreak></softBreak>	b]ar</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">	f[oo<softBreak></softBreak>	b]ar</codeBlock>' );
 		} );
 
 		it( 'should append the indentation to the line\'s leading white spaces (#1)', () => {
@@ -128,7 +128,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 			indentCommand.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">    	[]foo</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">    	[]foo</codeBlock>' );
 		} );
 
 		it( 'should append the indentation to the line\'s leading white spaces (#2)', () => {
@@ -142,7 +142,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 			indentCommand.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<codeBlock language="foo">    	f[oo<softBreak></softBreak>    	b]ar</codeBlock>' );
 		} );
 
@@ -158,7 +158,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 				indentCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">	[]<element></element></codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">	[]<element></element></codeBlock>' );
 			} );
 
 			it( 'should indent when a selection is collapsed after an element', () => {
@@ -166,7 +166,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 				indentCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo"><element></element>	[]</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="foo"><element></element>	[]</codeBlock>' );
 			} );
 
 			it( 'should indent a whole line when a selection is expanded before element', () => {
@@ -174,7 +174,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 				indentCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">	f[o]o<element></element></codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">	f[o]o<element></element></codeBlock>' );
 			} );
 
 			it( 'should indent a whole line when a selection is expanded after element', () => {
@@ -182,7 +182,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 				indentCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">	<element></element>f[o]o</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">	<element></element>f[o]o</codeBlock>' );
 			} );
 
 			it( 'should indent a whole line when a selection is expanded including element', () => {
@@ -190,7 +190,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 				indentCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">	f[<element></element>]o</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">	f[<element></element>]o</codeBlock>' );
 			} );
 
 			it( 'should indent multiple lines when a selection is expanded', () => {
@@ -199,7 +199,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 				indentCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">	f[o<element></element>o<softBreak></softBreak>' +
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">	f[o<element></element>o<softBreak></softBreak>' +
 					'	b]a<element></element>r</codeBlock>' );
 			} );
 
@@ -213,7 +213,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 				indentCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">    	[]foo<element></element></codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">    	[]foo<element></element></codeBlock>' );
 			} );
 
 			it( 'should append the indentation to the line\'s leading white spaces (#2)', () => {
@@ -228,7 +228,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 				indentCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<codeBlock language="foo">    	f[o<element></element>o<softBreak></softBreak>' +
 					'    	<element></element>b]ar</codeBlock>' );
 			} );
@@ -237,15 +237,17 @@ describe( 'IndentCodeBlockCommand', () => {
 		// Need to ensure that insertContent() will not be reverted to model.change() to not break integration
 		// with Track Changes.
 		it( 'should insert indent with insertContent()', () => {
-			const insertContentSpy = sinon.spy( model, 'insertContent' );
-			const modelChangeSpy = sinon.spy( model, 'change' );
+			const insertContentSpy = vi.spyOn( model, 'insertContent' );
+			const modelChangeSpy = vi.spyOn( model, 'change' );
 
 			_setModelData( model, '<codeBlock language="foo">[]Foo</codeBlock>' );
 
 			indentCommand.execute();
 
-			expect( insertContentSpy.calledOnce ).to.be.true;
-			expect( modelChangeSpy.calledAfter( insertContentSpy ) ).to.be.true;
+			expect( insertContentSpy ).toHaveBeenCalledOnce();
+			const insertOrder = insertContentSpy.mock.invocationCallOrder[ 0 ];
+			const lastChangeOrder = Math.max( ...modelChangeSpy.mock.invocationCallOrder );
+			expect( lastChangeOrder ).toBeGreaterThan( insertOrder );
 		} );
 
 		describe( 'config.codeBlock.indentSequence', () => {
@@ -266,7 +268,7 @@ describe( 'IndentCodeBlockCommand', () => {
 
 						indentCommand.execute();
 
-						expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">  f[o]o</codeBlock>' );
+						expect( _getModelData( model ) ).toBe( '<codeBlock language="foo">  f[o]o</codeBlock>' );
 
 						return editor.destroy();
 					} );

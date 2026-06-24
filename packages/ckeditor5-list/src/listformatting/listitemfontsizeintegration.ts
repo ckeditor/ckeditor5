@@ -7,7 +7,7 @@
  * @module list/listformatting/listitemfontsizeintegration
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 import { env } from '@ckeditor/ckeditor5-utils';
 import { _normalizeFontSizeOptions } from '@ckeditor/ckeditor5-font';
@@ -36,8 +36,8 @@ export class ListItemFontSizeIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ListEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ ListEditing ]> {
+		return [ ListEditing ];
 	}
 
 	/**
@@ -64,6 +64,7 @@ export class ListItemFontSizeIntegration extends Plugin {
 			attributeName: 'listItemFontSize',
 
 			setAttributeOnDowncast( writer, value: string, viewElement, options ) {
+				/* v8 ignore next -- Downcast callbacks are only registered for meaningful list marker formatting values. */
 				if ( value ) {
 					const fontSizeOption = normalizedFontSizeOptions.find( option => option.model == value );
 
@@ -72,6 +73,8 @@ export class ListItemFontSizeIntegration extends Plugin {
 							writer.addClass( 'ck-list-marker-font-size', viewElement );
 							writer.setStyle( '--ck-content-list-marker-font-size', fontSizeOption.view.styles[ 'font-size' ], viewElement );
 						}
+
+						/* v8 ignore next -- Normalized font size options used by the integration expose styles or classes. */
 						else if ( fontSizeOption.view.classes ) {
 							writer.addClass( `ck-list-marker-font-size-${ value }`, viewElement );
 
@@ -130,6 +133,7 @@ export class ListItemFontSizeIntegration extends Plugin {
 		const fontSizeOptions = _normalizeFontSizeOptions( editor.config.get( 'fontSize.options' )! );
 
 		for ( const option of fontSizeOptions ) {
+			/* v8 ignore next -- Normalized font size options used by the integration provide model and view values. */
 			if ( option.model && option.view ) {
 				editor.conversion.for( 'upcast' ).elementToAttribute( {
 					model: {

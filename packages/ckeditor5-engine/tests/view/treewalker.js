@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ViewDocument } from '../../src/view/document.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewAttributeElement } from '../../src/view/attributeelement.js';
@@ -157,7 +158,7 @@ describe( 'TreeWalker', () => {
 				expectValue( value, expected[ i++ ] );
 			}
 
-			expect( i ).to.equal( expected.length );
+			expect( i ).toBe( expected.length );
 		} );
 
 		it( 'should provide iterator interface with forward direction', () => {
@@ -168,7 +169,7 @@ describe( 'TreeWalker', () => {
 				expectValue( value, expected[ i++ ] );
 			}
 
-			expect( i ).to.equal( expected.length );
+			expect( i ).toBe( expected.length );
 		} );
 
 		it( 'should provide iterator interface which backward direction', () => {
@@ -179,7 +180,7 @@ describe( 'TreeWalker', () => {
 				expectValue( value, expected[ --i ], { direction: 'backward' } );
 			}
 
-			expect( i ).to.equal( 0 );
+			expect( i ).toBe( 0 );
 		} );
 
 		it( 'should start iterating at the startPosition witch is not a root bound', () => {
@@ -190,7 +191,7 @@ describe( 'TreeWalker', () => {
 				expectValue( value, expected[ i++ ] );
 			}
 
-			expect( i ).to.equal( expected.length );
+			expect( i ).toBe( expected.length );
 		} );
 
 		it( 'should start iterating at the startPosition witch is not a root bound, going backward', () => {
@@ -216,7 +217,7 @@ describe( 'TreeWalker', () => {
 				expectValue( value, expected[ --i ], { direction: 'backward' } );
 			}
 
-			expect( i ).to.equal( 0 );
+			expect( i ).toBe( 0 );
 		} );
 	} );
 
@@ -281,7 +282,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ i++ ] );
 				}
 
-				expect( i ).to.equal( expected.length );
+				expect( i ).toBe( expected.length );
 			} );
 
 			it( 'should iterating over the range going backward', () => {
@@ -292,7 +293,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
-				expect( i ).to.equal( 0 );
+				expect( i ).toBe( 0 );
 			} );
 		} );
 
@@ -344,7 +345,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ i++ ] );
 				}
 
-				expect( i ).to.equal( expected.length );
+				expect( i ).toBe( expected.length );
 			} );
 
 			it( 'should return part of the text going backward', () => {
@@ -359,7 +360,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
-				expect( i ).to.equal( 0 );
+				expect( i ).toBe( 0 );
 			} );
 		} );
 
@@ -411,7 +412,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ i++ ] );
 				}
 
-				expect( i ).to.equal( expected.length );
+				expect( i ).toBe( expected.length );
 			} );
 
 			it( 'should return part of the text going backward', () => {
@@ -427,7 +428,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
-				expect( i ).to.equal( 0 );
+				expect( i ).toBe( 0 );
 			} );
 		} );
 
@@ -455,7 +456,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ i++ ] );
 				}
 
-				expect( i ).to.equal( expected.length );
+				expect( i ).toBe( expected.length );
 			} );
 
 			it( 'should return part of the text going backward', () => {
@@ -471,7 +472,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
-				expect( i ).to.equal( 0 );
+				expect( i ).toBe( 0 );
 			} );
 		} );
 
@@ -510,7 +511,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ i++ ] );
 				}
 
-				expect( i ).to.equal( expected.length );
+				expect( i ).toBe( expected.length );
 			} );
 
 			it( 'should iterating from the start position going backward', () => {
@@ -548,7 +549,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
-				expect( i ).to.equal( 0 );
+				expect( i ).toBe( 0 );
 			} );
 		} );
 	} );
@@ -654,7 +655,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ i++ ] );
 				}
 
-				expect( i ).to.equal( expected.length );
+				expect( i ).toBe( expected.length );
 			} );
 
 			it( 'should return single characters going backward', () => {
@@ -669,7 +670,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
-				expect( i ).to.equal( 0 );
+				expect( i ).toBe( 0 );
 			} );
 		} );
 
@@ -733,7 +734,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ i++ ] );
 				}
 
-				expect( i ).to.equal( expected.length );
+				expect( i ).toBe( expected.length );
 			} );
 
 			it( 'should respect boundaries going backward', () => {
@@ -748,7 +749,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
-				expect( i ).to.equal( 0 );
+				expect( i ).toBe( 0 );
 			} );
 		} );
 	} );
@@ -765,9 +766,9 @@ describe( 'TreeWalker', () => {
 
 			const items = Array.from( walker );
 
-			expect( items.length ).to.equal( 1 );
-			expect( items[ 0 ].type ).to.equal( 'elementStart' );
-			expect( items[ 0 ].item ).to.equal( img1 );
+			expect( items.length ).toBe( 1 );
+			expect( items[ 0 ].type ).toBe( 'elementStart' );
+			expect( items[ 0 ].item ).toBe( img1 );
 		} );
 
 		it( '`shallow` only iterates elements in the range that ends inside some element (forward)', () => {
@@ -786,9 +787,9 @@ describe( 'TreeWalker', () => {
 
 			const items = Array.from( walker );
 
-			expect( items.length ).to.equal( 1 );
-			expect( items[ 0 ].type ).to.equal( 'elementStart' );
-			expect( items[ 0 ].item ).to.equal( paragraph );
+			expect( items.length ).toBe( 1 );
+			expect( items[ 0 ].type ).toBe( 'elementStart' );
+			expect( items[ 0 ].item ).toBe( paragraph );
 		} );
 
 		it( '`shallow` only iterates elements in the range ends deep inside some element (forward)', () => {
@@ -807,9 +808,9 @@ describe( 'TreeWalker', () => {
 
 			const items = Array.from( walker );
 
-			expect( items.length ).to.equal( 1 );
-			expect( items[ 0 ].type ).to.equal( 'elementStart' );
-			expect( items[ 0 ].item ).to.equal( paragraph );
+			expect( items.length ).toBe( 1 );
+			expect( items[ 0 ].type ).toBe( 'elementStart' );
+			expect( items[ 0 ].item ).toBe( paragraph );
 		} );
 
 		it( '`shallow` only iterates elements in the range (backwards)', () => {
@@ -824,9 +825,9 @@ describe( 'TreeWalker', () => {
 
 			const items = Array.from( walker );
 
-			expect( items.length ).to.equal( 1 );
-			expect( items[ 0 ].type ).to.equal( 'elementStart' );
-			expect( items[ 0 ].item ).to.equal( img1 );
+			expect( items.length ).toBe( 1 );
+			expect( items[ 0 ].type ).toBe( 'elementStart' );
+			expect( items[ 0 ].item ).toBe( img1 );
 		} );
 	} );
 
@@ -858,7 +859,7 @@ describe( 'TreeWalker', () => {
 				expectValue( value, expected[ i++ ] );
 			}
 
-			expect( i ).to.equal( expected.length );
+			expect( i ).toBe( expected.length );
 		} );
 
 		it( 'should not enter elements going backward', () => {
@@ -869,7 +870,7 @@ describe( 'TreeWalker', () => {
 				expectValue( value, expected[ --i ], { direction: 'backward' } );
 			}
 
-			expect( i ).to.equal( 0 );
+			expect( i ).toBe( 0 );
 		} );
 	} );
 
@@ -932,7 +933,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ i++ ] );
 				}
 
-				expect( i ).to.equal( expected.length );
+				expect( i ).toBe( expected.length );
 			} );
 
 			it( 'should iterate ignoring elementEnd going backward', () => {
@@ -947,7 +948,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
-				expect( i ).to.equal( 0 );
+				expect( i ).toBe( 0 );
 			} );
 		} );
 
@@ -1031,7 +1032,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ i++ ] );
 				}
 
-				expect( i ).to.equal( expected.length );
+				expect( i ).toBe( expected.length );
 			} );
 
 			it( 'should return single characters ignoring elementEnd going backward', () => {
@@ -1047,7 +1048,7 @@ describe( 'TreeWalker', () => {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
-				expect( i ).to.equal( 0 );
+				expect( i ).toBe( 0 );
 			} );
 		} );
 	} );
@@ -1059,8 +1060,8 @@ describe( 'TreeWalker', () => {
 
 		const step = iterator.next();
 
-		expect( step.value.type ).to.equal( 'elementEnd' );
-		expect( step.value.item ).to.equal( bold );
+		expect( step.value.type ).toBe( 'elementEnd' );
+		expect( step.value.item ).toBe( bold );
 	} );
 
 	it( 'should not return elementStart for a text node when iteration begins at the start of that text node', () => {
@@ -1071,8 +1072,8 @@ describe( 'TreeWalker', () => {
 
 		const step = iterator.next();
 
-		expect( step.value.type ).to.equal( 'elementStart' );
-		expect( step.value.item ).to.equal( bold );
+		expect( step.value.type ).toBe( 'elementStart' );
+		expect( step.value.item ).toBe( bold );
 	} );
 
 	it( 'should iterate over document fragment', () => {
@@ -1128,7 +1129,7 @@ describe( 'TreeWalker', () => {
 			expectValue( value, expected[ i++ ] );
 		}
 
-		expect( i ).to.equal( expected.length );
+		expect( i ).toBe( expected.length );
 	} );
 
 	describe( 'skip', () => {
@@ -1140,8 +1141,8 @@ describe( 'TreeWalker', () => {
 
 				walker.skip( value => value.type == 'text' || value.item.name == 'b' );
 
-				expect( walker.position.parent ).to.equal( paragraph );
-				expect( walker.position.offset ).to.equal( 2 );
+				expect( walker.position.parent ).toBe( paragraph );
+				expect( walker.position.offset ).toBe( 2 );
 			} );
 
 			it( 'should do not move if the condition is false', () => {
@@ -1151,8 +1152,8 @@ describe( 'TreeWalker', () => {
 
 				walker.skip( () => false );
 
-				expect( walker.position.parent ).to.equal( bold );
-				expect( walker.position.offset ).to.equal( 0 );
+				expect( walker.position.parent ).toBe( bold );
+				expect( walker.position.offset ).toBe( 0 );
 			} );
 
 			it( 'should do not move if the condition is false and the position is in text node', () => {
@@ -1162,8 +1163,8 @@ describe( 'TreeWalker', () => {
 
 				walker.skip( () => false );
 
-				expect( walker.position.parent ).to.equal( bold.getChild( 0 ) );
-				expect( walker.position.offset ).to.equal( 2 );
+				expect( walker.position.parent ).toBe( bold.getChild( 0 ) );
+				expect( walker.position.offset ).toBe( 2 );
 			} );
 
 			it( 'should move to the end if the condition is true', () => {
@@ -1173,8 +1174,8 @@ describe( 'TreeWalker', () => {
 
 				walker.skip( () => true );
 
-				expect( walker.position.parent ).to.equal( rootEnding.parent );
-				expect( walker.position.offset ).to.equal( rootEnding.offset );
+				expect( walker.position.parent ).toBe( rootEnding.parent );
+				expect( walker.position.offset ).toBe( rootEnding.offset );
 			} );
 		} );
 
@@ -1187,8 +1188,8 @@ describe( 'TreeWalker', () => {
 
 				walker.skip( value => value.type == 'text' || value.item.name == 'b' );
 
-				expect( walker.position.parent ).to.equal( paragraph );
-				expect( walker.position.offset ).to.equal( 0 );
+				expect( walker.position.parent ).toBe( paragraph );
+				expect( walker.position.offset ).toBe( 0 );
 			} );
 
 			it( 'should do not move if the condition is false', () => {
@@ -1199,8 +1200,8 @@ describe( 'TreeWalker', () => {
 
 				walker.skip( () => false );
 
-				expect( walker.position.parent ).to.equal( bold );
-				expect( walker.position.offset ).to.equal( 0 );
+				expect( walker.position.parent ).toBe( bold );
+				expect( walker.position.offset ).toBe( 0 );
 			} );
 
 			it( 'should move to the end if the condition is true', () => {
@@ -1211,8 +1212,8 @@ describe( 'TreeWalker', () => {
 
 				walker.skip( () => true );
 
-				expect( walker.position.parent ).to.equal( rootBeginning.parent );
-				expect( walker.position.offset ).to.equal( rootBeginning.offset );
+				expect( walker.position.parent ).toBe( rootBeginning.parent );
+				expect( walker.position.offset ).toBe( rootBeginning.offset );
 			} );
 		} );
 	} );
@@ -1225,13 +1226,13 @@ describe( 'TreeWalker', () => {
 
 			walker.jumpTo( new ViewPosition( paragraph, 2 ) );
 
-			expect( walker.position.parent ).to.equal( paragraph );
-			expect( walker.position.offset ).to.equal( 2 );
+			expect( walker.position.parent ).toBe( paragraph );
+			expect( walker.position.offset ).toBe( 2 );
 
 			walker.next();
 
-			expect( walker.position.parent ).to.equal( img2 );
-			expect( walker.position.offset ).to.equal( 0 );
+			expect( walker.position.parent ).toBe( img2 );
+			expect( walker.position.offset ).toBe( 0 );
 		} );
 
 		it( 'cannot move position before the #_boundaryStartParent', () => {
@@ -1248,13 +1249,13 @@ describe( 'TreeWalker', () => {
 			walker.jumpTo( positionBeforeAllowedRange );
 
 			// `jumpTo()` autocorrected the position to the first allowed position.
-			expect( walker.position.parent ).to.equal( paragraph );
-			expect( walker.position.offset ).to.equal( 2 );
+			expect( walker.position.parent ).toBe( paragraph );
+			expect( walker.position.offset ).toBe( 2 );
 
 			walker.next();
 
-			expect( walker.position.parent ).to.equal( img2 );
-			expect( walker.position.offset ).to.equal( 0 );
+			expect( walker.position.parent ).toBe( img2 );
+			expect( walker.position.offset ).toBe( 0 );
 		} );
 
 		it( 'cannot move position after the #_boundaryEndParent', () => {
@@ -1271,13 +1272,13 @@ describe( 'TreeWalker', () => {
 			// `jumpTo()` autocorrected the position to the last allowed position.
 			walker.jumpTo( positionAfterAllowedRange );
 
-			expect( walker.position.parent ).to.equal( paragraph );
-			expect( walker.position.offset ).to.equal( 2 );
+			expect( walker.position.parent ).toBe( paragraph );
+			expect( walker.position.offset ).toBe( 2 );
 
 			walker.next();
 
-			expect( walker.position.parent ).to.equal( paragraph );
-			expect( walker.position.offset ).to.equal( 2 );
+			expect( walker.position.parent ).toBe( paragraph );
+			expect( walker.position.offset ).toBe( 2 );
 		} );
 	} );
 } );
@@ -1293,9 +1294,9 @@ function expectValue( value, expected, options = {} ) {
 		expectedPreviousPosition = expected.previousPosition;
 	}
 
-	expect( value.type ).to.equal( expected.type );
-	expect( value.previousPosition ).to.deep.equal( expectedPreviousPosition );
-	expect( value.nextPosition ).to.deep.equal( expectedNextPosition );
+	expect( value.type ).toBe( expected.type );
+	expect( value.previousPosition ).toEqual( expectedPreviousPosition );
+	expect( value.nextPosition ).toEqual( expectedNextPosition );
 
 	if ( value.type == 'text' ) {
 		expectText( value, expected );
@@ -1307,16 +1308,16 @@ function expectValue( value, expected, options = {} ) {
 }
 
 function expectText( value, expected ) {
-	expect( value.item.data ).to.equal( expected.text );
-	expect( value.length ).to.equal( value.item.data.length );
+	expect( value.item.data ).toBe( expected.text );
+	expect( value.length ).toBe( value.item.data.length );
 }
 
 function expectStart( value, expected ) {
-	expect( value.item ).to.equal( expected.item );
-	expect( value.length ).to.equal( 1 );
+	expect( value.item ).toBe( expected.item );
+	expect( value.length ).toBe( 1 );
 }
 
 function expectEnd( value, expected ) {
-	expect( value.item ).to.equal( expected.item );
-	expect( value.length ).to.be.undefined;
+	expect( value.item ).toBe( expected.item );
+	expect( value.length ).toBeUndefined();
 }

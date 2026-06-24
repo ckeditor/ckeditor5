@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { ViewUIElement } from '../../src/view/uielement.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
@@ -25,12 +26,12 @@ describe( 'ViewUIElement', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create instance', () => {
-			expect( uiElement.name ).to.equal( 'span' );
-			expect( uiElement.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( uiElement.getStyle( 'margin-top' ) ).to.equal( '2em' );
-			expect( uiElement.getStyle( 'color' ) ).to.equal( 'white' );
-			expect( uiElement.hasClass( 'foo' ) ).to.true;
-			expect( uiElement.hasClass( 'bar' ) ).to.true;
+			expect( uiElement.name ).toBe( 'span' );
+			expect( uiElement.getAttribute( 'foo' ) ).toBe( 'bar' );
+			expect( uiElement.getStyle( 'margin-top' ) ).toBe( '2em' );
+			expect( uiElement.getStyle( 'color' ) ).toBe( 'white' );
+			expect( uiElement.hasClass( 'foo' ) ).toBe( true );
+			expect( uiElement.hasClass( 'bar' ) ).toBe( true );
 		} );
 
 		it( 'should throw if child elements are passed to constructor', () => {
@@ -43,42 +44,42 @@ describe( 'ViewUIElement', () => {
 	describe( 'is()', () => {
 		let el;
 
-		before( () => {
+		beforeAll( () => {
 			el = new ViewUIElement( doc, 'span' );
 		} );
 
 		it( 'should return true for uiElement/element, also with correct name and element name', () => {
-			expect( el.is( 'uiElement' ) ).to.be.true;
-			expect( el.is( 'view:uiElement' ) ).to.be.true;
-			expect( el.is( 'uiElement', 'span' ) ).to.be.true;
-			expect( el.is( 'view:uiElement', 'span' ) ).to.be.true;
-			expect( el.is( 'element' ) ).to.be.true;
-			expect( el.is( 'view:element' ) ).to.be.true;
-			expect( el.is( 'node' ) ).to.be.true;
-			expect( el.is( 'view:node' ) ).to.be.true;
-			expect( el.is( 'element', 'span' ) ).to.be.true;
-			expect( el.is( 'view:element', 'span' ) ).to.be.true;
+			expect( el.is( 'uiElement' ) ).toBe( true );
+			expect( el.is( 'view:uiElement' ) ).toBe( true );
+			expect( el.is( 'uiElement', 'span' ) ).toBe( true );
+			expect( el.is( 'view:uiElement', 'span' ) ).toBe( true );
+			expect( el.is( 'element' ) ).toBe( true );
+			expect( el.is( 'view:element' ) ).toBe( true );
+			expect( el.is( 'node' ) ).toBe( true );
+			expect( el.is( 'view:node' ) ).toBe( true );
+			expect( el.is( 'element', 'span' ) ).toBe( true );
+			expect( el.is( 'view:element', 'span' ) ).toBe( true );
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( el.is( 'uiElement', 'p' ) ).to.be.false;
-			expect( el.is( 'view:uiElement', 'p' ) ).to.be.false;
-			expect( el.is( 'element', 'p' ) ).to.be.false;
-			expect( el.is( 'view:element', 'p' ) ).to.be.false;
-			expect( el.is( 'element', 'p' ) ).to.be.false;
-			expect( el.is( 'view:p' ) ).to.be.false;
-			expect( el.is( '$text' ) ).to.be.false;
-			expect( el.is( '$textProxy' ) ).to.be.false;
-			expect( el.is( 'containerElement' ) ).to.be.false;
-			expect( el.is( 'attributeElement' ) ).to.be.false;
-			expect( el.is( 'emptyElement' ) ).to.be.false;
-			expect( el.is( 'rootElement' ) ).to.be.false;
-			expect( el.is( 'documentFragment' ) ).to.be.false;
-			expect( el.is( 'model:element' ) ).to.be.false;
-			expect( el.is( 'model:span' ) ).to.be.false;
-			expect( el.is( 'model:node' ) ).to.be.false;
-			expect( el.is( 'node', 'span' ) ).to.be.false;
-			expect( el.is( 'view:node', 'span' ) ).to.be.false;
+			expect( el.is( 'uiElement', 'p' ) ).toBe( false );
+			expect( el.is( 'view:uiElement', 'p' ) ).toBe( false );
+			expect( el.is( 'element', 'p' ) ).toBe( false );
+			expect( el.is( 'view:element', 'p' ) ).toBe( false );
+			expect( el.is( 'element', 'p' ) ).toBe( false );
+			expect( el.is( 'view:p' ) ).toBe( false );
+			expect( el.is( '$text' ) ).toBe( false );
+			expect( el.is( '$textProxy' ) ).toBe( false );
+			expect( el.is( 'containerElement' ) ).toBe( false );
+			expect( el.is( 'attributeElement' ) ).toBe( false );
+			expect( el.is( 'emptyElement' ) ).toBe( false );
+			expect( el.is( 'rootElement' ) ).toBe( false );
+			expect( el.is( 'documentFragment' ) ).toBe( false );
+			expect( el.is( 'model:element' ) ).toBe( false );
+			expect( el.is( 'model:span' ) ).toBe( false );
+			expect( el.is( 'model:node' ) ).toBe( false );
+			expect( el.is( 'node', 'span' ) ).toBe( false );
+			expect( el.is( 'view:node', 'span' ) ).toBe( false );
 		} );
 	} );
 
@@ -102,19 +103,19 @@ describe( 'ViewUIElement', () => {
 		it( 'should be properly cloned', () => {
 			const newUIElement = uiElement._clone();
 
-			expect( newUIElement.name ).to.equal( 'span' );
-			expect( newUIElement.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( newUIElement.getStyle( 'margin-top' ) ).to.equal( '2em' );
-			expect( newUIElement.getStyle( 'color' ) ).to.equal( 'white' );
-			expect( newUIElement.hasClass( 'foo' ) ).to.true;
-			expect( newUIElement.hasClass( 'bar' ) ).to.true;
-			expect( newUIElement.isSimilar( uiElement ) ).to.true;
+			expect( newUIElement.name ).toBe( 'span' );
+			expect( newUIElement.getAttribute( 'foo' ) ).toBe( 'bar' );
+			expect( newUIElement.getStyle( 'margin-top' ) ).toBe( '2em' );
+			expect( newUIElement.getStyle( 'color' ) ).toBe( 'white' );
+			expect( newUIElement.hasClass( 'foo' ) ).toBe( true );
+			expect( newUIElement.hasClass( 'bar' ) ).toBe( true );
+			expect( newUIElement.isSimilar( uiElement ) ).toBe( true );
 		} );
 	} );
 
 	describe( 'getFillerOffset()', () => {
 		it( 'should return null', () => {
-			expect( uiElement.getFillerOffset() ).to.null;
+			expect( uiElement.getFillerOffset() ).toBeNull();
 		} );
 	} );
 
@@ -126,16 +127,16 @@ describe( 'ViewUIElement', () => {
 		} );
 
 		it( 'should return DOM element', () => {
-			expect( domElement ).to.be.instanceOf( HTMLElement );
+			expect( domElement ).toBeInstanceOf( HTMLElement );
 		} );
 
 		it( 'should use element name', () => {
-			expect( domElement.tagName.toLowerCase() ).to.equal( uiElement.name );
+			expect( domElement.tagName.toLowerCase() ).toBe( uiElement.name );
 		} );
 
 		it( 'should render attributes', () => {
 			for ( const key of uiElement.getAttributeKeys() ) {
-				expect( domElement.getAttribute( key ) ).to.equal( uiElement.getAttribute( key ) );
+				expect( domElement.getAttribute( key ) ).toBe( uiElement.getAttribute( key ) );
 			}
 		} );
 
@@ -144,7 +145,7 @@ describe( 'ViewUIElement', () => {
 				return domDocument.createElement( 'b' );
 			};
 
-			expect( uiElement.render( document ).tagName.toLowerCase() ).to.equal( 'b' );
+			expect( uiElement.render( document ).tagName.toLowerCase() ).toBe( 'b' );
 		} );
 
 		it( 'should allow to add new elements inside', () => {
@@ -157,8 +158,8 @@ describe( 'ViewUIElement', () => {
 			};
 
 			const rendered = uiElement.render( document );
-			expect( rendered.tagName.toLowerCase() ).to.equal( 'span' );
-			expect( rendered.textContent ).to.equal( 'foo bar' );
+			expect( rendered.tagName.toLowerCase() ).toBe( 'span' );
+			expect( rendered.textContent ).toBe( 'foo bar' );
 		} );
 	} );
 
@@ -173,7 +174,7 @@ describe( 'ViewUIElement', () => {
 			const json = JSON.stringify( uiElement );
 			const parsed = JSON.parse( json );
 
-			expect( parsed ).to.deep.equal( {
+			expect( parsed ).toEqual( {
 				name: 'span',
 				path: [ 0, 0 ],
 				root: 'main',

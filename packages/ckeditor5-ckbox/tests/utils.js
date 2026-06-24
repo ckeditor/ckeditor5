@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getWorkspaceId, getImageUrls, blurHashToDataUrl, convertMimeTypeToExtension, getContentTypeOfUrl } from '../src/utils.js';
 
 describe( 'utils', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	describe( 'getWorkspaceId', () => {
 		describe( 'without default workspace', () => {
@@ -22,7 +24,7 @@ describe( 'utils', () => {
 					}
 				} );
 
-				expect( getWorkspaceId( token ) ).to.equal( 'workspace1' );
+				expect( getWorkspaceId( token ) ).toBe( 'workspace1' );
 			} );
 
 			it( 'should return the only workspace id from the token', async () => {
@@ -35,7 +37,7 @@ describe( 'utils', () => {
 					}
 				} );
 
-				expect( getWorkspaceId( token ) ).to.equal( 'workspace1' );
+				expect( getWorkspaceId( token ) ).toBe( 'workspace1' );
 			} );
 
 			it( 'should return environment name as a workspace id from a token when `auth.ckbox.workspaces` is missing', async () => {
@@ -46,7 +48,7 @@ describe( 'utils', () => {
 					}
 				} );
 
-				expect( getWorkspaceId( token ) ).to.equal( 'environment' );
+				expect( getWorkspaceId( token ) ).toBe( 'environment' );
 			} );
 
 			it( 'should return environment name as a workspace id from a token when `auth.ckbox` is missing', async () => {
@@ -55,7 +57,7 @@ describe( 'utils', () => {
 					auth: {}
 				} );
 
-				expect( getWorkspaceId( token ) ).to.equal( 'environment' );
+				expect( getWorkspaceId( token ) ).toBe( 'environment' );
 			} );
 
 			it( 'should return environment name as a workspace id from a token when `auth` is missing', async () => {
@@ -63,7 +65,7 @@ describe( 'utils', () => {
 					aud: 'environment'
 				} );
 
-				expect( getWorkspaceId( token ) ).to.equal( 'environment' );
+				expect( getWorkspaceId( token ) ).toBe( 'environment' );
 			} );
 		} );
 
@@ -78,7 +80,7 @@ describe( 'utils', () => {
 					}
 				} );
 
-				expect( getWorkspaceId( token, 'workspace2' ) ).to.equal( 'workspace2' );
+				expect( getWorkspaceId( token, 'workspace2' ) ).toBe( 'workspace2' );
 			} );
 
 			it( 'should return the default workspace id that equals to environment', async () => {
@@ -86,7 +88,7 @@ describe( 'utils', () => {
 					aud: 'environment'
 				} );
 
-				expect( getWorkspaceId( token, 'environment' ) ).to.equal( 'environment' );
+				expect( getWorkspaceId( token, 'environment' ) ).toBe( 'environment' );
 			} );
 
 			it( 'should return null when the user has no access to the default workspace', async () => {
@@ -99,7 +101,7 @@ describe( 'utils', () => {
 					}
 				} );
 
-				expect( getWorkspaceId( token, 'another-workspace' ) ).to.be.null;
+				expect( getWorkspaceId( token, 'another-workspace' ) ).toBeNull();
 			} );
 
 			it( 'should return default workspace when the user is superadmin', async () => {
@@ -112,7 +114,7 @@ describe( 'utils', () => {
 					}
 				} );
 
-				expect( getWorkspaceId( token, 'some-workspace' ) ).to.equal( 'some-workspace' );
+				expect( getWorkspaceId( token, 'some-workspace' ) ).toBe( 'some-workspace' );
 			} );
 		} );
 	} );
@@ -151,7 +153,7 @@ describe( 'utils', () => {
 				const expectedSizes = `(max-width: ${ maxWidth }px) 100vw, ${ maxWidth }px`;
 				const expectedSrcset = widths.map( width => `${ getExampleUrl( width ) } ${ width }w` ).join( ',' );
 
-				expect( getImageUrls( data ) ).to.deep.equal( {
+				expect( getImageUrls( data ) ).toEqual( {
 					imageFallbackUrl: getExampleUrl( maxWidth, extension ),
 					imageSources: [ {
 						sizes: expectedSizes,
@@ -162,6 +164,25 @@ describe( 'utils', () => {
 			} );
 		}
 
+		it( 'should keep the current max width when a later entry does not exceed it', () => {
+			// Integer-like keys iterate first in numeric ascending order; the non-integer-like
+			// `'200.5'` key iterates last (insertion order), with parseInt → 200, which is not
+			// greater than the maxWidth (300) already locked in by the earlier '300' entry.
+			const data = {
+				default: getExampleUrl( 300 ),
+				100: getExampleUrl( 100 ),
+				300: getExampleUrl( 300 ),
+				'200.5': getExampleUrl( '200.5' )
+			};
+
+			const { imageSources } = getImageUrls( data );
+
+			expect( imageSources[ 0 ].sizes ).toBe( '(max-width: 300px) 100vw, 300px' );
+			expect( imageSources[ 0 ].srcset ).toBe(
+				`${ getExampleUrl( 100 ) } 100w,${ getExampleUrl( 300 ) } 300w,${ getExampleUrl( '200.5' ) } 200.5w`
+			);
+		} );
+
 		function getExampleUrl( width, extension = 'webp' ) {
 			return `https://example.com/workspace1/assets/foo-id/images/${ width }.${ extension }`;
 		}
@@ -169,13 +190,13 @@ describe( 'utils', () => {
 
 	describe( 'base64FromBlurHash()', () => {
 		it( 'should return undefined if no blurHash', () => {
-			expect( blurHashToDataUrl( undefined ) ).to.be.undefined;
-			expect( blurHashToDataUrl( null ) ).to.be.undefined;
-			expect( blurHashToDataUrl( '' ) ).to.be.undefined;
+			expect( blurHashToDataUrl( undefined ) ).toBeUndefined();
+			expect( blurHashToDataUrl( null ) ).toBeUndefined();
+			expect( blurHashToDataUrl( '' ) ).toBeUndefined();
 		} );
 
 		it( 'should return undefined if invalid blurHash', () => {
-			expect( blurHashToDataUrl( '123' ) ).to.be.undefined;
+			expect( blurHashToDataUrl( '123' ) ).toBeUndefined();
 		} );
 
 		it( 'should generate image data url', () => {
@@ -183,8 +204,8 @@ describe( 'utils', () => {
 			const prefix = 'data:image/png;base64,';
 			const binary = atob( result.substring( prefix.length ) );
 
-			expect( result ).to.match( new RegExp( '^' + prefix ) );
-			expect( binary.substring( 0, 8 ) ).to.equal( '\x89PNG\r\n\u001a\n' );
+			expect( result ).toMatch( new RegExp( '^' + prefix ) );
+			expect( binary.substring( 0, 8 ) ).toBe( '\x89PNG\r\n\u001a\n' );
 		} );
 	} );
 
@@ -205,7 +226,7 @@ describe( 'utils', () => {
 			const returnDescription = extension ? `'${ extension }'` : 'undefined';
 
 			it( `should return ${ returnDescription } for '${ mimeType }' type`, () => {
-				expect( convertMimeTypeToExtension( mimeType ) ).to.equal( extension );
+				expect( convertMimeTypeToExtension( mimeType ) ).toBe( extension );
 			} );
 		}
 	} );
@@ -215,28 +236,28 @@ describe( 'utils', () => {
 			const imageUrl = 'https://example.com/sample.jpb';
 			const mimeType = 'image/myformat';
 			const controller = new AbortController();
-			sinon.stub( window, 'fetch' ).resolves(
+			vi.spyOn( window, 'fetch' ).mockResolvedValue(
 				new Response( null, { headers: { 'content-type': mimeType } } )
 			);
 
 			const result = await getContentTypeOfUrl( imageUrl, { signal: controller.signal } );
 
-			expect( result ).to.equal( mimeType );
+			expect( result ).toBe( mimeType );
 		} );
 
 		it( 'should call `fetch` with correct arguments', async () => {
 			const imageUrl = 'https://example.com/sample.jpb';
 			const mimeType = 'image/myformat';
 			const controller = new AbortController();
-			const stub = sinon.stub( window, 'fetch' ).resolves(
+			const stub = vi.spyOn( window, 'fetch' ).mockResolvedValue(
 				new Response( null, { headers: { 'content-type': mimeType } } )
 			);
 
 			await getContentTypeOfUrl( imageUrl, { signal: controller.signal } );
 
-			expect( stub.calledOnce ).to.be.true;
-			expect( stub.firstCall.args[ 0 ] ).to.equal( imageUrl );
-			expect( stub.firstCall.args[ 1 ] ).to.deep.include( {
+			expect( stub ).toHaveBeenCalledTimes( 1 );
+			expect( stub.mock.calls[ 0 ][ 0 ] ).toBe( imageUrl );
+			expect( stub.mock.calls[ 0 ][ 1 ] ).toMatchObject( {
 				method: 'HEAD',
 				cache: 'force-cache',
 				signal: controller.signal
@@ -246,35 +267,35 @@ describe( 'utils', () => {
 		it( 'should return empty string when `Content-Type` is missing in response', async () => {
 			const imageUrl = 'https://example.com/sample.jpb';
 			const controller = new AbortController();
-			sinon.stub( window, 'fetch' ).resolves(
+			vi.spyOn( window, 'fetch' ).mockResolvedValue(
 				new Response( null, { headers: {} } )
 			);
 
 			const result = await getContentTypeOfUrl( imageUrl, { signal: controller.signal } );
 
-			expect( result ).to.equal( '' );
+			expect( result ).toBe( '' );
 		} );
 
 		it( 'should return empty string when `fetch` fails', async () => {
 			const imageUrl = 'https://example.com/sample.jpb';
 			const controller = new AbortController();
-			sinon.stub( window, 'fetch' ).resolves(
+			vi.spyOn( window, 'fetch' ).mockResolvedValue(
 				new Response( null, { status: 500 } )
 			);
 
 			const result = await getContentTypeOfUrl( imageUrl, { signal: controller.signal } );
 
-			expect( result ).to.equal( '' );
+			expect( result ).toBe( '' );
 		} );
 
 		it( 'should return empty string on network error', async () => {
 			const imageUrl = 'https://example.com/sample.jpb';
 			const controller = new AbortController();
-			sinon.stub( window, 'fetch' ).rejects( 'failed' );
+			vi.spyOn( window, 'fetch' ).mockRejectedValue( new Error( 'failed' ) );
 
 			const result = await getContentTypeOfUrl( imageUrl, { signal: controller.signal } );
 
-			expect( result ).to.equal( '' );
+			expect( result ).toBe( '' );
 		} );
 	} );
 } );

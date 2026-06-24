@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Typing } from '@ckeditor/ckeditor5-typing';
@@ -17,15 +18,12 @@ import { ViewDocumentDomEventData,
 import { toWidget } from '../src/utils.js';
 
 import { env } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Widget - integration', () => {
 	let editor, model, view, viewDocument, editorElement;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
-		testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
+		vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
 
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
@@ -91,6 +89,8 @@ describe( 'Widget - integration', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
+
 		editorElement.remove();
 
 		return editor.destroy();
@@ -101,7 +101,7 @@ describe( 'Widget - integration', () => {
 		const viewDiv = viewDocument.getRoot().getChild( 1 );
 		const viewFigcaption = viewDiv.getChild( 0 );
 
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
@@ -111,9 +111,9 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.notCalled( preventDefault );
+		expect( preventDefault ).not.toHaveBeenCalled();
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'<p>[]</p>' +
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo bar</figcaption>' +
@@ -121,7 +121,7 @@ describe( 'Widget - integration', () => {
 			'</div>'
 		);
 
-		expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
+		expect( _getModelData( model ) ).toBe( '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
 	} );
 
 	it( 'should select the entire nested editable if triple clicked', () => {
@@ -129,7 +129,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
 			preventDefault,
@@ -138,15 +138,15 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
+		expect( preventDefault ).toHaveBeenCalled();
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
 		);
-		expect( _getModelData( model ) ).to.equal( '<widget><nested>[foo bar]</nested></widget>' );
+		expect( _getModelData( model ) ).toBe( '<widget><nested>[foo bar]</nested></widget>' );
 	} );
 
 	it( 'should select the entire nested editable if triple clicked on link', () => {
@@ -154,7 +154,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewLink = viewDiv.getChild( 0 ).getChild( 1 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewLink ),
 			preventDefault,
@@ -163,15 +163,15 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
+		expect( preventDefault ).toHaveBeenCalled();
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'<div class="ck-widget" contenteditable="false">' +
 			'<figcaption contenteditable="true">{foo <a href="abc">bar</a>]</figcaption>' +
 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
 		);
-		expect( _getModelData( model ) ).to.equal( '<widget><nested>[foo <$text linkHref="abc">bar</$text>]</nested></widget>' );
+		expect( _getModelData( model ) ).toBe( '<widget><nested>[foo <$text linkHref="abc">bar</$text>]</nested></widget>' );
 	} );
 
 	it( 'should select only clicked paragraph if triple clicked on link', () => {
@@ -187,7 +187,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewLink = viewDiv.getChild( 0 ).getChild( 1 ).getChild( 1 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewLink ),
 			preventDefault,
@@ -196,9 +196,9 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
+		expect( preventDefault ).toHaveBeenCalled();
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">' +
 					'<p>foo</p>' +
@@ -208,7 +208,7 @@ describe( 'Widget - integration', () => {
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
 		);
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			'<widget>' +
 				'<nested>' +
 					'<paragraph>foo</paragraph>' +
@@ -224,7 +224,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const secondViewFigcaption = viewDiv.getChild( 1 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( secondViewFigcaption ),
 			preventDefault,
@@ -233,9 +233,9 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
+		expect( preventDefault ).toHaveBeenCalled();
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo</figcaption>' +
 				'<figcaption contenteditable="true">{bar}</figcaption>' +
@@ -243,7 +243,7 @@ describe( 'Widget - integration', () => {
 			'</div>'
 		);
 
-		expect( _getModelData( model ) ).to.equal( '<widget><nested>foo</nested><nested>[bar]</nested></widget>' );
+		expect( _getModelData( model ) ).toBe( '<widget><nested>foo</nested><nested>[bar]</nested></widget>' );
 	} );
 
 	it( 'should select the entire nested editable if quadra clicked', () => {
@@ -251,7 +251,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
 			preventDefault,
@@ -260,23 +260,23 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
+		expect( preventDefault ).toHaveBeenCalled();
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
 		);
 
-		expect( _getModelData( model ) ).to.equal( '<widget><nested>[foo bar]</nested></widget>' );
+		expect( _getModelData( model ) ).toBe( '<widget><nested>[foo bar]</nested></widget>' );
 	} );
 
 	it( 'should select image block if triple clicked', () => {
 		_setModelData( model, '[]<imageBlock></imageBlock>' );
 
 		const image = viewDocument.getRoot().getChild( 0 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( image ),
 			preventDefault,
@@ -285,13 +285,13 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		expect( _getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).toBe(
 			'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img></img>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</figure>]'
 		);
 
-		expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
+		expect( _getModelData( model ) ).toBe( '[<imageBlock></imageBlock>]' );
 	} );
 } );

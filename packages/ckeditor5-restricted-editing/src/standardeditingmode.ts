@@ -7,7 +7,7 @@
  * @module restricted-editing/standardeditingmode
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { StandardEditingModeEditing } from './standardeditingmodeediting.js';
 import { StandardEditingModeUI } from './standardeditingmodeui.js';
@@ -37,8 +37,7 @@ export class StandardEditingMode extends Plugin {
 		return true;
 	}
 
-	public static get requires() {
-		return [ StandardEditingModeEditing, StandardEditingModeUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ StandardEditingModeEditing, StandardEditingModeUI ]> {
+		return [ StandardEditingModeEditing, StandardEditingModeUI ];
 	}
 }
-

@@ -115,4 +115,3 @@ function bindPreview( editor, previewId ) {
 
 	preview.innerHTML = editor.getData();
 }
-

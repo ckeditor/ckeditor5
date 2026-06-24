@@ -24,6 +24,7 @@ export function initializeCKEditor5NpmBuild( overrides = {} ) {
 		sourceMap: true,
 		external: [],
 		declarations: true,
+		stripInternal: false,
 
 		/**
 		 * Because this build runs first, it cleans up the old output folder
@@ -73,6 +74,7 @@ export async function generateCKEditor5PackageBuild( packagePath, overrides = {}
 		output: upath.resolve( packagePath, 'dist/index.js' ),
 		tsconfig: 'tsconfig.build.json',
 		declarations: true,
+		stripInternal: false,
 		banner,
 		external: [
 			'ckeditor5',

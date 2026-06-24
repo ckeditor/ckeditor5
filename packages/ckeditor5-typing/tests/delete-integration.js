@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Typing } from '../src/typing.js';
 import { DeleteCommand } from '../src/deletecommand.js';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
@@ -51,7 +52,7 @@ describe( 'Delete integration', () => {
 	} );
 
 	function assertOutput( output ) {
-		expect( _getModelData( model ) ).to.equal( output );
+		expect( _getModelData( model ) ).toEqual( output );
 	}
 
 	describe( 'with undo', () => {
@@ -189,7 +190,7 @@ describe( 'Delete integration', () => {
 			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="000" listType="numbered">OL List i[tem 1</paragraph>' +
 				'<paragraph listIndent="0" listItemId="001" listType="numbered">OL List item 2</paragraph>]' +
-				'<imageBlock alt="bar" imageStyle="side" src="/assets/sample.png"><caption>[Caption</caption></imageBlock>' +
+				'<imageBlock alt="bar" imageStyle="side" src="/sample.png"><caption>[Caption</caption></imageBlock>' +
 				'<blockQuote>' +
 					'<paragraph>Quote</paragraph>' +
 					'<paragraph listIndent="0" listItemId="002" listType="bulleted">Quoted UL List item 1</paragraph>' +
@@ -200,7 +201,7 @@ describe( 'Delete integration', () => {
 
 			expect( () => {
 				editor.execute( 'delete' );
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
 

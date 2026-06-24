@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconHeading2 } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { HeadingEditing } from '../src/headingediting.js';
@@ -52,61 +53,61 @@ describe( 'HeadingButtonUI', () => {
 		it( 'should define default buttons', () => {
 			const factory = editor.ui.componentFactory;
 
-			expect( factory.create( 'heading1' ) ).to.be.instanceOf( ButtonView );
-			expect( factory.create( 'heading2' ) ).to.be.instanceOf( ButtonView );
-			expect( factory.create( 'heading3' ) ).to.be.instanceOf( ButtonView );
-			expect( factory.create( 'heading4' ) ).to.be.instanceOf( ButtonView );
-			expect( factory.create( 'heading5' ) ).to.be.instanceOf( ButtonView );
-			expect( factory.create( 'heading6' ) ).to.be.instanceOf( ButtonView );
+			expect( factory.create( 'heading1' ) ).toBeInstanceOf( ButtonView );
+			expect( factory.create( 'heading2' ) ).toBeInstanceOf( ButtonView );
+			expect( factory.create( 'heading3' ) ).toBeInstanceOf( ButtonView );
+			expect( factory.create( 'heading4' ) ).toBeInstanceOf( ButtonView );
+			expect( factory.create( 'heading5' ) ).toBeInstanceOf( ButtonView );
+			expect( factory.create( 'heading6' ) ).toBeInstanceOf( ButtonView );
 		} );
 
 		it( 'should initialize buttons with correct localized data', () => {
 			const localizedOptions = getLocalizedOptions( editor ).filter( option => option.model == 'heading2' )[ 0 ];
 			const heading2Button = editor.ui.componentFactory.create( 'heading2' );
 
-			expect( heading2Button.label ).to.equal( localizedOptions.title );
-			expect( heading2Button.icon ).to.equal( IconHeading2 );
-			expect( heading2Button.tooltip ).to.equal( true );
+			expect( heading2Button.label ).toEqual( localizedOptions.title );
+			expect( heading2Button.icon ).toEqual( IconHeading2 );
+			expect( heading2Button.tooltip ).toEqual( true );
 		} );
 
 		it( 'should bind buttons to correct commands', () => {
 			const headingButton = editor.ui.componentFactory.create( 'heading1' );
 			const headingCommand = editor.commands.get( 'heading' );
 
-			expect( headingCommand.isEnabled ).to.be.true;
-			expect( headingButton.isEnabled ).to.be.true;
+			expect( headingCommand.isEnabled ).toBe( true );
+			expect( headingButton.isEnabled ).toBe( true );
 
 			headingCommand.isEnabled = false;
-			expect( headingButton.isEnabled ).to.be.false;
+			expect( headingButton.isEnabled ).toBe( false );
 
-			expect( headingCommand.value ).to.equal( 'heading1' );
-			expect( headingButton.isOn ).to.be.true;
+			expect( headingCommand.value ).toEqual( 'heading1' );
+			expect( headingButton.isOn ).toBe( true );
 
 			_setModelData( editor.model, '<heading2>f{}oo</heading2>' );
 
-			expect( headingCommand.value ).to.equal( 'heading2' );
-			expect( headingButton.isOn ).to.be.false;
+			expect( headingCommand.value ).toEqual( 'heading2' );
+			expect( headingButton.isOn ).toBe( false );
 		} );
 
 		it( 'should bind button execute to command execute', () => {
 			const headingButton = editor.ui.componentFactory.create( 'heading1' );
-			const executeCommandSpy = sinon.spy( editor, 'execute' );
+			const executeCommandSpy = vi.spyOn( editor, 'execute' );
 
 			headingButton.fire( 'execute' );
 
-			sinon.assert.calledOnce( executeCommandSpy );
-			sinon.assert.calledWithExactly( executeCommandSpy, 'heading', { value: 'heading1' } );
+			expect( executeCommandSpy ).toHaveBeenCalledOnce();
+			expect( executeCommandSpy ).toHaveBeenCalledWith( 'heading', { value: 'heading1' } );
 		} );
 
 		it( 'should be initialized as toggleable button', () => {
 			const factory = editor.ui.componentFactory;
 
-			expect( factory.create( 'heading1' ).isToggleable ).to.be.true;
-			expect( factory.create( 'heading2' ).isToggleable ).to.be.true;
-			expect( factory.create( 'heading3' ).isToggleable ).to.be.true;
-			expect( factory.create( 'heading4' ).isToggleable ).to.be.true;
-			expect( factory.create( 'heading5' ).isToggleable ).to.be.true;
-			expect( factory.create( 'heading6' ).isToggleable ).to.be.true;
+			expect( factory.create( 'heading1' ).isToggleable ).toBe( true );
+			expect( factory.create( 'heading2' ).isToggleable ).toBe( true );
+			expect( factory.create( 'heading3' ).isToggleable ).toBe( true );
+			expect( factory.create( 'heading4' ).isToggleable ).toBe( true );
+			expect( factory.create( 'heading5' ).isToggleable ).toBe( true );
+			expect( factory.create( 'heading6' ).isToggleable ).toBe( true );
 		} );
 	} );
 
@@ -145,7 +146,7 @@ describe( 'HeadingButtonUI', () => {
 		it( 'should allow to pass custom image to the configuration', () => {
 			const headingButton = editor.ui.componentFactory.create( 'heading1' );
 
-			expect( headingButton.icon ).to.equal( customIcon );
+			expect( headingButton.icon ).toEqual( customIcon );
 		} );
 	} );
 } );

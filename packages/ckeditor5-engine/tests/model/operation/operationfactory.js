@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { NoOperation } from '../../../src/model/operation/nooperation.js';
 import { OperationFactory } from '../../../src/model/operation/operationfactory.js';
@@ -20,7 +21,7 @@ describe( 'OperationFactory', () => {
 			baseVersion: 0
 		}, model.doc );
 
-		expect( operation ).to.instanceof( NoOperation );
-		expect( operation.baseVersion ).to.equal( 0 );
+		expect( operation ).toBeInstanceOf( NoOperation );
+		expect( operation.baseVersion ).toBe( 0 );
 	} );
 } );

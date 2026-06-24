@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconSpecialCharacters } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
@@ -51,19 +52,19 @@ describe( 'SpecialCharacters', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( SpecialCharacters.pluginName ).to.equal( 'SpecialCharacters' );
+		expect( SpecialCharacters.pluginName ).toEqual( 'SpecialCharacters' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( SpecialCharacters.isOfficialPlugin ).to.be.true;
+		expect( SpecialCharacters.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-		expect( SpecialCharacters.isPremiumPlugin ).to.be.true;
+		expect( SpecialCharacters.isPremiumPlugin ).toBe( true );
 	} );
 
 	it( 'should have `licenseFeatureCode` static flag set to `SCH`', () => {
-		expect( SpecialCharacters.licenseFeatureCode ).to.equal( 'SCH' );
+		expect( SpecialCharacters.licenseFeatureCode ).toEqual( 'SCH' );
 	} );
 
 	describe( 'toolbar button', () => {
@@ -158,14 +159,14 @@ describe( 'SpecialCharacters', () => {
 
 		it( 'executes a command and doesn\'t focus the editor', () => {
 			const grid = dialogContent.gridView;
-			const executeSpy = sinon.stub( editor, 'execute' );
-			const focusSpy = sinon.stub( editor.editing.view, 'focus' );
+			const executeSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 
 			grid.tiles.get( 2 ).fire( 'execute' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.notCalled( focusSpy );
-			sinon.assert.calledWithExactly( executeSpy.firstCall, 'insertText', {
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( focusSpy ).not.toHaveBeenCalled();
+			expect( executeSpy ).toHaveBeenNthCalledWith( 1, 'insertText', {
 				text: '≤'
 			} );
 		} );

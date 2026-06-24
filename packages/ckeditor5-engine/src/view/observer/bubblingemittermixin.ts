@@ -34,6 +34,17 @@ const callbackMapSymbol = Symbol( 'bubblingCallbacks' );
 const contextsSymbol = Symbol( 'bubblingContexts' );
 
 /**
+ * Constructor returned by {@link ~BubblingEmitterMixin}. Use it to name a mixin base class before extending it.
+ *
+ * ```ts
+ * const MyBubblingEmitterBase: BubblingEmitterMixinConstructor<typeof BaseClass> = BubblingEmitterMixin( BaseClass );
+ *
+ * class MyBubblingEmitter extends MyBubblingEmitterBase {}
+ * ```
+ */
+export type BubblingEmitterMixinConstructor<Base extends Constructor<Emitter>> = Mixed<Base, BubblingEmitter>;
+
+/**
  * Bubbling emitter mixin for the view document as described in the {@link ~BubblingEmitter} interface.
  *
  * This function creates a class that inherits from the provided `base` and implements `Emitter` interface.
@@ -49,7 +60,7 @@ const contextsSymbol = Symbol( 'bubblingContexts' );
  * }
  * ```
  */
-export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, BubblingEmitter> {
+export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): BubblingEmitterMixinConstructor<Base> {
 	abstract class Mixin extends base implements BubblingEmitter {
 		public abstract get selection(): ViewDocumentSelection;
 
@@ -104,7 +115,6 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 				return eventInfo.return;
 			} catch ( err: any ) {
 				// @if CK_DEBUG // throw err;
-				/* istanbul ignore next -- @preserve */
 				CKEditorError.rethrowUnexpectedError( err, this );
 			}
 		}

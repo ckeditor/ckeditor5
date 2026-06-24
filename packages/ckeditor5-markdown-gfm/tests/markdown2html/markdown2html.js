@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { MarkdownGfmMdToHtml, MarkdownGfmMdToHtmlDefaultPlugins } from '../../src/markdown2html/markdown2html.js';
 
 describe( 'MarkdownGfmMdToHtml', () => {
@@ -26,14 +27,14 @@ describe( 'MarkdownGfmMdToHtml', () => {
 
 			converter.parse( '# Hello' );
 
-			expect( pluginCalled ).to.be.true;
+			expect( pluginCalled ).toBe( true );
 		} );
 	} );
 } );
 
 describe( 'MarkdownGfmMdToHtmlDefaultPlugins', () => {
 	it( 'should load the default plugins', () => {
-		expect( MarkdownGfmMdToHtmlDefaultPlugins ).to.have.ordered.keys( [
+		expect( Object.keys( MarkdownGfmMdToHtmlDefaultPlugins ) ).toEqual( [
 			'remarkParse',
 			'remarkGfm',
 			'remarkBreaks',

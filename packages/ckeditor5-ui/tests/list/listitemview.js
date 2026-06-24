@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ButtonView } from '../../src/button/buttonview.js';
 import { ListItemView } from '../../src/list/listitemview.js';
 import { ViewCollection } from '../../src/viewcollection.js';
@@ -18,27 +19,27 @@ describe( 'ListItemView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'creates element from template', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-list__item' ) ).to.be.true;
-			expect( view.element.role ).to.equal( 'presentation' );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-list__item' ) ).toBe( true );
+			expect( view.element.role ).toBe( 'presentation' );
 		} );
 
 		it( 'creates view#children collection', () => {
-			expect( view.children ).to.be.instanceOf( ViewCollection );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'sets the #isVisible property', () => {
-			expect( view.isVisible ).to.be.true;
+			expect( view.isVisible ).toBe( true );
 		} );
 
 		describe( 'DOM element bindings', () => {
 			describe( 'class', () => {
 				it( 'reacts on view#isVisible', () => {
 					view.isVisible = true;
-					expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+					expect( view.element.classList.contains( 'ck-hidden' ) ).toBe( false );
 
 					view.isVisible = false;
-					expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+					expect( view.element.classList.contains( 'ck-hidden' ) ).toBe( true );
 				} );
 			} );
 		} );
@@ -49,16 +50,16 @@ describe( 'ListItemView', () => {
 			const button = new ButtonView();
 			view.children.add( button );
 
-			const spy = sinon.spy( button.element, 'focus' );
+			const spy = vi.spyOn( button.element, 'focus' );
 
 			view.focus();
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not throw if there is no child view', () => {
 			expect( () => {
 				view.focus();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
 } );

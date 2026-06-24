@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { getNormalizedConfig } from '../../../src/listproperties/utils/config.js';
 
 describe( 'ListProperties - utils - config', () => {
@@ -15,7 +16,7 @@ describe( 'ListProperties - utils - config', () => {
 				}
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'numbered', 'bulleted' ],
 					listStyleTypes: {
@@ -37,7 +38,7 @@ describe( 'ListProperties - utils - config', () => {
 				}
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'numbered' ],
 					listStyleTypes: {
@@ -58,7 +59,7 @@ describe( 'ListProperties - utils - config', () => {
 				}
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'bulleted' ],
 					listStyleTypes: {
@@ -79,7 +80,7 @@ describe( 'ListProperties - utils - config', () => {
 				}
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [],
 					listStyleTypes: {},
@@ -97,7 +98,7 @@ describe( 'ListProperties - utils - config', () => {
 				}
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'numbered' ],
 					listStyleTypes: {
@@ -115,7 +116,7 @@ describe( 'ListProperties - utils - config', () => {
 				styles: true
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'bulleted', 'numbered' ],
 					listStyleTypes: {
@@ -134,7 +135,7 @@ describe( 'ListProperties - utils - config', () => {
 				styles: false
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [],
 					listStyleTypes: {},
@@ -150,7 +151,7 @@ describe( 'ListProperties - utils - config', () => {
 				styles: 'numbered'
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'numbered' ],
 					listStyleTypes: {
@@ -168,7 +169,7 @@ describe( 'ListProperties - utils - config', () => {
 				styles: 'bulleted'
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'bulleted' ],
 					listStyleTypes: {
@@ -188,7 +189,7 @@ describe( 'ListProperties - utils - config', () => {
 				}
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'bulleted', 'numbered' ],
 					listStyleTypes: {
@@ -207,7 +208,7 @@ describe( 'ListProperties - utils - config', () => {
 				styles: undefined
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [],
 					listStyleTypes: {},
@@ -223,7 +224,7 @@ describe( 'ListProperties - utils - config', () => {
 				styles: [ 'bulleted', 'numbered' ]
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'bulleted', 'numbered' ],
 					listStyleTypes: {
@@ -242,7 +243,7 @@ describe( 'ListProperties - utils - config', () => {
 				styles: [ 'bulleted' ]
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'bulleted' ],
 					listStyleTypes: {
@@ -260,7 +261,7 @@ describe( 'ListProperties - utils - config', () => {
 				styles: [ 'numbered' ]
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'numbered' ],
 					listStyleTypes: {
@@ -280,7 +281,7 @@ describe( 'ListProperties - utils - config', () => {
 				reversed: true
 			};
 
-			expect( getNormalizedConfig( config ) ).to.deep.equal( {
+			expect( getNormalizedConfig( config ) ).toEqual( {
 				styles: {
 					listTypes: [ 'bulleted', 'numbered' ],
 					listStyleTypes: {

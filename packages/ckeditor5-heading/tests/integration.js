@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Heading } from '../src/heading.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
@@ -47,7 +48,7 @@ describe( 'Heading integration', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>foobar</heading1><paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<heading1>foobar</heading1><paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should not alter the "enter" command if selection not ended at the end of a heading block', () => {
@@ -60,7 +61,7 @@ describe( 'Heading integration', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>foo</heading1><heading1>[]bar</heading1>' );
+			expect( _getModelData( model ) ).toEqual( '<heading1>foo</heading1><heading1>[]bar</heading1>' );
 		} );
 	} );
 
@@ -69,7 +70,7 @@ describe( 'Heading integration', () => {
 		it( 'should not destroy the image when a selection converted to a heading', () => {
 			_setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
-				'<imageBlock src="/assets/sample.png">' +
+				'<imageBlock src="/sample.png">' +
 					'<caption>xxx</caption>' +
 				'</imageBlock>' +
 				'<paragraph>b]ar</paragraph>'
@@ -77,9 +78,9 @@ describe( 'Heading integration', () => {
 
 			editor.execute( 'heading', { value: 'heading1' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<heading1>fo[o</heading1>' +
-				'<imageBlock src="/assets/sample.png">' +
+				'<imageBlock src="/sample.png">' +
 					'<caption>xxx</caption>' +
 				'</imageBlock>' +
 				'<heading1>b]ar</heading1>'
@@ -95,9 +96,9 @@ describe( 'Heading integration', () => {
 			} );
 
 			editor.execute( 'heading', { value: 'heading1' } );
-			expect( _getModelData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
+			expect( _getModelData( model ) ).toEqual( '<heading1>foo[]bar</heading1>' );
 
-			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
+			expect( editor.commands.get( 'undo' ).isEnabled ).toBe( false );
 		} );
 
 		it( 'does not create undo steps when applied to an existing heading (non–collapsed selection)', () => {
@@ -107,9 +108,9 @@ describe( 'Heading integration', () => {
 			} );
 
 			editor.execute( 'heading', { value: 'heading1' } );
-			expect( _getModelData( model ) ).to.equal( '<heading1>[foo</heading1><heading1>bar]</heading1>' );
+			expect( _getModelData( model ) ).toEqual( '<heading1>[foo</heading1><heading1>bar]</heading1>' );
 
-			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
+			expect( editor.commands.get( 'undo' ).isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -144,7 +145,7 @@ describe( 'Heading integration', () => {
 					editor.setData( '<h2>Heading 2</h2><h2 class="fancy">Fancy Heading 2</h2>' );
 
 					expect( editor.getData() )
-						.to.equal( '<h2>Heading 2</h2><h2 class="fancy">Fancy Heading 2</h2>' );
+						.toEqual( '<h2>Heading 2</h2><h2 class="fancy">Fancy Heading 2</h2>' );
 
 					element.remove();
 					return editor.destroy();

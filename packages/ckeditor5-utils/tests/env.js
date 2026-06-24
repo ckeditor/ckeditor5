@@ -7,16 +7,18 @@ import { env,
 	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent,
 	isMediaForcedColors, isMotionReduced
 } from '../src/env.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { global } from '../src/dom/global.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
 }
 
 describe( 'Env', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	it( 'is an object', () => {
 		expect( env ).to.be.an( 'object' );
@@ -65,10 +67,10 @@ describe( 'Env', () => {
 	} );
 
 	describe( 'isMediaForcedColors', () => {
-		let matchMediaStub;
+		let matchMediaMock;
 
 		beforeEach( () => {
-			matchMediaStub = sinon.stub( global.window, 'matchMedia' );
+			matchMediaMock = vi.spyOn( global.window, 'matchMedia' );
 		} );
 
 		it( 'is a boolean', () => {
@@ -88,17 +90,21 @@ describe( 'Env', () => {
 		} );
 
 		function mockMediaForcedColors( enabled = true ) {
-			return matchMediaStub
-				.withArgs( '(forced-colors: active)' )
-				.returns( { matches: enabled } );
+			return matchMediaMock.mockImplementation( query => {
+				if ( query === '(forced-colors: active)' ) {
+					return { matches: enabled };
+				}
+
+				return { matches: false };
+			} );
 		}
 	} );
 
 	describe( 'isMotionReduced', () => {
-		let matchMediaStub;
+		let matchMediaMock;
 
 		beforeEach( () => {
-			matchMediaStub = sinon.stub( global.window, 'matchMedia' );
+			matchMediaMock = vi.spyOn( global.window, 'matchMedia' );
 		} );
 
 		it( 'is a boolean', () => {
@@ -118,9 +124,13 @@ describe( 'Env', () => {
 		} );
 
 		function mockMotionReduced( enabled = true ) {
-			return matchMediaStub
-				.withArgs( '(prefers-reduced-motion)' )
-				.returns( { matches: enabled } );
+			return matchMediaMock.mockImplementation( query => {
+				if ( query === '(prefers-reduced-motion)' ) {
+					return { matches: enabled };
+				}
+
+				return { matches: false };
+			} );
 		}
 	} );
 
@@ -240,7 +250,7 @@ describe( 'Env', () => {
 
 		it( 'returns true for Safari UA string ("Request Desktop Website")', () => {
 			// This is how you tell Safari@Mac from Safari@iOS.
-			testUtils.sinon.stub( global.window.navigator, 'maxTouchPoints' ).get( () => 3 );
+			vi.spyOn( global.window.navigator, 'maxTouchPoints', 'get' ).mockReturnValue( 3 );
 
 			expect( isiOS( toLowerCase(
 				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15'
@@ -337,17 +347,25 @@ describe( 'Env', () => {
 
 	describe( 'isMediaForcedColors()', () => {
 		it( 'returns true if the document media query matches forced-colors', () => {
-			testUtils.sinon.stub( global.window, 'matchMedia' )
-				.withArgs( '(forced-colors: active)' )
-				.returns( { matches: true } );
+			vi.spyOn( global.window, 'matchMedia' ).mockImplementation( query => {
+				if ( query === '(forced-colors: active)' ) {
+					return { matches: true };
+				}
+
+				return { matches: false };
+			} );
 
 			expect( isMediaForcedColors() ).to.be.true;
 		} );
 
 		it( 'returns false if the document media query does not match forced-colors', () => {
-			testUtils.sinon.stub( global.window, 'matchMedia' )
-				.withArgs( '(forced-colors: active)' )
-				.returns( { matches: false } );
+			vi.spyOn( global.window, 'matchMedia' ).mockImplementation( query => {
+				if ( query === '(forced-colors: active)' ) {
+					return { matches: false };
+				}
+
+				return { matches: true };
+			} );
 
 			expect( isMediaForcedColors() ).to.be.false;
 		} );
@@ -365,17 +383,25 @@ describe( 'Env', () => {
 
 	describe( 'isMotionReduced()', () => {
 		it( 'returns true if the document media query matches prefers-reduced-motion', () => {
-			testUtils.sinon.stub( global.window, 'matchMedia' )
-				.withArgs( '(prefers-reduced-motion)' )
-				.returns( { matches: true } );
+			vi.spyOn( global.window, 'matchMedia' ).mockImplementation( query => {
+				if ( query === '(prefers-reduced-motion)' ) {
+					return { matches: true };
+				}
+
+				return { matches: false };
+			} );
 
 			expect( isMotionReduced() ).to.be.true;
 		} );
 
 		it( 'returns false if the document media query does not match prefers-reduced-motion', () => {
-			testUtils.sinon.stub( global.window, 'matchMedia' )
-				.withArgs( '(prefers-reduced-motion)' )
-				.returns( { matches: false } );
+			vi.spyOn( global.window, 'matchMedia' ).mockImplementation( query => {
+				if ( query === '(prefers-reduced-motion)' ) {
+					return { matches: false };
+				}
+
+				return { matches: true };
+			} );
 
 			expect( isMotionReduced() ).to.be.false;
 		} );
@@ -406,19 +432,19 @@ describe( 'Env', () => {
 
 	describe( 'getUserAgent()', () => {
 		it( 'should return user agent in lower case', () => {
-			sinon.stub( global.window.navigator, 'userAgent' ).value( 'CKBrowser' );
+			vi.spyOn( global.window.navigator, 'userAgent', 'get' ).mockReturnValue( 'CKBrowser' );
 
 			expect( getUserAgent() ).to.equal( 'ckbrowser' );
 		} );
 
 		it( 'should return empty string if navigator API is unavailable', () => {
-			sinon.stub( global.window, 'navigator' ).value( undefined );
+			vi.spyOn( global.window, 'navigator', 'get' ).mockReturnValue( undefined );
 
 			expect( getUserAgent() ).to.equal( '' );
 		} );
 
 		it( 'should not throw an error if navigator API is unavailable', () => {
-			sinon.stub( global.window, 'navigator' ).value( undefined );
+			vi.spyOn( global.window, 'navigator', 'get' ).mockReturnValue( undefined );
 
 			expect( () => {
 				getUserAgent();

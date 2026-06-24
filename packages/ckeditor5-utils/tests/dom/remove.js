@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, expect, it } from 'vitest';
 import { remove } from '../../src/dom/remove.js';
 
 describe( 'remove', () => {

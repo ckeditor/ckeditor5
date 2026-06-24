@@ -78,6 +78,39 @@ export class ImageStyleCommand extends Command {
 	}
 
 	/**
+	 * Returns whether the style with the given name can be applied to the currently selected image.
+	 *
+	 * Applying a style may internally trigger a type conversion (block ↔ inline) when the style
+	 * supports only the opposite type. If that conversion would be rejected by the schema (for
+	 * example, converting an inline image to a block image inside `$inlineRoot`), this style
+	 * cannot be applied even though the command itself is enabled. UI components representing
+	 * individual styles should reflect this per-style state in their `isEnabled`.
+	 */
+	public isStyleEnabled( styleName: string ): boolean {
+		if ( !this.isEnabled ) {
+			return false;
+		}
+
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
+		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection );
+
+		if ( !element || !this._styles.has( styleName ) ) {
+			return false;
+		}
+
+		if ( !this.shouldConvertImageType( styleName, element ) ) {
+			return true;
+		}
+
+		// Applying this style requires a type conversion. The corresponding type command must be enabled
+		// for the conversion to succeed.
+		const typeCommandName = imageUtils.isBlockImage( element ) ? 'imageTypeInline' : 'imageTypeBlock';
+		const typeCommand = this.editor.commands.get( typeCommandName );
+
+		return !!typeCommand && typeCommand.isEnabled;
+	}
+
+	/**
 	 * Executes the command and applies the style to the currently selected image:
 	 *
 	 * ```ts
@@ -97,6 +130,12 @@ export class ImageStyleCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+
+		// If the requested style requires a type conversion that the schema does not allow,
+		// skip execution entirely to avoid leaving the image with a style its current type does not support.
+		if ( options.value && !this.isStyleEnabled( options.value ) ) {
+			return;
+		}
 
 		model.change( writer => {
 			const requestedStyle = options.value;

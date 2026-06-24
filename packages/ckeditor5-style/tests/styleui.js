@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { DropdownView } from '@ckeditor/ckeditor5-ui';
@@ -17,8 +17,6 @@ import { StylePanelView } from '../src/ui/stylepanelview.js';
 
 describe( 'StyleUI', () => {
 	let editor, element;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -33,22 +31,23 @@ describe( 'StyleUI', () => {
 		element.remove();
 
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should be named', () => {
-		expect( StyleUI.pluginName ).to.equal( 'StyleUI' );
+		expect( StyleUI.pluginName ).toBe( 'StyleUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( StyleUI.isOfficialPlugin ).to.be.true;
+		expect( StyleUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( StyleUI.isPremiumPlugin ).to.be.false;
+		expect( StyleUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded by the Style plugin', () => {
-		expect( editor.plugins.has( 'StyleUI' ) ).to.be.true;
+		expect( editor.plugins.has( 'StyleUI' ) ).toBe( true );
 	} );
 
 	describe( 'init', () => {
@@ -73,36 +72,36 @@ describe( 'StyleUI', () => {
 			} );
 
 			it( 'should be registered in the component factory', () => {
-				expect( editor.ui.componentFactory.has( 'style' ) ).to.be.true;
-				expect( dropdown ).to.be.instanceOf( DropdownView );
+				expect( editor.ui.componentFactory.has( 'style' ) ).toBe( true );
+				expect( dropdown ).toBeInstanceOf( DropdownView );
 			} );
 
 			it( 'should have #isEnabled bound to the command', () => {
 				command.isEnabled = true;
 
-				expect( dropdown.isEnabled ).to.be.true;
+				expect( dropdown.isEnabled ).toBe( true );
 
 				command.isEnabled = false;
 
-				expect( dropdown.isEnabled ).to.be.false;
+				expect( dropdown.isEnabled ).toBe( false );
 			} );
 
 			it( 'should have a static CSS class', () => {
-				expect( dropdown.element.classList.contains( 'ck-style-dropdown' ) ).to.be.true;
+				expect( dropdown.element.classList.contains( 'ck-style-dropdown' ) ).toBe( true );
 			} );
 
 			it( 'should have a special CSS class when multiple styles are active', () => {
 				command.value = [];
 
-				expect( dropdown.class ).to.equal( 'ck-style-dropdown' );
+				expect( dropdown.class ).toBe( 'ck-style-dropdown' );
 
 				command.value = [ 'foo' ];
 
-				expect( dropdown.class ).to.equal( 'ck-style-dropdown' );
+				expect( dropdown.class ).toBe( 'ck-style-dropdown' );
 
 				command.value = [ 'foo', 'bar' ];
 
-				expect( dropdown.class ).to.equal( 'ck-style-dropdown ck-style-dropdown_multiple-active' );
+				expect( dropdown.class ).toBe( 'ck-style-dropdown ck-style-dropdown_multiple-active' );
 			} );
 
 			it( 'should close when a style was #executed in the panel', () => {
@@ -112,37 +111,37 @@ describe( 'StyleUI', () => {
 					}
 				};
 
-				testUtils.sinon.stub( editor, 'execute' );
+				vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 				dropdown.isOpen = true;
 
 				dropdown.panelView.children.first.fire( new EventInfo( buttonMock, 'execute' ) );
 
-				expect( dropdown.isOpen ).to.be.false;
+				expect( dropdown.isOpen ).toBe( false );
 			} );
 
 			describe( '#buttonView', () => {
 				it( 'should display text and no icon', () => {
-					expect( dropdown.buttonView.withText ).to.be.true;
-					expect( dropdown.buttonView.icon ).to.be.undefined;
+					expect( dropdown.buttonView.withText ).toBe( true );
+					expect( dropdown.buttonView.icon ).toBeUndefined();
 				} );
 
 				it( 'should display default label when no styles are active', () => {
 					command.value = [];
 
-					expect( dropdown.buttonView.label ).to.equal( 'Styles' );
+					expect( dropdown.buttonView.label ).toBe( 'Styles' );
 				} );
 
 				it( 'should display style name as a label when a single style is active', () => {
 					command.value = [ 'foo' ];
 
-					expect( dropdown.buttonView.label ).to.equal( 'foo' );
+					expect( dropdown.buttonView.label ).toBe( 'foo' );
 				} );
 
 				it( 'should display special label when multiple styles are active', () => {
 					command.value = [ 'foo', 'bar' ];
 
-					expect( dropdown.buttonView.label ).to.equal( 'Multiple styles' );
+					expect( dropdown.buttonView.label ).toBe( 'Multiple styles' );
 				} );
 			} );
 
@@ -152,16 +151,16 @@ describe( 'StyleUI', () => {
 				beforeEach( () => {
 					panel = dropdown.panelView.children.first;
 
-					commandExecuteStub = testUtils.sinon.stub( editor, 'execute' );
+					commandExecuteStub = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 				} );
 
 				it( 'should be injected into dropdown panel', () => {
-					expect( dropdown.panelView.children.length ).to.equal( 1 );
-					expect( dropdown.panelView.children.first ).to.be.instanceOf( StylePanelView );
+					expect( dropdown.panelView.children.length ).toBe( 1 );
+					expect( dropdown.panelView.children.first ).toBeInstanceOf( StylePanelView );
 				} );
 
 				it( 'should delegate #execute to the dropdown', () => {
-					const spy = sinon.spy();
+					const spy = vi.fn();
 					const buttonMock = {
 						styleDefinition: {
 							name: 'foo'
@@ -172,7 +171,9 @@ describe( 'StyleUI', () => {
 
 					panel.fire( new EventInfo( buttonMock, 'execute' ) );
 
-					sinon.assert.calledOnceWithExactly( spy, sinon.match.object );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
+					expect( spy.mock.calls[ 0 ] ).toHaveLength( 1 );
+					expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( expect.any( Object ) );
 				} );
 
 				it( 'should execute the command on #execute event', () => {
@@ -184,27 +185,28 @@ describe( 'StyleUI', () => {
 
 					panel.fire( new EventInfo( buttonMock, 'execute' ) );
 
-					sinon.assert.calledOnceWithExactly( commandExecuteStub, 'style', { styleName: 'foo' } );
+					expect( commandExecuteStub ).toHaveBeenCalledTimes( 1 );
+					expect( commandExecuteStub ).toHaveBeenCalledWith( 'style', { styleName: 'foo' } );
 				} );
 
 				it( 'should bind #activeStyles to the command', () => {
 					command.value = [ 'foo', 'bar' ];
 
-					expect( panel.activeStyles ).to.deep.equal( [ 'foo', 'bar' ] );
+					expect( panel.activeStyles ).toEqual( [ 'foo', 'bar' ] );
 
 					command.value = [];
 
-					expect( panel.activeStyles ).to.deep.equal( [] );
+					expect( panel.activeStyles ).toEqual( [] );
 				} );
 
 				it( 'should bind #enabledStyles to the command', () => {
 					command.enabledStyles = [ 'foo', 'bar' ];
 
-					expect( panel.enabledStyles ).to.deep.equal( [ 'foo', 'bar' ] );
+					expect( panel.enabledStyles ).toEqual( [ 'foo', 'bar' ] );
 
 					command.enabledStyles = [];
 
-					expect( panel.enabledStyles ).to.deep.equal( [] );
+					expect( panel.enabledStyles ).toEqual( [] );
 				} );
 			} );
 		} );

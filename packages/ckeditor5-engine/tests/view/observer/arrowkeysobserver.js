@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ArrowKeysObserver } from '../../../src/view/observer/arrowkeysobserver.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -27,7 +28,7 @@ describe( 'ArrowKeysObserver', () => {
 	} );
 
 	it( 'should fire arrowKey event with the same data as keydown event (arrow right)', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		const data = { keyCode: keyCodes.arrowright };
 
 		viewDocument.on( 'arrowKey', spy );
@@ -37,12 +38,12 @@ describe( 'ArrowKeysObserver', () => {
 
 		viewDocument.fire( 'keydown', data );
 
-		expect( spy.calledOnce ).to.be.true;
-		expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
+		expect( spy ).toHaveBeenCalledOnce();
+		expect( spy.mock.calls[ 0 ][ 1 ] ).toBe( data );
 	} );
 
 	it( 'should fire arrowKey event with the same data as keydown event (arrow left)', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		const data = { keyCode: keyCodes.arrowleft };
 
 		viewDocument.on( 'arrowKey', spy );
@@ -52,54 +53,54 @@ describe( 'ArrowKeysObserver', () => {
 
 		viewDocument.fire( 'keydown', data );
 
-		expect( spy.calledOnce ).to.be.true;
-		expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
+		expect( spy ).toHaveBeenCalledOnce();
+		expect( spy.mock.calls[ 0 ][ 1 ] ).toBe( data );
 	} );
 
 	it( 'should fire arrowKey event with the same data as keydown event (arrow up)', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		const data = { keyCode: keyCodes.arrowup };
 
 		viewDocument.on( 'arrowKey', spy );
 
 		viewDocument.fire( 'keydown', data );
 
-		expect( spy.calledOnce ).to.be.true;
-		expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
+		expect( spy ).toHaveBeenCalledOnce();
+		expect( spy.mock.calls[ 0 ][ 1 ] ).toBe( data );
 	} );
 
 	it( 'should fire arrowKey event with the same data as keydown event (arrow down)', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		const data = { keyCode: keyCodes.arrowdown };
 
 		viewDocument.on( 'arrowKey', spy );
 
 		viewDocument.fire( 'keydown', data );
 
-		expect( spy.calledOnce ).to.be.true;
-		expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
+		expect( spy ).toHaveBeenCalledOnce();
+		expect( spy.mock.calls[ 0 ][ 1 ] ).toBe( data );
 	} );
 
 	it( 'should not fire arrowKey event on non arrow key press', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		const data = { keyCode: keyCodes.space };
 
 		viewDocument.on( 'arrowKey', spy );
 
 		viewDocument.fire( 'keydown', data );
 
-		expect( spy.notCalled ).to.be.true;
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should implement empty #observe() method', () => {
 		expect( () => {
 			observer.observe();
-		} ).to.not.throw();
+		} ).not.toThrow();
 	} );
 
 	it( 'should implement empty #stopObserving() method', () => {
 		expect( () => {
 			observer.stopObserving();
-		} ).to.not.throw();
+		} ).not.toThrow();
 	} );
 } );

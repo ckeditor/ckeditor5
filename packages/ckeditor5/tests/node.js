@@ -4,6 +4,7 @@
  */
 
 import * as ckeditor5 from '../src/index.js';
+import { describe, expect, it } from 'vitest';
 import * as adapterCkfinder from '@ckeditor/ckeditor5-adapter-ckfinder';
 import * as alignment from '@ckeditor/ckeditor5-alignment';
 import * as autoformat from '@ckeditor/ckeditor5-autoformat';
@@ -124,7 +125,7 @@ describe( '"ckeditor5" Node build', () => {
 	it( 'Re-exports everything', () => {
 		for ( const pkg of packages ) {
 			for ( const exportName of Object.keys( pkg ) ) {
-				expect( ckeditor5[ exportName ], exportName ).to.equal( pkg[ exportName ] );
+				expect( ckeditor5[ exportName ], exportName ).toBe( pkg[ exportName ] );
 			}
 		}
 	} );

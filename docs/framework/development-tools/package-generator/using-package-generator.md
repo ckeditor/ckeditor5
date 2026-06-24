@@ -84,8 +84,7 @@ The most common scripts are:
 | `npm run start`                    | Starts the Vite sample app with live reload.                |
 | `npm run test`                     | Runs the unit tests with Vitest.                            |
 | `npm run test:debug`               | Runs Vitest in Node inspector mode.                         |
-| `npm run lint`                     | Runs ESLint on the package sources.                         |
-| `npm run stylelint`                | Runs Stylelint on `theme/**/*.css`.                         |
+| `npm run lint`                     | Runs ESLint on the package sources, including CSS files.    |
 | `npm run build`                    | Creates the npm and browser builds in `dist/`.              |
 | `npm run translations:synchronize` | Updates translation files from the current source messages. |
 | `npm run translations:validate`    | Checks translation metadata without changing files.         |

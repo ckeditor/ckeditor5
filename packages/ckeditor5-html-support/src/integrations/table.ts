@@ -18,7 +18,7 @@ import type {
 	Model
 } from '@ckeditor/ckeditor5-engine';
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
 import { updateViewAttributes, type GHSViewAttributes } from '../utils.js';
@@ -41,8 +41,8 @@ export class TableElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ DataFilter ] as const;
+	public static get requires(): PluginDependenciesOf<[ DataFilter ]> {
+		return [ DataFilter ];
 	}
 
 	/**

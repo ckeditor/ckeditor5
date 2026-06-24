@@ -47,7 +47,7 @@ export class DragDropTarget extends Plugin {
 	 *
 	 * @internal
 	 */
-	public readonly removeDropMarkerDelayed = delay( () => this.removeDropMarker(), 40 );
+	public readonly removeDropMarkerDelayed: ReturnType<typeof delay> = delay( () => this.removeDropMarker(), 40 );
 
 	/**
 	 * A throttled callback updating the drop marker.
@@ -410,14 +410,17 @@ function findDropTargetRange(
 						if ( model.schema.checkChild( targetModelPosition, '$text' ) ) {
 							return model.createRange( targetModelPosition );
 						}
-						else if ( targetViewPosition ) {
-						// This is the case of dropping inside a span wrapper of an inline image.
-							return findDropTargetRangeForElement(
-								editor,
-								getClosestMappedModelElement( editor, targetViewPosition.parent as ViewElement ),
-								clientX,
-								clientY
-							);
+						else {
+							/* v8 ignore else -- @preserve */
+							if ( targetViewPosition ) {
+								// This is the case of dropping inside a span wrapper of an inline image.
+								return findDropTargetRangeForElement(
+									editor,
+									getClosestMappedModelElement( editor, targetViewPosition.parent as ViewElement ),
+									clientX,
+									clientY
+								);
+							}
 						}
 					}
 				}

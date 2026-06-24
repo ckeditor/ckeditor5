@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
 import { Model, ModelDocumentFragment,
 	_getModelData,
 	_parseModel,
@@ -72,11 +73,15 @@ export function setupTestHelpers( editor ) {
 			const modelBefore = _getModelData( model );
 			const viewBefore = _getViewData( view, { withoutSelection: true } );
 
-			test.reconvertSpy = sinon.spy( editor.editing, 'reconvertItem' );
+			test.reconvertSpy = vi.spyOn( editor.editing, 'reconvertItem' );
 			actionCallback( callbackSelection );
-			test.reconvertSpy.restore();
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
+			const reconvertSpyCalls = test.reconvertSpy.mock.calls;
+
+			test.reconvertSpy.mockRestore();
+			test.reconvertSpy = { mock: { calls: reconvertSpyCalls } };
+
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe( output );
 
 			if ( testUndo ) {
 				const modelAfter = _getModelData( model );
@@ -84,13 +89,13 @@ export function setupTestHelpers( editor ) {
 
 				editor.execute( 'undo' );
 
-				expect( _getModelData( model ), 'after undo' ).to.equalMarkup( modelBefore );
-				expect( _getViewData( view, { withoutSelection: true } ), 'after undo' ).to.equalMarkup( viewBefore );
+				expect( _getModelData( model ), 'after undo' ).toBe( modelBefore );
+				expect( _getViewData( view, { withoutSelection: true } ), 'after undo' ).toBe( viewBefore );
 
 				editor.execute( 'redo' );
 
-				expect( _getModelData( model ), 'after redo' ).to.equalMarkup( modelAfter );
-				expect( _getViewData( view, { withoutSelection: true } ), 'after redo' ).to.equalMarkup( viewAfter );
+				expect( _getModelData( model ), 'after redo' ).toBe( modelAfter );
+				expect( _getViewData( view, { withoutSelection: true } ), 'after redo' ).toBe( viewAfter );
 			}
 		},
 
@@ -204,8 +209,8 @@ export function setupTestHelpers( editor ) {
 		data( input, modelData, output = input ) {
 			editor.setData( input );
 
-			expect( editor.getData( { skipListItemIds: true } ), 'output data' ).to.equalMarkup( output );
-			expect( _getModelData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup( modelData );
+			expect( editor.getData( { skipListItemIds: true } ), 'output data' ).toBe( output );
+			expect( _getModelData( model, { withoutSelection: true } ), 'model data' ).toBe( modelData );
 		}
 	};
 

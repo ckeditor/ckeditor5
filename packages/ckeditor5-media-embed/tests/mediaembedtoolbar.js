@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import { MediaEmbed } from '../src/mediaembed.js';
@@ -14,12 +15,12 @@ import { View, ButtonView } from '@ckeditor/ckeditor5-ui';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'MediaEmbedToolbar', () => {
 	let editor, element, widgetToolbarRepository, balloon, toolbar, model;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -45,46 +46,47 @@ describe( 'MediaEmbedToolbar', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( MediaEmbedToolbar.isOfficialPlugin ).to.be.true;
+		expect( MediaEmbedToolbar.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( MediaEmbedToolbar.isPremiumPlugin ).to.be.false;
+		expect( MediaEmbedToolbar.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( MediaEmbedToolbar ) ).to.be.instanceOf( MediaEmbedToolbar );
+		expect( editor.plugins.get( MediaEmbedToolbar ) ).toBeInstanceOf( MediaEmbedToolbar );
 	} );
 
 	describe( 'toolbar', () => {
 		it( 'should use the config.table.tableWidget to create items', () => {
 			// Make sure that toolbar is empty before first show.
-			expect( toolbar.items.length ).to.equal( 0 );
+			expect( toolbar.items.length ).toBe( 0 );
 
 			editor.ui.focusTracker.isFocused = true;
 
 			_setModelData( model, '[<media url=""></media>]' );
 
-			expect( toolbar.items ).to.have.length( 1 );
-			expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
+			expect( toolbar.items ).toHaveLength( 1 );
+			expect( toolbar.items.get( 0 ).label ).toBe( 'fake button' );
 		} );
 
 		it( 'should set proper CSS classes', () => {
-			const spy = sinon.spy( balloon, 'add' );
+			const spy = vi.spyOn( balloon, 'add' );
 
 			editor.ui.focusTracker.isFocused = true;
 
 			_setModelData( model, '[<media url=""></media>]' );
 
-			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
-				return view === toolbar && balloonClassName === 'ck-toolbar-container';
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( {
+				view: toolbar,
+				balloonClassName: 'ck-toolbar-container'
 			} ) );
 		} );
 
 		it( 'should set aria-label attribute', () => {
 			toolbar.render();
 
-			expect( toolbar.element.getAttribute( 'aria-label' ) ).to.equal( 'Media toolbar' );
+			expect( toolbar.element.getAttribute( 'aria-label' ) ).toBe( 'Media toolbar' );
 
 			toolbar.destroy();
 		} );
@@ -115,7 +117,7 @@ describe( 'MediaEmbedToolbar', () => {
 			const repo = localEditor.plugins.get( 'WidgetToolbarRepository' );
 			const items = repo._toolbarDefinitions.get( 'mediaEmbed' ).itemsConfig;
 
-			expect( items ).to.deep.equal( [ 'fake_button', 'fake_dropdown' ] );
+			expect( items ).toEqual( [ 'fake_button', 'fake_dropdown' ] );
 
 			localElement.remove();
 			await localEditor.destroy();
@@ -137,13 +139,13 @@ describe( 'MediaEmbedToolbar', () => {
 			} );
 
 			const factory = localEditor.ui.componentFactory;
-			expect( factory.has( 'mediaEmbed:wrapText' ) ).to.be.false;
-			expect( factory.has( 'mediaEmbed:breakText' ) ).to.be.true;
+			expect( factory.has( 'mediaEmbed:wrapText' ) ).toBe( false );
+			expect( factory.has( 'mediaEmbed:breakText' ) ).toBe( true );
 
 			const repo = localEditor.plugins.get( 'WidgetToolbarRepository' );
 			const items = repo._toolbarDefinitions.get( 'mediaEmbed' ).itemsConfig;
 
-			expect( items ).to.deep.equal( [ 'mediaEmbed:breakText' ] );
+			expect( items ).toEqual( [ 'mediaEmbed:breakText' ] );
 
 			localElement.remove();
 			await localEditor.destroy();
@@ -166,14 +168,14 @@ describe( 'MediaEmbedToolbar', () => {
 			const repo = localEditor.plugins.get( 'WidgetToolbarRepository' );
 			const items = repo._toolbarDefinitions.get( 'mediaEmbed' ).itemsConfig;
 
-			expect( items ).to.deep.equal( [ 'fake_button', grouping ] );
+			expect( items ).toEqual( [ 'fake_button', grouping ] );
 
 			localElement.remove();
 			await localEditor.destroy();
 		} );
 
 		it( 'drops custom dropdown objects whose name was not registered', async () => {
-			const warnStub = sinon.stub( console, 'warn' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			const localElement = document.createElement( 'div' );
 			document.body.appendChild( localElement );
@@ -193,17 +195,16 @@ describe( 'MediaEmbedToolbar', () => {
 				}
 			} );
 
-			sinon.assert.calledWith( warnStub, sinon.match( /^media-style-configuration-definition-invalid/ ) );
+			expect( warnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^media-style-configuration-definition-invalid/ );
 
 			const factory = localEditor.ui.componentFactory;
-			expect( factory.has( 'mediaEmbed:custom' ) ).to.be.false;
+			expect( factory.has( 'mediaEmbed:custom' ) ).toBe( false );
 
 			const repo = localEditor.plugins.get( 'WidgetToolbarRepository' );
 			const items = repo._toolbarDefinitions.get( 'mediaEmbed' ).itemsConfig;
 
-			expect( items ).to.deep.equal( [ 'mediaEmbed:breakText' ] );
+			expect( items ).toEqual( [ 'mediaEmbed:breakText' ] );
 
-			warnStub.restore();
 			localElement.remove();
 			await localEditor.destroy();
 		} );
@@ -216,10 +217,10 @@ describe( 'MediaEmbedToolbar', () => {
 			_setModelData( editor.model, '[<media url=""></media>]' );
 
 			editor.ui.focusTracker.isFocused = false;
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 
 			editor.ui.focusTracker.isFocused = true;
-			expect( balloon.visibleView ).to.equal( toolbar );
+			expect( balloon.visibleView ).toBe( toolbar );
 		} );
 
 		it( 'should hide the toolbar when the editor loses focus and the media widget is selected', () => {
@@ -228,10 +229,10 @@ describe( 'MediaEmbedToolbar', () => {
 			_setModelData( editor.model, '[<media url=""></media>]' );
 
 			editor.ui.focusTracker.isFocused = true;
-			expect( balloon.visibleView ).to.equal( toolbar );
+			expect( balloon.visibleView ).toBe( toolbar );
 
 			editor.ui.focusTracker.isFocused = false;
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 		} );
 	} );
 
@@ -243,29 +244,29 @@ describe( 'MediaEmbedToolbar', () => {
 		it( 'should show the toolbar on ui#update when the media widget is selected', () => {
 			_setModelData( editor.model, '<paragraph>[foo]</paragraph><media url=""></media>' );
 
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 
 			editor.ui.fire( 'update' );
 
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 
 			editor.model.change( writer => {
 				// Select the [<media></media>]
 				writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 'on' );
 			} );
 
-			expect( balloon.visibleView ).to.equal( toolbar );
+			expect( balloon.visibleView ).toBe( toolbar );
 
 			// Make sure successive change does not throw, e.g. attempting
 			// to insert the toolbar twice.
 			editor.ui.fire( 'update' );
-			expect( balloon.visibleView ).to.equal( toolbar );
+			expect( balloon.visibleView ).toBe( toolbar );
 		} );
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
 			_setModelData( editor.model, '<media url=""></media>' );
 
-			expect( balloon.visibleView ).to.equal( toolbar );
+			expect( balloon.visibleView ).toBe( toolbar );
 
 			const lastView = new View();
 			lastView.element = document.createElement( 'div' );
@@ -277,42 +278,45 @@ describe( 'MediaEmbedToolbar', () => {
 				}
 			} );
 
-			expect( balloon.visibleView ).to.equal( lastView );
+			expect( balloon.visibleView ).toBe( lastView );
 
 			editor.ui.fire( 'update' );
 
-			expect( balloon.visibleView ).to.equal( lastView );
+			expect( balloon.visibleView ).toBe( lastView );
 		} );
 
 		it( 'should hide the toolbar on ui#update if the media is de–selected', () => {
 			_setModelData( model, '<paragraph>foo</paragraph>[<media url=""></media>]' );
 
-			expect( balloon.visibleView ).to.equal( toolbar );
+			expect( balloon.visibleView ).toBe( toolbar );
 
 			model.change( writer => {
 				// Select the <paragraph>[...]</paragraph>
 				writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 			} );
 
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 
 			// Make sure successive change does not throw, e.g. attempting
 			// to remove the toolbar twice.
 			editor.ui.fire( 'update' );
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 		} );
 	} );
 } );
 
 describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
-	let clock, editor, balloonToolbar, element, widgetToolbarRepository, balloon, toolbar, model;
+	let editor, balloonToolbar, element, widgetToolbarRepository, balloon, toolbar, model;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+		vi.useRealTimers();
+	} );
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
-		clock = testUtils.sinon.useFakeTimers();
+		vi.useFakeTimers();
 
 		return BalloonEditor.create( element, {
 			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton, Bold ],
@@ -341,38 +345,38 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 		_setModelData( model, '<paragraph>[abc]</paragraph><media url=""></media>' );
 		editor.editing.view.document.isFocused = true;
 
-		expect( balloon.visibleView ).to.equal( null );
+		expect( balloon.visibleView ).toBeNull();
 
 		model.change( writer => {
 			// Select the [<media></media>]
 			writer.setSelection( model.document.getRoot().getChild( 1 ), 'on' );
 		} );
 
-		expect( balloon.visibleView ).to.equal( toolbar );
+		expect( balloon.visibleView ).toBe( toolbar );
 
-		clock.tick( 200 );
+		vi.advanceTimersByTime( 200 );
 
-		expect( balloon.visibleView ).to.equal( toolbar );
+		expect( balloon.visibleView ).toBe( toolbar );
 	} );
 
 	it( 'balloon toolbar should be visible when media widget is not selected', () => {
 		_setModelData( model, '<paragraph>abc</paragraph>[<media url=""></media>]' );
 		editor.editing.view.document.isFocused = true;
 
-		expect( balloon.visibleView ).to.equal( toolbar );
+		expect( balloon.visibleView ).toBe( toolbar );
 
 		model.change( writer => {
 			// Select the <paragraph>[abc]</paragraph>
 			writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 		} );
 
-		clock.tick( 200 );
+		vi.advanceTimersByTime( 200 );
 
-		expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
+		expect( balloon.visibleView ).toBe( balloonToolbar.toolbarView );
 	} );
 
 	it( 'does not create the toolbar if its items are not specified', () => {
-		const consoleWarnStub = sinon.stub( console, 'warn' );
+		const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 		const element = document.createElement( 'div' );
 
 		return BalloonEditor.create( element, {
@@ -380,9 +384,9 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 		} ).then( editor => {
 			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
 
-			expect( widgetToolbarRepository._toolbarDefinitions.get( 'mediaEmbed' ) ).to.be.undefined;
-			expect( consoleWarnStub.calledOnce ).to.equal( true );
-			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items/ );
+			expect( widgetToolbarRepository._toolbarDefinitions.get( 'mediaEmbed' ) ).toBeUndefined();
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^widget-toolbar-no-items/ );
 
 			element.remove();
 			return editor.destroy();

@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 48.x | CKEditor 5 Documentation
 menu-title: Update to v48.x
 order: 76
-modified_at: 2026-05-13
+modified_at: 2026-06-05
 ---
 
 # Update to CKEditor&nbsp;5 v48.x
@@ -13,6 +13,86 @@ modified_at: 2026-05-13
 
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v48.2.0
+
+Released on 2 June, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.2.0))
+
+This release introduces media embed resize and styling, editor roots on paragraph-like elements, skip-level lists, General HTML Support integration with CKEditor AI, and paste and drag-and-drop support in AI Chat.
+
+### Media embed improvements (⭐)
+
+The {@link features/media-embed Media embed} feature now supports resizing via drag handles and alignment with optional text wrapping, letting embedded videos and other media be positioned left, right, or center with surrounding content flowing around them. Style options are available through the new `config.mediaEmbed.styles.options` configuration and inline split-button toolbar entries. See the {@link features/media-embed-resize Media embed resize} and {@link features/media-embed-styles Media embed styles} guides for details.
+
+### Media embed markup changes
+
+As part of the new media embed resize and styling features, the built-in media providers now output a modernized iframe. Previously, each provider used a `padding-bottom` hack on the wrapper `<div>` to maintain the aspect ratio, with the iframe absolutely positioned inside it. The iframe now carries explicit `width` and `height` attributes that act as its intrinsic size (a useful layout hint in containers such as table cells), and relies on the CSS `aspect-ratio` property for responsive sizing. The surrounding `<div>` wrapper is preserved for backward compatibility:
+
+```html
+<!-- Before -->
+<div style="position: relative; padding-bottom: 56.2493%; height: 0;">
+	<iframe src="..." style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;"></iframe>
+</div>
+
+<!-- After -->
+<div>
+	<iframe src="..." width="1280" height="720" style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;"></iframe>
+</div>
+```
+
+Because the wrapper `<div>` is still present, custom CSS and queries that target it continue to work, so no changes are required in most cases. However:
+
+* If your custom styles **relied on the previous inline styles** (the wrapper `padding-bottom` aspect-ratio hack or the absolutely positioned iframe), review them against the new `aspect-ratio`-based markup.
+* If you registered **custom media providers** through `config.mediaEmbed.providers` or `config.mediaEmbed.extraProviders`, your existing `html` output keeps working, but we recommend switching to the `aspect-ratio` approach so resizing and styling behave correctly.
+
+### Editor roots on paragraph-like elements (⭐)
+
+Editor roots can now be attached to, or created as, any block-level element other than the default container. The `config.root.element` and `config.roots.<name>.element` options now accept a tag-name string (such as `'h1'`) or a {@link module:core/editor/editorconfig~ViewRootElementDefinition `ViewRootElementDefinition`} object defining the tag name, CSS classes, inline styles, and attributes. The `<textarea>` and `<input>` elements are not supported. {@link module:editor-multi-root/multirooteditor~MultiRootEditor#createEditable `MultiRootEditor#createEditable()`} also accepts a `ViewRootElementDefinition`, and root element definitions are replicated through real-time collaboration. No migration steps are required.
+
+### Skip-level lists
+
+The {@link features/lists-editing#skip-level-lists list feature} now supports skip-level nesting via the new `list.enableSkipLevelLists` configuration option. List items can be indented by more than one level at a time, preserving the structure of documents imported or pasted from Word and other HTML sources that use non-sequential indentation levels.
+
+### General HTML Support in CKEditor AI (⭐)
+
+{@link features/ckeditor-ai-overview CKEditor AI} now works in editors configured with {@link features/general-html-support General HTML Support}. AI Chat, AI Quick Actions, and AI Review can apply and suggest changes on content that uses additional GHS-allowed elements and attributes.
+
+### Paste and drag and drop in AI Chat
+
+The {@link features/ckeditor-ai-chat AI Chat} input now supports pasting and drag and drop. Pasting a bare URL adds it to the conversation context as a link pill, pasting long text attaches it as a `.txt` file, and pasting or dropping images and other supported files adds them as context pills, with a dedicated icon for images.
+
+### Other AI improvements
+
+* **Multi-root and multi-editor support.** The {@link features/ckeditor-ai-multi-root-multi-editor-support multi-root and multiple editor support} introduced as experimental in v48.1.0 is now generally available and supports adding or removing editor instances at runtime.
+* **Default typography for AI Chat responses.** Built-in styles for body text, headings, lists, code, tables, block quotations, and horizontal rules improve readability of generated content.
+* **Resilient streaming.** Streaming replies in AI Chat continue on the server when the page is closed or reloaded and reconnect when the conversation is reopened. Stop generating still cancels the reply.
+* **Programmatic AI Review API.** A new programmatic API for the `AIReview` plugin is documented under {@link features/ckeditor-ai-programmatic Using CKEditor AI programmatically}.
+
+### Other improvements and fixes
+
+* Track Changes integrates with General HTML Support and with media embed resize and style operations: GHS-driven element, class, and inline-style changes are now recorded as suggestions instead of being applied silently.
+* Numbered list autoformat now accepts any starting number — typing `5. ` (or any number followed by `.` or `)` and a space) creates a numbered list. When `list.properties.startIndex` is enabled, the list starts at the typed number.
+* Tables with resized columns now keep their column widths when exported as email.
+* Spotify track embeds use a fixed `80px` height; album and artist embeds keep their responsive aspect ratio.
+* Inline images are no longer allowed in inline-only roots such as `$inlineRoot` and custom inline-only roots.
+
+### Minor breaking changes in this release
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Changed CKEditor AI APIs used by custom workflows. See the API documentation for details.
+  * Removed methods: `AIChatContext#updateCurrentDocument()` (use `AIChatContext#updateCurrentDocuments()`), `AIEditing#sessionId` (use `AIEditing#getSessionId( editor )`), `AIChatContext#getSourceByDataId()`, `AIChatContext#getDocumentContextSliceByDataId()`.
+  * Removed properties: `AIReply#documentId`, `AIReply#newNodeAnchorIds`, `AIReply#dataIdDocumentSources`.
+  * Modified method signatures: `AIReply#appendContent( content )`, `AIEditing#modelToDataWithIds( modelFragment )`, `AIChatController#addSelectionToChatContext()`, `AIEditing#getSelectionText()`.
+  * Modified property types: `AIReply#content`, `AIReply#parsedContent`, `AIReply#parsedMergedContent`, `AIReply#documentContextContent`.
+
+## Update to CKEditor&nbsp;5 v48.1.1
+
+Released on 18 May, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.1.1))
+
+### Dependency security update for real-time collaboration
+
+This release addresses vulnerabilities reported in the [`protobufjs`](https://www.npmjs.com/package/protobufjs) package, which is used inside [`@ckeditor/ckeditor5-operations-compressor`](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor) for real-time collaboration. Our security analysis confirmed that these vulnerabilities **do not affect** CKEditor&nbsp;5. The bump is published so that integrations using real-time collaboration no longer see noise from third-party security scanners.
+
+This release also includes two small fixes: the AI Review tooltip now appears when hovering over review suggestions, and the spacing of the footnotes list divider is corrected.
 
 ## Update to CKEditor&nbsp;5 v48.1.0
 
@@ -174,6 +254,8 @@ If your integration reads configuration values directly, update access paths as 
 * `config.get( 'initialData' )` -> `config.get( 'roots.main.initialData' )`
 * `config.get( 'placeholder' )` -> `config.get( 'roots.main.placeholder' )`
 * `config.get( 'label' )` -> `config.get( 'roots.main.label' )`
+
+See the {@link getting-started/setup/root-types Root types} guide for a full overview of root configuration options.
 
 #### Dynamic root management
 

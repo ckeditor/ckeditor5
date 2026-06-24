@@ -3,16 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StyleUtils } from '../src/styleutils.js';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 describe( 'StyleUtils', () => {
 	let editor, element, styleUtils, dataSchema;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -30,32 +29,33 @@ describe( 'StyleUtils', () => {
 		element.remove();
 
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should be named', () => {
-		expect( StyleUtils.pluginName ).to.equal( 'StyleUtils' );
+		expect( StyleUtils.pluginName ).toBe( 'StyleUtils' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( StyleUtils.isOfficialPlugin ).to.be.true;
+		expect( StyleUtils.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( StyleUtils.isPremiumPlugin ).to.be.false;
+		expect( StyleUtils.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'normalizeConfig()', () => {
 		it( 'should output empty lists for inline and block styles if there is no styles configured', () => {
 			const styleDefinitions = styleUtils.normalizeConfig( dataSchema );
 
-			expect( styleDefinitions ).to.deep.equal( {
+			expect( styleDefinitions ).toEqual( {
 				block: [],
 				inline: []
 			} );
 		} );
 
 		it( 'should normalize block style', () => {
-			sinon.stub( styleUtils, 'getStylePreview' ).callsFake( definition => ( {
+			vi.spyOn( styleUtils, 'getStylePreview' ).mockImplementation( definition => ( {
 				fake: 'preview for ' + definition.name
 			} ) );
 
@@ -65,7 +65,7 @@ describe( 'StyleUtils', () => {
 				classes: 'bar'
 			} ] );
 
-			expect( styleDefinitions ).to.deep.equal( {
+			expect( styleDefinitions ).toEqual( {
 				block: [
 					{
 						name: 'Foo',
@@ -87,7 +87,7 @@ describe( 'StyleUtils', () => {
 		} );
 
 		it( 'should normalize inline style', () => {
-			sinon.stub( styleUtils, 'getStylePreview' ).callsFake( definition => ( {
+			vi.spyOn( styleUtils, 'getStylePreview' ).mockImplementation( definition => ( {
 				fake: 'preview for ' + definition.name
 			} ) );
 
@@ -97,7 +97,7 @@ describe( 'StyleUtils', () => {
 				classes: 'foo'
 			} ] );
 
-			expect( styleDefinitions ).to.deep.equal( {
+			expect( styleDefinitions ).toEqual( {
 				inline: [
 					{
 						name: 'Bar',
@@ -117,7 +117,7 @@ describe( 'StyleUtils', () => {
 		} );
 
 		it( 'should normalize inline style that applies to model element', () => {
-			sinon.stub( styleUtils, 'getStylePreview' ).callsFake( definition => ( {
+			vi.spyOn( styleUtils, 'getStylePreview' ).mockImplementation( definition => ( {
 				fake: 'preview for ' + definition.name
 			} ) );
 
@@ -127,7 +127,7 @@ describe( 'StyleUtils', () => {
 				classes: 'foo'
 			} ] );
 
-			expect( styleDefinitions ).to.deep.equal( {
+			expect( styleDefinitions ).toEqual( {
 				block: [
 					{
 						name: 'Bar',
@@ -157,7 +157,7 @@ describe( 'StyleUtils', () => {
 				classes: 'bar'
 			}, [ { text: 'abc' } ] );
 
-			expect( preview ).to.deep.equal( {
+			expect( preview ).toEqual( {
 				tag: 'p',
 				attributes: {
 					class: 'bar'
@@ -176,7 +176,7 @@ describe( 'StyleUtils', () => {
 				classes: 'bar'
 			}, children );
 
-			expect( preview ).to.deep.equal( {
+			expect( preview ).toEqual( {
 				tag: 'p',
 				attributes: {
 					class: 'bar'
@@ -186,7 +186,7 @@ describe( 'StyleUtils', () => {
 				]
 			} );
 
-			expect( preview.children ).to.equal( children );
+			expect( preview.children ).toBe( children );
 		} );
 
 		it( 'should render non-previewable styles as div', () => {
@@ -196,7 +196,7 @@ describe( 'StyleUtils', () => {
 				classes: 'bar'
 			}, [ { text: 'abc' } ] );
 
-			expect( preview ).to.deep.equal( {
+			expect( preview ).toEqual( {
 				tag: 'div',
 				attributes: {
 					class: 'bar'

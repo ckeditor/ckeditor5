@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, expect, it } from 'vitest';
 import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import { PageBreak } from '../src/pagebreak.js';
@@ -11,18 +12,18 @@ import { PageBreakUI } from '../src/pagebreakui.js';
 
 describe( 'PageBreak', () => {
 	it( 'should require PageBreakEditing, PageBreakUI and Widget', () => {
-		expect( PageBreak.requires ).to.deep.equal( [ PageBreakEditing, PageBreakUI, Widget ] );
+		expect( PageBreak.requires ).toEqual( [ PageBreakEditing, PageBreakUI, Widget ] );
 	} );
 
 	it( 'should be named', () => {
-		expect( PageBreak.pluginName ).to.equal( 'PageBreak' );
+		expect( PageBreak.pluginName ).toBe( 'PageBreak' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( PageBreak.isOfficialPlugin ).to.be.true;
+		expect( PageBreak.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( PageBreak.isPremiumPlugin ).to.be.false;
+		expect( PageBreak.isPremiumPlugin ).toBe( false );
 	} );
 } );

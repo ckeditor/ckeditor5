@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -29,7 +30,7 @@ describe( 'IndentBlockListCommand', () => {
 
 				indentBlockUsingClasses = false;
 
-				sinon.stub( editor.plugins, 'get' ).callsFake( name => {
+				vi.spyOn( editor.plugins, 'get' ).mockImplementation( name => {
 					if ( name === 'ListUtils' ) {
 						return { isFirstListItemInList, expandListBlocksToCompleteList };
 					}
@@ -42,7 +43,7 @@ describe( 'IndentBlockListCommand', () => {
 	} );
 
 	afterEach( () => {
-		sinon.restore();
+		vi.restoreAllMocks();
 		command.destroy();
 
 		return editor.destroy();
@@ -275,7 +276,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* []foo {blockIndentList:40px}'
 						] ) );
 					} );
@@ -287,7 +288,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [fo]o {blockIndentList:40px}'
 						] ) );
 					} );
@@ -301,7 +302,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:40px}',
 							'* ba]r {blockIndentList:40px}',
 							'* baz {blockIndentList:40px}'
@@ -317,7 +318,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:40px}',
 							'* bar {blockIndentList:40px}',
 							'* ba]z {blockIndentList:40px}'
@@ -334,7 +335,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:40px}',
 							'* bar {blockIndentList:40px}',
 							'',
@@ -351,7 +352,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* []foo {blockIndentList:90px}'
 						] ) );
 					} );
@@ -363,7 +364,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [fo]o {blockIndentList:90px}'
 						] ) );
 					} );
@@ -377,7 +378,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:90px}',
 							'* bar {blockIndentList:90px}',
 							'* ba]z {blockIndentList:90px}'
@@ -393,7 +394,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:90px}',
 							'* ba]r {blockIndentList:90px}',
 							'* baz {blockIndentList:90px}'
@@ -410,7 +411,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:90px}',
 							'* bar {blockIndentList:90px}',
 							'',
@@ -427,7 +428,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* []foo'
 						] ) );
 					} );
@@ -439,7 +440,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [fo]o'
 						] ) );
 					} );
@@ -454,7 +455,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo',
 							'* bar',
 							'* ba]z'
@@ -471,7 +472,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo',
 							'* ba]r',
 							'* baz'
@@ -489,7 +490,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo',
 							'* bar',
 							'',
@@ -506,7 +507,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* []foo {blockIndentList:40px}'
 						] ) );
 					} );
@@ -523,7 +524,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:90px}',
 							'',
 							'* ba]r'
@@ -540,7 +541,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo',
 							'',
 							'* ba]r {blockIndentList:90px}'
@@ -558,7 +559,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute( { firstListOnly: true } );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:40px}',
 							'',
 							'* bar]'
@@ -797,7 +798,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* []foo {blockIndentList:indent-1}'
 						] ) );
 					} );
@@ -809,7 +810,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [fo]o {blockIndentList:indent-1}'
 						] ) );
 					} );
@@ -823,7 +824,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* bar {blockIndentList:indent-1}',
 							'* ba]z {blockIndentList:indent-1}'
@@ -839,7 +840,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* ba]r {blockIndentList:indent-1}',
 							'* baz {blockIndentList:indent-1}'
@@ -856,7 +857,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* bar {blockIndentList:indent-1}',
 							'',
@@ -873,7 +874,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* []foo {blockIndentList:indent-2}'
 						] ) );
 					} );
@@ -885,7 +886,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [fo]o {blockIndentList:indent-2}'
 						] ) );
 					} );
@@ -899,7 +900,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-2}',
 							'* bar {blockIndentList:indent-2}',
 							'* ba]z {blockIndentList:indent-2}'
@@ -915,7 +916,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-2}',
 							'* ba]r {blockIndentList:indent-2}',
 							'* baz {blockIndentList:indent-2}'
@@ -932,7 +933,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-2}',
 							'* bar {blockIndentList:indent-2}',
 							'',
@@ -951,7 +952,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-4}',
 							'',
 							'* ba]r {blockIndentList:indent-4}'
@@ -969,7 +970,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute( { firstListOnly: true } );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'',
 							'* bar]'
@@ -1230,7 +1231,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* []foo {blockIndentList:10px}'
 						] ) );
 					} );
@@ -1242,7 +1243,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [fo]o {blockIndentList:10px}'
 						] ) );
 					} );
@@ -1256,7 +1257,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:10px}',
 							'* bar {blockIndentList:10px}',
 							'* ba]z {blockIndentList:10px}'
@@ -1275,7 +1276,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:10px}',
 							'* ba]r {blockIndentList:10px}',
 							'* baz {blockIndentList:10px}'
@@ -1293,7 +1294,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:10px}',
 							'* bar {blockIndentList:10px}',
 							'',
@@ -1310,7 +1311,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* []foo'
 						] ) );
 					} );
@@ -1327,7 +1328,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:10px}',
 							'',
 							'* ba]r'
@@ -1345,7 +1346,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute( { firstListOnly: true } );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:10px}',
 							'',
 							'* bar] {blockIndentList:50px}'
@@ -1538,7 +1539,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* []foo {blockIndentList:indent-1}'
 						] ) );
 					} );
@@ -1550,7 +1551,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [fo]o {blockIndentList:indent-1}'
 						] ) );
 					} );
@@ -1564,7 +1565,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* bar {blockIndentList:indent-1}',
 							'* ba]z {blockIndentList:indent-1}'
@@ -1583,7 +1584,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* ba]r {blockIndentList:indent-1}',
 							'* baz {blockIndentList:indent-1}'
@@ -1601,7 +1602,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* bar {blockIndentList:indent-1}',
 							'',
@@ -1620,7 +1621,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute( { firstListOnly: true } );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equal( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'',
 							'* bar] {blockIndentList:indent-2}'

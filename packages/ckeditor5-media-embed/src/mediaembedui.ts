@@ -7,7 +7,7 @@
  * @module media-embed/mediaembedui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { IconMedia } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, CssTransitionDisablerMixin, MenuBarMenuListItemButtonView, Dialog } from '@ckeditor/ckeditor5-ui';
 
@@ -23,8 +23,8 @@ export class MediaEmbedUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ MediaEmbedEditing, Dialog ] as const;
+	public static get requires(): PluginDependenciesOf<[ MediaEmbedEditing, Dialog ]> {
+		return [ MediaEmbedEditing, Dialog ];
 	}
 
 	/**

@@ -7,7 +7,7 @@
  * @module style/integrations/table
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
@@ -42,8 +42,8 @@ export class TableStyleSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ StyleUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ StyleUtils ]> {
+		return [ StyleUtils ];
 	}
 
 	/**
@@ -132,6 +132,7 @@ export class TableStyleSupport extends Plugin {
 			}
 		}
 
+		/* v8 ignore else -- @preserve */
 		if ( [ 'thead', 'tbody', 'tfoot' ].includes( definition.element ) ) {
 			const headingRows = block.getAttribute( 'headingRows' ) as number || 0;
 			const footerRows = block.getAttribute( 'footerRows' ) as number || 0;
@@ -145,7 +146,7 @@ export class TableStyleSupport extends Plugin {
 			}
 		}
 
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		return false;
 	}
 

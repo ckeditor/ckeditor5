@@ -8,7 +8,7 @@ modified_at: 2022-11-03
 
 # Code style
 
-{@link framework/contributing/development-environment CKEditor&nbsp;5 development environment} has ESLint enabled both as a pre-commit hook and on CI. This means that code style issues are detected automatically. Additionally, `.editorconfig` files are present in every repository to automatically adjust your IDE settings (if it is configured to read them).
+{@link framework/contributing/development-environment CKEditor&nbsp;5 development environment} has ESLint enabled on CI. This means that code style issues are detected automatically. Additionally, `.editorconfig` files are present in every repository to automatically adjust your IDE settings (if it is configured to read them).
 
 Here is a quick summary of these rules.
 
@@ -344,13 +344,12 @@ foo();
 
 ## Linting
 
-CKEditor&nbsp;5 development environment uses [ESLint](https://eslint.org) and [stylelint](https://stylelint.io/).
+CKEditor&nbsp;5 development environment uses [ESLint](https://eslint.org), including its [native CSS linting support](https://eslint.org/blog/2025/02/eslint-css-support/).
 
 A couple of useful links:
 
 * [Disabling ESLint with inline comments](https://eslint.org/docs/latest/use/configure/).
 * [CKEditor&nbsp;5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/eslint.config.mjs) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
-* [CKEditor&nbsp;5 stylelint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/stylelint-config-ckeditor5/.stylelintrc) (npm: [`stylelint-config-ckeditor5`](https://www.npmjs.com/package/stylelint-config-ckeditor5)).
 
 <info-box>
 	Avoid using automatic code formatters on existing code. It is fine to automatically format code that you are editing, but you should not be changing the formatting of the code that is already written to not pollute your PRs. You should also not rely solely on automatic corrections.
@@ -1007,7 +1006,7 @@ import { Table } from 'ckeditor5';
 
 In TypeScript, the types inferred from some values are simplified. For example, the type of `const test = [1, 2, 3];` is `number[]`, but in some cases a more specific type may be needed. Using `as const` can help with this. For example, the type of `const test1 = [1, 2, 3] as const;` is `readonly [1, 2, 3]`.
 
-The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (for example, `'delete'` literal string instead of the generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
+The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (for example, `'delete'` literal string instead of the generic `string` in the `pluginName` method) to have all return statements with `as const`.
 
 👎&nbsp; Examples of incorrect code for this rule:
 
@@ -1179,7 +1178,7 @@ This rule ensures that changelog entry files are populated with proper data and 
 
 ### Disallow hardcoded `$root` literals: `ckeditor5-rules/no-literal-dollar-root`
 
-This rule disallows the literal `'$root'` string anywhere it could be used as a schema context. Hardcoding `'$root'` is silently wrong when {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} is customized: the runtime root no longer matches the literal, and any schema check or upcast against it operates against the wrong element name.
+This rule disallows the literal `'$root'` string anywhere it could be used as a schema context. Hardcoding `'$root'` is silently wrong when {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} is customized: the runtime root no longer matches the literal, and any schema check or upcast against it operates against the wrong element name. See the {@link getting-started/setup/root-types Root types} guide for an overview of the available root model element types.
 
 The rule also reports two specific patterns that have a name-agnostic replacement and provides an auto-fix for them:
 
@@ -1272,9 +1271,9 @@ editor.data.upcastDispatcher.convert( viewFragment, writer, [ '$root' ] );
 
 If the default `'$root'` context is intentional (for example, an internal editor whose only root always uses the default model element), opt out with an `// eslint-disable-next-line` comment that explains why.
 
-## CKEditor&nbsp;5 custom Stylelint rules
+## CKEditor&nbsp;5 custom CSS ESLint rules
 
-In addition to the rules provided by Stylelint, CKEditor&nbsp;5 uses a few custom rules described below.
+In addition to the rules provided by ESLint and its CSS plugin, CKEditor&nbsp;5 uses a few custom CSS rules described below.
 
 ### Names of CSS variables within `.ck-content`: `ckeditor5-rules/ck-content-variable-name`
 

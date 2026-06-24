@@ -17,9 +17,20 @@ import {
 import { type Editor } from '../editor.js';
 
 /**
+ * Constructor returned by {@link ~ElementApiMixin}. Use it to name a mixin base class before extending it.
+ *
+ * ```ts
+ * const MyElementApiBase: ElementApiMixinConstructor<typeof BaseClass> = ElementApiMixin( BaseClass );
+ *
+ * class MyElementApi extends MyElementApiBase {}
+ * ```
+ */
+export type ElementApiMixinConstructor<Base extends Constructor<Editor>> = Mixed<Base, ElementApi>;
+
+/**
  * Implementation of the {@link module:core/editor/utils/elementapimixin~ElementApi}.
  */
-export function ElementApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, ElementApi> {
+export function ElementApiMixin<Base extends Constructor<Editor>>( base: Base ): ElementApiMixinConstructor<Base> {
 	abstract class Mixin extends base implements ElementApi {
 		public sourceElement: HTMLElement | undefined;
 

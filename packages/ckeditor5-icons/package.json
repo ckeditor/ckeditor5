@@ -33,9 +33,17 @@
       "./package.json": "./package.json"
     }
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@vitest/browser-playwright": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.8",
+    "vitest": "^4.1.8"
+  },
   "scripts": {
-    "build": "node ../../scripts/nim/build-package.mjs && node ../../scripts/update-icons-typings.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs && node ../../scripts/update-icons-typings.mjs",
+    "test": "vitest run",
+    "test:headless": "vitest run --browser.headless",
+    "test:debug": "vitest",
+    "coverage": "pnpm run test:headless --coverage"
   },
   "files": [
     "dist",

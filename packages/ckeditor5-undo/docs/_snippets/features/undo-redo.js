@@ -57,6 +57,9 @@ ClassicEditor
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+		},
+		list: {
+			enableSkipLevelLists: true
 		}
 	} )
 	.then( editor => {

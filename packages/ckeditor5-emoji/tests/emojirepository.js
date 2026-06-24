@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { global } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { EmojiRepository } from '../src/emojirepository.js';
-import { EmojiUtils } from '../src/emojiutils.ts';
+import { EmojiUtils } from '../src/emojiutils.js';
 import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
 class EmojiUtilsMockVersion15 extends EmojiUtils {
@@ -32,34 +32,40 @@ class EmojiUtilsMockVersion16 extends EmojiUtils {
 	}
 }
 
-describe( 'EmojiRepository', () => {
-	testUtils.createSinonSandbox();
+function getCachedResults( plugin ) {
+	return EmojiRepository._cache.getSync( {
+		url: plugin._url.toString(),
+		cacheKeys: plugin._cacheKeys
+	} );
+}
 
-	let consoleStub, fetchStub, clock;
+describe( 'EmojiRepository', () => {
+	let consoleStub, fetchStub;
 
 	beforeEach( () => {
-		clock = testUtils.sinon.useFakeTimers();
+		vi.useFakeTimers();
 
-		EmojiRepository._results = {};
+		EmojiRepository._cache.clear();
 
-		consoleStub = testUtils.sinon.stub( console, 'warn' );
-		fetchStub = testUtils.sinon.stub( window, 'fetch' );
+		consoleStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+		fetchStub = vi.spyOn( window, 'fetch' ).mockImplementation( () => {} );
 	} );
 
 	afterEach( () => {
-		clock.restore();
+		vi.restoreAllMocks();
+		vi.useRealTimers();
 	} );
 
 	it( 'should be correctly named', () => {
-		expect( EmojiRepository.pluginName ).to.equal( 'EmojiRepository' );
+		expect( EmojiRepository.pluginName ).toBe( 'EmojiRepository' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EmojiRepository.isOfficialPlugin ).to.equal( true );
+		expect( EmojiRepository.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( EmojiRepository.isPremiumPlugin ).to.equal( false );
+		expect( EmojiRepository.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'editor config', () => {
@@ -75,7 +81,7 @@ describe( 'EmojiRepository', () => {
 
 			const configValue = editor.config.get( 'emoji.useCustomFont' );
 
-			expect( configValue ).to.equal( false );
+			expect( configValue ).toBe( false );
 
 			domElement.remove();
 			await editor.destroy();
@@ -93,12 +99,12 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			expect( fetchStub.calledOnce ).to.equal( true );
+			expect( fetchStub ).toHaveBeenCalledOnce();
 
-			const cdnUrl = fetchStub.firstCall.args[ 0 ];
+			const cdnUrl = new URL( fetchStub.mock.calls[ 0 ][ 0 ] );
 
-			expect( cdnUrl.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
-			expect( cdnUrl.searchParams.has( 'editorVersion' ) ).to.equal( true );
+			expect( cdnUrl.href ).toSatisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
+			expect( cdnUrl.searchParams.has( 'editorVersion' ) ).toBe( true );
 
 			domElement.remove();
 			await editor.destroy();
@@ -114,11 +120,11 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			expect( fetchStub.calledOnce ).to.equal( true );
+			expect( fetchStub ).toHaveBeenCalledOnce();
 
-			const fetchOptions = fetchStub.firstCall.args[ 1 ];
+			const fetchOptions = fetchStub.mock.calls[ 0 ][ 1 ];
 
-			expect( fetchOptions ).to.have.property( 'cache', 'force-cache' );
+			expect( fetchOptions ).toHaveProperty( 'cache', 'force-cache' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -134,17 +140,17 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			expect( fetchStub.calledOnce ).to.equal( true );
+			expect( fetchStub ).toHaveBeenCalledOnce();
 
-			const cdnUrl = fetchStub.firstCall.args[ 0 ];
+			const cdnUrl = new URL( fetchStub.mock.calls[ 0 ][ 0 ] );
 
-			expect( cdnUrl.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
+			expect( cdnUrl.href ).toSatisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
 
-			const results = EmojiRepository._results[ cdnUrl.href ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
-			expect( results ).to.have.length( 2 );
-			expect( results[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
-			expect( results[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+			expect( results ).toHaveLength( 2 );
+			expect( results[ 0 ] ).toHaveProperty( 'annotation', 'neutral face' );
+			expect( results[ 1 ] ).toHaveProperty( 'annotation', 'unamused face' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -176,24 +182,24 @@ describe( 'EmojiRepository', () => {
 					}
 				} );
 
-			expect( fetchStub.callCount ).to.equal( 2 );
+			expect( fetchStub ).toHaveBeenCalledTimes( 2 );
 
-			const cdnUrl1 = fetchStub.getCall( 0 ).args[ 0 ];
-			const cdnUrl2 = fetchStub.getCall( 1 ).args[ 0 ];
+			const cdnUrl1 = new URL( fetchStub.mock.calls[ 0 ][ 0 ] );
+			const cdnUrl2 = new URL( fetchStub.mock.calls[ 1 ][ 0 ] );
 
-			expect( cdnUrl1.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
-			expect( cdnUrl2.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/15/en.json' ) );
+			expect( cdnUrl1.href ).toSatisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
+			expect( cdnUrl2.href ).toSatisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/15/en.json' ) );
 
-			const resultsFor16 = EmojiRepository._results[ cdnUrl1.href ];
-			const resultsFor15 = EmojiRepository._results[ cdnUrl2.href ];
+			const resultsFor16 = getCachedResults( editor1.plugins.get( EmojiRepository ) );
+			const resultsFor15 = getCachedResults( editor2.plugins.get( EmojiRepository ) );
 
-			expect( resultsFor16 ).to.have.length( 2 );
-			expect( resultsFor16[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
-			expect( resultsFor16[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+			expect( resultsFor16 ).toHaveLength( 2 );
+			expect( resultsFor16[ 0 ] ).toHaveProperty( 'annotation', 'neutral face' );
+			expect( resultsFor16[ 1 ] ).toHaveProperty( 'annotation', 'unamused face' );
 
-			expect( resultsFor15 ).to.have.length( 2 );
-			expect( resultsFor15[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
-			expect( resultsFor15[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+			expect( resultsFor15 ).toHaveLength( 2 );
+			expect( resultsFor15[ 0 ] ).toHaveProperty( 'annotation', 'neutral face' );
+			expect( resultsFor15[ 1 ] ).toHaveProperty( 'annotation', 'unamused face' );
 
 			domElement1.remove();
 			domElement2.remove();
@@ -220,7 +226,7 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			expect( fetchStub.calledOnce ).to.equal( true );
+			expect( fetchStub ).toHaveBeenCalledOnce();
 
 			domElement1.remove();
 			domElement2.remove();
@@ -242,11 +248,11 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			expect( fetchStub.calledOnce ).to.equal( true );
+			expect( fetchStub ).toHaveBeenCalledOnce();
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor1.plugins.get( EmojiRepository ) );
 
-			expect( results ).to.deep.equal( [] );
+			expect( results ).toEqual( [] );
 
 			domElement1.remove();
 			domElement2.remove();
@@ -265,10 +271,10 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 			const hasGroup2 = results.some( item => item.group === 2 );
 
-			expect( hasGroup2 ).to.equal( false );
+			expect( hasGroup2 ).toBe( false );
 
 			domElement.remove();
 			await editor.destroy();
@@ -287,12 +293,12 @@ describe( 'EmojiRepository', () => {
 			} );
 
 			// `Head shaking horizontally` is mocked to be an unsupported emoji in `EmojiUtilsMock`.
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 			const headShakingHorizontallyEmoji = results.find( item => item.annotation === 'head shaking horizontally' );
 			const unamusedFaceEmoji = results.find( item => item.annotation === 'unamused face' );
 
-			expect( unamusedFaceEmoji ).not.to.be.undefined;
-			expect( headShakingHorizontallyEmoji ).to.be.undefined;
+			expect( unamusedFaceEmoji ).not.toBeUndefined();
+			expect( headShakingHorizontallyEmoji ).toBeUndefined();
 
 			domElement.remove();
 			await editor.destroy();
@@ -314,13 +320,13 @@ describe( 'EmojiRepository', () => {
 				}
 			);
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
 			const hasNeutralFaceEmoji = results.find( item => item.annotation === 'neutral face' );
 			const hasUnamusedEmoji = results.find( item => item.annotation === 'unamused face' );
 
-			expect( hasNeutralFaceEmoji ).to.be.undefined;
-			expect( hasUnamusedEmoji ).not.to.be.undefined;
+			expect( hasNeutralFaceEmoji ).toBeUndefined();
+			expect( hasUnamusedEmoji ).not.toBeUndefined();
 
 			domElement.remove();
 			await editor.destroy();
@@ -345,7 +351,7 @@ describe( 'EmojiRepository', () => {
 				}
 			);
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
 			// EmojiUtilsMockVersion15 removes emoji assigned to version `16`.
 			// However, the filtering mechanism is disabled by passing `emoji.useCustomFont=true`.
@@ -353,8 +359,8 @@ describe( 'EmojiRepository', () => {
 			const hasNeutralFaceEmoji = results.find( item => item.annotation === 'neutral face' );
 			const hasUnamusedEmoji = results.find( item => item.annotation === 'unamused face' );
 
-			expect( hasNeutralFaceEmoji ).not.to.be.undefined;
-			expect( hasUnamusedEmoji ).not.to.be.undefined;
+			expect( hasNeutralFaceEmoji ).not.toBeUndefined();
+			expect( hasUnamusedEmoji ).not.toBeUndefined();
 
 			domElement.remove();
 			await editor.destroy();
@@ -370,11 +376,11 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
-			expect( results ).to.have.length( 2 );
-			expect( results[ 0 ] ).to.have.deep.property( 'skins', { default: '😐️' } );
-			expect( results[ 1 ] ).to.have.deep.property( 'skins', { default: '😒' } );
+			expect( results ).toHaveLength( 2 );
+			expect( results[ 0 ] ).toHaveProperty( 'skins', { default: '😐️' } );
+			expect( results[ 1 ] ).toHaveProperty( 'skins', { default: '😒' } );
 
 			domElement.remove();
 			await editor.destroy();
@@ -402,10 +408,10 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
-			expect( results ).to.have.length( 1 );
-			expect( results[ 0 ] ).to.have.deep.property( 'skins', {
+			expect( results ).toHaveLength( 1 );
+			expect( results[ 0 ] ).toHaveProperty( 'skins', {
 				default: ninjaEmoji0,
 				light: ninjaEmoji1,
 				'medium-light': ninjaEmoji2,
@@ -423,35 +429,35 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( null, { status: 500 } ) );
 			} );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
-			expect( results ).to.deep.equal( [] );
+			expect( results ).toEqual( [] );
 
-			expect( consoleStub.called ).to.equal( true );
-			sinon.assert.calledWith( consoleStub, 'emoji-repository-empty' );
+			expect( consoleStub ).toHaveBeenCalled();
+			expect( consoleStub ).toHaveBeenCalledWith( 'emoji-repository-empty', expect.anything() );
 
 			domElement.remove();
 			await editor.destroy();
 		} );
 
-		it( 'should log a warning and store emoji database as empty array on network error when fetching emoji database', async () => {
+		it( 'should log a warning and do not store empty emoji array on network error when fetching emoji database', async () => {
 			const { editor, domElement } = await createTestEditor( ( resolve, reject ) => {
 				reject( new Response() );
 			} );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
-			expect( results ).to.deep.equal( [] );
+			expect( results ).toBeNull();
 
-			expect( consoleStub.called ).to.equal( true );
-			sinon.assert.calledWith( consoleStub, 'emoji-repository-empty' );
+			expect( consoleStub ).toHaveBeenCalled();
+			expect( consoleStub ).toHaveBeenCalledWith( 'emoji-repository-empty', expect.anything() );
 
 			domElement.remove();
 			await editor.destroy();
 		} );
 
 		it( 'should log a warning if there are no supported emojis', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).returns( false );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockReturnValue( false );
 
 			const { editor, domElement } = await createTestEditor( resolve => {
 				const response = JSON.stringify( [
@@ -461,8 +467,8 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			expect( consoleStub.called ).to.equal( true );
-			sinon.assert.calledWith( consoleStub, 'emoji-repository-empty' );
+			expect( consoleStub ).toHaveBeenCalled();
+			expect( consoleStub ).toHaveBeenCalledWith( 'emoji-repository-empty', expect.anything() );
 
 			domElement.remove();
 			await editor.destroy();
@@ -483,8 +489,8 @@ describe( 'EmojiRepository', () => {
 				}
 			} );
 
-			expect( consoleStub.called ).to.equal( true );
-			sinon.assert.calledWith( consoleStub, 'emoji-repository-redundant-version' );
+			expect( consoleStub ).toHaveBeenCalled();
+			expect( consoleStub ).toHaveBeenCalledWith( 'emoji-repository-redundant-version', expect.anything() );
 
 			domElement.remove();
 			await editor.destroy();
@@ -504,8 +510,8 @@ describe( 'EmojiRepository', () => {
 				licenseKey
 			} );
 
-			expect( consoleStub.called ).to.equal( true );
-			sinon.assert.calledWith( consoleStub, 'emoji-repository-cdn-use' );
+			expect( consoleStub ).toHaveBeenCalled();
+			expect( consoleStub ).toHaveBeenCalledWith( 'emoji-repository-cdn-use', expect.anything() );
 
 			domElement.remove();
 			await editor.destroy();
@@ -523,7 +529,7 @@ describe( 'EmojiRepository', () => {
 				licenseKey: 'GPL'
 			} );
 
-			expect( consoleStub ).to.not.have.been.calledWith( 'emoji-repository-redundant-version' );
+			expect( consoleStub ).not.toHaveBeenCalledWith( 'emoji-repository-redundant-version' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -548,7 +554,7 @@ describe( 'EmojiRepository', () => {
 				licenseKey
 			} );
 
-			expect( consoleStub ).to.not.have.been.calledWith( 'emoji-repository-redundant-version' );
+			expect( consoleStub ).not.toHaveBeenCalledWith( 'emoji-repository-redundant-version' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -572,10 +578,44 @@ describe( 'EmojiRepository', () => {
 				}
 			} );
 
-			expect( consoleStub ).to.not.have.been.calledWith( 'emoji-repository-redundant-version' );
+			expect( consoleStub ).not.toHaveBeenCalledWith( 'emoji-repository-redundant-version' );
 
 			domElement.remove();
 			await editor.destroy();
+		} );
+
+		it( 'should not crash when editor is destroyed before fetch completes', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			let fetchResolve;
+
+			fetchStub.mockReturnValue( new Promise( resolve => {
+				fetchResolve = resolve;
+			} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+
+			expect( plugin.isRepositoryReady ).toBe( null );
+
+			domElement.remove();
+			await editor.destroy();
+
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+			] );
+
+			expect( () => {
+				fetchResolve( new Response( response ) );
+			} ).not.toThrow();
+
+			await vi.advanceTimersToNextTimerAsync();
+
+			expect( plugin.isRepositoryReady ).toBe( null );
 		} );
 	} );
 
@@ -617,73 +657,90 @@ describe( 'EmojiRepository', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should return empty array if emojis failed to load', () => {
-			emojiRepositoryPlugin._items = null;
+		it( 'should return empty array if emojis failed to load', async () => {
+			domElement.remove();
+			await editor.destroy();
+
+			EmojiRepository._cache.clear();
+
+			const instance = await createTestEditor( ( _, reject ) => {
+				const response = JSON.stringify( {
+					error: 'Critical error'
+				} );
+
+				reject( new Response( response, {
+					status: 400
+				} ) );
+			} );
+
+			editor = instance.editor;
+			domElement = instance.domElement;
+			emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'face' );
 
-			expect( result ).to.deep.equal( [] );
+			expect( result ).toEqual( [] );
 		} );
 
 		it( 'should return empty array if search query is empty', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( '' );
 
-			expect( result ).to.deep.equal( [] );
+			expect( result ).toEqual( [] );
 		} );
 
 		it( 'should return empty array if search query is shorter than 2 characters', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'f' );
 
-			expect( result ).to.deep.equal( [] );
+			expect( result ).toEqual( [] );
 		} );
 
 		it( 'should return empty array if search query does not contain two non-white characters next to each other', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'f w' );
 
-			expect( result ).to.deep.equal( [] );
+			expect( result ).toEqual( [] );
 		} );
 
 		it( 'should return empty array if search query does not match any emoji', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'face happy' );
 
-			expect( result ).to.deep.equal( [] );
+			expect( result ).toEqual( [] );
 		} );
 
 		it( 'should return emojis matched by emoticon', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( ':|' );
 
-			expect( result ).to.have.length( 1 );
-			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
+			expect( result ).toHaveLength( 1 );
+			expect( result[ 0 ] ).toHaveProperty( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by annotation (single match)', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'neutral' );
 
-			expect( result ).to.have.length( 1 );
-			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
+			expect( result ).toHaveLength( 1 );
+			expect( result[ 0 ] ).toHaveProperty( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by annotation (multiple matches)', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'face' );
 
-			expect( result ).to.have.length( 2 );
-			expect( result[ 0 ] ).to.have.property( 'annotation', 'unamused face' );
-			expect( result[ 1 ] ).to.have.property( 'annotation', 'neutral face' );
+			expect( result ).toHaveLength( 2 );
+			expect( result[ 0 ] ).toHaveProperty( 'annotation', 'unamused face' );
+			expect( result[ 1 ] ).toHaveProperty( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by tags (single match)', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'blank' );
 
-			expect( result ).to.have.length( 1 );
-			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
+			expect( result ).toHaveLength( 1 );
+			expect( result[ 0 ] ).toHaveProperty( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by tags (multiple matches)', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'whatever' );
 
-			expect( result ).to.have.length( 2 );
-			expect( result[ 0 ] ).to.have.property( 'annotation', 'unamused face' );
-			expect( result[ 1 ] ).to.have.property( 'annotation', 'neutral face' );
+			expect( result ).toHaveLength( 2 );
+			expect( result[ 0 ] ).toHaveProperty( 'annotation', 'unamused face' );
+			expect( result[ 1 ] ).toHaveProperty( 'annotation', 'neutral face' );
 		} );
 	} );
 
@@ -720,53 +777,53 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should return empty array for each emoji category if emoji database is empty', () => {
-			EmojiRepository._results[ emojiRepositoryPlugin._url ] = [];
+			EmojiRepository._cache.clear();
 
 			const result = emojiRepositoryPlugin.getEmojiCategories();
 
-			expect( result ).to.have.length( 0 );
+			expect( result ).toHaveLength( 0 );
 		} );
 
 		it( 'should return emojis grouped by category', () => {
 			const result = emojiRepositoryPlugin.getEmojiCategories();
 
-			expect( result ).to.have.length( 9 );
+			expect( result ).toHaveLength( 9 );
 
-			expect( result[ 0 ] ).to.have.property( 'groupId', 0 );
-			expect( result[ 0 ].items ).to.have.length( 1 );
-			expect( result[ 0 ].items[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
+			expect( result[ 0 ] ).toHaveProperty( 'groupId', 0 );
+			expect( result[ 0 ].items ).toHaveLength( 1 );
+			expect( result[ 0 ].items[ 0 ] ).toHaveProperty( 'annotation', 'neutral face' );
 
-			expect( result[ 1 ] ).to.have.property( 'groupId', 1 );
-			expect( result[ 1 ].items ).to.have.length( 1 );
-			expect( result[ 1 ].items[ 0 ] ).to.have.property( 'annotation', 'ninja' );
+			expect( result[ 1 ] ).toHaveProperty( 'groupId', 1 );
+			expect( result[ 1 ].items ).toHaveLength( 1 );
+			expect( result[ 1 ].items[ 0 ] ).toHaveProperty( 'annotation', 'ninja' );
 
-			expect( result[ 2 ] ).to.have.property( 'groupId', 3 );
-			expect( result[ 2 ].items ).to.have.length( 1 );
-			expect( result[ 2 ].items[ 0 ] ).to.have.property( 'annotation', 'lobster' );
+			expect( result[ 2 ] ).toHaveProperty( 'groupId', 3 );
+			expect( result[ 2 ].items ).toHaveLength( 1 );
+			expect( result[ 2 ].items[ 0 ] ).toHaveProperty( 'annotation', 'lobster' );
 
-			expect( result[ 3 ] ).to.have.property( 'groupId', 4 );
-			expect( result[ 3 ].items ).to.have.length( 1 );
-			expect( result[ 3 ].items[ 0 ] ).to.have.property( 'annotation', 'salt' );
+			expect( result[ 3 ] ).toHaveProperty( 'groupId', 4 );
+			expect( result[ 3 ].items ).toHaveLength( 1 );
+			expect( result[ 3 ].items[ 0 ] ).toHaveProperty( 'annotation', 'salt' );
 
-			expect( result[ 4 ] ).to.have.property( 'groupId', 5 );
-			expect( result[ 4 ].items ).to.have.length( 1 );
-			expect( result[ 4 ].items[ 0 ] ).to.have.property( 'annotation', 'watch' );
+			expect( result[ 4 ] ).toHaveProperty( 'groupId', 5 );
+			expect( result[ 4 ].items ).toHaveLength( 1 );
+			expect( result[ 4 ].items[ 0 ] ).toHaveProperty( 'annotation', 'watch' );
 
-			expect( result[ 5 ] ).to.have.property( 'groupId', 6 );
-			expect( result[ 5 ].items ).to.have.length( 1 );
-			expect( result[ 5 ].items[ 0 ] ).to.have.property( 'annotation', 'magic wand' );
+			expect( result[ 5 ] ).toHaveProperty( 'groupId', 6 );
+			expect( result[ 5 ].items ).toHaveLength( 1 );
+			expect( result[ 5 ].items[ 0 ] ).toHaveProperty( 'annotation', 'magic wand' );
 
-			expect( result[ 6 ] ).to.have.property( 'groupId', 7 );
-			expect( result[ 6 ].items ).to.have.length( 1 );
-			expect( result[ 6 ].items[ 0 ] ).to.have.property( 'annotation', 'x-ray' );
+			expect( result[ 6 ] ).toHaveProperty( 'groupId', 7 );
+			expect( result[ 6 ].items ).toHaveLength( 1 );
+			expect( result[ 6 ].items[ 0 ] ).toHaveProperty( 'annotation', 'x-ray' );
 
-			expect( result[ 7 ] ).to.have.property( 'groupId', 8 );
-			expect( result[ 7 ].items ).to.have.length( 1 );
-			expect( result[ 7 ].items[ 0 ] ).to.have.property( 'annotation', 'up-left arrow' );
+			expect( result[ 7 ] ).toHaveProperty( 'groupId', 8 );
+			expect( result[ 7 ].items ).toHaveLength( 1 );
+			expect( result[ 7 ].items[ 0 ] ).toHaveProperty( 'annotation', 'up-left arrow' );
 
-			expect( result[ 8 ] ).to.have.property( 'groupId', 9 );
-			expect( result[ 8 ].items ).to.have.length( 1 );
-			expect( result[ 8 ].items[ 0 ] ).to.have.property( 'annotation', 'flag: Poland' );
+			expect( result[ 8 ] ).toHaveProperty( 'groupId', 9 );
+			expect( result[ 8 ].items ).toHaveLength( 1 );
+			expect( result[ 8 ].items[ 0 ] ).toHaveProperty( 'annotation', 'flag: Poland' );
 		} );
 	} );
 
@@ -803,7 +860,223 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should return available skin tones', () => {
-			expect( emojiRepositoryPlugin.getSkinTones() ).to.length( 6 );
+			expect( emojiRepositoryPlugin.getSkinTones() ).toHaveLength( 6 );
+		} );
+	} );
+
+	describe( 'onReady()', () => {
+		it( 'should invoke callback synchronously with `true` when repository is already loaded', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const spy = vi.fn();
+
+			plugin.onReady( spy );
+
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( true );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should invoke callback synchronously with `false` when repository already failed to load', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				resolve( new Response( null, { status: 500 } ) );
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const spy = vi.fn();
+
+			plugin.onReady( spy );
+
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( false );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should invoke callback asynchronously once the repository finishes loading successfully', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			let fetchResolve;
+
+			fetchStub.mockReturnValue( new Promise( resolve => {
+				fetchResolve = resolve;
+			} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const spy = vi.fn();
+
+			expect( plugin.isRepositoryReady ).toBe( null );
+
+			plugin.onReady( spy );
+
+			expect( spy ).not.toHaveBeenCalled();
+
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+			] );
+
+			fetchResolve( new Response( response ) );
+
+			await plugin.isReady();
+			await vi.advanceTimersToNextTimerAsync();
+
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( true );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should invoke callback asynchronously with `false` when the repository fetch fails', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			let fetchResolve;
+
+			fetchStub.mockReturnValue( new Promise( resolve => {
+				fetchResolve = resolve;
+			} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const spy = vi.fn();
+
+			expect( plugin.isRepositoryReady ).toBe( null );
+
+			plugin.onReady( spy );
+
+			expect( spy ).not.toHaveBeenCalled();
+
+			fetchResolve( new Response( null, { status: 500 } ) );
+
+			await plugin.isReady();
+			await vi.advanceTimersToNextTimerAsync();
+
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( false );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should invoke callback only once even if `onReady` is called while loading is in progress', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			let fetchResolve;
+
+			fetchStub.mockReturnValue( new Promise( resolve => {
+				fetchResolve = resolve;
+			} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+
+			const callbackSpy = vi.fn();
+
+			plugin.onReady( callbackSpy );
+
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+			] );
+
+			fetchResolve( new Response( response ) );
+
+			await plugin.isReady();
+			await vi.advanceTimersToNextTimerAsync();
+
+			expect( callbackSpy ).toHaveBeenCalledTimes( 1 );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should not invoke a previously registered callback again after repository is re-checked', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+
+			const firstSpy = vi.fn();
+			const secondSpy = vi.fn();
+
+			plugin.onReady( firstSpy );
+			plugin.onReady( secondSpy );
+
+			expect( firstSpy ).toHaveBeenCalledTimes( 1 );
+			expect( secondSpy ).toHaveBeenCalledTimes( 1 );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should never invoke the callback when the editor is destroyed before loading completes', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			fetchStub.mockReturnValue( new Promise( () => {} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const spy = vi.fn();
+
+			plugin.onReady( spy );
+			expect( spy ).not.toHaveBeenCalled();
+
+			domElement.remove();
+			await editor.destroy();
+			await vi.advanceTimersToNextTimerAsync();
+
+			expect( spy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'should not invoke callback when called on an already-destroyed editor', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+
+			domElement.remove();
+			await editor.destroy();
+
+			const spy = vi.fn();
+
+			plugin.onReady( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -820,7 +1093,7 @@ describe( 'EmojiRepository', () => {
 
 			const result = await editor.plugins.get( EmojiRepository ).isReady();
 
-			expect( result ).to.equal( true );
+			expect( result ).toBe( true );
 
 			domElement.remove();
 			await editor.destroy();
@@ -835,27 +1108,82 @@ describe( 'EmojiRepository', () => {
 
 			const result = await editor.plugins.get( EmojiRepository ).isReady();
 
-			expect( result ).to.equal( false );
+			expect( result ).toBe( false );
 
 			domElement.remove();
 			await editor.destroy();
 		} );
 
 		it( 'should return `false` when emoji database is not stored', async () => {
-			testUtils.sinon.stub( EmojiRepository, '_results' ).get( () => ( {} ) );
-
 			const { editor, domElement } = await createTestEditor( resolve => {
-				const response = JSON.stringify( [] );
-
-				resolve( new Response( response ) );
+				resolve( new Response( JSON.stringify( [] ) ) );
 			} );
 
 			const result = await editor.plugins.get( EmojiRepository ).isReady();
 
-			expect( result ).to.equal( false );
+			expect( result ).toBe( false );
 
 			domElement.remove();
 			await editor.destroy();
+		} );
+
+		it( 'should return `false` when the editor is destroyed while fetch is still pending', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			let fetchResolve;
+
+			fetchStub.mockReturnValue( new Promise( resolve => {
+				fetchResolve = resolve;
+			} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const isReadyPromise = plugin.isReady();
+
+			domElement.remove();
+			await editor.destroy();
+
+			let caughtError;
+
+			try {
+				await isReadyPromise;
+			} catch ( error ) {
+				caughtError = error;
+			}
+
+			fetchResolve();
+			expect( caughtError ).toBeInstanceOf( Error );
+			expect( caughtError.message ).toBe( 'The editor was destroyed before the emoji repository finished loading.' );
+		} );
+
+		it( 'should reject immediately when called on an already-destroyed editor', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+
+			domElement.remove();
+			await editor.destroy();
+
+			let caughtError;
+
+			try {
+				await plugin.isReady();
+			} catch ( error ) {
+				caughtError = error;
+			}
+
+			expect( caughtError ).toBeInstanceOf( Error );
+			expect( caughtError.message ).toBe( 'The editor was destroyed before the emoji repository finished loading.' );
 		} );
 	} );
 
@@ -865,7 +1193,7 @@ describe( 'EmojiRepository', () => {
 
 		let fetchStubResolve, fetchStubReject;
 
-		fetchStub.returns( new Promise( ( resolve, reject ) => {
+		fetchStub.mockReturnValue( new Promise( ( resolve, reject ) => {
 			fetchStubResolve = resolve;
 			fetchStubReject = reject;
 		} ) );
@@ -879,13 +1207,16 @@ describe( 'EmojiRepository', () => {
 			...editorConfig
 		} );
 
-		// Break the event loop to execute scheduled promise callbacks.
-		await clock.nextAsync();
+		const editor = await editorPromise;
+		const repository = editor.plugins.get( EmojiRepository );
 
 		fetchStubCallback( fetchStubResolve, fetchStubReject );
 
+		await repository.isReady();
+		await vi.advanceTimersToNextTimerAsync();
+
 		return {
-			editor: await editorPromise,
+			editor,
 			domElement
 		};
 	}

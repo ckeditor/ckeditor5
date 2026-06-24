@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewElement } from '../../../src/view/element.js';
@@ -32,7 +33,7 @@ describe( 'DowncastWriter', () => {
 
 			const newRange = writer.insert( selection.getFirstPosition(), nodesToInsert );
 
-			expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+			expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true } ) ).toBe( expected );
 		}
 
 		beforeEach( () => {
@@ -183,7 +184,7 @@ describe( 'DowncastWriter', () => {
 			const element = new ViewContainerElement( document, 'span', {}, 'baz' );
 			const newRange = writer.insert( selection.getFirstPosition(), element );
 
-			expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
+			expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true } ) ).toBe(
 				'<container:p>' +
 					'<attribute:b view-priority="1">foo</attribute:b>' +
 					'[<container:span>baz</container:span>]' +
@@ -196,7 +197,7 @@ describe( 'DowncastWriter', () => {
 
 			const finalRange = writer.wrap( newRange, attribute );
 
-			expect( _stringifyView( view.root, finalRange, { showType: true, showPriority: true } ) ).to.equal(
+			expect( _stringifyView( view.root, finalRange, { showType: true, showPriority: true } ) ).toBe(
 				'<container:p><attribute:b view-priority="1">foo[<container:span>baz</container:span>]bar</attribute:b></container:p>'
 			);
 		} );

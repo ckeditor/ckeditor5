@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { getCode, env } from '@ckeditor/ckeditor5-utils';
@@ -27,7 +27,9 @@ import { Command } from '@ckeditor/ckeditor5-core';
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	describe( 'plugin', () => {
 		beforeEach( async () => {
@@ -43,11 +45,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( RestrictedEditingModeEditing.isOfficialPlugin ).to.be.true;
+			expect( RestrictedEditingModeEditing.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-			expect( RestrictedEditingModeEditing.isPremiumPlugin ).to.be.true;
+			expect( RestrictedEditingModeEditing.isPremiumPlugin ).toBe( true );
 		} );
 
 		it( 'should have `licenseFeatureCode` static flag set to `RED`', () => {
@@ -60,7 +62,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		it( 'root should have "ck-restricted-editing_mode_restricted" class', () => {
 			for ( const root of editor.editing.view.document.roots ) {
-				expect( root.hasClass( 'ck-restricted-editing_mode_restricted' ) ).to.be.true;
+				expect( root.hasClass( 'ck-restricted-editing_mode_restricted' ) ).toBe( true );
 			}
 		} );
 
@@ -341,14 +343,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 				} );
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData() ).to.equal(
 					'<figure class="table"><table><tbody><tr><td>' +
 					'<span class="restricted-editing-exception"><b>foo bar baz</b></span>' +
 					'</td></tr></tbody></table></figure>'
 				);
 				expect(
 					_getViewData( editor.editing.view, { withoutSelection: true } )
-				).to.equalMarkup(
+				).to.equal(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
@@ -603,7 +605,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			editor.execute( 'insertText', { text: 'X' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo []bar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
 		} );
 
 		it( 'should not block user typing inside exception marker', () => {
@@ -623,7 +625,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 			editor.execute( 'insertText', { text: 'X' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bX[]ar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo bX[]ar baz</paragraph>' );
 		} );
 
 		it( 'should extend marker when typing on the marker boundary (end)', () => {
@@ -640,7 +642,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			editor.execute( 'insertText', { text: 'X' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo barX[] baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo barX[] baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 			const expectedRange = model.createRange(
 				model.createPositionAt( firstParagraph, 4 ),
@@ -669,7 +671,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			command.execute( { source: imgSrc } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo bar[<imageInline src="assets/sample.png"></imageInline>] baz</paragraph>'
 			);
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
@@ -700,7 +702,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			command.execute( { source: imgSrc } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo [<imageInline src="assets/sample.png"></imageInline>]bar baz</paragraph>'
 			);
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
@@ -726,7 +728,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			editor.execute( 'insertText', { text: 'X' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo X[]bar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo X[]bar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 
 			const expectedRange = model.createRange(
@@ -755,7 +757,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			editor.execute( 'insertText', { text: 'X' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo X[]bar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo X[]bar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 
 			const expectedRange = model.createRange(
@@ -784,7 +786,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo XX[]r baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo XX[]r baz</paragraph>' );
 
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 			const expectedRange = model.createRange(
@@ -813,7 +815,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXX[] baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXX[] baz</paragraph>' );
 
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 			const expectedRange = model.createRange(
@@ -841,7 +843,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo []ar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo []ar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 
 			const expectedRange = model.createRange(
@@ -874,7 +876,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} ).not.to.throw();
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]foo bar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar baz</paragraph>' );
 		} );
 
 		it( 'should not move collapsed marker to $graveyard if it was removed by dragging', () => {
@@ -896,7 +898,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			model.deleteContent( model.createSelection( range ) );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo ar b[]az</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo ar b[]az</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 
 			const expectedRange = model.createRange(
@@ -930,7 +932,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			model.deleteContent( model.document.selection );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>fo[]o bar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]o bar baz</paragraph>' );
 		} );
 
 		it( 'should trim deleted content to a exception marker (focus in marker)', () => {
@@ -947,7 +949,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.deleteContent( selection );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]foo bar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar baz</paragraph>' );
 		} );
 
 		it( 'should trim deleted content to a exception marker (anchor in marker)', () => {
@@ -964,7 +966,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.deleteContent( selection );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]foo b baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo b baz</paragraph>' );
 		} );
 
 		it( 'should trim deleted content to a exception marker and alter the selection argument (delete command integration)', () => {
@@ -978,7 +980,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 			editor.execute( 'delete', { unit: 'word' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo[] bar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[] bar baz</paragraph>' );
 		} );
 
 		it( 'should work with document selection', () => {
@@ -991,7 +993,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.deleteContent( model.document.selection );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( '<paragraph>fo baz</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>fo baz</paragraph>' );
 		} );
 	} );
 
@@ -1027,7 +1029,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo b[]ar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]ar baz</paragraph>' );
 		} );
 
 		it( 'should prevent changing text before exception marker (native spell-check simulation)', () => {
@@ -1046,7 +1048,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo b[]ar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]ar baz</paragraph>' );
 		} );
 
 		it( 'should prevent changing text before (change crossing different markers)', () => {
@@ -1066,7 +1068,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>fo[]o bar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]o bar baz</paragraph>' );
 		} );
 
 		it( 'should allow changing text inside single marker', () => {
@@ -1085,7 +1087,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foxxxxxxx[]baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foxxxxxxx[]baz</paragraph>' );
 		} );
 	} );
 
@@ -1121,7 +1123,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo b[]ar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]ar baz</paragraph>' );
 		} );
 
 		it( 'should prevent changing text before exception marker (native spell-check simulation)', () => {
@@ -1140,7 +1142,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo b[]ar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]ar baz</paragraph>' );
 		} );
 
 		it( 'should prevent changing text before (change crossing different markers)', () => {
@@ -1160,7 +1162,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>fo[]o bar baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]o bar baz</paragraph>' );
 		} );
 
 		it( 'should allow changing text inside single marker', () => {
@@ -1179,7 +1181,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foxxxxxxx[]baz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foxxxxxxx[]baz</paragraph>' );
 		} );
 	} );
 
@@ -1203,7 +1205,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 		describe( 'cut', () => {
 			it( 'should be blocked outside exception markers', () => {
 				_setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
 
 				viewDoc.fire( 'clipboardOutput', {
@@ -1213,8 +1215,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 					method: 'cut'
 				} );
 
-				sinon.assert.notCalled( spy );
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo []bar baz</paragraph>' );
+				expect( spy ).not.toHaveBeenCalled();
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
 			it( 'should cut selected content inside exception marker (selection inside marker)', () => {
@@ -1229,7 +1231,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					method: 'cut'
 				} );
 
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo b[]r baz</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]r baz</paragraph>' );
 			} );
 
 			it( 'should cut selected content inside exception marker (selection touching marker start)', () => {
@@ -1244,7 +1246,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					method: 'cut'
 				} );
 
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo []r baz</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo []r baz</paragraph>' );
 			} );
 
 			it( 'should cut selected content inside exception marker (selection touching marker end)', () => {
@@ -1259,14 +1261,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 					method: 'cut'
 				} );
 
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo b[] baz</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[] baz</paragraph>' );
 			} );
 		} );
 
 		describe( 'copy', () => {
 			it( 'should not be blocked outside exception markers', () => {
 				_setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
 
 				viewDoc.fire( 'clipboardOutput', {
@@ -1276,14 +1278,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 					method: 'copy'
 				} );
 
-				sinon.assert.calledOnce( spy );
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo []bar baz</paragraph>' );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
 			it( 'should not be blocked inside exception marker', () => {
 				_setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
 				const firstParagraph = model.document.getRoot().getChild( 0 );
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
 
 				model.change( writer => {
@@ -1308,20 +1310,20 @@ describe( 'RestrictedEditingModeEditing', () => {
 					method: 'copy'
 				} );
 
-				sinon.assert.calledOnce( spy );
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo b[]ar baz</paragraph>' );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]ar baz</paragraph>' );
 			} );
 		} );
 
 		describe( 'paste', () => {
 			beforeEach( () => {
 				// Required when testing without DOM using VirtualTestEditor - Clipboard feature scrolls after paste event.
-				sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+				vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 			} );
 
 			it( 'should be blocked outside exception markers (collapsed selection)', () => {
 				_setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
@@ -1332,13 +1334,13 @@ describe( 'RestrictedEditingModeEditing', () => {
 					content: dataTransfer.getData( 'text/html' )
 				} );
 
-				sinon.assert.notCalled( spy );
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo []bar baz</paragraph>' );
+				expect( spy ).not.toHaveBeenCalled();
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
 			it( 'should be blocked outside exception markers (non-collapsed selection)', () => {
 				_setModelData( model, '<paragraph>[foo bar baz]</paragraph>' );
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
@@ -1349,15 +1351,15 @@ describe( 'RestrictedEditingModeEditing', () => {
 					dataTransfer
 				} );
 
-				sinon.assert.notCalled( spy );
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[foo bar baz]</paragraph>' );
+				expect( spy ).not.toHaveBeenCalled();
+				expect( _getModelData( model ) ).to.equal( '<paragraph>[foo bar baz]</paragraph>' );
 			} );
 
 			it( 'should be blocked outside exception markers (non-collapsed selection, starts inside exception marker)', () => {
 				_setModelData( model, '<paragraph>foo b[ar baz]</paragraph>' );
 				addExceptionMarker( 4, 7, model.document.getRoot().getChild( 0 ), 'inline:1' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
@@ -1368,15 +1370,15 @@ describe( 'RestrictedEditingModeEditing', () => {
 					dataTransfer
 				} );
 
-				sinon.assert.notCalled( spy );
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo b[ar baz]</paragraph>' );
+				expect( spy ).not.toHaveBeenCalled();
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[ar baz]</paragraph>' );
 			} );
 
 			it( 'should be blocked outside exception markers (non-collapsed selection, ends inside exception marker)', () => {
 				_setModelData( model, '<paragraph>[foo ba]r baz</paragraph>' );
 				addExceptionMarker( 4, 7, model.document.getRoot().getChild( 0 ), 'inline:1' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
@@ -1387,8 +1389,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 					dataTransfer
 				} );
 
-				sinon.assert.notCalled( spy );
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[foo ba]r baz</paragraph>' );
+				expect( spy ).not.toHaveBeenCalled();
+				expect( _getModelData( model ) ).to.equal( '<paragraph>[foo ba]r baz</paragraph>' );
 			} );
 
 			describe( 'collapsed selection', () => {
@@ -1404,7 +1406,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						dataTransfer
 					} );
 
-					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXXX[]ar baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXXX[]ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ], 'inline:1' );
 				} );
 
@@ -1423,7 +1425,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>foo b<$text bold="true" italic="true" linkHref="foo">XXX</$text>' +
 						// The link attribute is removed from selection after pasting.
 						// See https://github.com/ckeditor/ckeditor5/issues/6053.
@@ -1444,7 +1446,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						dataTransfer
 					} );
 
-					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXXX[]ar baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXXX[]ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ], 'inline:1' );
 				} );
 
@@ -1461,7 +1463,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 
 					expect(
-						_getModelData( model ) ).to.equalMarkup(
+						_getModelData( model ) ).to.equal(
 						'<paragraph>foo b<$text bold="true" italic="true">XXX[]</$text>ar baz</paragraph>'
 					);
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ], 'inline:1' );
@@ -1479,7 +1481,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXXX[]ar baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXXX[]ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ], 'inline:1' );
 				} );
 			} );
@@ -1497,7 +1499,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXXX[]r baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXXX[]r baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ], 'inline:1' );
 				} );
 
@@ -1513,7 +1515,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo b<$text bold="true">XXX[]</$text>r baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo b<$text bold="true">XXX[]</$text>r baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ], 'inline:1' );
 				} );
 
@@ -1529,7 +1531,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXXX[]r baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXXX[]r baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ], 'inline:1' );
 				} );
 
@@ -1546,7 +1548,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 
 					expect(
-						_getModelData( model ) ).to.equalMarkup(
+						_getModelData( model ) ).to.equal(
 						'<paragraph>foo b<$text bold="true" italic="true">XXX[]</$text>r baz</paragraph>'
 					);
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ], 'inline:1' );
@@ -1804,11 +1806,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			domEvtDataStub = {
 				keyCode: getCode( 'Tab' ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 		} );
 
 		afterEach( () => {
@@ -1842,10 +1844,10 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingException' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute ).toHaveBeenCalledWith( 'goToNextRestrictedEditingException' );
+			expect( domEvtDataStub.preventDefault ).toHaveBeenCalledOnce();
+			expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should let the focus go outside the editor on tab key when in the last exception', () => {
@@ -1864,9 +1866,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			expect( editor.execute ).not.toHaveBeenCalled();
+			expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+			expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should move to the closest previous exception on shift+tab key', () => {
@@ -1895,10 +1897,10 @@ describe( 'RestrictedEditingModeEditing', () => {
 			domEvtDataStub.shiftKey = true;
 			view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'goToPreviousRestrictedEditingException' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute ).toHaveBeenCalledWith( 'goToPreviousRestrictedEditingException' );
+			expect( domEvtDataStub.preventDefault ).toHaveBeenCalledOnce();
+			expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should get into the table', () => {
@@ -1928,10 +1930,10 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingException' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute ).toHaveBeenCalledWith( 'goToNextRestrictedEditingException' );
+			expect( domEvtDataStub.preventDefault ).toHaveBeenCalledOnce();
+			expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledOnce();
 
 			const position = model.document.selection.getFirstRange().start;
 
@@ -1965,10 +1967,10 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingException' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute ).toHaveBeenCalledWith( 'goToNextRestrictedEditingException' );
+			expect( domEvtDataStub.preventDefault ).toHaveBeenCalledOnce();
+			expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledOnce();
 
 			const position = model.document.selection.getFirstRange().start;
 
@@ -1992,9 +1994,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 			domEvtDataStub.keyCode += getCode( 'Shift' );
 			view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			expect( editor.execute ).not.toHaveBeenCalled();
+			expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+			expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -2020,8 +2022,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 					keyCode: getCode( 'A' ),
 					ctrlKey: !env.isMac,
 					metaKey: env.isMac,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 			} );
 
@@ -2036,8 +2038,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					view.document.fire( 'keydown', evtData );
 
-					sinon.assert.calledOnce( evtData.preventDefault );
-					sinon.assert.calledOnce( evtData.stopPropagation );
+					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
@@ -2051,8 +2053,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					view.document.fire( 'keydown', evtData );
 
-					sinon.assert.calledOnce( evtData.preventDefault );
-					sinon.assert.calledOnce( evtData.stopPropagation );
+					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
@@ -2066,8 +2068,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					view.document.fire( 'keydown', evtData );
 
-					sinon.assert.calledOnce( evtData.preventDefault );
-					sinon.assert.calledOnce( evtData.stopPropagation );
+					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
@@ -2079,8 +2081,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					view.document.fire( 'keydown', evtData );
 
-					sinon.assert.notCalled( evtData.preventDefault );
-					sinon.assert.notCalled( evtData.stopPropagation );
+					expect( evtData.preventDefault ).not.toHaveBeenCalled();
+					expect( evtData.stopPropagation ).not.toHaveBeenCalled();
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo ba[]r baz</paragraph>' );
 				} );
 
@@ -2095,8 +2097,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 					view.document.fire( 'keydown', evtData );
 					view.document.fire( 'keydown', evtData );
 
-					sinon.assert.calledTwice( evtData.preventDefault );
-					sinon.assert.calledTwice( evtData.stopPropagation );
+					expect( evtData.preventDefault ).toHaveBeenCalledTimes( 2 );
+					expect( evtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 			} );
@@ -2112,8 +2114,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					view.document.fire( 'keydown', evtData );
 
-					sinon.assert.calledOnce( evtData.preventDefault );
-					sinon.assert.calledOnce( evtData.stopPropagation );
+					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
 					expect( _getModelData( model ) ).to.equal( '<paragraph>[foo bar] baz</paragraph>' );
 				} );
 
@@ -2127,8 +2129,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					view.document.fire( 'keydown', evtData );
 
-					sinon.assert.calledOnce( evtData.preventDefault );
-					sinon.assert.calledOnce( evtData.stopPropagation );
+					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
@@ -2142,8 +2144,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					view.document.fire( 'keydown', evtData );
 
-					sinon.assert.calledOnce( evtData.preventDefault );
-					sinon.assert.calledOnce( evtData.stopPropagation );
+					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
@@ -2157,8 +2159,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					view.document.fire( 'keydown', evtData );
 
-					sinon.assert.notCalled( evtData.preventDefault );
-					sinon.assert.notCalled( evtData.stopPropagation );
+					expect( evtData.preventDefault ).not.toHaveBeenCalled();
+					expect( evtData.stopPropagation ).not.toHaveBeenCalled();
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fo[o ba]r baz</paragraph>' );
 				} );
 
@@ -2173,8 +2175,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 					view.document.fire( 'keydown', evtData );
 					view.document.fire( 'keydown', evtData );
 
-					sinon.assert.calledTwice( evtData.preventDefault );
-					sinon.assert.calledTwice( evtData.stopPropagation );
+					expect( evtData.preventDefault ).toHaveBeenCalledTimes( 2 );
+					expect( evtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 			} );

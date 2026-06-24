@@ -14,7 +14,7 @@ import { IndentEditing } from '@ckeditor/ckeditor5-indent';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { beforeEach, afterEach, describe, it, vi } from 'vitest';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { setupTestHelpers } from './_utils/utils.js';
@@ -23,7 +23,9 @@ import { stubUid } from './_utils/uid.js';
 describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 	let editor, model, view, test;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -45,7 +47,7 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 		} );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
+		vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		stubUid();
 
 		test = setupTestHelpers( editor );

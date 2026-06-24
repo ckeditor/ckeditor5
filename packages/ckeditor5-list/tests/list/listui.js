@@ -15,6 +15,8 @@ import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 describe( 'ListUI', () => {
 	let editorElement, editor, model;
 
@@ -36,15 +38,15 @@ describe( 'ListUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListUI.isOfficialPlugin ).to.be.true;
+		expect( ListUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListUI.isPremiumPlugin ).to.be.false;
+		expect( ListUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListUI ) ).to.be.instanceOf( ListUI );
+		expect( editor.plugins.get( ListUI ) ).toBeInstanceOf( ListUI );
 	} );
 
 	describe( 'toolbar buttons', () => {
@@ -56,21 +58,21 @@ describe( 'ListUI', () => {
 		} );
 
 		it( 'should set up buttons for bulleted list and numbered list', () => {
-			expect( bulletedListButton ).to.be.instanceOf( ButtonView );
-			expect( bulletedListButton.isToggleable ).to.be.true;
+			expect( bulletedListButton ).toBeInstanceOf( ButtonView );
+			expect( bulletedListButton.isToggleable ).toBe( true );
 
-			expect( numberedListButton ).to.be.instanceOf( ButtonView );
-			expect( numberedListButton.isToggleable ).to.be.true;
+			expect( numberedListButton ).toBeInstanceOf( ButtonView );
+			expect( numberedListButton.isToggleable ).toBe( true );
 		} );
 
 		it( 'should execute proper commands when buttons are used', () => {
-			sinon.spy( editor, 'execute' );
+			const executeSpy = vi.spyOn( editor, 'execute' );
 
 			bulletedListButton.fire( 'execute' );
-			sinon.assert.calledWithExactly( editor.execute, 'bulletedList' );
+			expect( executeSpy ).toHaveBeenCalledWith( 'bulletedList' );
 
 			numberedListButton.fire( 'execute' );
-			sinon.assert.calledWithExactly( editor.execute, 'numberedList' );
+			expect( executeSpy ).toHaveBeenCalledWith( 'numberedList' );
 		} );
 
 		it( 'should bind bulleted list button model to bulledList command', () => {
@@ -78,14 +80,14 @@ describe( 'ListUI', () => {
 
 			const command = editor.commands.get( 'bulletedList' );
 
-			expect( bulletedListButton.isOn ).to.be.true;
-			expect( bulletedListButton.isEnabled ).to.be.true;
+			expect( bulletedListButton.isOn ).toBe( true );
+			expect( bulletedListButton.isEnabled ).toBe( true );
 
 			command.value = false;
-			expect( bulletedListButton.isOn ).to.be.false;
+			expect( bulletedListButton.isOn ).toBe( false );
 
 			command.isEnabled = false;
-			expect( bulletedListButton.isEnabled ).to.be.false;
+			expect( bulletedListButton.isEnabled ).toBe( false );
 		} );
 
 		it( 'should bind numbered list button model to numberedList command', () => {
@@ -94,14 +96,14 @@ describe( 'ListUI', () => {
 			const command = editor.commands.get( 'numberedList' );
 
 			// We are in UL, so numbered list is off.
-			expect( numberedListButton.isOn ).to.be.false;
-			expect( numberedListButton.isEnabled ).to.be.true;
+			expect( numberedListButton.isOn ).toBe( false );
+			expect( numberedListButton.isEnabled ).toBe( true );
 
 			command.value = true;
-			expect( numberedListButton.isOn ).to.be.true;
+			expect( numberedListButton.isOn ).toBe( true );
 
 			command.isEnabled = false;
-			expect( numberedListButton.isEnabled ).to.be.false;
+			expect( numberedListButton.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -114,26 +116,26 @@ describe( 'ListUI', () => {
 		} );
 
 		it( 'should set proper `role` and `isToggleable` attributes', () => {
-			expect( bulletedListButton.role ).to.be.equal( 'menuitemcheckbox' );
-			expect( numberedListButton.role ).to.be.equal( 'menuitemcheckbox' );
+			expect( bulletedListButton.role ).toBe( 'menuitemcheckbox' );
+			expect( numberedListButton.role ).toBe( 'menuitemcheckbox' );
 
-			expect( bulletedListButton.isToggleable ).to.be.true;
-			expect( numberedListButton.isToggleable ).to.be.true;
+			expect( bulletedListButton.isToggleable ).toBe( true );
+			expect( numberedListButton.isToggleable ).toBe( true );
 		} );
 
 		it( 'should set up buttons for bulleted list and numbered list', () => {
-			expect( bulletedListButton ).to.be.instanceOf( MenuBarMenuListItemButtonView );
-			expect( numberedListButton ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+			expect( bulletedListButton ).toBeInstanceOf( MenuBarMenuListItemButtonView );
+			expect( numberedListButton ).toBeInstanceOf( MenuBarMenuListItemButtonView );
 		} );
 
 		it( 'should execute proper commands when buttons are used', () => {
-			sinon.spy( editor, 'execute' );
+			const executeSpy = vi.spyOn( editor, 'execute' );
 
 			bulletedListButton.fire( 'execute' );
-			sinon.assert.calledWithExactly( editor.execute, 'bulletedList' );
+			expect( executeSpy ).toHaveBeenCalledWith( 'bulletedList' );
 
 			numberedListButton.fire( 'execute' );
-			sinon.assert.calledWithExactly( editor.execute, 'numberedList' );
+			expect( executeSpy ).toHaveBeenCalledWith( 'numberedList' );
 		} );
 
 		it( 'should bind bulleted list button model to bulledList command', () => {
@@ -141,14 +143,14 @@ describe( 'ListUI', () => {
 
 			const command = editor.commands.get( 'bulletedList' );
 
-			expect( bulletedListButton.isOn ).to.be.true;
-			expect( bulletedListButton.isEnabled ).to.be.true;
+			expect( bulletedListButton.isOn ).toBe( true );
+			expect( bulletedListButton.isEnabled ).toBe( true );
 
 			command.value = false;
-			expect( bulletedListButton.isOn ).to.be.false;
+			expect( bulletedListButton.isOn ).toBe( false );
 
 			command.isEnabled = false;
-			expect( bulletedListButton.isEnabled ).to.be.false;
+			expect( bulletedListButton.isEnabled ).toBe( false );
 		} );
 
 		it( 'should bind numbered list button model to numberedList command', () => {
@@ -157,14 +159,14 @@ describe( 'ListUI', () => {
 			const command = editor.commands.get( 'numberedList' );
 
 			// We are in UL, so numbered list is off.
-			expect( numberedListButton.isOn ).to.be.false;
-			expect( numberedListButton.isEnabled ).to.be.true;
+			expect( numberedListButton.isOn ).toBe( false );
+			expect( numberedListButton.isEnabled ).toBe( true );
 
 			command.value = true;
-			expect( numberedListButton.isOn ).to.be.true;
+			expect( numberedListButton.isOn ).toBe( true );
 
 			command.isEnabled = false;
-			expect( numberedListButton.isEnabled ).to.be.false;
+			expect( numberedListButton.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -193,8 +195,8 @@ describe( 'ListUI', () => {
 			const bulletedListButton = editor.ui.componentFactory.create( 'bulletedList' );
 			const numberedListButton = editor.ui.componentFactory.create( 'numberedList' );
 
-			expect( bulletedListButton.class ).to.be.equal( 'ck-list-styles-dropdown' );
-			expect( numberedListButton.class ).to.be.equal( 'ck-list-styles-dropdown' );
+			expect( bulletedListButton.class ).toBe( 'ck-list-styles-dropdown' );
+			expect( numberedListButton.class ).toBe( 'ck-list-styles-dropdown' );
 		} );
 	} );
 } );

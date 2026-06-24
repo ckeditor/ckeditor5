@@ -3,15 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi } from 'vitest';
+
 import { abortableDebounce } from '../src/abortabledebounce.js';
 
 describe( 'abortableDebounce()', () => {
 	it( 'should forward arguments and return type', () => {
-		const callback = sinon.stub();
+		const callback = vi.fn();
 
-		callback.onCall( 0 ).returns( 1 );
-		callback.onCall( 1 ).returns( 2 );
-		callback.returns( 3 );
+		callback
+			.mockReturnValueOnce( 1 )
+			.mockReturnValueOnce( 2 )
+			.mockReturnValue( 3 );
 
 		const abortable = abortableDebounce( callback );
 
@@ -19,25 +22,25 @@ describe( 'abortableDebounce()', () => {
 		const result2 = abortable( 'x', 'y', 'z' );
 		const result3 = abortable( 1, 2 );
 
-		expect( result1, '1st result' ).to.equal( 1 );
-		expect( result2, '2nd result' ).to.equal( 2 );
-		expect( result3, '3rd result' ).to.equal( 3 );
+		expect( result1, '1st result' ).toBe( 1 );
+		expect( result2, '2nd result' ).toBe( 2 );
+		expect( result3, '3rd result' ).toBe( 3 );
 
-		expect( callback.getCall( 0 ).args.length, '1st call, no. of args' ).to.equal( 3 );
-		expect( callback.getCall( 0 ).args[ 0 ], '1st call, 1st arg' ).to.be.an.instanceof( AbortSignal );
-		expect( callback.getCall( 0 ).args[ 1 ], '1st call, 2nd arg' ).to.equal( 'a' );
-		expect( callback.getCall( 0 ).args[ 2 ], '1st call, 3rd arg' ).to.equal( 'b' );
+		expect( callback.mock.calls[ 0 ].length, '1st call, no. of args' ).toBe( 3 );
+		expect( callback.mock.calls[ 0 ][ 0 ], '1st call, 1st arg' ).toBeInstanceOf( AbortSignal );
+		expect( callback.mock.calls[ 0 ][ 1 ], '1st call, 2nd arg' ).toBe( 'a' );
+		expect( callback.mock.calls[ 0 ][ 2 ], '1st call, 3rd arg' ).toBe( 'b' );
 
-		expect( callback.getCall( 1 ).args.length, '2nd call, no. of args' ).to.equal( 4 );
-		expect( callback.getCall( 1 ).args[ 0 ], '2nd call, 1st arg' ).to.be.an.instanceof( AbortSignal );
-		expect( callback.getCall( 1 ).args[ 1 ], '2nd call, 2nd arg' ).to.equal( 'x' );
-		expect( callback.getCall( 1 ).args[ 2 ], '2nd call, 3rd arg' ).to.equal( 'y' );
-		expect( callback.getCall( 1 ).args[ 3 ], '2nd call, 4rd arg' ).to.equal( 'z' );
+		expect( callback.mock.calls[ 1 ].length, '2nd call, no. of args' ).toBe( 4 );
+		expect( callback.mock.calls[ 1 ][ 0 ], '2nd call, 1st arg' ).toBeInstanceOf( AbortSignal );
+		expect( callback.mock.calls[ 1 ][ 1 ], '2nd call, 2nd arg' ).toBe( 'x' );
+		expect( callback.mock.calls[ 1 ][ 2 ], '2nd call, 3rd arg' ).toBe( 'y' );
+		expect( callback.mock.calls[ 1 ][ 3 ], '2nd call, 4rd arg' ).toBe( 'z' );
 
-		expect( callback.getCall( 2 ).args.length, '3rd call, no. of args' ).to.equal( 3 );
-		expect( callback.getCall( 2 ).args[ 0 ], '3rd call, 1st arg' ).to.be.an.instanceof( AbortSignal );
-		expect( callback.getCall( 2 ).args[ 1 ], '3rd call, 2nd arg' ).to.equal( 1 );
-		expect( callback.getCall( 2 ).args[ 2 ], '3rd call, 3rd arg' ).to.equal( 2 );
+		expect( callback.mock.calls[ 2 ].length, '3rd call, no. of args' ).toBe( 3 );
+		expect( callback.mock.calls[ 2 ][ 0 ], '3rd call, 1st arg' ).toBeInstanceOf( AbortSignal );
+		expect( callback.mock.calls[ 2 ][ 1 ], '3rd call, 2nd arg' ).toBe( 1 );
+		expect( callback.mock.calls[ 2 ][ 2 ], '3rd call, 3rd arg' ).toBe( 2 );
 	} );
 
 	it( 'should abort previous call', () => {
@@ -47,17 +50,17 @@ describe( 'abortableDebounce()', () => {
 
 		abortable();
 
-		expect( signals[ 0 ].aborted, '1st call - current signal' ).to.be.false;
+		expect( signals[ 0 ].aborted, '1st call - current signal' ).toBe( false );
 
 		abortable();
 
-		expect( signals[ 0 ].aborted, '2nd call - previous signal' ).to.be.true;
-		expect( signals[ 1 ].aborted, '2nd call - current signal' ).to.be.false;
+		expect( signals[ 0 ].aborted, '2nd call - previous signal' ).toBe( true );
+		expect( signals[ 1 ].aborted, '2nd call - current signal' ).toBe( false );
 
 		abortable();
 
-		expect( signals[ 1 ].aborted, '3rd call - previous signal' ).to.be.true;
-		expect( signals[ 2 ].aborted, '3rd call - current signal' ).to.be.false;
+		expect( signals[ 1 ].aborted, '3rd call - previous signal' ).toBe( true );
+		expect( signals[ 2 ].aborted, '3rd call - current signal' ).toBe( false );
 	} );
 
 	it( '`abort()` should abort last call', () => {
@@ -69,15 +72,15 @@ describe( 'abortableDebounce()', () => {
 
 		abortable();
 
-		expect( signal.aborted, 'before `abort()' ).to.be.false;
+		expect( signal.aborted, 'before `abort()' ).toBe( false );
 
 		abortable.abort();
 
-		expect( signal.aborted, 'after `abort()`' ).to.be.true;
+		expect( signal.aborted, 'after `abort()`' ).toBe( true );
 
 		abortable();
 
-		expect( signal.aborted, 'after next call' ).to.be.false;
+		expect( signal.aborted, 'after next call' ).toBe( false );
 	} );
 
 	it( 'should provide default abort reason', () => {
@@ -90,11 +93,11 @@ describe( 'abortableDebounce()', () => {
 		abortable();
 		abortable.abort();
 
-		expect( signals[ 0 ].reason ).to.be.instanceof( DOMException );
-		expect( signals[ 0 ].reason.name, '1st signal name' ).to.equal( 'AbortError' );
-		expect( signals[ 1 ].reason ).to.be.instanceof( DOMException );
-		expect( signals[ 1 ].reason.name, '2nd signal name' ).to.equal( 'AbortError' );
-		expect( signals[ 2 ].reason ).to.be.instanceof( DOMException );
-		expect( signals[ 2 ].reason.name, '3rd signal name' ).to.equal( 'AbortError' );
+		expect( signals[ 0 ].reason ).toBeInstanceOf( DOMException );
+		expect( signals[ 0 ].reason.name, '1st signal name' ).toBe( 'AbortError' );
+		expect( signals[ 1 ].reason ).toBeInstanceOf( DOMException );
+		expect( signals[ 1 ].reason.name, '2nd signal name' ).toBe( 'AbortError' );
+		expect( signals[ 2 ].reason ).toBeInstanceOf( DOMException );
+		expect( signals[ 2 ].reason.name, '3rd signal name' ).toBe( 'AbortError' );
 	} );
 } );

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeAll } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewText } from '../../../src/view/text.js';
@@ -23,10 +24,10 @@ describe( 'DowncastWriter', () => {
 		function testMerge( input, expected ) {
 			const { view, selection } = _parseView( input );
 			const newPosition = writer.mergeAttributes( selection.getFirstPosition() );
-			expect( _stringifyView( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
+			expect( _stringifyView( view, newPosition, { showType: true, showPriority: true } ) ).toBe( expected );
 		}
 
-		before( () => {
+		beforeAll( () => {
 			document = new ViewDocument( new StylesProcessor() );
 			writer = new ViewDowncastWriter( document );
 		} );
@@ -71,7 +72,7 @@ describe( 'DowncastWriter', () => {
 			const position = new ViewPosition( p, 1 );
 
 			const newPosition = writer.mergeAttributes( position );
-			expect( _stringifyView( p, newPosition ) ).to.equal( '<p>foo{}bar</p>' );
+			expect( _stringifyView( p, newPosition ) ).toBe( '<p>foo{}bar</p>' );
 		} );
 
 		it( 'should merge when placed between similar attribute nodes', () => {

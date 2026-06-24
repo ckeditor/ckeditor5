@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeAll } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 
@@ -25,10 +26,10 @@ describe( 'DowncastWriter', () => {
 			const { view, selection } = _parseView( input );
 
 			const newPosition = writer.breakContainer( selection.getFirstPosition() );
-			expect( _stringifyView( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
+			expect( _stringifyView( view.root, newPosition, { showType: true, showPriority: false } ) ).toBe( expected );
 		}
 
-		before( () => {
+		beforeAll( () => {
 			document = new ViewDocument( new StylesProcessor() );
 			writer = new ViewDowncastWriter( document );
 		} );

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { MoveOperation } from '../../../src/model/operation/moveoperation.js';
 import { ModelPosition } from '../../../src/model/position.js';
@@ -23,16 +24,16 @@ describe( 'MoveOperation', () => {
 
 	it( 'should have proper type', () => {
 		const move = new MoveOperation( new ModelPosition( root, [ 0, 0 ] ), 1, new ModelPosition( root, [ 1, 0 ] ), 0 );
-		expect( move.type ).to.equal( 'move' );
+		expect( move.type ).toBe( 'move' );
 
 		const remove1 = new MoveOperation( new ModelPosition( root, [ 0, 0 ] ), 1, new ModelPosition( gy, [ 0 ] ), 0 );
-		expect( remove1.type ).to.equal( 'remove' );
+		expect( remove1.type ).toBe( 'remove' );
 
 		const remove2 = new MoveOperation( new ModelPosition( gy, [ 0 ] ), 1, new ModelPosition( gy, [ 1 ] ), 0 );
-		expect( remove2.type ).to.equal( 'move' );
+		expect( remove2.type ).toBe( 'move' );
 
 		const reinsert = new MoveOperation( new ModelPosition( gy, [ 0 ] ), 1, new ModelPosition( root, [ 0, 0 ] ), 0 );
-		expect( reinsert.type ).to.equal( 'reinsert' );
+		expect( reinsert.type ).toBe( 'reinsert' );
 	} );
 
 	it( 'should move from one node to another', () => {
@@ -50,13 +51,13 @@ describe( 'MoveOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 2 );
-		expect( root.getChild( 0 ).name ).to.equal( 'p1' );
-		expect( root.getChild( 1 ).name ).to.equal( 'p2' );
-		expect( p1.maxOffset ).to.equal( 0 );
-		expect( p2.maxOffset ).to.equal( 1 );
-		expect( p2.getChild( 0 ).name ).to.equal( 'x' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 2 );
+		expect( root.getChild( 0 ).name ).toBe( 'p1' );
+		expect( root.getChild( 1 ).name ).toBe( 'p2' );
+		expect( p1.maxOffset ).toBe( 0 );
+		expect( p2.maxOffset ).toBe( 1 );
+		expect( p2.getChild( 0 ).name ).toBe( 'x' );
 	} );
 
 	it( 'should move position of children in one node backward', () => {
@@ -71,9 +72,9 @@ describe( 'MoveOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 5 );
-		expect( root.getChild( 0 ).data ).to.equal( 'xarbx' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 5 );
+		expect( root.getChild( 0 ).data ).toBe( 'xarbx' );
 	} );
 
 	it( 'should move position of children in one node forward', () => {
@@ -88,9 +89,9 @@ describe( 'MoveOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 5 );
-		expect( root.getChild( 0 ).data ).to.equal( 'xrbax' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 5 );
+		expect( root.getChild( 0 ).data ).toBe( 'xrbax' );
 	} );
 
 	it( 'should create a proper MoveOperation as a reverse', () => {
@@ -100,17 +101,17 @@ describe( 'MoveOperation', () => {
 		let operation = new MoveOperation( sourcePosition, 3, targetPosition, doc.version );
 		let reverse = operation.getReversed();
 
-		expect( reverse ).to.be.an.instanceof( MoveOperation );
-		expect( reverse.baseVersion ).to.equal( 1 );
-		expect( reverse.howMany ).to.equal( 3 );
-		expect( reverse.sourcePosition.path ).is.deep.equal( [ 1 ] );
-		expect( reverse.targetPosition.path ).is.deep.equal( [ 0 ] );
+		expect( reverse ).toBeInstanceOf( MoveOperation );
+		expect( reverse.baseVersion ).toBe( 1 );
+		expect( reverse.howMany ).toBe( 3 );
+		expect( reverse.sourcePosition.path ).toEqual( [ 1 ] );
+		expect( reverse.targetPosition.path ).toEqual( [ 0 ] );
 
 		operation = new MoveOperation( targetPosition, 3, sourcePosition, doc.version );
 		reverse = operation.getReversed();
 
-		expect( reverse.sourcePosition.path ).is.deep.equal( [ 0 ] );
-		expect( reverse.targetPosition.path ).is.deep.equal( [ 7 ] );
+		expect( reverse.sourcePosition.path ).toEqual( [ 0 ] );
+		expect( reverse.targetPosition.path ).toEqual( [ 7 ] );
 	} );
 
 	it( 'should undo move node by applying reverse operation', () => {
@@ -128,19 +129,19 @@ describe( 'MoveOperation', () => {
 
 		model.applyOperation( operation );
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 2 );
-		expect( p1.maxOffset ).to.equal( 0 );
-		expect( p2.maxOffset ).to.equal( 1 );
-		expect( p2.getChild( 0 ).name ).to.equal( 'x' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 2 );
+		expect( p1.maxOffset ).toBe( 0 );
+		expect( p2.maxOffset ).toBe( 1 );
+		expect( p2.getChild( 0 ).name ).toBe( 'x' );
 
 		model.applyOperation( operation.getReversed() );
 
-		expect( doc.version ).to.equal( 2 );
-		expect( root.maxOffset ).to.equal( 2 );
-		expect( p1.maxOffset ).to.equal( 1 );
-		expect( p1.getChild( 0 ).name ).to.equal( 'x' );
-		expect( p2.maxOffset ).to.equal( 0 );
+		expect( doc.version ).toBe( 2 );
+		expect( root.maxOffset ).toBe( 2 );
+		expect( p1.maxOffset ).toBe( 1 );
+		expect( p1.getChild( 0 ).name ).toBe( 'x' );
+		expect( p2.maxOffset ).toBe( 0 );
 	} );
 
 	describe( '_validate()', () => {
@@ -212,7 +213,7 @@ describe( 'MoveOperation', () => {
 				doc.version
 			);
 
-			expect( () => operation._validate() ).not.to.throw();
+			expect( () => operation._validate() ).not.toThrow();
 		} );
 
 		it( 'should not throw when operation paths looks like incorrect but move is between different roots', () => {
@@ -227,7 +228,7 @@ describe( 'MoveOperation', () => {
 				doc.version
 			);
 
-			expect( () => operation._validate() ).not.to.throw();
+			expect( () => operation._validate() ).not.toThrow();
 		} );
 	} );
 
@@ -242,13 +243,13 @@ describe( 'MoveOperation', () => {
 		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
-		expect( clone ).not.to.equal( op );
+		expect( clone ).not.toBe( op );
 
-		expect( clone ).to.be.instanceof( MoveOperation );
-		expect( clone.sourcePosition.isEqual( sourcePosition ) ).to.be.true;
-		expect( clone.targetPosition.isEqual( targetPosition ) ).to.be.true;
-		expect( clone.howMany ).to.equal( howMany );
-		expect( clone.baseVersion ).to.equal( baseVersion );
+		expect( clone ).toBeInstanceOf( MoveOperation );
+		expect( clone.sourcePosition.isEqual( sourcePosition ) ).toBe( true );
+		expect( clone.targetPosition.isEqual( targetPosition ) ).toBe( true );
+		expect( clone.howMany ).toBe( howMany );
+		expect( clone.baseVersion ).toBe( baseVersion );
 	} );
 
 	describe( 'getMovedRangeStart', () => {
@@ -260,7 +261,7 @@ describe( 'MoveOperation', () => {
 
 			const op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
 
-			expect( op.getMovedRangeStart().path ).to.deep.equal( [ 0, 3 ] );
+			expect( op.getMovedRangeStart().path ).toEqual( [ 0, 3 ] );
 		} );
 	} );
 
@@ -272,7 +273,7 @@ describe( 'MoveOperation', () => {
 
 			const serialized = op.toJSON();
 
-			expect( serialized ).to.deep.equal( {
+			expect( serialized ).toEqual( {
 				__className: 'MoveOperation',
 				baseVersion: 0,
 				howMany: 1,
@@ -291,7 +292,7 @@ describe( 'MoveOperation', () => {
 			const serialized = op.toJSON();
 			const deserialized = MoveOperation.fromJSON( serialized, doc );
 
-			expect( deserialized ).to.deep.equal( op );
+			expect( deserialized ).toEqual( op );
 		} );
 	} );
 } );

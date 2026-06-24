@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
@@ -39,26 +40,26 @@ describe( 'MediaEmbedStyleCommand', () => {
 	} );
 
 	it( 'is an instance of MediaEmbedStyleCommand', () => {
-		expect( command ).to.be.instanceOf( MediaEmbedStyleCommand );
+		expect( command ).toBeInstanceOf( MediaEmbedStyleCommand );
 	} );
 
 	describe( '#isEnabled', () => {
 		it( 'is true when a media element is selected', () => {
 			_setModelData( model, `<paragraph>x</paragraph>[<media url="${ URL }"></media>]` );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'is false when no media is selected', () => {
 			_setModelData( model, `<paragraph>x[]</paragraph><media url="${ URL }"></media>` );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'is false when selection is inside a paragraph', () => {
 			_setModelData( model, '<paragraph>x[]y</paragraph>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -66,20 +67,20 @@ describe( 'MediaEmbedStyleCommand', () => {
 		it( 'is false when no media is selected', () => {
 			_setModelData( model, `<paragraph>x[]</paragraph><media url="${ URL }"></media>` );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'falls back to "alignCenter" when the selected media has no mediaStyle attribute', () => {
 			_setModelData( model, `[<media url="${ URL }"></media>]` );
 
-			expect( command.value ).to.equal( 'alignCenter' );
+			expect( command.value ).toBe( 'alignCenter' );
 		} );
 
 		for ( const value of [ 'alignLeft', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'alignRight' ] ) {
 			it( `reflects mediaStyle="${ value }" when set on the selected media`, () => {
 				_setModelData( model, `[<media mediaStyle="${ value }" url="${ URL }"></media>]` );
 
-				expect( command.value ).to.equal( value );
+				expect( command.value ).toBe( value );
 			} );
 		}
 	} );
@@ -91,7 +92,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 				command.execute( { value } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`[<media mediaStyle="${ value }" url="${ URL }"></media>]`
 				);
 			} );
@@ -102,7 +103,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			command.execute( { value: 'alignCenter' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				`[<media url="${ URL }"></media>]`
 			);
 		} );
@@ -112,7 +113,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			command.execute( { value: null } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				`[<media url="${ URL }"></media>]`
 			);
 		} );
@@ -122,7 +123,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			command.execute( { value: 'alignBlockRight' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				`[<media mediaStyle="alignBlockRight" url="${ URL }"></media>]`
 			);
 		} );
@@ -133,7 +134,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 			command.execute( { value: 'alignBlockLeft' } );
 			command.execute( { value: 'alignBlockLeft' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				`[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]`
 			);
 		} );
@@ -143,7 +144,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			command.execute( { value: 'alignBlockLeft' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				`<paragraph>x[]</paragraph><media url="${ URL }"></media>`
 			);
 		} );
@@ -154,7 +155,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 			command.execute( { value: 'alignBlockLeft' } );
 			editor.execute( 'undo' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				`[<media url="${ URL }"></media>]`
 			);
 		} );
@@ -165,7 +166,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 			command.execute( { value: null } );
 			editor.execute( 'undo' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				`[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]`
 			);
 		} );
@@ -191,7 +192,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			configuredCommand.execute( { value: 'alignLeft' } );
 
-			expect( _getModelData( configuredModel ) ).to.equal( `[<media url="${ URL }"></media>]` );
+			expect( _getModelData( configuredModel ) ).toBe( `[<media url="${ URL }"></media>]` );
 		} );
 
 		it( 'preserves previous state when execute() is rejected', () => {
@@ -199,7 +200,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			configuredCommand.execute( { value: 'alignRight' } );
 
-			expect( _getModelData( configuredModel ) ).to.equal(
+			expect( _getModelData( configuredModel ) ).toBe(
 				`[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]`
 			);
 		} );
@@ -209,7 +210,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 			// reports the effective default so the default-state button can light up.
 			_setModelData( configuredModel, `[<media mediaStyle="alignLeft" url="${ URL }"></media>]` );
 
-			expect( configuredCommand.value ).to.equal( 'alignCenter' );
+			expect( configuredCommand.value ).toBe( 'alignCenter' );
 		} );
 	} );
 
@@ -232,7 +233,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 		it( 'refresh() reports the custom default name when no attribute is set', () => {
 			_setModelData( configuredModel, `[<media url="${ URL }"></media>]` );
 
-			expect( configuredCommand.value ).to.equal( 'natural' );
+			expect( configuredCommand.value ).toBe( 'natural' );
 		} );
 
 		it( 'execute() with the custom default name clears the attribute', () => {
@@ -240,7 +241,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			configuredCommand.execute( { value: 'natural' } );
 
-			expect( _getModelData( configuredModel ) ).to.equal( `[<media url="${ URL }"></media>]` );
+			expect( _getModelData( configuredModel ) ).toBe( `[<media url="${ URL }"></media>]` );
 		} );
 
 		it( 'execute() with alignCenter (no longer the resolved default) is rejected — alignCenter was filtered out', () => {
@@ -248,7 +249,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			configuredCommand.execute( { value: 'alignCenter' } );
 
-			expect( _getModelData( configuredModel ) ).to.equal(
+			expect( _getModelData( configuredModel ) ).toBe(
 				`[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]`
 			);
 		} );
@@ -270,13 +271,13 @@ describe( 'MediaEmbedStyleCommand', () => {
 		it( 'refresh() value is false when the selected media has no mediaStyle attribute', () => {
 			_setModelData( configuredModel, `[<media url="${ URL }"></media>]` );
 
-			expect( configuredCommand.value ).to.be.false;
+			expect( configuredCommand.value ).toBe( false );
 		} );
 
 		it( 'refresh() value is false when the attribute references an unknown style', () => {
 			_setModelData( configuredModel, `[<media mediaStyle="unknown" url="${ URL }"></media>]` );
 
-			expect( configuredCommand.value ).to.be.false;
+			expect( configuredCommand.value ).toBe( false );
 		} );
 
 		it( 'execute({ value: "alignCenter" }) is rejected — alignCenter is not in the resolved list', () => {
@@ -284,7 +285,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			configuredCommand.execute( { value: 'alignCenter' } );
 
-			expect( _getModelData( configuredModel ) ).to.equal(
+			expect( _getModelData( configuredModel ) ).toBe(
 				`[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]`
 			);
 		} );
@@ -294,7 +295,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			configuredCommand.execute( { value: null } );
 
-			expect( _getModelData( configuredModel ) ).to.equal( `[<media url="${ URL }"></media>]` );
+			expect( _getModelData( configuredModel ) ).toBe( `[<media url="${ URL }"></media>]` );
 		} );
 	} );
 
@@ -329,7 +330,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			configuredCommand.execute( { value: 'alignCenter' } );
 
-			expect( _getModelData( configuredModel ) ).to.equal(
+			expect( _getModelData( configuredModel ) ).toBe(
 				`[<media mediaStyle="alignCenter" url="${ URL }"></media>]`
 			);
 		} );
@@ -337,13 +338,13 @@ describe( 'MediaEmbedStyleCommand', () => {
 		it( 'refresh() value is false when no attribute and no isDefault style', () => {
 			_setModelData( configuredModel, `[<media url="${ URL }"></media>]` );
 
-			expect( configuredCommand.value ).to.be.false;
+			expect( configuredCommand.value ).toBe( false );
 		} );
 
 		it( 'refresh() reflects the demoted alignCenter when the attribute is applied', () => {
 			_setModelData( configuredModel, `[<media mediaStyle="alignCenter" url="${ URL }"></media>]` );
 
-			expect( configuredCommand.value ).to.equal( 'alignCenter' );
+			expect( configuredCommand.value ).toBe( 'alignCenter' );
 		} );
 	} );
 
@@ -377,7 +378,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			configuredCommand.execute( { value: 'alignCenter' } );
 
-			expect( _getModelData( configuredModel ) ).to.equal( `[<media url="${ URL }"></media>]` );
+			expect( _getModelData( configuredModel ) ).toBe( `[<media url="${ URL }"></media>]` );
 		} );
 
 		it( 'execute({ value: "natural" }) also clears the attribute (the second isDefault)', () => {
@@ -385,7 +386,7 @@ describe( 'MediaEmbedStyleCommand', () => {
 
 			configuredCommand.execute( { value: 'natural' } );
 
-			expect( _getModelData( configuredModel ) ).to.equal( `[<media url="${ URL }"></media>]` );
+			expect( _getModelData( configuredModel ) ).toBe( `[<media url="${ URL }"></media>]` );
 		} );
 	} );
 } );

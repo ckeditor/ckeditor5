@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { EditorUI } from '../../../src/editorui/editorui.js';
 import { BalloonToolbar } from '../../../src/toolbar/balloon/balloontoolbar.js';
@@ -22,14 +23,11 @@ import { _setModelData, _stringifyView } from '@ckeditor/ckeditor5-engine';
 
 const toPx = toUnit( 'px' );
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { View } from '../../../src/view.js';
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
 	let resizeCallback, addToolbarSpy;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -40,16 +38,16 @@ describe( 'BalloonToolbar', () => {
 		// in DOM, the following DOM mock will have no effect.
 		ResizeObserver._observerInstance = null;
 
-		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+		vi.spyOn( global.window, 'ResizeObserver' ).mockImplementation( function( callback ) {
 			resizeCallback = callback;
 
 			return {
-				observe: sinon.spy(),
-				unobserve: sinon.spy()
+				observe: vi.fn(),
+				unobserve: vi.fn()
 			};
 		} );
 
-		addToolbarSpy = sinon.spy( EditorUI.prototype, 'addToolbar' );
+		addToolbarSpy = vi.spyOn( EditorUI.prototype, 'addToolbar' );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -67,8 +65,8 @@ describe( 'BalloonToolbar', () => {
 				editingView.attachDomRoot( editorElement );
 
 				// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-				sinon.stub( balloon.view, 'attachTo' ).returns( {} );
-				sinon.stub( balloon.view, 'pin' ).returns( {} );
+				vi.spyOn( balloon.view, 'attachTo' ).mockReturnValue( {} );
+				vi.spyOn( balloon.view, 'pin' ).mockReturnValue( {} );
 
 				// Focus the engine.
 				editingView.document.isFocused = true;
@@ -80,6 +78,8 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	afterEach( async () => {
+		vi.restoreAllMocks();
+
 		editorElement.remove();
 
 		if ( editor ) {
@@ -87,7 +87,7 @@ describe( 'BalloonToolbar', () => {
 		}
 	} );
 
-	after( () => {
+	afterAll( () => {
 		// Clean up after the ResizeObserver stub in beforeEach(). Even though the global.window.ResizeObserver
 		// stub is restored, the ResizeObserver class (CKE5 module) keeps the reference to the single native
 		// observer. Resetting it will allow fresh start for any other test using ResizeObserver.
@@ -95,26 +95,26 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( BalloonToolbar.isOfficialPlugin ).to.be.true;
+		expect( BalloonToolbar.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( BalloonToolbar.isPremiumPlugin ).to.be.false;
+		expect( BalloonToolbar.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should create a plugin instance', () => {
-		expect( balloonToolbar ).to.instanceOf( Plugin );
-		expect( balloonToolbar ).to.instanceOf( BalloonToolbar );
-		expect( balloonToolbar.toolbarView ).to.instanceof( ToolbarView );
-		expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
+		expect( balloonToolbar ).toBeInstanceOf( Plugin );
+		expect( balloonToolbar ).toBeInstanceOf( BalloonToolbar );
+		expect( balloonToolbar.toolbarView ).toBeInstanceOf( ToolbarView );
+		expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).toBe( true );
 	} );
 
 	it( 'should load ContextualBalloon', () => {
-		expect( balloon ).to.instanceof( ContextualBalloon );
+		expect( balloon ).toBeInstanceOf( ContextualBalloon );
 	} );
 
 	it( 'should create components from config', () => {
-		expect( balloonToolbar.toolbarView.items ).to.length( 2 );
+		expect( balloonToolbar.toolbarView.items ).toHaveLength( 2 );
 	} );
 
 	it( 'should accept the extended format of the toolbar config', () => {
@@ -131,7 +131,7 @@ describe( 'BalloonToolbar', () => {
 			.then( editor => {
 				const balloonToolbar = editor.plugins.get( BalloonToolbar );
 
-				expect( balloonToolbar.toolbarView.items ).to.length( 3 );
+				expect( balloonToolbar.toolbarView.items ).toHaveLength( 3 );
 
 				editorElement.remove();
 
@@ -152,7 +152,7 @@ describe( 'BalloonToolbar', () => {
 		} ).then( editor => {
 			const balloonToolbar = editor.plugins.get( BalloonToolbar );
 
-			expect( balloonToolbar.toolbarView.options.shouldGroupWhenFull ).to.be.false;
+			expect( balloonToolbar.toolbarView.options.shouldGroupWhenFull ).toBe( false );
 
 			return editor.destroy();
 		} ).then( () => {
@@ -161,8 +161,8 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	it( 'should fire internal `_selectionChangeDebounced` event 200 ms after last selection change', () => {
-		const clock = testUtils.sinon.useFakeTimers();
-		const spy = testUtils.sinon.spy();
+		vi.useFakeTimers();
+		const spy = vi.fn();
 
 		_setModelData( model, '<paragraph>[bar]</paragraph>' );
 		balloonToolbar.on( '_selectionChangeDebounced', spy );
@@ -170,86 +170,89 @@ describe( 'BalloonToolbar', () => {
 		selection.fire( 'change:range', {} );
 
 		// Not yet.
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 
 		// Lets wait 100 ms.
-		clock.tick( 100 );
+		vi.advanceTimersByTime( 100 );
 		// Still not yet.
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 
 		// Fire event one more time.
 		selection.fire( 'change:range', {} );
 
 		// Another 100 ms waiting.
-		clock.tick( 100 );
+		vi.advanceTimersByTime( 100 );
 		// Still not yet.
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 
 		// Another waiting.
-		clock.tick( 110 );
+		vi.advanceTimersByTime( 110 );
 		// And here it is.
-		sinon.assert.calledOnce( spy );
+		expect( spy ).toHaveBeenCalledOnce();
+
+		vi.useRealTimers();
 	} );
 
 	it( 'should have the isFloating option set to true', () => {
-		expect( balloonToolbar.toolbarView.options.isFloating ).to.be.true;
+		expect( balloonToolbar.toolbarView.options.isFloating ).toBe( true );
 	} );
 
 	it( 'should have the accessible label', () => {
-		expect( balloonToolbar.toolbarView.ariaLabel ).to.equal( 'Editor contextual toolbar' );
+		expect( balloonToolbar.toolbarView.ariaLabel ).toBe( 'Editor contextual toolbar' );
 	} );
 
 	it( 'should register its toolbar as focusable toolbar in EditorUI with proper configuration responsible for presentation', () => {
-		const showPanelSpy = sinon.spy( balloonToolbar, 'show' );
-		const hidePanelSpy = sinon.spy( balloonToolbar, 'hide' );
+		const showPanelSpy = vi.spyOn( balloonToolbar, 'show' );
+		const hidePanelSpy = vi.spyOn( balloonToolbar, 'hide' );
 
-		sinon.assert.calledWithExactly( addToolbarSpy.lastCall, balloonToolbar.toolbarView, sinon.match( {
-			beforeFocus: sinon.match.func,
-			afterBlur: sinon.match.func,
+		expect( addToolbarSpy ).toHaveBeenLastCalledWith( balloonToolbar.toolbarView, expect.objectContaining( {
+			beforeFocus: expect.any( Function ),
+			afterBlur: expect.any( Function ),
 			isContextual: true
 		} ) );
 
-		addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+		addToolbarSpy.mock.calls[ addToolbarSpy.mock.calls.length - 1 ][ 1 ].beforeFocus();
 
-		sinon.assert.calledOnceWithExactly( showPanelSpy, true );
+		expect( showPanelSpy ).toHaveBeenCalledOnce();
+		expect( showPanelSpy ).toHaveBeenCalledWith( true );
 
-		addToolbarSpy.lastCall.args[ 1 ].afterBlur();
+		addToolbarSpy.mock.calls[ addToolbarSpy.mock.calls.length - 1 ][ 1 ].afterBlur();
 
-		sinon.assert.calledOnce( hidePanelSpy );
+		expect( hidePanelSpy ).toHaveBeenCalledOnce();
 	} );
 
 	describe( 'pluginName', () => {
 		it( 'should return plugin by its name', () => {
-			expect( editor.plugins.get( 'BalloonToolbar' ) ).to.equal( balloonToolbar );
+			expect( editor.plugins.get( 'BalloonToolbar' ) ).toBe( balloonToolbar );
 		} );
 	} );
 
 	describe( 'focusTracker', () => {
 		it( 'should be defined', () => {
-			expect( balloonToolbar.focusTracker ).to.instanceof( FocusTracker );
+			expect( balloonToolbar.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'it should track the focus of the #editableElement', () => {
-			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
 
 			editor.ui.getEditableElement().dispatchEvent( new Event( 'focus' ) );
 
-			expect( balloonToolbar.focusTracker.isFocused ).to.true;
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( true );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-commercial/issues/6633
 		it( 'should track the ToolbarView instance (not just its element) to allow using complex toolbar items scattered across DOM ' +
 			'sub-trees and keep track of the focus',
 		() => {
-			expect( balloonToolbar.focusTracker.externalViews ).to.include( balloonToolbar.toolbarView );
+			expect( balloonToolbar.focusTracker.externalViews ).toContain( balloonToolbar.toolbarView );
 		} );
 
 		it( 'it should track the focus of the toolbarView#element', () => {
-			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
 
 			balloonToolbar.toolbarView.element.dispatchEvent( new Event( 'focus' ) );
 
-			expect( balloonToolbar.focusTracker.isFocused ).to.true;
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( true );
 		} );
 	} );
 
@@ -280,7 +283,7 @@ describe( 'BalloonToolbar', () => {
 				forwardSelectionRect
 			] );
 
-			balloonAddSpy = sinon.spy( balloon, 'add' );
+			balloonAddSpy = vi.spyOn( balloon, 'add' );
 			editingView.document.isFocused = true;
 		} );
 
@@ -291,11 +294,11 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 
-			sinon.assert.calledWith( balloonAddSpy, {
+			expect( balloonAddSpy ).toHaveBeenCalledWith( {
 				view: balloonToolbar.toolbarView,
 				balloonClassName: 'ck-toolbar-container',
 				position: {
-					target: sinon.match.func,
+					target: expect.any( Function ),
 					positions: [
 						defaultPositions.southEastArrowNorth,
 						defaultPositions.southEastArrowNorthEast,
@@ -311,7 +314,7 @@ describe( 'BalloonToolbar', () => {
 				}
 			} );
 
-			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( forwardSelectionRect );
+			expect( balloonAddSpy.mock.calls[ 0 ][ 0 ].position.target() ).toEqual( forwardSelectionRect );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-ui/issues/385
@@ -322,18 +325,19 @@ describe( 'BalloonToolbar', () => {
 
 			// Because attaching and pinning BalloonPanelView is stubbed for test
 			// we need to manually call function that counting rect.
-			const targetRect = balloonAddSpy.firstCall.args[ 0 ].position.target();
+			const targetRect = balloonAddSpy.mock.calls[ 0 ][ 0 ].position.target();
 
-			const targetViewRange = editingView.domConverter.viewRangeToDom.lastCall.args[ 0 ];
+			const { mock: { calls: viewRangeCalls } } = editingView.domConverter.viewRangeToDom;
+			const targetViewRange = viewRangeCalls[ viewRangeCalls.length - 1 ][ 0 ];
 
-			expect( _stringifyView( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).to.equal( '<p>bar</p><p>{bi}z</p>' );
-			expect( targetRect ).to.deep.equal( forwardSelectionRect );
+			expect( _stringifyView( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).toBe( '<p>bar</p><p>{bi}z</p>' );
+			expect( targetRect ).toEqual( forwardSelectionRect );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-ui/issues/308
 		it( 'should ignore the zero-width orphan rect if there another one preceding it for the forward selection', () => {
 			// Restore previous stubSelectionRects() call.
-			editingView.domConverter.viewRangeToDom.restore();
+			editingView.domConverter.viewRangeToDom.mockRestore();
 
 			// Simulate an "orphan" rect preceded by a "correct" one.
 			stubSelectionRects( [
@@ -344,7 +348,7 @@ describe( 'BalloonToolbar', () => {
 			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.show();
-			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( forwardSelectionRect );
+			expect( balloonAddSpy.mock.calls[ 0 ][ 0 ].position.target() ).toEqual( forwardSelectionRect );
 		} );
 
 		it( 'should add #toolbarView to the #_balloon and attach the #_balloon to the selection for the backward selection', () => {
@@ -354,11 +358,11 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 
-			sinon.assert.calledWithExactly( balloonAddSpy, {
+			expect( balloonAddSpy ).toHaveBeenCalledWith( {
 				view: balloonToolbar.toolbarView,
 				balloonClassName: 'ck-toolbar-container',
 				position: {
-					target: sinon.match.func,
+					target: expect.any( Function ),
 					positions: [
 						defaultPositions.northWestArrowSouth,
 						defaultPositions.northWestArrowSouthWest,
@@ -374,7 +378,7 @@ describe( 'BalloonToolbar', () => {
 				}
 			} );
 
-			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( backwardSelectionRect );
+			expect( balloonAddSpy.mock.calls[ 0 ][ 0 ].position.target() ).toEqual( backwardSelectionRect );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-ui/issues/385
@@ -385,37 +389,38 @@ describe( 'BalloonToolbar', () => {
 
 			// Because attaching and pinning BalloonPanelView is stubbed for test
 			// we need to manually call function that counting rect.
-			const targetRect = balloonAddSpy.firstCall.args[ 0 ].position.target();
+			const targetRect = balloonAddSpy.mock.calls[ 0 ][ 0 ].position.target();
 
-			const targetViewRange = editingView.domConverter.viewRangeToDom.lastCall.args[ 0 ];
+			const { mock: { calls: viewRangeCalls } } = editingView.domConverter.viewRangeToDom;
+			const targetViewRange = viewRangeCalls[ viewRangeCalls.length - 1 ][ 0 ];
 
-			expect( _stringifyView( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).to.equal( '<p>b{ar}</p><p>biz</p>' );
-			expect( targetRect ).to.deep.equal( backwardSelectionRect );
+			expect( _stringifyView( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).toBe( '<p>b{ar}</p><p>biz</p>' );
+			expect( targetRect ).toEqual( backwardSelectionRect );
 		} );
 
 		it( 'should update balloon position on ui#update event when #toolbarView is already added to the #_balloon', () => {
 			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
-			const spy = sinon.spy( balloon, 'updatePosition' );
+			const spy = vi.spyOn( balloon, 'updatePosition' );
 
 			editor.ui.fire( 'update' );
 
 			balloonToolbar.show();
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 
 			editor.ui.fire( 'update' );
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not update balloon position on ui#update event when #toolbarView is not currently visible in the #_balloon', () => {
 			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
-			const spy = sinon.spy( balloon, 'updatePosition' );
+			const spy = vi.spyOn( balloon, 'updatePosition' );
 
 			editor.ui.fire( 'update' );
 
 			balloonToolbar.show();
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 
 			// Simulate another feature taking over and using the ContextualBalloon stack in the meanwhile.
 			balloon.add( {
@@ -423,19 +428,19 @@ describe( 'BalloonToolbar', () => {
 			} );
 
 			editor.ui.fire( 'update' );
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should update the balloon position whenever #toolbarView fires the #groupedItemsUpdate (it changed its geometry)', () => {
 			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
-			const spy = sinon.spy( balloon, 'updatePosition' );
+			const spy = vi.spyOn( balloon, 'updatePosition' );
 
 			balloonToolbar.show();
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 
 			balloonToolbar.toolbarView.fire( 'groupedItemsUpdate' );
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not add #toolbarView to the #_balloon more than once', () => {
@@ -443,21 +448,21 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 			balloonToolbar.show();
-			sinon.assert.calledOnce( balloonAddSpy );
+			expect( balloonAddSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not add the #toolbarView to the #_balloon when the selection is collapsed', () => {
 			_setModelData( model, '<paragraph>b[]ar</paragraph>' );
 
 			balloonToolbar.show();
-			sinon.assert.notCalled( balloonAddSpy );
+			expect( balloonAddSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should display the toolbar for a focused selection when called with an argument', () => {
 			_setModelData( model, '<paragraph>b[]ar</paragraph>' );
 
 			balloonToolbar.show( true );
-			sinon.assert.calledOnce( balloonAddSpy );
+			expect( balloonAddSpy ).toHaveBeenCalledOnce();
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/6443
@@ -465,7 +470,7 @@ describe( 'BalloonToolbar', () => {
 			_setModelData( model, '[<horizontalLine></horizontalLine>]<paragraph>foo</paragraph>[<horizontalLine></horizontalLine>]' );
 
 			balloonToolbar.show();
-			sinon.assert.notCalled( balloonAddSpy );
+			expect( balloonAddSpy ).not.toHaveBeenCalled();
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/6432
@@ -479,7 +484,7 @@ describe( 'BalloonToolbar', () => {
 			'</table>' );
 
 			balloonToolbar.show();
-			sinon.assert.notCalled( balloonAddSpy );
+			expect( balloonAddSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not add #toolbarView to the #_balloon when all components inside #toolbarView are disabled', () => {
@@ -489,7 +494,7 @@ describe( 'BalloonToolbar', () => {
 			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.show();
-			sinon.assert.notCalled( balloonAddSpy );
+			expect( balloonAddSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should add #toolbarView to the #_balloon when at least one component inside does not have #isEnabled interface', () => {
@@ -502,7 +507,7 @@ describe( 'BalloonToolbar', () => {
 			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.show();
-			sinon.assert.calledOnce( balloonAddSpy );
+			expect( balloonAddSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should set the toolbar max-width to 90% of the editable width', () => {
@@ -510,7 +515,7 @@ describe( 'BalloonToolbar', () => {
 
 			_setModelData( model, '<paragraph>b[ar]</paragraph>' );
 
-			expect( global.document.body.contains( viewElement ) ).to.be.true;
+			expect( global.document.body.contains( viewElement ) ).toBe( true );
 			viewElement.style.width = '400px';
 
 			resizeCallback( [ {
@@ -521,7 +526,7 @@ describe( 'BalloonToolbar', () => {
 			// The expected width should be 90% of the editor's editable element's width.
 			const expectedWidth = toPx( new Rect( viewElement ).width * 0.9 );
 
-			expect( balloonToolbar.toolbarView.maxWidth ).to.equal( expectedWidth );
+			expect( balloonToolbar.toolbarView.maxWidth ).toBe( expectedWidth );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/7707
@@ -553,15 +558,15 @@ describe( 'BalloonToolbar', () => {
 
 				balloonToolbar.show();
 
-				const defaultPositioningFunctions = balloonAddSpy.firstCall.args[ 0 ].position.positions;
+				const defaultPositioningFunctions = balloonAddSpy.mock.calls[ 0 ][ 0 ].position.positions;
 
 				balloonToolbar.hide();
 
-				testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
-				testUtils.sinon.stub( env, 'isiOS' ).get( () => true );
+				vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
+				vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
 				balloonToolbar.show();
 
-				const iOSPositioningFuctions = balloonAddSpy.secondCall.args[ 0 ].position.positions;
+				const iOSPositioningFuctions = balloonAddSpy.mock.calls[ 1 ][ 0 ].position.positions;
 
 				defaultPositioningFunctions.forEach( ( defaultPositioningFunction, index ) => {
 					const defaultResult = defaultPositioningFunction( targetRect, balloonRect );
@@ -574,7 +579,7 @@ describe( 'BalloonToolbar', () => {
 						defaultResult.top -= 10;
 					}
 
-					expect( iOSResult ).to.deep.equal( defaultResult, index );
+					expect( iOSResult ).toEqual( defaultResult );
 				} );
 			} );
 
@@ -583,16 +588,16 @@ describe( 'BalloonToolbar', () => {
 
 				balloonToolbar.show();
 
-				const defaultPositioningFunctions = balloonAddSpy.firstCall.args[ 0 ].position.positions;
+				const defaultPositioningFunctions = balloonAddSpy.mock.calls[ 0 ][ 0 ].position.positions;
 
 				balloonToolbar.hide();
 
-				testUtils.sinon.stub( global.window.visualViewport, 'scale' ).get( () => 0.5 );
-				testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
-				testUtils.sinon.stub( env, 'isiOS' ).get( () => true );
+				vi.spyOn( global.window.visualViewport, 'scale', 'get' ).mockReturnValue( 0.5 );
+				vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
+				vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
 				balloonToolbar.show();
 
-				const iOSPositioningFuctions = balloonAddSpy.secondCall.args[ 0 ].position.positions;
+				const iOSPositioningFuctions = balloonAddSpy.mock.calls[ 1 ][ 0 ].position.positions;
 
 				defaultPositioningFunctions.forEach( ( defaultPositioningFunction, index ) => {
 					const defaultResult = defaultPositioningFunction( targetRect, balloonRect );
@@ -605,7 +610,7 @@ describe( 'BalloonToolbar', () => {
 						defaultResult.top -= 30;
 					}
 
-					expect( iOSResult ).to.deep.equal( defaultResult, index );
+					expect( iOSResult ).toEqual( defaultResult );
 				} );
 			} );
 		} );
@@ -615,7 +620,7 @@ describe( 'BalloonToolbar', () => {
 		let removeBalloonSpy;
 
 		beforeEach( () => {
-			removeBalloonSpy = sinon.stub( balloon, 'remove' ).returns( {} );
+			removeBalloonSpy = vi.spyOn( balloon, 'remove' ).mockReturnValue( {} );
 			editingView.document.isFocused = true;
 		} );
 
@@ -625,25 +630,25 @@ describe( 'BalloonToolbar', () => {
 			balloonToolbar.show();
 
 			balloonToolbar.hide();
-			sinon.assert.calledWithExactly( removeBalloonSpy, balloonToolbar.toolbarView );
+			expect( removeBalloonSpy ).toHaveBeenCalledWith( balloonToolbar.toolbarView );
 		} );
 
 		it( 'should stop update balloon position on ui#update event', () => {
 			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
-			const spy = sinon.spy( balloon, 'updatePosition' );
+			const spy = vi.spyOn( balloon, 'updatePosition' );
 
 			balloonToolbar.show();
 			balloonToolbar.hide();
 
 			editor.ui.fire( 'update' );
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not remove #toolbarView when is not added to the #_balloon', () => {
 			balloonToolbar.hide();
 
-			sinon.assert.notCalled( removeBalloonSpy );
+			expect( removeBalloonSpy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -652,12 +657,12 @@ describe( 'BalloonToolbar', () => {
 			expect( () => {
 				balloonToolbar.destroy();
 				balloonToolbar.destroy();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should not fire `_selectionChangeDebounced` after plugin destroy', () => {
-			const clock = testUtils.sinon.useFakeTimers();
-			const spy = testUtils.sinon.spy();
+			vi.useFakeTimers();
+			const spy = vi.fn();
 
 			balloonToolbar.on( '_selectionChangeDebounced', spy );
 
@@ -665,20 +670,22 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.destroy();
 
-			clock.tick( 200 );
-			sinon.assert.notCalled( spy );
+			vi.advanceTimersByTime( 200 );
+			expect( spy ).not.toHaveBeenCalled();
+
+			vi.useRealTimers();
 		} );
 
 		it( 'should destroy #resizeObserver if is available', () => {
 			const editable = editor.ui.getEditableElement();
 			const resizeObserver = new ResizeObserver( editable, () => {} );
-			const destroySpy = sinon.spy( resizeObserver, 'destroy' );
+			const destroySpy = vi.spyOn( resizeObserver, 'destroy' );
 
 			balloonToolbar._resizeObserver = resizeObserver;
 
 			balloonToolbar.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -688,60 +695,60 @@ describe( 'BalloonToolbar', () => {
 		beforeEach( () => {
 			_setModelData( model, '<paragraph>[bar]</paragraph>' );
 
-			showPanelSpy = sinon.spy( balloonToolbar, 'show' );
-			hidePanelSpy = sinon.spy( balloonToolbar, 'hide' );
+			showPanelSpy = vi.spyOn( balloonToolbar, 'show' );
+			hidePanelSpy = vi.spyOn( balloonToolbar, 'hide' );
 		} );
 
 		it( 'should show when selection stops changing', () => {
-			sinon.assert.notCalled( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).not.toHaveBeenCalled();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not show when the selection stops changing when the editable is blurred', () => {
-			sinon.assert.notCalled( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).not.toHaveBeenCalled();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 
 			editingView.document.isFocused = false;
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
-			sinon.assert.notCalled( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).not.toHaveBeenCalled();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should hide when selection starts changing by a direct change', () => {
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 
 			selection.fire( 'change:range', { directChange: true } );
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.calledOnce( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not hide when selection starts changing by an indirect change', () => {
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 
 			selection.fire( 'change:range', { directChange: false } );
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should hide when selection starts changing by an indirect change but has changed to collapsed', () => {
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 
 			// Collapse range silently (without firing `change:range` { directChange: true } event).
 			const range = selection._ranges[ 0 ];
@@ -749,75 +756,75 @@ describe( 'BalloonToolbar', () => {
 
 			selection.fire( 'change:range', { directChange: false } );
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.calledOnce( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should show on #focusTracker focus', () => {
 			balloonToolbar.focusTracker.isFocused = false;
 
-			sinon.assert.notCalled( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).not.toHaveBeenCalled();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 
 			balloonToolbar.focusTracker.isFocused = true;
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should hide on #focusTracker blur', () => {
 			balloonToolbar.focusTracker.isFocused = true;
 
-			const stub = sinon.stub( balloon, 'visibleView' ).get( () => balloonToolbar.toolbarView );
+			const stub = vi.spyOn( balloon, 'visibleView', 'get' ).mockReturnValue( balloonToolbar.toolbarView );
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 
 			balloonToolbar.focusTracker.isFocused = false;
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.calledOnce( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).toHaveBeenCalledOnce();
 
-			stub.restore();
+			stub.mockRestore();
 		} );
 
 		it( 'should not hide on #focusTracker blur when toolbar is not in the balloon stack', () => {
 			balloonToolbar.focusTracker.isFocused = true;
 
-			const stub = sinon.stub( balloon, 'visibleView' ).get( () => null );
+			const stub = vi.spyOn( balloon, 'visibleView', 'get' ).mockReturnValue( null );
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 
 			balloonToolbar.focusTracker.isFocused = false;
 
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
+			expect( showPanelSpy ).toHaveBeenCalledOnce();
+			expect( hidePanelSpy ).not.toHaveBeenCalled();
 
-			stub.restore();
+			stub.mockRestore();
 		} );
 	} );
 
 	describe( 'show event', () => {
 		it( 'should fire `show` event just before panel shows', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			balloonToolbar.on( 'show', spy );
 			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.show();
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not show the panel when `show` event is stopped', () => {
-			const balloonAddSpy = sinon.spy( balloon, 'add' );
+			const balloonAddSpy = vi.spyOn( balloon, 'add' );
 
 			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.on( 'show', evt => evt.stop(), { priority: 'high' } );
 
 			balloonToolbar.show();
-			sinon.assert.notCalled( balloonAddSpy );
+			expect( balloonAddSpy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -843,8 +850,8 @@ describe( 'BalloonToolbar', () => {
 				.then( editor => {
 					const items = editor.plugins.get( BalloonToolbar ).toolbarView.items;
 
-					expect( items.length ).to.equal( 1 );
-					expect( items.first.label ).to.equal( 'Foo' );
+					expect( items.length ).toBe( 1 );
+					expect( items.first.label ).toBe( 'Foo' );
 
 					return editor.destroy();
 				} );
@@ -890,121 +897,121 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should create plugin instance', () => {
-			expect( balloonToolbar ).to.instanceOf( Plugin );
-			expect( balloonToolbar ).to.instanceOf( BalloonToolbar );
-			expect( balloonToolbar.toolbarView ).to.instanceof( ToolbarView );
-			expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
+			expect( balloonToolbar ).toBeInstanceOf( Plugin );
+			expect( balloonToolbar ).toBeInstanceOf( BalloonToolbar );
+			expect( balloonToolbar.toolbarView ).toBeInstanceOf( ToolbarView );
+			expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).toBe( true );
 		} );
 
 		it( '#focusTracker should include all roots created alongside with editor', () => {
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const editables = [ ...editor.ui.getEditableElementsNames() ];
 
-			expect( editables ).to.be.length( 3 );
-			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+			expect( editables ).toHaveLength( 3 );
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
 
 			for ( const editableName of editables ) {
 				const editableElement = editor.ui.getEditableElement( editableName );
 
 				editableElement.focus();
-				clock.tick( 50 );
-				expect( balloonToolbar.focusTracker.isFocused ).to.true;
+				vi.advanceTimersByTime( 50 );
+				expect( balloonToolbar.focusTracker.isFocused ).toBe( true );
 
 				focusHolder.focus();
-				clock.tick( 50 );
-				expect( balloonToolbar.focusTracker.isFocused ).to.false;
+				vi.advanceTimersByTime( 50 );
+				expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
 			}
 
-			clock.restore();
+			vi.useRealTimers();
 		} );
 
 		it( '#focusTracker should track focus on dynamically added roots', async () => {
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 
-			expect( balloonToolbar.focusTracker.isFocused ).to.false;
-			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
+			expect( balloonToolbar.focusTracker.elements.length ).toBe( 4 );
 
 			editor.addRoot( 'dynamicRoot' );
 
 			// Check if newly added editable is tracked in focus tracker.
-			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 5 );
+			expect( balloonToolbar.focusTracker.elements.length ).toBe( 5 );
 
 			// Check if element is added to focus tracker.
 			const editableElement = editor.ui.getEditableElement( 'dynamicRoot' );
-			expect( balloonToolbar.focusTracker._elements ).contain( editableElement );
+			expect( balloonToolbar.focusTracker._elements ).toContain( editableElement );
 
 			// Watch focus and blur events.
 			editableElement.focus();
-			clock.tick( 50 );
+			vi.advanceTimersByTime( 50 );
 
-			expect( balloonToolbar.focusTracker.isFocused ).to.true;
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( true );
 
 			focusHolder.focus();
-			clock.tick( 50 );
-			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+			vi.advanceTimersByTime( 50 );
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
 
 			editableElement.remove();
-			clock.restore();
+			vi.useRealTimers();
 		} );
 
 		it( 'dynamically removed roots should be removed from #focusTracker', () => {
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 
-			expect( balloonToolbar.focusTracker.isFocused ).to.false;
-			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
+			expect( balloonToolbar.focusTracker.elements.length ).toBe( 4 );
 
 			editor.addRoot( 'dynamicRoot' );
 			const editableElement = editor.ui.getEditableElement( 'dynamicRoot' );
 
 			// Check if newly added editable is tracked in focus tracker.
-			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 5 );
+			expect( balloonToolbar.focusTracker.elements.length ).toBe( 5 );
 
 			editor.detachRoot( 'dynamicRoot' );
 
 			// Check if element is removed from focus tracker.
-			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.elements.length ).toBe( 4 );
 
 			// Focus is no longer tracked.
 			editableElement.focus();
-			clock.tick( 50 );
+			vi.advanceTimersByTime( 50 );
 
-			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
 
-			clock.restore();
+			vi.useRealTimers();
 		} );
 
 		it( 'should track lazy attached and detached editables', () => {
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 
 			addEditableOnRootAdd = false;
 
-			expect( balloonToolbar.focusTracker.isFocused ).to.false;
-			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
+			expect( balloonToolbar.focusTracker.elements.length ).toBe( 4 );
 
 			editor.addRoot( 'dynamicRoot' );
 			const root = editor.model.document.getRoot( 'dynamicRoot' );
 
 			// Editable is not yet attached
-			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.elements.length ).toBe( 4 );
 
 			// Focus is no longer tracked.
 			const editableElement = editor.createEditable( root );
 
 			global.document.body.appendChild( editableElement );
-			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 5 );
+			expect( balloonToolbar.focusTracker.elements.length ).toBe( 5 );
 
 			// Lets test focus
 			editableElement.focus();
-			clock.tick( 50 );
+			vi.advanceTimersByTime( 50 );
 
-			expect( balloonToolbar.focusTracker.isFocused ).to.true;
+			expect( balloonToolbar.focusTracker.isFocused ).toBe( true );
 
 			// Detach editable element
 			editor.detachEditable( root );
-			expect( balloonToolbar.focusTracker.elements.length ).to.be.equal( 4 );
+			expect( balloonToolbar.focusTracker.elements.length ).toBe( 4 );
 
 			editableElement.remove();
-			clock.restore();
+			vi.useRealTimers();
 		} );
 
 		async function createMultiRootEditor() {
@@ -1035,11 +1042,11 @@ describe( 'BalloonToolbar', () => {
 		const originalViewRangeToDom = editingView.domConverter.viewRangeToDom;
 
 		// Mock selection rect.
-		sinon.stub( editingView.domConverter, 'viewRangeToDom' ).callsFake( ( ...args ) => {
+		vi.spyOn( editingView.domConverter, 'viewRangeToDom' ).mockImplementation( ( ...args ) => {
 			const domRange = originalViewRangeToDom.apply( editingView.domConverter, args );
 
-			sinon.stub( domRange, 'getClientRects' )
-				.returns( rects );
+			vi.spyOn( domRange, 'getClientRects' )
+				.mockReturnValue( rects );
 
 			return domRange;
 		} );

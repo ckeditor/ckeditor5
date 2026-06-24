@@ -7,7 +7,7 @@
  * @module style/integrations/link
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { ModelSelectable, ModelDocumentSelection, ModelRange, ModelPosition, Model } from '@ckeditor/ckeditor5-engine';
 import { findAttributeRange, findAttributeRangeBound } from '@ckeditor/ckeditor5-typing';
 
@@ -42,8 +42,8 @@ export class LinkStyleSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ StyleUtils, GeneralHtmlSupport ] as const;
+	public static get requires(): PluginDependenciesOf<[ StyleUtils, GeneralHtmlSupport ]> {
+		return [ StyleUtils, GeneralHtmlSupport ];
 	}
 
 	/**
@@ -93,6 +93,7 @@ export class LinkStyleSupport extends Plugin {
 
 				const selectable = this._getAffectedSelectable( definition, selection );
 
+				/* v8 ignore else -- @preserve */
 				if ( selectable ) {
 					evt.return = selectable;
 					evt.stop();

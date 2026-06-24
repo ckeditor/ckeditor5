@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeAll } from 'vitest';
 import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelRootElement } from '../../src/model/rootelement.js';
@@ -15,18 +16,18 @@ describe( 'RootElement', () => {
 			const doc = model.document;
 			const root = new ModelRootElement( doc );
 
-			expect( root ).to.be.an.instanceof( ModelElement );
-			expect( root.isAttached() ).to.be.true;
-			expect( root ).to.have.property( 'document' ).that.equals( doc );
-			expect( count( root.getAttributes() ) ).to.equal( 0 );
-			expect( root.childCount ).to.equal( 0 );
+			expect( root ).toBeInstanceOf( ModelElement );
+			expect( root.isAttached() ).toBe( true );
+			expect( root ).toHaveProperty( 'document', doc );
+			expect( count( root.getAttributes() ) ).toBe( 0 );
+			expect( root.childCount ).toBe( 0 );
 		} );
 	} );
 
 	describe( 'is()', () => {
 		let root;
 
-		before( () => {
+		beforeAll( () => {
 			const model = new Model();
 			const doc = model.document;
 
@@ -34,32 +35,32 @@ describe( 'RootElement', () => {
 		} );
 
 		it( 'should return true for rootElement, element, element with same name and element name', () => {
-			expect( root.is( 'element', '$root' ) ).to.be.true;
-			expect( root.is( 'model:element', '$root' ) ).to.be.true;
-			expect( root.is( 'element' ) ).to.be.true;
-			expect( root.is( 'model:element' ) ).to.be.true;
-			expect( root.is( 'rootElement', '$root' ) ).to.be.true;
-			expect( root.is( 'model:rootElement', '$root' ) ).to.be.true;
-			expect( root.is( 'rootElement' ) ).to.be.true;
-			expect( root.is( 'model:rootElement' ) ).to.be.true;
-			expect( root.is( 'node' ) ).to.be.true;
-			expect( root.is( 'model:node' ) ).to.be.true;
+			expect( root.is( 'element', '$root' ) ).toBe( true );
+			expect( root.is( 'model:element', '$root' ) ).toBe( true );
+			expect( root.is( 'element' ) ).toBe( true );
+			expect( root.is( 'model:element' ) ).toBe( true );
+			expect( root.is( 'rootElement', '$root' ) ).toBe( true );
+			expect( root.is( 'model:rootElement', '$root' ) ).toBe( true );
+			expect( root.is( 'rootElement' ) ).toBe( true );
+			expect( root.is( 'model:rootElement' ) ).toBe( true );
+			expect( root.is( 'node' ) ).toBe( true );
+			expect( root.is( 'model:node' ) ).toBe( true );
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( root.is( 'element', '$graveyard' ) ).to.be.false;
-			expect( root.is( 'model:element', '$graveyard' ) ).to.be.false;
-			expect( root.is( 'rootElement', '$graveyard' ) ).to.be.false;
-			expect( root.is( 'model:rootElement', '$graveyard' ) ).to.be.false;
-			expect( root.is( '$graveyard' ) ).to.be.false;
-			expect( root.is( '$text' ) ).to.be.false;
-			expect( root.is( '$textProxy' ) ).to.be.false;
-			expect( root.is( 'documentFragment' ) ).to.be.false;
-			expect( root.is( 'view:element' ) ).to.be.false;
-			expect( root.is( '$root' ) ).to.be.false;
-			expect( root.is( 'model:$root' ) ).to.be.false;
-			expect( root.is( 'node', '$root' ) ).to.be.false;
-			expect( root.is( 'model:node', '$root' ) ).to.be.false;
+			expect( root.is( 'element', '$graveyard' ) ).toBe( false );
+			expect( root.is( 'model:element', '$graveyard' ) ).toBe( false );
+			expect( root.is( 'rootElement', '$graveyard' ) ).toBe( false );
+			expect( root.is( 'model:rootElement', '$graveyard' ) ).toBe( false );
+			expect( root.is( '$graveyard' ) ).toBe( false );
+			expect( root.is( '$text' ) ).toBe( false );
+			expect( root.is( '$textProxy' ) ).toBe( false );
+			expect( root.is( 'documentFragment' ) ).toBe( false );
+			expect( root.is( 'view:element' ) ).toBe( false );
+			expect( root.is( '$root' ) ).toBe( false );
+			expect( root.is( 'model:$root' ) ).toBe( false );
+			expect( root.is( 'node', '$root' ) ).toBe( false );
+			expect( root.is( 'model:node', '$root' ) ).toBe( false );
 		} );
 	} );
 } );

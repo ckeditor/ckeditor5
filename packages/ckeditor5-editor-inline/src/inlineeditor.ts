@@ -18,13 +18,16 @@ import {
 	verifyRootElements,
 	type EditorConfig,
 	type EditorReadyEvent,
-	type ViewRootElementDefinition
+	type ViewRootElementDefinition,
+	type ElementApiMixinConstructor
 } from '@ckeditor/ckeditor5-core';
 
 import { InlineEditorUI } from './inlineeditorui.js';
 import { InlineEditorUIView } from './inlineeditoruiview.js';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
+
+const InlineEditorBase: ElementApiMixinConstructor<typeof Editor> = /* #__PURE__ */ ElementApiMixin( Editor );
 
 /**
  * The inline editor implementation. It uses an inline editable and a floating toolbar.
@@ -33,7 +36,7 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  * In order to create a inline editor instance, use the static
  * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method.
  */
-export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+export class InlineEditor extends InlineEditorBase {
 	/**
 	 * @inheritDoc
 	 */

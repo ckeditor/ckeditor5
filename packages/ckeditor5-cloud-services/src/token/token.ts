@@ -7,19 +7,21 @@
  * @module cloud-services/token/token
  */
 
-import { ObservableMixin, CKEditorError, logWarning } from '@ckeditor/ckeditor5-utils';
+import { ObservableMixin, CKEditorError, logWarning, type ObservableMixinConstructor } from '@ckeditor/ckeditor5-utils';
 import type { TokenUrl } from '../cloudservicesconfig.js';
 
 const DEFAULT_OPTIONS = { autoRefresh: true };
 const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000; // 1 hour
 const TOKEN_FAILED_REFRESH_TIMEOUT_TIME = 5000; // 5 seconds
 
+const TokenBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * The class representing the token used for communication with CKEditor Cloud Services.
  * The value of the token is retrieved from the specified URL and refreshed every 1 hour by default.
  * If the token retrieval fails, the token will automatically retry in 5 seconds intervals.
  */
-export class Token extends /* #__PURE__ */ ObservableMixin() {
+export class Token extends TokenBase {
 	/**
 	 * Value of the token.
 	 * The value of the token is undefined if `initValue` is not provided or `init` method was not called.

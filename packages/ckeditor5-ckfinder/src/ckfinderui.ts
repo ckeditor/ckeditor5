@@ -48,6 +48,7 @@ export class CKFinderUI extends Plugin {
 		editor.ui.componentFactory.add( 'ckfinder', () => this._createFileToolbarButton() );
 		editor.ui.componentFactory.add( 'menuBar:ckfinder', () => this._createFileMenuBarButton() );
 
+		/* v8 ignore else -- @preserve */
 		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
 			editor.plugins.get( 'ImageInsertUI' ).registerIntegration( {
 				name: 'assetManager',

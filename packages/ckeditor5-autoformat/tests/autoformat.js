@@ -3,10 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import { Autoformat } from '../src/autoformat.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ListEditing, ListPropertiesEditing, TodoListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing, ListPropertiesEditing, TodoListEditing, _ListItemUid as ListItemUid } from '@ckeditor/ckeditor5-list';
 import { HeadingEditing, HeadingCommand } from '@ckeditor/ckeditor5-heading';
 import { BoldEditing, StrikethroughEditing, CodeEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
@@ -19,13 +21,13 @@ import { Typing } from '@ckeditor/ckeditor5-typing';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'Autoformat', () => {
 	let editor, model, doc;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	describe( 'Plugin', () => {
 		beforeEach( async () => {
@@ -60,19 +62,19 @@ describe( 'Autoformat', () => {
 		} );
 
 		it( 'should have pluginName', () => {
-			expect( Autoformat.pluginName ).to.equal( 'Autoformat' );
+			expect( Autoformat.pluginName ).toBe( 'Autoformat' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( Autoformat.isOfficialPlugin ).to.be.true;
+			expect( Autoformat.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( Autoformat.isPremiumPlugin ).to.be.false;
+			expect( Autoformat.isPremiumPlugin ).toBe( false );
 		} );
 
 		it( 'should add keystroke accessibility info', () => {
-			expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+			expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).toContainEqual( {
 				label: 'Revert autoformatting action',
 				keystroke: 'Backspace'
 			} );
@@ -117,7 +119,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>*[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>'
 				);
 			} );
@@ -126,7 +128,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>-[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>'
 				);
 			} );
@@ -135,7 +137,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>*[]sample text</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]sample text</paragraph>'
 				);
 			} );
@@ -144,7 +146,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="bulleted">-[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">- []</paragraph>'
 				);
 			} );
@@ -153,14 +155,14 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>*[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>* []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak>* []</paragraph>' );
 			} );
 
 			it( 'should be converted from a to-do list', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo">*[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>'
 				);
 			} );
@@ -169,7 +171,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">*[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>'
 				);
 			} );
@@ -182,7 +184,7 @@ describe( 'Autoformat', () => {
 				editor.execute( 'insertText', { text: '*' } );
 				editor.execute( 'insertText', { text: ' ' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listItemItalic="true" listType="bulleted"' +
 						' selection:bold="true" selection:italic="true">' +
 						'<$text bold="true" italic="true">[]</$text>' +
@@ -203,7 +205,7 @@ describe( 'Autoformat', () => {
 
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph></paragraph>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>'
 				);
@@ -227,7 +229,7 @@ describe( 'Autoformat', () => {
 					}
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph></paragraph>' +
 					'<paragraph>* []</paragraph>'
 				);
@@ -239,7 +241,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>1.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
 				);
 			} );
@@ -248,7 +250,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>1)[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
 				);
 			} );
@@ -257,7 +259,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>1)[]sample text</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]sample text</paragraph>'
 				);
 			} );
@@ -266,14 +268,14 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>1[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>1 []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>1 []</paragraph>' );
 			} );
 
 			it( 'should not replace digit character when inside numbered list item', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="numbered">1.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">1. []</paragraph>'
 				);
 			} );
@@ -282,7 +284,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>3.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
 				);
 			} );
@@ -291,7 +293,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>12.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
 				);
 			} );
@@ -300,7 +302,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>5)[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
 				);
 			} );
@@ -309,7 +311,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="numbered">5.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">5. []</paragraph>'
 				);
 			} );
@@ -318,21 +320,21 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>1.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>1. []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak>1. []</paragraph>' );
 			} );
 
 			it( 'should be converted from a header', () => {
 				_setModelData( model, '<heading1>1.[]</heading1>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<heading1 listIndent="0" listItemId="a00" listType="numbered">[]</heading1>' );
+				expect( _getModelData( model ) ).toBe( '<heading1 listIndent="0" listItemId="a00" listType="numbered">[]</heading1>' );
 			} );
 
 			it( 'should be converted from a bulleted list', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="bulleted">1.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
 				);
 			} );
@@ -341,7 +343,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo">1.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
 				);
 			} );
@@ -352,7 +354,7 @@ describe( 'Autoformat', () => {
 				);
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
 				);
 			} );
@@ -370,7 +372,7 @@ describe( 'Autoformat', () => {
 
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph></paragraph>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
 				);
@@ -394,7 +396,7 @@ describe( 'Autoformat', () => {
 					}
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph></paragraph>' +
 					'<paragraph>1. []</paragraph>'
 				);
@@ -408,7 +410,7 @@ describe( 'Autoformat', () => {
 				editor.execute( 'insertText', { text: '1.' } );
 				editor.execute( 'insertText', { text: ' ' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listItemItalic="true" listType="numbered"' +
 						' selection:bold="true" selection:italic="true">' +
 					'<$text bold="true" italic="true">[]</$text>' +
@@ -430,7 +432,7 @@ describe( 'Autoformat', () => {
 					insertBrackets();
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo">[]</paragraph>'
 					);
 				} );
@@ -440,7 +442,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( ' ' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo">[]</paragraph>'
 					);
 				} );
@@ -450,7 +452,7 @@ describe( 'Autoformat', () => {
 					insertBrackets();
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo">[]Sample text</paragraph>'
 					);
 				} );
@@ -460,7 +462,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( ' ' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<heading1 listIndent="0" listItemId="a00" listType="todo">[]Header text</heading1>'
 					);
 				} );
@@ -470,7 +472,7 @@ describe( 'Autoformat', () => {
 					insertBrackets();
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo">[]Sample text</paragraph>'
 					);
 				} );
@@ -480,7 +482,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( ' ' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Sample text [ ] []</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Sample text [ ] []</paragraph>' );
 				} );
 
 				it( 'should not replace the brackets if it contains a text', () => {
@@ -488,7 +490,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'Foo' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>[Foo] []</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>[Foo] []</paragraph>' );
 				} );
 
 				it( 'should not replace the brackets after <softBreak>', () => {
@@ -496,7 +498,7 @@ describe( 'Autoformat', () => {
 					insertBrackets();
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>[] []</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak>[] []</paragraph>' );
 				} );
 
 				// See https://github.com/ckeditor/ckeditor5/issues/16240.
@@ -513,7 +515,7 @@ describe( 'Autoformat', () => {
 					insertBrackets();
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph></paragraph>' +
 						'<paragraph listIndent="0" listItemId="a00" listType="todo">[]</paragraph>'
 					);
@@ -537,7 +539,7 @@ describe( 'Autoformat', () => {
 						}
 					} );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph></paragraph>' +
 						'<paragraph>[] []</paragraph>'
 					);
@@ -551,7 +553,7 @@ describe( 'Autoformat', () => {
 					editor.execute( 'insertText', { text: '[]' } );
 					editor.execute( 'insertText', { text: ' ' } );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo" selection:bold="true" selection:italic="true">' +
 							'<$text bold="true" italic="true">[]</$text>' +
 						'</paragraph>'
@@ -565,7 +567,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</paragraph>'
 					);
 				} );
@@ -575,7 +577,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( ' x ' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</paragraph>'
 					);
 				} );
@@ -585,7 +587,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x ' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</paragraph>'
 					);
 				} );
@@ -595,7 +597,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( ' x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</paragraph>'
 					);
 				} );
@@ -605,7 +607,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]Sample text</paragraph>'
 					);
 				} );
@@ -615,7 +617,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]Header text</heading1>'
 					);
 				} );
@@ -625,7 +627,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]Sample text</paragraph>'
 					);
 				} );
@@ -635,7 +637,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Sample text [x] []</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Sample text [x] []</paragraph>' );
 				} );
 
 				it( 'should not replace the brackets after <softBreak>', () => {
@@ -643,7 +645,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>[x] []</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak>[x] []</paragraph>' );
 				} );
 
 				// See https://github.com/ckeditor/ckeditor5/issues/16240.
@@ -660,7 +662,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph></paragraph>' +
 						'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</paragraph>'
 					);
@@ -684,7 +686,7 @@ describe( 'Autoformat', () => {
 						}
 					} );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph></paragraph>' +
 						'<paragraph>[x] []</paragraph>'
 					);
@@ -698,7 +700,7 @@ describe( 'Autoformat', () => {
 					editor.execute( 'insertText', { text: '[x]' } );
 					editor.execute( 'insertText', { text: ' ' } );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph listIndent="0" listItemId="a00" listType="todo" selection:bold="true" selection:italic="true"' +
 							' todoListChecked="true">' +
 							'<$text bold="true" italic="true">[]</$text>' +
@@ -713,27 +715,27 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>#[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1>' );
+				expect( _getModelData( model ) ).toBe( '<heading1>[]</heading1>' );
 			} );
 
 			it( 'should replace two hash characters with heading level 2', () => {
 				_setModelData( model, '<paragraph>##[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<heading2>[]</heading2>' );
+				expect( _getModelData( model ) ).toBe( '<heading2>[]</heading2>' );
 			} );
 
 			it( 'should not replace hash character when inside heading', () => {
 				_setModelData( model, '<heading1>#[]</heading1>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<heading1># []</heading1>' );
+				expect( _getModelData( model ) ).toBe( '<heading1># []</heading1>' );
 			} );
 
 			it( 'should work with heading1-heading6 commands regardless of the config of the heading feature', () => {
 				const command = new HeadingCommand( editor, [ 'heading1', 'heading6' ] );
 
-				const spy = sinon.spy( command, 'execute' );
+				const spy = vi.spyOn( command, 'execute' );
 
 				function HeadingPlugin( editor ) {
 					editor.commands.add( 'heading', command );
@@ -755,18 +757,18 @@ describe( 'Autoformat', () => {
 							writer.insertText( ' ', doc.selection.getFirstPosition() );
 						} );
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, { value: 'heading1' } );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
+						expect( spy ).toHaveBeenCalledWith( { value: 'heading1' } );
 
-						spy.resetHistory();
+						spy.mockClear();
 
 						_setModelData( model, '<paragraph>######[]</paragraph>' );
 						model.change( writer => {
 							writer.insertText( ' ', doc.selection.getFirstPosition() );
 						} );
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, { value: 'heading6' } );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
+						expect( spy ).toHaveBeenCalledWith( { value: 'heading6' } );
 
 						return editor.destroy();
 					} );
@@ -783,21 +785,21 @@ describe( 'Autoformat', () => {
 					writer.insertText( ' ', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph># []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph># []</paragraph>' );
 			} );
 
 			it( 'should not replace hash character after <softBreak>', () => {
 				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>#[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak># []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak># []</paragraph>' );
 			} );
 
 			it( 'should convert a header that already contains a text', () => {
 				_setModelData( model, '<heading1>###[]foo</heading1>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<heading3>[]foo</heading3>' );
+				expect( _getModelData( model ) ).toBe( '<heading3>[]foo</heading3>' );
 			} );
 
 			it( 'should restore selection attributes', () => {
@@ -808,7 +810,7 @@ describe( 'Autoformat', () => {
 				editor.execute( 'insertText', { text: '#' } );
 				editor.execute( 'insertText', { text: ' ' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<heading1 selection:bold="true" selection:italic="true">' +
 						'<$text bold="true" italic="true">[]</$text>' +
 					'</heading1>'
@@ -821,28 +823,28 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>>[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
+				expect( _getModelData( model ) ).toBe( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
 			} );
 
 			it( 'should replace greater-than character in a non-empty paragraph', () => {
 				_setModelData( model, '<paragraph>>[]foo</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph>[]foo</paragraph></blockQuote>' );
+				expect( _getModelData( model ) ).toBe( '<blockQuote><paragraph>[]foo</paragraph></blockQuote>' );
 			} );
 
 			it( 'should wrap the heading if greater-than character was used', () => {
 				_setModelData( model, '<heading1>>[]</heading1>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<blockQuote><heading1>[]</heading1></blockQuote>' );
+				expect( _getModelData( model ) ).toBe( '<blockQuote><heading1>[]</heading1></blockQuote>' );
 			} );
 
 			it( 'should replace greater-than character when inside numbered list', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="numbered">>[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<blockQuote><paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph></blockQuote>'
 				);
 			} );
@@ -851,7 +853,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="bulleted">>[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<blockQuote><paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph></blockQuote>'
 				);
 			} );
@@ -860,7 +862,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo">>[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<blockQuote><paragraph listIndent="0" listItemId="a00" listType="todo">[]</paragraph></blockQuote>'
 				);
 			} );
@@ -869,7 +871,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">>[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<blockQuote>' +
 						'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</paragraph>' +
 					'</blockQuote>'
@@ -880,7 +882,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>>[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>> []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak>> []</paragraph>' );
 			} );
 
 			it( 'should restore selection attributes', () => {
@@ -891,7 +893,7 @@ describe( 'Autoformat', () => {
 				editor.execute( 'insertText', { text: '>' } );
 				editor.execute( 'insertText', { text: ' ' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<blockQuote>' +
 						'<paragraph selection:bold="true" selection:italic="true">' +
 							'<$text bold="true" italic="true">[]</$text>' +
@@ -908,7 +910,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">[]</codeBlock>' );
 			} );
 
 			it( 'should replace triple grave accents in a heading', () => {
@@ -917,7 +919,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">[]</codeBlock>' );
 			} );
 
 			it( 'should replace triple grave accents in a non-empty paragraph', () => {
@@ -926,7 +928,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]let foo = 1;</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">[]let foo = 1;</codeBlock>' );
 			} );
 
 			it( 'should replace triple grave accents in a numbered list', () => {
@@ -935,7 +937,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<codeBlock language="plaintext" listIndent="0" listItemId="a00" listType="numbered">[]let foo = 1;</codeBlock>'
 				);
 			} );
@@ -946,7 +948,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<codeBlock language="plaintext" listIndent="0" listItemId="a00" listType="bulleted">[]let foo = 1;</codeBlock>'
 				);
 			} );
@@ -957,7 +959,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">```[]</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">```[]</codeBlock>' );
 			} );
 
 			it( 'should remember the last used language', () => {
@@ -976,7 +978,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="cpp">[]</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="cpp">[]</codeBlock>' );
 			} );
 
 			it( 'should not restore selection attributes', () => {
@@ -987,7 +989,7 @@ describe( 'Autoformat', () => {
 				editor.execute( 'insertText', { text: '``' } );
 				editor.execute( 'insertText', { text: '`' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<codeBlock language="plaintext">[]</codeBlock>'
 				);
 			} );
@@ -1000,7 +1002,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
 			} );
 
 			it( 'should replace three dashes in a heading', () => {
@@ -1009,7 +1011,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
 			} );
 
 			it( 'should replace three dashes in a non-empty paragraph', () => {
@@ -1018,7 +1020,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<horizontalLine></horizontalLine><paragraph>[]foo - bar</paragraph>'
 				);
 			} );
@@ -1029,7 +1031,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<horizontalLine listIndent="0" listItemId="a00" listType="numbered"></horizontalLine>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]let foo = 1;</paragraph>'
 				);
@@ -1041,7 +1043,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<horizontalLine listIndent="0" listItemId="a00" listType="bulleted"></horizontalLine>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]let foo = 1;</paragraph>'
 				);
@@ -1053,7 +1055,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<horizontalLine listIndent="0" listItemId="a00" listType="todo"></horizontalLine>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]</paragraph>'
 				);
@@ -1067,7 +1069,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<horizontalLine listIndent="0" listItemId="a00" listType="todo"></horizontalLine>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]</paragraph>'
 				);
@@ -1081,7 +1083,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
 			} );
 
 			it( 'should replace both "*" with italic', () => {
@@ -1090,7 +1092,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
 			} );
 
 			it( 'should replace both "`" with code', () => {
@@ -1099,7 +1101,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
 			} );
 
 			it( 'should replace both "~~" with strikethrough', () => {
@@ -1108,7 +1110,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '~', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><$text strikethrough="true">foobar</$text>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph><$text strikethrough="true">foobar</$text>[]</paragraph>' );
 			} );
 
 			it( 'nothing should be replaces when typing "*"', () => {
@@ -1117,7 +1119,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foobar*[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foobar*[]</paragraph>' );
 			} );
 
 			it( 'should format inside the text', () => {
@@ -1126,7 +1128,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text>[] baz</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foo <$text bold="true">bar</$text>[] baz</paragraph>' );
 			} );
 
 			it( 'should not format if the command is not enabled', () => {
@@ -1142,7 +1144,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>**foobar**[]</paragraph>' );
 			} );
 
 			it( 'should not format if the plugin is disabled', () => {
@@ -1154,7 +1156,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>**foobar**[]</paragraph>' );
 			} );
 
 			describe( 'should not format', () => {
@@ -1165,8 +1167,7 @@ describe( 'Autoformat', () => {
 						writer.insertText( '*', doc.selection.getFirstPosition() );
 					} );
 
-					expect( _getModelData( model ) ).to
-						.equal( '<paragraph>fo*ob*ar*[]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fo*ob*ar*[]</paragraph>' );
 				} );
 
 				it( '__ without space preceding it', () => {
@@ -1176,8 +1177,7 @@ describe( 'Autoformat', () => {
 						writer.insertText( '_', doc.selection.getFirstPosition() );
 					} );
 
-					expect( _getModelData( model ) ).to
-						.equal( '<paragraph>fo__ob__ar__[]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fo__ob__ar__[]</paragraph>' );
 				} );
 
 				// https://github.com/ckeditor/ckeditor5/issues/2388
@@ -1188,8 +1188,7 @@ describe( 'Autoformat', () => {
 						writer.insertText( '_', doc.selection.getFirstPosition() );
 					} );
 
-					expect( _getModelData( model ) ).to
-						.equal( '<paragraph>foo_bar baz_[]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo_bar baz_[]</paragraph>' );
 				} );
 			} );
 
@@ -1202,8 +1201,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '*', { code: true }, doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo *obar*[]</$text></paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo *obar*[]</$text></paragraph>' );
 					} );
 
 					it( '__ inside', () => {
@@ -1213,8 +1211,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '_', { code: true }, doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo __obar__[]</$text></paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo __obar__[]</$text></paragraph>' );
 					} );
 
 					it( '~~ inside', () => {
@@ -1224,8 +1221,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '~', { code: true }, doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo~~obar~~[]</$text></paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo~~obar~~[]</$text></paragraph>' );
 					} );
 
 					it( '` inside', () => {
@@ -1235,8 +1231,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '`', { code: true }, doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo`obar`[]</$text></paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo`obar`[]</$text></paragraph>' );
 					} );
 				} );
 
@@ -1248,8 +1243,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '*', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo *o</$text>bar*[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo *o</$text>bar*[]</paragraph>' );
 					} );
 					it( '__ across', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo __o</$text>bar_[]</paragraph>' );
@@ -1258,8 +1252,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '_', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo __o</$text>bar__[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo __o</$text>bar__[]</paragraph>' );
 					} );
 					it( '~~ across', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo~~o</$text>bar~[]</paragraph>' );
@@ -1268,8 +1261,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '~', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo~~o</$text>bar~~[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo~~o</$text>bar~~[]</paragraph>' );
 					} );
 					it( '` across', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo`o</$text>bar[]</paragraph>' );
@@ -1278,8 +1270,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '`', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo`o</$text>bar`[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo`o</$text>bar`[]</paragraph>' );
 					} );
 				} );
 
@@ -1291,8 +1282,9 @@ describe( 'Autoformat', () => {
 							writer.insertText( '*', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo*o</$text>b <$text italic="true">ar</$text>[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe(
+							'<paragraph><$text code="true">fo*o</$text>b <$text italic="true">ar</$text>[]</paragraph>'
+						);
 					} );
 					it( '__ after', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo__o</$text>b __ar_[]</paragraph>' );
@@ -1301,8 +1293,9 @@ describe( 'Autoformat', () => {
 							writer.insertText( '_', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo__o</$text>b <$text bold="true">ar</$text>[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe(
+							'<paragraph><$text code="true">fo__o</$text>b <$text bold="true">ar</$text>[]</paragraph>'
+						);
 					} );
 					it( '~~ after', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo~~o</$text>b~~ar~[]</paragraph>' );
@@ -1311,8 +1304,9 @@ describe( 'Autoformat', () => {
 							writer.insertText( '~', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo~~o</$text>b<$text strikethrough="true">ar</$text>[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe(
+							'<paragraph><$text code="true">fo~~o</$text>b<$text strikethrough="true">ar</$text>[]</paragraph>'
+						);
 					} );
 					it( '` after', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo`o</$text>b`ar[]</paragraph>' );
@@ -1321,8 +1315,9 @@ describe( 'Autoformat', () => {
 							writer.insertText( '`', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo`o</$text>b<$text code="true">ar</$text>[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe(
+							'<paragraph><$text code="true">fo`o</$text>b<$text code="true">ar</$text>[]</paragraph>'
+						);
 					} );
 				} );
 			} );
@@ -1333,7 +1328,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foo<softBreak></softBreak><$text bold="true">barbaz</$text>[]</paragraph>'
 				);
 			} );
@@ -1360,21 +1355,21 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>*[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>* []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>* []</paragraph>' );
 			} );
 
 			it( 'should not replace minus character with bulleted list item', () => {
 				_setModelData( model, '<paragraph>-[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>- []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>- []</paragraph>' );
 			} );
 
 			it( 'should not replace digit with numbered list item', () => {
 				_setModelData( model, '<paragraph>1.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>1. []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>1. []</paragraph>' );
 			} );
 
 			it( 'should not replace square brackets with to-do list item', () => {
@@ -1384,7 +1379,7 @@ describe( 'Autoformat', () => {
 				} );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[] []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>[] []</paragraph>' );
 			} );
 
 			it( 'should not replace square brackets containing "x" with checked to-do list item', () => {
@@ -1394,21 +1389,21 @@ describe( 'Autoformat', () => {
 				} );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[x] []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>[x] []</paragraph>' );
 			} );
 
 			it( 'should not replace hash character with heading', () => {
 				_setModelData( model, '<paragraph>#[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph># []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph># []</paragraph>' );
 			} );
 
 			it( 'should not replace two hash characters with heading level 2', () => {
 				_setModelData( model, '<paragraph>##[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>## []</paragraph>' );
 			} );
 
 			it( 'should not replace both "**" with bold', () => {
@@ -1417,7 +1412,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>**foobar**[]</paragraph>' );
 			} );
 
 			it( 'should not replace both "*" with italic', () => {
@@ -1426,7 +1421,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>*foobar*[]</paragraph>' );
 			} );
 
 			it( 'should not replace both "`" with code', () => {
@@ -1435,14 +1430,14 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>`foobar`[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>`foobar`[]</paragraph>' );
 			} );
 
 			it( 'should not replace ">" with block quote', () => {
 				_setModelData( model, '<paragraph>>[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>> []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>> []</paragraph>' );
 			} );
 
 			it( 'should not replace "```" with code block', () => {
@@ -1451,7 +1446,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>```[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>```[]</paragraph>' );
 			} );
 
 			it( 'should not replace "---" with horizontal line', () => {
@@ -1460,7 +1455,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>---[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>---[]</paragraph>' );
 			} );
 
 			it( 'should use only configured headings', () => {
@@ -1481,7 +1476,7 @@ describe( 'Autoformat', () => {
 						_setModelData( model, '<paragraph>##[]</paragraph>' );
 						insertSpace();
 
-						expect( _getModelData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph>## []</paragraph>' );
 
 						return editor.destroy();
 					} );
@@ -1527,21 +1522,21 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>*[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="bulleted">[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="bulleted">[]</listItem>' );
 			} );
 
 			it( 'should replace minus character with bulleted list item', () => {
 				_setModelData( model, '<paragraph>-[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="bulleted">[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="bulleted">[]</listItem>' );
 			} );
 
 			it( 'should replace a non-empty paragraph using the asterisk', () => {
 				_setModelData( model, '<paragraph>*[]sample text</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="bulleted">[]sample text</listItem>'
 				);
 			} );
@@ -1550,7 +1545,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="bulleted">-[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="bulleted">- []</listItem>'
 				);
 			} );
@@ -1559,21 +1554,21 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>*[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>* []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak>* []</paragraph>' );
 			} );
 
 			it( 'should be converted from a to-do list', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="todo">*[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="bulleted">[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="bulleted">[]</listItem>' );
 			} );
 
 			it( 'should be converted from a checked to-do list', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">*[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="bulleted">[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="bulleted">[]</listItem>' );
 			} );
 
 			// See https://github.com/ckeditor/ckeditor5/issues/16240.
@@ -1589,7 +1584,7 @@ describe( 'Autoformat', () => {
 
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph></paragraph>' +
 					'<listItem listIndent="0" listItemId="a00" listType="bulleted">[]</listItem>'
 				);
@@ -1613,7 +1608,7 @@ describe( 'Autoformat', () => {
 					}
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph></paragraph>' +
 					'<paragraph>* []</paragraph>'
 				);
@@ -1625,21 +1620,21 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>1.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
 			} );
 
 			it( 'should replace digit with numbered list item using the parenthesis format', () => {
 				_setModelData( model, '<paragraph>1)[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
 			} );
 
 			it( 'should replace a non-empty paragraph using the parenthesis format', () => {
 				_setModelData( model, '<paragraph>1)[]sample text</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="numbered">[]sample text</listItem>'
 				);
 			} );
@@ -1648,14 +1643,14 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>1[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>1 []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>1 []</paragraph>' );
 			} );
 
 			it( 'should not replace digit character when inside numbered list item', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="numbered">1.[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="numbered">1. []</listItem>'
 				);
 			} );
@@ -1664,7 +1659,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>3.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>'
 				);
 			} );
@@ -1673,7 +1668,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>12.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>'
 				);
 			} );
@@ -1682,7 +1677,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>5)[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>'
 				);
 			} );
@@ -1691,7 +1686,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="numbered">5.[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="numbered">5. []</listItem>'
 				);
 			} );
@@ -1700,35 +1695,35 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>1.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>1. []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak>1. []</paragraph>' );
 			} );
 
 			it( 'should be converted from a header', () => {
 				_setModelData( model, '<heading1>1.[]</heading1>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
 			} );
 
 			it( 'should be converted from a bulleted list', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="bulleted">1.[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
 			} );
 
 			it( 'should be converted from a to-do list', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="todo">1.[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
 			} );
 
 			it( 'should be converted from a checked to-do list', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">1.[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>' );
 			} );
 
 			// See https://github.com/ckeditor/ckeditor5/issues/16240.
@@ -1744,7 +1739,7 @@ describe( 'Autoformat', () => {
 
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph></paragraph>' +
 					'<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>'
 				);
@@ -1768,7 +1763,7 @@ describe( 'Autoformat', () => {
 					}
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph></paragraph>' +
 					'<paragraph>1. []</paragraph>'
 				);
@@ -1788,7 +1783,7 @@ describe( 'Autoformat', () => {
 					insertBrackets();
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="todo">[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="todo">[]</listItem>' );
 				} );
 
 				it( 'should replace square brackets with space inside', () => {
@@ -1796,7 +1791,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( ' ' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="todo">[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="todo">[]</listItem>' );
 				} );
 
 				it( 'should be converted from a paragraph', () => {
@@ -1804,7 +1799,7 @@ describe( 'Autoformat', () => {
 					insertBrackets();
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listItemId="a00" listType="todo">[]Sample text</listItem>'
 					);
 				} );
@@ -1814,7 +1809,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( ' ' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listItemId="a00" listType="todo">[]Header text</listItem>'
 					);
 				} );
@@ -1824,7 +1819,7 @@ describe( 'Autoformat', () => {
 					insertBrackets();
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listItemId="a00" listType="todo">[]Sample text</listItem>'
 					);
 				} );
@@ -1834,7 +1829,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( ' ' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Sample text [ ] []</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Sample text [ ] []</paragraph>' );
 				} );
 
 				it( 'should not replace the brackets if it contains a text', () => {
@@ -1842,7 +1837,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'Foo' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>[Foo] []</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>[Foo] []</paragraph>' );
 				} );
 
 				it( 'should not replace the brackets after <softBreak>', () => {
@@ -1850,7 +1845,7 @@ describe( 'Autoformat', () => {
 					insertBrackets();
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>[] []</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak>[] []</paragraph>' );
 				} );
 
 				// See https://github.com/ckeditor/ckeditor5/issues/16240.
@@ -1867,7 +1862,7 @@ describe( 'Autoformat', () => {
 					insertBrackets();
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph></paragraph>' +
 						'<listItem listIndent="0" listItemId="a00" listType="todo">[]</listItem>'
 					);
@@ -1891,7 +1886,7 @@ describe( 'Autoformat', () => {
 						}
 					} );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph></paragraph>' +
 						'<paragraph>[] []</paragraph>'
 					);
@@ -1904,7 +1899,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</listItem>'
 					);
 				} );
@@ -1914,7 +1909,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( ' x ' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</listItem>'
 					);
 				} );
@@ -1924,7 +1919,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x ' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</listItem>'
 					);
 				} );
@@ -1934,7 +1929,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( ' x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</listItem>'
 					);
 				} );
@@ -1944,7 +1939,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]Sample text</listItem>'
 					);
 				} );
@@ -1954,7 +1949,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]Header text</listItem>'
 					);
 				} );
@@ -1964,7 +1959,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]Sample text</listItem>'
 					);
 				} );
@@ -1974,7 +1969,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Sample text [x] []</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Sample text [x] []</paragraph>' );
 				} );
 
 				it( 'should not replace the brackets after <softBreak>', () => {
@@ -1982,7 +1977,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>[x] []</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak>[x] []</paragraph>' );
 				} );
 
 				// See https://github.com/ckeditor/ckeditor5/issues/16240.
@@ -1999,7 +1994,7 @@ describe( 'Autoformat', () => {
 					insertBrackets( 'x' );
 					insertSpace();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph></paragraph>' +
 						'<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">[]</listItem>'
 					);
@@ -2023,7 +2018,7 @@ describe( 'Autoformat', () => {
 						}
 					} );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph></paragraph>' +
 						'<paragraph>[x] []</paragraph>'
 					);
@@ -2036,27 +2031,27 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>#[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1>' );
+				expect( _getModelData( model ) ).toBe( '<heading1>[]</heading1>' );
 			} );
 
 			it( 'should replace two hash characters with heading level 2', () => {
 				_setModelData( model, '<paragraph>##[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<heading2>[]</heading2>' );
+				expect( _getModelData( model ) ).toBe( '<heading2>[]</heading2>' );
 			} );
 
 			it( 'should not replace hash character when inside heading', () => {
 				_setModelData( model, '<heading1>#[]</heading1>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<heading1># []</heading1>' );
+				expect( _getModelData( model ) ).toBe( '<heading1># []</heading1>' );
 			} );
 
 			it( 'should work with heading1-heading6 commands regardless of the config of the heading feature', () => {
 				const command = new HeadingCommand( editor, [ 'heading1', 'heading6' ] );
 
-				const spy = sinon.spy( command, 'execute' );
+				const spy = vi.spyOn( command, 'execute' );
 
 				function HeadingPlugin( editor ) {
 					editor.commands.add( 'heading', command );
@@ -2078,18 +2073,18 @@ describe( 'Autoformat', () => {
 							writer.insertText( ' ', doc.selection.getFirstPosition() );
 						} );
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, { value: 'heading1' } );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
+						expect( spy ).toHaveBeenCalledWith( { value: 'heading1' } );
 
-						spy.resetHistory();
+						spy.mockClear();
 
 						_setModelData( model, '<paragraph>######[]</paragraph>' );
 						model.change( writer => {
 							writer.insertText( ' ', doc.selection.getFirstPosition() );
 						} );
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, { value: 'heading6' } );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
+						expect( spy ).toHaveBeenCalledWith( { value: 'heading6' } );
 
 						return editor.destroy();
 					} );
@@ -2106,21 +2101,21 @@ describe( 'Autoformat', () => {
 					writer.insertText( ' ', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph># []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph># []</paragraph>' );
 			} );
 
 			it( 'should not replace hash character after <softBreak>', () => {
 				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>#[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak># []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak># []</paragraph>' );
 			} );
 
 			it( 'should convert a header that already contains a text', () => {
 				_setModelData( model, '<heading1>###[]foo</heading1>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<heading3>[]foo</heading3>' );
+				expect( _getModelData( model ) ).toBe( '<heading3>[]foo</heading3>' );
 			} );
 		} );
 
@@ -2129,28 +2124,28 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>>[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
+				expect( _getModelData( model ) ).toBe( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
 			} );
 
 			it( 'should replace greater-than character in a non-empty paragraph', () => {
 				_setModelData( model, '<paragraph>>[]foo</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph>[]foo</paragraph></blockQuote>' );
+				expect( _getModelData( model ) ).toBe( '<blockQuote><paragraph>[]foo</paragraph></blockQuote>' );
 			} );
 
 			it( 'should wrap the heading if greater-than character was used', () => {
 				_setModelData( model, '<heading1>>[]</heading1>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<blockQuote><heading1>[]</heading1></blockQuote>' );
+				expect( _getModelData( model ) ).toBe( '<blockQuote><heading1>[]</heading1></blockQuote>' );
 			} );
 
 			it( 'should not replace greater-than character when inside numbered list', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="numbered">>[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="numbered">> []</listItem>'
 				);
 			} );
@@ -2159,7 +2154,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="bulleted">>[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="bulleted">> []</listItem>'
 				);
 			} );
@@ -2168,14 +2163,14 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="todo">>[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="todo">> []</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="todo">> []</listItem>' );
 			} );
 
 			it( 'should not replace greater-than character when inside checked to-do list', () => {
 				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">>[]</listItem>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">> []</listItem>'
 				);
 			} );
@@ -2184,7 +2179,7 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>>[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>> []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foo<softBreak></softBreak>> []</paragraph>' );
 			} );
 		} );
 
@@ -2195,7 +2190,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">[]</codeBlock>' );
 			} );
 
 			it( 'should replace triple grave accents in a heading', () => {
@@ -2204,7 +2199,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">[]</codeBlock>' );
 			} );
 
 			it( 'should replace triple grave accents in a non-empty paragraph', () => {
@@ -2213,7 +2208,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]let foo = 1;</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">[]let foo = 1;</codeBlock>' );
 			} );
 
 			it( 'should not replace triple grave accents in a numbered list', () => {
@@ -2222,7 +2217,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="numbered">```[]let foo = 1;</listItem>'
 				);
 			} );
@@ -2233,7 +2228,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="bulleted">```[]let foo = 1;</listItem>'
 				);
 			} );
@@ -2244,7 +2239,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">```[]</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">```[]</codeBlock>' );
 			} );
 
 			it( 'should remember the last used language', () => {
@@ -2263,7 +2258,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="cpp">[]</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="cpp">[]</codeBlock>' );
 			} );
 		} );
 
@@ -2274,7 +2269,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
 			} );
 
 			it( 'should replace three dashes in a heading', () => {
@@ -2283,7 +2278,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
 			} );
 
 			it( 'should replace three dashes in a non-empty paragraph', () => {
@@ -2292,7 +2287,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<horizontalLine></horizontalLine><paragraph>[]foo - bar</paragraph>'
 				);
 			} );
@@ -2303,7 +2298,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="bulleted">---[]</listItem>'
 				);
 			} );
@@ -2314,7 +2309,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="numbered">---[]</listItem>'
 				);
 			} );
@@ -2325,7 +2320,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listItemId="a00" listType="todo">---[]</listItem>' );
+				expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listItemId="a00" listType="todo">---[]</listItem>' );
 			} );
 
 			it( 'should not replace three dashes when inside checked todo list', () => {
@@ -2334,7 +2329,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">---[]</listItem>'
 				);
 			} );
@@ -2347,7 +2342,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
 			} );
 
 			it( 'should replace both "*" with italic', () => {
@@ -2356,7 +2351,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
 			} );
 
 			it( 'should replace both "`" with code', () => {
@@ -2365,7 +2360,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
 			} );
 
 			it( 'should replace both "~~" with strikethrough', () => {
@@ -2374,7 +2369,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '~', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><$text strikethrough="true">foobar</$text>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph><$text strikethrough="true">foobar</$text>[]</paragraph>' );
 			} );
 
 			it( 'nothing should be replaces when typing "*"', () => {
@@ -2383,7 +2378,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foobar*[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foobar*[]</paragraph>' );
 			} );
 
 			it( 'should format inside the text', () => {
@@ -2392,7 +2387,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text>[] baz</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foo <$text bold="true">bar</$text>[] baz</paragraph>' );
 			} );
 
 			it( 'should not format if the command is not enabled', () => {
@@ -2408,7 +2403,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>**foobar**[]</paragraph>' );
 			} );
 
 			it( 'should not format if the plugin is disabled', () => {
@@ -2420,7 +2415,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>**foobar**[]</paragraph>' );
 			} );
 
 			describe( 'should not format', () => {
@@ -2431,8 +2426,7 @@ describe( 'Autoformat', () => {
 						writer.insertText( '*', doc.selection.getFirstPosition() );
 					} );
 
-					expect( _getModelData( model ) ).to
-						.equal( '<paragraph>fo*ob*ar*[]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fo*ob*ar*[]</paragraph>' );
 				} );
 
 				it( '__ without space preceding it', () => {
@@ -2442,8 +2436,7 @@ describe( 'Autoformat', () => {
 						writer.insertText( '_', doc.selection.getFirstPosition() );
 					} );
 
-					expect( _getModelData( model ) ).to
-						.equal( '<paragraph>fo__ob__ar__[]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fo__ob__ar__[]</paragraph>' );
 				} );
 
 				// https://github.com/ckeditor/ckeditor5/issues/2388
@@ -2454,8 +2447,7 @@ describe( 'Autoformat', () => {
 						writer.insertText( '_', doc.selection.getFirstPosition() );
 					} );
 
-					expect( _getModelData( model ) ).to
-						.equal( '<paragraph>foo_bar baz_[]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo_bar baz_[]</paragraph>' );
 				} );
 			} );
 
@@ -2468,8 +2460,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '*', { code: true }, doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo *obar*[]</$text></paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo *obar*[]</$text></paragraph>' );
 					} );
 
 					it( '__ inside', () => {
@@ -2479,8 +2470,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '_', { code: true }, doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo __obar__[]</$text></paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo __obar__[]</$text></paragraph>' );
 					} );
 
 					it( '~~ inside', () => {
@@ -2490,8 +2480,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '~', { code: true }, doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo~~obar~~[]</$text></paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo~~obar~~[]</$text></paragraph>' );
 					} );
 
 					it( '` inside', () => {
@@ -2501,8 +2490,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '`', { code: true }, doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo`obar`[]</$text></paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo`obar`[]</$text></paragraph>' );
 					} );
 				} );
 
@@ -2514,8 +2502,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '*', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo *o</$text>bar*[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo *o</$text>bar*[]</paragraph>' );
 					} );
 					it( '__ across', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo __o</$text>bar_[]</paragraph>' );
@@ -2524,8 +2511,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '_', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo __o</$text>bar__[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo __o</$text>bar__[]</paragraph>' );
 					} );
 					it( '~~ across', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo~~o</$text>bar~[]</paragraph>' );
@@ -2534,8 +2520,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '~', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo~~o</$text>bar~~[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo~~o</$text>bar~~[]</paragraph>' );
 					} );
 					it( '` across', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo`o</$text>bar[]</paragraph>' );
@@ -2544,8 +2529,7 @@ describe( 'Autoformat', () => {
 							writer.insertText( '`', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo`o</$text>bar`[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph><$text code="true">fo`o</$text>bar`[]</paragraph>' );
 					} );
 				} );
 
@@ -2557,8 +2541,9 @@ describe( 'Autoformat', () => {
 							writer.insertText( '*', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo*o</$text>b <$text italic="true">ar</$text>[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe(
+							'<paragraph><$text code="true">fo*o</$text>b <$text italic="true">ar</$text>[]</paragraph>'
+						);
 					} );
 					it( '__ after', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo__o</$text>b __ar_[]</paragraph>' );
@@ -2567,8 +2552,9 @@ describe( 'Autoformat', () => {
 							writer.insertText( '_', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo__o</$text>b <$text bold="true">ar</$text>[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe(
+							'<paragraph><$text code="true">fo__o</$text>b <$text bold="true">ar</$text>[]</paragraph>'
+						);
 					} );
 					it( '~~ after', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo~~o</$text>b~~ar~[]</paragraph>' );
@@ -2577,8 +2563,9 @@ describe( 'Autoformat', () => {
 							writer.insertText( '~', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo~~o</$text>b<$text strikethrough="true">ar</$text>[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe(
+							'<paragraph><$text code="true">fo~~o</$text>b<$text strikethrough="true">ar</$text>[]</paragraph>'
+						);
 					} );
 					it( '` after', () => {
 						_setModelData( model, '<paragraph><$text code="true">fo`o</$text>b`ar[]</paragraph>' );
@@ -2587,8 +2574,9 @@ describe( 'Autoformat', () => {
 							writer.insertText( '`', doc.selection.getFirstPosition() );
 						} );
 
-						expect( _getModelData( model ) ).to
-							.equal( '<paragraph><$text code="true">fo`o</$text>b<$text code="true">ar</$text>[]</paragraph>' );
+						expect( _getModelData( model ) ).toBe(
+							'<paragraph><$text code="true">fo`o</$text>b<$text code="true">ar</$text>[]</paragraph>'
+						);
 					} );
 				} );
 			} );
@@ -2599,7 +2587,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foo<softBreak></softBreak><$text bold="true">barbaz</$text>[]</paragraph>'
 				);
 			} );
@@ -2626,21 +2614,21 @@ describe( 'Autoformat', () => {
 				_setModelData( model, '<paragraph>*[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>* []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>* []</paragraph>' );
 			} );
 
 			it( 'should not replace minus character with bulleted list item', () => {
 				_setModelData( model, '<paragraph>-[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>- []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>- []</paragraph>' );
 			} );
 
 			it( 'should not replace digit with numbered list item', () => {
 				_setModelData( model, '<paragraph>1.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>1. []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>1. []</paragraph>' );
 			} );
 
 			it( 'should not replace square brackets with to-do list item', () => {
@@ -2650,7 +2638,7 @@ describe( 'Autoformat', () => {
 				} );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[] []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>[] []</paragraph>' );
 			} );
 
 			it( 'should not replace square brackets containing "x" with checked to-do list item', () => {
@@ -2660,21 +2648,21 @@ describe( 'Autoformat', () => {
 				} );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[x] []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>[x] []</paragraph>' );
 			} );
 
 			it( 'should not replace hash character with heading', () => {
 				_setModelData( model, '<paragraph>#[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph># []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph># []</paragraph>' );
 			} );
 
 			it( 'should not replace two hash characters with heading level 2', () => {
 				_setModelData( model, '<paragraph>##[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>## []</paragraph>' );
 			} );
 
 			it( 'should not replace both "**" with bold', () => {
@@ -2683,7 +2671,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>**foobar**[]</paragraph>' );
 			} );
 
 			it( 'should not replace both "*" with italic', () => {
@@ -2692,7 +2680,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '*', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>*foobar*[]</paragraph>' );
 			} );
 
 			it( 'should not replace both "`" with code', () => {
@@ -2701,14 +2689,14 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>`foobar`[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>`foobar`[]</paragraph>' );
 			} );
 
 			it( 'should not replace ">" with block quote', () => {
 				_setModelData( model, '<paragraph>>[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>> []</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>> []</paragraph>' );
 			} );
 
 			it( 'should not replace "```" with code block', () => {
@@ -2717,7 +2705,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '`', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>```[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>```[]</paragraph>' );
 			} );
 
 			it( 'should not replace "---" with horizontal line', () => {
@@ -2726,7 +2714,7 @@ describe( 'Autoformat', () => {
 					writer.insertText( '-', doc.selection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>---[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>---[]</paragraph>' );
 			} );
 
 			it( 'should use only configured headings', () => {
@@ -2748,7 +2736,7 @@ describe( 'Autoformat', () => {
 						_setModelData( model, '<paragraph>##[]</paragraph>' );
 						insertSpace();
 
-						expect( _getModelData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+						expect( _getModelData( model ) ).toBe( '<paragraph>## []</paragraph>' );
 
 						return editor.destroy();
 					} );
@@ -2791,7 +2779,7 @@ describe( 'Autoformat', () => {
 			_setModelData( model, '<paragraph>1.[]</paragraph>' );
 			insertSpace();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a00" listStart="1" listType="numbered">[]</paragraph>'
 			);
 		} );
@@ -2800,7 +2788,7 @@ describe( 'Autoformat', () => {
 			_setModelData( model, '<paragraph>5.[]</paragraph>' );
 			insertSpace();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a00" listStart="5" listType="numbered">[]</paragraph>'
 			);
 		} );
@@ -2809,7 +2797,7 @@ describe( 'Autoformat', () => {
 			_setModelData( model, '<paragraph>12.[]</paragraph>' );
 			insertSpace();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a00" listStart="12" listType="numbered">[]</paragraph>'
 			);
 		} );
@@ -2818,7 +2806,7 @@ describe( 'Autoformat', () => {
 			_setModelData( model, '<paragraph>0.[]</paragraph>' );
 			insertSpace();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a00" listStart="0" listType="numbered">[]</paragraph>'
 			);
 		} );
@@ -2827,7 +2815,7 @@ describe( 'Autoformat', () => {
 			_setModelData( model, '<paragraph>5)[]</paragraph>' );
 			insertSpace();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a00" listStart="5" listType="numbered">[]</paragraph>'
 			);
 		} );
@@ -2839,7 +2827,7 @@ describe( 'Autoformat', () => {
 			);
 			insertSpace();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a01" listStart="1" listType="numbered">Item 1</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a00" listStart="1" listType="numbered">[]</paragraph>'
 			);
@@ -2852,7 +2840,7 @@ describe( 'Autoformat', () => {
 			);
 			insertSpace();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">Item 1</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a00" listStart="5" listType="numbered">[]</paragraph>'
 			);
@@ -2894,7 +2882,7 @@ describe( 'Autoformat', () => {
 			_setModelData( model, '<paragraph>5.[]</paragraph>' );
 			insertSpace();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
 			);
 		} );
@@ -2936,7 +2924,7 @@ describe( 'Autoformat', () => {
 			_setModelData( model, '<paragraph>5.[]</paragraph>' );
 			insertSpace();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listItemId="a00" listStart="5" listType="numbered">[]</listItem>'
 			);
 		} );
@@ -2946,5 +2934,11 @@ describe( 'Autoformat', () => {
 		model.change( writer => {
 			writer.insertText( ' ', doc.selection.getFirstPosition() );
 		} );
+	}
+
+	function stubUid( start = 0xa00 ) {
+		let num = start;
+
+		vi.spyOn( ListItemUid, 'next' ).mockImplementation( () => ( num++ ).toString( 16 ).padStart( 3, '000' ) );
 	}
 } );

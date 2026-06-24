@@ -325,16 +325,10 @@ function isImageAllowedInParent( editor: Editor, selection: ModelSelection | Mod
 	const imageType = determineImageTypeForInsertion( editor, selection, null );
 
 	if ( imageType == 'imageBlock' ) {
-		const parent = getInsertImageParent( selection, editor.model );
-
-		if ( editor.model.schema.checkChild( parent as ModelElement, 'imageBlock' ) ) {
-			return true;
-		}
-	} else if ( editor.model.schema.checkChild( selection.focus!, 'imageInline' ) ) {
-		return true;
+		return isBlockImageAllowedAtInsertion( editor.model, selection );
 	}
 
-	return false;
+	return editor.model.schema.checkChild( selection.focus!, 'imageInline' );
 }
 
 /**
@@ -356,6 +350,20 @@ function getInsertImageParent( selection: ModelSelection | ModelDocumentSelectio
 	}
 
 	return parent;
+}
+
+/**
+ * Checks whether a block image is allowed by the schema at the optimal insertion point for the given selectable
+ * (e.g. it is not allowed inside `$inlineRoot` or any other inline-only container).
+ */
+function isBlockImageAllowedAtInsertion(
+	model: Model,
+	selectable: ModelPosition | ModelSelection | ModelDocumentSelection
+): boolean {
+	const selection = selectable.is( 'position' ) ? model.createSelection( selectable ) : selectable;
+	const insertionParent = getInsertImageParent( selection, model );
+
+	return model.schema.checkChild( insertionParent as ModelElement, 'imageBlock' );
 }
 
 /**
@@ -382,6 +390,13 @@ function determineImageTypeForInsertion(
 
 	if ( imageType ) {
 		return imageType;
+	}
+
+	// Force `imageInline` when a block image cannot be placed at the insertion location (e.g. inside
+	// `$inlineRoot` or another inline-only container). Otherwise the `image.insert.type` config
+	// (default: `'block'`) could pick a type the schema would later reject.
+	if ( !isBlockImageAllowedAtInsertion( editor.model, selectable ) ) {
+		return 'imageInline';
 	}
 
 	if ( configImageInsertType === 'inline' ) {

@@ -7,7 +7,7 @@
  * @module html-support/integrations/heading
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 
@@ -20,8 +20,8 @@ export class HeadingElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ DataSchema, Enter ] as const;
+	public static get requires(): PluginDependenciesOf<[ DataSchema, Enter ]> {
+		return [ DataSchema, Enter ];
 	}
 
 	/**

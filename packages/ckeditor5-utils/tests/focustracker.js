@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { FocusTracker } from '../src/focustracker.js';
 import { global } from '../src/dom/global.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
 import { View } from '@ckeditor/ckeditor5-ui';
 
 describe( 'FocusTracker', () => {
-	let focusTracker, container, containerFirstInput, containerSecondInput, clock;
-
-	testUtils.createSinonSandbox();
+	let focusTracker, container, containerFirstInput, containerSecondInput;
 
 	beforeEach( () => {
 		container = document.createElement( 'div' );
@@ -22,46 +20,46 @@ describe( 'FocusTracker', () => {
 		container.appendChild( containerFirstInput );
 		container.appendChild( containerSecondInput );
 
-		clock = testUtils.sinon.useFakeTimers();
+		vi.useFakeTimers();
 
 		focusTracker = new FocusTracker();
 	} );
 
 	afterEach( () => {
-		clock.restore();
+		vi.useRealTimers();
 		focusTracker.destroy();
 	} );
 
 	describe( 'constructor()', () => {
 		describe( 'isFocused', () => {
 			it( 'should be false at default', () => {
-				expect( focusTracker.isFocused ).to.be.false;
+				expect( focusTracker.isFocused ).toBe( false );
 			} );
 
 			it( 'should be observable', () => {
-				const observableSpy = testUtils.sinon.spy();
+				const observableSpy = vi.fn();
 
 				focusTracker.listenTo( focusTracker, 'change:isFocused', observableSpy );
 
 				focusTracker.isFocused = true;
 
-				expect( observableSpy.calledOnce ).to.be.true;
+				expect( observableSpy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
 		describe( 'focusedElement', () => {
 			it( 'should be null at default', () => {
-				expect( focusTracker.focusedElement ).to.be.null;
+				expect( focusTracker.focusedElement ).toBeNull();
 			} );
 
 			it( 'should be observable', () => {
-				const observableSpy = testUtils.sinon.spy();
+				const observableSpy = vi.fn();
 
 				focusTracker.listenTo( focusTracker, 'change:focusedElement', observableSpy );
 
 				focusTracker.focusedElement = global.document.body;
 
-				expect( observableSpy.calledOnce ).to.be.true;
+				expect( observableSpy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 	} );
@@ -80,25 +78,25 @@ describe( 'FocusTracker', () => {
 				it( 'should start listening on element focus and update `isFocused` property', () => {
 					focusTracker.add( containerFirstInput );
 
-					expect( focusTracker.isFocused ).to.be.false;
+					expect( focusTracker.isFocused ).toBe( false );
 
 					containerFirstInput.dispatchEvent( new Event( 'focus' ) );
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( containerFirstInput );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( containerFirstInput );
 				} );
 
 				it( 'should start listening on element blur and update `isFocused` property', () => {
 					focusTracker.add( containerFirstInput );
 					containerFirstInput.dispatchEvent( new Event( 'focus' ) );
 
-					expect( focusTracker.focusedElement ).to.equal( containerFirstInput );
+					expect( focusTracker.focusedElement ).toBe( containerFirstInput );
 
 					containerFirstInput.dispatchEvent( new Event( 'blur' ) );
-					testUtils.sinon.clock.tick( 0 );
+					vi.advanceTimersByTime( 0 );
 
-					expect( focusTracker.isFocused ).to.be.false;
-					expect( focusTracker.focusedElement ).to.be.null;
+					expect( focusTracker.isFocused ).toBe( false );
+					expect( focusTracker.focusedElement ).toBeNull();
 				} );
 			} );
 
@@ -106,45 +104,45 @@ describe( 'FocusTracker', () => {
 				it( 'should start listening on element focus using event capturing and update `isFocused` property', () => {
 					focusTracker.add( container );
 
-					expect( focusTracker.isFocused ).to.be.false;
+					expect( focusTracker.isFocused ).toBe( false );
 
 					containerFirstInput.dispatchEvent( new Event( 'focus' ) );
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( container );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( container );
 				} );
 
 				it( 'should start listening on element blur using event capturing and update `isFocused` property', () => {
 					focusTracker.add( container );
 					containerFirstInput.dispatchEvent( new Event( 'focus' ) );
 
-					expect( focusTracker.focusedElement ).to.equal( container );
+					expect( focusTracker.focusedElement ).toBe( container );
 
 					containerFirstInput.dispatchEvent( new Event( 'blur' ) );
-					testUtils.sinon.clock.tick( 0 );
+					vi.advanceTimersByTime( 0 );
 
-					expect( focusTracker.isFocused ).to.be.false;
-					expect( focusTracker.focusedElement ).to.be.null;
+					expect( focusTracker.isFocused ).toBe( false );
+					expect( focusTracker.focusedElement ).toBeNull();
 				} );
 
 				it( 'should not change `isFocused` property when focus is going between child elements', () => {
-					const changeSpy = testUtils.sinon.spy();
+					const changeSpy = vi.fn();
 
 					focusTracker.add( container );
 
 					containerFirstInput.dispatchEvent( new Event( 'focus' ) );
-					expect( focusTracker.focusedElement ).to.equal( container );
-					expect( focusTracker.isFocused ).to.be.true;
+					expect( focusTracker.focusedElement ).toBe( container );
+					expect( focusTracker.isFocused ).toBe( true );
 
 					focusTracker.listenTo( focusTracker, 'change:isFocused', changeSpy );
 
 					containerFirstInput.dispatchEvent( new Event( 'blur' ) );
 					containerSecondInput.dispatchEvent( new Event( 'focus' ) );
-					testUtils.sinon.clock.tick( 0 );
+					vi.advanceTimersByTime( 0 );
 
-					expect( focusTracker.focusedElement ).to.equal( container );
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( changeSpy.notCalled ).to.be.true;
+					expect( focusTracker.focusedElement ).toBe( container );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( changeSpy ).not.toHaveBeenCalled();
 				} );
 
 				// https://github.com/ckeditor/ckeditor5-utils/issues/159
@@ -152,15 +150,15 @@ describe( 'FocusTracker', () => {
 					focusTracker.add( container );
 					container.dispatchEvent( new Event( 'focus' ) );
 
-					expect( focusTracker.focusedElement ).to.equal( container );
+					expect( focusTracker.focusedElement ).toBe( container );
 
 					container.dispatchEvent( new Event( 'blur' ) );
 					containerFirstInput.dispatchEvent( new Event( 'blur' ) );
 					containerSecondInput.dispatchEvent( new Event( 'focus' ) );
-					testUtils.sinon.clock.tick( 0 );
+					vi.advanceTimersByTime( 0 );
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( container );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( container );
 				} );
 			} );
 		} );
@@ -186,20 +184,20 @@ describe( 'FocusTracker', () => {
 
 					view.focus();
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( view.element );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( view.element );
 				} );
 
 				it( 'should not be listed in #externalViews', () => {
 					focusTracker.add( view );
 
-					expect( focusTracker.externalViews ).to.have.length( 0 );
+					expect( focusTracker.externalViews ).toHaveLength( 0 );
 				} );
 
 				it( 'should contribute to #elements', () => {
 					focusTracker.add( view );
 
-					expect( focusTracker.elements ).to.deep.equal( [ view.element ] );
+					expect( focusTracker.elements ).toEqual( [ view.element ] );
 				} );
 
 				it( 'should throw if view#element is unavailable', () => {
@@ -235,8 +233,8 @@ describe( 'FocusTracker', () => {
 
 					rootFocusTracker = focusTracker;
 
-					isFocusedSpy = sinon.spy();
-					focusedElementSpy = sinon.spy();
+					isFocusedSpy = vi.fn();
+					focusedElementSpy = vi.fn();
 
 					rootFocusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => isFocusedSpy( isFocused ) );
 					rootFocusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
@@ -261,20 +259,37 @@ describe( 'FocusTracker', () => {
 
 					childViewA.children.first.focus();
 
-					expect( rootFocusTracker.isFocused ).to.be.true;
-					expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+					expect( rootFocusTracker.isFocused ).toBe( true );
+					expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 				} );
 
 				it( 'should be listed in #externalViews', () => {
 					rootFocusTracker.add( childViewA );
 
-					expect( rootFocusTracker.externalViews ).to.deep.equal( [ childViewA ] );
+					expect( rootFocusTracker.externalViews ).toEqual( [ childViewA ] );
 				} );
 
 				it( 'should contribute to #elements', () => {
 					rootFocusTracker.add( childViewA );
 
-					expect( rootFocusTracker.elements ).to.deep.equal( [ childViewA.element ] );
+					expect( rootFocusTracker.elements ).toEqual( [ childViewA.element ] );
+				} );
+
+				it( 'should allow adding a related view without #element', () => {
+					const detachedView = {
+						element: null,
+						focusTracker: new FocusTracker()
+					};
+
+					rootFocusTracker.add( detachedView );
+					detachedView.focusTracker.focusedElement = document.body;
+
+					expect( rootFocusTracker.externalViews ).toEqual( [ detachedView ] );
+					expect( rootFocusTracker.elements ).toEqual( [] );
+					expect( rootFocusTracker.isFocused ).toBe( false );
+					expect( rootFocusTracker.focusedElement ).toBeNull();
+
+					detachedView.focusTracker.destroy();
 				} );
 
 				describe( 'focus detection between linked focus trackers', () => {
@@ -291,11 +306,11 @@ describe( 'FocusTracker', () => {
 						rootFocusTracker.add( childViewA );
 
 						childViewA.children.get( 0 ).focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledOnce( focusedElementSpy );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'should set #focusedElement to a child view#element when multiple sub-child got focused in short order', () => {
@@ -312,11 +327,11 @@ describe( 'FocusTracker', () => {
 
 						childViewA.children.get( 0 ).focus();
 						childViewA.children.get( 1 ).focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledOnce( focusedElementSpy );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'should set #focusedElement the correct child view#element if two successive focuses ocurred in that view ' +
@@ -342,11 +357,11 @@ describe( 'FocusTracker', () => {
 
 						childViewB.focus();
 						childViewB.children.get( 0 ).focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledOnce( focusedElementSpy );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'should set #focusedElement to a child view#element when a logically connected sub-child was focused', () => {
@@ -368,11 +383,11 @@ describe( 'FocusTracker', () => {
 						childViewA.focusTracker.add( childViewB );
 
 						childViewB.children.get( 0 ).focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledOnce( focusedElementSpy );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'should set #focusedElement to a child view#element when multiple logically connected sub-children were ' +
@@ -403,11 +418,11 @@ describe( 'FocusTracker', () => {
 
 						childViewB.children.get( 0 ).focus();
 						childViewC.children.get( 0 ).focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledOnce( focusedElementSpy );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 1 );
 					} );
 				} );
 
@@ -425,17 +440,17 @@ describe( 'FocusTracker', () => {
 						rootFocusTracker.add( childViewA );
 
 						childViewA.children.get( 0 ).focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 						rootElement.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( rootElement );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( rootElement );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledTwice( focusedElementSpy );
-						sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
-						sinon.assert.calledWithExactly( focusedElementSpy.secondCall, rootElement );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 2 );
+						expect( focusedElementSpy ).toHaveBeenNthCalledWith( 1, childViewA.element );
+						expect( focusedElementSpy ).toHaveBeenNthCalledWith( 2, rootElement );
 					} );
 
 					it( 'should set #focusedElement to the view#element if focus moved from the sub-child to the child view', () => {
@@ -451,15 +466,15 @@ describe( 'FocusTracker', () => {
 						rootFocusTracker.add( childViewA );
 
 						childViewA.children.get( 0 ).focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 						childViewA.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledOnce( focusedElementSpy );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'should set #focusedElement to a view#element in a different DOM sub-tree when its child gets focused', () => {
@@ -481,17 +496,17 @@ describe( 'FocusTracker', () => {
 						rootFocusTracker.add( childViewB );
 
 						childViewA.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 						childViewB.children.first.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewB.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledTwice( focusedElementSpy );
-						sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
-						sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 2 );
+						expect( focusedElementSpy ).toHaveBeenNthCalledWith( 1, childViewA.element );
+						expect( focusedElementSpy ).toHaveBeenNthCalledWith( 2, childViewB.element );
 					} );
 
 					it( 'should set #focusedElement to a view#element in a different DOM sub-tree when it gets focused', () => {
@@ -513,17 +528,17 @@ describe( 'FocusTracker', () => {
 						rootFocusTracker.add( childViewB );
 
 						childViewA.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 						childViewB.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewB.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledTwice( focusedElementSpy );
-						sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
-						sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 2 );
+						expect( focusedElementSpy ).toHaveBeenNthCalledWith( 1, childViewA.element );
+						expect( focusedElementSpy ).toHaveBeenNthCalledWith( 2, childViewB.element );
 					} );
 
 					it( 'should preserve #focusedElement if a focused element in a sub-tree was removed', () => {
@@ -537,18 +552,18 @@ describe( 'FocusTracker', () => {
 						rootFocusTracker.add( childViewA );
 
 						childViewA.children.first.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledOnce( focusedElementSpy );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 1 );
 
 						childViewA.element.remove();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledOnce( focusedElementSpy );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'should avoid accidental blurs as the focus traverses multiple DOM sub-trees (1)', () => {
@@ -577,22 +592,22 @@ describe( 'FocusTracker', () => {
 						childViewB.focusTracker.add( childViewC );
 
 						childViewA.children.first.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 						childViewB.focus();
 						childViewC.children.last.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewB.element );
 
 						childViewB.children.last.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewB.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledTwice( focusedElementSpy );
-						sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
-						sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 2 );
+						expect( focusedElementSpy ).toHaveBeenNthCalledWith( 1, childViewA.element );
+						expect( focusedElementSpy ).toHaveBeenNthCalledWith( 2, childViewB.element );
 					} );
 
 					it( 'should avoid accidental blurs as the focus traverses multiple DOM sub-trees (2)', () => {
@@ -620,21 +635,21 @@ describe( 'FocusTracker', () => {
 						childViewB.focusTracker.add( childViewC );
 
 						childViewA.children.first.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 						childViewC.children.first.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewB.element );
 
 						childViewB.focus();
-						expect( rootFocusTracker.isFocused ).to.be.true;
-						expect( rootFocusTracker.focusedElement ).to.equal( childViewB.element );
+						expect( rootFocusTracker.isFocused ).toBe( true );
+						expect( rootFocusTracker.focusedElement ).toBe( childViewB.element );
 
-						sinon.assert.calledOnce( isFocusedSpy );
-						sinon.assert.calledTwice( focusedElementSpy );
-						sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
-						sinon.assert.calledWithExactly( focusedElementSpy.secondCall, childViewB.element );
+						expect( isFocusedSpy ).toHaveBeenCalledTimes( 1 );
+						expect( focusedElementSpy ).toHaveBeenCalledTimes( 2 );
+						expect( focusedElementSpy ).toHaveBeenNthCalledWith( 1, childViewA.element );
+						expect( focusedElementSpy ).toHaveBeenNthCalledWith( 2, childViewB.element );
 					} );
 				} );
 
@@ -662,17 +677,17 @@ describe( 'FocusTracker', () => {
 					rootFocusTracker.add( childViewB );
 
 					childViewA.children.first.focus();
-					expect( rootFocusTracker.isFocused ).to.be.true;
-					expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+					expect( rootFocusTracker.isFocused ).toBe( true );
+					expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 					childViewC.children.first.focus();
-					expect( rootFocusTracker.isFocused ).to.be.false;
-					expect( rootFocusTracker.focusedElement ).to.equal( null );
+					expect( rootFocusTracker.isFocused ).toBe( false );
+					expect( rootFocusTracker.focusedElement ).toBe( null );
 
-					sinon.assert.calledTwice( isFocusedSpy );
-					sinon.assert.calledTwice( focusedElementSpy );
-					sinon.assert.calledWithExactly( focusedElementSpy.firstCall, childViewA.element );
-					sinon.assert.calledWithExactly( focusedElementSpy.secondCall, null );
+					expect( isFocusedSpy ).toHaveBeenCalledTimes( 2 );
+					expect( focusedElementSpy ).toHaveBeenCalledTimes( 2 );
+					expect( focusedElementSpy ).toHaveBeenNthCalledWith( 1, childViewA.element );
+					expect( focusedElementSpy ).toHaveBeenNthCalledWith( 2, null );
 				} );
 			} );
 		} );
@@ -683,7 +698,7 @@ describe( 'FocusTracker', () => {
 			it( 'should do nothing when element was not added', () => {
 				expect( () => {
 					focusTracker.remove( container );
-				} ).to.not.throw();
+				} ).not.toThrow();
 			} );
 
 			it( 'should stop listening on element focus', () => {
@@ -692,8 +707,8 @@ describe( 'FocusTracker', () => {
 
 				containerFirstInput.dispatchEvent( new Event( 'focus' ) );
 
-				expect( focusTracker.isFocused ).to.be.false;
-				expect( focusTracker.focusedElement ).to.be.null;
+				expect( focusTracker.isFocused ).toBe( false );
+				expect( focusTracker.focusedElement ).toBeNull();
 			} );
 
 			it( 'should stop listening on element blur', () => {
@@ -702,23 +717,23 @@ describe( 'FocusTracker', () => {
 				focusTracker.isFocused = true;
 
 				containerFirstInput.dispatchEvent( new Event( 'blur' ) );
-				testUtils.sinon.clock.tick( 0 );
+				vi.advanceTimersByTime( 0 );
 
-				expect( focusTracker.isFocused ).to.be.true;
+				expect( focusTracker.isFocused ).toBe( true );
 			} );
 
 			it( 'should blur element before removing when is focused', () => {
 				focusTracker.add( containerFirstInput );
 				containerFirstInput.dispatchEvent( new Event( 'focus' ) );
-				expect( focusTracker.focusedElement ).to.equal( containerFirstInput );
+				expect( focusTracker.focusedElement ).toBe( containerFirstInput );
 
-				expect( focusTracker.isFocused ).to.be.true;
+				expect( focusTracker.isFocused ).toBe( true );
 
 				focusTracker.remove( containerFirstInput );
-				testUtils.sinon.clock.tick( 0 );
+				vi.advanceTimersByTime( 0 );
 
-				expect( focusTracker.isFocused ).to.be.false;
-				expect( focusTracker.focusedElement ).to.be.null;
+				expect( focusTracker.isFocused ).toBe( false );
+				expect( focusTracker.focusedElement ).toBeNull();
 			} );
 		} );
 
@@ -751,36 +766,36 @@ describe( 'FocusTracker', () => {
 
 					viewA.focus();
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( viewA.element );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( viewA.element );
 
 					viewB.focus();
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( viewB.element );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( viewB.element );
 
 					focusTracker.remove( viewA );
-					testUtils.sinon.clock.tick( 10 );
+					vi.advanceTimersByTime( 10 );
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( viewB.element );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( viewB.element );
 
 					viewA.focus();
 
-					expect( focusTracker.isFocused ).to.be.false;
-					expect( focusTracker.focusedElement ).to.equal( null );
+					expect( focusTracker.isFocused ).toBe( false );
+					expect( focusTracker.focusedElement ).toBe( null );
 				} );
 
 				it( 'should remove view#element from #elements', () => {
 					focusTracker.add( viewA );
 					focusTracker.add( viewB );
 
-					expect( focusTracker.elements ).to.have.ordered.members( [ viewA.element, viewB.element ] );
+					expect( focusTracker.elements ).toEqual( [ viewA.element, viewB.element ] );
 
 					focusTracker.remove( viewA );
-					testUtils.sinon.clock.tick( 10 );
+					vi.advanceTimersByTime( 10 );
 
-					expect( focusTracker.elements ).to.deep.equal( [ viewB.element ] );
+					expect( focusTracker.elements ).toEqual( [ viewB.element ] );
 				} );
 
 				it( 'should update state upon removing view#element if focused', () => {
@@ -788,14 +803,14 @@ describe( 'FocusTracker', () => {
 
 					viewA.focus();
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( viewA.element );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( viewA.element );
 
 					focusTracker.remove( viewA );
-					testUtils.sinon.clock.tick( 10 );
+					vi.advanceTimersByTime( 10 );
 
-					expect( focusTracker.isFocused ).to.be.false;
-					expect( focusTracker.focusedElement ).to.equal( null );
+					expect( focusTracker.isFocused ).toBe( false );
+					expect( focusTracker.focusedElement ).toBe( null );
 				} );
 			} );
 
@@ -834,44 +849,59 @@ describe( 'FocusTracker', () => {
 
 					childViewA.focus();
 
-					expect( rootFocusTracker.isFocused ).to.be.true;
-					expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+					expect( rootFocusTracker.isFocused ).toBe( true );
+					expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 					childViewB.focus();
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( childViewB.element );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( childViewB.element );
 
 					focusTracker.remove( childViewA );
-					testUtils.sinon.clock.tick( 10 );
+					vi.advanceTimersByTime( 10 );
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( childViewB.element );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( childViewB.element );
 
 					childViewA.focus();
 
-					expect( focusTracker.isFocused ).to.be.false;
-					expect( focusTracker.focusedElement ).to.be.null;
+					expect( focusTracker.isFocused ).toBe( false );
+					expect( focusTracker.focusedElement ).toBeNull();
 				} );
 
 				it( 'should remove view from #externalViews', () => {
 					focusTracker.add( childViewA );
 
-					expect( focusTracker.externalViews ).to.deep.equal( [ childViewA ] );
+					expect( focusTracker.externalViews ).toEqual( [ childViewA ] );
 
 					focusTracker.remove( childViewA );
 
-					expect( focusTracker.externalViews ).to.deep.equal( [] );
+					expect( focusTracker.externalViews ).toEqual( [] );
+				} );
+
+				it( 'should remove a related view without #element', () => {
+					const detachedView = {
+						element: null,
+						focusTracker: new FocusTracker()
+					};
+
+					focusTracker.add( detachedView );
+					focusTracker.remove( detachedView );
+
+					expect( focusTracker.externalViews ).toEqual( [] );
+					expect( focusTracker.elements ).toEqual( [] );
+
+					detachedView.focusTracker.destroy();
 				} );
 
 				it( 'should remove view#element from #elements', () => {
 					focusTracker.add( childViewA );
 
-					expect( focusTracker.elements ).to.deep.equal( [ childViewA.element ] );
+					expect( focusTracker.elements ).toEqual( [ childViewA.element ] );
 
 					focusTracker.remove( childViewA );
 
-					expect( focusTracker.elements ).to.deep.equal( [] );
+					expect( focusTracker.elements ).toEqual( [] );
 				} );
 
 				it( 'should update the focus tracker\'s state upon removing view#element (if view#element was focused)', () => {
@@ -883,14 +913,14 @@ describe( 'FocusTracker', () => {
 
 					childViewA.focus();
 
-					expect( rootFocusTracker.isFocused ).to.be.true;
-					expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+					expect( rootFocusTracker.isFocused ).toBe( true );
+					expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 					focusTracker.remove( childViewA );
-					testUtils.sinon.clock.tick( 10 );
+					vi.advanceTimersByTime( 10 );
 
-					expect( focusTracker.isFocused ).to.be.false;
-					expect( focusTracker.focusedElement ).to.be.null;
+					expect( focusTracker.isFocused ).toBe( false );
+					expect( focusTracker.focusedElement ).toBeNull();
 				} );
 
 				it( 'should not blur the focus tracker if another focus tracker is focused', () => {
@@ -902,19 +932,19 @@ describe( 'FocusTracker', () => {
 
 					childViewA.focus();
 
-					expect( rootFocusTracker.isFocused ).to.be.true;
-					expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+					expect( rootFocusTracker.isFocused ).toBe( true );
+					expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 					childViewB.focus();
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( childViewB.element );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( childViewB.element );
 
 					focusTracker.remove( childViewA );
-					testUtils.sinon.clock.tick( 10 );
+					vi.advanceTimersByTime( 10 );
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( childViewB.element );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( childViewB.element );
 				} );
 
 				it( 'should not blur the focus tracker if another DOM element is focused', () => {
@@ -928,19 +958,19 @@ describe( 'FocusTracker', () => {
 
 					childViewA.focus();
 
-					expect( rootFocusTracker.isFocused ).to.be.true;
-					expect( rootFocusTracker.focusedElement ).to.equal( childViewA.element );
+					expect( rootFocusTracker.isFocused ).toBe( true );
+					expect( rootFocusTracker.focusedElement ).toBe( childViewA.element );
 
 					focusableDomElement.focus();
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( focusableDomElement );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( focusableDomElement );
 
 					focusTracker.remove( childViewA );
-					testUtils.sinon.clock.tick( 10 );
+					vi.advanceTimersByTime( 10 );
 
-					expect( focusTracker.isFocused ).to.be.true;
-					expect( focusTracker.focusedElement ).to.equal( focusableDomElement );
+					expect( focusTracker.isFocused ).toBe( true );
+					expect( focusTracker.focusedElement ).toBe( focusableDomElement );
 
 					focusableDomElement.remove();
 				} );
@@ -950,36 +980,36 @@ describe( 'FocusTracker', () => {
 
 	describe( '#elements', () => {
 		it( 'should return an array with elements currently added to the focus tracker', () => {
-			expect( focusTracker.elements ).to.deep.equal( [] );
+			expect( focusTracker.elements ).toEqual( [] );
 
 			const elementA = document.createElement( 'div' );
 			focusTracker.add( elementA );
 
-			expect( focusTracker.elements ).to.deep.equal( [ elementA ] );
+			expect( focusTracker.elements ).toEqual( [ elementA ] );
 
 			const elementB = document.createElement( 'div' );
 			focusTracker.add( elementB );
 
-			expect( focusTracker.elements ).to.deep.equal( [ elementA, elementB ] );
+			expect( focusTracker.elements ).toEqual( [ elementA, elementB ] );
 
 			focusTracker.remove( elementA );
 
-			expect( focusTracker.elements ).to.deep.equal( [ elementB ] );
+			expect( focusTracker.elements ).toEqual( [ elementB ] );
 
 			focusTracker.remove( elementB );
 
-			expect( focusTracker.elements ).to.deep.equal( [] );
+			expect( focusTracker.elements ).toEqual( [] );
 		} );
 
 		it( 'changing returned value should not have an effect on focus tracker', () => {
 			const elements = focusTracker.elements;
 
-			expect( focusTracker.elements ).to.deep.equal( [] );
+			expect( focusTracker.elements ).toEqual( [] );
 
 			const elementA = document.createElement( 'div' );
 			elements.push( elementA );
 
-			expect( focusTracker.elements ).to.deep.equal( [] );
+			expect( focusTracker.elements ).toEqual( [] );
 		} );
 	} );
 
@@ -991,18 +1021,18 @@ describe( 'FocusTracker', () => {
 			focusTracker.add( viewA );
 			focusTracker.add( viewB );
 
-			expect( focusTracker.externalViews ).to.be.instanceOf( Array );
-			expect( focusTracker.externalViews ).to.have.ordered.members( [ viewA, viewB ] );
+			expect( focusTracker.externalViews ).toBeInstanceOf( Array );
+			expect( focusTracker.externalViews ).toEqual( [ viewA, viewB ] );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should stop listening', () => {
-			const stopListeningSpy = sinon.spy( focusTracker, 'stopListening' );
+			const stopListeningSpy = vi.spyOn( focusTracker, 'stopListening' );
 
 			focusTracker.destroy();
 
-			sinon.assert.calledOnce( stopListeningSpy );
+			expect( stopListeningSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
@@ -1023,7 +1053,7 @@ describe( 'FocusTracker', () => {
 
 		focus() {
 			this.element.focus();
-			sinon.clock.tick( 10 );
+			vi.advanceTimersByTime( 10 );
 		}
 	}
 

@@ -167,6 +167,7 @@ export class CharacterGridView extends View<HTMLDivElement> {
 		super.destroy();
 
 		this.keystrokes.destroy();
+		this.focusTracker.destroy();
 	}
 
 	/**

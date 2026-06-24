@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ListEditing } from '../../../src/list/listediting.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ImageBlockEditing } from '@ckeditor/ckeditor5-image';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
@@ -17,7 +18,9 @@ import { stubUid } from '../_utils/uid.js';
 describe( 'ListEditing integrations: markers', () => {
 	let element, editor, model, root;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -55,8 +58,8 @@ describe( 'ListEditing integrations: markers', () => {
 	function checkMarker( range ) {
 		const marker = model.markers.get( 'foo:bar' );
 
-		expect( marker ).to.not.be.null;
-		expect( marker.getRange().isEqual( range ) ).to.be.true;
+		expect( marker ).not.toBeNull();
+		expect( marker.getRange().isEqual( range ) ).toBe( true );
 	}
 
 	describe( 'list item with a single paragraph', () => {
@@ -76,7 +79,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A<foo-end name="bar"></foo-end></p>' +
@@ -87,7 +90,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 
 		it( 'marker beginning before an empty paragraph and ending inside', () => {
@@ -102,7 +105,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar"><foo-end name="bar"></foo-end>&nbsp;</p>' +
@@ -113,7 +116,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 
 		it( 'marker beginning before a paragraph and ending after it', () => {
@@ -123,7 +126,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<p data-foo-end-after="bar" data-foo-start-before="bar">A</p>' +
@@ -134,7 +137,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 
 		it( 'marker inside a paragraph', () => {
@@ -144,7 +147,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<foo-start name="bar"></foo-start>A<foo-end name="bar"></foo-end>' +
@@ -155,7 +158,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 
 		it( 'marker inside an empty paragraph', () => {
@@ -167,7 +170,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<foo-start name="bar"></foo-start><foo-end name="bar"></foo-end>&nbsp;' +
@@ -178,7 +181,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 	} );
 
@@ -200,7 +203,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A<foo-end name="bar"></foo-end></p>' +
@@ -212,7 +215,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 
 		it( 'marker beginning before a paragraph and ending inside the next paragraph', () => {
@@ -225,7 +228,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A</p>' +
@@ -237,7 +240,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 
 		it( 'marker beginning before an empty paragraph and ending inside the next paragraph', () => {
@@ -255,7 +258,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">&nbsp;</p>' +
@@ -267,7 +270,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 
 		it( 'marker beginning before a paragraph and ending after the next paragraph', () => {
@@ -277,7 +280,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A</p>' +
@@ -289,7 +292,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 
 		it( 'marker starting in a paragraph and ending in next paragraph', () => {
@@ -302,7 +305,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<p>A<foo-start name="bar"></foo-start></p>' +
@@ -314,7 +317,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 
 		it( 'marker starting in a empty paragraph and ending in next empty paragraph', () => {
@@ -332,7 +335,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			const data = editor.getData();
 
-			expect( data ).to.equal(
+			expect( data ).toEqual(
 				'<ul>' +
 					'<li data-list-item-id="a">' +
 						'<p><foo-start name="bar"></foo-start>&nbsp;</p>' +
@@ -344,7 +347,7 @@ describe( 'ListEditing integrations: markers', () => {
 			editor.setData( data );
 
 			checkMarker( range );
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 	} );
 } );

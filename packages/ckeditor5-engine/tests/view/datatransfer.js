@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi } from 'vitest';
 import { ViewDataTransfer } from '../../src/view/datatransfer.js';
 
 describe( 'DataTransfer', () => {
@@ -16,7 +17,7 @@ describe( 'DataTransfer', () => {
 				}
 			} );
 
-			expect( dt.files ).to.deep.equal( [ 'file1', 'file2' ] );
+			expect( dt.files ).toEqual( [ 'file1', 'file2' ] );
 		} );
 
 		it( 'should create files from the native items', () => {
@@ -30,7 +31,7 @@ describe( 'DataTransfer', () => {
 				files: []
 			} );
 
-			expect( dt.files ).to.deep.equal( [ 'file1', 'file2' ] );
+			expect( dt.files ).toEqual( [ 'file1', 'file2' ] );
 		} );
 
 		it( 'should evaluate files property exactly once', () => {
@@ -43,14 +44,14 @@ describe( 'DataTransfer', () => {
 				}
 			};
 
-			const spy = sinon.spy( nativeDataTransfer, 'files', [ 'get' ] );
+			const spy = vi.spyOn( nativeDataTransfer, 'files', 'get' );
 
 			const dt = new ViewDataTransfer( nativeDataTransfer );
 
-			expect( dt.files ).to.deep.equal( [ 'file1' ] );
-			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+			expect( dt.files ).toEqual( [ 'file1' ] );
+			expect( dt.files ).toEqual( [ 'file1' ] );
 
-			expect( spy.get.calledOnce ).to.be.true;
+			expect( spy.mock.calls.length === 1 ).toBe( true );
 		} );
 
 		it( 'should evaluate items property exactly once', () => {
@@ -63,14 +64,14 @@ describe( 'DataTransfer', () => {
 				}
 			};
 
-			const spy = sinon.spy( nativeDataTransfer, 'items', [ 'get' ] );
+			const spy = vi.spyOn( nativeDataTransfer, 'items', 'get' );
 
 			const dt = new ViewDataTransfer( nativeDataTransfer );
 
-			expect( dt.files ).to.deep.equal( [ 'file1' ] );
-			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+			expect( dt.files ).toEqual( [ 'file1' ] );
+			expect( dt.files ).toEqual( [ 'file1' ] );
 
-			expect( spy.get.calledOnce ).to.be.true;
+			expect( spy.mock.calls.length === 1 ).toBe( true );
 		} );
 
 		it( 'should cache files if cacheFiles option is set', () => {
@@ -83,17 +84,17 @@ describe( 'DataTransfer', () => {
 				}
 			};
 
-			const spy = sinon.spy( nativeDataTransfer, 'files', [ 'get' ] );
+			const spy = vi.spyOn( nativeDataTransfer, 'files', 'get' );
 
 			const dt = new ViewDataTransfer( nativeDataTransfer, { cacheFiles: true } );
 
-			expect( spy.get.calledOnce ).to.be.true;
-			expect( dt._files ).to.deep.equal( [ 'file1' ] );
+			expect( spy.mock.calls.length === 1 ).toBe( true );
+			expect( dt._files ).toEqual( [ 'file1' ] );
 
 			// Access getter.
-			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+			expect( dt.files ).toEqual( [ 'file1' ] );
 
-			expect( spy.get.calledOnce ).to.be.true;
+			expect( spy.mock.calls.length === 1 ).toBe( true );
 		} );
 
 		it( 'should not cache files if cacheFiles option is not set', () => {
@@ -106,17 +107,17 @@ describe( 'DataTransfer', () => {
 				}
 			};
 
-			const spy = sinon.spy( nativeDataTransfer, 'files', [ 'get' ] );
+			const spy = vi.spyOn( nativeDataTransfer, 'files', 'get' );
 
 			const dt = new ViewDataTransfer( nativeDataTransfer );
 
-			expect( spy.get.calledOnce ).to.be.false;
-			expect( dt._files ).to.be.null;
+			expect( spy.mock.calls.length === 1 ).toBe( false );
+			expect( dt._files ).toBeNull();
 
 			// Access getter.
-			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+			expect( dt.files ).toEqual( [ 'file1' ] );
 
-			expect( spy.get.calledOnce ).to.be.true;
+			expect( spy.mock.calls.length === 1 ).toBe( true );
 		} );
 
 		it( 'should cache files (from items) if cacheFiles option is set', () => {
@@ -129,17 +130,17 @@ describe( 'DataTransfer', () => {
 				}
 			};
 
-			const spy = sinon.spy( nativeDataTransfer, 'items', [ 'get' ] );
+			const spy = vi.spyOn( nativeDataTransfer, 'items', 'get' );
 
 			const dt = new ViewDataTransfer( nativeDataTransfer, { cacheFiles: true } );
 
-			expect( spy.get.calledOnce ).to.be.true;
-			expect( dt._files ).to.deep.equal( [ 'file1' ] );
+			expect( spy.mock.calls.length === 1 ).toBe( true );
+			expect( dt._files ).toEqual( [ 'file1' ] );
 
 			// Access getter.
-			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+			expect( dt.files ).toEqual( [ 'file1' ] );
 
-			expect( spy.get.calledOnce ).to.be.true;
+			expect( spy.mock.calls.length === 1 ).toBe( true );
 		} );
 
 		it( 'should not cache files (from items) if cacheFiles option is not set', () => {
@@ -152,17 +153,17 @@ describe( 'DataTransfer', () => {
 				}
 			};
 
-			const spy = sinon.spy( nativeDataTransfer, 'items', [ 'get' ] );
+			const spy = vi.spyOn( nativeDataTransfer, 'items', 'get' );
 
 			const dt = new ViewDataTransfer( nativeDataTransfer );
 
-			expect( spy.get.calledOnce ).to.be.false;
-			expect( dt._files ).to.be.null;
+			expect( spy.mock.calls.length === 1 ).toBe( false );
+			expect( dt._files ).toBeNull();
 
 			// Access getter.
-			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+			expect( dt.files ).toEqual( [ 'file1' ] );
 
-			expect( spy.get.calledOnce ).to.be.true;
+			expect( spy.mock.calls.length === 1 ).toBe( true );
 		} );
 	} );
 
@@ -174,20 +175,20 @@ describe( 'DataTransfer', () => {
 				}
 			} );
 
-			expect( dt.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
+			expect( dt.getData( 'x/y' ) ).toBe( 'foo:x/y' );
 		} );
 	} );
 
 	describe( 'setData()', () => {
 		it( 'should set data in the native data transfer', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const dt = new ViewDataTransfer( {
 				setData: spy
 			} );
 
 			dt.setData( 'text/html', 'bar' );
 
-			expect( spy.calledWithExactly( 'text/html', 'bar' ) ).to.be.true;
+			expect( spy ).toHaveBeenCalledWith( 'text/html', 'bar' );
 		} );
 	} );
 
@@ -197,7 +198,7 @@ describe( 'DataTransfer', () => {
 				types: [ 'text/html', 'text/plain' ]
 			} );
 
-			expect( dt.types ).to.deep.equal( [ 'text/html', 'text/plain' ] );
+			expect( dt.types ).toEqual( [ 'text/html', 'text/plain' ] );
 		} );
 	} );
 
@@ -207,11 +208,11 @@ describe( 'DataTransfer', () => {
 				effectAllowed: 'foo'
 			} );
 
-			expect( dt.effectAllowed ).to.equal( 'foo' );
+			expect( dt.effectAllowed ).toBe( 'foo' );
 		} );
 
 		it( 'should set value in the native data transfer', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const dt = new ViewDataTransfer( {
 				set effectAllowed( value ) {
 					spy( value );
@@ -220,7 +221,7 @@ describe( 'DataTransfer', () => {
 
 			dt.effectAllowed = 'bar';
 
-			expect( spy.calledWithExactly( 'bar' ) ).to.be.true;
+			expect( spy ).toHaveBeenCalledWith( 'bar' );
 		} );
 	} );
 
@@ -230,11 +231,11 @@ describe( 'DataTransfer', () => {
 				dropEffect: 'foo'
 			} );
 
-			expect( dt.dropEffect ).to.equal( 'foo' );
+			expect( dt.dropEffect ).toBe( 'foo' );
 		} );
 
 		it( 'should set value in the native data transfer', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const dt = new ViewDataTransfer( {
 				set dropEffect( value ) {
 					spy( value );
@@ -243,13 +244,13 @@ describe( 'DataTransfer', () => {
 
 			dt.dropEffect = 'bar';
 
-			expect( spy.calledWithExactly( 'bar' ) ).to.be.true;
+			expect( spy ).toHaveBeenCalledWith( 'bar' );
 		} );
 	} );
 
 	describe( '#setDragImage()', () => {
 		it( 'should call the native data transfer', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const dt = new ViewDataTransfer( {
 				setDragImage( element, x, y ) {
 					spy( element, x, y );
@@ -258,7 +259,7 @@ describe( 'DataTransfer', () => {
 
 			dt.setDragImage( 'foo', 123, 789 );
 
-			expect( spy.calledWithExactly( 'foo', 123, 789 ) ).to.be.true;
+			expect( spy ).toHaveBeenCalledWith( 'foo', 123, 789 );
 		} );
 	} );
 
@@ -269,7 +270,7 @@ describe( 'DataTransfer', () => {
 				mozUserCancelled: false
 			} );
 
-			expect( dt.isCanceled ).to.be.true;
+			expect( dt.isCanceled ).toBe( true );
 		} );
 
 		it( 'should return true if native data transfer dropEffect is equal "none" and mozUserCancelled is set', () => {
@@ -278,7 +279,7 @@ describe( 'DataTransfer', () => {
 				mozUserCancelled: true
 			} );
 
-			expect( dt.isCanceled ).to.be.true;
+			expect( dt.isCanceled ).toBe( true );
 		} );
 
 		it( 'should return false if native data transfer dropEffect is equal "move" and mozUserCancelled is not set', () => {
@@ -287,7 +288,7 @@ describe( 'DataTransfer', () => {
 				mozUserCancelled: false
 			} );
 
-			expect( dt.isCanceled ).to.be.false;
+			expect( dt.isCanceled ).toBe( false );
 		} );
 
 		it( 'should return false if native data transfer dropEffect is equal "move" and mozUserCancelled is set', () => {
@@ -296,7 +297,7 @@ describe( 'DataTransfer', () => {
 				mozUserCancelled: true
 			} );
 
-			expect( dt.isCanceled ).to.be.true;
+			expect( dt.isCanceled ).toBe( true );
 		} );
 	} );
 } );

@@ -7,7 +7,7 @@
  * @module table/tablelayout
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { TableLayoutUI } from './tablelayout/tablelayoutui.js';
 
 import { TableLayoutEditing } from './tablelayout/tablelayoutediting.js';
@@ -36,7 +36,7 @@ export class TableLayout extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ TableColumnResize, TableLayoutEditing, TableLayoutUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ TableColumnResize, TableLayoutEditing, TableLayoutUI ]> {
+		return [ TableColumnResize, TableLayoutEditing, TableLayoutUI ];
 	}
 }

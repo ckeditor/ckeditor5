@@ -25,13 +25,16 @@ import {
 import { modelList } from '../_utils/utils.js';
 import { stubUid } from '../_utils/uid.js';
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { Model, _stringifyModel, _parseModel } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'List - utils - model', () => {
 	let model, schema, attributeNames;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		model = new Model();

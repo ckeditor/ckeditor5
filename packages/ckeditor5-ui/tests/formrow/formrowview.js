@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { FormRowView } from '../../src/formrow/formrowview.js';
 import { View } from '../../src/view.js';
 import { ViewCollection } from '../../src/viewcollection.js';
@@ -22,21 +23,21 @@ describe( 'FormRowView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should set view#locale', () => {
-			expect( view.locale ).to.equal( locale );
+			expect( view.locale ).toBe( locale );
 		} );
 
 		it( 'should create view#children collection', () => {
-			expect( view.children ).to.be.instanceOf( ViewCollection );
-			expect( view.children ).to.have.length( 0 );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
+			expect( view.children ).toHaveLength( 0 );
 		} );
 
 		it( 'should set view#class', () => {
-			expect( view.class ).to.deep.equal( [ 'ck', 'ck-form__row' ] );
+			expect( view.class ).toEqual( [ 'ck', 'ck-form__row' ] );
 		} );
 
 		it( 'should set the template', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-form__row' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-form__row' ) ).toBe( true );
 		} );
 
 		describe( 'options', () => {
@@ -45,7 +46,7 @@ describe( 'FormRowView', () => {
 					class: 'foo'
 				} );
 
-				expect( view.class ).to.deep.equal( [ 'ck', 'ck-form__row', 'foo' ] );
+				expect( view.class ).toEqual( [ 'ck', 'ck-form__row', 'foo' ] );
 
 				view.destroy();
 			} );
@@ -58,7 +59,7 @@ describe( 'FormRowView', () => {
 					]
 				} );
 
-				expect( view.class ).to.deep.equal( [ 'ck', 'ck-form__row', 'foo', 'bar' ] );
+				expect( view.class ).toEqual( [ 'ck', 'ck-form__row', 'foo', 'bar' ] );
 
 				view.destroy();
 			} );
@@ -70,7 +71,7 @@ describe( 'FormRowView', () => {
 					]
 				} );
 
-				expect( view.children ).to.have.length( 1 );
+				expect( view.children ).toHaveLength( 1 );
 
 				view.destroy();
 			} );
@@ -85,8 +86,8 @@ describe( 'FormRowView', () => {
 
 				view.render();
 
-				expect( view.element.getAttribute( 'role' ) ).to.equal( 'group' );
-				expect( view.element.getAttribute( 'aria-labelledby' ) ).to.equal( '123' );
+				expect( view.element.getAttribute( 'role' ) ).toBe( 'group' );
+				expect( view.element.getAttribute( 'aria-labelledby' ) ).toBe( '123' );
 
 				view.destroy();
 			} );
@@ -94,16 +95,16 @@ describe( 'FormRowView', () => {
 
 		describe( 'template bindings', () => {
 			it( 'should bind #class to the template', () => {
-				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
-				expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-form__row' ) ).to.be.true;
+				expect( view.element.classList.contains( 'foo' ) ).toBe( false );
+				expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-form__row' ) ).toBe( true );
 
 				view.class = [ 'foo', 'bar' ];
 
-				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
-				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck' ) ).to.be.false;
-				expect( view.element.classList.contains( 'ck-form__row' ) ).to.be.false;
+				expect( view.element.classList.contains( 'foo' ) ).toBe( true );
+				expect( view.element.classList.contains( 'bar' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck' ) ).toBe( false );
+				expect( view.element.classList.contains( 'ck-form__row' ) ).toBe( false );
 			} );
 
 			it( 'should bind #children to the template', () => {
@@ -112,7 +113,7 @@ describe( 'FormRowView', () => {
 
 				view.children.add( child );
 
-				expect( view.element.firstChild ).to.equal( child.element );
+				expect( view.element.firstChild ).toBe( child.element );
 
 				view.destroy();
 			} );

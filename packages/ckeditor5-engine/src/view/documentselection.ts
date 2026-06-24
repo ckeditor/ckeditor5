@@ -16,7 +16,7 @@ import {
 	type ViewSelectionChangeEvent
 } from './selection.js';
 
-import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { EmitterMixin, type EmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewEditableElement } from './editableelement.js';
 import { type ViewElement } from './element.js';
@@ -24,6 +24,8 @@ import { type ViewNode } from './node.js';
 import { type ViewItem } from './item.js';
 import type { ViewPosition, ViewPositionOffset } from './position.js';
 import { type ViewRange } from './range.js';
+
+const ViewDocumentSelectionBase: EmitterMixinConstructor<typeof ViewTypeCheckable> = /* #__PURE__ */ EmitterMixin( ViewTypeCheckable );
 
 /**
  * Class representing the document selection in the view.
@@ -35,7 +37,7 @@ import { type ViewRange } from './range.js';
  * the {@link module:engine/view/view~EditingView#change `View#change()`} block
  * (so via {@link module:engine/view/downcastwriter~ViewDowncastWriter#setSelection `ViewDowncastWriter#setSelection()`}).
  */
-export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) {
+export class ViewDocumentSelection extends ViewDocumentSelectionBase {
 	/**
 	 * Selection is used internally (`ViewDocumentSelection` is a proxy to that selection).
 	 */

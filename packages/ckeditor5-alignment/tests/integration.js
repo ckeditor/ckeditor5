@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { Alignment } from '../src/alignment.js';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -40,26 +42,26 @@ describe( 'Alignment integration', () => {
 
 	describe( 'compatibility with images', () => {
 		it( 'does not work inside image caption', () => {
-			_setModelData( model, '<imageBlock src="/assets/sample.png"><caption>Foo[]</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock src="/sample.png"><caption>Foo[]</caption></imageBlock>' );
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( _getModelData( model ) ).to.equal( '<imageBlock src="/assets/sample.png"><caption>Foo[]</caption></imageBlock>' );
+			expect( _getModelData( model ) ).toBe( '<imageBlock src="/sample.png"><caption>Foo[]</caption></imageBlock>' );
 		} );
 
 		it( 'does not work inside image caption when selection overlaps image', () => {
 			_setModelData(
 				model,
 				'<paragraph>foo[foo</paragraph>' +
-				'<imageBlock src="/assets/sample.png"><caption>bar</caption></imageBlock>' +
+				'<imageBlock src="/sample.png"><caption>bar</caption></imageBlock>' +
 				'<paragraph>baz]baz</paragraph>'
 			);
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph alignment="center">foo[foo</paragraph>' +
-				'<imageBlock src="/assets/sample.png"><caption>bar</caption></imageBlock>' +
+				'<imageBlock src="/sample.png"><caption>bar</caption></imageBlock>' +
 				'<paragraph alignment="center">baz]baz</paragraph>'
 			);
 		} );
@@ -71,7 +73,7 @@ describe( 'Alignment integration', () => {
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph alignment="center">Foo[]</paragraph></blockQuote>' );
+			expect( _getModelData( model ) ).toBe( '<blockQuote><paragraph alignment="center">Foo[]</paragraph></blockQuote>' );
 		} );
 
 		it( 'does work inside blockQuote on heading', () => {
@@ -79,7 +81,7 @@ describe( 'Alignment integration', () => {
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( _getModelData( model ) ).to.equal( '<blockQuote><heading1 alignment="center">Foo[]</heading1></blockQuote>' );
+			expect( _getModelData( model ) ).toBe( '<blockQuote><heading1 alignment="center">Foo[]</heading1></blockQuote>' );
 		} );
 
 		it( 'does work inside blockQuote on list item', () => {
@@ -90,7 +92,7 @@ describe( 'Alignment integration', () => {
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<blockQuote><paragraph alignment="center" listIndent="0" listItemId="a" listType="numbered">Foo[]</paragraph></blockQuote>'
 			);
 		} );
@@ -136,8 +138,8 @@ describe( 'Alignment integration', () => {
 
 			// As we do not allow for the `alignment` attribute for the `div` element, we expect
 			// that the `customAlignment` property will be set.
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<div customAlignment="right">foo</div>' );
-			expect( editor.getData() ).to.equal( '<div style="text-align:right;">foo</div>' );
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe( '<div customAlignment="right">foo</div>' );
+			expect( editor.getData() ).toBe( '<div style="text-align:right;">foo</div>' );
 		} );
 	} );
 } );

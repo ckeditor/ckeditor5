@@ -76,10 +76,17 @@
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
-    "@ckeditor/ckeditor5-utils": "workspace:*"
+    "@ckeditor/ckeditor5-utils": "workspace:*",
+    "@vitest/browser-playwright": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.8",
+    "vitest": "^4.1.8"
   },
   "scripts": {
-    "build": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs",
+    "coverage": "pnpm run test:headless --coverage",
+    "test": "vitest run",
+    "test:debug": "vitest",
+    "test:headless": "vitest run --browser.headless"
   },
   "files": [
     "dist",

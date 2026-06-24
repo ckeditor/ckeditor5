@@ -7,7 +7,7 @@
  * @module basic-styles/bold
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { BoldEditing } from './bold/boldediting.js';
 import { BoldUI } from './bold/boldui.js';
 
@@ -24,8 +24,8 @@ export class Bold extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ BoldEditing, BoldUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ BoldEditing, BoldUI ]> {
+		return [ BoldEditing, BoldUI ];
 	}
 
 	/**

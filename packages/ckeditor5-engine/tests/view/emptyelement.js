@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ViewEmptyElement } from '../../src/view/emptyelement.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
@@ -27,38 +28,38 @@ describe( 'ViewEmptyElement', () => {
 	describe( 'is()', () => {
 		let el;
 
-		before( () => {
+		beforeEach( () => {
 			el = new ViewEmptyElement( document, 'p' );
 		} );
 
 		it( 'should return true for emptyElement/element, also with correct name and element name', () => {
-			expect( el.is( 'emptyElement' ) ).to.be.true;
-			expect( el.is( 'view:emptyElement' ) ).to.be.true;
-			expect( el.is( 'emptyElement', 'p' ) ).to.be.true;
-			expect( el.is( 'view:emptyElement', 'p' ) ).to.be.true;
-			expect( el.is( 'element' ) ).to.be.true;
-			expect( el.is( 'view:element' ) ).to.be.true;
-			expect( el.is( 'element', 'p' ) ).to.be.true;
-			expect( el.is( 'view:element', 'p' ) ).to.be.true;
+			expect( el.is( 'emptyElement' ) ).toBe( true );
+			expect( el.is( 'view:emptyElement' ) ).toBe( true );
+			expect( el.is( 'emptyElement', 'p' ) ).toBe( true );
+			expect( el.is( 'view:emptyElement', 'p' ) ).toBe( true );
+			expect( el.is( 'element' ) ).toBe( true );
+			expect( el.is( 'view:element' ) ).toBe( true );
+			expect( el.is( 'element', 'p' ) ).toBe( true );
+			expect( el.is( 'view:element', 'p' ) ).toBe( true );
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( el.is( 'emptyElement', 'span' ) ).to.be.false;
-			expect( el.is( 'view:emptyElement', 'span' ) ).to.be.false;
-			expect( el.is( 'element', 'span' ) ).to.be.false;
-			expect( el.is( 'view:element', 'span' ) ).to.be.false;
-			expect( el.is( 'element', 'span' ) ).to.be.false;
-			expect( el.is( 'view:span' ) ).to.be.false;
-			expect( el.is( '$text' ) ).to.be.false;
-			expect( el.is( 'view:$text' ) ).to.be.false;
-			expect( el.is( '$textProxy' ) ).to.be.false;
-			expect( el.is( 'containerElement' ) ).to.be.false;
-			expect( el.is( 'attributeElement' ) ).to.be.false;
-			expect( el.is( 'uiElement' ) ).to.be.false;
-			expect( el.is( 'rootElement' ) ).to.be.false;
-			expect( el.is( 'documentFragment' ) ).to.be.false;
-			expect( el.is( 'node', 'p' ) ).to.be.false;
-			expect( el.is( 'view:node', 'p' ) ).to.be.false;
+			expect( el.is( 'emptyElement', 'span' ) ).toBe( false );
+			expect( el.is( 'view:emptyElement', 'span' ) ).toBe( false );
+			expect( el.is( 'element', 'span' ) ).toBe( false );
+			expect( el.is( 'view:element', 'span' ) ).toBe( false );
+			expect( el.is( 'element', 'span' ) ).toBe( false );
+			expect( el.is( 'view:span' ) ).toBe( false );
+			expect( el.is( '$text' ) ).toBe( false );
+			expect( el.is( 'view:$text' ) ).toBe( false );
+			expect( el.is( '$textProxy' ) ).toBe( false );
+			expect( el.is( 'containerElement' ) ).toBe( false );
+			expect( el.is( 'attributeElement' ) ).toBe( false );
+			expect( el.is( 'uiElement' ) ).toBe( false );
+			expect( el.is( 'rootElement' ) ).toBe( false );
+			expect( el.is( 'documentFragment' ) ).toBe( false );
+			expect( el.is( 'node', 'p' ) ).toBe( false );
+			expect( el.is( 'view:node', 'p' ) ).toBe( false );
 		} );
 	} );
 
@@ -90,19 +91,19 @@ describe( 'ViewEmptyElement', () => {
 		it( 'should be cloned properly', () => {
 			const newEmptyElement = emptyElement._clone();
 
-			expect( newEmptyElement.name ).to.equal( 'img' );
-			expect( newEmptyElement.getAttribute( 'alt' ) ).to.equal( 'alternative text' );
-			expect( newEmptyElement.getStyle( 'margin-top' ) ).to.equal( '2em' );
-			expect( newEmptyElement.getStyle( 'color' ) ).to.equal( 'white' );
-			expect( newEmptyElement.hasClass( 'image' ) ).to.be.true;
-			expect( newEmptyElement.hasClass( 'big' ) ).to.be.true;
-			expect( newEmptyElement.isSimilar( emptyElement ) ).to.be.true;
+			expect( newEmptyElement.name ).toBe( 'img' );
+			expect( newEmptyElement.getAttribute( 'alt' ) ).toBe( 'alternative text' );
+			expect( newEmptyElement.getStyle( 'margin-top' ) ).toBe( '2em' );
+			expect( newEmptyElement.getStyle( 'color' ) ).toBe( 'white' );
+			expect( newEmptyElement.hasClass( 'image' ) ).toBe( true );
+			expect( newEmptyElement.hasClass( 'big' ) ).toBe( true );
+			expect( newEmptyElement.isSimilar( emptyElement ) ).toBe( true );
 		} );
 	} );
 
 	describe( 'getFillerOffset', () => {
 		it( 'should return null', () => {
-			expect( emptyElement.getFillerOffset() ).to.be.null;
+			expect( emptyElement.getFillerOffset() ).toBeNull();
 		} );
 	} );
 
@@ -117,7 +118,7 @@ describe( 'ViewEmptyElement', () => {
 			const json = JSON.stringify( emptyElement );
 			const parsed = JSON.parse( json );
 
-			expect( parsed ).to.deep.equal( {
+			expect( parsed ).toEqual( {
 				name: 'span',
 				path: [ 0, 0 ],
 				root: 'main',

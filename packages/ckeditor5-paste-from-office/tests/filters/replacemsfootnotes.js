@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll } from 'vitest';
 import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { replaceMSFootnotes } from '../../src/filters/replacemsfootnotes.js';
 
@@ -12,7 +13,7 @@ describe( 'PasteFromOffice - filters', () => {
 	describe( 'replaceMSFootnotes', () => {
 		let writer, viewDocument;
 
-		before( () => {
+		beforeAll( () => {
 			viewDocument = new ViewDocument();
 			writer = new ViewUpcastWriter( viewDocument );
 		} );
@@ -60,7 +61,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World ' +
 					'<sup class="footnote">' +
@@ -68,14 +69,17 @@ describe( 'PasteFromOffice - filters', () => {
 					'</sup>' +
 					'213213&nbsp;<o:p></o:p>' +
 				'</p>' +
-				'<ol class="footnotes">' +
-					'<li class="footnote-definition" id="ftn1">' +
-						'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
-						'<div class="footnote-content">' +
-							'<p class="MsoFootnoteText">Test footnote&nbsp;<o:p></o:p></p>' +
-						'</div>' +
-					'</li>' +
-				'</ol>'
+				'<div class="footnotes">' +
+					'<hr class="footnotes-divider">' +
+					'<ol class="footnotes-list">' +
+						'<li class="footnote-definition" id="ftn1">' +
+							'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
+							'<div class="footnote-content">' +
+								'<p class="MsoFootnoteText">Test footnote&nbsp;<o:p></o:p></p>' +
+							'</div>' +
+						'</li>' +
+					'</ol>' +
+				'</div>'
 			);
 		} );
 
@@ -146,7 +150,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World ' +
 					'<sup class="footnote">' +
@@ -158,20 +162,23 @@ describe( 'PasteFromOffice - filters', () => {
 					'</sup>' +
 					'<o:p></o:p>' +
 				'</p>' +
-				'<ol class="footnotes">' +
-					'<li class="footnote-definition" id="ftn1">' +
-						'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
-						'<div class="footnote-content">' +
-							'<p class="MsoFootnoteText">Test foot note 1&nbsp;<o:p></o:p></p>' +
-						'</div>' +
-					'</li>' +
-					'<li class="footnote-definition" id="ftn2">' +
-						'<a class="footnote-backlink" href="#ref-ftn2">^</a>' +
-						'<div class="footnote-content">' +
-							'<p class="MsoFootnoteText">Test foot note 2&nbsp;<o:p></o:p></p>' +
-						'</div>' +
-					'</li>' +
-				'</ol>'
+				'<div class="footnotes">' +
+					'<hr class="footnotes-divider">' +
+					'<ol class="footnotes-list">' +
+						'<li class="footnote-definition" id="ftn1">' +
+							'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
+							'<div class="footnote-content">' +
+								'<p class="MsoFootnoteText">Test foot note 1&nbsp;<o:p></o:p></p>' +
+							'</div>' +
+						'</li>' +
+						'<li class="footnote-definition" id="ftn2">' +
+							'<a class="footnote-backlink" href="#ref-ftn2">^</a>' +
+							'<div class="footnote-content">' +
+								'<p class="MsoFootnoteText">Test foot note 2&nbsp;<o:p></o:p></p>' +
+							'</div>' +
+						'</li>' +
+					'</ol>' +
+				'</div>'
 			);
 		} );
 
@@ -197,7 +204,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World ' +
 					'<a style="mso-footnote-id:ftn1;" href="#_ftn1" name="_ftnref1" title="">' +
@@ -264,7 +271,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World ' +
 					'<sup class="footnote">' +
@@ -280,14 +287,17 @@ describe( 'PasteFromOffice - filters', () => {
 					'</a>' +
 					'<o:p></o:p>' +
 				'</p>' +
-				'<ol class="footnotes">' +
-					'<li class="footnote-definition" id="ftn1">' +
-						'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
-						'<div class="footnote-content">' +
-							'<p class="MsoFootnoteText">Test foot note 1&nbsp;<o:p></o:p></p>' +
-						'</div>' +
-					'</li>' +
-				'</ol>'
+				'<div class="footnotes">' +
+					'<hr class="footnotes-divider">' +
+					'<ol class="footnotes-list">' +
+						'<li class="footnote-definition" id="ftn1">' +
+							'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
+							'<div class="footnote-content">' +
+								'<p class="MsoFootnoteText">Test foot note 1&nbsp;<o:p></o:p></p>' +
+							'</div>' +
+						'</li>' +
+					'</ol>' +
+				'</div>'
 			);
 		} );
 
@@ -332,7 +342,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World&nbsp;' +
 					'<sup class="footnote">' +
@@ -340,14 +350,17 @@ describe( 'PasteFromOffice - filters', () => {
 					'</sup>' +
 					'<o:p></o:p>' +
 				'</p>' +
-				'<ol class="footnotes">' +
-					'<li class="footnote-definition" id="ftn1">' +
-						'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
-						'<div class="footnote-content">' +
-							'<p class="MsoFootnoteText">Footnote content&nbsp;<o:p></o:p></p>' +
-						'</div>' +
-					'</li>' +
-				'</ol>'
+				'<div class="footnotes">' +
+					'<hr class="footnotes-divider">' +
+					'<ol class="footnotes-list">' +
+						'<li class="footnote-definition" id="ftn1">' +
+							'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
+							'<div class="footnote-content">' +
+								'<p class="MsoFootnoteText">Footnote content&nbsp;<o:p></o:p></p>' +
+							'</div>' +
+						'</li>' +
+					'</ol>' +
+				'</div>'
 			);
 		} );
 
@@ -391,7 +404,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World&nbsp;' +
 					'<sup class="footnote">' +
@@ -399,14 +412,17 @@ describe( 'PasteFromOffice - filters', () => {
 					'</sup>' +
 					'<o:p></o:p>' +
 				'</p>' +
-				'<ol class="footnotes">' +
-					'<li class="footnote-definition" id="ftn1">' +
-						'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
-						'<div class="footnote-content">' +
-							'<p class="MsoFootnoteText"></p>' +
-						'</div>' +
-					'</li>' +
-				'</ol>'
+				'<div class="footnotes">' +
+					'<hr class="footnotes-divider">' +
+					'<ol class="footnotes-list">' +
+						'<li class="footnote-definition" id="ftn1">' +
+							'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
+							'<div class="footnote-content">' +
+								'<p class="MsoFootnoteText"></p>' +
+							'</div>' +
+						'</li>' +
+					'</ol>' +
+				'</div>'
 			);
 		} );
 
@@ -457,7 +473,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World&nbsp;' +
 					'<sup class="footnote">' +
@@ -465,24 +481,27 @@ describe( 'PasteFromOffice - filters', () => {
 					'</sup>' +
 					'<o:p></o:p>' +
 				'</p>' +
-				'<ol class="footnotes">' +
-					'<li class="footnote-definition" id="ftn1">' +
-						'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
-						'<div class="footnote-content">' +
-							'<p class="MsoFootnoteText">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr>' +
-											'<td>Cell 1</td>' +
-											'<td>Cell 2</td>' +
-										'</tr>' +
-									'</tbody>' +
-								'</table>' +
-								'<o:p></o:p>' +
-							'</p>' +
-						'</div>' +
-					'</li>' +
-				'</ol>'
+				'<div class="footnotes">' +
+					'<hr class="footnotes-divider">' +
+					'<ol class="footnotes-list">' +
+						'<li class="footnote-definition" id="ftn1">' +
+							'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
+							'<div class="footnote-content">' +
+								'<p class="MsoFootnoteText">' +
+									'<table>' +
+										'<tbody>' +
+											'<tr>' +
+												'<td>Cell 1</td>' +
+												'<td>Cell 2</td>' +
+											'</tr>' +
+										'</tbody>' +
+									'</table>' +
+									'<o:p></o:p>' +
+								'</p>' +
+							'</div>' +
+						'</li>' +
+					'</ol>' +
+				'</div>'
 			);
 		} );
 	} );

@@ -7,36 +7,40 @@
  * General test utils for CKEditor.
  */
 export const testUtils = {
-	sinon,
+	// In Karma context `sinon` is a global; in Vitest it is not available.
+	// TODO: Remove once all packages are migrated to Vitest. See: https://github.com/ckeditor/ckeditor5-internal/issues/4309
+	sinon: typeof sinon !== 'undefined' ? sinon : null,
 
 	/**
-	 * Creates Sinon sandbox in {@link testUtils#sinon} and plugs `afterEach()` callback which
-	 * restores all spies and stubs created in this sandbox.
+	 * Creates a cleanup hook that restores all mocks after each test.
 	 *
-	 * See https://github.com/ckeditor/ckeditor5-design/issues/72 and http://sinonjs.org/docs/#sinon-sandbox
+	 * In Vitest context uses `vi.restoreAllMocks()`. In Karma/Sinon context falls back to `testUtils.sinon.restore()`.
 	 *
 	 * Usage:
 	 *
-	 *		import { testUtils } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+	 *		import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 	 *
 	 *		describe( 'MyClass', () => {
-	 *			// Create Sinon sandbox inside top-level describe block:
 	 *			testUtils.createSinonSandbox();
 	 *
-	 *			// Then inside tests you can use testUtils.sinon:
 	 *			it( 'does something', () => {
-	 *				testUtils.sinon.spy( obj, 'method' );
+	 *				vi.spyOn( obj, 'method' );
 	 *			} );
 	 *		}
 	 *
 	 * **Note**: Do not use `testUtils.createSinonSandbox()` outside `describe()` block as it will attach `afterEach()` calls
-	 * to all test - not only those in current file.
+	 * to all tests - not only those in current file.
 	 */
 
 	createSinonSandbox() {
 		// eslint-disable-next-line mocha/no-top-level-hooks
 		afterEach( () => {
-			testUtils.sinon.restore();
+			if ( typeof vi !== 'undefined' ) {
+				// eslint-disable-next-line no-undef
+				vi.restoreAllMocks();
+			} else {
+				testUtils.sinon.restore();
+			}
 		} );
 	},
 

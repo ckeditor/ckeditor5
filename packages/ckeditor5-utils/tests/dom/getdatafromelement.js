@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { getDataFromElement } from '../../src/dom/getdatafromelement.js';
 
 describe( 'getDataFromElement', () => {
@@ -24,7 +26,7 @@ describe( 'getDataFromElement', () => {
 	[ 'textarea', 'template', 'div' ].forEach( elementName => {
 		it( 'should return the content of a ' + elementName, () => {
 			const data = getDataFromElement( document.getElementById( 'getData-' + elementName ) );
-			expect( data ).to.equal( '<b>foo</b>' );
+			expect( data ).toBe( '<b>foo</b>' );
 		} );
 	} );
 } );

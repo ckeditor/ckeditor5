@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -11,7 +12,6 @@ import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { EmojiMention } from '../src/emojimention.js';
 import { EmojiPicker } from '../src/emojipicker.js';
@@ -20,11 +20,11 @@ import { EmojiRepository } from '../src/emojirepository.js';
 function mockEmojiRepositoryValues( editor ) {
 	const repository = editor.plugins.get( 'EmojiRepository' );
 
-	testUtils.sinon.stub( repository, 'getEmojiByQuery' );
-	testUtils.sinon.stub( repository, 'getEmojiCategories' );
-	testUtils.sinon.stub( repository, 'getSkinTones' );
+	vi.spyOn( repository, 'getEmojiByQuery' );
+	vi.spyOn( repository, 'getEmojiCategories' );
+	vi.spyOn( repository, 'getSkinTones' );
 
-	repository.getEmojiCategories.returns( [
+	repository.getEmojiCategories.mockReturnValue( [
 		{
 			title: 'Smileys & Expressions',
 			icon: '😀',
@@ -37,7 +37,7 @@ function mockEmojiRepositoryValues( editor ) {
 		}
 	] );
 
-	repository.getSkinTones.returns( [
+	repository.getSkinTones.mockReturnValue( [
 		{ id: 'default', icon: '👋', tooltip: 'Default skin tone' },
 		{ id: 'medium', icon: '👋🏽', tooltip: 'Medium skin tone' },
 		{ id: 'dark', icon: '👋🏿', tooltip: 'Dark skin tone' }
@@ -45,9 +45,11 @@ function mockEmojiRepositoryValues( editor ) {
 }
 
 describe( 'EmojiMention', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
-	let editor, editorElement, fetchStub;
+	let editor, editorElement, fetchStub, emojiRepository;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -65,7 +67,7 @@ describe( 'EmojiMention', () => {
 			version: 1
 		};
 
-		fetchStub = testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+		fetchStub = vi.spyOn( window, 'fetch' ).mockImplementation( () => {
 			return new Promise( resolve => {
 				const results = JSON.stringify( [ exampleRepositoryEntry ] );
 
@@ -77,6 +79,8 @@ describe( 'EmojiMention', () => {
 			plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ]
 		} );
 
+		emojiRepository = editor.plugins.get( EmojiRepository );
+
 		mockEmojiRepositoryValues( editor );
 	} );
 
@@ -86,43 +90,43 @@ describe( 'EmojiMention', () => {
 	} );
 
 	it( 'should be correctly named', () => {
-		expect( EmojiMention.pluginName ).to.equal( 'EmojiMention' );
+		expect( EmojiMention.pluginName ).toBe( 'EmojiMention' );
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( EmojiMention.requires ).to.deep.equal( [ EmojiRepository, Typing, Mention ] );
+		expect( EmojiMention.requires ).toEqual( [ EmojiRepository, Typing, Mention ] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EmojiMention.isOfficialPlugin ).to.be.true;
+		expect( EmojiMention.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( EmojiMention.isPremiumPlugin ).to.be.false;
+		expect( EmojiMention.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'integrations with other plugins', () => {
 		let consoleWarnStub;
 
 		beforeEach( () => {
-			consoleWarnStub = sinon.stub( console, 'warn' );
+			consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 		} );
 
 		afterEach( () => {
-			consoleWarnStub.restore();
+			consoleWarnStub.mockRestore();
 		} );
 
 		it( 'should update the mention configuration if it is not defined when creating the editor', () => {
 			const configs = editor.config.get( 'mention.feeds' );
 
-			expect( configs.length ).to.equal( 1 );
+			expect( configs.length ).toBe( 1 );
 
 			const config = configs[ 0 ];
 
-			expect( config.marker ).to.equal( ':' );
-			expect( config.dropdownLimit ).to.equal( 6 );
-			expect( config.itemRenderer ).to.be.instanceOf( Function );
-			expect( config.feed ).to.be.instanceOf( Function );
+			expect( config.marker ).toBe( ':' );
+			expect( config.dropdownLimit ).toBe( 6 );
+			expect( config.itemRenderer ).toBeInstanceOf( Function );
+			expect( config.feed ).toBeInstanceOf( Function );
 		} );
 
 		it( 'should update the mention configuration if the existing configuration does not use the `:` character', async () => {
@@ -146,15 +150,15 @@ describe( 'EmojiMention', () => {
 
 			const configs = editor.config.get( 'mention.feeds' );
 
-			expect( configs.length ).to.equal( 2 );
+			expect( configs.length ).toBe( 2 );
 
 			const config = configs.find( config => config.marker !== '@' );
 
-			expect( config.marker ).to.equal( ':' );
-			expect( config._isEmojiMarker ).to.equal( true );
-			expect( config.dropdownLimit ).to.equal( 6 );
-			expect( config.itemRenderer ).to.be.instanceOf( Function );
-			expect( config.feed ).to.be.instanceOf( Function );
+			expect( config.marker ).toBe( ':' );
+			expect( config._isEmojiMarker ).toBe( true );
+			expect( config.dropdownLimit ).toBe( 6 );
+			expect( config.itemRenderer ).toBeInstanceOf( Function );
+			expect( config.feed ).toBeInstanceOf( Function );
 
 			await editor.destroy();
 			editorElement.remove();
@@ -181,19 +185,19 @@ describe( 'EmojiMention', () => {
 
 			const configs = editor.config.get( 'mention.feeds' );
 
-			expect( configs.length ).to.equal( 1 );
+			expect( configs.length ).toBe( 1 );
 
 			const config = configs[ 0 ];
 
-			expect( config.marker ).to.equal( ':' );
-			expect( config.feed ).to.deep.equal( [ ':Barney', ':Lily', ':Marry Ann', ':Marshall', ':Robin', ':Ted' ] );
-			expect( config.minimumCharacters ).to.equal( 1 );
+			expect( config.marker ).toBe( ':' );
+			expect( config.feed ).toEqual( [ ':Barney', ':Lily', ':Marry Ann', ':Marshall', ':Robin', ':Ted' ] );
+			expect( config.minimumCharacters ).toBe( 1 );
 
-			expect( config.dropdownLimit ).to.equal( undefined );
-			expect( config.itemRenderer ).to.equal( undefined );
+			expect( config.dropdownLimit ).toBeUndefined();
+			expect( config.itemRenderer ).toBeUndefined();
 
-			expect( consoleWarnStub.callCount ).to.equal( 1 );
-			expect( consoleWarnStub.firstCall.firstArg ).to.equal( 'emoji-config-marker-already-used' );
+			expect( consoleWarnStub.mock.calls.length ).toBe( 1 );
+			expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toBe( 'emoji-config-marker-already-used' );
 
 			await editor.destroy();
 			editorElement.remove();
@@ -214,10 +218,10 @@ describe( 'EmojiMention', () => {
 
 			const configs = editor.config.get( 'mention.feeds' );
 
-			expect( configs.length ).to.equal( 0 );
+			expect( configs.length ).toBe( 0 );
 
-			expect( consoleWarnStub.callCount ).to.equal( 1 );
-			expect( consoleWarnStub.firstCall.firstArg ).to.equal( 'emoji-config-marker-already-used' );
+			expect( consoleWarnStub.mock.calls.length ).toBe( 1 );
+			expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toBe( 'emoji-config-marker-already-used' );
 
 			await editor.destroy();
 			editorElement.remove();
@@ -242,7 +246,7 @@ describe( 'EmojiMention', () => {
 		} );
 
 		// Should register emoji mention config only once.
-		expect( editor1.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+		expect( editor1.config.get( 'mention.feeds' ).length ).toBe( 1 );
 
 		await editor.destroy();
 		await editor1.destroy();
@@ -251,7 +255,7 @@ describe( 'EmojiMention', () => {
 	} );
 
 	it( 'should not update the mention configuration when emoji configuration is already added', async () => {
-		const consoleWarnStub = sinon.stub( console, 'warn' );
+		const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
@@ -259,17 +263,17 @@ describe( 'EmojiMention', () => {
 			plugins: [ EmojiMention, Mention ]
 		} );
 
-		expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+		expect( editor.config.get( 'mention.feeds' ).length ).toBe( 1 );
 
 		editor.plugins.get( 'EmojiMention' )._setupMentionConfiguration( editor );
 
 		// Should not call console warn when there are no mention or merge fields configs defined.
-		expect( consoleWarnStub.callCount ).to.equal( 0 );
-		expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
+		expect( consoleWarnStub.mock.calls.length ).toBe( 0 );
+		expect( editor.config.get( 'mention.feeds' ).length ).toBe( 1 );
 
 		await editor.destroy();
 		editorElement.remove();
-		consoleWarnStub.restore();
+		consoleWarnStub.mockRestore();
 	} );
 
 	describe( '_customItemRendererFactory()', () => {
@@ -277,87 +281,87 @@ describe( 'EmojiMention', () => {
 
 		beforeEach( () => {
 			locale = {
-				t: sinon.stub().callsFake( input => input )
+				t: vi.fn().mockImplementation( input => input )
 			};
 
 			itemRenderer = editor.plugins.get( 'EmojiMention' )._customItemRendererFactory( locale.t );
 		} );
 
 		it( 'should be a function', () => {
-			expect( itemRenderer ).to.be.instanceOf( Function );
+			expect( itemRenderer ).toBeInstanceOf( Function );
 		} );
 
 		it( 'should render the specified `MentionFeedObjectItem` object properly', () => {
 			const item = itemRenderer( { id: ':smiling face:', text: '☺️' } );
 
-			expect( item.nodeName.toLowerCase() ).to.equal( 'button' );
+			expect( item.nodeName.toLowerCase() ).toBe( 'button' );
 
-			expect( Array.from( item.classList ) ).to.deep.equal( [ 'ck', 'ck-button', 'ck-button_with-text' ] );
-			expect( item.tabIndex ).to.equal( -1 );
-			expect( item.type ).to.equal( 'button' );
-			expect( item.id ).to.equal( 'mention-list-item-id:smiling face' );
-			expect( item.childNodes ).to.have.lengthOf( 1 );
+			expect( Array.from( item.classList ) ).toEqual( [ 'ck', 'ck-button', 'ck-button_with-text' ] );
+			expect( item.tabIndex ).toBe( -1 );
+			expect( item.type ).toBe( 'button' );
+			expect( item.id ).toBe( 'mention-list-item-id:smiling face' );
+			expect( item.childNodes ).toHaveLength( 1 );
 
 			const { firstChild } = item;
 
-			expect( firstChild.nodeName.toLowerCase() ).to.equal( 'span' );
-			expect( Array.from( firstChild.classList ) ).to.deep.equal( [ 'ck', 'ck-button__label' ] );
-			expect( firstChild.textContent ).to.equal( '☺️ :smiling face:' );
+			expect( firstChild.nodeName.toLowerCase() ).toBe( 'span' );
+			expect( Array.from( firstChild.classList ) ).toEqual( [ 'ck', 'ck-button__label' ] );
+			expect( firstChild.textContent ).toBe( '☺️ :smiling face:' );
 		} );
 
 		it( 'should render the "Show all emojis" item properly', () => {
 			const item = itemRenderer( { id: ':__EMOJI_SHOW_ALL:' } );
 
-			expect( item.nodeName.toLowerCase() ).to.equal( 'button' );
+			expect( item.nodeName.toLowerCase() ).toBe( 'button' );
 
-			expect( Array.from( item.classList ) ).to.deep.equal( [ 'ck', 'ck-button', 'ck-button_with-text' ] );
-			expect( item.tabIndex ).to.equal( -1 );
-			expect( item.type ).to.equal( 'button' );
-			expect( item.id ).to.equal( 'mention-list-item-id:__EMOJI_SHOW_ALL' );
-			expect( item.childNodes ).to.have.lengthOf( 1 );
+			expect( Array.from( item.classList ) ).toEqual( [ 'ck', 'ck-button', 'ck-button_with-text' ] );
+			expect( item.tabIndex ).toBe( -1 );
+			expect( item.type ).toBe( 'button' );
+			expect( item.id ).toBe( 'mention-list-item-id:__EMOJI_SHOW_ALL' );
+			expect( item.childNodes ).toHaveLength( 1 );
 
 			const { firstChild } = item;
 
-			expect( firstChild.nodeName.toLowerCase() ).to.equal( 'span' );
-			expect( Array.from( firstChild.classList ) ).to.deep.equal( [ 'ck', 'ck-button__label' ] );
-			expect( firstChild.textContent ).to.equal( 'Show all emoji...' );
+			expect( firstChild.nodeName.toLowerCase() ).toBe( 'span' );
+			expect( Array.from( firstChild.classList ) ).toEqual( [ 'ck', 'ck-button__label' ] );
+			expect( firstChild.textContent ).toBe( 'Show all emoji...' );
 
-			expect( locale.t.callCount ).to.equal( 1 );
-			expect( locale.t.firstCall.firstArg ).to.equal( 'Show all emoji...' );
+			expect( locale.t.mock.calls.length ).toBe( 1 );
+			expect( locale.t.mock.calls[ 0 ][ 0 ] ).toBe( 'Show all emoji...' );
 		} );
 
 		it( 'should render the "Keep on typing..." item properly', () => {
 			const item = itemRenderer( { id: ':__EMOJI_HINT:' } );
 
-			expect( item.nodeName.toLowerCase() ).to.equal( 'button' );
+			expect( item.nodeName.toLowerCase() ).toBe( 'button' );
 
-			expect( Array.from( item.classList ) ).to.deep.equal( [
+			expect( Array.from( item.classList ) ).toEqual( [
 				'ck',
 				'ck-button',
 				'ck-button_with-text',
 				'ck-list-item-button',
 				'ck-disabled'
 			] );
-			expect( item.tabIndex ).to.equal( -1 );
-			expect( item.type ).to.equal( 'button' );
-			expect( item.id ).to.equal( 'mention-list-item-id:__EMOJI_HINT' );
-			expect( item.childNodes ).to.have.lengthOf( 1 );
+			expect( item.tabIndex ).toBe( -1 );
+			expect( item.type ).toBe( 'button' );
+			expect( item.id ).toBe( 'mention-list-item-id:__EMOJI_HINT' );
+			expect( item.childNodes ).toHaveLength( 1 );
 
 			const { firstChild } = item;
 
-			expect( firstChild.nodeName.toLowerCase() ).to.equal( 'span' );
-			expect( Array.from( firstChild.classList ) ).to.deep.equal( [ 'ck', 'ck-button__label' ] );
-			expect( firstChild.textContent ).to.equal( 'Keep on typing to see the emoji.' );
+			expect( firstChild.nodeName.toLowerCase() ).toBe( 'span' );
+			expect( Array.from( firstChild.classList ) ).toEqual( [ 'ck', 'ck-button__label' ] );
+			expect( firstChild.textContent ).toBe( 'Keep on typing to see the emoji.' );
 
-			expect( locale.t.callCount ).to.equal( 1 );
-			expect( locale.t.firstCall.firstArg ).to.equal( 'Keep on typing to see the emoji.' );
+			expect( locale.t.mock.calls.length ).toBe( 1 );
+			expect( locale.t.mock.calls[ 0 ][ 0 ] ).toBe( 'Keep on typing to see the emoji.' );
 		} );
 	} );
 
 	describe( '_overrideMentionExecuteListener()', () => {
 		beforeEach( () => {
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
-			getEmojiByQuery.returns( [
+			getEmojiByQuery.mockReturnValue( [
 				{
 					annotation: 'raising hands',
 					emoji: '🙌',
@@ -386,10 +390,11 @@ describe( 'EmojiMention', () => {
 			} );
 
 			mockEmojiRepositoryValues( editor );
+			await editor.plugins.get( EmojiRepository ).isReady();
 
 			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			expect( _getModelData( editor.model ) ).toBe( '<paragraph>Hello world! []</paragraph>' );
 
 			editor.commands.execute( 'mention', {
 				marker: '@',
@@ -398,7 +403,7 @@ describe( 'EmojiMention', () => {
 				range: editor.model.document.selection.getFirstRange()
 			} );
 
-			expect( _getModelData( editor.model ) ).to.match(
+			expect( _getModelData( editor.model ) ).toMatch(
 				// eslint-disable-next-line @stylistic/max-len
 				/<paragraph>Hello world! <\$text mention="{"uid":"[a-z0-9]+","_text":"Barney","id":"@Barney"}">Barney<\/\$text> \[\]<\/paragraph>/
 			);
@@ -408,8 +413,8 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'must not override the default mention command execution if emoji repository is not ready', async () => {
-			testUtils.sinon.stub( console, 'warn' );
-			fetchStub.rejects( 'Failed to load CDN.' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+			fetchStub.mockRejectedValue( new Error( 'Failed to load CDN.' ) );
 
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
@@ -437,6 +442,24 @@ describe( 'EmojiMention', () => {
 			editorElement.remove();
 		} );
 
+		it( 'should not stop the "mention" command execution when the emoji repository is not ready', async () => {
+			await emojiRepository.isReady();
+			emojiRepository.isRepositoryReady = false;
+
+			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+
+			const range = editor.model.document.selection.getFirstRange();
+			const insertTextSpy = vi.spyOn( editor.commands.get( 'insertText' ), 'execute' );
+
+			editor.commands.execute( 'mention', {
+				range,
+				marker: ':',
+				mention: { id: ':raising hands:', text: '🙌' }
+			} );
+
+			expect( insertTextSpy ).not.toHaveBeenCalled();
+		} );
+
 		describe( 'break the command execution', () => {
 			it( 'should stop the "mention" command when inserting an item from the list', () => {
 				_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
@@ -455,7 +478,7 @@ describe( 'EmojiMention', () => {
 					mention: { id: ':raising hands:', text: '🙌' }
 				} );
 
-				expect( eventStop.called ).to.equal( true );
+				expect( eventStop.called ).toBe( true );
 			} );
 
 			it( 'should stop the "mention" command when selecting the "Keep on typing..." option', () => {
@@ -475,7 +498,7 @@ describe( 'EmojiMention', () => {
 					mention: { id: ':__EMOJI_SHOW_ALL:' }
 				} );
 
-				expect( eventStop.called ).to.equal( true );
+				expect( eventStop.called ).toBe( true );
 			} );
 
 			it( 'should stop the "mention" command when selecting the "Show all emoji" option', () => {
@@ -495,16 +518,16 @@ describe( 'EmojiMention', () => {
 					mention: { id: ':__EMOJI_HINT:' }
 				} );
 
-				expect( eventStop.called ).to.equal( true );
+				expect( eventStop.called ).toBe( true );
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+				expect( _getModelData( editor.model ) ).toBe( '<paragraph>Hello world! []</paragraph>' );
 			} );
 		} );
 
 		it( 'should remove the auto-complete query when selecting an item from the list', () => {
 			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			expect( _getModelData( editor.model ) ).toBe( '<paragraph>Hello world! []</paragraph>' );
 
 			const { startPosition, endPosition } = simulateTyping( ':raising' );
 
@@ -518,11 +541,11 @@ describe( 'EmojiMention', () => {
 				mention: { id: ':raising hands:', text: '🙌' }
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! 🙌[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).toBe( '<paragraph>Hello world! 🙌[]</paragraph>' );
 		} );
 
 		it( 'should use the "insertText" command when inserting the emoji', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
@@ -542,13 +565,13 @@ describe( 'EmojiMention', () => {
 				mention: { id: ':raising hands:', text: '🙌' }
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should remove the auto-complete query when selecting the "Show all emoji" option from the list', () => {
 			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			expect( _getModelData( editor.model ) ).toBe( '<paragraph>Hello world! []</paragraph>' );
 
 			const { startPosition, endPosition } = simulateTyping( ':raising' );
 
@@ -562,16 +585,16 @@ describe( 'EmojiMention', () => {
 				mention: { id: ':__EMOJI_SHOW_ALL:' }
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			expect( _getModelData( editor.model ) ).toBe( '<paragraph>Hello world! []</paragraph>' );
 		} );
 
 		it( 'should open the emoji picker UI when selecting the "Show all emojis" option from the list', () => {
 			const emojiPicker = editor.plugins.get( 'EmojiPicker' );
-			const stub = sinon.spy( emojiPicker, 'showUI' );
+			const stub = vi.spyOn( emojiPicker, 'showUI' );
 
 			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			expect( _getModelData( editor.model ) ).toBe( '<paragraph>Hello world! []</paragraph>' );
 
 			const { startPosition, endPosition } = simulateTyping( ':raising' );
 
@@ -586,11 +609,11 @@ describe( 'EmojiMention', () => {
 
 			} );
 
-			sinon.assert.calledOnce( stub );
-			sinon.assert.calledWith( stub, 'raising' );
+			expect( stub ).toHaveBeenCalledOnce();
+			expect( stub ).toHaveBeenCalledWith( 'raising' );
 
 			// Check the focus.
-			expect( document.activeElement ).to.equal( emojiPicker.emojiPickerView.searchView.inputView.queryView.fieldView.element );
+			expect( document.activeElement ).toBe( emojiPicker.emojiPickerView.searchView.inputView.queryView.fieldView.element );
 		} );
 	} );
 
@@ -602,29 +625,29 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should be a function', () => {
-			expect( queryEmoji ).to.be.instanceOf( Function );
+			expect( queryEmoji ).toBeInstanceOf( Function );
 		} );
 
 		it( 'should return an empty array when a query starts with a space', () => {
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
-			getEmojiByQuery.returns( [] );
+			getEmojiByQuery.mockReturnValue( [] );
 
-			expect( queryEmoji( ' ' ) ).to.deep.equal( [] );
-			expect( queryEmoji( '  ' ) ).to.deep.equal( [] );
-			expect( queryEmoji( ' see' ) ).to.deep.equal( [] );
+			expect( queryEmoji( ' ' ) ).toEqual( [] );
+			expect( queryEmoji( '  ' ) ).toEqual( [] );
+			expect( queryEmoji( ' see' ) ).toEqual( [] );
 		} );
 
 		it( 'should return an empty array when a query starts with a marker character', () => {
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
-			getEmojiByQuery.returns( [] );
+			getEmojiByQuery.mockReturnValue( [] );
 
-			expect( queryEmoji( ':' ) ).to.deep.equal( [] );
-			expect( queryEmoji( '::' ) ).to.deep.equal( [] );
+			expect( queryEmoji( ':' ) ).toEqual( [] );
+			expect( queryEmoji( '::' ) ).toEqual( [] );
 		} );
 
 		it( 'should return an empty array when the repository plugin is not available', async () => {
-			testUtils.sinon.stub( console, 'warn' );
-			fetchStub.rejects( 'Failed to load CDN.' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+			fetchStub.mockRejectedValue( new Error( 'Failed to load CDN.' ) );
 
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
@@ -633,12 +656,12 @@ describe( 'EmojiMention', () => {
 				plugins: [ EmojiMention, Paragraph, Essentials, Mention ]
 			} );
 
-			editor.plugins.get( 'EmojiMention' )._isEmojiRepositoryAvailable = false;
+			editor.plugins.get( 'EmojiRepository' ).isRepositoryReady = false;
 
 			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
 
-			expect( queryEmoji( '' ) ).to.deep.equal( [] );
-			expect( queryEmoji( 'see' ) ).to.deep.equal( [] );
+			expect( queryEmoji( '' ) ).toEqual( [] );
+			expect( queryEmoji( 'see' ) ).toEqual( [] );
 
 			await editor.destroy();
 			editorElement.remove();
@@ -646,34 +669,34 @@ describe( 'EmojiMention', () => {
 
 		it( 'should return a hint item when a query is too short', () => {
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
-			getEmojiByQuery.returns( [] );
+			getEmojiByQuery.mockReturnValue( [] );
 
 			let queryResult = queryEmoji( '' );
 
-			expect( queryResult, 'query is empty' ).to.deep.equal( [
+			expect( queryResult, 'query is empty' ).toEqual( [
 				{ id: ':__EMOJI_HINT:' }
 			] );
 
 			queryResult = queryEmoji( 's' );
 
-			expect( queryResult, 'query as a single character' ).to.deep.equal( [
+			expect( queryResult, 'query as a single character' ).toEqual( [
 				{ id: ':__EMOJI_HINT:' }
 			] );
 		} );
 
 		it( 'should pass the specified query to the repository plugin', () => {
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
-			getEmojiByQuery.returns( [] );
+			getEmojiByQuery.mockReturnValue( [] );
 
 			queryEmoji( 'see no evil' );
 
-			expect( getEmojiByQuery.callCount ).to.equal( 1 );
-			expect( getEmojiByQuery.firstCall.firstArg ).to.equal( 'see no evil' );
+			expect( getEmojiByQuery.mock.calls.length ).toBe( 1 );
+			expect( getEmojiByQuery.mock.calls[ 0 ][ 0 ] ).toBe( 'see no evil' );
 		} );
 
 		it( 'should return an array of items that implements the `MentionFeedObjectItem` type', () => {
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
-			getEmojiByQuery.returns( [
+			getEmojiByQuery.mockReturnValue( [
 				{
 					annotation: 'thumbs up',
 					emoji: '👍️',
@@ -692,20 +715,20 @@ describe( 'EmojiMention', () => {
 
 			const queryResult = queryEmoji( 'thumbs' );
 
-			expect( queryResult[ 0 ] ).to.deep.equal( { text: '👍️', id: ':thumbs up:' } );
-			expect( queryResult[ 1 ] ).to.deep.equal( { text: '👎️', id: ':thumbs down:' } );
+			expect( queryResult[ 0 ] ).toEqual( { text: '👍️', id: ':thumbs up:' } );
+			expect( queryResult[ 1 ] ).toEqual( { text: '👎️', id: ':thumbs down:' } );
 		} );
 
 		it( 'should include a "Show all emoji" option when the "EmojiPicker" plugin is available', () => {
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
-			getEmojiByQuery.returns( [] );
+			getEmojiByQuery.mockReturnValue( [] );
 
 			const queryResult = queryEmoji( 'thumbs' );
 
-			expect( queryResult ).to.deep.equal( [
+			expect( queryResult ).toEqual( [
 				{ id: ':__EMOJI_SHOW_ALL:' }
 			] );
-			expect( editor.plugins.has( 'EmojiPicker' ) ).to.equal( true );
+			expect( editor.plugins.has( 'EmojiPicker' ) ).toBe( true );
 		} );
 
 		it( 'should not include the show all emoji button when "EmojiPicker" plugin is not available', async () => {
@@ -720,7 +743,7 @@ describe( 'EmojiMention', () => {
 
 			const { getEmojiByQuery } = editor.plugins.get( 'EmojiRepository' );
 
-			getEmojiByQuery.returns( [
+			getEmojiByQuery.mockReturnValue( [
 				{
 					annotation: 'thumbs up',
 					emoji: '👍️',
@@ -740,11 +763,11 @@ describe( 'EmojiMention', () => {
 			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
 			const queryResult = queryEmoji( 'thumbs' );
 
-			expect( queryResult ).to.deep.equal( [
+			expect( queryResult ).toEqual( [
 				{ text: '👍️', id: ':thumbs up:' },
 				{ text: '👎️', id: ':thumbs down:' }
 			] );
-			expect( editor.plugins.has( 'EmojiPicker' ) ).to.equal( false );
+			expect( editor.plugins.has( 'EmojiPicker' ) ).toBe( false );
 
 			await editor.destroy();
 			editorElement.remove();
@@ -765,7 +788,7 @@ describe( 'EmojiMention', () => {
 				}
 			};
 
-			getEmojiByQuery.returns( [ thumbUpItem ] );
+			getEmojiByQuery.mockReturnValue( [ thumbUpItem ] );
 
 			editor.plugins.get( EmojiPicker ).showUI();
 			editor.plugins.get( EmojiPicker )._hideUI();
@@ -773,9 +796,9 @@ describe( 'EmojiMention', () => {
 
 			const queryResult = queryEmoji( 'thumbs' );
 
-			expect( queryResult.length ).to.equal( 2 );
+			expect( queryResult.length ).toBe( 2 );
 
-			expect( queryResult[ 0 ] ).to.deep.equal( {
+			expect( queryResult[ 0 ] ).toEqual( {
 				id: ':thumbs up:',
 				text: thumbUpItem.skins.dark
 			} );
@@ -790,7 +813,7 @@ describe( 'EmojiMention', () => {
 					'default': '👍️'
 				}
 			};
-			getEmojiByQuery.returns( [ thumbUpItem ] );
+			getEmojiByQuery.mockReturnValue( [ thumbUpItem ] );
 
 			editor.plugins.get( EmojiPicker ).showUI();
 			editor.plugins.get( EmojiPicker )._hideUI();
@@ -798,9 +821,9 @@ describe( 'EmojiMention', () => {
 
 			const queryResult = queryEmoji( 'thumbs' );
 
-			expect( queryResult.length ).to.equal( 2 );
+			expect( queryResult.length ).toBe( 2 );
 
-			expect( queryResult[ 0 ] ).to.deep.equal( {
+			expect( queryResult[ 0 ] ).toEqual( {
 				id: ':thumbs up:',
 				text: thumbUpItem.skins.default
 			} );
@@ -833,14 +856,14 @@ describe( 'EmojiMention', () => {
 				}
 			};
 
-			getEmojiByQuery.returns( [ thumbUpItem ] );
+			getEmojiByQuery.mockReturnValue( [ thumbUpItem ] );
 
 			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
 			const queryResult = queryEmoji( 'thumbs' );
 
-			expect( queryResult.length ).to.equal( 2 );
+			expect( queryResult.length ).toBe( 2 );
 
-			expect( queryResult[ 0 ] ).to.deep.equal( {
+			expect( queryResult[ 0 ] ).toEqual( {
 				id: ':thumbs up:',
 				text: thumbUpItem.skins.medium
 			} );
@@ -871,14 +894,14 @@ describe( 'EmojiMention', () => {
 				}
 			};
 
-			getEmojiByQuery.returns( [ thumbUpItem ] );
+			getEmojiByQuery.mockReturnValue( [ thumbUpItem ] );
 
 			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
 			const queryResult = queryEmoji( 'thumbs' );
 
-			expect( queryResult.length ).to.equal( 2 );
+			expect( queryResult.length ).toBe( 2 );
 
-			expect( queryResult[ 0 ] ).to.deep.equal( {
+			expect( queryResult[ 0 ] ).toEqual( {
 				id: ':thumbs up:',
 				text: thumbUpItem.skins.default
 			} );
@@ -905,7 +928,7 @@ describe( 'EmojiMention', () => {
 
 			simulateTyping( ':ro', codeBlockEditor );
 
-			expect( mentionCommand.isEnabled ).to.be.false;
+			expect( mentionCommand.isEnabled ).toBe( false );
 
 			await codeBlockEditor.destroy();
 			codeBlockEditorElement.remove();

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconContentUnlock } from '@ckeditor/ckeditor5-icons';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ButtonView, DropdownView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -15,7 +15,9 @@ import { StandardEditingModeEditing } from '../src/standardeditingmodeediting.js
 describe( 'StandardEditingModeUI', () => {
 	let editor, button, editorElement;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -225,12 +227,12 @@ describe( 'StandardEditingModeUI', () => {
 
 			const buttonInline = component.toolbarView.items.get( 0 );
 			const buttonBlock = component.toolbarView.items.get( 1 );
-			const spy = sinon.spy( buttonBlock, 'focus' );
+			const spy = vi.spyOn( buttonBlock, 'focus' );
 
 			buttonInline.isOn = false;
 			buttonBlock.isOn = true;
 			component.isOpen = true;
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			component.element.remove();
 		} );
@@ -243,14 +245,14 @@ describe( 'StandardEditingModeUI', () => {
 			component.isOpen = true;
 
 			const buttonInline = component.toolbarView.items.get( 0 );
-			const spy = sinon.spy( editor.editing.view, 'focus' );
+			const spy = vi.spyOn( editor.editing.view, 'focus' );
 			component.render();
 
 			buttonInline.fire( 'execute' );
 
 			// The focus is called twice - once by the button itself
 			// and once by the dropdown it is in.
-			sinon.assert.calledTwice( spy );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 		} );
 	} );
 
@@ -266,14 +268,15 @@ describe( 'StandardEditingModeUI', () => {
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
-			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
-			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
+			const executeSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
-			sinon.assert.calledOnce( focusSpy );
-			sinon.assert.callOrder( executeSpy, focusSpy );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( featureName );
+			expect( focusSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( focusSpy.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		it( `should bind #isEnabled to ${ featureName } command`, () => {

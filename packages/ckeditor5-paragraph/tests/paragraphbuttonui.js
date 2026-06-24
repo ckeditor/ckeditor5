@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconParagraph } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '../src/paragraph.js';
@@ -39,45 +40,45 @@ describe( 'HeadingButtonUI', () => {
 		it( 'should define default buttons', () => {
 			const factory = editor.ui.componentFactory;
 
-			expect( factory.create( 'paragraph' ) ).to.be.instanceOf( ButtonView );
+			expect( factory.create( 'paragraph' ) ).toBeInstanceOf( ButtonView );
 		} );
 
 		it( 'should intialize buttons with correct data', () => {
 			const paragraphButton = editor.ui.componentFactory.create( 'paragraph' );
 
-			expect( paragraphButton.label ).to.equal( 'Paragraph' );
-			expect( paragraphButton.icon ).to.equal( IconParagraph );
-			expect( paragraphButton.tooltip ).to.equal( true );
-			expect( paragraphButton.isToggleable ).to.equal( true );
+			expect( paragraphButton.label ).toEqual( 'Paragraph' );
+			expect( paragraphButton.icon ).toEqual( IconParagraph );
+			expect( paragraphButton.tooltip ).toEqual( true );
+			expect( paragraphButton.isToggleable ).toEqual( true );
 		} );
 
 		it( 'should bind button to command', () => {
 			const paragraphButton = editor.ui.componentFactory.create( 'paragraph' );
 			const paragraphCommand = editor.commands.get( 'paragraph' );
 
-			expect( paragraphCommand.isEnabled ).to.be.true;
-			expect( paragraphButton.isEnabled ).to.be.true;
+			expect( paragraphCommand.isEnabled ).toBe( true );
+			expect( paragraphButton.isEnabled ).toBe( true );
 
 			paragraphCommand.isEnabled = false;
-			expect( paragraphButton.isEnabled ).to.be.false;
+			expect( paragraphButton.isEnabled ).toBe( false );
 
-			expect( paragraphCommand.value ).to.be.true;
-			expect( paragraphButton.isOn ).to.be.true;
+			expect( paragraphCommand.value ).toBe( true );
+			expect( paragraphButton.isOn ).toBe( true );
 
 			_setModelData( editor.model, '<heading2>f{}oo</heading2>' );
 
-			expect( paragraphCommand.value ).to.be.false;
-			expect( paragraphButton.isOn ).to.be.false;
+			expect( paragraphCommand.value ).toBe( false );
+			expect( paragraphButton.isOn ).toBe( false );
 		} );
 
 		it( 'should bind button execute to command execute', () => {
 			const pararaphButton = editor.ui.componentFactory.create( 'paragraph' );
-			const executeCommandSpy = sinon.spy( editor, 'execute' );
+			const executeCommandSpy = vi.spyOn( editor, 'execute' );
 
 			pararaphButton.fire( 'execute' );
 
-			sinon.assert.calledOnce( executeCommandSpy );
-			sinon.assert.calledWithExactly( executeCommandSpy, 'paragraph' );
+			expect( executeCommandSpy ).toHaveBeenCalledOnce();
+			expect( executeCommandSpy ).toHaveBeenCalledWith( 'paragraph' );
 		} );
 	} );
 } );

@@ -44,7 +44,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="border-style:none;">' +
 					'<tbody>' +
 						'<tr>' +
@@ -69,7 +69,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="' +
 						'border-bottom:2px dotted red;' +
 						'border-left-style:none;' +
@@ -104,7 +104,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="' +
 						'border-bottom:2px dotted red;' +
 						'border-left:2px dotted red;' +
@@ -139,7 +139,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="' +
 						'border-bottom:2px dotted red;' +
 						'border-left:2px dotted red;' +
@@ -174,7 +174,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="' +
 						'border-bottom-style:none;' +
 						'border-left:2px dotted red;' +
@@ -211,7 +211,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="border-style:none;height:133px;width:400px;">' +
 					'<tbody>' +
 						'<tr>' +
@@ -236,7 +236,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="border:4px solid red;">' +
 					'<tbody>' +
 						'<tr>' +
@@ -261,7 +261,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="border-style:none;">' +
 					'<tbody>' +
 						'<tr>' +
@@ -286,7 +286,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="border-style:none;height:20%;width:100%;">' +
 					'<tbody>' +
 						'<tr>' +
@@ -313,7 +313,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="border-style:none;margin-left:0;margin-right:auto;">' +
 					'<tbody>' +
 						'<tr>' +
@@ -338,7 +338,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<table style="border-style:none;">' +
 					'<tbody>' +
 						'<tr>' +
@@ -365,7 +365,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<div align="right">' +
 					'<table style="border-style:none;margin-left:auto;margin-right:0;">' +
 						'<tbody>' +
@@ -394,7 +394,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<div align="right">' +
 					'<table style="border-style:none;">' +
 						'<tbody>' +
@@ -423,7 +423,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<div align="center">' +
 					'<table style="border-style:none;margin-left:auto;margin-right:auto;">' +
 						'<tbody>' +
@@ -452,7 +452,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<div align="center">' +
 					'<table style="border-style:none;">' +
 						'<tbody>' +
@@ -485,7 +485,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 				transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
 
-				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 					'<div align="right">' +
 						'<span>' +
 							'<table style="border-style:none;margin-left:auto;margin-right:0;">' +
@@ -519,7 +519,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 				transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
 
-				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 					'<div align="center">' +
 						'<span>' +
 							'<table style="border-style:none;margin-left:auto;margin-right:auto;">' +

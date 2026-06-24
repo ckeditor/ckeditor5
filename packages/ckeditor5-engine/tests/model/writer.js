@@ -20,12 +20,14 @@ import { getNodesAndText } from '../../tests/model/_utils/utils.js';
 import { ModelDocumentSelection } from '../../src/model/documentselection.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe( 'Writer', () => {
 	let model, doc, batch;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -42,11 +44,11 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should have model instance', () => {
-			expect( writer.model ).to.instanceof( Model );
+			expect( writer.model ).toBeInstanceOf( Model );
 		} );
 
 		it( 'should have batch instance', () => {
-			expect( writer.batch ).to.instanceof( Batch );
+			expect( writer.batch ).toBeInstanceOf( Batch );
 		} );
 	} );
 
@@ -54,15 +56,15 @@ describe( 'Writer', () => {
 		it( 'should create text node', () => {
 			const text = createText( 'foo' );
 
-			expect( text ).to.instanceof( ModelText );
-			expect( text.data ).to.equal( 'foo' );
-			expect( Array.from( text.getAttributes() ) ).to.length( 0 );
+			expect( text ).toBeInstanceOf( ModelText );
+			expect( text.data ).toBe( 'foo' );
+			expect( Array.from( text.getAttributes() ) ).toHaveLength( 0 );
 		} );
 
 		it( 'should create text with attributes', () => {
 			const text = createText( 'foo', { foo: 'bar', biz: 'baz' } );
 
-			expect( Array.from( text.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'biz', 'baz' ] ] );
+			expect( Array.from( text.getAttributes() ) ).toEqual( [ [ 'foo', 'bar' ], [ 'biz', 'baz' ] ] );
 		} );
 	} );
 
@@ -70,15 +72,15 @@ describe( 'Writer', () => {
 		it( 'should create element', () => {
 			const element = createElement( 'foo' );
 
-			expect( element ).to.instanceof( ModelElement );
-			expect( element.name ).to.equal( 'foo' );
-			expect( Array.from( element.getAttributes() ) ).to.length( 0 );
+			expect( element ).toBeInstanceOf( ModelElement );
+			expect( element.name ).toBe( 'foo' );
+			expect( Array.from( element.getAttributes() ) ).toHaveLength( 0 );
 		} );
 
 		it( 'should create element with attributes', () => {
 			const element = createText( 'foo', { foo: 'bar', biz: 'baz' } );
 
-			expect( Array.from( element.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'biz', 'baz' ] ] );
+			expect( Array.from( element.getAttributes() ) ).toEqual( [ [ 'foo', 'bar' ], [ 'biz', 'baz' ] ] );
 		} );
 	} );
 
@@ -86,7 +88,7 @@ describe( 'Writer', () => {
 		it( 'should create element', () => {
 			const element = createDocumentFragment();
 
-			expect( element ).to.instanceof( ModelDocumentFragment );
+			expect( element ).toBeInstanceOf( ModelDocumentFragment );
 		} );
 	} );
 
@@ -98,9 +100,9 @@ describe( 'Writer', () => {
 
 			const clonedElement = cloneElement( element );
 
-			expect( clonedElement ).to.not.equal( element );
-			expect( clonedElement.getChild( 0 ) ).to.not.equal( element.getChild( 0 ) );
-			expect( clonedElement.toJSON() ).to.deep.equal( element.toJSON() );
+			expect( clonedElement ).not.toBe( element );
+			expect( clonedElement.getChild( 0 ) ).not.toBe( element.getChild( 0 ) );
+			expect( clonedElement.toJSON() ).toEqual( element.toJSON() );
 		} );
 
 		it( 'should make shallow copy of element', () => {
@@ -113,9 +115,9 @@ describe( 'Writer', () => {
 
 			const clonedElement = cloneElement( element, false );
 
-			expect( clonedElement ).to.not.equal( element );
-			expect( clonedElement.childCount ).to.equal( 0 );
-			expect( clonedElement.toJSON() ).to.deep.equal( elementJson );
+			expect( clonedElement ).not.toBe( element );
+			expect( clonedElement.childCount ).toBe( 0 );
+			expect( clonedElement.toJSON() ).toEqual( elementJson );
 		} );
 	} );
 
@@ -128,7 +130,7 @@ describe( 'Writer', () => {
 			insert( child, new ModelPosition( parent, [ 0 ] ) );
 			insert( textChild, new ModelPosition( parent, [ 1 ] ) );
 
-			expect( Array.from( parent ) ).to.deep.equal( [ child, textChild ] );
+			expect( Array.from( parent ) ).toEqual( [ child, textChild ] );
 		} );
 
 		it( 'should insert node at the beginning of given element', () => {
@@ -139,7 +141,7 @@ describe( 'Writer', () => {
 			insert( child1, parent );
 			insert( child2, parent );
 
-			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child2, child1 ] );
+			expect( Array.from( parent.getChildren() ) ).toEqual( [ child2, child1 ] );
 		} );
 
 		it( 'should insert node at the end of given element', () => {
@@ -150,7 +152,7 @@ describe( 'Writer', () => {
 			insert( child1, parent );
 			insert( child2, parent, 'end' );
 
-			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2 ] );
+			expect( Array.from( parent.getChildren() ) ).toEqual( [ child1, child2 ] );
 		} );
 
 		it( 'should insert node at the given offset of given element', () => {
@@ -163,7 +165,7 @@ describe( 'Writer', () => {
 			insert( child1, parent );
 			insert( child2, parent, 1 );
 
-			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
+			expect( Array.from( parent.getChildren() ) ).toEqual( [ child1, child2, child3 ] );
 		} );
 
 		it( 'should insert node before the given node', () => {
@@ -176,7 +178,7 @@ describe( 'Writer', () => {
 			insert( child1, parent );
 			insert( child2, child3, 'before' );
 
-			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
+			expect( Array.from( parent.getChildren() ) ).toEqual( [ child1, child2, child3 ] );
 		} );
 
 		it( 'should insert node after the given node', () => {
@@ -189,7 +191,7 @@ describe( 'Writer', () => {
 			insert( child1, parent );
 			insert( child2, child1, 'after' );
 
-			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
+			expect( Array.from( parent.getChildren() ) ).toEqual( [ child1, child2, child3 ] );
 		} );
 
 		it( 'should do nothing if empty text node is being inserted', () => {
@@ -201,54 +203,54 @@ describe( 'Writer', () => {
 				writer.insert( text, parent );
 			} );
 
-			expect( parent.childCount ).to.equal( 0 );
+			expect( parent.childCount ).toBe( 0 );
 		} );
 
 		it( 'should create proper operation for inserting element #1 (document operation)', () => {
 			const parent = doc.createRoot();
 			const element = createElement( 'child' );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			insert( element, parent );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ] ).to.instanceof( InsertOperation );
-			expect( spy.lastCall.args[ 0 ].shouldReceiveAttributes ).to.be.false;
-			expect( spy.lastCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy.mock.lastCall[ 0 ].type ).toBe( 'insert' );
+			expect( spy.mock.lastCall[ 0 ] ).toBeInstanceOf( InsertOperation );
+			expect( spy.mock.lastCall[ 0 ].shouldReceiveAttributes ).toBe( false );
+			expect( spy.mock.lastCall[ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should create proper operation for inserting element #2 (non-document operation)', () => {
 			const parent = createDocumentFragment();
 			const element = createElement( 'child' );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			insert( element, parent );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ] ).to.instanceof( InsertOperation );
-			expect( spy.lastCall.args[ 0 ].shouldReceiveAttributes ).to.be.false;
-			expect( spy.lastCall.args[ 0 ].batch ).to.be.null;
+			expect( spy.mock.lastCall[ 0 ].type ).toBe( 'insert' );
+			expect( spy.mock.lastCall[ 0 ] ).toBeInstanceOf( InsertOperation );
+			expect( spy.mock.lastCall[ 0 ].shouldReceiveAttributes ).toBe( false );
+			expect( spy.mock.lastCall[ 0 ].batch ).toBeNull();
 		} );
 
 		it( 'should create proper operation for inserting text', () => {
 			const parent = doc.createRoot();
 			const text = createText( 'child' );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			insert( text, parent );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ] ).to.instanceof( InsertOperation );
-			expect( spy.lastCall.args[ 0 ].shouldReceiveAttributes ).to.be.true;
-			expect( spy.lastCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.lastCall[ 0 ].type ).toBe( 'insert' );
+			expect( spy.mock.lastCall[ 0 ] ).toBeInstanceOf( InsertOperation );
+			expect( spy.mock.lastCall[ 0 ].shouldReceiveAttributes ).toBe( true );
+			expect( spy.mock.lastCall[ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same document (rootA -> rootA)', () => {
@@ -261,18 +263,18 @@ describe( 'Writer', () => {
 			insert( parent1, root );
 			insert( parent2, root );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			insert( node, parent2 );
 
 			// Verify result.
-			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
-			expect( Array.from( parent2.getChildren() ) ).to.deep.equal( [ node ] );
+			expect( Array.from( parent1.getChildren() ) ).toEqual( [] );
+			expect( Array.from( parent2.getChildren() ) ).toEqual( [ node ] );
 
 			// Verify operations.
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ].type ).toBe( 'move' );
+			expect( spy.mock.calls[ 0 ][ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same document (rootA -> rootB)', () => {
@@ -282,18 +284,18 @@ describe( 'Writer', () => {
 
 			insert( node, rootA );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			insert( node, rootB );
 
 			// Verify result.
-			expect( Array.from( rootA.getChildren() ) ).to.deep.equal( [] );
-			expect( Array.from( rootB.getChildren() ) ).to.deep.equal( [ node ] );
+			expect( Array.from( rootA.getChildren() ) ).toEqual( [] );
+			expect( Array.from( rootB.getChildren() ) ).toEqual( [ node ] );
 
 			// Verify operations.
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ].type ).toBe( 'move' );
+			expect( spy.mock.calls[ 0 ][ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same document (docFragA -> docFragA)', () => {
@@ -306,18 +308,18 @@ describe( 'Writer', () => {
 			insert( parent1, docFragA );
 			insert( parent2, docFragA );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			insert( node, parent2 );
 
 			// Verify result.
-			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
-			expect( Array.from( parent2.getChildren() ) ).to.deep.equal( [ node ] );
+			expect( Array.from( parent1.getChildren() ) ).toEqual( [] );
+			expect( Array.from( parent2.getChildren() ) ).toEqual( [ node ] );
 
 			// Verify operations.
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].batch ).to.be.null;
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ].type ).toBe( 'move' );
+			expect( spy.mock.calls[ 0 ][ 0 ].batch ).toBeNull();
 		} );
 
 		it( 'should move element from one parent to the other within different document (docFragA -> docFragB)', () => {
@@ -327,20 +329,20 @@ describe( 'Writer', () => {
 
 			insert( node, docFragA );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			insert( node, docFragB );
 
 			// Verify result.
-			expect( Array.from( docFragA ) ).to.deep.equal( [] );
-			expect( Array.from( docFragB ) ).to.deep.equal( [ node ] );
+			expect( Array.from( docFragA ) ).toEqual( [] );
+			expect( Array.from( docFragB ) ).toEqual( [ node ] );
 
 			// Verify operations.
-			sinon.assert.calledTwice( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'detach' );
-			expect( spy.firstCall.args[ 0 ].batch ).to.be.null;
-			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.secondCall.args[ 0 ].batch ).to.be.null;
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+			expect( spy.mock.calls[ 0 ][ 0 ].type ).toBe( 'detach' );
+			expect( spy.mock.calls[ 0 ][ 0 ].batch ).toBeNull();
+			expect( spy.mock.calls[ 1 ][ 0 ].type ).toBe( 'insert' );
+			expect( spy.mock.calls[ 1 ][ 0 ].batch ).toBeNull();
 		} );
 
 		it( 'should throw when moving element from document to document fragment', () => {
@@ -370,15 +372,15 @@ describe( 'Writer', () => {
 
 			insert( docFrag, new ModelPosition( root, [ 2 ] ) );
 
-			expect( Array.from( model.markers ).length ).to.equal( 1 );
+			expect( Array.from( model.markers ).length ).toBe( 1 );
 
 			const modelMarker = model.markers.get( 'marker' );
 			const range = modelMarker.getRange();
-			expect( range.root ).to.equal( root );
-			expect( range.start.path ).to.deep.equal( [ 2, 1 ] );
-			expect( range.end.path ).to.deep.equal( [ 2, 5 ] );
-			expect( modelMarker.managedUsingOperations ).to.be.true;
-			expect( modelMarker.affectsData ).to.be.true;
+			expect( range.root ).toBe( root );
+			expect( range.start.path ).toEqual( [ 2, 1 ] );
+			expect( range.end.path ).toEqual( [ 2, 5 ] );
+			expect( modelMarker.managedUsingOperations ).toBe( true );
+			expect( modelMarker.affectsData ).toBe( true );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1721.
@@ -405,15 +407,15 @@ describe( 'Writer', () => {
 
 			insert( docFrag, new ModelPosition( root, [ 2 ] ) );
 
-			expect( Array.from( model.markers ).length ).to.equal( 1 );
+			expect( Array.from( model.markers ).length ).toBe( 1 );
 
 			const modelMarker = model.markers.get( 'marker' );
 			const range = modelMarker.getRange();
-			expect( range.root ).to.equal( root );
-			expect( range.start.path ).to.deep.equal( [ 2, 1 ] );
-			expect( range.end.path ).to.deep.equal( [ 2, 5 ] );
-			expect( modelMarker.managedUsingOperations ).to.be.true;
-			expect( modelMarker.affectsData ).to.be.true;
+			expect( range.root ).toBe( root );
+			expect( range.start.path ).toEqual( [ 2, 1 ] );
+			expect( range.end.path ).toEqual( [ 2, 5 ] );
+			expect( modelMarker.managedUsingOperations ).toBe( true );
+			expect( modelMarker.affectsData ).toBe( true );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
@@ -433,10 +435,10 @@ describe( 'Writer', () => {
 
 			insertText( 'foo', { bar: 'biz' }, new ModelPosition( parent, [ 0 ] ) );
 
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
-			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelText );
+			expect( parent.getChild( 0 ).data ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [ [ 'bar', 'biz' ] ] );
 		} );
 
 		it( 'should create and insert text node with no attributes at given position', () => {
@@ -444,10 +446,10 @@ describe( 'Writer', () => {
 
 			insertText( 'foo', null, new ModelPosition( parent, [ 0 ] ) );
 
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
-			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelText );
+			expect( parent.getChild( 0 ).data ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [] );
 		} );
 
 		it( 'should create and insert text node omitting attributes param', () => {
@@ -455,10 +457,10 @@ describe( 'Writer', () => {
 
 			insertText( 'foo', new ModelPosition( parent, [ 0 ] ) );
 
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
-			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelText );
+			expect( parent.getChild( 0 ).data ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [] );
 		} );
 
 		it( 'should create and insert text node at the beginning of given element', () => {
@@ -468,9 +470,9 @@ describe( 'Writer', () => {
 
 			insertText( 'foo', parent );
 
-			expect( parent.childCount ).to.equal( 2 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
-			expect( parent.getChild( 1 ) ).to.instanceof( ModelElement );
+			expect( parent.childCount ).toBe( 2 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelText );
+			expect( parent.getChild( 1 ) ).toBeInstanceOf( ModelElement );
 		} );
 
 		it( 'should create and insert text node at the end of given element', () => {
@@ -479,9 +481,9 @@ describe( 'Writer', () => {
 			insert( createElement( 'child' ), parent );
 			insertText( 'foo', parent, 'end' );
 
-			expect( parent.childCount ).to.equal( 2 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
+			expect( parent.childCount ).toBe( 2 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelElement );
+			expect( parent.getChild( 1 ) ).toBeInstanceOf( ModelText );
 		} );
 
 		it( 'should create and insert text node at the given offset of given element', () => {
@@ -492,10 +494,10 @@ describe( 'Writer', () => {
 
 			insertText( 'foo', parent, 1 );
 
-			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
-			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
+			expect( parent.childCount ).toBe( 3 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelElement );
+			expect( parent.getChild( 1 ) ).toBeInstanceOf( ModelText );
+			expect( parent.getChild( 2 ) ).toBeInstanceOf( ModelElement );
 		} );
 
 		it( 'should create and insert text node before the given node', () => {
@@ -508,10 +510,10 @@ describe( 'Writer', () => {
 
 			insertText( 'foo', child2, 'before' );
 
-			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
-			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
+			expect( parent.childCount ).toBe( 3 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelElement );
+			expect( parent.getChild( 1 ) ).toBeInstanceOf( ModelText );
+			expect( parent.getChild( 2 ) ).toBeInstanceOf( ModelElement );
 		} );
 
 		it( 'should create and insert text node after the given node', () => {
@@ -524,23 +526,23 @@ describe( 'Writer', () => {
 
 			insertText( 'foo', child1, 'after' );
 
-			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
-			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
+			expect( parent.childCount ).toBe( 3 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelElement );
+			expect( parent.getChild( 1 ) ).toBeInstanceOf( ModelText );
+			expect( parent.getChild( 2 ) ).toBeInstanceOf( ModelElement );
 		} );
 
 		it( 'should create proper operation', () => {
 			const parent = doc.createRoot();
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			insertText( 'foo', parent );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ] ).to.instanceof( InsertOperation );
-			expect( spy.lastCall.args[ 0 ].shouldReceiveAttributes ).to.be.true;
-			expect( spy.lastCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.lastCall[ 0 ].type ).toBe( 'insert' );
+			expect( spy.mock.lastCall[ 0 ] ).toBeInstanceOf( InsertOperation );
+			expect( spy.mock.lastCall[ 0 ].shouldReceiveAttributes ).toBe( true );
+			expect( spy.mock.lastCall[ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
@@ -559,30 +561,30 @@ describe( 'Writer', () => {
 
 			insertElement( 'foo', { bar: 'biz' }, new ModelPosition( parent, [ 0 ] ) );
 
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelElement );
+			expect( parent.getChild( 0 ).name ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [ [ 'bar', 'biz' ] ] );
 		} );
 
 		it( 'should create and insert element with no attributes at given position', () => {
 			const parent = createDocumentFragment();
 			insertElement( 'foo', null, new ModelPosition( parent, [ 0 ] ) );
 
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelElement );
+			expect( parent.getChild( 0 ).name ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [] );
 		} );
 
 		it( 'should create and insert element with no attributes omitting attributes param', () => {
 			const parent = createDocumentFragment();
 			insertElement( 'foo', new ModelPosition( parent, [ 0 ] ) );
 
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelElement );
+			expect( parent.getChild( 0 ).name ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [] );
 		} );
 
 		it( 'should create and insert element at the beginning of given element', () => {
@@ -591,9 +593,9 @@ describe( 'Writer', () => {
 
 			insertElement( 'foo', parent );
 
-			expect( parent.childCount ).to.equal( 2 );
-			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
-			expect( parent.getChild( 1 ).name ).to.equal( 'child' );
+			expect( parent.childCount ).toBe( 2 );
+			expect( parent.getChild( 0 ).name ).toBe( 'foo' );
+			expect( parent.getChild( 1 ).name ).toBe( 'child' );
 		} );
 
 		it( 'should create and insert element at the end of given element', () => {
@@ -602,9 +604,9 @@ describe( 'Writer', () => {
 
 			insertElement( 'foo', parent, 'end' );
 
-			expect( parent.childCount ).to.equal( 2 );
-			expect( parent.getChild( 0 ).name ).to.equal( 'child' );
-			expect( parent.getChild( 1 ).name ).to.equal( 'foo' );
+			expect( parent.childCount ).toBe( 2 );
+			expect( parent.getChild( 0 ).name ).toBe( 'child' );
+			expect( parent.getChild( 1 ).name ).toBe( 'foo' );
 		} );
 
 		it( 'should create and insert element at the given offset of given element', () => {
@@ -614,10 +616,10 @@ describe( 'Writer', () => {
 
 			insertElement( 'foo', parent, 1 );
 
-			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
-			expect( parent.getChild( 1 ).name ).to.equal( 'foo' );
-			expect( parent.getChild( 2 ).name ).to.equal( 'child2' );
+			expect( parent.childCount ).toBe( 3 );
+			expect( parent.getChild( 0 ).name ).toBe( 'child1' );
+			expect( parent.getChild( 1 ).name ).toBe( 'foo' );
+			expect( parent.getChild( 2 ).name ).toBe( 'child2' );
 		} );
 
 		it( 'should create and insert element before the given node', () => {
@@ -630,10 +632,10 @@ describe( 'Writer', () => {
 
 			insertElement( 'foo', child2, 'before' );
 
-			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
-			expect( parent.getChild( 1 ).name ).to.equal( 'foo' );
-			expect( parent.getChild( 2 ).name ).to.equal( 'child2' );
+			expect( parent.childCount ).toBe( 3 );
+			expect( parent.getChild( 0 ).name ).toBe( 'child1' );
+			expect( parent.getChild( 1 ).name ).toBe( 'foo' );
+			expect( parent.getChild( 2 ).name ).toBe( 'child2' );
 		} );
 
 		it( 'should create and insert element after the given node', () => {
@@ -646,23 +648,23 @@ describe( 'Writer', () => {
 
 			insertElement( 'foo', child1, 'after' );
 
-			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
-			expect( parent.getChild( 1 ).name ).to.equal( 'foo' );
-			expect( parent.getChild( 2 ).name ).to.equal( 'child2' );
+			expect( parent.childCount ).toBe( 3 );
+			expect( parent.getChild( 0 ).name ).toBe( 'child1' );
+			expect( parent.getChild( 1 ).name ).toBe( 'foo' );
+			expect( parent.getChild( 2 ).name ).toBe( 'child2' );
 		} );
 
 		it( 'should create proper operation', () => {
 			const parent = doc.createRoot();
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			insertElement( 'foo', parent );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ] ).to.instanceof( InsertOperation );
-			expect( spy.lastCall.args[ 0 ].shouldReceiveAttributes ).to.be.false;
-			expect( spy.lastCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.lastCall[ 0 ].type ).toBe( 'insert' );
+			expect( spy.mock.lastCall[ 0 ] ).toBeInstanceOf( InsertOperation );
+			expect( spy.mock.lastCall[ 0 ].shouldReceiveAttributes ).toBe( false );
+			expect( spy.mock.lastCall[ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
@@ -684,19 +686,19 @@ describe( 'Writer', () => {
 			append( childText, parent );
 			append( childElement, parent );
 
-			expect( Array.from( parent ) ).to.deep.equal( [ childText, childElement ] );
+			expect( Array.from( parent ) ).toEqual( [ childText, childElement ] );
 		} );
 
 		it( 'should create proper operation', () => {
 			const parent = doc.createRoot();
 			const text = createText( 'foo' );
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			append( text, parent );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.lastCall[ 0 ].type ).toBe( 'insert' );
+			expect( spy.mock.lastCall[ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same root (rootA -> rootA)', () => {
@@ -710,18 +712,18 @@ describe( 'Writer', () => {
 			insert( parent1, rootA );
 			insert( parent2, rootA );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			append( node, parent2 );
 
 			// Verify result.
-			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
-			expect( Array.from( parent2.getChildren() ) ).to.deep.equal( [ node ] );
+			expect( Array.from( parent1.getChildren() ) ).toEqual( [] );
+			expect( Array.from( parent2.getChildren() ) ).toEqual( [ node ] );
 
 			// Verify operations.
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ].type ).toBe( 'move' );
+			expect( spy.mock.calls[ 0 ][ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same document (rootA -> rootB)', () => {
@@ -731,18 +733,18 @@ describe( 'Writer', () => {
 
 			insert( node, rootA );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			append( node, rootB );
 
 			// Verify result.
-			expect( Array.from( rootA.getChildren() ) ).to.deep.equal( [] );
-			expect( Array.from( rootB.getChildren() ) ).to.deep.equal( [ node ] );
+			expect( Array.from( rootA.getChildren() ) ).toEqual( [] );
+			expect( Array.from( rootB.getChildren() ) ).toEqual( [ node ] );
 
 			// Verify operations.
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ].type ).toBe( 'move' );
+			expect( spy.mock.calls[ 0 ][ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same document fragment (docFragA -> docFragA)', () => {
@@ -755,18 +757,18 @@ describe( 'Writer', () => {
 			insert( parent1, docFragA );
 			insert( parent2, docFragA );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			append( node, parent2 );
 
 			// Verify result.
-			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
-			expect( Array.from( parent2.getChildren() ) ).to.deep.equal( [ node ] );
+			expect( Array.from( parent1.getChildren() ) ).toEqual( [] );
+			expect( Array.from( parent2.getChildren() ) ).toEqual( [ node ] );
 
 			// Verify operations.
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].batch ).to.be.null;
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ].type ).toBe( 'move' );
+			expect( spy.mock.calls[ 0 ][ 0 ].batch ).toBeNull();
 		} );
 
 		it( 'should move element from one parent to the other within different document fragments (docFragA -> docFragB)', () => {
@@ -776,20 +778,20 @@ describe( 'Writer', () => {
 
 			insert( node, docFragA );
 
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			append( node, docFragB );
 
 			// Verify result.
-			expect( Array.from( docFragA ) ).to.deep.equal( [] );
-			expect( Array.from( docFragB ) ).to.deep.equal( [ node ] );
+			expect( Array.from( docFragA ) ).toEqual( [] );
+			expect( Array.from( docFragB ) ).toEqual( [ node ] );
 
 			// Verify operations.
-			sinon.assert.calledTwice( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'detach' );
-			expect( spy.firstCall.args[ 0 ].batch ).to.be.null;
-			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.secondCall.args[ 0 ].batch ).to.be.null;
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+			expect( spy.mock.calls[ 0 ][ 0 ].type ).toBe( 'detach' );
+			expect( spy.mock.calls[ 0 ][ 0 ].batch ).toBeNull();
+			expect( spy.mock.calls[ 1 ][ 0 ].type ).toBe( 'insert' );
+			expect( spy.mock.calls[ 1 ][ 0 ].batch ).toBeNull();
 		} );
 
 		it( 'should throw when moving element from document to document fragment', () => {
@@ -811,44 +813,44 @@ describe( 'Writer', () => {
 			appendText( 'foo', { bar: 'biz' }, parent );
 			appendText( 'bar', { biz: 'bar' }, parent );
 
-			expect( parent.childCount ).to.equal( 2 );
-			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
-			expect( parent.getChild( 1 ).data ).to.equal( 'bar' );
-			expect( Array.from( parent.getChild( 1 ).getAttributes() ) ).to.deep.equal( [ [ 'biz', 'bar' ] ] );
+			expect( parent.childCount ).toBe( 2 );
+			expect( parent.getChild( 0 ).data ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [ [ 'bar', 'biz' ] ] );
+			expect( parent.getChild( 1 ).data ).toBe( 'bar' );
+			expect( Array.from( parent.getChild( 1 ).getAttributes() ) ).toEqual( [ [ 'biz', 'bar' ] ] );
 		} );
 
 		it( 'should create and insert text node with no attributes at the end of the parent', () => {
 			const parent = createDocumentFragment();
 			appendText( 'foo', null, parent );
 
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
-			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelText );
+			expect( parent.getChild( 0 ).data ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [] );
 		} );
 
 		it( 'should create and insert text node with no attributes omitting attributes param', () => {
 			const parent = createDocumentFragment();
 			appendText( 'foo', parent );
 
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
-			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ) ).toBeInstanceOf( ModelText );
+			expect( parent.getChild( 0 ).data ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [] );
 		} );
 
 		it( 'should create proper operations', () => {
 			const parent = doc.createRoot();
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			appendText( 'foo', parent );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.firstCall.args[ 0 ] ).to.instanceof( InsertOperation );
-			expect( spy.firstCall.args[ 0 ].shouldReceiveAttributes ).to.be.true;
-			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ].type ).toBe( 'insert' );
+			expect( spy.mock.calls[ 0 ][ 0 ] ).toBeInstanceOf( InsertOperation );
+			expect( spy.mock.calls[ 0 ][ 0 ].shouldReceiveAttributes ).toBe( true );
+			expect( spy.mock.calls[ 0 ][ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
@@ -867,42 +869,42 @@ describe( 'Writer', () => {
 			appendElement( 'foo', { bar: 'biz' }, parent );
 			appendElement( 'bar', { biz: 'bar' }, parent );
 
-			expect( parent.childCount ).to.equal( 2 );
-			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
-			expect( parent.getChild( 1 ).name ).to.equal( 'bar' );
-			expect( Array.from( parent.getChild( 1 ).getAttributes() ) ).to.deep.equal( [ [ 'biz', 'bar' ] ] );
+			expect( parent.childCount ).toBe( 2 );
+			expect( parent.getChild( 0 ).name ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [ [ 'bar', 'biz' ] ] );
+			expect( parent.getChild( 1 ).name ).toBe( 'bar' );
+			expect( Array.from( parent.getChild( 1 ).getAttributes() ) ).toEqual( [ [ 'biz', 'bar' ] ] );
 		} );
 
 		it( 'should create and insert element with no attributes at the end of the parent', () => {
 			const parent = createDocumentFragment();
 			appendElement( 'foo', null, parent );
 
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ).name ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [] );
 		} );
 
 		it( 'should create and insert element with no attributes omitting attributes param', () => {
 			const parent = createDocumentFragment();
 			appendElement( 'foo', parent );
 
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
-			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ).name ).toBe( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).toEqual( [] );
 		} );
 
 		it( 'should create proper operation', () => {
 			const parent = doc.createRoot();
-			const spy = sinon.spy( model, 'applyOperation' );
+			const spy = vi.spyOn( model, 'applyOperation' );
 
 			appendElement( 'foo', parent );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.firstCall.args[ 0 ] ).to.be.instanceof( InsertOperation );
-			expect( spy.firstCall.args[ 0 ].shouldReceiveAttributes ).to.be.false;
-			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ].type ).toBe( 'insert' );
+			expect( spy.mock.calls[ 0 ][ 0 ] ).toBeInstanceOf( InsertOperation );
+			expect( spy.mock.calls[ 0 ][ 0 ].shouldReceiveAttributes ).toBe( false );
+			expect( spy.mock.calls[ 0 ][ 0 ].batch ).toBe( batch );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
@@ -932,38 +934,38 @@ describe( 'Writer', () => {
 				append( node, root );
 				append( text, root );
 
-				spy = sinon.spy( model, 'applyOperation' );
+				spy = vi.spyOn( model, 'applyOperation' );
 			} );
 
 			describe( 'setAttribute', () => {
 				it( 'should create the attribute on element', () => {
 					setAttribute( 'b', 2, node );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( node.getAttribute( 'b' ) ).to.equal( 2 );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( node.getAttribute( 'b' ) ).toBe( 2 );
 				} );
 
 				it( 'should change the attribute of element', () => {
 					setAttribute( 'a', 2, node );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( node.getAttribute( 'a' ) ).to.equal( 2 );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( node.getAttribute( 'a' ) ).toBe( 2 );
 				} );
 
 				it( 'should create the attribute on text node', () => {
 					setAttribute( 'b', 2, text );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( root.getChild( 1 ).getAttribute( 'b' ) ).to.equal( 2 );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( root.getChild( 1 ).getAttribute( 'b' ) ).toBe( 2 );
 				} );
 
 				it( 'should change the attribute of text node', () => {
 					setAttribute( 'a', 2, text );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.equal( 2 );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( root.getChild( 1 ).getAttribute( 'a' ) ).toBe( 2 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same', () => {
 					setAttribute( 'a', 1, node );
-					expect( spy.callCount ).to.equal( 0 );
-					expect( node.getAttribute( 'a' ) ).to.equal( 1 );
+					expect( spy.mock.calls.length ).toBe( 0 );
+					expect( node.getAttribute( 'a' ) ).toBe( 1 );
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
@@ -978,19 +980,19 @@ describe( 'Writer', () => {
 			describe( 'removeAttribute', () => {
 				it( 'should remove the attribute from element', () => {
 					removeAttribute( 'a', node );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( node.getAttribute( 'a' ) ).to.be.undefined;
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( node.getAttribute( 'a' ) ).toBeUndefined();
 				} );
 
 				it( 'should remove the attribute from character', () => {
 					removeAttribute( 'a', text );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.be.undefined;
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( root.getChild( 1 ).getAttribute( 'a' ) ).toBeUndefined();
 				} );
 
 				it( 'should do nothing if the attribute is not set', () => {
 					removeAttribute( 'b', node );
-					expect( spy.callCount ).to.equal( 0 );
+					expect( spy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
@@ -1017,7 +1019,7 @@ describe( 'Writer', () => {
 				append( element, root );
 				appendText( 'xxx', root );
 
-				spy = sinon.spy( model, 'applyOperation' );
+				spy = vi.spyOn( model, 'applyOperation' );
 			} );
 
 			function getRange( startIndex, endIndex ) {
@@ -1051,43 +1053,43 @@ describe( 'Writer', () => {
 			describe( 'setAttribute', () => {
 				it( 'should set the attribute on the range', () => {
 					setAttribute( 'a', 3, getRange( 3, 6 ) );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( getChangesAttrsCount() ).to.equal( 3 );
-					expect( getCompressedAttrs() ).to.equal( '111333111222---1112------' );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( getChangesAttrsCount() ).toBe( 3 );
+					expect( getCompressedAttrs() ).toBe( '111333111222---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the range have different attributes', () => {
 					setAttribute( 'a', 3, getRange( 4, 14 ) );
-					expect( spy.callCount ).to.equal( 4 );
-					expect( getChangesAttrsCount() ).to.equal( 10 );
-					expect( getCompressedAttrs() ).to.equal( '111-3333333333-1112------' );
+					expect( spy.mock.calls.length ).toBe( 4 );
+					expect( getChangesAttrsCount() ).toBe( 10 );
+					expect( getCompressedAttrs() ).toBe( '111-3333333333-1112------' );
 				} );
 
 				it( 'should split the operations if parts of the part of the range have the attribute', () => {
 					setAttribute( 'a', 2, getRange( 4, 14 ) );
-					expect( spy.callCount ).to.equal( 3 );
-					expect( getChangesAttrsCount() ).to.equal( 7 );
-					expect( getCompressedAttrs() ).to.equal( '111-2222222222-1112------' );
+					expect( spy.mock.calls.length ).toBe( 3 );
+					expect( getChangesAttrsCount() ).toBe( 7 );
+					expect( getCompressedAttrs() ).toBe( '111-2222222222-1112------' );
 				} );
 
 				it( 'should strip the range if the beginning have the attribute', () => {
 					setAttribute( 'a', 1, getRange( 1, 5 ) );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( getChangesAttrsCount() ).to.equal( 2 );
-					expect( getCompressedAttrs() ).to.equal( '11111-111222---1112------' );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( getChangesAttrsCount() ).toBe( 2 );
+					expect( getCompressedAttrs() ).toBe( '11111-111222---1112------' );
 				} );
 
 				it( 'should strip the range if the ending have the attribute', () => {
 					setAttribute( 'a', 1, getRange( 13, 17 ) );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( getChangesAttrsCount() ).to.equal( 2 );
-					expect( getCompressedAttrs() ).to.equal( '111---111222-111112------' );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( getChangesAttrsCount() ).toBe( 2 );
+					expect( getCompressedAttrs() ).toBe( '111---111222-111112------' );
 				} );
 
 				it( 'should do nothing if the range has attribute', () => {
 					setAttribute( 'a', 1, getRange( 0, 3 ) );
-					expect( spy.callCount ).to.equal( 0 );
-					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+					expect( spy.mock.calls.length ).toBe( 0 );
+					expect( getCompressedAttrs() ).toBe( '111---111222---1112------' );
 				} );
 
 				it( 'should not check range\'s start position node when creating operations', () => {
@@ -1097,9 +1099,9 @@ describe( 'Writer', () => {
 					);
 
 					setAttribute( 'a', 1, range );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( getChangesAttrsCount() ).to.equal( 2 );
-					expect( getCompressedAttrs() ).to.equal( '111---111222---1112-11---' );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( getChangesAttrsCount() ).toBe( 2 );
+					expect( getCompressedAttrs() ).toBe( '111---111222---1112-11---' );
 				} );
 
 				it( 'should not change elements attribute if range contains closing tag', () => {
@@ -1109,9 +1111,9 @@ describe( 'Writer', () => {
 					);
 
 					setAttribute( 'a', 1, range );
-					expect( spy.callCount ).to.equal( 2 );
-					expect( getChangesAttrsCount() ).to.equal( 4 );
-					expect( getCompressedAttrs() ).to.equal( '111---111222---1112-1111-' );
+					expect( spy.mock.calls.length ).toBe( 2 );
+					expect( getChangesAttrsCount() ).toBe( 4 );
+					expect( getCompressedAttrs() ).toBe( '111---111222---1112-1111-' );
 				} );
 
 				it( 'should not create an operation if the range contains only closing tag', () => {
@@ -1121,21 +1123,21 @@ describe( 'Writer', () => {
 					);
 
 					setAttribute( 'a', 3, range );
-					expect( spy.callCount ).to.equal( 0 );
-					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+					expect( spy.mock.calls.length ).toBe( 0 );
+					expect( getCompressedAttrs() ).toBe( '111---111222---1112------' );
 				} );
 
 				it( 'should not create an operation if is collapsed', () => {
 					setAttribute( 'a', 1, getRange( 3, 3 ) );
-					expect( spy.callCount ).to.equal( 0 );
-					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+					expect( spy.mock.calls.length ).toBe( 0 );
+					expect( getCompressedAttrs() ).toBe( '111---111222---1112------' );
 				} );
 
 				it( 'should not change children of items in the range', () => {
 					setAttribute( 'a', 1, getRange( 0, 20 ) );
-					expect( spy.callCount ).to.equal( 5 );
-					expect( getChangesAttrsCount() ).to.equal( 14 );
-					expect( getCompressedAttrs() ).to.equal( '1111111111111111111---1--' );
+					expect( spy.mock.calls.length ).toBe( 5 );
+					expect( getChangesAttrsCount() ).toBe( 14 );
+					expect( getCompressedAttrs() ).toBe( '1111111111111111111---1--' );
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
@@ -1150,43 +1152,43 @@ describe( 'Writer', () => {
 			describe( 'removeAttribute', () => {
 				it( 'should remove the attribute on the range', () => {
 					removeAttribute( 'a', getRange( 0, 2 ) );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( getChangesAttrsCount() ).to.equal( 2 );
-					expect( getCompressedAttrs() ).to.equal( '--1---111222---1112------' );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( getChangesAttrsCount() ).toBe( 2 );
+					expect( getCompressedAttrs() ).toBe( '--1---111222---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the range have different attributes', () => {
 					removeAttribute( 'a', getRange( 7, 11 ) );
-					expect( spy.callCount ).to.equal( 2 );
-					expect( getChangesAttrsCount() ).to.equal( 4 );
-					expect( getCompressedAttrs() ).to.equal( '111---1----2---1112------' );
+					expect( spy.mock.calls.length ).toBe( 2 );
+					expect( getChangesAttrsCount() ).toBe( 4 );
+					expect( getCompressedAttrs() ).toBe( '111---1----2---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the part of the range have no attribute', () => {
 					removeAttribute( 'a', getRange( 1, 7 ) );
-					expect( spy.callCount ).to.equal( 2 );
-					expect( getChangesAttrsCount() ).to.equal( 3 );
-					expect( getCompressedAttrs() ).to.equal( '1------11222---1112------' );
+					expect( spy.mock.calls.length ).toBe( 2 );
+					expect( getChangesAttrsCount() ).toBe( 3 );
+					expect( getCompressedAttrs() ).toBe( '1------11222---1112------' );
 				} );
 
 				it( 'should strip the range if the beginning have no attribute', () => {
 					removeAttribute( 'a', getRange( 4, 12 ) );
-					expect( spy.callCount ).to.equal( 2 );
-					expect( getChangesAttrsCount() ).to.equal( 6 );
-					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
+					expect( spy.mock.calls.length ).toBe( 2 );
+					expect( getChangesAttrsCount() ).toBe( 6 );
+					expect( getCompressedAttrs() ).toBe( '111------------1112------' );
 				} );
 
 				it( 'should strip the range if the ending have no attribute', () => {
 					removeAttribute( 'a', getRange( 7, 15 ) );
-					expect( spy.callCount ).to.equal( 2 );
-					expect( getChangesAttrsCount() ).to.equal( 5 );
-					expect( getCompressedAttrs() ).to.equal( '111---1--------1112------' );
+					expect( spy.mock.calls.length ).toBe( 2 );
+					expect( getChangesAttrsCount() ).toBe( 5 );
+					expect( getCompressedAttrs() ).toBe( '111---1--------1112------' );
 				} );
 
 				it( 'should do nothing if the range has no attribute', () => {
 					removeAttribute( 'a', getRange( 4, 5 ) );
-					expect( spy.callCount ).to.equal( 0 );
-					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+					expect( spy.mock.calls.length ).toBe( 0 );
+					expect( getCompressedAttrs() ).toBe( '111---111222---1112------' );
 				} );
 
 				it( 'should not check range\'s start position node when creating operations', () => {
@@ -1196,22 +1198,22 @@ describe( 'Writer', () => {
 					);
 
 					removeAttribute( 'a', range );
-					expect( spy.callCount ).to.equal( 0 );
-					expect( getChangesAttrsCount() ).to.equal( 0 );
-					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+					expect( spy.mock.calls.length ).toBe( 0 );
+					expect( getChangesAttrsCount() ).toBe( 0 );
+					expect( getCompressedAttrs() ).toBe( '111---111222---1112------' );
 				} );
 
 				it( 'should not create an operation if range is collapsed', () => {
 					removeAttribute( 'a', getRange( 3, 3 ) );
-					expect( spy.callCount ).to.equal( 0 );
-					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+					expect( spy.mock.calls.length ).toBe( 0 );
+					expect( getCompressedAttrs() ).toBe( '111---111222---1112------' );
 				} );
 
 				it( 'should create a proper operations for the mixed range', () => {
 					removeAttribute( 'a', getRange( 3, 15 ) );
-					expect( spy.callCount ).to.equal( 2 );
-					expect( getChangesAttrsCount() ).to.equal( 6 );
-					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
+					expect( spy.mock.calls.length ).toBe( 2 );
+					expect( getChangesAttrsCount() ).toBe( 6 );
+					expect( getCompressedAttrs() ).toBe( '111------------1112------' );
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
@@ -1229,48 +1231,48 @@ describe( 'Writer', () => {
 
 			beforeEach( () => {
 				p = createElement( 'p', { a: 3 } );
-				spy = sinon.spy( model, 'applyOperation' );
+				spy = vi.spyOn( model, 'applyOperation' );
 			} );
 
 			describe( 'setAttribute', () => {
 				it( 'should create the attribute on root', () => {
 					setAttribute( 'b', 2, root );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( root.getAttribute( 'b' ) ).to.equal( 2 );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( root.getAttribute( 'b' ) ).toBe( 2 );
 				} );
 
 				it( 'should create the attribute on detached root', () => {
 					setAttribute( 'b', 2, p );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( p.getAttribute( 'b' ) ).to.equal( 2 );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( p.getAttribute( 'b' ) ).toBe( 2 );
 				} );
 
 				it( 'should change the attribute of root', () => {
 					setAttribute( 'a', 2, root );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( root.getAttribute( 'a' ) ).to.equal( 2 );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( root.getAttribute( 'a' ) ).toBe( 2 );
 				} );
 
 				it( 'should change the attribute of detached root', () => {
 					setAttribute( 'a', 2, p );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( p.getAttribute( 'a' ) ).to.equal( 2 );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( p.getAttribute( 'a' ) ).toBe( 2 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same', () => {
 					setAttribute( 'a', 1, root );
-					expect( spy.callCount ).to.equal( 1 );
+					expect( spy.mock.calls.length ).toBe( 1 );
 					setAttribute( 'a', 1, root );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( root.getAttribute( 'a' ) ).to.equal( 1 );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( root.getAttribute( 'a' ) ).toBe( 1 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same on detached root', () => {
 					setAttribute( 'a', 1, p );
-					expect( spy.callCount ).to.equal( 1 );
+					expect( spy.mock.calls.length ).toBe( 1 );
 					setAttribute( 'a', 1, p );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( p.getAttribute( 'a' ) ).to.equal( 1 );
+					expect( spy.mock.calls.length ).toBe( 1 );
+					expect( p.getAttribute( 'a' ) ).toBe( 1 );
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
@@ -1287,13 +1289,13 @@ describe( 'Writer', () => {
 					setAttribute( 'a', 1, root );
 					removeAttribute( 'a', root );
 
-					expect( spy.callCount ).to.equal( 2 );
-					expect( root.getAttribute( 'a' ) ).to.be.undefined;
+					expect( spy.mock.calls.length ).toBe( 2 );
+					expect( root.getAttribute( 'a' ) ).toBeUndefined();
 				} );
 
 				it( 'should do nothing if the attribute is not set', () => {
 					removeAttribute( 'b', root );
-					expect( spy.callCount ).to.equal( 0 );
+					expect( spy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
@@ -1323,40 +1325,40 @@ describe( 'Writer', () => {
 
 					for ( const item of range.getItems() ) {
 						itemsCount++;
-						expect( Array.from( item.getAttributeKeys() ).length ).to.equal( 0 );
+						expect( Array.from( item.getAttributeKeys() ).length ).toBe( 0 );
 					}
 
-					expect( itemsCount ).to.equal( 3 );
+					expect( itemsCount ).toBe( 3 );
 				} );
 
 				it( 'should clear attributes on element', () => {
 					const element = createElement( 'x', { a: 1, b: 2, c: 3 }, root );
 
-					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 3 );
+					expect( Array.from( element.getAttributeKeys() ).length ).toBe( 3 );
 
 					clearAttributes( element );
 
-					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 0 );
+					expect( Array.from( element.getAttributeKeys() ).length ).toBe( 0 );
 				} );
 
 				it( 'should clear attributes on root element', () => {
 					setAttributes( { a: 1, b: 2, c: 3 }, root );
 
-					expect( Array.from( root.getAttributeKeys() ).length ).to.equal( 3 );
+					expect( Array.from( root.getAttributeKeys() ).length ).toBe( 3 );
 
 					clearAttributes( root );
 
-					expect( Array.from( root.getAttributeKeys() ).length ).to.equal( 0 );
+					expect( Array.from( root.getAttributeKeys() ).length ).toBe( 0 );
 				} );
 
 				it( 'should do nothing if there are no attributes', () => {
 					const element = createElement( 'x' );
 
-					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 0 );
+					expect( Array.from( element.getAttributeKeys() ).length ).toBe( 0 );
 
 					clearAttributes( element );
 
-					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 0 );
+					expect( Array.from( element.getAttributeKeys() ).length ).toBe( 0 );
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
@@ -1389,19 +1391,19 @@ describe( 'Writer', () => {
 			model.change( writer => {
 				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
 				// such a big amount of the same tests, so let's use a spy here.
-				spy = sinon.spy( writer, 'setAttribute' );
+				spy = vi.spyOn( writer, 'setAttribute' );
 
 				writer.setAttributes( { a: 3, c: null }, range );
 			} );
 
 			// Verify result.
-			expect( Array.from( frag.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'a', 3 ] ] );
-			expect( Array.from( frag.getChild( 1 ).getAttributes() ) ).to.deep.equal( [ [ 'b', 2 ], [ 'a', 3 ] ] );
+			expect( Array.from( frag.getChild( 0 ).getAttributes() ) ).toEqual( [ [ 'a', 3 ] ] );
+			expect( Array.from( frag.getChild( 1 ).getAttributes() ) ).toEqual( [ [ 'b', 2 ], [ 'a', 3 ] ] );
 
 			// Verify operations
-			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWith( spy.firstCall, 'a', 3, range );
-			sinon.assert.calledWith( spy.secondCall, 'c', null, range );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+			expect( spy ).toHaveBeenNthCalledWith( 1, 'a', 3, range );
+			expect( spy ).toHaveBeenNthCalledWith( 2, 'c', null, range );
 		} );
 
 		it( 'should set attributes one by one on range for map as attributes list', () => {
@@ -1411,19 +1413,19 @@ describe( 'Writer', () => {
 			model.change( writer => {
 				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
 				// such a big amount of the same tests, so let's use a spy here.
-				spy = sinon.spy( writer, 'setAttribute' );
+				spy = vi.spyOn( writer, 'setAttribute' );
 
 				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), range );
 			} );
 
 			// Verify result.
-			expect( Array.from( frag.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'a', 3 ] ] );
-			expect( Array.from( frag.getChild( 1 ).getAttributes() ) ).to.deep.equal( [ [ 'b', 2 ], [ 'a', 3 ] ] );
+			expect( Array.from( frag.getChild( 0 ).getAttributes() ) ).toEqual( [ [ 'a', 3 ] ] );
+			expect( Array.from( frag.getChild( 1 ).getAttributes() ) ).toEqual( [ [ 'b', 2 ], [ 'a', 3 ] ] );
 
 			// Verify operations
-			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWith( spy.firstCall, 'a', 3, range );
-			sinon.assert.calledWith( spy.secondCall, 'c', null, range );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+			expect( spy ).toHaveBeenNthCalledWith( 1, 'a', 3, range );
+			expect( spy ).toHaveBeenNthCalledWith( 2, 'c', null, range );
 		} );
 
 		it( 'should set attributes one by one on item', () => {
@@ -1432,18 +1434,18 @@ describe( 'Writer', () => {
 			model.change( writer => {
 				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
 				// such a big amount of the same tests, so let's use a spy here.
-				spy = sinon.spy( writer, 'setAttribute' );
+				spy = vi.spyOn( writer, 'setAttribute' );
 
 				writer.setAttributes( { a: 3, c: null }, item );
 			} );
 
 			// Verify result.
-			expect( Array.from( item.getAttributes() ) ).to.deep.equal( [ [ 'b', 2 ], [ 'a', 3 ] ] );
+			expect( Array.from( item.getAttributes() ) ).toEqual( [ [ 'b', 2 ], [ 'a', 3 ] ] );
 
 			// Verify operations
-			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWith( spy.firstCall, 'a', 3, item );
-			sinon.assert.calledWith( spy.secondCall, 'c', null, item );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+			expect( spy ).toHaveBeenNthCalledWith( 1, 'a', 3, item );
+			expect( spy ).toHaveBeenNthCalledWith( 2, 'c', null, item );
 		} );
 
 		it( 'should set attributes one by one on item for maps as attributes list', () => {
@@ -1452,18 +1454,18 @@ describe( 'Writer', () => {
 			model.change( writer => {
 				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
 				// such a big amount of the same tests, so let's use a spy here.
-				spy = sinon.spy( writer, 'setAttribute' );
+				spy = vi.spyOn( writer, 'setAttribute' );
 
 				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
 			} );
 
 			// Verify result.
-			expect( Array.from( item.getAttributes() ) ).to.deep.equal( [ [ 'b', 2 ], [ 'a', 3 ] ] );
+			expect( Array.from( item.getAttributes() ) ).toEqual( [ [ 'b', 2 ], [ 'a', 3 ] ] );
 
 			// Verify operations
-			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWith( spy.firstCall, 'a', 3, item );
-			sinon.assert.calledWith( spy.secondCall, 'c', null, item );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+			expect( spy ).toHaveBeenNthCalledWith( 1, 'a', 3, item );
+			expect( spy ).toHaveBeenNthCalledWith( 2, 'c', null, item );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
@@ -1490,12 +1492,12 @@ describe( 'Writer', () => {
 		it( 'should merge foo and bar into foobar', () => {
 			merge( new ModelPosition( root, [ 1 ] ) );
 
-			expect( root.maxOffset ).to.equal( 1 );
-			expect( root.getChild( 0 ).name ).to.equal( 'p' );
-			expect( root.getChild( 0 ).maxOffset ).to.equal( 6 );
-			expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
-			expect( root.getChild( 0 ).getAttribute( 'key1' ) ).to.equal( 'value1' );
-			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
+			expect( root.maxOffset ).toBe( 1 );
+			expect( root.getChild( 0 ).name ).toBe( 'p' );
+			expect( root.getChild( 0 ).maxOffset ).toBe( 6 );
+			expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 1 );
+			expect( root.getChild( 0 ).getAttribute( 'key1' ) ).toBe( 'value1' );
+			expect( root.getChild( 0 ).getChild( 0 ).data ).toBe( 'foobar' );
 		} );
 
 		it( 'should correctly merge in document fragment', () => {
@@ -1506,8 +1508,8 @@ describe( 'Writer', () => {
 
 			merge( new ModelPosition( docFrag, [ 1 ] ) );
 
-			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
-			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
+			expect( docFrag.getChild( 0 ).name ).toBe( 'p' );
+			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).toBe( 'foobar' );
 		} );
 
 		describe( 'should create a marker operation if a marker was affected', () => {
@@ -1547,12 +1549,12 @@ describe( 'Writer', () => {
 				const lastOperation = history.lastOperation;
 				const secondLastOperation = history.getOperation( history.version - 2 );
 
-				expect( secondLastOperation.type ).to.equal( 'marker' );
+				expect( secondLastOperation.type ).toBe( 'marker' );
 				expect( secondLastOperation.oldRange.isEqual( markerRange ) );
 				expect( secondLastOperation.newRange.isEqual( markerRange ) );
 
-				expect( lastOperation.type ).to.equal( 'merge' );
-				expect( model.document.version ).to.equal( documentVersion + 2 );
+				expect( lastOperation.type ).toBe( 'merge' );
+				expect( model.document.version ).toBe( documentVersion + 2 );
 			}
 		} );
 
@@ -1572,8 +1574,8 @@ describe( 'Writer', () => {
 
 			const lastOperation = history.lastOperation;
 
-			expect( lastOperation.type ).to.equal( 'merge' );
-			expect( model.document.version ).to.equal( documentVersion + 1 );
+			expect( lastOperation.type ).toBe( 'merge' );
+			expect( model.document.version ).toBe( documentVersion + 1 );
 		} );
 
 		it( 'should throw if there is no element after', () => {
@@ -1617,8 +1619,8 @@ describe( 'Writer', () => {
 		it( 'should move flat range of nodes', () => {
 			move( range, new ModelPosition( root, [ 1, 3 ] ) );
 
-			expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
-			expect( getNodesAndText( ModelRange._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
+			expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).toBe( 'PggggPfoPhhhhP' );
+			expect( getNodesAndText( ModelRange._createIn( root.getChild( 1 ) ) ) ).toBe( 'abcobarxyz' );
 		} );
 
 		it( 'should create a marker operation if a marker was affected', () => {
@@ -1638,12 +1640,12 @@ describe( 'Writer', () => {
 			const lastOperation = history.lastOperation;
 			const secondLastOperation = history.getOperation( history.version - 2 );
 
-			expect( secondLastOperation.type ).to.equal( 'marker' );
+			expect( secondLastOperation.type ).toBe( 'marker' );
 			expect( secondLastOperation.oldRange.isEqual( markerRange ) );
 			expect( secondLastOperation.newRange.isEqual( markerRange ) );
 
-			expect( lastOperation.type ).to.equal( 'move' );
-			expect( model.document.version ).to.equal( documentVersion + 2 );
+			expect( lastOperation.type ).toBe( 'move' );
+			expect( model.document.version ).toBe( documentVersion + 2 );
 		} );
 
 		it( 'should not create a marker operation if affected marker was not using operations', () => {
@@ -1662,8 +1664,8 @@ describe( 'Writer', () => {
 
 			const lastOperation = history.lastOperation;
 
-			expect( lastOperation.type ).to.equal( 'move' );
-			expect( model.document.version ).to.equal( documentVersion + 1 );
+			expect( lastOperation.type ).toBe( 'move' );
+			expect( model.document.version ).toBe( documentVersion + 1 );
 		} );
 
 		it( 'should throw if object to move is not a range', () => {
@@ -1731,36 +1733,36 @@ describe( 'Writer', () => {
 			it( 'should remove specified node', () => {
 				remove( div );
 
-				expect( root.maxOffset ).to.equal( 1 );
-				expect( root.childCount ).to.equal( 1 );
-				expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+				expect( root.maxOffset ).toBe( 1 );
+				expect( root.childCount ).toBe( 1 );
+				expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).toBe( 'abcxyz' );
 			} );
 
 			it( 'should remove specified text node', () => {
 				remove( p.getChild( 0 ) );
 
-				expect( getNodesAndText( ModelRange._createOn( p ) ) ).to.equal( 'PP' );
+				expect( getNodesAndText( ModelRange._createOn( p ) ) ).toBe( 'PP' );
 			} );
 
 			it( 'should remove any range of nodes', () => {
 				remove( range );
 
-				expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
-				expect( getNodesAndText( ModelRange._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).toBe( 'PggParPhhhhP' );
+				expect( getNodesAndText( ModelRange._createIn( root.getChild( 1 ) ) ) ).toBe( 'abcxyz' );
 			} );
 
 			it( 'should create minimal number of remove operations, each with only one operation', () => {
 				batch = new Batch();
 				remove( range );
 
-				expect( batch.operations.length ).to.equal( 2 );
+				expect( batch.operations.length ).toBe( 2 );
 			} );
 
 			it( 'should use MoveOperation to graveyard', () => {
 				batch = new Batch();
 				remove( div );
 
-				expect( batch.operations[ 0 ].type ).to.equal( 'remove' );
+				expect( batch.operations[ 0 ].type ).toBe( 'remove' );
 			} );
 
 			it( 'should create a marker operation if a marker was affected', () => {
@@ -1780,13 +1782,13 @@ describe( 'Writer', () => {
 				const lastOperation = history.lastOperation;
 				const secondLastOperation = history.getOperation( history.version - 2 );
 
-				expect( secondLastOperation.type ).to.equal( 'marker' );
+				expect( secondLastOperation.type ).toBe( 'marker' );
 				expect( secondLastOperation.oldRange.isEqual( markerRange ) );
 				expect( secondLastOperation.newRange.isEqual( markerRange ) );
 
-				expect( lastOperation.type ).to.equal( 'remove' );
+				expect( lastOperation.type ).toBe( 'remove' );
 
-				expect( model.document.version ).to.equal( documentVersion + 2 );
+				expect( model.document.version ).toBe( documentVersion + 2 );
 			} );
 
 			it( 'should not create a marker operation if affected marker was not using operations', () => {
@@ -1805,8 +1807,8 @@ describe( 'Writer', () => {
 
 				const lastOperation = history.lastOperation;
 
-				expect( lastOperation.type ).to.equal( 'remove' );
-				expect( model.document.version ).to.equal( documentVersion + 1 );
+				expect( lastOperation.type ).toBe( 'remove' );
+				expect( model.document.version ).toBe( documentVersion + 1 );
 			} );
 
 			it( 'should throw when trying to use detached writer', () => {
@@ -1834,36 +1836,36 @@ describe( 'Writer', () => {
 			it( 'should remove specified node', () => {
 				remove( div );
 
-				expect( frag.maxOffset ).to.equal( 1 );
-				expect( frag.childCount ).to.equal( 1 );
-				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+				expect( frag.maxOffset ).toBe( 1 );
+				expect( frag.childCount ).toBe( 1 );
+				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 0 ) ) ) ).toBe( 'abcxyz' );
 			} );
 
 			it( 'should remove specified text node', () => {
 				remove( p.getChild( 0 ) );
 
-				expect( getNodesAndText( ModelRange._createOn( p ) ) ).to.equal( 'PP' );
+				expect( getNodesAndText( ModelRange._createOn( p ) ) ).toBe( 'PP' );
 			} );
 
 			it( 'should remove any range of nodes', () => {
 				remove( range );
 
-				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
-				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 0 ) ) ) ).toBe( 'PggParPhhhhP' );
+				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 1 ) ) ) ).toBe( 'abcxyz' );
 			} );
 
 			it( 'should create minimal number of remove operations, each with only one operation', () => {
 				batch = new Batch();
 				remove( range );
 
-				expect( batch.operations.length ).to.equal( 0 );
+				expect( batch.operations.length ).toBe( 0 );
 			} );
 
 			it( 'should use DetachOperation', () => {
-				sinon.spy( model, 'applyOperation' );
+				vi.spyOn( model, 'applyOperation' );
 				remove( div );
 
-				expect( model.applyOperation.firstCall.args[ 0 ].type ).to.equal( 'detach' );
+				expect( model.applyOperation.mock.calls[ 0 ][ 0 ].type ).toBe( 'detach' );
 			} );
 
 			it( 'should throw when trying to use detached writer', () => {
@@ -1885,8 +1887,8 @@ describe( 'Writer', () => {
 
 			rename( p, 'h' );
 
-			expect( root.maxOffset ).to.equal( 1 );
-			expect( root.getChild( 0 ) ).to.have.property( 'name', 'h' );
+			expect( root.maxOffset ).toBe( 1 );
+			expect( root.getChild( 0 ) ).toHaveProperty( 'name', 'h' );
 		} );
 
 		it( 'should rename in document fragment', () => {
@@ -1897,8 +1899,8 @@ describe( 'Writer', () => {
 
 			rename( p, 'h' );
 
-			expect( docFrag.maxOffset ).to.equal( 1 );
-			expect( docFrag.getChild( 0 ) ).to.have.property( 'name', 'h' );
+			expect( docFrag.maxOffset ).toBe( 1 );
+			expect( docFrag.getChild( 0 ) ).toHaveProperty( 'name', 'h' );
 		} );
 
 		it( 'should throw if not an Element instance is passed', () => {
@@ -1931,19 +1933,19 @@ describe( 'Writer', () => {
 		it( 'should split foobar to foo and bar', () => {
 			split( new ModelPosition( root, [ 0, 3 ] ) );
 
-			expect( root.maxOffset ).to.equal( 2 );
+			expect( root.maxOffset ).toBe( 2 );
 
-			expect( root.getChild( 0 ).name ).to.equal( 'p' );
-			expect( root.getChild( 0 ).maxOffset ).to.equal( 3 );
-			expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
-			expect( root.getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+			expect( root.getChild( 0 ).name ).toBe( 'p' );
+			expect( root.getChild( 0 ).maxOffset ).toBe( 3 );
+			expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 1 );
+			expect( root.getChild( 0 ).getAttribute( 'key' ) ).toBe( 'value' );
+			expect( root.getChild( 0 ).getChild( 0 ).data ).toBe( 'foo' );
 
-			expect( root.getChild( 1 ).name ).to.equal( 'p' );
-			expect( root.getChild( 1 ).maxOffset ).to.equal( 3 );
-			expect( count( root.getChild( 1 ).getAttributes() ) ).to.equal( 1 );
-			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
+			expect( root.getChild( 1 ).name ).toBe( 'p' );
+			expect( root.getChild( 1 ).maxOffset ).toBe( 3 );
+			expect( count( root.getChild( 1 ).getAttributes() ) ).toBe( 1 );
+			expect( root.getChild( 1 ).getAttribute( 'key' ) ).toBe( 'value' );
+			expect( root.getChild( 1 ).getChild( 0 ).data ).toBe( 'bar' );
 		} );
 
 		it( 'should split inside document fragment', () => {
@@ -1952,32 +1954,32 @@ describe( 'Writer', () => {
 
 			split( new ModelPosition( docFrag, [ 0, 3 ] ) );
 
-			expect( docFrag.maxOffset ).to.equal( 2 );
+			expect( docFrag.maxOffset ).toBe( 2 );
 
-			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
-			expect( docFrag.getChild( 0 ).maxOffset ).to.equal( 3 );
-			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+			expect( docFrag.getChild( 0 ).name ).toBe( 'p' );
+			expect( docFrag.getChild( 0 ).maxOffset ).toBe( 3 );
+			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).toBe( 'foo' );
 
-			expect( docFrag.getChild( 1 ).name ).to.equal( 'p' );
-			expect( docFrag.getChild( 1 ).maxOffset ).to.equal( 3 );
-			expect( docFrag.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
+			expect( docFrag.getChild( 1 ).name ).toBe( 'p' );
+			expect( docFrag.getChild( 1 ).maxOffset ).toBe( 3 );
+			expect( docFrag.getChild( 1 ).getChild( 0 ).data ).toBe( 'bar' );
 		} );
 
 		it( 'should create an empty paragraph if we split at the end', () => {
 			split( new ModelPosition( root, [ 0, 6 ] ) );
 
-			expect( root.maxOffset ).to.equal( 2 );
+			expect( root.maxOffset ).toBe( 2 );
 
-			expect( root.getChild( 0 ).name ).to.equal( 'p' );
-			expect( root.getChild( 0 ).maxOffset ).to.equal( 6 );
-			expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
-			expect( root.getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
+			expect( root.getChild( 0 ).name ).toBe( 'p' );
+			expect( root.getChild( 0 ).maxOffset ).toBe( 6 );
+			expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 1 );
+			expect( root.getChild( 0 ).getAttribute( 'key' ) ).toBe( 'value' );
+			expect( root.getChild( 0 ).getChild( 0 ).data ).toBe( 'foobar' );
 
-			expect( root.getChild( 1 ).name ).to.equal( 'p' );
-			expect( root.getChild( 1 ).maxOffset ).to.equal( 0 );
-			expect( count( root.getChild( 1 ).getAttributes() ) ).to.equal( 1 );
-			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( root.getChild( 1 ).name ).toBe( 'p' );
+			expect( root.getChild( 1 ).maxOffset ).toBe( 0 );
+			expect( count( root.getChild( 1 ).getAttributes() ) ).toBe( 1 );
+			expect( root.getChild( 1 ).getAttribute( 'key' ) ).toBe( 'value' );
 		} );
 
 		it( 'should throw if we try to split a root', () => {
@@ -2010,20 +2012,20 @@ describe( 'Writer', () => {
 
 			split( new ModelPosition( p, [ 3 ] ), section );
 
-			expect( root.maxOffset ).to.equal( 1 );
-			expect( section.maxOffset ).to.equal( 2 );
+			expect( root.maxOffset ).toBe( 1 );
+			expect( section.maxOffset ).toBe( 2 );
 
-			expect( section.getChild( 0 ).name ).to.equal( 'div' );
-			expect( section.getChild( 0 ).getChild( 0 ).name ).to.equal( 'p' );
-			expect( section.getChild( 0 ).getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( count( section.getChild( 0 ).getChild( 0 ).getAttributes() ) ).to.equal( 1 );
-			expect( section.getChild( 0 ).getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+			expect( section.getChild( 0 ).name ).toBe( 'div' );
+			expect( section.getChild( 0 ).getChild( 0 ).name ).toBe( 'p' );
+			expect( section.getChild( 0 ).getChild( 0 ).getAttribute( 'key' ) ).toBe( 'value' );
+			expect( count( section.getChild( 0 ).getChild( 0 ).getAttributes() ) ).toBe( 1 );
+			expect( section.getChild( 0 ).getChild( 0 ).getChild( 0 ).data ).toBe( 'foo' );
 
-			expect( section.getChild( 1 ).name ).to.equal( 'div' );
-			expect( section.getChild( 1 ).getChild( 0 ).name ).to.equal( 'p' );
-			expect( section.getChild( 1 ).getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( count( section.getChild( 1 ).getChild( 0 ).getAttributes() ) ).to.equal( 1 );
-			expect( section.getChild( 1 ).getChild( 0 ).getChild( 0 ).data ).to.equal( 'bar' );
+			expect( section.getChild( 1 ).name ).toBe( 'div' );
+			expect( section.getChild( 1 ).getChild( 0 ).name ).toBe( 'p' );
+			expect( section.getChild( 1 ).getChild( 0 ).getAttribute( 'key' ) ).toBe( 'value' );
+			expect( count( section.getChild( 1 ).getChild( 0 ).getAttributes() ) ).toBe( 1 );
+			expect( section.getChild( 1 ).getChild( 0 ).getChild( 0 ).data ).toBe( 'bar' );
 		} );
 
 		it( 'should throw when limitElement is not a position ancestor', () => {
@@ -2062,21 +2064,21 @@ describe( 'Writer', () => {
 			const p = new ModelElement( 'p' );
 			wrap( range, p );
 
-			expect( root.maxOffset ).to.equal( 5 );
-			expect( root.getChild( 0 ).data ).to.equal( 'fo' );
-			expect( root.getChild( 1 ).name ).to.equal( 'p' );
-			expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'ob' );
-			expect( root.getChild( 2 ).data ).to.equal( 'ar' );
+			expect( root.maxOffset ).toBe( 5 );
+			expect( root.getChild( 0 ).data ).toBe( 'fo' );
+			expect( root.getChild( 1 ).name ).toBe( 'p' );
+			expect( root.getChild( 1 ).getChild( 0 ).data ).toBe( 'ob' );
+			expect( root.getChild( 2 ).data ).toBe( 'ar' );
 		} );
 
 		it( 'should wrap flat range with an element of given name', () => {
 			wrap( range, 'p' );
 
-			expect( root.maxOffset ).to.equal( 5 );
-			expect( root.getChild( 0 ).data ).to.equal( 'fo' );
-			expect( root.getChild( 1 ).name ).to.equal( 'p' );
-			expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'ob' );
-			expect( root.getChild( 2 ).data ).to.equal( 'ar' );
+			expect( root.maxOffset ).toBe( 5 );
+			expect( root.getChild( 0 ).data ).toBe( 'fo' );
+			expect( root.getChild( 1 ).name ).toBe( 'p' );
+			expect( root.getChild( 1 ).getChild( 0 ).data ).toBe( 'ob' );
+			expect( root.getChild( 2 ).data ).toBe( 'ar' );
 		} );
 
 		it( 'should wrap inside document fragment', () => {
@@ -2084,9 +2086,9 @@ describe( 'Writer', () => {
 
 			wrap( ModelRange._createIn( docFrag ), 'p' );
 
-			expect( docFrag.maxOffset ).to.equal( 1 );
-			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
-			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+			expect( docFrag.maxOffset ).toBe( 1 );
+			expect( docFrag.getChild( 0 ).name ).toBe( 'p' );
+			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).toBe( 'foo' );
 		} );
 
 		it( 'should throw if range to wrap is not flat', () => {
@@ -2137,8 +2139,8 @@ describe( 'Writer', () => {
 		it( 'should unwrap given element', () => {
 			unwrap( p );
 
-			expect( root.maxOffset ).to.equal( 5 );
-			expect( root.getChild( 0 ).data ).to.equal( 'axyzb' );
+			expect( root.maxOffset ).toBe( 5 );
+			expect( root.getChild( 0 ).data ).toBe( 'axyzb' );
 		} );
 
 		it( 'should unwrap inside document fragment', () => {
@@ -2146,8 +2148,8 @@ describe( 'Writer', () => {
 
 			unwrap( docFrag.getChild( 0 ) );
 
-			expect( docFrag.maxOffset ).to.equal( 3 );
-			expect( docFrag.getChild( 0 ).data ).to.equal( 'foo' );
+			expect( docFrag.maxOffset ).toBe( 3 );
+			expect( docFrag.getChild( 0 ).data ).toBe( 'foo' );
 		} );
 
 		it( 'should throw if element to unwrap has no parent', () => {
@@ -2191,43 +2193,43 @@ describe( 'Writer', () => {
 		it( 'should add marker to the document marker collection', () => {
 			addMarker( 'name', { range, usingOperation: false } );
 
-			expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).to.be.true;
+			expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).toBe( true );
 		} );
 
 		it( 'should return marker if that was set directly', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false } );
 
-			expect( model.markers.get( 'name' ) ).to.equal( marker );
+			expect( model.markers.get( 'name' ) ).toBe( marker );
 		} );
 
 		it( 'should return marker if that was set using operation API', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
 
-			expect( model.markers.get( 'name' ) ).to.equal( marker );
+			expect( model.markers.get( 'name' ) ).toBe( marker );
 		} );
 
 		it( 'should return marker with properly set managedUsingOperations (to true)', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
 
-			expect( marker.managedUsingOperations ).to.be.true;
+			expect( marker.managedUsingOperations ).toBe( true );
 		} );
 
 		it( 'should return marker with properly set managedUsingOperations (to false)', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false } );
 
-			expect( marker.managedUsingOperations ).to.be.false;
+			expect( marker.managedUsingOperations ).toBe( false );
 		} );
 
 		it( 'should return marker with properly set affectsData (default to false)', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false } );
 
-			expect( marker.affectsData ).to.be.false;
+			expect( marker.affectsData ).toBe( false );
 		} );
 
 		it( 'should return marker with properly set affectsData (to false)', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false, affectsData: true } );
 
-			expect( marker.affectsData ).to.be.true;
+			expect( marker.affectsData ).toBe( true );
 		} );
 
 		it( 'should throw when trying to update existing marker in the document marker collection', () => {
@@ -2241,17 +2243,17 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should use operations when having set usingOperation to true', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			model.on( 'applyOperation', spy );
 
 			addMarker( 'name', { range, usingOperation: true } );
 			const op = batch.operations[ 0 ];
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
-			expect( op.oldRange ).to.be.null;
-			expect( op.newRange.isEqual( range ) ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 1 ][ 0 ].type ).toBe( 'marker' );
+			expect( op.oldRange ).toBeNull();
+			expect( op.newRange.isEqual( range ) ).toBe( true );
 		} );
 
 		it( 'should throw if marker with given name does not exist and range is not passed', () => {
@@ -2291,13 +2293,13 @@ describe( 'Writer', () => {
 
 			updateMarker( marker, { range: range2 } );
 
-			expect( batch.operations.length ).to.equal( 2 );
+			expect( batch.operations.length ).toBe( 2 );
 
 			const op = batch.operations[ 1 ];
 
-			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
-			expect( op.oldRange.isEqual( range ) ).to.be.true;
-			expect( op.newRange.isEqual( range2 ) ).to.be.true;
+			expect( marker.getRange().isEqual( range2 ) ).toBe( true );
+			expect( op.oldRange.isEqual( range ) ).toBe( true );
+			expect( op.newRange.isEqual( range2 ) ).toBe( true );
 		} );
 
 		it( 'should update managed marker\'s range by marker name using operations', () => {
@@ -2306,13 +2308,13 @@ describe( 'Writer', () => {
 
 			updateMarker( 'name', { range: range2 } );
 
-			expect( batch.operations.length ).to.equal( 2 );
+			expect( batch.operations.length ).toBe( 2 );
 
 			const op = batch.operations[ 1 ];
 
-			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
-			expect( op.oldRange.isEqual( range ) ).to.be.true;
-			expect( op.newRange.isEqual( range2 ) ).to.be.true;
+			expect( marker.getRange().isEqual( range2 ) ).toBe( true );
+			expect( op.oldRange.isEqual( range ) ).toBe( true );
+			expect( op.newRange.isEqual( range2 ) ).toBe( true );
 		} );
 
 		it( 'should update managed marker\'s range by marker instance using operations and usingOperation explicitly passed', () => {
@@ -2321,13 +2323,13 @@ describe( 'Writer', () => {
 
 			updateMarker( marker, { range: range2, usingOperation: true } );
 
-			expect( batch.operations.length ).to.equal( 2 );
+			expect( batch.operations.length ).toBe( 2 );
 
 			const op = batch.operations[ 1 ];
 
-			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
-			expect( op.oldRange.isEqual( range ) ).to.be.true;
-			expect( op.newRange.isEqual( range2 ) ).to.be.true;
+			expect( marker.getRange().isEqual( range2 ) ).toBe( true );
+			expect( op.oldRange.isEqual( range ) ).toBe( true );
+			expect( op.newRange.isEqual( range2 ) ).toBe( true );
 		} );
 
 		it( 'should update managed marker\'s range by marker name using operations and usingOperation explicitly passed', () => {
@@ -2336,17 +2338,17 @@ describe( 'Writer', () => {
 
 			updateMarker( 'name', { range: range2, usingOperation: true } );
 
-			expect( batch.operations.length ).to.equal( 2 );
+			expect( batch.operations.length ).toBe( 2 );
 
 			const op = batch.operations[ 1 ];
 
-			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
-			expect( op.oldRange.isEqual( range ) ).to.be.true;
-			expect( op.newRange.isEqual( range2 ) ).to.be.true;
+			expect( marker.getRange().isEqual( range2 ) ).toBe( true );
+			expect( op.oldRange.isEqual( range ) ).toBe( true );
+			expect( op.newRange.isEqual( range2 ) ).toBe( true );
 		} );
 
 		it( 'should not use operations when updating marker which does not use operations', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			model.on( 'applyOperation', spy );
 
 			const marker = addMarker( 'name', { range, usingOperation: false } );
@@ -2354,11 +2356,11 @@ describe( 'Writer', () => {
 
 			updateMarker( marker, { range: range2 } );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should create additional operation when marker type changes to not managed using operation', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			model.on( 'applyOperation', spy );
 
 			addMarker( 'name', { range, usingOperation: true } );
@@ -2369,21 +2371,21 @@ describe( 'Writer', () => {
 			const op1 = batch.operations[ 0 ];
 			const op2 = batch.operations[ 1 ];
 
-			sinon.assert.calledTwice( spy );
-			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
-			expect( spy.secondCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+			expect( spy.mock.calls[ 0 ][ 1 ][ 0 ].type ).toBe( 'marker' );
+			expect( spy.mock.calls[ 1 ][ 1 ][ 0 ].type ).toBe( 'marker' );
 
-			expect( op1.oldRange ).to.be.null;
-			expect( op1.newRange.isEqual( range ) ).to.be.true;
+			expect( op1.oldRange ).toBeNull();
+			expect( op1.newRange.isEqual( range ) ).toBe( true );
 
-			expect( op2.oldRange.isEqual( range ) ).to.be.true;
-			expect( op2.newRange ).to.be.null;
+			expect( op2.oldRange.isEqual( range ) ).toBe( true );
+			expect( op2.newRange ).toBeNull();
 
-			expect( marker.managedUsingOperations ).to.be.false;
+			expect( marker.managedUsingOperations ).toBe( false );
 		} );
 
 		it( 'should create additional operation when marker type changes to not managed using operation and changing its range', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			model.on( 'applyOperation', spy );
 			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
@@ -2395,23 +2397,23 @@ describe( 'Writer', () => {
 			const op1 = batch.operations[ 0 ];
 			const op2 = batch.operations[ 1 ];
 
-			sinon.assert.calledTwice( spy );
-			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
-			expect( spy.secondCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+			expect( spy.mock.calls[ 0 ][ 1 ][ 0 ].type ).toBe( 'marker' );
+			expect( spy.mock.calls[ 1 ][ 1 ][ 0 ].type ).toBe( 'marker' );
 
-			expect( op1.oldRange ).to.be.null;
-			expect( op1.newRange.isEqual( range ) ).to.be.true;
+			expect( op1.oldRange ).toBeNull();
+			expect( op1.newRange.isEqual( range ) ).toBe( true );
 
-			expect( op2.oldRange.isEqual( range ) ).to.be.true;
-			expect( op2.newRange ).to.be.null;
+			expect( op2.oldRange.isEqual( range ) ).toBe( true );
+			expect( op2.newRange ).toBeNull();
 
 			expect( marker.getRange().isEqual( range2 ) );
 
-			expect( marker.managedUsingOperations ).to.be.false;
+			expect( marker.managedUsingOperations ).toBe( false );
 		} );
 
 		it( 'should enable changing marker to be managed using operation', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			model.on( 'applyOperation', spy );
 
 			addMarker( 'name', { range, usingOperation: false } );
@@ -2419,14 +2421,14 @@ describe( 'Writer', () => {
 
 			const marker = model.markers.get( 'name' );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 1 ][ 0 ].type ).toBe( 'marker' );
 
-			expect( marker.managedUsingOperations ).to.be.true;
+			expect( marker.managedUsingOperations ).toBe( true );
 		} );
 
 		it( 'should enable changing marker to be managed using operation while changing range', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			model.on( 'applyOperation', spy );
 			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
@@ -2435,11 +2437,11 @@ describe( 'Writer', () => {
 
 			const marker = model.markers.get( 'name' );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
-			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 1 ][ 0 ].type ).toBe( 'marker' );
+			expect( marker.getRange().isEqual( range2 ) ).toBe( true );
 
-			expect( marker.managedUsingOperations ).to.be.true;
+			expect( marker.managedUsingOperations ).toBe( true );
 		} );
 
 		it( 'should allow changing affectsData property not using operations', () => {
@@ -2448,7 +2450,7 @@ describe( 'Writer', () => {
 
 			const marker = model.markers.get( 'name' );
 
-			expect( marker.affectsData ).to.be.false;
+			expect( marker.affectsData ).toBe( false );
 		} );
 
 		it( 'should allow changing affectsData property using operations', () => {
@@ -2459,10 +2461,10 @@ describe( 'Writer', () => {
 			const op2 = batch.operations[ 1 ];
 			const marker = model.markers.get( 'name' );
 
-			expect( op1.affectsData ).to.be.false;
-			expect( op2.affectsData ).to.be.true;
+			expect( op1.affectsData ).toBe( false );
+			expect( op2.affectsData ).toBe( true );
 
-			expect( marker.affectsData ).to.be.true;
+			expect( marker.affectsData ).toBe( true );
 		} );
 
 		it( 'should not change affectsData property if not provided', () => {
@@ -2473,7 +2475,7 @@ describe( 'Writer', () => {
 
 			const marker = model.markers.get( 'name' );
 
-			expect( marker.affectsData ).to.be.false;
+			expect( marker.affectsData ).toBe( false );
 		} );
 
 		it( 'should allow changing affectsData and usingOperation', () => {
@@ -2484,14 +2486,14 @@ describe( 'Writer', () => {
 			const op2 = batch.operations[ 1 ];
 			const marker = model.markers.get( 'name' );
 
-			expect( op1.affectsData ).to.be.false;
-			expect( op2.affectsData ).to.be.true;
+			expect( op1.affectsData ).toBe( false );
+			expect( op2.affectsData ).toBe( true );
 
-			expect( marker.affectsData ).to.be.true;
+			expect( marker.affectsData ).toBe( true );
 		} );
 
 		it( 'should allow changing affectsData and usingOperation #2', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			model.on( 'applyOperation', spy );
 
 			addMarker( 'name', { range, usingOperation: false, affectsData: true } );
@@ -2499,10 +2501,10 @@ describe( 'Writer', () => {
 
 			const marker = model.markers.get( 'name' );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 1 ][ 0 ].type ).toBe( 'marker' );
 
-			expect( marker.affectsData ).to.be.false;
+			expect( marker.affectsData ).toBe( false );
 		} );
 
 		it( 'should throw when range and usingOperations were not provided', () => {
@@ -2520,29 +2522,29 @@ describe( 'Writer', () => {
 
 		it( 'should only refresh (but warn()) the marker when there is no provided options to update', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const spy = sinon.spy( model.markers, '_refresh' );
-			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
+			const spy = vi.spyOn( model.markers, '_refresh' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			updateMarker( marker );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, marker );
-			sinon.assert.calledOnce( consoleWarnStub );
-			sinon.assert.calledWithExactly( consoleWarnStub.firstCall,
-				sinon.match( /^writer-updatemarker-reconvert-using-editingcontroller/ ),
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( marker );
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub ).toHaveBeenNthCalledWith( 1,
+				expect.stringMatching( /^writer-updatemarker-reconvert-using-editingcontroller/ ),
 				{ markerName: 'name' },
-				sinon.match.string // Link to the documentation
+				expect.any( String ) // Link to the documentation
 			);
 
 			updateMarker( 'name' );
 
-			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWithExactly( spy.secondCall, marker );
-			sinon.assert.calledTwice( consoleWarnStub );
-			sinon.assert.calledWithExactly( consoleWarnStub.secondCall,
-				sinon.match( /^writer-updatemarker-reconvert-using-editingcontroller/ ),
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+			expect( spy ).toHaveBeenNthCalledWith( 2, marker );
+			expect( consoleWarnStub ).toHaveBeenCalledTimes( 2 );
+			expect( consoleWarnStub ).toHaveBeenNthCalledWith( 2,
+				expect.stringMatching( /^writer-updatemarker-reconvert-using-editingcontroller/ ),
 				{ markerName: 'name' },
-				sinon.match.string // Link to the documentation
+				expect.any( String ) // Link to the documentation
 			);
 		} );
 
@@ -2569,7 +2571,7 @@ describe( 'Writer', () => {
 			addMarker( 'name', { range, usingOperation: false } );
 			removeMarker( 'name' );
 
-			expect( model.markers.get( 'name' ) ).to.be.null;
+			expect( model.markers.get( 'name' ) ).toBeNull();
 		} );
 
 		it( 'should throw when trying to remove non existing marker', () => {
@@ -2592,22 +2594,22 @@ describe( 'Writer', () => {
 
 			removeMarker( marker );
 
-			expect( model.markers.get( 'name' ) ).to.be.null;
+			expect( model.markers.get( 'name' ) ).toBeNull();
 		} );
 
 		it( 'should use MarkerOperation when marker was created using operation', () => {
 			addMarker( 'name', { range, usingOperation: true } );
 
 			const marker = model.markers.get( 'name' );
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			model.on( 'applyOperation', spy );
 
 			removeMarker( marker );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
-			expect( model.markers.get( 'name' ) ).to.be.null;
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 1 ][ 0 ].type ).toBe( 'marker' );
+			expect( model.markers.get( 'name' ) ).toBeNull();
 		} );
 	} );
 
@@ -2616,8 +2618,8 @@ describe( 'Writer', () => {
 			model.change( writer => {
 				const root = writer.addRoot( 'new' );
 
-				expect( model.document.getRoot( 'new' ) ).to.equal( root );
-				expect( root.isAttached() ).to.be.true;
+				expect( model.document.getRoot( 'new' ) ).toBe( root );
+				expect( root.isAttached() ).toBe( true );
 			} );
 		} );
 
@@ -2625,7 +2627,7 @@ describe( 'Writer', () => {
 			model.change( writer => {
 				const root = writer.addRoot( 'new', 'div' );
 
-				expect( root.name ).to.equal( 'div' );
+				expect( root.name ).toBe( 'div' );
 			} );
 		} );
 
@@ -2638,7 +2640,7 @@ describe( 'Writer', () => {
 			model.change( writer => {
 				const root = writer.addRoot( 'new' );
 
-				expect( root.isAttached() ).to.be.true;
+				expect( root.isAttached() ).toBe( true );
 			} );
 		} );
 
@@ -2660,11 +2662,11 @@ describe( 'Writer', () => {
 
 				const op = model.document.history.getOperation( version );
 
-				expect( op.type ).to.equal( 'addRoot' );
-				expect( op.rootName ).to.equal( 'new' );
-				expect( op.elementName ).to.equal( 'div' );
-				expect( op.baseVersion ).to.equal( version );
-				expect( op.isAdd ).to.equal( true );
+				expect( op.type ).toBe( 'addRoot' );
+				expect( op.rootName ).toBe( 'new' );
+				expect( op.elementName ).toBe( 'div' );
+				expect( op.baseVersion ).toBe( version );
+				expect( op.isAdd ).toBe( true );
 			} );
 		} );
 	} );
@@ -2686,11 +2688,11 @@ describe( 'Writer', () => {
 				writer.detachRoot( root );
 			} );
 
-			expect( root.isAttached() ).to.be.false;
+			expect( root.isAttached() ).toBe( false );
 			expect( root.isEmpty );
-			expect( Array.from( root.getAttributes() ).length ).to.equal( 0 );
-			expect( p.parent.rootName ).to.equal( '$graveyard' );
-			expect( model.markers.get( 'newMarker' ) ).to.be.null;
+			expect( Array.from( root.getAttributes() ).length ).toBe( 0 );
+			expect( p.parent.rootName ).toBe( '$graveyard' );
+			expect( model.markers.get( 'newMarker' ) ).toBeNull();
 		} );
 
 		it( 'should not remove markers when root in range is different than the detached root', () => {
@@ -2706,7 +2708,7 @@ describe( 'Writer', () => {
 				writer.detachRoot( root );
 			} );
 
-			expect( model.markers.get( 'newMarker' ) ).not.to.be.null;
+			expect( model.markers.get( 'newMarker' ) ).not.toBeNull();
 		} );
 
 		it( 'should accept root name as a parameter', () => {
@@ -2715,7 +2717,7 @@ describe( 'Writer', () => {
 				writer.detachRoot( 'new' );
 			} );
 
-			expect( model.document.getRoot( 'new' ).isAttached() ).to.be.false;
+			expect( model.document.getRoot( 'new' ).isAttached() ).toBe( false );
 		} );
 
 		it( 'should throw when trying to detach a non-existing root', () => {
@@ -2747,11 +2749,11 @@ describe( 'Writer', () => {
 
 				const op = model.document.history.getOperation( version );
 
-				expect( op.type ).to.equal( 'detachRoot' );
-				expect( op.rootName ).to.equal( 'new' );
-				expect( op.elementName ).to.equal( 'div' );
-				expect( op.baseVersion ).to.equal( version );
-				expect( op.isAdd ).to.equal( false );
+				expect( op.type ).toBe( 'detachRoot' );
+				expect( op.rootName ).toBe( 'new' );
+				expect( op.elementName ).toBe( 'div' );
+				expect( op.baseVersion ).toBe( version );
+				expect( op.isAdd ).toBe( false );
 			} );
 		} );
 	} );
@@ -2774,11 +2776,10 @@ describe( 'Writer', () => {
 		it( 'should use ModelDocumentSelection#_setTo method', () => {
 			const firstParagraph = root.getNodeByPath( [ 1 ] );
 
-			const setToSpy = sinon.spy( ModelDocumentSelection.prototype, '_setTo' );
+			const setToSpy = vi.spyOn( ModelDocumentSelection.prototype, '_setTo' );
 			setSelection( firstParagraph, 0 );
 
-			expect( setToSpy.calledOnce ).to.be.true;
-			setToSpy.restore();
+			expect( setToSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should change document selection ranges', () => {
@@ -2786,10 +2787,10 @@ describe( 'Writer', () => {
 
 			setSelection( range, { backward: true } );
 
-			expect( model.document.selection._ranges.length ).to.equal( 1 );
-			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 1, 0 ] );
-			expect( model.document.selection._ranges[ 0 ].end.path ).to.deep.equal( [ 2, 2 ] );
-			expect( model.document.selection.isBackward ).to.be.true;
+			expect( model.document.selection._ranges.length ).toBe( 1 );
+			expect( model.document.selection._ranges[ 0 ].start.path ).toEqual( [ 1, 0 ] );
+			expect( model.document.selection._ranges[ 0 ].end.path ).toEqual( [ 2, 2 ] );
+			expect( model.document.selection.isBackward ).toBe( true );
 		} );
 	} );
 
@@ -2811,20 +2812,19 @@ describe( 'Writer', () => {
 		it( 'should use ModelDocumentSelection#_setFocus method', () => {
 			const firstParagraph = root.getNodeByPath( [ 1 ] );
 
-			const setFocusSpy = sinon.spy( ModelDocumentSelection.prototype, '_setFocus' );
+			const setFocusSpy = vi.spyOn( ModelDocumentSelection.prototype, '_setFocus' );
 			setSelectionFocus( firstParagraph, 0 );
 
-			expect( setFocusSpy.calledOnce ).to.be.true;
-			setFocusSpy.restore();
+			expect( setFocusSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should change document selection ranges', () => {
 			setSelection( new ModelPosition( root, [ 0, 0 ] ) );
 			setSelectionFocus( new ModelPosition( root, [ 2, 2 ] ) );
 
-			expect( model.document.selection._ranges.length ).to.equal( 1 );
-			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
-			expect( model.document.selection._ranges[ 0 ].end.path ).to.deep.equal( [ 2, 2 ] );
+			expect( model.document.selection._ranges.length ).toBe( 1 );
+			expect( model.document.selection._ranges[ 0 ].start.path ).toEqual( [ 0, 0 ] );
+			expect( model.document.selection._ranges[ 0 ].end.path ).toEqual( [ 2, 2 ] );
 		} );
 	} );
 
@@ -2851,25 +2851,25 @@ describe( 'Writer', () => {
 			setSelection( rangeInEmptyP );
 			setSelectionAttribute( 'foo', 'bar' );
 
-			expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( model.document.selection.getAttribute( 'foo' ) ).toBe( 'bar' );
 
-			expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+			expect( emptyP.getAttribute( fooStoreAttrKey ) ).toBe( 'bar' );
 		} );
 
 		it( 'should be able to store attributes from the given object', () => {
 			setSelection( rangeInEmptyP );
 			setSelectionAttribute( { key1: 'foo', key2: 'bar' } );
 
-			expect( model.document.selection.getAttribute( 'key1' ) ).to.equal( 'foo' );
-			expect( model.document.selection.getAttribute( 'key2' ) ).to.equal( 'bar' );
+			expect( model.document.selection.getAttribute( 'key1' ) ).toBe( 'foo' );
+			expect( model.document.selection.getAttribute( 'key2' ) ).toBe( 'bar' );
 		} );
 
 		it( 'should be able to store attributes from the given iterable', () => {
 			setSelection( rangeInEmptyP );
 			setSelectionAttribute( new Map( [ [ 'key1', 'foo' ], [ 'key2', 'bar' ] ] ) );
 
-			expect( model.document.selection.getAttribute( 'key1' ) ).to.equal( 'foo' );
-			expect( model.document.selection.getAttribute( 'key2' ) ).to.equal( 'bar' );
+			expect( model.document.selection.getAttribute( 'key1' ) ).toBe( 'foo' );
+			expect( model.document.selection.getAttribute( 'key2' ) ).toBe( 'bar' );
 		} );
 	} );
 
@@ -2897,9 +2897,9 @@ describe( 'Writer', () => {
 			setSelectionAttribute( 'foo', 'bar' );
 			removeSelectionAttribute( 'foo' );
 
-			expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+			expect( model.document.selection.getAttribute( 'foo' ) ).toBeUndefined();
 
-			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).toBe( false );
 		} );
 
 		it( 'should remove all attributes from the given iterable', () => {
@@ -2908,10 +2908,10 @@ describe( 'Writer', () => {
 			setSelectionAttribute( 'foo2', 'bar2' );
 			removeSelectionAttribute( [ 'foo', 'foo2' ] );
 
-			expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
-			expect( model.document.selection.getAttribute( 'foo2' ) ).to.be.undefined;
+			expect( model.document.selection.getAttribute( 'foo' ) ).toBeUndefined();
+			expect( model.document.selection.getAttribute( 'foo2' ) ).toBeUndefined();
 
-			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).toBe( false );
 		} );
 
 		it( 'should do nothing if attribute does not exist in the selection', () => {
@@ -2920,25 +2920,24 @@ describe( 'Writer', () => {
 			setSelectionAttribute( 'foo2', 'bar2' );
 			removeSelectionAttribute( [ 'foo', 'baz' ] );
 
-			expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
-			expect( model.document.selection.getAttribute( 'foo2' ) ).to.equal( 'bar2' );
+			expect( model.document.selection.getAttribute( 'foo' ) ).toBeUndefined();
+			expect( model.document.selection.getAttribute( 'foo2' ) ).toBe( 'bar2' );
 
-			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).toBe( false );
 		} );
 	} );
 
 	describe( 'overrideSelectionGravity()', () => {
 		it( 'should use ModelDocumentSelection#_overrideGravity', () => {
-			const overrideGravitySpy = sinon.spy( ModelDocumentSelection.prototype, '_overrideGravity' );
+			const overrideGravitySpy = vi.spyOn( ModelDocumentSelection.prototype, '_overrideGravity' );
 
 			overrideSelectionGravity();
 
-			sinon.assert.calledOnce( overrideGravitySpy );
-			overrideGravitySpy.restore();
+			expect( overrideGravitySpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should return the unique id', () => {
-			expect( overrideSelectionGravity() ).to.be.a( 'string' );
+			expect( overrideSelectionGravity() ).toBeTypeOf( 'string' );
 		} );
 
 		it( 'should not get attributes from the node before the caret when gravity is overridden', () => {
@@ -2951,30 +2950,29 @@ describe( 'Writer', () => {
 
 			setSelection( new ModelPosition( root, [ 6 ] ) );
 
-			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).toEqual( [ 'foo', 'bar' ] );
 
 			overrideSelectionGravity();
 
-			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo' ] );
-			expect( model.document.selection.isGravityOverridden ).to.true;
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).toEqual( [ 'foo' ] );
+			expect( model.document.selection.isGravityOverridden ).toBe( true );
 
 			// Moving selection should not restore the gravity.
 			setSelection( new ModelPosition( root, [ 5 ] ) );
 
-			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
-			expect( model.document.selection.isGravityOverridden ).to.true;
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).toEqual( [ 'foo', 'bar' ] );
+			expect( model.document.selection.isGravityOverridden ).toBe( true );
 		} );
 	} );
 
 	describe( 'restoreSelectionGravity()', () => {
 		it( 'should use ModelDocumentSelection#_restoreGravity', () => {
 			const overrideUid = overrideSelectionGravity();
-			const restoreGravitySpy = sinon.spy( ModelDocumentSelection.prototype, '_restoreGravity' );
+			const restoreGravitySpy = vi.spyOn( ModelDocumentSelection.prototype, '_restoreGravity' );
 
 			restoreSelectionGravity( overrideUid );
 
-			sinon.assert.calledOnce( restoreGravitySpy );
-			restoreGravitySpy.restore();
+			expect( restoreGravitySpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should restore overridden gravity to default', () => {
@@ -2989,107 +2987,107 @@ describe( 'Writer', () => {
 
 			const overrideUid = overrideSelectionGravity();
 
-			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo' ] );
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).toEqual( [ 'foo' ] );
 
 			restoreSelectionGravity( overrideUid );
 
-			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).toEqual( [ 'foo', 'bar' ] );
 		} );
 	} );
 
 	describe( 'createPositionFromPath()', () => {
 		it( 'should call model.createPositionFromPath()', () => {
-			const stub = sinon.stub( model, 'createPositionFromPath' );
+			const stub = vi.spyOn( model, 'createPositionFromPath' ).mockImplementation( () => {} );
 
 			model.change( writer => {
 				writer.createPositionFromPath();
 			} );
 
-			sinon.assert.calledOnce( stub );
+			expect( stub ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'createPositionAt()', () => {
 		it( 'should call model.createPositionAt()', () => {
-			const stub = sinon.stub( model, 'createPositionAt' );
+			const stub = vi.spyOn( model, 'createPositionAt' ).mockImplementation( () => {} );
 
 			model.change( writer => {
 				writer.createPositionAt();
 			} );
 
-			sinon.assert.calledOnce( stub );
+			expect( stub ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'createPositionAfter()', () => {
 		it( 'should call model.createPositionAfter()', () => {
-			const stub = sinon.stub( model, 'createPositionAfter' );
+			const stub = vi.spyOn( model, 'createPositionAfter' ).mockImplementation( () => {} );
 
 			model.change( writer => {
 				writer.createPositionAfter();
 			} );
 
-			sinon.assert.calledOnce( stub );
+			expect( stub ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'createPositionBefore()', () => {
 		it( 'should call model.createPositionBefore()', () => {
-			const stub = sinon.stub( model, 'createPositionBefore' );
+			const stub = vi.spyOn( model, 'createPositionBefore' ).mockImplementation( () => {} );
 
 			model.change( writer => {
 				writer.createPositionBefore();
 			} );
 
-			sinon.assert.calledOnce( stub );
+			expect( stub ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'createRange()', () => {
 		it( 'should call model.createRange()', () => {
-			const stub = sinon.stub( model, 'createRange' );
+			const stub = vi.spyOn( model, 'createRange' ).mockImplementation( () => {} );
 
 			model.change( writer => {
 				writer.createRange();
 			} );
 
-			sinon.assert.calledOnce( stub );
+			expect( stub ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'createRangeIn()', () => {
 		it( 'should call model.createRangeIn()', () => {
-			const stub = sinon.stub( model, 'createRangeIn' );
+			const stub = vi.spyOn( model, 'createRangeIn' ).mockImplementation( () => {} );
 
 			model.change( writer => {
 				writer.createRangeIn();
 			} );
 
-			sinon.assert.calledOnce( stub );
+			expect( stub ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'createRangeOn()', () => {
 		it( 'should call model.createRangeOn()', () => {
-			const stub = sinon.stub( model, 'createRangeOn' );
+			const stub = vi.spyOn( model, 'createRangeOn' ).mockImplementation( () => {} );
 
 			model.change( writer => {
 				writer.createRangeOn();
 			} );
 
-			sinon.assert.calledOnce( stub );
+			expect( stub ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'createSelection()', () => {
 		it( 'should call model.createSelection()', () => {
-			const stub = sinon.stub( model, 'createSelection' );
+			const stub = vi.spyOn( model, 'createSelection' ).mockImplementation( () => {} );
 
 			model.change( writer => {
 				writer.createSelection();
 			} );
 
-			sinon.assert.calledOnce( stub );
+			expect( stub ).toHaveBeenCalledOnce();
 		} );
 	} );
 

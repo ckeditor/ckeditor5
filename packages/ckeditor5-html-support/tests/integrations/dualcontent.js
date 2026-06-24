@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
@@ -41,15 +42,15 @@ describe( 'DualContentModelElementSupport', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( editor.plugins.has( 'DualContentModelElementSupport' ) ).to.be.true;
+		expect( editor.plugins.has( 'DualContentModelElementSupport' ) ).toBe( true );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( DualContentModelElementSupport.isOfficialPlugin ).to.be.true;
+		expect( DualContentModelElementSupport.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( DualContentModelElementSupport.isPremiumPlugin ).to.be.false;
+		expect( DualContentModelElementSupport.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be only applied to newly enabled elements', () => {
@@ -58,11 +59,11 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><p>foobar</p></div>' );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			'<paragraph>foobar</paragraph>'
 		);
 
-		expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+		expect( editor.getData() ).toBe( '<p>foobar</p>' );
 	} );
 
 	it( 'should recognize paragraph-like elements', () => {
@@ -70,13 +71,13 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><i>foo</i>bar<b>baz</b></div>' );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			'<htmlDivParagraph>' +
 			'<$text italic="true">foo</$text>bar<$text bold="true">baz</$text>' +
 			'</htmlDivParagraph>'
 		);
 
-		expect( editor.getData() ).to.equal( '<div><i>foo</i>bar<strong>baz</strong></div>' );
+		expect( editor.getData() ).toBe( '<div><i>foo</i>bar<strong>baz</strong></div>' );
 	} );
 
 	it( 'should recognize paragraph-like elements with soft breaks', () => {
@@ -84,11 +85,11 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div>foo<br>bar</div>' );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			'<htmlDivParagraph>foo<softBreak></softBreak>bar</htmlDivParagraph>'
 		);
 
-		expect( editor.getData() ).to.equal( '<div>foo<br>bar</div>' );
+		expect( editor.getData() ).toBe( '<div>foo<br>bar</div>' );
 	} );
 
 	it( 'should recognize paragraph-like elements with nested structure', () => {
@@ -96,7 +97,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><a href="example.com"><i>foo</i>bar</a>baz</div>' );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			'<htmlDivParagraph>' +
 				'<$text italic="true" linkHref="example.com">foo</$text>' +
 				'<$text linkHref="example.com">bar</$text>' +
@@ -104,7 +105,7 @@ describe( 'DualContentModelElementSupport', () => {
 			'</htmlDivParagraph>'
 		);
 
-		expect( editor.getData() ).to.equal( '<div><a href="example.com"><i>foo</i>bar</a>baz</div>' );
+		expect( editor.getData() ).toBe( '<div><a href="example.com"><i>foo</i>bar</a>baz</div>' );
 	} );
 
 	it( 'should recognize block elements', () => {
@@ -112,11 +113,11 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><p>foobar</p></div>' );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			'<htmlDiv><paragraph>foobar</paragraph></htmlDiv>'
 		);
 
-		expect( editor.getData() ).to.equal( '<div><p>foobar</p></div>' );
+		expect( editor.getData() ).toBe( '<div><p>foobar</p></div>' );
 	} );
 
 	it( 'should recognize block elements with nested structure', () => {
@@ -124,14 +125,14 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><a href="example.com"><p>foo</p></a>bar</div>' );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			'<htmlDiv>' +
 				'<paragraph><$text linkHref="example.com">foo</$text></paragraph>' +
 				'<paragraph>bar</paragraph>' +
 			'</htmlDiv>'
 		);
 
-		expect( editor.getData() ).to.equal( '<div><p><a href="example.com">foo</a></p><p>bar</p></div>' );
+		expect( editor.getData() ).toBe( '<div><p><a href="example.com">foo</a></p><p>bar</p></div>' );
 	} );
 
 	it( 'should autoparagraph mixed content', () => {
@@ -139,11 +140,11 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div>foo<p>bar</p>baz</div>' );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			'<htmlDiv><paragraph>foo</paragraph><paragraph>bar</paragraph><paragraph>baz</paragraph></htmlDiv>'
 		);
 
-		expect( editor.getData() ).to.equal( '<div><p>foo</p><p>bar</p><p>baz</p></div>' );
+		expect( editor.getData() ).toBe( '<div><p>foo</p><p>bar</p><p>baz</p></div>' );
 	} );
 
 	it( 'should detect nested dual content', () => {
@@ -151,11 +152,11 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><div>inline</div><div><p>sectioning</p></div></div>' );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			'<htmlDiv><htmlDivParagraph>inline</htmlDivParagraph><htmlDiv><paragraph>sectioning</paragraph></htmlDiv></htmlDiv>'
 		);
 
-		expect( editor.getData() ).to.equal( '<div><div>inline</div><div><p>sectioning</p></div></div>' );
+		expect( editor.getData() ).toBe( '<div><div>inline</div><div><p>sectioning</p></div></div>' );
 	} );
 
 	it( 'should preserve allowed attributes', () => {
@@ -164,7 +165,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div data-foo><p>foobar</p></div><div data-foo>foobar</div>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<htmlDiv htmlDivAttributes="(1)"><paragraph>foobar</paragraph></htmlDiv>' +
 			'<htmlDivParagraph htmlDivAttributes="(2)">foobar</htmlDivParagraph>',
 			attributes: {
@@ -177,7 +178,7 @@ describe( 'DualContentModelElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<div data-foo=""><p>foobar</p></div><div data-foo="">foobar</div>' );
+		expect( editor.getData() ).toBe( '<div data-foo=""><p>foobar</p></div><div data-foo="">foobar</div>' );
 	} );
 
 	it( 'should remove disallowed attributes', () => {
@@ -187,13 +188,13 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div data-foo><p>foobar</p></div><div data-foo>foobar</div>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<htmlDiv><paragraph>foobar</paragraph></htmlDiv>' +
 			'<htmlDivParagraph>foobar</htmlDivParagraph>',
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal( '<div><p>foobar</p></div><div>foobar</div>' );
+		expect( editor.getData() ).toBe( '<div><p>foobar</p></div><div>foobar</div>' );
 	} );
 
 	it( 'should ensure that model element is allowed in the insertion context', () => {
@@ -210,7 +211,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<xyz><p>xyz</p></xyz>' );
 
-		expect( editor.getData() ).to.equal( '<p>xyz</p>' );
+		expect( editor.getData() ).toBe( '<p>xyz</p>' );
 	} );
 
 	describe( 'with ghs configured to allow all', () => {
@@ -255,7 +256,7 @@ describe( 'DualContentModelElementSupport', () => {
 				'</dl>'
 			);
 
-			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).toBe(
 				'<htmlDl>' +
 					'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
 					'<htmlDd><paragraph>Godzilla</paragraph></htmlDd>' +
@@ -279,7 +280,7 @@ describe( 'DualContentModelElementSupport', () => {
 				'</dl>'
 			);
 
-			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).toBe(
 				'<htmlDl>' +
 					'<htmlDiv>' +
 						'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
@@ -308,7 +309,7 @@ describe( 'DualContentModelElementSupport', () => {
 				'</dl>'
 			);
 
-			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).toBe(
 				'<htmlDiv><htmlDivParagraph>inline</htmlDivParagraph><htmlDiv><paragraph>sectioning</paragraph></htmlDiv></htmlDiv>' +
 				'<htmlDl>' +
 					'<htmlDiv>' +
@@ -329,7 +330,7 @@ describe( 'DualContentModelElementSupport', () => {
 				'<dl>' +
 					'<dd>' +
 						'<h3>Heading 1</h3>' +
-						'<div><img src="/assets/sample.png"></div>' +
+						'<div><img src="/sample.png"></div>' +
 					'</dd>' +
 					'<div>' +
 						'<dt>Title</dt>' +
@@ -338,11 +339,11 @@ describe( 'DualContentModelElementSupport', () => {
 				'</dl>'
 			);
 
-			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).toBe(
 				'<htmlDl>' +
 					'<htmlDd>' +
 						'<htmlH3>Heading 1</htmlH3>' +
-						'<htmlDivParagraph><imageInline src="/assets/sample.png"></imageInline></htmlDivParagraph>' +
+						'<htmlDivParagraph><imageInline src="/sample.png"></imageInline></htmlDivParagraph>' +
 					'</htmlDd>' +
 					'<htmlDiv>' +
 						'<htmlDt><paragraph>Title</paragraph></htmlDt>' +

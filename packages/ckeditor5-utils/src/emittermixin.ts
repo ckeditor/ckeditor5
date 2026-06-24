@@ -21,6 +21,22 @@ const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
 const _delegations = Symbol( 'delegations' );
 
+/**
+ * Constructor returned by {@link ~EmitterMixin}. Use it to name a mixin base class before extending it.
+ *
+ * ```
+ * const MyEmitterBase: EmitterMixinConstructor<typeof BaseClass> = EmitterMixin( BaseClass );
+ *
+ * class MyEmitter extends MyEmitterBase {}
+ * ```
+ */
+export type EmitterMixinConstructor<Base extends Constructor | undefined = undefined> = Base extends Constructor ?
+	Mixed<Base, Emitter> :
+	{
+		new (): Emitter;
+		prototype: Emitter;
+	};
+
 const defaultEmitterClass = /* #__PURE__ */ EmitterMixin( Object );
 
 /**
@@ -43,7 +59,7 @@ const defaultEmitterClass = /* #__PURE__ */ EmitterMixin( Object );
  *
  * @label EXTENDS
  */
-export function EmitterMixin<Base extends Constructor>( base: Base ): Mixed<Base, Emitter>;
+export function EmitterMixin<Base extends Constructor>( base: Base ): EmitterMixinConstructor<Base>;
 
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.
@@ -63,10 +79,7 @@ export function EmitterMixin<Base extends Constructor>( base: Base ): Mixed<Base
  *
  * @label NO_ARGUMENTS
  */
-export function EmitterMixin(): {
-	new (): Emitter;
-	prototype: Emitter;
-};
+export function EmitterMixin(): EmitterMixinConstructor;
 
 export function EmitterMixin( base?: Constructor ): unknown {
 	if ( !base ) {
@@ -273,7 +286,7 @@ export function EmitterMixin( base?: Constructor ): unknown {
 				return eventInfo.return;
 			} catch ( err ) {
 				// @if CK_DEBUG // throw err;
-				/* istanbul ignore next -- @preserve */
+				/* v8 ignore next -- @preserve */
 				CKEditorError.rethrowUnexpectedError( err as Error, this );
 			}
 		}

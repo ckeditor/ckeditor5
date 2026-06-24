@@ -113,12 +113,6 @@ export {
 export { getSelectedImageWidthInUnits as _getSelectedImageWidthInUnits } from './imageresize/utils/getselectedimagewidthinunits.js';
 
 export {
-	tryParseDimensionWithUnit as _tryParseImageDimensionWithUnit,
-	tryCastDimensionsToUnit as _tryCastImageDimensionsToUnit
-} from './imageresize/utils/tryparsedimensionwithunit.js';
-export type { DimensionWithUnit as _ImageDimensionWithUnit } from './imageresize/utils/tryparsedimensionwithunit.js';
-
-export {
 	modelToViewStyleAttribute as _modelToViewImageStyleAttribute,
 	viewToModelStyleAttribute as _viewToModelImageStyleAttribute
 } from './imagestyle/converters.js';

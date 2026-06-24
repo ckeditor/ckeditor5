@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -12,15 +13,12 @@ import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Table } from '@ckeditor/ckeditor5-table';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { Style } from '../src/style.js';
 
 describe( 'StyleCommand', () => {
 	let editor, editorElement, command, model, doc, root;
-
-	testUtils.createSinonSandbox();
 
 	const inlineStyles = [
 		{
@@ -133,6 +131,7 @@ describe( 'StyleCommand', () => {
 	afterEach( async () => {
 		editorElement.remove();
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( '#enabledStyles', () => {
@@ -142,10 +141,11 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 6 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockParagraphStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should enable styles for heading', () => {
@@ -156,10 +156,11 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 7 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockHeadingStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should enable styles for block quote', () => {
@@ -173,11 +174,12 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 7 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockParagraphStyles.map( ( { name } ) => name ),
 					...blockQuoteBlockStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should enable styles for div (as container)', () => {
@@ -191,11 +193,12 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 7 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockParagraphStyles.map( ( { name } ) => name ),
 					...blockDivStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should enable styles for div (as block)', () => {
@@ -207,10 +210,11 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 6 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockDivStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should enable styles for paragraphs when nested inside html section', () => {
@@ -225,7 +229,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Red paragraph' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<htmlSection><paragraph htmlPAttributes="{"classes":["red"]}">[Foo</paragraph></htmlSection>' +
 					'<htmlSection><paragraph htmlPAttributes="{"classes":["red"]}">Bar</paragraph></htmlSection>' +
 					'<htmlSection><paragraph htmlPAttributes="{"classes":["red"]}">Baz]</paragraph></htmlSection>'
@@ -237,9 +241,10 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 3 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...blockCodeBlockStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should enable styles for the closest widget but no outer blocks', () => {
@@ -257,10 +262,11 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 3 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...blockParagraphStyles.map( ( { name } ) => name ),
 					...blockWidgetStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should enable styles for view elements that does not map to model element', () => {
@@ -276,10 +282,11 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 3 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...blockParagraphStyles.map( ( { name } ) => name ),
 					...blockWidgetStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should enable styles for the first selected block', () => {
@@ -291,10 +298,11 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 7 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...blockHeadingStyles.map( ( { name } ) => name ),
 					...inlineStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should not enable styles for blocks that disable GHS', () => {
@@ -308,9 +316,10 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 5 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...inlineStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should not enable styles for elements outside an object element', () => {
@@ -328,11 +337,12 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 8 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockParagraphStyles.map( ( { name } ) => name ),
 					...blockWidgetStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should not crash if there are no selected blocks', () => {
@@ -343,9 +353,10 @@ describe( 'StyleCommand', () => {
 
 					command.refresh();
 
-					expect( command.enabledStyles ).to.have.members( [
+					expect( command.enabledStyles ).toHaveLength( 5 );
+					expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 						...inlineStyles.map( ( { name } ) => name )
-					] );
+					] ) );
 				} );
 			} );
 		} );
@@ -356,10 +367,11 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 6 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockParagraphStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 
 			it( 'should not enable styles for text in code block', () => {
@@ -367,9 +379,10 @@ describe( 'StyleCommand', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [
+				expect( command.enabledStyles ).toHaveLength( 3 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [
 					...blockCodeBlockStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 		} );
 	} );
@@ -378,13 +391,13 @@ describe( 'StyleCommand', () => {
 		it( 'should be disabled if none of styles applies to selection', () => {
 			_setModelData( model, '[<horizontalLine></horizontalLine>]' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be enabled if selection is on a block widget but there are nested blocks that allow inline style', () => {
 			_setModelData( model, '[<imageBlock><caption>foo</caption></imageBlock>]' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 	} );
 
@@ -397,7 +410,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlPAttributes', { classes: [ 'red' ] }, root.getChild( 0 ) );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Red paragraph' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Red paragraph' ] ) );
 			} );
 
 			it( 'should detect styles for heading', () => {
@@ -410,7 +424,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlH2Attributes', { classes: [ 'big-heading' ] }, root.getChild( 1 ) );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Big heading' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Big heading' ] ) );
 			} );
 
 			it( 'should detect style for specified element if style shares an element name', () => {
@@ -424,13 +439,15 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlH2Attributes', { classes: [ 'red' ] }, root.getChild( 1 ) );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Red paragraph' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Red paragraph' ] ) );
 
 				model.change( writer => {
 					writer.setSelection( root.getChild( 1 ), 0 );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Red heading' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Red heading' ] ) );
 			} );
 
 			it( 'should detect styles for block quote', () => {
@@ -446,7 +463,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlBlockquoteAttributes', { classes: [ 'side-quote' ] }, root.getChild( 1 ) );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Side quote' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Side quote' ] ) );
 			} );
 
 			it( 'should detect styles for the code block', () => {
@@ -456,7 +474,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlPreAttributes', { classes: [ 'vibrant-code' ] }, root.getChild( 0 ) );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Vibrant code block' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Vibrant code block' ] ) );
 			} );
 
 			it( 'should detect styles for the div (as container)', () => {
@@ -470,7 +489,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlDivAttributes', { classes: [ 'callout' ] }, root.getChild( 0 ) );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Div style' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Div style' ] ) );
 			} );
 
 			it( 'should detect styles for the div (as block)', () => {
@@ -482,7 +502,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlDivAttributes', { classes: [ 'callout' ] }, root.getChild( 0 ) );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Div style' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Div style' ] ) );
 			} );
 
 			it( 'should not detect styles for elements outside a widget element', () => {
@@ -504,7 +525,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlPAttributes', { classes: [ 'red' ] }, root.getNodeByPath( [ 0, 0, 0, 0, 0 ] ) );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Red paragraph', 'Table style' ] );
+				expect( command.value ).toHaveLength( 2 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Red paragraph', 'Table style' ] ) );
 			} );
 
 			it( 'should detect styles for selected widget element only', () => {
@@ -526,7 +548,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlPAttributes', { classes: [ 'red' ] }, root.getNodeByPath( [ 0, 0, 0, 0, 0 ] ) );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Table style' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Table style' ] ) );
 			} );
 
 			it( 'should detect styles for view elements that does not map to model element', () => {
@@ -545,9 +568,10 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlTableAttributes', { classes: [ 'example' ] }, root.getChild( 0 ) );
 				} );
 
-				expect( command.value ).to.have.members( [
+				expect( command.value ).toHaveLength( 2 );
+				expect( command.value ).toEqual( expect.arrayContaining( [
 					...blockWidgetStyles.map( ( { name } ) => name )
-				] );
+				] ) );
 			} );
 		} );
 
@@ -559,7 +583,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlSpan', { classes: [ 'marker', 'typewriter' ] }, doc.selection.getFirstRange() );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Marker', 'Typewriter' ] );
+				expect( command.value ).toHaveLength( 2 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Marker', 'Typewriter' ] ) );
 			} );
 
 			it( 'should detect styles that use multiple classes', () => {
@@ -569,7 +594,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlSpan', { classes: [ 'class-one', 'class-two' ] }, doc.selection.getFirstRange() );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Multiple classes' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Multiple classes' ] ) );
 			} );
 
 			it( 'should not detect styles that does not have all classes for a style', () => {
@@ -579,7 +605,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlSpan', { classes: [ 'class-one', 'marker' ] }, doc.selection.getFirstRange() );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Marker' ] );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'Marker' ] ) );
 			} );
 
 			it( 'should detect applied inline style', () => {
@@ -589,8 +616,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlSpan', { classes: [ 'marker' ] }, root.getChild( 0 ).getChild( 0 ) );
 				} );
 
-				expect( command.value ).to.deep.equal( [ 'Marker' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toEqual( [ 'Marker' ] );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>[<$text htmlSpan="{"classes":["marker"]}">foobar</$text>]</paragraph>'
 				);
 			} );
@@ -602,8 +629,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'htmlSpan', { classes: [ 'marker', 'typewriter' ] }, root.getChild( 0 ).getChild( 0 ) );
 				} );
 
-				expect( command.value ).to.deep.equal( [ 'Marker', 'Typewriter' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toEqual( [ 'Marker', 'Typewriter' ] );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>[<$text htmlSpan="{"classes":["marker","typewriter"]}">foobar</$text>]</paragraph>'
 				);
 			} );
@@ -617,8 +644,8 @@ describe( 'StyleCommand', () => {
 					writer.setAttribute( 'bold', true, root.getChild( 0 ).getChild( 0 ) );
 				} );
 
-				expect( command.value ).to.deep.equal( [ 'Marker' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toEqual( [ 'Marker' ] );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>[<$text bold="true" htmlSpan="{"classes":["marker"]}">foobar</$text>]</paragraph>'
 				);
 			} );
@@ -632,18 +659,19 @@ describe( 'StyleCommand', () => {
 			command.isEnabled = false;
 			command.execute( { styleName: 'Marker' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		it( 'should warn if the command is executed with incorrect style name', () => {
-			const stub = sinon.stub( console, 'warn' );
+			const stub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			_setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 			command.execute( { styleName: 'Invalid style' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
-			sinon.assert.calledWithMatch( stub, 'style-command-executed-with-incorrect-style-name' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>fo[ob]ar</paragraph>' );
+			expect( stub ).toHaveBeenCalled();
+			expect( stub.mock.calls[ 0 ][ 0 ] ).toContain( 'style-command-executed-with-incorrect-style-name' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/11748
@@ -657,7 +685,7 @@ describe( 'StyleCommand', () => {
 			// Remove light theme
 			command.execute( { styleName: 'Code (bright)' } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<codeBlock ' +
 					'htmlPreAttributes="{"classes":["fancy-code","fancy-code-dark"]}" ' +
 					'language="typescript"' +
@@ -672,7 +700,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Marker' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foobar<$text htmlSpan="{"classes":["marker"]}">[]</$text></paragraph>'
 				);
 
@@ -680,7 +708,7 @@ describe( 'StyleCommand', () => {
 					model.insertContent( writer.createText( 'baz', doc.selection.getAttributes() ), doc.selection );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foobar<$text htmlSpan="{"classes":["marker"]}">baz[]</$text></paragraph>'
 				);
 			} );
@@ -691,7 +719,7 @@ describe( 'StyleCommand', () => {
 				command.execute( { styleName: 'Marker' } );
 				command.execute( { styleName: 'Typewriter' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foobar<$text htmlSpan="{"classes":["marker","typewriter"]}">[]</$text></paragraph>'
 				);
 
@@ -699,7 +727,7 @@ describe( 'StyleCommand', () => {
 					model.insertContent( writer.createText( 'baz', doc.selection.getAttributes() ), doc.selection );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foobar<$text htmlSpan="{"classes":["marker","typewriter"]}">baz[]</$text></paragraph>'
 				);
 			} );
@@ -709,7 +737,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Marker' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>fo[<$text htmlSpan="{"classes":["marker"]}">ob</$text>]ar</paragraph>'
 				);
 			} );
@@ -720,7 +748,7 @@ describe( 'StyleCommand', () => {
 				command.execute( { styleName: 'Marker' } );
 				command.execute( { styleName: 'Typewriter' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>fo[<$text htmlSpan="{"classes":["marker","typewriter"]}">ob</$text>]ar</paragraph>'
 				);
 			} );
@@ -731,7 +759,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Marker' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>[<$text htmlSpan="{"classes":["marker"]}">foo b</$text>]ar baz</paragraph>'
 				);
 
@@ -745,7 +773,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Typewriter' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>[' +
 						'<$text htmlSpan="{"classes":["marker","typewriter"]}">foo b</$text>' +
 						'<$text htmlSpan="{"classes":["typewriter"]}">ar ba</$text>]' +
@@ -759,7 +787,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Multiple classes' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>fo[<$text htmlSpan="{"classes":["class-one","class-two"]}">ob</$text>]ar</paragraph>'
 				);
 			} );
@@ -773,7 +801,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Marker' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>f[<$text htmlSpan="{"classes":["marker"]}">oo</$text></paragraph>' +
 					'<codeBlock language="plaintext">bar</codeBlock>' +
 					'<paragraph><$text htmlSpan="{"classes":["marker"]}">ba</$text>]z</paragraph>'
@@ -787,7 +815,7 @@ describe( 'StyleCommand', () => {
 				command.execute( { styleName: 'Typewriter' } );
 				command.execute( { styleName: 'Marker' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foo[<$text htmlSpan="{"classes":["typewriter"]}">bar</$text>]</paragraph>'
 				);
 			} );
@@ -798,7 +826,7 @@ describe( 'StyleCommand', () => {
 				command.execute( { styleName: 'Marker' } );
 				command.execute( { styleName: 'Marker' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foo[bar]</paragraph>'
 				);
 			} );
@@ -814,7 +842,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Marker', forceValue: true } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>fo[<$text htmlSpan="{"classes":["marker"]}">obar</$text>]</paragraph>'
 				);
 			} );
@@ -830,7 +858,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Marker', forceValue: false } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>[foob]ar</paragraph>'
 				);
 			} );
@@ -842,7 +870,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Big heading' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<heading1 htmlH2Attributes="{"classes":["big-heading"]}">foo[]bar</heading1>'
 				);
 			} );
@@ -853,7 +881,7 @@ describe( 'StyleCommand', () => {
 				command.execute( { styleName: 'Big heading' } );
 				command.execute( { styleName: 'Red heading' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<heading1 htmlH2Attributes="{"classes":["big-heading","red"]}">foo[]bar</heading1>'
 				);
 			} );
@@ -867,7 +895,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Red heading' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<heading1 htmlH2Attributes="{"classes":["red"]}">fo[o</heading1>' +
 					'<paragraph>bar</paragraph>' +
 					'<heading1 htmlH2Attributes="{"classes":["red"]}">ba]z</heading1>'
@@ -883,7 +911,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Div style' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<htmlDiv htmlDivAttributes="{"classes":["callout"]}">' +
 						'<paragraph>foo[]</paragraph>' +
 					'</htmlDiv>'
@@ -891,7 +919,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Div style' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<htmlDiv>' +
 						'<paragraph>foo[]</paragraph>' +
 					'</htmlDiv>'
@@ -905,13 +933,13 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Div style' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<htmlDivParagraph htmlDivAttributes="{"classes":["callout"]}">foo[]</htmlDivParagraph>'
 				);
 
 				command.execute( { styleName: 'Div style' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<htmlDivParagraph>foo[]</htmlDivParagraph>'
 				);
 			} );
@@ -933,7 +961,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Side quote' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<blockQuote>' +
 						'<table>' +
 							'<tableRow>' +
@@ -967,7 +995,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Table style' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -997,7 +1025,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Figure' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<table htmlFigureAttributes="{"classes":["fancy-figure"]}">' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -1021,7 +1049,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Figure' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<table htmlFigureAttributes="{"classes":["fancy-figure"]}">' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -1033,7 +1061,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Figure' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -1050,7 +1078,7 @@ describe( 'StyleCommand', () => {
 				command.execute( { styleName: 'Big heading' } );
 				command.execute( { styleName: 'Big heading' } );
 
-				expect( _getModelData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
+				expect( _getModelData( model ) ).toBe( '<heading1>foo[]bar</heading1>' );
 			} );
 
 			it( 'should force adding style if the command was called with `forceValue=true`', () => {
@@ -1061,7 +1089,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Red heading', forceValue: true } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<heading1>foo</heading1>' +
 					'<heading1 htmlH2Attributes="{"classes":["red"]}">b[ar</heading1>' +
 					'<heading1 htmlH2Attributes="{"classes":["red"]}">ba]z</heading1>'
@@ -1069,7 +1097,7 @@ describe( 'StyleCommand', () => {
 			} );
 
 			it( 'should not force adding a style on an element that cannot receive it', () => {
-				sinon.stub( console, 'warn' );
+				vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 				_setModelData( model,
 					'<paragraph>f[oo</paragraph>' +
@@ -1077,7 +1105,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Red heading', forceValue: true } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>f[oo</paragraph>' +
 					'<paragraph>ba]r</paragraph>'
 				);
@@ -1091,7 +1119,7 @@ describe( 'StyleCommand', () => {
 
 				command.execute( { styleName: 'Red heading', forceValue: false } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<heading1>f[oo</heading1>' +
 					'<heading1>ba]r</heading1>' +
 					'<heading1>baz</heading1>'

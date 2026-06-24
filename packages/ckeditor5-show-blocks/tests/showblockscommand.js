@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from '@ckeditor/ckeditor5-core';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -40,15 +41,15 @@ describe( 'ShowBlocksCommand', () => {
 
 	describe( 'constructor', () => {
 		it( 'should be a command instance', () => {
-			expect( command ).to.be.instanceOf( Command );
+			expect( command ).toBeInstanceOf( Command );
 		} );
 
 		it( 'should set "#affectsData" property to false', () => {
-			expect( command.affectsData ).to.be.false;
+			expect( command.affectsData ).toBe( false );
 		} );
 
 		it( 'should set "#value" property to false', () => {
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 	} );
 
@@ -56,7 +57,7 @@ describe( 'ShowBlocksCommand', () => {
 		it( 'should set "ck-show-blocks" class on the root when executed for the first time', () => {
 			editor.execute( 'showBlocks' );
 
-			expect( editor.editing.view.document.roots.get( 'main' ).hasClass( 'ck-show-blocks' ) ).to.be.true;
+			expect( editor.editing.view.document.roots.get( 'main' ).hasClass( 'ck-show-blocks' ) ).toBe( true );
 		} );
 
 		it( 'should set block label styles on the root when executed for the first time', () => {
@@ -66,9 +67,9 @@ describe( 'ShowBlocksCommand', () => {
 			const paragraphLabelLtr = root.getStyle( '--ck-show-blocks-label-p-ltr' );
 			const headingLabelRtl = root.getStyle( '--ck-show-blocks-label-h2-rtl' );
 
-			expect( paragraphLabelLtr ).to.contain( 'data:image/svg+xml;utf8' );
-			expect( paragraphLabelLtr ).to.contain( '>P</text></svg>' );
-			expect( headingLabelRtl ).to.contain( '>H2</text></svg>' );
+			expect( paragraphLabelLtr ).toContain( 'data:image/svg+xml;utf8' );
+			expect( paragraphLabelLtr ).toContain( '>P</text></svg>' );
+			expect( headingLabelRtl ).toContain( '>H2</text></svg>' );
 		} );
 
 		it( 'should not overwrite existing block label styles', () => {
@@ -80,27 +81,27 @@ describe( 'ShowBlocksCommand', () => {
 
 			editor.execute( 'showBlocks' );
 
-			expect( root.getStyle( '--ck-show-blocks-label-address-ltr' ) ).to.equal( 'preset-address-label' );
+			expect( root.getStyle( '--ck-show-blocks-label-address-ltr' ) ).toBe( 'preset-address-label' );
 		} );
 
 		it( 'should remove "ck-show-blocks" class on the root when executed for the second time', () => {
 			editor.execute( 'showBlocks' );
 			editor.execute( 'showBlocks' );
 
-			expect( editor.editing.view.document.roots.get( 'main' ).hasClass( 'ck-show-blocks' ) ).to.be.false;
+			expect( editor.editing.view.document.roots.get( 'main' ).hasClass( 'ck-show-blocks' ) ).toBe( false );
 		} );
 
 		it( 'should set value to true when executed for the first time', () => {
 			editor.execute( 'showBlocks' );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'should set value to false when executed for the second time', () => {
 			editor.execute( 'showBlocks' );
 			editor.execute( 'showBlocks' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		describe( 'in multiroot editor', () => {
@@ -142,7 +143,7 @@ describe( 'ShowBlocksCommand', () => {
 				multirootEditor.execute( 'showBlocks' );
 
 				for ( const root of multirootEditor.editing.view.document.roots ) {
-					expect( root.hasClass( 'ck-show-blocks' ), `Class was not set properly on ${ root.rootName } root` ).to.be.true;
+					expect( root.hasClass( 'ck-show-blocks' ), `Class was not set properly on ${ root.rootName } root` ).toBe( true );
 				}
 			} );
 
@@ -153,7 +154,7 @@ describe( 'ShowBlocksCommand', () => {
 					expect(
 						root.getStyle( '--ck-show-blocks-label-blockquote-ltr' ),
 						`Label style was not set properly on ${ root.rootName } root`
-					).to.contain( '>BLOCKQUOTE</text></svg>' );
+					).toContain( '>BLOCKQUOTE</text></svg>' );
 				}
 			} );
 
@@ -162,7 +163,7 @@ describe( 'ShowBlocksCommand', () => {
 				multirootEditor.execute( 'showBlocks' );
 
 				for ( const root of multirootEditor.editing.view.document.roots ) {
-					expect( root.hasClass( 'ck-show-blocks' ), `Class was not set properly on ${ root.rootName } root` ).to.be.false;
+					expect( root.hasClass( 'ck-show-blocks' ), `Class was not set properly on ${ root.rootName } root` ).toBe( false );
 				}
 			} );
 		} );

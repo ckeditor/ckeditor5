@@ -7,11 +7,7 @@
  * @module widget/widgettoolbarrepository
  */
 
-import {
-	Plugin,
-	type Editor,
-	type ToolbarConfigItem
-} from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type ToolbarConfigItem, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import type { ViewDocumentSelection, ViewElement } from '@ckeditor/ckeditor5-engine';
 
@@ -44,7 +40,7 @@ import { isWidget } from './utils.js';
  *
  * ```ts
  * class ImageToolbar extends Plugin {
- * 	static get requires() {
+ * 	static get requires(): PluginDependenciesOf<[ WidgetToolbarRepository ]> {
  * 		return [ WidgetToolbarRepository ];
  * 	}
  *
@@ -71,8 +67,8 @@ export class WidgetToolbarRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ContextualBalloon ] as const;
+	public static get requires(): PluginDependenciesOf<[ ContextualBalloon ]> {
+		return [ ContextualBalloon ];
 	}
 
 	/**

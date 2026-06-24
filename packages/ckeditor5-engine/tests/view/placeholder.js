@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
 	enableViewPlaceholder,
 	disableViewPlaceholder,
@@ -26,6 +27,10 @@ describe( 'placeholder', () => {
 		viewDocument.isFocused = true;
 	} );
 
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
+
 	describe( 'enableViewPlaceholder', () => {
 		it( 'should attach proper CSS class and data attribute', () => {
 			_setViewData( view, '<div></div><div>{another div}</div>' );
@@ -37,8 +42,8 @@ describe( 'placeholder', () => {
 				element
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
 		} );
 
 		it( 'should attach proper CSS class and data attribute (isDirectHost=false)', () => {
@@ -52,8 +57,8 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( true );
 		} );
 
 		it( 'if element has children set only data attribute', () => {
@@ -66,8 +71,8 @@ describe( 'placeholder', () => {
 				element
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'if element has only ui elements, set CSS class and data attribute', () => {
@@ -80,8 +85,8 @@ describe( 'placeholder', () => {
 				element
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
 		} );
 
 		it( 'if element has selection inside set only data attribute', () => {
@@ -94,8 +99,8 @@ describe( 'placeholder', () => {
 				element
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'if element has selection inside but document is blurred should contain placeholder CSS class', () => {
@@ -111,8 +116,8 @@ describe( 'placeholder', () => {
 
 			view.forceRender();
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
 		} );
 
 		it( 'should remove CSS class if selection is moved inside', () => {
@@ -125,14 +130,14 @@ describe( 'placeholder', () => {
 				element
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
 
 			view.change( writer => {
 				writer.setSelection( ViewRange._createIn( element ) );
 			} );
 
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'should change placeholder settings when called twice', () => {
@@ -151,8 +156,8 @@ describe( 'placeholder', () => {
 				element
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'new text' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'new text' );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
 		} );
 
 		it( 'should not throw when element is no longer in document', () => {
@@ -192,11 +197,11 @@ describe( 'placeholder', () => {
 				element: secondElement
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'first placeholder' );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
 
-			expect( secondElement.getAttribute( 'data-placeholder' ) ).to.equal( 'second placeholder' );
-			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( secondElement.getAttribute( 'data-placeholder' ) ).toBe( 'second placeholder' );
+			expect( secondElement.hasClass( 'ck-placeholder' ) ).toBe( true );
 
 			// Move selection to the elements with placeholders.
 			view.change( writer => {
@@ -207,11 +212,11 @@ describe( 'placeholder', () => {
 				writer.setSelection( ViewRange._createIn( secondElement ) );
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'first placeholder' );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( false );
 
-			expect( secondElement.getAttribute( 'data-placeholder' ) ).to.equal( 'second placeholder' );
-			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( secondElement.getAttribute( 'data-placeholder' ) ).toBe( 'second placeholder' );
+			expect( secondElement.hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'should update placeholder before rendering', () => {
@@ -228,12 +233,12 @@ describe( 'placeholder', () => {
 				writer.setSelection( ViewRange._createIn( element ) );
 
 				// Here we are before rendering - placeholder is visible in first element;
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+				expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+				expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
 			} );
 
 			// After rendering - placeholder should be invisible since selection is moved there.
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'should not set class when multiple children (isDirectHost=false)', () => {
@@ -247,8 +252,8 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/9009
@@ -263,8 +268,8 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/9046
@@ -288,9 +293,9 @@ describe( 'placeholder', () => {
 
 			view.forceRender();
 
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
-			expect( viewRoot.getChild( 0 ).isEmpty ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).toBe( 'bar' );
+			expect( viewRoot.getChild( 0 ).isEmpty ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( true );
 		} );
 
 		it( 'should not trigger infinite post-fixers loop (isDirectHost=false)', () => {
@@ -306,8 +311,8 @@ describe( 'placeholder', () => {
 
 			view.forceRender();
 
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( true );
 		} );
 
 		it( 'should not set class when there is no children (isDirectHost=false)', () => {
@@ -321,9 +326,9 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( viewRoot.getChild( 0 ).isEmpty ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( false );
+			expect( viewRoot.getChild( 0 ).isEmpty ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'should not set attributes/class when first child is not element (isDirectHost=false)', () => {
@@ -337,8 +342,8 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( false );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'should not set attributes/class when first child is an ViewAttributeElement (isDirectHost=false)', () => {
@@ -352,8 +357,8 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( false );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/14354
@@ -369,8 +374,8 @@ describe( 'placeholder', () => {
 			} );
 
 			// Placeholder should be visible on the first child.
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( true );
 
 			// Let's insert an attribute element at the end of the root and move the first element after it.
 			// The parent element should return no-host substitute for the placeholder as the first child is not suitable.
@@ -384,14 +389,14 @@ describe( 'placeholder', () => {
 			view.forceRender();
 
 			// Attribute element should not have placeholder attributes.
-			expect( viewRoot.childCount ).to.equal( 1 );
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.childCount ).toBe( 1 );
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( false );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 
 			// The old element should not have placeholder attributes as it's wrapped with an attribute element.
-			expect( viewRoot.getChild( 0 ).childCount ).to.equal( 1 );
-			expect( viewRoot.getChild( 0 ).getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( viewRoot.getChild( 0 ).getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).childCount ).toBe( 1 );
+			expect( viewRoot.getChild( 0 ).getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( false );
+			expect( viewRoot.getChild( 0 ).getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/18149
@@ -407,8 +412,8 @@ describe( 'placeholder', () => {
 			} );
 
 			// Placeholder should be visible on the first child.
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( true );
 
 			// Let's insert an container element at the end of the root and move the first element after it.
 			view.change( writer => {
@@ -417,15 +422,15 @@ describe( 'placeholder', () => {
 
 			view.forceRender();
 
-			expect( viewRoot.childCount ).to.equal( 2 );
+			expect( viewRoot.childCount ).toBe( 2 );
 
 			// It should have placeholder attribute but placeholder itself should not be visible.
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 
 			// The old element should not have placeholder attributes.
-			expect( viewRoot.getChild( 1 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 1 ).hasAttribute( 'data-placeholder' ) ).toBe( false );
+			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'should keep the placeholder visible when the host element is focused (keepOnFocus = true)', () => {
@@ -439,19 +444,19 @@ describe( 'placeholder', () => {
 				keepOnFocus: true
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( true );
 
 			view.change( writer => {
 				writer.setSelection( ViewRange._createIn( element ) );
 
 				// Here we are before rendering - placeholder is visible in first element;
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+				expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+				expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( true );
 		} );
 
 		it( 'should hide the placeholder when the host element is focused (keepOnFocus = false)', () => {
@@ -465,19 +470,19 @@ describe( 'placeholder', () => {
 				// Defaults: keepOnFocus = false
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( true );
 
 			view.change( writer => {
 				writer.setSelection( ViewRange._createIn( element ) );
 
 				// Here we are before rendering - placeholder is visible in first element;
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+				expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+				expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'should hide the placeholder when there is a composition in progress in the host element (keepOnFocus = true)', () => {
@@ -491,21 +496,21 @@ describe( 'placeholder', () => {
 				keepOnFocus: true
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( true );
 
 			// Make sure that renderer is not locked before the view got updated.
 			view._renderer.on( 'set:isComposing', () => {
-				expect( viewDocument.isComposing ).to.be.true;
-				expect( view._renderer.isComposing ).to.be.false;
-				expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-				expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+				expect( viewDocument.isComposing ).toBe( true );
+				expect( view._renderer.isComposing ).toBe( false );
+				expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( true );
+				expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 			} );
 
 			viewDocument.isComposing = true;
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 	} );
 
@@ -520,13 +525,13 @@ describe( 'placeholder', () => {
 				element
 			} );
 
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
 
 			disableViewPlaceholder( view, element );
 
-			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.hasAttribute( 'data-placeholder' ) ).toBe( false );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'should not blow up when called on element without placeholder', () => {
@@ -535,8 +540,8 @@ describe( 'placeholder', () => {
 
 			disableViewPlaceholder( view, element );
 
-			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.hasAttribute( 'data-placeholder' ) ).toBe( false );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 
 		it( 'should remove placeholder from element (isDirectHost=false)', () => {
@@ -550,13 +555,13 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).toBe( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( true );
 
 			disableViewPlaceholder( view, viewRoot );
 
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).toBe( false );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toBe( false );
 		} );
 	} );
 
@@ -567,8 +572,8 @@ describe( 'placeholder', () => {
 
 			const result = view.change( writer => showViewPlaceholder( writer, element ) );
 
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
-			expect( result ).to.be.true;
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
+			expect( result ).toBe( true );
 		} );
 
 		it( 'should do nothing if an element already has the ck-placeholder class', () => {
@@ -577,14 +582,14 @@ describe( 'placeholder', () => {
 			let spy;
 
 			const result = view.change( writer => {
-				spy = sinon.spy( writer, 'addClass' );
+				spy = vi.spyOn( writer, 'addClass' );
 
 				return showViewPlaceholder( writer, element );
 			} );
 
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
-			expect( result ).to.be.false;
-			sinon.assert.notCalled( spy );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( true );
+			expect( result ).toBe( false );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -595,8 +600,8 @@ describe( 'placeholder', () => {
 
 			const result = view.change( writer => hideViewPlaceholder( writer, element ) );
 
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
-			expect( result ).to.be.true;
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( false );
+			expect( result ).toBe( true );
 		} );
 
 		it( 'should do nothing if an element has no ck-placeholder class', () => {
@@ -605,14 +610,14 @@ describe( 'placeholder', () => {
 			let spy;
 
 			const result = view.change( writer => {
-				spy = sinon.spy( writer, 'removeClass' );
+				spy = vi.spyOn( writer, 'removeClass' );
 
 				return hideViewPlaceholder( writer, element );
 			} );
 
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
-			expect( result ).to.be.false;
-			sinon.assert.notCalled( spy );
+			expect( element.hasClass( 'ck-placeholder' ) ).toBe( false );
+			expect( result ).toBe( false );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -623,13 +628,13 @@ describe( 'placeholder', () => {
 
 			const element = viewRoot.getChild( 0 );
 
-			expect( needsViewPlaceholder( element ) ).to.be.true;
+			expect( needsViewPlaceholder( element ) ).toBe( true );
 
 			view.change( writer => {
 				writer.remove( element );
 			} );
 
-			expect( needsViewPlaceholder( element ) ).to.be.false;
+			expect( needsViewPlaceholder( element ) ).toBe( false );
 		} );
 
 		it( 'should return true if element is empty and document is blurred', () => {
@@ -638,7 +643,7 @@ describe( 'placeholder', () => {
 
 			const element = viewRoot.getChild( 0 );
 
-			expect( needsViewPlaceholder( element ) ).to.be.true;
+			expect( needsViewPlaceholder( element ) ).toBe( true );
 		} );
 
 		it( 'should return false if element has content other than UI elements', () => {
@@ -647,7 +652,7 @@ describe( 'placeholder', () => {
 
 			const element = viewRoot.getChild( 0 );
 
-			expect( needsViewPlaceholder( element ) ).to.be.false;
+			expect( needsViewPlaceholder( element ) ).toBe( false );
 		} );
 
 		it( 'should return true if element hosts UI elements only and document is blurred', () => {
@@ -656,7 +661,7 @@ describe( 'placeholder', () => {
 
 			const element = viewRoot.getChild( 0 );
 
-			expect( needsViewPlaceholder( element ) ).to.be.true;
+			expect( needsViewPlaceholder( element ) ).toBe( true );
 		} );
 
 		it( 'should return true when document is focused but selection anchored somewhere else', () => {
@@ -665,7 +670,7 @@ describe( 'placeholder', () => {
 
 			const element = viewRoot.getChild( 0 );
 
-			expect( needsViewPlaceholder( element ) ).to.be.true;
+			expect( needsViewPlaceholder( element ) ).toBe( true );
 		} );
 
 		it( 'should return true if we want to keep placeholder when element is focused', () => {
@@ -674,7 +679,7 @@ describe( 'placeholder', () => {
 
 			const element = viewRoot.getChild( 0 );
 
-			expect( needsViewPlaceholder( element, true ) ).to.be.true;
+			expect( needsViewPlaceholder( element, true ) ).toBe( true );
 		} );
 
 		it( 'should return false if we want to keep placeholder when element is focused and document is in composition mode', () => {
@@ -684,7 +689,7 @@ describe( 'placeholder', () => {
 
 			const element = viewRoot.getChild( 0 );
 
-			expect( needsViewPlaceholder( element, true ) ).to.be.false;
+			expect( needsViewPlaceholder( element, true ) ).toBe( false );
 		} );
 
 		it( 'should update placeholder when property in editing root is changed', () => {
@@ -696,7 +701,7 @@ describe( 'placeholder', () => {
 			} );
 			viewRoot.placeholder = 'new placeholder';
 
-			expect( viewRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'new placeholder' );
+			expect( viewRoot.getAttribute( 'data-placeholder' ) ).toBe( 'new placeholder' );
 		} );
 
 		it( 'should update placeholder when property in editing root is changed (isDirectHost=false)', () => {
@@ -709,11 +714,11 @@ describe( 'placeholder', () => {
 			} );
 			viewRoot.placeholder = 'new placeholder';
 
-			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'new placeholder' );
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).toBe( 'new placeholder' );
 		} );
 
 		it( 'should through warning once if "text" is used as argument', () => {
-			sinon.stub( console, 'warn' );
+			const warnSpy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			_setViewData( view, '<div></div><div>{another div}</div>' );
 
@@ -731,8 +736,8 @@ describe( 'placeholder', () => {
 				text: 'foo bar baz'
 			} );
 
-			sinon.assert.calledOnce( console.warn );
-			expect( console.warn.calledWith( sinon.match( /^enableViewPlaceholder-deprecated-text-option/ ) ) ).to.be.true;
+			expect( warnSpy ).toHaveBeenCalledOnce();
+			expect( warnSpy.mock.calls[ 0 ][ 0 ] ).toMatch( /^enableViewPlaceholder-deprecated-text-option/ );
 		} );
 
 		it( 'should set placeholder using "text" argument', () => {
@@ -744,7 +749,7 @@ describe( 'placeholder', () => {
 				text: 'placeholder'
 			} );
 
-			expect( viewRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder' );
+			expect( viewRoot.getAttribute( 'data-placeholder' ) ).toBe( 'placeholder' );
 		} );
 
 		it( 'should prefer element\'s placeholder value over text parameter', () => {
@@ -758,7 +763,7 @@ describe( 'placeholder', () => {
 
 			viewRoot.placeholder = 'bar';
 
-			expect( viewRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
+			expect( viewRoot.getAttribute( 'data-placeholder' ) ).toBe( 'bar' );
 		} );
 	} );
 } );

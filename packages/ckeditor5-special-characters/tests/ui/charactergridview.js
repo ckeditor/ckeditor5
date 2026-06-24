@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CharacterGridView } from '../../src/ui/charactergridview.js';
 import { ViewCollection, ButtonView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'CharacterGridView', () => {
 	let view;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new CharacterGridView();
@@ -20,11 +18,12 @@ describe( 'CharacterGridView', () => {
 
 	afterEach( () => {
 		view.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'creates view#tiles collection', () => {
-			expect( view.tiles ).to.be.instanceOf( ViewCollection );
+			expect( view.tiles ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'creates #element from template', () => {
@@ -33,13 +32,13 @@ describe( 'CharacterGridView', () => {
 
 			view.tiles.add( tile );
 
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-character-grid' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-character-grid' ) ).toBe( true );
 
-			expect( tilesElement.classList.contains( 'ck' ) ).to.be.true;
-			expect( tilesElement.classList.contains( 'ck-character-grid__tiles' ) ).to.be.true;
+			expect( tilesElement.classList.contains( 'ck' ) ).toBe( true );
+			expect( tilesElement.classList.contains( 'ck-character-grid__tiles' ) ).toBe( true );
 
-			expect( tile.element.parentNode ).to.equal( tilesElement );
+			expect( tile.element.parentNode ).toBe( tilesElement );
 		} );
 
 		describe( 'Focus management across the grid items using arrow keys', () => {
@@ -69,20 +68,20 @@ describe( 'CharacterGridView', () => {
 				it( '"arrow right" should focus the next focusable grid item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.arrowright,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the first grid item is focused.
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.tiles.first.element;
 
-					const spy = sinon.spy( view.tiles.get( 1 ), 'focus' );
+					const spy = vi.spyOn( view.tiles.get( 1 ), 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( '"arrow down" should focus the focusable grid item in the second row', () => {
@@ -94,20 +93,20 @@ describe( 'CharacterGridView', () => {
 
 					const keyEvtData = {
 						keyCode: keyCodes.arrowdown,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the first grid item is focused.
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.tiles.first.element;
 
-					const spy = sinon.spy( view.tiles.get( numberOfColumns ), 'focus' );
+					const spy = vi.spyOn( view.tiles.get( numberOfColumns ), 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 			} );
 
@@ -119,39 +118,39 @@ describe( 'CharacterGridView', () => {
 				it( '"arrow right" should focus the next focusable grid item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.arrowright,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the first grid item is focused.
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.tiles.first.element;
 
-					const spy = sinon.spy( view.tiles.get( 1 ), 'focus' );
+					const spy = vi.spyOn( view.tiles.get( 1 ), 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( '"arrow down" should focus the focusable grid item in the second row', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.arrowdown,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the first grid item is focused.
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.tiles.first.element;
 
-					const spy = sinon.spy( view.tiles.get( 5 ), 'focus' );
+					const spy = vi.spyOn( view.tiles.get( 5 ), 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 			} );
 		} );
@@ -161,55 +160,55 @@ describe( 'CharacterGridView', () => {
 		it( 'creates a new tile button', () => {
 			const tile = view.createTile( 'ε', 'foo bar baz' );
 
-			expect( tile ).to.be.instanceOf( ButtonView );
-			expect( tile.label ).to.equal( 'ε' );
-			expect( tile.withText ).to.be.true;
-			expect( tile.class ).to.equal( 'ck-character-grid__tile' );
+			expect( tile ).toBeInstanceOf( ButtonView );
+			expect( tile.label ).toBe( 'ε' );
+			expect( tile.withText ).toBe( true );
+			expect( tile.class ).toBe( 'ck-character-grid__tile' );
 		} );
 
 		it( 'delegates #execute from the tile to the grid', () => {
 			const tile = view.createTile( 'ε', 'foo bar baz' );
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			view.on( 'execute', spy );
 			tile.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( expect.anything(), { name: 'foo bar baz', character: 'ε' } );
 		} );
 
 		it( 'delegates #tileHover from the tile to the grid on hover the tile', () => {
 			const tile = view.createTile( 'ε', 'foo bar baz' );
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			view.on( 'tileHover', spy );
 			tile.fire( 'mouseover' );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( expect.anything(), { name: 'foo bar baz', character: 'ε' } );
 		} );
 
 		it( 'delegates #tileFocus from the tile to the grid on focus the tile', () => {
 			const tile = view.createTile( 'ε', 'foo bar baz' );
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			view.on( 'tileFocus', spy );
 			tile.fire( 'focus' );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( expect.anything(), { name: 'foo bar baz', character: 'ε' } );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'focuses the first tile', () => {
 			const tile = view.createTile( 'ε', 'foo bar baz' );
-			const spy = sinon.spy( tile, 'focus' );
+			const spy = vi.spyOn( tile, 'focus' );
 
 			view.tiles.add( tile );
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -217,11 +216,11 @@ describe( 'CharacterGridView', () => {
 		describe( 'FocusTracker', () => {
 			it( 'should add tiles to focus tracker when tiles are added to #tiles', () => {
 				const tile = view.createTile( 'ε', 'foo bar baz' );
-				const spy = sinon.spy( view.focusTracker, 'add' );
+				const spy = vi.spyOn( view.focusTracker, 'add' );
 
 				view.tiles.add( tile );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should remove tiles from focus tracker when tiles are removed from #tiles', () => {
@@ -229,11 +228,11 @@ describe( 'CharacterGridView', () => {
 
 				view.tiles.add( tile );
 
-				const spy = sinon.spy( view.focusTracker, 'remove' );
+				const spy = vi.spyOn( view.focusTracker, 'remove' );
 
 				view.tiles.remove( tile );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );

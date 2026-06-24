@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { diff } from '../src/diff.js';
 import { diffToChanges } from '../src/difftochanges.js';
 
@@ -62,8 +63,8 @@ describe( 'diffToChanges', () => {
 			}
 		} );
 
-		expect( input ).to.deep.equal( output );
-		expect( changes ).to.have.lengthOf( 3 );
+		expect( input ).toEqual( output );
+		expect( changes ).toHaveLength( 3 );
 	} );
 
 	function testDiff( expectedChangeNumber, oldStr, newStr ) {
@@ -79,8 +80,8 @@ describe( 'diffToChanges', () => {
 				}
 			} );
 
-			expect( oldStrChars.join( '' ) ).to.equal( newStr );
-			expect( changes ).to.have.lengthOf( expectedChangeNumber );
+			expect( oldStrChars.join( '' ) ).toBe( newStr );
+			expect( changes ).toHaveLength( expectedChangeNumber );
 		} );
 	}
 } );

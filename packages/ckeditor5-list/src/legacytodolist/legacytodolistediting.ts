@@ -24,7 +24,7 @@ import type {
 	ModelDocumentFragment
 } from '@ckeditor/ckeditor5-engine';
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	getCode,
@@ -76,8 +76,8 @@ export class LegacyTodoListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ LegacyListEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ LegacyListEditing ]> {
+		return [ LegacyListEditing ];
 	}
 
 	/**

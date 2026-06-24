@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconContentLock } from '@ckeditor/ckeditor5-icons';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
@@ -14,7 +14,9 @@ import { RestrictedEditingModeUI } from './../src/restrictededitingmodeui.js';
 describe( 'RestrictedEditingModeUI', () => {
 	let editor, element, goToPreviousCommand, goToNextCommand;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -112,12 +114,12 @@ describe( 'RestrictedEditingModeUI', () => {
 			} );
 
 			it( 'should focus the view after executing the command', () => {
-				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 				const list = dropdown.listView;
 				const goToPreviousButton = list.items.first.children.first;
 
 				goToPreviousButton.fire( 'execute' );
-				sinon.assert.calledOnce( focusSpy );
+				expect( focusSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'be enabled just like their corresponding commands', () => {
@@ -143,13 +145,13 @@ describe( 'RestrictedEditingModeUI', () => {
 				goToPreviousCommand.isEnabled = true;
 				goToNextCommand.isEnabled = true;
 
-				const spy = sinon.spy( editor, 'execute' );
+				const spy = vi.spyOn( editor, 'execute' );
 
 				goToPreviousButton.fire( 'execute' );
-				sinon.assert.calledWith( spy.firstCall, 'goToPreviousRestrictedEditingException' );
+				expect( spy.mock.calls[ 0 ][ 0 ] ).to.equal( 'goToPreviousRestrictedEditingException' );
 
 				goToNextButton.fire( 'execute' );
-				sinon.assert.calledWith( spy.secondCall, 'goToNextRestrictedEditingException' );
+				expect( spy.mock.calls[ 1 ][ 0 ] ).to.equal( 'goToNextRestrictedEditingException' );
 			} );
 		} );
 	} );
@@ -195,15 +197,15 @@ describe( 'RestrictedEditingModeUI', () => {
 			} );
 
 			it( 'should delegate #execute to the menu view', () => {
-				const executeSpy = sinon.spy();
+				const executeSpy = vi.fn();
 
 				menuView.on( 'execute', executeSpy );
 
 				backwardButton.fire( 'execute' );
-				sinon.assert.calledOnce( executeSpy );
+				expect( executeSpy ).toHaveBeenCalledOnce();
 
 				forwardButton.fire( 'execute' );
-				sinon.assert.calledTwice( executeSpy );
+				expect( executeSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			it( 'should have #isEnabled bound to their respective commands to the command', () => {
@@ -243,26 +245,26 @@ describe( 'RestrictedEditingModeUI', () => {
 			} );
 
 			it( 'should focus the view after executing the command', () => {
-				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 				backwardButton.fire( 'execute' );
-				sinon.assert.calledOnce( focusSpy );
+				expect( focusSpy ).toHaveBeenCalledOnce();
 
 				forwardButton.fire( 'execute' );
-				sinon.assert.calledTwice( focusSpy );
+				expect( focusSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			it( 'should execute their corresponding commands', () => {
 				goToPreviousCommand.isEnabled = true;
 				goToNextCommand.isEnabled = true;
 
-				const spy = sinon.spy( editor, 'execute' );
+				const spy = vi.spyOn( editor, 'execute' );
 
 				backwardButton.fire( 'execute' );
-				sinon.assert.calledWith( spy.firstCall, 'goToPreviousRestrictedEditingException' );
+				expect( spy.mock.calls[ 0 ][ 0 ] ).to.equal( 'goToPreviousRestrictedEditingException' );
 
 				forwardButton.fire( 'execute' );
-				sinon.assert.calledWith( spy.secondCall, 'goToNextRestrictedEditingException' );
+				expect( spy.mock.calls[ 1 ][ 0 ] ).to.equal( 'goToNextRestrictedEditingException' );
 			} );
 		} );
 	} );

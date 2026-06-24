@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ListEditing } from '../../../src/list/listediting.js';
 import { isListItemBlock } from '../../../src/list/utils/model.js';
 import { modelList } from '../_utils/utils.js';
@@ -16,7 +18,6 @@ import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ImageBlockEditing, ImageInlineEditing } from '@ckeditor/ckeditor5-image';
 import { Widget } from '@ckeditor/ckeditor5-widget';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
@@ -34,7 +35,9 @@ import { stubUid } from '../_utils/uid.js';
 describe( 'ListEditing integrations: clipboard copy & paste', () => {
 	let element, editor, model, modelDoc, modelRoot, view, clipboard;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -60,7 +63,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 		clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => { } );
+		vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		stubUid();
 	} );
 
@@ -84,7 +87,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			const viewFragment = editor.data.toView( modelFragment, { skipListItemIds: true } );
 			const data = editor.data.htmlProcessor.toData( viewFragment );
 
-			expect( data ).to.equal(
+			expect( data ).toBe(
 				'<ul>' +
 					'<li>' +
 						'<p>B1</p>' +
@@ -110,7 +113,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			const viewFragment = editor.data.toView( modelFragment, { skipListItemIds: true } );
 			const data = editor.data.htmlProcessor.toData( viewFragment );
 
-			expect( data ).to.equal(
+			expect( data ).toBe(
 				'<ul>' +
 					'<li>C1</li>' +
 					'<li>C2</li>' +
@@ -128,8 +131,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 					] ) );
 
 					view.document.on( 'clipboardOutput', ( evt, data ) => {
-						expect( data.content.childCount ).to.equal( 1 );
-						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).to.be.false;
+						expect( data.content.childCount ).toBe( 1 );
+						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).toBe( false );
 					} );
 
 					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
@@ -143,8 +146,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 					] ) );
 
 					view.document.on( 'clipboardOutput', ( evt, data ) => {
-						expect( data.content.childCount ).to.equal( 1 );
-						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).to.be.false;
+						expect( data.content.childCount ).toBe( 1 );
+						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).toBe( false );
 					} );
 
 					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
@@ -156,8 +159,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 					] ) );
 
 					view.document.on( 'clipboardOutput', ( evt, data ) => {
-						expect( data.content.childCount ).to.equal( 1 );
-						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).to.be.false;
+						expect( data.content.childCount ).toBe( 1 );
+						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).toBe( false );
 					} );
 
 					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
@@ -171,8 +174,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 					] ) );
 
 					view.document.on( 'clipboardOutput', ( evt, data ) => {
-						expect( data.content.childCount ).to.equal( 3 );
-						expect( Array.from( data.content.getChildren() ).some( isListItemBlock ) ).to.be.false;
+						expect( data.content.childCount ).toBe( 3 );
+						expect( Array.from( data.content.getChildren() ).some( isListItemBlock ) ).toBe( false );
 					} );
 
 					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
@@ -185,8 +188,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
 
-					expect( modelFragment.childCount ).to.equal( 1 );
-					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+					expect( modelFragment.childCount ).toBe( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).toBe( false );
 				} );
 
 				it( 'should return just a text, if a list item block was completely selected', () => {
@@ -196,8 +199,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
 
-					expect( modelFragment.childCount ).to.equal( 1 );
-					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+					expect( modelFragment.childCount ).toBe( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).toBe( false );
 				} );
 
 				it( 'should return just a text, if a list item block in the middle was completely selected', () => {
@@ -209,8 +212,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
 
-					expect( modelFragment.childCount ).to.equal( 1 );
-					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+					expect( modelFragment.childCount ).toBe( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).toBe( false );
 				} );
 
 				it( 'should return an inline object stripped of list attributes, if that object was selected in a list item', () => {
@@ -220,8 +223,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
 
-					expect( modelFragment.childCount ).to.equal( 1 );
-					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+					expect( modelFragment.childCount ).toBe( 1 );
+					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).toBe( false );
 				} );
 
 				it( 'should return nodes stripped of list attributes, if a single list item block was partially selected', () => {
@@ -231,8 +234,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
 
-					expect( modelFragment.childCount ).to.equal( 3 );
-					expect( Array.from( modelFragment.getChildren() ).some( hasAnyListAttribute ) ).to.be.false;
+					expect( modelFragment.childCount ).toBe( 3 );
+					expect( Array.from( modelFragment.getChildren() ).some( hasAnyListAttribute ) ).toBe( false );
 				} );
 
 				// Note: This test also verifies support for arbitrary selection passed to getSelectedContent().
@@ -246,8 +249,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 					// Note: It is impossible to set a document selection like this because the postfixer will normalize it to * [Foo].
 
 					view.document.on( 'outputTransformation', ( evt, data ) => {
-						expect( data.content.childCount ).to.equal( 1 );
-						expect( Array.from( data.content.getChildren() ).some( hasAnyListAttribute ) ).to.be.false;
+						expect( data.content.childCount ).toBe( 1 );
+						expect( Array.from( data.content.getChildren() ).some( hasAnyListAttribute ) ).toBe( false );
 					} );
 
 					clipboard._fireOutputTransformationEvent(
@@ -262,11 +265,11 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 					` ) );
 
 					view.document.on( 'outputTransformation', ( evt, data ) => {
-						expect( data.content.childCount ).to.equal( 1 );
-						expect( Array.from( data.content.getChildren() ).every( isListItemBlock ) ).to.be.false;
-						expect( Array.from( data.content.getChild( 0 ).getChildren() ).every( isListItemBlock ) ).to.be.true;
+						expect( data.content.childCount ).toBe( 1 );
+						expect( Array.from( data.content.getChildren() ).every( isListItemBlock ) ).toBe( false );
+						expect( Array.from( data.content.getChild( 0 ).getChildren() ).every( isListItemBlock ) ).toBe( true );
 
-						expect( _stringifyModel( data.content ) ).to.equal(
+						expect( _stringifyModel( data.content ) ).toBe(
 							'<blockQuote>' +
 								'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
 							'</blockQuote>'
@@ -287,8 +290,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
 
-					expect( modelFragment.childCount ).to.equal( 2 );
-					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.true;
+					expect( modelFragment.childCount ).toBe( 2 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).toBe( true );
 				} );
 
 				it( 'should return a list structure, if a nested items were included in the selection', () => {
@@ -300,8 +303,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
 
-					expect( modelFragment.childCount ).to.equal( 3 );
-					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.true;
+					expect( modelFragment.childCount ).toBe( 3 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).toBe( true );
 				} );
 
 				// Note: This test also verifies support for arbitrary selection passed to getSelectedContent().
@@ -319,8 +322,8 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 					// * Bar]
 					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
 
-					expect( modelFragment.childCount ).to.equal( 2 );
-					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.true;
+					expect( modelFragment.childCount ).toBe( 2 );
+					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).toBe( true );
 				} );
 			} );
 		} );
@@ -352,7 +355,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				)
 			);
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX</paragraph>' +
 				'<paragraph listIndent="2" listItemId="y" listType="bulleted">Y[]</paragraph>' +
@@ -379,7 +382,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				)
 			);
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B[]X</paragraph>' +
 				'<paragraph listIndent="2" listItemId="y" listType="bulleted">Y</paragraph>' +
@@ -402,7 +405,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				model.insertContent( paragraph );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX[]</paragraph>' +
 				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
@@ -421,7 +424,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				model.insertContent( writer.createText( 'X' ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX[]</paragraph>' +
 				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
@@ -446,7 +449,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				model.insertContent( writer.createText( 'X' ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX[]</paragraph>' +
 				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
@@ -471,7 +474,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				model.insertContent( writer.createElement( 'imageInline', { src: '' } ) );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">' +
 					'B<imageInline src=""></imageInline>' +
@@ -499,7 +502,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				model.insertContent( fragment );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">' +
 					'BX<imageInline src=""></imageInline>' +
@@ -519,7 +522,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX</paragraph>' +
 				'<paragraph listIndent="2" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
@@ -538,7 +541,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BW</paragraph>' +
 				'<paragraph listIndent="2" listItemId="a00" listType="bulleted">X</paragraph>' +
@@ -559,7 +562,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<p>X</p><ul><li>Y</li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
@@ -582,7 +585,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a01" listType="bulleted">X</paragraph>' +
@@ -601,7 +604,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">AX</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>'
@@ -618,7 +621,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>AX</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
 				'<paragraph>B</paragraph>'
@@ -632,7 +635,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				model.change( writer => {
 					editor.model.insertContent( writer.createDocumentFragment() );
 				} );
-			} ).not.to.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should correctly handle item that is pasted between list items without its parent', () => {
@@ -653,7 +656,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
@@ -681,7 +684,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
@@ -709,7 +712,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
@@ -735,7 +738,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
@@ -756,7 +759,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BW</paragraph>' +
 				'<paragraph listIndent="2" listItemId="a00" listType="bulleted">X</paragraph>' +
@@ -777,7 +780,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">AW</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">X</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">Y</paragraph>' +
@@ -798,7 +801,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">AW</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">X</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">Y</paragraph>' +
@@ -830,7 +833,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">Aa</paragraph>' +
 				'<splitBlock></splitBlock>' +
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
@@ -850,7 +853,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<p>A</p><p>B</p>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">B[]X</paragraph>' +
 				'<paragraph listIndent="1" listItemId="y" listType="bulleted">Y</paragraph>'
@@ -870,7 +873,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<ul><li>A</li><li>B</li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="x" listType="numbered">X</paragraph>' +
 				'<paragraph listIndent="1" listItemId="y" listType="numbered">YA</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a01" listType="numbered">B[]</paragraph>'
@@ -889,7 +892,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<ul><li>A<ul><li>B<ul><li>C</li></ul></li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="x" listType="numbered">X</paragraph>' +
 				'<paragraph listIndent="1" listItemId="y" listType="numbered">YA</paragraph>' +
 				'<paragraph listIndent="2" listItemId="a01" listType="numbered">B</paragraph>' +
@@ -909,7 +912,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 				content: _parseView( '<p>A</p><p>B</p>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph listIndent="0" listItemId="x" listType="numbered">X</paragraph>' +
 				'<paragraph listIndent="1" listItemId="y" listType="numbered">YA</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a01" listType="numbered">B[]</paragraph>'
@@ -939,7 +942,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			} );
 
 			view.document.on( 'clipboardOutput', ( evt, data ) => {
-				expect( _stringifyView( data.content ) ).is.equal(
+				expect( _stringifyView( data.content ) ).toBe(
 					'<ul><li><p>Foo bar.</p></li></ul>'
 				);
 			} );
@@ -970,7 +973,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			} );
 
 			view.document.on( 'clipboardOutput', ( evt, data ) => {
-				expect( _stringifyView( data.content ) ).is.equal(
+				expect( _stringifyView( data.content ) ).toBe(
 					'<ul><li><p>Foo bar.</p></li></ul>'
 				);
 			} );
@@ -1000,7 +1003,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			} );
 
 			view.document.on( 'clipboardOutput', ( evt, data ) => {
-				expect( _stringifyView( data.content ) ).is.equal(
+				expect( _stringifyView( data.content ) ).toBe(
 					'<p>Foo bar.</p><p></p>'
 				);
 			} );

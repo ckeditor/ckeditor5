@@ -15,7 +15,7 @@
 export function isEmojiSupported( unicode: string ): boolean {
 	const ctx = getCanvas();
 
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	if ( !ctx ) {
 		return false;
 	}
@@ -48,7 +48,7 @@ export function isEmojiSupported( unicode: string ): boolean {
 	for ( ; i < count && !a[ i + 3 ]; i += 4 );
 
 	// No visible pixel.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	if ( i >= count ) {
 		return false;
 	}
@@ -59,13 +59,13 @@ export function isEmojiSupported( unicode: string ): boolean {
 	const y = Math.floor( i / 4 / CANVAS_WIDTH );
 	const b = ctx.getImageData( x, y, 1, 1 ).data;
 
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	if ( a[ i ] !== b[ 0 ] || a[ i + 2 ] !== b[ 2 ]) {
 		return false;
 	}
 
 	//Some emojis consist of different ones, so they will show multiple characters if they are not supported.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	if ( ctx.measureText( unicode ).width >= CANVAS_WIDTH ) {
 		return false;
 	}
@@ -78,7 +78,7 @@ function getCanvas(): CanvasRenderingContext2D | null {
 	try {
 		return document.createElement( 'canvas' ).getContext( '2d', { willReadFrequently: true } );
 	} catch {
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		return null;
 	}
 }

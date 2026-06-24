@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 
@@ -14,7 +14,9 @@ import { RestrictedEditingModeEditing } from './../src/restrictededitingmodeedit
 describe( 'RestrictedEditingMode', () => {
 	let editor, element;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -34,11 +36,11 @@ describe( 'RestrictedEditingMode', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( RestrictedEditingMode.isOfficialPlugin ).to.be.true;
+		expect( RestrictedEditingMode.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( RestrictedEditingMode.isPremiumPlugin ).to.be.false;
+		expect( RestrictedEditingMode.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should load the RestrictedEditingModeEditing plugin', () => {

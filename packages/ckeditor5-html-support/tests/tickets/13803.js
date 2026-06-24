@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
@@ -46,6 +47,6 @@ describe( 'bug #13803', () => {
 
 		editor.setData( data );
 
-		expect( editor.getData() ).to.equalMarkup( data );
+		expect( editor.getData() ).toBe( data );
 	} );
 } );

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
@@ -16,22 +16,24 @@ import { stubUid } from '../list/_utils/uid.js';
 describe( 'ListPropertiesEditing', () => {
 	let editor, model;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListPropertiesEditing.pluginName ).to.equal( 'ListPropertiesEditing' );
+		expect( ListPropertiesEditing.pluginName ).toBe( 'ListPropertiesEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListPropertiesEditing.isOfficialPlugin ).to.be.true;
+		expect( ListPropertiesEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-		expect( ListPropertiesEditing.isPremiumPlugin ).to.be.true;
+		expect( ListPropertiesEditing.isPremiumPlugin ).toBe( true );
 	} );
 
 	it( 'should have `licenseFeatureCode` static flag set to `LP`', () => {
-		expect( ListPropertiesEditing.licenseFeatureCode ).to.equal( 'LP' );
+		expect( ListPropertiesEditing.licenseFeatureCode ).toBe( 'LP' );
 	} );
 
 	describe( 'config', () => {
@@ -46,7 +48,7 @@ describe( 'ListPropertiesEditing', () => {
 		} );
 
 		it( 'should have default values', () => {
-			expect( editor.config.get( 'list.properties' ) ).to.deep.equal( {
+			expect( editor.config.get( 'list.properties' ) ).toEqual( {
 				styles: true,
 				startIndex: false,
 				reversed: false
@@ -54,7 +56,7 @@ describe( 'ListPropertiesEditing', () => {
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( ListPropertiesEditing ) ).to.be.instanceOf( ListPropertiesEditing );
+			expect( editor.plugins.get( ListPropertiesEditing ) ).toBeInstanceOf( ListPropertiesEditing );
 		} );
 	} );
 
@@ -80,31 +82,31 @@ describe( 'ListPropertiesEditing', () => {
 			it( 'should register `listStyle` command with support for all style types', () => {
 				const command = editor.commands.get( 'listStyle' );
 
-				expect( command.isStyleTypeSupported( 'disc' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'circle' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'square' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'decimal' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'decimal-leading-zero' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'lower-roman' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'upper-roman' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'lower-alpha' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'upper-alpha' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'lower-latin' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'upper-latin' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'disc' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'circle' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'square' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'decimal' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'decimal-leading-zero' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'lower-roman' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'upper-roman' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'lower-alpha' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'upper-alpha' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'lower-latin' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'upper-latin' ) ).toBe( true );
 			} );
 		} );
 
 		describe( 'schema rules', () => {
 			it( 'should allow set `listStyle` on the `paragraph`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStyle' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStyle' ) ).toBe( true );
 			} );
 
 			it( 'should not allow set `listReversed` on the `paragraph`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listReversed' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listReversed' ) ).toBe( false );
 			} );
 
 			it( 'should not allow set `listStart` on the `paragraph`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStart' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStart' ) ).toBe( false );
 			} );
 		} );
 
@@ -300,7 +302,7 @@ describe( 'ListPropertiesEditing', () => {
 						* Foo {style:default}
 					` ) );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).toBe( '<ul><li>Foo</li></ul>' );
 				} );
 
 				it( 'should downcast to `list-style-type` style (bulleted, circle)', () => {
@@ -308,7 +310,7 @@ describe( 'ListPropertiesEditing', () => {
 						* Foo {style:circle}
 					` ) );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+					expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 						'<ul style="list-style-type:circle;"><li>Foo</li></ul>'
 					);
 				} );
@@ -318,7 +320,7 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {style:default}
 					` ) );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).toBe( '<ol><li>Foo</li></ol>' );
 				} );
 
 				it( 'should downcast to `list-style-type` style (numbered, decimal)', () => {
@@ -326,7 +328,7 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {style:decimal}
 					` ) );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+					expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 						'<ol style="list-style-type:decimal;"><li>Foo</li></ol>'
 					);
 				} );
@@ -432,17 +434,17 @@ describe( 'ListPropertiesEditing', () => {
 			it( 'should register `listStyle` command with support for all style types except `decimal-leading-zero`', () => {
 				const command = editor.commands.get( 'listStyle' );
 
-				expect( command.isStyleTypeSupported( 'disc' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'circle' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'square' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'decimal' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'decimal-leading-zero' ) ).to.be.false;
-				expect( command.isStyleTypeSupported( 'lower-roman' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'upper-roman' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'lower-alpha' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'upper-alpha' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'lower-latin' ) ).to.be.true;
-				expect( command.isStyleTypeSupported( 'upper-latin' ) ).to.be.true;
+				expect( command.isStyleTypeSupported( 'disc' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'circle' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'square' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'decimal' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'decimal-leading-zero' ) ).toBe( false );
+				expect( command.isStyleTypeSupported( 'lower-roman' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'upper-roman' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'lower-alpha' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'upper-alpha' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'lower-latin' ) ).toBe( true );
+				expect( command.isStyleTypeSupported( 'upper-latin' ) ).toBe( true );
 			} );
 		} );
 
@@ -551,7 +553,7 @@ describe( 'ListPropertiesEditing', () => {
 						* Foo {style:default}
 					` ) );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).toBe( '<ul><li>Foo</li></ul>' );
 				} );
 
 				it( 'should downcast to `type` attribute (bulleted, circle)', () => {
@@ -559,7 +561,7 @@ describe( 'ListPropertiesEditing', () => {
 						* Foo {style:circle}
 					` ) );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul type="circle"><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).toBe( '<ul type="circle"><li>Foo</li></ul>' );
 				} );
 
 				it( 'should downcast to `type` attribute (numbered, default)', () => {
@@ -567,7 +569,7 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {style:default}
 					` ) );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).toBe( '<ol><li>Foo</li></ol>' );
 				} );
 
 				it( 'should downcast to `type` attribute (numbered, decimal)', () => {
@@ -575,7 +577,7 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {style:decimal}
 					` ) );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol type="1"><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).toBe( '<ol type="1"><li>Foo</li></ol>' );
 				} );
 
 				it( 'should downcast to `type` attribute (numbered, decimal-leading-zero)', () => {
@@ -583,7 +585,7 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {style:decimal-leading-zero}
 					` ) );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).toBe( '<ol><li>Foo</li></ol>' );
 				} );
 			} );
 		} );
@@ -607,15 +609,15 @@ describe( 'ListPropertiesEditing', () => {
 
 		describe( 'schema rules', () => {
 			it( 'should not allow set `listStyle` on the `paragraph`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStyle' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStyle' ) ).toBe( false );
 			} );
 
 			it( 'should not allow set `listReversed` on the `paragraph`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listReversed' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listReversed' ) ).toBe( true );
 			} );
 
 			it( 'should allow set `listStart` on the `paragraph`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStart' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStart' ) ).toBe( false );
 			} );
 		} );
 
@@ -819,15 +821,15 @@ describe( 'ListPropertiesEditing', () => {
 
 		describe( 'schema rules', () => {
 			it( 'should allow set `listStyle` on the `paragraph`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStyle' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStyle' ) ).toBe( false );
 			} );
 
 			it( 'should not allow set `listReversed` on the `paragraph`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listReversed' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listReversed' ) ).toBe( false );
 			} );
 
 			it( 'should not allow set `listStart` on the `paragraph`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStart' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listStart' ) ).toBe( true );
 			} );
 		} );
 
@@ -1143,31 +1145,31 @@ describe( 'ListPropertiesEditing', () => {
 				'</paragraph>'
 			);
 
-			const changeDataListener = sinon.spy( () => {
+			const changeDataListener = vi.fn( () => {
 				const changes = editor.model.document.differ.getChanges();
 
-				expect( changes.length ).to.equal( 2 );
+				expect( changes.length ).toBe( 2 );
 
-				expect( changes[ 0 ].type ).to.equal( 'attribute' );
-				expect( changes[ 0 ].attributeKey ).to.equal( 'listItemBold' );
-				expect( changes[ 0 ].attributeOldValue ).to.be.null;
-				expect( changes[ 0 ].attributeNewValue ).to.be.true;
-				expect( changes[ 0 ].range.start.path ).to.deep.equal( [ 2 ] );
-				expect( changes[ 0 ].range.end.path ).to.deep.equal( [ 2, 0 ] );
+				expect( changes[ 0 ].type ).toBe( 'attribute' );
+				expect( changes[ 0 ].attributeKey ).toBe( 'listItemBold' );
+				expect( changes[ 0 ].attributeOldValue ).toBeNull();
+				expect( changes[ 0 ].attributeNewValue ).toBe( true );
+				expect( changes[ 0 ].range.start.path ).toEqual( [ 2 ] );
+				expect( changes[ 0 ].range.end.path ).toEqual( [ 2, 0 ] );
 
-				expect( changes[ 1 ].type ).to.equal( 'attribute' );
-				expect( changes[ 1 ].attributeKey ).to.equal( 'bold' );
-				expect( changes[ 1 ].attributeOldValue ).to.be.null;
-				expect( changes[ 1 ].attributeNewValue ).to.be.true;
-				expect( changes[ 1 ].range.start.path ).to.deep.equal( [ 2, 0 ] );
-				expect( changes[ 1 ].range.end.path ).to.deep.equal( [ 2, 8 ] );
+				expect( changes[ 1 ].type ).toBe( 'attribute' );
+				expect( changes[ 1 ].attributeKey ).toBe( 'bold' );
+				expect( changes[ 1 ].attributeOldValue ).toBeNull();
+				expect( changes[ 1 ].attributeNewValue ).toBe( true );
+				expect( changes[ 1 ].range.start.path ).toEqual( [ 2, 0 ] );
+				expect( changes[ 1 ].range.end.path ).toEqual( [ 2, 8 ] );
 			} );
 
 			editor.model.document.on( 'change:data', changeDataListener );
 
 			editor.execute( 'bold' );
 
-			expect( changeDataListener.calledOnce ).to.be.true;
+			expect( changeDataListener.mock.calls.length === 1 ).toBe( true );
 
 			expect( _getModelData( model ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listStyle="default" listType="bulleted">' +
@@ -1215,31 +1217,31 @@ describe( 'ListPropertiesEditing', () => {
 				'</paragraph>'
 			);
 
-			const changeDataListener = sinon.spy( () => {
+			const changeDataListener = vi.fn( () => {
 				const changes = editor.model.document.differ.getChanges();
 
-				expect( changes.length ).to.equal( 2 );
+				expect( changes.length ).toBe( 2 );
 
-				expect( changes[ 0 ].type ).to.equal( 'attribute' );
-				expect( changes[ 0 ].attributeKey ).to.equal( 'listItemBold' );
-				expect( changes[ 0 ].attributeOldValue ).to.be.true;
-				expect( changes[ 0 ].attributeNewValue ).to.be.null;
-				expect( changes[ 0 ].range.start.path ).to.deep.equal( [ 2 ] );
-				expect( changes[ 0 ].range.end.path ).to.deep.equal( [ 2, 0 ] );
+				expect( changes[ 0 ].type ).toBe( 'attribute' );
+				expect( changes[ 0 ].attributeKey ).toBe( 'listItemBold' );
+				expect( changes[ 0 ].attributeOldValue ).toBe( true );
+				expect( changes[ 0 ].attributeNewValue ).toBeNull();
+				expect( changes[ 0 ].range.start.path ).toEqual( [ 2 ] );
+				expect( changes[ 0 ].range.end.path ).toEqual( [ 2, 0 ] );
 
-				expect( changes[ 1 ].type ).to.equal( 'attribute' );
-				expect( changes[ 1 ].attributeKey ).to.equal( 'bold' );
-				expect( changes[ 1 ].attributeOldValue ).to.be.true;
-				expect( changes[ 1 ].attributeNewValue ).to.be.null;
-				expect( changes[ 1 ].range.start.path ).to.deep.equal( [ 2, 0 ] );
-				expect( changes[ 1 ].range.end.path ).to.deep.equal( [ 2, 8 ] );
+				expect( changes[ 1 ].type ).toBe( 'attribute' );
+				expect( changes[ 1 ].attributeKey ).toBe( 'bold' );
+				expect( changes[ 1 ].attributeOldValue ).toBe( true );
+				expect( changes[ 1 ].attributeNewValue ).toBeNull();
+				expect( changes[ 1 ].range.start.path ).toEqual( [ 2, 0 ] );
+				expect( changes[ 1 ].range.end.path ).toEqual( [ 2, 8 ] );
 			} );
 
 			editor.model.document.on( 'change:data', changeDataListener );
 
 			editor.execute( 'bold' );
 
-			expect( changeDataListener.calledOnce ).to.be.true;
+			expect( changeDataListener.mock.calls.length === 1 ).toBe( true );
 
 			expect( _getModelData( model ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listStyle="default" listType="bulleted">' +

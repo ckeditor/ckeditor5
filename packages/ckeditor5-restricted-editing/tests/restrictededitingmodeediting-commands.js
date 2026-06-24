@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Typing } from '@ckeditor/ckeditor5-typing';
@@ -16,8 +16,6 @@ import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 describe( 'RestrictedEditingEditing - commands', () => {
 	let editor;
-
-	testUtils.createSinonSandbox();
 
 	describe( 'commands toggling', () => {
 		let model, firstParagraph;
@@ -55,7 +53,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 1 );
 					} );
 
-					expect( editor.commands.get( 'undo' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'undo' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled inside exception marker', () => {
@@ -63,7 +61,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'undo' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'undo' ).isEnabled ).toBe( true );
 				} );
 			} );
 
@@ -77,7 +75,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 1 );
 					} );
 
-					expect( editor.commands.get( 'redo' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'redo' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled inside exception marker', () => {
@@ -85,7 +83,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'redo' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'redo' ).isEnabled ).toBe( true );
 				} );
 			} );
 		} );
@@ -105,7 +103,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 1 );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
@@ -113,7 +111,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be disabled when caret is inside other marker', () => {
@@ -129,7 +127,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 1 );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
@@ -137,7 +135,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 4 );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (end boundary)', () => {
@@ -145,7 +143,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 7 );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be disabled for multi-range selection (collapsed ranges)', () => {
@@ -160,7 +158,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						] );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
@@ -171,7 +169,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
@@ -182,7 +180,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
@@ -193,7 +191,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
@@ -204,7 +202,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
@@ -215,7 +213,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be disabled for non-collapsed selection with more then one range', () => {
@@ -232,7 +230,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						] );
 					} );
 
-					expect( editor.commands.get( 'input' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'input' ).isEnabled ).toBe( false );
 				} );
 			} );
 
@@ -250,7 +248,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 1 );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
@@ -258,7 +256,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be disabled when caret is inside exception marker (start boundary)', () => {
@@ -266,7 +264,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 4 );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be disabled when caret moves to start boundary and it was enabled previously', () => {
@@ -274,13 +272,13 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( true );
 
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 4 );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (end boundary)', () => {
@@ -288,7 +286,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 7 );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
@@ -299,7 +297,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
@@ -310,7 +308,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
@@ -321,7 +319,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
@@ -332,7 +330,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
@@ -343,7 +341,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).toBe( true );
 				} );
 			} );
 
@@ -361,7 +359,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 1 );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
@@ -369,7 +367,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
@@ -377,7 +375,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 4 );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be disabled when caret is inside exception marker (end boundary)', () => {
@@ -385,7 +383,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 7 );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be disabled when caret moves to end boundary and it was enabled previously', () => {
@@ -393,13 +391,13 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( true );
 
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 7 );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
@@ -410,7 +408,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( false );
 				} );
 
 				it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
@@ -421,7 +419,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
@@ -432,7 +430,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
@@ -443,7 +441,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( true );
 				} );
 
 				it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
@@ -454,7 +452,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).toBe( true );
 				} );
 			} );
 		} );
@@ -473,7 +471,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					writer.setSelection( firstParagraph, 1 );
 				} );
 
-				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'other' ).isEnabled ).toBe( false );
 			} );
 
 			it( 'should be disabled inside exception marker', () => {
@@ -484,7 +482,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					writer.setSelection( firstParagraph, 5 );
 				} );
 
-				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'other' ).isEnabled ).toBe( false );
 			} );
 
 			it( 'should be disabled when caret is inside exception marker (not touching boundaries)', () => {
@@ -492,7 +490,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					writer.setSelection( firstParagraph, 5 );
 				} );
 
-				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'other' ).isEnabled ).toBe( false );
 			} );
 
 			it( 'should be disabled when caret is inside exception marker (start boundary)', () => {
@@ -500,7 +498,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					writer.setSelection( firstParagraph, 4 );
 				} );
 
-				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'other' ).isEnabled ).toBe( false );
 			} );
 
 			it( 'should be disabled when caret is inside exception marker (end boundary)', () => {
@@ -508,7 +506,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					writer.setSelection( firstParagraph, 7 );
 				} );
 
-				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'other' ).isEnabled ).toBe( false );
 			} );
 
 			it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
@@ -519,7 +517,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					) );
 				} );
 
-				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'other' ).isEnabled ).toBe( false );
 			} );
 
 			it( 'should be disabled for non-collapsed selection that is fully contained inside exception marker', () => {
@@ -530,7 +528,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					) );
 				} );
 
-				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'other' ).isEnabled ).toBe( false );
 			} );
 
 			it( 'should be disabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
@@ -541,7 +539,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					) );
 				} );
 
-				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'other' ).isEnabled ).toBe( false );
 			} );
 
 			it( 'should be disabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
@@ -552,7 +550,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					) );
 				} );
 
-				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'other' ).isEnabled ).toBe( false );
 			} );
 
 			it( 'should be disabled for non-collapsed selection is equal to exception marker', () => {
@@ -563,7 +561,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					) );
 				} );
 
-				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'other' ).isEnabled ).toBe( false );
 			} );
 		} );
 	} );
@@ -606,7 +604,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				writer.setSelection( firstParagraph, 1 );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.false;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( false );
 		} );
 
 		it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
@@ -614,7 +612,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				writer.setSelection( firstParagraph, 5 );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.true;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( true );
 		} );
 
 		it( 'should be disabled when caret is inside other marker', () => {
@@ -630,7 +628,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				writer.setSelection( firstParagraph, 1 );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.false;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( false );
 		} );
 
 		it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
@@ -638,7 +636,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				writer.setSelection( firstParagraph, 4 );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.true;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled when caret is inside exception marker (end boundary)', () => {
@@ -646,7 +644,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				writer.setSelection( firstParagraph, 7 );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.true;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( true );
 		} );
 
 		it( 'should be disabled for multi-range selection (collapsed ranges)', () => {
@@ -661,7 +659,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				] );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.false;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( false );
 		} );
 
 		it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
@@ -672,7 +670,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				) );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.false;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( false );
 		} );
 
 		it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
@@ -683,7 +681,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				) );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.true;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
@@ -694,7 +692,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				) );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.true;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
@@ -705,7 +703,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				) );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.true;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
@@ -716,7 +714,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				) );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.true;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( true );
 		} );
 
 		it( 'should be disabled for non-collapsed selection with more then one range', () => {
@@ -733,7 +731,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				] );
 			} );
 
-			expect( editor.commands.get( 'allowed' ).isEnabled ).to.be.false;
+			expect( editor.commands.get( 'allowed' ).isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -773,7 +771,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				editor.execute( 'delete' );
 				editor.execute( 'undo' );
 
-				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
+				expect( editor.commands.get( 'delete' ).isEnabled ).toBe( true );
 			} );
 		} );
 	} );
