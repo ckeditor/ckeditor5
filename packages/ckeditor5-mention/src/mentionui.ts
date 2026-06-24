@@ -601,10 +601,10 @@ function getBalloonPanelPositions(
 ): DomOptimalPositionOptions['positions'] {
 	const positions: Record<string, DomOptimalPositionOptions['positions'][0]> = {
 		// Positions the panel to the southeast of the caret rectangle.
-		'caret_se': ( targetRect: Rect ) => {
+		'caret_se': ( targetRect: Rect, balloonRect: Rect, viewportRect: Rect ) => {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
-				left: targetRect.right,
+				left: fitLeftInViewport( targetRect.right, balloonRect, viewportRect ),
 				name: 'caret_se',
 				config: {
 					withArrow: false
@@ -613,10 +613,10 @@ function getBalloonPanelPositions(
 		},
 
 		// Positions the panel to the northeast of the caret rectangle.
-		'caret_ne': ( targetRect: Rect, balloonRect: Rect ) => {
+		'caret_ne': ( targetRect: Rect, balloonRect: Rect, viewportRect: Rect ) => {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
-				left: targetRect.right,
+				left: fitLeftInViewport( targetRect.right, balloonRect, viewportRect ),
 				name: 'caret_ne',
 				config: {
 					withArrow: false
@@ -625,10 +625,10 @@ function getBalloonPanelPositions(
 		},
 
 		// Positions the panel to the southwest of the caret rectangle.
-		'caret_sw': ( targetRect: Rect, balloonRect: Rect ) => {
+		'caret_sw': ( targetRect: Rect, balloonRect: Rect, viewportRect: Rect ) => {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
-				left: targetRect.right - balloonRect.width,
+				left: fitLeftInViewport( targetRect.right - balloonRect.width, balloonRect, viewportRect ),
 				name: 'caret_sw',
 				config: {
 					withArrow: false
@@ -637,10 +637,10 @@ function getBalloonPanelPositions(
 		},
 
 		// Positions the panel to the northwest of the caret rect.
-		'caret_nw': ( targetRect: Rect, balloonRect: Rect ) => {
+		'caret_nw': ( targetRect: Rect, balloonRect: Rect, viewportRect: Rect ) => {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
-				left: targetRect.right - balloonRect.width,
+				left: fitLeftInViewport( targetRect.right - balloonRect.width, balloonRect, viewportRect ),
 				name: 'caret_nw',
 				config: {
 					withArrow: false
@@ -668,6 +668,16 @@ function getBalloonPanelPositions(
 		positions.caret_nw,
 		positions.caret_ne
 	];
+}
+
+/**
+ * Keeps the panel within the viewport horizontally, so it does not get cut off
+ * when the caret is close to the screen edge (e.g. on mobile).
+ *
+ * See https://github.com/ckeditor/ckeditor5/issues/20182.
+ */
+function fitLeftInViewport( left: number, balloonRect: Rect, viewportRect: Rect ): number {
+	return Math.max( viewportRect.left, Math.min( left, viewportRect.right - balloonRect.width ) );
 }
 
 /**
