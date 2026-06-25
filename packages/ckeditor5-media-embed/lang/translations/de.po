@@ -69,28 +69,28 @@ msgstr "Rechts ausgerichtete Medien"
 
 msgctxt "The label used for the dropdown in the media toolbar containing defined resize options."
 msgid "Resize media"
-msgstr ""
+msgstr "Mediengröße ändern"
 
 msgctxt "The label used for the standalone resize options buttons in the media toolbar."
 msgid "Resize media to %0"
-msgstr ""
+msgstr "Mediengröße auf %0 ändern"
 
 msgctxt "The accessibility label of the standalone media resize reset option button in the media toolbar for screen readers."
 msgid "Resize media to the original size"
-msgstr ""
+msgstr "Mediengröße auf Originalgröße zurücksetzen"
 
 msgctxt "The label for media resize balloon input."
 msgid "Resize media (in %0)"
-msgstr ""
+msgstr "Mediengröße ändern (auf %0)"
 
 msgctxt "The accessibility label of the standalone media resize custom option button in the media toolbar for screen readers."
 msgid "Custom media size"
-msgstr ""
+msgstr "Benutzerdefinierte Mediengröße"
 
 msgctxt "The accessibility label of the media resize dropdown for screen readers."
 msgid "Media resize list"
-msgstr ""
+msgstr "Liste zur Änderung der Mediengröße"
 
 msgctxt "The label for the header of the media resize balloon."
 msgid "Media Resize"
-msgstr ""
+msgstr "Mediengröße ändern"

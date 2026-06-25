@@ -69,28 +69,28 @@ msgstr "Høyrejustert innhold"
 
 msgctxt "The label used for the dropdown in the media toolbar containing defined resize options."
 msgid "Resize media"
-msgstr ""
+msgstr "Endre mediastørrelse"
 
 msgctxt "The label used for the standalone resize options buttons in the media toolbar."
 msgid "Resize media to %0"
-msgstr ""
+msgstr "Endre mediastørrelse til %0"
 
 msgctxt "The accessibility label of the standalone media resize reset option button in the media toolbar for screen readers."
 msgid "Resize media to the original size"
-msgstr ""
+msgstr "Endre media til original størrelse"
 
 msgctxt "The label for media resize balloon input."
 msgid "Resize media (in %0)"
-msgstr ""
+msgstr "Endre mediastørrelse (i %0)"
 
 msgctxt "The accessibility label of the standalone media resize custom option button in the media toolbar for screen readers."
 msgid "Custom media size"
-msgstr ""
+msgstr "Tilpasset mediestørrelse"
 
 msgctxt "The accessibility label of the media resize dropdown for screen readers."
 msgid "Media resize list"
-msgstr ""
+msgstr "Liste for mediastørrelse"
 
 msgctxt "The label for the header of the media resize balloon."
 msgid "Media Resize"
-msgstr ""
+msgstr "Endre mediastørrelse"
