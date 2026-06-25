@@ -69,28 +69,28 @@ msgstr "Desno poravnat medijski sadržaj"
 
 msgctxt "The label used for the dropdown in the media toolbar containing defined resize options."
 msgid "Resize media"
-msgstr ""
+msgstr "Promeni veličinu medija"
 
 msgctxt "The label used for the standalone resize options buttons in the media toolbar."
 msgid "Resize media to %0"
-msgstr ""
+msgstr "Promeni veličinu medija na %0"
 
 msgctxt "The accessibility label of the standalone media resize reset option button in the media toolbar for screen readers."
 msgid "Resize media to the original size"
-msgstr ""
+msgstr "Vrati medij na originalnu veličinu"
 
 msgctxt "The label for media resize balloon input."
 msgid "Resize media (in %0)"
-msgstr ""
+msgstr "Promeni veličinu medija (u %0)"
 
 msgctxt "The accessibility label of the standalone media resize custom option button in the media toolbar for screen readers."
 msgid "Custom media size"
-msgstr ""
+msgstr "Prilagođena veličina medija"
 
 msgctxt "The accessibility label of the media resize dropdown for screen readers."
 msgid "Media resize list"
-msgstr ""
+msgstr "Lista promena veličine medija"
 
 msgctxt "The label for the header of the media resize balloon."
 msgid "Media Resize"
-msgstr ""
+msgstr "Promena veličine medija"

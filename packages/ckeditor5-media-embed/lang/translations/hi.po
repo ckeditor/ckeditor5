@@ -69,28 +69,28 @@ msgstr "दाईं ओर संरेखित मीडिया"
 
 msgctxt "The label used for the dropdown in the media toolbar containing defined resize options."
 msgid "Resize media"
-msgstr ""
+msgstr "मीडिया का साइज़ बदलें"
 
 msgctxt "The label used for the standalone resize options buttons in the media toolbar."
 msgid "Resize media to %0"
-msgstr ""
+msgstr "मीडिया का साइज़ बदलकर %0 करें"
 
 msgctxt "The accessibility label of the standalone media resize reset option button in the media toolbar for screen readers."
 msgid "Resize media to the original size"
-msgstr ""
+msgstr "मीडिया का साइज़ बदलकर उसे ओरिजिनल साइज़ में करें"
 
 msgctxt "The label for media resize balloon input."
 msgid "Resize media (in %0)"
-msgstr ""
+msgstr "मीडिया का साइज़ बदलें (%0 में)"
 
 msgctxt "The accessibility label of the standalone media resize custom option button in the media toolbar for screen readers."
 msgid "Custom media size"
-msgstr ""
+msgstr "कस्टम मीडिया साइज़"
 
 msgctxt "The accessibility label of the media resize dropdown for screen readers."
 msgid "Media resize list"
-msgstr ""
+msgstr "मीडिया का आकार बदलने की सूची"
 
 msgctxt "The label for the header of the media resize balloon."
 msgid "Media Resize"
-msgstr ""
+msgstr "मीडिया का आकार बदलें"

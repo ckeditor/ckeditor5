@@ -69,28 +69,28 @@ msgstr "Media rata kanan"
 
 msgctxt "The label used for the dropdown in the media toolbar containing defined resize options."
 msgid "Resize media"
-msgstr ""
+msgstr "Ubah ukuran media"
 
 msgctxt "The label used for the standalone resize options buttons in the media toolbar."
 msgid "Resize media to %0"
-msgstr ""
+msgstr "Ubah ukuran media menjadi %0"
 
 msgctxt "The accessibility label of the standalone media resize reset option button in the media toolbar for screen readers."
 msgid "Resize media to the original size"
-msgstr ""
+msgstr "Kembalikan ukuran media ke ukuran asli"
 
 msgctxt "The label for media resize balloon input."
 msgid "Resize media (in %0)"
-msgstr ""
+msgstr "Ubah ukuran media (dalam %0)"
 
 msgctxt "The accessibility label of the standalone media resize custom option button in the media toolbar for screen readers."
 msgid "Custom media size"
-msgstr ""
+msgstr "Ukuran media kustom"
 
 msgctxt "The accessibility label of the media resize dropdown for screen readers."
 msgid "Media resize list"
-msgstr ""
+msgstr "Daftar ukuran media"
 
 msgctxt "The label for the header of the media resize balloon."
 msgid "Media Resize"
-msgstr ""
+msgstr "Ubah Ukuran Media"
