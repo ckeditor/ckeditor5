@@ -21,6 +21,7 @@ import { CKBoxUtils } from '../../src/ckboxutils.js';
 
 describe( 'CKBoxImageEditUI', () => {
 	let editor, model, element, button, command;
+	let originalCKBox;
 
 	beforeEach( () => {
 		// `CKBoxEditing#init()` and `CKBoxUtils#init()` fire unawaited network requests (the upload permission
@@ -38,6 +39,7 @@ describe( 'CKBoxImageEditUI', () => {
 			'signature'
 		].join( '.' );
 
+		originalCKBox = window.CKBox;
 		window.CKBox = {
 			mountImageEditor: vi.fn()
 		};
@@ -74,6 +76,9 @@ describe( 'CKBoxImageEditUI', () => {
 	} );
 
 	afterEach( () => {
+		// Browser tests run in a shared page, so globals must not leak between files.
+		window.CKBox = originalCKBox;
+
 		element.remove();
 
 		if ( global.document.querySelector( '.ck.ckbox-wrapper' ) ) {

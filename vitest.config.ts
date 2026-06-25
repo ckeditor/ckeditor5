@@ -54,6 +54,7 @@ export function createVitestConfig( { name, ...testOverrides }: TestOptions ): V
 
 				browser: {
 					enabled: true,
+					isolate: false,
 					provider: playwright( {
 						launchOptions: CHROME_EXECUTABLE_PATH ?
 							{ executablePath: CHROME_EXECUTABLE_PATH } :

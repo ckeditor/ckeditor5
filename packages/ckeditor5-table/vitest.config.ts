@@ -10,8 +10,4 @@ const config: ViteUserConfig = createVitestConfig( {
 	name: 'table'
 } );
 
-// With per-file isolation the accumulated browser contexts exhaust the renderer and crash this
-// large suite ("Browser connection was closed"). Reusing a single context keeps memory bounded.
-config.test!.browser!.isolate = false;
-
 export default config;
