@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
@@ -504,14 +505,14 @@ describe( 'PlainTableOutput', () => {
 
 				testEditor.setData(
 					'<figure class="image">' +
-						'<img src="/assets/sample.png" />' +
+						'<img src="/sample.png" />' +
 						'<figcaption>Caption</figcaption>' +
 					'</figure>'
 				);
 
 				expect( testEditor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<img src="/assets/sample.png">' +
+						'<img src="/sample.png">' +
 						'<figcaption>Caption</figcaption>' +
 					'</figure>'
 				);
@@ -536,14 +537,14 @@ describe( 'PlainTableOutput', () => {
 
 				testEditor.setData(
 					'<figure class="image">' +
-						'<img src="/assets/sample.png" />' +
+						'<img src="/sample.png" />' +
 						'<figcaption>Caption</figcaption>' +
 					'</figure>'
 				);
 
 				expect( testEditor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<img src="/assets/sample.png">' +
+						'<img src="/sample.png">' +
 						'<foobar>Caption</foobar>' +
 					'</figure>'
 				);

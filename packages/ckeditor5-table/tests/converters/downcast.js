@@ -3,13 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 import { _getViewData, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { modelTable, viewTable } from '../_utils/utils.js';
@@ -23,7 +24,9 @@ import { TableLayout } from '../../src/tablelayout.js';
 describe( 'downcast converters', () => {
 	let editor, model, root, view, viewRoot;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -2802,6 +2805,35 @@ describe( 'downcast converters', () => {
 					await testEditor.destroy();
 				} );
 
+				it( 'no tableAlignment with TableLayout plugin (no alignment class/style)', async () => {
+					const testEditor = await ClassicTestEditor.create( editorElement, {
+						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
+					} );
+
+					_setModelData(
+						testEditor.model,
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					const table = testEditor.model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					testEditor.model.change( writer => writer.setAttribute( 'tableType', 'layout', table ) );
+
+					expect( getClipboardData( testEditor ) ).to.equalMarkup(
+						'<table class="table layout-table" role="presentation">' +
+							'<tbody><tr><td>foo</td></tr></tbody>' +
+						'</table>'
+					);
+
+					await testEditor.destroy();
+				} );
+
 				it( 'tableWidth', () => {
 					model.change( writer => writer.setAttribute( 'tableWidth', '500px', table ) );
 
@@ -3123,14 +3155,14 @@ describe( 'downcast converters', () => {
 
 				testEditor.setData(
 					'<figure class="image">' +
-						'<img src="/assets/sample.png" />' +
+						'<img src="/sample.png" />' +
 						'<figcaption>Caption</figcaption>' +
 					'</figure>'
 				);
 
 				expect( testEditor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<img src="/assets/sample.png">' +
+						'<img src="/sample.png">' +
 						'<figcaption>Caption</figcaption>' +
 					'</figure>'
 				);
@@ -3155,14 +3187,14 @@ describe( 'downcast converters', () => {
 
 				testEditor.setData(
 					'<figure class="image">' +
-						'<img src="/assets/sample.png" />' +
+						'<img src="/sample.png" />' +
 						'<figcaption>Caption</figcaption>' +
 					'</figure>'
 				);
 
 				expect( testEditor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<img src="/assets/sample.png">' +
+						'<img src="/sample.png">' +
 						'<foobar>Caption</foobar>' +
 					'</figure>'
 				);

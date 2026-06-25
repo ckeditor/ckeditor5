@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { TableCellPropertiesView } from '../../../src/tablecellproperties/ui/tablecellpropertiesview.js';
 import { LabeledFieldView, FocusCycler, ViewCollection, ToolbarView, ButtonView, InputTextView } from '@ckeditor/ckeditor5-ui';
 import { keyCodes, KeystrokeHandler, FocusTracker } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ColorInputView } from '../../../src/ui/colorinputview.js';
 
 const VIEW_OPTIONS = {
@@ -46,7 +46,9 @@ describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesView', () => {
 		let view, locale;
 
-		testUtils.createSinonSandbox();
+		afterEach( () => {
+			vi.restoreAllMocks();
+		} );
 
 		beforeEach( () => {
 			locale = { t: val => val };
@@ -62,19 +64,19 @@ describe( 'table cell properties', () => {
 
 		describe( 'constructor()', () => {
 			it( 'should set view#options', () => {
-				expect( view.options ).to.deep.equal( VIEW_OPTIONS );
+				expect( view.options ).toEqual( VIEW_OPTIONS );
 			} );
 
 			it( 'should set view#locale', () => {
-				expect( view.locale ).to.equal( locale );
+				expect( view.locale ).toBe( locale );
 			} );
 
 			it( 'should create view#children collection', () => {
-				expect( view.children ).to.be.instanceOf( ViewCollection );
+				expect( view.children ).toBeInstanceOf( ViewCollection );
 			} );
 
 			it( 'should define the public data interface (observable properties)', () => {
-				expect( view ).to.include( {
+				expect( view ).toMatchObject( {
 					borderStyle: '',
 					borderWidth: '',
 					borderColor: '',
@@ -86,34 +88,34 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should create element from template', () => {
-				expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-form' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-table-form' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-table-cell-properties-form' ) ).to.be.true;
-				expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+				expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-form' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-table-form' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-table-cell-properties-form' ) ).toBe( true );
+				expect( view.element.getAttribute( 'tabindex' ) ).toBe( '-1' );
 			} );
 
 			it( 'should create child views (and references)', () => {
-				expect( view.borderStyleDropdown ).to.be.instanceOf( LabeledFieldView );
-				expect( view.borderWidthInput ).to.be.instanceOf( LabeledFieldView );
-				expect( view.borderColorInput ).to.be.instanceOf( LabeledFieldView );
-				expect( view.backgroundInput ).to.be.instanceOf( LabeledFieldView );
-				expect( view.cellTypeDropdown ).to.be.instanceOf( LabeledFieldView );
-				expect( view.paddingInput ).to.be.instanceOf( LabeledFieldView );
-				expect( view.horizontalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
-				expect( view.verticalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
+				expect( view.borderStyleDropdown ).toBeInstanceOf( LabeledFieldView );
+				expect( view.borderWidthInput ).toBeInstanceOf( LabeledFieldView );
+				expect( view.borderColorInput ).toBeInstanceOf( LabeledFieldView );
+				expect( view.backgroundInput ).toBeInstanceOf( LabeledFieldView );
+				expect( view.cellTypeDropdown ).toBeInstanceOf( LabeledFieldView );
+				expect( view.paddingInput ).toBeInstanceOf( LabeledFieldView );
+				expect( view.horizontalAlignmentToolbar ).toBeInstanceOf( ToolbarView );
+				expect( view.verticalAlignmentToolbar ).toBeInstanceOf( ToolbarView );
 
-				expect( view.saveButtonView ).to.be.instanceOf( ButtonView );
-				expect( view.cancelButtonView ).to.be.instanceOf( ButtonView );
-				expect( view.backButtonView ).to.be.instanceOf( ButtonView );
+				expect( view.saveButtonView ).toBeInstanceOf( ButtonView );
+				expect( view.cancelButtonView ).toBeInstanceOf( ButtonView );
+				expect( view.backButtonView ).toBeInstanceOf( ButtonView );
 			} );
 
 			it( 'should have a header', () => {
 				const header = view.element.firstChild;
 
-				expect( header.classList.contains( 'ck' ) ).to.be.true;
-				expect( header.classList.contains( 'ck-form__header' ) ).to.be.true;
-				expect( header.children[ 1 ].textContent ).to.equal( 'Cell properties' );
+				expect( header.classList.contains( 'ck' ) ).toBe( true );
+				expect( header.classList.contains( 'ck-form__header' ) ).toBe( true );
+				expect( header.children[ 1 ].textContent ).toBe( 'Cell properties' );
 			} );
 
 			describe( 'form rows', () => {
@@ -121,12 +123,12 @@ describe( 'table cell properties', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 1 ];
 
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-form__border-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Border' );
-						expect( row.childNodes[ 1 ] ).to.equal( view.borderStyleDropdown.element );
-						expect( row.childNodes[ 2 ] ).to.equal( view.borderWidthInput.element );
-						expect( row.childNodes[ 3 ] ).to.equal( view.borderColorInput.element );
+						expect( row.classList.contains( 'ck-form__row' ) ).toBe( true );
+						expect( row.classList.contains( 'ck-table-form__border-row' ) ).toBe( true );
+						expect( row.childNodes[ 0 ].textContent ).toBe( 'Border' );
+						expect( row.childNodes[ 1 ] ).toBe( view.borderStyleDropdown.element );
+						expect( row.childNodes[ 2 ] ).toBe( view.borderWidthInput.element );
+						expect( row.childNodes[ 3 ] ).toBe( view.borderColorInput.element );
 					} );
 
 					describe( 'border style labeled dropdown', () => {
@@ -137,41 +139,41 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should have properties set', () => {
-							expect(	labeledDropdown.label ).to.equal( 'Style' );
-							expect(	labeledDropdown.class ).to.equal( 'ck-table-form__border-style' );
+							expect(	labeledDropdown.label ).toBe( 'Style' );
+							expect(	labeledDropdown.class ).toBe( 'ck-table-form__border-style' );
 						} );
 
 						it( 'should have a button with properties set', () => {
-							expect(	labeledDropdown.fieldView.buttonView.isOn ).to.be.false;
-							expect(	labeledDropdown.fieldView.buttonView.withText ).to.be.true;
-							expect(	labeledDropdown.fieldView.buttonView.tooltip ).to.equal( 'Style' );
-							expect( labeledDropdown.fieldView.buttonView.ariaLabel ).to.equal( 'Style' );
-							expect( labeledDropdown.fieldView.buttonView.ariaLabelledBy ).to.be.undefined;
+							expect(	labeledDropdown.fieldView.buttonView.isOn ).toBe( false );
+							expect(	labeledDropdown.fieldView.buttonView.withText ).toBe( true );
+							expect(	labeledDropdown.fieldView.buttonView.tooltip ).toBe( 'Style' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabel ).toBe( 'Style' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabelledBy ).toBeUndefined();
 						} );
 
 						it( 'should bind button\'s label to #borderStyle property', () => {
 							view.borderStyle = 'dotted';
-							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Dotted' );
+							expect( labeledDropdown.fieldView.buttonView.label ).toBe( 'Dotted' );
 
 							view.borderStyle = 'dashed';
-							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Dashed' );
+							expect( labeledDropdown.fieldView.buttonView.label ).toBe( 'Dashed' );
 						} );
 
 						it( 'should bind #isEmpty to #borderStyle property', () => {
 							view.borderStyle = 'dotted';
-							expect( labeledDropdown.isEmpty ).to.be.false;
+							expect( labeledDropdown.isEmpty ).toBe( false );
 
 							view.borderStyle = null;
-							expect( labeledDropdown.isEmpty ).to.be.true;
+							expect( labeledDropdown.isEmpty ).toBe( true );
 						} );
 
 						it( 'should change #borderStyle when executed', () => {
 							labeledDropdown.fieldView.isOpen = true;
 							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
-							expect( view.borderStyle ).to.equal( 'none' );
+							expect( view.borderStyle ).toBe( 'none' );
 
 							labeledDropdown.fieldView.listView.items.last.children.first.fire( 'execute' );
-							expect( view.borderStyle ).to.equal( 'outset' );
+							expect( view.borderStyle ).toBe( 'outset' );
 						} );
 
 						it( 'should come with a set of pre–defined border styles', () => {
@@ -179,7 +181,7 @@ describe( 'table cell properties', () => {
 
 							expect( labeledDropdown.fieldView.listView.items.map( item => {
 								return item.children.first.label;
-							} ) ).to.have.ordered.members( [
+							} ) ).toEqual( [
 								'None', 'Solid', 'Dotted', 'Dashed', 'Double', 'Groove', 'Ridge', 'Inset', 'Outset'
 							] );
 						} );
@@ -191,8 +193,8 @@ describe( 'table cell properties', () => {
 
 							view.borderStyle = 'none';
 
-							expect( view.borderColor ).to.equal( '' );
-							expect( view.borderWidth ).to.equal( '' );
+							expect( view.borderColor ).toBe( '' );
+							expect( view.borderWidth ).toBe( '' );
 						} );
 
 						it( 'listView should have properties set', () => {
@@ -200,8 +202,8 @@ describe( 'table cell properties', () => {
 
 							const listView = labeledDropdown.fieldView.listView;
 
-							expect( listView.element.role ).to.equal( 'menu' );
-							expect( listView.element.ariaLabel ).to.equal( 'Style' );
+							expect( listView.element.role ).toBe( 'menu' );
+							expect( listView.element.ariaLabel ).toBe( 'Style' );
 						} );
 					} );
 
@@ -213,35 +215,35 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.fieldView ).to.be.instanceOf( InputTextView );
-							expect( labeledInput.label ).to.equal( 'Width' );
-							expect( labeledInput.class ).to.equal( 'ck-table-form__border-width' );
+							expect( labeledInput.fieldView ).toBeInstanceOf( InputTextView );
+							expect( labeledInput.label ).toBe( 'Width' );
+							expect( labeledInput.class ).toBe( 'ck-table-form__border-width' );
 						} );
 
 						it( 'should reflect #borderWidth property', () => {
 							view.borderWidth = 'foo';
-							expect( labeledInput.fieldView.value ).to.equal( 'foo' );
+							expect( labeledInput.fieldView.value ).toBe( 'foo' );
 
 							view.borderWidth = 'bar';
-							expect( labeledInput.fieldView.value ).to.equal( 'bar' );
+							expect( labeledInput.fieldView.value ).toBe( 'bar' );
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
 							view.borderStyle = 'none';
-							expect( labeledInput.isEnabled ).to.be.false;
+							expect( labeledInput.isEnabled ).toBe( false );
 
 							view.borderStyle = 'dotted';
-							expect( labeledInput.isEnabled ).to.be.true;
+							expect( labeledInput.isEnabled ).toBe( true );
 						} );
 
 						it( 'should update #borderWidth on DOM "input" event', () => {
 							labeledInput.fieldView.element.value = 'foo';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.borderWidth ).to.equal( 'foo' );
+							expect( view.borderWidth ).toBe( 'foo' );
 
 							labeledInput.fieldView.element.value = 'bar';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.borderWidth ).to.equal( 'bar' );
+							expect( view.borderWidth ).toBe( 'bar' );
 						} );
 					} );
 
@@ -253,12 +255,12 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.fieldView ).to.be.instanceOf( ColorInputView );
-							expect( labeledInput.label ).to.equal( 'Color' );
+							expect( labeledInput.fieldView ).toBeInstanceOf( ColorInputView );
+							expect( labeledInput.label ).toBe( 'Color' );
 						} );
 
 						it( 'should get the color configuration', () => {
-							expect( labeledInput.fieldView.options.colorDefinitions ).to.deep.equal( [
+							expect( labeledInput.fieldView.options.colorDefinitions ).toEqual( [
 								{
 									color: 'rgb(255,0,0)',
 									label: 'Red',
@@ -278,28 +280,28 @@ describe( 'table cell properties', () => {
 
 						it( 'should reflect #borderColor property', () => {
 							view.borderColor = 'foo';
-							expect( labeledInput.fieldView.value ).to.equal( 'foo' );
+							expect( labeledInput.fieldView.value ).toBe( 'foo' );
 
 							view.borderColor = 'bar';
-							expect( labeledInput.fieldView.value ).to.equal( 'bar' );
+							expect( labeledInput.fieldView.value ).toBe( 'bar' );
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
 							view.borderStyle = 'none';
-							expect( labeledInput.isEnabled ).to.be.false;
+							expect( labeledInput.isEnabled ).toBe( false );
 
 							view.borderStyle = 'dotted';
-							expect( labeledInput.isEnabled ).to.be.true;
+							expect( labeledInput.isEnabled ).toBe( true );
 						} );
 
 						it( 'should update #borderColor on DOM "input" event', () => {
 							labeledInput.fieldView.value = 'foo';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.borderColor ).to.equal( 'foo' );
+							expect( view.borderColor ).toBe( 'foo' );
 
 							labeledInput.fieldView.value = 'bar';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.borderColor ).to.equal( 'bar' );
+							expect( view.borderColor ).toBe( 'bar' );
 						} );
 					} );
 				} );
@@ -308,10 +310,10 @@ describe( 'table cell properties', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 2 ].children[ 0 ];
 
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-form__cell-type-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Cell type' );
-						expect( row.childNodes[ 1 ] ).to.equal( view.cellTypeDropdown.element );
+						expect( row.classList.contains( 'ck-form__row' ) ).toBe( true );
+						expect( row.classList.contains( 'ck-table-form__cell-type-row' ) ).toBe( true );
+						expect( row.childNodes[ 0 ].textContent ).toBe( 'Cell type' );
+						expect( row.childNodes[ 1 ] ).toBe( view.cellTypeDropdown.element );
 					} );
 
 					describe( 'cell type dropdown', () => {
@@ -322,41 +324,41 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should have properties set', () => {
-							expect( labeledDropdown.label ).to.equal( 'Cell type' );
-							expect( labeledDropdown.class ).to.equal( 'ck-table-cell-properties-form__cell-type' );
+							expect( labeledDropdown.label ).toBe( 'Cell type' );
+							expect( labeledDropdown.class ).toBe( 'ck-table-cell-properties-form__cell-type' );
 						} );
 
 						it( 'should have a button with properties set', () => {
-							expect( labeledDropdown.fieldView.buttonView.isOn ).to.be.false;
-							expect( labeledDropdown.fieldView.buttonView.withText ).to.be.true;
-							expect( labeledDropdown.fieldView.buttonView.tooltip ).to.equal( 'Cell type' );
-							expect( labeledDropdown.fieldView.buttonView.ariaLabel ).to.equal( 'Cell type' );
-							expect( labeledDropdown.fieldView.buttonView.ariaLabelledBy ).to.be.undefined;
+							expect( labeledDropdown.fieldView.buttonView.isOn ).toBe( false );
+							expect( labeledDropdown.fieldView.buttonView.withText ).toBe( true );
+							expect( labeledDropdown.fieldView.buttonView.tooltip ).toBe( 'Cell type' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabel ).toBe( 'Cell type' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabelledBy ).toBeUndefined();
 						} );
 
 						it( 'should bind button\'s label to #cellType property', () => {
 							view.cellType = 'data';
-							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Data cell' );
+							expect( labeledDropdown.fieldView.buttonView.label ).toBe( 'Data cell' );
 
 							view.cellType = 'header';
-							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Header cell' );
+							expect( labeledDropdown.fieldView.buttonView.label ).toBe( 'Header cell' );
 						} );
 
 						it( 'should bind #isEmpty to #cellType property', () => {
 							view.cellType = 'data';
-							expect( labeledDropdown.isEmpty ).to.be.false;
+							expect( labeledDropdown.isEmpty ).toBe( false );
 
 							view.cellType = '';
-							expect( labeledDropdown.isEmpty ).to.be.true;
+							expect( labeledDropdown.isEmpty ).toBe( true );
 						} );
 
 						it( 'should change #cellType when executed', () => {
 							labeledDropdown.fieldView.isOpen = true;
 							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
-							expect( view.cellType ).to.equal( 'data' );
+							expect( view.cellType ).toBe( 'data' );
 
 							labeledDropdown.fieldView.listView.items.last.children.first.fire( 'execute' );
-							expect( view.cellType ).to.equal( 'header' );
+							expect( view.cellType ).toBe( 'header' );
 						} );
 
 						it( 'should come with a set of pre–defined cell types', () => {
@@ -364,7 +366,7 @@ describe( 'table cell properties', () => {
 
 							expect( labeledDropdown.fieldView.listView.items.map( item => {
 								return item.children.first.label;
-							} ) ).to.have.ordered.members( [
+							} ) ).toEqual( [
 								'Data cell', 'Header cell'
 							] );
 						} );
@@ -374,8 +376,8 @@ describe( 'table cell properties', () => {
 
 							const listView = labeledDropdown.fieldView.listView;
 
-							expect( listView.element.role ).to.equal( 'menu' );
-							expect( listView.element.ariaLabel ).to.equal( 'Cell type' );
+							expect( listView.element.role ).toBe( 'menu' );
+							expect( listView.element.ariaLabel ).toBe( 'Cell type' );
 						} );
 					} );
 				} );
@@ -384,12 +386,12 @@ describe( 'table cell properties', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 2 ].children[ 1 ];
 
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-form__background-row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-form__row' ) ).toBe( true );
+						expect( row.classList.contains( 'ck-table-form__background-row' ) ).toBe( true );
 
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Background' );
-						expect( row.childNodes[ 1 ] ).to.equal( view.backgroundInput.element );
+						expect( row.classList.contains( 'ck-form__row' ) ).toBe( true );
+						expect( row.childNodes[ 0 ].textContent ).toBe( 'Background' );
+						expect( row.childNodes[ 1 ] ).toBe( view.backgroundInput.element );
 					} );
 
 					describe( 'background color input', () => {
@@ -400,13 +402,13 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.fieldView ).to.be.instanceOf( ColorInputView );
-							expect( labeledInput.label ).to.equal( 'Color' );
-							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__background' );
+							expect( labeledInput.fieldView ).toBeInstanceOf( ColorInputView );
+							expect( labeledInput.label ).toBe( 'Color' );
+							expect( labeledInput.class ).toBe( 'ck-table-cell-properties-form__background' );
 						} );
 
 						it( 'should get the color configuration', () => {
-							expect( labeledInput.fieldView.options.colorDefinitions ).to.deep.equal( [
+							expect( labeledInput.fieldView.options.colorDefinitions ).toEqual( [
 								{
 									color: 'rgb(0,255,0)',
 									label: 'Green',
@@ -419,20 +421,20 @@ describe( 'table cell properties', () => {
 
 						it( 'should reflect #backgroundColor property', () => {
 							view.backgroundColor = 'foo';
-							expect( labeledInput.fieldView.value ).to.equal( 'foo' );
+							expect( labeledInput.fieldView.value ).toBe( 'foo' );
 
 							view.backgroundColor = 'bar';
-							expect( labeledInput.fieldView.value ).to.equal( 'bar' );
+							expect( labeledInput.fieldView.value ).toBe( 'bar' );
 						} );
 
 						it( 'should update #backgroundColor on DOM "input" event', () => {
 							labeledInput.fieldView.value = 'foo';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.backgroundColor ).to.equal( 'foo' );
+							expect( view.backgroundColor ).toBe( 'foo' );
 
 							labeledInput.fieldView.value = 'bar';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.backgroundColor ).to.equal( 'bar' );
+							expect( view.backgroundColor ).toBe( 'bar' );
 						} );
 					} );
 				} );
@@ -441,12 +443,12 @@ describe( 'table cell properties', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 3 ].childNodes[ 0 ];
 
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-form__dimensions-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Dimensions' );
-						expect( row.childNodes[ 1 ] ).to.equal( view.widthInput.element );
-						expect( row.childNodes[ 2 ].textContent ).to.equal( '×' );
-						expect( row.childNodes[ 3 ] ).to.equal( view.heightInput.element );
+						expect( row.classList.contains( 'ck-form__row' ) ).toBe( true );
+						expect( row.classList.contains( 'ck-table-form__dimensions-row' ) ).toBe( true );
+						expect( row.childNodes[ 0 ].textContent ).toBe( 'Dimensions' );
+						expect( row.childNodes[ 1 ] ).toBe( view.widthInput.element );
+						expect( row.childNodes[ 2 ].textContent ).toBe( '×' );
+						expect( row.childNodes[ 3 ] ).toBe( view.heightInput.element );
 					} );
 
 					describe( 'width input', () => {
@@ -457,27 +459,27 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.fieldView ).to.be.instanceOf( InputTextView );
-							expect( labeledInput.label ).to.equal( 'Width' );
-							expect( labeledInput.class ).to.equal( 'ck-table-form__dimensions-row__width' );
+							expect( labeledInput.fieldView ).toBeInstanceOf( InputTextView );
+							expect( labeledInput.label ).toBe( 'Width' );
+							expect( labeledInput.class ).toBe( 'ck-table-form__dimensions-row__width' );
 						} );
 
 						it( 'should reflect #width property', () => {
 							view.width = 'foo';
-							expect( labeledInput.fieldView.value ).to.equal( 'foo' );
+							expect( labeledInput.fieldView.value ).toBe( 'foo' );
 
 							view.width = 'bar';
-							expect( labeledInput.fieldView.value ).to.equal( 'bar' );
+							expect( labeledInput.fieldView.value ).toBe( 'bar' );
 						} );
 
 						it( 'should update #width on DOM "input" event', () => {
 							labeledInput.fieldView.element.value = 'foo';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.width ).to.equal( 'foo' );
+							expect( view.width ).toBe( 'foo' );
 
 							labeledInput.fieldView.element.value = 'bar';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.width ).to.equal( 'bar' );
+							expect( view.width ).toBe( 'bar' );
 						} );
 					} );
 
@@ -489,27 +491,27 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.fieldView ).to.be.instanceOf( InputTextView );
-							expect( labeledInput.label ).to.equal( 'Height' );
-							expect( labeledInput.class ).to.equal( 'ck-table-form__dimensions-row__height' );
+							expect( labeledInput.fieldView ).toBeInstanceOf( InputTextView );
+							expect( labeledInput.label ).toBe( 'Height' );
+							expect( labeledInput.class ).toBe( 'ck-table-form__dimensions-row__height' );
 						} );
 
 						it( 'should reflect #height property', () => {
 							view.height = 'foo';
-							expect( labeledInput.fieldView.value ).to.equal( 'foo' );
+							expect( labeledInput.fieldView.value ).toBe( 'foo' );
 
 							view.height = 'bar';
-							expect( labeledInput.fieldView.value ).to.equal( 'bar' );
+							expect( labeledInput.fieldView.value ).toBe( 'bar' );
 						} );
 
 						it( 'should update #height on DOM "input" event', () => {
 							labeledInput.fieldView.element.value = 'foo';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.height ).to.equal( 'foo' );
+							expect( view.height ).toBe( 'foo' );
 
 							labeledInput.fieldView.element.value = 'bar';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.height ).to.equal( 'bar' );
+							expect( view.height ).toBe( 'bar' );
 						} );
 					} );
 				} );
@@ -518,9 +520,9 @@ describe( 'table cell properties', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 3 ].childNodes[ 1 ];
 
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-cell-properties-form__padding-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ] ).to.equal( view.paddingInput.element );
+						expect( row.classList.contains( 'ck-form__row' ) ).toBe( true );
+						expect( row.classList.contains( 'ck-table-cell-properties-form__padding-row' ) ).toBe( true );
+						expect( row.childNodes[ 0 ] ).toBe( view.paddingInput.element );
 					} );
 
 					describe( 'padding input', () => {
@@ -531,27 +533,27 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.fieldView ).to.be.instanceOf( InputTextView );
-							expect( labeledInput.label ).to.equal( 'Padding' );
-							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__padding' );
+							expect( labeledInput.fieldView ).toBeInstanceOf( InputTextView );
+							expect( labeledInput.label ).toBe( 'Padding' );
+							expect( labeledInput.class ).toBe( 'ck-table-cell-properties-form__padding' );
 						} );
 
 						it( 'should reflect #padding property', () => {
 							view.padding = 'foo';
-							expect( labeledInput.fieldView.value ).to.equal( 'foo' );
+							expect( labeledInput.fieldView.value ).toBe( 'foo' );
 
 							view.padding = 'bar';
-							expect( labeledInput.fieldView.value ).to.equal( 'bar' );
+							expect( labeledInput.fieldView.value ).toBe( 'bar' );
 						} );
 
 						it( 'should update #padding on DOM "input" event', () => {
 							labeledInput.fieldView.element.value = 'foo';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.padding ).to.equal( 'foo' );
+							expect( view.padding ).toBe( 'foo' );
 
 							labeledInput.fieldView.element.value = 'bar';
 							labeledInput.fieldView.fire( 'input' );
-							expect( view.padding ).to.equal( 'bar' );
+							expect( view.padding ).toBe( 'bar' );
 						} );
 					} );
 				} );
@@ -560,11 +562,11 @@ describe( 'table cell properties', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 4 ];
 
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-cell-properties-form__alignment-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Table cell text alignment' );
-						expect( row.childNodes[ 1 ] ).to.equal( view.horizontalAlignmentToolbar.element );
-						expect( row.childNodes[ 2 ] ).to.equal( view.verticalAlignmentToolbar.element );
+						expect( row.classList.contains( 'ck-form__row' ) ).toBe( true );
+						expect( row.classList.contains( 'ck-table-cell-properties-form__alignment-row' ) ).toBe( true );
+						expect( row.childNodes[ 0 ].textContent ).toBe( 'Table cell text alignment' );
+						expect( row.childNodes[ 1 ] ).toBe( view.horizontalAlignmentToolbar.element );
+						expect( row.childNodes[ 2 ] ).toBe( view.verticalAlignmentToolbar.element );
 					} );
 
 					describe( 'horizontal text alignment toolbar', () => {
@@ -575,28 +577,28 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be defined', () => {
-							expect( toolbar ).to.be.instanceOf( ToolbarView );
+							expect( toolbar ).toBeInstanceOf( ToolbarView );
 						} );
 
 						it( 'should have an ARIA label', () => {
-							expect( toolbar.ariaLabel ).to.equal( 'Horizontal text alignment toolbar' );
+							expect( toolbar.ariaLabel ).toBe( 'Horizontal text alignment toolbar' );
 						} );
 
 						it( 'should have a dedicated CSS class', () => {
 							expect( view.horizontalAlignmentToolbar.element.classList.contains(
 								'ck-table-cell-properties-form__horizontal-alignment-toolbar'
-							) ).to.be.true;
+							) ).toBe( true );
 						} );
 
 						it( 'should bring alignment buttons in the right order (left-to-right UI)', () => {
-							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
+							expect( toolbar.items.map( ( { label } ) => label ) ).toEqual( [
 								'Align cell text to the left',
 								'Align cell text to the center',
 								'Align cell text to the right',
 								'Justify cell text'
 							] );
 
-							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
+							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).toEqual( [
 								true, false, false, false
 							] );
 						} );
@@ -611,14 +613,14 @@ describe( 'table cell properties', () => {
 							const view = new TableCellPropertiesView( locale, VIEW_OPTIONS );
 							const toolbar = view.horizontalAlignmentToolbar;
 
-							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
+							expect( toolbar.items.map( ( { label } ) => label ) ).toEqual( [
 								'Align cell text to the right',
 								'Align cell text to the center',
 								'Align cell text to the left',
 								'Justify cell text'
 							] );
 
-							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
+							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).toEqual( [
 								true, false, false, false
 							] );
 
@@ -627,23 +629,23 @@ describe( 'table cell properties', () => {
 
 						it( 'should change the #horizontalAlignment value', () => {
 							toolbar.items.last.fire( 'execute' );
-							expect( view.horizontalAlignment ).to.equal( 'justify' );
-							expect( toolbar.items.last.isOn ).to.be.true;
+							expect( view.horizontalAlignment ).toBe( 'justify' );
+							expect( toolbar.items.last.isOn ).toBe( true );
 
 							toolbar.items.first.fire( 'execute' );
-							expect( view.horizontalAlignment ).to.equal( 'left' );
-							expect( toolbar.items.last.isOn ).to.be.false;
-							expect( toolbar.items.first.isOn ).to.be.true;
+							expect( view.horizontalAlignment ).toBe( 'left' );
+							expect( toolbar.items.last.isOn ).toBe( false );
+							expect( toolbar.items.first.isOn ).toBe( true );
 						} );
 
 						it( 'should have proper ARIA properties', () => {
-							expect( toolbar.role ).to.equal( 'radiogroup' );
-							expect( toolbar.ariaLabel ).to.equal( 'Horizontal text alignment toolbar' );
+							expect( toolbar.role ).toBe( 'radiogroup' );
+							expect( toolbar.ariaLabel ).toBe( 'Horizontal text alignment toolbar' );
 						} );
 
 						it( 'should have role=radio set on buttons', () => {
-							expect( [ ...toolbar.items ].some( ( { role, isToggleable } ) => role && isToggleable ) ).to.be.true;
-							expect( toolbar.items.length ).to.equal( 4 );
+							expect( [ ...toolbar.items ].some( ( { role, isToggleable } ) => role && isToggleable ) ).toBe( true );
+							expect( toolbar.items.length ).toBe( 4 );
 						} );
 					} );
 
@@ -655,51 +657,51 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be defined', () => {
-							expect( toolbar ).to.be.instanceOf( ToolbarView );
+							expect( toolbar ).toBeInstanceOf( ToolbarView );
 						} );
 
 						it( 'should have an ARIA label', () => {
-							expect( toolbar.ariaLabel ).to.equal( 'Vertical text alignment toolbar' );
+							expect( toolbar.ariaLabel ).toBe( 'Vertical text alignment toolbar' );
 						} );
 
 						it( 'should have a dedicated CSS class', () => {
 							expect( view.verticalAlignmentToolbar.element.classList.contains(
 								'ck-table-cell-properties-form__vertical-alignment-toolbar'
-							) ).to.be.true;
+							) ).toBe( true );
 						} );
 
 						it( 'should bring alignment buttons', () => {
-							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
+							expect( toolbar.items.map( ( { label } ) => label ) ).toEqual( [
 								'Align cell text to the top',
 								'Align cell text to the middle',
 								'Align cell text to the bottom'
 							] );
 
-							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
+							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).toEqual( [
 								false, true, false
 							] );
 						} );
 
 						it( 'should change the #verticalAlignment value', () => {
 							toolbar.items.last.fire( 'execute' );
-							expect( view.verticalAlignment ).to.equal( 'bottom' );
-							expect( toolbar.items.last.isOn ).to.be.true;
+							expect( view.verticalAlignment ).toBe( 'bottom' );
+							expect( toolbar.items.last.isOn ).toBe( true );
 
 							toolbar.items.first.fire( 'execute' );
-							expect( view.verticalAlignment ).to.equal( 'top' );
-							expect( toolbar.items.last.isOn ).to.be.false;
-							expect( toolbar.items.first.isOn ).to.be.true;
+							expect( view.verticalAlignment ).toBe( 'top' );
+							expect( toolbar.items.last.isOn ).toBe( false );
+							expect( toolbar.items.first.isOn ).toBe( true );
 						} );
 
 						it( 'should have proper ARIA properties', () => {
-							expect( toolbar.role ).to.equal( 'radiogroup' );
-							expect( toolbar.isCompact ).to.be.true;
-							expect( toolbar.ariaLabel ).to.equal( 'Vertical text alignment toolbar' );
+							expect( toolbar.role ).toBe( 'radiogroup' );
+							expect( toolbar.isCompact ).toBe( true );
+							expect( toolbar.ariaLabel ).toBe( 'Vertical text alignment toolbar' );
 						} );
 
 						it( 'should have role=radio set on buttons', () => {
-							expect( [ ...toolbar.items ].some( ( { role, isToggleable } ) => role && isToggleable ) ).to.be.true;
-							expect( toolbar.items.length ).to.equal( 3 );
+							expect( [ ...toolbar.items ].some( ( { role, isToggleable } ) => role && isToggleable ) ).toBe( true );
+							expect( toolbar.items.length ).toBe( 3 );
 						} );
 					} );
 				} );
@@ -708,22 +710,22 @@ describe( 'table cell properties', () => {
 					it( 'should be defined', () => {
 						const header = view.element.firstChild;
 
-						expect( header.childNodes[ 0 ] ).to.equal( view.backButtonView.element );
+						expect( header.childNodes[ 0 ] ).toBe( view.backButtonView.element );
 					} );
 
 					it( 'should have button with right properties', () => {
-						expect( view.backButtonView.label ).to.equal( 'Back' );
-						expect( view.backButtonView.type ).to.equal( 'button' );
-						expect( view.backButtonView.class ).to.equal( 'ck-button-back' );
+						expect( view.backButtonView.label ).toBe( 'Back' );
+						expect( view.backButtonView.type ).toBe( 'button' );
+						expect( view.backButtonView.class ).toBe( 'ck-button-back' );
 					} );
 
 					it( 'should delegate execute to cancel event', () => {
-						const spy = sinon.spy();
+						const spy = vi.fn();
 
 						view.on( 'cancel', spy );
 						view.backButtonView.fire( 'execute' );
 
-						expect( spy.calledOnce ).to.be.true;
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 				} );
 
@@ -731,31 +733,31 @@ describe( 'table cell properties', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 5 ];
 
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-form__action-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ] ).to.equal( view.cancelButtonView.element );
-						expect( row.childNodes[ 1 ] ).to.equal( view.saveButtonView.element );
+						expect( row.classList.contains( 'ck-form__row' ) ).toBe( true );
+						expect( row.classList.contains( 'ck-table-form__action-row' ) ).toBe( true );
+						expect( row.childNodes[ 0 ] ).toBe( view.cancelButtonView.element );
+						expect( row.childNodes[ 1 ] ).toBe( view.saveButtonView.element );
 					} );
 
 					it( 'should have buttons with right properties', () => {
-						expect( view.saveButtonView.label ).to.equal( 'Save' );
-						expect( view.saveButtonView.type ).to.equal( 'submit' );
-						expect( view.saveButtonView.withText ).to.be.true;
-						expect( view.saveButtonView.class ).to.equal( 'ck-button-action' );
+						expect( view.saveButtonView.label ).toBe( 'Save' );
+						expect( view.saveButtonView.type ).toBe( 'submit' );
+						expect( view.saveButtonView.withText ).toBe( true );
+						expect( view.saveButtonView.class ).toBe( 'ck-button-action' );
 
-						expect( view.cancelButtonView.label ).to.equal( 'Cancel' );
-						expect( view.cancelButtonView.withText ).to.be.true;
-						expect( view.cancelButtonView.type ).to.equal( 'button' );
+						expect( view.cancelButtonView.label ).toBe( 'Cancel' );
+						expect( view.cancelButtonView.withText ).toBe( true );
+						expect( view.cancelButtonView.type ).toBe( 'button' );
 					} );
 
 					it( 'should make the cancel button fire the #cancel event when executed', () => {
-						const spy = sinon.spy();
+						const spy = vi.fn();
 
 						view.on( 'cancel', spy );
 
 						view.cancelButtonView.fire( 'execute' );
 
-						expect( spy.calledOnce ).to.be.true;
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 
 					it( 'should make sure the #saveButtonView is disabled until text fields are without errors', () => {
@@ -764,59 +766,59 @@ describe( 'table cell properties', () => {
 						view.backgroundInput.errorText = 'foo';
 						view.paddingInput.errorText = 'foo';
 
-						expect( view.saveButtonView.isEnabled ).to.be.false;
+						expect( view.saveButtonView.isEnabled ).toBe( false );
 
 						view.borderWidthInput.errorText = 'foo';
 						view.borderColorInput.errorText = 'foo';
 						view.backgroundInput.errorText = 'foo';
 						view.paddingInput.errorText = null;
 
-						expect( view.saveButtonView.isEnabled ).to.be.false;
+						expect( view.saveButtonView.isEnabled ).toBe( false );
 
 						view.borderWidthInput.errorText = 'foo';
 						view.borderColorInput.errorText = 'foo';
 						view.backgroundInput.errorText = null;
 						view.paddingInput.errorText = null;
 
-						expect( view.saveButtonView.isEnabled ).to.be.false;
+						expect( view.saveButtonView.isEnabled ).toBe( false );
 
 						view.borderWidthInput.errorText = 'foo';
 						view.borderColorInput.errorText = null;
 						view.backgroundInput.errorText = null;
 						view.paddingInput.errorText = null;
 
-						expect( view.saveButtonView.isEnabled ).to.be.false;
+						expect( view.saveButtonView.isEnabled ).toBe( false );
 
 						view.borderWidthInput.errorText = null;
 						view.borderColorInput.errorText = null;
 						view.backgroundInput.errorText = null;
 						view.paddingInput.errorText = null;
 
-						expect( view.saveButtonView.isEnabled ).to.be.true;
+						expect( view.saveButtonView.isEnabled ).toBe( true );
 					} );
 				} );
 			} );
 
 			it( 'should create #focusTracker instance', () => {
-				expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+				expect( view.focusTracker ).toBeInstanceOf( FocusTracker );
 			} );
 
 			it( 'should create #keystrokes instance', () => {
-				expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+				expect( view.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 			} );
 
 			it( 'should create #_focusCycler instance', () => {
-				expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+				expect( view._focusCycler ).toBeInstanceOf( FocusCycler );
 			} );
 
 			it( 'should create #_focusables view collection', () => {
-				expect( view._focusables ).to.be.instanceOf( ViewCollection );
+				expect( view._focusables ).toBeInstanceOf( ViewCollection );
 			} );
 		} );
 
 		describe( 'render()', () => {
 			it( 'should register child views in #_focusables', () => {
-				expect( view._focusables.map( f => f ) ).to.have.members( [
+				const expectedMembers = [
 					view.borderStyleDropdown,
 					view.borderColorInput,
 					view.borderWidthInput,
@@ -830,81 +832,85 @@ describe( 'table cell properties', () => {
 					view.cancelButtonView,
 					view.saveButtonView,
 					view.backButtonView
-				] );
+				];
+				const actualMembers = view._focusables.map( f => f );
+
+				expect( actualMembers ).toHaveLength( expectedMembers.length );
+				expect( actualMembers ).toEqual( expect.arrayContaining( expectedMembers ) );
 			} );
 
 			it( 'should register child views\' #element in #focusTracker', () => {
-				const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
+				const spy = vi.spyOn( FocusTracker.prototype, 'add' );
 				const view = new TableCellPropertiesView( { t: val => val }, VIEW_OPTIONS );
 				view.render();
 
-				sinon.assert.calledWith( spy, view.borderStyleDropdown.element );
-				sinon.assert.calledWith( spy, view.borderColorInput.element );
-				sinon.assert.calledWith( spy, view.borderWidthInput.element );
-				sinon.assert.calledWith( spy, view.backgroundInput.element );
-				sinon.assert.calledWith( spy, view.paddingInput.element );
-				sinon.assert.calledWith( spy, view.horizontalAlignmentToolbar.element );
-				sinon.assert.calledWith( spy, view.verticalAlignmentToolbar.element );
-				sinon.assert.calledWith( spy, view.saveButtonView.element );
-				sinon.assert.calledWith( spy, view.cancelButtonView.element );
+				expect( spy ).toHaveBeenCalledWith( view.borderStyleDropdown.element );
+				expect( spy ).toHaveBeenCalledWith( view.borderColorInput.element );
+				expect( spy ).toHaveBeenCalledWith( view.borderWidthInput.element );
+				expect( spy ).toHaveBeenCalledWith( view.backgroundInput.element );
+				expect( spy ).toHaveBeenCalledWith( view.paddingInput.element );
+				expect( spy ).toHaveBeenCalledWith( view.horizontalAlignmentToolbar.element );
+				expect( spy ).toHaveBeenCalledWith( view.verticalAlignmentToolbar.element );
+				expect( spy ).toHaveBeenCalledWith( view.saveButtonView.element );
+				expect( spy ).toHaveBeenCalledWith( view.cancelButtonView.element );
 
 				view.destroy();
 			} );
 
 			it( 'starts listening for #keystrokes coming from #element', () => {
 				const view = new TableCellPropertiesView( { t: val => val }, VIEW_OPTIONS );
-				const spy = sinon.spy( view.keystrokes, 'listenTo' );
+				const spy = vi.spyOn( view.keystrokes, 'listenTo' );
 
 				view.render();
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, view.element );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( spy ).toHaveBeenCalledWith( view.element );
 			} );
 
 			describe( 'activates keyboard navigation for the form', () => {
 				it( 'so "tab" focuses the next focusable item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the border style dropdown button is focused.
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.borderStyleDropdown.element;
 
-					const spy = sinon.spy( view.borderColorInput, 'focus' );
+					const spy = vi.spyOn( view.borderColorInput, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( 'so "shift + tab" focuses the previous focusable item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
 						shiftKey: true,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the border style dropdown button is focused.
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.borderStyleDropdown.element;
 
-					const spy = sinon.spy( view.backButtonView, 'focus' );
+					const spy = vi.spyOn( view.backButtonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( 'providing seamless forward navigation over child views with their own focusable children and focus cyclers', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the border color dropdown button button is focused.
@@ -913,20 +919,20 @@ describe( 'table cell properties', () => {
 					view.borderColorInput.fieldView.focusTracker.focusedElement =
 						view.borderColorInput.fieldView.dropdownView.buttonView.element;
 
-					const spy = sinon.spy( view.borderWidthInput, 'focus' );
+					const spy = vi.spyOn( view.borderWidthInput, 'focus' );
 
 					view.borderColorInput.fieldView.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( 'providing seamless backward navigation over child views with their own focusable children and focus cyclers', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
 						shiftKey: true,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the border color dropdown input is focused.
@@ -935,54 +941,54 @@ describe( 'table cell properties', () => {
 					view.borderColorInput.fieldView.focusTracker.focusedElement =
 						view.borderColorInput.fieldView.inputView.element;
 
-					const spy = sinon.spy( view.borderStyleDropdown, 'focus' );
+					const spy = vi.spyOn( view.borderStyleDropdown, 'focus' );
 
 					view.borderColorInput.fieldView.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 		} );
 
 		describe( 'destroy()', () => {
 			it( 'should destroy the FocusTracker instance', () => {
-				const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+				const destroySpy = vi.spyOn( view.focusTracker, 'destroy' );
 
 				view.destroy();
 
-				sinon.assert.calledOnce( destroySpy );
+				expect( destroySpy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should destroy the KeystrokeHandler instance', () => {
-				const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+				const destroySpy = vi.spyOn( view.keystrokes, 'destroy' );
 
 				view.destroy();
 
-				sinon.assert.calledOnce( destroySpy );
+				expect( destroySpy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
 		describe( 'DOM bindings', () => {
 			describe( 'submit event', () => {
 				it( 'should trigger submit event', () => {
-					const spy = sinon.spy();
+					const spy = vi.fn();
 
 					view.on( 'submit', spy );
 					view.element.dispatchEvent( new Event( 'submit' ) );
 
-					expect( spy.calledOnce ).to.be.true;
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 		} );
 
 		describe( 'focus()', () => {
 			it( 'focuses the #borderStyleDropdown', () => {
-				const spy = sinon.spy( view.borderStyleDropdown, 'focus' );
+				const spy = vi.spyOn( view.borderStyleDropdown, 'focus' );
 
 				view.focus();
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
@@ -997,7 +1003,7 @@ describe( 'table cell properties', () => {
 				const labeledDropdown = view.cellTypeDropdown;
 				labeledDropdown.fieldView.isOpen = true;
 
-				expect( labeledDropdown.fieldView.listView.items.map( item => item.children.first.label ) ).to.have.ordered.members( [
+				expect( labeledDropdown.fieldView.listView.items.map( item => item.children.first.label ) ).toEqual( [
 					'Data cell', 'Header cell', 'Column header', 'Row header'
 				] );
 
@@ -1008,7 +1014,7 @@ describe( 'table cell properties', () => {
 				const labeledDropdown = view.cellTypeDropdown;
 				labeledDropdown.fieldView.isOpen = true;
 
-				expect( labeledDropdown.fieldView.listView.items.map( item => item.children.first.label ) ).to.have.ordered.members( [
+				expect( labeledDropdown.fieldView.listView.items.map( item => item.children.first.label ) ).toEqual( [
 					'Data cell', 'Header cell'
 				] );
 			} );

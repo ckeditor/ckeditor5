@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _getModelData } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -1178,14 +1180,14 @@ describe( 'upcastTable()', () => {
 				'<table>' +
 					'<tbody>' +
 						'<tr>' +
-							'<td><img src="/assets/sample.png"></td>' +
+							'<td><img src="/sample.png"></td>' +
 						'</tr>' +
 					'</tbody>' +
 				'</table>'
 			);
 
 			expectModel( modelTable( [
-				[ '<imageBlock src="/assets/sample.png"></imageBlock>' ]
+				[ '<imageBlock src="/sample.png"></imageBlock>' ]
 			] ) );
 		} );
 	} );

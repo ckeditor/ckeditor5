@@ -200,7 +200,7 @@ describe( 'table clipboard', () => {
 			// Position the selection after the image by using [].
 			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
-				[ '[]<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>', '11', '12' ]
+				[ '[]<imageBlock src="/sample.png"><caption>Caption</caption></imageBlock>', '11', '12' ]
 			] ) );
 
 			const dataTransferMock = createDataTransfer();
@@ -236,7 +236,7 @@ describe( 'table clipboard', () => {
 				[ '00', '01', '02' ],
 				[
 					modelTable( [ [ 'aa', 'ab' ], [ 'ba', 'bb' ] ] ) +
-						'<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>',
+						'<imageBlock src="/sample.png"><caption>Caption</caption></imageBlock>',
 					'11', '12'
 				]
 			] ) );
@@ -256,7 +256,7 @@ describe( 'table clipboard', () => {
 			// Position the image in a cell and place selection after it (using []).
 			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
-				[ '<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>[]', '11', '12' ]
+				[ '<imageBlock src="/sample.png"><caption>Caption</caption></imageBlock>[]', '11', '12' ]
 			] ) );
 
 			const dataTransferMock = createDataTransfer();
@@ -298,7 +298,7 @@ describe( 'table clipboard', () => {
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
-					'<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>' +
+					'<imageBlock src="/sample.png"><caption>Caption</caption></imageBlock>' +
 						modelTable( [ [ 'aa', 'ab' ], [ 'ba', 'bb' ] ] ),
 					'11', '12'
 				]

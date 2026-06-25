@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { _getModelData, _setModelData, Batch } from '@ckeditor/ckeditor5-engine';
 
@@ -26,13 +27,15 @@ import { modelTable } from '../_utils/utils.js';
 describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesUI', () => {
 		let editor, editorElement, contextualBalloon,
-			tableCellPropertiesUI, tableCellPropertiesView, tableCellPropertiesButton,
-			clock;
+			tableCellPropertiesUI, tableCellPropertiesView, tableCellPropertiesButton;
 
-		testUtils.createSinonSandbox();
+		afterEach( () => {
+			vi.restoreAllMocks();
+			vi.useRealTimers();
+		} );
 
 		beforeEach( async () => {
-			clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -40,7 +43,6 @@ describe( 'table cell properties', () => {
 		} );
 
 		afterEach( () => {
-			clock.restore();
 			editorElement.remove();
 
 			return editor.destroy();
@@ -65,8 +67,8 @@ describe( 'table cell properties', () => {
 			tableCellPropertiesView = tableCellPropertiesUI.view;
 
 			// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-			testUtils.sinon.stub( contextualBalloon.view, 'attachTo' ).returns( {} );
-			testUtils.sinon.stub( contextualBalloon.view, 'pin' ).returns( {} );
+			vi.spyOn( contextualBalloon.view, 'attachTo' ).mockReturnValue( {} );
+			vi.spyOn( contextualBalloon.view, 'pin' ).mockReturnValue( {} );
 		}
 
 		it( 'should be named', () => {
@@ -143,10 +145,10 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should call #_showView upon #execute', () => {
-					const spy = testUtils.sinon.stub( tableCellPropertiesUI, '_showView' ).returns( {} );
+					const spy = vi.spyOn( tableCellPropertiesUI, '_showView' ).mockReturnValue( {} );
 
 					tableCellPropertiesButton.fire( 'execute' );
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should be disabled if all of the table cell properties commands are disabled', () => {
@@ -177,11 +179,11 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesUI._showView();
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				const spy = sinon.spy( tableCellPropertiesView, 'destroy' );
+				const spy = vi.spyOn( tableCellPropertiesView, 'destroy' );
 
 				tableCellPropertiesUI.destroy();
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -205,7 +207,7 @@ describe( 'table cell properties', () => {
 			describe( '#cancel event', () => {
 				// https://github.com/ckeditor/ckeditor5/issues/6180
 				it( 'should not undo if it there were no changes made to the property fields', () => {
-					const spy = sinon.spy( editor, 'execute' );
+					const spy = vi.spyOn( editor, 'execute' );
 
 					// Show the view. New batch will be created.
 					tableCellPropertiesButton.fire( 'execute' );
@@ -214,11 +216,11 @@ describe( 'table cell properties', () => {
 					// Cancel the view immediately.
 					tableCellPropertiesView.fire( 'cancel' );
 
-					sinon.assert.notCalled( spy );
+					expect( spy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should undo the entire batch of changes if there were some', () => {
-					const spy = sinon.spy( editor, 'execute' );
+					const spy = vi.spyOn( editor, 'execute' );
 
 					// Show the view. New batch will be created.
 					tableCellPropertiesButton.fire( 'execute' );
@@ -252,7 +254,7 @@ describe( 'table cell properties', () => {
 						'<paragraph>bar</paragraph>'
 					);
 
-					sinon.assert.calledWith( spy, 'undo', tableCellPropertiesUI._undoStepBatch );
+					expect( spy ).toHaveBeenCalledWith( 'undo', tableCellPropertiesUI._undoStepBatch );
 				} );
 
 				it( 'should hide the view', () => {
@@ -269,8 +271,8 @@ describe( 'table cell properties', () => {
 			it( 'should hide on the Esc key press', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.esc,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				tableCellPropertiesButton.fire( 'execute' );
@@ -310,13 +312,13 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should not reposition if view is not visible', () => {
-				const spy = sinon.spy( contextualBalloon, 'updatePosition' );
+				const spy = vi.spyOn( contextualBalloon, 'updatePosition' );
 
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesUI.view = false;
 				editor.ui.fire( 'update' );
 
-				expect( spy.called ).to.be.false;
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should hide if clicked outside the balloon', () => {
@@ -356,231 +358,231 @@ describe( 'table cell properties', () => {
 
 				describe( '#borderStyle', () => {
 					it( 'should affect the editor state', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						tableCellPropertiesView.borderStyle = 'dotted';
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'tableCellBorderStyle', { value: 'dotted', batch } );
 					} );
 				} );
 
 				describe( '#borderColor', () => {
 					it( 'should affect the editor state', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						tableCellPropertiesView.borderColor = '#FFAAFF';
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#FFAAFF', batch } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'tableCellBorderColor', { value: '#FFAAFF', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						// First, let's pass an invalid value and check what happens.
 						tableCellPropertiesView.borderColor = '42';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.borderColorInput.errorText ).to.match( /^The color is invalid/ );
-						sinon.assert.notCalled( spy );
+						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
 						tableCellPropertiesView.borderColor = '#AAA';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.borderColorInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#AAA', batch } );
+						expect( spy ).toHaveBeenCalledWith( 'tableCellBorderColor', { value: '#AAA', batch } );
 					} );
 				} );
 
 				describe( '#borderWidth', () => {
 					it( 'should affect the editor state', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						tableCellPropertiesView.borderWidth = '12px';
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '12px', batch } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'tableCellBorderWidth', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						// First, let's pass an invalid value and check what happens.
 						tableCellPropertiesView.borderWidth = 'wrong';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.borderWidthInput.errorText ).to.match( /^The value is invalid/ );
-						sinon.assert.notCalled( spy );
+						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
 						tableCellPropertiesView.borderWidth = '3em';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '3em', batch } );
+						expect( spy ).toHaveBeenCalledWith( 'tableCellBorderWidth', { value: '3em', batch } );
 					} );
 				} );
 
 				describe( '#width', () => {
 					it( 'should affect the editor state', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						tableCellPropertiesView.width = '12px';
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '12px', batch } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'tableCellWidth', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						// First, let's pass an invalid value and check what happens.
 						tableCellPropertiesView.width = 'wrong';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.widthInput.errorText ).to.match( /^The value is invalid/ );
-						sinon.assert.notCalled( spy );
+						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
 						tableCellPropertiesView.width = '3em';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '3em', batch } );
+						expect( spy ).toHaveBeenCalledWith( 'tableCellWidth', { value: '3em', batch } );
 					} );
 				} );
 
 				describe( '#height', () => {
 					it( 'should affect the editor state', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						tableCellPropertiesView.height = '12px';
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '12px', batch } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'tableCellHeight', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						// First, let's pass an invalid value and check what happens.
 						tableCellPropertiesView.height = 'wrong';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.heightInput.errorText ).to.match( /^The value is invalid/ );
-						sinon.assert.notCalled( spy );
+						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
 						tableCellPropertiesView.height = '3em';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '3em', batch } );
+						expect( spy ).toHaveBeenCalledWith( 'tableCellHeight', { value: '3em', batch } );
 					} );
 				} );
 
 				describe( '#padding', () => {
 					it( 'should affect the editor state', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						tableCellPropertiesView.padding = '12px';
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '12px', batch } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'tableCellPadding', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						// First, let's pass an invalid value and check what happens.
 						tableCellPropertiesView.padding = 'wrong';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.paddingInput.errorText ).to.match( /^The value is invalid/ );
-						sinon.assert.notCalled( spy );
+						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
 						tableCellPropertiesView.padding = '3em';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '3em', batch } );
+						expect( spy ).toHaveBeenCalledWith( 'tableCellPadding', { value: '3em', batch } );
 					} );
 				} );
 
 				describe( '#backgroundColor', () => {
 					it( 'should affect the editor state', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						tableCellPropertiesView.backgroundColor = '#FFAAFF';
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#FFAAFF', batch } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'tableCellBackgroundColor', { value: '#FFAAFF', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						// First, let's pass an invalid value and check what happens.
 						tableCellPropertiesView.backgroundColor = '42';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.match( /^The color is invalid/ );
-						sinon.assert.notCalled( spy );
+						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
 						tableCellPropertiesView.backgroundColor = '#AAA';
 
-						clock.tick( 500 );
+						vi.advanceTimersByTime( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#AAA', batch } );
+						expect( spy ).toHaveBeenCalledWith( 'tableCellBackgroundColor', { value: '#AAA', batch } );
 					} );
 				} );
 
 				describe( '#horizontalAlignment', () => {
 					it( 'should affect the editor state', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						tableCellPropertiesView.horizontalAlignment = 'right';
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellHorizontalAlignment', { value: 'right', batch } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'tableCellHorizontalAlignment', { value: 'right', batch } );
 					} );
 				} );
 
 				describe( '#verticalAlignment', () => {
 					it( 'should affect the editor state', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						tableCellPropertiesView.verticalAlignment = 'right';
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellVerticalAlignment', { value: 'right', batch } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'tableCellVerticalAlignment', { value: 'right', batch } );
 					} );
 				} );
 
 				describe( '#cellType', () => {
 					it( 'should affect the editor state', () => {
-						const spy = testUtils.sinon.stub( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 						tableCellPropertiesView.cellType = 'header';
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellType', { value: 'header', batch } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'tableCellType', { value: 'header', batch } );
 					} );
 				} );
 
@@ -588,25 +590,25 @@ describe( 'table cell properties', () => {
 					// First, let's pass an invalid value.
 					tableCellPropertiesView.borderColor = '#';
 
-					clock.tick( 100 );
+					vi.advanceTimersByTime( 100 );
 
 					// Then the user managed to quickly type the correct value.
 					tableCellPropertiesView.borderColor = '#aaa';
 
-					clock.tick( 400 );
+					vi.advanceTimersByTime( 400 );
 
 					// Because they were quick, they should see no error
 					expect( tableCellPropertiesView.borderColorInput.errorText ).to.be.null;
 				} );
 
 				it( 'should not affect the editor state if internal property has changed', () => {
-					const spy = testUtils.sinon.stub( editor, 'execute' );
+					const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 					tableCellPropertiesView.set( 'internalProp', 'foo' );
 
 					tableCellPropertiesView.internalProp = 'bar';
 
-					sinon.assert.notCalled( spy );
+					expect( spy ).not.toHaveBeenCalled();
 				} );
 			} );
 		} );
@@ -656,16 +658,16 @@ describe( 'table cell properties', () => {
 			describe( 'initial data', () => {
 				it( 'should not execute commands before changing the data', () => {
 					const tableCellBackgroundCommand = editor.commands.get( 'tableCellBackgroundColor' );
-					const spy = sinon.spy( tableCellBackgroundCommand, 'execute' );
+					const spy = vi.spyOn( tableCellBackgroundCommand, 'execute' );
 
 					tableCellPropertiesUI._showView();
 					tableCellPropertiesView = tableCellPropertiesUI.view;
 
-					expect( spy.called ).to.be.false;
+					expect( spy ).not.toHaveBeenCalled();
 
 					tableCellPropertiesView.backgroundColor = 'red';
 
-					expect( spy.called ).to.be.true;
+					expect( spy ).toHaveBeenCalled();
 				} );
 
 				it( 'should be set before adding the form to the the balloon to avoid unnecessary input animations', () => {
@@ -674,17 +676,18 @@ describe( 'table cell properties', () => {
 					tableCellPropertiesUI._hideView();
 					tableCellPropertiesView = tableCellPropertiesUI.view;
 
-					const balloonAddSpy = testUtils.sinon.spy( editor.plugins.get( ContextualBalloon ), 'add' );
-					const borderStyleChangeSpy = testUtils.sinon.spy();
+					const balloonAddSpy = vi.spyOn( editor.plugins.get( ContextualBalloon ), 'add' );
+					const borderStyleChangeSpy = vi.fn();
 
 					tableCellPropertiesView.on( 'change:borderStyle', borderStyleChangeSpy );
 
 					editor.commands.get( 'tableCellBorderStyle' ).value = 'a';
 					tableCellPropertiesButton.fire( 'execute' );
 
-					sinon.assert.calledOnce( borderStyleChangeSpy );
-					sinon.assert.calledOnce( balloonAddSpy );
-					sinon.assert.callOrder( borderStyleChangeSpy, balloonAddSpy );
+					expect( borderStyleChangeSpy ).toHaveBeenCalledOnce();
+					expect( balloonAddSpy ).toHaveBeenCalledOnce();
+					expect( borderStyleChangeSpy.mock.invocationCallOrder[ 0 ] )
+						.to.be.lessThan( balloonAddSpy.mock.invocationCallOrder[ 0 ] );
 				} );
 
 				it( 'should be set from the command values', () => {
@@ -741,10 +744,15 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should handle missing commands gracefully', () => {
-				const stub = testUtils.sinon.stub( editor.commands, 'get' );
+				const originalGet = editor.commands.get.bind( editor.commands );
 
-				stub.callThrough();
-				stub.withArgs( 'tableCellType' ).returns( undefined );
+				vi.spyOn( editor.commands, 'get' ).mockImplementation( command => {
+					if ( command === 'tableCellType' ) {
+						return undefined;
+					}
+
+					return originalGet( command );
+				} );
 
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
@@ -759,11 +767,11 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesUI._hideView();
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				const spy = testUtils.sinon.spy( tableCellPropertiesView, 'focus' );
+				const spy = vi.spyOn( tableCellPropertiesView, 'focus' );
 
 				tableCellPropertiesButton.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -775,7 +783,7 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should stop listening to EditorUI#update', () => {
-				const spy = testUtils.sinon.spy( tableCellPropertiesUI, 'stopListening' );
+				const spy = vi.spyOn( tableCellPropertiesUI, 'stopListening' );
 
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
@@ -785,12 +793,12 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesView.fire( 'submit' );
 				expect( contextualBalloon.visibleView ).to.be.null;
 
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, editor.ui, 'update' );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( editor.ui, 'update' );
 			} );
 
 			it( 'should focus the editing view so the focus is not lost', () => {
-				const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+				const spy = vi.spyOn( editor.editing.view, 'focus' );
 
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
@@ -799,7 +807,7 @@ describe( 'table cell properties', () => {
 
 				tableCellPropertiesView.fire( 'submit' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -807,7 +815,9 @@ describe( 'table cell properties', () => {
 			let editor, editorElement, contextualBalloon,
 				tableCellPropertiesUI, tableCellPropertiesView, tableCellPropertiesButton;
 
-			testUtils.createSinonSandbox();
+			afterEach( () => {
+				vi.restoreAllMocks();
+			} );
 
 			beforeEach( () => {
 				editorElement = document.createElement( 'div' );
@@ -848,8 +858,8 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView = tableCellPropertiesUI.view;
 
 						// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-						testUtils.sinon.stub( contextualBalloon.view, 'attachTo' ).returns( {} );
-						testUtils.sinon.stub( contextualBalloon.view, 'pin' ).returns( {} );
+						vi.spyOn( contextualBalloon.view, 'attachTo' ).mockReturnValue( {} );
+						vi.spyOn( contextualBalloon.view, 'pin' ).mockReturnValue( {} );
 					} );
 			} );
 
@@ -997,6 +1007,10 @@ describe( 'table cell properties', () => {
 		describe( 'table properties without color picker', () => {
 			let editor, editorElement, contextualBalloon, tableCellPropertiesUI;
 
+			afterEach( () => {
+				vi.restoreAllMocks();
+			} );
+
 			beforeEach( () => {
 				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
@@ -1018,8 +1032,8 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView = tableCellPropertiesUI.view;
 
 						// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-						testUtils.sinon.stub( contextualBalloon.view, 'attachTo' ).returns( {} );
-						testUtils.sinon.stub( contextualBalloon.view, 'pin' ).returns( {} );
+						vi.spyOn( contextualBalloon.view, 'attachTo' ).mockReturnValue( {} );
+						vi.spyOn( contextualBalloon.view, 'pin' ).mockReturnValue( {} );
 					} );
 			} );
 

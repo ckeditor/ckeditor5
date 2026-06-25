@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { TableCaptionEditing } from '../../src/tablecaption/tablecaptionediting.js';
@@ -15,7 +15,9 @@ import { TableEditing } from '../../src/tableediting.js';
 describe( 'TableCaptionUI', () => {
 	let editor, tableCaption, editorElement;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -51,12 +53,12 @@ describe( 'TableCaptionUI', () => {
 	} );
 
 	it( 'should execute toggleTableCaption command on model execute event', () => {
-		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+		const executeSpy = vi.spyOn( editor, 'execute' );
 
 		tableCaption.fire( 'execute' );
 
-		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'toggleTableCaption', {
+		expect( executeSpy ).toHaveBeenCalledOnce();
+		expect( executeSpy ).toHaveBeenCalledWith( 'toggleTableCaption', {
 			focusCaptionOnShow: true
 		} );
 	} );
@@ -64,41 +66,41 @@ describe( 'TableCaptionUI', () => {
 	it( 'should scroll the editing view to the caption on the #execute event if the caption showed up', () => {
 		editor.setData( '<figure class="table"><table><tr><td>foo</td></tr></table></figure>' );
 
-		const executeSpy = testUtils.sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+		const executeSpy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' );
 
 		tableCaption.fire( 'execute' );
 
-		sinon.assert.calledOnce( executeSpy );
+		expect( executeSpy ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'should focus the editing view on the #execute event if the caption showed up', () => {
 		editor.setData( '<figure class="table"><table><tr><td>foo</td></tr></table></figure>' );
 
-		const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+		const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 		tableCaption.fire( 'execute' );
 
-		sinon.assert.calledOnce( focusSpy );
+		expect( focusSpy ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'should focus the editing view on the #execute event if the caption was hidden', () => {
 		editor.setData( '<figure class="table"><table><tr><td>foo</td></tr></table><figcaption>caption</figcaption></figure>' );
 
-		const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+		const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 		tableCaption.fire( 'execute' );
 
-		sinon.assert.calledOnce( focusSpy );
+		expect( focusSpy ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'should not scroll the editing view on the #execute event if the caption was hidden', () => {
 		editor.setData( '<figure class="table"><table><tr><td>foo</td></tr></table><figcaption>foo</figcaption></figure>' );
 
-		const executeSpy = testUtils.sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+		const executeSpy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' );
 
 		tableCaption.fire( 'execute' );
 
-		sinon.assert.notCalled( executeSpy );
+		expect( executeSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should highlight the figcaption element in the view on the #execute event if the caption showed up', () => {
@@ -112,16 +114,16 @@ describe( 'TableCaptionUI', () => {
 	} );
 
 	it( 'should not scroll or highlight anything if figcaption element is missing', () => {
-		sinon.stub( editor.editing.mapper, 'toViewElement' ).returns( null );
+		vi.spyOn( editor.editing.mapper, 'toViewElement' ).mockReturnValue( null );
 
 		editor.setData( '<figure class="table"><table><tr><td>foo</td></tr></table></figure>' );
 
-		const executeSpy = testUtils.sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+		const executeSpy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' );
 		const figcaptionElement = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 2 );
 
 		tableCaption.fire( 'execute' );
 
-		sinon.assert.notCalled( executeSpy );
+		expect( executeSpy ).not.toHaveBeenCalled();
 		expect( figcaptionElement ).to.be.undefined;
 	} );
 

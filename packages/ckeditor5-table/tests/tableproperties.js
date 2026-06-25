@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { global } from '@ckeditor/ckeditor5-utils';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -30,23 +31,23 @@ describe( 'table properties', () => {
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( TableProperties ) ).to.instanceOf( TableProperties );
+			expect( editor.plugins.get( TableProperties ) ).toBeInstanceOf( TableProperties );
 		} );
 
 		it( 'should load TablePropertiesEditing plugin', () => {
-			expect( editor.plugins.get( TablePropertiesEditing ) ).to.instanceOf( TablePropertiesEditing );
+			expect( editor.plugins.get( TablePropertiesEditing ) ).toBeInstanceOf( TablePropertiesEditing );
 		} );
 
 		it( 'should have pluginName', () => {
-			expect( TableProperties.pluginName ).to.equal( 'TableProperties' );
+			expect( TableProperties.pluginName ).toBe( 'TableProperties' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( TableProperties.isOfficialPlugin ).to.be.true;
+			expect( TableProperties.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( TableProperties.isPremiumPlugin ).to.be.false;
+			expect( TableProperties.isPremiumPlugin ).toBe( false );
 		} );
 	} );
 } );

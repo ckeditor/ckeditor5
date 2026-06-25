@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Table } from '../../../src/table.js';
 import { TableCellProperties } from '../../../src/tablecellproperties.js';
@@ -12,14 +13,11 @@ import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { View, BalloonPanelView } from '@ckeditor/ckeditor5-ui';
 
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { modelTable } from '../../_utils/utils.js';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../../../src/utils/ui/contextualballoon.js';
 
 describe( 'table utils', () => {
 	let editor, editingView, balloon, editorElement;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -46,7 +44,7 @@ describe( 'table utils', () => {
 		describe( 'repositionContextualBalloon()', () => {
 			describe( 'with respect to the table cell', () => {
 				it( 'should re-position the ContextualBalloon when the table cell is selected', () => {
-					const spy = sinon.spy( balloon, 'updatePosition' );
+					const spy = vi.spyOn( balloon, 'updatePosition' );
 					const defaultPositions = BalloonPanelView.defaultPositions;
 					const view = new View();
 
@@ -71,7 +69,7 @@ describe( 'table utils', () => {
 					const modelCell = tableUtils.getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 					const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
-					sinon.assert.calledWithExactly( spy, {
+					expect( spy ).toHaveBeenCalledWith( {
 						target: editingView.domConverter.mapViewToDom( viewCell ),
 						positions: [
 							defaultPositions.northArrowSouth,
@@ -86,18 +84,18 @@ describe( 'table utils', () => {
 				} );
 
 				it( 'should not engage with no table is selected', () => {
-					const spy = sinon.spy( balloon, 'updatePosition' );
+					const spy = vi.spyOn( balloon, 'updatePosition' );
 
 					_setModelData( editor.model, '<paragraph>foo</paragraph>' );
 
 					repositionContextualBalloon( editor, 'cell' );
-					sinon.assert.notCalled( spy );
+					expect( spy ).not.toHaveBeenCalled();
 				} );
 			} );
 
 			describe( 'with respect to the entire table', () => {
 				it( 'should re-position the ContextualBalloon when the selection is in the table', () => {
-					const spy = sinon.spy( balloon, 'updatePosition' );
+					const spy = vi.spyOn( balloon, 'updatePosition' );
 					const defaultPositions = BalloonPanelView.defaultPositions;
 					const view = new View();
 
@@ -120,7 +118,7 @@ describe( 'table utils', () => {
 					const modelTable = editor.model.document.selection.getFirstPosition().findAncestor( 'table' );
 					const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
-					sinon.assert.calledWithExactly( spy, {
+					expect( spy ).toHaveBeenCalledWith( {
 						target: editingView.domConverter.mapViewToDom( viewTable ),
 						positions: [
 							defaultPositions.northArrowSouth,
@@ -135,7 +133,7 @@ describe( 'table utils', () => {
 				} );
 
 				it( 'should re-position the ContextualBalloon when the selection is over the table', () => {
-					const spy = sinon.spy( balloon, 'updatePosition' );
+					const spy = vi.spyOn( balloon, 'updatePosition' );
 					const defaultPositions = BalloonPanelView.defaultPositions;
 					const view = new View();
 
@@ -158,7 +156,7 @@ describe( 'table utils', () => {
 					const modelTable = editor.model.document.selection.getSelectedElement();
 					const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
-					sinon.assert.calledWithExactly( spy, {
+					expect( spy ).toHaveBeenCalledWith( {
 						target: editingView.domConverter.mapViewToDom( viewTable ),
 						positions: [
 							defaultPositions.northArrowSouth,
@@ -173,12 +171,12 @@ describe( 'table utils', () => {
 				} );
 
 				it( 'should not engage with no table is selected', () => {
-					const spy = sinon.spy( balloon, 'updatePosition' );
+					const spy = vi.spyOn( balloon, 'updatePosition' );
 
 					_setModelData( editor.model, '<paragraph>foo</paragraph>' );
 
 					repositionContextualBalloon( editor, 'table' );
-					sinon.assert.notCalled( spy );
+					expect( spy ).not.toHaveBeenCalled();
 				} );
 			} );
 		} );
@@ -218,7 +216,7 @@ describe( 'table utils', () => {
 				const modelCell = tableUtils.getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 				const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
-				expect( data ).to.deep.equal( {
+				expect( data ).toEqual( {
 					target: editingView.domConverter.mapViewToDom( viewCell ),
 					positions: [
 						defaultPositions.northArrowSouth,
@@ -241,7 +239,7 @@ describe( 'table utils', () => {
 				const data = getBalloonCellPositionData( editor );
 				const targetData = data.target();
 
-				expect( targetData ).to.deep.equal( {
+				expect( targetData ).toEqual( {
 					top: 100,
 					left: 100,
 					right: 120,
@@ -260,7 +258,7 @@ describe( 'table utils', () => {
 				const data = getBalloonCellPositionData( editor );
 				const targetData = data.target();
 
-				expect( targetData ).to.deep.equal( {
+				expect( targetData ).toEqual( {
 					top: 100,
 					left: 110,
 					right: 120,
@@ -280,7 +278,7 @@ describe( 'table utils', () => {
 				const data = getBalloonCellPositionData( editor );
 				const targetData = data.target();
 
-				expect( targetData ).to.deep.equal( {
+				expect( targetData ).toEqual( {
 					top: 100,
 					left: 100,
 					right: 120,
@@ -297,7 +295,7 @@ describe( 'table utils', () => {
 			}
 
 			function mockBoundingBox( element, data ) {
-				testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 					...data,
 					right: data.left + data.width,
 					bottom: data.top + data.height

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
@@ -4171,6 +4173,40 @@ describe( 'table cell properties', () => {
 							]
 						], { headingRows: 1 } )
 					);
+				} );
+
+				it( 'should ignore a `tableCellType` attribute change on an element that is not a table cell', () => {
+					// Allow the attribute on a paragraph so the change is recorded by the differ.
+					model.schema.extend( 'paragraph', { allowAttributes: [ 'tableCellType' ] } );
+
+					_setModelData( model, '<paragraph>foo</paragraph>' );
+
+					const paragraph = model.document.getRoot().getChild( 0 );
+
+					expect( () => {
+						model.change( writer => {
+							writer.setAttribute( 'tableCellType', 'header', paragraph );
+						} );
+					} ).to.not.throw();
+
+					expect( paragraph.getAttribute( 'tableCellType' ) ).to.equal( 'header' );
+				} );
+
+				it( 'should ignore a `headingRows` attribute change on an element that is not a table', () => {
+					// Allow the attribute on a paragraph so the change is recorded by the differ.
+					model.schema.extend( 'paragraph', { allowAttributes: [ 'headingRows' ] } );
+
+					_setModelData( model, '<paragraph>foo</paragraph>' );
+
+					const paragraph = model.document.getRoot().getChild( 0 );
+
+					expect( () => {
+						model.change( writer => {
+							writer.setAttribute( 'headingRows', 1, paragraph );
+						} );
+					} ).to.not.throw();
+
+					expect( paragraph.getAttribute( 'headingRows' ) ).to.equal( 1 );
 				} );
 			} );
 		} );

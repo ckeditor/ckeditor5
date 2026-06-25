@@ -195,6 +195,7 @@ export class TableLayoutEditing extends Plugin {
 				// when `tableType` attribute has been changed by `TableTypeCommand`.
 				if ( entry.type == 'attribute' && entry.attributeKey == 'tableType' ) {
 					for ( const item of entry.range.getItems() ) {
+						/* v8 ignore else -- `tableType` is only ever set on a single `table`, so the range holds no other items. */
 						if ( item.is( 'element', 'table' ) ) {
 							editor.model.schema.removeDisallowedAttributes( [ item ], writer );
 

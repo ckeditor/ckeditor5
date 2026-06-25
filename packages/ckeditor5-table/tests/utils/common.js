@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, ModelSelection } from '@ckeditor/ckeditor5-engine';
@@ -40,7 +42,7 @@ describe( 'table utils', () => {
 
 				const tableCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
-				expect( isHeadingColumnCell( tableUtils, tableCell ) ).to.be.true;
+				expect( isHeadingColumnCell( tableUtils, tableCell ) ).toBe( true );
 			} );
 
 			it( 'should return "true" for a heading column cell with colspan', () => {
@@ -50,7 +52,7 @@ describe( 'table utils', () => {
 
 				const tableCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 
-				expect( isHeadingColumnCell( tableUtils, tableCell ) ).to.be.true;
+				expect( isHeadingColumnCell( tableUtils, tableCell ) ).toBe( true );
 			} );
 
 			it( 'should return "false" for a regular column cell', () => {
@@ -60,7 +62,7 @@ describe( 'table utils', () => {
 
 				const tableCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
 
-				expect( isHeadingColumnCell( tableUtils, tableCell ) ).to.be.false;
+				expect( isHeadingColumnCell( tableUtils, tableCell ) ).toBe( false );
 			} );
 
 			it( 'should return "false" for a regular column cell with colspan', () => {
@@ -70,7 +72,7 @@ describe( 'table utils', () => {
 
 				const tableCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
-				expect( isHeadingColumnCell( tableUtils, tableCell ) ).to.be.false;
+				expect( isHeadingColumnCell( tableUtils, tableCell ) ).toBe( false );
 			} );
 		} );
 
@@ -81,7 +83,7 @@ describe( 'table utils', () => {
 
 				const tableElement = getSelectionAffectedTable( selection );
 
-				expect( tableElement ).to.be.null;
+				expect( tableElement ).toBeNull();
 			} );
 
 			it( 'should return table if present higher in the model tree', () => {
@@ -93,7 +95,7 @@ describe( 'table utils', () => {
 				const selection = new ModelSelection( model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ) );
 				const tableElement = getSelectionAffectedTable( selection );
 
-				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
+				expect( tableElement ).toBe( modelRoot.getNodeByPath( [ 0 ] ) );
 			} );
 
 			it( 'should return table if selected', () => {
@@ -105,7 +107,7 @@ describe( 'table utils', () => {
 				const selection = new ModelSelection( model.createRangeOn( modelRoot.getChild( 0 ) ) );
 				const tableElement = getSelectionAffectedTable( selection );
 
-				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
+				expect( tableElement ).toBe( modelRoot.getNodeByPath( [ 0 ] ) );
 			} );
 
 			it( 'should return selected table if selected inside other table', () => {
@@ -121,7 +123,7 @@ describe( 'table utils', () => {
 				const selection = new ModelSelection( model.createRangeOn( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) ) );
 				const tableElement = getSelectionAffectedTable( selection );
 
-				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) );
+				expect( tableElement ).toBe( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) );
 			} );
 		} );
 	} );

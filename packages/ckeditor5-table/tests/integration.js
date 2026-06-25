@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { BalloonToolbar, View } from '@ckeditor/ckeditor5-ui';
@@ -53,7 +54,7 @@ describe( 'TableContentToolbar integration', () => {
 
 			balloonToolbar.show();
 
-			expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
+			expect( balloon.visibleView ).toBe( balloonToolbar.toolbarView );
 		} );
 
 		it( 'should allow the BalloonToolbar to be displayed when a table content is selected', () => {
@@ -64,7 +65,7 @@ describe( 'TableContentToolbar integration', () => {
 
 			balloonToolbar.show();
 
-			expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
+			expect( balloon.visibleView ).toBe( balloonToolbar.toolbarView );
 		} );
 
 		it( 'should prevent the BalloonToolbar from being displayed when a table is selected as whole', () => {
@@ -75,13 +76,13 @@ describe( 'TableContentToolbar integration', () => {
 
 			balloonToolbar.show();
 
-			expect( balloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).toBeNull();
 		} );
 
 		it( 'should listen to BalloonToolbar#show event with the high priority', () => {
-			const highestPrioritySpy = sinon.spy();
-			const highPrioritySpy = sinon.spy();
-			const normalPrioritySpy = sinon.spy();
+			const highestPrioritySpy = vi.fn();
+			const highPrioritySpy = vi.fn();
+			const normalPrioritySpy = vi.fn();
 
 			// Select an table
 			_setModelData(
@@ -95,9 +96,9 @@ describe( 'TableContentToolbar integration', () => {
 
 			balloonToolbar.show();
 
-			sinon.assert.calledOnce( highestPrioritySpy );
-			sinon.assert.notCalled( highPrioritySpy );
-			sinon.assert.notCalled( normalPrioritySpy );
+			expect( highestPrioritySpy ).toHaveBeenCalledTimes( 1 );
+			expect( highPrioritySpy ).not.toHaveBeenCalled();
+			expect( normalPrioritySpy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -133,7 +134,7 @@ describe( 'TableContentToolbar integration', () => {
 				'</table>'
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -153,7 +154,7 @@ describe( 'TableContentToolbar integration', () => {
 				'</table>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -187,7 +188,7 @@ describe( 'TableContentToolbar integration', () => {
 				'</table>'
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -207,7 +208,7 @@ describe( 'TableContentToolbar integration', () => {
 				'</table>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -241,7 +242,7 @@ describe( 'TableContentToolbar integration', () => {
 				'</table>'
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -261,7 +262,7 @@ describe( 'TableContentToolbar integration', () => {
 				'</table>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +

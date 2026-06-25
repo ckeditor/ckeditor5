@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { EditingView } from '@ckeditor/ckeditor5-engine';
 import { MouseEventsObserver } from '../../src/tablemouse/mouseeventsobserver.js';
 
@@ -30,15 +31,15 @@ describe( 'table selection', () => {
 		describe( 'onDomEvent', () => {
 			for ( const eventName of [ 'mousemove', 'mouseleave' ] ) {
 				it( `should fire ${ eventName } with the right event data`, () => {
-					const spy = sinon.spy();
+					const spy = vi.fn();
 
 					viewDocument.on( eventName, spy );
 
 					observer.onDomEvent( { type: eventName, target: document.body } );
 
-					expect( spy.calledOnce ).to.be.true;
+					expect( spy ).toHaveBeenCalledOnce();
 
-					const data = spy.args[ 0 ][ 1 ];
+					const data = spy.mock.calls[ 0 ][ 1 ];
 					expect( data.domTarget ).to.equal( document.body );
 				} );
 			}

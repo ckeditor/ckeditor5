@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
@@ -33,7 +35,7 @@ describe( 'SelectRowCommand', () => {
 
 	describe( 'constructor()', () => {
 		it( 'sets public properties', () => {
-			expect( command ).to.have.property( 'affectsData', false );
+			expect( command ).toHaveProperty( 'affectsData', false );
 		} );
 	} );
 
@@ -44,7 +46,7 @@ describe( 'SelectRowCommand', () => {
 				[ '10', '11' ]
 			] ) );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if the selection contains multiple cells', () => {
@@ -59,7 +61,7 @@ describe( 'SelectRowCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if the selection is inside the table and the editor is read-only', () => {
@@ -69,13 +71,13 @@ describe( 'SelectRowCommand', () => {
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if the selection is outside a table', () => {
 			_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 

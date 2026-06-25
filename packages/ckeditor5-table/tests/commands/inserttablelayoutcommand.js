@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, beforeEach, afterEach, it, expect, vi } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -87,13 +89,13 @@ describe( 'InsertTableLayoutCommand', () => {
 		it( 'should create a single batch', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			model.document.on( 'change', spy );
 
 			command.execute( { rows: 3, columns: 4 } );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		describe( 'collapsed selection', () => {

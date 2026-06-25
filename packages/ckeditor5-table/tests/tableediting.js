@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -354,8 +355,8 @@ describe( 'TableEditing', () => {
 
 		beforeEach( () => {
 			evtDataStub = {
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy(),
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn(),
 				isSoft: false
 			};
 
@@ -366,7 +367,7 @@ describe( 'TableEditing', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					sinon.stub( editor, 'execute' );
+					vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 					viewDocument = editor.editing.view.document;
 					model = editor.model;
@@ -378,7 +379,7 @@ describe( 'TableEditing', () => {
 
 			viewDocument.fire( 'enter', evtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			expect( editor.execute ).not.toHaveBeenCalled();
 			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]foo</paragraph>' );
 		} );
 
@@ -389,7 +390,7 @@ describe( 'TableEditing', () => {
 
 			viewDocument.fire( 'enter', evtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			expect( editor.execute ).not.toHaveBeenCalled();
 			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '<paragraph>[]11</paragraph>' ]
 			] ) );
@@ -402,7 +403,7 @@ describe( 'TableEditing', () => {
 
 			viewDocument.fire( 'enter', evtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			expect( editor.execute ).not.toHaveBeenCalled();
 			_setModelData( model, modelTable( [
 				[ '<paragraph>[1</paragraph><paragraph>1]</paragraph>' ]
 			] ) );
@@ -416,7 +417,7 @@ describe( 'TableEditing', () => {
 			evtDataStub.isSoft = true;
 			viewDocument.fire( 'enter', evtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			expect( editor.execute ).not.toHaveBeenCalled();
 			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]11' ]
 			] ) );

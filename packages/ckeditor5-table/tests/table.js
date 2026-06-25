@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { Table } from '../src/table.js';
 import { TableEditing } from '../src/tableediting.js';
 import { TableUI } from '../src/tableui.js';
@@ -14,20 +15,20 @@ import { TableMouse } from '../src/tablemouse.js';
 
 describe( 'Table', () => {
 	it( 'requires TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard and Widget', () => {
-		expect( Table.requires ).to.deep.equal( [
+		expect( Table.requires ).toEqual( [
 			TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard, Widget
 		] );
 	} );
 
 	it( 'has proper name', () => {
-		expect( Table.pluginName ).to.equal( 'Table' );
+		expect( Table.pluginName ).toBe( 'Table' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Table.isOfficialPlugin ).to.be.true;
+		expect( Table.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Table.isPremiumPlugin ).to.be.false;
+		expect( Table.isPremiumPlugin ).toBe( false );
 	} );
 } );

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -39,7 +41,7 @@ describe( 'RemoveColumnCommand', () => {
 				[ '10', '11' ]
 			] ) );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if selection contains multiple cells', () => {
@@ -55,7 +57,7 @@ describe( 'RemoveColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if selection is inside table with one column only', () => {
@@ -65,7 +67,7 @@ describe( 'RemoveColumnCommand', () => {
 				[ '20[]' ]
 			] ) );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if all columns are selected', () => {
@@ -81,7 +83,7 @@ describe( 'RemoveColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 2 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if all columns are selected - table with more than 10 columns (array sort bug)', () => {
@@ -96,13 +98,13 @@ describe( 'RemoveColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 12 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection is outside a table', () => {
 			_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 

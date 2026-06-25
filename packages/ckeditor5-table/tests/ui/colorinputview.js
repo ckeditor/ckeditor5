@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ColorInputView } from '../../src/ui/colorinputview.js';
 import { InputTextView, ColorGridView, DropdownView, ButtonView, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, keyCodes, global } from '@ckeditor/ckeditor5-utils';
@@ -143,16 +144,16 @@ describe( 'ColorInputView', () => {
 			} );
 
 			it( 'should show color grids when dropdown is open', () => {
-				const spy = sinon.spy( colorSelectorView, 'showColorGridsFragment' );
+				const spy = vi.spyOn( colorSelectorView, 'showColorGridsFragment' );
 				const dropdown = view.dropdownView;
 
 				dropdown.isOpen = true;
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 
 				dropdown.isOpen = false;
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should close dropdown when "save button" is pressed', () => {
@@ -168,7 +169,7 @@ describe( 'ColorInputView', () => {
 			} );
 
 			it( 'should not not fire input event on submiting', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'input', spy );
 
@@ -176,7 +177,7 @@ describe( 'ColorInputView', () => {
 					source: 'colorPickerSaveButton'
 				} );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should close dropdown and cancel changes when "cancel button" is pressed', () => {
@@ -290,13 +291,13 @@ describe( 'ColorInputView', () => {
 			} );
 
 			it( 'should fire the ColorInputView#input event upon ColorTileView#execute', () => {
-				const spy = sinon.spy( view, 'fire' );
+				const spy = vi.spyOn( view, 'fire' );
 
 				view.dropdownView.isOpen = true;
 
 				colorGridView.items.last.fire( 'execute' );
 
-				sinon.assert.calledWithExactly( spy.lastCall, 'input' );
+				expect( spy ).toHaveBeenLastCalledWith( 'input' );
 			} );
 
 			it( 'should set #selectedColor to the #value upon dropdown opening', () => {
@@ -461,11 +462,11 @@ describe( 'ColorInputView', () => {
 			);
 
 			it( 'should have #input event delegated to the color input', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				view.on( 'input', spy );
 
 				inputView.fire( 'input' );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
@@ -573,8 +574,8 @@ describe( 'ColorInputView', () => {
 				it( 'so "tab" focuses the next focusable item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					view.dropdownView.isOpen = true;
@@ -584,20 +585,20 @@ describe( 'ColorInputView', () => {
 					view.focusTracker.focusedElement = view.inputView.element;
 
 					// Spy the next view which in this case is the color grid view.
-					const spy = sinon.spy( view.dropdownView.buttonView, 'focus' );
+					const spy = vi.spyOn( view.dropdownView.buttonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( 'so "shift + tab" focuses the previous focusable item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
 						shiftKey: true,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					view.dropdownView.isOpen = true;
@@ -607,12 +608,12 @@ describe( 'ColorInputView', () => {
 					view.focusTracker.focusedElement = view.inputView.element;
 
 					// Spy the previous view which in this case is the color grid view.
-					const spy = sinon.spy( view.dropdownView.buttonView, 'focus' );
+					const spy = vi.spyOn( view.dropdownView.buttonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 
@@ -620,8 +621,8 @@ describe( 'ColorInputView', () => {
 				it( '"arrow right" should focus the next focusable color button', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.arrowright,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					view.dropdownView.isOpen = true;
@@ -630,19 +631,19 @@ describe( 'ColorInputView', () => {
 					colorGridView.focusTracker.isFocused = true;
 					colorGridView.focusTracker.focusedElement = colorGridView.items.first.element;
 
-					const spy = sinon.spy( colorGridView.items.get( 1 ), 'focus' );
+					const spy = vi.spyOn( colorGridView.items.get( 1 ), 'focus' );
 
 					colorGridView.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( '"arrow down" should focus the focusable color button in the second row', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.arrowdown,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					view.dropdownView.isOpen = true;
@@ -651,12 +652,12 @@ describe( 'ColorInputView', () => {
 					colorGridView.focusTracker.isFocused = true;
 					colorGridView.focusTracker.focusedElement = colorGridView.items.first.element;
 
-					const spy = sinon.spy( colorGridView.items.get( 2 ), 'focus' );
+					const spy = vi.spyOn( colorGridView.items.get( 2 ), 'focus' );
 
 					colorGridView.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 		} );
@@ -664,19 +665,19 @@ describe( 'ColorInputView', () => {
 
 	describe( 'focus()', () => {
 		it( 'should focus the input', () => {
-			const spy = sinon.spy( inputView, 'focus' );
+			const spy = vi.spyOn( inputView, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should focus the dropdown button if the backwards direction was specified', () => {
-			const spy = sinon.spy( view.dropdownView.buttonView, 'focus' );
+			const spy = vi.spyOn( view.dropdownView.buttonView, 'focus' );
 
 			view.focus( -1 );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
@@ -687,11 +688,11 @@ describe( 'ColorInputView', () => {
 				columns: 5
 			} );
 
-			const spy = sinon.spy( view.keystrokes, 'listenTo' );
+			const spy = vi.spyOn( view.keystrokes, 'listenTo' );
 
 			view.render();
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, view.element );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledWith( view.element );
 
 			view.destroy();
 		} );
@@ -699,19 +700,19 @@ describe( 'ColorInputView', () => {
 
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
-			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+			const destroySpy = vi.spyOn( view.focusTracker, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should destroy the KeystrokeHandler instance', () => {
-			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+			const destroySpy = vi.spyOn( view.keystrokes, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 } );

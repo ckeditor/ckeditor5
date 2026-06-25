@@ -8,6 +8,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import { assertTableCellStyle, modelTable, setTableCellWithObjectAttributes, viewTable } from '../../_utils/utils.js';
 import { TableCellPropertiesEditing } from '../../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableCellPaddingCommand } from '../../../src/tablecellproperties/commands/tablecellpaddingcommand.js';
@@ -188,10 +190,10 @@ describe( 'table cell properties', () => {
 				it( 'should use provided batch', () => {
 					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 					const batch = model.createBatch();
-					const spy = sinon.spy( model, 'enqueueChange' );
+					const spy = vi.spyOn( model, 'enqueueChange' );
 
 					command.execute( { value: '0.5em', batch } );
-					sinon.assert.calledWith( spy, batch );
+					expect( spy.mock.calls.some( call => call[ 0 ] === batch ) ).to.be.true;
 				} );
 
 				it( 'should add default unit for numeric values (number passed)', () => {

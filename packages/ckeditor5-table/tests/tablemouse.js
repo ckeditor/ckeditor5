@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _setModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
@@ -32,15 +33,15 @@ describe( 'TableMouse', () => {
 		} );
 
 		it( 'should have pluginName', () => {
-			expect( TableMouse.pluginName ).to.equal( 'TableMouse' );
+			expect( TableMouse.pluginName ).toBe( 'TableMouse' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( TableMouse.isOfficialPlugin ).to.be.true;
+			expect( TableMouse.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( TableMouse.isPremiumPlugin ).to.be.false;
+			expect( TableMouse.isPremiumPlugin ).toBe( false );
 		} );
 	} );
 
@@ -101,7 +102,7 @@ describe( 'TableMouse', () => {
 		} );
 
 		it( 'should abort if Shift+clicked an element outside a table', () => {
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 
 			model.change( writer => {
 				const paragraph = writer.createElement( 'paragraph' );
@@ -126,11 +127,11 @@ describe( 'TableMouse', () => {
 				[ 0, 0, 0 ]
 			] );
 
-			expect( preventDefault.called ).to.equal( false );
+			expect( preventDefault ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should abort if clicked a cell that belongs to another table', () => {
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 
 			_setModelData( model, [
 				modelTable( [
@@ -159,11 +160,11 @@ describe( 'TableMouse', () => {
 				[ 0, 0 ]
 			] );
 
-			expect( preventDefault.called ).to.equal( false );
+			expect( preventDefault ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should select all cells in first row', () => {
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				shiftKey: true,
@@ -182,11 +183,11 @@ describe( 'TableMouse', () => {
 				[ 0, 0, 0 ]
 			] );
 
-			expect( preventDefault.called ).to.equal( true );
+			expect( preventDefault ).toHaveBeenCalled();
 		} );
 
 		it( 'should use the anchor cell from the selection if possible', () => {
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				shiftKey: true,
@@ -215,12 +216,12 @@ describe( 'TableMouse', () => {
 				[ 0, 0, 0 ]
 			] );
 
-			expect( preventDefault.called ).to.equal( true );
+			expect( preventDefault ).toHaveBeenCalled();
 		} );
 
 		it( 'should ignore `selectionChange` event when selecting cells', () => {
-			const preventDefault = sinon.spy();
-			const selectionChangeCallback = sinon.spy();
+			const preventDefault = vi.fn();
+			const selectionChangeCallback = vi.fn();
 
 			// Adding a new callback to check whether it will be executed (whether `evt.stop()` is being called).
 			viewDocument.on( 'selectionChange', selectionChangeCallback );
@@ -242,7 +243,7 @@ describe( 'TableMouse', () => {
 
 			// The callback shouldn't be executed because
 			// `selectionChange` event should be canceled.
-			expect( selectionChangeCallback.called ).to.equal( false );
+			expect( selectionChangeCallback ).not.toHaveBeenCalled();
 
 			// Enables listening to `selectionChange` event.
 			viewDocument.fire( 'mouseup' );
@@ -251,7 +252,7 @@ describe( 'TableMouse', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( selectionChangeCallback.called ).to.equal( true );
+			expect( selectionChangeCallback ).toHaveBeenCalled();
 		} );
 	} );
 
@@ -272,7 +273,7 @@ describe( 'TableMouse', () => {
 				[ '31', '32', '33' ]
 			] ) );
 
-			preventDefault = sinon.spy();
+			preventDefault = vi.fn();
 		} );
 
 		it( 'should do nothing if the plugin is disabled', () => {
@@ -465,7 +466,7 @@ describe( 'TableMouse', () => {
 					viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 1 )
 				),
 				buttons: 1,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} ) );
 
 			// And back to the "started" cell.
@@ -474,7 +475,7 @@ describe( 'TableMouse', () => {
 					viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 )
 				),
 				buttons: 1,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} ) );
 
 			viewDocument.fire( 'mouseup' );
@@ -511,12 +512,12 @@ describe( 'TableMouse', () => {
 				[ 0, 0, 0 ]
 			] );
 
-			expect( preventDefault.called ).to.equal( true );
+			expect( preventDefault ).toHaveBeenCalled();
 		} );
 
 		it( 'should ignore `selectionChange` event when selecting cells ', () => {
-			const preventDefault = sinon.spy();
-			const selectionChangeCallback = sinon.spy();
+			const preventDefault = vi.fn();
+			const selectionChangeCallback = vi.fn();
 
 			// Adding a new callback to check whether it will be executed (whether `evt.stop()` is being called).
 			viewDocument.on( 'selectionChange', selectionChangeCallback );
@@ -543,7 +544,7 @@ describe( 'TableMouse', () => {
 			viewDocument.fire( 'selectionChange' );
 
 			// `selectionChange` event should be canceled.
-			expect( selectionChangeCallback.called ).to.equal( false );
+			expect( selectionChangeCallback ).not.toHaveBeenCalled();
 
 			// Enables listening to `selectionChange` event.
 			viewDocument.fire( 'mouseup' );
@@ -552,7 +553,7 @@ describe( 'TableMouse', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( selectionChangeCallback.called ).to.equal( true );
+			expect( selectionChangeCallback ).toHaveBeenCalled();
 		} );
 	} );
 

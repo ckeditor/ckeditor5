@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
@@ -67,23 +68,23 @@ describe( 'TableCaptionEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( TableCaptionEditing.pluginName ).to.equal( 'TableCaptionEditing' );
+		expect( TableCaptionEditing.pluginName ).toEqual( 'TableCaptionEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TableCaptionEditing.isOfficialPlugin ).to.be.true;
+		expect( TableCaptionEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TableCaptionEditing.isPremiumPlugin ).to.be.false;
+		expect( TableCaptionEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkChild( [ '$root', 'table' ], 'caption' ) ).to.be.true;
-		expect( model.schema.checkChild( [ '$root', 'table', 'caption' ], '$text' ) ).to.be.true;
-		expect( model.schema.isLimit( 'caption' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'table' ], 'caption' ) ).toBe( true );
+		expect( model.schema.checkChild( [ '$root', 'table', 'caption' ], '$text' ) ).toBe( true );
+		expect( model.schema.isLimit( 'caption' ) ).toBe( true );
 
-		expect( model.schema.checkChild( [ '$root', 'table', 'caption' ], 'caption' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'table', 'caption' ], 'caption' ) ).toBe( false );
 	} );
 
 	it( 'should extend caption if schema for it is already registered', async () => {
@@ -92,9 +93,9 @@ describe( 'TableCaptionEditing', () => {
 				plugins: [ FakePlugin, TableEditing, TableCaptionEditing, Paragraph, TableCaptionEditing ]
 			} );
 
-		expect( model.schema.isRegistered( 'caption' ) ).to.be.true;
-		expect( model.schema.isLimit( 'caption' ) ).to.be.true;
-		expect( model.schema.checkChild( [ 'table' ], 'caption' ) ).to.be.true;
+		expect( model.schema.isRegistered( 'caption' ) ).toBe( true );
+		expect( model.schema.isLimit( 'caption' ) ).toBe( true );
+		expect( model.schema.checkChild( [ 'table' ], 'caption' ) ).toBe( true );
 	} );
 
 	describe( 'data pipeline', () => {

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
@@ -27,20 +29,20 @@ describe( 'table clipboard', () => {
 
 	describe( 'TableClipboard', () => {
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( TableClipboard.isOfficialPlugin ).to.be.true;
+			expect( TableClipboard.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( TableClipboard.isPremiumPlugin ).to.be.false;
+			expect( TableClipboard.isPremiumPlugin ).toBe( false );
 		} );
 
 		it( 'should be a named plugin', () => {
-			expect( editor.plugins.get( 'TableClipboard' ) ).to.be.instanceOf( TableClipboard );
+			expect( editor.plugins.get( 'TableClipboard' ) ).toBeInstanceOf( TableClipboard );
 		} );
 
 		it( 'requires TableSelection plugins and utilities', () => {
-			expect( editor.plugins.has( TableSelection ) ).to.be.true;
-			expect( editor.plugins.has( TableUtils ) ).to.be.true;
+			expect( editor.plugins.has( TableSelection ) ).toBe( true );
+			expect( editor.plugins.has( TableUtils ) ).toBe( true );
 		} );
 	} );
 } );

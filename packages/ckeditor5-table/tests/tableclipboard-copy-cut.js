@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -44,20 +45,20 @@ describe( 'table clipboard', () => {
 	describe( 'Clipboard integration - copy', () => {
 		it( 'should do nothing for normal selection in table', () => {
 			const dataTransferMock = createDataTransfer();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'clipboardOutput', spy );
 
 			viewDocument.fire( 'copy', {
 				dataTransfer: dataTransferMock,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should copy selected table cells as a standalone table', () => {
-			const preventDefaultSpy = sinon.spy();
+			const preventDefaultSpy = vi.fn();
 
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
@@ -70,8 +71,8 @@ describe( 'table clipboard', () => {
 			};
 			viewDocument.fire( 'copy', data );
 
-			sinon.assert.calledOnce( preventDefaultSpy );
-			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( viewTable( [
+			expect( preventDefaultSpy ).toHaveBeenCalledTimes( 1 );
+			expect( data.dataTransfer.getData( 'text/html' ) ).toBe( viewTable( [
 				[ '01', '02' ],
 				[ '11', '12' ]
 			] ) );
@@ -362,10 +363,10 @@ describe( 'table clipboard', () => {
 
 			viewDocument.fire( 'cut', {
 				dataTransfer: dataTransferMock,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
-			expect( dataTransferMock.getData( 'text/html' ) ).to.equal( '00' );
+			expect( dataTransferMock.getData( 'text/html' ) ).toBe( '00' );
 		} );
 
 		it( 'should be preventable', () => {
@@ -378,7 +379,7 @@ describe( 'table clipboard', () => {
 
 			viewDocument.fire( 'cut', {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
 			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
@@ -389,7 +390,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'is clears selected table cells', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'clipboardOutput', spy );
 
@@ -400,7 +401,7 @@ describe( 'table clipboard', () => {
 
 			viewDocument.fire( 'cut', {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
 			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
@@ -411,7 +412,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should copy selected table cells as a standalone table', () => {
-			const preventDefaultSpy = sinon.spy();
+			const preventDefaultSpy = vi.fn();
 
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
@@ -424,15 +425,15 @@ describe( 'table clipboard', () => {
 			};
 			viewDocument.fire( 'cut', data );
 
-			sinon.assert.calledOnce( preventDefaultSpy );
-			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( viewTable( [
+			expect( preventDefaultSpy ).toHaveBeenCalledTimes( 1 );
+			expect( data.dataTransfer.getData( 'text/html' ) ).toBe( viewTable( [
 				[ '01', '02' ],
 				[ '11', '12' ]
 			] ) );
 		} );
 
 		it( 'should be disabled in a readonly mode', () => {
-			const preventDefaultStub = sinon.stub();
+			const preventDefaultStub = vi.fn();
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
@@ -449,25 +450,25 @@ describe( 'table clipboard', () => {
 
 			editor.disableReadOnlyMode( 'unit-test' );
 
-			expect( data.dataTransfer.getData( 'text/html' ) ).to.be.undefined;
+			expect( data.dataTransfer.getData( 'text/html' ) ).toBeUndefined();
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '22' ]
 			] ) );
 
-			sinon.assert.calledOnce( preventDefaultStub );
+			expect( preventDefaultStub ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
 	function assertClipboardContentOnMethod( method, expectedViewTable ) {
 		const data = {
 			dataTransfer: createDataTransfer(),
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		};
 		viewDocument.fire( method, data );
 
-		expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( expectedViewTable );
+		expect( data.dataTransfer.getData( 'text/html' ) ).toBe( expectedViewTable );
 	}
 
 	function createDataTransfer() {

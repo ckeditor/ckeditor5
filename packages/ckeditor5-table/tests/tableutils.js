@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -21,8 +21,6 @@ import { TableWalker } from '../src/tablewalker.js';
 
 describe( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editor = await ModelTestEditor.create( {
@@ -80,7 +78,7 @@ describe( 'TableUtils', () => {
 
 	describe( 'insertRows()', () => {
 		it( 'should be decorated', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
@@ -97,7 +95,7 @@ describe( 'TableUtils', () => {
 				[ '21', '22' ]
 			] ) );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should insert row in given table at given index', () => {
@@ -613,7 +611,7 @@ describe( 'TableUtils', () => {
 
 	describe( 'insertColumns()', () => {
 		it( 'should be decorated', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
@@ -629,7 +627,7 @@ describe( 'TableUtils', () => {
 				[ '21', '', '22' ]
 			] ) );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should insert column in given table at given index', () => {
@@ -1836,6 +1834,21 @@ describe( 'TableUtils', () => {
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ]
 				] ) );
+			} );
+
+			it( 'should keep footer rows unchanged if removing a row entirely above the footer section', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
 			} );
 
 			it( 'should move row-spanned cells to a row after removed rows section', () => {
@@ -3408,6 +3421,34 @@ describe( 'TableUtils with TableCellProperties', () => {
 					[ { contents: '', tableCellType: 'header-row' }, { contents: '00', tableCellType: 'header-row' }, '01' ],
 					[ { contents: '', tableCellType: 'header-row' }, { contents: '10', tableCellType: 'header-row' }, '11' ]
 				], { headingColumns: 2 } ) );
+			} );
+		} );
+
+		describe( 'with scoped headers disabled', () => {
+			beforeEach( () => {
+				editor.config.set( 'table.tableCellProperties.scopedHeaders', false );
+			} );
+
+			describe( 'setHeadingRowsCount()', () => {
+				it( 'should set plain tableCellType="header" to cells in the header row', () => {
+					_setModelData( model, modelTable( [
+						[ '00', '01' ],
+						[ '10', '11' ],
+						[ '20', '21' ]
+					] ) );
+
+					model.change( writer => {
+						const table = root.getChild( 0 );
+
+						tableUtils.setHeadingRowsCount( writer, table, 1 );
+					} );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+						[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+						[ '10', '11' ],
+						[ '20', '21' ]
+					], { headingRows: 1 } ) );
+				} );
 			} );
 		} );
 	} );

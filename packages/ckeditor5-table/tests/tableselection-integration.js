@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -39,7 +40,7 @@ describe( 'TableSelection - integration', () => {
 			);
 
 			const domEventData = new ViewDocumentDomEventData( viewDocument, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'backward',
 				unit: 'character',
@@ -61,7 +62,7 @@ describe( 'TableSelection - integration', () => {
 			);
 
 			const domEventData = new ViewDocumentDomEventData( viewDocument, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'forward',
 				unit: 'character',
@@ -84,7 +85,7 @@ describe( 'TableSelection - integration', () => {
 			] ) );
 
 			const domEventData = new ViewDocumentDomEventData( viewDocument, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'backward',
 				unit: 'character',
@@ -117,12 +118,12 @@ describe( 'TableSelection - integration', () => {
 			const eventData = {
 				text: 'x',
 				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) ),
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			};
 
 			eventData.domEvent = {
 				get defaultPrevented() {
-					return eventData.preventDefault.called;
+					return eventData.preventDefault.mock.calls.length > 0;
 				}
 			};
 
@@ -142,12 +143,12 @@ describe( 'TableSelection - integration', () => {
 			const eventData = {
 				text: 'x',
 				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) ),
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			};
 
 			eventData.domEvent = {
 				get defaultPrevented() {
-					return eventData.preventDefault.called;
+					return eventData.preventDefault.mock.calls.length > 0;
 				}
 			};
 
@@ -176,14 +177,12 @@ describe( 'TableSelection - integration', () => {
 			);
 
 			const dataTransferMock = {
-				getData: sinon.stub()
-					.withArgs( 'text/plain' ).returns( 'foo' )
-					.withArgs( 'text/html' ).returns( '<p>foo</p>' )
+				getData: vi.fn( format => format === 'text/plain' ? 'foo' : '<p>foo</p>' )
 			};
 
 			editor.editing.view.document.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
-				stop: sinon.spy(),
+				stop: vi.fn(),
 				content: dataTransferMock.getData( 'text/html' )
 			} );
 

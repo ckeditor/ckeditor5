@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
@@ -163,10 +165,10 @@ describe( 'table cell properties', () => {
 				it( 'should use provided batch', () => {
 					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 					const batch = model.createBatch();
-					const spy = sinon.spy( model, 'enqueueChange' );
+					const spy = vi.spyOn( model, 'enqueueChange' );
 
 					command.execute( { value: '25px', batch } );
-					sinon.assert.calledWith( spy, batch );
+					expect( spy ).toHaveBeenCalledWith( batch, expect.anything() );
 				} );
 
 				it( 'should add default unit for numeric values (number passed)', () => {

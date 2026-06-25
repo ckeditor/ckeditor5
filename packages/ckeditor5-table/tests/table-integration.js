@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
+
 import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -19,11 +21,12 @@ import {
 
 import { TableEditing } from '../src/tableediting.js';
 import { modelTable, viewTable } from './_utils/utils.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'Table feature – integration', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	describe( 'with clipboard', () => {
 		let editor, clipboard;

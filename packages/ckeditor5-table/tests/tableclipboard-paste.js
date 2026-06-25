@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
@@ -11,7 +12,6 @@ import { ImageCaptionEditing, ImageBlockEditing } from '@ckeditor/ckeditor5-imag
 import { ListEditing } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Input } from '@ckeditor/ckeditor5-typing';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _getModelData, _setModelData, ModelRange } from '@ckeditor/ckeditor5-engine';
 import { assertSelectedCells, formatAttributes, modelTable, viewTable } from './_utils/utils.js';
 import { TableEditing } from '../src/tableediting.js';
@@ -26,8 +26,6 @@ import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element, clipboardMarkersUtils, getUniqueMarkerNameStub;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
 		stubUid();
 
@@ -39,6 +37,8 @@ describe( 'table clipboard', () => {
 		await editor.destroy();
 
 		element.remove();
+
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'Clipboard integration - paste (selection scenarios)', () => {
@@ -75,14 +75,14 @@ describe( 'table clipboard', () => {
 				[ '30', '31', '32', '33' ]
 			] ) );
 
-			sinon.assert.calledOnce( data.preventDefault );
+			expect( data.preventDefault ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should allow normal paste if no table cells are selected', () => {
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
 			viewDocument.fire( 'paste', data );
@@ -136,8 +136,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
 			viewDocument.fire( 'paste', data );
@@ -163,8 +163,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', table );
 			viewDocument.fire( 'paste', data );
@@ -219,8 +219,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
 			data.dataTransfer.setData( 'text/html', table );
@@ -260,8 +260,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
 			viewDocument.fire( 'paste', data );
@@ -301,8 +301,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', `${ tableViewData }<p>foo</p>` );
 			viewDocument.fire( 'paste', data );
@@ -331,8 +331,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', `<p>foo</p>${ tableViewData }` );
 			viewDocument.fire( 'paste', data );
@@ -361,8 +361,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', `${ tableViewData }${ tableViewData }` );
 			viewDocument.fire( 'paste', data );
@@ -388,8 +388,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', `${ table }<p>&nbsp;</p>` );
 			viewDocument.fire( 'paste', data );
@@ -415,8 +415,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', `${ table }<br>` );
 			viewDocument.fire( 'paste', data );
@@ -442,8 +442,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', `<p>&nbsp;</p>${ table }` );
 			viewDocument.fire( 'paste', data );
@@ -469,8 +469,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', `<br>${ table }` );
 			viewDocument.fire( 'paste', data );
@@ -496,8 +496,8 @@ describe( 'table clipboard', () => {
 
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', `<p>&nbsp;</p><p>&nbsp;</p>${ table }<p>&nbsp;</p><br>` );
 			viewDocument.fire( 'paste', data );
@@ -4337,8 +4337,8 @@ describe( 'table clipboard', () => {
 			const pastedTable = `<table style="${ tableStyle }"><tr><td>aa</td><td>ab</td></tr><tr><td>ba</td><td>bb</td></tr></table>`;
 			const data = {
 				dataTransfer: createDataTransfer(),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 			data.dataTransfer.setData( 'text/html', pastedTable );
 			viewDocument.fire( 'paste', data );
@@ -4429,9 +4429,8 @@ describe( 'table clipboard', () => {
 				duplicateOnPaste: true
 			} );
 
-			getUniqueMarkerNameStub = sinon
-				.stub( clipboardMarkersUtils, '_getUniqueMarkerName' )
-				.callsFake( markerName => {
+			getUniqueMarkerNameStub = vi.spyOn( clipboardMarkersUtils, '_getUniqueMarkerName' )
+				.mockImplementation( markerName => {
 					if ( markerName.endsWith( 'uniq' ) ) {
 						return markerName;
 					}
@@ -4672,7 +4671,7 @@ describe( 'table clipboard', () => {
 			beforeEach( () => {
 				let index = 0;
 
-				getUniqueMarkerNameStub.callsFake( markerName => {
+				getUniqueMarkerNameStub.mockImplementation( markerName => {
 					const markerWithoutID = markerName.split( ':' ).slice( 0, 2 ).join( ':' );
 
 					return `${ markerWithoutID }:${ index++ }`;
@@ -5092,8 +5091,8 @@ describe( 'table clipboard', () => {
 	function pasteTable( tableData, attributes = {} ) {
 		const data = {
 			dataTransfer: createDataTransfer(),
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+			preventDefault: vi.fn(),
+			stopPropagation: vi.fn()
 		};
 		data.dataTransfer.setData( 'text/html', viewTable( tableData, attributes ) );
 		viewDocument.fire( 'paste', data );

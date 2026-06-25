@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Delete } from '@ckeditor/ckeditor5-typing';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _getViewData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { viewTable } from '../_utils/utils.js';
@@ -15,7 +16,9 @@ import { viewTable } from '../_utils/utils.js';
 describe( 'Table cell refresh handler', () => {
 	let editor, model, doc, root, view, element;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -446,7 +449,7 @@ describe( 'Table cell refresh handler', () => {
 
 		editor.setData( viewTable( [ [ '<p>foo[]</p>' ] ] ) );
 
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		view.document.selection.on( 'change', spy );
 
@@ -463,7 +466,7 @@ describe( 'Table cell refresh handler', () => {
 
 		// View selection should be updated only twice - will be set to null and then to widget.
 		// If called thrice the selection post fixer for table cell was also called.
-		sinon.assert.calledTwice( spy );
+		expect( spy ).toHaveBeenCalledTimes( 2 );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5-table/issues/191.

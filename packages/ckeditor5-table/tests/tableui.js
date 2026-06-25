@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterAll, beforeAll, vi } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { TableEditing } from '../src/tableediting.js';
 import { TableUI } from '../src/tableui.js';
@@ -17,9 +17,7 @@ import { IconTable } from '@ckeditor/ckeditor5-icons';
 describe( 'TableUI', () => {
 	let editor, element;
 
-	testUtils.createSinonSandbox();
-
-	before( () => {
+	beforeAll( () => {
 		addTranslations( 'en', {} );
 		addTranslations( 'pl', {} );
 	} );
@@ -59,7 +57,7 @@ describe( 'TableUI', () => {
 
 			const labels = dropdown.listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
-			expect( labels ).to.deep.equal( [
+			expect( labels ).toEqual( [
 				'Header row',
 				'Footer row',
 				'|',
@@ -77,14 +75,14 @@ describe( 'TableUI', () => {
 			const footerCommand = footerEditor.commands.get( 'setTableFooterRow' );
 
 			footerCommand.isEnabled = true;
-			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 1 ).children.first.isEnabled ).toBe( true );
 
 			footerCommand.isEnabled = false;
-			expect( items.get( 1 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 1 ).children.first.isEnabled ).toBe( false );
 		} );
 	} );
 
-	after( () => {
+	afterAll( () => {
 		_clearTranslations();
 	} );
 
@@ -102,17 +100,19 @@ describe( 'TableUI', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
+
 		element.remove();
 
 		return editor.destroy();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TableUI.isOfficialPlugin ).to.be.true;
+		expect( TableUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TableUI.isPremiumPlugin ).to.be.false;
+		expect( TableUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'insertTable dropdown', () => {
@@ -133,24 +133,24 @@ describe( 'TableUI', () => {
 		} );
 
 		it( 'should register insertTable button', () => {
-			expect( insertTable ).to.be.instanceOf( DropdownView );
-			expect( insertTable.buttonView.label ).to.equal( 'Insert table' );
-			expect( insertTable.buttonView.icon ).to.equal( IconTable );
+			expect( insertTable ).toBeInstanceOf( DropdownView );
+			expect( insertTable.buttonView.label ).toEqual( 'Insert table' );
+			expect( insertTable.buttonView.icon ).toEqual( IconTable );
 		} );
 
 		it( 'should bind to insertTable command', () => {
 			const command = editor.commands.get( 'insertTable' );
 
 			command.isEnabled = true;
-			expect( insertTable.buttonView.isOn ).to.be.true;
-			expect( insertTable.buttonView.isEnabled ).to.be.true;
+			expect( insertTable.buttonView.isOn ).toBe( true );
+			expect( insertTable.buttonView.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( insertTable.buttonView.isEnabled ).to.be.false;
+			expect( insertTable.buttonView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should execute insertTable command on button execute event', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			const executeSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 			const tableSizeView = insertTable.panelView.children.first;
 
@@ -159,15 +159,15 @@ describe( 'TableUI', () => {
 
 			insertTable.fire( 'execute' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'insertTable', { rows: 2, columns: 7 } );
+			expect( executeSpy ).toHaveBeenCalledTimes( 1 );
+			expect( executeSpy ).toHaveBeenCalledWith( 'insertTable', { rows: 2, columns: 7 } );
 		} );
 
 		it( 'is not fully initialized until open', () => {
 			const dropdown = editor.ui.componentFactory.create( 'insertTable' );
 
 			for ( const childView of dropdown.panelView.children ) {
-				expect( childView ).not.to.be.instanceOf( InsertTableView );
+				expect( childView ).not.toBeInstanceOf( InsertTableView );
 			}
 		} );
 
@@ -190,11 +190,11 @@ describe( 'TableUI', () => {
 			} );
 
 			it( 'should focus the first tile in the grid', () => {
-				const spy = sinon.spy( insertTable.panelView.children.first.items.first, 'focus' );
+				const spy = vi.spyOn( insertTable.panelView.children.first.items.first, 'focus' );
 
 				insertTable.buttonView.fire( 'open' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 	} );
@@ -216,40 +216,40 @@ describe( 'TableUI', () => {
 		} );
 
 		it( 'should set properties on a button', () => {
-			expect( menuView.buttonView.label ).to.equal( 'Table' );
-			expect( menuView.buttonView.icon ).to.equal( IconTable );
+			expect( menuView.buttonView.label ).toEqual( 'Table' );
+			expect( menuView.buttonView.icon ).toEqual( IconTable );
 		} );
 
 		it( 'should bind #isEnabled to the InsertTableCommand', () => {
 			const command = editor.commands.get( 'insertTable' );
 
-			expect( menuView.isEnabled ).to.be.true;
+			expect( menuView.isEnabled ).toBe( true );
 
 			command.forceDisabled( 'foo' );
-			expect( menuView.isEnabled ).to.be.false;
+			expect( menuView.isEnabled ).toBe( false );
 
 			command.clearForceDisabled( 'foo' );
-			expect( menuView.isEnabled ).to.be.true;
+			expect( menuView.isEnabled ).toBe( true );
 		} );
 
 		it( 'should render InsertTableView', () => {
-			expect( menuView.panelView.children.first ).to.be.instanceOf( InsertTableView );
+			expect( menuView.panelView.children.first ).toBeInstanceOf( InsertTableView );
 		} );
 
 		it( 'should delegate #execute from InsertTableView to the MenuBarMenuView', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			menuView.on( 'execute', spy );
 
 			menuView.panelView.children.first.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should execute the insertTable command upon the #execute event and focus editing', () => {
 			const command = editor.commands.get( 'insertTable' );
-			const commandSpy = sinon.spy( command, 'execute' );
-			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+			const commandSpy = vi.spyOn( command, 'execute' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 			const insertView = menuView.panelView.children.first;
 
 			insertView.rows = 3;
@@ -257,9 +257,10 @@ describe( 'TableUI', () => {
 
 			insertView.fire( 'execute' );
 
-			sinon.assert.calledOnceWithExactly( commandSpy, { rows: 3, columns: 5 } );
-			sinon.assert.calledOnce( focusSpy );
-			sinon.assert.callOrder( commandSpy, focusSpy );
+			expect( commandSpy ).toHaveBeenCalledTimes( 1 );
+			expect( commandSpy ).toHaveBeenCalledWith( { rows: 3, columns: 5 } );
+			expect( focusSpy ).toHaveBeenCalledTimes( 1 );
+			expect( commandSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( focusSpy.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		it( 'should reset column and rows selection on reopen', () => {
@@ -270,13 +271,13 @@ describe( 'TableUI', () => {
 
 			menuView.isOpen = false;
 
-			expect( insertView.rows ).to.equal( 1 );
-			expect( insertView.columns ).to.equal( 1 );
+			expect( insertView.rows ).toEqual( 1 );
+			expect( insertView.columns ).toEqual( 1 );
 
 			menuView.isOpen = true;
 
-			expect( insertView.rows ).to.equal( 1 );
-			expect( insertView.columns ).to.equal( 1 );
+			expect( insertView.rows ).toEqual( 1 );
+			expect( insertView.columns ).toEqual( 1 );
 		} );
 	} );
 
@@ -294,14 +295,14 @@ describe( 'TableUI', () => {
 		} );
 
 		it( 'have button with proper properties set', () => {
-			expect( dropdown ).to.be.instanceOf( DropdownView );
+			expect( dropdown ).toBeInstanceOf( DropdownView );
 
 			const button = dropdown.buttonView;
 
-			expect( button.isOn ).to.be.false;
-			expect( button.tooltip ).to.be.true;
-			expect( button.label ).to.equal( 'Row' );
-			expect( button.icon ).to.match( /<svg / );
+			expect( button.isOn ).toBe( false );
+			expect( button.tooltip ).toBe( true );
+			expect( button.label ).toEqual( 'Row' );
+			expect( button.icon ).toMatch( /<svg / );
 		} );
 
 		it( 'should have proper items in panel', () => {
@@ -311,7 +312,7 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
-			expect( labels ).to.deep.equal( [
+			expect( labels ).toEqual( [
 				'Header row',
 				'|',
 				'Insert row above',
@@ -338,67 +339,67 @@ describe( 'TableUI', () => {
 			removeRowCommand.isEnabled = true;
 			selectRowCommand.isEnabled = true;
 
-			expect( items.first.children.first.isEnabled ).to.be.true;
-			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 4 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 5 ).children.first.isEnabled ).to.be.true;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
+			expect( items.first.children.first.isEnabled ).toBe( true );
+			expect( items.get( 2 ).children.first.isEnabled ).toBe( true );
+			expect( items.get( 3 ).children.first.isEnabled ).toBe( true );
+			expect( items.get( 4 ).children.first.isEnabled ).toBe( true );
+			expect( items.get( 5 ).children.first.isEnabled ).toBe( true );
+			expect( dropdown.buttonView.isEnabled ).toBe( true );
 
 			setRowHeaderCommand.isEnabled = false;
 
-			expect( items.first.children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
+			expect( items.first.children.first.isEnabled ).toBe( false );
+			expect( dropdown.buttonView.isEnabled ).toBe( true );
 
 			insertRowAboveCommand.isEnabled = false;
 
-			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
+			expect( items.get( 2 ).children.first.isEnabled ).toBe( false );
+			expect( dropdown.buttonView.isEnabled ).toBe( true );
 
 			insertRowBelowCommand.isEnabled = false;
-			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
+			expect( items.get( 3 ).children.first.isEnabled ).toBe( false );
+			expect( dropdown.buttonView.isEnabled ).toBe( true );
 
 			removeRowCommand.isEnabled = false;
 
-			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
+			expect( items.get( 4 ).children.first.isEnabled ).toBe( false );
+			expect( dropdown.buttonView.isEnabled ).toBe( true );
 
 			selectRowCommand.isEnabled = false;
 
-			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.false;
+			expect( items.get( 5 ).children.first.isEnabled ).toBe( false );
+			expect( dropdown.buttonView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should focus view after command execution', () => {
 			dropdown.isOpen = true;
 
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			dropdown.listView.items.get( 3 ).children.last.fire( 'execute' );
 
-			sinon.assert.calledOnce( focusSpy );
+			expect( focusSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should not focus view after using a switchbutton', () => {
 			dropdown.isOpen = true;
 
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			dropdown.listView.items.first.children.last.fire( 'execute' );
 
-			sinon.assert.notCalled( focusSpy );
+			expect( focusSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'executes command when it\'s executed', () => {
 			dropdown.isOpen = true;
 
-			const spy = sinon.stub( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 			dropdown.listView.items.first.children.first.fire( 'execute' );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setTableRowHeader' );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( 'setTableRowHeader' );
 		} );
 
 		it( 'should use a toggle switch for the setTableRowHeader item', () => {
@@ -406,7 +407,7 @@ describe( 'TableUI', () => {
 
 			const items = dropdown.listView.items;
 
-			expect( items.first.children.first ).to.be.instanceOf( SwitchButtonView );
+			expect( items.first.children.first ).toBeInstanceOf( SwitchButtonView );
 		} );
 
 		it( 'should bind set header row command value to dropdown item', () => {
@@ -417,10 +418,10 @@ describe( 'TableUI', () => {
 			const setRowHeaderCommand = editor.commands.get( 'setTableRowHeader' );
 
 			setRowHeaderCommand.value = false;
-			expect( items.first.children.first.isOn ).to.be.false;
+			expect( items.first.children.first.isOn ).toBe( false );
 
 			setRowHeaderCommand.value = true;
-			expect( items.first.children.first.isOn ).to.be.true;
+			expect( items.first.children.first.isOn ).toBe( true );
 		} );
 	} );
 
@@ -438,14 +439,14 @@ describe( 'TableUI', () => {
 		} );
 
 		it( 'have button with proper properties set', () => {
-			expect( dropdown ).to.be.instanceOf( DropdownView );
+			expect( dropdown ).toBeInstanceOf( DropdownView );
 
 			const button = dropdown.buttonView;
 
-			expect( button.isOn ).to.be.false;
-			expect( button.tooltip ).to.be.true;
-			expect( button.label ).to.equal( 'Column' );
-			expect( button.icon ).to.match( /<svg / );
+			expect( button.isOn ).toBe( false );
+			expect( button.tooltip ).toBe( true );
+			expect( button.label ).toEqual( 'Column' );
+			expect( button.icon ).toMatch( /<svg / );
 		} );
 
 		it( 'should have proper items in panel', () => {
@@ -455,7 +456,7 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
-			expect( labels ).to.deep.equal(
+			expect( labels ).toEqual(
 				[ 'Header column', '|', 'Insert column left', 'Insert column right', 'Delete column', 'Select column' ]
 			);
 		} );
@@ -477,33 +478,33 @@ describe( 'TableUI', () => {
 			removeColumnCommand.isEnabled = true;
 			selectColumnCommand.isEnabled = true;
 
-			expect( items.first.children.first.isEnabled ).to.be.true;
-			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 4 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 5 ).children.first.isEnabled ).to.be.true;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
+			expect( items.first.children.first.isEnabled ).toBe( true );
+			expect( items.get( 2 ).children.first.isEnabled ).toBe( true );
+			expect( items.get( 3 ).children.first.isEnabled ).toBe( true );
+			expect( items.get( 4 ).children.first.isEnabled ).toBe( true );
+			expect( items.get( 5 ).children.first.isEnabled ).toBe( true );
+			expect( dropdown.buttonView.isEnabled ).toBe( true );
 
 			setColumnHeaderCommand.isEnabled = false;
 
-			expect( items.first.children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
+			expect( items.first.children.first.isEnabled ).toBe( false );
+			expect( dropdown.buttonView.isEnabled ).toBe( true );
 
 			insertColumnLeftCommand.isEnabled = false;
 
-			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
+			expect( items.get( 2 ).children.first.isEnabled ).toBe( false );
+			expect( dropdown.buttonView.isEnabled ).toBe( true );
 
 			insertColumnRightCommand.isEnabled = false;
-			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 3 ).children.first.isEnabled ).toBe( false );
 
 			removeColumnCommand.isEnabled = false;
-			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 4 ).children.first.isEnabled ).toBe( false );
 
 			selectColumnCommand.isEnabled = false;
-			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 5 ).children.first.isEnabled ).toBe( false );
 
-			expect( dropdown.buttonView.isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should bind items in panel to proper commands (RTL content)', () => {
@@ -526,11 +527,11 @@ describe( 'TableUI', () => {
 
 					const items = dropdown.listView.items;
 
-					expect( items.get( 2 ).children.first.label ).to.equal( 'Insert column left' );
-					expect( items.get( 2 ).children.first.commandName ).to.equal( 'insertTableColumnRight' );
+					expect( items.get( 2 ).children.first.label ).toEqual( 'Insert column left' );
+					expect( items.get( 2 ).children.first.commandName ).toEqual( 'insertTableColumnRight' );
 
-					expect( items.get( 3 ).children.first.label ).to.equal( 'Insert column right' );
-					expect( items.get( 3 ).children.first.commandName ).to.equal( 'insertTableColumnLeft' );
+					expect( items.get( 3 ).children.first.label ).toEqual( 'Insert column right' );
+					expect( items.get( 3 ).children.first.commandName ).toEqual( 'insertTableColumnLeft' );
 
 					element.remove();
 
@@ -541,32 +542,32 @@ describe( 'TableUI', () => {
 		it( 'should focus view after command execution', () => {
 			dropdown.isOpen = true;
 
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			dropdown.listView.items.get( 2 ).children.first.fire( 'execute' );
 
-			sinon.assert.calledOnce( focusSpy );
+			expect( focusSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should not focus view after using a switchbutton', () => {
 			dropdown.isOpen = true;
 
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			dropdown.listView.items.first.children.last.fire( 'execute' );
 
-			sinon.assert.notCalled( focusSpy );
+			expect( focusSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'executes command when it\'s executed', () => {
 			dropdown.isOpen = true;
 
-			const spy = sinon.stub( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 			dropdown.listView.items.first.children.first.fire( 'execute' );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setTableColumnHeader' );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( 'setTableColumnHeader' );
 		} );
 
 		it( 'should use a toggle switch for the setTableColumnHeader item', () => {
@@ -574,7 +575,7 @@ describe( 'TableUI', () => {
 
 			const items = dropdown.listView.items;
 
-			expect( items.first.children.first ).to.be.instanceOf( SwitchButtonView );
+			expect( items.first.children.first ).toBeInstanceOf( SwitchButtonView );
 		} );
 
 		it( 'should bind set header column command value to dropdown item', () => {
@@ -585,10 +586,10 @@ describe( 'TableUI', () => {
 			const setColumnHeaderCommand = editor.commands.get( 'setTableColumnHeader' );
 
 			setColumnHeaderCommand.value = false;
-			expect( items.first.children.first.isOn ).to.be.false;
+			expect( items.first.children.first.isOn ).toBe( false );
 
 			setColumnHeaderCommand.value = true;
-			expect( items.first.children.first.isOn ).to.be.true;
+			expect( items.first.children.first.isOn ).toBe( true );
 		} );
 	} );
 
@@ -608,18 +609,18 @@ describe( 'TableUI', () => {
 		} );
 
 		it( 'have button with proper properties set', () => {
-			expect( dropdown ).to.be.instanceOf( DropdownView );
+			expect( dropdown ).toBeInstanceOf( DropdownView );
 
 			const button = dropdown.buttonView;
 
-			expect( button.isOn ).to.be.false;
-			expect( button.tooltip ).to.be.true;
-			expect( button.label ).to.equal( 'Merge cells' );
-			expect( button.icon ).to.match( /<svg / );
+			expect( button.isOn ).toBe( false );
+			expect( button.tooltip ).toBe( true );
+			expect( button.label ).toEqual( 'Merge cells' );
+			expect( button.icon ).toMatch( /<svg / );
 		} );
 
 		it( 'should have a split button', () => {
-			expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
+			expect( dropdown.buttonView ).toBeInstanceOf( SplitButtonView );
 		} );
 
 		it( 'should be disabled if all of the merge commands are disabled, along with the main merge command', () => {
@@ -635,25 +636,25 @@ describe( 'TableUI', () => {
 				editor.commands.get( command ).isEnabled = false;
 			} );
 
-			expect( dropdown.isEnabled ).to.be.false;
+			expect( dropdown.isEnabled ).toBe( false );
 
 			editor.commands.get( 'mergeTableCellLeft' ).isEnabled = true;
 
-			expect( dropdown.isEnabled ).to.be.true;
+			expect( dropdown.isEnabled ).toBe( true );
 
 			editor.commands.get( 'mergeTableCellLeft' ).isEnabled = false;
 			command.isEnabled = true;
 
-			expect( dropdown.isEnabled ).to.be.true;
+			expect( dropdown.isEnabled ).toBe( true );
 		} );
 
 		it( 'should execute the "mergeTableCells" command when the main part of the split button is clicked', () => {
-			const spy = sinon.stub( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 			dropdown.buttonView.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, 'mergeTableCells' );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledWith( 'mergeTableCells' );
 		} );
 
 		it( 'should have proper items in panel', () => {
@@ -663,7 +664,7 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
-			expect( labels ).to.deep.equal( [
+			expect( labels ).toEqual( [
 				'Merge cell up',
 				'Merge cell right',
 				'Merge cell down',
@@ -701,30 +702,30 @@ describe( 'TableUI', () => {
 			const splitVerticallyButton = items.get( 5 );
 			const splitHorizontallyButton = items.get( 6 );
 
-			expect( mergeCellUpButton.children.first.isEnabled ).to.be.true;
-			expect( mergeCellRightButton.children.first.isEnabled ).to.be.true;
-			expect( mergeCellDownButton.children.first.isEnabled ).to.be.true;
-			expect( mergeCellLeftButton.children.first.isEnabled ).to.be.true;
-			expect( splitVerticallyButton.children.first.isEnabled ).to.be.true;
-			expect( splitHorizontallyButton.children.first.isEnabled ).to.be.true;
+			expect( mergeCellUpButton.children.first.isEnabled ).toBe( true );
+			expect( mergeCellRightButton.children.first.isEnabled ).toBe( true );
+			expect( mergeCellDownButton.children.first.isEnabled ).toBe( true );
+			expect( mergeCellLeftButton.children.first.isEnabled ).toBe( true );
+			expect( splitVerticallyButton.children.first.isEnabled ).toBe( true );
+			expect( splitHorizontallyButton.children.first.isEnabled ).toBe( true );
 
 			mergeCellUpCommand.isEnabled = false;
-			expect( mergeCellUpButton.children.first.isEnabled ).to.be.false;
+			expect( mergeCellUpButton.children.first.isEnabled ).toBe( false );
 
 			mergeCellRightCommand.isEnabled = false;
-			expect( mergeCellRightButton.children.first.isEnabled ).to.be.false;
+			expect( mergeCellRightButton.children.first.isEnabled ).toBe( false );
 
 			mergeCellDownCommand.isEnabled = false;
-			expect( mergeCellDownButton.children.first.isEnabled ).to.be.false;
+			expect( mergeCellDownButton.children.first.isEnabled ).toBe( false );
 
 			mergeCellLeftCommand.isEnabled = false;
-			expect( mergeCellLeftButton.children.first.isEnabled ).to.be.false;
+			expect( mergeCellLeftButton.children.first.isEnabled ).toBe( false );
 
 			splitCellVerticallyCommand.isEnabled = false;
-			expect( splitVerticallyButton.children.first.isEnabled ).to.be.false;
+			expect( splitVerticallyButton.children.first.isEnabled ).toBe( false );
 
 			splitCellHorizontallyCommand.isEnabled = false;
-			expect( splitHorizontallyButton.children.first.isEnabled ).to.be.false;
+			expect( splitHorizontallyButton.children.first.isEnabled ).toBe( false );
 		} );
 
 		it( 'should bind items in panel to proper commands (RTL content)', () => {
@@ -747,11 +748,11 @@ describe( 'TableUI', () => {
 
 					const items = dropdown.listView.items;
 
-					expect( items.get( 1 ).children.first.label ).to.equal( 'Merge cell right' );
-					expect( items.get( 1 ).children.first.commandName ).to.equal( 'mergeTableCellLeft' );
+					expect( items.get( 1 ).children.first.label ).toEqual( 'Merge cell right' );
+					expect( items.get( 1 ).children.first.commandName ).toEqual( 'mergeTableCellLeft' );
 
-					expect( items.get( 3 ).children.first.label ).to.equal( 'Merge cell left' );
-					expect( items.get( 3 ).children.first.commandName ).to.equal( 'mergeTableCellRight' );
+					expect( items.get( 3 ).children.first.label ).toEqual( 'Merge cell left' );
+					expect( items.get( 3 ).children.first.commandName ).toEqual( 'mergeTableCellRight' );
 
 					element.remove();
 
@@ -762,22 +763,22 @@ describe( 'TableUI', () => {
 		it( 'should focus view after command execution', () => {
 			dropdown.isOpen = true;
 
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			dropdown.listView.items.first.children.first.fire( 'execute' );
 
-			sinon.assert.calledOnce( focusSpy );
+			expect( focusSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'executes command when it\'s executed', () => {
 			dropdown.isOpen = true;
 
-			const spy = sinon.stub( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 			dropdown.listView.items.first.children.first.fire( 'execute' );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeTableCellUp' );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( 'mergeTableCellUp' );
 		} );
 	} );
 } );

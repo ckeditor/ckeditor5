@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -3596,9 +3597,11 @@ describe( 'table properties', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should wrap table in div with align="right" attribute for `blockRight` table alignment', done => {
+			it( 'should wrap table in div with align="right" attribute for `blockRight` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3613,7 +3616,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<div align="right">' +
@@ -3622,8 +3625,6 @@ describe( 'table properties', () => {
 							'</table>' +
 						'</div>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3632,9 +3633,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should wrap table in div with align="right" attribute for `right` table alignment', done => {
+			it( 'should wrap table in div with align="right" attribute for `right` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3649,7 +3652,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<div align="right">' +
@@ -3659,8 +3662,6 @@ describe( 'table properties', () => {
 							'</table>' +
 						'</div>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3669,9 +3670,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should wrap table in div with align="center" attribute for `center` table alignment', done => {
+			it( 'should wrap table in div with align="center" attribute for `center` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3686,7 +3689,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<div align="center">' +
@@ -3696,8 +3699,6 @@ describe( 'table properties', () => {
 							'</table>' +
 						'</div>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3706,9 +3707,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should not wrap table in div for `blockLeft` table alignment', done => {
+			it( 'should not wrap table in div for `blockLeft` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3723,15 +3726,13 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<table class="table table-style-block-align-left" style="margin-left:0;margin-right:auto;">' +
 							'<tbody><tr><td>foo</td></tr></tbody>' +
 						'</table>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3740,9 +3741,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should not wrap table in div for `left` table alignment', done => {
+			it( 'should not wrap table in div for `left` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3757,7 +3760,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<table class="table table-style-align-left" ' +
@@ -3765,8 +3768,6 @@ describe( 'table properties', () => {
 							'<tbody><tr><td>foo</td></tr></tbody>' +
 						'</table>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3775,9 +3776,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should wrap only table in div with align="right" attribute for `blockRight` table alignment', done => {
+			it( 'should wrap only table in div with align="right" attribute for `blockRight` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3793,7 +3796,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<p>bar</p>' +
@@ -3803,8 +3806,6 @@ describe( 'table properties', () => {
 							'</table>' +
 						'</div>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3813,9 +3814,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should wrap nested tables in div with align="right" attribute for `blockRight` table alignment', done => {
+			it( 'should wrap nested tables in div with align="right" attribute for `blockRight` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3836,7 +3839,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<div align="right">' +
@@ -3851,8 +3854,6 @@ describe( 'table properties', () => {
 							'</table>' +
 						'</div>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {

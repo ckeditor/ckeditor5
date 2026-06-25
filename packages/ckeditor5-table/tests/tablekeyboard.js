@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { TableKeyboard } from '../src/tablekeyboard.js';
 import { Table } from '../src/table.js';
 import { TableEditing } from '../src/tableediting.js';
@@ -92,8 +93,8 @@ describe( 'TableKeyboard', () => {
 		beforeEach( () => {
 			domEvtDataStub = {
 				keyCode: getCode( 'Tab' ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy(),
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn(),
 				domTarget: global.document.body
 			};
 		} );
@@ -107,8 +108,8 @@ describe( 'TableKeyboard', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+			expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11', '12[]' ]
 			] ) );
@@ -123,8 +124,8 @@ describe( 'TableKeyboard', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+			expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11', '12[]' ]
 			] ) );
@@ -136,7 +137,7 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph></paragraph>[' + modelTable( [
 					[ '11', '12' ]
 				] ) + ']' );
@@ -149,8 +150,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '[12]' ]
 				] ) );
@@ -261,8 +262,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '<paragraph>[foo</paragraph><imageBlock><caption></caption></imageBlock>]' ]
 				] ) );
@@ -281,8 +282,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '<blockQuote><paragraph>[foo]</paragraph></blockQuote>' ]
 				] ) );
@@ -295,8 +296,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '12' ],
@@ -317,8 +318,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '12' ],
@@ -339,8 +340,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '12' ],
@@ -374,8 +375,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '12[]' ]
@@ -383,7 +384,7 @@ describe( 'TableKeyboard', () => {
 			} );
 
 			it( 'should handle event over other listeners with lower priority', () => {
-				const lowerPriorityListenerSpy = sinon.spy();
+				const lowerPriorityListenerSpy = vi.fn();
 
 				_setModelData( model, modelTable(
 					[
@@ -405,9 +406,9 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-				sinon.assert.notCalled( lowerPriorityListenerSpy );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
+				expect( lowerPriorityListenerSpy ).not.toHaveBeenCalled();
 
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable(
 					[
@@ -438,8 +439,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ innerTable + '<paragraph>A</paragraph>', '[' + innerTable + '<paragraph>B]</paragraph>' ],
@@ -465,8 +466,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ innerTable + '<paragraph>A</paragraph>', innerTable + '<paragraph>B</paragraph>' ],
@@ -496,8 +497,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 				expect( _getModelData( model ) ).to.equalMarkup(
 					modelTable(
@@ -523,7 +524,7 @@ describe( 'TableKeyboard', () => {
 				} );
 
 				it( 'should move caret to the first table cell on TAB', () => {
-					const spy = sinon.spy();
+					const spy = vi.fn();
 
 					editor.editing.view.document.on( 'tab', spy, { priority: 'lowest' } );
 
@@ -533,19 +534,19 @@ describe( 'TableKeyboard', () => {
 
 					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-					sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-					// sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+					expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+					// expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 						[ '[11]', '12' ]
 					] ) );
 
 					// Should cancel event - so no other tab handler is called.
-					sinon.assert.notCalled( spy );
+					expect( spy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'shouldn\'t do anything on other blocks', () => {
-					const spy = sinon.spy();
+					const spy = vi.fn();
 
 					editor.editing.view.document.on( 'tab', spy );
 
@@ -553,13 +554,13 @@ describe( 'TableKeyboard', () => {
 
 					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-					sinon.assert.notCalled( domEvtDataStub.preventDefault );
-					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+					expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+					expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 
 					expect( _getModelData( model ) ).to.equalMarkup( '[<block>foo</block>]' );
 
 					// Should not cancel event.
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( 'table tab handler for selected table should not capture event if selection is not a table', () => {
@@ -576,8 +577,8 @@ describe( 'TableKeyboard', () => {
 
 					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-					sinon.assert.notCalled( domEvtDataStub.preventDefault );
-					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+					expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+					expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					expect( _getModelData( model ) ).to.equalMarkup( '[<fakeFigure></fakeFigure>]' );
 				} );
 
@@ -595,8 +596,8 @@ describe( 'TableKeyboard', () => {
 
 					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-					sinon.assert.notCalled( domEvtDataStub.preventDefault );
-					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+					expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+					expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					expect( _getModelData( model ) ).to.equalMarkup( '[<fakeTableCell></fakeTableCell>]' );
 				} );
 
@@ -614,8 +615,8 @@ describe( 'TableKeyboard', () => {
 
 					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-					sinon.assert.notCalled( domEvtDataStub.preventDefault );
-					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+					expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+					expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					expect( _getModelData( model ) ).to.equalMarkup( '[<fakeTableHeader></fakeTableHeader>]' );
 				} );
 			} );
@@ -636,8 +637,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				sinon.assert.notCalled( domEvtDataStub.preventDefault );
-				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+				expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]</paragraph>' + modelTable( [
 					[ '11', '12' ]
 				] ) );
@@ -650,8 +651,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '[11]', '12' ]
@@ -707,8 +708,8 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '<paragraph>[foo</paragraph><imageBlock><caption></caption></imageBlock>]', 'bar' ]
 				] ) );
@@ -722,26 +723,26 @@ describe( 'TableKeyboard', () => {
 		beforeEach( () => {
 			leftArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowLeft' ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy(),
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn(),
 				domTarget: global.document.body
 			};
 			rightArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowRight' ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy(),
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn(),
 				domTarget: global.document.body
 			};
 			upArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowUp' ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy(),
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn(),
 				domTarget: global.document.body
 			};
 			downArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowDown' ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy(),
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn(),
 				domTarget: global.document.body
 			};
 		} );
@@ -755,8 +756,8 @@ describe( 'TableKeyboard', () => {
 
 			editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-			sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
-			sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+			expect( leftArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+			expect( leftArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01[]' ]
@@ -770,8 +771,8 @@ describe( 'TableKeyboard', () => {
 
 			editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-			sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
-			sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+			expect( upArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+			expect( upArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equalMarkup( modelData );
 		} );
@@ -783,8 +784,8 @@ describe( 'TableKeyboard', () => {
 
 			editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-			sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
-			sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+			expect( upArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+			expect( upArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equalMarkup( modelData );
 		} );
@@ -1563,8 +1564,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell on the left', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -1576,8 +1577,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell on the right', () => {
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -1589,8 +1590,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell above the selection', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
@@ -1602,8 +1603,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell below the selection', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -1648,8 +1649,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the left', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
@@ -1659,8 +1660,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the right', () => {
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
@@ -1670,8 +1671,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell above the selection', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
@@ -1681,8 +1682,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell below the selection', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
@@ -1712,8 +1713,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell on the top left of the selection', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
@@ -1726,8 +1727,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell on the bottom right of the selection', () => {
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
@@ -1740,8 +1741,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell above the selection', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01[]', '02', '03' ],
@@ -1754,8 +1755,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell below the selection', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
@@ -1777,8 +1778,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the left from the focus cell', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
@@ -1788,8 +1789,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the right from the focus cell', () => {
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
@@ -1799,8 +1800,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should shrink the selection to the anchor cell', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( anchorCell );
@@ -1810,8 +1811,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell below the focus cell', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 3, 1 ] ) );
@@ -1841,8 +1842,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell on the top left of the selection', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
@@ -1855,8 +1856,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell on the bottom right of the selection', () => {
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
@@ -1869,8 +1870,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell above the selection', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01[]', '02', '03' ],
@@ -1883,8 +1884,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell below the selection', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
@@ -1906,8 +1907,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the left from the focus cell', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
@@ -1917,8 +1918,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the right from the focus cell', () => {
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
@@ -1928,8 +1929,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should shrink the selection to the anchor cell', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( anchorCell );
@@ -1939,8 +1940,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell below the focus cell', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
@@ -1970,8 +1971,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell on the top left of the selection', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
@@ -1984,8 +1985,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell on the bottom right of the selection', () => {
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
@@ -1998,8 +1999,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell above the selection', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01[]', '02', '03' ],
@@ -2012,8 +2013,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should move to the cell below the selection', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
@@ -2035,8 +2036,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell above the focus cell', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 2 ] ) );
@@ -2046,8 +2047,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell below the focus cell', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
@@ -2057,8 +2058,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should shrink the selection to the anchor cell', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( anchorCell );
@@ -2068,8 +2069,8 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the right to the focus cell', () => {
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 3 ] ) );
@@ -2096,8 +2097,8 @@ describe( 'TableKeyboard', () => {
 				it( 'should move to the cell on the top left of selection', () => {
 					editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+					expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -2110,8 +2111,8 @@ describe( 'TableKeyboard', () => {
 				it( 'should move to the cell on the bottom right of selection', () => {
 					editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+					expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -2124,8 +2125,8 @@ describe( 'TableKeyboard', () => {
 				it( 'should move to the cell above selection', () => {
 					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+					expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 						[ '00', '01[]', '02', '03' ],
@@ -2138,8 +2139,8 @@ describe( 'TableKeyboard', () => {
 				it( 'should move to the cell below selection', () => {
 					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+					expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -2163,8 +2164,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2182,8 +2183,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2201,8 +2202,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
@@ -2220,8 +2221,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2247,8 +2248,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+							expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
@@ -2264,8 +2265,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+							expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
@@ -2281,8 +2282,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+							expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
@@ -2298,8 +2299,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+							expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
@@ -2318,8 +2319,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2337,8 +2338,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2356,8 +2357,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
@@ -2375,8 +2376,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2396,8 +2397,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2415,8 +2416,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2434,8 +2435,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
@@ -2453,8 +2454,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2478,8 +2479,8 @@ describe( 'TableKeyboard', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.called( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.called( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2493,8 +2494,8 @@ describe( 'TableKeyboard', () => {
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.called( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.called( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2508,8 +2509,8 @@ describe( 'TableKeyboard', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.called( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.called( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
@@ -2523,8 +2524,8 @@ describe( 'TableKeyboard', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.called( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.called( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2546,8 +2547,8 @@ describe( 'TableKeyboard', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.called( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.called( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
+						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2567,8 +2568,8 @@ describe( 'TableKeyboard', () => {
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.called( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.called( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
+						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2588,8 +2589,8 @@ describe( 'TableKeyboard', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.called( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.called( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
@@ -2609,8 +2610,8 @@ describe( 'TableKeyboard', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.called( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.called( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2664,8 +2665,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( leftArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should not navigate to the cell on the right', () => {
@@ -2677,8 +2678,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( rightArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should not navigate to the cell above', () => {
@@ -2690,8 +2691,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2709,8 +2710,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2736,22 +2737,22 @@ describe( 'TableKeyboard', () => {
 						it( 'should not prevent default browser behavior for the left arrow pressed with shift', () => {
 							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-							sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
-							sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+							expect( leftArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+							expect( leftArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 						} );
 
 						it( 'should not prevent default browser behavior for the right arrow pressed with shift', () => {
 							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-							sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
-							sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+							expect( rightArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+							expect( rightArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 						} );
 
 						it( 'should expand selection to the beginning of the cell content', () => {
 							editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -2763,8 +2764,8 @@ describe( 'TableKeyboard', () => {
 						it( 'should expand selection to the end of the cell content', () => {
 							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -2787,8 +2788,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( upArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should move caret to beginning of cell content if caret is in the first line of a text', () => {
@@ -2800,8 +2801,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2819,8 +2820,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -2838,8 +2839,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( leftArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should not prevent default browser behavior for the right arrow for non-collapsed selection', () => {
@@ -2851,8 +2852,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( rightArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					describe( 'when shift key is pressed', () => {
@@ -2872,8 +2873,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-							sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
-							sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+							expect( upArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+							expect( upArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 						} );
 
 						it( 'should not prevent default browser behavior for the down arrow in the middle lines of cell text', () => {
@@ -2885,8 +2886,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-							sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
-							sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+							expect( downArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+							expect( downArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 						} );
 
 						it( 'should expand collapsed selection to the beginning of the cell content', () => {
@@ -2898,8 +2899,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -2917,8 +2918,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -2936,8 +2937,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -2955,8 +2956,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-							sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
-							sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+							expect( leftArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+							expect( leftArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 						} );
 
 						it( 'should expand not collapsed selection at the beginning of a cell (left arrow)', () => {
@@ -2968,8 +2969,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+							expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
@@ -2985,8 +2986,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-							sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
-							sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+							expect( rightArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+							expect( rightArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 						} );
 
 						it( 'should expand not collapsed selection at the end of a cell (right arrow)', () => {
@@ -2998,8 +2999,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+							expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
@@ -3015,8 +3016,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -3034,8 +3035,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-							sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
-							sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+							expect( downArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+							expect( downArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 						} );
 
 						it( 'should expand not collapsed selection to the end of the cell content from the selection anchor', () => {
@@ -3047,8 +3048,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -3076,8 +3077,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -3095,8 +3096,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -3114,8 +3115,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-							sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
-							sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+							expect( downArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+							expect( downArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 						} );
 
 						describe( 'when shift key is pressed', () => {
@@ -3133,8 +3134,8 @@ describe( 'TableKeyboard', () => {
 
 								editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-								sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-								sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+								expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+								expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 								expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 									[ '00', '01', '02' ],
@@ -3152,8 +3153,8 @@ describe( 'TableKeyboard', () => {
 
 								editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-								sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-								sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+								expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+								expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 								expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 									[ '00', '01', '02' ],
@@ -3177,8 +3178,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( upArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should move the caret to the beginning of a cell content if the caret is in the first line of text', () => {
@@ -3190,8 +3191,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -3209,8 +3210,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( downArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should move the caret to end of a cell content if the caret is in the last line of text', () => {
@@ -3222,8 +3223,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -3247,8 +3248,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -3266,8 +3267,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -3290,8 +3291,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( upArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should move the caret to the beginning of cell content if the caret is in the first line of text', () => {
@@ -3303,8 +3304,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -3322,8 +3323,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -3388,8 +3389,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -3407,8 +3408,8 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-							sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 								[ '00', '01', '02' ],
@@ -3432,8 +3433,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+						expect( leftArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( leftArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should not navigate to the cell on the right', () => {
@@ -3448,8 +3449,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+						expect( rightArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( rightArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should not navigate to the cell above (only to closest limit boundary)', () => {
@@ -3464,8 +3465,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -3489,8 +3490,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( upArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should not navigate to the cell above but should put caret at first position of the image caption', () => {
@@ -3505,8 +3506,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -3530,8 +3531,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -3555,8 +3556,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+						expect( downArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should navigate to the cell below if the caret on last position in the image caption', () => {
@@ -3571,8 +3572,8 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -3590,7 +3591,7 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -3608,7 +3609,7 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 							[ '00', '01', '02' ],
@@ -3659,8 +3660,8 @@ describe( 'TableKeyboard', () => {
 				it( 'should move to the cell on the right (visually flipped by the browser)', () => {
 					editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+					expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 						[ '00', '01', '02' ],
@@ -3672,8 +3673,8 @@ describe( 'TableKeyboard', () => {
 				it( 'should move to the cell on the left (visually flipped by the browser)', () => {
 					editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+					expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 						[ '00', '01', '02' ],
@@ -3685,8 +3686,8 @@ describe( 'TableKeyboard', () => {
 				it( 'should move to the cell above the selection', () => {
 					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+					expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 						[ '00', '01[]', '02' ],
@@ -3698,8 +3699,8 @@ describe( 'TableKeyboard', () => {
 				it( 'should move to the cell below the selection', () => {
 					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+					expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 						[ '00', '01', '02' ],

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ModelElement, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
@@ -629,14 +630,21 @@ describe( 'TableColumnResize utils', () => {
 			);
 
 			const table = editor.model.document.getRoot().getChild( 0 );
-			const getComputedStyleStub = sinon.stub( window, 'getComputedStyle' ).callThrough();
+			const originalGetComputedStyle = window.getComputedStyle.bind( window );
+			const getComputedStyleStub = vi.spyOn( window, 'getComputedStyle' ).mockImplementation( ( ...args ) => {
+				const element = args[ 0 ];
 
-			// Emulate safari's bug.
-			getComputedStyleStub.withArgs( sinon.match.has( 'localName', 'colgroup' ) ).returns( { width: '0px' } );
+				// Emulate safari's bug.
+				if ( element && element.localName === 'colgroup' ) {
+					return { width: '0px' };
+				}
+
+				return originalGetComputedStyle( ...args );
+			} );
 
 			const result = getTableWidthInPixels( table, editor );
 
-			getComputedStyleStub.restore();
+			getComputedStyleStub.mockRestore();
 
 			expect( result ).to.not.equal( 0 );
 		} );
