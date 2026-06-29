@@ -72,7 +72,18 @@ export class ShowBlocksCommand extends Command {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public override refresh(): void {
+		const view = this.editor.editing.view;
+
+		// The command is enabled only if at least one root accepts block-level content.
+		this.isEnabled = Array.from( view.document.roots ).some( root => isBlockRoot( this.editor, root ) );
+	}
+
+	/**
 	 * Toggles the visibility of content blocks.
+	 * Only roots that accept block-level content are affected.
 	 */
 	public override execute(): void {
 		const view = this.editor.editing.view;
@@ -80,6 +91,10 @@ export class ShowBlocksCommand extends Command {
 		view.change( writer => {
 			// Multiroot support.
 			for ( const root of view.document.roots ) {
+				if ( !isBlockRoot( this.editor, root ) ) {
+					continue;
+				}
+
 				if ( !root.hasClass( CLASS_NAME ) ) {
 					setBlockLabelStyles( writer, root );
 					writer.addClass( CLASS_NAME, root );
@@ -91,6 +106,16 @@ export class ShowBlocksCommand extends Command {
 			}
 		} );
 	}
+}
+
+/**
+ * Checks whether the given view root corresponds to a model root that accepts block-level content.
+ * Inline roots (e.g. roots restricted to `$inlineObject` content) are excluded.
+ */
+function isBlockRoot( editor: Editor, root: ViewRootEditableElement ): boolean {
+	const modelRoot = editor.model.document.getRoot( root.rootName )!;
+
+	return editor.model.schema.checkChild( modelRoot, '$block' );
 }
 
 /**
