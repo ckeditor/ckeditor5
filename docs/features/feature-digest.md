@@ -1301,10 +1301,10 @@ By integrating AI writing assistance directly into the editing experience, CKEdi
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='ai-multi-root'>
-			AI in multi-root and multi-editor setups <ck:badge variant='premium' /> <ck:badge variant='experiment' />
+			AI in multi-root and multi-editor setups <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			Experimental support for AI Chat, Review, and Translate across multi-root editors and across multiple editors sharing a Context. Suggestions, translations, and chat history stay scoped to the right surface.
+			Support for AI Chat, Review, and Translate across multi-root editors and across multiple editors sharing a Context. Suggestions, translations, and chat history stay scoped to the right surface.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-multi-root-multi-editor-support}'>
