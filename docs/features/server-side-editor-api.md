@@ -3,7 +3,7 @@ category: cloud-services
 order: 30
 meta-title: Cloud Services Server-side Editor API | CKEditor 5 Documentation
 meta-description: Learn how to use server-side API to manage content and collaboration data easily without running the editor on the client side.
-modified_at: 2025-06-05
+modified_at: 2026-06-30
 badges: [ premium ]
 ---
 
@@ -442,6 +442,60 @@ return { documentData, attributes };
 ```
 
 This is useful if you need particular revision data for further processing. It will allow you build custom backend features based on revisions, like previewing revisions data outside of editor, exporting a particular revision to PDF, or integrating revisions data with external systems.
+
+### Working with AI services
+
+You can drive CKEditor&nbsp;AI features from server-side scripts through their gateway plugins, exactly as you would in the browser. The same programmatic APIs are available for {@link features/ckeditor-ai-programmatic#document-processing Document Processing}, {@link features/ckeditor-ai-programmatic#review AI Review}, and {@link features/ckeditor-ai-programmatic#translate AI Translate}. The AI output is written back into the live document as real {@link features/track-changes track changes} suggestions or as direct changes, and syncs to everyone editing it.
+
+For example, the script below runs a proofreading review and applies the result as suggestions:
+
+```js
+// Run a proofreading review headless and apply the result as track changes suggestions.
+const aiReviewGateway = editor.plugins.get( 'AIReviewGateway' );
+
+const result = await aiReviewGateway.runReview( 'correctness' );
+
+if ( result.status === 'completed' ) {
+	aiReviewGateway.applyReview( result, 'suggest' );
+}
+```
+
+#### Granting access to AI services
+
+By default, the Server-side Editor API has **no access** to AI services. Scripts run as the built-in `ServerSideEditorAPI` user, which carries no AI permissions, so any call to an AI gateway fails. To enable AI, pass a `token` field inside the `user` object of the request body:
+
+```json
+{
+	"script": "const aiReviewGateway = editor.plugins.get( 'AIReviewGateway' ); /* ... */",
+	"user": {
+		"token": "<TOKEN_WITH_AI_PERMISSIONS>"
+	}
+}
+```
+
+The `token` is a JSON Web Token (JWT) &ndash; the same kind of token your application&rsquo;s [token endpoint](https://ckeditor.com/docs/cs/latest/developer-resources/security/token-endpoint.html) issues for the editor on the client side. It must include the AI permissions the script needs in its `auth.ai.permissions` claim. The decoded payload below uses `ai:admin`, which grants full access to all AI services:
+
+```json
+{
+	"aud": "<ENVIRONMENT_ID>",
+	"sub": "user-123",
+	"iat": 1782388554,
+	"exp": 1782392154,
+	"auth": {
+		"ai": {
+			"permissions": [ "ai:admin" ]
+		}
+	}
+}
+```
+
+Instead of `ai:admin`, you can grant only the permissions a given script needs, for example `ai:reviews:system:correctness` to run the proofreading review above (or `ai:reviews:system:*` for all predefined system reviews), and `ai:models:agent` to allow the recommended model. For the full list of available AI permissions, see the [CKEditor AI permissions](https://ckeditor.com/docs/cs/latest/guides/ckeditor-ai/permissions.html) guide. For the complete request and token reference, see the [Cloud Services Server-side Editor API](https://ckeditor.com/docs/cs/latest/developer-resources/server-side-editor-api/editor-scripts.html) documentation.
+
+The same token also governs collaboration features. If your scripts also use collaboration features, for example the comments feature, the token must carry the relevant collaboration permissions next to the AI ones in its `auth` claim. See the [roles and permissions](https://ckeditor.com/docs/cs/latest/developer-resources/security/token-endpoint.html#roles-and-permissions) section of the token endpoint documentation for the available collaboration permissions.
+
+<info-box warning>
+	Currently, to use AI through the Server-side Editor API, a self-hosted (on-premises) AI service must be available at a publicly reachable address. The Server-side Editor API cannot yet reach an AI service hosted on a private network address. Support for this will be added in a future release.
+</info-box>
 
 ## Custom plugins
 
