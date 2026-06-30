@@ -162,7 +162,10 @@ export function testFocusCycling( {
 				).toBe( true );
 
 				const orderedSpies = action === 'focusNext' ? focusSpies : focusSpies.reverse();
-				const callOrders = orderedSpies.map( spy => spy.mock.invocationCallOrder[ 0 ] );
+				const callOrders = orderedSpies.map( ( spy, index, arr ) => {
+					const isWrappedSpy = action === 'focusPrevious' && index === arr.length - 1;
+					return spy.mock.invocationCallOrder.at( isWrappedSpy ? -1 : 0 );
+				} );
 
 				for ( let i = 1; i < callOrders.length; i++ ) {
 					expect( callOrders[ i ] ).toBeGreaterThan( callOrders[ i - 1 ] );
