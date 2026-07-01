@@ -60,7 +60,7 @@ jobs:
           command: sudo corepack disable
       - run:
           name: Install pnpm
-          command: sudo npm i -g pnpm@^10
+          command: sudo npm i -g pnpm@^11
       - run:
           name: Install dependencies
           environment:
