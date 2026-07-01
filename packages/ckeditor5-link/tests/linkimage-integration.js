@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Enter } from '@ckeditor/ckeditor5-enter';
@@ -47,14 +48,14 @@ describe( 'LinkImage integration', () => {
 		it( 'link command should link a figcaption element if an image is selected', () => {
 			_setModelData(
 				model,
-				'<paragraph>Foo.</paragraph>[<imageBlock src="/assets/sample.png"><caption>Foo.</caption></imageBlock>]'
+				'<paragraph>Foo.</paragraph>[<imageBlock src="/sample.png"><caption>Foo.</caption></imageBlock>]'
 			);
 
 			editor.execute( 'link', 'https://cksource.com' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo.</paragraph>' +
-				'[<imageBlock src="/assets/sample.png"><caption><$text linkHref="https://cksource.com">Foo.</$text></caption></imageBlock>]'
+				'[<imageBlock src="/sample.png"><caption><$text linkHref="https://cksource.com">Foo.</$text></caption></imageBlock>]'
 			);
 		} );
 
@@ -62,10 +63,10 @@ describe( 'LinkImage integration', () => {
 			_setModelData(
 				model,
 				'<paragraph>Foo.</paragraph>' +
-				'[<imageBlock src="/assets/sample.png"><caption><$text linkHref="https://cksource.com">Foo.</$text></caption></imageBlock>]'
+				'[<imageBlock src="/sample.png"><caption><$text linkHref="https://cksource.com">Foo.</$text></caption></imageBlock>]'
 			);
 
-			expect( editor.commands.get( 'unlink' ).isEnabled ).to.equal( true );
+			expect( editor.commands.get( 'unlink' ).isEnabled ).toBe( true );
 		} );
 	} );
 

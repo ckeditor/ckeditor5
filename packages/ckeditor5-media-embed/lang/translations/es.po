@@ -66,3 +66,31 @@ msgstr "Medios centrados"
 msgctxt "The label for the right aligned media option."
 msgid "Right aligned media"
 msgstr "Medios alineados a la derecha"
+
+msgctxt "The label used for the dropdown in the media toolbar containing defined resize options."
+msgid "Resize media"
+msgstr "Ajustar el tamaño de los elementos multimedia"
+
+msgctxt "The label used for the standalone resize options buttons in the media toolbar."
+msgid "Resize media to %0"
+msgstr "Redimensionar el tamaño del elemento multimedia en %0"
+
+msgctxt "The accessibility label of the standalone media resize reset option button in the media toolbar for screen readers."
+msgid "Resize media to the original size"
+msgstr "Redimensionar el contenido multimedia al tamaño original"
+
+msgctxt "The label for media resize balloon input."
+msgid "Resize media (in %0)"
+msgstr "Redimensionar el tamaño del elemento multimedia (en %0)"
+
+msgctxt "The accessibility label of the standalone media resize custom option button in the media toolbar for screen readers."
+msgid "Custom media size"
+msgstr "Tamaño de personalizado del elemento multimedia"
+
+msgctxt "The accessibility label of the media resize dropdown for screen readers."
+msgid "Media resize list"
+msgstr "Lista de redimensionamiento del contenido multimedia"
+
+msgctxt "The label for the header of the media resize balloon."
+msgid "Media Resize"
+msgstr "Redimensionar elementos multimedia"

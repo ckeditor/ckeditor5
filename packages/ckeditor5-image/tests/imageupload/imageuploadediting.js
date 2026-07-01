@@ -299,6 +299,52 @@ describe( 'ImageUploadEditing', () => {
 		);
 	} );
 
+	describe( 'in an inline root', () => {
+		let inlineEditorElement, inlineEditor, inlineModel;
+
+		beforeEach( async () => {
+			inlineEditorElement = document.createElement( 'div' );
+			document.body.appendChild( inlineEditorElement );
+
+			// Note: no `image.insert.type` config, so it defaults to `'block'`. The upload must still produce an
+			// inline image because a block image cannot land in an inline root.
+			inlineEditor = await ClassicEditor.create( inlineEditorElement, {
+				plugins: [
+					ImageBlockEditing, ImageInlineEditing, ImageUploadEditing,
+					Paragraph, UndoEditing, UploadAdapterPluginMock, ClipboardPipeline
+				],
+				root: { modelElement: '$inlineRoot' }
+			} );
+
+			inlineModel = inlineEditor.model;
+
+			sinon.stub( inlineEditor.editing.view, 'scrollToTheSelection' ).callsFake( () => {} );
+		} );
+
+		afterEach( async () => {
+			await inlineEditor.destroy();
+			inlineEditorElement.remove();
+		} );
+
+		it( 'should enable the uploadImage command', () => {
+			expect( inlineEditor.commands.get( 'uploadImage' ).isEnabled ).to.be.true;
+		} );
+
+		it( 'should upload as an inline image because a block image cannot land', () => {
+			const fileMock = createNativeFileMock();
+
+			_setModelData( inlineModel, 'foo[]bar' );
+
+			inlineEditor.commands.get( 'uploadImage' ).execute( { file: fileMock } );
+
+			const id = inlineEditor.plugins.get( FileRepository ).getLoader( fileMock ).id;
+
+			expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
+				`foo<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>bar`
+			);
+		} );
+	} );
+
 	it( 'should not insert image when editor is in read-only mode', () => {
 		// Clipboard plugin is required for this test.
 		return VirtualTestEditor

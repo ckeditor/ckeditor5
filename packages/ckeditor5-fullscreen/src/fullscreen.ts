@@ -7,7 +7,7 @@
  * @module fullscreen/fullscreen
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { FullscreenEditing } from './fullscreenediting.js';
 import { FullscreenUI } from './fullscreenui.js';
@@ -19,8 +19,8 @@ export class Fullscreen extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ FullscreenEditing, FullscreenUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ FullscreenEditing, FullscreenUI ]> {
+		return [ FullscreenEditing, FullscreenUI ];
 	}
 
 	/**

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
+
 import { Config } from '../src/config.js';
 import { areConnectedThroughProperties } from '../src/areconnectedthroughproperties.js';
 
@@ -35,16 +37,16 @@ describe( 'Config', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should set configurations', () => {
-			expect( config.get( 'creator' ) ).to.equal( 'inline' );
-			expect( config.get( 'language' ) ).to.equal( 'pl' );
-			expect( config.get( 'resize' ) ).to.deep.equal( {
+			expect( config.get( 'creator' ) ).toBe( 'inline' );
+			expect( config.get( 'language' ) ).toBe( 'pl' );
+			expect( config.get( 'resize' ) ).toEqual( {
 				minHeight: 300,
 				maxHeight: 800,
 				icon: {
 					path: 'xyz'
 				}
 			} );
-			expect( config.get( 'toolbar' ) ).to.equal( 'top' );
+			expect( config.get( 'toolbar' ) ).toBe( 'top' );
 		} );
 
 		it( 'should work with no parameters', () => {
@@ -60,8 +62,8 @@ describe( 'Config', () => {
 
 			config = new Config( {}, defaultConfig );
 
-			expect( config.get( 'foo' ) ).to.equal( 1 );
-			expect( config.get( 'bar' ) ).to.equal( 2 );
+			expect( config.get( 'foo' ) ).toBe( 1 );
+			expect( config.get( 'bar' ) ).toBe( 2 );
 		} );
 
 		it( 'should copy default configuration to not share properties between config instances [watchdog]', () => {
@@ -80,7 +82,7 @@ describe( 'Config', () => {
 
 			const areStructuresConnected = areConnectedThroughProperties( config1, config2 );
 
-			expect( areStructuresConnected ).to.be.false;
+			expect( areStructuresConnected ).toBe( false );
 		} );
 
 		it( 'passed parameters should override default parameters', () => {
@@ -93,8 +95,8 @@ describe( 'Config', () => {
 				foo: 10
 			}, defaultConfig );
 
-			expect( config.get( 'foo' ) ).to.equal( 10 );
-			expect( config.get( 'bar' ) ).to.equal( 2 );
+			expect( config.get( 'foo' ) ).toBe( 10 );
+			expect( config.get( 'bar' ) ).toBe( 2 );
 		} );
 
 		it( 'should work with deeper objects', () => {
@@ -126,21 +128,21 @@ describe( 'Config', () => {
 
 			config = new Config( parameters, defaultConfig );
 
-			expect( config.get( 'a' ) ).to.deep.equal( {
+			expect( config.get( 'a' ) ).toEqual( {
 				first: 1,
 				second: 2,
 				third: 3
 			} );
 
-			expect( config.get( 'b' ) ).to.have.key( 'foo' );
+			expect( Object.keys( config.get( 'b' ) ) ).toEqual( [ 'foo' ] );
 
-			expect( config.get( 'b.foo' ) ).to.deep.equal( {
+			expect( config.get( 'b.foo' ) ).toEqual( {
 				first: 3,
 				second: 2,
 				third: 1
 			} );
 
-			expect( config.get( 'custom' ) ).to.equal( 'foo' );
+			expect( config.get( 'custom' ) ).toBe( 'foo' );
 		} );
 	} );
 
@@ -153,22 +155,22 @@ describe( 'Config', () => {
 				}
 			} );
 
-			expect( config.get( 'option1' ) ).to.equal( 1 );
-			expect( config.get( 'option2.subOption21' ) ).to.equal( 21 );
+			expect( config.get( 'option1' ) ).toBe( 1 );
+			expect( config.get( 'option2.subOption21' ) ).toBe( 21 );
 		} );
 
 		it( 'should set configurations when passing name and value', () => {
 			config.set( 'something', 'anything' );
 
-			expect( config.get( 'something' ) ).to.equal( 'anything' );
+			expect( config.get( 'something' ) ).toBe( 'anything' );
 		} );
 
 		it( 'should set configurations when passing name.with.deep and value', () => {
 			config.set( 'color.red', 'f00' );
 			config.set( 'background.color.blue', '00f' );
 
-			expect( config.get( 'color.red' ) ).to.equal( 'f00' );
-			expect( config.get( 'background.color.blue' ) ).to.equal( '00f' );
+			expect( config.get( 'color.red' ) ).toBe( 'f00' );
+			expect( config.get( 'background.color.blue' ) ).toBe( '00f' );
 		} );
 
 		it( 'should replace a simple entry with an object', () => {
@@ -177,8 +179,8 @@ describe( 'Config', () => {
 				prop: 1
 			} );
 
-			expect( config.get( 'test' ) ).to.be.an( 'object' );
-			expect( config.get( 'test.prop' ) ).to.equal( 1 );
+			expect( config.get( 'test' ) ).toBeTypeOf( 'object' );
+			expect( config.get( 'test.prop' ) ).toBe( 1 );
 		} );
 
 		it( 'should replace a simple entry with an object when passing only object', () => {
@@ -189,17 +191,17 @@ describe( 'Config', () => {
 				}
 			} );
 
-			expect( config.get( 'test' ) ).to.be.an( 'object' );
-			expect( config.get( 'test.prop' ) ).to.equal( 1 );
+			expect( config.get( 'test' ) ).toBeTypeOf( 'object' );
+			expect( config.get( 'test.prop' ) ).toBe( 1 );
 		} );
 
 		it( 'should replace a simple entry with an object when passing a name.with.deep', () => {
 			config.set( 'test.prop', 1 );
 			config.set( 'test.prop.value', 1 );
 
-			expect( config.get( 'test' ) ).to.be.an( 'object' );
-			expect( config.get( 'test.prop' ) ).to.be.an( 'object' );
-			expect( config.get( 'test.prop.value' ) ).to.equal( 1 );
+			expect( config.get( 'test' ) ).toBeTypeOf( 'object' );
+			expect( config.get( 'test.prop' ) ).toBeTypeOf( 'object' );
+			expect( config.get( 'test.prop.value' ) ).toBe( 1 );
 		} );
 
 		it( 'should override and expand deep configurations', () => {
@@ -215,7 +217,7 @@ describe( 'Config', () => {
 				}
 			} );
 
-			expect( config.get( 'resize' ) ).to.be.deep.equal( {
+			expect( config.get( 'resize' ) ).toEqual( {
 				minHeight: 400,		// Overridden
 				maxHeight: 800,		// The same
 				hidden: true,		// Expanded
@@ -238,7 +240,7 @@ describe( 'Config', () => {
 				}
 			} );
 
-			expect( config.get( 'resize' ) ).to.deep.equal( {
+			expect( config.get( 'resize' ) ).toEqual( {
 				minHeight: 400,		// Overridden
 				maxHeight: 800,		// The same
 				hidden: true,		// Expanded
@@ -258,8 +260,8 @@ describe( 'Config', () => {
 				instance: new SomeClass()
 			} );
 
-			expect( config.get( 'date' ) ).to.be.an.instanceof( Date );
-			expect( config.get( 'instance' ) ).to.be.an.instanceof( SomeClass );
+			expect( config.get( 'date' ) ).toBeInstanceOf( Date );
+			expect( config.get( 'instance' ) ).toBeInstanceOf( SomeClass );
 		} );
 	} );
 
@@ -272,22 +274,22 @@ describe( 'Config', () => {
 				}
 			} );
 
-			expect( config.get( 'option1' ) ).to.equal( 1 );
-			expect( config.get( 'option2.subOption21' ) ).to.equal( 21 );
+			expect( config.get( 'option1' ) ).toBe( 1 );
+			expect( config.get( 'option2.subOption21' ) ).toBe( 21 );
 		} );
 
 		it( 'should set configurations when passing name and value', () => {
 			config.set( 'something', 'anything' );
 
-			expect( config.get( 'something' ) ).to.equal( 'anything' );
+			expect( config.get( 'something' ) ).toBe( 'anything' );
 		} );
 
 		it( 'should set configurations when passing name.with.deep and value', () => {
 			config.set( 'color.red', 'f00' );
 			config.set( 'background.color.blue', '00f' );
 
-			expect( config.get( 'color.red' ) ).to.equal( 'f00' );
-			expect( config.get( 'background.color.blue' ) ).to.equal( '00f' );
+			expect( config.get( 'color.red' ) ).toBe( 'f00' );
+			expect( config.get( 'background.color.blue' ) ).toBe( '00f' );
 		} );
 
 		it( 'should not replace already defined values', () => {
@@ -295,9 +297,9 @@ describe( 'Config', () => {
 			config.define( 'resize.minHeight', 400 );
 			config.define( 'resize.icon', 'some value' );
 
-			expect( config.get( 'language' ) ).to.equal( 'pl' );
-			expect( config.get( 'resize.icon' ) ).to.be.an( 'object' );
-			expect( config.get( 'resize.minHeight' ) ).to.equal( 300 );
+			expect( config.get( 'language' ) ).toBe( 'pl' );
+			expect( config.get( 'resize.icon' ) ).toBeTypeOf( 'object' );
+			expect( config.get( 'resize.minHeight' ) ).toBe( 300 );
 		} );
 
 		it( 'should expand but not override deep configurations', () => {
@@ -313,7 +315,7 @@ describe( 'Config', () => {
 				}
 			} );
 
-			expect( config.get( 'resize' ) ).to.be.deep.equal( {
+			expect( config.get( 'resize' ) ).toEqual( {
 				minHeight: 300,		// The same
 				maxHeight: 800,		// The same
 				hidden: true,		// Expanded
@@ -336,7 +338,7 @@ describe( 'Config', () => {
 				}
 			} );
 
-			expect( config.get( 'resize' ) ).to.be.deep.equal( {
+			expect( config.get( 'resize' ) ).toEqual( {
 				minHeight: 300,		// The same
 				maxHeight: 800,		// The same
 				hidden: true,		// Expanded
@@ -356,94 +358,94 @@ describe( 'Config', () => {
 				instance: new SomeClass()
 			} );
 
-			expect( config.get( 'date' ) ).to.be.an.instanceof( Date );
-			expect( config.get( 'instance' ) ).to.be.an.instanceof( SomeClass );
+			expect( config.get( 'date' ) ).toBeInstanceOf( Date );
+			expect( config.get( 'instance' ) ).toBeInstanceOf( SomeClass );
 		} );
 	} );
 
 	describe( 'get()', () => {
 		it( 'should retrieve a configuration', () => {
-			expect( config.get( 'creator' ) ).to.equal( 'inline' );
+			expect( config.get( 'creator' ) ).toBe( 'inline' );
 		} );
 
 		it( 'should retrieve a deep configuration', () => {
-			expect( config.get( 'resize.minHeight' ) ).to.equal( 300 );
-			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
+			expect( config.get( 'resize.minHeight' ) ).toBe( 300 );
+			expect( config.get( 'resize.icon.path' ) ).toBe( 'xyz' );
 		} );
 
 		it( 'should return a function', () => {
-			expect( typeof config.get( 'callback' ) ).to.equal( 'function' );
-			expect( config.get( 'callback' )() ).to.equal( null );
+			expect( typeof config.get( 'callback' ) ).toBe( 'function' );
+			expect( config.get( 'callback' )() ).toBe( null );
 		} );
 
 		it( 'should return a function nested in option', () => {
-			expect( typeof config.get( 'options.callback' ) ).to.equal( 'function' );
-			expect( config.get( 'options.callback' )() ).to.equal( null );
+			expect( typeof config.get( 'options.callback' ) ).toBe( 'function' );
+			expect( config.get( 'options.callback' )() ).toBe( null );
 		} );
 
 		it( 'should retrieve an object of the configuration', () => {
 			const resize = config.get( 'resize' );
 
-			expect( resize ).to.be.an( 'object' );
-			expect( resize.minHeight ).equal( 300 );
-			expect( resize.maxHeight ).to.equal( 800 );
-			expect( resize.icon ).to.be.an( 'object' );
+			expect( resize ).toBeTypeOf( 'object' );
+			expect( resize.minHeight ).toBe( 300 );
+			expect( resize.maxHeight ).toBe( 800 );
+			expect( resize.icon ).toBeTypeOf( 'object' );
 
-			expect( resize.icon ).to.be.an( 'object' );
+			expect( resize.icon ).toBeTypeOf( 'object' );
 		} );
 
 		it( 'should not retrieve values case-insensitively', () => {
-			expect( config.get( 'Creator' ) ).to.be.undefined;
-			expect( config.get( 'resize.MINHEIGHT' ) ).to.be.undefined;
+			expect( config.get( 'Creator' ) ).toBeUndefined();
+			expect( config.get( 'resize.MINHEIGHT' ) ).toBeUndefined();
 		} );
 
 		it( 'should return undefined for non existing configuration', () => {
-			expect( config.get( 'invalid' ) ).to.be.undefined;
+			expect( config.get( 'invalid' ) ).toBeUndefined();
 		} );
 
 		it( 'should return undefined for empty configuration', () => {
 			config = new Config();
 
-			expect( config.get( 'invalid' ) ).to.be.undefined;
-			expect( config.get( 'deep.invalid' ) ).to.be.undefined;
+			expect( config.get( 'invalid' ) ).toBeUndefined();
+			expect( config.get( 'deep.invalid' ) ).toBeUndefined();
 		} );
 
 		it( 'should return undefined for non existing deep configuration', () => {
-			expect( config.get( 'resize.invalid.value' ) ).to.be.undefined;
+			expect( config.get( 'resize.invalid.value' ) ).toBeUndefined();
 		} );
 
 		it( 'should not be possible to retrieve value directly from config object', () => {
-			expect( config.creator ).to.be.undefined;
+			expect( config.creator ).toBeUndefined();
 			// Check if 'resize.maxHeight' would be accessible;
-			expect( config.resize ).to.be.undefined;
+			expect( config.resize ).toBeUndefined();
 		} );
 
 		it( 'should not be possible to alter config object by altering returned value', () => {
-			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
+			expect( config.get( 'resize.icon.path' ) ).toBe( 'xyz' );
 
 			const icon = config.get( 'resize.icon' );
 			icon.path = 'foo/bar';
 
-			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
+			expect( config.get( 'resize.icon.path' ) ).toBe( 'xyz' );
 
 			const resize = config.get( 'resize' );
 			resize.icon.path = 'foo/baz';
 
-			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
+			expect( config.get( 'resize.icon.path' ) ).toBe( 'xyz' );
 		} );
 
 		it( 'should not be possible to alter array in config by altering returned value', () => {
-			expect( config.get( 'options.foo' ) ).to.deep.equal( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
+			expect( config.get( 'options.foo' ) ).toEqual( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
 
 			const fooOptions = config.get( 'options.foo' );
 			fooOptions.pop();
 
-			expect( config.get( 'options.foo' ) ).to.deep.equal( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
+			expect( config.get( 'options.foo' ) ).toEqual( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
 
 			const options = config.get( 'options' );
 			options.foo.pop();
 
-			expect( config.get( 'options.foo' ) ).to.deep.equal( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
+			expect( config.get( 'options.foo' ) ).toEqual( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
 		} );
 
 		it( 'should return class & functions references from config array', () => {
@@ -458,21 +460,21 @@ describe( 'Config', () => {
 
 			config.set( 'plugins', [ Foo, bar, baz ] );
 
-			expect( config.get( 'plugins' ) ).to.deep.equal( [ Foo, bar, baz ] );
+			expect( config.get( 'plugins' ) ).toEqual( [ Foo, bar, baz ] );
 
 			const plugins = config.get( 'plugins' );
 
-			expect( plugins[ 0 ] ).to.equal( Foo );
-			expect( plugins[ 1 ] ).to.equal( bar );
-			expect( plugins[ 2 ] ).to.equal( baz );
+			expect( plugins[ 0 ] ).toBe( Foo );
+			expect( plugins[ 1 ] ).toBe( bar );
+			expect( plugins[ 2 ] ).toBe( baz );
 
 			const pluginsAgain = config.get( 'plugins' );
 
 			// The returned array should be a new instance:
-			expect( pluginsAgain ).to.not.equal( plugins );
+			expect( pluginsAgain ).not.toBe( plugins );
 
 			// But array members should remain the same contents should be equal:
-			expect( pluginsAgain ).to.deep.equal( plugins );
+			expect( pluginsAgain ).toEqual( plugins );
 		} );
 
 		it( 'should return DOM nodes references from config array', () => {
@@ -481,26 +483,26 @@ describe( 'Config', () => {
 			config.set( 'node', foo );
 			config.set( 'nodes', [ foo ] );
 
-			expect( config.get( 'node' ) ).to.equal( foo );
-			expect( config.get( 'nodes' ) ).to.deep.equal( [ foo ] );
+			expect( config.get( 'node' ) ).toBe( foo );
+			expect( config.get( 'nodes' ) ).toEqual( [ foo ] );
 
 			const nodes = config.get( 'nodes' );
 
-			expect( nodes[ 0 ] ).to.equal( foo );
+			expect( nodes[ 0 ] ).toBe( foo );
 
 			const nodesAgain = config.get( 'nodes' );
 
 			// The returned array should be a new instance:
-			expect( nodesAgain ).to.not.equal( nodes );
+			expect( nodesAgain ).not.toBe( nodes );
 
 			// But array members should remain the same contents should be equal:
-			expect( nodesAgain ).to.deep.equal( nodes );
+			expect( nodesAgain ).toEqual( nodes );
 		} );
 	} );
 
 	describe( 'names()', () => {
 		it( 'should return an iterator of top level names of the configuration', () => {
-			expect( Array.from( config.names() ) ).to.be.deep.equal(
+			expect( Array.from( config.names() ) ).toEqual(
 				[ 'creator', 'language', 'resize', 'toolbar', 'options', 'callback' ]
 			);
 		} );

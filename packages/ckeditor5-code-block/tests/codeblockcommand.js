@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { CodeBlockEditing } from '../src/codeblockediting.js';
 import { CodeBlockCommand } from '../src/codeblockcommand.js';
 
@@ -37,25 +38,25 @@ describe( 'CodeBlockCommand', () => {
 		it( 'should be true when the first selected element is a codeBlock element (selection inside code block)', () => {
 			_setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
 
-			expect( command.value ).to.equal( 'foo' );
+			expect( command.value ).toBe( 'foo' );
 		} );
 
 		it( 'should be true when the first selected element is a codeBlock element (other blocks in selection are not code block)', () => {
 			_setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><paragraph>ba]r</paragraph>' );
 
-			expect( command.value ).to.equal( 'foo' );
+			expect( command.value ).toBe( 'foo' );
 		} );
 
 		it( 'should be false when the first selected element is not a code block (all blocks are not code block)', () => {
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			expect( command.value ).to.equal( false );
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should be false when the first selected element is not a code block (selection ends in code block)', () => {
 			_setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="foo">ba]r</codeBlock>' );
 
-			expect( command.value ).to.equal( false );
+			expect( command.value ).toBe( false );
 		} );
 	} );
 
@@ -63,25 +64,25 @@ describe( 'CodeBlockCommand', () => {
 		it( 'should be true when the first selected block is a codeBlock (selection inside code block)', () => {
 			_setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
 
-			expect( command.isEnabled ).to.equal( true );
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the first selected block is a codeBlock (other blocks in selection are not code block)', () => {
 			_setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><paragraph>ba]r</paragraph>' );
 
-			expect( command.isEnabled ).to.equal( true );
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the first selected block can be a codeBlock (collapsed selection)', () => {
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			expect( command.isEnabled ).to.equal( true );
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the first selected block can be a codeBlock (non-collapsed selection, ends in code block)', () => {
 			_setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="foo">ba]r</codeBlock>' );
 
-			expect( command.isEnabled ).to.equal( true );
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false when selected element is a limit element (selection on element)', () => {
@@ -92,7 +93,7 @@ describe( 'CodeBlockCommand', () => {
 
 			_setModelData( model, '[<limit>foo</limit>]' );
 
-			expect( command.isEnabled ).to.equal( false );
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false when selection starts in a blockless space', () => {
@@ -100,7 +101,7 @@ describe( 'CodeBlockCommand', () => {
 
 			_setModelData( model, 'x[]x' );
 
-			expect( command.isEnabled ).to.equal( false );
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false when selected element is a limit element (selection has mixed limit and non-limit elements)', () => {
@@ -111,7 +112,7 @@ describe( 'CodeBlockCommand', () => {
 
 			_setModelData( model, '<limit>f[oo</limit><paragraph>ba]r</paragraph>' );
 
-			expect( command.isEnabled ).to.equal( false );
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true when limit element is not the first selected element', () => {
@@ -122,7 +123,7 @@ describe( 'CodeBlockCommand', () => {
 
 			_setModelData( model, '<paragraph>f[oo</paragraph><limit>bar</limit><paragraph>bi]z</paragraph>' );
 
-			expect( command.isEnabled ).to.equal( true );
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should make it possible to disallow codeBlock using schema', () => {
@@ -134,7 +135,7 @@ describe( 'CodeBlockCommand', () => {
 
 			_setModelData( model, '<blockQuote><paragraph>f[o]o</paragraph></blockQuote>' );
 
-			expect( command.isEnabled ).to.equal( false );
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -144,7 +145,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">[]</codeBlock>' );
 		} );
 
 		it( 'should change selected block to codeBlock', () => {
@@ -152,7 +153,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
 		} );
 
 		it( 'should change multiple selected block to codeBlock', () => {
@@ -160,7 +161,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<codeBlock language="plaintext">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
 		} );
 
@@ -169,7 +170,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<codeBlock language="plaintext">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
 		} );
 
@@ -182,7 +183,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<codeBlock language="plaintext">foo</codeBlock>' +
 				'<codeBlock language="plaintext">b[a]r</codeBlock>' +
 				'<codeBlock language="plaintext">biz</codeBlock>'
@@ -194,7 +195,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should change selected codeBlock to paragraph', () => {
@@ -202,7 +203,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>f[o]o</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>f[o]o</paragraph>' );
 		} );
 
 		it( 'should change selected multi-line codeBlock to paragraphs', () => {
@@ -212,7 +213,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>b[]ar</paragraph>' +
 				'<paragraph>biz</paragraph>'
@@ -224,7 +225,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">f[o]o</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 		} );
 
 		it( 'should use forceValue parameter', () => {
@@ -232,7 +233,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute( { forceValue: true } );
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">f[o]o</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 		} );
 
 		it( 'should allow setting the language of the new block', () => {
@@ -240,7 +241,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute( { language: 'css' } );
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="css">f[o]o</codeBlock>' );
 		} );
 
 		it( 'should allow changing the language of the existing block', () => {
@@ -248,7 +249,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute( { language: 'css', forceValue: true } );
 
-			expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
+			expect( _getModelData( model ) ).toBe( '<codeBlock language="css">f[o]o</codeBlock>' );
 		} );
 
 		it( 'should remove all non-allowed nodes when inserting the "codeBlock" element', () => {
@@ -259,7 +260,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<codeBlock language="plaintext">[FooBar]</codeBlock>'
 			);
 		} );
@@ -272,7 +273,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<codeBlock language="plaintext">[FooBar<softBreak></softBreak>Baz]</codeBlock>'
 			);
 		} );
@@ -283,7 +284,7 @@ describe( 'CodeBlockCommand', () => {
 
 				command.execute( { language: 'php' } );
 
-				expect( command._lastLanguage ).to.equal( 'php' );
+				expect( command._lastLanguage ).toBe( 'php' );
 			} );
 
 			it( 'it should apply the previous language if specified', () => {
@@ -293,7 +294,7 @@ describe( 'CodeBlockCommand', () => {
 
 				command.execute( { usePreviousLanguageChoice: true } );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">fo[]o</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="css">fo[]o</codeBlock>' );
 			} );
 
 			it( 'it should not apply the previous language if specified but usePreviousLanguageChoice=false', () => {
@@ -303,7 +304,7 @@ describe( 'CodeBlockCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
 			} );
 
 			it( 'it should apply the default language when the last language is not set yet', () => {
@@ -311,7 +312,7 @@ describe( 'CodeBlockCommand', () => {
 
 				command.execute( { usePreviousLanguageChoice: true } );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
 			} );
 
 			it( 'it should prioritize using language passed as an option over previous language', () => {
@@ -321,7 +322,7 @@ describe( 'CodeBlockCommand', () => {
 
 				command.execute( { language: 'php', usePreviousLanguageChoice: true } );
 
-				expect( _getModelData( model ) ).to.equal( '<codeBlock language="php">fo[]o</codeBlock>' );
+				expect( _getModelData( model ) ).toBe( '<codeBlock language="php">fo[]o</codeBlock>' );
 			} );
 		} );
 	} );
@@ -332,7 +333,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<blockQuote><codeBlock language="plaintext">f[o]o</codeBlock></blockQuote>' );
 		} );
 
@@ -345,7 +346,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<codeBlock language="plaintext">f[oo</codeBlock>' +
 				'<blockQuote><codeBlock language="plaintext">bar</codeBlock></blockQuote>' +
 				'<codeBlock language="plaintext">bi]z</codeBlock>'

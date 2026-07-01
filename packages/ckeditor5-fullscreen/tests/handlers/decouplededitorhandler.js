@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
@@ -42,7 +43,7 @@ describe( 'DecoupledEditorHandler', () => {
 
 	describe( 'constructor', () => {
 		it( 'should set the editor instance as a property', () => {
-			expect( decoupledEditorHandler._editor ).to.be.instanceOf( DecoupledEditor );
+			expect( decoupledEditorHandler._editor ).toBeInstanceOf( DecoupledEditor );
 		} );
 	} );
 
@@ -51,11 +52,20 @@ describe( 'DecoupledEditorHandler', () => {
 			decoupledEditorHandler.enable();
 
 			expect( decoupledEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=editable]' ).children[ 1 ] )
-				.to.equal( editor.editing.view.getDomRoot() );
+				.toBe( editor.editing.view.getDomRoot() );
 			expect( decoupledEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
-				.to.equal( editor.ui.view.toolbar.element );
+				.toBe( editor.ui.view.toolbar.element );
 			expect( decoupledEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
-				.to.equal( editor.ui.view.menuBarView.element );
+				.toBe( editor.ui.view.menuBarView.element );
+		} );
+
+		it( 'should not move the menu bar if it is hidden by the fullscreen config', () => {
+			editor.config.set( 'fullscreen.menuBar.isVisible', false );
+
+			decoupledEditorHandler.enable();
+
+			expect( decoupledEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=menu-bar]' ).children.length )
+				.toBe( 0 );
 		} );
 
 		it( 'should use the configured toolbar behavior', async () => {
@@ -77,7 +87,7 @@ describe( 'DecoupledEditorHandler', () => {
 
 			tempEditorDynamicToolbar.execute( 'toggleFullscreen' );
 
-			expect( tempEditorDynamicToolbar.ui.view.toolbar.isGrouping ).to.be.false;
+			expect( tempEditorDynamicToolbar.ui.view.toolbar.isGrouping ).toBe( false );
 
 			tempDomElementDynamicToolbar.remove();
 			await tempEditorDynamicToolbar.destroy();
@@ -100,7 +110,7 @@ describe( 'DecoupledEditorHandler', () => {
 
 			tempEditorStaticToolbar.execute( 'toggleFullscreen' );
 
-			expect( tempEditorStaticToolbar.ui.view.toolbar.isGrouping ).to.be.true;
+			expect( tempEditorStaticToolbar.ui.view.toolbar.isGrouping ).toBe( true );
 
 			tempDomElementStaticToolbar.remove();
 			return tempEditorStaticToolbar.destroy();

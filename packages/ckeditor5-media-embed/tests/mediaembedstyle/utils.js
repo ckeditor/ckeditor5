@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { normalizeStyles } from '../../src/mediaembedstyle/utils.js';
 import {
 	DEFAULT_DROPDOWN_DEFINITIONS,
@@ -12,44 +12,49 @@ import {
 } from '../../src/mediaembedstyle/constants.js';
 
 describe( 'MediaEmbedStyle utils', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
-		testUtils.sinon.stub( console, 'warn' );
+		vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 	} );
 
 	describe( 'DEFAULT_OPTIONS', () => {
 		it( 'lists exactly the five built-in styles in canonical order', () => {
-			expect( Object.keys( DEFAULT_OPTIONS ) ).to.deep.equal( [
+			expect( Object.keys( DEFAULT_OPTIONS ) ).toEqual( [
 				'alignLeft', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'alignRight'
 			] );
 		} );
 
 		it( 'has each entry keyed by its own `name`', () => {
 			for ( const [ key, definition ] of Object.entries( DEFAULT_OPTIONS ) ) {
-				expect( definition.name, `${ key }.name` ).to.equal( key );
+				expect( definition.name, `${ key }.name` ).toBe( key );
 			}
 		} );
 
 		it( 'has non-empty title and icon on every entry', () => {
 			for ( const [ key, definition ] of Object.entries( DEFAULT_OPTIONS ) ) {
-				expect( definition.title, `${ key }.title` ).to.be.a( 'string' ).and.not.empty;
-				expect( definition.icon, `${ key }.icon` ).to.be.a( 'string' ).and.not.empty;
+				expect( typeof definition.title, `${ key }.title` ).toBe( 'string' );
+				expect( definition.title ).not.toBe( '' );
+				expect( typeof definition.icon, `${ key }.icon` ).toBe( 'string' );
+				expect( definition.icon ).not.toBe( '' );
 			}
 		} );
 
 		it( 'has exactly one isDefault entry — alignCenter — and it omits className', () => {
 			const defaults = Object.values( DEFAULT_OPTIONS ).filter( s => s.isDefault );
 
-			expect( defaults ).to.have.lengthOf( 1 );
-			expect( defaults[ 0 ].name ).to.equal( 'alignCenter' );
-			expect( defaults[ 0 ].className ).to.be.undefined;
+			expect( defaults ).toHaveLength( 1 );
+			expect( defaults[ 0 ].name ).toBe( 'alignCenter' );
+			expect( defaults[ 0 ].className ).toBeUndefined();
 		} );
 
 		it( 'has className on every non-default entry', () => {
 			for ( const definition of Object.values( DEFAULT_OPTIONS ) ) {
 				if ( !definition.isDefault ) {
-					expect( definition.className, `${ definition.name }.className` ).to.be.a( 'string' ).and.not.empty;
+					expect( typeof definition.className, `${ definition.name }.className` ).toBe( 'string' );
+					expect( definition.className ).not.toBe( '' );
 				}
 			}
 		} );
@@ -57,29 +62,31 @@ describe( 'MediaEmbedStyle utils', () => {
 
 	describe( 'DEFAULT_ICONS', () => {
 		it( 'exposes exactly the five short aliases (matching image)', () => {
-			expect( Object.keys( DEFAULT_ICONS ) ).to.have.members( [
-				'inlineLeft', 'left', 'center', 'right', 'inlineRight'
-			] );
+			expect( Object.keys( DEFAULT_ICONS ) ).toEqual(
+				expect.arrayContaining( [ 'inlineLeft', 'left', 'center', 'right', 'inlineRight' ] )
+			);
+			expect( Object.keys( DEFAULT_ICONS ) ).toHaveLength( 5 );
 		} );
 
 		it( 'maps every alias to a non-empty SVG XML string', () => {
 			for ( const [ alias, svg ] of Object.entries( DEFAULT_ICONS ) ) {
-				expect( svg, alias ).to.be.a( 'string' ).and.match( /<svg/ );
+				expect( typeof svg, alias ).toBe( 'string' );
+				expect( svg ).toMatch( /<svg/ );
 			}
 		} );
 	} );
 
 	describe( 'DEFAULT_DROPDOWN_DEFINITIONS', () => {
 		it( 'lists mediaEmbed:wrapText and mediaEmbed:breakText', () => {
-			expect( DEFAULT_DROPDOWN_DEFINITIONS.map( d => d.name ) ).to.have.members( [
-				'mediaEmbed:wrapText', 'mediaEmbed:breakText'
-			] );
+			expect( DEFAULT_DROPDOWN_DEFINITIONS.map( d => d.name ) ).toEqual(
+				expect.arrayContaining( [ 'mediaEmbed:wrapText', 'mediaEmbed:breakText' ] )
+			);
 		} );
 
 		it( 'stores items as prefixed component names (matches the public dropdown-definition surface)', () => {
 			for ( const definition of DEFAULT_DROPDOWN_DEFINITIONS ) {
 				for ( const item of definition.items ) {
-					expect( item, `${ definition.name } item` ).to.match( /^mediaEmbed:/ );
+					expect( item, `${ definition.name } item` ).toMatch( /^mediaEmbed:/ );
 				}
 			}
 		} );
@@ -89,13 +96,13 @@ describe( 'MediaEmbedStyle utils', () => {
 				const defaultStyleName = definition.defaultItem.replace( /^mediaEmbed:/, '' );
 
 				expect( DEFAULT_OPTIONS, `${ definition.name } defaultItem` )
-					.to.have.property( defaultStyleName );
+					.toHaveProperty( defaultStyleName );
 
 				for ( const item of definition.items ) {
 					const styleName = item.replace( /^mediaEmbed:/, '' );
 
 					expect( DEFAULT_OPTIONS, `${ definition.name } item "${ item }"` )
-						.to.have.property( styleName );
+						.toHaveProperty( styleName );
 				}
 			}
 		} );
@@ -103,24 +110,24 @@ describe( 'MediaEmbedStyle utils', () => {
 
 	describe( 'normalizeStyles()', () => {
 		it( 'returns an empty array when options is empty or absent', () => {
-			expect( normalizeStyles( { options: [] } ) ).to.deep.equal( [] );
-			expect( normalizeStyles( {} ) ).to.deep.equal( [] );
-			expect( normalizeStyles( { options: null } ) ).to.deep.equal( [] );
-			expect( normalizeStyles( { options: undefined } ) ).to.deep.equal( [] );
+			expect( normalizeStyles( { options: [] } ) ).toEqual( [] );
+			expect( normalizeStyles( {} ) ).toEqual( [] );
+			expect( normalizeStyles( { options: null } ) ).toEqual( [] );
+			expect( normalizeStyles( { options: undefined } ) ).toEqual( [] );
 
-			sinon.assert.notCalled( console.warn );
+			expect( console.warn ).not.toHaveBeenCalled();
 		} );
 
 		describe( 'string entries', () => {
 			it( 'resolves a built-in name to a clone of the matching default', () => {
 				const result = normalizeStyles( { options: [ 'alignLeft' ] } );
 
-				expect( result ).to.have.lengthOf( 1 );
-				expect( result[ 0 ] ).to.deep.equal( DEFAULT_OPTIONS.alignLeft );
+				expect( result ).toHaveLength( 1 );
+				expect( result[ 0 ] ).toEqual( DEFAULT_OPTIONS.alignLeft );
 				expect( result[ 0 ], 'should be a clone, not the same reference' )
-					.to.not.equal( DEFAULT_OPTIONS.alignLeft );
+					.not.toBe( DEFAULT_OPTIONS.alignLeft );
 
-				sinon.assert.notCalled( console.warn );
+				expect( console.warn ).not.toHaveBeenCalled();
 			} );
 
 			it( 'resolves every built-in name', () => {
@@ -128,22 +135,22 @@ describe( 'MediaEmbedStyle utils', () => {
 					options: [ 'alignLeft', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'alignRight' ]
 				} );
 
-				expect( result.map( s => s.name ) ).to.deep.equal( [
+				expect( result.map( s => s.name ) ).toEqual( [
 					'alignLeft', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'alignRight'
 				] );
 
-				sinon.assert.notCalled( console.warn );
+				expect( console.warn ).not.toHaveBeenCalled();
 			} );
 
 			it( 'warns and drops a string referencing an unknown built-in', () => {
 				const result = normalizeStyles( { options: [ 'doesNotExist' ] } );
 
-				expect( result ).to.deep.equal( [] );
-				sinon.assert.calledOnce( console.warn );
-				sinon.assert.calledWithExactly( console.warn,
-					sinon.match( /^media-style-configuration-definition-invalid/ ),
+				expect( result ).toEqual( [] );
+				expect( console.warn ).toHaveBeenCalledOnce();
+				expect( console.warn ).toHaveBeenCalledWith(
+					expect.stringMatching( /^media-style-configuration-definition-invalid/ ),
 					{ style: { name: 'doesNotExist' } },
-					sinon.match.string
+					expect.any( String )
 				);
 			} );
 		} );
@@ -154,14 +161,14 @@ describe( 'MediaEmbedStyle utils', () => {
 					options: [ { name: 'alignLeft', title: 'My label' } ]
 				} );
 
-				expect( result[ 0 ] ).to.deep.equal( {
+				expect( result[ 0 ] ).toEqual( {
 					name: 'alignLeft',
 					title: 'My label',
 					icon: DEFAULT_OPTIONS.alignLeft.icon,
 					className: DEFAULT_OPTIONS.alignLeft.className
 				} );
 
-				sinon.assert.notCalled( console.warn );
+				expect( console.warn ).not.toHaveBeenCalled();
 			} );
 
 			it( 'resolves a short icon alias to the corresponding SVG', () => {
@@ -169,7 +176,7 @@ describe( 'MediaEmbedStyle utils', () => {
 					options: [ { name: 'alignLeft', icon: 'left' } ]
 				} );
 
-				expect( result[ 0 ].icon ).to.equal( DEFAULT_ICONS.left );
+				expect( result[ 0 ].icon ).toBe( DEFAULT_ICONS.left );
 			} );
 
 			it( 'leaves an unrecognized icon string untouched (treated as raw SVG)', () => {
@@ -178,7 +185,7 @@ describe( 'MediaEmbedStyle utils', () => {
 					options: [ { name: 'alignLeft', icon: customSvg } ]
 				} );
 
-				expect( result[ 0 ].icon ).to.equal( customSvg );
+				expect( result[ 0 ].icon ).toBe( customSvg );
 			} );
 
 			it( 'can demote a default style by setting isDefault: false + className', () => {
@@ -188,12 +195,12 @@ describe( 'MediaEmbedStyle utils', () => {
 					]
 				} );
 
-				expect( result[ 0 ].isDefault ).to.equal( false );
-				expect( result[ 0 ].className ).to.equal( 'my-explicit-center' );
-				expect( result[ 0 ].name ).to.equal( 'alignCenter' );
+				expect( result[ 0 ].isDefault ).toBe( false );
+				expect( result[ 0 ].className ).toBe( 'my-explicit-center' );
+				expect( result[ 0 ].name ).toBe( 'alignCenter' );
 				// Title and icon stay inherited from the default.
-				expect( result[ 0 ].title ).to.equal( DEFAULT_OPTIONS.alignCenter.title );
-				expect( result[ 0 ].icon ).to.equal( DEFAULT_OPTIONS.alignCenter.icon );
+				expect( result[ 0 ].title ).toBe( DEFAULT_OPTIONS.alignCenter.title );
+				expect( result[ 0 ].icon ).toBe( DEFAULT_OPTIONS.alignCenter.icon );
 			} );
 
 			it( 'does not mutate DEFAULT_OPTIONS when overriding a built-in', () => {
@@ -203,7 +210,7 @@ describe( 'MediaEmbedStyle utils', () => {
 					options: [ { name: 'alignLeft', title: 'Mutated?', icon: '<svg id="x"/>' } ]
 				} );
 
-				expect( DEFAULT_OPTIONS.alignLeft ).to.deep.equal( originalAlignLeft );
+				expect( DEFAULT_OPTIONS.alignLeft ).toEqual( originalAlignLeft );
 			} );
 		} );
 
@@ -219,14 +226,14 @@ describe( 'MediaEmbedStyle utils', () => {
 					} ]
 				} );
 
-				expect( result ).to.deep.equal( [ {
+				expect( result ).toEqual( [ {
 					name: 'alignFull',
 					title: 'Full',
 					icon: customSvg,
 					className: 'media-style-align-full'
 				} ] );
 
-				sinon.assert.notCalled( console.warn );
+				expect( console.warn ).not.toHaveBeenCalled();
 			} );
 
 			it( 'registers a custom semantical style (e.g. "side")', () => {
@@ -239,10 +246,10 @@ describe( 'MediaEmbedStyle utils', () => {
 					} ]
 				} );
 
-				expect( result[ 0 ].name ).to.equal( 'side' );
-				expect( result[ 0 ].className ).to.equal( 'media-style-side' );
+				expect( result[ 0 ].name ).toBe( 'side' );
+				expect( result[ 0 ].className ).toBe( 'media-style-side' );
 
-				sinon.assert.notCalled( console.warn );
+				expect( console.warn ).not.toHaveBeenCalled();
 			} );
 
 			it( 'registers a custom default style (isDefault: true, no className required)', () => {
@@ -255,15 +262,15 @@ describe( 'MediaEmbedStyle utils', () => {
 					} ]
 				} );
 
-				expect( result[ 0 ] ).to.include( {
+				expect( result[ 0 ] ).toMatchObject( {
 					name: 'natural',
 					title: 'Natural',
 					icon: DEFAULT_ICONS.center,
 					isDefault: true
 				} );
-				expect( result[ 0 ].className ).to.be.undefined;
+				expect( result[ 0 ].className ).toBeUndefined();
 
-				sinon.assert.notCalled( console.warn );
+				expect( console.warn ).not.toHaveBeenCalled();
 			} );
 
 			// Each entry omits one required field. Validation drops it with a warning. The exact
@@ -274,9 +281,9 @@ describe( 'MediaEmbedStyle utils', () => {
 				[ 'icon', { name: 'noIcon', title: 'No icon', className: 'x' } ]
 			] ) {
 				it( `warns and drops a custom style missing ${ missingField }`, () => {
-					expect( normalizeStyles( { options: [ config ] } ) ).to.deep.equal( [] );
+					expect( normalizeStyles( { options: [ config ] } ) ).toEqual( [] );
 
-					sinon.assert.calledOnce( console.warn );
+					expect( console.warn ).toHaveBeenCalledOnce();
 				} );
 			}
 		} );
@@ -292,8 +299,8 @@ describe( 'MediaEmbedStyle utils', () => {
 					]
 				} );
 
-				expect( result.map( s => s.name ) ).to.deep.equal( [ 'alignLeft', 'side' ] );
-				sinon.assert.calledTwice( console.warn );
+				expect( result.map( s => s.name ) ).toEqual( [ 'alignLeft', 'side' ] );
+				expect( console.warn ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			it( 'preserves the configured order', () => {
@@ -301,7 +308,7 @@ describe( 'MediaEmbedStyle utils', () => {
 					options: [ 'alignBlockRight', 'alignLeft', 'alignCenter' ]
 				} );
 
-				expect( result.map( s => s.name ) ).to.deep.equal( [
+				expect( result.map( s => s.name ) ).toEqual( [
 					'alignBlockRight', 'alignLeft', 'alignCenter'
 				] );
 			} );

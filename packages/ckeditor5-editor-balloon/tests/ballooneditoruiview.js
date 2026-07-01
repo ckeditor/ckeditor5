@@ -4,17 +4,14 @@
  */
 
 import { EditingView } from '@ckeditor/ckeditor5-engine';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { BalloonEditorUIView } from '../src/ballooneditoruiview.js';
 import { InlineEditableUIView, MenuBarView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'BalloonEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale();
@@ -24,24 +21,28 @@ describe( 'BalloonEditorUIView', () => {
 		view.editable.name = editingViewRoot.rootName;
 	} );
 
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
+
 	describe( 'constructor()', () => {
 		describe( '#editable', () => {
 			it( 'is created', () => {
-				expect( view.editable ).to.be.instanceof( InlineEditableUIView );
+				expect( view.editable ).toBeInstanceOf( InlineEditableUIView );
 			} );
 
 			it( 'is given a locate object', () => {
-				expect( view.editable.locale ).to.equal( locale );
+				expect( view.editable.locale ).toBe( locale );
 			} );
 
 			it( 'is not rendered', () => {
-				expect( view.editable.isRendered ).to.be.false;
+				expect( view.editable.isRendered ).toBe( false );
 			} );
 
 			it( 'creates an editing root with the default aria-label', () => {
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Rich Text Editor. Editing area: main' );
 
 				view.destroy();
 			} );
@@ -53,7 +54,7 @@ describe( 'BalloonEditorUIView', () => {
 				view.editable.name = editingViewRoot.rootName;
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Foo' );
 
 				view.destroy();
 			} );
@@ -67,7 +68,7 @@ describe( 'BalloonEditorUIView', () => {
 				view.editable.name = editingViewRoot.rootName;
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Foo' );
 
 				view.destroy();
 			} );
@@ -75,26 +76,26 @@ describe( 'BalloonEditorUIView', () => {
 
 		describe( '#menuBarView', () => {
 			it( 'is created', () => {
-				expect( view.menuBarView ).to.be.instanceof( MenuBarView );
+				expect( view.menuBarView ).toBeInstanceOf( MenuBarView );
 			} );
 
 			it( 'is given a locale object', () => {
-				expect( view.menuBarView.locale ).to.equal( locale );
+				expect( view.menuBarView.locale ).toBe( locale );
 			} );
 
 			it( 'is not rendered', () => {
-				expect( view.menuBarView.isRendered ).to.be.false;
+				expect( view.menuBarView.isRendered ).toBe( false );
 			} );
 		} );
 	} );
 
 	describe( 'render()', () => {
 		it( 'editable is registered as a child', () => {
-			const spy = sinon.spy( view.editable, 'destroy' );
+			const spy = vi.spyOn( view.editable, 'destroy' );
 
 			view.render();
 			view.destroy();
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 } );

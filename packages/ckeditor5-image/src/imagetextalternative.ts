@@ -7,7 +7,7 @@
  * @module image/imagetextalternative
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ImageTextAlternativeEditing } from './imagetextalternative/imagetextalternativeediting.js';
 import { ImageTextAlternativeUI } from './imagetextalternative/imagetextalternativeui.js';
 
@@ -24,8 +24,8 @@ export class ImageTextAlternative extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageTextAlternativeEditing, ImageTextAlternativeUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageTextAlternativeEditing, ImageTextAlternativeUI ]> {
+		return [ ImageTextAlternativeEditing, ImageTextAlternativeUI ];
 	}
 
 	/**

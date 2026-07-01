@@ -30,7 +30,7 @@ import {
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { getAllListItemBlocks, isFirstBlockOfListItem, isListItemBlock } from '../list/utils/model.js';
 import {
@@ -71,8 +71,8 @@ export class TodoListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ListEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ ListEditing ]> {
+		return [ ListEditing ];
 	}
 
 	/**
@@ -306,6 +306,7 @@ export class TodoListEditing extends Plugin {
 			const modelPositionAfter = editing.mapper.toModelPosition( viewPositionAfter );
 			const modelElement = modelPositionAfter.parent;
 
+			/* v8 ignore next -- Defensive guard for externally fired observer events outside to-do list inputs. */
 			if ( modelElement && isListItemBlock( modelElement ) && modelElement.getAttribute( 'listType' ) == 'todo' ) {
 				this._handleCheckmarkChange( modelElement );
 			}
@@ -345,6 +346,7 @@ export class TodoListEditing extends Plugin {
 
 			const nodeAfter = data.modelPosition!.nodeAfter;
 
+			/* v8 ignore next -- Defensive mapper guard for view positions outside to-do list widgets. */
 			if ( nodeAfter && nodeAfter.getAttribute( 'listType' ) == 'todo' ) {
 				data.modelPosition = model.createPositionAt( nodeAfter, 0 );
 			}

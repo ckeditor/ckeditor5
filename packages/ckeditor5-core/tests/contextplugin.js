@@ -3,28 +3,33 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { ContextPlugin } from '../src/contextplugin.js';
 
 describe( 'ContextPlugin', () => {
 	const contextMock = {};
 
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
+
 	it( 'should be marked as a context plugin', () => {
-		expect( ContextPlugin.isContextPlugin ).to.true;
+		expect( ContextPlugin.isContextPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `false`', () => {
-		expect( ContextPlugin.isOfficialPlugin ).to.be.false;
+		expect( ContextPlugin.isOfficialPlugin ).toBe( false );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ContextPlugin.isPremiumPlugin ).to.be.false;
+		expect( ContextPlugin.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should set the `context` property', () => {
 			const plugin = new ContextPlugin( contextMock );
 
-			expect( plugin ).to.have.property( 'context' ).to.equal( contextMock );
+			expect( plugin ).toHaveProperty( 'context', contextMock );
 		} );
 	} );
 
@@ -32,16 +37,16 @@ describe( 'ContextPlugin', () => {
 		it( 'should be defined', () => {
 			const plugin = new ContextPlugin( contextMock );
 
-			expect( plugin.destroy ).to.be.a( 'function' );
+			expect( plugin.destroy ).toBeTypeOf( 'function' );
 		} );
 
 		it( 'should stop listening', () => {
 			const plugin = new ContextPlugin( contextMock );
-			const stopListeningSpy = sinon.spy( plugin, 'stopListening' );
+			const stopListeningSpy = vi.spyOn( plugin, 'stopListening' );
 
 			plugin.destroy();
 
-			sinon.assert.calledOnce( stopListeningSpy );
+			expect( stopListeningSpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 } );

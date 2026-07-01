@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -37,7 +38,7 @@ describe( 'ClassicEditorHandler', () => {
 
 	describe( 'constructor', () => {
 		it( 'should set the editor instance as a property', () => {
-			expect( classicEditorHandler._editor ).to.be.instanceOf( ClassicEditor );
+			expect( classicEditorHandler._editor ).toBeInstanceOf( ClassicEditor );
 		} );
 	} );
 
@@ -46,21 +47,21 @@ describe( 'ClassicEditorHandler', () => {
 			classicEditorHandler.enable();
 
 			expect( classicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=editable]' ).children[ 1 ] )
-				.to.equal( editor.editing.view.getDomRoot() );
+				.toBe( editor.editing.view.getDomRoot() );
 			expect( classicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
-				.to.equal( editor.ui.view.toolbar.element );
+				.toBe( editor.ui.view.toolbar.element );
 		} );
 
 		it( 'should set [dir] attribute on the fullscreen container', () => {
 			classicEditorHandler.enable();
 
-			expect( classicEditorHandler.getWrapper().getAttribute( 'dir' ) ).to.equal( editor.ui.view.element.getAttribute( 'dir' ) );
+			expect( classicEditorHandler.getWrapper().getAttribute( 'dir' ) ).toBe( editor.ui.view.element.getAttribute( 'dir' ) );
 		} );
 
 		it( 'should set `.ck-rounded-corners` class on the fullscreen container', () => {
 			classicEditorHandler.enable();
 
-			expect( classicEditorHandler.getWrapper().classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+			expect( classicEditorHandler.getWrapper().classList.contains( 'ck-rounded-corners' ) ).toBe( true );
 		} );
 
 		it( 'should move menu bar if it is present', async () => {
@@ -87,7 +88,7 @@ describe( 'ClassicEditorHandler', () => {
 			tempClassicEditorHandler.enable();
 
 			expect( tempClassicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
-				.to.equal( tempEditor.ui.view.menuBarView.element );
+				.toBe( tempEditor.ui.view.menuBarView.element );
 
 			tempDomElement.remove();
 			return tempEditor.destroy();
@@ -112,7 +113,7 @@ describe( 'ClassicEditorHandler', () => {
 
 			tempEditorDynamicToolbar.execute( 'toggleFullscreen' );
 
-			expect( tempEditorDynamicToolbar.ui.view.toolbar.isGrouping ).to.be.false;
+			expect( tempEditorDynamicToolbar.ui.view.toolbar.isGrouping ).toBe( false );
 
 			tempDomElementDynamicToolbar.remove();
 			await tempEditorDynamicToolbar.destroy();
@@ -135,7 +136,7 @@ describe( 'ClassicEditorHandler', () => {
 
 			tempEditorStaticToolbar.execute( 'toggleFullscreen' );
 
-			expect( tempEditorStaticToolbar.ui.view.toolbar.isGrouping ).to.be.true;
+			expect( tempEditorStaticToolbar.ui.view.toolbar.isGrouping ).toBe( true );
 
 			tempDomElementStaticToolbar.remove();
 			return tempEditorStaticToolbar.destroy();

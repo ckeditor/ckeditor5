@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DomEventObserver } from '../../../src/view/observer/domeventobserver.js';
 import { Observer } from '../../../src/view/observer/observer.js';
 import { EditingView } from '../../../src/view/view.js';
@@ -59,6 +60,7 @@ describe( 'DomEventObserver', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
 		view.destroy();
 	} );
 
@@ -66,14 +68,14 @@ describe( 'DomEventObserver', () => {
 		it( 'should create Observer with properties', () => {
 			const observer = new DomEventObserver( viewDocument );
 
-			expect( observer ).to.be.an.instanceof( Observer );
+			expect( observer ).toBeInstanceOf( Observer );
 		} );
 	} );
 
 	it( 'should add event listener', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
-		const evtSpy = sinon.spy();
+		const evtSpy = vi.fn();
 
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domElement );
@@ -82,21 +84,21 @@ describe( 'DomEventObserver', () => {
 
 		domElement.dispatchEvent( domEvent );
 
-		expect( evtSpy.calledOnce ).to.be.true;
+		expect( evtSpy ).toHaveBeenCalledOnce();
 
-		const data = evtSpy.args[ 0 ][ 1 ];
+		const data = evtSpy.mock.calls[ 0 ][ 1 ];
 
-		expect( data ).to.have.property( 'foo', 1 );
-		expect( data ).to.have.property( 'bar', 2 );
-		expect( data ).to.have.property( 'domEvent', domEvent );
+		expect( data ).toHaveProperty( 'foo', 1 );
+		expect( data ).toHaveProperty( 'bar', 2 );
+		expect( data ).toHaveProperty( 'domEvent', domEvent );
 	} );
 
 	it( 'should add multiple event listeners', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent1 = new MouseEvent( 'evt1' );
 		const domEvent2 = new MouseEvent( 'evt2' );
-		const evtSpy1 = sinon.spy();
-		const evtSpy2 = sinon.spy();
+		const evtSpy1 = vi.fn();
+		const evtSpy2 = vi.fn();
 
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domElement );
@@ -105,16 +107,16 @@ describe( 'DomEventObserver', () => {
 		viewDocument.on( 'evt2', evtSpy2 );
 
 		domElement.dispatchEvent( domEvent1 );
-		expect( evtSpy1.calledOnce ).to.be.true;
+		expect( evtSpy1 ).toHaveBeenCalledOnce();
 
 		domElement.dispatchEvent( domEvent2 );
-		expect( evtSpy2.calledOnce ).to.be.true;
+		expect( evtSpy2 ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'should not fire event if observer is disabled', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
-		const evtSpy = sinon.spy();
+		const evtSpy = vi.fn();
 
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domElement );
@@ -125,17 +127,17 @@ describe( 'DomEventObserver', () => {
 
 		domElement.dispatchEvent( domEvent );
 
-		expect( evtSpy.called ).to.be.false;
+		expect( evtSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not fire event if the target is ignored', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
-		const evtSpy = sinon.spy();
+		const evtSpy = vi.fn();
 
-		const ignoreEventFromTargetStub = sinon
-			.stub( Observer.prototype, 'checkShouldIgnoreEventFromTarget' )
-			.returns( true );
+		const ignoreEventFromTargetStub = vi
+			.spyOn( Observer.prototype, 'checkShouldIgnoreEventFromTarget' )
+			.mockReturnValue( true );
 
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domElement );
@@ -144,16 +146,14 @@ describe( 'DomEventObserver', () => {
 
 		domElement.dispatchEvent( domEvent );
 
-		ignoreEventFromTargetStub.restore();
-
-		expect( ignoreEventFromTargetStub.called ).to.be.true;
-		expect( evtSpy.called ).to.be.false;
+		expect( ignoreEventFromTargetStub ).toHaveBeenCalled();
+		expect( evtSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should fire event if observer is disabled and re-enabled', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
-		const evtSpy = sinon.spy();
+		const evtSpy = vi.fn();
 
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domElement );
@@ -164,30 +164,32 @@ describe( 'DomEventObserver', () => {
 
 		domElement.dispatchEvent( domEvent );
 
-		expect( evtSpy.called ).to.be.false;
+		expect( evtSpy ).not.toHaveBeenCalled();
 
 		testObserver.enable();
 
 		domElement.dispatchEvent( domEvent );
 
-		expect( evtSpy.calledOnce ).to.be.true;
+		expect( evtSpy ).toHaveBeenCalledOnce();
 	} );
 
-	it( 'should allow to listen events on capturing phase', done => {
-		const domElement = document.createElement( 'div' );
-		const childDomElement = document.createElement( 'p' );
-		const domEvent = new MouseEvent( 'click' );
-		domElement.appendChild( childDomElement );
-		createViewRoot( viewDocument );
-		view.attachDomRoot( domElement );
-		view.addObserver( ClickCapturingObserver );
+	it( 'should allow to listen events on capturing phase', () => {
+		return new Promise( resolve => {
+			const domElement = document.createElement( 'div' );
+			const childDomElement = document.createElement( 'p' );
+			const domEvent = new MouseEvent( 'click' );
+			domElement.appendChild( childDomElement );
+			createViewRoot( viewDocument );
+			view.attachDomRoot( domElement );
+			view.addObserver( ClickCapturingObserver );
 
-		viewDocument.on( 'click', ( evt, domEventData ) => {
-			expect( domEventData.domEvent.eventPhase ).to.equal( domEventData.domEvent.CAPTURING_PHASE );
-			done();
+			viewDocument.on( 'click', ( evt, domEventData ) => {
+				expect( domEventData.domEvent.eventPhase ).toBe( domEventData.domEvent.CAPTURING_PHASE );
+				resolve();
+			} );
+
+			childDomElement.dispatchEvent( domEvent );
 		} );
-
-		childDomElement.dispatchEvent( domEvent );
 	} );
 
 	it( 'should allow to listen passive events', () => {
@@ -195,16 +197,14 @@ describe( 'DomEventObserver', () => {
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domElement );
 
-		const eventHandlerSpy = sinon.spy( ClickPassiveObserver.prototype, 'listenTo' );
+		const eventHandlerSpy = vi.spyOn( ClickPassiveObserver.prototype, 'listenTo' );
 
 		view.addObserver( ClickPassiveObserver );
 
-		expect( eventHandlerSpy ).to.be.calledWith( domElement, 'click', sinon.match.func, {
+		expect( eventHandlerSpy ).toHaveBeenCalledWith( domElement, 'click', expect.any( Function ), {
 			useCapture: false,
 			usePassive: true
 		} );
-
-		eventHandlerSpy.restore();
 	} );
 
 	describe( 'integration with UIElement', () => {
@@ -232,7 +232,7 @@ describe( 'DomEventObserver', () => {
 			view.forceRender();
 
 			domEvent = new MouseEvent( 'click', { bubbles: true } );
-			evtSpy = sinon.spy();
+			evtSpy = vi.fn();
 			view.addObserver( ClickObserver );
 			viewDocument.on( 'click', evtSpy );
 		} );
@@ -241,39 +241,39 @@ describe( 'DomEventObserver', () => {
 			const domUiElement = domRoot.querySelector( 'p' );
 			domUiElement.dispatchEvent( domEvent );
 
-			const data = evtSpy.args[ 0 ][ 1 ];
+			const data = evtSpy.mock.calls[ 0 ][ 1 ];
 
-			sinon.assert.calledOnce( evtSpy );
-			expect( data.target ).to.equal( uiElement );
+			expect( evtSpy ).toHaveBeenCalledOnce();
+			expect( data.target ).toBe( uiElement );
 		} );
 
 		it( 'events from inside of UIElement should target UIElement', () => {
 			const domUiElementChild = domRoot.querySelector( 'span' );
 			domUiElementChild.dispatchEvent( domEvent );
 
-			const data = evtSpy.args[ 0 ][ 1 ];
+			const data = evtSpy.mock.calls[ 0 ][ 1 ];
 
-			sinon.assert.calledOnce( evtSpy );
-			expect( data.target ).to.equal( uiElement );
+			expect( evtSpy ).toHaveBeenCalledOnce();
+			expect( data.target ).toBe( uiElement );
 		} );
 	} );
 
 	describe( 'fire', () => {
 		it( 'should do nothing if observer is disabled', () => {
 			const testObserver = new ClickObserver( view );
-			const fireSpy = sinon.spy( viewDocument, 'fire' );
+			const fireSpy = vi.spyOn( viewDocument, 'fire' );
 
 			testObserver.disable();
 
 			testObserver.fire( 'click', {} );
 
-			expect( fireSpy.called ).to.be.false;
+			expect( fireSpy ).not.toHaveBeenCalled();
 
 			testObserver.enable();
 
 			testObserver.fire( 'click', {} );
 
-			expect( fireSpy.calledOnce ).to.be.true;
+			expect( fireSpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -281,7 +281,7 @@ describe( 'DomEventObserver', () => {
 		it( 'should stop listening to events fired by DOM element', () => {
 			const domElement = document.createElement( 'p' );
 			const domEvent = new MouseEvent( 'click' );
-			const evtSpy = sinon.spy();
+			const evtSpy = vi.fn();
 
 			createViewRoot( viewDocument );
 			view.attachDomRoot( domElement );
@@ -292,7 +292,7 @@ describe( 'DomEventObserver', () => {
 
 			domElement.dispatchEvent( domEvent );
 
-			expect( evtSpy.called ).to.be.false;
+			expect( evtSpy ).not.toHaveBeenCalled();
 		} );
 	} );
 } );

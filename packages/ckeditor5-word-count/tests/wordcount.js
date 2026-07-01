@@ -3,12 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
+
 import { WordCount } from '../src/wordcount.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, ModelPosition } from '@ckeditor/ckeditor5-engine';
 import { add as addTranslations, _clearTranslations, env } from '@ckeditor/ckeditor5-utils';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
@@ -21,7 +22,9 @@ import { ImageCaptionEditing, ImageBlockEditing } from '@ckeditor/ckeditor5-imag
 const DELAY = 300;
 
 describe( 'WordCount', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	let wordCountPlugin, editor, model;
 
@@ -42,143 +45,143 @@ describe( 'WordCount', () => {
 	} );
 
 	it( 'should have `licenseFeatureCode` static flag set to `WC`', () => {
-		expect( WordCount.licenseFeatureCode ).to.equal( 'WC' );
+		expect( WordCount.licenseFeatureCode ).toBe( 'WC' );
 	} );
 
 	describe( 'constructor()', () => {
 		describe( '#words property', () => {
 			it( 'is defined', () => {
-				expect( wordCountPlugin.words ).to.equal( 0 );
+				expect( wordCountPlugin.words ).toBe( 0 );
 			} );
 
 			it( 'returns the number of words right away', () => {
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
-				expect( wordCountPlugin.words ).to.equal( 2 );
+				expect( wordCountPlugin.words ).toBe( 2 );
 
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world</paragraph>' );
-				expect( wordCountPlugin.words ).to.equal( 2 );
+				expect( wordCountPlugin.words ).toBe( 2 );
 
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
-				expect( wordCountPlugin.words ).to.equal( 1 );
+				expect( wordCountPlugin.words ).toBe( 1 );
 
 				_setModelData( model, '' );
-				expect( wordCountPlugin.words ).to.equal( 0 );
+				expect( wordCountPlugin.words ).toBe( 0 );
 			} );
 
-			it( 'is observable', done => {
-				const spy = sinon.spy();
+			it( 'is observable', async () => {
+				const spy = vi.fn();
 
 				wordCountPlugin.on( 'change:words', spy );
 
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
 
-				setTimeout( () => {
-					// The #update event fired once because it is throttled.
-					sinon.assert.calledOnce( spy );
-					expect( spy.firstCall.args[ 2 ] ).to.equal( 1 );
+				await new Promise( resolve => {
+					setTimeout( resolve, DELAY );
+				} );
 
-					done();
-				}, DELAY );
+				// The #update event fired once because it is throttled.
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( spy.mock.calls[ 0 ][ 2 ] ).toBe( 1 );
 			} );
 		} );
 
 		describe( '#characters property', () => {
 			it( 'is defined', () => {
-				expect( wordCountPlugin.characters ).to.equal( 0 );
+				expect( wordCountPlugin.characters ).toBe( 0 );
 			} );
 
 			it( 'returns the number of characters right away', () => {
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
-				expect( wordCountPlugin.characters ).to.equal( 12 );
+				expect( wordCountPlugin.characters ).toBe( 12 );
 
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world</paragraph>' );
-				expect( wordCountPlugin.characters ).to.equal( 11 );
+				expect( wordCountPlugin.characters ).toBe( 11 );
 
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
-				expect( wordCountPlugin.characters ).to.equal( 5 );
+				expect( wordCountPlugin.characters ).toBe( 5 );
 
 				_setModelData( model, '' );
-				expect( wordCountPlugin.characters ).to.equal( 0 );
+				expect( wordCountPlugin.characters ).toBe( 0 );
 			} );
 
-			it( 'is observable', done => {
-				const spy = sinon.spy();
+			it( 'is observable', async () => {
+				const spy = vi.fn();
 
 				wordCountPlugin.on( 'change:characters', spy );
 
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
 
-				setTimeout( () => {
-					// The #update event fired once because it is throttled.
-					sinon.assert.calledOnce( spy );
-					expect( spy.firstCall.args[ 2 ] ).to.equal( 5 );
+				await new Promise( resolve => {
+					setTimeout( resolve, DELAY );
+				} );
 
-					done();
-				}, DELAY );
+				// The #update event fired once because it is throttled.
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( spy.mock.calls[ 0 ][ 2 ] ).toBe( 5 );
 			} );
 		} );
 
 		it( 'has a name', () => {
-			expect( WordCount.pluginName ).to.equal( 'WordCount' );
+			expect( WordCount.pluginName ).toBe( 'WordCount' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( WordCount.isOfficialPlugin ).to.be.true;
+			expect( WordCount.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-			expect( WordCount.isPremiumPlugin ).to.be.true;
+			expect( WordCount.isPremiumPlugin ).toBe( true );
 		} );
 	} );
 
 	describe( 'functionality', () => {
 		describe( 'counting words', () => {
 			beforeEach( () => {
-				expect( wordCountPlugin.words ).to.equal( 0 );
+				expect( wordCountPlugin.words ).toBe( 0 );
 			} );
 
 			it( 'should count a number as a word', () => {
 				_setModelData( model, '<paragraph>1 12 3,5 3/4 1.2 0</paragraph>' );
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 6 );
+				expect( wordCountPlugin.words ).toBe( 6 );
 			} );
 
 			it( 'should count a single letter as a word', () => {
 				_setModelData( model, '<paragraph>a</paragraph>' );
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 1 );
+				expect( wordCountPlugin.words ).toBe( 1 );
 			} );
 
 			it( 'should count an e-mail as a single word', () => {
 				_setModelData( model, '<paragraph>j.doe@cksource.com</paragraph>' );
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 1 );
+				expect( wordCountPlugin.words ).toBe( 1 );
 			} );
 
 			it( 'should ignore apostrophes in words', () => {
 				_setModelData( model, '<paragraph>Foo\'bar</paragraph>' );
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 1 );
+				expect( wordCountPlugin.words ).toBe( 1 );
 			} );
 
 			it( 'should ignore dots in words', () => {
 				_setModelData( model, '<paragraph>Foo.bar</paragraph>' );
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 1 );
+				expect( wordCountPlugin.words ).toBe( 1 );
 			} );
 
 			it( 'should count words in links', () => {
 				_setModelData( model, '<paragraph><$text linkHref="http://www.cksource.com">CK Source</$text></paragraph>' );
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 2 );
+				expect( wordCountPlugin.words ).toBe( 2 );
 			} );
 
 			it( 'should not count the string with no letters or numbers as a word', () => {
 				_setModelData( model, '<paragraph>(@#$%^*()) . ??? @ --- ...</paragraph>' );
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 0 );
+				expect( wordCountPlugin.words ).toBe( 0 );
 			} );
 
 			it( 'should not count the list item number/bullet as a word', () => {
@@ -189,7 +192,7 @@ describe( 'WordCount', () => {
 				);
 
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 2 );
+				expect( wordCountPlugin.words ).toBe( 2 );
 			} );
 
 			it( 'should count words in the image caption', () => {
@@ -200,7 +203,7 @@ describe( 'WordCount', () => {
 				);
 
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 2 );
+				expect( wordCountPlugin.words ).toBe( 2 );
 			} );
 
 			it( 'should count words in the table', () => {
@@ -220,7 +223,7 @@ describe( 'WordCount', () => {
 				);
 
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 6 );
+				expect( wordCountPlugin.words ).toBe( 6 );
 			} );
 
 			it( 'should separate words with the end of the paragraph', () => {
@@ -228,59 +231,55 @@ describe( 'WordCount', () => {
 				'<paragraph>Bar</paragraph>' );
 
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 2 );
+				expect( wordCountPlugin.words ).toBe( 2 );
 			} );
 
 			it( 'should separate words with the new line character', () => {
 				_setModelData( model, '<paragraph>Foo\nBar</paragraph>' );
 
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 2 );
+				expect( wordCountPlugin.words ).toBe( 2 );
 			} );
 
 			it( 'should separate words with the soft break', () => {
 				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>Bar</paragraph>' );
 
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 2 );
+				expect( wordCountPlugin.words ).toBe( 2 );
 			} );
 
 			it( 'should not separate words with the special characters', () => {
 				_setModelData( model, '<paragraph>F!o@o-B#a$r%F^o*B(a)r_F-o+o=B£a§r`F~o,B,a.F/o?o;B:a\'r"F\\o|oB{ar}</paragraph>' );
 
 				wordCountPlugin._refreshStats();
-				expect( wordCountPlugin.words ).to.equal( 1 );
+				expect( wordCountPlugin.words ).toBe( 1 );
 			} );
 
-			it( 'should count international words', function() {
-				if ( !env.features.isRegExpUnicodePropertySupported ) {
-					this.skip();
-				}
-
+			( env.features.isRegExpUnicodePropertySupported ? it : it.skip )( 'should count international words', () => {
 				_setModelData( model, '<paragraph>שמש 太陽 ดวงอาทิตย์ شمس ਸੂਰਜ słońce</paragraph>' );
 				wordCountPlugin._refreshStats();
 
-				expect( wordCountPlugin.words ).to.equal( 6 );
+				expect( wordCountPlugin.words ).toBe( 6 );
 			} );
 
 			describe( 'ES2018 RegExp Unicode property fallback', () => {
 				const originalPropertiesSupport = env.features.isRegExpUnicodePropertySupported;
 
-				before( () => {
+				beforeAll( () => {
 					env.features.isRegExpUnicodePropertySupported = false;
 				} );
 
-				after( () => {
+				afterAll( () => {
 					env.features.isRegExpUnicodePropertySupported = originalPropertiesSupport;
 				} );
 
 				it( 'should use different regexp when unicode properties are not supported', () => {
-					expect( wordCountPlugin.words ).to.equal( 0 );
+					expect( wordCountPlugin.words ).toBe( 0 );
 
 					_setModelData( model, '<paragraph>hello world.</paragraph>' );
 					wordCountPlugin._refreshStats();
 
-					expect( wordCountPlugin.words ).to.equal( 2 );
+					expect( wordCountPlugin.words ).toBe( 2 );
 				} );
 			} );
 		} );
@@ -290,11 +289,11 @@ describe( 'WordCount', () => {
 
 			wordCountPlugin._refreshStats();
 
-			expect( wordCountPlugin.characters ).to.equal( 12 );
+			expect( wordCountPlugin.characters ).toBe( 12 );
 		} );
 
 		it( 'should not count enter as a character', () => {
-			expect( wordCountPlugin.characters ).to.equal( 0 );
+			expect( wordCountPlugin.characters ).toBe( 0 );
 
 			_setModelData( model, '<paragraph>Fo<softBreak></softBreak>o</paragraph>' +
 				'<paragraph>Foo</paragraph>' +
@@ -312,29 +311,29 @@ describe( 'WordCount', () => {
 
 			wordCountPlugin._refreshStats();
 
-			expect( wordCountPlugin.characters ).to.equal( 9 );
+			expect( wordCountPlugin.characters ).toBe( 9 );
 		} );
 
 		describe( '#update event', () => {
 			it( 'fires with the actual number of characters and words', () => {
-				const fake = sinon.fake();
+				const fake = vi.fn();
 				wordCountPlugin.on( 'update', fake );
 
 				wordCountPlugin._refreshStats();
 
-				sinon.assert.calledOnce( fake );
-				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 0, characters: 0 } );
+				expect( fake ).toHaveBeenCalledTimes( 1 );
+				expect( fake ).toHaveBeenNthCalledWith( 1, expect.anything(), { words: 0, characters: 0 } );
 
 				// _refreshStats is throttled, so for this test case is run manually
 				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 				wordCountPlugin._refreshStats();
 
-				sinon.assert.calledTwice( fake );
-				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 2, characters: 12 } );
+				expect( fake ).toHaveBeenCalledTimes( 2 );
+				expect( fake ).toHaveBeenNthCalledWith( 2, expect.anything(), { words: 2, characters: 12 } );
 			} );
 
 			it( 'should be fired after editor initialization', () => {
-				const fake = sinon.fake();
+				const fake = vi.fn();
 
 				return VirtualTestEditor.create( {
 					plugins: [ WordCount, Paragraph, ShiftEnter, TableEditing ],
@@ -343,7 +342,7 @@ describe( 'WordCount', () => {
 					}
 				} )
 					.then( () => {
-						sinon.assert.calledOnce( fake );
+						expect( fake ).toHaveBeenCalledTimes( 1 );
 					} );
 			} );
 		} );
@@ -356,64 +355,60 @@ describe( 'WordCount', () => {
 		} );
 
 		it( 'provides html element', () => {
-			expect( container ).to.be.instanceof( HTMLElement );
+			expect( container ).toBeInstanceOf( HTMLElement );
 		} );
 
 		it( 'provided element has proper structure', () => {
-			expect( container.tagName ).to.equal( 'DIV' );
-			expect( container.classList.contains( 'ck' ) ).to.be.true;
-			expect( container.classList.contains( 'ck-word-count' ) ).to.be.true;
+			expect( container.tagName ).toBe( 'DIV' );
+			expect( container.classList.contains( 'ck' ) ).toBe( true );
+			expect( container.classList.contains( 'ck-word-count' ) ).toBe( true );
 
 			const children = Array.from( container.children );
-			expect( children.length ).to.equal( 2 );
-			expect( children[ 0 ].tagName ).to.equal( 'DIV' );
-			expect( children[ 0 ].innerHTML ).to.equal( 'Words: 0' );
-			expect( children[ 1 ].tagName ).to.equal( 'DIV' );
-			expect( children[ 1 ].innerHTML ).to.equal( 'Characters: 0' );
+			expect( children.length ).toBe( 2 );
+			expect( children[ 0 ].tagName ).toBe( 'DIV' );
+			expect( children[ 0 ].innerHTML ).toBe( 'Words: 0' );
+			expect( children[ 1 ].tagName ).toBe( 'DIV' );
+			expect( children[ 1 ].innerHTML ).toBe( 'Characters: 0' );
 		} );
 
 		it( 'updates container content', () => {
-			expect( container.innerText ).to.equal( 'Words: 0Characters: 0' );
+			expect( container.innerText ).toBe( 'Words: 0Characters: 0' );
 
 			_setModelData( model, '<paragraph>Foo bar</paragraph>' +
 				'<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 
 			wordCountPlugin._refreshStats();
 
-			expect( container.innerText ).to.equal( 'Words: 4Characters: 19' );
+			expect( container.innerText ).toBe( 'Words: 4Characters: 19' );
 		} );
 
 		it( 'subsequent calls provides the same element', () => {
 			const newContainer = wordCountPlugin.wordCountContainer;
 
-			expect( container ).to.equal( newContainer );
+			expect( container ).toBe( newContainer );
 		} );
 
 		describe( 'destroy()', () => {
-			it( 'html element is removed', done => {
+			it( 'html element is removed', () => {
 				const frag = document.createDocumentFragment();
 
 				frag.appendChild( container );
 
-				expect( frag.querySelector( '*' ) ).to.be.instanceof( HTMLElement );
+				expect( frag.querySelector( '*' ) ).toBeInstanceOf( HTMLElement );
 
-				editor.destroy()
+				return editor.destroy()
 					.then( () => {
-						expect( frag.querySelector( '*' ) ).to.be.null;
-					} )
-					.then( done )
-					.catch( done );
+						expect( frag.querySelector( '*' ) ).toBeNull();
+					} );
 			} );
 
-			it( 'method is called', done => {
-				const spy = sinon.spy( wordCountPlugin, 'destroy' );
+			it( 'method is called', () => {
+				const spy = vi.spyOn( wordCountPlugin, 'destroy' );
 
-				editor.destroy()
+				return editor.destroy()
 					.then( () => {
-						sinon.assert.calledOnce( spy );
-					} )
-					.then( done )
-					.catch( done );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
+					} );
 			} );
 
 			it( 'should not throw an error if container is not specified', () => {
@@ -428,40 +423,42 @@ describe( 'WordCount', () => {
 	} );
 
 	describe( '_refreshStats and throttle', () => {
-		beforeEach( done => {
+		beforeEach( () => {
 			// We need to flush initial throttle value after editor's initialization
-			setTimeout( done, DELAY );
+			return new Promise( resolve => {
+				setTimeout( resolve, DELAY );
+			} );
 		} );
 
-		it( 'gets update after model data change', done => {
-			const fake = sinon.fake();
+		it( 'gets update after model data change', async () => {
+			const fake = vi.fn();
 
 			wordCountPlugin.on( 'update', fake );
 
 			// Initial change in model should be immediately reflected in word-count
 			_setModelData( model, '<paragraph>Hello world.</paragraph>' );
 
-			sinon.assert.calledOnce( fake );
-			sinon.assert.calledWith( fake, sinon.match.any, { words: 2, characters: 12 } );
-
-			// Subsequent updates should be throttle and run with last parameters
-			setTimeout( () => {
-				sinon.assert.calledTwice( fake );
-				sinon.assert.calledWith( fake, sinon.match.any, { words: 2, characters: 9 } );
-
-				done();
-			}, DELAY );
+			expect( fake ).toHaveBeenCalledTimes( 1 );
+			expect( fake ).toHaveBeenNthCalledWith( 1, expect.anything(), { words: 2, characters: 12 } );
 
 			_setModelData( model, '<paragraph>Hello world</paragraph>' );
 			_setModelData( model, '<paragraph>Hello worl</paragraph>' );
 			_setModelData( model, '<paragraph>Hello wor</paragraph>' );
+
+			// Subsequent updates should be throttle and run with last parameters
+			await new Promise( resolve => {
+				setTimeout( resolve, DELAY );
+			} );
+
+			expect( fake ).toHaveBeenCalledTimes( 2 );
+			expect( fake ).toHaveBeenNthCalledWith( 2, expect.anything(), { words: 2, characters: 9 } );
 		} );
 
-		it( 'is not update after selection change', done => {
+		it( 'is not update after selection change', async () => {
 			_setModelData( model, '<paragraph>Hello[] world.</paragraph>' );
 
-			const fake = sinon.fake();
-			const fakeSelectionChange = sinon.fake();
+			const fake = vi.fn();
+			const fakeSelectionChange = vi.fn();
 
 			wordCountPlugin.on( 'update', fake );
 			model.document.on( 'change', fakeSelectionChange );
@@ -478,12 +475,12 @@ describe( 'WordCount', () => {
 				writer.setSelection( range );
 			} );
 
-			setTimeout( () => {
-				sinon.assert.notCalled( fake );
-				sinon.assert.called( fakeSelectionChange );
+			await new Promise( resolve => {
+				setTimeout( resolve, DELAY );
+			} );
 
-				done();
-			}, DELAY );
+			expect( fake ).not.toHaveBeenCalled();
+			expect( fakeSelectionChange ).toHaveBeenCalled();
 		} );
 	} );
 
@@ -499,7 +496,7 @@ describe( 'WordCount', () => {
 					const wordCountPlugin = editor.plugins.get( 'WordCount' );
 					const container = wordCountPlugin.wordCountContainer;
 
-					expect( container.innerText ).to.equal( 'Characters: 0' );
+					expect( container.innerText ).toBe( 'Characters: 0' );
 				} );
 		} );
 
@@ -514,12 +511,12 @@ describe( 'WordCount', () => {
 					const wordCountPlugin = editor.plugins.get( 'WordCount' );
 					const container = wordCountPlugin.wordCountContainer;
 
-					expect( container.innerText ).to.equal( 'Words: 0' );
+					expect( container.innerText ).toBe( 'Words: 0' );
 				} );
 		} );
 
 		it( 'should call function registered under config.wordCount.onUpdate', () => {
-			const fake = sinon.fake();
+			const fake = vi.fn();
 			return VirtualTestEditor.create( {
 				plugins: [ WordCount, Paragraph ],
 				wordCount: {
@@ -527,7 +524,7 @@ describe( 'WordCount', () => {
 				}
 			} )
 				.then( editor => {
-					sinon.assert.calledWithExactly( fake, { words: 0, characters: 0 } );
+					expect( fake ).toHaveBeenNthCalledWith( 1, { words: 0, characters: 0 } );
 
 					_setModelData( editor.model, '<paragraph>Foo Bar</paragraph>' );
 				} )
@@ -535,14 +532,14 @@ describe( 'WordCount', () => {
 					setTimeout( resolve, DELAY );
 				} ) )
 				.then( () => {
-					sinon.assert.calledWithExactly( fake, { words: 2, characters: 7 } );
+					expect( fake ).toHaveBeenLastCalledWith( { words: 2, characters: 7 } );
 				} );
 		} );
 
 		it( 'should append word count container in element referenced in config.wordCount.container', () => {
 			const element = document.createElement( 'div' );
 
-			expect( element.children.length ).to.equal( 0 );
+			expect( element.children.length ).toBe( 0 );
 
 			return VirtualTestEditor.create( {
 				plugins: [ WordCount, Paragraph ],
@@ -551,17 +548,17 @@ describe( 'WordCount', () => {
 				}
 			} )
 				.then( editor => {
-					expect( element.children.length ).to.equal( 1 );
+					expect( element.children.length ).toBe( 1 );
 
 					const wordCountPlugin = editor.plugins.get( 'WordCount' );
 
-					expect( element.firstElementChild ).to.equal( wordCountPlugin.wordCountContainer );
+					expect( element.firstElementChild ).toBe( wordCountPlugin.wordCountContainer );
 				} );
 		} );
 	} );
 
 	describe( 'translations', () => {
-		before( () => {
+		beforeAll( () => {
 			addTranslations( 'pl', {
 				'Words: %0': 'Słowa: %0',
 				'Characters: %0': 'Znaki: %0'
@@ -572,7 +569,7 @@ describe( 'WordCount', () => {
 			} );
 		} );
 
-		after( () => {
+		afterAll( () => {
 			_clearTranslations();
 		} );
 
@@ -585,7 +582,7 @@ describe( 'WordCount', () => {
 					const wordCountPlugin = editor.plugins.get( 'WordCount' );
 					const container = wordCountPlugin.wordCountContainer;
 
-					expect( container.innerText ).to.equal( 'Słowa: 0Znaki: 0' );
+					expect( container.innerText ).toBe( 'Słowa: 0Znaki: 0' );
 				} );
 		} );
 	} );
@@ -616,14 +613,14 @@ describe( 'WordCount', () => {
 			_setModelData( model, '<paragraph>foo bar</paragraph>', { rootName: 'foo' } );
 			_setModelData( model, '<paragraph>lorem ipsum</paragraph>', { rootName: 'bar' } );
 
-			expect( wordCountPlugin.characters ).to.be.equal( 18 );
+			expect( wordCountPlugin.characters ).toBe( 18 );
 		} );
 
 		it( 'should sum words of each root', () => {
 			_setModelData( model, '<paragraph>foo bar</paragraph>', { rootName: 'foo' } );
 			_setModelData( model, '<paragraph>lorem ipsum</paragraph>', { rootName: 'bar' } );
 
-			expect( wordCountPlugin.words ).to.be.equal( 4 );
+			expect( wordCountPlugin.words ).toBe( 4 );
 		} );
 	} );
 } );

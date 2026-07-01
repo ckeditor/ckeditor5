@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeAll } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
@@ -35,11 +36,11 @@ describe( 'DowncastWriter', () => {
 
 			const newRange = writer.move( srcSelection.getFirstRange(), dstSelection.getFirstPosition() );
 
-			expect( _stringifyView( dstView, newRange, { showType: true, showPriority: true } ) ).to.equal( destinationAfterMove );
-			expect( _stringifyView( srcView, null, { showType: true, showPriority: true } ) ).to.equal( sourceAfterMove );
+			expect( _stringifyView( dstView, newRange, { showType: true, showPriority: true } ) ).toBe( destinationAfterMove );
+			expect( _stringifyView( srcView, null, { showType: true, showPriority: true } ) ).toBe( sourceAfterMove );
 		}
 
-		before( () => {
+		beforeAll( () => {
 			document = new ViewDocument( new StylesProcessor() );
 			writer = new ViewDowncastWriter( document );
 		} );
@@ -127,7 +128,7 @@ describe( 'DowncastWriter', () => {
 			const newRange = writer.move( selection.getFirstRange(), ViewPosition._createAt( view, 2 ) );
 
 			const expectedView = '<container:p>b[<attribute:b>a}c</attribute:b></container:p>';
-			expect( _stringifyView( view, newRange, { showType: true } ) ).to.equal( expectedView );
+			expect( _stringifyView( view, newRange, { showType: true } ) ).toBe( expectedView );
 		} );
 
 		it( 'should correctly move text nodes inside same container', () => {
@@ -138,7 +139,7 @@ describe( 'DowncastWriter', () => {
 			const viewText = view.getChild( 3 );
 			const newRange = writer.move( selection.getFirstRange(), ViewPosition._createAt( viewText, 1 ) );
 
-			expect( _stringifyView( view, newRange, { showType: true } ) ).to.equal(
+			expect( _stringifyView( view, newRange, { showType: true } ) ).toBe(
 				'<container:p><attribute:b>ad</attribute:b>y[<attribute:b>b</attribute:b>xx<attribute:b>c</attribute:b>]y</container:p>'
 			);
 		} );
@@ -231,15 +232,15 @@ describe( 'DowncastWriter', () => {
 
 			mapper.bindElementToMarker( attrElemA, 'foo' );
 
-			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 2 );
+			expect( mapper.markerNameToElements( 'foo' ).size ).toBe( 2 );
 
 			writer.remove( writer.createRangeOn( attrElemA ) );
 
-			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
+			expect( mapper.markerNameToElements( 'foo' ).size ).toBe( 1 );
 
 			writer.move( writer.createRangeOn( attrElemB ), new ViewPosition( dstContainer, 0 ) );
 
-			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
+			expect( mapper.markerNameToElements( 'foo' ).size ).toBe( 1 );
 		} );
 	} );
 } );

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { UnderlineEditing } from '../../src/underline/underlineediting.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -30,41 +32,41 @@ describe( 'UnderlineEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( UnderlineEditing.pluginName ).to.equal( 'UnderlineEditing' );
+		expect( UnderlineEditing.pluginName ).toBe( 'UnderlineEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( UnderlineEditing.isOfficialPlugin ).to.be.true;
+		expect( UnderlineEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( UnderlineEditing.isPremiumPlugin ).to.be.false;
+		expect( UnderlineEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( UnderlineEditing ) ).to.be.instanceOf( UnderlineEditing );
+		expect( editor.plugins.get( UnderlineEditing ) ).toBeInstanceOf( UnderlineEditing );
 	} );
 
 	it( 'should add keystroke accessibility info', () => {
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).toContainEqual( {
 			label: 'Underline text',
 			keystroke: 'CTRL+U'
 		} );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'underline' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'underline' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'underline' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'underline' ) ).toBe( true );
 	} );
 
 	it( 'should be marked with a formatting property', () => {
-		expect( model.schema.getAttributeProperties( 'underline' ) ).to.include( {
+		expect( model.schema.getAttributeProperties( 'underline' ) ).toMatchObject( {
 			isFormatting: true
 		} );
 	} );
 
 	it( 'its attribute is marked with a copOnEnter property', () => {
-		expect( model.schema.getAttributeProperties( 'underline' ) ).to.include( {
+		expect( model.schema.getAttributeProperties( 'underline' ) ).toMatchObject( {
 			copyOnEnter: true
 		} );
 	} );
@@ -73,8 +75,8 @@ describe( 'UnderlineEditing', () => {
 		it( 'should register underline command', () => {
 			const command = editor.commands.get( 'underline' );
 
-			expect( command ).to.be.instanceOf( AttributeCommand );
-			expect( command ).to.have.property( 'attributeKey', 'underline' );
+			expect( command ).toBeInstanceOf( AttributeCommand );
+			expect( command ).toHaveProperty( 'attributeKey', 'underline' );
 		} );
 	} );
 
@@ -83,27 +85,27 @@ describe( 'UnderlineEditing', () => {
 			editor.setData( '<p><u>foo</u>bar</p>' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
+				.toBe( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><u>foo</u>bar</p>' );
+			expect( editor.getData() ).toBe( '<p><u>foo</u>bar</p>' );
 		} );
 
 		it( 'should convert text-decoration:underline to underline attribute', () => {
 			editor.setData( '<p><span style="text-decoration: underline;">foo</span>bar</p>' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
+				.toBe( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><u>foo</u>bar</p>' );
+			expect( editor.getData() ).toBe( '<p><u>foo</u>bar</p>' );
 		} );
 
 		it( 'should be integrated with autoparagraphing', () => {
 			editor.setData( '<u>foo</u>bar' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
+				.toBe( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><u>foo</u>bar</p>' );
+			expect( editor.getData() ).toBe( '<p><u>foo</u>bar</p>' );
 		} );
 	} );
 
@@ -111,7 +113,7 @@ describe( 'UnderlineEditing', () => {
 		it( 'should convert attribute', () => {
 			_setModelData( model, '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><u>foo</u>bar</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe( '<p><u>foo</u>bar</p>' );
 		} );
 	} );
 } );

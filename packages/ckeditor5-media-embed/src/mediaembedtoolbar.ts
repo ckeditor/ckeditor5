@@ -7,7 +7,7 @@
  * @module media-embed/mediaembedtoolbar
  */
 
-import { Plugin, type ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf, type ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
 import type { ComponentFactory } from '@ckeditor/ckeditor5-ui';
 import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
@@ -25,8 +25,8 @@ export class MediaEmbedToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ WidgetToolbarRepository ] as const;
+	public static get requires(): PluginDependenciesOf<[ WidgetToolbarRepository ]> {
+		return [ WidgetToolbarRepository ];
 	}
 
 	/**
@@ -76,4 +76,3 @@ function normalizeDeclarativeConfig(
 			typeof item !== 'string' || !item.startsWith( 'mediaEmbed:' ) || factory.has( item )
 		);
 }
-

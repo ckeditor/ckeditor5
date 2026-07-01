@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
+
 import { ListWalker } from '../../../src/list/utils/listwalker.js';
 import { modelList } from '../_utils/utils.js';
 
@@ -38,7 +40,7 @@ describe( 'List - utils - ListWalker', () => {
 		} );
 		const blocks = Array.from( walker );
 
-		expect( blocks.length ).to.equal( 0 );
+		expect( blocks.length ).toBe( 0 );
 	} );
 
 	describe( 'same level iterating (sameIndent = true)', () => {
@@ -57,10 +59,10 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks.length ).toBe( 3 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 1 ) );
+			expect( blocks[ 2 ] ).toBe( fragment.getChild( 2 ) );
 		} );
 
 		it( 'should stop iterating on first node without `listItemId` attribute', () => {
@@ -78,9 +80,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should not iterate over nodes without `listItemId` attribute', () => {
@@ -98,7 +100,7 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 0 );
+			expect( blocks.length ).toBe( 0 );
 		} );
 
 		it( 'should skip start block (includeSelf = false, direction = forward)', () => {
@@ -116,9 +118,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 2 ) );
 		} );
 
 		it( 'should skip start block (includeSelf = false, direction = backward)', () => {
@@ -136,9 +138,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 0 ) );
 		} );
 
 		it( 'should return items with the same ID', () => {
@@ -157,9 +159,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should return items of the same type', () => {
@@ -178,9 +180,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should return items of the same additional attributes (single specified)', () => {
@@ -199,9 +201,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should return items of the same additional attributes (multiple specified)', () => {
@@ -221,9 +223,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should return items while iterating over a nested list', () => {
@@ -242,9 +244,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 2 ) );
 		} );
 
 		it( 'should skip nested items (higherIndent = false)', () => {
@@ -263,9 +265,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should include nested items (higherIndent = true)', () => {
@@ -287,11 +289,11 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 4 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks.length ).toBe( 4 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toBe( fragment.getChild( 3 ) );
+			expect( blocks[ 3 ] ).toBe( fragment.getChild( 4 ) );
 		} );
 
 		it( 'should include nested items (higherIndent = true, sameItemId = true, forward)', () => {
@@ -314,11 +316,11 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 4 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks.length ).toBe( 4 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toBe( fragment.getChild( 3 ) );
+			expect( blocks[ 3 ] ).toBe( fragment.getChild( 4 ) );
 		} );
 
 		it( 'should include nested items (higherIndent = true, sameItemId = true, backward)', () => {
@@ -341,11 +343,11 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 4 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 4 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks.length ).toBe( 4 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 4 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 3 ) );
+			expect( blocks[ 2 ] ).toBe( fragment.getChild( 2 ) );
+			expect( blocks[ 3 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should not include nested items from other item (higherIndent = true, sameItemId = true, backward)', () => {
@@ -368,8 +370,8 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 1 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks.length ).toBe( 1 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 4 ) );
 		} );
 
 		it( 'should return all list blocks (higherIndent = true, sameIndent = true, lowerIndent = true)', () => {
@@ -392,12 +394,12 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 5 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
-			expect( blocks[ 4 ] ).to.equal( fragment.getChild( 5 ) );
+			expect( blocks.length ).toBe( 5 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toBe( fragment.getChild( 3 ) );
+			expect( blocks[ 3 ] ).toBe( fragment.getChild( 4 ) );
+			expect( blocks[ 4 ] ).toBe( fragment.getChild( 5 ) );
 		} );
 
 		describe( 'first()', () => {
@@ -417,7 +419,7 @@ describe( 'List - utils - ListWalker', () => {
 					sameIndent: true
 				} );
 
-				expect( block ).to.equal( fragment.getChild( 3 ) );
+				expect( block ).toBe( fragment.getChild( 3 ) );
 			} );
 
 			it( 'should return first block on the same indent level (forward)', () => {
@@ -436,7 +438,7 @@ describe( 'List - utils - ListWalker', () => {
 					sameIndent: true
 				} );
 
-				expect( block ).to.equal( fragment.getChild( 4 ) );
+				expect( block ).toBe( fragment.getChild( 4 ) );
 			} );
 
 			it( 'should return first block on the same indent level (backward)', () => {
@@ -455,7 +457,7 @@ describe( 'List - utils - ListWalker', () => {
 					sameIndent: true
 				} );
 
-				expect( block ).to.equal( fragment.getChild( 1 ) );
+				expect( block ).toBe( fragment.getChild( 1 ) );
 			} );
 		} );
 	} );
@@ -478,9 +480,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 2 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should return all nested blocks (higherIndent = true, sameIndent = false)', () => {
@@ -500,11 +502,11 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 4 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks.length ).toBe( 4 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toBe( fragment.getChild( 3 ) );
+			expect( blocks[ 3 ] ).toBe( fragment.getChild( 4 ) );
 		} );
 
 		it( 'should return all nested blocks (higherIndent = true, sameIndent = false, backward)', () => {
@@ -524,11 +526,11 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 4 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 4 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks.length ).toBe( 4 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 4 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 3 ) );
+			expect( blocks[ 2 ] ).toBe( fragment.getChild( 2 ) );
+			expect( blocks[ 3 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should return nested blocks next to the start element', () => {
@@ -548,9 +550,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 2 ) );
 		} );
 
 		it( 'should return nested blocks next to the start element (backward)', () => {
@@ -570,9 +572,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 4 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 4 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should return nothing there is no nested sibling', () => {
@@ -590,7 +592,7 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 0 );
+			expect( blocks.length ).toBe( 0 );
 		} );
 
 		it( 'should return nothing there is no nested sibling (backward)', () => {
@@ -608,7 +610,7 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 0 );
+			expect( blocks.length ).toBe( 0 );
 		} );
 
 		it( 'should return nothing if a the end of nested list', () => {
@@ -626,7 +628,7 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 0 );
+			expect( blocks.length ).toBe( 0 );
 		} );
 
 		it( 'should return nothing if a the start of nested list (backward)', () => {
@@ -644,7 +646,7 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 0 );
+			expect( blocks.length ).toBe( 0 );
 		} );
 
 		describe( 'first()', () => {
@@ -664,7 +666,7 @@ describe( 'List - utils - ListWalker', () => {
 					higherIndent: true
 				} );
 
-				expect( block ).to.equal( fragment.getChild( 2 ) );
+				expect( block ).toBe( fragment.getChild( 2 ) );
 			} );
 
 			it( 'should return nested sibling block (backward)', () => {
@@ -683,7 +685,7 @@ describe( 'List - utils - ListWalker', () => {
 					higherIndent: true
 				} );
 
-				expect( block ).to.equal( fragment.getChild( 3 ) );
+				expect( block ).toBe( fragment.getChild( 3 ) );
 			} );
 		} );
 	} );
@@ -704,7 +706,7 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 0 );
+			expect( blocks.length ).toBe( 0 );
 		} );
 
 		it( 'should return nothing if at top level list (backward)', () => {
@@ -722,7 +724,7 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 0 );
+			expect( blocks.length ).toBe( 0 );
 		} );
 
 		it( 'should return nothing if at top level list (forward)', () => {
@@ -740,7 +742,7 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 0 );
+			expect( blocks.length ).toBe( 0 );
 		} );
 
 		it( 'should return parent block if at the first block of nested list (backward)', () => {
@@ -758,8 +760,8 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 1 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks.length ).toBe( 1 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 0 ) );
 		} );
 
 		it( 'should return parent block if at the following block of nested list (backward)', () => {
@@ -777,8 +779,8 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 1 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks.length ).toBe( 1 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 0 ) );
 		} );
 
 		it( 'should return parent block even when there is a nested list (backward)', () => {
@@ -798,8 +800,8 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 1 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks.length ).toBe( 1 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 0 ) );
 		} );
 
 		it( 'should return parent block even when there is a nested list (forward)', () => {
@@ -819,8 +821,8 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 1 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 5 ) );
+			expect( blocks.length ).toBe( 1 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 5 ) );
 		} );
 
 		it( 'should return parent blocks (backward)', () => {
@@ -840,10 +842,10 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks.length ).toBe( 3 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 3 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toBe( fragment.getChild( 1 ) );
 		} );
 
 		it( 'should return parent blocks (forward)', () => {
@@ -864,9 +866,9 @@ describe( 'List - utils - ListWalker', () => {
 			} );
 			const blocks = Array.from( walker );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 4 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 6 ) );
+			expect( blocks.length ).toBe( 2 );
+			expect( blocks[ 0 ] ).toBe( fragment.getChild( 4 ) );
+			expect( blocks[ 1 ] ).toBe( fragment.getChild( 6 ) );
 		} );
 
 		describe( 'first()', () => {
@@ -886,7 +888,7 @@ describe( 'List - utils - ListWalker', () => {
 					lowerIndent: true
 				} );
 
-				expect( block ).to.equal( fragment.getChild( 1 ) );
+				expect( block ).toBe( fragment.getChild( 1 ) );
 			} );
 		} );
 	} );

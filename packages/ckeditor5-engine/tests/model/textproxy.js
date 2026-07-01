@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
 import { ModelTextProxy } from '../../src/model/textproxy.js';
@@ -29,52 +30,52 @@ describe( 'ModelTextProxy', () => {
 	} );
 
 	it( 'should have data property', () => {
-		expect( textProxy ).to.have.property( 'data' ).that.equals( 'oba' );
-		expect( textProxyNoParent ).to.have.property( 'data' ).that.equals( 'b' );
+		expect( textProxy ).toHaveProperty( 'data', 'oba' );
+		expect( textProxyNoParent ).toHaveProperty( 'data', 'b' );
 	} );
 
 	it( 'should have root property', () => {
-		expect( textProxy ).to.have.property( 'root' ).that.equals( root );
-		expect( textProxyNoParent ).to.have.property( 'root' ).that.equals( textNoParent );
+		expect( textProxy ).toHaveProperty( 'root', root );
+		expect( textProxyNoParent ).toHaveProperty( 'root', textNoParent );
 	} );
 
 	it( 'should have parent property', () => {
-		expect( textProxy ).to.have.property( 'parent' ).that.equals( element );
-		expect( textProxyNoParent ).to.have.property( 'parent' ).that.equals( null );
+		expect( textProxy ).toHaveProperty( 'parent', element );
+		expect( textProxyNoParent ).toHaveProperty( 'parent', null );
 	} );
 
 	it( 'should have textNode property', () => {
-		expect( textProxy ).to.have.property( 'textNode' ).that.equals( text );
-		expect( textProxyNoParent ).to.have.property( 'textNode' ).that.equals( textNoParent );
+		expect( textProxy ).toHaveProperty( 'textNode', text );
+		expect( textProxyNoParent ).toHaveProperty( 'textNode', textNoParent );
 	} );
 
 	it( 'should have startOffset property', () => {
-		expect( textProxy ).to.have.property( 'startOffset' ).that.equals( 5 );
-		expect( textProxyNoParent ).to.have.property( 'startOffset' ).that.is.null;
+		expect( textProxy.startOffset ).toBe( 5 );
+		expect( textProxyNoParent.startOffset ).toBeNull();
 	} );
 
 	it( 'should have offsetSize property', () => {
-		expect( textProxy ).to.have.property( 'offsetSize' ).that.equals( 3 );
-		expect( textProxyNoParent ).to.have.property( 'offsetSize' ).that.equals( 1 );
+		expect( textProxy.offsetSize ).toBe( 3 );
+		expect( textProxyNoParent.offsetSize ).toBe( 1 );
 	} );
 
 	it( 'should have endOffset property', () => {
-		expect( textProxy ).to.have.property( 'endOffset' ).that.equals( 8 );
-		expect( textProxyNoParent ).to.have.property( 'endOffset' ).that.equals( null );
+		expect( textProxy.endOffset ).toBe( 8 );
+		expect( textProxyNoParent.endOffset ).toBeNull();
 	} );
 
 	it( 'should have offsetInText property', () => {
-		expect( textProxy ).to.have.property( 'offsetInText' ).that.equals( 2 );
-		expect( textProxyNoParent ).to.have.property( 'offsetInText' ).that.equals( 1 );
+		expect( textProxy.offsetInText ).toBe( 2 );
+		expect( textProxyNoParent.offsetInText ).toBe( 1 );
 	} );
 
 	it( 'should have isPartial property', () => {
 		const startTextProxy = new ModelTextProxy( text, 0, 4 );
 		const fullTextProxy = new ModelTextProxy( text, 0, 6 );
 
-		expect( textProxy.isPartial ).to.be.true;
-		expect( startTextProxy.isPartial ).to.be.true;
-		expect( fullTextProxy.isPartial ).to.be.false;
+		expect( textProxy.isPartial ).toBe( true );
+		expect( startTextProxy.isPartial ).toBe( true );
+		expect( fullTextProxy.isPartial ).toBe( false );
 	} );
 
 	it( 'should throw if wrong offsetInText is passed', () => {
@@ -99,76 +100,76 @@ describe( 'ModelTextProxy', () => {
 
 	describe( 'is()', () => {
 		it( 'should return true for $textProxy', () => {
-			expect( textProxy.is( '$textProxy' ) ).to.be.true;
-			expect( textProxy.is( 'model:$textProxy' ) ).to.be.true;
-			expect( textProxy.is( 'textProxy' ) ).to.be.true;
-			expect( textProxy.is( 'model:textProxy' ) ).to.be.true;
+			expect( textProxy.is( '$textProxy' ) ).toBe( true );
+			expect( textProxy.is( 'model:$textProxy' ) ).toBe( true );
+			expect( textProxy.is( 'textProxy' ) ).toBe( true );
+			expect( textProxy.is( 'model:textProxy' ) ).toBe( true );
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( textProxy.is( 'node' ) ).to.be.false;
-			expect( textProxy.is( 'model:node' ) ).to.be.false;
-			expect( textProxy.is( '$text' ) ).to.be.false;
-			expect( textProxy.is( 'element' ) ).to.be.false;
-			expect( textProxy.is( 'model:element', 'imageBlock' ) ).to.be.false;
-			expect( textProxy.is( 'documentFragment' ) ).to.be.false;
-			expect( textProxy.is( 'rootElement' ) ).to.be.false;
+			expect( textProxy.is( 'node' ) ).toBe( false );
+			expect( textProxy.is( 'model:node' ) ).toBe( false );
+			expect( textProxy.is( '$text' ) ).toBe( false );
+			expect( textProxy.is( 'element' ) ).toBe( false );
+			expect( textProxy.is( 'model:element', 'imageBlock' ) ).toBe( false );
+			expect( textProxy.is( 'documentFragment' ) ).toBe( false );
+			expect( textProxy.is( 'rootElement' ) ).toBe( false );
 		} );
 	} );
 
 	describe( 'getPath', () => {
 		it( 'should return path to the text proxy', () => {
-			expect( textProxy.getPath() ).to.deep.equal( [ 0, 5 ] );
-			expect( textProxyNoParent.getPath() ).to.deep.equal( [] );
+			expect( textProxy.getPath() ).toEqual( [ 0, 5 ] );
+			expect( textProxyNoParent.getPath() ).toEqual( [] );
 		} );
 	} );
 
 	describe( 'getAncestors', () => {
 		it( 'should return proper array of ancestor nodes', () => {
-			expect( textProxy.getAncestors() ).to.deep.equal( [ root, element ] );
+			expect( textProxy.getAncestors() ).toEqual( [ root, element ] );
 		} );
 
 		it( 'should include itself if includeSelf option is set to true', () => {
-			expect( textProxy.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root, element, textProxy ] );
+			expect( textProxy.getAncestors( { includeSelf: true } ) ).toEqual( [ root, element, textProxy ] );
 		} );
 
 		it( 'should reverse order if parentFirst option is set to true', () => {
-			expect( textProxy.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ textProxy, element, root ] );
+			expect( textProxy.getAncestors( { includeSelf: true, parentFirst: true } ) ).toEqual( [ textProxy, element, root ] );
 		} );
 	} );
 
 	describe( 'attributes interface', () => {
 		describe( 'hasAttribute', () => {
 			it( 'should return true if text proxy has attribute with given key', () => {
-				expect( textProxy.hasAttribute( 'foo' ) ).to.be.true;
+				expect( textProxy.hasAttribute( 'foo' ) ).toBe( true );
 			} );
 
 			it( 'should return false if text proxy does not have attribute with given key', () => {
-				expect( textProxy.hasAttribute( 'abc' ) ).to.be.false;
+				expect( textProxy.hasAttribute( 'abc' ) ).toBe( false );
 			} );
 		} );
 
 		describe( 'getAttribute', () => {
 			it( 'should return attribute with given key if text proxy has given attribute', () => {
-				expect( textProxy.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( textProxy.getAttribute( 'foo' ) ).toBe( 'bar' );
 			} );
 
 			it( 'should return undefined if text proxy does not have given attribute', () => {
-				expect( textProxy.getAttribute( 'bar' ) ).to.be.undefined;
+				expect( textProxy.getAttribute( 'bar' ) ).toBeUndefined();
 			} );
 		} );
 
 		describe( 'getAttributes', () => {
 			it( 'should return an iterator that iterates over all attributes set on the text proxy', () => {
-				expect( Array.from( textProxy.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
-				expect( Array.from( textProxyNoParent.getAttributes() ) ).to.deep.equal( [] );
+				expect( Array.from( textProxy.getAttributes() ) ).toEqual( [ [ 'foo', 'bar' ] ] );
+				expect( Array.from( textProxyNoParent.getAttributes() ) ).toEqual( [] );
 			} );
 		} );
 
 		describe( 'getAttributeKeys', () => {
 			it( 'should return an iterator that iterates over all attribute keys set on the text proxy', () => {
-				expect( Array.from( textProxy.getAttributeKeys() ) ).to.deep.equal( [ 'foo' ] );
-				expect( Array.from( textProxyNoParent.getAttributeKeys() ) ).to.deep.equal( [] );
+				expect( Array.from( textProxy.getAttributeKeys() ) ).toEqual( [ 'foo' ] );
+				expect( Array.from( textProxyNoParent.getAttributeKeys() ) ).toEqual( [] );
 			} );
 		} );
 	} );

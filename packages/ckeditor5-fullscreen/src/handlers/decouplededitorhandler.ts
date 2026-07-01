@@ -34,7 +34,7 @@ export class FullscreenDecoupledEditorHandler extends FullscreenAbstractEditorHa
 	 */
 	public override defaultOnEnter(): HTMLElement {
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
 			this.moveToFullscreen(
 				this._editor.ui.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'

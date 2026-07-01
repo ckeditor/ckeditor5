@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconIndent, IconOutdent } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import { IndentEditing } from '../src/indentediting.js';
@@ -14,7 +14,9 @@ import { IndentUI } from '../src/indentui.js';
 describe( 'IndentUI', () => {
 	let editor, rtlEditor, element, button, rtlButton;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -124,14 +126,15 @@ describe( 'IndentUI', () => {
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
-			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
-			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
+			const executeSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
-			sinon.assert.calledOnce( focusSpy );
-			sinon.assert.callOrder( executeSpy, focusSpy );
+			expect( executeSpy ).toHaveBeenCalledTimes( 1 );
+			expect( executeSpy ).toHaveBeenCalledWith( featureName );
+			expect( focusSpy ).toHaveBeenCalledTimes( 1 );
+			expect( executeSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( focusSpy.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		it( `should bind #isEnabled to ${ featureName } command`, () => {

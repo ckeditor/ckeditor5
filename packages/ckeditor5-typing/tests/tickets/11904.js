@@ -3,12 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
+
 import { DeleteObserver } from '../../src/deleteobserver.js';
 import { InsertTextObserver } from '../../src/inserttextobserver.js';
 
 import { EditingView, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env, getCode } from '@ckeditor/ckeditor5-utils';
 import { fireBeforeInputDomEvent } from '../_utils/utils.js';
 
@@ -16,7 +17,9 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 	let view, domRoot, viewDocument;
 	let deleteSpy;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		domRoot = document.createElement( 'div' );
@@ -29,7 +32,7 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 		view.addObserver( DeleteObserver );
 		view.addObserver( InsertTextObserver );
 
-		deleteSpy = testUtils.sinon.spy();
+		deleteSpy = vi.fn();
 		viewDocument.on( 'delete', deleteSpy );
 	} );
 
@@ -48,8 +51,8 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 				keyCode: getCode( 'backspace' )
 			} ) );
 
-			sinon.assert.callCount( deleteSpy, 1 );
-			sinon.assert.calledWithMatch( deleteSpy.getCall( 0 ), {}, { unit: 'selection', direction: 'backward' } );
+			expect( deleteSpy ).toHaveBeenCalledTimes( 1 );
+			expect( deleteSpy.mock.calls[ 0 ][ 1 ] ).toEqual( expect.objectContaining( { unit: 'selection', direction: 'backward' } ) );
 		} );
 
 		it( 'should fire `delete` event on `keyup` if no deleting `beforeinput` received (forward deletion)', () => {
@@ -61,8 +64,8 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 				keyCode: getCode( 'delete' )
 			} ) );
 
-			sinon.assert.callCount( deleteSpy, 1 );
-			sinon.assert.calledWithMatch( deleteSpy.getCall( 0 ), {}, { unit: 'selection', direction: 'forward' } );
+			expect( deleteSpy ).toHaveBeenCalledTimes( 1 );
+			expect( deleteSpy.mock.calls[ 0 ][ 1 ] ).toEqual( expect.objectContaining( { unit: 'selection', direction: 'forward' } ) );
 		} );
 
 		it( 'should not fire additional `delete` event on `keyup` if deleting `beforeinput` received (same direction)', () => {
@@ -78,7 +81,7 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 				keyCode: getCode( 'backspace' )
 			} ) );
 
-			sinon.assert.callCount( deleteSpy, 1, { unit: 'codePoint', directin: 'backward' } );
+			expect( deleteSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should fire additional `delete` event on `keyup` if deleting `beforeinput` received (opposite direction)', () => {
@@ -94,7 +97,7 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 				keyCode: getCode( 'backspace' )
 			} ) );
 
-			sinon.assert.callCount( deleteSpy, 2 );
+			expect( deleteSpy ).toHaveBeenCalledTimes( 2 );
 		} );
 
 		it( 'should not fire additional `delete` event on `keyup` if delete event was stopped', () => {
@@ -112,11 +115,11 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 				keyCode: getCode( 'backspace' )
 			} ) );
 
-			sinon.assert.callCount( deleteSpy, 1, { unit: 'codePoint', directin: 'backward' } );
+			expect( deleteSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should ignore `beforeinput` inserting single delete (x7f) character', () => {
-			const insertTextSpy = testUtils.sinon.spy();
+			const insertTextSpy = vi.fn();
 			viewDocument.on( 'insertText', insertTextSpy );
 
 			viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
@@ -132,11 +135,11 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 				keyCode: getCode( 'delete' )
 			} ) );
 
-			sinon.assert.callCount( insertTextSpy, 0 );
+			expect( insertTextSpy ).toHaveBeenCalledTimes( 0 );
 		} );
 
 		it( 'should not ignore unrelated `beforeinput`', () => {
-			const insertTextSpy = testUtils.sinon.spy();
+			const insertTextSpy = vi.fn();
 			viewDocument.on( 'insertText', insertTextSpy );
 
 			viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
@@ -152,16 +155,16 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 				keyCode: getCode( 'delete' )
 			} ) );
 
-			sinon.assert.callCount( insertTextSpy, 1 );
+			expect( insertTextSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
 	describe( 'Non-Blink', () => {
-		before( () => {
+		beforeAll( () => {
 			env.isBlink = false;
 		} );
 
-		after( () => {
+		afterAll( () => {
 			env.isBlink = true;
 		} );
 
@@ -174,11 +177,11 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 				keyCode: getCode( 'backspace' )
 			} ) );
 
-			sinon.assert.callCount( deleteSpy, 0 );
+			expect( deleteSpy ).toHaveBeenCalledTimes( 0 );
 		} );
 
 		it( 'should not ignore `beforeinput` inserting single delete (x7f) character', () => {
-			const insertTextSpy = testUtils.sinon.spy();
+			const insertTextSpy = vi.fn();
 			viewDocument.on( 'insertText', insertTextSpy );
 
 			viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
@@ -194,14 +197,13 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 				keyCode: getCode( 'delete' )
 			} ) );
 
-			sinon.assert.callCount( insertTextSpy, 1 );
-			sinon.assert.callCount( insertTextSpy, 1, { text: '\x7f' } );
+			expect( insertTextSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
 	function getDomEvent() {
 		return {
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		};
 	}
 } );

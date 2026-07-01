@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { SplitOperation } from '../../../src/model/operation/splitoperation.js';
 import { MergeOperation } from '../../../src/model/operation/mergeoperation.js';
@@ -29,7 +30,7 @@ describe( 'SplitOperation', () => {
 
 		const split = new SplitOperation( splitPosition, 2, insertionPosition, null, 1 );
 
-		expect( split.type ).to.equal( 'split' );
+		expect( split.type ).toBe( 'split' );
 	} );
 
 	it( 'should have proper insertionPosition', () => {
@@ -38,7 +39,7 @@ describe( 'SplitOperation', () => {
 
 		const split = new SplitOperation( splitPosition, 2, insertionPosition, null, 1 );
 
-		expect( split.insertionPosition.path ).to.deep.equal( [ 2 ] );
+		expect( split.insertionPosition.path ).toEqual( [ 2 ] );
 	} );
 
 	it( 'should have proper moveTargetPosition', () => {
@@ -47,7 +48,7 @@ describe( 'SplitOperation', () => {
 
 		const split = new SplitOperation( splitPosition, 2, insertionPosition, null, 1 );
 
-		expect( split.moveTargetPosition.path ).to.deep.equal( [ 2, 0 ] );
+		expect( split.moveTargetPosition.path ).toEqual( [ 2, 0 ] );
 	} );
 
 	it( 'should have proper movedRange', () => {
@@ -56,8 +57,30 @@ describe( 'SplitOperation', () => {
 
 		const split = new SplitOperation( splitPosition, 2, insertionPosition, null, 1 );
 
-		expect( split.movedRange.start.path ).to.deep.equal( [ 1, 3 ] );
-		expect( split.movedRange.end.path ).to.deep.equal( [ 1, Number.POSITIVE_INFINITY ] );
+		expect( split.movedRange.start.path ).toEqual( [ 1, 3 ] );
+		expect( split.movedRange.end.path ).toEqual( [ 1, Number.POSITIVE_INFINITY ] );
+	} );
+
+	it( 'should include graveyard range in affectedSelectable when graveyardPosition is set', () => {
+		const splitPosition = new ModelPosition( root, [ 1, 3 ] );
+		const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
+
+		const split = new SplitOperation( splitPosition, 2, insertionPosition, gyPos, 1 );
+
+		const selectable = split.affectedSelectable;
+
+		expect( selectable ).toHaveLength( 3 );
+	} );
+
+	it( 'should include only 2 ranges in affectedSelectable when graveyardPosition is not set', () => {
+		const splitPosition = new ModelPosition( root, [ 1, 3 ] );
+		const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
+
+		const split = new SplitOperation( splitPosition, 2, insertionPosition, null, 1 );
+
+		const selectable = split.affectedSelectable;
+
+		expect( selectable ).toHaveLength( 2 );
 	} );
 
 	it( 'should split an element', () => {
@@ -70,16 +93,16 @@ describe( 'SplitOperation', () => {
 
 		model.applyOperation( new SplitOperation( splitPosition, 3, insertionPosition, null, doc.version ) );
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 2 );
-		expect( root.getChild( 0 ).name ).to.equal( 'p1' );
-		expect( root.getChild( 1 ).name ).to.equal( 'p1' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 2 );
+		expect( root.getChild( 0 ).name ).toBe( 'p1' );
+		expect( root.getChild( 1 ).name ).toBe( 'p1' );
 
-		expect( p1.maxOffset ).to.equal( 3 );
-		expect( p1.getChild( 0 ).data ).to.equal( 'Foo' );
+		expect( p1.maxOffset ).toBe( 3 );
+		expect( p1.getChild( 0 ).data ).toBe( 'Foo' );
 
-		expect( root.getChild( 1 ).maxOffset ).to.equal( 3 );
-		expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
+		expect( root.getChild( 1 ).maxOffset ).toBe( 3 );
+		expect( root.getChild( 1 ).getChild( 0 ).data ).toBe( 'bar' );
 	} );
 
 	it( 'should split an element using graveyard element', () => {
@@ -94,18 +117,18 @@ describe( 'SplitOperation', () => {
 
 		model.applyOperation( new SplitOperation( splitPosition, 3, insertionPosition, gyPos, doc.version ) );
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 2 );
-		expect( root.getChild( 0 ).name ).to.equal( 'p1' );
-		expect( root.getChild( 1 ).name ).to.equal( 'p2' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 2 );
+		expect( root.getChild( 0 ).name ).toBe( 'p1' );
+		expect( root.getChild( 1 ).name ).toBe( 'p2' );
 
-		expect( p1.maxOffset ).to.equal( 3 );
-		expect( p1.getChild( 0 ).data ).to.equal( 'Foo' );
+		expect( p1.maxOffset ).toBe( 3 );
+		expect( p1.getChild( 0 ).data ).toBe( 'Foo' );
 
-		expect( root.getChild( 1 ).maxOffset ).to.equal( 3 );
-		expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
+		expect( root.getChild( 1 ).maxOffset ).toBe( 3 );
+		expect( root.getChild( 1 ).getChild( 0 ).data ).toBe( 'bar' );
 
-		expect( gy.maxOffset ).to.equal( 0 );
+		expect( gy.maxOffset ).toBe( 0 );
 	} );
 
 	it( 'should create a proper MergeOperation as a reverse', () => {
@@ -115,12 +138,12 @@ describe( 'SplitOperation', () => {
 		const operation = new SplitOperation( splitPosition, 3, insertionPosition, null, doc.version );
 		const reverse = operation.getReversed();
 
-		expect( reverse ).to.be.an.instanceof( MergeOperation );
-		expect( reverse.baseVersion ).to.equal( 1 );
-		expect( reverse.howMany ).to.equal( 3 );
-		expect( reverse.sourcePosition.isEqual( new ModelPosition( root, [ 2, 0 ] ) ) ).to.be.true;
-		expect( reverse.targetPosition.isEqual( new ModelPosition( root, [ 1, 3 ] ) ) ).to.be.true;
-		expect( reverse.graveyardPosition.isEqual( gyPos ) ).to.be.true;
+		expect( reverse ).toBeInstanceOf( MergeOperation );
+		expect( reverse.baseVersion ).toBe( 1 );
+		expect( reverse.howMany ).toBe( 3 );
+		expect( reverse.sourcePosition.isEqual( new ModelPosition( root, [ 2, 0 ] ) ) ).toBe( true );
+		expect( reverse.targetPosition.isEqual( new ModelPosition( root, [ 1, 3 ] ) ) ).toBe( true );
+		expect( reverse.graveyardPosition.isEqual( gyPos ) ).toBe( true );
 	} );
 
 	it( 'should undo split by applying reverse operation', () => {
@@ -136,10 +159,10 @@ describe( 'SplitOperation', () => {
 		model.applyOperation( operation );
 		model.applyOperation( operation.getReversed() );
 
-		expect( doc.version ).to.equal( 2 );
-		expect( root.maxOffset ).to.equal( 1 );
-		expect( p1.maxOffset ).to.equal( 6 );
-		expect( p1.getChild( 0 ).data ).to.equal( 'Foobar' );
+		expect( doc.version ).toBe( 2 );
+		expect( root.maxOffset ).toBe( 1 );
+		expect( p1.maxOffset ).toBe( 6 );
+		expect( p1.getChild( 0 ).data ).toBe( 'Foobar' );
 	} );
 
 	describe( '_validate()', () => {
@@ -208,14 +231,14 @@ describe( 'SplitOperation', () => {
 		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
-		expect( clone ).not.to.equal( op );
+		expect( clone ).not.toBe( op );
 
-		expect( clone ).to.be.instanceof( SplitOperation );
-		expect( clone.splitPosition.isEqual( position ) ).to.be.true;
-		expect( clone.howMany ).to.equal( howMany );
+		expect( clone ).toBeInstanceOf( SplitOperation );
+		expect( clone.splitPosition.isEqual( position ) ).toBe( true );
+		expect( clone.howMany ).toBe( howMany );
 		expect( clone.insertionPosition.isEqual( op.insertionPosition ) );
-		expect( clone.graveyardPosition ).to.be.null;
-		expect( clone.baseVersion ).to.equal( baseVersion );
+		expect( clone.graveyardPosition ).toBeNull();
+		expect( clone.baseVersion ).toBe( baseVersion );
 	} );
 
 	it( 'should create SplitOperation with the same parameters when cloned #2', () => {
@@ -229,14 +252,14 @@ describe( 'SplitOperation', () => {
 		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
-		expect( clone ).not.to.equal( op );
+		expect( clone ).not.toBe( op );
 
-		expect( clone ).to.be.instanceof( SplitOperation );
-		expect( clone.splitPosition.isEqual( position ) ).to.be.true;
-		expect( clone.howMany ).to.equal( howMany );
+		expect( clone ).toBeInstanceOf( SplitOperation );
+		expect( clone.splitPosition.isEqual( position ) ).toBe( true );
+		expect( clone.howMany ).toBe( howMany );
 		expect( clone.insertionPosition.isEqual( op.insertionPosition ) );
-		expect( clone.graveyardPosition.isEqual( gyPos ) ).to.be.true;
-		expect( clone.baseVersion ).to.equal( baseVersion );
+		expect( clone.graveyardPosition.isEqual( gyPos ) ).toBe( true );
+		expect( clone.baseVersion ).toBe( baseVersion );
 	} );
 
 	describe( 'toJSON', () => {
@@ -247,7 +270,7 @@ describe( 'SplitOperation', () => {
 
 			const serialized = op.toJSON();
 
-			expect( serialized ).to.deep.equal( {
+			expect( serialized ).toEqual( {
 				__className: 'SplitOperation',
 				baseVersion: 0,
 				howMany: 2,
@@ -264,7 +287,7 @@ describe( 'SplitOperation', () => {
 
 			const serialized = op.toJSON();
 
-			expect( serialized ).to.deep.equal( {
+			expect( serialized ).toEqual( {
 				__className: 'SplitOperation',
 				baseVersion: 0,
 				howMany: 2,
@@ -285,7 +308,7 @@ describe( 'SplitOperation', () => {
 
 			const deserialized = SplitOperation.fromJSON( serialized, doc );
 
-			expect( deserialized ).to.deep.equal( op );
+			expect( deserialized ).toEqual( op );
 		} );
 
 		it( 'should create proper SplitOperation from json object #2', () => {
@@ -297,7 +320,7 @@ describe( 'SplitOperation', () => {
 
 			const deserialized = SplitOperation.fromJSON( serialized, doc );
 
-			expect( deserialized ).to.deep.equal( op );
+			expect( deserialized ).toEqual( op );
 		} );
 	} );
 } );

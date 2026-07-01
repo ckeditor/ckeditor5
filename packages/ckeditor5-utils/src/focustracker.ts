@@ -7,11 +7,14 @@
  * @module utils/focustracker
  */
 
-import { DomEmitterMixin } from './dom/emittermixin.js';
-import { ObservableMixin } from './observablemixin.js';
+import { DomEmitterMixin, type DomEmitterMixinConstructor } from './dom/emittermixin.js';
+import { ObservableMixin, type ObservableMixinConstructor } from './observablemixin.js';
 import { CKEditorError } from './ckeditorerror.js';
 import type { View } from '@ckeditor/ckeditor5-ui';
 import { isElement as _isElement } from 'es-toolkit/compat';
+
+const FocusTrackerBase: DomEmitterMixinConstructor<ObservableMixinConstructor> =
+	/* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() );
 
 /**
  * Allows observing a group of DOM `Element`s or {@link module:ui/view~View view instances} whether at least one of them (or their child)
@@ -26,7 +29,7 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  *
  * Check out the {@glink framework/deep-dive/ui/focus-tracking "Deep dive into focus tracking"} guide to learn more.
  */
-export class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
+export class FocusTracker extends FocusTrackerBase {
 	/**
 	 * True when one of the registered {@link #elements} or {@link #externalViews} is focused.
 	 *

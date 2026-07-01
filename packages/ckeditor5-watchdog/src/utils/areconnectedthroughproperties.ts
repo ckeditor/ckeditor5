@@ -14,7 +14,11 @@ import { getSubNodes } from './getsubnodes.js';
  *
  * @internal
  */
-export function areConnectedThroughProperties( target1: unknown, target2: unknown, excludedNodes = new Set() ): boolean {
+export function areConnectedThroughProperties(
+	target1: unknown,
+	target2: unknown,
+	excludedNodes: Set<unknown> = new Set()
+): boolean {
 	if ( target1 === target2 && isObject( target1 ) ) {
 		return true;
 	}
@@ -33,7 +37,7 @@ export function areConnectedThroughProperties( target1: unknown, target2: unknow
 	return false;
 }
 
-/* istanbul ignore next -- @preserve */
+/* v8 ignore start -- @preserve */
 // eslint-disable-next-line
 function checkConnectionBetweenProps( target1: unknown, target2: unknown, excludedNodes: any ) {
 	const { subNodes: subNodes1, prevNodeMap: prevNodeMap1 } = getSubNodes( target1, excludedNodes.subNodes ) as any;
@@ -71,6 +75,8 @@ function checkConnectionBetweenProps( target1: unknown, target2: unknown, exclud
 
 	return false;
 }
+
+/* v8 ignore stop -- @preserve */
 
 function isObject( structure: unknown ): boolean {
 	return typeof structure === 'object' && structure !== null;

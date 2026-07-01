@@ -7,7 +7,7 @@
  * @module list/listformatting
  */
 
-import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import { type Editor, Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { ListItemBoldIntegration } from './listformatting/listitemboldintegration.js';
 import { ListItemItalicIntegration } from './listformatting/listitemitalicintegration.js';
@@ -65,14 +65,20 @@ export class ListFormatting extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
+	public static get requires(): PluginDependenciesOf<[
+		ListItemBoldIntegration,
+		ListItemItalicIntegration,
+		ListItemFontSizeIntegration,
+		ListItemFontColorIntegration,
+		ListItemFontFamilyIntegration
+	]> {
 		return [
 			ListItemBoldIntegration,
 			ListItemItalicIntegration,
 			ListItemFontSizeIntegration,
 			ListItemFontColorIntegration,
 			ListItemFontFamilyIntegration
-		] as const;
+		];
 	}
 
 	/**

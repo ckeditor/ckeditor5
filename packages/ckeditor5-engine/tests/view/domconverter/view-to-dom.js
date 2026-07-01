@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ViewText } from '../../../src/view/text.js';
 import { ViewElement } from '../../../src/view/element.js';
 import { ViewUIElement } from '../../../src/view/uielement.js';
@@ -20,7 +21,7 @@ import { _parseView, _getViewData } from '../../../src/dev-utils/view.js';
 import { _setModelData } from '../../../src/dev-utils/model.js';
 
 import { createElement, global } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
@@ -29,11 +30,13 @@ import { StylesProcessor } from '../../../src/view/stylesmap.js';
 describe( 'DomConverter', () => {
 	let converter, viewDocument;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
 		converter = new ViewDomConverter( viewDocument );
+	} );
+
+	afterEach( () => {
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'viewToDom()', () => {
@@ -51,18 +54,18 @@ describe( 'DomConverter', () => {
 
 			const domP = converter.viewToDom( viewP );
 
-			expect( domP ).to.be.an.instanceof( HTMLElement );
-			expect( domP.tagName ).to.equal( 'P' );
+			expect( domP ).toBeInstanceOf( HTMLElement );
+			expect( domP.tagName ).toBe( 'P' );
 
-			expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( domP.attributes.length ).to.equal( 1 );
+			expect( domP.getAttribute( 'class' ) ).toBe( 'foo' );
+			expect( domP.attributes.length ).toBe( 1 );
 
-			expect( domP.childNodes.length ).to.equal( 2 );
-			expect( domP.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
-			expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+			expect( domP.childNodes.length ).toBe( 2 );
+			expect( domP.childNodes[ 0 ].tagName ).toBe( 'IMG' );
+			expect( domP.childNodes[ 1 ].data ).toBe( 'foo' );
 
-			expect( converter.mapDomToView( domP ) ).not.to.equal( viewP );
-			expect( converter.mapDomToView( domP.childNodes[ 0 ] ) ).to.equal( viewImg );
+			expect( converter.mapDomToView( domP ) ).not.toBe( viewP );
+			expect( converter.mapDomToView( domP.childNodes[ 0 ] ) ).toBe( viewImg );
 		} );
 
 		it( 'should create tree of DOM elements from view elements and bind elements', () => {
@@ -75,18 +78,18 @@ describe( 'DomConverter', () => {
 
 			const domP = converter.viewToDom( viewP, { bind: true } );
 
-			expect( domP ).to.be.an.instanceof( HTMLElement );
-			expect( domP.tagName ).to.equal( 'P' );
+			expect( domP ).toBeInstanceOf( HTMLElement );
+			expect( domP.tagName ).toBe( 'P' );
 
-			expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( domP.attributes.length ).to.equal( 1 );
+			expect( domP.getAttribute( 'class' ) ).toBe( 'foo' );
+			expect( domP.attributes.length ).toBe( 1 );
 
-			expect( domP.childNodes.length ).to.equal( 2 );
-			expect( domP.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
-			expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+			expect( domP.childNodes.length ).toBe( 2 );
+			expect( domP.childNodes[ 0 ].tagName ).toBe( 'IMG' );
+			expect( domP.childNodes[ 1 ].data ).toBe( 'foo' );
 
-			expect( converter.mapDomToView( domP ) ).to.equal( viewP );
-			expect( converter.mapDomToView( domP.childNodes[ 0 ] ) ).to.equal( viewP.getChild( 0 ) );
+			expect( converter.mapDomToView( domP ) ).toBe( viewP );
+			expect( converter.mapDomToView( domP.childNodes[ 0 ] ) ).toBe( viewP.getChild( 0 ) );
 		} );
 
 		it( 'should support unicode', () => {
@@ -95,11 +98,11 @@ describe( 'DomConverter', () => {
 
 			const domP = converter.viewToDom( viewP, { bind: true } );
 
-			expect( domP.childNodes.length ).to.equal( 1 );
-			expect( domP.childNodes[ 0 ].data ).to.equal( 'நிலைக்கு' );
+			expect( domP.childNodes.length ).toBe( 1 );
+			expect( domP.childNodes[ 0 ].data ).toBe( 'நிலைக்கு' );
 
-			expect( converter.mapDomToView( domP ) ).to.equal( viewP );
-			expect( converter.findCorrespondingViewText( domP.childNodes[ 0 ] ) ).to.equal( viewP.getChild( 0 ) );
+			expect( converter.mapDomToView( domP ) ).toBe( viewP );
+			expect( converter.findCorrespondingViewText( domP.childNodes[ 0 ] ) ).toBe( viewP.getChild( 0 ) );
 		} );
 
 		it( 'should create tree of DOM elements from view element without children', () => {
@@ -116,14 +119,14 @@ describe( 'DomConverter', () => {
 
 			const domP = converter.viewToDom( viewP, { withChildren: false } );
 
-			expect( domP ).to.be.an.instanceof( HTMLElement );
-			expect( domP.tagName ).to.equal( 'P' );
+			expect( domP ).toBeInstanceOf( HTMLElement );
+			expect( domP.tagName ).toBe( 'P' );
 
-			expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( domP.attributes.length ).to.equal( 1 );
+			expect( domP.getAttribute( 'class' ) ).toBe( 'foo' );
+			expect( domP.attributes.length ).toBe( 1 );
 
-			expect( domP.childNodes.length ).to.equal( 0 );
-			expect( converter.mapDomToView( domP ) ).not.to.equal( viewP );
+			expect( domP.childNodes.length ).toBe( 0 );
+			expect( converter.mapDomToView( domP ) ).not.toBe( viewP );
 		} );
 
 		it( 'should create DOM document fragment from view document fragment and bind elements', () => {
@@ -136,13 +139,13 @@ describe( 'DomConverter', () => {
 
 			const domFragment = converter.viewToDom( viewFragment, { bind: true } );
 
-			expect( domFragment ).to.be.an.instanceof( DocumentFragment );
-			expect( domFragment.childNodes.length ).to.equal( 2 );
-			expect( domFragment.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
-			expect( domFragment.childNodes[ 1 ].data ).to.equal( 'foo' );
+			expect( domFragment ).toBeInstanceOf( DocumentFragment );
+			expect( domFragment.childNodes.length ).toBe( 2 );
+			expect( domFragment.childNodes[ 0 ].tagName ).toBe( 'IMG' );
+			expect( domFragment.childNodes[ 1 ].data ).toBe( 'foo' );
 
-			expect( converter.mapDomToView( domFragment ) ).to.equal( viewFragment );
-			expect( converter.mapDomToView( domFragment.childNodes[ 0 ] ) ).to.equal( viewFragment.getChild( 0 ) );
+			expect( converter.mapDomToView( domFragment ) ).toBe( viewFragment );
+			expect( converter.mapDomToView( domFragment.childNodes[ 0 ] ) ).toBe( viewFragment.getChild( 0 ) );
 		} );
 
 		it( 'should create DOM document fragment from view document without children', () => {
@@ -159,10 +162,10 @@ describe( 'DomConverter', () => {
 
 			const domFragment = converter.viewToDom( viewFragment, { withChildren: false } );
 
-			expect( domFragment ).to.be.an.instanceof( DocumentFragment );
+			expect( domFragment ).toBeInstanceOf( DocumentFragment );
 
-			expect( domFragment.childNodes.length ).to.equal( 0 );
-			expect( converter.mapDomToView( domFragment ) ).not.to.equal( viewFragment );
+			expect( domFragment.childNodes.length ).toBe( 0 );
+			expect( converter.mapDomToView( domFragment ) ).not.toBe( viewFragment );
 		} );
 
 		it( 'should return already bind document fragment', () => {
@@ -173,15 +176,15 @@ describe( 'DomConverter', () => {
 
 			const domFragment2 = converter.viewToDom( viewFragment );
 
-			expect( domFragment2 ).to.equal( domFragment );
+			expect( domFragment2 ).toBe( domFragment );
 		} );
 
 		it( 'should create DOM text node from view text node', () => {
 			const viewTextNode = new ViewText( viewDocument, 'foo' );
 			const domTextNode = converter.viewToDom( viewTextNode );
 
-			expect( domTextNode ).to.be.instanceof( Text );
-			expect( domTextNode.data ).to.equal( 'foo' );
+			expect( domTextNode ).toBeInstanceOf( Text );
+			expect( domTextNode.data ).toBe( 'foo' );
 		} );
 
 		it( 'should create namespaced elements', () => {
@@ -190,7 +193,7 @@ describe( 'DomConverter', () => {
 
 			const domSvg = converter.viewToDom( viewSvg );
 
-			expect( domSvg.createSVGRect ).to.be.a( 'function' );
+			expect( domSvg.createSVGRect ).toBeTypeOf( 'function' );
 		} );
 
 		it( 'should create a DOM comment node from a view `$comment` UIElement', () => {
@@ -200,11 +203,11 @@ describe( 'DomConverter', () => {
 
 			const domComment = converter.viewToDom( viewComment );
 
-			expect( domComment ).to.be.an.instanceof( Comment );
-			expect( domComment.nodeName ).to.equal( '#comment' );
-			expect( domComment.data ).to.equal( 'foo' );
+			expect( domComment ).toBeInstanceOf( Comment );
+			expect( domComment.nodeName ).toBe( '#comment' );
+			expect( domComment.data ).toBe( 'foo' );
 
-			expect( converter.mapDomToView( domComment ) ).to.not.equal( viewComment );
+			expect( converter.mapDomToView( domComment ) ).not.toBe( viewComment );
 		} );
 
 		it( 'should create a DOM comment node from a view `$comment` UIElement and bind them', () => {
@@ -214,11 +217,11 @@ describe( 'DomConverter', () => {
 
 			const domComment = converter.viewToDom( viewComment, { bind: true } );
 
-			expect( domComment ).to.be.an.instanceof( Comment );
-			expect( domComment.nodeName ).to.equal( '#comment' );
-			expect( domComment.data ).to.equal( 'foo' );
+			expect( domComment ).toBeInstanceOf( Comment );
+			expect( domComment.nodeName ).toBe( '#comment' );
+			expect( domComment.data ).toBe( 'foo' );
 
-			expect( converter.mapDomToView( domComment ) ).to.equal( viewComment );
+			expect( converter.mapDomToView( domComment ) ).toBe( viewComment );
 		} );
 
 		describe( 'options.renderingMode = data', () => {
@@ -233,10 +236,10 @@ describe( 'DomConverter', () => {
 
 				const domElement = converter.viewToDom( viewElement );
 
-				expect( domElement.ownerDocument ).not.equal( document );
-				expect( domElement.firstChild.ownerDocument ).not.equal( document );
-				expect( domElement.ownerDocument ).to.equal( domElement.firstChild.ownerDocument );
-				expect( domElement.innerHTML ).to.equal( '<audio src="x" onerror="alert(1)"></audio>' );
+				expect( domElement.ownerDocument ).not.toBe( document );
+				expect( domElement.firstChild.ownerDocument ).not.toBe( document );
+				expect( domElement.ownerDocument ).toBe( domElement.firstChild.ownerDocument );
+				expect( domElement.innerHTML ).toBe( '<audio src="x" onerror="alert(1)"></audio>' );
 			} );
 
 			it( 'should use a separate DOM document to create DOM text nodes', () => {
@@ -250,10 +253,10 @@ describe( 'DomConverter', () => {
 
 				const domElement = converter.viewToDom( viewElement );
 
-				expect( domElement.ownerDocument ).not.equal( document );
-				expect( domElement.firstChild.ownerDocument ).not.equal( document );
-				expect( domElement.ownerDocument ).to.equal( domElement.firstChild.ownerDocument );
-				expect( domElement.innerHTML ).to.equal( 'foobar' );
+				expect( domElement.ownerDocument ).not.toBe( document );
+				expect( domElement.firstChild.ownerDocument ).not.toBe( document );
+				expect( domElement.ownerDocument ).toBe( domElement.firstChild.ownerDocument );
+				expect( domElement.innerHTML ).toBe( 'foobar' );
 			} );
 
 			it( 'should use a separate DOM document to create a DOM document fragment', () => {
@@ -269,11 +272,11 @@ describe( 'DomConverter', () => {
 
 				const domFragment = converter.viewToDom( viewFragment );
 
-				expect( domFragment.ownerDocument ).not.equal( document );
-				expect( domFragment.firstChild.ownerDocument ).not.equal( document );
-				expect( domFragment.firstChild.firstChild.ownerDocument ).not.equal( document );
-				expect( domFragment.ownerDocument ).to.equal( domFragment.firstChild.ownerDocument );
-				expect( domFragment.firstChild.innerHTML ).to.equal( '<audio src="x" onerror="alert(1)"></audio>' );
+				expect( domFragment.ownerDocument ).not.toBe( document );
+				expect( domFragment.firstChild.ownerDocument ).not.toBe( document );
+				expect( domFragment.firstChild.firstChild.ownerDocument ).not.toBe( document );
+				expect( domFragment.ownerDocument ).toBe( domFragment.firstChild.ownerDocument );
+				expect( domFragment.firstChild.innerHTML ).toBe( '<audio src="x" onerror="alert(1)"></audio>' );
 			} );
 		} );
 
@@ -281,7 +284,7 @@ describe( 'DomConverter', () => {
 			let warnStub;
 
 			beforeEach( () => {
-				warnStub = testUtils.sinon.stub( console, 'warn' );
+				warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 			} );
 
 			it( 'should filter DOM event handlers', () => {
@@ -302,17 +305,17 @@ describe( 'DomConverter', () => {
 
 				const domP = converter.viewToDom( viewP );
 
-				expect( domP ).to.be.an.instanceof( HTMLElement );
-				expect( domP.tagName ).to.equal( 'P' );
-				expect( domP.attributes.length ).to.equal( 1 );
-				expect( domP.dataset.ckUnsafeAttributeOnclick ).to.equal( 'bar' );
+				expect( domP ).toBeInstanceOf( HTMLElement );
+				expect( domP.tagName ).toBe( 'P' );
+				expect( domP.attributes.length ).toBe( 1 );
+				expect( domP.dataset.ckUnsafeAttributeOnclick ).toBe( 'bar' );
 
-				expect( domP.childNodes.length ).to.equal( 2 );
-				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
-				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+				expect( domP.childNodes.length ).toBe( 2 );
+				expect( domP.childNodes[ 0 ].tagName ).toBe( 'IMG' );
+				expect( domP.childNodes[ 1 ].data ).toBe( 'foo' );
 
-				expect( converter.mapDomToView( domP ) ).not.to.equal( viewP );
-				expect( converter.mapDomToView( domP.childNodes[ 0 ] ) ).to.equal( viewImg );
+				expect( converter.mapDomToView( domP ) ).not.toBe( viewP );
+				expect( converter.mapDomToView( domP.childNodes[ 0 ] ) ).toBe( viewImg );
 			} );
 
 			it( 'should warn when an unsafe attribute was filtered out', () => {
@@ -324,15 +327,15 @@ describe( 'DomConverter', () => {
 
 				const domP = converter.viewToDom( viewP );
 
-				sinon.assert.calledOnce( warnStub );
-				sinon.assert.calledWithExactly( warnStub,
-					sinon.match( /^domconverter-unsafe-attribute-detected/ ),
+				expect( warnStub ).toHaveBeenCalledOnce();
+				expect( warnStub ).toHaveBeenCalledWith(
+					expect.stringMatching( /^domconverter-unsafe-attribute-detected/ ),
 					{
 						domElement: domP,
 						key: 'onclick',
 						value: 'bar'
 					},
-					sinon.match.string // Link to the documentation
+					expect.any( String ) // Link to the documentation
 				);
 			} );
 
@@ -350,15 +353,15 @@ describe( 'DomConverter', () => {
 
 				const domP = converter.viewToDom( viewP );
 
-				expect( domP ).to.be.an.instanceof( HTMLElement );
-				expect( domP.tagName ).to.equal( 'P' );
-				expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
-				expect( domP.attributes.length ).to.equal( 1 );
+				expect( domP ).toBeInstanceOf( HTMLElement );
+				expect( domP.tagName ).toBe( 'P' );
+				expect( domP.getAttribute( 'class' ) ).toBe( 'foo' );
+				expect( domP.attributes.length ).toBe( 1 );
 
-				expect( domP.childNodes.length ).to.equal( 2 );
-				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'SPAN' );
-				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-unsafe-element' ) ).to.equal( 'script' );
-				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+				expect( domP.childNodes.length ).toBe( 2 );
+				expect( domP.childNodes[ 0 ].tagName ).toBe( 'SPAN' );
+				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-unsafe-element' ) ).toBe( 'script' );
+				expect( domP.childNodes[ 1 ].data ).toBe( 'foo' );
 			} );
 
 			it( 'should warn when an unsafe script was filtered out', () => {
@@ -375,10 +378,10 @@ describe( 'DomConverter', () => {
 
 				converter.viewToDom( viewP );
 
-				sinon.assert.calledOnce( warnStub );
-				sinon.assert.calledWithExactly( warnStub,
-					sinon.match( /^domconverter-unsafe-script-element-detected/ ),
-					sinon.match.string // Link to the documentation
+				expect( warnStub ).toHaveBeenCalledOnce();
+				expect( warnStub ).toHaveBeenCalledWith(
+					expect.stringMatching( /^domconverter-unsafe-script-element-detected/ ),
+					expect.any( String ) // Link to the documentation
 				);
 			} );
 
@@ -396,15 +399,15 @@ describe( 'DomConverter', () => {
 
 				const domP = converter.viewToDom( viewP );
 
-				expect( domP ).to.be.an.instanceof( HTMLElement );
-				expect( domP.tagName ).to.equal( 'P' );
-				expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
-				expect( domP.attributes.length ).to.equal( 1 );
+				expect( domP ).toBeInstanceOf( HTMLElement );
+				expect( domP.tagName ).toBe( 'P' );
+				expect( domP.getAttribute( 'class' ) ).toBe( 'foo' );
+				expect( domP.attributes.length ).toBe( 1 );
 
-				expect( domP.childNodes.length ).to.equal( 2 );
-				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'SPAN' );
-				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-unsafe-element' ) ).to.equal( 'style' );
-				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+				expect( domP.childNodes.length ).toBe( 2 );
+				expect( domP.childNodes[ 0 ].tagName ).toBe( 'SPAN' );
+				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-unsafe-element' ) ).toBe( 'style' );
+				expect( domP.childNodes[ 1 ].data ).toBe( 'foo' );
 			} );
 
 			it( 'should warn when an unsafe style was filtered out', () => {
@@ -421,10 +424,10 @@ describe( 'DomConverter', () => {
 
 				converter.viewToDom( viewP );
 
-				sinon.assert.calledOnce( warnStub );
-				sinon.assert.calledWithExactly( warnStub,
-					sinon.match( /^domconverter-unsafe-style-element-detected/ ),
-					sinon.match.string // Link to the documentation
+				expect( warnStub ).toHaveBeenCalledOnce();
+				expect( warnStub ).toHaveBeenCalledWith(
+					expect.stringMatching( /^domconverter-unsafe-style-element-detected/ ),
+					expect.any( String ) // Link to the documentation
 				);
 			} );
 
@@ -444,15 +447,15 @@ describe( 'DomConverter', () => {
 
 				const domP = converter.viewToDom( viewP );
 
-				expect( domP ).to.be.an.instanceof( HTMLElement );
-				expect( domP.tagName ).to.equal( 'P' );
-				expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
-				expect( domP.attributes.length ).to.equal( 1 );
+				expect( domP ).toBeInstanceOf( HTMLElement );
+				expect( domP.tagName ).toBe( 'P' );
+				expect( domP.getAttribute( 'class' ) ).toBe( 'foo' );
+				expect( domP.attributes.length ).toBe( 1 );
 
-				expect( domP.childNodes.length ).to.equal( 2 );
-				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'SPAN' );
-				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-unsafe-element' ) ).to.equal( 'custom-foo-element' );
-				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+				expect( domP.childNodes.length ).toBe( 2 );
+				expect( domP.childNodes[ 0 ].tagName ).toBe( 'SPAN' );
+				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-unsafe-element' ) ).toBe( 'custom-foo-element' );
+				expect( domP.childNodes[ 1 ].data ).toBe( 'foo' );
 			} );
 
 			describe( 'unsafe attribute names that were declaratively permitted', () => {
@@ -471,7 +474,7 @@ describe( 'DomConverter', () => {
 						onkeydown: 'bar'
 					}, { renderUnsafeAttributes: [ 'onclick' ] } );
 
-					expect( converter.viewToDom( viewElement ).outerHTML ).to.equal(
+					expect( converter.viewToDom( viewElement ).outerHTML ).toBe(
 						'<span onclick="foo" data-ck-unsafe-attribute-onkeydown="bar"></span>'
 					);
 				} );
@@ -484,7 +487,7 @@ describe( 'DomConverter', () => {
 
 					viewElement.getFillerOffset = () => null;
 
-					expect( converter.viewToDom( viewElement ).outerHTML ).to.equal(
+					expect( converter.viewToDom( viewElement ).outerHTML ).toBe(
 						'<p onclick="foo" data-ck-unsafe-attribute-onkeydown="bar"></p>'
 					);
 				} );
@@ -497,7 +500,7 @@ describe( 'DomConverter', () => {
 
 					viewElement.getFillerOffset = () => null;
 
-					expect( converter.viewToDom( viewElement ).outerHTML ).to.equal(
+					expect( converter.viewToDom( viewElement ).outerHTML ).toBe(
 						'<div onclick="foo" data-ck-unsafe-attribute-onkeydown="bar"></div>'
 					);
 				} );
@@ -508,7 +511,7 @@ describe( 'DomConverter', () => {
 						onkeydown: 'bar'
 					}, { renderUnsafeAttributes: [ 'onclick' ] } );
 
-					expect( converter.viewToDom( viewElement ).outerHTML ).to.equal(
+					expect( converter.viewToDom( viewElement ).outerHTML ).toBe(
 						'<img onclick="foo" data-ck-unsafe-attribute-onkeydown="bar">'
 					);
 				} );
@@ -523,7 +526,7 @@ describe( 'DomConverter', () => {
 						renderUnsafeAttributes: [ 'onclick' ]
 					} );
 
-					expect( converter.viewToDom( viewElement ).outerHTML ).to.equal(
+					expect( converter.viewToDom( viewElement ).outerHTML ).toBe(
 						'<p onclick="foo" data-ck-unsafe-attribute-onkeydown="bar">foo</p>'
 					);
 				} );
@@ -587,7 +590,7 @@ describe( 'DomConverter', () => {
 						}
 					} );
 
-					alertStub = testUtils.sinon.stub( global.window, 'alert' );
+					alertStub = vi.spyOn( global.window, 'alert' ).mockImplementation( () => {} );
 				} );
 
 				afterEach( () => {
@@ -598,23 +601,23 @@ describe( 'DomConverter', () => {
 				it( 'script included in SVG encoded as base64 should not be executed when set on src attribute of img element', () => {
 					_setModelData( editor.model, `<paragraph><fakeImg src='${ svgBase64 }'></fakeImg></paragraph>` );
 
-					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 						'<p>' +
 							`<img src="${ svgBase64 }" srcset="${ svgBase64 }"></img>` +
 						'</p>'
 					);
-					expect( alertStub.callCount ).to.equal( 0 );
+					expect( alertStub ).not.toHaveBeenCalled();
 				} );
 
 				it( 'script included in encoded SVG should not be executed when set on src attribute of img element', () => {
 					_setModelData( editor.model, `<paragraph><fakeImg src='${ svgEncoded }'></fakeImg></paragraph>` );
 
-					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 						'<p>' +
 							`<img src="${ svgEncoded }" srcset="${ svgEncoded }"></img>` +
 						'</p>'
 					);
-					expect( alertStub.callCount ).to.equal( 0 );
+					expect( alertStub ).not.toHaveBeenCalled();
 				} );
 
 				it( 'script included in SVG encoded as base64 should not be executed when set on srcset attribute of source element',
@@ -623,7 +626,7 @@ describe( 'DomConverter', () => {
 							`<paragraph><fakePicture srcset='${ svgBase64 }' media="(min-width: 10px)"></fakePicture></paragraph>`
 						);
 
-						expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 							'<p>' +
 								'<picture>' +
 									`<source media="(min-width: 10px)" srcset="${ svgBase64 }"></source>` +
@@ -631,7 +634,7 @@ describe( 'DomConverter', () => {
 								'</picture>' +
 							'</p>'
 						);
-						expect( alertStub.callCount ).to.equal( 0 );
+						expect( alertStub ).not.toHaveBeenCalled();
 					}
 				);
 
@@ -641,7 +644,7 @@ describe( 'DomConverter', () => {
 							`<paragraph><fakePicture srcset='${ svgEncoded }' media="(min-width: 10px)"></fakePicture></paragraph>`
 						);
 
-						expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 							'<p>' +
 								'<picture>' +
 									`<source media="(min-width: 10px)" srcset="${ svgEncoded }"></source>` +
@@ -649,7 +652,7 @@ describe( 'DomConverter', () => {
 								'</picture>' +
 							'</p>'
 						);
-						expect( alertStub.callCount ).to.equal( 0 );
+						expect( alertStub ).not.toHaveBeenCalled();
 					}
 				);
 			} );
@@ -665,7 +668,7 @@ describe( 'DomConverter', () => {
 
 				const domDiv = converter.viewToDom( viewDiv );
 
-				expect( domDiv.innerHTML ).to.equal( '<p>&nbsp;foo</p><p>bar</p><p>&nbsp;xxx</p>' );
+				expect( domDiv.innerHTML ).toBe( '<p>&nbsp;foo</p><p>bar</p><p>&nbsp;xxx</p>' );
 			} );
 
 			it( 'at the end of each container element', () => {
@@ -677,7 +680,7 @@ describe( 'DomConverter', () => {
 
 				const domDiv = converter.viewToDom( viewDiv );
 
-				expect( domDiv.innerHTML ).to.equal( '<p>foo&nbsp;</p><p>bar</p><p>xxx&nbsp;</p>' );
+				expect( domDiv.innerHTML ).toBe( '<p>foo&nbsp;</p><p>bar</p><p>xxx&nbsp;</p>' );
 			} );
 
 			it( 'at the beginning of each block attribute element - li', () => {
@@ -689,7 +692,7 @@ describe( 'DomConverter', () => {
 
 				const domDiv = converter.viewToDom( viewDiv );
 
-				expect( domDiv.innerHTML ).to.equal( '<li>&nbsp;foo</li><li>bar</li><li>&nbsp;xxx</li>' );
+				expect( domDiv.innerHTML ).toBe( '<li>&nbsp;foo</li><li>bar</li><li>&nbsp;xxx</li>' );
 			} );
 
 			it( 'at the end of each block attribute element - li', () => {
@@ -701,7 +704,7 @@ describe( 'DomConverter', () => {
 
 				const domDiv = converter.viewToDom( viewDiv );
 
-				expect( domDiv.innerHTML ).to.equal( '<li>foo&nbsp;</li><li>bar</li><li>xxx&nbsp;</li>' );
+				expect( domDiv.innerHTML ).toBe( '<li>foo&nbsp;</li><li>bar</li><li>xxx&nbsp;</li>' );
 			} );
 
 			it( 'when there are multiple spaces next to each other or between attribute elements', () => {
@@ -717,7 +720,7 @@ describe( 'DomConverter', () => {
 
 				const domDiv = converter.viewToDom( viewDiv );
 
-				expect( domDiv.innerHTML ).to.equal( 'x &nbsp;x &nbsp; x x&nbsp;<b> x&nbsp;</b><i><b><u> x</u></b></i>' );
+				expect( domDiv.innerHTML ).toBe( 'x &nbsp;x &nbsp; x x&nbsp;<b> x&nbsp;</b><i><b><u> x</u></b></i>' );
 			} );
 
 			it( 'all together', () => {
@@ -736,7 +739,7 @@ describe( 'DomConverter', () => {
 
 				const domDiv = converter.viewToDom( viewDiv );
 
-				expect( domDiv.innerHTML ).to.equal(
+				expect( domDiv.innerHTML ).toBe(
 					'<p>&nbsp;x &nbsp;x &nbsp; x x&nbsp;<b> x&nbsp;</b><i><b><u> x&nbsp;</u></b></i></p><p>&nbsp; x &nbsp;</p>'
 				);
 			} );
@@ -756,7 +759,7 @@ describe( 'DomConverter', () => {
 					const domElement = converter.viewToDom( viewElement );
 					const data = showNbsp( domElement.innerHTML );
 
-					expect( data ).to.equal( output );
+					expect( data ).toBe( output );
 				} );
 			}
 
@@ -921,7 +924,7 @@ describe( 'DomConverter', () => {
 				] );
 				const domPre = converter.viewToDom( viewPre );
 
-				expect( domPre.innerHTML ).to.equal( '   foo    bar ' );
+				expect( domPre.innerHTML ).toBe( '   foo    bar ' );
 			} );
 
 			it( 'not in a preformatted block followed by a text', () => {
@@ -929,7 +932,7 @@ describe( 'DomConverter', () => {
 				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [ viewPre, new ViewText( viewDocument, ' bar' ) ] );
 				const domDiv = converter.viewToDom( viewDiv );
 
-				expect( domDiv.innerHTML ).to.equal( '<pre>foo   </pre>&nbsp;bar' );
+				expect( domDiv.innerHTML ).toBe( '<pre>foo   </pre>&nbsp;bar' );
 			} );
 
 			it( 'not in a preformatted inline element followed by a text', () => {
@@ -939,7 +942,7 @@ describe( 'DomConverter', () => {
 				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [ viewPre, new ViewText( viewDocument, ' bar' ) ] );
 				const domDiv = converter.viewToDom( viewDiv );
 
-				expect( domDiv.innerHTML ).to.equal( '<code>foo   </code> bar' );
+				expect( domDiv.innerHTML ).toBe( '<code>foo   </code> bar' );
 			} );
 
 			describe( 'around <br>s', () => {
@@ -951,7 +954,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo_<br>bar' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( 'foo_<br>bar' );
 				} );
 
 				it( 'before <br> – two spaces', () => {
@@ -962,7 +965,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo _<br>bar' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( 'foo _<br>bar' );
 				} );
 
 				it( 'before <br> – three spaces', () => {
@@ -973,7 +976,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo __<br>bar' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( 'foo __<br>bar' );
 				} );
 
 				it( 'before <br> – only a space', () => {
@@ -984,7 +987,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '_<br>bar' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( '_<br>bar' );
 				} );
 
 				it( 'before <br> – only two spaces', () => {
@@ -995,7 +998,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '__<br>bar' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( '__<br>bar' );
 				} );
 
 				it( 'before <br> – only three spaces', () => {
@@ -1006,7 +1009,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '_ _<br>bar' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( '_ _<br>bar' );
 				} );
 
 				it( 'after <br> – a single space', () => {
@@ -1017,7 +1020,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>_bar' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( 'foo<br>_bar' );
 				} );
 
 				it( 'after <br> – two spaces', () => {
@@ -1028,7 +1031,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>_ bar' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( 'foo<br>_ bar' );
 				} );
 
 				it( 'after <br> – three spaces', () => {
@@ -1039,7 +1042,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>_ _bar' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( 'foo<br>_ _bar' );
 				} );
 
 				it( 'after <br> – only a space', () => {
@@ -1050,7 +1053,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>_' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( 'foo<br>_' );
 				} );
 
 				it( 'after <br> – only two spaces', () => {
@@ -1061,7 +1064,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>__' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( 'foo<br>__' );
 				} );
 
 				it( 'after <br> – only three spaces', () => {
@@ -1072,7 +1075,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>_ _' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( 'foo<br>_ _' );
 				} );
 
 				it( 'between <br>s – a single space', () => {
@@ -1084,7 +1087,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '<br>_<br>foo' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( '<br>_<br>foo' );
 				} );
 
 				it( 'between <br>s – only two spaces', () => {
@@ -1096,7 +1099,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '<br>__<br>foo' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( '<br>__<br>foo' );
 				} );
 
 				it( 'between <br>s – only three spaces', () => {
@@ -1108,7 +1111,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '<br>_ _<br>foo' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( '<br>_ _<br>foo' );
 				} );
 
 				it( 'between <br>s – space and text', () => {
@@ -1120,7 +1123,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '<br>_foo<br>foo' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( '<br>_foo<br>foo' );
 				} );
 
 				it( 'between <br>s – text and space', () => {
@@ -1132,7 +1135,7 @@ describe( 'DomConverter', () => {
 					] );
 					const domDiv = converter.viewToDom( viewDiv );
 
-					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '<br>foo_<br>foo' );
+					expect( showNbsp( domDiv.innerHTML ) ).toBe( '<br>foo_<br>foo' );
 				} );
 			} );
 		} );
@@ -1144,10 +1147,10 @@ describe( 'DomConverter', () => {
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 
-			expect( domChildren.length ).to.equal( 2 );
-			expect( domChildren[ 0 ].data ).to.equal( 'foo' );
-			expect( domChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
-			expect( domChildren[ 1 ].childNodes.length ).to.equal( 1 );
+			expect( domChildren.length ).toBe( 2 );
+			expect( domChildren[ 0 ].data ).toBe( 'foo' );
+			expect( domChildren[ 1 ].tagName.toLowerCase() ).toBe( 'b' );
+			expect( domChildren[ 1 ].childNodes.length ).toBe( 1 );
 		} );
 
 		it( 'should add filler', () => {
@@ -1155,8 +1158,8 @@ describe( 'DomConverter', () => {
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 
-			expect( domChildren.length ).to.equal( 1 );
-			expect( converter.isBlockFiller( domChildren[ 0 ] ) ).to.be.true;
+			expect( domChildren.length ).toBe( 1 );
+			expect( converter.isBlockFiller( domChildren[ 0 ] ) ).toBe( true );
 		} );
 
 		it( 'should add filler according to fillerPositionOffset', () => {
@@ -1165,9 +1168,9 @@ describe( 'DomConverter', () => {
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 
-			expect( domChildren.length ).to.equal( 2 );
-			expect( converter.isBlockFiller( domChildren[ 0 ] ) ).to.be.true;
-			expect( domChildren[ 1 ].data ).to.equal( 'foo' );
+			expect( domChildren.length ).toBe( 2 );
+			expect( converter.isBlockFiller( domChildren[ 0 ] ) ).toBe( true );
+			expect( domChildren[ 1 ].data ).toBe( 'foo' );
 		} );
 
 		it( 'should add proper filler type - br', () => {
@@ -1178,7 +1181,7 @@ describe( 'DomConverter', () => {
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 			const filler = domChildren[ 0 ];
 
-			expect( filler.isEqualNode( BR_FILLER( document ) ) ).to.be.true; // eslint-disable-line new-cap
+			expect( filler.isEqualNode( BR_FILLER( document ) ) ).toBe( true ); // eslint-disable-line new-cap
 		} );
 
 		it( 'should add proper filler type - nbsp', () => {
@@ -1189,7 +1192,7 @@ describe( 'DomConverter', () => {
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 			const filler = domChildren[ 0 ];
 
-			expect( filler.isEqualNode( NBSP_FILLER( document ) ) ).to.be.true; // eslint-disable-line new-cap
+			expect( filler.isEqualNode( NBSP_FILLER( document ) ) ).toBe( true ); // eslint-disable-line new-cap
 		} );
 
 		it( 'should add proper filler type - markedNbsp', () => {
@@ -1200,7 +1203,7 @@ describe( 'DomConverter', () => {
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 			const filler = domChildren[ 0 ];
 
-			expect( filler.isEqualNode( MARKED_NBSP_FILLER( document ) ) ).to.be.true; // eslint-disable-line new-cap
+			expect( filler.isEqualNode( MARKED_NBSP_FILLER( document ) ) ).toBe( true ); // eslint-disable-line new-cap
 		} );
 
 		it( 'should pass options', () => {
@@ -1208,10 +1211,10 @@ describe( 'DomConverter', () => {
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP, { withChildren: false } ) );
 
-			expect( domChildren.length ).to.equal( 2 );
-			expect( domChildren[ 0 ].data ).to.equal( 'foo' );
-			expect( domChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
-			expect( domChildren[ 1 ].childNodes.length ).to.equal( 0 );
+			expect( domChildren.length ).toBe( 2 );
+			expect( domChildren[ 0 ].data ).toBe( 'foo' );
+			expect( domChildren[ 1 ].tagName.toLowerCase() ).toBe( 'b' );
+			expect( domChildren[ 1 ].childNodes.length ).toBe( 0 );
 		} );
 
 		describe( 'transparentRendering custom property', () => {
@@ -1219,7 +1222,7 @@ describe( 'DomConverter', () => {
 				converter.renderingMode = 'data';
 				converter.blockFillerMode = 'nbsp';
 
-				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 				const viewList = _parseView(
 					'<container:div>' +
@@ -1241,30 +1244,30 @@ describe( 'DomConverter', () => {
 
 				const domDivChildren = Array.from( converter.viewChildrenToDom( viewList ) );
 
-				expect( domDivChildren.length ).to.equal( 1 );
-				expect( domDivChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'ul' );
+				expect( domDivChildren.length ).toBe( 1 );
+				expect( domDivChildren[ 0 ].tagName.toLowerCase() ).toBe( 'ul' );
 
 				const domUlChildren = Array.from( domDivChildren[ 0 ].childNodes );
 
-				expect( domUlChildren.length ).to.equal( 2 );
-				expect( domUlChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'li' );
-				expect( domUlChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'li' );
+				expect( domUlChildren.length ).toBe( 2 );
+				expect( domUlChildren[ 0 ].tagName.toLowerCase() ).toBe( 'li' );
+				expect( domUlChildren[ 1 ].tagName.toLowerCase() ).toBe( 'li' );
 
 				const domUl1Children = Array.from( domUlChildren[ 0 ].childNodes );
 				const domUl2Children = Array.from( domUlChildren[ 1 ].childNodes );
 
-				expect( domUl1Children.length ).to.equal( 2 );
-				expect( domUl1Children[ 0 ].data ).to.equal( 'foo' );
-				expect( domUl1Children[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
-				expect( domUl1Children[ 1 ].firstChild.data ).to.equal( 'bar' );
+				expect( domUl1Children.length ).toBe( 2 );
+				expect( domUl1Children[ 0 ].data ).toBe( 'foo' );
+				expect( domUl1Children[ 1 ].tagName.toLowerCase() ).toBe( 'b' );
+				expect( domUl1Children[ 1 ].firstChild.data ).toBe( 'bar' );
 
-				expect( domUl2Children.length ).to.equal( 2 );
-				expect( domUl2Children[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
-				expect( domUl2Children[ 1 ].tagName.toLowerCase() ).to.equal( 'p' );
-				expect( domUl2Children[ 0 ].firstChild.data ).to.equal( 'abc' );
-				expect( domUl2Children[ 1 ].firstChild.data ).to.equal( '123' );
+				expect( domUl2Children.length ).toBe( 2 );
+				expect( domUl2Children[ 0 ].tagName.toLowerCase() ).toBe( 'p' );
+				expect( domUl2Children[ 1 ].tagName.toLowerCase() ).toBe( 'p' );
+				expect( domUl2Children[ 0 ].firstChild.data ).toBe( 'abc' );
+				expect( domUl2Children[ 1 ].firstChild.data ).toBe( '123' );
 
-				sinon.assert.notCalled( warnStub );
+				expect( warnStub ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should yield the `RawElement` children properly', () => {
@@ -1280,7 +1283,7 @@ describe( 'DomConverter', () => {
 				downcastWriter.insert( downcastWriter.createPositionAt( parentElement, 'end' ), transparentRawElement );
 				downcastWriter.setCustomProperty( 'dataPipeline:transparentRendering', true, transparentRawElement );
 
-				expect( dataConverter.viewToDom( parentElement ).outerHTML ).to.equal(
+				expect( dataConverter.viewToDom( parentElement ).outerHTML ).toBe(
 					'<p>foo <span style="color:red;">bar</span> <strong>is</strong> good</p>'
 				);
 			} );
@@ -1289,7 +1292,7 @@ describe( 'DomConverter', () => {
 				converter.renderingMode = 'editing';
 				converter.blockFillerMode = 'br';
 
-				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 				const viewList = _parseView(
 					'<container:div>' +
@@ -1311,37 +1314,37 @@ describe( 'DomConverter', () => {
 
 				const domDivChildren = Array.from( converter.viewChildrenToDom( viewList ) );
 
-				expect( domDivChildren.length ).to.equal( 1 );
-				expect( domDivChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'ul' );
+				expect( domDivChildren.length ).toBe( 1 );
+				expect( domDivChildren[ 0 ].tagName.toLowerCase() ).toBe( 'ul' );
 
 				const domUlChildren = Array.from( domDivChildren[ 0 ].childNodes );
 
-				expect( domUlChildren.length ).to.equal( 2 );
-				expect( domUlChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'li' );
-				expect( domUlChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'li' );
+				expect( domUlChildren.length ).toBe( 2 );
+				expect( domUlChildren[ 0 ].tagName.toLowerCase() ).toBe( 'li' );
+				expect( domUlChildren[ 1 ].tagName.toLowerCase() ).toBe( 'li' );
 
 				const domUl1Children = Array.from( domUlChildren[ 0 ].childNodes );
 				const domUl2Children = Array.from( domUlChildren[ 1 ].childNodes );
 
-				expect( domUl1Children.length ).to.equal( 1 );
-				expect( domUl1Children[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
-				expect( domUl1Children[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
-				expect( domUl1Children[ 0 ].childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
-				expect( domUl1Children[ 0 ].childNodes[ 1 ].firstChild.data ).to.equal( 'bar' );
+				expect( domUl1Children.length ).toBe( 1 );
+				expect( domUl1Children[ 0 ].tagName.toLowerCase() ).toBe( 'p' );
+				expect( domUl1Children[ 0 ].childNodes[ 0 ].data ).toBe( 'foo' );
+				expect( domUl1Children[ 0 ].childNodes[ 1 ].tagName.toLowerCase() ).toBe( 'b' );
+				expect( domUl1Children[ 0 ].childNodes[ 1 ].firstChild.data ).toBe( 'bar' );
 
-				expect( domUl2Children.length ).to.equal( 2 );
-				expect( domUl2Children[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
-				expect( domUl2Children[ 1 ].tagName.toLowerCase() ).to.equal( 'p' );
-				expect( domUl2Children[ 0 ].firstChild.data ).to.equal( 'abc' );
-				expect( domUl2Children[ 1 ].firstChild.data ).to.equal( '123' );
+				expect( domUl2Children.length ).toBe( 2 );
+				expect( domUl2Children[ 0 ].tagName.toLowerCase() ).toBe( 'p' );
+				expect( domUl2Children[ 1 ].tagName.toLowerCase() ).toBe( 'p' );
+				expect( domUl2Children[ 0 ].firstChild.data ).toBe( 'abc' );
+				expect( domUl2Children[ 1 ].firstChild.data ).toBe( '123' );
 
-				sinon.assert.calledOnce( warnStub );
-				sinon.assert.calledWithExactly( warnStub,
-					sinon.match( /^domconverter-transparent-rendering-unsupported-in-editing-pipeline/ ),
+				expect( warnStub ).toHaveBeenCalledOnce();
+				expect( warnStub ).toHaveBeenCalledWith(
+					expect.stringMatching( /^domconverter-transparent-rendering-unsupported-in-editing-pipeline/ ),
 					{
 						viewElement: bogusParagraph
 					},
-					sinon.match.string // Link to the documentation
+					expect.any( String ) // Link to the documentation
 				);
 			} );
 
@@ -1349,7 +1352,7 @@ describe( 'DomConverter', () => {
 				converter.renderingMode = 'data';
 				converter.blockFillerMode = 'nbsp';
 
-				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 				const viewList = _parseView(
 					'<container:div>' +
@@ -1377,34 +1380,34 @@ describe( 'DomConverter', () => {
 
 				const domDivChildren = Array.from( converter.viewChildrenToDom( viewList ) );
 
-				expect( domDivChildren.length ).to.equal( 1 );
-				expect( domDivChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'ul' );
+				expect( domDivChildren.length ).toBe( 1 );
+				expect( domDivChildren[ 0 ].tagName.toLowerCase() ).toBe( 'ul' );
 
 				const domUlChildren = Array.from( domDivChildren[ 0 ].childNodes );
 
-				expect( domUlChildren.length ).to.equal( 3 );
-				expect( domUlChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'li' );
-				expect( domUlChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'li' );
-				expect( domUlChildren[ 2 ].tagName.toLowerCase() ).to.equal( 'li' );
+				expect( domUlChildren.length ).toBe( 3 );
+				expect( domUlChildren[ 0 ].tagName.toLowerCase() ).toBe( 'li' );
+				expect( domUlChildren[ 1 ].tagName.toLowerCase() ).toBe( 'li' );
+				expect( domUlChildren[ 2 ].tagName.toLowerCase() ).toBe( 'li' );
 
 				const domUl1Children = Array.from( domUlChildren[ 0 ].childNodes );
 				const domUl2Children = Array.from( domUlChildren[ 1 ].childNodes );
 				const domUl3Children = Array.from( domUlChildren[ 2 ].childNodes );
 
-				expect( domUl1Children.length ).to.equal( 1 );
-				expect( domUl1Children[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
-				expect( domUl1Children[ 0 ].getAttribute( 'class' ) ).to.equal( 'style' );
-				expect( domUl1Children[ 0 ].firstChild.data ).to.equal( 'foo' );
+				expect( domUl1Children.length ).toBe( 1 );
+				expect( domUl1Children[ 0 ].tagName.toLowerCase() ).toBe( 'p' );
+				expect( domUl1Children[ 0 ].getAttribute( 'class' ) ).toBe( 'style' );
+				expect( domUl1Children[ 0 ].firstChild.data ).toBe( 'foo' );
 
-				expect( domUl2Children.length ).to.equal( 1 );
-				expect( domUl2Children[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
-				expect( domUl2Children[ 0 ].getAttribute( 'data-foo' ) ).to.equal( '123' );
-				expect( domUl2Children[ 0 ].firstChild.data ).to.equal( 'bar' );
+				expect( domUl2Children.length ).toBe( 1 );
+				expect( domUl2Children[ 0 ].tagName.toLowerCase() ).toBe( 'p' );
+				expect( domUl2Children[ 0 ].getAttribute( 'data-foo' ) ).toBe( '123' );
+				expect( domUl2Children[ 0 ].firstChild.data ).toBe( 'bar' );
 
-				expect( domUl3Children.length ).to.equal( 1 );
-				expect( domUl3Children[ 0 ].data ).to.equal( 'baz' );
+				expect( domUl3Children.length ).toBe( 1 );
+				expect( domUl3Children[ 0 ].data ).toBe( 'baz' );
 
-				sinon.assert.notCalled( warnStub );
+				expect( warnStub ).not.toHaveBeenCalled();
 			} );
 		} );
 	} );
@@ -1420,8 +1423,8 @@ describe( 'DomConverter', () => {
 			const viewPosition = selection.getFirstPosition();
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition.offset ).to.equal( 2 );
-			expect( domPosition.parent ).to.equal( domFoo );
+			expect( domPosition.offset ).toBe( 2 );
+			expect( domPosition.parent ).toBe( domFoo );
 		} );
 
 		it( 'should support unicode', () => {
@@ -1434,8 +1437,8 @@ describe( 'DomConverter', () => {
 			const viewPosition = selection.getFirstPosition();
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition.offset ).to.equal( 4 );
-			expect( domPosition.parent ).to.equal( domText );
+			expect( domPosition.offset ).toBe( 4 );
+			expect( domPosition.parent ).toBe( domText );
 		} );
 
 		it( 'should convert the position in the empty element', () => {
@@ -1447,8 +1450,8 @@ describe( 'DomConverter', () => {
 			const viewPosition = selection.getFirstPosition();
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition.offset ).to.equal( 0 );
-			expect( domPosition.parent ).to.equal( domP );
+			expect( domPosition.offset ).toBe( 0 );
+			expect( domPosition.parent ).toBe( domP );
 		} );
 
 		it( 'should convert the position in the non-empty element', () => {
@@ -1462,8 +1465,8 @@ describe( 'DomConverter', () => {
 			const viewPosition = selection.getFirstPosition();
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition.offset ).to.equal( 1 );
-			expect( domPosition.parent ).to.equal( domP );
+			expect( domPosition.offset ).toBe( 1 );
+			expect( domPosition.parent ).toBe( domP );
 		} );
 
 		it( 'should convert the position after text', () => {
@@ -1475,8 +1478,8 @@ describe( 'DomConverter', () => {
 			const viewPosition = selection.getFirstPosition();
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition.offset ).to.equal( 1 );
-			expect( domPosition.parent ).to.equal( domP );
+			expect( domPosition.offset ).toBe( 1 );
+			expect( domPosition.parent ).toBe( domP );
 		} );
 
 		it( 'should convert the position before text', () => {
@@ -1488,8 +1491,8 @@ describe( 'DomConverter', () => {
 			const viewPosition = selection.getFirstPosition();
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition.offset ).to.equal( 0 );
-			expect( domPosition.parent ).to.equal( domP );
+			expect( domPosition.offset ).toBe( 0 );
+			expect( domPosition.parent ).toBe( domP );
 		} );
 
 		it( 'should update offset if DOM text node starts with inline filler', () => {
@@ -1502,8 +1505,8 @@ describe( 'DomConverter', () => {
 			const viewPosition = selection.getFirstPosition();
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition.offset ).to.equal( INLINE_FILLER_LENGTH + 2 );
-			expect( domPosition.parent ).to.equal( domFoo );
+			expect( domPosition.offset ).toBe( INLINE_FILLER_LENGTH + 2 );
+			expect( domPosition.parent ).toBe( domFoo );
 		} );
 
 		it( 'should convert the position in the text even if offset is after the text', () => {
@@ -1516,8 +1519,8 @@ describe( 'DomConverter', () => {
 			const viewPosition = new ViewPosition( viewP.getChild( 0 ), 40 ); // This offset is after the text.
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition.offset ).to.equal( 3 );
-			expect( domPosition.parent ).to.equal( domFoo );
+			expect( domPosition.offset ).toBe( 3 );
+			expect( domPosition.parent ).toBe( domFoo );
 		} );
 
 		it( 'should not crash for position in text on not yet updated DOM tree', () => {
@@ -1535,8 +1538,8 @@ describe( 'DomConverter', () => {
 			const viewPosition = new ViewPosition( viewP.getChild( 0 ), 0 );
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition.offset ).to.equal( 0 );
-			expect( domPosition.parent ).to.equal( domStrong );
+			expect( domPosition.offset ).toBe( 0 );
+			expect( domPosition.parent ).toBe( domStrong );
 			// This should be in a text node but since DOM is not yet updated, it is in the strong element.
 		} );
 
@@ -1550,8 +1553,8 @@ describe( 'DomConverter', () => {
 			const viewPosition = selection.getFirstPosition();
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition.offset ).to.equal( INLINE_FILLER_LENGTH );
-			expect( domPosition.parent ).to.equal( domFiller );
+			expect( domPosition.offset ).toBe( INLINE_FILLER_LENGTH );
+			expect( domPosition.parent ).toBe( domFiller );
 		} );
 
 		it( 'should return null if view position is after a view element that has not been rendered to DOM', () => {
@@ -1563,7 +1566,7 @@ describe( 'DomConverter', () => {
 			const viewPosition = selection.getFirstPosition();
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition ).to.equal( null );
+			expect( domPosition ).toBe( null );
 		} );
 
 		it( 'should return null if view position is in a view text node that has not been rendered to DOM', () => {
@@ -1571,7 +1574,7 @@ describe( 'DomConverter', () => {
 			const viewPosition = new ViewPosition( viewText, 1 );
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition ).to.equal( null );
+			expect( domPosition ).toBe( null );
 		} );
 
 		it( 'should return null if view position is in a view element that has not been rendered to DOM', () => {
@@ -1579,7 +1582,7 @@ describe( 'DomConverter', () => {
 			const viewPosition = new ViewPosition( viewElement, 0 );
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
-			expect( domPosition ).to.equal( null );
+			expect( domPosition ).toBe( null );
 		} );
 	} );
 
@@ -1594,11 +1597,11 @@ describe( 'DomConverter', () => {
 			const viewRange = selection.getFirstRange();
 			const domRange = converter.viewRangeToDom( viewRange );
 
-			expect( domRange ).to.be.instanceof( Range );
-			expect( domRange.startContainer ).to.equal( domFoo );
-			expect( domRange.startOffset ).to.equal( 2 );
-			expect( domRange.endContainer ).to.equal( domP );
-			expect( domRange.endOffset ).to.equal( 1 );
+			expect( domRange ).toBeInstanceOf( Range );
+			expect( domRange.startContainer ).toBe( domFoo );
+			expect( domRange.startOffset ).toBe( 2 );
+			expect( domRange.endContainer ).toBe( domP );
+			expect( domRange.endOffset ).toBe( 1 );
 		} );
 	} );
 } );

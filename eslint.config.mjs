@@ -35,8 +35,10 @@ export default defineConfig( [
 			'!.changelog/',
 			'build/**',
 			'coverage/**',
+			'coverage-vitest/**',
 			'dist/**',
 			'packages/*/build/**',
+			'packages/*/coverage/**',
 			'packages/*/dist/**',
 			'packages/*/src/lib/**',
 			'release/**',
@@ -81,6 +83,133 @@ export default defineConfig( [
 			} ],
 			'ckeditor5-rules/require-file-extensions-in-imports': [ 'error', {
 				extensions: [ '.ts', '.js', '.json' ]
+			} ],
+			'ckeditor5-rules/require-as-const-returns-in-methods': [ 'error', {
+				methodNames: [ 'pluginName' ]
+			} ]
+		}
+	},
+	{
+		files: [
+			'packages/**/*.css',
+			'docs/**/*.css'
+		],
+
+		plugins: {
+			'ckeditor5-rules': ckeditor5Rules
+		},
+
+		rules: {
+			'ckeditor5-rules/license-header': [ 'error', {
+				headerLines: [
+					'/*',
+					' * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.',
+					' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options',
+					' */'
+				]
+			} ]
+		}
+	},
+	{
+		// `ck-content-variable-name` is activated by the eslint-config-ckeditor5 only for `**/theme/**/*.css`.
+		files: [ '**/theme/**/*.css' ],
+
+		rules: {
+			'ckeditor5-rules/ck-content-variable-name': [ 'error', {
+				ignoredVariableSubstrings: [ '-suggestion-', '-comment-', '-color-base-' ]
+			} ]
+		}
+	},
+	{
+		files: [ '**/*.css' ],
+
+		rules: {
+			// TODO (RTL): off pending a migration of physical properties/values to logical. Step 1
+			// (required first): fix the ~10 logical-*value* cases in source - text-align/float/resize
+			// `right`/`left`/`vertical` - which have no allow option, so they block enabling. Then, as a
+			// gradual follow-up, replace `off` with the allow-list below (it permits the physical
+			// properties/units already in use, silencing the bulk so only new ones are flagged) and
+			// shrink that list over time as each property is migrated to logical.
+			// 'css/prefer-logical-properties': [ 'error', {
+			//     allowProperties: [
+			//         // sizing
+			//         'width', 'height', 'min-width', 'min-height', 'max-width', 'max-height',
+			//         // margin / padding
+			//         'margin-top', 'margin-bottom', 'margin-left', 'margin-right',
+			//         'padding-top', 'padding-bottom', 'padding-left', 'padding-right',
+			//         // inset
+			//         'top', 'bottom', 'left', 'right',
+			//         // border (side / width / color)
+			//         'border-top', 'border-bottom', 'border-left', 'border-right', 'border-top-width',
+			//         'border-top-color', 'border-bottom-color', 'border-left-color',
+			//         // border radius
+			//         'border-top-left-radius', 'border-top-right-radius',
+			//         'border-bottom-left-radius', 'border-bottom-right-radius',
+			//         // overflow / misc
+			//         'overflow-x', 'overflow-y', 'scroll-margin-top', 'overscroll-behavior-y'
+			//     ],
+			//     allowUnits: [ 'vh', 'vw' ]
+			// } ],
+			'css/prefer-logical-properties': 'off',
+
+			// The features marked with TODO are used but are not yet baseline "widely available", so they are
+			// temporarily white-listed locally. The rest are acceptable (supported in practice or handled by the build).
+			// All TODOs should be fixed in source and have the exceptions removed afterwards.
+			'css/use-baseline': [ 'error', {
+				available: 'widely',
+
+				allowSelectors: [
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/Nesting_selector
+					// handled by LightningCSS at build (never ships nested)
+					'nesting',
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/:has
+					// Baseline 2023, all modern browsers
+					'has',
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/::selection
+					'selection',
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/::marker
+					'marker',
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/:dir
+					'dir'
+				],
+
+				allowProperties: [
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/user-select
+					'user-select',
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/resize
+					'resize',
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap
+					'text-wrap',
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/transition-behavior
+					'transition-behavior',
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/mask
+					'mask',
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/zoom (legacy non-standard)
+					'zoom',
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior
+					'overscroll-behavior',
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior-y
+					'overscroll-behavior-y'
+				],
+
+				allowAtRules: [
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/@starting-style
+					'starting-style'
+				],
+
+				allowFunctions: [
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/anchor
+					'anchor'
+				],
+
+				allowPropertyValues: {
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/break-after
+					'break-after': [ 'column' ],
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/break-before
+					'break-before': [ 'avoid' ],
+					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration
+					'text-decoration': [ 'currentColor' ]
+				}
 			} ]
 		}
 	},

@@ -186,6 +186,7 @@ export class AriaLiveAnnouncerRegionView extends View {
 		} );
 
 		editor.on( 'destroy', () => {
+			/* v8 ignore else -- @preserve */
 			if ( this._pruneAnnouncementsInterval !== null ) {
 				clearInterval( this._pruneAnnouncementsInterval! );
 				this._pruneAnnouncementsInterval = null;

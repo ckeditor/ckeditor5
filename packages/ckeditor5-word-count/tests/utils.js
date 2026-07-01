@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { modelElementToPlainText } from '../src/utils.js';
 
 import { ModelElement, ModelText, _setModelData } from '@ckeditor/ckeditor5-engine';
@@ -27,7 +28,7 @@ describe( 'utils', () => {
 
 			const mainElement = new ModelElement( 'container', null, [ innerElement1, innerElement2 ] );
 
-			expect( modelElementToPlainText( mainElement ) ).to.equal( 'Foo\nBarBaz' );
+			expect( modelElementToPlainText( mainElement ) ).toBe( 'Foo\nBarBaz' );
 		} );
 
 		describe( 'complex structures', () => {
@@ -58,7 +59,7 @@ describe( 'utils', () => {
 						'<paragraph>bar</paragraph>' +
 					'</blockQuote>' );
 
-				expect( modelElementToPlainText( model.document.getRoot() ) ).to.equal( 'Hello\nworld\nfoo\nbar' );
+				expect( modelElementToPlainText( model.document.getRoot() ) ).toBe( 'Hello\nworld\nfoo\nbar' );
 			} );
 
 			it( 'extracts plain text from tables', () => {
@@ -81,19 +82,19 @@ describe( 'utils', () => {
 						'</tableRow>' +
 					'</table>' );
 
-				expect( modelElementToPlainText( model.document.getRoot() ) ).to.equal( 'Foo\nBar\nBaz\nFoo' );
+				expect( modelElementToPlainText( model.document.getRoot() ) ).toBe( 'Foo\nBar\nBaz\nFoo' );
 			} );
 
 			it( 'extracts plain text with soft break', () => {
 				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>bar</paragraph>' );
 
-				expect( modelElementToPlainText( model.document.getRoot() ) ).to.equal( 'Foo\nbar' );
+				expect( modelElementToPlainText( model.document.getRoot() ) ).toBe( 'Foo\nbar' );
 			} );
 
 			it( 'extracts plain text with inline styles', () => {
 				_setModelData( model, '<paragraph>F<$text bold="true">oo</$text><$text href="url">Ba</$text>r</paragraph>' );
 
-				expect( modelElementToPlainText( model.document.getRoot() ) ).to.equal( 'FooBar' );
+				expect( modelElementToPlainText( model.document.getRoot() ) ).toBe( 'FooBar' );
 			} );
 
 			it( 'extracts plain text from mixed structure', () => {
@@ -121,7 +122,7 @@ describe( 'utils', () => {
 						'</tableRow>' +
 					'</table>' );
 
-				expect( modelElementToPlainText( model.document.getRoot() ) ).to.equal(
+				expect( modelElementToPlainText( model.document.getRoot() ) ).toBe(
 					'111222333\n444\n555\n666\n777\n888\n999\n000\n111\n222'
 				);
 			} );

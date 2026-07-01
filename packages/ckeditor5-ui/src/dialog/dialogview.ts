@@ -30,12 +30,18 @@ import { FocusCycler, isViewWithFocusCycler,
 	isFocusable
 }
 	from '../focuscycler.js';
-import { DraggableViewMixin, type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin.js';
+import {
+	DraggableViewMixin,
+	type DraggableView,
+	type DraggableViewDragEvent,
+	type DraggableViewMixinConstructor
+} from '../bindings/draggableviewmixin.js';
 import { DialogActionsView, type DialogActionButtonDefinition } from './dialogactionsview.js';
 import { DialogContentView } from './dialogcontentview.js';
 import { type EditorUI } from '../editorui/editorui.js';
 
 import '../../theme/components/dialog/dialog.css';
+import type { DialogPositionCallback } from './dialog.js';
 // @if CK_DEBUG_DIALOG // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
 /**
@@ -65,10 +71,12 @@ export const DialogViewPosition = {
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
+const DialogViewBase: DraggableViewMixinConstructor<typeof View> = /* #__PURE__ */ DraggableViewMixin( View );
+
 /**
  * A dialog view class.
  */
-export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) implements DraggableView {
+export class DialogView extends DialogViewBase implements DraggableView {
 	/**
 	 * A collection of the child views inside of the dialog.
 	 * A dialog can have 3 optional parts: header, content, and actions.
@@ -140,13 +148,12 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 	/**
 	 * The position of the dialog view.
 	 *
-	 * If set to a function, it will be called with the DOM root Rect and the dialog Rect as arguments.
+	 * If set to a function, it will be called with the DOM root Rects and the dialog Rect as arguments.
 	 * It should return the coordinates of the dialog's position.
 	 *
 	 * @observable
 	 */
-	declare public position: typeof DialogViewPosition[ keyof typeof DialogViewPosition ] | null |
-		( ( dialogRect: Rect, domRootRect?: Rect | null ) => { left: number; top: number } | null );
+	declare public position: typeof DialogViewPosition[ keyof typeof DialogViewPosition ] | DialogPositionCallback | null;
 
 	/**
 	 * A flag indicating that the dialog should be shown. Once set to `true`, the dialog will be shown
@@ -187,7 +194,7 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 	/**
 	 * A callback returning the DOM root that requested the dialog.
 	 */
-	private _getCurrentDomRoot: () => HTMLElement;
+	private _getDomRootElement: () => HTMLElement | null;
 
 	/**
 	 * A callback returning the configured editor viewport offset.
@@ -209,11 +216,11 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 	 */
 	constructor( locale: Locale,
 		{
-			getCurrentDomRoot,
+			getDomRootElement,
 			getViewportOffset,
 			keystrokeHandlerOptions
 		}: {
-			getCurrentDomRoot: () => HTMLElement;
+			getDomRootElement: () => HTMLElement | null;
 			getViewportOffset: () => EditorUI[ 'viewportOffset' ];
 			keystrokeHandlerOptions?: KeystrokeHandlerOptions;
 		}
@@ -231,7 +238,7 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 		this.set( '_isTransparent', false );
 		this.set( '_top', 0 );
 		this.set( '_left', 0 );
-		this._getCurrentDomRoot = getCurrentDomRoot;
+		this._getDomRootElement = getDomRootElement;
 		this._getViewportOffset = getViewportOffset;
 
 		this.decorate( 'moveTo' );
@@ -485,12 +492,13 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 
 		// Actual position may be different from the configured one if there's no DOM root.
 		let configuredPosition = this.position;
-		let domRootRect;
+		let domRootRect = null;
+		let visibleDomRootRect = null;
 
-		if ( !this._getCurrentDomRoot() ) {
+		if ( !this._getDomRootElement() ) {
 			configuredPosition = DialogViewPosition.SCREEN_CENTER;
 		} else {
-			domRootRect = this._getVisibleDomRootRect( viewportRect );
+			( { domRootRect, visibleDomRootRect } = this._getDomRootRects( viewportRect ) );
 		}
 
 		const defaultOffset = DialogView.defaultOffset;
@@ -499,7 +507,7 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 		if ( this.position == null ) {
 			return;
 		} else if ( typeof this.position == 'function' ) {
-			const coords = this.position( dialogRect, domRootRect );
+			const coords = this.position( dialogRect, visibleDomRootRect, domRootRect );
 
 			if ( coords == null ) {
 				this._moveOffScreen();
@@ -521,12 +529,12 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
 
-				if ( domRootRect ) {
+				if ( visibleDomRootRect ) {
 					const leftCoordinate = this.locale!.contentLanguageDirection === 'ltr' ?
-						domRootRect.right - dialogRect.width - defaultOffset :
-						domRootRect.left + defaultOffset;
+						visibleDomRootRect.right - dialogRect.width - defaultOffset :
+						visibleDomRootRect.left + defaultOffset;
 
-					this.moveTo( leftCoordinate, domRootRect.top + defaultOffset );
+					this.moveTo( leftCoordinate, visibleDomRootRect.top + defaultOffset );
 				} else {
 					this._moveOffScreen();
 				}
@@ -534,10 +542,10 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 				break;
 			}
 			case DialogViewPosition.EDITOR_CENTER: {
-				if ( domRootRect ) {
+				if ( visibleDomRootRect ) {
 					this.moveTo(
-						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
-						Math.round( domRootRect.top + domRootRect.height / 2 - dialogRect.height / 2 )
+						Math.round( visibleDomRootRect.left + visibleDomRootRect.width / 2 - dialogRect.width / 2 ),
+						Math.round( visibleDomRootRect.top + visibleDomRootRect.height / 2 - dialogRect.height / 2 )
 					);
 				} else {
 					this._moveOffScreen();
@@ -558,10 +566,10 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
 
-				if ( domRootRect ) {
+				if ( visibleDomRootRect ) {
 					this.moveTo(
-						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
-						domRootRect.top + defaultOffset
+						Math.round( visibleDomRootRect.left + visibleDomRootRect.width / 2 - dialogRect.width / 2 ),
+						visibleDomRootRect.top + defaultOffset
 					);
 				} else {
 					this._moveOffScreen();
@@ -574,10 +582,10 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
 
-				if ( domRootRect ) {
+				if ( visibleDomRootRect ) {
 					this.moveTo(
-						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
-						domRootRect.bottom - dialogRect.height - defaultOffset
+						Math.round( visibleDomRootRect.left + visibleDomRootRect.width / 2 - dialogRect.width / 2 ),
+						visibleDomRootRect.bottom - dialogRect.height - defaultOffset
 					);
 				} else {
 					this._moveOffScreen();
@@ -590,10 +598,10 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
 
-				if ( domRootRect ) {
+				if ( visibleDomRootRect ) {
 					this.moveTo(
-						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
-						domRootRect.top - dialogRect.height - defaultOffset
+						Math.round( visibleDomRootRect.left + visibleDomRootRect.width / 2 - dialogRect.width / 2 ),
+						visibleDomRootRect.top - dialogRect.height - defaultOffset
 					);
 				} else {
 					this._moveOffScreen();
@@ -606,10 +614,10 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
 
-				if ( domRootRect ) {
+				if ( visibleDomRootRect ) {
 					this.moveTo(
-						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
-						domRootRect.bottom + defaultOffset
+						Math.round( visibleDomRootRect.left + visibleDomRootRect.width / 2 - dialogRect.width / 2 ),
+						visibleDomRootRect.bottom + defaultOffset
 					);
 				} else {
 					this._moveOffScreen();
@@ -621,22 +629,26 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 	}
 
 	/**
-	 * Calculates the visible DOM root part.
+	 * Calculates the {@link #_getDomRootElement DOM root element's} Rect and its corresponding visible DOM root Rect.
+	 *
+	 * The visible Rect is the part of the DOM root Rect that is actually visible to the user
+	 * (see {@link module:utils/dom/rect~Rect#getVisible}), and overlaps with the viewport.
+	 *
+	 * **Note**: It might be that the visible DOM root Rect is not available (root off the screen, cropped by parent elements, etc.)
+	 * but its general DOM root Rect is still available.
 	 */
-	private _getVisibleDomRootRect( viewportRect: Rect ): Rect | null {
-		let visibleDomRootRect = new Rect( this._getCurrentDomRoot() ).getVisible();
+	private _getDomRootRects( viewportRect: Rect ): {
+		visibleDomRootRect: Rect | null;
+		domRootRect: Rect | null;
+	} {
+		const domRootRect = new Rect( this._getDomRootElement()! );
+		let visibleDomRootRect = domRootRect.getVisible();
 
-		if ( !visibleDomRootRect ) {
-			return null;
-		} else {
+		if ( visibleDomRootRect ) {
 			visibleDomRootRect = viewportRect.getIntersection( visibleDomRootRect );
-
-			if ( !visibleDomRootRect ) {
-				return null;
-			}
 		}
 
-		return visibleDomRootRect;
+		return { visibleDomRootRect, domRootRect };
 	}
 
 	/**

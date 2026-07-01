@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { getPositionedAncestor } from '../../src/dom/getpositionedancestor.js';
 
 describe( 'getPositionedAncestor', () => {
@@ -19,17 +20,17 @@ describe( 'getPositionedAncestor', () => {
 	} );
 
 	it( 'should return null when there is no element', () => {
-		expect( getPositionedAncestor() ).to.be.null;
+		expect( getPositionedAncestor() ).toBeNull();
 	} );
 
 	it( 'should return null when there is no positioned ancestor', () => {
-		expect( getPositionedAncestor( element ) ).to.be.null;
+		expect( getPositionedAncestor( element ) ).toBeNull();
 	} );
 
 	it( 'should not consider the passed element', () => {
 		element.style.position = 'relative';
 
-		expect( getPositionedAncestor( element ) ).to.be.null;
+		expect( getPositionedAncestor( element ) ).toBeNull();
 	} );
 
 	it( 'should find the positioned ancestor (direct parent)', () => {
@@ -39,7 +40,7 @@ describe( 'getPositionedAncestor', () => {
 		document.body.appendChild( parent );
 		parent.style.position = 'absolute';
 
-		expect( getPositionedAncestor( element ) ).to.equal( parent );
+		expect( getPositionedAncestor( element ) ).toBe( parent );
 
 		parent.remove();
 	} );
@@ -53,7 +54,7 @@ describe( 'getPositionedAncestor', () => {
 		document.body.appendChild( parentA );
 		parentA.style.position = 'absolute';
 
-		expect( getPositionedAncestor( element ) ).to.equal( parentA );
+		expect( getPositionedAncestor( element ) ).toBe( parentA );
 
 		parentA.remove();
 	} );

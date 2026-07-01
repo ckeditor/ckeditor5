@@ -1316,7 +1316,7 @@ export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFun
 			return;
 		}
 
-		const markerRange = data.markerRange;
+		const { markerRange, markerName } = data;
 
 		// Marker that is collapsed has consumable build differently that non-collapsed one.
 		// For more information see `addMarker` event description.
@@ -1336,22 +1336,148 @@ export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFun
 		const viewWriter = conversionApi.writer;
 
 		viewWriter.setCustomProperty( 'markerBoundaryType', 'start', viewStartElement );
-		viewWriter.setCustomProperty( 'markerBoundaryType', 'end', viewEndElement );
+		viewWriter.setCustomProperty( 'markerBoundaryName', markerName, viewStartElement );
 
-		// Add "end" element only if range is not collapsed.
+		viewWriter.setCustomProperty( 'markerBoundaryType', 'end', viewEndElement );
+		viewWriter.setCustomProperty( 'markerBoundaryName', markerName, viewEndElement );
+
+		// Returns the current model position of the given boundary UIElement for an already-inserted marker.
+		const getBoundaryModelPosition = ( name: string, type: 'start' | 'end' ): ModelPosition | null => {
+			const elements = mapper.markerNameToElements( name );
+
+			if ( elements ) {
+				for ( const el of elements ) {
+					if ( el.getCustomProperty( 'markerBoundaryType' ) === type ) {
+						return mapper.toModelPosition( viewWriter.createPositionBefore( el ) );
+					}
+				}
+			}
+
+			return null;
+		};
+
+		// End elements close inner-first: [outer:start] [inner:start] foo [inner:end] [outer:end]
+		// Walk forward from the end boundary, skipping inner markers' end elements and stopping before outer ones.
+		// Tie-breaker for identical ranges: inner markers sort after ours.
 		if ( !markerRange.isCollapsed ) {
-			viewWriter.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
-			conversionApi.mapper.bindElementToMarker( viewEndElement, data.markerName );
+			const endViewPosition = mapper.toViewPosition( markerRange.end ).getLastMatchingPosition( ( { item } ) => {
+				if ( !item.is( 'uiElement' ) || item.getCustomProperty( 'markerBoundaryType' ) !== 'end' ) {
+					return false;
+				}
+
+				const existingName = item.getCustomProperty( 'markerBoundaryName' ) as string;
+				const existingStartPos = getBoundaryModelPosition( existingName, 'start' );
+
+				if ( !existingStartPos ) {
+					return false;
+				}
+
+				const cmp = existingStartPos.compareWith( markerRange.start );
+
+				// Identical range — inner markers have a name that sorts after ours.
+				// [*new*:start]|[old:start] ... [old:end] [*new*:end]  -> (old > new) -> skip (return true)
+				//                               ^^^^^^^^^
+				// [old:start]|[*new*:start] ... [*new*:end] [old:end]  -> (old < new) -> stop (return false)
+				//                                           ^^^^^^^^^
+				if ( cmp === 'same' ) {
+					return existingName.localeCompare( markerName ) > 0;
+				}
+
+				// Skip inner markers (start is after ours), stop before outer ones.
+				// [*new*:start] ... [old:start] ... [old:end] [*new*:end] -> skip (return true)
+				//                                   ^^^^^^^^^
+				// [old:start] ... [*new*:start] ... [*new*:end] [old:end] -> stop (return false)
+				//                                               ^^^^^^^^^
+				return cmp === 'after';
+			} );
+
+			viewWriter.insert( endViewPosition, viewEndElement );
+			mapper.bindElementToMarker( viewEndElement, markerName );
 		}
 
-		// Jump over end UI elements to find a proper position for "start" element.
-		// It should be after all marker "end" UI elements as markers conversion should be triggered in reverse DOM order.
-		const startViewPosition = mapper.toViewPosition( markerRange.start ).getLastMatchingPosition( ( { item } ) =>
-			item.is( 'uiElement' ) && item.getCustomProperty( 'markerBoundaryType' ) === 'end'
-		);
+		// Start elements open outer-first: [outer:start] [inner:start] foo [inner:end] [outer:end]
+		// Walk forward from the start boundary, skipping:
+		// 1. End UIElements (they must remain after all start elements).
+		// 2. Start UIElements of outer markers (end is after ours, using `viewEndElement` as reference).
+		// Note: Collapsed markers land after non-collapsed starts.
+		const startViewPosition = mapper.toViewPosition( markerRange.start ).getLastMatchingPosition( ( { item } ) => {
+			if ( !item.is( 'uiElement' ) ) {
+				return false;
+			}
+
+			const boundaryType = item.getCustomProperty( 'markerBoundaryType' );
+
+			// Non-boundary UIElement — not part of the marker system, stop before it.
+			// [*new*:start] [?:ui] ... -> stop (return false)
+			//               ^^^^^^
+			if ( !boundaryType ) {
+				return false;
+			}
+
+			// Stray end element → skip unconditionally.
+			// [old:end] [*new*:start] ... -> skip (return true)
+			// ^^^^^^^^^
+			if ( boundaryType === 'end' ) {
+				return true;
+			}
+
+			const existingName = item.getCustomProperty( 'markerBoundaryName' ) as string;
+			const existingEndPos = getBoundaryModelPosition( existingName, 'end' );
+
+			// The existing marker we just encountered is collapsed.
+			// We need to decide where to place our new marker's start element relative to it.
+			//
+			// 1. If our new marker is a RANGE (non-collapsed):
+			//    Ranges must wrap points at the same position. We must insert our start BEFORE the old point.
+			//    [old:collapsed] ... [*new*:end] -> stop here (return false)
+			//    ^^^^^^^^^^^^^^^
+			//
+			// 2. If our new marker is ALSO COLLAPSED:
+			//    Both are points at the same position. We preserve creation order (new goes after old).
+			//    [old:collapsed] [*new*:collapsed] -> skip the old one (return true)
+			//    ^^^^^^^^^^^^^^^
+			//
+			// We intentionally do NOT sort by name here. `compareMarkersForDowncast` treats two collapsed
+			// markers at the same position as non-overlapping (range.end === range.start is not 'after'),
+			// so it unconditionally returns 1 — preserving insertion order without a name-based tiebreaker.
+			// This boundary-walker must stay consistent with that. Sorting by name would also break features
+			// like HTML comments whose marker names contain random UIDs.
+			//
+			// Sorting by name would also make the algorithm non-deterministic: many features (e.g. comments)
+			// use collapsed markers with random UID-based names, so the insertion order of their view elements would
+			// differ between runs.
+			if ( !existingEndPos ) {
+				return markerRange.isCollapsed;
+			}
+
+			// Our marker is collapsed — it always lands after any non-collapsed start.
+			// [old:start] [*new*:collapsed] ... [old:end] -> skip (return true)
+			// ^^^^^^^^^^^
+			if ( markerRange.isCollapsed ) {
+				return true;
+			}
+
+			const cmp = existingEndPos.compareWith( markerRange.end );
+
+			// Identical range — outer markers have a name that sorts before ours.
+			// [old:start] [*new*:start] ... [*new*:end]|[old:end] -> (old < new) -> skip (return true)
+			// ^^^^^^^^^^^
+			// [*new*:start] [old:start] ... [old:end]|[*new*:end] -> (old > new) -> stop (return false)
+			//               ^^^^^^^^^^^
+			if ( cmp === 'same' ) {
+				return existingName.localeCompare( markerName ) < 0;
+			}
+
+			// Skip outer markers (end is after ours), stop before inner ones.
+			// [old:start] [*new*:start] ... [*new*:end] ... [old:end] -> skip (return true)
+			// ^^^^^^^^^^^
+			// [*new*:start] [old:start] ... [old:end] ... [*new*:end] -> stop (return false)
+			//               ^^^^^^^^^^^
+			return cmp === 'after';
+		} );
 
 		viewWriter.insert( startViewPosition, viewStartElement );
-		conversionApi.mapper.bindElementToMarker( viewStartElement, data.markerName );
+		mapper.bindElementToMarker( viewStartElement, markerName );
 
 		evt.stop();
 	};

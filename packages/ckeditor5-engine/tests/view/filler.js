@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
 	INLINE_FILLER_LENGTH,
 	INLINE_FILLER,
@@ -15,7 +16,7 @@ import {
 describe( 'filler', () => {
 	describe( 'INLINE_FILLER', () => {
 		it( 'should have length equal INLINE_FILLER_LENGTH', () => {
-			expect( INLINE_FILLER.length ).to.equal( INLINE_FILLER_LENGTH );
+			expect( INLINE_FILLER.length ).toBe( INLINE_FILLER_LENGTH );
 		} );
 	} );
 
@@ -23,43 +24,43 @@ describe( 'filler', () => {
 		it( 'should be true for node which contains only filler', () => {
 			const node = document.createTextNode( INLINE_FILLER );
 
-			expect( startsWithFiller( node ) ).to.be.true;
+			expect( startsWithFiller( node ) ).toBe( true );
 		} );
 
 		it( 'should be true for node which starts with filler', () => {
 			const node = document.createTextNode( INLINE_FILLER + 'foo' );
 
-			expect( startsWithFiller( node ) ).to.be.true;
+			expect( startsWithFiller( node ) ).toBe( true );
 		} );
 
 		it( 'should be true for text which contains only filler', () => {
 			const str = `${ INLINE_FILLER }`;
 
-			expect( startsWithFiller( str ) ).to.be.true;
+			expect( startsWithFiller( str ) ).toBe( true );
 		} );
 
 		it( 'should be true for text which starts with filler', () => {
 			const str = `${ INLINE_FILLER }foo`;
 
-			expect( startsWithFiller( str ) ).to.be.true;
+			expect( startsWithFiller( str ) ).toBe( true );
 		} );
 
 		it( 'should be false for element', () => {
 			const node = document.createElement( 'p' );
 
-			expect( startsWithFiller( node ) ).to.be.false;
+			expect( startsWithFiller( node ) ).toBe( false );
 		} );
 
 		it( 'should be false which contains filler in the middle', () => {
 			const node = document.createTextNode( 'x' + INLINE_FILLER + 'x' );
 
-			expect( startsWithFiller( node ) ).to.be.false;
+			expect( startsWithFiller( node ) ).toBe( false );
 		} );
 
 		it( 'should be false for the node which does not contains filler', () => {
 			const node = document.createTextNode( 'foo' );
 
-			expect( startsWithFiller( node ) ).to.be.false;
+			expect( startsWithFiller( node ) ).toBe( false );
 		} );
 
 		it( 'should be false for the node which does not contains filler, even if it has the same length', () => {
@@ -71,7 +72,7 @@ describe( 'filler', () => {
 
 			const node = document.createTextNode( text );
 
-			expect( startsWithFiller( node ) ).to.be.false;
+			expect( startsWithFiller( node ) ).toBe( false );
 		} );
 	} );
 
@@ -81,8 +82,8 @@ describe( 'filler', () => {
 
 			const dataWithoutFiller = getDataWithoutFiller( node );
 
-			expect( dataWithoutFiller.length ).to.equals( 3 );
-			expect( dataWithoutFiller ).to.equals( 'foo' );
+			expect( dataWithoutFiller.length ).toBe( 3 );
+			expect( dataWithoutFiller ).toBe( 'foo' );
 		} );
 
 		it( 'should return text without filler', () => {
@@ -90,8 +91,8 @@ describe( 'filler', () => {
 
 			const dataWithoutFiller = getDataWithoutFiller( str );
 
-			expect( dataWithoutFiller.length ).to.equals( 3 );
-			expect( dataWithoutFiller ).to.equals( 'foo' );
+			expect( dataWithoutFiller.length ).toBe( 3 );
+			expect( dataWithoutFiller ).toBe( 'foo' );
 		} );
 
 		it( 'should return the same data for data without filler', () => {
@@ -99,8 +100,8 @@ describe( 'filler', () => {
 
 			const dataWithoutFiller = getDataWithoutFiller( node );
 
-			expect( dataWithoutFiller.length ).to.equals( 3 );
-			expect( dataWithoutFiller ).to.equals( 'foo' );
+			expect( dataWithoutFiller.length ).toBe( 3 );
+			expect( dataWithoutFiller ).toBe( 'foo' );
 		} );
 
 		it( 'should return the same data for text without filler', () => {
@@ -108,8 +109,8 @@ describe( 'filler', () => {
 
 			const dataWithoutFiller = getDataWithoutFiller( node );
 
-			expect( dataWithoutFiller.length ).to.equals( 3 );
-			expect( dataWithoutFiller ).to.equals( 'foo' );
+			expect( dataWithoutFiller.length ).toBe( 3 );
+			expect( dataWithoutFiller ).toBe( 'foo' );
 		} );
 	} );
 
@@ -117,13 +118,13 @@ describe( 'filler', () => {
 		it( 'should be true for inline filler', () => {
 			const node = document.createTextNode( INLINE_FILLER );
 
-			expect( isInlineFiller( node ) ).to.be.true;
+			expect( isInlineFiller( node ) ).toBe( true );
 		} );
 
 		it( 'should be false for element which starts with filler', () => {
 			const node = document.createTextNode( INLINE_FILLER + 'foo' );
 
-			expect( isInlineFiller( node ) ).to.be.false;
+			expect( isInlineFiller( node ) ).toBe( false );
 		} );
 
 		it( 'should be false for the node which does not contains filler, even if it has the same length', () => {
@@ -135,7 +136,7 @@ describe( 'filler', () => {
 
 			const node = document.createTextNode( text );
 
-			expect( isInlineFiller( node ) ).to.be.false;
+			expect( isInlineFiller( node ) ).toBe( false );
 		} );
 
 		it( 'should be true for inline filler from inside iframe', () => {
@@ -143,7 +144,7 @@ describe( 'filler', () => {
 			document.body.appendChild( iframe );
 			const node = iframe.contentDocument.createTextNode( INLINE_FILLER );
 
-			expect( isInlineFiller( node ) ).to.be.true;
+			expect( isInlineFiller( node ) ).toBe( true );
 
 			document.body.removeChild( iframe );
 		} );
@@ -151,27 +152,31 @@ describe( 'filler', () => {
 
 	describe( 'MARKED_NBSP_FILLER', () => {
 		afterEach( () => {
-			sinon.restore();
+			vi.restoreAllMocks();
 		} );
 
 		it( 'should return node with correct HTML', () => {
 			const node = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
 
-			expect( node.outerHTML ).to.equal( '<span data-cke-filler="true">&nbsp;</span>' );
+			expect( node.outerHTML ).toBe( '<span data-cke-filler="true">&nbsp;</span>' );
 		} );
 
 		it( 'should use innerText setter instead of innerHTML', () => {
 			const el = document.createElement( 'span' );
-			const innerHTMLSpy = sinon.spy( el, 'innerHTML', [ 'set' ] );
-			const innerTextSpy = sinon.spy( el, 'innerText', [ 'set' ] );
-			const createElementStub = sinon.stub( document, 'createElement' );
-			createElementStub.withArgs( 'span' ).returns( el );
+			const innerHTMLSpy = vi.spyOn( el, 'innerHTML', 'set' );
+			const innerTextSpy = vi.spyOn( el, 'innerText', 'set' );
+			const createElementStub = vi.spyOn( document, 'createElement' ).mockImplementation( tagName => {
+				if ( tagName === 'span' ) {
+					return el;
+				}
+				return document.createElement.wrappedMethod( tagName );
+			} );
 
 			MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
 
-			sinon.assert.calledOnce( createElementStub );
-			sinon.assert.notCalled( innerHTMLSpy.set );
-			sinon.assert.calledOnce( innerTextSpy.set );
+			expect( createElementStub ).toHaveBeenCalledOnce();
+			expect( innerHTMLSpy ).not.toHaveBeenCalled();
+			expect( innerTextSpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 } );

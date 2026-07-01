@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { LabelView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -52,33 +53,33 @@ describe( 'StyleGroupView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should set #labelView', () => {
-			expect( group.labelView ).to.be.instanceOf( LabelView );
-			expect( group.labelView.text ).to.equal( 'Foo label' );
+			expect( group.labelView ).toBeInstanceOf( LabelView );
+			expect( group.labelView.text ).toBe( 'Foo label' );
 		} );
 
 		it( 'should set #gridView', () => {
-			expect( group.gridView ).to.be.instanceOf( StyleGridView );
-			expect( group.gridView.children.first.label ).to.equal( 'Red heading' );
-			expect( group.gridView.children.last.label ).to.equal( 'Large heading' );
+			expect( group.gridView ).toBeInstanceOf( StyleGridView );
+			expect( group.gridView.children.first.label ).toBe( 'Red heading' );
+			expect( group.gridView.children.last.label ).toBe( 'Large heading' );
 		} );
 
 		it( 'should be a <div>', () => {
 			group.render();
 
-			expect( group.element.tagName ).to.equal( 'DIV' );
+			expect( group.element.tagName ).toBe( 'DIV' );
 		} );
 
 		it( 'should have a static CSS class', () => {
 			group.render();
 
-			expect( group.element.classList.contains( 'ck-style-panel__style-group' ) ).to.be.true;
+			expect( group.element.classList.contains( 'ck-style-panel__style-group' ) ).toBe( true );
 		} );
 
 		it( 'should have children in DOM', () => {
 			group.render();
 
-			expect( group.element.firstChild ).to.equal( group.labelView.element );
-			expect( group.element.lastChild ).to.equal( group.gridView.element );
+			expect( group.element.firstChild ).toBe( group.labelView.element );
+			expect( group.element.lastChild ).toBe( group.gridView.element );
 		} );
 	} );
 } );

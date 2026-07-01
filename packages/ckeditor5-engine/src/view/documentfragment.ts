@@ -11,12 +11,14 @@ import { ViewTypeCheckable } from './typecheckable.js';
 import { ViewText } from './text.js';
 import { ViewTextProxy } from './textproxy.js';
 
-import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
+import { EmitterMixin, isIterable, type EmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
 
 import type { ViewDocument, ViewDocumentChangeType } from './document.js';
 
 import { type ViewItem } from './item.js';
 import { type ViewNode } from './node.js';
+
+const ViewDocumentFragmentBase: EmitterMixinConstructor<typeof ViewTypeCheckable> = /* #__PURE__ */ EmitterMixin( ViewTypeCheckable );
 
 /**
  * Document fragment.
@@ -25,7 +27,7 @@ import { type ViewNode } from './node.js';
  * {@link module:engine/view/upcastwriter~ViewUpcastWriter#createDocumentFragment `ViewUpcastWriter#createDocumentFragment()`}
  * method.
  */
-export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) implements Iterable<ViewNode> {
+export class ViewDocumentFragment extends ViewDocumentFragmentBase implements Iterable<ViewNode> {
 	/**
 	 * The document to which this document fragment belongs.
 	 */

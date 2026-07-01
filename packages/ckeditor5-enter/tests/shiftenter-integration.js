@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
@@ -37,8 +38,8 @@ describe( 'ShiftEnter integration', () => {
 	} );
 
 	it( 'loads correct data', () => {
-		expect( _getModelData( model, options ) ).to.equal( '<paragraph>First line.<softBreak></softBreak>Second line.</paragraph>' );
-		expect( _getViewData( editor.editing.view, options ) ).to.equal( '<p>First line.<br></br>Second line.</p>' );
+		expect( _getModelData( model, options ) ).toEqual( '<paragraph>First line.<softBreak></softBreak>Second line.</paragraph>' );
+		expect( _getViewData( editor.editing.view, options ) ).toEqual( '<p>First line.<br></br>Second line.</p>' );
 	} );
 
 	it( 'BLOCK_FILLER should be inserted after <br> in the paragraph (data pipeline)', () => {
@@ -46,7 +47,7 @@ describe( 'ShiftEnter integration', () => {
 
 		editor.execute( 'shiftEnter' );
 
-		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><br>&nbsp;</p>' );
+		expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p><br>&nbsp;</p>' );
 	} );
 
 	it( 'INLINE_FILLER should be inserted before last <br> (BLOCK_FILLER) in the paragraph (editing pipeline)', () => {
@@ -54,7 +55,7 @@ describe( 'ShiftEnter integration', () => {
 
 		editor.execute( 'shiftEnter' );
 
-		expect( editor.ui.view.editable.element.innerHTML ).to.equal(
+		expect( editor.ui.view.editable.element.innerHTML ).toEqual(
 			`<p><br>${ _VIEW_INLINE_FILLER }<br data-cke-filler="true"></p>`
 		);
 	} );
@@ -72,7 +73,7 @@ describe( 'ShiftEnter integration', () => {
 
 		const selection = model.document.selection;
 
-		expect( selection.hasAttribute( 'linkHref' ) ).to.equal( false );
-		expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
+		expect( selection.hasAttribute( 'linkHref' ) ).toEqual( false );
+		expect( selection.hasAttribute( 'bold' ) ).toEqual( true );
 	} );
 } );

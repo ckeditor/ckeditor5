@@ -4,6 +4,7 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -13,6 +14,8 @@ import { ImageCaptionEditing } from '../../src/imagecaption/imagecaptionediting.
 
 describe( 'ImageTypeCommand', () => {
 	let editor, blockCommand, inlineCommand, model, root;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -86,6 +89,49 @@ describe( 'ImageTypeCommand', () => {
 
 				expect( blockCommand.isEnabled ).to.be.false;
 			} );
+
+			it( 'should be false when the inline image is in $inlineRoot (imageBlock not allowed there)', async () => {
+				const inlineEditor = await VirtualTestEditor.create( {
+					plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
+					root: { modelElement: '$inlineRoot' }
+				} );
+
+				try {
+					const inlineBlockCommand = inlineEditor.commands.get( 'imageTypeBlock' );
+
+					_setModelData(
+						inlineEditor.model,
+						'foo[<imageInline src="assets/sample.png"></imageInline>]bar'
+					);
+
+					expect( inlineBlockCommand.isEnabled ).to.be.false;
+				} finally {
+					await inlineEditor.destroy();
+				}
+			} );
+
+			it( 'should be false when an ancestor limit element disallows imageBlock', () => {
+				model.schema.register( 'inlineOnlyContainer', {
+					allowIn: '$root',
+					allowContentOf: '$root',
+					isLimit: true
+				} );
+				model.schema.addChildCheck( ( context, childDefinition ) => {
+					if ( context.endsWith( 'inlineOnlyContainer' ) && childDefinition.name === 'imageBlock' ) {
+						return false;
+					}
+				} );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'inlineOnlyContainer', view: 'div' } );
+
+				_setModelData(
+					model,
+					'<inlineOnlyContainer>' +
+						'<paragraph>foo[<imageInline src="assets/sample.png"></imageInline>]bar</paragraph>' +
+					'</inlineOnlyContainer>'
+				);
+
+				expect( blockCommand.isEnabled ).to.be.false;
+			} );
 		} );
 
 		describe( 'inline command', () => {
@@ -121,6 +167,28 @@ describe( 'ImageTypeCommand', () => {
 			it( 'should be true when the selection is on a block image', () => {
 				_setModelData( model, '[<imageBlock></imageBlock>]' );
 				expect( inlineCommand.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true for a block image in $root (the inline image can be auto-paragraphed)', () => {
+				// Regression guard: `imageInline` is not allowed directly in `$root`, so the command must rely on
+				// the auto-paragraph path being available - otherwise this common case would be wrongly disabled.
+				_setModelData( model, '[<imageBlock src="assets/sample.png"></imageBlock>]' );
+				expect( inlineCommand.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false when neither inline images nor paragraphs are allowed at the image position', () => {
+				// A container that accepts only block images: an inline image cannot land there directly and
+				// there is no paragraph to wrap it in, so converting the block image to inline is impossible.
+				model.schema.register( 'blockImageOnly', {
+					allowIn: '$root',
+					allowChildren: 'imageBlock',
+					isLimit: true
+				} );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'blockImageOnly', view: 'div' } );
+
+				_setModelData( model, '<blockImageOnly>[<imageBlock src="assets/sample.png"></imageBlock>]</blockImageOnly>' );
+
+				expect( inlineCommand.isEnabled ).to.be.false;
 			} );
 
 			it( 'should be false when the selection is on an inline image', () => {
@@ -234,10 +302,36 @@ describe( 'ImageTypeCommand', () => {
 
 				_setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
 
-				const result = blockCommand.execute();
+				// The command refresh detects that `imageBlock` has nowhere to land and disables itself,
+				// so `editor.execute` short-circuits without changing the model.
+				expect( blockCommand.isEnabled ).to.be.false;
 
-				expect( result ).to.be.null;
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				editor.execute( 'imageTypeBlock' );
+
+				expect( _getModelData( model ) ).to.equal(
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				);
+			} );
+
+			it( 'should return null and not change the model when the image insertion fails', () => {
+				// `refresh()` pre-checks placeability and normally disables the command when the target type has
+				// nowhere to land, so `editor.execute()` short-circuits before reaching the conversion. This guards
+				// the remaining case where the command is enabled but `insertImage()` still fails to place the new
+				// element - the conversion must bail out with `null` and leave the model untouched.
+				_setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+				const imageUtils = editor.plugins.get( 'ImageUtils' );
+
+				sinon.stub( imageUtils, 'insertImage' ).returns( null );
+
+				expect( blockCommand.isEnabled ).to.be.true;
+
+				const returned = blockCommand.execute();
+
+				expect( returned ).to.be.null;
+				expect( _getModelData( model ) ).to.equal(
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				);
 			} );
 
 			it( 'should set width and height attributes when converting inline image to block image', async () => {
@@ -493,10 +587,15 @@ describe( 'ImageTypeCommand', () => {
 
 				_setModelData( model, `<block>[<imageBlock src="${ imgSrc }"></imageBlock>]</block>` );
 
-				const result = inlineCommand.execute();
+				// The command refresh detects that `imageInline` has nowhere to land and disables itself,
+				// so `editor.execute` short-circuits without changing the model.
+				expect( inlineCommand.isEnabled ).to.be.false;
 
-				expect( result ).to.be.null;
-				expect( _getModelData( model ) ).to.equal( '<block>[]</block>' );
+				editor.execute( 'imageTypeInline' );
+
+				expect( _getModelData( model ) ).to.equal(
+					`<block>[<imageBlock src="${ imgSrc }"></imageBlock>]</block>`
+				);
 			} );
 
 			it( 'should set width and height attributes when converting block image to inline image', async () => {

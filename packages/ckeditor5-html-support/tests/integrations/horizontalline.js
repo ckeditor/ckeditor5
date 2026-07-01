@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -37,15 +38,15 @@ describe( 'HorizontalLineElementSupport', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( editor.plugins.has( 'HorizontalLineElementSupport' ) ).to.be.true;
+		expect( editor.plugins.has( 'HorizontalLineElementSupport' ) ).toBe( true );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( HorizontalLineElementSupport.isOfficialPlugin ).to.be.true;
+		expect( HorizontalLineElementSupport.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( HorizontalLineElementSupport.isPremiumPlugin ).to.be.false;
+		expect( HorizontalLineElementSupport.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should allow attributes', () => {
@@ -59,7 +60,7 @@ describe( 'HorizontalLineElementSupport', () => {
 
 		editor.setData( expectedHtml );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<horizontalLine htmlHrAttributes="(1)"></horizontalLine>',
 			attributes: {
 				1: {
@@ -70,7 +71,7 @@ describe( 'HorizontalLineElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( expectedHtml );
+		expect( editor.getData() ).toBe( expectedHtml );
 	} );
 
 	it( 'should allow classes', () => {
@@ -84,7 +85,7 @@ describe( 'HorizontalLineElementSupport', () => {
 
 		editor.setData( expectedHtml );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<horizontalLine htmlHrAttributes="(1)"></horizontalLine>',
 			attributes: {
 				1: {
@@ -93,7 +94,7 @@ describe( 'HorizontalLineElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( expectedHtml );
+		expect( editor.getData() ).toBe( expectedHtml );
 	} );
 
 	it( 'should allow styles', () => {
@@ -107,7 +108,7 @@ describe( 'HorizontalLineElementSupport', () => {
 
 		editor.setData( expectedHtml );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<horizontalLine htmlHrAttributes="(1)"></horizontalLine>',
 			attributes: {
 				1: {
@@ -118,7 +119,7 @@ describe( 'HorizontalLineElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( expectedHtml );
+		expect( editor.getData() ).toBe( expectedHtml );
 	} );
 
 	it( 'should disallow attributes', () => {
@@ -136,12 +137,12 @@ describe( 'HorizontalLineElementSupport', () => {
 			'<hr data-foo="bar">'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<horizontalLine></horizontalLine>',
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<hr>'
 		);
 	} );
@@ -161,12 +162,12 @@ describe( 'HorizontalLineElementSupport', () => {
 			'<hr class="foobar">'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<horizontalLine></horizontalLine>',
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<hr>'
 		);
 	} );
@@ -186,12 +187,12 @@ describe( 'HorizontalLineElementSupport', () => {
 			'<hr style="color:red;">'
 		);
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<horizontalLine></horizontalLine>',
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<hr>'
 		);
 	} );
@@ -213,8 +214,58 @@ describe( 'HorizontalLineElementSupport', () => {
 			'<hr data-foo="foo">'
 		);
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData() ).toBe(
 			'<hr>'
 		);
+	} );
+
+	it( 'should update view element attributes when model attribute is changed programmatically', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: 'hr',
+			attributes: /^data-.*$/
+		} ] );
+
+		editor.setData( '<hr>' );
+
+		const horizontalLineElement = model.document.getRoot().getChild( 0 );
+
+		model.change( writer => {
+			writer.setAttribute( 'htmlHrAttributes', { attributes: { 'data-foo': 'bar' } }, horizontalLineElement );
+		} );
+
+		expect( editor.getData() ).toBe( '<hr data-foo="bar">' );
+	} );
+
+	it( 'should not update attributes when view element is not found in container', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: 'hr',
+			attributes: /^data-.*$/
+		} ] );
+
+		// Replace the default downcast so that the container element does not contain an <hr> child.
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			dispatcher.on( 'insert:horizontalLine', ( evt, data, conversionApi ) => {
+				// Create a container without an inner <hr> element.
+				const viewElement = conversionApi.writer.createContainerElement( 'div', { class: 'custom-hr' } );
+
+				conversionApi.mapper.bindElements( data.item, viewElement );
+				conversionApi.consumable.consume( data.item, 'insert' );
+				conversionApi.writer.insert(
+					conversionApi.mapper.toViewPosition( data.range.start ),
+					viewElement
+				);
+
+				evt.stop();
+			}, { priority: 'high' } );
+		} );
+
+		editor.setData( '<hr data-foo="foo">' );
+
+		const horizontalLineElement = model.document.getRoot().getChild( 0 );
+
+		// Updating the attribute should not throw even though there is no <hr> in the container.
+		expect( () => model.change( writer => {
+			writer.setAttribute( 'htmlHrAttributes', { attributes: { 'data-foo': 'bar' } }, horizontalLineElement );
+		} ) ).not.toThrow();
 	} );
 } );

@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Base64UploadAdapter } from '../../src/adapters/base64uploadadapter.js';
 import { FileRepository } from '../../src/filerepository.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { createNativeFileMock } from '../_utils/mocks.js';
 
 describe( 'Base64UploadAdapter', () => {
 	let div, stubs;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		div = window.document.createElement( 'div' );
@@ -22,38 +20,39 @@ describe( 'Base64UploadAdapter', () => {
 			addEventListener( event, callback ) {
 				stubs[ `on${ event }` ] = callback;
 			},
-			readAsDataURL: testUtils.sinon.spy(),
-			abort: testUtils.sinon.spy(),
+			readAsDataURL: vi.fn(),
+			abort: vi.fn(),
 			result: 'data:image/png;base64'
 		};
 
-		testUtils.sinon.stub( window, 'FileReader' ).callsFake( function FileReader() {
+		vi.spyOn( window, 'FileReader' ).mockImplementation( function FileReader() {
 			return stubs;
 		} );
 	} );
 
 	afterEach( () => {
 		window.document.body.removeChild( div );
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should require the FileRepository plugin', () => {
-		expect( Base64UploadAdapter.requires ).to.deep.equal( [ FileRepository ] );
+		expect( Base64UploadAdapter.requires ).toEqual( [ FileRepository ] );
 	} );
 
 	it( 'should be named', () => {
-		expect( Base64UploadAdapter.pluginName ).to.equal( 'Base64UploadAdapter' );
+		expect( Base64UploadAdapter.pluginName ).toEqual( 'Base64UploadAdapter' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Base64UploadAdapter.isOfficialPlugin ).to.be.true;
+		expect( Base64UploadAdapter.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-		expect( Base64UploadAdapter.isPremiumPlugin ).to.be.true;
+		expect( Base64UploadAdapter.isPremiumPlugin ).toBe( true );
 	} );
 
 	it( 'should have `licenseFeatureCode` static flag set to `B64A`', () => {
-		expect( Base64UploadAdapter.licenseFeatureCode ).to.equal( 'B64A' );
+		expect( Base64UploadAdapter.licenseFeatureCode ).toEqual( 'B64A' );
 	} );
 
 	describe( 'init()', () => {
@@ -63,7 +62,7 @@ describe( 'Base64UploadAdapter', () => {
 					plugins: [ Base64UploadAdapter ]
 				} )
 				.then( editor => {
-					expect( editor.plugins.get( FileRepository ).createUploadAdapter ).is.a( 'function' );
+					expect( editor.plugins.get( FileRepository ).createUploadAdapter ).toBeInstanceOf( Function );
 
 					return editor.destroy();
 				} );
@@ -88,9 +87,9 @@ describe( 'Base64UploadAdapter', () => {
 		} );
 
 		it( 'crateAdapter method should be registered and have upload() and abort() methods', () => {
-			expect( adapter ).to.not.be.undefined;
-			expect( adapter.upload ).to.be.a( 'function' );
-			expect( adapter.abort ).to.be.a( 'function' );
+			expect( adapter ).not.toBeUndefined();
+			expect( adapter.upload ).toBeInstanceOf( Function );
+			expect( adapter.abort ).toBeInstanceOf( Function );
 		} );
 
 		describe( 'upload()', () => {
@@ -102,8 +101,8 @@ describe( 'Base64UploadAdapter', () => {
 
 				return adapter.upload()
 					.then( response => {
-						expect( response.default ).to.equal( 'data:image/png;base64' );
-						expect( stubs.readAsDataURL.calledOnce ).to.equal( true );
+						expect( response.default ).toEqual( 'data:image/png;base64' );
+						expect( stubs.readAsDataURL ).toHaveBeenCalledTimes( 1 );
 					} );
 			} );
 
@@ -121,8 +120,8 @@ describe( 'Base64UploadAdapter', () => {
 							return new Error( 'Supposed to be rejected.' );
 						},
 						err => {
-							expect( err ).to.equal( uploadError );
-							expect( stubs.readAsDataURL.calledOnce ).to.equal( true );
+							expect( err ).toEqual( uploadError );
+							expect( stubs.readAsDataURL ).toHaveBeenCalledTimes( 1 );
 						}
 					);
 			} );
@@ -139,7 +138,7 @@ describe( 'Base64UploadAdapter', () => {
 							return new Error( 'Supposed to be rejected.' );
 						},
 						() => {
-							expect( stubs.readAsDataURL.calledOnce ).to.equal( true );
+							expect( stubs.readAsDataURL ).toHaveBeenCalledTimes( 1 );
 						}
 					);
 			} );
@@ -153,21 +152,23 @@ describe( 'Base64UploadAdapter', () => {
 					// Catch the upload error to prevent uncaught promise errors
 					adapter.upload().catch( () => {} );
 					adapter.abort();
-				} ).to.not.throw();
+				} ).not.toThrow();
 
-				expect( stubs.abort.called ).to.equal( false );
+				expect( stubs.abort ).not.toHaveBeenCalled();
 			} );
 
-			it( 'should call abort() on the FileReader uploader (loader#file resolved)', done => {
+			it( 'should call abort() on the FileReader uploader (loader#file resolved)', () => {
 				adapter.upload();
 
 				// Wait for the `loader.file` promise.
-				setTimeout( () => {
-					adapter.abort();
+				return new Promise( resolve => {
+					setTimeout( () => {
+						adapter.abort();
 
-					expect( stubs.abort.called ).to.equal( true );
+						expect( stubs.abort ).toHaveBeenCalled();
 
-					done();
+						resolve();
+					} );
 				} );
 			} );
 		} );

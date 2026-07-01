@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Locale, global } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
 	ButtonLabelWithHighlightView,
 	ButtonView,
@@ -17,8 +17,6 @@ import {
 } from '../../src/index.js';
 
 describe( 'filterGroupAndItemNames()', () => {
-	testUtils.createSinonSandbox();
-
 	let listView, searchView, element;
 
 	const listDefinitions = [ {
@@ -69,13 +67,14 @@ describe( 'filterGroupAndItemNames()', () => {
 
 	afterEach( async () => {
 		element.remove();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'used as the list filter() method', () => {
 		it( 'should filter items by their texts and hide those that do not match the query', () => {
 			searchView.search( 'Client' );
 
-			expect( getListItemsData( searchView.filteredView.items ) ).to.deep.equal( [
+			expect( getListItemsData( searchView.filteredView.items ) ).toEqual( [
 				[
 					{
 						isVisible: true,
@@ -112,7 +111,7 @@ describe( 'filterGroupAndItemNames()', () => {
 				]
 			] );
 
-			expect( getGroupsData( searchView.filteredView.items ) ).to.deep.equal( [
+			expect( getGroupsData( searchView.filteredView.items ) ).toEqual( [
 				{
 					isVisible: true,
 					title: 'Client data'
@@ -127,14 +126,14 @@ describe( 'filterGroupAndItemNames()', () => {
 				}
 			] );
 
-			expect( searchView.resultsCount ).to.equal( 3 );
-			expect( searchView.totalItemsCount ).to.equal( 7 );
+			expect( searchView.resultsCount ).toBe( 3 );
+			expect( searchView.totalItemsCount ).toBe( 7 );
 		} );
 
 		it( 'should display a message using #infoView when no items were found', () => {
 			searchView.search( 'something that will not be found' );
 
-			expect( getListItemsData( searchView.filteredView.items ) ).to.deep.equal( [
+			expect( getListItemsData( searchView.filteredView.items ) ).toEqual( [
 				[
 					{
 						isVisible: false,
@@ -171,7 +170,7 @@ describe( 'filterGroupAndItemNames()', () => {
 				]
 			] );
 
-			expect( getGroupsData( searchView.filteredView.items ) ).to.deep.equal( [
+			expect( getGroupsData( searchView.filteredView.items ) ).toEqual( [
 				{
 					isVisible: false,
 					title: 'Client data'
@@ -186,14 +185,14 @@ describe( 'filterGroupAndItemNames()', () => {
 				}
 			] );
 
-			expect( searchView.resultsCount ).to.equal( 0 );
-			expect( searchView.totalItemsCount ).to.equal( 7 );
+			expect( searchView.resultsCount ).toBe( 0 );
+			expect( searchView.totalItemsCount ).toBe( 7 );
 		} );
 
 		it( 'should reset filtering when no query was specified', () => {
 			searchView.search( 'address' );
 
-			expect( getListItemsData( searchView.filteredView.items ) ).to.deep.equal( [
+			expect( getListItemsData( searchView.filteredView.items ) ).toEqual( [
 				[
 					{
 						isVisible: false,
@@ -230,7 +229,7 @@ describe( 'filterGroupAndItemNames()', () => {
 				]
 			] );
 
-			expect( getGroupsData( searchView.filteredView.items ) ).to.deep.equal( [
+			expect( getGroupsData( searchView.filteredView.items ) ).toEqual( [
 				{
 					isVisible: true,
 					title: 'Client data'
@@ -245,12 +244,12 @@ describe( 'filterGroupAndItemNames()', () => {
 				}
 			] );
 
-			expect( searchView.resultsCount ).to.equal( 1 );
-			expect( searchView.totalItemsCount ).to.equal( 7 );
+			expect( searchView.resultsCount ).toBe( 1 );
+			expect( searchView.totalItemsCount ).toBe( 7 );
 
 			searchView.search();
 
-			expect( getListItemsData( searchView.filteredView.items ) ).to.deep.equal( [
+			expect( getListItemsData( searchView.filteredView.items ) ).toEqual( [
 				[
 					{
 						isVisible: true,
@@ -287,7 +286,7 @@ describe( 'filterGroupAndItemNames()', () => {
 				]
 			] );
 
-			expect( getGroupsData( searchView.filteredView.items ) ).to.deep.equal( [
+			expect( getGroupsData( searchView.filteredView.items ) ).toEqual( [
 				{
 					isVisible: true,
 					title: 'Client data'
@@ -302,14 +301,14 @@ describe( 'filterGroupAndItemNames()', () => {
 				}
 			] );
 
-			expect( searchView.resultsCount ).to.equal( 7 );
-			expect( searchView.totalItemsCount ).to.equal( 7 );
+			expect( searchView.resultsCount ).toBe( 7 );
+			expect( searchView.totalItemsCount ).toBe( 7 );
 		} );
 
 		it( 'should be case insensitive', () => {
 			searchView.search( 'DATE' );
 
-			expect( getListItemsData( searchView.filteredView.items ) ).to.deep.equal( [
+			expect( getListItemsData( searchView.filteredView.items ) ).toEqual( [
 				[
 					{
 						isVisible: false,
@@ -346,7 +345,7 @@ describe( 'filterGroupAndItemNames()', () => {
 				]
 			] );
 
-			expect( getGroupsData( searchView.filteredView.items ) ).to.deep.equal( [
+			expect( getGroupsData( searchView.filteredView.items ) ).toEqual( [
 				{
 					isVisible: false,
 					title: 'Client data'
@@ -361,15 +360,15 @@ describe( 'filterGroupAndItemNames()', () => {
 				}
 			] );
 
-			expect( searchView.resultsCount ).to.equal( 2 );
-			expect( searchView.totalItemsCount ).to.equal( 7 );
+			expect( searchView.resultsCount ).toBe( 2 );
+			expect( searchView.totalItemsCount ).toBe( 7 );
 		} );
 
 		describe( 'filtering by group name', () => {
 			it( 'should show all group items if the group name matches the pattern', () => {
 				searchView.search( 'data' );
 
-				expect( getListItemsData( searchView.filteredView.items ) ).to.deep.equal( [
+				expect( getListItemsData( searchView.filteredView.items ) ).toEqual( [
 					[
 						{
 							isVisible: true,
@@ -406,7 +405,7 @@ describe( 'filterGroupAndItemNames()', () => {
 					]
 				] );
 
-				expect( getGroupsData( searchView.filteredView.items ) ).to.deep.equal( [
+				expect( getGroupsData( searchView.filteredView.items ) ).toEqual( [
 					{
 						isVisible: true,
 						title: 'Client data'
@@ -421,14 +420,14 @@ describe( 'filterGroupAndItemNames()', () => {
 					}
 				] );
 
-				expect( searchView.resultsCount ).to.equal( 3 );
-				expect( searchView.totalItemsCount ).to.equal( 7 );
+				expect( searchView.resultsCount ).toBe( 3 );
+				expect( searchView.totalItemsCount ).toBe( 7 );
 			} );
 
 			it( 'should show items that match the pattern despite the group name not matching the pattern', () => {
 				searchView.search( 'phone' );
 
-				expect( getListItemsData( searchView.filteredView.items ) ).to.deep.equal( [
+				expect( getListItemsData( searchView.filteredView.items ) ).toEqual( [
 					[
 						{
 							isVisible: false,
@@ -465,7 +464,7 @@ describe( 'filterGroupAndItemNames()', () => {
 					]
 				] );
 
-				expect( getGroupsData( searchView.filteredView.items ) ).to.deep.equal( [
+				expect( getGroupsData( searchView.filteredView.items ) ).toEqual( [
 					{
 						isVisible: true,
 						title: 'Client data'
@@ -480,8 +479,8 @@ describe( 'filterGroupAndItemNames()', () => {
 					}
 				] );
 
-				expect( searchView.resultsCount ).to.equal( 1 );
-				expect( searchView.totalItemsCount ).to.equal( 7 );
+				expect( searchView.resultsCount ).toBe( 1 );
+				expect( searchView.totalItemsCount ).toBe( 7 );
 			} );
 		} );
 
@@ -520,8 +519,8 @@ describe( 'filterGroupAndItemNames()', () => {
 					}
 				] );
 
-				expect( searchView.resultsCount ).to.equal( 3 );
-				expect( searchView.totalItemsCount ).to.equal( 7 );
+				expect( searchView.resultsCount ).toBe( 3 );
+				expect( searchView.totalItemsCount ).toBe( 7 );
 			} );
 
 			it( 'should highlight the search query of each matching item from different groups', () => {
@@ -552,8 +551,8 @@ describe( 'filterGroupAndItemNames()', () => {
 					}
 				] );
 
-				expect( searchView.resultsCount ).to.equal( 5 );
-				expect( searchView.totalItemsCount ).to.equal( 7 );
+				expect( searchView.resultsCount ).toBe( 5 );
+				expect( searchView.totalItemsCount ).toBe( 7 );
 			} );
 
 			it( 'should not highlight the search query in the items if the query was not specified', () => {
@@ -584,19 +583,19 @@ describe( 'filterGroupAndItemNames()', () => {
 					}
 				] );
 
-				expect( searchView.resultsCount ).to.equal( 7 );
-				expect( searchView.totalItemsCount ).to.equal( 7 );
+				expect( searchView.resultsCount ).toBe( 7 );
+				expect( searchView.totalItemsCount ).toBe( 7 );
 			} );
 
 			function getHighlightTextSpies( groups ) {
 				return groups.map( group => {
 					return {
-						group: sinon.spy( group.labelView, 'highlightText' ),
+						group: vi.spyOn( group.labelView, 'highlightText' ),
 						items: group.items.map( listItemView => {
 							const buttonView = listItemView.children.first;
 							const labelView = buttonView.labelView;
 
-							return sinon.spy( labelView, 'highlightText' );
+							return vi.spyOn( labelView, 'highlightText' );
 						} )
 					};
 				} );
@@ -607,12 +606,12 @@ describe( 'filterGroupAndItemNames()', () => {
 
 				for ( const { group, items } of groupSpies ) {
 					strucure.push( {
-						group: [ group.callCount, group.firstCall && group.firstCall.args[ 0 ] ],
-						items: items.map( spy => [ spy.callCount, spy.firstCall && spy.firstCall.args[ 0 ] ] )
+						group: [ group.mock.calls.length, group.mock.calls[ 0 ] ? group.mock.calls[ 0 ][ 0 ] : null ],
+						items: items.map( spy => [ spy.mock.calls.length, spy.mock.calls[ 0 ] ? spy.mock.calls[ 0 ][ 0 ] : null ] )
 					} );
 				}
 
-				return expect( strucure ).to.deep.equal( expected );
+				return expect( strucure ).toEqual( expected );
 			}
 		} );
 	} );

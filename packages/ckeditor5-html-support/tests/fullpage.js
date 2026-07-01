@@ -3,18 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { FullPage, HtmlComment, HtmlPageDataProcessor } from '../src/index.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'FullPage', () => {
 	let editor;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	afterEach( async () => {
 		if ( editor ) {
@@ -23,25 +25,25 @@ describe( 'FullPage', () => {
 	} );
 
 	it( 'has proper name', () => {
-		expect( FullPage.pluginName ).to.equal( 'FullPage' );
+		expect( FullPage.pluginName ).toBe( 'FullPage' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FullPage.isOfficialPlugin ).to.be.true;
+		expect( FullPage.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-		expect( FullPage.isPremiumPlugin ).to.be.true;
+		expect( FullPage.isPremiumPlugin ).toBe( true );
 	} );
 
 	it( 'should have `licenseFeatureCode` static flag set to `FPH`', () => {
-		expect( FullPage.licenseFeatureCode ).to.equal( 'FPH' );
+		expect( FullPage.licenseFeatureCode ).toBe( 'FPH' );
 	} );
 
 	it( 'should set editor.data.processor', async () => {
 		await createEditor( '' );
 
-		expect( editor.data.processor ).to.be.an.instanceof( HtmlPageDataProcessor );
+		expect( editor.data.processor ).toBeInstanceOf( HtmlPageDataProcessor );
 	} );
 
 	it( 'should preserve full page content', async () => {
@@ -57,7 +59,7 @@ describe( 'FullPage', () => {
 
 		await createEditor( content );
 
-		expect( editor.getData() ).to.equal( content );
+		expect( editor.getData() ).toBe( content );
 	} );
 
 	it( 'should preserve full page content (without doctype and xml declaration)', async () => {
@@ -71,7 +73,7 @@ describe( 'FullPage', () => {
 
 		await createEditor( content );
 
-		expect( editor.getData() ).to.equal( content );
+		expect( editor.getData() ).toBe( content );
 	} );
 
 	it( 'should preserve full page content (without doctype)', async () => {
@@ -86,7 +88,7 @@ describe( 'FullPage', () => {
 
 		await createEditor( content );
 
-		expect( editor.getData() ).to.equal( content );
+		expect( editor.getData() ).toBe( content );
 	} );
 
 	it( 'should preserve full page content (without xml declaration)', async () => {
@@ -101,7 +103,7 @@ describe( 'FullPage', () => {
 
 		await createEditor( content );
 
-		expect( editor.getData() ).to.equal( content );
+		expect( editor.getData() ).toBe( content );
 	} );
 
 	it( 'should not wrap data if there was no full page on input', async () => {
@@ -109,7 +111,7 @@ describe( 'FullPage', () => {
 
 		await createEditor( content );
 
-		expect( editor.getData() ).to.equal( content );
+		expect( editor.getData() ).toBe( content );
 	} );
 
 	it( 'should preserve full page content (disable content trimming)', async () => {
@@ -123,7 +125,7 @@ describe( 'FullPage', () => {
 
 		await createEditor( content );
 
-		expect( editor.getData() ).to.equal( content );
+		expect( editor.getData() ).toBe( content );
 	} );
 
 	it( 'should preserve full page content (disable content trimming, with options passed to getData)', async () => {
@@ -137,7 +139,7 @@ describe( 'FullPage', () => {
 
 		await createEditor( content );
 
-		expect( editor.getData( {} ) ).to.equal( content );
+		expect( editor.getData( {} ) ).toBe( content );
 	} );
 
 	it( 'should preserve full page content after editor.setData() call with other data', async () => {
@@ -162,7 +164,7 @@ describe( 'FullPage', () => {
 
 		editor.setData( content );
 
-		expect( editor.getData() ).to.equal( content );
+		expect( editor.getData() ).toBe( content );
 	} );
 
 	describe( 'clipboard integration', () => {
@@ -179,7 +181,7 @@ describe( 'FullPage', () => {
 				'</html>'
 			);
 
-			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p><p>test</p>' );
+			expect( editor.getData() ).toBe( '<p>foo</p><p>bar</p><p>test</p>' );
 		} );
 
 		it( 'should not apply page data while copying', async () => {
@@ -201,7 +203,7 @@ describe( 'FullPage', () => {
 			};
 			editor.editing.view.document.fire( 'copy', data );
 
-			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( data.dataTransfer.getData( 'text/html' ) ).toBe( '<p>foo</p><p>bar</p>' );
 		} );
 
 		function pasteHtml( editor, html ) {
@@ -232,7 +234,7 @@ describe( 'FullPage', () => {
 
 	describe( 'config', () => {
 		beforeEach( () => {
-			sinon.stub( console, 'warn' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 		} );
 
 		describe( 'htmlSupport.fullPage.allowRenderStylesFromHead', () => {
@@ -241,7 +243,7 @@ describe( 'FullPage', () => {
 
 				const fullPage = editor.config.get( 'htmlSupport.fullPage' );
 
-				expect( fullPage.allowRenderStylesFromHead ).to.equal( false );
+				expect( fullPage.allowRenderStylesFromHead ).toBe( false );
 			} );
 
 			it( 'should allow to extract and append `<style>` tag from editor content to the document `<head>`', async () => {
@@ -266,13 +268,13 @@ describe( 'FullPage', () => {
 
 				await createEditor( content, config );
 
-				expect( editor.getData() ).to.equal( content );
-				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+				expect( editor.getData() ).toBe( content );
+				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).toHaveLength( 1 );
 
 				const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
 
-				expect( stylesheet.textContent ).to.equal( 'p { color: red; }' );
-				expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+				expect( stylesheet.textContent ).toBe( 'p { color: red; }' );
+				expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).toBe( editor.id );
 			} );
 
 			it( 'should remove previously attached `<style>` tag after update the editor content', async () => {
@@ -297,13 +299,13 @@ describe( 'FullPage', () => {
 
 				await createEditor( content, config );
 
-				expect( editor.getData() ).to.equal( content );
-				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+				expect( editor.getData() ).toBe( content );
+				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).toHaveLength( 1 );
 
 				const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
 
-				expect( stylesheet.textContent ).to.equal( 'p { color: red; }' );
-				expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+				expect( stylesheet.textContent ).toBe( 'p { color: red; }' );
+				expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).toBe( editor.id );
 
 				const contentToSet =
 					'<html>' +
@@ -318,14 +320,14 @@ describe( 'FullPage', () => {
 
 				editor.setData( contentToSet );
 
-				expect( editor.getData() ).to.equal( contentToSet );
+				expect( editor.getData() ).toBe( contentToSet );
 
-				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).toHaveLength( 1 );
 
 				const stylesheetUpdated = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
 
-				expect( stylesheetUpdated.textContent ).to.equal( 'p { color: green; }' );
-				expect( stylesheetUpdated.getAttribute( 'data-full-page-style-id' ) ).to.equal( editor.id );
+				expect( stylesheetUpdated.textContent ).toBe( 'p { color: green; }' );
+				expect( stylesheetUpdated.getAttribute( 'data-full-page-style-id' ) ).toBe( editor.id );
 			} );
 		} );
 
@@ -348,7 +350,7 @@ describe( 'FullPage', () => {
 			} );
 
 			it( 'should return an object with cleaned css and a note whether something has changed', async () => {
-				expect( fullPageConfig.sanitizeCss( 'p { color: red; }' ) ).to.deep.equal( {
+				expect( fullPageConfig.sanitizeCss( 'p { color: red; }' ) ).toEqual( {
 					css: 'p { color: red; }',
 					hasChanged: false
 				} );
@@ -357,14 +359,14 @@ describe( 'FullPage', () => {
 			it( 'should return an input string (without any modifications)', () => {
 				const unsafeCss = 'input[value="a"] { background: url(https://example.com/?value=a); }';
 
-				expect( fullPageConfig.sanitizeCss( unsafeCss ).css ).to.deep.equal( unsafeCss );
+				expect( fullPageConfig.sanitizeCss( unsafeCss ).css ).toEqual( unsafeCss );
 			} );
 
 			it( 'should display a warning when using the default sanitizer', () => {
 				fullPageConfig.sanitizeCss( 'p { color: red; }' );
 
-				expect( console.warn.callCount ).to.equal( 1 );
-				expect( console.warn.firstCall.args[ 0 ] ).to.equal( 'css-full-page-provide-sanitize-function' );
+				expect( console.warn ).toHaveBeenCalledTimes( 1 );
+				expect( console.warn.mock.calls[ 0 ][ 0 ] ).toBe( 'css-full-page-provide-sanitize-function' );
 			} );
 		} );
 
@@ -395,7 +397,7 @@ describe( 'FullPage', () => {
 			} );
 
 			it( 'should return an object with cleaned css and a note whether something has changed', async () => {
-				expect( fullPageConfig.sanitizeCss( 'p { color: red; }' ) ).to.deep.equal( {
+				expect( fullPageConfig.sanitizeCss( 'p { color: red; }' ) ).toEqual( {
 					css: 'p { color: #c0ffee; }',
 					hasChanged: true
 				} );
@@ -404,7 +406,7 @@ describe( 'FullPage', () => {
 			it( 'should return an input string (without any modifications)', () => {
 				const unsafeCss = 'input[value="a"] { background: url(https://example.com/?value=a); }';
 
-				expect( fullPageConfig.sanitizeCss( unsafeCss ).css ).to.deep.equal( unsafeCss );
+				expect( fullPageConfig.sanitizeCss( unsafeCss ).css ).toEqual( unsafeCss );
 			} );
 
 			it( 'should allow to extract and append `<style>` tag from editor content to the document `<head>` ' +
@@ -422,18 +424,18 @@ describe( 'FullPage', () => {
 
 				editor.setData( content );
 
-				expect( editor.getData() ).to.equal( content );
-				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).to.have.length( 1 );
+				expect( editor.getData() ).toBe( content );
+				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).toHaveLength( 1 );
 
 				const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
 
-				expect( stylesheet.textContent ).to.equal( 'p { color: #c0ffee; }' );
+				expect( stylesheet.textContent ).toBe( 'p { color: #c0ffee; }' );
 			} );
 
 			it( 'should not display a warning when using the custom sanitizer', () => {
 				fullPageConfig.sanitizeCss( 'p { color: red; }' );
 
-				expect( console.warn.callCount ).to.equal( 0 );
+				expect( console.warn ).toHaveBeenCalledTimes( 0 );
 			} );
 		} );
 	} );
@@ -455,7 +457,7 @@ describe( 'FullPage', () => {
 				plugins: [ Paragraph, ClipboardPipeline, HtmlComment, FullPage ]
 			} );
 
-			expect( editor.getData() ).to.equal( content );
+			expect( editor.getData() ).toBe( content );
 		} );
 	} );
 
@@ -467,6 +469,6 @@ describe( 'FullPage', () => {
 		} );
 
 		// Stub `editor.editing.view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 	}
 } );

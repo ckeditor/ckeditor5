@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
+
 import { getCsrfToken, getCookie, setCookie } from '../src/utils.js';
 
 describe( 'utils', () => {
@@ -18,15 +20,15 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should be saved in cookie', () => {
-			expect( document.cookie.indexOf( `ckCsrfToken=${ token }` ) > -1 ).to.be.true;
+			expect( document.cookie.indexOf( `ckCsrfToken=${ token }` ) > -1 ).toBe( true );
 		} );
 
 		it( 'should have proper length', () => {
-			expect( token.length ).to.equal( 40 );
+			expect( token.length ).toBe( 40 );
 		} );
 
 		it( 'should produce same token for all cals', () => {
-			expect( token ).to.equal( getCsrfToken() );
+			expect( token ).toBe( getCsrfToken() );
 		} );
 	} );
 
@@ -43,23 +45,23 @@ describe( 'utils', () => {
 		describe( 'setCookie', () => {
 			it( 'should set cookie', () => {
 				setCookie( cookieName, cookieValue );
-				expect( document.cookie.indexOf( `${ cookieName }=${ cookieValue }` ) > -1 ).to.be.true;
+				expect( document.cookie.indexOf( `${ cookieName }=${ cookieValue }` ) > -1 ).toBe( true );
 			} );
 		} );
 
 		describe( 'getCookie', () => {
 			it( 'should get cookie', () => {
 				document.cookie = encodeURIComponent( cookieName ) + '=' + encodeURIComponent( cookieValue ) + ';path=/';
-				expect( getCookie( cookieName ) ).to.equal( cookieValue );
+				expect( getCookie( cookieName ) ).toBe( cookieValue );
 			} );
 
 			it( 'should return null if cookie is not present', () => {
-				expect( getCookie( cookieName ) ).to.be.null;
+				expect( getCookie( cookieName ) ).toBeNull();
 			} );
 
 			it( 'should return empty cookie', () => {
 				document.cookie = encodeURIComponent( cookieName ) + '=;path=/';
-				expect( getCookie( cookieName ) ).to.equal( '' );
+				expect( getCookie( cookieName ) ).toBe( '' );
 			} );
 		} );
 	} );

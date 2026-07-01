@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CommandCollection } from '../src/commandcollection.js';
 import { Command } from '../src/command.js';
 import { ModelTestEditor } from './_utils/modeltesteditor.js';
@@ -37,7 +38,7 @@ describe( 'CommandCollection', () => {
 
 			collection.add( 'foo', command );
 
-			expect( collection.get( 'foo' ) ).to.equal( command );
+			expect( collection.get( 'foo' ) ).toBe( command );
 		} );
 	} );
 
@@ -45,28 +46,28 @@ describe( 'CommandCollection', () => {
 		it( 'executes given method with given attributes', () => {
 			const command = new SomeCommand( editor );
 
-			sinon.spy( command, 'execute' );
+			vi.spyOn( command, 'execute' );
 
 			collection.add( 'foo', command );
 
 			collection.execute( 'foo', 1, 2 );
 
-			expect( command.execute.calledOnce ).to.be.true;
-			expect( command.execute.args[ 0 ] ).to.deep.equal( [ 1, 2 ] );
+			expect( command.execute ).toHaveBeenCalledOnce();
+			expect( command.execute ).toHaveBeenCalledWith( 1, 2 );
 		} );
 
 		it( 'returns the result of command\'s execute()', () => {
 			const command = new SomeCommand( editor );
 
 			const commandResult = { foo: 'bar' };
-			sinon.stub( command, 'execute' ).returns( commandResult );
+			vi.spyOn( command, 'execute' ).mockReturnValue( commandResult );
 
 			collection.add( 'foo', command );
 
 			const collectionResult = collection.execute( 'foo' );
 
-			expect( collectionResult, 'collection.execute()' ).to.equal( commandResult );
-			expect( collectionResult, 'collection.execute()' ).to.deep.equal( { foo: 'bar' } );
+			expect( collectionResult, 'collection.execute()' ).toBe( commandResult );
+			expect( collectionResult, 'collection.execute()' ).toEqual( { foo: 'bar' } );
 		} );
 
 		it( 'throws an error if command does not exist', () => {
@@ -83,14 +84,14 @@ describe( 'CommandCollection', () => {
 		it( 'returns iterator', () => {
 			const names = collection.names();
 
-			expect( names.next ).to.be.a( 'function' );
+			expect( typeof names.next ).toBe( 'function' );
 		} );
 
 		it( 'returns iterator of command names', () => {
 			collection.add( 'foo', new SomeCommand( editor ) );
 			collection.add( 'bar', new SomeCommand( editor ) );
 
-			expect( Array.from( collection.names() ) ).to.have.members( [ 'foo', 'bar' ] );
+			expect( Array.from( collection.names() ) ).toEqual( expect.arrayContaining( [ 'foo', 'bar' ] ) );
 		} );
 	} );
 
@@ -98,7 +99,7 @@ describe( 'CommandCollection', () => {
 		it( 'returns iterator', () => {
 			const commands = collection.commands();
 
-			expect( commands.next ).to.be.a( 'function' );
+			expect( typeof commands.next ).toBe( 'function' );
 		} );
 
 		it( 'returns iterator of commands', () => {
@@ -110,14 +111,14 @@ describe( 'CommandCollection', () => {
 
 			const commandArray = Array.from( collection.commands() );
 
-			expect( commandArray ).to.have.length( 2 );
-			expect( commandArray ).to.have.members( [ c1, c2 ] );
+			expect( commandArray ).toHaveLength( 2 );
+			expect( commandArray ).toEqual( expect.arrayContaining( [ c1, c2 ] ) );
 		} );
 	} );
 
 	describe( 'iterator', () => {
 		it( 'exists', () => {
-			expect( collection ).to.have.property( Symbol.iterator );
+			expect( collection[ Symbol.iterator ] ).toBeDefined();
 		} );
 
 		it( 'returns iterator of [ name, command ]', () => {
@@ -129,9 +130,9 @@ describe( 'CommandCollection', () => {
 
 			const collectionArray = Array.from( collection );
 
-			expect( collectionArray ).to.have.length( 2 );
-			expect( collectionArray.map( pair => pair[ 0 ] ) ).to.have.members( [ 'foo', 'bar' ] );
-			expect( collectionArray.map( pair => pair[ 1 ] ) ).to.have.members( [ c1, c2 ] );
+			expect( collectionArray ).toHaveLength( 2 );
+			expect( collectionArray.map( pair => pair[ 0 ] ) ).toEqual( expect.arrayContaining( [ 'foo', 'bar' ] ) );
+			expect( collectionArray.map( pair => pair[ 1 ] ) ).toEqual( expect.arrayContaining( [ c1, c2 ] ) );
 		} );
 	} );
 
@@ -140,16 +141,16 @@ describe( 'CommandCollection', () => {
 			const c1 = new SomeCommand( editor );
 			const c2 = new SomeCommand( editor );
 
-			sinon.spy( c1, 'destroy' );
-			sinon.spy( c2, 'destroy' );
+			vi.spyOn( c1, 'destroy' );
+			vi.spyOn( c2, 'destroy' );
 
 			collection.add( 'foo', c1 );
 			collection.add( 'bar', c2 );
 
 			collection.destroy();
 
-			expect( c1.destroy.calledOnce ).to.be.true;
-			expect( c2.destroy.calledOnce ).to.be.true;
+			expect( c1.destroy ).toHaveBeenCalledOnce();
+			expect( c2.destroy ).toHaveBeenCalledOnce();
 		} );
 	} );
 } );

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-ui",
-  "version": "48.2.0",
+  "version": "48.3.0",
   "description": "The UI framework and standard UI library of CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -50,6 +50,9 @@
     "vanilla-colorful": "0.7.2"
   },
   "devDependencies": {
+    "@vitest/browser-playwright": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.8",
+    "vitest": "^4.1.8",
     "@ckeditor/ckeditor5-autoformat": "workspace:*",
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
@@ -80,14 +83,15 @@
     "@ckeditor/ckeditor5-undo": "workspace:*"
   },
   "scripts": {
-    "build": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs",
+    "test": "vitest run",
+    "test:headless": "vitest run --browser.headless",
+    "test:debug": "vitest",
+    "coverage": "pnpm run test:headless --coverage"
   },
   "files": [
     "dist",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
-  ],
-  "depcheckIgnore": [
-    "sinon"
   ]
 }

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -35,7 +36,7 @@ describe( 'LegacyListStartCommand', () => {
 		it( 'should be false if selected a paragraph', () => {
 			_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
-			expect( listStartCommand.isEnabled ).to.be.false;
+			expect( listStartCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection starts in a paragraph and ends in a list item', () => {
@@ -44,25 +45,25 @@ describe( 'LegacyListStartCommand', () => {
 				'<listItem listIndent="0" listType="numbered" listStart="1">Foo]</listItem>'
 			);
 
-			expect( listStartCommand.isEnabled ).to.be.false;
+			expect( listStartCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection is inside a listItem (listType: bulleted)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
 
-			expect( listStartCommand.isEnabled ).to.be.false;
+			expect( listStartCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if selection is inside a listItem (collapsed selection)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="numbered" listStart="2">Foo[]</listItem>' );
 
-			expect( listStartCommand.isEnabled ).to.be.true;
+			expect( listStartCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if selection is inside a listItem (non-collapsed selection)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="numbered" listStart="1">[Foo]</listItem>' );
 
-			expect( listStartCommand.isEnabled ).to.be.true;
+			expect( listStartCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true attribute if selected more elements in the same list', () => {
@@ -72,7 +73,7 @@ describe( 'LegacyListStartCommand', () => {
 				'<listItem listIndent="0" listType="numbered" listStart="3">3.</listItem>'
 			);
 
-			expect( listStartCommand.isEnabled ).to.be.true;
+			expect( listStartCommand.isEnabled ).toBe( true );
 		} );
 	} );
 
@@ -80,7 +81,7 @@ describe( 'LegacyListStartCommand', () => {
 		it( 'should return null if selected a paragraph', () => {
 			_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
-			expect( listStartCommand.value ).to.be.null;
+			expect( listStartCommand.value ).toBeNull();
 		} );
 
 		it( 'should return null if selection starts in a paragraph and ends in a list item', () => {
@@ -89,25 +90,25 @@ describe( 'LegacyListStartCommand', () => {
 				'<listItem listIndent="0" listType="numbered" listStart="2">Foo]</listItem>'
 			);
 
-			expect( listStartCommand.value ).to.be.null;
+			expect( listStartCommand.value ).toBeNull();
 		} );
 
 		it( 'should return null if selection is inside a listItem (listType: bulleted)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
 
-			expect( listStartCommand.value ).to.be.null;
+			expect( listStartCommand.value ).toBeNull();
 		} );
 
 		it( 'should return the value of `listStart` attribute if selection is inside a listItem (collapsed selection)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="numbered" listStart="2">Foo[]</listItem>' );
 
-			expect( listStartCommand.value ).to.equal( 2 );
+			expect( listStartCommand.value ).toBe( 2 );
 		} );
 
 		it( 'should return the value of `listStart` attribute if selection is inside a listItem (non-collapsed selection)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="numbered" listStart="3">[Foo]</listItem>' );
 
-			expect( listStartCommand.value ).to.equal( 3 );
+			expect( listStartCommand.value ).toBe( 3 );
 		} );
 
 		it( 'should return the value of `listStart` attribute if selected more elements in the same list', () => {
@@ -117,7 +118,7 @@ describe( 'LegacyListStartCommand', () => {
 				'<listItem listIndent="0" listType="numbered" listStart="3">3.</listItem>'
 			);
 
-			expect( listStartCommand.value ).to.equal( 3 );
+			expect( listStartCommand.value ).toBe( 3 );
 		} );
 
 		it( 'should return the value of `listStart` attribute for the selection inside a nested list', () => {
@@ -127,7 +128,7 @@ describe( 'LegacyListStartCommand', () => {
 				'<listItem listIndent="0" listType="numbered" listStart="2">2.</listItem>'
 			);
 
-			expect( listStartCommand.value ).to.equal( 3 );
+			expect( listStartCommand.value ).toBe( 3 );
 		} );
 
 		it(
@@ -139,7 +140,7 @@ describe( 'LegacyListStartCommand', () => {
 					'<listItem listIndent="0" listType="numbered" listStart="2">2.]</listItem>'
 				);
 
-				expect( listStartCommand.value ).to.equal( 3 );
+				expect( listStartCommand.value ).toBe( 3 );
 			}
 		);
 	} );
@@ -152,7 +153,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStart="5" listType="numbered">1.[]</listItem>'
 			);
 		} );
@@ -164,7 +165,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStart="5" listType="numbered">[1.]</listItem>'
 			);
 		} );
@@ -178,7 +179,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 3 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStart="3" listType="numbered">1.[]</listItem>' +
 				'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>' +
 				'<listItem listIndent="0" listStart="3" listType="numbered">3.</listItem>'
@@ -197,7 +198,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 2 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStart="2" listType="numbered">1.[]</listItem>' +
 				'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 				'<listItem listIndent="1" listStart="1" listType="numbered">2.1.</listItem>' +
@@ -221,7 +222,7 @@ describe( 'LegacyListStartCommand', () => {
 
 				listStartCommand.execute( { startIndex: 2 } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<listItem listIndent="0" listStart="1" listType="numbered">1.</listItem>' +
 					'<listItem listIndent="0" listStart="1" listType="numbered">2.</listItem>' +
 					'<listItem listIndent="1" listStart="2" listType="numbered">2.1.[]</listItem>' +
@@ -242,7 +243,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 2 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStart="2" listType="numbered">1.[]</listItem>' +
 				'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
@@ -260,7 +261,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 2 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStart="2" listType="numbered">1.[]</listItem>' +
 				'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
@@ -278,7 +279,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 3 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStart="3" listType="numbered">1.[]</listItem>' +
 				'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>' +
@@ -296,7 +297,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 3 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStart="3" listType="numbered">1.</listItem>' +
 				'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>' +
 				'<listItem listIndent="0" listStart="3" listType="numbered">[3.</listItem>' +
@@ -311,7 +312,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStart="1" listType="numbered">1.[]</listItem>'
 			);
 		} );
@@ -323,7 +324,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( {} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStart="1" listType="numbered">1.[]</listItem>'
 			);
 		} );
@@ -360,7 +361,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 7 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStart="7" listType="numbered">1.</listItem>' +
 				'<listItem listIndent="0" listStart="7" listType="numbered">[2.</listItem>' +
 				'<listItem listIndent="1" listStart="7" listType="numbered">2.1.</listItem>' +
@@ -380,7 +381,7 @@ describe( 'LegacyListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 0 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStart="0" listType="numbered">1.[]</listItem>'
 			);
 		} );
@@ -391,7 +392,7 @@ describe( 'LegacyListStartCommand', () => {
 			);
 			listStartCommand.execute( { startIndex: -2 } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStart="1" listType="numbered">1.[]</listItem>'
 			);
 		} );

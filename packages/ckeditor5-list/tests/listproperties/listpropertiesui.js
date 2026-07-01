@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 // TODO change to new plugin
 import {
 	IconBulletedList,
@@ -53,25 +55,26 @@ describe( 'ListPropertiesUI', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
 		editorElement.remove();
 
 		return editor.destroy();
 	} );
 
 	it( 'should be named', () => {
-		expect( ListPropertiesUI.pluginName ).to.equal( 'ListPropertiesUI' );
+		expect( ListPropertiesUI.pluginName ).toBe( 'ListPropertiesUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListPropertiesUI.isOfficialPlugin ).to.be.true;
+		expect( ListPropertiesUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListPropertiesUI.isPremiumPlugin ).to.be.false;
+		expect( ListPropertiesUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListPropertiesUI ) ).to.be.instanceOf( ListPropertiesUI );
+		expect( editor.plugins.get( ListPropertiesUI ) ).toBeInstanceOf( ListPropertiesUI );
 	} );
 
 	describe( 'init()', () => {
@@ -81,11 +84,11 @@ describe( 'ListPropertiesUI', () => {
 					return withEditor( { styles: true }, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'bulletedList' ) ).to.be.true;
+						expect( componentFactory.has( 'bulletedList' ) ).toBe( true );
 
 						const bulletedListDropdown = componentFactory.create( 'bulletedList' );
 
-						expect( bulletedListDropdown ).to.be.instanceOf( DropdownView );
+						expect( bulletedListDropdown ).toBeInstanceOf( DropdownView );
 					} );
 				} );
 
@@ -98,7 +101,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+						expect( componentFactory.has( 'bulletedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -113,7 +116,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+						expect( componentFactory.has( 'bulletedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -126,7 +129,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+						expect( componentFactory.has( 'bulletedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -139,7 +142,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+						expect( componentFactory.has( 'bulletedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -154,7 +157,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+						expect( componentFactory.has( 'numberedList' ) ).toBe( true );
 					} );
 				} );
 
@@ -169,7 +172,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+						expect( componentFactory.has( 'numberedList' ) ).toBe( true );
 					} );
 				} );
 
@@ -184,7 +187,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+						expect( componentFactory.has( 'numberedList' ) ).toBe( true );
 					} );
 				} );
 
@@ -199,7 +202,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'numberedList' ) ).to.be.false;
+						expect( componentFactory.has( 'numberedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -214,8 +217,8 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'numberedList' ) ).to.be.false;
-						expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+						expect( componentFactory.has( 'numberedList' ) ).toBe( false );
+						expect( componentFactory.has( 'bulletedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -233,11 +236,11 @@ describe( 'ListPropertiesUI', () => {
 							return withEditor( listPropertiesConfig, editor => {
 								const componentFactory = editor.ui.componentFactory;
 
-								expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+								expect( componentFactory.has( 'numberedList' ) ).toBe( true );
 
 								const numberedListDropdown = componentFactory.create( 'numberedList' );
 
-								expect( numberedListDropdown ).to.be.instanceOf( DropdownView );
+								expect( numberedListDropdown ).toBeInstanceOf( DropdownView );
 							} );
 						}
 					);
@@ -251,7 +254,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'numberedList' ) ).to.be.false;
+						expect( componentFactory.has( 'numberedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -277,7 +280,7 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = bulletedListDropdown.panelView.children.first;
 							const stylesView = listPropertiesView.stylesView;
 
-							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [ 'Disc', 'Circle' ] );
+							expect( stylesView.children.map( b => b.tooltip ) ).toEqual( [ 'Disc', 'Circle' ] );
 
 							bulletedListDropdown.element.remove();
 						} );
@@ -304,7 +307,7 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 							const stylesView = listPropertiesView.stylesView;
 
-							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [ 'Decimal', 'Lower–roman' ] );
+							expect( stylesView.children.map( b => b.tooltip ) ).toEqual( [ 'Decimal', 'Lower–roman' ] );
 
 							numberedListDropdown.element.remove();
 						} );
@@ -327,13 +330,48 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 							const stylesView = listPropertiesView.stylesView;
 
-							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [
+							expect( stylesView.children.map( b => b.tooltip ) ).toEqual( [
 								'Decimal',
 								'Decimal with leading zero',
 								'Lower–roman',
 								'Upper-roman',
 								'Lower-latin',
 								'Upper-latin'
+							] );
+
+							numberedListDropdown.element.remove();
+						} );
+					} );
+
+					it( 'should register all buttons when listStyleTypes does not define current list type', () => {
+						return withEditor( {
+							styles: {
+								listStyleTypes: {
+									bulleted: [ 'disc' ]
+								}
+							}
+						}, editor => {
+							const componentFactory = editor.ui.componentFactory;
+							const numberedListDropdown = componentFactory.create( 'numberedList' );
+
+							numberedListDropdown.render();
+							document.body.appendChild( numberedListDropdown.element );
+
+							// Trigger lazy init
+							numberedListDropdown.isOpen = true;
+							numberedListDropdown.isOpen = false;
+
+							const listPropertiesView = numberedListDropdown.panelView.children.first;
+							const stylesView = listPropertiesView.stylesView;
+
+							expect( stylesView.children.map( b => b.tooltip ) ).toEqual( [
+								'Decimal',
+								'Decimal with leading zero',
+								'Lower–roman',
+								'Upper-roman',
+								'Lower-latin',
+								'Upper-latin',
+								'Arabic-indic'
 							] );
 
 							numberedListDropdown.element.remove();
@@ -361,7 +399,7 @@ describe( 'ListPropertiesUI', () => {
 
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-							expect( listPropertiesView.stylesView ).to.be.null;
+							expect( listPropertiesView.stylesView ).toBeNull();
 
 							numberedListDropdown.element.remove();
 						} );
@@ -391,27 +429,27 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should registered as "bulletedList" in the component factory', () => {
-					expect( bulletedListDropdown ).to.be.instanceOf( DropdownView );
+					expect( bulletedListDropdown ).toBeInstanceOf( DropdownView );
 				} );
 
 				it( 'should have #isEnabled bound to the "bulletedList" command state', () => {
-					expect( bulletedListDropdown.isEnabled ).to.be.true;
+					expect( bulletedListDropdown.isEnabled ).toBe( true );
 
 					bulletedListCommand.isEnabled = true;
-					expect( bulletedListDropdown.isEnabled ).to.be.true;
+					expect( bulletedListDropdown.isEnabled ).toBe( true );
 
 					bulletedListCommand.isEnabled = false;
-					expect( bulletedListDropdown.isEnabled ).to.be.false;
+					expect( bulletedListDropdown.isEnabled ).toBe( false );
 				} );
 
 				it( 'should have a specific CSS class', () => {
-					expect( bulletedListDropdown.class ).to.equal( 'ck-list-styles-dropdown' );
+					expect( bulletedListDropdown.class ).toBe( 'ck-list-styles-dropdown' );
 				} );
 
 				it( 'should not have numbered list properties', () => {
-					expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
-					expect( listPropertiesView.startIndexFieldView ).to.be.null;
-					expect( listPropertiesView.reversedSwitchButtonView ).to.be.null;
+					expect( listPropertiesView.stylesView ).toBeInstanceOf( View );
+					expect( listPropertiesView.startIndexFieldView ).toBeNull();
+					expect( listPropertiesView.reversedSwitchButtonView ).toBeNull();
 				} );
 
 				describe( 'main split button', () => {
@@ -422,39 +460,41 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have a #label', () => {
-						expect( mainButtonView.label ).to.equal( 'Bulleted List' );
+						expect( mainButtonView.label ).toBe( 'Bulleted List' );
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( IconBulletedList );
+						expect( mainButtonView.icon ).toBe( IconBulletedList );
 					} );
 
 					it( 'should have a #tooltip based on a label', () => {
-						expect( mainButtonView.tooltip ).to.be.true;
+						expect( mainButtonView.tooltip ).toBe( true );
 					} );
 
 					it( 'should be toggleable', () => {
-						expect( mainButtonView.isToggleable ).to.be.true;
+						expect( mainButtonView.isToggleable ).toBe( true );
 					} );
 
 					it( 'should have the #isOn state bound to the value of the "bulletedList" command', () => {
-						expect( mainButtonView.isOn ).to.be.false;
+						expect( mainButtonView.isOn ).toBe( false );
 
 						bulletedListCommand.value = 'foo';
-						expect( mainButtonView.isOn ).to.be.true;
+						expect( mainButtonView.isOn ).toBe( true );
 
 						bulletedListCommand.value = null;
-						expect( mainButtonView.isOn ).to.be.false;
+						expect( mainButtonView.isOn ).toBe( false );
 					} );
 
 					it( 'should execute the "bulletedList" command and focus the editing view when clicked', () => {
-						sinon.spy( editor, 'execute' );
-						sinon.spy( editor.editing.view, 'focus' );
+						vi.spyOn( editor, 'execute' );
+						vi.spyOn( editor.editing.view, 'focus' );
 
 						mainButtonView.fire( 'execute' );
-						sinon.assert.calledWithExactly( editor.execute, 'bulletedList' );
-						sinon.assert.calledOnce( editor.editing.view.focus );
-						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+						expect( editor.execute ).toHaveBeenCalledWith( 'bulletedList' );
+						expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+						expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+							editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+						);
 					} );
 				} );
 
@@ -466,31 +506,31 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have a proper ARIA label', () => {
-						expect( stylesView.element.getAttribute( 'aria-label' ) ).to.equal( 'Bulleted list styles toolbar' );
+						expect( stylesView.element.getAttribute( 'aria-label' ) ).toBe( 'Bulleted list styles toolbar' );
 					} );
 
 					it( 'should bring the "disc" list style button', () => {
 						const buttonView = stylesView.children.first;
 
-						expect( buttonView.label ).to.equal( 'Toggle the disc list style' );
-						expect( buttonView.tooltip ).to.equal( 'Disc' );
-						expect( buttonView.icon ).to.equal( IconListStyleDisc );
+						expect( buttonView.label ).toBe( 'Toggle the disc list style' );
+						expect( buttonView.tooltip ).toBe( 'Disc' );
+						expect( buttonView.icon ).toBe( IconListStyleDisc );
 					} );
 
 					it( 'should bring the "circle" list style button', () => {
 						const buttonView = stylesView.children.get( 1 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the circle list style' );
-						expect( buttonView.tooltip ).to.equal( 'Circle' );
-						expect( buttonView.icon ).to.equal( IconListStyleCircle );
+						expect( buttonView.label ).toBe( 'Toggle the circle list style' );
+						expect( buttonView.tooltip ).toBe( 'Circle' );
+						expect( buttonView.icon ).toBe( IconListStyleCircle );
 					} );
 
 					it( 'should bring the "square" list style button', () => {
 						const buttonView = stylesView.children.get( 2 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the square list style' );
-						expect( buttonView.tooltip ).to.equal( 'Square' );
-						expect( buttonView.icon ).to.equal( IconListStyleSquare );
+						expect( buttonView.label ).toBe( 'Toggle the square list style' );
+						expect( buttonView.tooltip ).toBe( 'Square' );
+						expect( buttonView.icon ).toBe( IconListStyleSquare );
 					} );
 
 					it( 'should only bring the style buttons supported by the command', () => {
@@ -507,28 +547,28 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = bulletedListDropdown.panelView.children.first;
 							const stylesView = listPropertiesView.stylesView;
 
-							expect( stylesView.children.map( b => b.label ) ).to.deep.equal( [
+							expect( stylesView.children.map( b => b.label ) ).toEqual( [
 								'Toggle the square list style'
 							] );
 						} );
 					} );
 
 					it( 'should close the drop-down when any button gets executed', () => {
-						const spy = sinon.spy();
+						const spy = vi.fn();
 
 						bulletedListDropdown.on( 'execute', spy );
 						listPropertiesView.fire( 'execute' );
 
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledOnce();
 					} );
 
 					it( 'on dropdown open should focus the first active button', () => {
 						const button = stylesView.children.get( 1 );
-						const spy = sinon.spy( button, 'focus' );
+						const spy = vi.spyOn( button, 'focus' );
 
 						button.isOn = true;
 						bulletedListDropdown.isOpen = true;
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledOnce();
 					} );
 
 					describe( 'style button', () => {
@@ -538,25 +578,25 @@ describe( 'ListPropertiesUI', () => {
 							// "circle"
 							styleButtonView = stylesView.children.get( 1 );
 
-							sinon.spy( editor, 'execute' );
-							sinon.spy( editor.editing.view, 'focus' );
+							vi.spyOn( editor, 'execute' );
+							vi.spyOn( editor.editing.view, 'focus' );
 						} );
 
 						it( 'should be instances of ButtonView', () => {
-							expect( styleButtonView ).to.be.instanceOf( ButtonView );
+							expect( styleButtonView ).toBeInstanceOf( ButtonView );
 						} );
 
 						it( 'should change its #isOn state when the value of the "listStyleCommand" command changes', () => {
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 
 							listStyleCommand.value = 'foo';
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 
 							listStyleCommand.value = 'circle';
-							expect( styleButtonView.isOn ).to.be.true;
+							expect( styleButtonView.isOn ).toBe( true );
 
 							listStyleCommand.value = null;
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 						} );
 
 						it( 'should apply the new style if none was set', () => {
@@ -564,9 +604,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'circle' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'circle' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should apply the new style if a different one was set', () => {
@@ -574,9 +616,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'circle' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'circle' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should remove (toggle) the style if the same style was set', () => {
@@ -584,9 +628,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'bulletedList' );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'bulletedList' );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should execute the "bulletedList" command and apply the style if selection was not anchored in a list', () => {
@@ -594,10 +640,12 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'bulletedList' );
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'circle' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'bulletedList' );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'circle' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should create the single undo step while selection was not anchored in a list', () => {
@@ -605,13 +653,13 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							expect( _getModelData( model ) ).to.equal(
+							expect( _getModelData( model ) ).toBe(
 								'<listItem listIndent="0" listStyle="circle" listType="bulleted">foo[]</listItem>'
 							);
 
 							editor.execute( 'undo' );
 
-							expect( _getModelData( model ) ).to.equal(
+							expect( _getModelData( model ) ).toBe(
 								'<paragraph>foo[]</paragraph>'
 							);
 						} );
@@ -641,17 +689,17 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should have #isEnabled bound to the "numberedList" command state', () => {
-					expect( numberedListDropdown.isEnabled ).to.be.true;
+					expect( numberedListDropdown.isEnabled ).toBe( true );
 
 					numberedListCommand.isEnabled = true;
-					expect( numberedListDropdown.isEnabled ).to.be.true;
+					expect( numberedListDropdown.isEnabled ).toBe( true );
 
 					numberedListCommand.isEnabled = false;
-					expect( numberedListDropdown.isEnabled ).to.be.false;
+					expect( numberedListDropdown.isEnabled ).toBe( false );
 				} );
 
 				it( 'should have a specific CSS class', () => {
-					expect( numberedListDropdown.class ).to.equal( 'ck-list-styles-dropdown' );
+					expect( numberedListDropdown.class ).toBe( 'ck-list-styles-dropdown' );
 				} );
 
 				describe( 'support of config.list.properties', () => {
@@ -672,9 +720,9 @@ describe( 'ListPropertiesUI', () => {
 
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-							expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
-							expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
-							expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
+							expect( listPropertiesView.stylesView ).toBeInstanceOf( View );
+							expect( listPropertiesView.startIndexFieldView ).toBeInstanceOf( LabeledFieldView );
+							expect( listPropertiesView.reversedSwitchButtonView ).toBeInstanceOf( SwitchButtonView );
 
 							numberedListDropdown.element.remove();
 						} );
@@ -699,9 +747,9 @@ describe( 'ListPropertiesUI', () => {
 
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-							expect( listPropertiesView.stylesView ).to.be.null;
-							expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
-							expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
+							expect( listPropertiesView.stylesView ).toBeNull();
+							expect( listPropertiesView.startIndexFieldView ).toBeInstanceOf( LabeledFieldView );
+							expect( listPropertiesView.reversedSwitchButtonView ).toBeInstanceOf( SwitchButtonView );
 
 							numberedListDropdown.element.remove();
 						} );
@@ -724,9 +772,9 @@ describe( 'ListPropertiesUI', () => {
 
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-							expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
-							expect( listPropertiesView.startIndexFieldView ).to.be.null;
-							expect( listPropertiesView.reversedSwitchButtonView ).to.be.null;
+							expect( listPropertiesView.stylesView ).toBeInstanceOf( View );
+							expect( listPropertiesView.startIndexFieldView ).toBeNull();
+							expect( listPropertiesView.reversedSwitchButtonView ).toBeNull();
 
 							numberedListDropdown.element.remove();
 						} );
@@ -749,9 +797,9 @@ describe( 'ListPropertiesUI', () => {
 
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-							expect( listPropertiesView.stylesView ).to.be.null;
-							expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
-							expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
+							expect( listPropertiesView.stylesView ).toBeNull();
+							expect( listPropertiesView.startIndexFieldView ).toBeInstanceOf( LabeledFieldView );
+							expect( listPropertiesView.reversedSwitchButtonView ).toBeInstanceOf( SwitchButtonView );
 
 							numberedListDropdown.element.remove();
 						} );
@@ -778,11 +826,11 @@ describe( 'ListPropertiesUI', () => {
 							// Force clear is necessary on CI.
 							listPropertiesView.focusTracker.focusedElement = null;
 
-							const spy = sinon.spy( startIndexFieldView, 'focus' );
+							const spy = vi.spyOn( startIndexFieldView, 'focus' );
 
 							numberedListDropdown.isOpen = true;
 
-							sinon.assert.calledOnce( spy );
+							expect( spy ).toHaveBeenCalledOnce();
 
 							numberedListDropdown.element.remove();
 							numberedListDropdown.destroy();
@@ -798,39 +846,41 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have a #label', () => {
-						expect( mainButtonView.label ).to.equal( 'Numbered List' );
+						expect( mainButtonView.label ).toBe( 'Numbered List' );
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( IconNumberedList );
+						expect( mainButtonView.icon ).toBe( IconNumberedList );
 					} );
 
 					it( 'should have a #tooltip based on a label', () => {
-						expect( mainButtonView.tooltip ).to.be.true;
+						expect( mainButtonView.tooltip ).toBe( true );
 					} );
 
 					it( 'should be toggleable', () => {
-						expect( mainButtonView.isToggleable ).to.be.true;
+						expect( mainButtonView.isToggleable ).toBe( true );
 					} );
 
 					it( 'should have the #isOn state bound to the value of the "numberedList" command', () => {
-						expect( mainButtonView.isOn ).to.be.false;
+						expect( mainButtonView.isOn ).toBe( false );
 
 						numberedListCommand.value = 'foo';
-						expect( mainButtonView.isOn ).to.be.true;
+						expect( mainButtonView.isOn ).toBe( true );
 
 						numberedListCommand.value = null;
-						expect( mainButtonView.isOn ).to.be.false;
+						expect( mainButtonView.isOn ).toBe( false );
 					} );
 
 					it( 'should execute the "numberedList" command and focus the editing view when clicked', () => {
-						sinon.spy( editor, 'execute' );
-						sinon.spy( editor.editing.view, 'focus' );
+						vi.spyOn( editor, 'execute' );
+						vi.spyOn( editor.editing.view, 'focus' );
 
 						mainButtonView.fire( 'execute' );
-						sinon.assert.calledWithExactly( editor.execute, 'numberedList' );
-						sinon.assert.calledOnce( editor.editing.view.focus );
-						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+						expect( editor.execute ).toHaveBeenCalledWith( 'numberedList' );
+						expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+						expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+							editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+						);
 					} );
 				} );
 
@@ -842,55 +892,55 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have a proper ARIA label', () => {
-						expect( stylesView.element.getAttribute( 'aria-label' ) ).to.equal( 'Numbered list styles toolbar' );
+						expect( stylesView.element.getAttribute( 'aria-label' ) ).toBe( 'Numbered list styles toolbar' );
 					} );
 
 					it( 'should bring the "decimal" list style button', () => {
 						const buttonView = stylesView.children.first;
 
-						expect( buttonView.label ).to.equal( 'Toggle the decimal list style' );
-						expect( buttonView.tooltip ).to.equal( 'Decimal' );
-						expect( buttonView.icon ).to.equal( IconListStyleDecimal );
+						expect( buttonView.label ).toBe( 'Toggle the decimal list style' );
+						expect( buttonView.tooltip ).toBe( 'Decimal' );
+						expect( buttonView.icon ).toBe( IconListStyleDecimal );
 					} );
 
 					it( 'should bring the "decimal-leading-zero" list style button', () => {
 						const buttonView = stylesView.children.get( 1 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the decimal with leading zero list style' );
-						expect( buttonView.tooltip ).to.equal( 'Decimal with leading zero' );
-						expect( buttonView.icon ).to.equal( IconListStyleDecimalLeadingZero );
+						expect( buttonView.label ).toBe( 'Toggle the decimal with leading zero list style' );
+						expect( buttonView.tooltip ).toBe( 'Decimal with leading zero' );
+						expect( buttonView.icon ).toBe( IconListStyleDecimalLeadingZero );
 					} );
 
 					it( 'should bring the "lower-roman" list style button', () => {
 						const buttonView = stylesView.children.get( 2 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the lower–roman list style' );
-						expect( buttonView.tooltip ).to.equal( 'Lower–roman' );
-						expect( buttonView.icon ).to.equal( IconListStyleLowerRoman );
+						expect( buttonView.label ).toBe( 'Toggle the lower–roman list style' );
+						expect( buttonView.tooltip ).toBe( 'Lower–roman' );
+						expect( buttonView.icon ).toBe( IconListStyleLowerRoman );
 					} );
 
 					it( 'should bring the "upper-roman" list style button', () => {
 						const buttonView = stylesView.children.get( 3 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the upper–roman list style' );
-						expect( buttonView.tooltip ).to.equal( 'Upper-roman' );
-						expect( buttonView.icon ).to.equal( IconListStyleUpperRoman );
+						expect( buttonView.label ).toBe( 'Toggle the upper–roman list style' );
+						expect( buttonView.tooltip ).toBe( 'Upper-roman' );
+						expect( buttonView.icon ).toBe( IconListStyleUpperRoman );
 					} );
 
 					it( 'should bring the "lower–latin" list style button', () => {
 						const buttonView = stylesView.children.get( 4 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the lower–latin list style' );
-						expect( buttonView.tooltip ).to.equal( 'Lower-latin' );
-						expect( buttonView.icon ).to.equal( IconListStyleLowerLatin );
+						expect( buttonView.label ).toBe( 'Toggle the lower–latin list style' );
+						expect( buttonView.tooltip ).toBe( 'Lower-latin' );
+						expect( buttonView.icon ).toBe( IconListStyleLowerLatin );
 					} );
 
 					it( 'should bring the "upper–latin" list style button', () => {
 						const buttonView = stylesView.children.get( 5 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the upper–latin list style' );
-						expect( buttonView.tooltip ).to.equal( 'Upper-latin' );
-						expect( buttonView.icon ).to.equal( IconListStyleUpperLatin );
+						expect( buttonView.label ).toBe( 'Toggle the upper–latin list style' );
+						expect( buttonView.tooltip ).toBe( 'Upper-latin' );
+						expect( buttonView.icon ).toBe( IconListStyleUpperLatin );
 					} );
 
 					it( 'should only bring the style buttons supported by the command', () => {
@@ -912,7 +962,7 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 							const stylesView = listPropertiesView.stylesView;
 
-							expect( stylesView.children.map( b => b.label ) ).to.deep.equal( [
+							expect( stylesView.children.map( b => b.label ) ).toEqual( [
 								'Toggle the decimal with leading zero list style',
 								'Toggle the lower–roman list style',
 								'Toggle the upper–roman list style',
@@ -924,21 +974,21 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should close the drop-down when any button gets executed', () => {
-						const spy = sinon.spy();
+						const spy = vi.fn();
 
 						numberedListDropdown.on( 'execute', spy );
 						listPropertiesView.fire( 'execute' );
 
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledOnce();
 					} );
 
 					it( 'on dropdown open should focus the first active button', () => {
 						const button = stylesView.children.get( 1 );
-						const spy = sinon.spy( button, 'focus' );
+						const spy = vi.spyOn( button, 'focus' );
 
 						button.isOn = true;
 						numberedListDropdown.isOpen = true;
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledOnce();
 					} );
 
 					describe( 'style button', () => {
@@ -948,25 +998,25 @@ describe( 'ListPropertiesUI', () => {
 							// "decimal-leading-zero""
 							styleButtonView = stylesView.children.get( 1 );
 
-							sinon.spy( editor, 'execute' );
-							sinon.spy( editor.editing.view, 'focus' );
+							vi.spyOn( editor, 'execute' );
+							vi.spyOn( editor.editing.view, 'focus' );
 						} );
 
 						it( 'should be instances of ButtonView', () => {
-							expect( styleButtonView ).to.be.instanceOf( ButtonView );
+							expect( styleButtonView ).toBeInstanceOf( ButtonView );
 						} );
 
 						it( 'should change its #isOn state when the value of the "listStyleCommand" command changes', () => {
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 
 							listStyleCommand.value = 'foo';
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 
 							listStyleCommand.value = 'decimal-leading-zero';
-							expect( styleButtonView.isOn ).to.be.true;
+							expect( styleButtonView.isOn ).toBe( true );
 
 							listStyleCommand.value = null;
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 						} );
 
 						it( 'should apply the new style if none was set', () => {
@@ -974,9 +1024,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'decimal-leading-zero' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'decimal-leading-zero' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should apply the new style if a different one was set', () => {
@@ -984,9 +1036,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'decimal-leading-zero' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'decimal-leading-zero' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should remove (toggle) the style if the same style was set', () => {
@@ -997,9 +1051,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'numberedList' );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'numberedList' );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should execute the "numberedList" command and apply the style if selection was not anchored in a list', () => {
@@ -1007,10 +1063,12 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'numberedList' );
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'decimal-leading-zero' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'numberedList' );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'decimal-leading-zero' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should create the single undo step while selection was not anchored in a list', () => {
@@ -1018,7 +1076,7 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							expect( _getModelData( model ) ).to.equal(
+							expect( _getModelData( model ) ).toBe(
 								'<listItem ' +
 									'listIndent="0" ' +
 									'listReversed="false" ' +
@@ -1031,7 +1089,7 @@ describe( 'ListPropertiesUI', () => {
 
 							editor.execute( 'undo' );
 
-							expect( _getModelData( model ) ).to.equal(
+							expect( _getModelData( model ) ).toBe(
 								'<paragraph>foo[]</paragraph>'
 							);
 						} );
@@ -1048,27 +1106,27 @@ describe( 'ListPropertiesUI', () => {
 
 					it( 'should bind #isEnabled to the list start command', () => {
 						listStartCommand.isEnabled = true;
-						expect( startIndexFieldView.isEnabled ).to.be.true;
+						expect( startIndexFieldView.isEnabled ).toBe( true );
 
 						listStartCommand.isEnabled = false;
-						expect( startIndexFieldView.isEnabled ).to.be.false;
+						expect( startIndexFieldView.isEnabled ).toBe( false );
 					} );
 
 					it( 'should bind #value to the list start command', () => {
 						listStartCommand.value = 123;
-						expect( startIndexFieldView.fieldView.value ).to.equal( 123 );
+						expect( startIndexFieldView.fieldView.value ).toBe( 123 );
 
 						listStartCommand.value = 321;
-						expect( startIndexFieldView.fieldView.value ).to.equal( 321 );
+						expect( startIndexFieldView.fieldView.value ).toBe( 321 );
 					} );
 
 					it( 'should execute the list start command when the list property view fires #listStart', () => {
-						const spy = sinon.spy( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' );
 
 						listPropertiesView.fire( 'listStart', { startIndex: 1234 } );
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'listStart', { startIndex: 1234 } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'listStart', { startIndex: 1234 } );
 					} );
 				} );
 
@@ -1082,27 +1140,27 @@ describe( 'ListPropertiesUI', () => {
 
 					it( 'should bind #isEnabled to the list reversed command', () => {
 						listReversedCommand.isEnabled = true;
-						expect( reversedSwitchButtonView.isEnabled ).to.be.true;
+						expect( reversedSwitchButtonView.isEnabled ).toBe( true );
 
 						listReversedCommand.isEnabled = false;
-						expect( reversedSwitchButtonView.isEnabled ).to.be.false;
+						expect( reversedSwitchButtonView.isEnabled ).toBe( false );
 					} );
 
 					it( 'should bind #isOn to the list reversed command', () => {
 						listReversedCommand.value = true;
-						expect( reversedSwitchButtonView.isOn ).to.be.true;
+						expect( reversedSwitchButtonView.isOn ).toBe( true );
 
 						listReversedCommand.value = false;
-						expect( reversedSwitchButtonView.isOn ).to.be.false;
+						expect( reversedSwitchButtonView.isOn ).toBe( false );
 					} );
 
 					it( 'should execute the list reversed command when the list property view fires #listReversed', () => {
-						const spy = sinon.spy( editor, 'execute' );
+						const spy = vi.spyOn( editor, 'execute' );
 
 						listPropertiesView.fire( 'listReversed' );
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'listReversed', { reversed: true } );
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledWith( 'listReversed', { reversed: true } );
 					} );
 				} );
 			} );
@@ -1114,11 +1172,11 @@ describe( 'ListPropertiesUI', () => {
 					return withEditor( { styles: true }, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'menuBar:bulletedList' ) ).to.be.true;
+						expect( componentFactory.has( 'menuBar:bulletedList' ) ).toBe( true );
 
 						const bulletedListDropdown = componentFactory.create( 'menuBar:bulletedList' );
 
-						expect( bulletedListDropdown ).to.be.instanceOf( MenuBarMenuView );
+						expect( bulletedListDropdown ).toBeInstanceOf( MenuBarMenuView );
 					} );
 				} );
 
@@ -1131,7 +1189,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'menuBar:bulletedList' ) ).to.be.false;
+						expect( componentFactory.has( 'menuBar:bulletedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -1143,7 +1201,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'menuBar:numberedList' ) ).to.be.false;
+						expect( componentFactory.has( 'menuBar:numberedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -1154,7 +1212,7 @@ describe( 'ListPropertiesUI', () => {
 					} }, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'menuBar:bulletedList' ) ).to.be.false;
+						expect( componentFactory.has( 'menuBar:bulletedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -1169,7 +1227,7 @@ describe( 'ListPropertiesUI', () => {
 					}, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'menuBar:numberedList' ) ).to.be.false;
+						expect( componentFactory.has( 'menuBar:numberedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -1180,8 +1238,8 @@ describe( 'ListPropertiesUI', () => {
 					} }, editor => {
 						const componentFactory = editor.ui.componentFactory;
 
-						expect( componentFactory.has( 'menuBar:numberedList' ) ).to.be.false;
-						expect( componentFactory.has( 'menuBar:bulletedList' ) ).to.be.false;
+						expect( componentFactory.has( 'menuBar:numberedList' ) ).toBe( false );
+						expect( componentFactory.has( 'menuBar:bulletedList' ) ).toBe( false );
 					} );
 				} );
 
@@ -1207,7 +1265,7 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = bulletedListMenu.panelView.children.first;
 							const stylesView = listPropertiesView.stylesView;
 
-							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [ 'Disc', 'Circle' ] );
+							expect( stylesView.children.map( b => b.tooltip ) ).toEqual( [ 'Disc', 'Circle' ] );
 
 							bulletedListMenu.element.remove();
 						} );
@@ -1234,7 +1292,7 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = numberedListMenu.panelView.children.first;
 							const stylesView = listPropertiesView.stylesView;
 
-							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [ 'Decimal', 'Lower–roman' ] );
+							expect( stylesView.children.map( b => b.tooltip ) ).toEqual( [ 'Decimal', 'Lower–roman' ] );
 
 							numberedListMenu.element.remove();
 						} );
@@ -1257,13 +1315,48 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = numberedListMenu.panelView.children.first;
 							const stylesView = listPropertiesView.stylesView;
 
-							expect( stylesView.children.map( b => b.tooltip ) ).to.deep.equal( [
+							expect( stylesView.children.map( b => b.tooltip ) ).toEqual( [
 								'Decimal',
 								'Decimal with leading zero',
 								'Lower–roman',
 								'Upper-roman',
 								'Lower-latin',
 								'Upper-latin'
+							] );
+
+							numberedListMenu.element.remove();
+						} );
+					} );
+
+					it( 'should register all buttons when listStyleTypes does not define current list type in menu bar', () => {
+						return withEditor( {
+							styles: {
+								listStyleTypes: {
+									bulleted: [ 'disc' ]
+								}
+							}
+						}, editor => {
+							const componentFactory = editor.ui.componentFactory;
+							const numberedListMenu = componentFactory.create( 'menuBar:numberedList' );
+
+							numberedListMenu.render();
+							document.body.appendChild( numberedListMenu.element );
+
+							// Trigger lazy init
+							numberedListMenu.isOpen = true;
+							numberedListMenu.isOpen = false;
+
+							const listPropertiesView = numberedListMenu.panelView.children.first;
+							const stylesView = listPropertiesView.stylesView;
+
+							expect( stylesView.children.map( b => b.tooltip ) ).toEqual( [
+								'Decimal',
+								'Decimal with leading zero',
+								'Lower–roman',
+								'Upper-roman',
+								'Lower-latin',
+								'Upper-latin',
+								'Arabic-indic'
 							] );
 
 							numberedListMenu.element.remove();
@@ -1291,7 +1384,7 @@ describe( 'ListPropertiesUI', () => {
 
 							const listPropertiesView = numberedListMenu.panelView.children.first;
 
-							expect( listPropertiesView.stylesView ).to.be.null;
+							expect( listPropertiesView.stylesView ).toBeNull();
 
 							numberedListMenu.element.remove();
 						} );
@@ -1321,23 +1414,23 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should registered as "bulletedList" in the component factory', () => {
-					expect( bulletedListMenu ).to.be.instanceOf( MenuBarMenuView );
+					expect( bulletedListMenu ).toBeInstanceOf( MenuBarMenuView );
 				} );
 
 				it( 'should have #isEnabled bound to the "bulletedList" command state', () => {
-					expect( bulletedListMenu.isEnabled ).to.be.true;
+					expect( bulletedListMenu.isEnabled ).toBe( true );
 
 					bulletedListCommand.isEnabled = true;
-					expect( bulletedListMenu.isEnabled ).to.be.true;
+					expect( bulletedListMenu.isEnabled ).toBe( true );
 
 					bulletedListCommand.isEnabled = false;
-					expect( bulletedListMenu.isEnabled ).to.be.false;
+					expect( bulletedListMenu.isEnabled ).toBe( false );
 				} );
 
 				it( 'should not have numbered list properties', () => {
-					expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
-					expect( listPropertiesView.startIndexFieldView ).to.be.null;
-					expect( listPropertiesView.reversedSwitchButtonView ).to.be.null;
+					expect( listPropertiesView.stylesView ).toBeInstanceOf( View );
+					expect( listPropertiesView.startIndexFieldView ).toBeNull();
+					expect( listPropertiesView.reversedSwitchButtonView ).toBeNull();
 				} );
 
 				describe( 'menu button', () => {
@@ -1348,11 +1441,11 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have a #label', () => {
-						expect( mainButtonView.label ).to.equal( 'Bulleted List' );
+						expect( mainButtonView.label ).toBe( 'Bulleted List' );
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( IconBulletedList );
+						expect( mainButtonView.icon ).toBe( IconBulletedList );
 					} );
 				} );
 
@@ -1364,31 +1457,31 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have a proper ARIA label', () => {
-						expect( stylesView.element.getAttribute( 'aria-label' ) ).to.equal( 'Bulleted list styles toolbar' );
+						expect( stylesView.element.getAttribute( 'aria-label' ) ).toBe( 'Bulleted list styles toolbar' );
 					} );
 
 					it( 'should bring the "disc" list style button', () => {
 						const buttonView = stylesView.children.first;
 
-						expect( buttonView.label ).to.equal( 'Toggle the disc list style' );
-						expect( buttonView.tooltip ).to.equal( 'Disc' );
-						expect( buttonView.icon ).to.equal( IconListStyleDisc );
+						expect( buttonView.label ).toBe( 'Toggle the disc list style' );
+						expect( buttonView.tooltip ).toBe( 'Disc' );
+						expect( buttonView.icon ).toBe( IconListStyleDisc );
 					} );
 
 					it( 'should bring the "circle" list style button', () => {
 						const buttonView = stylesView.children.get( 1 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the circle list style' );
-						expect( buttonView.tooltip ).to.equal( 'Circle' );
-						expect( buttonView.icon ).to.equal( IconListStyleCircle );
+						expect( buttonView.label ).toBe( 'Toggle the circle list style' );
+						expect( buttonView.tooltip ).toBe( 'Circle' );
+						expect( buttonView.icon ).toBe( IconListStyleCircle );
 					} );
 
 					it( 'should bring the "square" list style button', () => {
 						const buttonView = stylesView.children.get( 2 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the square list style' );
-						expect( buttonView.tooltip ).to.equal( 'Square' );
-						expect( buttonView.icon ).to.equal( IconListStyleSquare );
+						expect( buttonView.label ).toBe( 'Toggle the square list style' );
+						expect( buttonView.tooltip ).toBe( 'Square' );
+						expect( buttonView.icon ).toBe( IconListStyleSquare );
 					} );
 
 					it( 'should only bring the style buttons supported by the command', () => {
@@ -1405,7 +1498,7 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = bulletedListDropdown.panelView.children.first;
 							const stylesView = listPropertiesView.stylesView;
 
-							expect( stylesView.children.map( b => b.label ) ).to.deep.equal( [
+							expect( stylesView.children.map( b => b.label ) ).toEqual( [
 								'Toggle the square list style'
 							] );
 						} );
@@ -1418,25 +1511,25 @@ describe( 'ListPropertiesUI', () => {
 							// "circle"
 							styleButtonView = stylesView.children.get( 1 );
 
-							sinon.spy( editor, 'execute' );
-							sinon.spy( editor.editing.view, 'focus' );
+							vi.spyOn( editor, 'execute' );
+							vi.spyOn( editor.editing.view, 'focus' );
 						} );
 
 						it( 'should be instances of ButtonView', () => {
-							expect( styleButtonView ).to.be.instanceOf( ButtonView );
+							expect( styleButtonView ).toBeInstanceOf( ButtonView );
 						} );
 
 						it( 'should change its #isOn state when the value of the "listStyleCommand" command changes', () => {
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 
 							listStyleCommand.value = 'foo';
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 
 							listStyleCommand.value = 'circle';
-							expect( styleButtonView.isOn ).to.be.true;
+							expect( styleButtonView.isOn ).toBe( true );
 
 							listStyleCommand.value = null;
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 						} );
 
 						it( 'should apply the new style if none was set', () => {
@@ -1444,9 +1537,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'circle' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'circle' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should apply the new style if a different one was set', () => {
@@ -1454,9 +1549,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'circle' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'circle' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should remove (toggle) the style if the same style was set', () => {
@@ -1464,9 +1561,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'bulletedList' );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'bulletedList' );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should execute the "bulletedList" command and apply the style if selection was not anchored in a list', () => {
@@ -1474,10 +1573,12 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'bulletedList' );
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'circle' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'bulletedList' );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'circle' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should create the single undo step while selection was not anchored in a list', () => {
@@ -1485,13 +1586,13 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							expect( _getModelData( model ) ).to.equal(
+							expect( _getModelData( model ) ).toBe(
 								'<listItem listIndent="0" listStyle="circle" listType="bulleted">foo[]</listItem>'
 							);
 
 							editor.execute( 'undo' );
 
-							expect( _getModelData( model ) ).to.equal(
+							expect( _getModelData( model ) ).toBe(
 								'<paragraph>foo[]</paragraph>'
 							);
 						} );
@@ -1521,13 +1622,13 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should have #isEnabled bound to the "numberedList" command state', () => {
-					expect( numberedListMenu.isEnabled ).to.be.true;
+					expect( numberedListMenu.isEnabled ).toBe( true );
 
 					numberedListCommand.isEnabled = true;
-					expect( numberedListMenu.isEnabled ).to.be.true;
+					expect( numberedListMenu.isEnabled ).toBe( true );
 
 					numberedListCommand.isEnabled = false;
-					expect( numberedListMenu.isEnabled ).to.be.false;
+					expect( numberedListMenu.isEnabled ).toBe( false );
 				} );
 
 				describe( 'support of config.list.properties', () => {
@@ -1548,9 +1649,9 @@ describe( 'ListPropertiesUI', () => {
 
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-							expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
-							expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
-							expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
+							expect( listPropertiesView.stylesView ).toBeInstanceOf( View );
+							expect( listPropertiesView.startIndexFieldView ).toBeInstanceOf( LabeledFieldView );
+							expect( listPropertiesView.reversedSwitchButtonView ).toBeInstanceOf( SwitchButtonView );
 
 							numberedListDropdown.element.remove();
 						} );
@@ -1573,9 +1674,9 @@ describe( 'ListPropertiesUI', () => {
 
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-							expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
-							expect( listPropertiesView.startIndexFieldView ).to.be.null;
-							expect( listPropertiesView.reversedSwitchButtonView ).to.be.null;
+							expect( listPropertiesView.stylesView ).toBeInstanceOf( View );
+							expect( listPropertiesView.startIndexFieldView ).toBeNull();
+							expect( listPropertiesView.reversedSwitchButtonView ).toBeNull();
 
 							numberedListDropdown.element.remove();
 						} );
@@ -1598,9 +1699,9 @@ describe( 'ListPropertiesUI', () => {
 
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-							expect( listPropertiesView.stylesView ).to.be.null;
-							expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
-							expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
+							expect( listPropertiesView.stylesView ).toBeNull();
+							expect( listPropertiesView.startIndexFieldView ).toBeInstanceOf( LabeledFieldView );
+							expect( listPropertiesView.reversedSwitchButtonView ).toBeInstanceOf( SwitchButtonView );
 
 							numberedListDropdown.element.remove();
 						} );
@@ -1627,11 +1728,11 @@ describe( 'ListPropertiesUI', () => {
 							// Force clear is necessary on CI.
 							listPropertiesView.focusTracker.focusedElement = null;
 
-							const spy = sinon.spy( startIndexFieldView, 'focus' );
+							const spy = vi.spyOn( startIndexFieldView, 'focus' );
 
 							numberedListDropdown.isOpen = true;
 
-							sinon.assert.calledOnce( spy );
+							expect( spy ).toHaveBeenCalledOnce();
 
 							numberedListDropdown.element.remove();
 							numberedListDropdown.destroy();
@@ -1647,11 +1748,11 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have a #label', () => {
-						expect( mainButtonView.label ).to.equal( 'Numbered List' );
+						expect( mainButtonView.label ).toBe( 'Numbered List' );
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( IconNumberedList );
+						expect( mainButtonView.icon ).toBe( IconNumberedList );
 					} );
 				} );
 
@@ -1663,55 +1764,55 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have a proper ARIA label', () => {
-						expect( stylesView.element.getAttribute( 'aria-label' ) ).to.equal( 'Numbered list styles toolbar' );
+						expect( stylesView.element.getAttribute( 'aria-label' ) ).toBe( 'Numbered list styles toolbar' );
 					} );
 
 					it( 'should bring the "decimal" list style button', () => {
 						const buttonView = stylesView.children.first;
 
-						expect( buttonView.label ).to.equal( 'Toggle the decimal list style' );
-						expect( buttonView.tooltip ).to.equal( 'Decimal' );
-						expect( buttonView.icon ).to.equal( IconListStyleDecimal );
+						expect( buttonView.label ).toBe( 'Toggle the decimal list style' );
+						expect( buttonView.tooltip ).toBe( 'Decimal' );
+						expect( buttonView.icon ).toBe( IconListStyleDecimal );
 					} );
 
 					it( 'should bring the "decimal-leading-zero" list style button', () => {
 						const buttonView = stylesView.children.get( 1 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the decimal with leading zero list style' );
-						expect( buttonView.tooltip ).to.equal( 'Decimal with leading zero' );
-						expect( buttonView.icon ).to.equal( IconListStyleDecimalLeadingZero );
+						expect( buttonView.label ).toBe( 'Toggle the decimal with leading zero list style' );
+						expect( buttonView.tooltip ).toBe( 'Decimal with leading zero' );
+						expect( buttonView.icon ).toBe( IconListStyleDecimalLeadingZero );
 					} );
 
 					it( 'should bring the "lower-roman" list style button', () => {
 						const buttonView = stylesView.children.get( 2 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the lower–roman list style' );
-						expect( buttonView.tooltip ).to.equal( 'Lower–roman' );
-						expect( buttonView.icon ).to.equal( IconListStyleLowerRoman );
+						expect( buttonView.label ).toBe( 'Toggle the lower–roman list style' );
+						expect( buttonView.tooltip ).toBe( 'Lower–roman' );
+						expect( buttonView.icon ).toBe( IconListStyleLowerRoman );
 					} );
 
 					it( 'should bring the "upper-roman" list style button', () => {
 						const buttonView = stylesView.children.get( 3 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the upper–roman list style' );
-						expect( buttonView.tooltip ).to.equal( 'Upper-roman' );
-						expect( buttonView.icon ).to.equal( IconListStyleUpperRoman );
+						expect( buttonView.label ).toBe( 'Toggle the upper–roman list style' );
+						expect( buttonView.tooltip ).toBe( 'Upper-roman' );
+						expect( buttonView.icon ).toBe( IconListStyleUpperRoman );
 					} );
 
 					it( 'should bring the "lower–latin" list style button', () => {
 						const buttonView = stylesView.children.get( 4 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the lower–latin list style' );
-						expect( buttonView.tooltip ).to.equal( 'Lower-latin' );
-						expect( buttonView.icon ).to.equal( IconListStyleLowerLatin );
+						expect( buttonView.label ).toBe( 'Toggle the lower–latin list style' );
+						expect( buttonView.tooltip ).toBe( 'Lower-latin' );
+						expect( buttonView.icon ).toBe( IconListStyleLowerLatin );
 					} );
 
 					it( 'should bring the "upper–latin" list style button', () => {
 						const buttonView = stylesView.children.get( 5 );
 
-						expect( buttonView.label ).to.equal( 'Toggle the upper–latin list style' );
-						expect( buttonView.tooltip ).to.equal( 'Upper-latin' );
-						expect( buttonView.icon ).to.equal( IconListStyleUpperLatin );
+						expect( buttonView.label ).toBe( 'Toggle the upper–latin list style' );
+						expect( buttonView.tooltip ).toBe( 'Upper-latin' );
+						expect( buttonView.icon ).toBe( IconListStyleUpperLatin );
 					} );
 
 					it( 'should only bring the style buttons supported by the command', () => {
@@ -1733,7 +1834,7 @@ describe( 'ListPropertiesUI', () => {
 							const listPropertiesView = numberedListDropdown.panelView.children.first;
 							const stylesView = listPropertiesView.stylesView;
 
-							expect( stylesView.children.map( b => b.label ) ).to.deep.equal( [
+							expect( stylesView.children.map( b => b.label ) ).toEqual( [
 								'Toggle the decimal with leading zero list style',
 								'Toggle the lower–roman list style',
 								'Toggle the upper–roman list style',
@@ -1751,25 +1852,25 @@ describe( 'ListPropertiesUI', () => {
 							// "decimal-leading-zero""
 							styleButtonView = stylesView.children.get( 1 );
 
-							sinon.spy( editor, 'execute' );
-							sinon.spy( editor.editing.view, 'focus' );
+							vi.spyOn( editor, 'execute' );
+							vi.spyOn( editor.editing.view, 'focus' );
 						} );
 
 						it( 'should be instances of ButtonView', () => {
-							expect( styleButtonView ).to.be.instanceOf( ButtonView );
+							expect( styleButtonView ).toBeInstanceOf( ButtonView );
 						} );
 
 						it( 'should change its #isOn state when the value of the "listStyleCommand" command changes', () => {
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 
 							listStyleCommand.value = 'foo';
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 
 							listStyleCommand.value = 'decimal-leading-zero';
-							expect( styleButtonView.isOn ).to.be.true;
+							expect( styleButtonView.isOn ).toBe( true );
 
 							listStyleCommand.value = null;
-							expect( styleButtonView.isOn ).to.be.false;
+							expect( styleButtonView.isOn ).toBe( false );
 						} );
 
 						it( 'should apply the new style if none was set', () => {
@@ -1777,9 +1878,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'decimal-leading-zero' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'decimal-leading-zero' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should apply the new style if a different one was set', () => {
@@ -1787,9 +1890,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'decimal-leading-zero' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'decimal-leading-zero' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should remove (toggle) the style if the same style was set', () => {
@@ -1800,9 +1905,11 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'numberedList' );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'numberedList' );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should execute the "numberedList" command and apply the style if selection was not anchored in a list', () => {
@@ -1810,10 +1917,12 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							sinon.assert.calledWithExactly( editor.execute, 'numberedList' );
-							sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'decimal-leading-zero' } );
-							sinon.assert.calledOnce( editor.editing.view.focus );
-							sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+							expect( editor.execute ).toHaveBeenCalledWith( 'numberedList' );
+							expect( editor.execute ).toHaveBeenCalledWith( 'listStyle', { type: 'decimal-leading-zero' } );
+							expect( editor.editing.view.focus ).toHaveBeenCalledOnce();
+							expect( editor.execute.mock.invocationCallOrder[ 0 ] ).toBeLessThan(
+								editor.editing.view.focus.mock.invocationCallOrder[ 0 ]
+							);
 						} );
 
 						it( 'should create the single undo step while selection was not anchored in a list', () => {
@@ -1821,7 +1930,7 @@ describe( 'ListPropertiesUI', () => {
 
 							styleButtonView.fire( 'execute' );
 
-							expect( _getModelData( model ) ).to.equal(
+							expect( _getModelData( model ) ).toBe(
 								'<listItem ' +
 									'listIndent="0" ' +
 									'listReversed="false" ' +
@@ -1834,7 +1943,7 @@ describe( 'ListPropertiesUI', () => {
 
 							editor.execute( 'undo' );
 
-							expect( _getModelData( model ) ).to.equal(
+							expect( _getModelData( model ) ).toBe(
 								'<paragraph>foo[]</paragraph>'
 							);
 						} );

@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { tryParseDimensionWithUnit } from '../../../src/imageresize/utils/tryparsedimensionwithunit.js';
+import { describe, expect, it } from 'vitest';
+import { tryParseDimensionWithUnit, tryCastDimensionsToUnit } from '../src/parsedimensionwithunit.js';
 
 describe( 'tryParseDimensionWithUnit', () => {
 	it( 'should parse value with pixels', () => {
@@ -38,5 +39,28 @@ describe( 'tryParseDimensionWithUnit', () => {
 
 	it( 'should handle unknown units', () => {
 		expect( tryParseDimensionWithUnit( '1234in' ) ).to.be.null;
+	} );
+} );
+
+describe( 'tryCastDimensionsToUnit', () => {
+	it( 'should return px dimension unchanged when target unit is px', () => {
+		expect( tryCastDimensionsToUnit( 800, { value: 200, unit: 'px' }, 'px' ) ).to.deep.equal( {
+			value: 200,
+			unit: 'px'
+		} );
+	} );
+
+	it( 'should convert px to % when target unit is %', () => {
+		expect( tryCastDimensionsToUnit( 800, { value: 200, unit: 'px' }, '%' ) ).to.deep.equal( {
+			value: 25,
+			unit: '%'
+		} );
+	} );
+
+	it( 'should handle floating point conversion', () => {
+		const result = tryCastDimensionsToUnit( 1000, { value: 250, unit: 'px' }, '%' );
+
+		expect( result.unit ).to.equal( '%' );
+		expect( result.value ).to.equal( 25 );
 	} );
 } );

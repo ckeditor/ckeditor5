@@ -3,38 +3,46 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { isNode } from '../../src/dom/isnode.js';
 
 describe( 'isNode()', () => {
 	it( 'detects native DOM nodes', () => {
-		expect( isNode( document ) ).to.be.true;
-		expect( isNode( document.createElement( 'div' ) ) ).to.be.true;
-		expect( isNode( document.createTextNode( 'Foo' ) ) ).to.be.true;
+		expect( isNode( document ) ).toBe( true );
+		expect( isNode( document.createElement( 'div' ) ) ).toBe( true );
+		expect( isNode( document.createTextNode( 'Foo' ) ) ).toBe( true );
 
-		expect( isNode( {} ) ).to.be.false;
-		expect( isNode( null ) ).to.be.false;
-		expect( isNode( undefined ) ).to.be.false;
-		expect( isNode( new Date() ) ).to.be.false;
-		expect( isNode( 42 ) ).to.be.false;
-		expect( isNode( window ) ).to.be.false;
+		expect( isNode( {} ) ).toBe( false );
+		expect( isNode( null ) ).toBe( false );
+		expect( isNode( undefined ) ).toBe( false );
+		expect( isNode( new Date() ) ).toBe( false );
+		expect( isNode( 42 ) ).toBe( false );
+		expect( isNode( window ) ).toBe( false );
 	} );
 
-	it( 'works for nodes in an iframe', done => {
-		const iframe = document.createElement( 'iframe' );
+	it( 'works for nodes in an iframe', () => {
+		return new Promise( ( resolve, reject ) => {
+			const iframe = document.createElement( 'iframe' );
 
-		iframe.addEventListener( 'load', () => {
-			const iframeDocument = iframe.contentWindow.document;
+			iframe.addEventListener( 'load', () => {
+				try {
+					const iframeDocument = iframe.contentWindow.document;
 
-			expect( isNode( iframeDocument ) ).to.be.true;
-			expect( isNode( iframeDocument.createElement( 'div' ) ) ).to.be.true;
-			expect( isNode( iframeDocument.createTextNode( 'Foo' ) ) ).to.be.true;
+					expect( isNode( iframeDocument ) ).toBe( true );
+					expect( isNode( iframeDocument.createElement( 'div' ) ) ).toBe( true );
+					expect( isNode( iframeDocument.createTextNode( 'Foo' ) ) ).toBe( true );
 
-			expect( isNode( iframe.contentWindow ) ).to.be.false;
+					expect( isNode( iframe.contentWindow ) ).toBe( false );
 
-			iframe.remove();
-			done();
+					iframe.remove();
+					resolve();
+				} catch ( error ) {
+					iframe.remove();
+					reject( error );
+				}
+			} );
+
+			document.body.appendChild( iframe );
 		} );
-
-		document.body.appendChild( iframe );
 	} );
 } );

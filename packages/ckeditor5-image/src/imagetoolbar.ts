@@ -7,7 +7,7 @@
  * @module image/imagetoolbar
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
 import { ImageUtils } from './imageutils.js';
@@ -30,8 +30,8 @@ export class ImageToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ WidgetToolbarRepository, ImageUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ WidgetToolbarRepository, ImageUtils ]> {
+		return [ WidgetToolbarRepository, ImageUtils ];
 	}
 
 	/**

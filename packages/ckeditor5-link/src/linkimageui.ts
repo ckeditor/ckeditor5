@@ -8,7 +8,7 @@
  */
 
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { IconLink } from '@ckeditor/ckeditor5-icons';
 import type {
 	ModelDocumentSelection,
@@ -34,8 +34,8 @@ export class LinkImageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ LinkEditing, LinkUI, ImageBlockEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ LinkEditing, LinkUI, ImageBlockEditing ]> {
+		return [ LinkEditing, LinkUI, ImageBlockEditing ];
 	}
 
 	/**

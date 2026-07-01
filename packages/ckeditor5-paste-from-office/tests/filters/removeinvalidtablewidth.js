@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll } from 'vitest';
 import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { removeInvalidTableWidth } from '../../src/filters/removeinvalidtablewidth.js';
 
@@ -12,7 +13,7 @@ describe( 'PasteFromOffice - filters', () => {
 	describe( 'removeInvalidTableWidth', () => {
 		let writer, viewDocument;
 
-		before( () => {
+		beforeAll( () => {
 			viewDocument = new ViewDocument();
 			writer = new ViewUpcastWriter( viewDocument );
 		} );
@@ -31,7 +32,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeInvalidTableWidth( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
 		} );
 
 		it( 'should remove width="0" attribute from Word table', () => {
@@ -48,7 +49,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeInvalidTableWidth( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<div align="center"><table><tbody><tr><td>123</td></tr></tbody></table></div>'
 			);
 		} );
@@ -67,7 +68,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeInvalidTableWidth( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
 		} );
 	} );
 } );

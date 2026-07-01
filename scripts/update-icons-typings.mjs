@@ -39,7 +39,7 @@ const path = upath.join( CKEDITOR5_PACKAGES_PATH, 'ckeditor5-icons', 'dist', 'in
 const content = fs.readFileSync( path, 'utf8' );
 
 const updatedContent = content.replace(
-	/^export { default as (.*) } from '(.*)';$/gm,
+	/^export { default as (.*) } from "(.*)";$/gm,
 	'export const $1: string;'
 );
 

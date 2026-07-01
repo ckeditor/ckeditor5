@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { MediaEmbedEditing } from '../src/mediaembedediting.js';
@@ -32,22 +33,22 @@ describe( 'MediaEmbedCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should be true if in a root', () => {
 			_setModelData( model, '[]' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if in a paragraph (collapsed)', () => {
 			_setModelData( model, '<p>foo[]</p>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if in a paragraph (not collapsed)', () => {
 			_setModelData( model, '<p>[foo]</p>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if a media is selected', () => {
 			_setModelData( model, '[<media url="http://ckeditor.com"></media>]' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if a media is selected in a table cell', () => {
@@ -58,7 +59,7 @@ describe( 'MediaEmbedCommand', () => {
 
 			_setModelData( model, '<table><tableRow><tableCell>[<media></media>]</tableCell></tableRow></table>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if in a table cell', () => {
@@ -69,14 +70,14 @@ describe( 'MediaEmbedCommand', () => {
 
 			_setModelData( model, '<table><tableRow><tableCell><p>foo[]</p></tableCell></tableRow></table>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection directly in a block', () => {
 			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: '$text' } );
 
 			_setModelData( model, '<block>foo[]</block>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false when the selection in a limit element', () => {
@@ -85,33 +86,33 @@ describe( 'MediaEmbedCommand', () => {
 			model.schema.extend( '$text', { allowIn: 'limit' } );
 
 			_setModelData( model, '<block><limit>foo[]</limit></block>' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if a non-object element is selected', () => {
 			model.schema.register( 'element', { allowIn: '$root', isSelectable: true } );
 
 			_setModelData( model, '[<element></element>]' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if a non-media object is selected', () => {
 			model.schema.register( 'imageBlock', { isObject: true, isBlock: true, allowWhere: '$block' } );
 
 			_setModelData( model, '[<imageBlock src="http://ckeditor.com"></imageBlock>]' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 	} );
 
 	describe( 'value', () => {
 		it( 'should be null when no media is selected (paragraph)', () => {
 			_setModelData( model, '<p>foo[]</p>' );
-			expect( command.value ).to.be.undefined;
+			expect( command.value ).toBeUndefined();
 		} );
 
 		it( 'should equal the url of the selected media', () => {
 			_setModelData( model, '[<media url="http://ckeditor.com"></media>]' );
-			expect( command.value ).to.equal( 'http://ckeditor.com' );
+			expect( command.value ).toBe( 'http://ckeditor.com' );
 		} );
 	} );
 
@@ -119,13 +120,13 @@ describe( 'MediaEmbedCommand', () => {
 		it( 'should create a single batch', () => {
 			_setModelData( model, '<p>foo[]</p>' );
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			model.document.on( 'change', spy );
 
 			command.execute( 'http://ckeditor.com' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should insert a media in an empty root and select it', () => {
@@ -133,7 +134,7 @@ describe( 'MediaEmbedCommand', () => {
 
 			command.execute( 'http://ckeditor.com' );
 
-			expect( _getModelData( model ) ).to.equal( '[<media url="http://ckeditor.com"></media>]' );
+			expect( _getModelData( model ) ).toBe( '[<media url="http://ckeditor.com"></media>]' );
 		} );
 
 		it( 'should update media url', () => {
@@ -141,7 +142,7 @@ describe( 'MediaEmbedCommand', () => {
 
 			command.execute( 'http://cksource.com' );
 
-			expect( _getModelData( model ) ).to.equal( '[<media url="http://cksource.com"></media>]' );
+			expect( _getModelData( model ) ).toBe( '[<media url="http://cksource.com"></media>]' );
 		} );
 
 		it( 'should replace an existing selected object with a media', () => {
@@ -152,7 +153,7 @@ describe( 'MediaEmbedCommand', () => {
 
 			command.execute( 'http://ckeditor.com' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<p>foo</p>[<media url="http://ckeditor.com"></media>]<p>bar</p>'
 			);
 		} );

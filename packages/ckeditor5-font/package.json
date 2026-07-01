@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-font",
-  "version": "48.2.0",
+  "version": "48.3.0",
   "description": "Font feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -46,10 +46,17 @@
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-highlight": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@ckeditor/ckeditor5-table": "workspace:*"
+    "@ckeditor/ckeditor5-table": "workspace:*",
+    "@vitest/browser-playwright": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.8",
+    "vitest": "^4.1.8"
   },
   "scripts": {
-    "build": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs",
+    "coverage": "pnpm run test:headless --coverage",
+    "test": "vitest run",
+    "test:debug": "vitest",
+    "test:headless": "vitest run --browser.headless"
   },
   "files": [
     "dist",

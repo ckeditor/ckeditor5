@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ListIndentCommand } from '../../src/list/listindentcommand.js';
 import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
@@ -10,12 +12,12 @@ import { modelList } from './_utils/utils.js';
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'ListIndentCommand', () => {
 	let editor, model, doc, root, attributeNames;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editor = new Editor();
@@ -32,8 +34,10 @@ describe( 'ListIndentCommand', () => {
 		model.schema.extend( '$block', { allowAttributes: attributeNames } );
 		model.schema.extend( '$blockObject', { allowAttributes: attributeNames } );
 
-		sinon.stub( editor.plugins, 'get' ).withArgs( 'ListEditing' ).returns( {
-			getListAttributeNames: () => attributeNames
+		vi.spyOn( editor.plugins, 'get' ).mockImplementation( name => {
+			if ( name === 'ListEditing' ) {
+				return { getListAttributeNames: () => attributeNames };
+			}
 		} );
 	} );
 
@@ -61,7 +65,7 @@ describe( 'ListIndentCommand', () => {
 						'* 6'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false if selection starts in first list item', () => {
@@ -75,7 +79,7 @@ describe( 'ListIndentCommand', () => {
 						'* 6'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false if selection starts in first list item at given indent', () => {
@@ -87,7 +91,7 @@ describe( 'ListIndentCommand', () => {
 						'    * 4'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false if selection starts in first list item (different list type)', () => {
@@ -99,7 +103,7 @@ describe( 'ListIndentCommand', () => {
 						'* []4'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false if selection is in first list item with different type than previous list', () => {
@@ -108,7 +112,7 @@ describe( 'ListIndentCommand', () => {
 						'# []1'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false if selection starts in a list item that has higher indent than it\'s previous sibling', () => {
@@ -122,7 +126,7 @@ describe( 'ListIndentCommand', () => {
 						'* 6'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false if selection starts before a list item', () => {
@@ -132,7 +136,7 @@ describe( 'ListIndentCommand', () => {
 						'* 2'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 			} );
 
@@ -145,7 +149,7 @@ describe( 'ListIndentCommand', () => {
 						'  3'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be true if selection starts in the second block of list item', () => {
@@ -156,7 +160,7 @@ describe( 'ListIndentCommand', () => {
 						'  3'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be true if selection starts in the last block of list item', () => {
@@ -167,7 +171,7 @@ describe( 'ListIndentCommand', () => {
 						'  []3'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false if selection starts in first list item', () => {
@@ -176,7 +180,7 @@ describe( 'ListIndentCommand', () => {
 						'  1'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false if selection starts in the first list item at given indent', () => {
@@ -186,7 +190,7 @@ describe( 'ListIndentCommand', () => {
 						'    2'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false if selection is in first list item with different type than previous list', () => {
@@ -197,7 +201,7 @@ describe( 'ListIndentCommand', () => {
 						'  3'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				describe( 'multiple list items selection', () => {
@@ -210,7 +214,7 @@ describe( 'ListIndentCommand', () => {
 							'  4'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 			} );
@@ -230,11 +234,11 @@ describe( 'ListIndentCommand', () => {
 					] ) );
 
 					model.change( writer => {
-						expect( writer.batch.operations.length ).to.equal( 0 );
+						expect( writer.batch.operations.length ).toBe( 0 );
 
 						command.execute();
 
-						expect( writer.batch.operations.length ).to.be.above( 0 );
+						expect( writer.batch.operations.length ).toBeGreaterThan( 0 );
 					} );
 				} );
 
@@ -516,7 +520,7 @@ describe( 'ListIndentCommand', () => {
 					} );
 				} );
 
-				it( 'should fire "afterExecute" event after finish all operations with all changed items', done => {
+				it( 'should fire "afterExecute" event after finish all operations with all changed items', () => {
 					_setModelData( model, modelList( [
 						'* 0',
 						'* []1',
@@ -527,19 +531,21 @@ describe( 'ListIndentCommand', () => {
 						'* 6'
 					] ) );
 
-					command.on( 'afterExecute', ( evt, data ) => {
-						expect( data ).to.deep.equal( [
-							root.getChild( 1 ),
-							root.getChild( 2 ),
-							root.getChild( 3 ),
-							root.getChild( 4 ),
-							root.getChild( 5 )
-						] );
+					return new Promise( resolve => {
+						command.on( 'afterExecute', ( evt, data ) => {
+							expect( data ).toEqual( [
+								root.getChild( 1 ),
+								root.getChild( 2 ),
+								root.getChild( 3 ),
+								root.getChild( 4 ),
+								root.getChild( 5 )
+							] );
 
-						done();
+							resolve();
+						} );
+
+						command.execute();
 					} );
-
-					command.execute();
 				} );
 			} );
 
@@ -680,7 +686,7 @@ describe( 'ListIndentCommand', () => {
 					] ) );
 				} );
 
-				it( 'should fire "afterExecute" event after finish all operations with all changed items', done => {
+				it( 'should fire "afterExecute" event after finish all operations with all changed items', () => {
 					_setModelData( model, modelList( [
 						'* 0',
 						'* []1',
@@ -691,19 +697,21 @@ describe( 'ListIndentCommand', () => {
 						'* 6'
 					] ) );
 
-					command.on( 'afterExecute', ( evt, data ) => {
-						expect( data ).to.deep.equal( [
-							root.getChild( 1 ),
-							root.getChild( 2 ),
-							root.getChild( 3 ),
-							root.getChild( 4 ),
-							root.getChild( 5 )
-						] );
+					return new Promise( resolve => {
+						command.on( 'afterExecute', ( evt, data ) => {
+							expect( data ).toEqual( [
+								root.getChild( 1 ),
+								root.getChild( 2 ),
+								root.getChild( 3 ),
+								root.getChild( 4 ),
+								root.getChild( 5 )
+							] );
 
-						done();
+							resolve();
+						} );
+
+						command.execute();
 					} );
-
-					command.execute();
 				} );
 
 				it( 'should align the list item type after indenting a following block of a list item (numbered)', () => {
@@ -812,7 +820,7 @@ describe( 'ListIndentCommand', () => {
 					'* 6'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if selection starts in first list item', () => {
@@ -826,7 +834,7 @@ describe( 'ListIndentCommand', () => {
 					'* 6'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if selection starts in a list item that has higher indent than it\'s previous sibling', () => {
@@ -840,7 +848,7 @@ describe( 'ListIndentCommand', () => {
 					'* 6'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if selection starts before a list', () => {
@@ -850,7 +858,7 @@ describe( 'ListIndentCommand', () => {
 					'  * 2'
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true with selection in the middle block of a list item', () => {
@@ -860,7 +868,7 @@ describe( 'ListIndentCommand', () => {
 					'  2'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true with selection in the last block of a list item', () => {
@@ -870,7 +878,7 @@ describe( 'ListIndentCommand', () => {
 					'  []2'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -1215,7 +1223,7 @@ describe( 'ListIndentCommand', () => {
 					'* 1'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true for second list item', () => {
@@ -1224,7 +1232,7 @@ describe( 'ListIndentCommand', () => {
 					'* []1'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true for a deeply nested item', () => {
@@ -1234,7 +1242,7 @@ describe( 'ListIndentCommand', () => {
 					'    * []2'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true when first item at given indent has no sibling', () => {
@@ -1243,7 +1251,7 @@ describe( 'ListIndentCommand', () => {
 					'  * []1'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true when a non-collapsed selection starts at the start of first list item', () => {
@@ -1252,7 +1260,7 @@ describe( 'ListIndentCommand', () => {
 					'* 1'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true when selection is at start of first item preceded by a non-list block', () => {
@@ -1262,7 +1270,7 @@ describe( 'ListIndentCommand', () => {
 					'* 1'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true when selection is at start of first bulleted item after numbered list', () => {
@@ -1273,7 +1281,7 @@ describe( 'ListIndentCommand', () => {
 					'* 3'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true when selection is at start of a skip-level list item preceded by a paragraph', () => {
@@ -1282,7 +1290,7 @@ describe( 'ListIndentCommand', () => {
 					'  * []0'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true when skip-level list item is the first element in the document', () => {
@@ -1290,7 +1298,7 @@ describe( 'ListIndentCommand', () => {
 					'    * []0'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -1431,7 +1439,7 @@ describe( 'ListIndentCommand', () => {
 					'  * []1'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if selection starts in first list item', () => {
@@ -1440,7 +1448,7 @@ describe( 'ListIndentCommand', () => {
 					'* 1'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true in a deeply nested list item', () => {
@@ -1450,7 +1458,7 @@ describe( 'ListIndentCommand', () => {
 					'    * []2'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true when selection is at start of first skip-level list item', () => {
@@ -1458,7 +1466,7 @@ describe( 'ListIndentCommand', () => {
 					'  * []0'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true for a single list item at indent 0', () => {
@@ -1466,7 +1474,7 @@ describe( 'ListIndentCommand', () => {
 					'* []0'
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 

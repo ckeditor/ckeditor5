@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { LegacyTodoListEditing } from '../../src/legacytodolist/legacytodolistediting.js';
 import { LegacyCheckTodoListCommand } from '../../src/legacytodolist/legacychecktodolistcommand.js';
 
@@ -25,17 +26,21 @@ describe( 'LegacyCheckTodoListCommand', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	describe( 'value', () => {
 		it( 'should be false when selection is in not checked element', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="todo">ab[]c</listItem>' );
 
-			expect( command.value ).to.equal( false );
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should be true when selection is in checked element', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">ab[]c</listItem>' );
 
-			expect( command.value ).to.equal( true );
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'should be false when at least one selected element is not checked', () => {
@@ -46,7 +51,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">ab]c</listItem>'
 			);
 
-			expect( command.value ).to.equal( false );
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should be true when all selected elements are checked', () => {
@@ -57,7 +62,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">ab]c</listItem>'
 			);
 
-			expect( command.value ).to.equal( true );
+			expect( command.value ).toBe( true );
 		} );
 	} );
 
@@ -65,13 +70,13 @@ describe( 'LegacyCheckTodoListCommand', () => {
 		it( 'should be enabled when selection is inside to-do list item', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="todo">a[b]c</listItem>' );
 
-			expect( command.isEnabled ).to.equal( true );
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be disabled when selection is not inside to-do list item', () => {
 			_setModelData( model, '<paragraph>a[b]c</paragraph>' );
 
-			expect( command.isEnabled ).to.equal( false );
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be enabled when at least one to-do list item is selected', () => {
@@ -81,7 +86,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 				'<paragraph>ab]c</paragraph>'
 			);
 
-			expect( command.isEnabled ).to.equal( true );
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled when none to-do list item is selected', () => {
@@ -91,7 +96,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 				'<paragraph>a]bc</paragraph>'
 			);
 
-			expect( command.isEnabled ).to.equal( false );
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -101,13 +106,13 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">b[]ar</listItem>'
 			);
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="todo">b[]ar</listItem>'
 			);
 		} );
@@ -117,13 +122,13 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">b[a]r</listItem>'
 			);
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="todo">b[a]r</listItem>'
 			);
 		} );
@@ -137,7 +142,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">abc[</listItem>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">def</listItem>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">]ghi</listItem>'
@@ -145,7 +150,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="todo">abc[</listItem>' +
 				'<listItem listIndent="0" listType="todo">def</listItem>' +
 				'<listItem listIndent="0" listType="todo">]ghi</listItem>'
@@ -163,7 +168,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>a[bc</paragraph>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">def</listItem>' +
 				'<listItem listIndent="0" listType="numbered">ghi</listItem>' +
@@ -173,7 +178,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>a[bc</paragraph>' +
 				'<listItem listIndent="0" listType="todo">def</listItem>' +
 				'<listItem listIndent="0" listType="numbered">ghi</listItem>' +
@@ -191,7 +196,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">abc[</listItem>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">def</listItem>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">]ghi</listItem>'
@@ -203,7 +208,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>b[]ar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>b[]ar</paragraph>' );
 		} );
 
 		it( 'should be up to date just before execution', () => {
@@ -223,7 +228,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 			command.execute( { forceValue: true } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">b[]ar</listItem>'
 			);
 		} );
@@ -233,7 +238,7 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 			command.execute( { forceValue: false } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="todo">b[]ar</listItem>'
 			);
 		} );

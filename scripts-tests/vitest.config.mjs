@@ -7,6 +7,11 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig( {
 	test: {
+		deps: {
+			// Make the ESM-CJS interop match plain Node.js, so that CJS dependencies (e.g. `@babel/traverse`)
+			// expose the same shape in tests as in production scripts.
+			interopDefault: false
+		},
 		testTimeout: 10000,
 		mockReset: true,
 		restoreMocks: true,
@@ -14,7 +19,8 @@ export default defineConfig( {
 			'scripts-tests/**/*.@(js|mjs|cjs)'
 		],
 		exclude: [
-			'scripts-tests/vitest.config.mjs'
+			'scripts-tests/vitest.config.mjs',
+			'scripts-tests/**/_utils.mjs'
 		],
 		coverage: {
 			provider: 'v8',

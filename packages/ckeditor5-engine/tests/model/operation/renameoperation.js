@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { RenameOperation } from '../../../src/model/operation/renameoperation.js';
@@ -30,7 +31,7 @@ describe( 'RenameOperation', () => {
 	it( 'should have type equal to rename', () => {
 		const op = new RenameOperation( position, oldName, newName, doc.version );
 
-		expect( op.type ).to.equal( 'rename' );
+		expect( op.type ).toBe( 'rename' );
 	} );
 
 	it( 'should change name of given element', () => {
@@ -38,18 +39,18 @@ describe( 'RenameOperation', () => {
 
 		model.applyOperation( op );
 
-		expect( element.name ).to.equal( newName );
+		expect( element.name ).toBe( newName );
 	} );
 
 	it( 'should create a RenameOperation as a reverse', () => {
 		const op = new RenameOperation( position, oldName, newName, doc.version );
 		const reverse = op.getReversed();
 
-		expect( reverse ).to.be.an.instanceof( RenameOperation );
-		expect( reverse.baseVersion ).to.equal( 1 );
-		expect( reverse.position.isEqual( position ) ).to.be.true;
-		expect( reverse.oldName ).to.equal( newName );
-		expect( reverse.newName ).to.equal( oldName );
+		expect( reverse ).toBeInstanceOf( RenameOperation );
+		expect( reverse.baseVersion ).toBe( 1 );
+		expect( reverse.position.isEqual( position ) ).toBe( true );
+		expect( reverse.oldName ).toBe( newName );
+		expect( reverse.newName ).toBe( oldName );
 	} );
 
 	it( 'should undo renaming element by applying reverse operation', () => {
@@ -59,8 +60,8 @@ describe( 'RenameOperation', () => {
 		model.applyOperation( op );
 		model.applyOperation( reverse );
 
-		expect( doc.version ).to.equal( 2 );
-		expect( element.name ).to.equal( oldName );
+		expect( doc.version ).toBe( 2 );
+		expect( element.name ).toBe( oldName );
 	} );
 
 	describe( '_validate()', () => {
@@ -85,7 +86,7 @@ describe( 'RenameOperation', () => {
 
 			expect( () => {
 				op._validate();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
 
@@ -94,13 +95,13 @@ describe( 'RenameOperation', () => {
 		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
-		expect( clone ).not.to.equal( op );
+		expect( clone ).not.toBe( op );
 
-		expect( clone ).to.be.instanceof( RenameOperation );
-		expect( clone.baseVersion ).to.equal( op.baseVersion );
-		expect( clone.position.isEqual( op.position ) ).to.be.true;
-		expect( clone.oldName ).to.equal( oldName );
-		expect( clone.newName ).to.equal( newName );
+		expect( clone ).toBeInstanceOf( RenameOperation );
+		expect( clone.baseVersion ).toBe( op.baseVersion );
+		expect( clone.position.isEqual( op.position ) ).toBe( true );
+		expect( clone.oldName ).toBe( oldName );
+		expect( clone.newName ).toBe( newName );
 	} );
 
 	describe( 'toJSON', () => {
@@ -108,7 +109,7 @@ describe( 'RenameOperation', () => {
 			const op = new RenameOperation( ModelPosition._createAt( root, 'end' ), oldName, newName, doc.version );
 			const serialized = op.toJSON();
 
-			expect( serialized ).to.deep.equal( {
+			expect( serialized ).toEqual( {
 				__className: 'RenameOperation',
 				baseVersion: 0,
 				position: op.position.toJSON(),
@@ -125,7 +126,7 @@ describe( 'RenameOperation', () => {
 			const serialized = op.toJSON();
 			const deserialized = RenameOperation.fromJSON( serialized, doc );
 
-			expect( deserialized ).to.deep.equal( op );
+			expect( deserialized ).toEqual( op );
 		} );
 	} );
 } );

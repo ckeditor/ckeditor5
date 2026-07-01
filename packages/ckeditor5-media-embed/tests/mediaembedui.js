@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconMedia } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { MediaEmbed } from '../src/mediaembed.js';
@@ -38,20 +39,21 @@ describe( 'MediaEmbedUI', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
 
 	it( 'should be named', () => {
-		expect( MediaEmbedUI.pluginName ).to.equal( 'MediaEmbedUI' );
+		expect( MediaEmbedUI.pluginName ).toBe( 'MediaEmbedUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( MediaEmbedUI.isOfficialPlugin ).to.be.true;
+		expect( MediaEmbedUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( MediaEmbedUI.isPremiumPlugin ).to.be.false;
+		expect( MediaEmbedUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should allow creating two instances', () => {
@@ -59,15 +61,15 @@ describe( 'MediaEmbedUI', () => {
 
 		expect( function createSecondInstance() {
 			secondInstance = editor.ui.componentFactory.create( 'mediaEmbed' );
-		} ).not.to.throw();
-		expect( button ).to.not.equal( secondInstance );
+		} ).not.toThrow();
+		expect( button ).not.toBe( secondInstance );
 	} );
 
 	describe( 'toolbar button', () => {
 		testButton( 'Insert media', ButtonView );
 
 		it( 'should enable tooltips for the #buttonView', () => {
-			expect( button.tooltip ).to.be.true;
+			expect( button.tooltip ).toBe( true );
 		} );
 	} );
 
@@ -90,26 +92,26 @@ describe( 'MediaEmbedUI', () => {
 		} );
 
 		it( 'has two action buttons', () => {
-			expect( dialog.view.actionsView.children ).to.have.length( 2 );
-			expect( dialog.view.actionsView.children.get( 0 ).label ).to.equal( 'Cancel' );
-			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Insert' );
+			expect( dialog.view.actionsView.children ).toHaveLength( 2 );
+			expect( dialog.view.actionsView.children.get( 0 ).label ).toBe( 'Cancel' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).toBe( 'Insert' );
 		} );
 
 		it( 'should be open as modal', () => {
-			expect( dialog.view.isModal ).to.be.true;
+			expect( dialog.view.isModal ).toBe( true );
 		} );
 
 		it( 'should be open at screen center', () => {
-			expect( dialog.view.position ).to.be.equal( DialogViewPosition.SCREEN_CENTER );
+			expect( dialog.view.position ).toBe( DialogViewPosition.SCREEN_CENTER );
 		} );
 
 		it( 'should have a title', () => {
-			const sinonSpy = sinon.spy( dialog, 'show' );
+			const showSpy = vi.spyOn( dialog, 'show' );
 
 			dialog.hide();
 			button.fire( 'execute' );
 
-			expect( sinonSpy ).to.have.been.calledWithMatch( { title: 'Media embed' } );
+			expect( showSpy ).toHaveBeenCalledWith( expect.objectContaining( { title: 'Media embed' } ) );
 		} );
 
 		it( 'should show save button if media is selected', () => {
@@ -117,7 +119,7 @@ describe( 'MediaEmbedUI', () => {
 			mediaEmbedCommand.value = 'http://example.org';
 			button.fire( 'execute' );
 
-			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Save' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).toBe( 'Save' );
 		} );
 
 		it( 'should show insert button if media is selected', () => {
@@ -125,7 +127,7 @@ describe( 'MediaEmbedUI', () => {
 			mediaEmbedCommand.value = undefined;
 			button.fire( 'execute' );
 
-			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Insert' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).toBe( 'Insert' );
 		} );
 
 		testSubmit( 'Accept button', () => {
@@ -141,35 +143,35 @@ describe( 'MediaEmbedUI', () => {
 		function testSubmit( suiteName, action ) {
 			describe( suiteName, () => {
 				it( 'checks if the form is valid', () => {
-					const spy = sinon.spy( form, 'isValid' );
+					const spy = vi.spyOn( form, 'isValid' );
 
 					action();
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'executes the command and closes the UI (if the form is valid)', async () => {
-					const commandSpy = sinon.spy( editor.commands.get( 'mediaEmbed' ), 'execute' );
+					const commandSpy = vi.spyOn( editor.commands.get( 'mediaEmbed' ), 'execute' );
 
 					// The form is invalid.
 					form.url = 'https://invalid/url';
 
 					action();
 
-					sinon.assert.notCalled( commandSpy );
+					expect( commandSpy ).not.toHaveBeenCalled();
 
-					expect( dialog.id ).to.be.equal( 'mediaEmbed' );
+					expect( dialog.id ).toBe( 'mediaEmbed' );
 
 					// The form is valid.
 					form.url = 'https://valid/url';
 					action();
 
-					sinon.assert.calledOnce( commandSpy );
-					sinon.assert.calledWithExactly( commandSpy, 'https://valid/url' );
+					expect( commandSpy ).toHaveBeenCalledOnce();
+					expect( commandSpy ).toHaveBeenCalledWith( 'https://valid/url' );
 
 					await wait( 10 );
 
-					expect( dialog.id ).to.be.null;
+					expect( dialog.id ).toBeNull();
 				} );
 			} );
 		}
@@ -186,7 +188,7 @@ describe( 'MediaEmbedUI', () => {
 
 				await wait( 10 );
 
-				expect( dialog.id ).to.be.null;
+				expect( dialog.id ).toBeNull();
 			} );
 		} );
 
@@ -195,33 +197,33 @@ describe( 'MediaEmbedUI', () => {
 				form.urlInputView.fieldView.element.value = '   ';
 				form.urlInputView.fieldView.fire( 'input' );
 
-				expect( form.mediaURLInputValue ).to.equal( '' );
+				expect( form.mediaURLInputValue ).toBe( '' );
 
 				form.urlInputView.fieldView.element.value = '   test   ';
 				form.urlInputView.fieldView.fire( 'input' );
 
-				expect( form.mediaURLInputValue ).to.equal( 'test' );
+				expect( form.mediaURLInputValue ).toBe( 'test' );
 			} );
 
 			it( 'should implement the CSS transition disabling feature', () => {
-				expect( form.disableCssTransitions ).to.be.a( 'function' );
+				expect( form.disableCssTransitions ).toBeTypeOf( 'function' );
 			} );
 
 			describe( 'validators', () => {
 				it( 'check the empty URL', () => {
 					form.url = '';
-					expect( form.isValid() ).to.be.false;
+					expect( form.isValid() ).toBe( false );
 
 					form.url = 'https://valid/url';
-					expect( form.isValid() ).to.be.true;
+					expect( form.isValid() ).toBe( true );
 				} );
 
 				it( 'check the supported media', () => {
 					form.url = 'https://invalid/url';
-					expect( form.isValid() ).to.be.false;
+					expect( form.isValid() ).toBe( false );
 
 					form.url = 'https://valid/url';
-					expect( form.isValid() ).to.be.true;
+					expect( form.isValid() ).toBe( true );
 				} );
 			} );
 		} );
@@ -229,43 +231,43 @@ describe( 'MediaEmbedUI', () => {
 
 	function testButton( label, expectedType ) {
 		it( 'should add the "mediaEmbed" component to the factory', () => {
-			expect( button ).to.be.instanceOf( expectedType );
+			expect( button ).toBeInstanceOf( expectedType );
 		} );
 
 		it( 'should bind #isEnabled to the command', () => {
 			const command = editor.commands.get( 'mediaEmbed' );
 
-			expect( button.isEnabled ).to.be.true;
+			expect( button.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( button.isEnabled ).to.be.false;
+			expect( button.isEnabled ).toBe( false );
 		} );
 
 		it( 'should set a #label of the #buttonView', () => {
-			expect( button.label ).to.equal( label );
+			expect( button.label ).toBe( label );
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( IconMedia );
+			expect( button.icon ).toBe( IconMedia );
 		} );
 
 		it( 'should open media embed dialog', () => {
 			const dialogPlugin = editor.plugins.get( 'Dialog' );
-			expect( dialogPlugin.id ).to.be.null;
+			expect( dialogPlugin.id ).toBeNull();
 
 			button.fire( 'execute' );
 
-			expect( dialogPlugin.id ).to.equal( 'mediaEmbed' );
+			expect( dialogPlugin.id ).toBe( 'mediaEmbed' );
 		} );
 
 		it( 'should hide media embed dialog on second click', () => {
 			const dialogPlugin = editor.plugins.get( 'Dialog' );
-			expect( dialogPlugin.id ).to.be.null;
+			expect( dialogPlugin.id ).toBeNull();
 
 			button.fire( 'execute' );
 			button.fire( 'execute' );
 
-			expect( dialogPlugin.id ).to.be.null;
+			expect( dialogPlugin.id ).toBeNull();
 		} );
 	}
 } );

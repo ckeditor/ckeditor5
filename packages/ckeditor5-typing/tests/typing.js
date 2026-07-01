@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { Typing } from '../src/typing.js';
 import { Input } from '../src/input.js';
 import { Delete } from '../src/delete.js';

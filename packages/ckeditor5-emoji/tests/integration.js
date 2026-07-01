@@ -3,43 +3,44 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Emoji } from '../src/emoji.js';
 import { EmojiPicker } from '../src/emojipicker.js';
+import { EmojiRepository } from '../src/emojirepository.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 
 import database from './fixtures/database.json';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Emoji integration', () => {
-	let editor, element, emojiPicker;
+	let editor, element, emojiPicker, emojiRepository;
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
 		const response = new Response( JSON.stringify( database ) );
-		testUtils.sinon.stub( window, 'fetch' ).resolves( response );
+		vi.spyOn( window, 'fetch' ).mockResolvedValue( response );
 
-		return ClassicTestEditor
-			.create( element, {
-				plugins: [ Emoji, Essentials, Paragraph, Mention ],
-				toolbar: 'emoji',
-				menubar: {
-					isVisible: true
-				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				emojiPicker = editor.plugins.get( EmojiPicker );
-			} );
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ Emoji, Essentials, Paragraph, Mention ],
+			toolbar: 'emoji',
+			menubar: {
+				isVisible: true
+			}
+		} );
+
+		emojiPicker = editor.plugins.get( EmojiPicker );
+		emojiRepository = editor.plugins.get( EmojiRepository );
+
+		await emojiRepository.isReady();
 	} );
 
 	afterEach( () => {
 		element.remove();
-		testUtils.sinon.restore();
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
@@ -49,10 +50,11 @@ describe( 'Emoji integration', () => {
 		emojiPicker.emojiPickerView.gridView.element.scrollTo( 0, 335 );
 
 		// We want 335, but sometimes we get e.g. 334.3999.
-		expect( emojiPicker.emojiPickerView.gridView.element.scrollTop ).to.be.within( 334, 335 );
+		expect( emojiPicker.emojiPickerView.gridView.element.scrollTop ).toBeGreaterThanOrEqual( 334 );
+		expect( emojiPicker.emojiPickerView.gridView.element.scrollTop ).toBeLessThanOrEqual( 335 );
 
 		document.querySelector( '.ck-emoji__categories-list > button:nth-child(2)' ).click();
 
-		expect( emojiPicker.emojiPickerView.gridView.element.scrollTop ).to.equal( 0 );
+		expect( emojiPicker.emojiPickerView.gridView.element.scrollTop ).toBe( 0 );
 	} );
 } );

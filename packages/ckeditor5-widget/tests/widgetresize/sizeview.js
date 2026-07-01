@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { SizeView } from '../../src/widgetresize/sizeview.js';
 import { WidgetResizeState } from '../../src/widgetresize/resizerstate.js';
 
@@ -21,10 +22,12 @@ describe( 'SizeView', () => {
 		it( 'sets a proper template structure', () => {
 			const template = sizeView.template;
 
-			expect( template.tag ).to.equal( 'div' );
-			expect( template.attributes.class ).to.have.length( 3 ).and.include( 'ck', 'ck-size-view', '' );
-			expect( template.attributes.style[ 0 ] ).to.have.property( 'display' );
-			expect( template.children[ 0 ] ).to.have.property( 'text' );
+			expect( template.tag ).toBe( 'div' );
+			expect( template.attributes.class ).toHaveLength( 3 );
+			expect( template.attributes.class ).toContain( 'ck' );
+			expect( template.attributes.class ).toContain( 'ck-size-view' );
+			expect( template.attributes.style[ 0 ] ).toHaveProperty( 'display' );
+			expect( template.children[ 0 ] ).toHaveProperty( 'text' );
 		} );
 	} );
 
@@ -36,7 +39,7 @@ describe( 'SizeView', () => {
 				widthPercents: 20
 			} );
 
-			expect( sizeView.element.innerText ).to.equal( '20%' );
+			expect( sizeView.element.innerText ).toBe( '20%' );
 		} );
 
 		it( 'should have proper text if the resizing unit is pixels', () => {
@@ -49,7 +52,7 @@ describe( 'SizeView', () => {
 				widthPercents: 20
 			} );
 
-			expect( sizeView.element.innerText ).to.equal( '50×50' );
+			expect( sizeView.element.innerText ).toBe( '50×50' );
 		} );
 	} );
 
@@ -60,7 +63,7 @@ describe( 'SizeView', () => {
 				height: null
 			} );
 
-			expect( sizeView.element.style.display ).to.equal( 'none' );
+			expect( sizeView.element.style.display ).toBe( 'none' );
 		} );
 
 		it( 'should be visible if the state proposedHeight and proposedWidth are not null', () => {
@@ -69,7 +72,7 @@ describe( 'SizeView', () => {
 				height: 50
 			} );
 
-			expect( sizeView.element.style.display ).to.equal( '' );
+			expect( sizeView.element.style.display ).toBe( '' );
 		} );
 	} );
 
@@ -81,7 +84,7 @@ describe( 'SizeView', () => {
 				handleHostHeight: 200
 			} );
 
-			expect( sizeView.element.classList.contains( 'ck-orientation-above-center' ) ).to.be.true;
+			expect( sizeView.element.classList.contains( 'ck-orientation-above-center' ) ).toBe( true );
 		} );
 
 		it( 'should have a valid class if the widget height is less than 50px', () => {
@@ -91,7 +94,7 @@ describe( 'SizeView', () => {
 				handleHostHeight: 49
 			} );
 
-			expect( sizeView.element.classList.contains( 'ck-orientation-above-center' ) ).to.be.true;
+			expect( sizeView.element.classList.contains( 'ck-orientation-above-center' ) ).toBe( true );
 		} );
 
 		it( 'should have a valid class if the widget dimensions are greater than 50px/50px', () => {
@@ -103,7 +106,7 @@ describe( 'SizeView', () => {
 				handleHostHeight: 200
 			} );
 
-			expect( sizeView.element.classList.contains( `ck-orientation-${ position }` ) ).to.be.true;
+			expect( sizeView.element.classList.contains( `ck-orientation-${ position }` ) ).toBe( true );
 		} );
 	} );
 } );

@@ -73,7 +73,7 @@
 		{
 			"name": "Media embed resize",
 			"className": "MediaEmbedResize",
-			"description": "Allows for resizing media embeds using handles.",
+			"description": "Allows for resizing media embeds using drag handles, a toolbar dropdown, or standalone buttons for predefined sizes plus a custom-width balloon.",
 			"docs": "features/media-embed/media-embed-resize.html",
 			"path": "src/mediaembedresize.ts",
 			"requires": [

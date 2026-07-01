@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { RestrictedEditingExceptionBlockCommand, StandardEditingModeEditing } from '../src/index.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -49,15 +51,15 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 	} );
 
 	it( 'is a command', () => {
-		expect( RestrictedEditingExceptionBlockCommand.prototype ).to.be.instanceOf( Command );
-		expect( command ).to.be.instanceOf( Command );
+		expect( RestrictedEditingExceptionBlockCommand.prototype ).toBeInstanceOf( Command );
+		expect( command ).toBeInstanceOf( Command );
 	} );
 
 	describe( 'value', () => {
 		it( 'is false when selection is not in a restricted editing block exception', () => {
 			_setModelData( model, '<paragraph>x[]x</paragraph>' );
 
-			expect( command ).to.have.property( 'value', false );
+			expect( command ).toHaveProperty( 'value', false );
 		} );
 
 		it( 'is false when start of the selection is not in a restricted editing block exception', () => {
@@ -68,7 +70,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				'</restrictedEditingException>'
 			);
 
-			expect( command ).to.have.property( 'value', false );
+			expect( command ).toHaveProperty( 'value', false );
 		} );
 
 		it( 'is false when selection starts in a blockless space', () => {
@@ -76,7 +78,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 			_setModelData( model, 'x[]x' );
 
-			expect( command ).to.have.property( 'value', false );
+			expect( command ).toHaveProperty( 'value', false );
 		} );
 
 		it( 'is true when selection is in a restricted editing block exception', () => {
@@ -86,7 +88,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				'</restrictedEditingException>'
 			);
 
-			expect( command ).to.have.property( 'value', true );
+			expect( command ).toHaveProperty( 'value', true );
 		} );
 
 		it( 'is true when selection starts in a restricted editing block exception', () => {
@@ -97,7 +99,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				'<paragraph>y]y</paragraph>'
 			);
 
-			expect( command ).to.have.property( 'value', true );
+			expect( command ).toHaveProperty( 'value', true );
 		} );
 
 		it( 'is true when selection in deep inside restricted editing block exception', () => {
@@ -110,7 +112,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				'<paragraph>yy</paragraph>'
 			);
 
-			expect( command ).to.have.property( 'value', true );
+			expect( command ).toHaveProperty( 'value', true );
 		} );
 	} );
 
@@ -118,7 +120,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 		it( 'is true when selection is in a block which can be wrapped with restricted editing block exception', () => {
 			_setModelData( model, '<paragraph>x[]x</paragraph>' );
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 		} );
 
 		it( 'is true when selection is in a block which is already in restricted editing block exception', () => {
@@ -128,7 +130,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				'</restrictedEditingException>'
 			);
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 		} );
 
 		it( 'is true when selection is deep in a block which is already in restricted editing block exception', () => {
@@ -140,19 +142,19 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				'</restrictedEditingException>'
 			);
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 		} );
 
 		it( 'is true when selection starts in a block which can be wrapped with restricted editing block exception', () => {
 			_setModelData( model, '<paragraph>x[x</paragraph><widget>y]y</widget>' );
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 		} );
 
 		it( 'is false when selection is in an element which cannot be wrapped with exception (because it cannot be its child)', () => {
 			_setModelData( model, '<widget>x[]x</widget>' );
 
-			expect( command ).to.have.property( 'isEnabled', false );
+			expect( command ).toHaveProperty( 'isEnabled', false );
 		} );
 	} );
 
@@ -168,7 +170,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>abc</paragraph>' +
 					'<restrictedEditingException>' +
 						'<paragraph>x[]x</paragraph>' +
@@ -176,7 +178,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 					'<paragraph>def</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>abc</p>' +
 					'<div class="restricted-editing-exception">' +
 						'<p>x{}x</p>' +
@@ -195,7 +197,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<restrictedEditingException>' +
 						'<heading>a[bc</heading>' +
 						'<paragraph>xx</paragraph>' +
@@ -203,7 +205,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 					'</restrictedEditingException>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<div class="restricted-editing-exception">' +
 						'<h>a{bc</h>' +
 						'<p>xx</p>' +
@@ -226,7 +228,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<restrictedEditingException>' +
 						'<heading>abc</heading>' +
 						'<paragraph>[x]x</paragraph>' +
@@ -236,7 +238,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				);
 
 				// Selection incorrectly trimmed.
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<div class="restricted-editing-exception">' +
 						'<h>abc</h>' +
 						'<p>{x}x</p>' +
@@ -257,14 +259,14 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<restrictedEditingException>' +
 						'<paragraph>abc</paragraph>' +
 						'<paragraph>x[]x</paragraph>' +
 					'</restrictedEditingException>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<div class="restricted-editing-exception">' +
 						'<p>abc</p>' +
 						'<p>x{}x</p>' +
@@ -283,14 +285,14 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<restrictedEditingException>' +
 						'<paragraph>x[]x</paragraph>' +
 						'<paragraph>abc</paragraph>' +
 					'</restrictedEditingException>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<div class="restricted-editing-exception">' +
 						'<p>x{}x</p>' +
 						'<p>abc</p>' +
@@ -312,7 +314,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<restrictedEditingException>' +
 						'<heading>abc</heading>' +
 						'<paragraph>def</paragraph>' +
@@ -322,7 +324,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				);
 
 				// Selection incorrectly trimmed.
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<div class="restricted-editing-exception">' +
 						'<h>abc</h>' +
 						'<p>def</p>' +
@@ -351,7 +353,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>x</paragraph>' +
 					'<restrictedEditingException>' +
 						'<paragraph>abc</paragraph>' +
@@ -364,7 +366,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				);
 
 				// Selection incorrectly trimmed.
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>x</p>' +
 					'<div class="restricted-editing-exception">' +
 						'<p>abc</p>' +
@@ -398,7 +400,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<restrictedEditingException>' +
 						'<paragraph>abc</paragraph>' +
 					'</restrictedEditingException>' +
@@ -430,7 +432,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<restrictedEditingException>' +
 						'<paragraph>abc</paragraph>' +
 					'</restrictedEditingException>' +
@@ -439,6 +441,18 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 						'<paragraph>de]f</paragraph>' +
 					'</restrictedEditingException>'
 				);
+			} );
+
+			it( 'should not merge anything when there are no blocks to wrap', () => {
+				// The command is disabled whenever no selected block can be wrapped, so `_applyException()`
+				// is never reached with an empty list through the command itself. Calling it directly with
+				// no blocks exercises the otherwise-unreachable branch that skips merging neighbouring
+				// exceptions (there is nothing to merge).
+				_setModelData( model, '<paragraph>x[]x</paragraph>' );
+
+				model.change( writer => {
+					expect( () => command._applyException( writer, [] ) ).to.throw( TypeError );
+				} );
 			} );
 
 			it( 'should handle forceValue = true param', () => {
@@ -452,14 +466,14 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock', { forceValue: true } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<restrictedEditingException>' +
 						'<paragraph>x[x</paragraph>' +
 						'<paragraph>d]ef</paragraph>' +
 					'</restrictedEditingException>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<div class="restricted-editing-exception">' +
 						'<p>x{x</p>' +
 						'<p>d}ef</p>' +
@@ -481,13 +495,13 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>abc</paragraph>' +
 					'<paragraph>x[]x</paragraph>' +
 					'<paragraph>def</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>abc</p>' +
 					'<p>x{}x</p>' +
 					'<p>def</p>'
@@ -506,13 +520,13 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>a[bc</paragraph>' +
 					'<paragraph>xx</paragraph>' +
 					'<paragraph>de]f</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>a{bc</p>' +
 					'<p>xx</p>' +
 					'<p>de}f</p>'
@@ -532,7 +546,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>xx</paragraph>' +
 					'<paragraph>a[b]c</paragraph>' +
 					'<restrictedEditingException>' +
@@ -541,7 +555,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 					'<paragraph>yy</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>xx</p>' +
 					'<p>a{b}c</p>' +
 					'<div class="restricted-editing-exception">' +
@@ -563,7 +577,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<restrictedEditingException>' +
 						'<paragraph>abc</paragraph>' +
 					'</restrictedEditingException>' +
@@ -571,7 +585,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 					'<paragraph>de]f</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<div class="restricted-editing-exception">' +
 					'<p>abc</p>' +
 					'</div>' +
@@ -594,7 +608,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>xx</paragraph>' +
 					'<restrictedEditingException>' +
 						'<paragraph>abc</paragraph>' +
@@ -606,7 +620,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 					'<paragraph>xx</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>xx</p>' +
 					'<div class="restricted-editing-exception">' +
 						'<p>abc</p>' +
@@ -635,7 +649,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>xx</paragraph>' +
 					'<restrictedEditingException>' +
 						'<paragraph>abc</paragraph>' +
@@ -649,7 +663,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 					'<paragraph>xx</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>xx</p>' +
 					'<div class="restricted-editing-exception">' +
 						'<p>abc</p>' +
@@ -684,7 +698,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 
 				editor.execute( 'restrictedEditingExceptionBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>a[bc</paragraph>' +
 					'<paragraph>xx</paragraph>' +
 					'<paragraph>def</paragraph>' +
@@ -696,7 +710,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 					'</restrictedEditingException>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>a{bc</p>' +
 					'<p>xx</p>' +
 					'<p>def</p>' +
@@ -721,12 +735,12 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 				editor.execute( 'restrictedEditingExceptionBlock', { forceValue: false } );
 
 				// Incorrect selection.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>a[bc]</paragraph>' +
 					'<paragraph>xx</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>a{bc}</p>' +
 					'<p>xx</p>'
 				);

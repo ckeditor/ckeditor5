@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ButtonView } from '../../src/button/buttonview.js';
 import { IconView } from '../../src/icon/iconview.js';
 import { View } from '../../src/view.js';
@@ -14,8 +14,6 @@ import { ButtonLabelView } from '../../src/index.js';
 describe( 'ButtonView', () => {
 	let locale, view;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
 		locale = { t() {} };
 
@@ -25,39 +23,40 @@ describe( 'ButtonView', () => {
 
 	afterEach( () => {
 		view.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'creates view#children collection', () => {
-			expect( view.children ).to.be.instanceOf( ViewCollection );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'creates #labelView', () => {
-			expect( view.labelView ).to.be.instanceOf( View );
-			expect( view.labelView.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.labelView.element.classList.contains( 'ck-button__label' ) ).to.be.true;
+			expect( view.labelView ).toBeInstanceOf( View );
+			expect( view.labelView.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.labelView.element.classList.contains( 'ck-button__label' ) ).toBe( true );
 		} );
 
 		it( 'creates #keystrokeView', () => {
-			expect( view.keystrokeView ).to.be.instanceOf( View );
+			expect( view.keystrokeView ).toBeInstanceOf( View );
 		} );
 
 		it( 'creates #iconView', () => {
-			expect( view.iconView ).to.be.instanceOf( IconView );
+			expect( view.iconView ).toBeInstanceOf( IconView );
 		} );
 
 		describe( 'label', () => {
 			it( 'uses ButtonLabelView by default', () => {
-				expect( view.labelView ).to.be.instanceOf( ButtonLabelView );
+				expect( view.labelView ).toBeInstanceOf( ButtonLabelView );
 
 				view.set( {
 					labelStyle: 'color: red',
 					label: 'bar'
 				} );
 
-				expect( view.labelView.id ).to.equal( view.element.getAttribute( 'aria-labelledby' ) );
-				expect( view.labelView.element.getAttribute( 'style' ) ).to.equal( 'color: red' );
-				expect( view.labelView.element.textContent ).to.equal( 'bar' );
+				expect( view.labelView.id ).toBe( view.element.getAttribute( 'aria-labelledby' ) );
+				expect( view.labelView.element.getAttribute( 'style' ) ).toBe( 'color: red' );
+				expect( view.labelView.element.textContent ).toBe( 'bar' );
 			} );
 
 			it( 'accepts a custom label instance that implements the same button label interface', () => {
@@ -95,10 +94,10 @@ describe( 'ButtonView', () => {
 
 				view.render();
 
-				expect( view.labelView ).to.be.instanceOf( CustomLabel );
-				expect( view.labelView.element.id ).to.equal( view.element.getAttribute( 'aria-labelledby' ) );
-				expect( view.labelView.element.getAttribute( 'style' ) ).to.equal( 'color: red' );
-				expect( view.labelView.element.textContent ).to.equal( 'bar' );
+				expect( view.labelView ).toBeInstanceOf( CustomLabel );
+				expect( view.labelView.element.id ).toBe( view.element.getAttribute( 'aria-labelledby' ) );
+				expect( view.labelView.element.getAttribute( 'style' ) ).toBe( 'color: red' );
+				expect( view.labelView.element.textContent ).toBe( 'bar' );
 
 				view.destroy();
 			} );
@@ -108,97 +107,97 @@ describe( 'ButtonView', () => {
 	describe( '<button> bindings', () => {
 		describe( 'class', () => {
 			it( 'is set initially', () => {
-				expect( view.element.classList ).to.have.length( 3 );
-				expect( view.element.classList.contains( 'ck' ) ).to.true;
-				expect( view.element.classList.contains( 'ck-button' ) ).to.true;
-				expect( view.element.classList.contains( 'ck-disabled' ) ).to.false;
-				expect( view.element.classList.contains( 'ck-off' ) ).to.true;
+				expect( view.element.classList ).toHaveLength( 3 );
+				expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-button' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-disabled' ) ).toBe( false );
+				expect( view.element.classList.contains( 'ck-off' ) ).toBe( true );
 			} );
 
 			it( 'reacts on view#isEnabled', () => {
 				view.isEnabled = true;
-				expect( view.element.classList.contains( 'ck-disabled' ) ).to.false;
+				expect( view.element.classList.contains( 'ck-disabled' ) ).toBe( false );
 
 				view.isEnabled = false;
-				expect( view.element.classList.contains( 'ck-disabled' ) ).to.true;
+				expect( view.element.classList.contains( 'ck-disabled' ) ).toBe( true );
 			} );
 
 			it( 'reacts on view#isOn', () => {
 				view.isOn = true;
-				expect( view.element.classList.contains( 'ck-on' ) ).to.true;
+				expect( view.element.classList.contains( 'ck-on' ) ).toBe( true );
 
 				view.isOn = false;
-				expect( view.element.classList.contains( 'ck-on' ) ).to.false;
+				expect( view.element.classList.contains( 'ck-on' ) ).toBe( false );
 			} );
 
 			it( 'reacts on view#isVisible', () => {
 				view.isVisible = true;
-				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-hidden' ) ).toBe( false );
 
 				view.isVisible = false;
-				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-hidden' ) ).toBe( true );
 			} );
 
 			it( 'reacts on view#withText', () => {
 				view.withText = true;
-				expect( view.element.classList.contains( 'ck-button_with-text' ) ).to.true;
+				expect( view.element.classList.contains( 'ck-button_with-text' ) ).toBe( true );
 
 				view.withText = false;
-				expect( view.element.classList.contains( 'ck-button_with-text' ) ).to.false;
+				expect( view.element.classList.contains( 'ck-button_with-text' ) ).toBe( false );
 			} );
 
 			it( 'reacts on view#withKeystroke', () => {
 				view.withKeystroke = true;
-				expect( view.element.classList.contains( 'ck-button_with-keystroke' ) ).to.true;
+				expect( view.element.classList.contains( 'ck-button_with-keystroke' ) ).toBe( true );
 
 				view.withKeystroke = false;
-				expect( view.element.classList.contains( 'ck-button_with-keystroke' ) ).to.false;
+				expect( view.element.classList.contains( 'ck-button_with-keystroke' ) ).toBe( false );
 			} );
 
 			it( 'reacts on view#type', () => {
 				// Default value.
-				expect( view.element.getAttribute( 'type' ) ).to.equal( 'button' );
+				expect( view.element.getAttribute( 'type' ) ).toBe( 'button' );
 
 				view.type = 'submit';
-				expect( view.element.getAttribute( 'type' ) ).to.equal( 'submit' );
+				expect( view.element.getAttribute( 'type' ) ).toBe( 'submit' );
 
 				// Default value.
 				view.type = null;
-				expect( view.element.getAttribute( 'type' ) ).to.equal( 'button' );
+				expect( view.element.getAttribute( 'type' ) ).toBe( 'button' );
 			} );
 
 			it( 'reacts on view#class', () => {
 				view.set( 'class', 'foo' );
 
-				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+				expect( view.element.classList.contains( 'foo' ) ).toBe( true );
 			} );
 		} );
 
 		describe( 'labelView', () => {
 			it( 'reacts on view#labelStyle', () => {
-				expect( view.labelView.element.attributes.getNamedItem( 'style' ) ).to.be.null;
+				expect( view.labelView.element.attributes.getNamedItem( 'style' ) ).toBeNull();
 
 				view.labelStyle = 'color: red';
 
-				expect( view.labelView.element.attributes.getNamedItem( 'style' ).value ).to.equal( 'color: red' );
+				expect( view.labelView.element.attributes.getNamedItem( 'style' ).value ).toBe( 'color: red' );
 			} );
 		} );
 
 		describe( 'tooltip', () => {
 			it( 'is initially set', () => {
-				expect( view.element.dataset.ckeTooltipText ).to.be.undefined;
-				expect( view.element.dataset.ckeTooltipPosition ).to.equal( 's' );
+				expect( view.element.dataset.ckeTooltipText ).toBeUndefined();
+				expect( view.element.dataset.ckeTooltipPosition ).toBe( 's' );
 			} );
 
 			it( 'it reacts to #tooltipPosition attribute', () => {
 				view.tooltip = 'foo';
 				view.icon = '<svg></svg>';
 
-				expect( view.tooltipPosition ).to.equal( 's' );
-				expect( view.element.dataset.ckeTooltipPosition ).to.equal( 's' );
+				expect( view.tooltipPosition ).toBe( 's' );
+				expect( view.element.dataset.ckeTooltipPosition ).toBe( 's' );
 
 				view.tooltipPosition = 'n';
-				expect( view.element.dataset.ckeTooltipPosition ).to.equal( 'n' );
+				expect( view.element.dataset.ckeTooltipPosition ).toBe( 'n' );
 			} );
 
 			describe( 'defined as a Boolean', () => {
@@ -207,7 +206,7 @@ describe( 'ButtonView', () => {
 					view.label = 'bar';
 					view.keystroke = 'A';
 
-					expect( view.element.dataset.ckeTooltipText ).to.equal( 'bar (A)' );
+					expect( view.element.dataset.ckeTooltipText ).toBe( 'bar (A)' );
 				} );
 
 				it( 'not render tooltip text when #tooltip value is false', () => {
@@ -215,7 +214,7 @@ describe( 'ButtonView', () => {
 					view.label = 'bar';
 					view.keystroke = 'A';
 
-					expect( view.element.dataset.ckeTooltipText ).to.be.undefined;
+					expect( view.element.dataset.ckeTooltipText ).toBeUndefined();
 				} );
 
 				it( 'reacts to changes in #label and #keystroke', () => {
@@ -223,12 +222,12 @@ describe( 'ButtonView', () => {
 					view.label = 'foo';
 					view.keystroke = 'B';
 
-					expect( view.element.dataset.ckeTooltipText ).to.equal( 'foo (B)' );
+					expect( view.element.dataset.ckeTooltipText ).toBe( 'foo (B)' );
 
 					view.label = 'baz';
 					view.keystroke = false;
 
-					expect( view.element.dataset.ckeTooltipText ).to.equal( 'baz' );
+					expect( view.element.dataset.ckeTooltipText ).toBe( 'baz' );
 				} );
 			} );
 
@@ -238,16 +237,16 @@ describe( 'ButtonView', () => {
 					view.label = 'foo';
 					view.keystroke = 'A';
 
-					expect( view.element.dataset.ckeTooltipText ).to.equal( 'bar' );
+					expect( view.element.dataset.ckeTooltipText ).toBe( 'bar' );
 				} );
 
 				it( 'reacts to changes of #tooltip', () => {
 					view.tooltip = 'bar';
 
-					expect( view.element.dataset.ckeTooltipText ).to.equal( 'bar' );
+					expect( view.element.dataset.ckeTooltipText ).toBe( 'bar' );
 
 					view.tooltip = 'foo';
-					expect( view.element.dataset.ckeTooltipText ).to.equal( 'foo' );
+					expect( view.element.dataset.ckeTooltipText ).toBe( 'foo' );
 				} );
 			} );
 
@@ -257,7 +256,7 @@ describe( 'ButtonView', () => {
 					view.label = 'foo';
 					view.keystroke = 'A';
 
-					expect( view.element.dataset.ckeTooltipText ).to.equal( 'foo - A' );
+					expect( view.element.dataset.ckeTooltipText ).toBe( 'foo - A' );
 				} );
 
 				it( 'reacts to changes of #label and #keystroke', () => {
@@ -265,102 +264,103 @@ describe( 'ButtonView', () => {
 					view.label = 'foo';
 					view.keystroke = 'A';
 
-					expect( view.element.dataset.ckeTooltipText ).to.equal( 'foo - A' );
+					expect( view.element.dataset.ckeTooltipText ).toBe( 'foo - A' );
 
 					view.label = 'bar';
 					view.keystroke = 'B';
 
-					expect( view.element.dataset.ckeTooltipText ).to.equal( 'bar - B' );
+					expect( view.element.dataset.ckeTooltipText ).toBe( 'bar - B' );
 				} );
 			} );
 		} );
 
 		describe( 'role', () => {
 			it( 'is not initially set ', () => {
-				expect( view.element.attributes.role ).to.equal( undefined );
+				expect( view.element.attributes.role ).toBeUndefined();
 			} );
 
 			it( 'reacts on view#role', () => {
 				view.role = 'foo';
 
-				expect( view.element.attributes.role.value ).to.equal( 'foo' );
+				expect( view.element.attributes.role.value ).toBe( 'foo' );
 			} );
 		} );
 
 		describe( 'text', () => {
 			it( 'is not initially set ', () => {
-				expect( view.element.textContent ).to.equal( '' );
+				expect( view.element.textContent ).toBe( '' );
 			} );
 
 			it( 'reacts on view#label', () => {
 				view.label = 'bar';
 
-				expect( view.element.textContent ).to.equal( 'bar' );
+				expect( view.element.textContent ).toBe( 'bar' );
 			} );
 		} );
 
 		describe( 'tabindex', () => {
 			it( 'is initially set ', () => {
-				expect( view.element.attributes.tabindex.value ).to.equal( '-1' );
+				expect( view.element.attributes.tabindex.value ).toBe( '-1' );
 			} );
 
 			it( 'reacts on view#tabindex', () => {
 				view.tabindex = 3;
 
-				expect( view.element.attributes.tabindex.value ).to.equal( '3' );
+				expect( view.element.attributes.tabindex.value ).toBe( '3' );
 			} );
 		} );
 
 		describe( 'aria', () => {
 			it( '-labelledby is set', () => {
 				expect( view.element.attributes[ 'aria-labelledby' ].value )
-					.to.equal( view.element.lastChild.id )
-					.to.match( /^ck-editor__aria-label_\w+$/ );
+					.toBe( view.element.lastChild.id );
+				expect( view.element.attributes[ 'aria-labelledby' ].value )
+					.toMatch( /^ck-editor__aria-label_\w+$/ );
 			} );
 
 			it( '-labelledby reacts to #ariaLabelledBy', () => {
 				view.ariaLabelledBy = 'foo';
 				expect( view.element.attributes[ 'aria-labelledby' ].value )
-					.to.equal( 'foo' );
+					.toBe( 'foo' );
 			} );
 
 			it( '-disabled reacts to #isEnabled', () => {
 				view.isEnabled = true;
-				expect( view.element.attributes[ 'aria-disabled' ] ).to.be.undefined;
+				expect( view.element.attributes[ 'aria-disabled' ] ).toBeUndefined();
 
 				view.isEnabled = false;
-				expect( view.element.attributes[ 'aria-disabled' ].value ).to.equal( 'true' );
+				expect( view.element.attributes[ 'aria-disabled' ].value ).toBe( 'true' );
 			} );
 
 			it( '-pressed has correct default value for toggleable button', () => {
 				view.isToggleable = true;
 				view.isOn = undefined;
-				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'false' );
+				expect( view.element.attributes[ 'aria-pressed' ].value ).toBe( 'false' );
 			} );
 
 			it( '-pressed reacts to #isOn', () => {
 				view.isToggleable = true;
 				view.isOn = true;
 
-				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'true' );
-				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+				expect( view.element.attributes[ 'aria-pressed' ].value ).toBe( 'true' );
+				expect( view.element.hasAttribute( 'aria-checked' ) ).toBe( false );
 
 				view.isOn = false;
 
-				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'false' );
-				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+				expect( view.element.attributes[ 'aria-pressed' ].value ).toBe( 'false' );
+				expect( view.element.hasAttribute( 'aria-checked' ) ).toBe( false );
 			} );
 
 			it( '-pressed is not present for non–toggleable button', () => {
 				view.isOn = true;
 
-				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
-				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+				expect( view.element.hasAttribute( 'aria-pressed' ) ).toBe( false );
+				expect( view.element.hasAttribute( 'aria-checked' ) ).toBe( false );
 
 				view.isOn = false;
 
-				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
-				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+				expect( view.element.hasAttribute( 'aria-pressed' ) ).toBe( false );
+				expect( view.element.hasAttribute( 'aria-checked' ) ).toBe( false );
 			} );
 
 			for ( const role of [ 'radio', 'checkbox', 'option', 'switch', 'menuitemcheckbox', 'menuitemradio' ] ) {
@@ -369,27 +369,27 @@ describe( 'ButtonView', () => {
 					view.isToggleable = true;
 					view.isOn = true;
 
-					expect( view.element.attributes[ 'aria-checked' ].value ).to.equal( 'true' );
-					expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
+					expect( view.element.attributes[ 'aria-checked' ].value ).toBe( 'true' );
+					expect( view.element.hasAttribute( 'aria-pressed' ) ).toBe( false );
 
 					view.isOn = false;
 
-					expect( view.element.attributes[ 'aria-checked' ].value ).to.equal( 'false' );
-					expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
+					expect( view.element.attributes[ 'aria-checked' ].value ).toBe( 'false' );
+					expect( view.element.hasAttribute( 'aria-pressed' ) ).toBe( false );
 				} );
 			}
 
 			it( '-label reacts on #ariaLabel', () => {
 				view.ariaLabel = undefined;
-				expect( view.element.hasAttribute( 'aria-label' ) ).to.be.false;
+				expect( view.element.hasAttribute( 'aria-label' ) ).toBe( false );
 
 				view.ariaLabel = 'Foo';
-				expect( view.element.attributes[ 'aria-label' ].value ).to.equal( 'Foo' );
+				expect( view.element.attributes[ 'aria-label' ].value ).toBe( 'Foo' );
 			} );
 
 			it( '-checked is not present', () => {
 				view.isOn = true;
-				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+				expect( view.element.hasAttribute( 'aria-checked' ) ).toBe( false );
 			} );
 		} );
 
@@ -397,66 +397,66 @@ describe( 'ButtonView', () => {
 			it( 'should not be prevented', () => {
 				const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-				expect( ret ).to.true;
+				expect( ret ).toBe( true );
 			} );
 
 			describe( 'in Safari', () => {
-				let view, stub, clock;
+				let view, clock;
 
 				beforeEach( () => {
-					stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
-					clock = testUtils.sinon.useFakeTimers();
+					vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
+					vi.useFakeTimers();
+					clock = { tick: ms => vi.advanceTimersByTime( ms ) };
 					view = new ButtonView( locale );
 					view.render();
 				} );
 
 				afterEach( () => {
-					stub.resetBehavior();
-					clock.restore();
+					vi.useRealTimers();
 					view.destroy();
 				} );
 
 				it( 'the button is focused', () => {
-					const spy = sinon.spy( view.element, 'focus' );
+					const spy = vi.spyOn( view.element, 'focus' );
 					view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 					clock.tick( 0 );
 
-					expect( spy.callCount ).to.equal( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( 'does not steal focus from other element if the focus already moved', () => {
-					const spy = sinon.spy( view.element, 'focus' );
+					const spy = vi.spyOn( view.element, 'focus' );
 					view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 					view.element.dispatchEvent( new Event( 'mouseup', { cancelable: true } ) );
 
 					document.body.focus();
 					clock.tick( 0 );
 
-					expect( spy.callCount ).to.equal( 0 );
+					expect( spy ).toHaveBeenCalledTimes( 0 );
 				} );
 
 				it( 'the event is not prevented', () => {
 					const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-					expect( ret ).to.true;
+					expect( ret ).toBe( true );
 				} );
 			} );
 		} );
 
 		describe( 'execute event', () => {
 			it( 'triggers view#execute event if button is not disabled', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'execute', spy );
 				view.set( 'isEnabled', true );
 
 				view.element.dispatchEvent( new Event( 'click' ) );
-				sinon.assert.callCount( spy, 1 );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 
 				view.isEnabled = false;
 
 				view.element.dispatchEvent( new Event( 'click' ) );
-				sinon.assert.callCount( spy, 1 );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 	} );
@@ -466,8 +466,8 @@ describe( 'ButtonView', () => {
 			view = new ButtonView( locale );
 			view.render();
 
-			expect( view.element.childNodes ).to.have.length( 1 );
-			expect( view.iconView.element ).to.be.null;
+			expect( view.element.childNodes ).toHaveLength( 1 );
+			expect( view.iconView.element ).toBeNull();
 		} );
 
 		it( 'is added to the #children when view#icon is defined', () => {
@@ -475,15 +475,15 @@ describe( 'ButtonView', () => {
 			view.icon = '<svg></svg>';
 			view.render();
 
-			expect( view.element.childNodes ).to.have.length( 2 );
-			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
+			expect( view.element.childNodes ).toHaveLength( 2 );
+			expect( view.element.childNodes[ 0 ] ).toBe( view.iconView.element );
 
-			expect( view.iconView ).to.instanceOf( IconView );
-			expect( view.iconView.content ).to.equal( '<svg></svg>' );
-			expect( view.iconView.element.classList.contains( 'ck-button__icon' ) ).to.be.true;
+			expect( view.iconView ).toBeInstanceOf( IconView );
+			expect( view.iconView.content ).toBe( '<svg></svg>' );
+			expect( view.iconView.element.classList.contains( 'ck-button__icon' ) ).toBe( true );
 
 			view.icon = '<svg>bar</svg>';
-			expect( view.iconView.content ).to.equal( '<svg>bar</svg>' );
+			expect( view.iconView.content ).toBe( '<svg>bar</svg>' );
 		} );
 
 		it( 'is added to the #children when view#icon is defined after render', () => {
@@ -491,15 +491,15 @@ describe( 'ButtonView', () => {
 			view.render();
 
 			view.icon = '<svg></svg>';
-			expect( view.element.childNodes ).to.have.length( 2 );
-			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
+			expect( view.element.childNodes ).toHaveLength( 2 );
+			expect( view.element.childNodes[ 0 ] ).toBe( view.iconView.element );
 
-			expect( view.iconView ).to.instanceOf( IconView );
-			expect( view.iconView.content ).to.equal( '<svg></svg>' );
-			expect( view.iconView.element.classList.contains( 'ck-button__icon' ) ).to.be.true;
+			expect( view.iconView ).toBeInstanceOf( IconView );
+			expect( view.iconView.content ).toBe( '<svg></svg>' );
+			expect( view.iconView.element.classList.contains( 'ck-button__icon' ) ).toBe( true );
 
 			view.icon = '<svg>bar</svg>';
-			expect( view.iconView.content ).to.equal( '<svg>bar</svg>' );
+			expect( view.iconView.content ).toBe( '<svg>bar</svg>' );
 		} );
 
 		it( 'is removed from the #children when view#icon is removed', () => {
@@ -507,13 +507,13 @@ describe( 'ButtonView', () => {
 			view.icon = '<svg></svg>';
 			view.render();
 
-			expect( view.element.childNodes ).to.have.length( 2 );
-			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
-			expect( view.element.childNodes[ 1 ] ).to.equal( view.labelView.element );
+			expect( view.element.childNodes ).toHaveLength( 2 );
+			expect( view.element.childNodes[ 0 ] ).toBe( view.iconView.element );
+			expect( view.element.childNodes[ 1 ] ).toBe( view.labelView.element );
 
 			view.icon = undefined;
-			expect( view.element.childNodes ).to.have.length( 1 );
-			expect( view.element.childNodes[ 0 ] ).to.equal( view.labelView.element );
+			expect( view.element.childNodes ).toHaveLength( 1 );
+			expect( view.element.childNodes[ 0 ] ).toBe( view.labelView.element );
 		} );
 
 		it( 'is destroyed with the view', () => {
@@ -521,10 +521,10 @@ describe( 'ButtonView', () => {
 			view.icon = '<svg></svg>';
 			view.render();
 
-			const spy = sinon.spy( view.iconView, 'destroy' );
+			const spy = vi.spyOn( view.iconView, 'destroy' );
 
 			view.destroy();
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -533,26 +533,26 @@ describe( 'ButtonView', () => {
 			view = new ButtonView( locale );
 			view.render();
 
-			expect( view.element.childNodes ).to.have.length( 1 );
-			expect( view.keystrokeView.element ).to.be.null;
+			expect( view.element.childNodes ).toHaveLength( 1 );
+			expect( view.keystrokeView.element ).toBeNull();
 		} );
 
 		it( 'is added to the #children when view#withKeystroke is true', () => {
-			testUtils.sinon.stub( env, 'isMac' ).value( false );
+			vi.spyOn( env, 'isMac', 'get' ).mockReturnValue( false );
 
 			view = new ButtonView( locale );
 			view.keystroke = 'Ctrl+A';
 			view.withKeystroke = true;
 			view.render();
 
-			expect( view.element.childNodes ).to.have.length( 2 );
-			expect( view.element.childNodes[ 1 ] ).to.equal( view.keystrokeView.element );
+			expect( view.element.childNodes ).toHaveLength( 2 );
+			expect( view.element.childNodes[ 1 ] ).toBe( view.keystrokeView.element );
 
-			expect( view.keystrokeView.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.keystrokeView.element.classList.contains( 'ck-button__keystroke' ) ).to.be.true;
+			expect( view.keystrokeView.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.keystrokeView.element.classList.contains( 'ck-button__keystroke' ) ).toBe( true );
 
-			expect( view.keystrokeView ).to.instanceOf( View );
-			expect( view.keystrokeView.element.textContent ).to.equal( 'Ctrl+A' );
+			expect( view.keystrokeView ).toBeInstanceOf( View );
+			expect( view.keystrokeView.element.textContent ).toBe( 'Ctrl+A' );
 		} );
 
 		it( 'is omitted in #children when view#keystroke is not defined', () => {
@@ -561,19 +561,19 @@ describe( 'ButtonView', () => {
 			view.withKeystroke = true;
 			view.render();
 
-			expect( view.element.childNodes ).to.have.length( 1 );
-			expect( view.keystrokeView.element ).to.be.null;
+			expect( view.element.childNodes ).toHaveLength( 1 );
+			expect( view.keystrokeView.element ).toBeNull();
 		} );
 
 		it( 'usese fancy keystroke preview on Mac', () => {
-			testUtils.sinon.stub( env, 'isMac' ).value( true );
+			vi.spyOn( env, 'isMac', 'get' ).mockReturnValue( true );
 
 			view = new ButtonView( locale );
 			view.keystroke = 'Ctrl+A';
 			view.withKeystroke = true;
 			view.render();
 
-			expect( view.keystrokeView.element.textContent ).to.equal( '⌘A' );
+			expect( view.keystrokeView.element.textContent ).toBe( '⌘A' );
 		} );
 
 		it( 'is destroyed with the view', () => {
@@ -582,20 +582,20 @@ describe( 'ButtonView', () => {
 			view.withKeystroke = true;
 			view.render();
 
-			const spy = sinon.spy( view.keystrokeView, 'destroy' );
+			const spy = vi.spyOn( view.keystrokeView, 'destroy' );
 
 			view.destroy();
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'focuses the button in DOM', () => {
-			const spy = sinon.spy( view.element, 'focus' );
+			const spy = vi.spyOn( view.element, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 } );

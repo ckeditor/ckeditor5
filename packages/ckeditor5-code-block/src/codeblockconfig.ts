@@ -156,4 +156,3 @@ export interface CodeBlockLanguageDefinition {
 	 */
 	class?: string;
 }
-

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { Editor } from '../../../src/editor/editor.js';
 import { verifyRootElements } from '../../../src/editor/utils/verifyrootelements.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -105,7 +106,7 @@ describe( 'verifyRootElements()', () => {
 			thrownError = err;
 		}
 
-		expect( thrownError.data ).to.deep.equal( {
+		expect( thrownError.data ).toEqual( {
 			rootName: 'secondRoot',
 			elementName: 'nonLimit'
 		} );

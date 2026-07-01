@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-html-embed",
-  "version": "48.2.0",
+  "version": "48.3.0",
   "description": "HTML embed feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -49,11 +49,18 @@
     "@ckeditor/ckeditor5-media-embed": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
+    "@vitest/browser-playwright": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.8",
     "es-toolkit": "1.45.1",
-    "sanitize-html": "^2.13.0"
+    "sanitize-html": "^2.13.0",
+    "vitest": "^4.1.8"
   },
   "scripts": {
-    "build": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs",
+    "coverage": "pnpm run test:headless --coverage",
+    "test": "vitest run",
+    "test:headless": "vitest run --browser.headless",
+    "test:debug": "vitest"
   },
   "files": [
     "dist",

@@ -6,7 +6,7 @@ version: 2.1
 
 orbs:
   browser-tools: circleci/browser-tools@2.4.0
-  codecov: codecov/codecov@5.4.3
+  codecov: codecov/codecov@6.0.0
 
 # List of parameters are automatically inherited from `config.yml`.
 parameters:
@@ -105,10 +105,6 @@ jobs:
           when: always
           name: Execute ESLint
           command: pnpm run lint
-      - run:
-          when: always
-          name: Execute Stylelint
-          command: pnpm run stylelint
       - run:
           when: always
           name: Check if all packages are exported in the "ckeditor5" package

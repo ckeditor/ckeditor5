@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { ListView, MenuBarMenuListView } from '../../src/index.js';
 
@@ -20,11 +21,11 @@ describe( 'MenuBarMenuListView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should inherit from ListView', () => {
-			expect( listView ).to.be.instanceOf( ListView );
+			expect( listView ).toBeInstanceOf( ListView );
 		} );
 
 		it( 'should have #role set', () => {
-			expect( listView.role ).to.equal( 'menu' );
+			expect( listView.role ).toBe( 'menu' );
 		} );
 	} );
 } );

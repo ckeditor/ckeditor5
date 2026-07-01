@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { getCommonAncestor } from '../../src/dom/getcommonancestor.js';
 import { createElement } from '../../src/dom/createelement.js';
 
@@ -29,8 +30,8 @@ describe( 'getParents', () => {
 	} );
 
 	function testParents( a, b, lca ) {
-		expect( getCommonAncestor( a, b ) ).to.equal( lca );
-		expect( getCommonAncestor( b, a ) ).to.equal( lca );
+		expect( getCommonAncestor( a, b ) ).toBe( lca );
+		expect( getCommonAncestor( b, a ) ).toBe( lca );
 	}
 
 	it( 'should return lowest common ancestor of nodes in different tree branches', () => {

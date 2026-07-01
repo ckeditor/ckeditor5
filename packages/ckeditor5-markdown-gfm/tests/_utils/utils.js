@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { expect } from 'vitest';
 import { MarkdownGfmDataProcessor } from '../../src/gfmdataprocessor.js';
 import { _stringifyView, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 
@@ -30,12 +31,12 @@ export function testDataProcessor( markdown, viewString, normalizedMarkdown, opt
 	const html = cleanHtml( _stringifyView( viewFragment ) );
 
 	// Check if view has correct data.
-	expect( JSON.stringify( html ) ).to.equal( JSON.stringify( viewString ) );
+	expect( JSON.stringify( html ) ).toEqual( JSON.stringify( viewString ) );
 
 	// Check if converting back gives the same result.
 	const normalized = typeof normalizedMarkdown !== 'undefined' ? normalizedMarkdown : markdown;
 
-	expect( JSON.stringify( cleanMarkdown( dataProcessor.toData( viewFragment ) ) ) ).to.equal( JSON.stringify( normalized ) );
+	expect( JSON.stringify( cleanMarkdown( dataProcessor.toData( viewFragment ) ) ) ).toEqual( JSON.stringify( normalized ) );
 
 	return viewFragment;
 }

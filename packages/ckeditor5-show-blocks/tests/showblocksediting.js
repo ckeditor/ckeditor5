@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { global } from '@ckeditor/ckeditor5-utils';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -35,20 +36,20 @@ describe( 'ShowBlocksEditing', () => {
 	} );
 
 	it( 'should be correctly named', () => {
-		expect( ShowBlocksEditing.pluginName ).to.equal( 'ShowBlocksEditing' );
+		expect( ShowBlocksEditing.pluginName ).toBe( 'ShowBlocksEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ShowBlocksEditing.isOfficialPlugin ).to.be.true;
+		expect( ShowBlocksEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ShowBlocksEditing.isPremiumPlugin ).to.be.false;
+		expect( ShowBlocksEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should register the "showBlocks" command', () => {
 		const command = editor.commands.get( 'showBlocks' );
 
-		expect( command ).to.be.instanceOf( ShowBlocksCommand );
+		expect( command ).toBeInstanceOf( ShowBlocksCommand );
 	} );
 } );

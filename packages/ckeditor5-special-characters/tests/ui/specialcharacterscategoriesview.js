@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SpecialCharactersCategoriesView } from '../../src/ui/specialcharacterscategoriesview.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { View, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'SpecialCharactersCategoriesView', () => {
 	let view, locale;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = {
@@ -26,22 +24,23 @@ describe( 'SpecialCharactersCategoriesView', () => {
 
 	afterEach( () => {
 		view.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should be an instance of the View', () => {
-			expect( view ).to.be.instanceOf( View );
+			expect( view ).toBeInstanceOf( View );
 		} );
 
 		it( 'creates #dropdownView', () => {
-			expect( view._dropdownView ).to.be.instanceOf( LabeledFieldView );
+			expect( view._dropdownView ).toBeInstanceOf( LabeledFieldView );
 		} );
 
 		it( 'creates #element from template', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-character-categories' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-character-categories' ) ).toBe( true );
 
-			expect( view.element.firstChild.classList.contains( 'ck-labeled-field-view' ) ).to.be.true;
+			expect( view.element.firstChild.classList.contains( 'ck-labeled-field-view' ) ).toBe( true );
 		} );
 	} );
 
@@ -49,10 +48,10 @@ describe( 'SpecialCharactersCategoriesView', () => {
 		it( 'returns the #value of #dropdownView', () => {
 			view._dropdownView.fieldView.isOpen = true;
 
-			expect( view.currentGroupName ).to.equal( 'groupA' );
+			expect( view.currentGroupName ).toBe( 'groupA' );
 
 			view._dropdownView.fieldView.listView.items.last.children.first.fire( 'execute' );
-			expect( view.currentGroupName ).to.equal( 'groupB' );
+			expect( view.currentGroupName ).toBe( 'groupB' );
 		} );
 	} );
 
@@ -65,11 +64,11 @@ describe( 'SpecialCharactersCategoriesView', () => {
 		} );
 
 		it( 'has a default #value', () => {
-			expect( view.currentGroupName ).to.equal( 'groupA' );
+			expect( view.currentGroupName ).toBe( 'groupA' );
 		} );
 
 		it( 'has a right #panelPosition (LTR)', () => {
-			expect( groupDropdownView.panelPosition ).to.equal( 'sw' );
+			expect( groupDropdownView.panelPosition ).toBe( 'sw' );
 		} );
 
 		it( 'has a right #panelPosition (RTL)', () => {
@@ -84,25 +83,25 @@ describe( 'SpecialCharactersCategoriesView', () => {
 			] ) );
 			view.render();
 
-			expect( view._dropdownView.fieldView.panelPosition ).to.equal( 'se' );
+			expect( view._dropdownView.fieldView.panelPosition ).toBe( 'se' );
 
 			view.destroy();
 		} );
 
 		describe( 'buttonView', () => {
 			it( 'binds #label to translation #value', () => {
-				expect( groupDropdownView.buttonView.label ).to.equal( 'labelA' );
+				expect( groupDropdownView.buttonView.label ).toBe( 'labelA' );
 
 				groupDropdownView.listView.items.last.children.first.fire( 'execute' );
-				expect( groupDropdownView.buttonView.label ).to.equal( 'labelB' );
+				expect( groupDropdownView.buttonView.label ).toBe( 'labelB' );
 			} );
 
 			it( 'should be configured by the #dropdownView', () => {
-				expect( groupDropdownView.buttonView.isOn ).to.be.true;
-				expect( groupDropdownView.buttonView.withText ).to.be.true;
-				expect( groupDropdownView.buttonView.tooltip ).to.equal( 'Category' );
-				expect( groupDropdownView.buttonView.ariaLabel ).to.equal( 'Category' );
-				expect( groupDropdownView.buttonView.ariaLabelledBy ).to.be.undefined;
+				expect( groupDropdownView.buttonView.isOn ).toBe( true );
+				expect( groupDropdownView.buttonView.withText ).toBe( true );
+				expect( groupDropdownView.buttonView.tooltip ).toBe( 'Category' );
+				expect( groupDropdownView.buttonView.ariaLabel ).toBe( 'Category' );
+				expect( groupDropdownView.buttonView.ariaLabelledBy ).toBeUndefined();
 			} );
 		} );
 
@@ -110,8 +109,8 @@ describe( 'SpecialCharactersCategoriesView', () => {
 			it( 'should have properties set', () => {
 				const listView = groupDropdownView.listView;
 
-				expect( listView.element.role ).to.equal( 'menu' );
-				expect( listView.element.ariaLabel ).to.equal( 'Category' );
+				expect( listView.element.role ).toBe( 'menu' );
+				expect( listView.element.ariaLabel ).toBe( 'Category' );
 			} );
 		} );
 
@@ -123,7 +122,7 @@ describe( 'SpecialCharactersCategoriesView', () => {
 
 						return { name, label, role, withText };
 					} ) )
-					.to.deep.equal( [
+					.toEqual( [
 						{ name: 'groupA', label: 'labelA', role: 'menuitemradio', withText: true },
 						{ name: 'groupB', label: 'labelB', role: 'menuitemradio', withText: true }
 					] );
@@ -133,11 +132,11 @@ describe( 'SpecialCharactersCategoriesView', () => {
 
 	describe( 'focus()', () => {
 		it( 'focuses the character categories dropdown', () => {
-			const spy = sinon.spy( view._dropdownView, 'focus' );
+			const spy = vi.spyOn( view._dropdownView, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 } );

@@ -3,13 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { count } from '../src/count.js';
 
 describe( 'utils', () => {
 	describe( 'count', () => {
 		it( 'should returns number of editable items', () => {
 			const totalNumber = count( [ 1, 2, 3, 4, 5 ] );
-			expect( totalNumber ).to.equal( 5 );
+			expect( totalNumber ).toBe( 5 );
 		} );
 	} );
 } );

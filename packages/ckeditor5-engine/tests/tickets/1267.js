@@ -9,6 +9,7 @@ import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
 import { _setModelData, _getModelData } from '../../src/dev-utils/model.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe( 'Bug ckeditor5-engine#1267', () => {
 	let element, editor, model;
@@ -42,7 +43,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 			writer.remove( ModelRange._createFromPositionAndShift( new ModelPosition( model.document.getRoot(), [ 1 ] ), 1 ) );
 		} );
 
-		expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar baz[]</paragraph>' );
+		expect( _getModelData( model ) ).toBe( '<paragraph>foo bar baz[]</paragraph>' );
 	} );
 
 	it( 'selection should retain attributes set manually', () => {
@@ -54,7 +55,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 
 		// Execute bold command when selection is inside empty paragraph.
 		editor.execute( 'bold' );
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			'<paragraph>foo bar baz</paragraph>' +
 			'<paragraph>foo bar baz</paragraph>' +
 			'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>'
@@ -66,7 +67,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 		} );
 
 		// Selection attributes set by command should stay as they were.
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			'<paragraph>foo bar baz</paragraph>' +
 			'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>' );
 	} );

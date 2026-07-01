@@ -9,13 +9,11 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Command } from '@ckeditor/ckeditor5-core';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe( 'blockAutoformatEditing', () => {
 	let editor, model, doc, plugin;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -32,11 +30,12 @@ describe( 'blockAutoformatEditing', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'command name', () => {
 		it( 'should run a command when the pattern is matched', () => {
-			const spy = testUtils.sinon.spy();
+			const spy = vi.fn();
 			const testCommand = new TestCommand( editor, spy );
 
 			editor.commands.add( 'testCommand', testCommand );
@@ -49,11 +48,11 @@ describe( 'blockAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should remove found pattern', () => {
-			const spy = testUtils.sinon.spy();
+			const spy = vi.fn();
 			const testCommand = new TestCommand( editor, spy );
 
 			editor.commands.add( 'testCommand', testCommand );
@@ -66,12 +65,12 @@ describe( 'blockAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.calledOnce( spy );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( _getModelData( model ) ).toBe( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should not autoformat if command is disabled', () => {
-			const spy = testUtils.sinon.spy();
+			const spy = vi.fn();
 			const testCommand = new TestCommand( editor, spy );
 
 			testCommand.refresh = function() {
@@ -88,13 +87,13 @@ describe( 'blockAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 
 	describe( 'callback', () => {
 		it( 'should run callback when the pattern is matched', () => {
-			const spy = testUtils.sinon.spy();
+			const spy = vi.fn();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			_setModelData( model, '<paragraph>*[]</paragraph>' );
@@ -102,11 +101,11 @@ describe( 'blockAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should not call the callback when the pattern is matched but the plugin is disabled', () => {
-			const callbackSpy = testUtils.sinon.spy().named( 'callback' );
+			const callbackSpy = vi.fn().mockName( 'callback' );
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, callbackSpy );
 
 			plugin.isEnabled = false;
@@ -116,11 +115,11 @@ describe( 'blockAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( callbackSpy );
+			expect( callbackSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should ignore other delta operations', () => {
-			const spy = testUtils.sinon.spy();
+			const spy = vi.fn();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			_setModelData( model, '<paragraph>*[]</paragraph>' );
@@ -128,13 +127,13 @@ describe( 'blockAutoformatEditing', () => {
 				writer.remove( doc.selection.getFirstRange() );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should ignore a ranged selection', () => {
 			model.schema.extend( '$text', { allowAttributes: 'foo' } );
 
-			const spy = testUtils.sinon.spy();
+			const spy = vi.fn();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			_setModelData( model, '<paragraph>[* ]foo</paragraph>' );
@@ -142,11 +141,11 @@ describe( 'blockAutoformatEditing', () => {
 				writer.setAttribute( 'foo', true, model.document.selection.getFirstRange() );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should stop if there is no text to run matching on', () => {
-			const spy = testUtils.sinon.spy();
+			const spy = vi.fn();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			_setModelData( model, '<paragraph>[]</paragraph>' );
@@ -154,7 +153,7 @@ describe( 'blockAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not call callback when after inline element', () => {
@@ -174,7 +173,7 @@ describe( 'blockAutoformatEditing', () => {
 					view: ( modelElement, { writer } ) => writer.createEmptyElement( 'br' )
 				} );
 
-			const spy = testUtils.sinon.spy();
+			const spy = vi.fn();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			_setModelData( model, '<paragraph>*<softBreak></softBreak>[]</paragraph>' );
@@ -182,11 +181,11 @@ describe( 'blockAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not call callback when typing in the middle of block text', () => {
-			const spy = testUtils.sinon.spy();
+			const spy = vi.fn();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			_setModelData( model, '<paragraph>* foo[]bar</paragraph>' );
@@ -194,7 +193,7 @@ describe( 'blockAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not call callback when after inline element (typing after softBreak in a "matching" paragraph)', () => {
@@ -214,7 +213,7 @@ describe( 'blockAutoformatEditing', () => {
 					view: ( modelElement, { writer } ) => writer.createEmptyElement( 'br' )
 				} );
 
-			const spy = testUtils.sinon.spy();
+			const spy = vi.fn();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			_setModelData( model, '<paragraph>* <softBreak></softBreak>[]</paragraph>' );
@@ -223,7 +222,7 @@ describe( 'blockAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should stop if callback returned false', () => {
@@ -234,12 +233,36 @@ describe( 'blockAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>* []</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>* []</paragraph>' );
+		} );
+
+		it( 'should not restore selection attributes if text is not allowed at the new selection position', () => {
+			model.schema.register( 'imageBlock', {
+				allowIn: '$root',
+				isObject: true
+			} );
+			editor.conversion.elementToElement( { model: 'imageBlock', view: 'img' } );
+
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, () => {
+				editor.model.change( writer => {
+					const imageBlock = writer.createElement( 'imageBlock' );
+
+					writer.append( imageBlock, doc.getRoot() );
+					writer.setSelection( imageBlock, 'on' );
+				} );
+			} );
+
+			_setModelData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( _getModelData( model ) ).toBe( '[<imageBlock></imageBlock>]' );
 		} );
 	} );
 
 	it( 'should ignore non-local batches', () => {
-		const spy = testUtils.sinon.spy();
+		const spy = vi.fn();
 		blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 		_setModelData( model, '<paragraph>*[]</paragraph>' );
@@ -247,11 +270,11 @@ describe( 'blockAutoformatEditing', () => {
 			writer.insertText( ' ', doc.selection.getFirstPosition() );
 		} );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should ignore undo batches', () => {
-		const spy = testUtils.sinon.spy();
+		const spy = vi.fn();
 		blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 		_setModelData( model, '<paragraph>*[]</paragraph>' );
@@ -259,7 +282,7 @@ describe( 'blockAutoformatEditing', () => {
 			writer.insertText( ' ', doc.selection.getFirstPosition() );
 		} );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 } );
 

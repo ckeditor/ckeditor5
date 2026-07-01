@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { View } from '../src/view.js';
 import { Template } from '../src/template.js';
 
@@ -15,7 +15,9 @@ import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/util
 let TestView, view, childA, childB;
 
 describe( 'View', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	afterEach( () => {
 		if ( view.element ) {
@@ -34,12 +36,12 @@ describe( 'View', () => {
 		it( 'defines basic view properties', () => {
 			view = new View();
 
-			expect( view.t ).to.be.undefined;
-			expect( view.locale ).to.be.undefined;
-			expect( view.isRendered ).to.be.false;
-			expect( view.template ).to.be.undefined;
-			expect( view._viewCollections ).to.be.instanceOf( Collection );
-			expect( view._unboundChildren ).to.be.instanceOf( ViewCollection );
+			expect( view.t ).toBeUndefined();
+			expect( view.locale ).toBeUndefined();
+			expect( view.isRendered ).toBe( false );
+			expect( view.template ).toBeUndefined();
+			expect( view._viewCollections ).toBeInstanceOf( Collection );
+			expect( view._unboundChildren ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'defines the locale property and the "t" function', () => {
@@ -47,8 +49,8 @@ describe( 'View', () => {
 
 			view = new View( locale );
 
-			expect( view.locale ).to.equal( locale );
-			expect( view.t ).to.equal( locale.t );
+			expect( view.locale ).toBe( locale );
+			expect( view.t ).toBe( locale.t );
 		} );
 
 		describe( '_viewCollections', () => {
@@ -60,11 +62,11 @@ describe( 'View', () => {
 				const view = new View( locale );
 				const collection = new ViewCollection();
 
-				expect( view.locale ).to.equal( locale );
-				expect( collection.locale ).to.be.undefined;
+				expect( view.locale ).toBe( locale );
+				expect( collection.locale ).toBeUndefined();
 
 				view._viewCollections.add( collection );
-				expect( collection.locale ).to.equal( view.locale );
+				expect( collection.locale ).toBe( view.locale );
 			} );
 		} );
 	} );
@@ -76,16 +78,16 @@ describe( 'View', () => {
 		} );
 
 		it( 'returns an instance of view collection', () => {
-			expect( view.createCollection() ).to.be.instanceOf( ViewCollection );
+			expect( view.createCollection() ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'adds a new collection to the #_viewCollections', () => {
-			expect( view._viewCollections ).to.have.length( 1 );
+			expect( view._viewCollections ).toHaveLength( 1 );
 
 			const collection = view.createCollection();
 
-			expect( view._viewCollections ).to.have.length( 2 );
-			expect( view._viewCollections.get( 1 ) ).to.equal( collection );
+			expect( view._viewCollections ).toHaveLength( 2 );
+			expect( view._viewCollections.get( 1 ) ).toBe( collection );
 		} );
 
 		it( 'accepts initial views', () => {
@@ -94,9 +96,9 @@ describe( 'View', () => {
 
 			const collection = view.createCollection( [ viewA, viewB ] );
 
-			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 0 ) ).to.equal( viewA );
-			expect( collection.get( 1 ) ).to.equal( viewB );
+			expect( collection ).toHaveLength( 2 );
+			expect( collection.get( 0 ) ).toBe( viewA );
+			expect( collection.get( 1 ) ).toBe( viewB );
 		} );
 	} );
 
@@ -107,20 +109,20 @@ describe( 'View', () => {
 		} );
 
 		it( 'should add a single view to #_unboundChildren', () => {
-			expect( view._unboundChildren ).to.have.length( 0 );
+			expect( view._unboundChildren ).toHaveLength( 0 );
 
 			const child = new View();
 
 			view.registerChild( child );
-			expect( view._unboundChildren ).to.have.length( 1 );
-			expect( view._unboundChildren.get( 0 ) ).to.equal( child );
+			expect( view._unboundChildren ).toHaveLength( 1 );
+			expect( view._unboundChildren.get( 0 ) ).toBe( child );
 		} );
 
 		it( 'should support iterables', () => {
-			expect( view._unboundChildren ).to.have.length( 0 );
+			expect( view._unboundChildren ).toHaveLength( 0 );
 
 			view.registerChild( [ new View(), new View(), new View() ] );
-			expect( view._unboundChildren ).to.have.length( 3 );
+			expect( view._unboundChildren ).toHaveLength( 3 );
 		} );
 	} );
 
@@ -136,11 +138,11 @@ describe( 'View', () => {
 
 			view.registerChild( child1 );
 			view.registerChild( child2 );
-			expect( view._unboundChildren ).to.have.length( 2 );
+			expect( view._unboundChildren ).toHaveLength( 2 );
 
 			view.deregisterChild( child2 );
-			expect( view._unboundChildren ).to.have.length( 1 );
-			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
+			expect( view._unboundChildren ).toHaveLength( 1 );
+			expect( view._unboundChildren.get( 0 ) ).toBe( child1 );
 		} );
 
 		it( 'should support iterables', () => {
@@ -149,11 +151,11 @@ describe( 'View', () => {
 			const child3 = new View();
 
 			view.registerChild( [ child1, child2, child3 ] );
-			expect( view._unboundChildren ).to.have.length( 3 );
+			expect( view._unboundChildren ).toHaveLength( 3 );
 
 			view.deregisterChild( [ child2, child3 ] );
-			expect( view._unboundChildren ).to.have.length( 1 );
-			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
+			expect( view._unboundChildren ).toHaveLength( 1 );
+			expect( view._unboundChildren.get( 0 ) ).toBe( child1 );
 		} );
 	} );
 
@@ -175,7 +177,7 @@ describe( 'View', () => {
 
 			view.render();
 
-			expect( normalizeHtml( view.element.outerHTML ) ).to.equal( '<div class="bar"></div>' );
+			expect( normalizeHtml( view.element.outerHTML ) ).toBe( '<div class="bar"></div>' );
 		} );
 	} );
 
@@ -200,21 +202,21 @@ describe( 'View', () => {
 
 			view.render();
 
-			expect( normalizeHtml( view.element.outerHTML ) ).to.equal( '<div class="bar"></div>' );
+			expect( normalizeHtml( view.element.outerHTML ) ).toBe( '<div class="bar"></div>' );
 		} );
 	} );
 
 	describe( 'render()', () => {
-		it( 'is decorated', done => {
+		it( 'is decorated', () => new Promise( done => {
 			const view = new View();
 
 			view.on( 'render', () => {
-				expect( view.isRendered ).to.be.true;
+				expect( view.isRendered ).toBe( true );
 				done();
 			} );
 
 			view.render();
-		} );
+		} ) );
 
 		it( 'should throw if already rendered', () => {
 			const view = new View();
@@ -237,10 +239,10 @@ describe( 'View', () => {
 				tag: 'div'
 			} );
 
-			expect( view.isRendered ).to.be.false;
+			expect( view.isRendered ).toBe( false );
 
 			view.render();
-			expect( view.isRendered ).to.be.true;
+			expect( view.isRendered ).toBe( true );
 		} );
 	} );
 
@@ -251,13 +253,13 @@ describe( 'View', () => {
 		} );
 
 		it( 'returns a shorthand for Template binding', () => {
-			expect( view.bindTemplate.to ).to.be.a( 'function' );
-			expect( view.bindTemplate.if ).to.be.a( 'function' );
+			expect( view.bindTemplate.to ).toBeTypeOf( 'function' );
+			expect( view.bindTemplate.if ).toBeTypeOf( 'function' );
 
 			const binding = view.bindTemplate.to( 'a' );
 
-			expect( binding.observable ).to.equal( view );
-			expect( binding.emitter ).to.equal( view );
+			expect( binding.observable ).toBe( view );
+			expect( binding.emitter ).toBe( view );
 		} );
 	} );
 
@@ -265,8 +267,8 @@ describe( 'View', () => {
 		beforeEach( createViewInstanceWithTemplate );
 
 		it( 'invokes out of #template', () => {
-			expect( view.element ).to.be.an.instanceof( HTMLElement );
-			expect( view.element.nodeName ).to.equal( 'A' );
+			expect( view.element ).toBeInstanceOf( HTMLElement );
+			expect( view.element.nodeName ).toBe( 'A' );
 		} );
 
 		it( 'can be explicitly declared', () => {
@@ -280,7 +282,7 @@ describe( 'View', () => {
 
 			const view = new CustomView();
 
-			expect( view.element ).to.be.an.instanceof( HTMLElement );
+			expect( view.element ).toBeInstanceOf( HTMLElement );
 		} );
 
 		it( 'is null when there is no template', () => {
@@ -288,7 +290,7 @@ describe( 'View', () => {
 
 			view.render();
 
-			expect( view.element ).to.be.null;
+			expect( view.element ).toBeNull();
 		} );
 
 		it( 'registers child views found in the template', () => {
@@ -318,14 +320,14 @@ describe( 'View', () => {
 				]
 			} );
 
-			expect( view._unboundChildren ).to.have.length( 0 );
+			expect( view._unboundChildren ).toHaveLength( 0 );
 
 			view.render();
 
-			expect( view._unboundChildren ).to.have.length( 3 );
-			expect( view._unboundChildren.get( 0 ) ).to.equal( viewA );
-			expect( view._unboundChildren.get( 1 ) ).to.equal( viewB );
-			expect( view._unboundChildren.get( 2 ) ).to.equal( viewC );
+			expect( view._unboundChildren ).toHaveLength( 3 );
+			expect( view._unboundChildren.get( 0 ) ).toBe( viewA );
+			expect( view._unboundChildren.get( 1 ) ).toBe( viewB );
+			expect( view._unboundChildren.get( 2 ) ).toBe( viewC );
 		} );
 	} );
 
@@ -337,38 +339,38 @@ describe( 'View', () => {
 				view.destroy();
 				view.destroy();
 				view.destroy();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should not touch the basic properties', () => {
 			view.destroy();
 
-			expect( view.element ).to.be.an.instanceof( HTMLElement );
-			expect( view.template ).to.be.an.instanceof( Template );
-			expect( view.locale ).to.be.an( 'object' );
-			expect( view.locale.t ).to.be.a( 'function' );
+			expect( view.element ).toBeInstanceOf( HTMLElement );
+			expect( view.template ).toBeInstanceOf( Template );
+			expect( view.locale ).toBeTypeOf( 'object' );
+			expect( view.locale.t ).toBeTypeOf( 'function' );
 
-			expect( view._viewCollections ).to.be.instanceOf( Collection );
-			expect( view._unboundChildren ).to.be.instanceOf( ViewCollection );
+			expect( view._viewCollections ).toBeInstanceOf( Collection );
+			expect( view._unboundChildren ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should not clear the #_unboundChildren', () => {
 			const cached = view._unboundChildren;
 
 			view.registerChild( [ new View(), new View() ] );
-			expect( cached ).to.have.length( 4 );
+			expect( cached ).toHaveLength( 4 );
 
 			view.destroy();
-			expect( cached ).to.have.length( 4 );
+			expect( cached ).toHaveLength( 4 );
 		} );
 
 		it( 'should not clear the #_viewCollections', () => {
 			const cached = view._viewCollections;
 
-			expect( cached ).to.have.length( 1 );
+			expect( cached ).toHaveLength( 1 );
 
 			view.destroy();
-			expect( cached ).to.have.length( 1 );
+			expect( cached ).toHaveLength( 1 );
 		} );
 
 		it( 'leaves the #element in DOM', () => {
@@ -378,20 +380,20 @@ describe( 'View', () => {
 			parentEl.appendChild( view.element );
 
 			view.destroy();
-			expect( elRef.parentNode ).to.equal( parentEl );
+			expect( elRef.parentNode ).toBe( parentEl );
 		} );
 
 		it( 'calls destroy() on all view#_viewCollections', () => {
 			const collectionA = view.createCollection();
 			const collectionB = view.createCollection();
 
-			const spyA = testUtils.sinon.spy( collectionA, 'destroy' );
-			const spyB = testUtils.sinon.spy( collectionB, 'destroy' );
+			const spyA = vi.spyOn( collectionA, 'destroy' );
+			const spyB = vi.spyOn( collectionB, 'destroy' );
 
 			view.destroy();
-			sinon.assert.calledOnce( spyA );
-			sinon.assert.calledOnce( spyB );
-			sinon.assert.callOrder( spyA, spyB );
+			expect( spyA ).toHaveBeenCalledOnce();
+			expect( spyB ).toHaveBeenCalledOnce();
+			expect( spyA.mock.invocationCallOrder[ 0 ] ).toBeLessThan( spyB.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		it( 'destroy a template–less view', () => {
@@ -399,7 +401,7 @@ describe( 'View', () => {
 
 			expect( () => {
 				view.destroy();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
 } );

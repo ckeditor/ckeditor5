@@ -8,15 +8,17 @@ import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData } from '../../src/dev-utils/model.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { stringifyBlocks } from '../model/_utils/utils.js';
 
 describe( '#984', () => {
 	let model, doc, root, liveRange;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -65,19 +67,19 @@ describe( '#984', () => {
 	it( 'does not return the last block if none of its content is selected', () => {
 		_setModelData( model, '<p>[a</p><p>b</p><p>]c</p>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b' ] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p#a', 'p#b' ] );
 	} );
 
 	it( 'returns no blocks if selection spanning two blocks has no content', () => {
 		_setModelData( model, '<p>a</p><h>b[</h><p>]c</p><p>d</p>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [] );
 	} );
 
 	it( 'does not return the last block if none of its content is selected (nested case)', () => {
 		_setModelData( model, '<p>[a</p><nestedBlock><nestedBlock>]b</nestedBlock></nestedBlock>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p#a' ] );
 	} );
 
 	// As a super edge case, we can live with this behavior as I don't even know what we could expect here
@@ -85,20 +87,20 @@ describe( '#984', () => {
 	it( 'does not return the last block if none of its content is selected (nested case, wrapper with a content)', () => {
 		_setModelData( model, '<p>[a</p><nestedBlock>b<nestedBlock>]c</nestedBlock></nestedBlock>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p#a' ] );
 	} );
 
 	it( 'returns the last block if at least one of its child nodes is selected', () => {
 		_setModelData( model, '<p>[a</p><p>b</p><p><imageBlock></imageBlock>]c</p>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p#a', 'p#b', 'p#c' ] );
 	} );
 
 	// I needed these last 2 cases to justify the use of isTouching() instead of simple `offset == 0` check.
 	it( 'returns the last block if at least one of its child nodes is selected (end in an inline element)', () => {
 		_setModelData( model, '<p>[a</p><p>b</p><p><imageBlock>x]</imageBlock>c</p>' );
 
-		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
+		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p#a', 'p#b', 'p#c' ] );
 	} );
 
 	it(
@@ -107,7 +109,7 @@ describe( '#984', () => {
 		() => {
 			_setModelData( model, '<p>[a</p><p>b</p><p><imageBlock>]x</imageBlock>c</p>' );
 
-			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).toEqual( [ 'p#a', 'p#b' ] );
 		}
 	);
 } );

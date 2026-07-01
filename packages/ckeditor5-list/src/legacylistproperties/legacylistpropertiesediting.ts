@@ -7,7 +7,7 @@
  * @module list/legacylistproperties/legacylistpropertiesediting
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import type {
 	DifferItem,
@@ -46,8 +46,8 @@ export class LegacyListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ LegacyListEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ LegacyListEditing ]> {
+		return [ LegacyListEditing ];
 	}
 
 	/**

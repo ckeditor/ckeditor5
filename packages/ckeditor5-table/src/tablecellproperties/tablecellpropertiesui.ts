@@ -7,7 +7,7 @@
  * @module table/tablecellproperties/tablecellpropertiesui
  */
 
-import { Plugin, type Editor, type Command } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type Command, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { IconTableCellProperties } from '@ckeditor/ckeditor5-icons';
 import {
 	ButtonView,
@@ -108,8 +108,8 @@ export class TableCellPropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ContextualBalloon ] as const;
+	public static get requires(): PluginDependenciesOf<[ ContextualBalloon ]> {
+		return [ ContextualBalloon ];
 	}
 
 	/**

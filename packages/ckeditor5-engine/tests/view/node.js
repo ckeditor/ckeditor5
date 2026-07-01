@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
+
 import { ViewElement } from '../../src/view/element.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewNode } from '../../src/view/node.js';
@@ -20,7 +22,7 @@ describe( 'Node', () => {
 		one, two, three,
 		charB, charA, charR, img;
 
-	before( () => {
+	beforeAll( () => {
 		document = new ViewDocument( new StylesProcessor() );
 
 		charB = new ViewText( document, 'b' );
@@ -43,90 +45,90 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return true for node', () => {
-			expect( node.is( 'node' ) ).to.be.true;
-			expect( node.is( 'view:node' ) ).to.be.true;
+			expect( node.is( 'node' ) ).toBe( true );
+			expect( node.is( 'view:node' ) ).toBe( true );
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( node.is( 'rootElement' ) ).to.be.false;
-			expect( node.is( 'containerElement' ) ).to.be.false;
-			expect( node.is( 'element' ) ).to.be.false;
-			expect( node.is( 'element', 'p' ) ).to.be.false;
-			expect( node.is( '$text' ) ).to.be.false;
-			expect( node.is( '$textProxy' ) ).to.be.false;
-			expect( node.is( 'attributeElement' ) ).to.be.false;
-			expect( node.is( 'uiElement' ) ).to.be.false;
-			expect( node.is( 'emptyElement' ) ).to.be.false;
-			expect( node.is( 'documentFragment' ) ).to.be.false;
+			expect( node.is( 'rootElement' ) ).toBe( false );
+			expect( node.is( 'containerElement' ) ).toBe( false );
+			expect( node.is( 'element' ) ).toBe( false );
+			expect( node.is( 'element', 'p' ) ).toBe( false );
+			expect( node.is( '$text' ) ).toBe( false );
+			expect( node.is( '$textProxy' ) ).toBe( false );
+			expect( node.is( 'attributeElement' ) ).toBe( false );
+			expect( node.is( 'uiElement' ) ).toBe( false );
+			expect( node.is( 'emptyElement' ) ).toBe( false );
+			expect( node.is( 'documentFragment' ) ).toBe( false );
 		} );
 	} );
 
 	describe( 'getNextSibling/getPreviousSibling()', () => {
 		it( 'should return next sibling', () => {
-			expect( root.nextSibling ).to.be.null;
+			expect( root.nextSibling ).toBeNull();
 
-			expect( one.nextSibling ).to.equal( two );
-			expect( two.nextSibling ).to.equal( three );
-			expect( three.nextSibling ).to.be.null;
+			expect( one.nextSibling ).toBe( two );
+			expect( two.nextSibling ).toBe( three );
+			expect( three.nextSibling ).toBeNull();
 
-			expect( charB.nextSibling ).to.equal( charA );
-			expect( charA.nextSibling ).to.equal( img );
-			expect( img.nextSibling ).to.equal( charR );
-			expect( charR.nextSibling ).to.be.null;
+			expect( charB.nextSibling ).toBe( charA );
+			expect( charA.nextSibling ).toBe( img );
+			expect( img.nextSibling ).toBe( charR );
+			expect( charR.nextSibling ).toBeNull();
 		} );
 
 		it( 'should return previous sibling', () => {
-			expect( root.previousSibling ).to.be.null;
+			expect( root.previousSibling ).toBeNull();
 
-			expect( one.previousSibling ).to.be.null;
-			expect( two.previousSibling ).to.equal( one );
-			expect( three.previousSibling ).to.equal( two );
+			expect( one.previousSibling ).toBeNull();
+			expect( two.previousSibling ).toBe( one );
+			expect( three.previousSibling ).toBe( two );
 
-			expect( charB.previousSibling ).to.be.null;
-			expect( charA.previousSibling ).to.equal( charB );
-			expect( img.previousSibling ).to.equal( charA );
-			expect( charR.previousSibling ).to.equal( img );
+			expect( charB.previousSibling ).toBeNull();
+			expect( charA.previousSibling ).toBe( charB );
+			expect( img.previousSibling ).toBe( charA );
+			expect( charR.previousSibling ).toBe( img );
 		} );
 	} );
 
 	describe( 'getAncestors()', () => {
 		it( 'should return empty array for node without ancestors', () => {
 			const result = root.getAncestors();
-			expect( result ).to.be.an( 'array' );
-			expect( result.length ).to.equal( 0 );
+			expect( Array.isArray( result ) ).toBe( true );
+			expect( result.length ).toBe( 0 );
 		} );
 
 		it( 'should return array including node itself if requested', () => {
 			const result = root.getAncestors( { includeSelf: true } );
-			expect( result ).to.be.an( 'array' );
-			expect( result.length ).to.equal( 1 );
-			expect( result[ 0 ] ).to.equal( root );
+			expect( Array.isArray( result ) ).toBe( true );
+			expect( result.length ).toBe( 1 );
+			expect( result[ 0 ] ).toBe( root );
 		} );
 
 		it( 'should return array of ancestors', () => {
 			const result = charR.getAncestors();
-			expect( result.length ).to.equal( 2 );
-			expect( result[ 0 ] ).to.equal( root );
-			expect( result[ 1 ] ).to.equal( two );
+			expect( result.length ).toBe( 2 );
+			expect( result[ 0 ] ).toBe( root );
+			expect( result[ 1 ] ).toBe( two );
 
 			const result2 = charR.getAncestors( { includeSelf: true } );
-			expect( result2.length ).to.equal( 3 );
-			expect( result2[ 0 ] ).to.equal( root );
-			expect( result2[ 1 ] ).to.equal( two );
-			expect( result2[ 2 ] ).to.equal( charR );
+			expect( result2.length ).toBe( 3 );
+			expect( result2[ 0 ] ).toBe( root );
+			expect( result2[ 1 ] ).toBe( two );
+			expect( result2[ 2 ] ).toBe( charR );
 		} );
 
 		it( 'should return array of ancestors starting from parent', () => {
 			const result = charR.getAncestors( { parentFirst: true } );
-			expect( result.length ).to.equal( 2 );
-			expect( result[ 0 ] ).to.equal( two );
-			expect( result[ 1 ] ).to.equal( root );
+			expect( result.length ).toBe( 2 );
+			expect( result[ 0 ] ).toBe( two );
+			expect( result[ 1 ] ).toBe( root );
 
 			const result2 = charR.getAncestors( { includeSelf: true, parentFirst: true } );
-			expect( result2.length ).to.equal( 3 );
-			expect( result2[ 2 ] ).to.equal( root );
-			expect( result2[ 1 ] ).to.equal( two );
-			expect( result2[ 0 ] ).to.equal( charR );
+			expect( result2.length ).toBe( 3 );
+			expect( result2[ 2 ] ).toBe( root );
+			expect( result2[ 1 ] ).toBe( two );
+			expect( result2[ 0 ] ).toBe( charR );
 		} );
 
 		it( 'should return ancestors including DocumentFragment', () => {
@@ -134,50 +136,50 @@ describe( 'Node', () => {
 			const result = img.getAncestors();
 			root._remove();
 
-			expect( result.length ).to.equal( 3 );
-			expect( result[ 0 ] ).to.equal( fragment );
-			expect( result[ 1 ] ).to.equal( root );
-			expect( result[ 2 ] ).to.equal( two );
+			expect( result.length ).toBe( 3 );
+			expect( result[ 0 ] ).toBe( fragment );
+			expect( result[ 1 ] ).toBe( root );
+			expect( result[ 2 ] ).toBe( two );
 		} );
 	} );
 
 	describe( 'getCommonAncestor()', () => {
 		it( 'should return the parent element for the same node', () => {
-			expect( img.getCommonAncestor( img ) ).to.equal( two );
+			expect( img.getCommonAncestor( img ) ).toBe( two );
 		} );
 
 		it( 'should return the given node for the same node if includeSelf is used', () => {
-			expect( img.getCommonAncestor( img, { includeSelf: true } ) ).to.equal( img );
+			expect( img.getCommonAncestor( img, { includeSelf: true } ) ).toBe( img );
 		} );
 
 		it( 'should return null for detached subtrees', () => {
 			const detached = new ViewElement( document, 'foo' );
 
-			expect( img.getCommonAncestor( detached ) ).to.be.null;
-			expect( detached.getCommonAncestor( img ) ).to.be.null;
+			expect( img.getCommonAncestor( detached ) ).toBeNull();
+			expect( detached.getCommonAncestor( img ) ).toBeNull();
 
-			expect( img.getCommonAncestor( detached, { includeSelf: true } ) ).to.be.null;
-			expect( detached.getCommonAncestor( img, { includeSelf: true } ) ).to.be.null;
+			expect( img.getCommonAncestor( detached, { includeSelf: true } ) ).toBeNull();
+			expect( detached.getCommonAncestor( img, { includeSelf: true } ) ).toBeNull();
 		} );
 
 		it( 'should return null when one of the nodes is a tree root itself', () => {
-			expect( root.getCommonAncestor( img ) ).to.be.null;
-			expect( img.getCommonAncestor( root ) ).to.be.null;
-			expect( root.getCommonAncestor( root ) ).to.be.null;
+			expect( root.getCommonAncestor( img ) ).toBeNull();
+			expect( img.getCommonAncestor( root ) ).toBeNull();
+			expect( root.getCommonAncestor( root ) ).toBeNull();
 		} );
 
 		it( 'should return root when one of the nodes is a tree root itself and includeSelf is used', () => {
-			expect( root.getCommonAncestor( img, { includeSelf: true } ) ).to.equal( root );
-			expect( img.getCommonAncestor( root, { includeSelf: true } ) ).to.equal( root );
-			expect( root.getCommonAncestor( root, { includeSelf: true } ) ).to.equal( root );
+			expect( root.getCommonAncestor( img, { includeSelf: true } ) ).toBe( root );
+			expect( img.getCommonAncestor( root, { includeSelf: true } ) ).toBe( root );
+			expect( root.getCommonAncestor( root, { includeSelf: true } ) ).toBe( root );
 		} );
 
 		it( 'should return parent of the nodes at the same level', () => {
-			expect( img.getCommonAncestor( charA ), 1 ).to.equal( two );
-			expect( charB.getCommonAncestor( charA ), 2 ).to.equal( two );
+			expect( img.getCommonAncestor( charA ), 1 ).toBe( two );
+			expect( charB.getCommonAncestor( charA ), 2 ).toBe( two );
 
-			expect( img.getCommonAncestor( charA, { includeSelf: true } ), 3 ).to.equal( two );
-			expect( charB.getCommonAncestor( charA, { includeSelf: true } ), 4 ).to.equal( two );
+			expect( img.getCommonAncestor( charA, { includeSelf: true } ), 3 ).toBe( two );
+			expect( charB.getCommonAncestor( charA, { includeSelf: true } ), 4 ).toBe( two );
 		} );
 
 		it( 'should return proper element for nodes in different branches and on different levels', () => {
@@ -192,19 +194,19 @@ describe( 'Node', () => {
 
 			// <a><b><c>foo<d>bar</d></c></b><e>bom</e></a>
 
-			expect( bar.getCommonAncestor( foo ), 1 ).to.equal( c );
-			expect( foo.getCommonAncestor( d ), 2 ).to.equal( c );
-			expect( c.getCommonAncestor( b ), 3 ).to.equal( a );
-			expect( bom.getCommonAncestor( d ), 4 ).to.equal( a );
-			expect( b.getCommonAncestor( bom ), 5 ).to.equal( a );
-			expect( b.getCommonAncestor( bar ), 6 ).to.equal( a );
+			expect( bar.getCommonAncestor( foo ), 1 ).toBe( c );
+			expect( foo.getCommonAncestor( d ), 2 ).toBe( c );
+			expect( c.getCommonAncestor( b ), 3 ).toBe( a );
+			expect( bom.getCommonAncestor( d ), 4 ).toBe( a );
+			expect( b.getCommonAncestor( bom ), 5 ).toBe( a );
+			expect( b.getCommonAncestor( bar ), 6 ).toBe( a );
 
-			expect( bar.getCommonAncestor( foo, { includeSelf: true } ), 11 ).to.equal( c );
-			expect( foo.getCommonAncestor( d, { includeSelf: true } ), 12 ).to.equal( c );
-			expect( c.getCommonAncestor( b, { includeSelf: true } ), 13 ).to.equal( b );
-			expect( bom.getCommonAncestor( d, { includeSelf: true } ), 14 ).to.equal( a );
-			expect( b.getCommonAncestor( bom, { includeSelf: true } ), 15 ).to.equal( a );
-			expect( b.getCommonAncestor( bar, { includeSelf: true } ), 16 ).to.equal( b );
+			expect( bar.getCommonAncestor( foo, { includeSelf: true } ), 11 ).toBe( c );
+			expect( foo.getCommonAncestor( d, { includeSelf: true } ), 12 ).toBe( c );
+			expect( c.getCommonAncestor( b, { includeSelf: true } ), 13 ).toBe( b );
+			expect( bom.getCommonAncestor( d, { includeSelf: true } ), 14 ).toBe( a );
+			expect( b.getCommonAncestor( bom, { includeSelf: true } ), 15 ).toBe( a );
+			expect( b.getCommonAncestor( bar, { includeSelf: true } ), 16 ).toBe( b );
 		} );
 
 		it( 'should return document fragment', () => {
@@ -212,24 +214,24 @@ describe( 'Node', () => {
 			const bar = new ViewText( document, 'bar' );
 			const df = new ViewDocumentFragment( document, [ foo, bar ] );
 
-			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
+			expect( foo.getCommonAncestor( bar ) ).toBe( df );
 		} );
 	} );
 
 	describe( '#index getter', () => {
 		it( 'should return null if the parent is null', () => {
-			expect( root.index ).to.be.null;
+			expect( root.index ).toBeNull();
 		} );
 
 		it( 'should return index in the parent', () => {
-			expect( one.index ).to.equal( 0 );
-			expect( two.index ).to.equal( 1 );
-			expect( three.index ).to.equal( 2 );
+			expect( one.index ).toBe( 0 );
+			expect( two.index ).toBe( 1 );
+			expect( three.index ).toBe( 2 );
 
-			expect( charB.index ).to.equal( 0 );
-			expect( charA.index ).to.equal( 1 );
-			expect( img.index ).to.equal( 2 );
-			expect( charR.index ).to.equal( 3 );
+			expect( charB.index ).toBe( 0 );
+			expect( charA.index ).toBe( 1 );
+			expect( img.index ).toBe( 2 );
+			expect( charR.index ).toBe( 3 );
 		} );
 
 		it( 'should throw an error if parent does not contain element', () => {
@@ -246,15 +248,15 @@ describe( 'Node', () => {
 
 	describe( 'getPath()', () => {
 		it( 'should return empty array is the element is the root', () => {
-			expect( root.getPath() ).to.deep.equal( [] );
+			expect( root.getPath() ).toEqual( [] );
 		} );
 
 		it( 'should return array with indices of given element and its ancestors starting from top-most one', () => {
-			expect( one.getPath() ).to.deep.equal( [ 0 ] );
-			expect( two.getPath() ).to.deep.equal( [ 1 ] );
-			expect( img.getPath() ).to.deep.equal( [ 1, 2 ] );
-			expect( charR.getPath() ).to.deep.equal( [ 1, 3 ] );
-			expect( three.getPath() ).to.deep.equal( [ 2 ] );
+			expect( one.getPath() ).toEqual( [ 0 ] );
+			expect( two.getPath() ).toEqual( [ 1 ] );
+			expect( img.getPath() ).toEqual( [ 1, 2 ] );
+			expect( charR.getPath() ).toEqual( [ 1, 3 ] );
+			expect( three.getPath() ).toEqual( [ 2 ] );
 		} );
 	} );
 
@@ -262,7 +264,7 @@ describe( 'Node', () => {
 		it( 'should return this element if it has no parent', () => {
 			const child = new ViewElement( document, 'p' );
 
-			expect( child.root ).to.equal( child );
+			expect( child.root ).toBe( child );
 		} );
 
 		it( 'should return root element', () => {
@@ -271,37 +273,37 @@ describe( 'Node', () => {
 
 			child.parent = parent;
 
-			expect( parent.root ).to.equal( parent );
-			expect( child.root ).to.equal( parent );
+			expect( parent.root ).toBe( parent );
+			expect( child.root ).toBe( parent );
 		} );
 	} );
 
 	describe( 'isBefore()', () => {
 		// Model is: <root><one></one><two>ba<img></img>r</two><three></three>
 		it( 'should return true if the element is before given element', () => {
-			expect( one.isBefore( two ) ).to.be.true;
-			expect( one.isBefore( img ) ).to.be.true;
+			expect( one.isBefore( two ) ).toBe( true );
+			expect( one.isBefore( img ) ).toBe( true );
 
-			expect( two.isBefore( charB ) ).to.be.true;
-			expect( two.isBefore( charR ) ).to.be.true;
-			expect( two.isBefore( three ) ).to.be.true;
+			expect( two.isBefore( charB ) ).toBe( true );
+			expect( two.isBefore( charR ) ).toBe( true );
+			expect( two.isBefore( three ) ).toBe( true );
 
-			expect( root.isBefore( one ) ).to.be.true;
+			expect( root.isBefore( one ) ).toBe( true );
 		} );
 
 		it( 'should return false if the element is after given element', () => {
-			expect( two.isBefore( one ) ).to.be.false;
-			expect( img.isBefore( one ) ).to.be.false;
+			expect( two.isBefore( one ) ).toBe( false );
+			expect( img.isBefore( one ) ).toBe( false );
 
-			expect( charB.isBefore( two ) ).to.be.false;
-			expect( charR.isBefore( two ) ).to.be.false;
-			expect( three.isBefore( two ) ).to.be.false;
+			expect( charB.isBefore( two ) ).toBe( false );
+			expect( charR.isBefore( two ) ).toBe( false );
+			expect( three.isBefore( two ) ).toBe( false );
 
-			expect( one.isBefore( root ) ).to.be.false;
+			expect( one.isBefore( root ) ).toBe( false );
 		} );
 
 		it( 'should return false if the same element is given', () => {
-			expect( one.isBefore( one ) ).to.be.false;
+			expect( one.isBefore( one ) ).toBe( false );
 		} );
 
 		it( 'should return false if elements are in different roots', () => {
@@ -310,36 +312,36 @@ describe( 'Node', () => {
 
 			otherRoot._appendChild( otherElement );
 
-			expect( otherElement.isBefore( three ) ).to.be.false;
+			expect( otherElement.isBefore( three ) ).toBe( false );
 		} );
 	} );
 
 	describe( 'isAfter()', () => {
 		// Model is: <root><one></one><two>ba<img></img>r</two><three></three>
 		it( 'should return true if the element is after given element', () => {
-			expect( two.isAfter( one ) ).to.be.true;
-			expect( img.isAfter( one ) ).to.be.true;
+			expect( two.isAfter( one ) ).toBe( true );
+			expect( img.isAfter( one ) ).toBe( true );
 
-			expect( charB.isAfter( two ) ).to.be.true;
-			expect( charR.isAfter( two ) ).to.be.true;
-			expect( three.isAfter( two ) ).to.be.true;
+			expect( charB.isAfter( two ) ).toBe( true );
+			expect( charR.isAfter( two ) ).toBe( true );
+			expect( three.isAfter( two ) ).toBe( true );
 
-			expect( one.isAfter( root ) ).to.be.true;
+			expect( one.isAfter( root ) ).toBe( true );
 		} );
 
 		it( 'should return false if the element is before given element', () => {
-			expect( one.isAfter( two ) ).to.be.false;
-			expect( one.isAfter( img ) ).to.be.false;
+			expect( one.isAfter( two ) ).toBe( false );
+			expect( one.isAfter( img ) ).toBe( false );
 
-			expect( two.isAfter( charB ) ).to.be.false;
-			expect( two.isAfter( charR ) ).to.be.false;
-			expect( two.isAfter( three ) ).to.be.false;
+			expect( two.isAfter( charB ) ).toBe( false );
+			expect( two.isAfter( charR ) ).toBe( false );
+			expect( two.isAfter( three ) ).toBe( false );
 
-			expect( root.isAfter( one ) ).to.be.false;
+			expect( root.isAfter( one ) ).toBe( false );
 		} );
 
 		it( 'should return false if the same element is given', () => {
-			expect( one.isAfter( one ) ).to.be.false;
+			expect( one.isAfter( one ) ).toBe( false );
 		} );
 
 		it( 'should return false if elements are in different roots', () => {
@@ -348,7 +350,7 @@ describe( 'Node', () => {
 
 			otherRoot._appendChild( otherElement );
 
-			expect( three.isAfter( otherElement ) ).to.be.false;
+			expect( three.isAfter( otherElement ) ).toBe( false );
 		} );
 	} );
 
@@ -357,21 +359,21 @@ describe( 'Node', () => {
 			const char = new ViewText( document, 'x' );
 			const el = new ViewElement( document, 'one' );
 
-			expect( char.isAttached() ).to.equal( false );
-			expect( el.isAttached() ).to.equal( false );
+			expect( char.isAttached() ).toBe( false );
+			expect( el.isAttached() ).toBe( false );
 		} );
 
 		it( 'returns true for the root element', () => {
 			const root = new ViewRootEditableElement( document, 'div' );
 
-			expect( root.isAttached() ).to.equal( true );
+			expect( root.isAttached() ).toBe( true );
 		} );
 
 		it( 'returns false for a node attached to a document fragment', () => {
 			const foo = new ViewText( document, 'foo' );
 			new ViewDocumentFragment( document, [ foo ] ); // eslint-disable-line no-new
 
-			expect( foo.isAttached() ).to.equal( false );
+			expect( foo.isAttached() ).toBe( false );
 		} );
 	} );
 
@@ -381,18 +383,18 @@ describe( 'Node', () => {
 			const parent = new ViewElement( document, 'p', null, [ char ] );
 			char._remove();
 
-			expect( parent.getChildIndex( char ) ).to.equal( -1 );
+			expect( parent.getChildIndex( char ) ).toBe( -1 );
 		} );
 
 		it( 'uses parent._removeChildren method', () => {
 			const char = new ViewText( document, 'a' );
 			const parent = new ViewElement( document, 'p', null, [ char ] );
-			const _removeChildrenSpy = sinon.spy( parent, '_removeChildren' );
+			const _removeChildrenSpy = vi.spyOn( parent, '_removeChildren' );
 			const index = char.index;
 			char._remove();
-			_removeChildrenSpy.restore();
-			sinon.assert.calledOnce( _removeChildrenSpy );
-			sinon.assert.calledWithExactly( _removeChildrenSpy, index );
+			expect( _removeChildrenSpy ).toHaveBeenCalledOnce();
+			expect( _removeChildrenSpy ).toHaveBeenCalledWith( index );
+			vi.restoreAllMocks();
 		} );
 	} );
 
@@ -402,16 +404,18 @@ describe( 'Node', () => {
 			const parent = new ViewElement( document, 'p', null );
 			parent._appendChild( char );
 
-			sinon.stub( char, 'document' ).value( 'view.Document()' );
+			vi.spyOn( char, 'document', 'get' ).mockReturnValue( 'view.Document()' );
 
 			const json = JSON.stringify( char );
 			const parsed = JSON.parse( json );
 
-			expect( parsed ).to.deep.equal( {
+			expect( parsed ).toEqual( {
 				data: 'a',
 				path: [ 0 ],
 				type: 'Text'
 			} );
+
+			vi.restoreAllMocks();
 		} );
 
 		it( 'should provide root name if node is attached', () => {
@@ -424,7 +428,7 @@ describe( 'Node', () => {
 			const json = JSON.stringify( text );
 			const parsed = JSON.parse( json );
 
-			expect( parsed ).to.deep.equal( {
+			expect( parsed ).toEqual( {
 				data: 'foo',
 				path: [ 0, 0 ],
 				root: 'main',
@@ -444,7 +448,7 @@ describe( 'Node', () => {
 			const json = JSON.stringify( strong.getChild( 0 ) );
 			const parsed = JSON.parse( json );
 
-			expect( parsed ).to.deep.equal( {
+			expect( parsed ).toEqual( {
 				data: 'bar',
 				path: [ 0, 1, 0 ],
 				root: 'main',
@@ -456,8 +460,8 @@ describe( 'Node', () => {
 	describe( 'change event', () => {
 		let root, text, img, rootChangeSpy;
 
-		before( () => {
-			rootChangeSpy = sinon.spy();
+		beforeAll( () => {
+			rootChangeSpy = vi.fn();
 		} );
 
 		beforeEach( () => {
@@ -471,11 +475,11 @@ describe( 'Node', () => {
 			root.on( 'change:attributes', ( evt, node ) => rootChangeSpy( 'attributes', node ) );
 			root.on( 'change:text', ( evt, node ) => rootChangeSpy( 'text', node ) );
 
-			rootChangeSpy.resetHistory();
+			rootChangeSpy.mockClear();
 		} );
 
 		it( 'should be fired on the node', () => {
-			const imgChangeSpy = sinon.spy();
+			const imgChangeSpy = vi.fn();
 
 			img.on( 'change:attributes', ( evt, node ) => {
 				imgChangeSpy( 'attributes', node );
@@ -483,23 +487,23 @@ describe( 'Node', () => {
 
 			img._setAttribute( 'width', 100 );
 
-			sinon.assert.calledOnce( imgChangeSpy );
-			sinon.assert.calledWith( imgChangeSpy, 'attributes', img );
+			expect( imgChangeSpy ).toHaveBeenCalledOnce();
+			expect( imgChangeSpy ).toHaveBeenCalledWith( 'attributes', img );
 		} );
 
 		it( 'should be fired on the parent', () => {
 			img._setAttribute( 'width', 100 );
 
-			sinon.assert.calledOnce( rootChangeSpy );
-			sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
+			expect( rootChangeSpy ).toHaveBeenCalledOnce();
+			expect( rootChangeSpy ).toHaveBeenCalledWith( 'attributes', img );
 		} );
 
 		describe( '_setAttribute()', () => {
 			it( 'should fire change event', () => {
 				img._setAttribute( 'width', 100 );
 
-				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
+				expect( rootChangeSpy ).toHaveBeenCalledOnce();
+				expect( rootChangeSpy ).toHaveBeenCalledWith( 'attributes', img );
 			} );
 		} );
 
@@ -507,8 +511,8 @@ describe( 'Node', () => {
 			it( 'should fire change event', () => {
 				img._removeAttribute( 'src' );
 
-				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
+				expect( rootChangeSpy ).toHaveBeenCalledOnce();
+				expect( rootChangeSpy ).toHaveBeenCalledWith( 'attributes', img );
 			} );
 		} );
 
@@ -516,8 +520,8 @@ describe( 'Node', () => {
 			it( 'should fire change event', () => {
 				root._insertChild( 1, new ViewElement( document, 'img' ) );
 
-				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'children', root );
+				expect( rootChangeSpy ).toHaveBeenCalledOnce();
+				expect( rootChangeSpy ).toHaveBeenCalledWith( 'children', root );
 			} );
 		} );
 
@@ -525,8 +529,8 @@ describe( 'Node', () => {
 			it( 'should fire change event', () => {
 				root._appendChild( new ViewElement( document, 'img' ) );
 
-				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'children', root );
+				expect( rootChangeSpy ).toHaveBeenCalledOnce();
+				expect( rootChangeSpy ).toHaveBeenCalledWith( 'children', root );
 			} );
 		} );
 
@@ -534,8 +538,8 @@ describe( 'Node', () => {
 			it( 'should fire change event', () => {
 				root._removeChildren( 1, 1 );
 
-				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'children', root );
+				expect( rootChangeSpy ).toHaveBeenCalledOnce();
+				expect( rootChangeSpy ).toHaveBeenCalledWith( 'children', root );
 			} );
 		} );
 
@@ -543,8 +547,8 @@ describe( 'Node', () => {
 			it( 'should fire change event', () => {
 				text._data = 'bar';
 
-				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'text', text );
+				expect( rootChangeSpy ).toHaveBeenCalledOnce();
+				expect( rootChangeSpy ).toHaveBeenCalledWith( 'text', text );
 			} );
 		} );
 	} );

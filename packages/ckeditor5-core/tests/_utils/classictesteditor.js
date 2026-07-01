@@ -8,6 +8,7 @@ import { ElementApiMixin } from '../../src/editor/utils/elementapimixin.js';
 import { normalizeRootsConfig, normalizeSingleRootEditorConstructorParams } from '../../src/editor/utils/normalizerootsconfig.js';
 import { EditorUI, BoxedEditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
 import { ElementReplacer } from '@ckeditor/ckeditor5-utils';
+import { registerAndInitializeRootConfigAttributes } from '@ckeditor/ckeditor5-core';
 import { isElement } from 'es-toolkit/compat';
 
 /**
@@ -38,6 +39,7 @@ export class ClassicTestEditor extends ElementApiMixin( Editor ) {
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot( this.config.get( 'roots' ).main.modelElement );
+		registerAndInitializeRootConfigAttributes( this );
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 

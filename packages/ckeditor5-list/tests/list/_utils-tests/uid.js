@@ -3,45 +3,47 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 
 import { stubUid } from '../_utils/uid.js';
 import { ListItemUid } from '../../../src/list/utils/model.js';
 
 describe( 'stubUid()', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	it( 'Should start from 0', () => {
 		stubUid( 0 );
 
-		expect( ListItemUid.next() ).to.equal( '000' );
-		expect( ListItemUid.next() ).to.equal( '001' );
-		expect( ListItemUid.next() ).to.equal( '002' );
-		expect( ListItemUid.next() ).to.equal( '003' );
-		expect( ListItemUid.next() ).to.equal( '004' );
-		expect( ListItemUid.next() ).to.equal( '005' );
-		expect( ListItemUid.next() ).to.equal( '006' );
-		expect( ListItemUid.next() ).to.equal( '007' );
-		expect( ListItemUid.next() ).to.equal( '008' );
-		expect( ListItemUid.next() ).to.equal( '009' );
-		expect( ListItemUid.next() ).to.equal( '00a' );
-		expect( ListItemUid.next() ).to.equal( '00b' );
+		expect( ListItemUid.next() ).toBe( '000' );
+		expect( ListItemUid.next() ).toBe( '001' );
+		expect( ListItemUid.next() ).toBe( '002' );
+		expect( ListItemUid.next() ).toBe( '003' );
+		expect( ListItemUid.next() ).toBe( '004' );
+		expect( ListItemUid.next() ).toBe( '005' );
+		expect( ListItemUid.next() ).toBe( '006' );
+		expect( ListItemUid.next() ).toBe( '007' );
+		expect( ListItemUid.next() ).toBe( '008' );
+		expect( ListItemUid.next() ).toBe( '009' );
+		expect( ListItemUid.next() ).toBe( '00a' );
+		expect( ListItemUid.next() ).toBe( '00b' );
 	} );
 
 	it( 'Should start from 0xa00 (default)', () => {
 		stubUid();
 
-		expect( ListItemUid.next() ).to.equal( 'a00' );
-		expect( ListItemUid.next() ).to.equal( 'a01' );
-		expect( ListItemUid.next() ).to.equal( 'a02' );
-		expect( ListItemUid.next() ).to.equal( 'a03' );
-		expect( ListItemUid.next() ).to.equal( 'a04' );
-		expect( ListItemUid.next() ).to.equal( 'a05' );
-		expect( ListItemUid.next() ).to.equal( 'a06' );
-		expect( ListItemUid.next() ).to.equal( 'a07' );
-		expect( ListItemUid.next() ).to.equal( 'a08' );
-		expect( ListItemUid.next() ).to.equal( 'a09' );
-		expect( ListItemUid.next() ).to.equal( 'a0a' );
-		expect( ListItemUid.next() ).to.equal( 'a0b' );
+		expect( ListItemUid.next() ).toBe( 'a00' );
+		expect( ListItemUid.next() ).toBe( 'a01' );
+		expect( ListItemUid.next() ).toBe( 'a02' );
+		expect( ListItemUid.next() ).toBe( 'a03' );
+		expect( ListItemUid.next() ).toBe( 'a04' );
+		expect( ListItemUid.next() ).toBe( 'a05' );
+		expect( ListItemUid.next() ).toBe( 'a06' );
+		expect( ListItemUid.next() ).toBe( 'a07' );
+		expect( ListItemUid.next() ).toBe( 'a08' );
+		expect( ListItemUid.next() ).toBe( 'a09' );
+		expect( ListItemUid.next() ).toBe( 'a0a' );
+		expect( ListItemUid.next() ).toBe( 'a0b' );
 	} );
 } );

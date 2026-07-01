@@ -7,10 +7,7 @@
  * @module link/linkimageediting
  */
 
-import {
-	Plugin,
-	type Editor
-} from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	Matcher,
 	type UpcastElementEvent,
@@ -39,8 +36,8 @@ export class LinkImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageEditing, ImageUtils, LinkEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageEditing, ImageUtils, LinkEditing ]> {
+		return [ ImageEditing, ImageUtils, LinkEditing ];
 	}
 
 	/**

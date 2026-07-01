@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { ModelText } from '../../../src/model/text.js';
 import { ModelElement } from '../../../src/model/element.js';
@@ -32,7 +33,7 @@ describe( 'AttributeOperation', () => {
 				doc.version
 			);
 
-			expect( op.type ).to.equal( 'addAttribute' );
+			expect( op.type ).toBe( 'addAttribute' );
 		} );
 
 		it( 'should be removeAttribute for removing attribute', () => {
@@ -44,7 +45,7 @@ describe( 'AttributeOperation', () => {
 				doc.version
 			);
 
-			expect( op.type ).to.equal( 'removeAttribute' );
+			expect( op.type ).toBe( 'removeAttribute' );
 		} );
 
 		it( 'should be changeAttribute for removing attribute', () => {
@@ -56,7 +57,7 @@ describe( 'AttributeOperation', () => {
 				doc.version
 			);
 
-			expect( op.type ).to.equal( 'changeAttribute' );
+			expect( op.type ).toBe( 'changeAttribute' );
 		} );
 	} );
 
@@ -73,12 +74,12 @@ describe( 'AttributeOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 3 );
-		expect( root.getChild( 0 ).hasAttribute( 'isNew' ) ).to.be.true;
-		expect( root.getChild( 0 ).data ).to.equal( 'ba' );
-		expect( root.getChild( 1 ).hasAttribute( 'isNew' ) ).to.be.false;
-		expect( root.getChild( 1 ).data ).to.equal( 'r' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 3 );
+		expect( root.getChild( 0 ).hasAttribute( 'isNew' ) ).toBe( true );
+		expect( root.getChild( 0 ).data ).toBe( 'ba' );
+		expect( root.getChild( 1 ).hasAttribute( 'isNew' ) ).toBe( false );
+		expect( root.getChild( 1 ).data ).toBe( 'r' );
 	} );
 
 	it( 'should add attribute to the existing attributes', () => {
@@ -94,12 +95,12 @@ describe( 'AttributeOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 1 );
-		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 3 );
-		expect( root.getChild( 0 ).hasAttribute( 'isNew' ) ).to.be.true;
-		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
-		expect( root.getChild( 0 ).hasAttribute( 'bar' ) ).to.be.true;
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 1 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 3 );
+		expect( root.getChild( 0 ).hasAttribute( 'isNew' ) ).toBe( true );
+		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).toBe( true );
+		expect( root.getChild( 0 ).hasAttribute( 'bar' ) ).toBe( true );
 	} );
 
 	it( 'should change attribute to the set of nodes', () => {
@@ -115,12 +116,12 @@ describe( 'AttributeOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 3 );
-		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
-		expect( root.getChild( 0 ).getAttribute( 'isNew' ) ).to.be.true;
-		expect( count( root.getChild( 1 ).getAttributes() ) ).to.equal( 1 );
-		expect( root.getChild( 1 ).getAttribute( 'isNew' ) ).to.be.false;
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 3 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 1 );
+		expect( root.getChild( 0 ).getAttribute( 'isNew' ) ).toBe( true );
+		expect( count( root.getChild( 1 ).getAttributes() ) ).toBe( 1 );
+		expect( root.getChild( 1 ).getAttribute( 'isNew' ) ).toBe( false );
 	} );
 
 	it( 'should change attribute in the middle of existing attributes', () => {
@@ -136,12 +137,12 @@ describe( 'AttributeOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 1 );
-		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 3 );
-		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.be.true;
-		expect( root.getChild( 0 ).getAttribute( 'x' ) ).to.equal( 2 );
-		expect( root.getChild( 0 ).getAttribute( 'bar' ) ).to.be.true;
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 1 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 3 );
+		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).toBe( true );
+		expect( root.getChild( 0 ).getAttribute( 'x' ) ).toBe( 2 );
+		expect( root.getChild( 0 ).getAttribute( 'bar' ) ).toBe( true );
 	} );
 
 	it( 'should work correctly if old and new value are same', () => {
@@ -157,10 +158,10 @@ describe( 'AttributeOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.childCount ).to.equal( 1 );
-		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
-		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.equal( 'bar' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.childCount ).toBe( 1 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 1 );
+		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).toBe( 'bar' );
 	} );
 
 	it( 'should remove attribute', () => {
@@ -176,11 +177,11 @@ describe( 'AttributeOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 1 );
-		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 2 );
-		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
-		expect( root.getChild( 0 ).hasAttribute( 'bar' ) ).to.be.true;
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 1 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 2 );
+		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).toBe( true );
+		expect( root.getChild( 0 ).hasAttribute( 'bar' ) ).toBe( true );
 	} );
 
 	describe( '_validate()', () => {
@@ -197,7 +198,7 @@ describe( 'AttributeOperation', () => {
 				);
 
 				operation._validate();
-			} ).to.not.throw( Error );
+			} ).not.toThrow( Error );
 		} );
 
 		it( 'should throw an error when one try to remove and the attribute does not exists', () => {
@@ -245,7 +246,7 @@ describe( 'AttributeOperation', () => {
 				);
 
 				operation._validate();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should throw for a non-flat range', () => {
@@ -273,12 +274,12 @@ describe( 'AttributeOperation', () => {
 		const operation = new AttributeOperation( range, 'x', 'old', 'new', doc.version );
 		const reverse = operation.getReversed();
 
-		expect( reverse ).to.be.an.instanceof( AttributeOperation );
-		expect( reverse.baseVersion ).to.equal( 1 );
-		expect( reverse.range.isEqual( range ) ).to.be.true;
-		expect( reverse.key ).to.equal( 'x' );
-		expect( reverse.oldValue ).to.equal( 'new' );
-		expect( reverse.newValue ).to.equal( 'old' );
+		expect( reverse ).toBeInstanceOf( AttributeOperation );
+		expect( reverse.baseVersion ).toBe( 1 );
+		expect( reverse.range.isEqual( range ) ).toBe( true );
+		expect( reverse.key ).toBe( 'x' );
+		expect( reverse.oldValue ).toBe( 'new' );
+		expect( reverse.newValue ).toBe( 'old' );
 	} );
 
 	it( 'should undo adding attribute by applying reverse operation', () => {
@@ -297,9 +298,9 @@ describe( 'AttributeOperation', () => {
 		model.applyOperation( operation );
 		model.applyOperation( reverse );
 
-		expect( doc.version ).to.equal( 2 );
-		expect( root.maxOffset ).to.equal( 3 );
-		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 0 );
+		expect( doc.version ).toBe( 2 );
+		expect( root.maxOffset ).toBe( 3 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 0 );
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', () => {
@@ -318,10 +319,10 @@ describe( 'AttributeOperation', () => {
 		model.applyOperation( operation );
 		model.applyOperation( reverse );
 
-		expect( doc.version ).to.equal( 2 );
-		expect( root.maxOffset ).to.equal( 3 );
-		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
-		expect( root.getChild( 0 ).getAttribute( 'isNew' ) ).to.be.false;
+		expect( doc.version ).toBe( 2 );
+		expect( root.maxOffset ).toBe( 3 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 1 );
+		expect( root.getChild( 0 ).getAttribute( 'isNew' ) ).toBe( false );
 	} );
 
 	it( 'should undo remove attribute by applying reverse operation', () => {
@@ -340,10 +341,10 @@ describe( 'AttributeOperation', () => {
 		model.applyOperation( operation );
 		model.applyOperation( reverse );
 
-		expect( doc.version ).to.equal( 2 );
-		expect( root.maxOffset ).to.equal( 3 );
-		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
-		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.be.true;
+		expect( doc.version ).toBe( 2 );
+		expect( root.maxOffset ).toBe( 3 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).toBe( 1 );
+		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).toBe( true );
 	} );
 
 	it( 'should create an AttributeOperation with the same parameters when cloned', () => {
@@ -355,14 +356,14 @@ describe( 'AttributeOperation', () => {
 		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
-		expect( clone ).not.to.equal( op );
+		expect( clone ).not.toBe( op );
 
-		expect( clone ).to.be.instanceof( AttributeOperation );
-		expect( clone.range.isEqual( range ) ).to.be.true;
-		expect( clone.key ).to.equal( 'foo' );
-		expect( clone.oldValue ).to.equal( 'old' );
-		expect( clone.newValue ).to.equal( 'new' );
-		expect( clone.baseVersion ).to.equal( baseVersion );
+		expect( clone ).toBeInstanceOf( AttributeOperation );
+		expect( clone.range.isEqual( range ) ).toBe( true );
+		expect( clone.key ).toBe( 'foo' );
+		expect( clone.oldValue ).toBe( 'old' );
+		expect( clone.newValue ).toBe( 'new' );
+		expect( clone.baseVersion ).toBe( baseVersion );
 	} );
 
 	it( 'should merge characters in node list', () => {
@@ -382,8 +383,8 @@ describe( 'AttributeOperation', () => {
 			)
 		);
 
-		expect( root.getChild( 0 ).data ).to.equal( 'a' );
-		expect( root.getChild( 1 ).data ).to.equal( 'bcxyz' );
+		expect( root.getChild( 0 ).data ).toBe( 'a' );
+		expect( root.getChild( 1 ).data ).toBe( 'bcxyz' );
 	} );
 
 	describe( 'toJSON', () => {
@@ -399,9 +400,9 @@ describe( 'AttributeOperation', () => {
 
 			const serialized = op.toJSON();
 
-			expect( serialized.__className ).to.equal( 'AttributeOperation' );
+			expect( serialized.__className ).toBe( 'AttributeOperation' );
 
-			expect( serialized ).to.deep.equal( {
+			expect( serialized ).toEqual( {
 				__className: 'AttributeOperation',
 				baseVersion: 0,
 				key: 'key',
@@ -426,7 +427,7 @@ describe( 'AttributeOperation', () => {
 			const serialized = op.toJSON();
 			const deserialized = AttributeOperation.fromJSON( serialized, doc );
 
-			expect( deserialized ).to.deep.equal( op );
+			expect( deserialized ).toEqual( op );
 		} );
 	} );
 } );

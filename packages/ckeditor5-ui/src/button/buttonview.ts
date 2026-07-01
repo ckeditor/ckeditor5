@@ -318,6 +318,7 @@ export class ButtonView extends View<HTMLButtonElement> implements Button {
 		// On Safari we have to force the focus on a button on click as it's the only browser
 		// that doesn't do that automatically. See https://github.com/ckeditor/ckeditor5/issues/12115.
 		if ( env.isSafari ) {
+			/* v8 ignore else -- @preserve */
 			if ( !this._focusDelayed ) {
 				this._focusDelayed = delay( () => this.focus(), 0 );
 			}

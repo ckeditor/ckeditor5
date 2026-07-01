@@ -21,8 +21,17 @@ export {
 } from './arialiveannouncer.js';
 
 export { clickOutsideHandler } from './bindings/clickoutsidehandler.js';
-export { CssTransitionDisablerMixin, type ViewWithCssTransitionDisabler } from './bindings/csstransitiondisablermixin.js';
-export { DraggableViewMixin, type DraggableView, type DraggableViewDragEvent } from './bindings/draggableviewmixin.js';
+export {
+	CssTransitionDisablerMixin,
+	type CssTransitionDisablerMixinConstructor,
+	type ViewWithCssTransitionDisabler
+} from './bindings/csstransitiondisablermixin.js';
+export {
+	DraggableViewMixin,
+	type DraggableView,
+	type DraggableViewMixinConstructor,
+	type DraggableViewDragEvent
+} from './bindings/draggableviewmixin.js';
 export { submitHandler, type SubmitHandlerEvent } from './bindings/submithandler.js';
 export { addKeyboardHandlingForGrid } from './bindings/addkeyboardhandlingforgrid.js';
 
@@ -45,6 +54,7 @@ export {
 	FileDialogListItemButtonView,
 	FileDialogViewMixin,
 	type FileDialogButtonViewBase,
+	type FileDialogViewMixinConstructor,
 	type FileInputViewDoneEvent
 } from './button/filedialogbuttonview.js';
 
@@ -89,7 +99,7 @@ export { ColorPickerFragmentView } from './colorselector/colorpickerfragmentview
 
 export { ComponentFactory } from './componentfactory.js';
 
-export { Dialog, type DialogDefinition, type DialogShowEvent, type DialogHideEvent } from './dialog/dialog.js';
+export { Dialog, type DialogDefinition, type DialogShowEvent, type DialogHideEvent, type DialogPositionCallback } from './dialog/dialog.js';
 export { DialogView, DialogViewPosition, type DialogViewMoveToEvent, type DialogViewCloseEvent } from './dialog/dialogview.js';
 export { DialogActionsView, type DialogActionButtonDefinition } from './dialog/dialogactionsview.js';
 export { DialogContentView } from './dialog/dialogcontentview.js';

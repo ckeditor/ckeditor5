@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
+
 import { getAncestors } from '../../src/dom/getancestors.js';
 import { createElement } from '../../src/dom/createelement.js';
 
@@ -21,7 +23,7 @@ describe( 'getAncestors', () => {
 		const p2 = createElement( document, 'p', {}, [ createElement( document, 'i' ) ] );
 		const div = createElement( document, 'div', {}, [ p1, p2 ] );
 
-		expect( getAncestors( b ) ).to.deep.equal( [ div, p1, span, b ] );
+		expect( getAncestors( b ) ).toEqual( [ div, p1, span, b ] );
 	} );
 
 	it( 'should not return document object', () => {
@@ -30,7 +32,7 @@ describe( 'getAncestors', () => {
 
 		const ancestors = getAncestors( span );
 
-		expect( ancestors.includes( document ) ).to.be.false;
+		expect( ancestors.includes( document ) ).toBe( false );
 	} );
 
 	it( 'should not return any non-Node, non-DocumentFragment object if given node is in iframe', () => {
@@ -44,7 +46,7 @@ describe( 'getAncestors', () => {
 
 		const ancestors = getAncestors( span );
 
-		expect( ancestors.includes( iframeDoc ) ).to.be.false;
+		expect( ancestors.includes( iframeDoc ) ).toBe( false );
 
 		document.body.removeChild( iframe );
 	} );

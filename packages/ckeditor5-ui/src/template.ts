@@ -18,12 +18,15 @@ import {
 	type ArrayOrItem,
 	type Emitter,
 	type Observable,
-	type ObservableChangeEvent
+	type ObservableChangeEvent,
+	type EmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { isObject, cloneDeepWith } from 'es-toolkit/compat';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
+
+const TemplateBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
 
 /**
  * A basic Template class. It renders a DOM HTML element or text from a
@@ -63,7 +66,7 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
  * See {@link module:ui/template~TemplateDefinition} to know more about templates and complex
  * template definitions.
  */
-export class Template extends /* #__PURE__ */ EmitterMixin() {
+export class Template extends TemplateBase {
 	public ns?: string;
 
 	/**

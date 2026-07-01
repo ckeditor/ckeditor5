@@ -11,9 +11,10 @@ import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { TodoListEditing } from '../../src/todolist/todolistediting.js';
 import { ListEditing } from '../../src/list/listediting.js';
@@ -27,7 +28,9 @@ import { stubUid } from '../list/_utils/uid.js';
 describe( 'TodoListEditing (multiBlock=false)', () => {
 	let editor, model, view, editorElement;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );

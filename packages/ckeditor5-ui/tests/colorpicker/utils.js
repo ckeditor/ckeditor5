@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import {
 	convertToHex,
 	convertColor,
@@ -13,19 +14,19 @@ import parse from 'color-parse';
 describe( 'utils', () => {
 	describe( 'convertToHex()', () => {
 		it( 'returns proper value if empty value passed', () => {
-			expect( convertToHex( '' ) ).to.equal( '' );
+			expect( convertToHex( '' ) ).toBe( '' );
 		} );
 
 		it( 'should return the same string if hex color was passed', () => {
-			expect( convertToHex( '#123123' ) ).to.equal( '#123123' );
+			expect( convertToHex( '#123123' ) ).toBe( '#123123' );
 		} );
 
 		it( 'returns proper value if invalid value passed', () => {
-			expect( convertToHex( 'lorem ipsum' ) ).to.equal( '#000' );
+			expect( convertToHex( 'lorem ipsum' ) ).toBe( '#000' );
 		} );
 
 		it( 'returns proper value if broken syntax value passed', () => {
-			expect( convertToHex( 'hsl( a)' ) ).to.equal( '#000000' );
+			expect( convertToHex( 'hsl( a)' ) ).toBe( '#000000' );
 		} );
 
 		describe( 'should correctly convert color from (integration)', () => {
@@ -47,40 +48,40 @@ describe( 'utils', () => {
 
 	describe( 'convertColor()', () => {
 		it( 'should return an empty string if no color was passed', () => {
-			expect( convertColor() ).to.equal( '' );
+			expect( convertColor() ).toBe( '' );
 		} );
 
 		it( 'should return an empty string if a nullish value was passed', () => {
-			expect( convertColor( '' ) ).to.equal( '' );
+			expect( convertColor( '' ) ).toBe( '' );
 		} );
 
 		it( 'should return an empty string a non-color string was passed', () => {
-			expect( convertColor( 'foo' ) ).to.equal( '' );
+			expect( convertColor( 'foo' ) ).toBe( '' );
 		} );
 
 		it( 'returns proper format for unknown color type', () => {
-			expect( convertColor( '#f00', 'lorem ipsum' ) ).to.equal( '' );
+			expect( convertColor( '#f00', 'lorem ipsum' ) ).toBe( '' );
 		} );
 
 		it( 'returns reasonable value for formats officially not supported', () => {
-			expect( convertColor( '#001100', 'cmyk' ) ).to.equal( '' );
+			expect( convertColor( '#001100', 'cmyk' ) ).toBe( '' );
 		} );
 
 		it( 'should return an empty string if a `converted` object doens\'t have `space` attr value acceptable by`parsed` function', () => {
-			expect( convertColor( 'lchu( 10%, 10, 10)', 'lch' ) ).to.equal( '' );
+			expect( convertColor( 'lchu( 10%, 10, 10)', 'lch' ) ).toBe( '' );
 		} );
 
 		it( 'should return the same string if color space is in the passed format (integration)', () => {
-			expect( convertColor( '#123123', 'hex' ) ).to.equal( '#123123' );
-			expect( convertColor( 'rgb( 10, 10, 10)', 'rgb' ) ).to.equal( 'rgb( 10, 10, 10)' );
-			expect( convertColor( 'hsl( 10, 10%, 10%)', 'hsl' ) ).to.equal( 'hsl( 10, 10%, 10%)' );
-			expect( convertColor( 'hwb( 10, 10, 10)', 'hwb' ) ).to.equal( 'hwb( 10, 10, 10)' );
-			expect( convertColor( 'lab( 10%, 10, 10)', 'lab' ) ).to.equal( 'lab( 10%, 10, 10)' );
-			expect( convertColor( 'lch( 10%, 10, 10)', 'lch' ) ).to.equal( 'lch( 10%, 10, 10)' );
+			expect( convertColor( '#123123', 'hex' ) ).toBe( '#123123' );
+			expect( convertColor( 'rgb( 10, 10, 10)', 'rgb' ) ).toBe( 'rgb( 10, 10, 10)' );
+			expect( convertColor( 'hsl( 10, 10%, 10%)', 'hsl' ) ).toBe( 'hsl( 10, 10%, 10%)' );
+			expect( convertColor( 'hwb( 10, 10, 10)', 'hwb' ) ).toBe( 'hwb( 10, 10, 10)' );
+			expect( convertColor( 'lab( 10%, 10, 10)', 'lab' ) ).toBe( 'lab( 10%, 10, 10)' );
+			expect( convertColor( 'lch( 10%, 10, 10)', 'lch' ) ).toBe( 'lch( 10%, 10, 10)' );
 		} );
 
 		it( 'should return an empty string if a color keyword was expected', () => {
-			expect( convertColor( '#123123', 'keyword' ) ).to.equal( '' );
+			expect( convertColor( '#123123', 'keyword' ) ).toBe( '' );
 		} );
 
 		describe( 'should correctly convert the color', () => {
@@ -112,17 +113,17 @@ describe( 'utils', () => {
 
 	describe( 'registerCustomElement()', () => {
 		it( 'should register custom element', () => {
-			expect( customElements.get( 'test-element' ) ).to.be.undefined;
+			expect( customElements.get( 'test-element' ) ).toBeUndefined();
 
 			registerCustomElement( 'test-element', TestElement );
 
-			expect( customElements.get( 'test-element' ) ).to.be.a( 'function' );
+			expect( customElements.get( 'test-element' ) ).toBeTypeOf( 'function' );
 		} );
 
 		it( 'should not throw when trying to re-register the same custom element', () => {
 			registerCustomElement( 'second-test-element', SecondTestElement );
 
-			expect( () => registerCustomElement( 'second-test-element', SecondTestElement ) ).to.not.throw();
+			expect( () => registerCustomElement( 'second-test-element', SecondTestElement ) ).not.toThrow();
 		} );
 	} );
 } );
@@ -140,7 +141,7 @@ function assertSimilarity( expected, actual ) {
 			actualChannels.values[ 0 ] = 0;
 		}
 
-		expect( Math.abs( expectedChannels.values[ i ] - actualChannels.values[ i ] ) ).to.be.below( 3 );
+		expect( Math.abs( expectedChannels.values[ i ] - actualChannels.values[ i ] ) ).toBeLessThan( 3 );
 	}
 }
 

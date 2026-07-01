@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
@@ -15,7 +16,6 @@ import {
 	ImageUtils,
 	PictureEditing
 } from '@ckeditor/ckeditor5-image';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { LinkImageEditing } from '../src/linkimageediting.js';
 import { LinkEditing } from '../src/linkediting.js';
@@ -23,7 +23,9 @@ import { LinkEditing } from '../src/linkediting.js';
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -42,19 +44,19 @@ describe( 'LinkImageEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( LinkImageEditing.pluginName ).to.equal( 'LinkImageEditing' );
+		expect( LinkImageEditing.pluginName ).toBe( 'LinkImageEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( LinkImageEditing.isOfficialPlugin ).to.be.true;
+		expect( LinkImageEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( LinkImageEditing.isPremiumPlugin ).to.be.false;
+		expect( LinkImageEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( LinkImageEditing ) ).to.be.instanceOf( LinkImageEditing );
+		expect( editor.plugins.get( LinkImageEditing ) ).toBeInstanceOf( LinkImageEditing );
 	} );
 
 	it( 'should set proper schema rules for image style when ImageBlock plugin is enabled', async () => {
@@ -62,7 +64,7 @@ describe( 'LinkImageEditing', () => {
 			plugins: [ ImageBlockEditing, LinkImageEditing ]
 		} );
 
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'linkHref' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'linkHref' ) ).toBe( true );
 
 		await newEditor.destroy();
 	} );
@@ -72,21 +74,21 @@ describe( 'LinkImageEditing', () => {
 			plugins: [ ImageInlineEditing, LinkImageEditing ]
 		} );
 
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).toBe( true );
 
 		await newEditor.destroy();
 	} );
 
 	it( 'should require ImageEditing', () => {
-		expect( LinkImageEditing.requires ).to.include( ImageEditing );
+		expect( LinkImageEditing.requires ).toContain( ImageEditing );
 	} );
 
 	it( 'should require ImageUtils', () => {
-		expect( LinkImageEditing.requires ).to.include( ImageUtils );
+		expect( LinkImageEditing.requires ).toContain( ImageUtils );
 	} );
 
 	it( 'should require LinkEditing', () => {
-		expect( LinkImageEditing.requires ).to.include( LinkEditing );
+		expect( LinkImageEditing.requires ).toContain( LinkEditing );
 	} );
 
 	describe( 'conversion in data pipeline', () => {
@@ -94,7 +96,7 @@ describe( 'LinkImageEditing', () => {
 			it( 'should convert an image with a link', () => {
 				_setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text"></a></figure>'
 				);
 			} );
@@ -102,7 +104,7 @@ describe( 'LinkImageEditing', () => {
 			it( 'should convert an image with a link and without alt attribute', () => {
 				_setModelData( model, '<imageBlock src="/assets/sample.png" linkHref="http://ckeditor.com"></imageBlock>' );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png"></a></figure>'
 				);
 			} );
@@ -115,7 +117,7 @@ describe( 'LinkImageEditing', () => {
 					'</imageBlock>'
 				);
 
-				expect( normalizeHtml( editor.getData() ) ).to.equal(
+				expect( normalizeHtml( editor.getData() ) ).toBe(
 					'<figure class="image">' +
 						'<a href="http://ckeditor.com">' +
 							'<img sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
@@ -125,7 +127,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			it( 'should be overridable', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				editor.data.downcastDispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, { consumable } ) => {
 					consumable.consume( data.item, evt.name );
@@ -135,10 +137,10 @@ describe( 'LinkImageEditing', () => {
 
 				_setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>'
 				);
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should convert a link containing an inline image as a single anchor element in data', async () => {
@@ -155,7 +157,7 @@ describe( 'LinkImageEditing', () => {
 					'</paragraph>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>foo <a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text"></a>bar</p>'
 				);
 
@@ -175,7 +177,7 @@ describe( 'LinkImageEditing', () => {
 					'</imageBlock>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<figure class="image">' +
 						'<a href="http://ckeditor.com">' +
 							'<picture>' +
@@ -208,7 +210,7 @@ describe( 'LinkImageEditing', () => {
 					'</paragraph>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<p>' +
 						'foo' +
 						'<a href="http://ckeditor.com">' +
@@ -230,21 +232,21 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
+						.toBe( '<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should convert an image with a link and without alt attribute', () => {
 					editor.setData( '<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" /></a></figure>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
+						.toBe( '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should convert without src attribute', () => {
 					editor.setData( '<figure class="image"><a href="http://ckeditor.com"><img alt="alt text" /></a></figure>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
+						.toBe( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 				} );
 
 				it( 'should not convert in wrong context', () => {
@@ -267,7 +269,7 @@ describe( 'LinkImageEditing', () => {
 						'</div>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<div></div>' );
+						.toBe( '<div></div>' );
 				} );
 
 				it( 'should not convert "a" element if is already consumed', () => {
@@ -279,7 +281,7 @@ describe( 'LinkImageEditing', () => {
 						'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a></figure>'
 					);
 
-					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
+					expect( editor.getData() ).toBe( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
 				} );
 
 				it( 'should convert even if a link has empty "href" attribute', () => {
@@ -288,7 +290,7 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<imageBlock alt="alt text" linkHref="" src="/assets/sample.png"></imageBlock>' );
+						.toBe( '<imageBlock alt="alt text" linkHref="" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should not convert if a link misses "href" attribute', () => {
@@ -297,7 +299,7 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>' );
+						.toBe( '<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should convert a link without an image to a paragraph with the link', () => {
@@ -306,7 +308,7 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<paragraph><$text linkHref="http://ckeditor.com">Foo</$text></paragraph>' );
+						.toBe( '<paragraph><$text linkHref="http://ckeditor.com">Foo</$text></paragraph>' );
 				} );
 			} );
 
@@ -317,21 +319,21 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
+						.toBe( '<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should convert an image surrounded by a link without alt attribute', () => {
 					editor.setData( '<a href="http://ckeditor.com"><img src="/assets/sample.png" /></a>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
+						.toBe( '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should convert an image surrounded by a link without src attribute', () => {
 					editor.setData( '<a href="http://ckeditor.com"><img alt="alt text" /></a>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
+						.toBe( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 				} );
 
 				it( 'should convert multiple block images surrounded by a link', () => {
@@ -342,7 +344,7 @@ describe( 'LinkImageEditing', () => {
 						'</a>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' +
 						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" src="/assets/sample2.png"></imageBlock>'
 					);
@@ -357,7 +359,7 @@ describe( 'LinkImageEditing', () => {
 						'</a>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<paragraph>' +
 							'<$text linkHref="http://ckeditor.com">Foo</$text>' +
 						'</paragraph>' +
@@ -388,14 +390,14 @@ describe( 'LinkImageEditing', () => {
 						'</a>'
 					);
 
-					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).toBe(
 						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" linkIsGallery="true" src="/assets/sample.png">' +
 						'</imageBlock>' +
 						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" linkIsGallery="true" src="/assets/sample2.png">' +
 						'</imageBlock>'
 					);
 
-					expect( newEditor.getData() ).to.equal(
+					expect( newEditor.getData() ).toBe(
 						'<figure class="image">' +
 							'<a class="gallery" href="http://ckeditor.com">' +
 								'<img src="/assets/sample.png" alt="alt text">' +
@@ -433,7 +435,7 @@ describe( 'LinkImageEditing', () => {
 						'</a>'
 					);
 
-					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).toBe(
 						'<paragraph><$text linkHref="http://ckeditor.com" linkIsGallery="true">Foo</$text></paragraph>' +
 						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" linkIsGallery="true" src="/assets/sample.png">' +
 						'</imageBlock>' +
@@ -468,14 +470,14 @@ describe( 'LinkImageEditing', () => {
 						'</a>'
 					);
 
-					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).toBe(
 						'<imageBlock alt="alt text" linkHref="http://ckeditor.com/example.pdf" src="/assets/sample.png">' +
 						'</imageBlock>' +
 						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com/example.pdf" src="/assets/sample2.png">' +
 						'</imageBlock>'
 					);
 
-					expect( newEditor.getData() ).to.equal(
+					expect( newEditor.getData() ).toBe(
 						'<figure class="image">' +
 							'<a href="http://ckeditor.com/example.pdf" download="file.pdf">' +
 								'<img src="/assets/sample.png" alt="alt text">' +
@@ -516,7 +518,7 @@ describe( 'LinkImageEditing', () => {
 						'</a>'
 					);
 
-					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).toBe(
 						'<paragraph><$text linkHref="http://ckeditor.com/example.pdf">Foo</$text></paragraph>' +
 						'<imageBlock alt="alt text" linkHref="http://ckeditor.com/example.pdf" src="/assets/sample.png">' +
 						'</imageBlock>' +
@@ -525,7 +527,7 @@ describe( 'LinkImageEditing', () => {
 						'<paragraph><$text linkHref="http://ckeditor.com/example.pdf">Bar</$text></paragraph>'
 					);
 
-					expect( newEditor.getData() ).to.equal(
+					expect( newEditor.getData() ).toBe(
 						'<p>' +
 							'<a download="file.pdf" href="http://ckeditor.com/example.pdf">Foo</a>' +
 						'</p>' +
@@ -563,14 +565,14 @@ describe( 'LinkImageEditing', () => {
 						'</a>'
 					);
 
-					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).toBe(
 						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png">' +
 						'</imageBlock>' +
 						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" src="/assets/sample2.png">' +
 						'</imageBlock>'
 					);
 
-					expect( newEditor.getData() ).to.equal(
+					expect( newEditor.getData() ).toBe(
 						'<figure class="image">' +
 							'<a href="http://ckeditor.com" target="_blank" rel="noopener noreferrer">' +
 								'<img src="/assets/sample.png" alt="alt text">' +
@@ -604,7 +606,7 @@ describe( 'LinkImageEditing', () => {
 						'</a>'
 					);
 
-					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).toBe(
 						'<paragraph><$text linkHref="http://ckeditor.com">Foo</$text></paragraph>' +
 						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png">' +
 						'</imageBlock>' +
@@ -613,7 +615,7 @@ describe( 'LinkImageEditing', () => {
 						'</imageBlock>'
 					);
 
-					expect( newEditor.getData() ).to.equal(
+					expect( newEditor.getData() ).toBe(
 						'<p>' +
 							'<a target="_blank" rel="noopener noreferrer" href="http://ckeditor.com">Foo</a>' +
 						'</p>' +
@@ -653,7 +655,7 @@ describe( 'LinkImageEditing', () => {
 						'</div>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<div></div>' );
+						.toBe( '<div></div>' );
 				} );
 
 				it( 'should not convert "a" element if is already consumed', () => {
@@ -665,7 +667,7 @@ describe( 'LinkImageEditing', () => {
 						'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
 					);
 
-					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
+					expect( editor.getData() ).toBe( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
 				} );
 
 				it( 'should convert if a has empty "href" attribute', () => {
@@ -674,7 +676,7 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<imageBlock alt="alt text" linkHref="" src="/assets/sample.png"></imageBlock>' );
+						.toBe( '<imageBlock alt="alt text" linkHref="" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should not convert if a link misses "href" attribute', () => {
@@ -683,7 +685,7 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>' );
+						.toBe( '<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should not convert an image surrounded by a link to a linked block image' +
@@ -698,7 +700,7 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					// If ImageInline is loaded, then ☝️ should be a plain linked inline image in the editor.
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<paragraph>' +
 							'<imageInline alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageInline>' +
 						'</paragraph>'
@@ -726,7 +728,7 @@ describe( 'LinkImageEditing', () => {
 								'</figure>'
 							);
 
-							expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+							expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe(
 								'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png">' +
 									'<caption>Foo Bar.</caption>' +
 								'</imageBlock>'
@@ -744,7 +746,7 @@ describe( 'LinkImageEditing', () => {
 			it( 'should convert the image element', () => {
 				_setModelData( model, '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text"></imageBlock>' );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://ckeditor.com">' +
 							'<img alt="alt text" src="/assets/sample.png"></img>' +
@@ -761,7 +763,7 @@ describe( 'LinkImageEditing', () => {
 					writer.setAttribute( 'linkHref', 'https://ckeditor.com/why-ckeditor/', image );
 				} );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="https://ckeditor.com/why-ckeditor/">' +
 							'<img alt="alt text" src="/assets/sample.png"></img>' +
@@ -778,7 +780,7 @@ describe( 'LinkImageEditing', () => {
 					writer.removeAttribute( 'linkHref', image );
 				} );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</figure>'
@@ -786,7 +788,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			it( 'should be overridable', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				editor.editing.downcastDispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, { consumable } ) => {
 					consumable.consume( data.item, evt.name );
@@ -796,12 +798,12 @@ describe( 'LinkImageEditing', () => {
 
 				_setModelData( model, '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text"></imageBlock>' );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</figure>'
 				);
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should link a text including an inline image as a single anchor element', async () => {
@@ -816,7 +818,7 @@ describe( 'LinkImageEditing', () => {
 
 				editor.execute( 'link', 'https://cksource.com' );
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toBe(
 					'<p>' +
 						'[<a class="ck-link_selected" href="https://cksource.com">' +
 							'foo<span class="ck-widget image-inline" contenteditable="false">' +
@@ -843,7 +845,7 @@ describe( 'LinkImageEditing', () => {
 							'</imageBlock>'
 						);
 
-						expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 							'<figure class="ck-widget image" contenteditable="false">' +
 								'<a href="http://ckeditor.com">' +
 									'<img alt="alt text" src="/assets/sample.png"></img>' +
@@ -882,7 +884,7 @@ describe( 'LinkImageEditing', () => {
 					'</imageBlock>'
 				);
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://ckeditor.com" rel="noopener noreferrer" target="_blank">' +
 							'<img alt="alt text" src="/assets/sample.png"></img>' +
@@ -892,7 +894,7 @@ describe( 'LinkImageEditing', () => {
 
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://ckeditor.com" rel="noopener noreferrer" target="_blank">' +
 							'<img alt="alt text" src="/assets/sample.png"></img>' +
@@ -906,7 +908,7 @@ describe( 'LinkImageEditing', () => {
 
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://ckeditor.com" rel="noopener noreferrer" target="_blank">' +
 							'<img alt="alt text" src="/assets/sample.png"></img>' +
@@ -986,10 +988,10 @@ describe( 'LinkImageEditing', () => {
 						);
 
 						expect( _getModelData( model, { withoutSelection: true } ) )
-							.to.equal( `<imageBlock linkHref="${ link.url }" src="/assets/sample.png"></imageBlock>` );
+							.toBe( `<imageBlock linkHref="${ link.url }" src="/assets/sample.png"></imageBlock>` );
 
 						// Downcast check.
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toBe(
 							'<figure class="image">' +
 								`<a href="${ link.url }">` +
 									'<img src="/assets/sample.png">' +
@@ -1027,11 +1029,11 @@ describe( 'LinkImageEditing', () => {
 						);
 
 						expect( _getModelData( model, { withoutSelection: true } ) )
-							.to.equal( `<imageBlock linkHref="${ link.url }" src="/assets/sample.png"></imageBlock>` );
+							.toBe( `<imageBlock linkHref="${ link.url }" src="/assets/sample.png"></imageBlock>` );
 
 						// Downcast check.
 						if ( link.external ) {
-							expect( editor.getData() ).to.equal(
+							expect( editor.getData() ).toBe(
 								'<figure class="image">' +
 									`<a href="${ link.url }" target="_blank" rel="noopener noreferrer">` +
 										'<img src="/assets/sample.png">' +
@@ -1039,7 +1041,7 @@ describe( 'LinkImageEditing', () => {
 								'</figure>'
 							);
 						} else {
-							expect( editor.getData() ).to.equal(
+							expect( editor.getData() ).toBe(
 								'<figure class="image">' +
 									`<a href="${ link.url }">` +
 										'<img src="/assets/sample.png">' +
@@ -1149,10 +1151,10 @@ describe( 'LinkImageEditing', () => {
 						editor.setData( `<a href="${ link.url }"><img src="/assets/sample.png"></a>` );
 
 						expect( _getModelData( model, { withoutSelection: true } ) )
-							.to.equal( `<imageBlock linkHref="${ link.url }" src="/assets/sample.png"></imageBlock>` );
+							.toBe( `<imageBlock linkHref="${ link.url }" src="/assets/sample.png"></imageBlock>` );
 
 						// Order of attributes is important, that's why this is assert is construct in such way.
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toBe(
 							'<figure class="image">' +
 								`<a ${ reducedAttr }>` +
 									'<img src="/assets/sample.png">' +
@@ -1226,7 +1228,7 @@ describe( 'LinkImageEditing', () => {
 					}
 				} );
 
-				expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'linkIsGallery' ) ).to.be.true;
+				expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'linkIsGallery' ) ).toBe( true );
 				await newEditor.destroy();
 			} );
 
@@ -1242,7 +1244,7 @@ describe( 'LinkImageEditing', () => {
 					}
 				} );
 
-				expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkIsGallery' ) ).to.be.true;
+				expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkIsGallery' ) ).toBe( true );
 				await newEditor.destroy();
 			} );
 
@@ -1256,7 +1258,7 @@ describe( 'LinkImageEditing', () => {
 					'</figure>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<imageBlock linkHref="url" linkIsDownloadable="true" linkIsExternal="true" ' +
 					'linkIsHighlighted="true" src="/assets/sample.png"></imageBlock>'
 				);
@@ -1273,7 +1275,7 @@ describe( 'LinkImageEditing', () => {
 					'</figure>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<imageBlock linkHref="url" linkIsExternal="true" src="/assets/sample.png"></imageBlock>'
 				);
 			} );
@@ -1298,7 +1300,7 @@ describe( 'LinkImageEditing', () => {
 					'</figure>'
 				);
 
-				expect( editor.getData() ).to.equal( '<figure class="image"><a href="url"><img src="/assets/sample.png"></a></figure>' );
+				expect( editor.getData() ).toBe( '<figure class="image"><a href="url"><img src="/assets/sample.png"></a></figure>' );
 			} );
 
 			it( 'should upcast the decorators when linked image (figure > a > img)', () => {
@@ -1318,7 +1320,7 @@ describe( 'LinkImageEditing', () => {
 					'</p>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<imageBlock alt="bar" ' +
 						'linkHref="https://cksource.com" ' +
 						'linkIsDownloadable="true" ' +
@@ -1349,7 +1351,7 @@ describe( 'LinkImageEditing', () => {
 					'</p>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<imageBlock alt="bar" ' +
 						'linkHref="https://cksource.com" ' +
 						'linkIsDownloadable="true" ' +
@@ -1391,7 +1393,7 @@ describe( 'LinkImageEditing', () => {
 					'</p>'
 				);
 
-				expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).toBe(
 					'<paragraph>' +
 						'foo ' +
 						'<$text linkHref="https://cksource.com" linkIsGallery="true">abc </$text>' +
@@ -1482,7 +1484,7 @@ describe( 'LinkImageEditing', () => {
 					linkIsHighlighted: true
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<figure class="image">' +
 						'<a class="gallery highlighted" style="text-decoration:underline;" href="https://cksource.com" ' +
 						'download="download" target="_blank" rel="noopener noreferrer">' +
@@ -1506,7 +1508,7 @@ describe( 'LinkImageEditing', () => {
 				);
 
 				// Verify if decorators are present in the view
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="gallery highlighted" download="download" href="https://cksource.com" ' +
 						'rel="noopener noreferrer" style="text-decoration:underline" target="_blank">' +
@@ -1522,7 +1524,7 @@ describe( 'LinkImageEditing', () => {
 					writer.setAttribute( 'linkIsDownloadable', undefined, image );
 				} );
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="gallery highlighted" href="https://cksource.com" ' +
 						'rel="noopener noreferrer" style="text-decoration:underline" target="_blank">' +
@@ -1535,7 +1537,7 @@ describe( 'LinkImageEditing', () => {
 					writer.setAttribute( 'linkIsExternal', undefined, image );
 				} );
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="gallery highlighted" href="https://cksource.com" style="text-decoration:underline">' +
 							'<img alt="bar" src="assets/sample.png"></img>' +
@@ -1547,7 +1549,7 @@ describe( 'LinkImageEditing', () => {
 					writer.setAttribute( 'linkIsGallery', undefined, image );
 				} );
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="highlighted" href="https://cksource.com" style="text-decoration:underline">' +
 							'<img alt="bar" src="assets/sample.png"></img>' +
@@ -1559,7 +1561,7 @@ describe( 'LinkImageEditing', () => {
 					writer.setAttribute( 'linkIsHighlighted', undefined, image );
 				} );
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="https://cksource.com">' +
 							'<img alt="bar" src="assets/sample.png"></img>' +
@@ -1590,9 +1592,9 @@ describe( 'LinkImageEditing', () => {
 						linkIsGallery: true,
 						linkIsHighlighted: true
 					} );
-				} ).to.not.throw();
+				} ).not.toThrow();
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<figure class="image">' +
 						'<img alt="bar" src="assets/sample.png">' +
 					'</figure>'
@@ -1616,7 +1618,7 @@ describe( 'LinkImageEditing', () => {
 						}
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<imageBlock linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></imageBlock>'
 					);
 				} );
@@ -1639,7 +1641,7 @@ describe( 'LinkImageEditing', () => {
 						}
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<imageBlock linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></imageBlock>'
 					);
 				} );
@@ -1699,7 +1701,7 @@ describe( 'LinkImageEditing', () => {
 					'<imageBlock src="/assets/sample.png" linkHref="http://target-test.com" linkManualTarget="true"></imageBlock>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://target-test.com" target="_self">' +
 							'<img src="/assets/sample.png"></img>' +
@@ -1713,7 +1715,7 @@ describe( 'LinkImageEditing', () => {
 					'<imageBlock src="/assets/sample.png" linkHref="http://target-test.com"></imageBlock>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://target-test.com" target="_blank">' +
 							'<img src="/assets/sample.png"></img>' +
@@ -1727,7 +1729,7 @@ describe( 'LinkImageEditing', () => {
 					'<imageBlock src="/assets/sample.png" linkHref="http://target-test.com" linkManualTarget="true"></imageBlock>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://target-test.com" target="_self">' +
 							'<img src="/assets/sample.png"></img>' +
@@ -1739,7 +1741,7 @@ describe( 'LinkImageEditing', () => {
 					writer.removeAttribute( 'linkManualTarget', model.document.getRoot().getChild( 0 ) );
 				} );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://target-test.com" target="_blank">' +
 							'<img src="/assets/sample.png"></img>' +
@@ -1753,7 +1755,7 @@ describe( 'LinkImageEditing', () => {
 					'<imageBlock src="/assets/sample.png" linkHref="http://target-test.com"></imageBlock>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://target-test.com" target="_blank">' +
 							'<img src="/assets/sample.png"></img>' +
@@ -1765,7 +1767,7 @@ describe( 'LinkImageEditing', () => {
 					writer.setAttribute( 'linkManualTarget', true, model.document.getRoot().getChild( 0 ) );
 				} );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://target-test.com" target="_self">' +
 							'<img src="/assets/sample.png"></img>' +
@@ -1779,7 +1781,7 @@ describe( 'LinkImageEditing', () => {
 					'<imageBlock src="/assets/sample.png" linkHref="http://rel-test.com" linkManualRel="true"></imageBlock>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://rel-test.com" rel="auto-value manual-value">' +
 							'<img src="/assets/sample.png"></img>' +

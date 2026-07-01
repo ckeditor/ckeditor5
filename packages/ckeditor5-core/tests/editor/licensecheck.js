@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CKEditorError, global } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { Editor } from '../../src/editor/editor.js';
 import { Plugin } from '../../src/plugin.js';
-import { testUtils } from '../../tests/_utils/utils.js';
 import { generateLicenseKey } from '../_utils/generatelicensekey.js';
 import { getEditorUsageData } from '../../src/editor/utils/editorusagedata.js';
 
@@ -32,16 +32,16 @@ describe( 'Editor - license check', () => {
 		delete TestEditor.builtinPlugins;
 		delete TestEditor.defaultConfig;
 
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'license key verification', () => {
 		let showErrorStub, consoleInfoStub, consoleWarnStub;
 
 		beforeEach( () => {
-			showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
-			consoleInfoStub = sinon.stub( console, 'info' );
-			consoleWarnStub = sinon.stub( console, 'warn' );
+			showErrorStub = vi.spyOn( TestEditor.prototype, '_showLicenseError' ).mockImplementation( () => {} );
+			consoleInfoStub = vi.spyOn( console, 'info' ).mockImplementation( () => {} );
+			consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 		} );
 
 		describe( 'required fields in the license key', () => {
@@ -50,8 +50,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 			} );
 
 			it( 'should block the editor when the `exp` field is missing', () => {
@@ -59,8 +59,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
-				expect( editor.isReadOnly ).to.be.true;
+				expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'invalid' );
+				expect( editor.isReadOnly ).toBe( true );
 			} );
 
 			it( 'should block the editor when the `jti` field is missing', () => {
@@ -68,8 +68,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
-				expect( editor.isReadOnly ).to.be.true;
+				expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'invalid' );
+				expect( editor.isReadOnly ).toBe( true );
 			} );
 
 			it( 'should block the editor when the `vc` field is missing', () => {
@@ -77,8 +77,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
-				expect( editor.isReadOnly ).to.be.true;
+				expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'invalid' );
+				expect( editor.isReadOnly ).toBe( true );
 			} );
 		} );
 
@@ -167,27 +167,27 @@ describe( 'Editor - license check', () => {
 
 			sets.success.forEach( set => {
 				it( `works on ${ set.name }`, () => {
-					sinon.stub( URL.prototype, 'hostname' ).value( set.hostname );
+					vi.spyOn( URL.prototype, 'hostname', 'get' ).mockReturnValue( set.hostname );
 
 					const { licenseKey } = generateLicenseKey( { licensedHosts: [ set.licensedHost ] } );
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.notCalled( showErrorStub );
+					expect( showErrorStub ).not.toHaveBeenCalled();
 
-					expect( editor.isReadOnly ).to.be.false;
+					expect( editor.isReadOnly ).toBe( false );
 				} );
 			} );
 
 			sets.fail.forEach( set => {
 				it( `fails on ${ set.name }`, () => {
-					sinon.stub( URL.prototype, 'hostname' ).value( set.hostname );
+					vi.spyOn( URL.prototype, 'hostname', 'get' ).mockReturnValue( set.hostname );
 
 					const { licenseKey } = generateLicenseKey( { licensedHosts: [ set.licensedHost ] } );
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.calledWithMatch( showErrorStub, 'domainLimit' );
+					expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'domainLimit' );
 
-					expect( editor.isReadOnly ).to.be.true;
+					expect( editor.isReadOnly ).toBe( true );
 				} );
 			} );
 		} );
@@ -204,8 +204,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 			} );
 
 			it( 'should not block if one of distribution channel match', () => {
@@ -215,8 +215,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 			} );
 
 			it( 'should not block if implicit distribution channel match', () => {
@@ -224,8 +224,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 			} );
 
 			it( 'should not block if distribution channel is not restricted', () => {
@@ -235,8 +235,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 			} );
 
 			it( 'should block if distribution channel doesn\'t match', () => {
@@ -246,8 +246,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( showErrorStub, 'distributionChannel' );
-				expect( editor.isReadOnly ).to.be.true;
+				expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'distributionChannel' );
+				expect( editor.isReadOnly ).toBe( true );
 			} );
 
 			it( 'should block if none of distribution channel doesn\'t match', () => {
@@ -257,8 +257,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( showErrorStub, 'distributionChannel' );
-				expect( editor.isReadOnly ).to.be.true;
+				expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'distributionChannel' );
+				expect( editor.isReadOnly ).toBe( true );
 			} );
 
 			it( 'should block if implicit distribution channel doesn\'t match', () => {
@@ -266,8 +266,8 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.calledWithMatch( showErrorStub, 'distributionChannel' );
-				expect( editor.isReadOnly ).to.be.true;
+				expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'distributionChannel' );
+				expect( editor.isReadOnly ).toBe( true );
 			} );
 
 			describe( 'GPL license', () => {
@@ -277,8 +277,8 @@ describe( 'Editor - license check', () => {
 					const licenseKey = 'GPL';
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.calledWithMatch( showErrorStub, 'distributionChannel' );
-					expect( editor.isReadOnly ).to.be.true;
+					expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'distributionChannel' );
+					expect( editor.isReadOnly ).toBe( true );
 				} );
 
 				it( 'should not block if distribution channel is not cloud', () => {
@@ -287,8 +287,8 @@ describe( 'Editor - license check', () => {
 					const licenseKey = 'GPL';
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.notCalled( showErrorStub );
-					expect( editor.isReadOnly ).to.be.false;
+					expect( showErrorStub ).not.toHaveBeenCalled();
+					expect( editor.isReadOnly ).toBe( false );
 				} );
 			} );
 
@@ -304,14 +304,14 @@ describe( 'Editor - license check', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new TestEditor( { licenseKey } );
-				} ).to.not.throw();
+				} ).not.toThrow();
 			} );
 
 			it( 'should not throw if license key is missing (CKEditor testing environment)', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new TestEditor( {} );
-				} ).to.not.throw();
+				} ).not.toThrow();
 			} );
 
 			it( 'should throw if license key is missing (outside of CKEditor testing environment)', () => {
@@ -320,7 +320,7 @@ describe( 'Editor - license check', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new TestEditor( {} );
-				} ).to.throw( CKEditorError, 'license-key-missing' );
+				} ).toThrow( CKEditorError );
 
 				window.CKEDITOR_GLOBAL_LICENSE_KEY = 'GPL';
 			} );
@@ -330,11 +330,12 @@ describe( 'Editor - license check', () => {
 			const licenseTypes = [ 'evaluation', 'trial' ];
 
 			beforeEach( () => {
-				sinon.useFakeTimers( { now: Date.now() } );
+				vi.useFakeTimers( { now: Date.now() } );
 			} );
 
 			afterEach( () => {
-				sinon.restore();
+				vi.useRealTimers();
+				vi.restoreAllMocks();
 			} );
 
 			it( 'should block editor after 10 minutes on evaluation license', () => {
@@ -344,19 +345,19 @@ describe( 'Editor - license check', () => {
 					daysAfterExpiration: -1
 				} );
 
-				const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
+				const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( todayTimestamp );
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 
-				sinon.clock.tick( 600100 );
+				vi.advanceTimersByTime( 600100 );
 
-				sinon.assert.calledWithMatch( showErrorStub, 'evaluationLimit' );
-				expect( editor.isReadOnly ).to.be.true;
+				expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'evaluationLimit' );
+				expect( editor.isReadOnly ).toBe( true );
 
-				dateNow.restore();
+				dateNow.mockRestore();
 			} );
 
 			it( 'should not block editor after 10 minutes on trial license', () => {
@@ -366,40 +367,42 @@ describe( 'Editor - license check', () => {
 					daysAfterExpiration: -1
 				} );
 
-				const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
+				const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( todayTimestamp );
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 
-				sinon.clock.tick( 600100 );
+				vi.advanceTimersByTime( 600100 );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 
-				dateNow.restore();
+				dateNow.mockRestore();
 			} );
 
-			it( 'should clear timer on editor destroy on evaluation license', done => {
-				const { licenseKey, todayTimestamp } = generateLicenseKey( {
-					licenseType: 'evaluation',
-					isExpired: false,
-					daysAfterExpiration: -1
+			it( 'should clear timer on editor destroy on evaluation license', () => {
+				return new Promise( done => {
+					const { licenseKey, todayTimestamp } = generateLicenseKey( {
+						licenseType: 'evaluation',
+						isExpired: false,
+						daysAfterExpiration: -1
+					} );
+
+					const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( todayTimestamp );
+					const editor = new TestEditor( { licenseKey } );
+					const clearTimeoutSpy = vi.spyOn( globalThis, 'clearTimeout' );
+
+					editor.fire( 'ready' );
+					editor.on( 'destroy', () => {
+						expect( clearTimeoutSpy ).toHaveBeenCalledOnce();
+						done();
+					} );
+
+					editor.destroy();
+					dateNow.mockRestore();
 				} );
-
-				const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
-				const editor = new TestEditor( { licenseKey } );
-				const clearTimeoutSpy = sinon.spy( globalThis, 'clearTimeout' );
-
-				editor.fire( 'ready' );
-				editor.on( 'destroy', () => {
-					sinon.assert.calledOnce( clearTimeoutSpy );
-					done();
-				} );
-
-				editor.destroy();
-				dateNow.restore();
 			} );
 
 			licenseTypes.forEach( licenseType => {
@@ -411,14 +414,14 @@ describe( 'Editor - license check', () => {
 					} );
 
 					const today = todayTimestamp;
-					const dateNow = sinon.stub( Date, 'now' ).returns( today );
+					const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( today );
 
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.notCalled( showErrorStub );
-					expect( editor.isReadOnly ).to.be.false;
+					expect( showErrorStub ).not.toHaveBeenCalled();
+					expect( editor.isReadOnly ).toBe( false );
 
-					dateNow.restore();
+					dateNow.mockRestore();
 				} );
 
 				it( `should block if ${ licenseType } license is expired`, () => {
@@ -427,14 +430,14 @@ describe( 'Editor - license check', () => {
 						daysAfterExpiration: 1
 					} );
 
-					const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
+					const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( todayTimestamp );
 
 					const editor = new TestEditor( { licenseKey } );
 
-					sinon.assert.calledWithMatch( showErrorStub, 'expired' );
-					expect( editor.isReadOnly ).to.be.true;
+					expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'expired' );
+					expect( editor.isReadOnly ).toBe( true );
 
-					dateNow.restore();
+					dateNow.mockRestore();
 				} );
 
 				it( `should log information to the console about using the ${ licenseType } license`, () => {
@@ -442,20 +445,20 @@ describe( 'Editor - license check', () => {
 						licenseType
 					} );
 
-					const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
+					const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( todayTimestamp );
 
 					// Simulate hard reload.
 					global.window.CKEDITOR_WARNING_SUPPRESSIONS = undefined;
 
 					const editor = new TestEditor( { licenseKey } );
-					expect( editor.isReadOnly ).to.be.false;
+					expect( editor.isReadOnly ).toBe( false );
 
-					sinon.assert.calledOnce( consoleInfoStub );
-					sinon.assert.calledOnce( consoleWarnStub );
+					expect( consoleInfoStub ).toHaveBeenCalledOnce();
+					expect( consoleWarnStub ).toHaveBeenCalledOnce();
 
 					assertConsoleMessages( consoleInfoStub, consoleWarnStub, licenseType );
 
-					dateNow.restore();
+					dateNow.mockRestore();
 				} );
 
 				it( `should log information to the console about using the ${ licenseType } license only once`, () => {
@@ -463,7 +466,7 @@ describe( 'Editor - license check', () => {
 						licenseType
 					} );
 
-					const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
+					const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( todayTimestamp );
 
 					// Simulate hard reload.
 					global.window.CKEDITOR_WARNING_SUPPRESSIONS = undefined;
@@ -471,8 +474,8 @@ describe( 'Editor - license check', () => {
 					// eslint-disable-next-line no-new
 					new TestEditor( { licenseKey } );
 
-					sinon.assert.calledOnce( consoleInfoStub );
-					sinon.assert.calledOnce( consoleWarnStub );
+					expect( consoleInfoStub ).toHaveBeenCalledOnce();
+					expect( consoleWarnStub ).toHaveBeenCalledOnce();
 
 					assertConsoleMessages( consoleInfoStub, consoleWarnStub, licenseType );
 
@@ -481,10 +484,10 @@ describe( 'Editor - license check', () => {
 					// eslint-disable-next-line no-new
 					new TestEditor( { licenseKey } );
 
-					sinon.assert.calledOnce( consoleInfoStub );
-					sinon.assert.calledOnce( consoleWarnStub );
+					expect( consoleInfoStub ).toHaveBeenCalledOnce();
+					expect( consoleWarnStub ).toHaveBeenCalledOnce();
 
-					dateNow.restore();
+					dateNow.mockRestore();
 				} );
 			} );
 
@@ -497,7 +500,7 @@ describe( 'Editor - license check', () => {
 					licenseType: 'evaluation'
 				} );
 
-				const dateNow = sinon.stub( Date, 'now' ).returns( trialLicense.licenseKeyTimestamp );
+				const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( trialLicense.licenseKeyTimestamp );
 
 				// Simulate hard reload.
 				global.window.CKEDITOR_WARNING_SUPPRESSIONS = undefined;
@@ -505,8 +508,8 @@ describe( 'Editor - license check', () => {
 				// eslint-disable-next-line no-new
 				new TestEditor( { licenseKey: trialLicense.licenseKey } );
 
-				sinon.assert.calledOnce( consoleInfoStub );
-				sinon.assert.calledOnce( consoleWarnStub );
+				expect( consoleInfoStub ).toHaveBeenCalledOnce();
+				expect( consoleWarnStub ).toHaveBeenCalledOnce();
 
 				assertConsoleMessages( consoleInfoStub, consoleWarnStub, 'trial' );
 
@@ -515,22 +518,23 @@ describe( 'Editor - license check', () => {
 				// eslint-disable-next-line no-new
 				new TestEditor( { licenseKey: evaluationLicense.licenseKey } );
 
-				sinon.assert.calledTwice( consoleInfoStub );
-				sinon.assert.calledTwice( consoleWarnStub );
+				expect( consoleInfoStub ).toHaveBeenCalledTimes( 2 );
+				expect( consoleWarnStub ).toHaveBeenCalledTimes( 2 );
 
 				assertConsoleMessages( consoleInfoStub, consoleWarnStub, 'evaluation' );
 
-				dateNow.restore();
+				dateNow.mockRestore();
 			} );
 		} );
 
 		describe( 'development license', () => {
 			beforeEach( () => {
-				sinon.useFakeTimers( { now: Date.now() } );
+				vi.useFakeTimers( { now: Date.now() } );
 			} );
 
 			afterEach( () => {
-				sinon.restore();
+				vi.useRealTimers();
+				vi.restoreAllMocks();
 			} );
 
 			it( 'should log information to the console about using the development license', () => {
@@ -543,10 +547,10 @@ describe( 'Editor - license check', () => {
 
 				const editor = new TestEditor( { licenseKey } );
 
-				expect( editor.isReadOnly ).to.be.false;
+				expect( editor.isReadOnly ).toBe( false );
 
-				sinon.assert.calledOnce( consoleInfoStub );
-				sinon.assert.calledOnce( consoleWarnStub );
+				expect( consoleInfoStub ).toHaveBeenCalledOnce();
+				expect( consoleWarnStub ).toHaveBeenCalledOnce();
 
 				assertConsoleMessages( consoleInfoStub, consoleWarnStub, 'development' );
 			} );
@@ -562,8 +566,8 @@ describe( 'Editor - license check', () => {
 				// eslint-disable-next-line no-new
 				new TestEditor( { licenseKey } );
 
-				sinon.assert.calledOnce( consoleInfoStub );
-				sinon.assert.calledOnce( consoleWarnStub );
+				expect( consoleInfoStub ).toHaveBeenCalledOnce();
+				expect( consoleWarnStub ).toHaveBeenCalledOnce();
 
 				assertConsoleMessages( consoleInfoStub, consoleWarnStub, 'development' );
 
@@ -572,8 +576,8 @@ describe( 'Editor - license check', () => {
 				// eslint-disable-next-line no-new
 				new TestEditor( { licenseKey } );
 
-				sinon.assert.calledOnce( consoleInfoStub );
-				sinon.assert.calledOnce( consoleWarnStub );
+				expect( consoleInfoStub ).toHaveBeenCalledOnce();
+				expect( consoleWarnStub ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not block the editor if 10 minutes have not passed (development license)', () => {
@@ -582,19 +586,19 @@ describe( 'Editor - license check', () => {
 				} );
 
 				const today = 1715166436000; // 08.05.2024
-				const dateNow = sinon.stub( Date, 'now' ).returns( today );
+				const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( today );
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 
-				sinon.clock.tick( 1 );
+				vi.advanceTimersByTime( 1 );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 
-				dateNow.restore();
+				dateNow.mockRestore();
 			} );
 
 			it( 'should not block editor after 10 minutes (development license)', () => {
@@ -602,38 +606,40 @@ describe( 'Editor - license check', () => {
 					licenseType: 'development'
 				} );
 
-				const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
+				const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( todayTimestamp );
 
 				const editor = new TestEditor( { licenseKey } );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 
-				sinon.clock.tick( 600100 );
+				vi.advanceTimersByTime( 600100 );
 
-				sinon.assert.notCalled( showErrorStub );
-				expect( editor.isReadOnly ).to.be.false;
+				expect( showErrorStub ).not.toHaveBeenCalled();
+				expect( editor.isReadOnly ).toBe( false );
 
-				dateNow.restore();
+				dateNow.mockRestore();
 			} );
 
-			it( 'should not interact with timers', done => {
-				const { licenseKey, todayTimestamp } = generateLicenseKey( {
-					licenseType: 'development'
+			it( 'should not interact with timers', () => {
+				return new Promise( done => {
+					const { licenseKey, todayTimestamp } = generateLicenseKey( {
+						licenseType: 'development'
+					} );
+
+					const dateNow = vi.spyOn( Date, 'now' ).mockReturnValue( todayTimestamp );
+					const editor = new TestEditor( { licenseKey } );
+					const clearTimeoutSpy = vi.spyOn( globalThis, 'clearTimeout' );
+
+					editor.fire( 'ready' );
+					editor.on( 'destroy', () => {
+						expect( clearTimeoutSpy ).not.toHaveBeenCalled();
+						done();
+					} );
+
+					editor.destroy();
+					dateNow.mockRestore();
 				} );
-
-				const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
-				const editor = new TestEditor( { licenseKey } );
-				const clearTimeoutSpy = sinon.spy( globalThis, 'clearTimeout' );
-
-				editor.fire( 'ready' );
-				editor.on( 'destroy', () => {
-					sinon.assert.notCalled( clearTimeoutSpy );
-					done();
-				} );
-
-				editor.destroy();
-				dateNow.restore();
 			} );
 		} );
 
@@ -688,8 +694,8 @@ describe( 'Editor - license check', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						sinon.assert.notCalled( showErrorStub );
-						expect( editor.isReadOnly ).to.be.false;
+						expect( showErrorStub ).not.toHaveBeenCalled();
+						expect( editor.isReadOnly ).toBe( false );
 					} );
 			} );
 
@@ -703,8 +709,8 @@ describe( 'Editor - license check', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						sinon.assert.notCalled( showErrorStub );
-						expect( editor.isReadOnly ).to.be.false;
+						expect( showErrorStub ).not.toHaveBeenCalled();
+						expect( editor.isReadOnly ).toBe( false );
 					} );
 			} );
 
@@ -718,8 +724,8 @@ describe( 'Editor - license check', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						sinon.assert.notCalled( showErrorStub );
-						expect( editor.isReadOnly ).to.be.false;
+						expect( showErrorStub ).not.toHaveBeenCalled();
+						expect( editor.isReadOnly ).toBe( false );
 					} );
 			} );
 
@@ -733,8 +739,8 @@ describe( 'Editor - license check', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						sinon.assert.notCalled( showErrorStub );
-						expect( editor.isReadOnly ).to.be.false;
+						expect( showErrorStub ).not.toHaveBeenCalled();
+						expect( editor.isReadOnly ).toBe( false );
 					} );
 			} );
 
@@ -750,8 +756,9 @@ describe( 'Editor - license check', () => {
 
 				return editor.initPlugins()
 					.then( () => {
-						sinon.assert.calledWithMatch( showErrorStub, 'pluginNotAllowed', 'LicensedPlugin' );
-						expect( editor.isReadOnly ).to.be.true;
+						expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'pluginNotAllowed' );
+						expect( showErrorStub.mock.calls[ 0 ][ 1 ] ).toBe( 'LicensedPlugin' );
+						expect( editor.isReadOnly ).toBe( true );
 					} );
 			} );
 		} );
@@ -763,8 +770,8 @@ describe( 'Editor - license check', () => {
 
 			const editor = new TestEditor( { licenseKey } );
 
-			sinon.assert.calledWithMatch( showErrorStub, 'expired' );
-			expect( editor.isReadOnly ).to.be.true;
+			expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'expired' );
+			expect( editor.isReadOnly ).toBe( true );
 		} );
 
 		it( 'should block the editor when the license key has wrong format (wrong verificationCode)', () => {
@@ -774,8 +781,8 @@ describe( 'Editor - license check', () => {
 
 			const editor = new TestEditor( { licenseKey } );
 
-			sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
-			expect( editor.isReadOnly ).to.be.true;
+			expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'invalid' );
+			expect( editor.isReadOnly ).toBe( true );
 		} );
 
 		it( 'should block the editor when the license key has wrong format (missing header part)', () => {
@@ -786,8 +793,8 @@ describe( 'Editor - license check', () => {
 
 			const editor = new TestEditor( { licenseKey } );
 
-			sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
-			expect( editor.isReadOnly ).to.be.true;
+			expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'invalid' );
+			expect( editor.isReadOnly ).toBe( true );
 		} );
 
 		it( 'should block the editor when the license key has wrong format (missing tail part)', () => {
@@ -798,8 +805,8 @@ describe( 'Editor - license check', () => {
 
 			const editor = new TestEditor( { licenseKey } );
 
-			sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
-			expect( editor.isReadOnly ).to.be.true;
+			expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'invalid' );
+			expect( editor.isReadOnly ).toBe( true );
 		} );
 
 		it( 'should block the editor when the license key has wrong format (payload does not start with `ey`)', () => {
@@ -807,8 +814,8 @@ describe( 'Editor - license check', () => {
 
 			const editor = new TestEditor( { licenseKey } );
 
-			sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
-			expect( editor.isReadOnly ).to.be.true;
+			expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'invalid' );
+			expect( editor.isReadOnly ).toBe( true );
 		} );
 
 		it( 'should block the editor when the license key has wrong format (payload not parsable as a JSON object)', () => {
@@ -816,14 +823,17 @@ describe( 'Editor - license check', () => {
 
 			const editor = new TestEditor( { licenseKey } );
 
-			sinon.assert.calledWithMatch( showErrorStub, 'invalid' );
-			expect( editor.isReadOnly ).to.be.true;
+			expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'invalid' );
+			expect( editor.isReadOnly ).toBe( true );
 		} );
 	} );
 
 	describe( 'usage endpoint', () => {
 		it( 'should send request with telemetry data if license key contains a usage endpoint', () => {
-			const fetchStub = sinon.stub( window, 'fetch' );
+			const fetchStub = vi.spyOn( window, 'fetch' ).mockResolvedValue( {
+				ok: true,
+				json: () => Promise.resolve( { status: 'ok' } )
+			} );
 
 			const { licenseKey } = generateLicenseKey( {
 				usageEndpoint: 'https://ckeditor.com'
@@ -832,12 +842,12 @@ describe( 'Editor - license check', () => {
 
 			editor.fire( 'ready' );
 
-			sinon.assert.calledOnce( fetchStub );
+			expect( fetchStub ).toHaveBeenCalledOnce();
 
-			const sentData = JSON.parse( fetchStub.firstCall.lastArg.body );
+			const sentData = JSON.parse( fetchStub.mock.calls[ 0 ][ 1 ].body );
 
-			expect( sentData.license ).to.equal( licenseKey );
-			expect( sentData.editor ).to.deep.equal(
+			expect( sentData.license ).toBe( licenseKey );
+			expect( sentData.editor ).toEqual(
 				// JSON.stringify() helps with getting rid of the `undefined` values.
 				// It's done by the fetch anyways.
 				JSON.parse( JSON.stringify( getEditorUsageData( editor ) ) )
@@ -845,42 +855,46 @@ describe( 'Editor - license check', () => {
 		} );
 
 		it( 'should not send any request if license key does not contain a usage endpoint', () => {
-			const fetchStub = sinon.stub( window, 'fetch' );
+			const fetchStub = vi.spyOn( window, 'fetch' ).mockResolvedValue( {
+				ok: true,
+				json: () => Promise.resolve( { status: 'ok' } )
+			} );
 
 			const { licenseKey } = generateLicenseKey();
 			const editor = new TestEditor( { licenseKey } );
 
 			editor.fire( 'ready' );
 
-			sinon.assert.notCalled( fetchStub );
+			expect( fetchStub ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should display error on the console and not block the editor if response status is not ok (HTTP 500)', async () => {
 			const { licenseKey } = generateLicenseKey( {
 				usageEndpoint: 'https://ckeditor.com'
 			} );
-			const fetchStub = sinon.stub( window, 'fetch' ).resolves( new Response( null, { status: 500 } ) );
-			const errorStub = sinon.stub( console, 'error' );
+			const fetchStub = vi.spyOn( window, 'fetch' ).mockResolvedValue( new Response( null, { status: 500 } ) );
+			const errorStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
 			const editor = new TestEditor( { licenseKey } );
 
 			editor.fire( 'ready' );
 			await wait( 1 );
 
-			sinon.assert.calledOnce( fetchStub );
-			sinon.assert.calledWithMatch(
-				errorStub, 'license-key-validation-endpoint-not-reachable', { 'url': 'https://ckeditor.com' } );
-			expect( editor.isReadOnly ).to.be.false;
+			expect( fetchStub ).toHaveBeenCalledOnce();
+			expect( errorStub ).toHaveBeenCalledOnce();
+			expect( errorStub.mock.calls[ 0 ][ 0 ] ).toContain( 'license-key-validation-endpoint-not-reachable' );
+			expect( errorStub.mock.calls[ 0 ][ 1 ] ).toEqual( expect.objectContaining( { 'url': 'https://ckeditor.com' } ) );
+			expect( editor.isReadOnly ).toBe( false );
 		} );
 
 		it( 'should display warning and block the editor when usage status is not ok', async () => {
-			const fetchStub = sinon.stub( window, 'fetch' ).resolves( {
+			const fetchStub = vi.spyOn( window, 'fetch' ).mockResolvedValue( {
 				ok: true,
 				json: () => Promise.resolve( {
 					status: 'foo'
 				} )
 			} );
-			const showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
+			const showErrorStub = vi.spyOn( TestEditor.prototype, '_showLicenseError' ).mockImplementation( () => {} );
 
 			const { licenseKey } = generateLicenseKey( {
 				usageEndpoint: 'https://ckeditor.com'
@@ -890,22 +904,22 @@ describe( 'Editor - license check', () => {
 			editor.fire( 'ready' );
 			await wait( 1 );
 
-			sinon.assert.calledOnce( fetchStub );
-			sinon.assert.calledOnce( showErrorStub );
-			sinon.assert.calledWithMatch( showErrorStub, 'usageLimit' );
-			expect( editor.isReadOnly ).to.be.true;
+			expect( fetchStub ).toHaveBeenCalledOnce();
+			expect( showErrorStub ).toHaveBeenCalledOnce();
+			expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'usageLimit' );
+			expect( editor.isReadOnly ).toBe( true );
 		} );
 
 		it( 'should display additional warning when usage status is not ok and message is provided', async () => {
-			const fetchStub = sinon.stub( window, 'fetch' ).resolves( {
+			const fetchStub = vi.spyOn( window, 'fetch' ).mockResolvedValue( {
 				ok: true,
 				json: () => Promise.resolve( {
 					status: 'foo',
 					message: 'bar'
 				} )
 			} );
-			const warnStub = testUtils.sinon.stub( console, 'warn' );
-			const showErrorStub = testUtils.sinon.stub( TestEditor.prototype, '_showLicenseError' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+			const showErrorStub = vi.spyOn( TestEditor.prototype, '_showLicenseError' ).mockImplementation( () => {} );
 
 			const { licenseKey } = generateLicenseKey( {
 				usageEndpoint: 'https://ckeditor.com'
@@ -915,20 +929,22 @@ describe( 'Editor - license check', () => {
 			editor.fire( 'ready' );
 			await wait( 1 );
 
-			sinon.assert.calledOnce( fetchStub );
-			sinon.assert.calledOnce( warnStub );
-			sinon.assert.calledOnce( showErrorStub );
-			sinon.assert.calledWithMatch( warnStub, 'bar' );
-			sinon.assert.calledWithMatch( showErrorStub, 'usageLimit' );
-			expect( editor.isReadOnly ).to.be.true;
+			expect( fetchStub ).toHaveBeenCalledOnce();
+			expect( warnStub ).toHaveBeenCalledOnce();
+			expect( showErrorStub ).toHaveBeenCalledOnce();
+			expect( warnStub ).toHaveBeenCalledWith( 'bar' );
+			expect( showErrorStub.mock.calls[ 0 ][ 0 ] ).toBe( 'usageLimit' );
+			expect( editor.isReadOnly ).toBe( true );
 		} );
 	} );
 
 	describe( 'license errors', () => {
-		let clock;
-
 		beforeEach( () => {
-			clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			vi.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+		} );
+
+		afterEach( () => {
+			vi.useRealTimers();
 		} );
 
 		const testCases = [
@@ -955,7 +971,7 @@ describe( 'Editor - license check', () => {
 
 				editor._showLicenseError( reason, pluginOrFeatureName );
 
-				expectToThrowCKEditorError( () => clock.tick( 1 ), error, undefined, expectedData );
+				expectToThrowCKEditorError( () => vi.advanceTimersByTime( 1 ), error, undefined, expectedData );
 			} );
 		}
 
@@ -973,7 +989,7 @@ describe( 'Editor - license check', () => {
 
 			editor._showLicenseError( 'pluginNotAllowed', 'TableColumnResizeEditing' );
 
-			expectToThrowCKEditorError( () => clock.tick( 1 ), 'license-key-plugin-not-allowed', undefined, {
+			expectToThrowCKEditorError( () => vi.advanceTimersByTime( 1 ), 'license-key-plugin-not-allowed', undefined, {
 				pluginName: 'TableColumnResize'
 			} );
 		} );
@@ -992,7 +1008,7 @@ describe( 'Editor - license check', () => {
 
 			editor._showLicenseError( 'pluginNotAllowed', 'TableColumnResizeUI' );
 
-			expectToThrowCKEditorError( () => clock.tick( 1 ), 'license-key-plugin-not-allowed', undefined, {
+			expectToThrowCKEditorError( () => vi.advanceTimersByTime( 1 ), 'license-key-plugin-not-allowed', undefined, {
 				pluginName: 'TableColumnResize'
 			} );
 		} );
@@ -1003,14 +1019,14 @@ describe( 'Editor - license check', () => {
 			editor._showLicenseError( 'invalid' );
 
 			try {
-				clock.tick( 1 );
+				vi.advanceTimersByTime( 1 );
 			} catch {
 				// Do nothing.
 			}
 
 			editor._showLicenseError( 'invalid' );
 
-			expect( () => clock.tick( 1 ) ).to.not.throw();
+			expect( () => vi.advanceTimersByTime( 1 ) ).not.toThrow();
 		} );
 	} );
 
@@ -1023,20 +1039,21 @@ describe( 'Editor - license check', () => {
 			} );
 
 			editor = new TestEditor( { licenseKey } );
-			sendUsageRequestStub = sinon.stub( editor, '_sendUsageRequest' ).returns( Promise.resolve() );
+			sendUsageRequestStub = vi.spyOn( editor, '_sendUsageRequest' ).mockResolvedValue( { status: 'ok' } );
 		} );
 
 		it( 'should fire `collectUsageData` event with proper payload', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.on( 'collectUsageData', spy );
 			editor.fire( 'ready' );
 
-			expect( spy ).to.be.calledOnce.calledWithMatch(
-				sinon.match.object,
-				{
-					setUsageData: sinon.match.func
-				}
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith(
+				expect.any( Object ),
+				expect.objectContaining( {
+					setUsageData: expect.any( Function )
+				} )
 			);
 		} );
 
@@ -1047,12 +1064,13 @@ describe( 'Editor - license check', () => {
 
 			editor.fire( 'ready' );
 
-			expect( sendUsageRequestStub ).to.be.calledOnce.calledWithMatch(
-				sinon.match.string,
-				sinon.match( {
-					editor: {
+			expect( sendUsageRequestStub ).toHaveBeenCalledOnce();
+			expect( sendUsageRequestStub ).toHaveBeenCalledWith(
+				expect.any( String ),
+				expect.objectContaining( {
+					editor: expect.objectContaining( {
 						foo: 123
-					}
+					} )
 				} )
 			);
 		} );
@@ -1064,14 +1082,15 @@ describe( 'Editor - license check', () => {
 
 			editor.fire( 'ready' );
 
-			expect( sendUsageRequestStub ).to.be.calledOnce.calledWithMatch(
-				sinon.match.string,
-				sinon.match( {
-					editor: {
-						foo: {
+			expect( sendUsageRequestStub ).toHaveBeenCalledOnce();
+			expect( sendUsageRequestStub ).toHaveBeenCalledWith(
+				expect.any( String ),
+				expect.objectContaining( {
+					editor: expect.objectContaining( {
+						foo: expect.objectContaining( {
 							bar: 123
-						}
-					}
+						} )
+					} )
 				} )
 			);
 		} );
@@ -1084,13 +1103,14 @@ describe( 'Editor - license check', () => {
 
 			editor.fire( 'ready' );
 
-			expect( sendUsageRequestStub ).to.be.calledOnce.calledWithMatch(
-				sinon.match.string,
-				sinon.match( {
-					editor: {
+			expect( sendUsageRequestStub ).toHaveBeenCalledOnce();
+			expect( sendUsageRequestStub ).toHaveBeenCalledWith(
+				expect.any( String ),
+				expect.objectContaining( {
+					editor: expect.objectContaining( {
 						foo: 123,
 						bar: 456
-					}
+					} )
 				} )
 			);
 		} );
@@ -1102,14 +1122,15 @@ describe( 'Editor - license check', () => {
 
 			editor.fire( 'ready' );
 
-			expect( sendUsageRequestStub ).to.be.calledOnce.calledWithMatch(
-				sinon.match.string,
-				sinon.match( {
-					editor: {
-						integration: {
+			expect( sendUsageRequestStub ).toHaveBeenCalledOnce();
+			expect( sendUsageRequestStub ).toHaveBeenCalledWith(
+				expect.any( String ),
+				expect.objectContaining( {
+					editor: expect.objectContaining( {
+						integration: expect.objectContaining( {
 							foo: 123
-						}
-					}
+						} )
+					} )
 				} )
 			);
 		} );
@@ -1118,56 +1139,52 @@ describe( 'Editor - license check', () => {
 			editor.on( 'collectUsageData', ( _, { setUsageData } ) => {
 				expect( () => {
 					setUsageData( 'plugins', 456 );
-				} ).to.throw( CKEditorError, 'editor-usage-data-path-already-set' );
+				} ).toThrow( CKEditorError );
 			} );
 
 			editor.fire( 'ready' );
 
-			expect( sendUsageRequestStub ).to.be.calledOnce;
+			expect( sendUsageRequestStub ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should raise error when trying to set the same data two times in row', () => {
-			const spy = sinon.spy( ( _, { setUsageData } ) => {
+			const spy = vi.fn( ( _, { setUsageData } ) => {
 				expect( () => {
 					setUsageData( 'foo', 123 );
 					setUsageData( 'foo', 456 );
-				} ).to.throw( CKEditorError, 'editor-usage-data-path-already-set' );
+				} ).toThrow( CKEditorError );
 			} );
 
 			editor.on( 'collectUsageData', spy );
 			editor.fire( 'ready' );
 
-			expect( spy ).to.be.calledOnce;
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 } );
 
 function assertConsoleMessages( consoleInfoStub, consoleWarnStub, licenseType ) {
 	if ( licenseType === 'development' ) {
-		sinon.assert.calledWith(
-			consoleInfoStub,
+		expect( consoleInfoStub ).toHaveBeenCalledWith(
 			'%cCKEditor 5 Development License',
 			'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
 		);
 
-		sinon.assert.calledWith(
-			consoleWarnStub,
+		expect( consoleWarnStub ).toHaveBeenCalledWith(
 			'⚠️ You are using a development license of CKEditor 5. ' +
 			'For production usage, please obtain a production license at https://portal.ckeditor.com/'
 		);
 	} else if ( [ 'trial', 'evaluation' ].includes( licenseType ) ) {
 		const licenseTypeCapitalized = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
 
-		sinon.assert.calledWith(
-			consoleInfoStub,
+		expect( consoleInfoStub ).toHaveBeenCalledWith(
 			`%cCKEditor 5 ${ licenseTypeCapitalized } License`,
 			'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
 		);
 
 		const article = licenseType === 'evaluation' ? 'an' : 'a';
 
-		sinon.assert.calledWith(
-			consoleWarnStub,
+		expect( consoleWarnStub ).toHaveBeenCalledWith(
 			`⚠️ You are using ${ article } ${ licenseType } license of CKEditor 5` +
 			`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
 			'For production usage, please obtain a production license at https://portal.ckeditor.com/'

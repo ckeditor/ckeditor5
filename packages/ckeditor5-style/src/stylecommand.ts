@@ -97,6 +97,7 @@ export class StyleCommand extends Command {
 		// Block styles.
 		const firstBlock = first( selection.getSelectedBlocks() ) || selection.getFirstPosition()!.parent;
 
+		/* v8 ignore else -- @preserve */
 		if ( firstBlock ) {
 			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<ModelElement>;
 

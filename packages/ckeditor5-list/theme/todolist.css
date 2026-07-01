@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,7 +7,6 @@
 	--ck-content-todo-list-checkmark-size: 16px;
 }
 
-/* stylelint-disable no-descending-specificity */
 .ck-content .todo-list .todo-list__label > input,
 .ck-editor__editable.ck-content .todo-list .todo-list__label > span[contenteditable=false] > input {
 	-webkit-appearance: none;
@@ -132,4 +131,3 @@
 		}
 	}
 }
-/* stylelint-enable no-descending-specificity */

@@ -73,6 +73,12 @@ export function generateTests( config ) {
 	const groups = groupFixturesByBrowsers( config.browsers, config.input, config.skip, config.fixtures );
 	const generateSuiteFn = config.type === 'normalization' ? generateNormalizationTests : generateIntegrationTests;
 
+	const hasFixtures = Object.values( groups ).some( g => g !== null );
+
+	if ( !hasFixtures ) {
+		return;
+	}
+
 	describe( config.type, () => {
 		describe( config.input, () => {
 			const editorConfig = typeof config.editorConfig == 'function' ?
@@ -152,11 +158,20 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip, only )
 			editor = await VirtualTestEditor.create( await editorConfig() );
 
 			// Stub `editor.editing.view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-			sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+			if ( globalThis.vi ) {
+				globalThis.vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
+			} else {
+				globalThis.sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+			}
 		} );
 
 		afterEach( async () => {
-			sinon.restore();
+			if ( globalThis.vi ) {
+				globalThis.vi.restoreAllMocks();
+			} else {
+				globalThis.sinon.restore();
+			}
+
 			await editor.destroy();
 		} );
 
@@ -210,7 +225,8 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 		let element, editor;
 		let data = {};
 
-		before( async () => {
+		// `beforeAll` is Vitest's equivalent of Mocha's `before`. Use whichever is available.
+		( globalThis.beforeAll || globalThis.before )( async () => {
 			element = document.createElement( 'div' );
 
 			document.body.appendChild( element );
@@ -226,19 +242,33 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 
 			data = {};
 
-			sinon.stub( editorModel, 'insertContent' ).callsFake( ( content, selection ) => {
-				// Save model string representation now as it may change after `insertContent()` function call
-				// so accessing it later may not work as it may have emptied/changed structure.
-				data.actual = _stringifyModel( content );
-				insertContent.call( editorModel, content, selection );
-			} );
+			if ( globalThis.vi ) {
+				globalThis.vi.spyOn( editorModel, 'insertContent' ).mockImplementation( ( content, selection ) => {
+					// Save model string representation now as it may change after `insertContent()` function call
+					// so accessing it later may not work as it may have emptied/changed structure.
+					data.actual = _stringifyModel( content );
+					insertContent.call( editorModel, content, selection );
+				} );
+			} else {
+				globalThis.sinon.stub( editorModel, 'insertContent' ).callsFake( ( content, selection ) => {
+					// Save model string representation now as it may change after `insertContent()` function call
+					// so accessing it later may not work as it may have emptied/changed structure.
+					data.actual = _stringifyModel( content );
+					insertContent.call( editorModel, content, selection );
+				} );
+			}
 		} );
 
 		afterEach( () => {
-			sinon.restore();
+			if ( globalThis.vi ) {
+				globalThis.vi.restoreAllMocks();
+			} else {
+				globalThis.sinon.restore();
+			}
 		} );
 
-		after( () => {
+		// `afterAll` is Vitest's equivalent of Mocha's `after`. Use whichever is available.
+		( globalThis.afterAll || globalThis.after )( () => {
 			return editor.destroy()
 				.then( () => {
 					element.remove();
@@ -336,8 +366,8 @@ function compareContentWithBase64Images( actual, expected ) {
 	expect( actualModel.replace( /\u00A0/g, ' ' ) ).to.equalMarkup( expectedModel );
 
 	if ( actualImages.length > 0 && expectedImages.length > 0 ) {
-		expect( actualImages.length ).to.equal( expectedImages.length );
-		expect( actualImages ).to.deep.equal( expectedImages );
+		expect( actualImages.length ).toBe( expectedImages.length );
+		expect( actualImages ).toEqual( expectedImages );
 	}
 }
 

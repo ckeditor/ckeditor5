@@ -19,17 +19,19 @@ overrides:
   'diff@^7': '^8.0.3'
   'fast-xml-parser@^5': '^5.3.8'
   'http-proxy-agent@^5': '^6.1.1'
-  'lodash-es@^4': '^4.18.0'
   'lodash@^4': '^4.18.0'
   'markdown-it-toc': 'npm:@maboloshi/markdown-it-toc@1.1.1'
   'minimatch@^9': '^9.0.7'
   'path-to-regexp@^0': '^0.1.13'
-  'qs@^6': '^6.14.2'
+  'qs@^6': '^6.15.2'
   'serialize-javascript@^6': '^7.0.5'
   'uuid@^8': '^14.0.0'
   'uuid@^9': '^14.0.0'
   'uuid@^11': '^14.0.0'
   'yauzl@^2': '^3.2.1'
+  'ws@^8': '^8.20.1'
+  'js-cookie@^3': '^3.0.8'
+  'tmp@^0.2': '^0.2.7'
 
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
@@ -37,6 +39,13 @@ minimumReleaseAgeExclude:
   - '@cksource/*'
   - '*ckeditor5*'
   - 'umberto'
+
+  # Remove after 2026-06-04
+  - 'oxc-transform'
+  - '@oxc-transform/*'
+  # Remove after 2026-06-06
+  - vitest
+  - '@vitest/*'
 
 shellEmulator: true
 shamefullyHoist: true

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewRange } from '../../../src/view/range.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
@@ -30,7 +31,7 @@ describe( 'DowncastWriter', () => {
 
 			writer.clear( selection.getFirstRange(), elementToRemove );
 
-			expect( _stringifyView( view, null, { showType: true } ) ).to.equal( expectedResult );
+			expect( _stringifyView( view, null, { showType: true } ) ).toBe( expectedResult );
 		}
 
 		beforeEach( () => {

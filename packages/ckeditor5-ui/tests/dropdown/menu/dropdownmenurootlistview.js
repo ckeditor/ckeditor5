@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { DropdownMenuRootListView } from '../../../src/dropdown/menu/dropdownmenurootlistview.js';
@@ -67,6 +68,8 @@ describe( 'DropdownMenuRootListView', () => {
 	} );
 
 	afterEach( async () => {
+		vi.restoreAllMocks();
+
 		await editor.destroy();
 
 		rootListView.destroy();
@@ -75,11 +78,11 @@ describe( 'DropdownMenuRootListView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should inherit from DropdownMenuListView', () => {
-			expect( rootListView ).to.be.instanceOf( DropdownMenuRootListView );
+			expect( rootListView ).toBeInstanceOf( DropdownMenuRootListView );
 		} );
 
 		it( 'should not create any views before rendering', () => {
-			expect( rootListView.items.length ).to.equal( 0 );
+			expect( rootListView.items.length ).toBe( 0 );
 		} );
 	} );
 
@@ -88,116 +91,118 @@ describe( 'DropdownMenuRootListView', () => {
 			// See menu structure in main `beforeEach()`.
 			rootListView.render();
 
-			expect( rootListView.items.length ).to.equal( 4 );
+			expect( rootListView.items.length ).toBe( 4 );
 
 			// I am doing this manually intentionally. I don't want to create a util that would
 			// basically end up as a bit different implementation of the tested `_createStructure()` method.
 			const itemMenu1View = rootListView.items.get( 0 );
 
-			expect( itemMenu1View ).to.be.instanceOf( DropdownMenuListItemView );
+			expect( itemMenu1View ).toBeInstanceOf( DropdownMenuListItemView );
 
 			const menu1View = itemMenu1View.childView;
 
-			expect( menu1View ).to.be.instanceof( DropdownMenuNestedMenuView );
-			expect( menu1View.id ).to.equal( 'menu_1' );
-			expect( menu1View.buttonView.label ).to.equal( 'Menu 1' );
-			expect( menu1View.listView.items.length ).to.equal( 2 );
+			expect( menu1View ).toBeInstanceOf( DropdownMenuNestedMenuView );
+			expect( menu1View.id ).toBe( 'menu_1' );
+			expect( menu1View.buttonView.label ).toBe( 'Menu 1' );
+			expect( menu1View.listView.items.length ).toBe( 2 );
 
 			const itemMenu1AView = menu1View.listView.items.get( 0 );
 
-			expect( itemMenu1AView ).to.be.instanceOf( DropdownMenuListItemView );
+			expect( itemMenu1AView ).toBeInstanceOf( DropdownMenuListItemView );
 
 			const btnMenu1AView = itemMenu1AView.childView;
 
-			expect( btnMenu1AView ).to.be.instanceOf( DropdownMenuListItemButtonView );
-			expect( btnMenu1AView.id ).to.equal( 'menu_1_a' );
-			expect( btnMenu1AView.label ).to.equal( 'Item A' );
+			expect( btnMenu1AView ).toBeInstanceOf( DropdownMenuListItemButtonView );
+			expect( btnMenu1AView.id ).toBe( 'menu_1_a' );
+			expect( btnMenu1AView.label ).toBe( 'Item A' );
 
 			const itemMenu1BView = menu1View.listView.items.get( 1 );
 
-			expect( itemMenu1BView ).to.be.instanceOf( DropdownMenuListItemView );
+			expect( itemMenu1BView ).toBeInstanceOf( DropdownMenuListItemView );
 
 			const btnMenu1BView = itemMenu1BView.childView;
 
-			expect( btnMenu1BView ).to.be.instanceOf( DropdownMenuListItemButtonView );
-			expect( btnMenu1BView.id ).to.equal( 'menu_1_b' );
-			expect( btnMenu1BView.label ).to.equal( 'Item B' );
+			expect( btnMenu1BView ).toBeInstanceOf( DropdownMenuListItemButtonView );
+			expect( btnMenu1BView.id ).toBe( 'menu_1_b' );
+			expect( btnMenu1BView.label ).toBe( 'Item B' );
 
 			const itemMenu2View = rootListView.items.get( 1 );
 
-			expect( itemMenu2View ).to.be.instanceOf( DropdownMenuListItemView );
+			expect( itemMenu2View ).toBeInstanceOf( DropdownMenuListItemView );
 
 			const menu2View = itemMenu2View.childView;
 
-			expect( menu2View ).to.be.instanceof( DropdownMenuNestedMenuView );
-			expect( menu2View.id ).to.equal( 'menu_2' );
-			expect( menu2View.buttonView.label ).to.equal( 'Menu 2' );
-			expect( menu2View.listView.items.length ).to.equal( 1 );
+			expect( menu2View ).toBeInstanceOf( DropdownMenuNestedMenuView );
+			expect( menu2View.id ).toBe( 'menu_2' );
+			expect( menu2View.buttonView.label ).toBe( 'Menu 2' );
+			expect( menu2View.listView.items.length ).toBe( 1 );
 
 			const itemMenu21View = menu2View.listView.items.get( 0 );
 
-			expect( itemMenu21View ).to.be.instanceOf( DropdownMenuListItemView );
+			expect( itemMenu21View ).toBeInstanceOf( DropdownMenuListItemView );
 
 			const menu21View = itemMenu21View.childView;
 
-			expect( menu21View ).to.be.instanceof( DropdownMenuNestedMenuView );
-			expect( menu21View.id ).to.equal( 'menu_2_1' );
-			expect( menu21View.buttonView.label ).to.equal( 'Menu 2 1' );
-			expect( menu21View.listView.items.length ).to.equal( 1 );
+			expect( menu21View ).toBeInstanceOf( DropdownMenuNestedMenuView );
+			expect( menu21View.id ).toBe( 'menu_2_1' );
+			expect( menu21View.buttonView.label ).toBe( 'Menu 2 1' );
+			expect( menu21View.listView.items.length ).toBe( 1 );
 
 			const itemMenu21AView = menu21View.listView.items.get( 0 );
 
-			expect( itemMenu21AView ).to.be.instanceOf( DropdownMenuListItemView );
+			expect( itemMenu21AView ).toBeInstanceOf( DropdownMenuListItemView );
 
 			const btnMenu21AView = itemMenu21AView.childView;
 
-			expect( btnMenu21AView ).to.be.instanceOf( DropdownMenuListItemButtonView );
-			expect( btnMenu21AView.id ).to.equal( 'menu_2_1_a' );
-			expect( btnMenu21AView.label ).to.equal( 'Item A' );
+			expect( btnMenu21AView ).toBeInstanceOf( DropdownMenuListItemButtonView );
+			expect( btnMenu21AView.id ).toBe( 'menu_2_1_a' );
+			expect( btnMenu21AView.label ).toBe( 'Item A' );
 
 			const itemMenuTopAView = rootListView.items.get( 2 );
 
-			expect( itemMenuTopAView ).to.be.instanceOf( DropdownMenuListItemView );
+			expect( itemMenuTopAView ).toBeInstanceOf( DropdownMenuListItemView );
 
 			const btnMenuTopAView = itemMenuTopAView.childView;
 
-			expect( btnMenuTopAView ).to.be.instanceOf( DropdownMenuListItemButtonView );
-			expect( btnMenuTopAView.id ).to.equal( 'top_a' );
-			expect( btnMenuTopAView.label ).to.equal( 'Item Top A' );
+			expect( btnMenuTopAView ).toBeInstanceOf( DropdownMenuListItemButtonView );
+			expect( btnMenuTopAView.id ).toBe( 'top_a' );
+			expect( btnMenuTopAView.label ).toBe( 'Item Top A' );
 
 			const itemMenuTopBView = rootListView.items.get( 3 );
 
-			expect( itemMenuTopBView ).to.be.instanceOf( DropdownMenuListItemView );
+			expect( itemMenuTopBView ).toBeInstanceOf( DropdownMenuListItemView );
 
 			const btnMenuTopBView = itemMenuTopBView.childView;
 
-			expect( btnMenuTopBView ).to.be.instanceOf( DropdownMenuListItemButtonView );
-			expect( btnMenuTopBView.id ).to.equal( 'top_b' );
-			expect( btnMenuTopBView.label ).to.equal( 'Item Top B' );
+			expect( btnMenuTopBView ).toBeInstanceOf( DropdownMenuListItemButtonView );
+			expect( btnMenuTopBView.id ).toBe( 'top_b' );
+			expect( btnMenuTopBView.label ).toBe( 'Item Top B' );
 		} );
 
 		it( 'should add toggleMenusAndFocusItemsOnHover behavior', () => {
 			// The behavior itself is tested separately in its own suite.
-			const spy = sinon.spy( DropdownRootMenuBehaviors, 'toggleMenusAndFocusItemsOnHover' );
+			const spy = vi.spyOn( DropdownRootMenuBehaviors, 'toggleMenusAndFocusItemsOnHover' );
 
 			rootListView.render();
 
-			sinon.assert.calledOnceWithExactly( spy, rootListView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( rootListView );
 		} );
 
 		it( 'should add closeMenuWhenAnotherOnTheSameLevelOpens behavior', () => {
 			// The behavior itself is tested separately in its own suite.
-			const spy = sinon.spy( DropdownRootMenuBehaviors, 'closeMenuWhenAnotherOnTheSameLevelOpens' );
+			const spy = vi.spyOn( DropdownRootMenuBehaviors, 'closeMenuWhenAnotherOnTheSameLevelOpens' );
 
 			rootListView.render();
 
-			sinon.assert.calledOnceWithExactly( spy, rootListView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( rootListView );
 		} );
 	} );
 
 	describe( 'menus', () => {
 		it( 'is empty before render', () => {
-			expect( rootListView.menus ).to.deep.equal( [] );
+			expect( rootListView.menus ).toEqual( [] );
 		} );
 
 		it( 'should return all menus (including nested menus)', () => {
@@ -205,31 +210,31 @@ describe( 'DropdownMenuRootListView', () => {
 
 			const menus = rootListView.menus;
 
-			expect( menus.length ).to.equal( 3 );
+			expect( menus.length ).toBe( 3 );
 
 			const menu1View = menus[ 0 ];
 
-			expect( menu1View ).to.be.instanceof( DropdownMenuNestedMenuView );
-			expect( menu1View.id ).to.equal( 'menu_1' );
-			expect( menu1View.buttonView.label ).to.equal( 'Menu 1' );
+			expect( menu1View ).toBeInstanceOf( DropdownMenuNestedMenuView );
+			expect( menu1View.id ).toBe( 'menu_1' );
+			expect( menu1View.buttonView.label ).toBe( 'Menu 1' );
 
 			const menu2View = menus[ 1 ];
 
-			expect( menu2View ).to.be.instanceof( DropdownMenuNestedMenuView );
-			expect( menu2View.id ).to.equal( 'menu_2' );
-			expect( menu2View.buttonView.label ).to.equal( 'Menu 2' );
+			expect( menu2View ).toBeInstanceOf( DropdownMenuNestedMenuView );
+			expect( menu2View.id ).toBe( 'menu_2' );
+			expect( menu2View.buttonView.label ).toBe( 'Menu 2' );
 
 			const menu21View = menus[ 2 ];
 
-			expect( menu21View ).to.be.instanceof( DropdownMenuNestedMenuView );
-			expect( menu21View.id ).to.equal( 'menu_2_1' );
-			expect( menu21View.buttonView.label ).to.equal( 'Menu 2 1' );
+			expect( menu21View ).toBeInstanceOf( DropdownMenuNestedMenuView );
+			expect( menu21View.id ).toBe( 'menu_2_1' );
+			expect( menu21View.buttonView.label ).toBe( 'Menu 2 1' );
 		} );
 	} );
 
 	describe( 'buttons', () => {
 		it( 'is empty before render', () => {
-			expect( rootListView.buttons ).to.deep.equal( [] );
+			expect( rootListView.buttons ).toEqual( [] );
 		} );
 
 		it( 'should return all "leaf" buttons (including inside nested menus)', () => {
@@ -237,56 +242,56 @@ describe( 'DropdownMenuRootListView', () => {
 
 			const buttons = rootListView.buttons;
 
-			expect( buttons.length ).to.equal( 5 );
+			expect( buttons.length ).toBe( 5 );
 
 			const btnMenu1AView = buttons[ 0 ];
 
-			expect( btnMenu1AView ).to.be.instanceOf( DropdownMenuListItemButtonView );
-			expect( btnMenu1AView.id ).to.equal( 'menu_1_a' );
-			expect( btnMenu1AView.label ).to.equal( 'Item A' );
+			expect( btnMenu1AView ).toBeInstanceOf( DropdownMenuListItemButtonView );
+			expect( btnMenu1AView.id ).toBe( 'menu_1_a' );
+			expect( btnMenu1AView.label ).toBe( 'Item A' );
 
 			const btnMenu1BView = buttons[ 1 ];
 
-			expect( btnMenu1BView ).to.be.instanceOf( DropdownMenuListItemButtonView );
-			expect( btnMenu1BView.id ).to.equal( 'menu_1_b' );
-			expect( btnMenu1BView.label ).to.equal( 'Item B' );
+			expect( btnMenu1BView ).toBeInstanceOf( DropdownMenuListItemButtonView );
+			expect( btnMenu1BView.id ).toBe( 'menu_1_b' );
+			expect( btnMenu1BView.label ).toBe( 'Item B' );
 
 			const btnMenu21AView = buttons[ 2 ];
 
-			expect( btnMenu21AView ).to.be.instanceOf( DropdownMenuListItemButtonView );
-			expect( btnMenu21AView.id ).to.equal( 'menu_2_1_a' );
-			expect( btnMenu21AView.label ).to.equal( 'Item A' );
+			expect( btnMenu21AView ).toBeInstanceOf( DropdownMenuListItemButtonView );
+			expect( btnMenu21AView.id ).toBe( 'menu_2_1_a' );
+			expect( btnMenu21AView.label ).toBe( 'Item A' );
 
 			const btnMenuTopAView = buttons[ 3 ];
 
-			expect( btnMenuTopAView ).to.be.instanceOf( DropdownMenuListItemButtonView );
-			expect( btnMenuTopAView.id ).to.equal( 'top_a' );
-			expect( btnMenuTopAView.label ).to.equal( 'Item Top A' );
+			expect( btnMenuTopAView ).toBeInstanceOf( DropdownMenuListItemButtonView );
+			expect( btnMenuTopAView.id ).toBe( 'top_a' );
+			expect( btnMenuTopAView.label ).toBe( 'Item Top A' );
 
 			const btnMenuTopBView = buttons[ 4 ];
 
-			expect( btnMenuTopBView ).to.be.instanceOf( DropdownMenuListItemButtonView );
-			expect( btnMenuTopBView.id ).to.equal( 'top_b' );
-			expect( btnMenuTopBView.label ).to.equal( 'Item Top B' );
+			expect( btnMenuTopBView ).toBeInstanceOf( DropdownMenuListItemButtonView );
+			expect( btnMenuTopBView.id ).toBe( 'top_b' );
+			expect( btnMenuTopBView.label ).toBe( 'Item Top B' );
 		} );
 	} );
 
 	describe( 'menuPanelClass', () => {
 		it( 'is undefined by default', () => {
-			expect( rootListView.menuPanelClass ).to.be.undefined;
+			expect( rootListView.menuPanelClass ).toBeUndefined();
 		} );
 
 		it( 'should set nested menus panel views CSS class', () => {
 			rootListView.render();
 
 			for ( const menu of rootListView.menus ) {
-				expect( menu.panelView.class ).to.be.undefined;
+				expect( menu.panelView.class ).toBeUndefined();
 			}
 
 			rootListView.menuPanelClass = 'foo';
 
 			for ( const menu of rootListView.menus ) {
-				expect( menu.panelView.class ).to.equal( 'foo' );
+				expect( menu.panelView.class ).toBe( 'foo' );
 			}
 		} );
 	} );
@@ -295,20 +300,20 @@ describe( 'DropdownMenuRootListView', () => {
 		it( 'closes all nested menus', () => {
 			rootListView.render();
 
-			const spy1 = sinon.spy();
+			const spy1 = vi.fn();
 			rootListView.menus[ 0 ].on( 'set:isOpen', ( evt, propName, newValue ) => spy1( newValue ) );
 
-			const spy2 = sinon.spy();
+			const spy2 = vi.fn();
 			rootListView.menus[ 1 ].on( 'set:isOpen', ( evt, propName, newValue ) => spy2( newValue ) );
 
-			const spy21 = sinon.spy();
+			const spy21 = vi.fn();
 			rootListView.menus[ 2 ].on( 'set:isOpen', ( evt, propName, newValue ) => spy21( newValue ) );
 
 			rootListView.closeMenus();
 
-			expect( spy1.calledWithExactly( false ) ).to.be.true;
-			expect( spy2.calledWithExactly( false ) ).to.be.true;
-			expect( spy21.calledWithExactly( false ) ).to.be.true;
+			expect( spy1 ).toHaveBeenCalledWith( false );
+			expect( spy2 ).toHaveBeenCalledWith( false );
+			expect( spy21 ).toHaveBeenCalledWith( false );
 		} );
 	} );
 
@@ -318,16 +323,16 @@ describe( 'DropdownMenuRootListView', () => {
 		} );
 
 		it( 'should fire execute event with the button id when a "leaf" button is executed', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			rootListView.on( 'menu:execute', evt => spy( evt.source.id ) );
 
 			for ( const button of rootListView.buttons ) {
 				button.fire( 'execute' );
 
-				expect( spy.calledOnce ).to.be.true;
-				expect( spy.calledWithExactly( button.id ) ).to.be.true;
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( button.id );
 
-				spy.resetHistory();
+				spy.mockClear();
 			}
 		} );
 
@@ -335,15 +340,15 @@ describe( 'DropdownMenuRootListView', () => {
 
 		for ( const eventName of delegatedEvents ) {
 			it( 'should fire "menu:' + eventName + '" event delegated from nested menus', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				rootListView.on( 'menu:' + eventName, spy );
 
 				for ( const menu of rootListView.menus ) {
 					menu.fire( eventName );
 
-					expect( spy.calledOnce ).to.be.true;
+					expect( spy ).toHaveBeenCalledOnce();
 
-					spy.resetHistory();
+					spy.mockClear();
 				}
 			} );
 		}

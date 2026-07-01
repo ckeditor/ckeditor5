@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { DetachOperation } from '../../../src/model/operation/detachoperation.js';
 
@@ -24,12 +25,12 @@ describe( 'DetachOperation', () => {
 	it( 'should have type equal to detach', () => {
 		const op = new DetachOperation( ModelPosition._createBefore( element ), 1 );
 
-		expect( op.type ).to.equal( 'detach' );
+		expect( op.type ).toBe( 'detach' );
 	} );
 
 	it( 'should return null on affectedSelectable', () => {
 		const op = new DetachOperation( ModelPosition._createBefore( element ), 1 );
-		expect( op.affectedSelectable ).to.equal( null );
+		expect( op.affectedSelectable ).toBe( null );
 	} );
 
 	it( 'should remove given element from parent', () => {
@@ -37,7 +38,7 @@ describe( 'DetachOperation', () => {
 
 		model.applyOperation( op );
 
-		expect( docFrag.childCount ).to.equal( 0 );
+		expect( docFrag.childCount ).toBe( 0 );
 	} );
 
 	describe( '_validate()', () => {
@@ -58,7 +59,7 @@ describe( 'DetachOperation', () => {
 	it( 'should be not a document operation', () => {
 		const op = new DetachOperation( ModelPosition._createBefore( element ), 1 );
 
-		expect( op.isDocumentOperation ).to.false;
+		expect( op.isDocumentOperation ).toBe( false );
 	} );
 
 	describe( 'toJSON', () => {
@@ -68,7 +69,7 @@ describe( 'DetachOperation', () => {
 
 			const serialized = op.toJSON();
 
-			expect( serialized ).to.deep.equal( {
+			expect( serialized ).toEqual( {
 				__className: 'DetachOperation',
 				baseVersion: null,
 				sourcePosition: position.toJSON(),

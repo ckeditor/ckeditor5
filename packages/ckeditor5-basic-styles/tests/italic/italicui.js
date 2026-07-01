@@ -3,19 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ItalicEditing } from '../../src/italic/italicediting.js';
 import { ItalicUI } from '../../src/italic/italicui.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'ItalicUI', () => {
 	let editor, italicView, editorElement;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -32,6 +31,7 @@ describe( 'ItalicUI', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
@@ -85,12 +85,12 @@ describe( 'ItalicUI', () => {
 		} );
 
 		it( 'should execute italic command on model execute event', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			const executeSpy = vi.spyOn( editor, 'execute' );
 
 			italicView.fire( 'execute' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'italic' );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( 'italic' );
 		} );
 
 		it( 'should bind model to italic command', () => {
@@ -107,18 +107,18 @@ describe( 'ItalicUI', () => {
 		} );
 
 		it( 'should set editor keystroke', () => {
-			const spy = sinon.spy( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' );
 
 			const wasHandled = editor.keystrokes.press( {
 				keyCode: keyCodes.i,
 				ctrlKey: !env.isMac,
 				metaKey: env.isMac,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			} );
 
 			expect( wasHandled ).to.be.true;
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should bind `isOn` to `command`.`value`', () => {

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
@@ -36,15 +37,15 @@ describe( 'CodeBlockElementSupport', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CodeBlockElementSupport.isOfficialPlugin ).to.be.true;
+		expect( CodeBlockElementSupport.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CodeBlockElementSupport.isPremiumPlugin ).to.be.false;
+		expect( CodeBlockElementSupport.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be named', () => {
-		expect( editor.plugins.has( 'CodeBlockElementSupport' ) ).to.be.true;
+		expect( editor.plugins.has( 'CodeBlockElementSupport' ) ).toBe( true );
 	} );
 
 	it( 'should allow attributes', () => {
@@ -53,7 +54,7 @@ describe( 'CodeBlockElementSupport', () => {
 
 		editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<codeBlock htmlContentAttributes="(1)" htmlPreAttributes="(2)" language="plaintext">foobar</codeBlock>',
 			attributes: {
 				1: {
@@ -69,7 +70,7 @@ describe( 'CodeBlockElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<pre data-foo="foo">' +
+		expect( editor.getData() ).toBe( '<pre data-foo="foo">' +
 			'<code class="language-plaintext" data-foo="foo">foobar</code>' +
 			'</pre>' );
 	} );
@@ -83,7 +84,7 @@ describe( 'CodeBlockElementSupport', () => {
 
 		expect( () => {
 			editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
-		} ).to.not.throw();
+		} ).not.toThrow();
 	} );
 
 	it( 'should allow attributes (classes)', () => {
@@ -92,7 +93,7 @@ describe( 'CodeBlockElementSupport', () => {
 
 		editor.setData( '<pre class="foo"><code class="foo">foobar</code></pre>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<codeBlock htmlContentAttributes="(1)" htmlPreAttributes="(2)" language="plaintext">foobar</codeBlock>',
 			attributes: {
 				1: {
@@ -104,7 +105,7 @@ describe( 'CodeBlockElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<pre class="foo">' +
+		expect( editor.getData() ).toBe( '<pre class="foo">' +
 			'<code class="language-plaintext foo">foobar</code>' +
 			'</pre>' );
 	} );
@@ -116,7 +117,7 @@ describe( 'CodeBlockElementSupport', () => {
 
 		editor.setData( '<pre style="background:blue;"><code style="color:red;">foobar</code></pre>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<codeBlock htmlContentAttributes="(1)" htmlPreAttributes="(2)" language="plaintext">foobar</codeBlock>',
 			attributes: {
 				1: {
@@ -132,7 +133,7 @@ describe( 'CodeBlockElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<pre style="background:blue;">' +
+		expect( editor.getData() ).toBe( '<pre style="background:blue;">' +
 			'<code class="language-plaintext" style="color:red;">foobar</code>' +
 			'</pre>' );
 	} );
@@ -144,12 +145,12 @@ describe( 'CodeBlockElementSupport', () => {
 
 		editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<codeBlock language="plaintext">foobar</codeBlock>',
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext">foobar</code></pre>' );
+		expect( editor.getData() ).toBe( '<pre><code class="language-plaintext">foobar</code></pre>' );
 	} );
 
 	it( 'should disallow attributes (classes)', () => {
@@ -159,12 +160,12 @@ describe( 'CodeBlockElementSupport', () => {
 
 		editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<codeBlock language="plaintext">foobar</codeBlock>',
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext">foobar</code></pre>' );
+		expect( editor.getData() ).toBe( '<pre><code class="language-plaintext">foobar</code></pre>' );
 	} );
 
 	it( 'should disallow attributes (styles)', () => {
@@ -178,12 +179,12 @@ describe( 'CodeBlockElementSupport', () => {
 
 		editor.setData( '<pre style="background:blue;"><code style="color:red;">foobar</code></pre>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<codeBlock language="plaintext">foobar</codeBlock>',
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext">foobar</code></pre>' );
+		expect( editor.getData() ).toBe( '<pre><code class="language-plaintext">foobar</code></pre>' );
 	} );
 
 	it( 'should allow attributes on code element existing alone', () => {
@@ -192,7 +193,7 @@ describe( 'CodeBlockElementSupport', () => {
 
 		editor.setData( '<p><code data-foo="foo">foobar</code></p>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<paragraph><$text htmlCode="(1)">foobar</$text></paragraph>',
 			attributes: {
 				1: {
@@ -203,7 +204,7 @@ describe( 'CodeBlockElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><code data-foo="foo">foobar</code></p>' );
+		expect( editor.getData() ).toBe( '<p><code data-foo="foo">foobar</code></p>' );
 	} );
 
 	it( 'should not consume attributes already consumed (downcast)', () => {
@@ -220,7 +221,7 @@ describe( 'CodeBlockElementSupport', () => {
 
 		editor.setData( '<pre data-foo><code data-foo>foobar</code></section>' );
 
-		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
 			data: '<codeBlock htmlContentAttributes="(1)" htmlPreAttributes="(2)" language="plaintext">foobar</codeBlock>',
 			// At this point, attribute should still be in the model, as we are testing downcast conversion.
 			attributes: {
@@ -237,7 +238,7 @@ describe( 'CodeBlockElementSupport', () => {
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext">foobar</code></pre>' );
+		expect( editor.getData() ).toBe( '<pre><code class="language-plaintext">foobar</code></pre>' );
 	} );
 
 	// describe( 'attributes modifications', () => {

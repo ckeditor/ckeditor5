@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-alignment",
-  "version": "48.2.0",
+  "version": "48.3.0",
   "description": "Text alignment feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -49,10 +49,17 @@
     "@ckeditor/ckeditor5-image": "workspace:*",
     "@ckeditor/ckeditor5-list": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@ckeditor/ckeditor5-typing": "workspace:*"
+    "@ckeditor/ckeditor5-typing": "workspace:*",
+    "@vitest/browser-playwright": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.8",
+    "vitest": "^4.1.8"
   },
   "scripts": {
-    "build": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs",
+    "test": "vitest run",
+    "test:headless": "vitest run --browser.headless",
+    "test:debug": "vitest",
+    "coverage": "pnpm run test:headless --coverage"
   },
   "files": [
     "dist",

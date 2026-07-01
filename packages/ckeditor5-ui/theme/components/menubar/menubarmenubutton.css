@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -37,7 +37,6 @@
 	/*
 	 * Top-level menu buttons only.
 	 */
-	/* stylelint-disable-next-line no-descending-specificity */
 	&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {
 		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
 		min-height: unset;
@@ -71,7 +70,6 @@
 	/*
 	 * Sub-menu buttons.
 	 */
-	/* stylelint-disable-next-line no-descending-specificity */
 	&:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button {
 		border-radius: 0;
 

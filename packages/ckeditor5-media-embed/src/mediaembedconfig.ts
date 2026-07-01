@@ -282,6 +282,94 @@ export interface MediaEmbedConfig {
 	 * When omitted, all five built-in styles are available.
 	 */
 	styles?: MediaStyleConfig;
+
+	/**
+	 * The resize unit applied to the media width.
+	 *
+	 * Possible values: `'%'` (default) or `'px'`.
+	 *
+	 * ```ts
+	 * mediaEmbed: {
+	 * 	resizeUnit: 'px'
+	 * }
+	 * ```
+	 *
+	 * @default '%'
+	 */
+	resizeUnit?: 'px' | '%';
+
+	/**
+	 * The available media resize options.
+	 *
+	 * Used to populate the resize dropdown (`'resizeMediaEmbed'`) or the standalone resize buttons
+	 * (`'resizeMediaEmbed:25'`, `'resizeMediaEmbed:original'`, etc.) placed in
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#toolbar `config.mediaEmbed.toolbar`}.
+	 *
+	 * Example — dropdown form:
+	 *
+	 * ```ts
+	 * mediaEmbed: {
+	 * 	toolbar: [ 'resizeMediaEmbed' ],
+	 * 	resizeOptions: [
+	 * 		{ name: 'resizeMediaEmbed:original', value: null, icon: 'original' },
+	 * 		{ name: 'resizeMediaEmbed:25',       value: '25',  icon: 'small'   },
+	 * 		{ name: 'resizeMediaEmbed:50',       value: '50',  icon: 'medium'  },
+	 * 		{ name: 'resizeMediaEmbed:75',       value: '75',  icon: 'large'   },
+	 * 		{ name: 'resizeMediaEmbed:custom',   value: 'custom', icon: 'custom' }
+	 * 	]
+	 * }
+	 * ```
+	 *
+	 * Example — standalone buttons form:
+	 *
+	 * ```ts
+	 * mediaEmbed: {
+	 * 	toolbar: [ 'resizeMediaEmbed:25', 'resizeMediaEmbed:50', 'resizeMediaEmbed:75',
+	 * 	           'resizeMediaEmbed:original', 'resizeMediaEmbed:custom' ],
+	 * 	resizeOptions: [
+	 * 		{ name: 'resizeMediaEmbed:original', value: null,     icon: 'original' },
+	 * 		{ name: 'resizeMediaEmbed:custom',   value: 'custom', icon: 'custom'   },
+	 * 		{ name: 'resizeMediaEmbed:25',       value: '25',     icon: 'small'    },
+	 * 		{ name: 'resizeMediaEmbed:50',       value: '50',     icon: 'medium'   },
+	 * 		{ name: 'resizeMediaEmbed:75',       value: '75',     icon: 'large'    }
+	 * 	]
+	 * }
+	 * ```
+	 */
+	resizeOptions?: Array<MediaEmbedResizeOption>;
+}
+
+/**
+ * The media embed resize option used in the
+ * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#resizeOptions `config.mediaEmbed.resizeOptions`} configuration.
+ */
+export interface MediaEmbedResizeOption {
+
+	/**
+	 * The name of the UI component that changes the media size.
+	 * When placing individual resize buttons in the toolbar, reference this name directly.
+	 * When using the dropdown, this name is used for the corresponding list item.
+	 */
+	name: string;
+
+	/**
+	 * The numeric resize value without the unit
+	 * ({@link module:media-embed/mediaembedconfig~MediaEmbedConfig#resizeUnit configured separately}).
+	 * `null` resets the media to its original (unresized) width. `'custom'` opens the custom-size balloon.
+	 */
+	value: string | null;
+
+	/**
+	 * The icon displayed on the button. Available icons: `'small'`, `'medium'`, `'large'`, `'original'`, `'custom'`.
+	 */
+	icon?: string;
+
+	/**
+	 * The option label shown in the dropdown or used as button tooltip and ARIA label.
+	 * When not specified, the label is generated automatically from the `value` and
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#resizeUnit `config.mediaEmbed.resizeUnit`}.
+	 */
+	label?: string;
 }
 
 /**

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -11,7 +13,6 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ImageInline, ImageBlock } from '@ckeditor/ckeditor5-image';
 import { Table } from '@ckeditor/ckeditor5-table';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { BookmarkEditing } from '../src/bookmarkediting.js';
@@ -20,12 +21,10 @@ import { InsertBookmarkCommand } from '../src/insertbookmarkcommand.js';
 describe( 'InsertBookmarkCommand', () => {
 	let domElement, editor, model, command, stub;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( async () => {
 		domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
-		stub = sinon.stub( console, 'warn' );
+		stub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 		editor = await ClassicEditor.create( domElement, {
 			plugins: [
@@ -46,7 +45,7 @@ describe( 'InsertBookmarkCommand', () => {
 	} );
 
 	afterEach( () => {
-		stub.restore();
+		vi.restoreAllMocks();
 		domElement.remove();
 		return editor.destroy();
 	} );
@@ -56,37 +55,37 @@ describe( 'InsertBookmarkCommand', () => {
 			it( 'when bookmark element is allowed in the selection focus', () => {
 				_setModelData( model, '<paragraph>[]</paragraph>' );
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 
 			it( 'when bookmark element is allowed on selected text in `paragraph`', () => {
 				_setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 
 			it( 'when bookmark element is allowed in selected text in `heading`', () => {
 				_setModelData( model, '<heading1>[foobar]</heading1>' );
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 
 			it( 'when bookmark element is allowed on selected `imageInline`', () => {
 				_setModelData( model, '<paragraph>[<imageInline src="#"></imageInline>]</paragraph>' );
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 
 			it( 'when bookmark element is allowed on selected `imageBlock`', () => {
 				_setModelData( model, '[<imageBlock src="#"></imageBlock>]' );
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 
 			it( 'when bookmark element is allowed on selected `Table`', () => {
 				_setModelData( model, '[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]' );
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 
 			it( 'when bookmark element is allowed on selected single `TableCell` (1 cell table)', () => {
@@ -99,7 +98,7 @@ describe( 'InsertBookmarkCommand', () => {
 					'</table>'
 				);
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 
 			it( 'when bookmark element is allowed on selected two `TableCell` (2 cell table)', () => {
@@ -113,7 +112,7 @@ describe( 'InsertBookmarkCommand', () => {
 					'</table>'
 				);
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 
 			it( 'when bookmark element is allowed on selected single `TableCell` (4 cell table)', () => {
@@ -129,7 +128,7 @@ describe( 'InsertBookmarkCommand', () => {
 					'</table>'
 				);
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 
 			it( 'when bookmark element is allowed on selected two `TableCell`s (4 cell table)', () => {
@@ -145,7 +144,7 @@ describe( 'InsertBookmarkCommand', () => {
 					'</table>'
 				);
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 
 			it( 'when bookmark element is allowed on selection in `paragraph` inside single `TableCell` (1 cell table)', () => {
@@ -158,7 +157,7 @@ describe( 'InsertBookmarkCommand', () => {
 					'</table>'
 				);
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toEqual( true );
 			} );
 		} );
 
@@ -177,7 +176,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'when bookmark element is not allowed on custom defined elements', () => {
@@ -194,7 +193,7 @@ describe( 'InsertBookmarkCommand', () => {
 					'<paragraph></paragraph>'
 				);
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 	} );
@@ -206,7 +205,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 			} );
 
 			it( 'if bookmarkId is an empty string', () => {
@@ -214,7 +213,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( '' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 			} );
 
 			it( 'if invalid command options are provided', () => {
@@ -222,17 +221,17 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { 'id': 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 			} );
 
 			it( 'if position does not allow for bookmark and insertParagraph command returns null', () => {
 				_setModelData( model, '[<imageBlock src="#"></imageBlock>]' );
 
-				sinon.stub( editor.commands.get( 'insertParagraph' ), 'execute' ).callsFake( () => null );
+				vi.spyOn( editor.commands.get( 'insertParagraph' ), 'execute' ).mockImplementation( () => null );
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal( '[<imageBlock src="#"></imageBlock>]' );
+				expect( _getModelData( model ) ).toEqual( '[<imageBlock src="#"></imageBlock>]' );
 			} );
 		} );
 
@@ -242,7 +241,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>'
 				);
 			} );
@@ -252,7 +251,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]foobar</paragraph>'
 				);
 			} );
@@ -262,7 +261,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<heading1>[<bookmark bookmarkId="foo"></bookmark>]foobar</heading1>'
 				);
 			} );
@@ -272,7 +271,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>' +
 						'[<bookmark bookmarkId="foo"></bookmark>]' +
 						'<imageInline src="#"></imageInline>' +
@@ -285,7 +284,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>' +
 						'[<bookmark bookmarkId="foo"></bookmark>]' +
 						'<imageInline src="#"></imageInline>' +
@@ -299,7 +298,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>' +
 						'foo ' +
 						'[<bookmark bookmarkId="foo"></bookmark>]' +
@@ -314,7 +313,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 					'<imageBlock src="#"></imageBlock>'
 				);
@@ -325,7 +324,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 					'<imageBlock src="#"></imageBlock>' +
 					'<imageBlock src="#"></imageBlock>'
@@ -337,7 +336,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<imageBlock src="#"></imageBlock>' +
 					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 					'<imageBlock src="#"></imageBlock>'
@@ -351,7 +350,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>foo</paragraph>' +
 					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 					'<imageBlock src="#"></imageBlock>'
@@ -370,7 +369,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -393,7 +392,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>[<bookmark bookmarkId="foo"></bookmark>]foo</paragraph></tableCell>' +
@@ -418,7 +417,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>[<bookmark bookmarkId="foo"></bookmark>]foo</paragraph></tableCell>' +
@@ -445,7 +444,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>1</paragraph></tableCell>' +
@@ -472,7 +471,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>[<bookmark bookmarkId="foo"></bookmark>]foo</paragraph></tableCell>' +
@@ -500,7 +499,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>foo</paragraph></tableCell>' +
@@ -533,7 +532,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>foo</paragraph></tableCell>' +
@@ -561,7 +560,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>[<bookmark bookmarkId="foo"></bookmark>]foo</paragraph></tableCell>' +
@@ -576,7 +575,7 @@ describe( 'InsertBookmarkCommand', () => {
 				editor.execute( 'bold' );
 				editor.execute( 'italic' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>[<bookmark bold="true" bookmarkId="foo" italic="true"></bookmark>]</paragraph>'
 				);
 			} );
@@ -586,7 +585,7 @@ describe( 'InsertBookmarkCommand', () => {
 
 				editor.execute( 'insertBookmark', { bookmarkId: 'foo' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>' +
 						'<$text bold="true">foo</$text>' +
 						'[<bookmark bold="true" bookmarkId="foo"></bookmark>]' +
@@ -602,7 +601,10 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: '   ' } );
 
-				sinon.assert.calledWithMatch( stub, 'insert-bookmark-command-executed-with-invalid-name' );
+				expect( stub ).toHaveBeenCalledWith(
+					expect.stringContaining( 'insert-bookmark-command-executed-with-invalid-name' ),
+					expect.anything()
+				);
 			} );
 
 			it( 'should warn if the command is executed with invalid id (spaces with bookmark name)', () => {
@@ -610,7 +612,10 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'bookmark name' } );
 
-				sinon.assert.calledWithMatch( stub, 'insert-bookmark-command-executed-with-invalid-name' );
+				expect( stub ).toHaveBeenCalledWith(
+					expect.stringContaining( 'insert-bookmark-command-executed-with-invalid-name' ),
+					expect.anything()
+				);
 			} );
 
 			it( 'should warn if the command is executed with invalid id (empty name)', () => {
@@ -618,7 +623,10 @@ describe( 'InsertBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: '' } );
 
-				sinon.assert.calledWithMatch( stub, 'insert-bookmark-command-executed-with-invalid-name' );
+				expect( stub ).toHaveBeenCalledWith(
+					expect.stringContaining( 'insert-bookmark-command-executed-with-invalid-name' ),
+					expect.anything()
+				);
 			} );
 		} );
 	} );

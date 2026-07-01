@@ -27,7 +27,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceTabsWithinPreWithSpaces( documentFragment, writer, DEFAULT_TAB_FILLER.length );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				`<div style="white-space:pre-wrap;">${ DEFAULT_TAB_FILLER }123${ DEFAULT_TAB_FILLER }456</div>`
 			);
 		} );
@@ -45,7 +45,7 @@ describe( 'PasteFromOffice - filters', () => {
 				replaceTabsWithinPreWithSpaces( documentFragment, writer, tabWidth );
 
 				const expectedOutput = `<div style="white-space:pre-wrap;">${ filler }123${ filler }456</div>`;
-				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( expectedOutput );
+				expect( htmlDataProcessor.toData( documentFragment ) ).toBe( expectedOutput );
 			}
 		} );
 
@@ -58,7 +58,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceTabsWithinPreWithSpaces( documentFragment, writer, DEFAULT_TAB_FILLER.length );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				`<div style="white-space:pre-wrap;">123${ DEFAULT_TAB_FILLER }</div>` +
 				`<div style="white-space:pre-wrap;">${ DEFAULT_TAB_FILLER }456</div>`
 			);
@@ -74,7 +74,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceTabsWithinPreWithSpaces( documentFragment, writer, DEFAULT_TAB_FILLER.length );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<div>123 456</div>' +
 				'<p>123 456</p>' +
 				'<span>123 456</span>'
@@ -90,7 +90,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceTabsWithinPreWithSpaces( documentFragment, writer, DEFAULT_TAB_FILLER.length );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<div style="white-space:nowrap;">123 456</div>' +
 				'<div style="white-space:pre;">\t123\t456</div>'
 			);
@@ -104,7 +104,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceTabsWithinPreWithSpaces( documentFragment, writer, DEFAULT_TAB_FILLER.length );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				`<div style="white-space:pre-wrap;"><span>${ DEFAULT_TAB_FILLER }123${ DEFAULT_TAB_FILLER }456</span></div>`
 			);
 		} );

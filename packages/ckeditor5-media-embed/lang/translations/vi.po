@@ -66,3 +66,31 @@ msgstr "Phương tiện được căn giữa"
 msgctxt "The label for the right aligned media option."
 msgid "Right aligned media"
 msgstr "Phương tiện được căn phải"
+
+msgctxt "The label used for the dropdown in the media toolbar containing defined resize options."
+msgid "Resize media"
+msgstr "Thay đổi kích thước tập tin đa phương tiện"
+
+msgctxt "The label used for the standalone resize options buttons in the media toolbar."
+msgid "Resize media to %0"
+msgstr "Thay đổi kích thước tập tin đa phương tiện thành %0"
+
+msgctxt "The accessibility label of the standalone media resize reset option button in the media toolbar for screen readers."
+msgid "Resize media to the original size"
+msgstr "Thay đổi kích thước tập tin đa phương tiện về kích thước ban đầu"
+
+msgctxt "The label for media resize balloon input."
+msgid "Resize media (in %0)"
+msgstr "Thay đổi kích thước tập tin đa phương tiện (ở %0)"
+
+msgctxt "The accessibility label of the standalone media resize custom option button in the media toolbar for screen readers."
+msgid "Custom media size"
+msgstr "Kích thước tập tin đa phương tiện tùy chỉnh"
+
+msgctxt "The accessibility label of the media resize dropdown for screen readers."
+msgid "Media resize list"
+msgstr "Danh sách thay đổi kích thước tập tin đa phương tiện"
+
+msgctxt "The label for the header of the media resize balloon."
+msgid "Media Resize"
+msgstr "Thay đổi kích thước tập tin đa phương tiện"

@@ -3,16 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EditingView, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 import { EditableUIView } from '../../src/editableui/editableuiview.js';
 import { View } from '../../src/view.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'EditableUIView', () => {
 	let view, editableElement, editingView, editingViewRoot, locale;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		locale = new Locale();
@@ -36,29 +38,29 @@ describe( 'EditableUIView', () => {
 		it( 'sets initial values of attributes', () => {
 			const view = new EditableUIView( locale, editingView );
 
-			expect( view.isFocused ).to.be.false;
-			expect( view.isInlineRoot ).to.be.false;
-			expect( view.name ).to.be.null;
-			expect( view._externalElement ).to.be.undefined;
-			expect( view._editingView ).to.equal( editingView );
-			expect( view._hasExternalElement ).to.be.false;
-			expect( view.hasExternalElement ).to.be.false;
+			expect( view.isFocused ).toBe( false );
+			expect( view.isInlineRoot ).toBe( false );
+			expect( view.name ).toBeNull();
+			expect( view._externalElement ).toBeUndefined();
+			expect( view._editingView ).toBe( editingView );
+			expect( view._hasExternalElement ).toBe( false );
+			expect( view.hasExternalElement ).toBe( false );
 
 			view.destroy();
 		} );
 
 		it( 'renders element from template when no editableElement', () => {
-			expect( view.element ).to.equal( view._editableElement );
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-content' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
-			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'en' );
-			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
-			expect( view._externalElement ).to.be.undefined;
-			expect( view._hasExternalElement ).to.be.false;
-			expect( view.hasExternalElement ).to.be.false;
-			expect( view.isRendered ).to.be.true;
+			expect( view.element ).toBe( view._editableElement );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-content' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-editor__editable' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).toBe( true );
+			expect( view.element.getAttribute( 'lang' ) ).toBe( 'en' );
+			expect( view.element.getAttribute( 'dir' ) ).toBe( 'ltr' );
+			expect( view._externalElement ).toBeUndefined();
+			expect( view._hasExternalElement ).toBe( false );
+			expect( view.hasExternalElement ).toBe( false );
+			expect( view.isRendered ).toBe( true );
 		} );
 
 		it( 'accepts editableElement as an argument', () => {
@@ -67,16 +69,16 @@ describe( 'EditableUIView', () => {
 
 			view.render();
 
-			expect( view.element ).to.equal( editableElement );
-			expect( view.element ).to.equal( view._editableElement );
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
-			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'en' );
-			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
-			expect( view._hasExternalElement ).to.be.true;
-			expect( view.hasExternalElement ).to.be.true;
-			expect( view.isRendered ).to.be.true;
+			expect( view.element ).toBe( editableElement );
+			expect( view.element ).toBe( view._editableElement );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-editor__editable' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).toBe( true );
+			expect( view.element.getAttribute( 'lang' ) ).toBe( 'en' );
+			expect( view.element.getAttribute( 'dir' ) ).toBe( 'ltr' );
+			expect( view._hasExternalElement ).toBe( true );
+			expect( view.hasExternalElement ).toBe( true );
+			expect( view.isRendered ).toBe( true );
 
 			view.destroy();
 		} );
@@ -88,8 +90,8 @@ describe( 'EditableUIView', () => {
 
 			view.render();
 
-			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'ar' );
-			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+			expect( view.element.getAttribute( 'lang' ) ).toBe( 'ar' );
+			expect( view.element.getAttribute( 'dir' ) ).toBe( 'rtl' );
 
 			view.destroy();
 		} );
@@ -104,8 +106,8 @@ describe( 'EditableUIView', () => {
 
 			view.render();
 
-			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'ar' );
-			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+			expect( view.element.getAttribute( 'lang' ) ).toBe( 'ar' );
+			expect( view.element.getAttribute( 'dir' ) ).toBe( 'rtl' );
 
 			view.destroy();
 		} );
@@ -117,9 +119,9 @@ describe( 'EditableUIView', () => {
 
 				view.render();
 
-				expect( view.element.tagName ).to.equal( 'H1' );
-				expect( view._hasExternalElement ).to.be.false;
-				expect( view.hasExternalElement ).to.be.false;
+				expect( view.element.tagName ).toBe( 'H1' );
+				expect( view._hasExternalElement ).toBe( false );
+				expect( view.hasExternalElement ).toBe( false );
 
 				view.destroy();
 			} );
@@ -130,7 +132,7 @@ describe( 'EditableUIView', () => {
 
 				view.render();
 
-				expect( view.element.tagName ).to.equal( 'DIV' );
+				expect( view.element.tagName ).toBe( 'DIV' );
 
 				view.destroy();
 			} );
@@ -144,12 +146,12 @@ describe( 'EditableUIView', () => {
 
 				view.render();
 
-				expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-content' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
-				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
-				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-content' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-editor__editable' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-rounded-corners' ) ).toBe( true );
+				expect( view.element.classList.contains( 'foo' ) ).toBe( true );
+				expect( view.element.classList.contains( 'bar' ) ).toBe( true );
 
 				view.destroy();
 			} );
@@ -163,8 +165,8 @@ describe( 'EditableUIView', () => {
 
 				view.render();
 
-				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
-				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
+				expect( view.element.classList.contains( 'foo' ) ).toBe( true );
+				expect( view.element.classList.contains( 'bar' ) ).toBe( true );
 
 				view.destroy();
 			} );
@@ -178,8 +180,8 @@ describe( 'EditableUIView', () => {
 
 				view.render();
 
-				expect( view.element.style.color ).to.equal( 'rgb(255, 0, 0)' );
-				expect( view.element.style.fontWeight ).to.equal( 'bold' );
+				expect( view.element.style.color ).toBe( 'rgb(255, 0, 0)' );
+				expect( view.element.style.fontWeight ).toBe( 'bold' );
 
 				view.destroy();
 			} );
@@ -193,8 +195,8 @@ describe( 'EditableUIView', () => {
 
 				view.render();
 
-				expect( view.element.getAttribute( 'data-id' ) ).to.equal( '123' );
-				expect( view.element.getAttribute( 'data-role' ) ).to.equal( 'editor' );
+				expect( view.element.getAttribute( 'data-id' ) ).toBe( '123' );
+				expect( view.element.getAttribute( 'data-role' ) ).toBe( 'editor' );
 
 				view.destroy();
 			} );
@@ -205,8 +207,8 @@ describe( 'EditableUIView', () => {
 
 				view.render();
 
-				expect( view.element.getAttribute( 'lang' ) ).to.equal( 'en' );
-				expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+				expect( view.element.getAttribute( 'lang' ) ).toBe( 'en' );
+				expect( view.element.getAttribute( 'dir' ) ).toBe( 'ltr' );
 
 				view.destroy();
 			} );
@@ -217,7 +219,7 @@ describe( 'EditableUIView', () => {
 
 				view.render();
 
-				expect( view._editableElement ).to.equal( view.element );
+				expect( view._editableElement ).toBe( view.element );
 
 				view.destroy();
 			} );
@@ -229,12 +231,12 @@ describe( 'EditableUIView', () => {
 			it( 'reacts on view#isFocused', () => {
 				view.isFocused = true;
 
-				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.true;
-				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.false;
+				expect( editingViewRoot.hasClass( 'ck-focused' ) ).toBe( true );
+				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).toBe( false );
 
 				view.isFocused = false;
-				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.false;
-				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.true;
+				expect( editingViewRoot.hasClass( 'ck-focused' ) ).toBe( false );
+				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).toBe( true );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/1530.
@@ -258,59 +260,59 @@ describe( 'EditableUIView', () => {
 				view.isFocused = true;
 				secondView.isFocused = false;
 
-				expect( editingViewRoot.hasClass( 'ck-focused' ), 1 ).to.be.true;
-				expect( editingViewRoot.hasClass( 'ck-blurred' ), 2 ).to.be.false;
-				expect( secondEditingViewRoot.hasClass( 'ck-focused' ), 3 ).to.be.false;
-				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 4 ).to.be.true;
+				expect( editingViewRoot.hasClass( 'ck-focused' ), 1 ).toBe( true );
+				expect( editingViewRoot.hasClass( 'ck-blurred' ), 2 ).toBe( false );
+				expect( secondEditingViewRoot.hasClass( 'ck-focused' ), 3 ).toBe( false );
+				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 4 ).toBe( true );
 
 				editingView.isRenderingInProgress = true;
 				view.isFocused = false;
 				secondView.isFocused = true;
 
-				expect( editingViewRoot.hasClass( 'ck-focused' ), 5 ).to.be.true;
-				expect( editingViewRoot.hasClass( 'ck-blurred' ), 6 ).to.be.false;
-				expect( secondEditingViewRoot.hasClass( 'ck-focused' ), 7 ).to.be.false;
-				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 8 ).to.be.true;
+				expect( editingViewRoot.hasClass( 'ck-focused' ), 5 ).toBe( true );
+				expect( editingViewRoot.hasClass( 'ck-blurred' ), 6 ).toBe( false );
+				expect( secondEditingViewRoot.hasClass( 'ck-focused' ), 7 ).toBe( false );
+				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 8 ).toBe( true );
 
 				editingView.isRenderingInProgress = false;
 
-				expect( editingViewRoot.hasClass( 'ck-focused' ), 9 ).to.be.false;
-				expect( editingViewRoot.hasClass( 'ck-blurred' ), 10 ).to.be.true;
-				expect( secondEditingViewRoot.hasClass( 'ck-focused' ), 11 ).to.be.true;
-				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 12 ).to.be.false;
+				expect( editingViewRoot.hasClass( 'ck-focused' ), 9 ).toBe( false );
+				expect( editingViewRoot.hasClass( 'ck-blurred' ), 10 ).toBe( true );
+				expect( secondEditingViewRoot.hasClass( 'ck-focused' ), 11 ).toBe( true );
+				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 12 ).toBe( false );
 
 				secondEditableElement.remove();
 				secondView.destroy();
 			} );
 
 			it( 'adds the inline-root class when view#isInlineRoot becomes true', () => {
-				expect( view.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( false );
 
 				view.isInlineRoot = true;
 
-				expect( view.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( true );
 			} );
 
 			it( 'removes the inline-root class when view#isInlineRoot becomes false', () => {
 				view.isInlineRoot = true;
-				expect( view.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( true );
 
 				view.isInlineRoot = false;
-				expect( view.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( false );
 			} );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'calls super#destroy()', () => {
-			const spy = testUtils.sinon.spy( View.prototype, 'destroy' );
+			const spy = vi.spyOn( View.prototype, 'destroy' );
 			const view = new EditableUIView( locale, editingView );
 			view.name = editingViewRoot.rootName;
 
 			view.render();
 			view.destroy();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'can be called multiple times', () => {
@@ -322,7 +324,7 @@ describe( 'EditableUIView', () => {
 			expect( () => {
 				view.destroy();
 				view.destroy();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		describe( 'when #editableElement as an argument', () => {
@@ -336,8 +338,8 @@ describe( 'EditableUIView', () => {
 
 				view.render();
 				view.destroy();
-				expect( view.element.classList.contains( 'ck' ) ).to.be.false;
-				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck' ) ).toBe( false );
+				expect( view.element.classList.contains( 'foo' ) ).toBe( true );
 			} );
 		} );
 	} );

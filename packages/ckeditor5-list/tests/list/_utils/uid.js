@@ -13,7 +13,12 @@ import { ListItemUid } from '../../../src/list/utils/model.js';
 export function stubUid( start = 0xa00 ) {
 	const seq = sequence( start );
 
-	sinon.stub( ListItemUid, 'next' ).callsFake( () => seq.next().value );
+	// TODO: Use Vitest directly once all packages are migrated. See: https://github.com/ckeditor/ckeditor5-internal/issues/4309
+	if ( globalThis.vi ) {
+		globalThis.vi.spyOn( ListItemUid, 'next' ).mockImplementation( () => seq.next().value );
+	} else {
+		globalThis.sinon.stub( ListItemUid, 'next' ).callsFake( () => seq.next().value );
+	}
 }
 
 function* sequence( num ) {

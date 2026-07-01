@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -34,14 +35,14 @@ describe( 'Fullscreen', () => {
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( Fullscreen.requires ).to.deep.equal( [ FullscreenEditing, FullscreenUI ] );
+		expect( Fullscreen.requires ).toEqual( [ FullscreenEditing, FullscreenUI ] );
 	} );
 
 	it( 'should have a proper name', () => {
-		expect( Fullscreen.pluginName ).to.equal( 'Fullscreen' );
+		expect( Fullscreen.pluginName ).toBe( 'Fullscreen' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Fullscreen.isOfficialPlugin ).to.be.true;
+		expect( Fullscreen.isOfficialPlugin ).toBe( true );
 	} );
 } );

@@ -3,10 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { BlockQuote } from '../src/blockquote.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
-import { List } from '@ckeditor/ckeditor5-list';
+import { List, _ListItemUid as ListItemUid } from '@ckeditor/ckeditor5-list';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 import { Delete } from '@ckeditor/ckeditor5-typing';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -19,13 +21,13 @@ import {
 	_getModelData,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine';
-import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'BlockQuote integration', () => {
 	let editor, model, element, viewDocument;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		stubUid();
@@ -53,64 +55,64 @@ describe( 'BlockQuote integration', () => {
 	describe( 'enter key support', () => {
 		function fakeEventData() {
 			return {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			};
 		}
 
 		it( 'does nothing if selection is in an empty block but not in a block quote', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
 
 			viewDocument.fire( 'enter', data );
 
 			// Only enter command should be executed.
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'enter' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'enter' );
 		} );
 
 		it( 'does nothing if selection is in a non-empty block (at the end) in a block quote', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<blockQuote><paragraph>xx[]</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'enter', data );
 
 			// Only enter command should be executed.
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'enter' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'enter' );
 		} );
 
 		it( 'does nothing if selection is in a non-empty block (at the beginning) in a block quote', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<blockQuote><paragraph>[]xx</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'enter', data );
 
 			// Only enter command should be executed.
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'enter' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'enter' );
 		} );
 
 		it( 'does nothing if selection is not collapsed', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<blockQuote><paragraph>[</paragraph><paragraph>]</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'enter', data );
 
 			// Only enter command should be executed.
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'enter' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'enter' );
 		} );
 
 		it( 'does not interfere with a similar handler in the list feature', () => {
@@ -127,9 +129,9 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'enter', data );
 
-			expect( data.preventDefault.called ).to.be.true;
+			expect( data.preventDefault ).toHaveBeenCalled();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">a</paragraph>' +
@@ -141,22 +143,22 @@ describe( 'BlockQuote integration', () => {
 
 		it( 'escapes block quote if selection is in an empty block in an empty block quote', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<paragraph>x</paragraph><blockQuote><paragraph>[]</paragraph></blockQuote><paragraph>x</paragraph>' );
 
 			viewDocument.fire( 'enter', data );
 
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'blockQuote' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
 		} );
 
 		it( 'escapes block quote if selection is in an empty block in the middle of a block quote', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model,
 				'<paragraph>x</paragraph>' +
@@ -166,11 +168,11 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'enter', data );
 
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'blockQuote' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph></blockQuote>' +
 				'<paragraph>[]</paragraph>' +
@@ -181,7 +183,7 @@ describe( 'BlockQuote integration', () => {
 
 		it( 'escapes block quote if selection is in an empty block at the end of a block quote', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model,
 				'<paragraph>x</paragraph>' +
@@ -191,11 +193,11 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'enter', data );
 
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'blockQuote' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph></blockQuote>' +
 				'<paragraph>[]</paragraph>' +
@@ -205,8 +207,8 @@ describe( 'BlockQuote integration', () => {
 
 		it( 'scrolls the view document to the selection after the command is executed', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
-			const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+			const execSpy = vi.spyOn( editor, 'execute' );
+			const scrollSpy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 
 			_setModelData( model,
 				'<paragraph>x</paragraph>' +
@@ -216,15 +218,15 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'enter', data );
 
-			sinon.assert.calledOnce( scrollSpy );
-			sinon.assert.callOrder( execSpy, scrollSpy );
+			expect( scrollSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( scrollSpy.mock.invocationCallOrder[ 0 ] );
 		} );
 	} );
 
 	describe( 'backspace key support', () => {
 		function fakeEventData() {
 			return {
-				preventDefault: sinon.spy(),
+				preventDefault: vi.fn(),
 				direction: 'backward',
 				inputType: 'deleteContentBackward',
 				unit: 'character'
@@ -242,7 +244,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<blockQuote><paragraph>a</paragraph><paragraph>b[]c</paragraph></blockQuote>' +
 				'<paragraph>d</paragraph>'
 			);
@@ -259,7 +261,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>x[]a</paragraph>' +
 				'<blockQuote><paragraph>b</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
@@ -278,7 +280,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph><paragraph>b[]c</paragraph><paragraph>d</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
@@ -297,7 +299,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph></blockQuote>' +
 				'<paragraph>[]</paragraph>' +
@@ -316,7 +318,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>x</paragraph>' +
 				'<paragraph>[]</paragraph>' +
 				'<paragraph>y</paragraph>'
@@ -334,7 +336,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>x</paragraph>' +
 				'<paragraph>[]</paragraph>' +
 				'<blockQuote><paragraph>foo</paragraph></blockQuote>' +
@@ -353,7 +355,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
@@ -362,58 +364,58 @@ describe( 'BlockQuote integration', () => {
 
 		it( 'does nothing if selection is in an empty block but not in a block quote', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
 
 			viewDocument.fire( 'delete', data );
 
 			// Only delete command should be executed.
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'delete' );
 		} );
 
 		it( 'does nothing if selection is in a non-empty block (at the end) in a block quote', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<blockQuote><paragraph>xx[]</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'delete', data );
 
 			// Only delete command should be executed.
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'delete' );
 		} );
 
 		it( 'does nothing if selection is in a non-empty block (at the beginning) in a block quote', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<blockQuote><paragraph>[]xx</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'delete', data );
 
 			// Only delete command should be executed.
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'delete' );
 		} );
 
 		it( 'does nothing if selection is not collapsed', () => {
 			const data = fakeEventData();
-			const execSpy = sinon.spy( editor, 'execute' );
+			const execSpy = vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<blockQuote><paragraph>[</paragraph><paragraph>]</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'delete', data );
 
 			// Only delete command should be executed.
-			expect( data.preventDefault.called ).to.be.true;
-			expect( execSpy.calledOnce ).to.be.true;
-			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
+			expect( data.preventDefault ).toHaveBeenCalled();
+			expect( execSpy ).toHaveBeenCalledOnce();
+			expect( execSpy.mock.calls[ 0 ][ 0 ] ).toBe( 'delete' );
 		} );
 	} );
 
@@ -438,7 +440,7 @@ describe( 'BlockQuote integration', () => {
 
 					editor.execute( 'blockQuote' );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toEqual(
 						'<blockQuote>' +
 							'<paragraph>fo[o</paragraph>' +
 							'<imageBlock src="/assets/sample.png"></imageBlock>' +
@@ -462,7 +464,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<blockQuote>' +
 					'<paragraph>fo[o</paragraph>' +
 					'<imageBlock src="/assets/sample.png">' +
@@ -485,7 +487,7 @@ describe( 'BlockQuote integration', () => {
 			editor.execute( 'blockQuote' );
 
 			// Selection incorrectly trimmed.
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<blockQuote>' +
 					'<paragraph>foo</paragraph>' +
 					'<imageBlock src="/assets/sample.png">' +
@@ -503,7 +505,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<blockQuote><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</blockQuote>'
 			);
 		} );
@@ -515,7 +517,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]'
 			);
 		} );
@@ -527,7 +529,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<blockQuote>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></blockQuote>'
 			);
 		} );
@@ -539,7 +541,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<blockQuote>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></blockQuote>'
 			);
 		} );
@@ -558,7 +560,7 @@ describe( 'BlockQuote integration', () => {
 
 			model.insertContent( df, model.document.selection );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">fo</paragraph>' +
 				'<blockQuote listIndent="0" listItemId="a00" listType="bulleted">' +
 				'<paragraph>xxx</paragraph>' +
@@ -590,7 +592,7 @@ describe( 'BlockQuote integration', () => {
 
 			singleBlockModel.insertContent( df, singleBlockModel.document.selection );
 
-			expect( _getModelData( singleBlockModel ) ).to.equal(
+			expect( _getModelData( singleBlockModel ) ).toEqual(
 				'<listItem listIndent="0" listType="bulleted">fo</listItem>' +
 				'<blockQuote>' +
 				'<paragraph>xxx</paragraph>' +
@@ -609,7 +611,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<blockQuote>[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]</blockQuote>'
 			);
 		} );
@@ -622,7 +624,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]'
 			);
 		} );
@@ -632,7 +634,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<table><tableRow><tableCell><blockQuote><paragraph>[]foo</paragraph></blockQuote></tableCell></tableRow></table>'
 			);
 		} );
@@ -645,7 +647,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<table><tableRow><tableCell><paragraph>[]foo</paragraph></tableCell></tableRow></table>'
 			);
 		} );
@@ -661,7 +663,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><blockQuote>[<imageBlock><caption>foo</caption></imageBlock>]</blockQuote></tableCell>' +
@@ -681,7 +683,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>[<imageBlock><caption>foo</caption></imageBlock>]</tableCell>' +
@@ -701,7 +703,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -725,7 +727,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</tableCell>' +
@@ -745,7 +747,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -767,7 +769,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<table>' +
 				'<tableRow>' +
 				'<tableCell>' +
@@ -789,7 +791,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<blockquote>' +
 					'<p>foo<strong>bar</strong></p>' +
 				'</blockquote>' +
@@ -806,7 +808,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<blockquote>' +
 					'<p>foo<strong>bar</strong></p>' +
 				'</blockquote>' +
@@ -823,7 +825,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<blockquote>' +
 					'<p>foo<strong>bar</strong></p>' +
 				'</blockquote>' +
@@ -840,7 +842,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<blockquote>' +
 					'<p>foo</p><p><strong>bar</strong></p>' +
 				'</blockquote>' +
@@ -857,7 +859,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<blockquote>' +
 					'<p>foo</p><h2>bar</h2><p><strong>baz</strong></p>' +
 				'</blockquote>' +
@@ -865,4 +867,16 @@ describe( 'BlockQuote integration', () => {
 			);
 		} );
 	} );
+
+	function stubUid( start = 0xa00 ) {
+		const seq = sequence( start );
+
+		vi.spyOn( ListItemUid, 'next' ).mockImplementation( () => seq.next().value );
+	}
+
+	function* sequence( num ) {
+		while ( true ) {
+			yield ( num++ ).toString( 16 ).padStart( 3, '000' );
+		}
+	}
 } );

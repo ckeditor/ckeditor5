@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { global } from '../../src/dom/global.js';
 import { ResizeObserver } from '../../src/dom/resizeobserver.js';
 
 describe( 'ResizeObserver()', () => {
 	let elementA, elementB;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		// Make sure other tests of the editor do not affect tests that follow.
@@ -32,6 +30,7 @@ describe( 'ResizeObserver()', () => {
 		// Make it look like the module was loaded from scratch.
 		ResizeObserver._observerInstance = null;
 		ResizeObserver._elementCallbacks = null;
+		vi.restoreAllMocks();
 
 		elementA.remove();
 		elementB.remove();
@@ -39,18 +38,18 @@ describe( 'ResizeObserver()', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should use the native implementation if available', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( () => {
+			vi.spyOn( global.window, 'ResizeObserver' ).mockImplementation( function() {
 				return {
 					observe: spy,
-					unobserve: sinon.spy()
+					unobserve: vi.fn()
 				};
 			} );
 
 			const observer = new ResizeObserver( elementA, () => {} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 
 			observer.destroy();
 		} );
@@ -59,7 +58,7 @@ describe( 'ResizeObserver()', () => {
 			const elementA = document.createElement( 'div' );
 			const elementB = document.createElement( 'div' );
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( () => {
+			vi.spyOn( global.window, 'ResizeObserver' ).mockImplementation( function() {
 				return {
 					observe() {},
 					unobserve() {}
@@ -69,17 +68,17 @@ describe( 'ResizeObserver()', () => {
 			const observerA = new ResizeObserver( elementA, () => {} );
 			const observerB = new ResizeObserver( elementB, () => {} );
 
-			sinon.assert.calledOnce( global.window.ResizeObserver );
+			expect( global.window.ResizeObserver ).toHaveBeenCalledTimes( 1 );
 
 			observerA.destroy();
 			observerB.destroy();
 		} );
 
 		it( 'should react to resizing of an element', () => {
-			const callbackA = sinon.spy();
+			const callbackA = vi.fn();
 			let resizeCallback;
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			vi.spyOn( global.window, 'ResizeObserver' ).mockImplementation( function( callback ) {
 				resizeCallback = callback;
 
 				return {
@@ -94,18 +93,18 @@ describe( 'ResizeObserver()', () => {
 				{ target: elementA }
 			] );
 
-			sinon.assert.calledOnce( callbackA );
-			sinon.assert.calledWithExactly( callbackA.firstCall, { target: elementA } );
+			expect( callbackA ).toHaveBeenCalledTimes( 1 );
+			expect( callbackA ).toHaveBeenNthCalledWith( 1, { target: elementA } );
 
 			observerA.destroy();
 		} );
 
 		it( 'should be able to observe the same element along with other observers', () => {
-			const callbackA = sinon.spy();
-			const callbackB = sinon.spy();
+			const callbackA = vi.fn();
+			const callbackB = vi.fn();
 			let resizeCallback;
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			vi.spyOn( global.window, 'ResizeObserver' ).mockImplementation( function( callback ) {
 				resizeCallback = callback;
 
 				return {
@@ -121,21 +120,21 @@ describe( 'ResizeObserver()', () => {
 				{ target: elementA }
 			] );
 
-			sinon.assert.calledOnce( callbackA );
-			sinon.assert.calledWithExactly( callbackA, { target: elementA } );
-			sinon.assert.calledOnce( callbackB );
-			sinon.assert.calledWithExactly( callbackB, { target: elementA } );
+			expect( callbackA ).toHaveBeenCalledTimes( 1 );
+			expect( callbackA ).toHaveBeenCalledWith( { target: elementA } );
+			expect( callbackB ).toHaveBeenCalledTimes( 1 );
+			expect( callbackB ).toHaveBeenCalledWith( { target: elementA } );
 
 			observerA.destroy();
 			observerB.destroy();
 		} );
 
 		it( 'should not be affected by other observers being destroyed', () => {
-			const callbackA = sinon.spy();
-			const callbackB = sinon.spy();
+			const callbackA = vi.fn();
+			const callbackB = vi.fn();
 			let resizeCallback;
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			vi.spyOn( global.window, 'ResizeObserver' ).mockImplementation( function( callback ) {
 				resizeCallback = callback;
 
 				return {
@@ -151,10 +150,10 @@ describe( 'ResizeObserver()', () => {
 				{ target: elementA }
 			] );
 
-			sinon.assert.calledOnce( callbackA );
-			sinon.assert.calledWithExactly( callbackA, { target: elementA } );
-			sinon.assert.calledOnce( callbackB );
-			sinon.assert.calledWithExactly( callbackB, { target: elementA } );
+			expect( callbackA ).toHaveBeenCalledTimes( 1 );
+			expect( callbackA ).toHaveBeenCalledWith( { target: elementA } );
+			expect( callbackB ).toHaveBeenCalledTimes( 1 );
+			expect( callbackB ).toHaveBeenCalledWith( { target: elementA } );
 
 			observerB.destroy();
 
@@ -162,10 +161,10 @@ describe( 'ResizeObserver()', () => {
 				{ target: elementA }
 			] );
 
-			sinon.assert.calledTwice( callbackA );
-			sinon.assert.calledWithExactly( callbackA.secondCall, { target: elementA } );
-			sinon.assert.calledOnce( callbackB );
-			sinon.assert.calledWithExactly( callbackB, { target: elementA } );
+			expect( callbackA ).toHaveBeenCalledTimes( 2 );
+			expect( callbackA ).toHaveBeenNthCalledWith( 2, { target: elementA } );
+			expect( callbackB ).toHaveBeenCalledTimes( 1 );
+			expect( callbackB ).toHaveBeenCalledWith( { target: elementA } );
 
 			observerA.destroy();
 		} );
@@ -175,16 +174,16 @@ describe( 'ResizeObserver()', () => {
 		it( 'should return observed element', () => {
 			const observer = new ResizeObserver( elementA, () => {} );
 
-			expect( observer.element ).to.equal( elementA );
+			expect( observer.element ).toBe( elementA );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should make the observer stop responding to resize of an element', () => {
-			const callbackA = sinon.spy();
+			const callbackA = vi.fn();
 			let resizeCallback;
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			vi.spyOn( global.window, 'ResizeObserver' ).mockImplementation( function( callback ) {
 				resizeCallback = callback;
 
 				return {
@@ -199,7 +198,7 @@ describe( 'ResizeObserver()', () => {
 				{ target: elementA }
 			] );
 
-			sinon.assert.calledOnce( callbackA );
+			expect( callbackA ).toHaveBeenCalledTimes( 1 );
 
 			observerA.destroy();
 
@@ -207,17 +206,17 @@ describe( 'ResizeObserver()', () => {
 				{ target: elementA }
 			] );
 
-			sinon.assert.calledOnce( callbackA );
+			expect( callbackA ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should not throw if called multiple times', () => {
-			const callbackA = sinon.spy();
+			const callbackA = vi.fn();
 			const observerA = new ResizeObserver( elementA, callbackA );
 
 			expect( () => {
 				observerA.destroy();
 				observerA.destroy();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
 } );

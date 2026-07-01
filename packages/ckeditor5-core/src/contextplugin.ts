@@ -12,7 +12,8 @@ import {
 	type Collection,
 	type Config,
 	type Locale,
-	type LocaleTranslate
+	type LocaleTranslate,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { type Editor } from './editor/editor.js';
@@ -20,6 +21,8 @@ import type { EditorConfig } from './editor/editorconfig.js';
 import { type Context } from './context.js';
 import type { PluginDependencies, PluginInterface } from './plugin.js';
 import { type PluginCollection } from './plugincollection.js';
+
+const ContextPluginBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
 
 /**
  * The base class for {@link module:core/context~Context} plugin classes.
@@ -35,7 +38,7 @@ import { type PluginCollection } from './plugincollection.js';
  * * An {@link module:core/plugin~Plugin editor plugin} can require a context plugin.
  * * A context plugin MUST NOT require an {@link module:core/plugin~Plugin editor plugin}.
  */
-export class ContextPlugin extends /* #__PURE__ */ ObservableMixin() implements PluginInterface {
+export class ContextPlugin extends ContextPluginBase implements PluginInterface {
 	/**
 	 * The context or editor instance.
 	 */

@@ -8,7 +8,7 @@
  */
 
 import type { ViewElement } from '@ckeditor/ckeditor5-engine';
-import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import { type Editor, Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ImageUtils } from '../imageutils.js';
 import { ResizeImageCommand } from './resizeimagecommand.js';
 import { widthAndHeightStylesAreBothSet } from '../image/utils.js';
@@ -23,8 +23,8 @@ export class ImageResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageUtils ]> {
+		return [ ImageUtils ];
 	}
 
 	/**

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { BlockQuoteEditing } from '../src/blockquoteediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ListEditing } from '@ckeditor/ckeditor5-list';
@@ -32,36 +34,36 @@ describe( 'BlockQuoteEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( BlockQuoteEditing.pluginName ).to.equal( 'BlockQuoteEditing' );
+		expect( BlockQuoteEditing.pluginName ).toBe( 'BlockQuoteEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( BlockQuoteEditing.isOfficialPlugin ).to.be.true;
+		expect( BlockQuoteEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( BlockQuoteEditing.isPremiumPlugin ).to.be.false;
+		expect( BlockQuoteEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'adds a blockQuote command', () => {
-		expect( editor.commands.get( 'blockQuote' ) ).to.be.instanceOf( BlockQuoteCommand );
+		expect( editor.commands.get( 'blockQuote' ) ).toBeInstanceOf( BlockQuoteCommand );
 	} );
 
 	it( 'allows for blockQuote in the $root', () => {
-		expect( model.schema.checkChild( [ '$root' ], 'blockQuote' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'blockQuote' ) ).toBe( true );
 	} );
 
 	it( 'allows for $block in blockQuote', () => {
-		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], '$block' ) ).to.be.true;
-		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'paragraph' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], '$block' ) ).toBe( true );
+		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'paragraph' ) ).toBe( true );
 	} );
 
 	it( 'allows for blockQuote in blockQuote', () => {
-		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'blockQuote' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'blockQuote' ) ).toBe( true );
 	} );
 
 	it( 'does not break when checking an unregisterd item', () => {
-		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'foo' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'foo' ) ).toBe( false );
 	} );
 
 	it( 'inherits attributes from $container', () => {
@@ -69,7 +71,7 @@ describe( 'BlockQuoteEditing', () => {
 			allowAttributes: 'foo'
 		} );
 
-		expect( model.schema.checkAttribute( 'blockQuote', 'foo' ) ).to.be.true;
+		expect( model.schema.checkAttribute( 'blockQuote', 'foo' ) ).toBe( true );
 	} );
 
 	it( 'adds converters to the data pipeline', () => {
@@ -77,14 +79,14 @@ describe( 'BlockQuoteEditing', () => {
 
 		editor.setData( data );
 
-		expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph>[]x</paragraph></blockQuote>' );
-		expect( editor.getData() ).to.equal( data );
+		expect( _getModelData( model ) ).toBe( '<blockQuote><paragraph>[]x</paragraph></blockQuote>' );
+		expect( editor.getData() ).toBe( data );
 	} );
 
 	it( 'adds a converter to the view pipeline', () => {
 		_setModelData( model, '<blockQuote><paragraph>x</paragraph></blockQuote>' );
 
-		expect( editor.getData() ).to.equal( '<blockquote><p>x</p></blockquote>' );
+		expect( editor.getData() ).toBe( '<blockquote><p>x</p></blockquote>' );
 	} );
 
 	it( 'allows list items inside blockQuote', () => {
@@ -95,7 +97,7 @@ describe( 'BlockQuoteEditing', () => {
 			.then( editor => {
 				editor.setData( '<blockquote><ul><li>xx</li></ul></blockquote>' );
 
-				expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<blockquote><ul><li>xx</li></ul></blockquote>' );
+				expect( editor.getData( { skipListItemIds: true } ) ).toBe( '<blockquote><ul><li>xx</li></ul></blockquote>' );
 
 				return editor.destroy();
 			} );
@@ -104,7 +106,7 @@ describe( 'BlockQuoteEditing', () => {
 	it( 'should remove empty blockQuote elements', () => {
 		_setModelData( model, '<blockQuote></blockQuote><paragraph>Foo</paragraph>' );
 
-		expect( editor.getData() ).to.equal( '<p>Foo</p>' );
+		expect( editor.getData() ).toBe( '<p>Foo</p>' );
 	} );
 
 	it( 'should remove blockQuotes which became empty', () => {
@@ -117,7 +119,7 @@ describe( 'BlockQuoteEditing', () => {
 			writer.remove( writer.createRangeIn( bq ) );
 		} );
 
-		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' ); // Autoparagraphed.
+		expect( editor.getData( { trim: 'none' } ) ).toBe( '<p>&nbsp;</p>' ); // Autoparagraphed.
 	} );
 
 	it( 'should not unwrap a blockQuote if it was inserted into another blockQuote', () => {
@@ -133,7 +135,7 @@ describe( 'BlockQuoteEditing', () => {
 			writer.insert( bq, root.getChild( 0 ), 1 ); // Insert after <p>Foo</p>.
 		} );
 
-		expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><blockquote><p>Bar</p></blockquote></blockquote>' );
+		expect( editor.getData() ).toBe( '<blockquote><p>Foo</p><blockquote><p>Bar</p></blockquote></blockquote>' );
 	} );
 
 	it( 'should not unwrap nested blockQuote if it was wrapped into another blockQuote', () => {
@@ -145,7 +147,7 @@ describe( 'BlockQuoteEditing', () => {
 			writer.wrap( writer.createRangeIn( root ), 'blockQuote' );
 		} );
 
-		expect( editor.getData() ).to.equal( '<blockquote><blockquote><p>Foo</p></blockquote><p>Bar</p></blockquote>' );
+		expect( editor.getData() ).toBe( '<blockquote><blockquote><p>Foo</p></blockquote><p>Bar</p></blockquote>' );
 	} );
 
 	it( 'postfixer should do nothing on attribute change', () => {
@@ -159,7 +161,7 @@ describe( 'BlockQuoteEditing', () => {
 			writer.setAttribute( 'bold', true, writer.createRangeIn( p ) );
 		} );
 
-		expect( editor.getData() ).to.equal( '<blockquote><p><strong>Foo</strong></p></blockquote>' );
+		expect( editor.getData() ).toBe( '<blockquote><p><strong>Foo</strong></p></blockquote>' );
 	} );
 
 	describe( 'nested blockQuote forbidden by custom rule', () => {
@@ -186,7 +188,7 @@ describe( 'BlockQuoteEditing', () => {
 				writer.insert( bq, root.getChild( 0 ), 1 ); // Insert after <p>Foo</p>.
 			} );
 
-			expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
+			expect( editor.getData() ).toBe( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
 		} );
 
 		it( 'should unwrap nested blockQuote if it was wrapped into another blockQuote', () => {
@@ -198,7 +200,7 @@ describe( 'BlockQuoteEditing', () => {
 				writer.wrap( writer.createRangeIn( root ), 'blockQuote' );
 			} );
 
-			expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
+			expect( editor.getData() ).toBe( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
 		} );
 	} );
 } );

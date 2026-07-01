@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach, afterEach, vi } from 'vitest';
 import { ListEditing } from '../../../src/list/listediting.js';
 
 import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { EmptyBlock } from '@ckeditor/ckeditor5-html-support';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { setupTestHelpers } from '../_utils/utils.js';
@@ -16,8 +16,6 @@ import { stubUid } from '../_utils/uid.js';
 
 describe( 'ListEditing - EmptyBlock integration', () => {
 	let editor, view, test;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -27,7 +25,7 @@ describe( 'ListEditing - EmptyBlock integration', () => {
 		view = editor.editing.view;
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
+		vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		stubUid();
 
 		test = setupTestHelpers( editor );
@@ -35,6 +33,7 @@ describe( 'ListEditing - EmptyBlock integration', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'inside a plain li element', () => {

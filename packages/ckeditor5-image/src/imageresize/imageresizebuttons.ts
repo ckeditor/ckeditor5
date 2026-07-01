@@ -7,7 +7,7 @@
  * @module image/imageresize/imageresizebuttons
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	ButtonView,
 	DropdownButtonView,
@@ -47,8 +47,8 @@ export class ImageResizeButtons extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageResizeEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageResizeEditing ]> {
+		return [ ImageResizeEditing ];
 	}
 
 	/**

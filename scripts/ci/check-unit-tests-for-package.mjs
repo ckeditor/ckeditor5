@@ -20,13 +20,26 @@ main()
 async function main() {
 	const { packageName, checkCoverage, allowNonFullCoverage, coverageFile, attempts } = getOptions( process.argv.slice( 2 ) );
 
+	// Batched CI jobs run many packages sequentially in the same workspace. Remove coverage
+	// artifacts left by previous packages so stale data is not merged into this check.
+	await Promise.all( [
+		fs.rm( 'coverage', { recursive: true, force: true } ),
+		fs.rm( 'coverage-vitest', { recursive: true, force: true } ),
+		fs.rm( '.nyc_output/karma-coverage.json', { force: true } ),
+		fs.rm( '.nyc_output/vitest-coverage.json', { force: true } )
+	] );
+
+	await fs.mkdir( '.nyc_output', { recursive: true } );
+
 	runTests( { packageName, checkCoverage, attempts } );
 
 	if ( checkCoverage && !allowNonFullCoverage ) {
 		const exitCode = checkCodeCoverage();
 
 		if ( coverageFile ) {
-			const matches = await glob( 'coverage/*/lcov.info' );
+			// Karma writes to coverage/<BrowserName>/lcov.info,
+			// Vitest writes to coverage-vitest/lcov.info (merged from coverage-vitest/<project>/ by the test runner).
+			const matches = await glob( [ 'coverage/*/lcov.info', 'coverage-vitest/lcov.info' ] );
 
 			for ( const filePath of matches ) {
 				const buffer = await fs.readFile( filePath );
@@ -80,7 +93,15 @@ function runTests( { packageName, checkCoverage, attempts = 3 } ) {
 }
 
 function checkCodeCoverage() {
-	execSync( 'cp coverage/*/coverage-final.json .nyc_output', {
+	// Karma writes coverage-final.json to coverage/<BrowserName>/,
+	// Vitest writes it to coverage-vitest/. Copy whichever exists
+	// with distinct names so nyc can merge both.
+	execSync( 'cp coverage/*/coverage-final.json .nyc_output/karma-coverage.json 2>/dev/null || true', {
+		cwd: process.cwd(),
+		stdio: 'inherit'
+	} );
+
+	execSync( 'cp coverage-vitest/coverage-final.json .nyc_output/vitest-coverage.json 2>/dev/null || true', {
 		cwd: process.cwd(),
 		stdio: 'inherit'
 	} );

@@ -7,28 +7,30 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Autosave } from '../src/autosave.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { PendingActions } from '@ckeditor/ckeditor5-core';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe( 'Autosave', () => {
 	let editor, element, autosave;
 
 	beforeEach( () => {
-		sinon.useFakeTimers( { now: Date.now() } );
+		vi.useFakeTimers( { now: Date.now() } );
 	} );
 
 	afterEach( () => {
-		sinon.restore();
+		vi.restoreAllMocks();
+		vi.useRealTimers();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Autosave.isOfficialPlugin ).to.be.true;
+		expect( Autosave.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Autosave.isPremiumPlugin ).to.be.false;
+		expect( Autosave.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should have static pluginName property', () => {
-		expect( Autosave.pluginName ).to.equal( 'Autosave' );
+		expect( Autosave.pluginName ).toBe( 'Autosave' );
 	} );
 
 	describe( 'initialization', () => {
@@ -56,7 +58,7 @@ describe( 'Autosave', () => {
 		} );
 
 		it( 'should initialize adapter with an undefined value', () => {
-			expect( autosave.adapter ).to.be.undefined;
+			expect( autosave.adapter ).toBeUndefined();
 		} );
 
 		it( 'should allow plugin to work without defined adapter and without its config', () => {
@@ -66,12 +68,12 @@ describe( 'Autosave', () => {
 					editor.model.insertContent( writer.createText( 'foo' ) );
 				} );
 
-				sinon.clock.tick( 1000 );
-			} ).to.not.throw();
+				vi.advanceTimersByTime( 1000 );
+			} ).not.toThrow();
 		} );
 
 		it( 'should start with the `synchronized` state', () => {
-			expect( autosave.state ).to.equal( 'synchronized' );
+			expect( autosave.state ).toBe( 'synchronized' );
 		} );
 	} );
 
@@ -82,7 +84,7 @@ describe( 'Autosave', () => {
 			element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
-			spy = sinon.spy();
+			spy = vi.fn();
 
 			return ClassicTestEditor
 				.create( element, {
@@ -108,33 +110,33 @@ describe( 'Autosave', () => {
 		} );
 
 		it( 'should not call autosave callback while editor is being initialized', () => {
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return Promise.resolve().then( () => {
-				expect( spy.called ).to.be.false;
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 		} );
 
 		it( 'should enable providing callback via the config', () => {
-			editor.config.get( 'autosave' ).save.resetHistory();
+			editor.config.get( 'autosave' ).save.mockClear();
 
 			editor.model.change( writer => {
 				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return Promise.resolve().then( () => {
-				sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
+				expect( editor.config.get( 'autosave' ).save ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
 		it( 'config callback and adapter callback should be called if both are provided', () => {
-			editor.config.get( 'autosave' ).save.resetHistory();
+			editor.config.get( 'autosave' ).save.mockClear();
 
 			autosave.adapter = {
-				save: sinon.spy()
+				save: vi.fn()
 			};
 
 			editor.model.change( writer => {
@@ -142,19 +144,19 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return Promise.resolve().then( () => {
-				sinon.assert.calledOnce( autosave.adapter.save );
-				sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
+				expect( autosave.adapter.save ).toHaveBeenCalledTimes( 1 );
+				expect( editor.config.get( 'autosave' ).save ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
 		it( 'config callback and adapter callback should be called with the editor as an argument', () => {
-			editor.config.get( 'autosave' ).save.resetHistory();
+			editor.config.get( 'autosave' ).save.mockClear();
 
 			autosave.adapter = {
-				save: sinon.spy()
+				save: vi.fn()
 			};
 
 			editor.model.change( writer => {
@@ -162,11 +164,11 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return Promise.resolve().then( () => {
-				sinon.assert.calledWithExactly( autosave.adapter.save, editor );
-				sinon.assert.calledWithExactly( editor.config.get( 'autosave' ).save, editor );
+				expect( autosave.adapter.save.mock.calls[ 0 ] ).toEqual( [ editor ] );
+				expect( editor.config.get( 'autosave' ).save.mock.calls[ 0 ] ).toEqual( [ editor ] );
 			} );
 		} );
 	} );
@@ -186,7 +188,7 @@ describe( 'Autosave', () => {
 				.create( element, {
 					plugins: [ Autosave, Paragraph ],
 					autosave: {
-						save: sinon.spy(),
+						save: vi.fn(),
 						waitingTime: 500
 					}
 				} )
@@ -201,17 +203,17 @@ describe( 'Autosave', () => {
 						editor.model.insertContent( writer.createText( 'foo' ) );
 					} );
 
-					sinon.clock.tick( 499 );
+					vi.advanceTimersByTime( 499 );
 
 					return Promise.resolve().then( () => {
-						sinon.assert.notCalled( editor.config.get( 'autosave' ).save );
+						expect( editor.config.get( 'autosave' ).save ).not.toHaveBeenCalled();
 
-						sinon.clock.tick( 1 );
+						vi.advanceTimersByTime( 1 );
 
 						return Promise.resolve();
 					} ).then( () => {
 						// Callback should be called exactly after 500ms.
-						sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
+						expect( editor.config.get( 'autosave' ).save ).toHaveBeenCalledTimes( 1 );
 					} );
 				} );
 		} );
@@ -224,7 +226,7 @@ describe( 'Autosave', () => {
 				.create( element, {
 					plugins: [ Autosave, Paragraph ],
 					autosave: {
-						save: sinon.spy()
+						save: vi.fn()
 					}
 				} )
 				.then( _editor => {
@@ -238,17 +240,17 @@ describe( 'Autosave', () => {
 						editor.model.insertContent( writer.createText( 'foo' ) );
 					} );
 
-					sinon.clock.tick( 999 );
+					vi.advanceTimersByTime( 999 );
 
 					return Promise.resolve().then( () => {
-						sinon.assert.notCalled( editor.config.get( 'autosave' ).save );
+						expect( editor.config.get( 'autosave' ).save ).not.toHaveBeenCalled();
 
-						sinon.clock.tick( 1 );
+						vi.advanceTimersByTime( 1 );
 
 						return Promise.resolve();
 					} ).then( () => {
 						// Callback should be called exactly after 1000ms by default.
-						sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
+						expect( editor.config.get( 'autosave' ).save ).toHaveBeenCalledTimes( 1 );
 					} );
 				} );
 		} );
@@ -280,7 +282,7 @@ describe( 'Autosave', () => {
 
 		it( 'should run adapter\'s save method when the editor\'s change event is fired', () => {
 			autosave.adapter = {
-				save: sinon.spy()
+				save: vi.fn()
 			};
 
 			editor.model.change( writer => {
@@ -288,15 +290,15 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return Promise.resolve().then( () => {
-				sinon.assert.calledOnce( autosave.adapter.save );
+				expect( autosave.adapter.save ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
 		it( 'should debounce editor\'s change event', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const savedStates = [];
 
 			autosave.adapter = {
@@ -312,27 +314,27 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			editor.model.change( writer => {
 				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ) );
 				editor.model.insertContent( writer.createText( 'bar' ) );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			editor.model.change( writer => {
 				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) ) );
 				editor.model.insertContent( writer.createText( 'biz' ) );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return Promise.resolve().then( () => {
-				sinon.assert.calledOnce( spy );
-				expect( savedStates ).to.deep.equal( [
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( savedStates ).toEqual( [
 					'<p>paragraph1</p><p>biz</p>'
 				] );
 			} );
@@ -340,9 +342,8 @@ describe( 'Autosave', () => {
 
 		it( 'should add a pending action after a change and wait on the server response', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
-			const serverActionSpy = sinon.spy();
-			const serverActionStub = sinon.stub();
-			serverActionStub.callsFake( () => wait( 1000 ).then( serverActionSpy ) );
+			const serverActionSpy = vi.fn();
+			const serverActionStub = vi.fn().mockImplementation( () => wait( 1000 ).then( serverActionSpy ) );
 
 			autosave.adapter = {
 				save: serverActionStub
@@ -353,56 +354,55 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
 
-			sinon.assert.notCalled( serverActionSpy );
-			expect( pendingActions.hasAny ).to.be.true;
-			expect( pendingActions.first.message ).to.equal( 'Saving changes' );
+			expect( serverActionSpy ).not.toHaveBeenCalled();
+			expect( pendingActions.hasAny ).toBe( true );
+			expect( pendingActions.first.message ).toBe( 'Saving changes' );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
-			sinon.assert.notCalled( serverActionSpy );
-			expect( pendingActions.hasAny ).to.be.true;
-			expect( pendingActions.first.message ).to.equal( 'Saving changes' );
+			expect( serverActionSpy ).not.toHaveBeenCalled();
+			expect( pendingActions.hasAny ).toBe( true );
+			expect( pendingActions.first.message ).toBe( 'Saving changes' );
 
 			return Promise.resolve().then( () => {
-				sinon.clock.tick( 1000 );
+				vi.advanceTimersByTime( 1000 );
 
 				return runPromiseCycles().then( () => {
-					sinon.assert.calledOnce( serverActionSpy );
-					expect( pendingActions.hasAny ).to.be.false;
+					expect( serverActionSpy ).toHaveBeenCalledTimes( 1 );
+					expect( pendingActions.hasAny ).toBe( false );
 				} );
 			} );
 		} );
 
 		it( 'should add a pending action during the saving #2.', () => {
-			const serverActionSpy = sinon.spy();
+			const serverActionSpy = vi.fn();
 			const pendingActions = editor.plugins.get( PendingActions );
 
 			autosave.adapter = {
 				save: serverActionSpy
 			};
 
-			expect( pendingActions.hasAny ).to.be.false;
+			expect( pendingActions.hasAny ).toBe( false );
 
 			editor.model.change( writer => {
 				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
 
-			expect( pendingActions.hasAny ).to.be.true;
+			expect( pendingActions.hasAny ).toBe( true );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return runPromiseCycles().then( () => {
-				sinon.assert.calledOnce( serverActionSpy );
-				expect( pendingActions.hasAny ).to.be.false;
+				expect( serverActionSpy ).toHaveBeenCalledTimes( 1 );
+				expect( pendingActions.hasAny ).toBe( false );
 			} );
 		} );
 
 		it( 'should be in correct states during the saving', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
-			const serverActionSpy = sinon.spy();
-			const serverActionStub = sinon.stub();
-			serverActionStub.callsFake( () => wait( 1000 ).then( serverActionSpy ) );
+			const serverActionSpy = vi.fn();
+			const serverActionStub = vi.fn().mockImplementation( () => wait( 1000 ).then( serverActionSpy ) );
 
 			autosave.adapter = {
 				save: serverActionStub
@@ -413,12 +413,12 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
 
-			sinon.assert.notCalled( serverActionSpy );
-			expect( pendingActions.hasAny ).to.be.true;
-			expect( pendingActions.first.message ).to.equal( 'Saving changes' );
+			expect( serverActionSpy ).not.toHaveBeenCalled();
+			expect( pendingActions.hasAny ).toBe( true );
+			expect( pendingActions.first.message ).toBe( 'Saving changes' );
 
-			sinon.clock.tick( 1000 );
-			expect( autosave.state ).to.equal( 'saving' );
+			vi.advanceTimersByTime( 1000 );
+			expect( autosave.state ).toBe( 'saving' );
 
 			return Promise.resolve().then( () => {
 				// Add new change before the response from the server.
@@ -428,53 +428,53 @@ describe( 'Autosave', () => {
 					editor.model.insertContent( writer.createText( 'foo' ) );
 				} );
 
-				sinon.clock.tick( 1000 );
+				vi.advanceTimersByTime( 1000 );
 
 				return runPromiseCycles();
 			} ).then( () => {
 				// Now there should come the first server response.
-				expect( autosave.state ).to.equal( 'waiting' );
-				expect( pendingActions.hasAny ).to.be.true;
-				sinon.assert.calledOnce( serverActionSpy );
+				expect( autosave.state ).toBe( 'waiting' );
+				expect( pendingActions.hasAny ).toBe( true );
+				expect( serverActionSpy ).toHaveBeenCalledTimes( 1 );
 
-				sinon.clock.tick( 1000 );
+				vi.advanceTimersByTime( 1000 );
 
 				return runPromiseCycles();
 			} ).then( () => {
-				expect( autosave.state ).to.equal( 'saving' );
-				expect( pendingActions.hasAny ).to.be.true;
-				sinon.assert.calledOnce( serverActionSpy );
+				expect( autosave.state ).toBe( 'saving' );
+				expect( pendingActions.hasAny ).toBe( true );
+				expect( serverActionSpy ).toHaveBeenCalledTimes( 1 );
 
 				// Wait for the second server response.
-				sinon.clock.tick( 1000 );
+				vi.advanceTimersByTime( 1000 );
 
 				return runPromiseCycles();
 			} ).then( () => {
-				expect( pendingActions.hasAny ).to.be.false;
-				expect( autosave.state ).to.equal( 'synchronized' );
-				sinon.assert.calledTwice( serverActionSpy );
+				expect( pendingActions.hasAny ).toBe( false );
+				expect( autosave.state ).toBe( 'synchronized' );
+				expect( serverActionSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 		} );
 
 		it( 'should filter out selection changes', () => {
 			autosave.adapter = {
-				save: sinon.spy()
+				save: vi.fn()
 			};
 
 			editor.model.change( writer => {
 				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return runPromiseCycles().then( () => {
-				sinon.assert.notCalled( autosave.adapter.save );
+				expect( autosave.adapter.save ).not.toHaveBeenCalled();
 			} );
 		} );
 
 		it( 'should filter out markers that does not affect the data', () => {
 			autosave.adapter = {
-				save: sinon.spy()
+				save: vi.fn()
 			};
 
 			editor.model.change( writer => {
@@ -482,23 +482,23 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: true, range } );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			editor.model.change( writer => {
 				const range = writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) );
 				writer.updateMarker( 'name', { range } );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return runPromiseCycles().then( () => {
-				sinon.assert.notCalled( autosave.adapter.save );
+				expect( autosave.adapter.save ).not.toHaveBeenCalled();
 			} );
 		} );
 
 		it( 'should filter out markers that does not affect the data #2', () => {
 			autosave.adapter = {
-				save: sinon.spy()
+				save: vi.fn()
 			};
 
 			editor.model.change( writer => {
@@ -506,23 +506,23 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: false, range } );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			editor.model.change( writer => {
 				const range = writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) );
 				writer.updateMarker( 'name', { range } );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return runPromiseCycles().then( () => {
-				sinon.assert.notCalled( autosave.adapter.save );
+				expect( autosave.adapter.save ).not.toHaveBeenCalled();
 			} );
 		} );
 
 		it( 'should call the save method when some marker affects the data', () => {
 			autosave.adapter = {
-				save: sinon.spy()
+				save: vi.fn()
 			};
 
 			editor.model.change( writer => {
@@ -530,16 +530,16 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: true, affectsData: true, range } );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return runPromiseCycles().then( () => {
-				sinon.assert.calledOnce( autosave.adapter.save );
+				expect( autosave.adapter.save ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
 		it( 'should call the save method when some marker affects the data #2', () => {
 			autosave.adapter = {
-				save: sinon.spy()
+				save: vi.fn()
 			};
 
 			editor.model.change( writer => {
@@ -547,27 +547,27 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: false, affectsData: true, range } );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return runPromiseCycles().then( () => {
-				sinon.assert.calledOnce( autosave.adapter.save );
+				expect( autosave.adapter.save ).toHaveBeenCalledTimes( 1 );
 
 				editor.model.change( writer => {
 					const range = writer.createRangeIn( editor.model.document.getRoot().getChild( 1 ) );
 					writer.updateMarker( 'name', { range } );
 				} );
 
-				sinon.clock.tick( 1000 );
+				vi.advanceTimersByTime( 1000 );
 
 				return runPromiseCycles().then( () => {
-					sinon.assert.calledTwice( autosave.adapter.save );
+					expect( autosave.adapter.save ).toHaveBeenCalledTimes( 2 );
 				} );
 			} );
 		} );
 
 		it( 'should call the save method when some marker affects the data #3', () => {
 			autosave.adapter = {
-				save: sinon.spy()
+				save: vi.fn()
 			};
 
 			editor.model.change( writer => {
@@ -576,15 +576,15 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'marker-affecting-data', { usingOperation: false, affectsData: false, range } );
 			} );
 
-			sinon.clock.tick( 1000 );
+			vi.advanceTimersByTime( 1000 );
 
 			return runPromiseCycles().then( () => {
-				sinon.assert.calledOnce( autosave.adapter.save );
+				expect( autosave.adapter.save ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
 		it( 'should flush remaining call after editor\'s destroy', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const savedStates = [];
 
 			autosave.adapter = {
@@ -605,11 +605,11 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( writer.createText( 'bar' ) );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 
 			return editor.destroy().then( () => {
-				sinon.assert.calledOnce( spy );
-				expect( savedStates ).to.deep.equal( [
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( savedStates ).toEqual( [
 					'<p>foo</p><p>bar</p>'
 				] );
 			} );
@@ -617,9 +617,8 @@ describe( 'Autosave', () => {
 
 		it( 'should work after editor\'s destroy with long server\'s response time', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
-			const serverActionSpy = sinon.spy();
-			const serverActionStub = sinon.stub();
-			serverActionStub.onCall( 0 ).resolves( wait( 1000 ).then( serverActionSpy ) );
+			const serverActionSpy = vi.fn();
+			const serverActionStub = vi.fn().mockResolvedValueOnce( wait( 1000 ).then( serverActionSpy ) );
 
 			autosave.adapter = {
 				save: serverActionStub
@@ -632,27 +631,31 @@ describe( 'Autosave', () => {
 
 			return editor.destroy()
 				.then( () => {
-					expect( pendingActions.hasAny ).to.be.true;
-					sinon.clock.tick( 1000 );
+					expect( pendingActions.hasAny ).toBe( true );
+					vi.advanceTimersByTime( 1000 );
 				} )
 				.then( runPromiseCycles )
 				.then( () => {
-					expect( pendingActions.hasAny ).to.be.false;
-					sinon.assert.calledOnce( serverActionSpy );
-					sinon.assert.calledOnce( serverActionStub );
+					expect( pendingActions.hasAny ).toBe( false );
+					expect( serverActionSpy ).toHaveBeenCalledTimes( 1 );
+					expect( serverActionStub ).toHaveBeenCalledTimes( 1 );
 				} );
 		} );
 
 		it( 'should handle a situation when the save callback throws an error', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
-			const successServerActionSpy = sinon.spy();
-			const serverActionStub = sinon.stub();
+			const successServerActionSpy = vi.fn();
+			const serverActionStub = vi.fn();
+			const handleUnhandledRejection = evt => {
+				expect( evt.reason ).toEqual( new Error( 'foo' ) );
+				evt.preventDefault();
+			};
 
-			serverActionStub.onFirstCall()
-				.rejects( new Error( 'foo' ) );
+			window.addEventListener( 'unhandledrejection', handleUnhandledRejection, { once: true } );
 
-			serverActionStub.onSecondCall()
-				.callsFake( successServerActionSpy );
+			serverActionStub.mockRejectedValueOnce( new Error( 'foo' ) );
+
+			serverActionStub.mockImplementationOnce( successServerActionSpy );
 
 			autosave.adapter = {
 				save: serverActionStub
@@ -665,36 +668,36 @@ describe( 'Autosave', () => {
 
 			return editor.destroy()
 				.then( () => {
-					expect( pendingActions.hasAny ).to.be.true;
+					expect( pendingActions.hasAny ).toBe( true );
 				} )
 				.then( runPromiseCycles )
 				.then( () => {
-					expect( pendingActions.hasAny ).to.be.true;
-					sinon.assert.calledOnce( serverActionStub );
-					sinon.assert.notCalled( successServerActionSpy );
+					expect( pendingActions.hasAny ).toBe( true );
+					expect( serverActionStub ).toHaveBeenCalledTimes( 1 );
+					expect( successServerActionSpy ).not.toHaveBeenCalled();
 				} )
-				.then( () => sinon.clock.tick( 1000 ) )
+				.then( () => vi.advanceTimersByTime( 1000 ) )
 				.then( runPromiseCycles )
 				.then( () => {
-					expect( pendingActions.hasAny ).to.be.false;
-					sinon.assert.calledTwice( serverActionStub );
-					sinon.assert.calledOnce( successServerActionSpy );
+					expect( pendingActions.hasAny ).toBe( false );
+					expect( serverActionStub ).toHaveBeenCalledTimes( 2 );
+					expect( successServerActionSpy ).toHaveBeenCalledTimes( 1 );
 				} );
 		} );
 
 		it( 'should ignore non-local changes', () => {
 			autosave.adapter = {
-				save: sinon.spy()
+				save: vi.fn()
 			};
 
 			editor.model.enqueueChange( { isLocal: false }, writer => {
 				writer.insertElement( 'paragraph', null, editor.model.document.getRoot(), 0 );
 			} );
 
-			sinon.clock.tick( 2000 );
+			vi.advanceTimersByTime( 2000 );
 
 			return runPromiseCycles().then( () => {
-				sinon.assert.notCalled( autosave.adapter.save );
+				expect( autosave.adapter.save ).not.toHaveBeenCalled();
 			} );
 		} );
 	} );
@@ -706,7 +709,7 @@ describe( 'Autosave', () => {
 			element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
-			spy = sinon.spy();
+			spy = vi.fn();
 
 			return ClassicTestEditor
 				.create( element, {
@@ -741,12 +744,12 @@ describe( 'Autosave', () => {
 			await runPromiseCycles();
 
 			// "Wait" for the callback to finish.
-			sinon.clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			// Wait for autosave callback promise to resolve.
 			await promise;
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should use one autosave call and one promise if called multiple times', async () => {
@@ -754,19 +757,19 @@ describe( 'Autosave', () => {
 			const promiseB = autosave.save();
 			const promiseC = autosave.save();
 
-			expect( promiseB ).to.equal( promise );
-			expect( promiseC ).to.equal( promise );
+			expect( promiseB ).toBe( promise );
+			expect( promiseC ).toBe( promise );
 
 			// Wait for autosave's inner promise delayer. After this callback has been called.
 			await runPromiseCycles();
 
 			// "Wait" for the callback to finish.
-			sinon.clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			// Wait for autosave callback promise to resolve.
 			await promise;
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should use two autosave calls and one promise if called another time after model changed', async () => {
@@ -779,26 +782,26 @@ describe( 'Autosave', () => {
 
 			const promiseB = autosave.save();
 
-			expect( promise ).to.equal( promiseB );
+			expect( promise ).toBe( promiseB );
 
 			// Wait for autosave's inner promise delayer. After this callback has been called.
 			await runPromiseCycles();
 
 			// "Wait" for the first callback to finish.
-			sinon.clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			// Wait for autosave callback promise to resolve.
 			await runPromiseCycles();
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 
 			// "Wait" for the second callback to finish.
-			sinon.clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			// Wait for autosave callback promise to resolve.
 			await promise;
 
-			expect( spy.calledTwice ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 		} );
 
 		it( 'should cancel delayed autosave callback', async () => {
@@ -813,24 +816,24 @@ describe( 'Autosave', () => {
 			await runPromiseCycles();
 
 			// "Wait" for the `save()` callback to finish.
-			sinon.clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			// Wait for autosave callback promise to resolve.
 			await runPromiseCycles();
 
 			// "Wait" for the debounce to finish.
-			sinon.clock.tick( 2000 );
+			vi.advanceTimersByTime( 2000 );
 
 			// Wait for autosave's inner promise delayer.
 			await runPromiseCycles();
 
 			// "Wait" for the autosave callback to finish.
-			sinon.clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			// Wait for autosave callback promise to resolve.
 			await runPromiseCycles();
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should return a promise resolved when the autosave for save() call is finished (another callback in progress)', async () => {
@@ -840,7 +843,7 @@ describe( 'Autosave', () => {
 			} );
 
 			// "Wait" for the debounce to finish.
-			sinon.clock.tick( 2000 );
+			vi.advanceTimersByTime( 2000 );
 
 			// Wait for autosave's inner promise delayer.
 			await runPromiseCycles();
@@ -852,24 +855,24 @@ describe( 'Autosave', () => {
 			// Call `save()` before earlier callback finishes.
 			const promise = autosave.save();
 
-			expect( spy.called ).to.be.false;
+			expect( spy ).not.toHaveBeenCalled();
 
 			// "Wait" for the callback to finish.
-			sinon.clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			// Wait for autosave callback promise to resolve.
 			await runPromiseCycles();
 
 			// First callback (debounced) has finished.
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 
 			// "Wait" for the second callback to finish.
-			sinon.clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			await promise;
 
 			// First callback has finished.
-			expect( spy.calledTwice ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 		} );
 	} );
 
@@ -892,7 +895,7 @@ describe( 'Autosave', () => {
 						editor.model.insertContent( writer.createText( 'bar' ) );
 					} );
 
-					sinon.clock.tick( 10 );
+					vi.advanceTimersByTime( 10 );
 				} );
 			}
 		}
@@ -901,7 +904,7 @@ describe( 'Autosave', () => {
 			.create( element, {
 				plugins: [ Autosave, Paragraph, AsyncPlugin ],
 				autosave: {
-					save: sinon.spy(),
+					save: vi.fn(),
 					waitingTime: 5
 				}
 			} )
@@ -909,8 +912,8 @@ describe( 'Autosave', () => {
 				editor = _editor;
 				const spy = editor.config.get( 'autosave' ).save;
 
-				expect( editor.getData() ).to.equal( '<p>bar</p>' );
-				sinon.assert.notCalled( spy );
+				expect( editor.getData() ).toBe( '<p>bar</p>' );
+				expect( spy ).not.toHaveBeenCalled();
 			} )
 			.then( () => {
 				document.body.removeChild( element );

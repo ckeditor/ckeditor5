@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UIModel } from '../src/model.js';
 
 let Car, car;
@@ -18,15 +19,15 @@ describe( 'UIModel', () => {
 	} );
 
 	it( 'should set attributes on creation', () => {
-		expect( car ).to.have.property( 'color', 'red' );
-		expect( car ).to.have.property( 'year', 2015 );
+		expect( car ).toHaveProperty( 'color', 'red' );
+		expect( car ).toHaveProperty( 'year', 2015 );
 
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		car.on( 'change:color', spy );
 		car.color = 'blue';
 
-		expect( spy.called ).to.be.true;
+		expect( spy ).toHaveBeenCalled();
 	} );
 
 	it( 'should add properties on creation', () => {
@@ -34,6 +35,6 @@ describe( 'UIModel', () => {
 			prop: 1
 		} );
 
-		expect( car ).to.have.property( 'prop', 1 );
+		expect( car ).toHaveProperty( 'prop', 1 );
 	} );
 } );

@@ -1428,6 +1428,47 @@ export interface RootConfig {
 	description?: string;
 
 	/**
+	 * An optional, human-readable name of this editing area.
+	 *
+	 * Unlike {@link #label `label`} (which is primarily used as the `aria-label` accessibility text), the title is
+	 * intended as a semantic name that features can present to users or send to external services. For instance, the
+	 * AI features use it to tell roots apart, so that requests scoped to a specific area ("edit the title",
+	 * "summarize the introduction") can be routed to the intended root.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			title: 'Article main content'
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should provide config for roots individually:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			title: 'Article header'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			title: 'Article main content'
+	 * 		}
+	 * 	}
+	 * } )
+	 * .then( ... )
+	 * .catch( ... );
+	 * ```
+	 */
+	title?: string;
+
+	/**
 	 * Initial root attributes for a root.
 	 *
 	 * **Note: You must provide full set of attributes for each root. If an attribute is not set on a root, set the value to `null`.

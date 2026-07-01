@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { ModelElement } from '../../../src/model/element.js';
@@ -76,7 +77,7 @@ describe( 'Operation utils', () => {
 			utils._remove( range );
 
 			expectData( 'fooxyz' );
-			expect( root.childCount ).to.equal( 1 );
+			expect( root.childCount ).toBe( 1 );
 		} );
 
 		it( 'should throw if given range is not flat', () => {
@@ -139,14 +140,14 @@ describe( 'normalizeNodes', () => {
 	it( 'should change single object into an array', () => {
 		const p = new ModelElement( 'p' );
 
-		expect( utils._normalizeNodes( p ) ).to.deep.equal( [ p ] );
+		expect( utils._normalizeNodes( p ) ).toEqual( [ p ] );
 	} );
 
 	it( 'should change strings to text nodes', () => {
 		const text = utils._normalizeNodes( 'abc' )[ 0 ];
 
-		expect( text ).to.be.instanceof( ModelText );
-		expect( text.data ).to.equal( 'abc' );
+		expect( text ).toBeInstanceOf( ModelText );
+		expect( text.data ).toBe( 'abc' );
 	} );
 
 	it( 'should change text proxies to text nodes', () => {
@@ -155,18 +156,18 @@ describe( 'normalizeNodes', () => {
 
 		const text = utils._normalizeNodes( textProxy )[ 0 ];
 
-		expect( text ).to.be.instanceof( ModelText );
-		expect( text.data ).to.equal( 'b' );
+		expect( text ).toBeInstanceOf( ModelText );
+		expect( text.data ).toBe( 'b' );
 	} );
 
 	it( 'should not change elements', () => {
 		const p = new ModelElement( 'p' );
 
-		expect( utils._normalizeNodes( p )[ 0 ] ).to.equal( p );
+		expect( utils._normalizeNodes( p )[ 0 ] ).toBe( p );
 	} );
 
 	it( 'should omit unrecognized objects', () => {
-		expect( utils._normalizeNodes( 1 ) ).to.deep.equal( [] );
+		expect( utils._normalizeNodes( 1 ) ).toEqual( [] );
 	} );
 
 	it( 'should accept arrays', () => {
@@ -176,17 +177,17 @@ describe( 'normalizeNodes', () => {
 
 		const normalized = utils._normalizeNodes( nodes );
 
-		expect( normalized[ 0 ] ).to.be.instanceof( ModelText );
-		expect( normalized[ 1 ] ).to.equal( text );
-		expect( normalized[ 2 ] ).to.equal( image );
-		expect( normalized[ 3 ] ).to.be.instanceof( ModelText );
+		expect( normalized[ 0 ] ).toBeInstanceOf( ModelText );
+		expect( normalized[ 1 ] ).toBe( text );
+		expect( normalized[ 2 ] ).toBe( image );
+		expect( normalized[ 3 ] ).toBeInstanceOf( ModelText );
 	} );
 
 	it( 'should merge text nodes if mergeTextNodes flag is set to true', () => {
 		const normalized = utils._normalizeNodes( [ 'foo', 'bar' ], true );
 
-		expect( normalized.length ).to.equal( 1 );
-		expect( normalized[ 0 ].data ).to.equal( 'foobar' );
+		expect( normalized.length ).toBe( 1 );
+		expect( normalized[ 0 ].data ).toBe( 'foobar' );
 	} );
 
 	it( 'should replace document fragment by the list of it\'s children', () => {
@@ -198,14 +199,14 @@ describe( 'normalizeNodes', () => {
 
 		const normalized = utils._normalizeNodes( nodes, true );
 
-		expect( normalized[ 0 ] ).to.be.instanceof( ModelText );
-		expect( normalized[ 0 ].getAttribute( 'bold' ) ).to.be.true;
-		expect( normalized[ 0 ].data ).to.equal( 'foobar' );
-		expect( normalized[ 1 ].name ).to.equal( 'imageBlock' );
-		expect( normalized[ 2 ].data ).to.equal( 'xyz' );
+		expect( normalized[ 0 ] ).toBeInstanceOf( ModelText );
+		expect( normalized[ 0 ].getAttribute( 'bold' ) ).toBe( true );
+		expect( normalized[ 0 ].data ).toBe( 'foobar' );
+		expect( normalized[ 1 ].name ).toBe( 'imageBlock' );
+		expect( normalized[ 2 ].data ).toBe( 'xyz' );
 	} );
 } );
 
 function expectData( html ) {
-	expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( html );
+	expect( _getModelData( model, { withoutSelection: true } ) ).toBe( html );
 }

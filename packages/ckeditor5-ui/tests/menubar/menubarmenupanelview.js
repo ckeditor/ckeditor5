@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { MenuBarMenuPanelView } from '../../src/menubar/menubarmenupanelview.js';
 import { ViewCollection } from '../../src/viewcollection.js';
@@ -22,11 +23,12 @@ describe( 'MenuBarMenuPanelView', () => {
 
 	afterEach( () => {
 		panelView.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should have #children view collection', () => {
-			expect( panelView.children ).to.be.instanceOf( ViewCollection );
+			expect( panelView.children ).toBeInstanceOf( ViewCollection );
 
 			const view = new View();
 
@@ -36,44 +38,46 @@ describe( 'MenuBarMenuPanelView', () => {
 			panelView.render();
 			panelView.children.add( view );
 
-			expect( panelView.element.firstChild ).to.equal( view.element );
+			expect( panelView.element.firstChild ).toBe( view.element );
 		} );
 
 		it( 'should have #isVisible set to false by default', () => {
-			expect( panelView.isVisible ).to.be.false;
+			expect( panelView.isVisible ).toBe( false );
 		} );
 
 		it( 'should have #position set to "se" by default', () => {
-			expect( panelView.position ).to.equal( 'se' );
+			expect( panelView.position ).toBe( 'se' );
 		} );
 
 		describe( 'template and DOM element', () => {
 			it( 'should have CSS classes', () => {
-				expect( panelView.template.attributes.class ).to.include.members( [ 'ck', 'ck-reset', 'ck-menu-bar__menu__panel' ] );
+				expect( panelView.template.attributes.class ).toEqual(
+					expect.arrayContaining( [ 'ck', 'ck-reset', 'ck-menu-bar__menu__panel' ] )
+				);
 			} );
 
 			it( 'should have #position bound to a CSS class', () => {
 				panelView.render();
 
 				panelView.position = 'sw';
-				expect( panelView.element.classList.contains( 'ck-menu-bar__menu__panel_position_sw' ) ).to.be.true;
+				expect( panelView.element.classList.contains( 'ck-menu-bar__menu__panel_position_sw' ) ).toBe( true );
 
 				panelView.position = 'se';
-				expect( panelView.element.classList.contains( 'ck-menu-bar__menu__panel_position_se' ) ).to.be.true;
+				expect( panelView.element.classList.contains( 'ck-menu-bar__menu__panel_position_se' ) ).toBe( true );
 			} );
 
 			it( 'should have #isVisible bound to a CSS class', () => {
 				panelView.render();
 
 				panelView.isVisible = false;
-				expect( panelView.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+				expect( panelView.element.classList.contains( 'ck-hidden' ) ).toBe( true );
 
 				panelView.isVisible = true;
-				expect( panelView.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+				expect( panelView.element.classList.contains( 'ck-hidden' ) ).toBe( false );
 			} );
 
 			it( 'should have tabindex attribute value set', () => {
-				expect( panelView.template.attributes.tabindex ).to.have.members( [ '-1' ] );
+				expect( panelView.template.attributes.tabindex ).toEqual( [ '-1' ] );
 			} );
 
 			it( 'should preventDefault the selectstart event to avoid breaking the selection in the editor', () => {
@@ -83,16 +87,16 @@ describe( 'MenuBarMenuPanelView', () => {
 					bubbles: true,
 					cancelable: true
 				} );
-				const spy = sinon.spy( selectStartEvent, 'preventDefault' );
+				const spy = vi.spyOn( selectStartEvent, 'preventDefault' );
 				const labeledInput = new LabeledFieldView( { t: () => {} }, createLabeledInputText );
 
 				panelView.element.dispatchEvent( selectStartEvent );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 
 				panelView.children.add( labeledInput );
 
 				labeledInput.fieldView.element.dispatchEvent( selectStartEvent );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -103,13 +107,13 @@ describe( 'MenuBarMenuPanelView', () => {
 
 				panelView.children.addMany( [ firstChildView, lastChildView ] );
 
-				firstChildView.focus = sinon.spy();
-				lastChildView.focus = sinon.spy();
+				firstChildView.focus = vi.fn();
+				lastChildView.focus = vi.fn();
 
 				panelView.focus();
 
-				sinon.assert.calledOnce( firstChildView.focus );
-				sinon.assert.notCalled( lastChildView.focus );
+				expect( firstChildView.focus ).toHaveBeenCalledOnce();
+				expect( lastChildView.focus ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should focus the last child if the argument was passed', () => {
@@ -118,13 +122,17 @@ describe( 'MenuBarMenuPanelView', () => {
 
 				panelView.children.addMany( [ firstChildView, lastChildView ] );
 
-				firstChildView.focus = sinon.spy();
-				lastChildView.focus = sinon.spy();
+				firstChildView.focus = vi.fn();
+				lastChildView.focus = vi.fn();
 
 				panelView.focus( -1 );
 
-				sinon.assert.notCalled( firstChildView.focus );
-				sinon.assert.calledOnce( lastChildView.focus );
+				expect( firstChildView.focus ).not.toHaveBeenCalled();
+				expect( lastChildView.focus ).toHaveBeenCalledOnce();
+			} );
+
+			it( 'should not throw when children is empty', () => {
+				expect( () => panelView.focus() ).not.toThrow();
 			} );
 		} );
 	} );

@@ -7,7 +7,7 @@
  * @module ckbox/ckboximageedit/ckboximageeditediting
  */
 
-import { PendingActions, Plugin } from '@ckeditor/ckeditor5-core';
+import { PendingActions, Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { Notification } from '@ckeditor/ckeditor5-ui';
 import { ImageEditing, ImageUtils } from '@ckeditor/ckeditor5-image';
 import { CKBoxImageEditCommand } from './ckboximageeditcommand.js';
@@ -35,8 +35,22 @@ export class CKBoxImageEditEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ CKBoxEditing, CKBoxUtils, PendingActions, Notification, ImageUtils, ImageEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[
+		CKBoxEditing,
+		CKBoxUtils,
+		PendingActions,
+		Notification,
+		ImageUtils,
+		ImageEditing
+	]> {
+		return [
+			CKBoxEditing,
+			CKBoxUtils,
+			PendingActions,
+			Notification,
+			ImageUtils,
+			ImageEditing
+		];
 	}
 
 	/**

@@ -3,20 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
 	normalizeColorOptions,
 	getLocalizedColorOptions
 } from '../../src/colorgrid/utils.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'utils', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	describe( 'normalizeColorOptions()', () => {
 		it( 'should return normalized config object from string', () => {
 			const normalizedOption = normalizeColorOptions( [ 'black' ] );
 
-			expect( normalizedOption ).to.deep.equal( [
+			expect( normalizedOption ).toEqual( [
 				{
 					model: 'black',
 					label: 'black',
@@ -34,7 +36,7 @@ describe( 'utils', () => {
 		it( 'should return normalized config object from object( color )', () => {
 			const normalizedOption = normalizeColorOptions( [ { color: 'black' } ] );
 
-			expect( normalizedOption ).to.deep.equal( [
+			expect( normalizedOption ).toEqual( [
 				{
 					model: 'black',
 					label: 'black',
@@ -57,7 +59,7 @@ describe( 'utils', () => {
 				}
 			] );
 
-			expect( normalizedOption ).to.deep.equal( [
+			expect( normalizedOption ).toEqual( [
 				{
 					model: 'black',
 					label: 'Black',
@@ -81,7 +83,7 @@ describe( 'utils', () => {
 				}
 			] );
 
-			expect( normalizedOption ).to.deep.equal( [
+			expect( normalizedOption ).toEqual( [
 				{
 					model: 'black',
 					label: 'Black',
@@ -104,7 +106,7 @@ describe( 'utils', () => {
 				}
 			] );
 
-			expect( normalizedOption ).to.deep.equal( [
+			expect( normalizedOption ).toEqual( [
 				{
 					model: 'black',
 					label: 'black',
@@ -135,7 +137,7 @@ describe( 'utils', () => {
 					color: 'blue',
 					label: 'Blue'
 				}
-			] ) ).to.deep.equal( [
+			] ) ).toEqual( [
 				{
 					color: 'red',
 					label: 'Localized:Red'
@@ -157,7 +159,7 @@ describe( 'utils', () => {
 					color: 'unknown',
 					label: 'Unknown'
 				}
-			] ) ).to.deep.equal( [
+			] ) ).toEqual( [
 				{
 					color: 'red',
 					label: 'Localized:Red'

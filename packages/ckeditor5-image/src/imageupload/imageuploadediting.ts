@@ -7,7 +7,7 @@
  * @module image/imageupload/imageuploadediting
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	ViewUpcastWriter,
@@ -45,8 +45,8 @@ export class ImageUploadEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ FileRepository, Notification, ClipboardPipeline, ImageUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ FileRepository, Notification, ClipboardPipeline, ImageUtils ]> {
+		return [ FileRepository, Notification, ClipboardPipeline, ImageUtils ];
 	}
 
 	public static get pluginName() {

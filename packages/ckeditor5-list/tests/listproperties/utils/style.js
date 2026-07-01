@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import {
 	getListTypeFromListStyleType,
 	getTypeAttributeFromListStyleType,
@@ -29,7 +30,7 @@ describe( 'ListProperties - utils - style', () => {
 
 		for ( const [ style, type ] of testData ) {
 			it( `shoud return "${ type }" for "${ style }" style`, () => {
-				expect( getListTypeFromListStyleType( style ) ).to.equal( type );
+				expect( getListTypeFromListStyleType( style ) ).toBe( type );
 			} );
 		}
 	} );
@@ -48,28 +49,28 @@ describe( 'ListProperties - utils - style', () => {
 		describe( 'getTypeAttributeFromListStyleType()', () => {
 			for ( const [ styleType, typeAttribute ] of testData ) {
 				it( `should return "${ typeAttribute }" for "${ styleType }" style`, () => {
-					expect( getTypeAttributeFromListStyleType( styleType ) ).to.equal( typeAttribute );
+					expect( getTypeAttributeFromListStyleType( styleType ) ).toBe( typeAttribute );
 				} );
 			}
 
 			it( 'should return null for "default" style', () => {
-				expect( getTypeAttributeFromListStyleType( 'default' ) ).to.be.null;
+				expect( getTypeAttributeFromListStyleType( 'default' ) ).toBeNull();
 			} );
 
 			it( 'should return null for unknown style', () => {
-				expect( getTypeAttributeFromListStyleType( 'strange-style' ) ).to.be.null;
+				expect( getTypeAttributeFromListStyleType( 'strange-style' ) ).toBeNull();
 			} );
 		} );
 
 		describe( 'getListStyleTypeFromTypeAttribute()', () => {
 			for ( const [ styleType, typeAttribute ] of testData.filter( ( [ style ] ) => !style.endsWith( '-alpha' ) ) ) {
 				it( `should return "${ typeAttribute }" for "${ styleType }" attribute value`, () => {
-					expect( getListStyleTypeFromTypeAttribute( typeAttribute ) ).to.equal( styleType );
+					expect( getListStyleTypeFromTypeAttribute( typeAttribute ) ).toBe( styleType );
 				} );
 			}
 
 			it( 'should return null for unknown attribute value', () => {
-				expect( getListStyleTypeFromTypeAttribute( 'Q' ) ).to.be.null;
+				expect( getListStyleTypeFromTypeAttribute( 'Q' ) ).toBeNull();
 			} );
 		} );
 	} );
@@ -91,7 +92,7 @@ describe( 'ListProperties - utils - style', () => {
 
 		for ( const [ input, expected ] of testData ) {
 			it( `should convert "${ input }" to "${ expected }"`, () => {
-				expect( normalizeListStyle( input ) ).to.equal( expected );
+				expect( normalizeListStyle( input ) ).toBe( expected );
 			} );
 		}
 	} );

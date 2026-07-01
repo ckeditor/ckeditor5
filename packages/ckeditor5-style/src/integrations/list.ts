@@ -7,7 +7,7 @@
  * @module style/integrations/list
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import type { ListType, ListUtils } from '@ckeditor/ckeditor5-list';
 import type { TemplateDefinition } from '@ckeditor/ckeditor5-ui';
@@ -47,8 +47,8 @@ export class ListStyleSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ StyleUtils, GeneralHtmlSupport ] as const;
+	public static get requires(): PluginDependenciesOf<[ StyleUtils, GeneralHtmlSupport ]> {
+		return [ StyleUtils, GeneralHtmlSupport ];
 	}
 
 	/**

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { View, ViewCollection } from '../../src/index.js';
 import { DialogContentView } from '../../src/dialog/dialogcontentview.js';
 
@@ -21,12 +22,12 @@ describe( 'DialogContentView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should have a CSS class', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-dialog__content' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-dialog__content' ) ).toBe( true );
 		} );
 
 		it( 'should have a collection of #children', () => {
-			expect( view.children ).to.be.an.instanceof( ViewCollection );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should bind the #children collection to the DOM', () => {
@@ -35,7 +36,7 @@ describe( 'DialogContentView', () => {
 
 			view.children.add( childView );
 
-			expect( view.element.firstElementChild ).to.equal( childView.element );
+			expect( view.element.firstElementChild ).toBe( childView.element );
 		} );
 	} );
 
@@ -49,9 +50,9 @@ describe( 'DialogContentView', () => {
 			view.children.add( childViewA );
 			view.children.add( childViewB );
 
-			expect( view.element.childElementCount ).to.equal( 2 );
+			expect( view.element.childElementCount ).toBe( 2 );
 			view.reset();
-			expect( view.element.childElementCount ).to.equal( 0 );
+			expect( view.element.childElementCount ).toBe( 0 );
 		} );
 	} );
 } );

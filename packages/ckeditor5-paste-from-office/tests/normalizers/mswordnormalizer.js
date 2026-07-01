@@ -11,22 +11,34 @@ describe( 'PasteFromOfficeMSWordNormalizer', () => {
 
 	describe( 'isActive()', () => {
 		it( 'should return true for microsoft word content', () => {
-			expect( normalizer.isActive( '<meta name=Generator content="Microsoft Word 15"><p>Foo bar</p>' ) ).to.be.true;
+			expect( normalizer.isActive( '<meta name=Generator content="Microsoft Word 15"><p>Foo bar</p>' ) ).toBe( true );
 		} );
 
 		it( 'should return true for microsoft word content - safari', () => {
 			expect( normalizer.isActive( '<html xmlns:o="urn:schemas-microsoft-com:office:office"' +
 				'xmlns:w="urn:schemas-microsoft-com:office:word" ' +
 				'xmlns:m="http://schemas.microsoft.com/office/2004/12/omml" ' +
-				'xmlns="http://www.w3.org/TR/REC-html40">' ) ).to.be.true;
+				'xmlns="http://www.w3.org/TR/REC-html40">' ) ).toBe( true );
+		} );
+
+		it( 'should return true for microsoft excel content', () => {
+			expect( normalizer.isActive( '<meta name=Generator content="Microsoft Excel 15"><table></table>' ) ).toBe( true );
+		} );
+
+		it( 'should return true for microsoft excel online content (no xmlns:o)', () => {
+			const html = '<div ccp_infra_version=\'3\' data-ccp-timestamp=\'1780896911866\'>' +
+				'<meta name=ProgId content=Excel.Sheet>' +
+				'<meta name=Generator content="Microsoft Excel 15"><table></table></div>';
+
+			expect( normalizer.isActive( html ) ).toBe( true );
 		} );
 
 		it( 'should return false for google docs content', () => {
-			expect( normalizer.isActive( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' ) ).to.be.false;
+			expect( normalizer.isActive( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' ) ).toBe( false );
 		} );
 
 		it( 'should return false for content fromother sources', () => {
-			expect( normalizer.isActive( '<p>foo</p>' ) ).to.be.false;
+			expect( normalizer.isActive( '<p>foo</p>' ) ).toBe( false );
 		} );
 	} );
 } );

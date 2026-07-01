@@ -3,35 +3,34 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Editor } from '../../src/editor/editor.js';
 import { EditingController, HtmlDataProcessor, ModelRootElement, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { ModelTestEditor } from '../../tests/_utils/modeltesteditor.js';
 
-import { testUtils } from '../../tests/_utils/utils.js';
-
 describe( 'ModelTestEditor', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	describe( 'constructor()', () => {
 		it( 'creates an instance of editor', async () => {
 			const editor = new ModelTestEditor( { foo: 1 } );
 
-			expect( editor ).to.be.instanceof( Editor );
-			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
-			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
-			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( '$root' );
+			expect( editor ).toBeInstanceOf( Editor );
+			expect( editor.config.get( 'foo' ) ).toBe( 1 );
+			expect( editor.data.processor ).toBeInstanceOf( HtmlDataProcessor );
+			expect( editor.model.document.getRoot( 'main' ).name ).toBe( '$root' );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
 		} );
 
 		it( 'should disable editing pipeline', () => {
-			const spy = sinon.spy( EditingController.prototype, 'destroy' );
+			const spy = vi.spyOn( EditingController.prototype, 'destroy' );
 
 			return ModelTestEditor.create( { foo: 1 } ).then( editor => {
-				sinon.assert.calledOnce( spy );
-
-				spy.restore();
+				expect( spy ).toHaveBeenCalledOnce();
 
 				return editor.destroy();
 			} );
@@ -40,7 +39,7 @@ describe( 'ModelTestEditor', () => {
 		it( 'creates main root element', async () => {
 			const editor = new ModelTestEditor();
 
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
+			expect( editor.model.document.getRoot( 'main' ) ).toBeInstanceOf( ModelRootElement );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -54,7 +53,7 @@ describe( 'ModelTestEditor', () => {
 				}
 			} );
 
-			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( 'customRoot' );
+			expect( editor.model.document.getRoot( 'main' ).name ).toBe( 'customRoot' );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -82,7 +81,7 @@ describe( 'ModelTestEditor', () => {
 
 			editor.setData( 'foo' );
 
-			expect( _getModelData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
+			expect( _getModelData( editor.model, { rootName: 'main', withoutSelection: true } ) ).toBe( 'foo' );
 		} );
 	} );
 
@@ -105,7 +104,7 @@ describe( 'ModelTestEditor', () => {
 		it( 'should set data of the first root', () => {
 			_setModelData( editor.model, 'foo' );
 
-			expect( editor.getData() ).to.equal( 'foo' );
+			expect( editor.getData() ).toBe( 'foo' );
 		} );
 	} );
 } );

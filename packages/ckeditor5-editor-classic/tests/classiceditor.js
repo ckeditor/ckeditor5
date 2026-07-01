@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ClassicEditor } from '../src/classiceditor.js';
 import { ClassicEditorUI } from '../src/classiceditorui.js';
 import { ClassicEditorUIView } from '../src/classiceditoruiview.js';
@@ -15,12 +16,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'ClassicEditor', () => {
 	let editor, editorElement;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -28,10 +25,11 @@ describe( 'ClassicEditor', () => {
 
 		document.body.appendChild( editorElement );
 
-		testUtils.sinon.stub( console, 'warn' ).callsFake( () => {} );
+		vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
 		editorElement.remove();
 	} );
 
@@ -48,20 +46,20 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'uses HTMLDataProcessor', () => {
-			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+			expect( editor.data.processor ).toBeInstanceOf( HtmlDataProcessor );
 		} );
 
 		it( 'it\'s possible to extract editor name from editor instance', () => {
-			expect( Object.getPrototypeOf( editor ).constructor.editorName ).to.be.equal( 'ClassicEditor' );
+			expect( Object.getPrototypeOf( editor ).constructor.editorName ).toBe( 'ClassicEditor' );
 		} );
 
 		it( 'mixes ElementApiMixin', () => {
-			expect( ClassicEditor.prototype ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
+			expect( ClassicEditor.prototype ).toHaveProperty( 'updateSourceElement', expect.any( Function ) );
 		} );
 
 		it( 'creates main root element', () => {
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
-			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( '$root' );
+			expect( editor.model.document.getRoot( 'main' ) ).toBeInstanceOf( ModelRootElement );
+			expect( editor.model.document.getRoot( 'main' ).name ).toBe( '$root' );
 		} );
 
 		it( 'creates main root element with the given modelElement name', () => {
@@ -72,7 +70,7 @@ describe( 'ClassicEditor', () => {
 				}
 			} );
 
-			expect( customEditor.model.document.getRoot( 'main' ).name ).to.equal( 'customRoot' );
+			expect( customEditor.model.document.getRoot( 'main' ).name ).toBe( 'customRoot' );
 
 			customEditor.fire( 'ready' );
 
@@ -80,7 +78,7 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'contains the source element as #sourceElement property', () => {
-			expect( editor.sourceElement ).to.equal( editorElement );
+			expect( editor.sourceElement ).toBe( editorElement );
 		} );
 
 		it( 'handles form element', () => {
@@ -97,7 +95,7 @@ describe( 'ClassicEditor', () => {
 			return ClassicEditor.create( textarea, {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
-				expect( textarea.value ).to.equal( '' );
+				expect( textarea.value ).toBe( '' );
 
 				editor.setData( '<p>Foo</p>' );
 
@@ -106,7 +104,7 @@ describe( 'ClassicEditor', () => {
 					cancelable: true
 				} ) );
 
-				expect( textarea.value ).to.equal( '<p>Foo</p>' );
+				expect( textarea.value ).toBe( '<p>Foo</p>' );
 
 				return editor.destroy().then( () => {
 					form.remove();
@@ -116,8 +114,8 @@ describe( 'ClassicEditor', () => {
 
 		describe( 'ui', () => {
 			it( 'creates the UI using BoxedEditorUI classes', () => {
-				expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
-				expect( editor.ui.view ).to.be.instanceof( ClassicEditorUIView );
+				expect( editor.ui ).toBeInstanceOf( ClassicEditorUI );
+				expect( editor.ui.view ).toBeInstanceOf( ClassicEditorUIView );
 			} );
 
 			describe( 'automatic toolbar items groupping', () => {
@@ -125,7 +123,7 @@ describe( 'ClassicEditor', () => {
 					const editorElement = document.body.appendChild( document.createElement( 'div' ) );
 					const editor = new ClassicEditor( editorElement );
 
-					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).toBe( true );
 
 					editor.fire( 'ready' );
 					await editor.destroy();
@@ -141,7 +139,7 @@ describe( 'ClassicEditor', () => {
 						}
 					} );
 
-					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.false;
+					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).toBe( false );
 
 					editor.fire( 'ready' );
 					await editor.destroy();
@@ -167,7 +165,7 @@ describe( 'ClassicEditor', () => {
 			it( 'if not set, is set using DOM element data', async () => {
 				const editor = new ClassicEditor( editorElement );
 
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -176,7 +174,7 @@ describe( 'ClassicEditor', () => {
 			it( 'if not set, is set using data passed in constructor', async () => {
 				const editor = new ClassicEditor( '<p>Foo</p>' );
 
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -185,7 +183,7 @@ describe( 'ClassicEditor', () => {
 			it( 'if set, is not overwritten with DOM element data (legacy config.initialData)', async () => {
 				const editor = new ClassicEditor( editorElement, { initialData: '<p>Bar</p>' } );
 
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Bar</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -195,21 +193,21 @@ describe( 'ClassicEditor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
-				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
-				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root and config.roots.main is set', () => {
@@ -219,7 +217,7 @@ describe( 'ClassicEditor', () => {
 						root: { initialData: '<p>abc</p>' },
 						roots: { main: { initialData: '<p>Bar</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-with-main' );
+				} ).toThrow( CKEditorError, 'editor-create-roots-with-main' );
 			} );
 
 			it( 'it should throw if legacy config.initialData and config.root.initialData is set', () => {
@@ -229,7 +227,7 @@ describe( 'ClassicEditor', () => {
 						initialData: '<p>abc</p>',
 						root: { initialData: '<p>abc</p>' }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
@@ -239,7 +237,7 @@ describe( 'ClassicEditor', () => {
 						initialData: '<p>abc</p>',
 						roots: { main: { initialData: '<p>abc</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if source element and config.attachTo are both set', () => {
@@ -248,7 +246,7 @@ describe( 'ClassicEditor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( editorElement, { attachTo: attachToElement } );
-				} ).to.throw( CKEditorError, 'editor-create-attachto-overspecified' );
+				} ).toThrow( CKEditorError, 'editor-create-attachto-overspecified' );
 			} );
 		} );
 
@@ -258,7 +256,7 @@ describe( 'ClassicEditor', () => {
 					root: { placeholder: 'Type here...' }
 				} );
 
-				expect( editor.config.get( 'roots.main.placeholder' ) ).to.equal( 'Type here...' );
+				expect( editor.config.get( 'roots.main.placeholder' ) ).toBe( 'Type here...' );
 			} );
 
 			it( 'should normalize legacy config.placeholder to config.roots.main.placeholder (legacy)', () => {
@@ -266,7 +264,7 @@ describe( 'ClassicEditor', () => {
 					placeholder: 'Type here...'
 				} );
 
-				expect( editor.config.get( 'roots.main.placeholder' ) ).to.equal( 'Type here...' );
+				expect( editor.config.get( 'roots.main.placeholder' ) ).toBe( 'Type here...' );
 			} );
 		} );
 
@@ -276,7 +274,7 @@ describe( 'ClassicEditor', () => {
 					root: { label: 'Custom label' }
 				} );
 
-				expect( editor.config.get( 'roots.main.label' ) ).to.equal( 'Custom label' );
+				expect( editor.config.get( 'roots.main.label' ) ).toBe( 'Custom label' );
 			} );
 
 			it( 'should normalize legacy config.label to config.roots.main.label (legacy)', () => {
@@ -284,7 +282,7 @@ describe( 'ClassicEditor', () => {
 					label: 'Custom label'
 				} );
 
-				expect( editor.config.get( 'roots.main.label' ) ).to.equal( 'Custom label' );
+				expect( editor.config.get( 'roots.main.label' ) ).toBe( 'Custom label' );
 			} );
 		} );
 
@@ -303,10 +301,10 @@ describe( 'ClassicEditor', () => {
 
 				const root = editor.model.document.getRoot();
 
-				expect( root.getAttribute( 'foo' ) ).to.be.equal( 1 );
-				expect( root.getAttribute( 'bar' ) ).to.be.equal( 2 );
+				expect( root.getAttribute( 'foo' ) ).toBe( 1 );
+				expect( root.getAttribute( 'bar' ) ).toBe( 2 );
 
-				expect( editor.getRootAttributes() ).to.be.deep.equal( {
+				expect( editor.getRootAttributes() ).toEqual( {
 					foo: 1,
 					bar: 2
 				} );
@@ -328,10 +326,10 @@ describe( 'ClassicEditor', () => {
 
 				const root = editor.model.document.getRoot();
 
-				expect( root.getAttribute( 'foo' ) ).to.be.equal( 1 );
-				expect( root.getAttribute( 'bar' ) ).to.be.equal( 2 );
+				expect( root.getAttribute( 'foo' ) ).toBe( 1 );
+				expect( root.getAttribute( 'bar' ) ).toBe( 2 );
 
-				expect( editor.getRootAttributes() ).to.be.deep.equal( {
+				expect( editor.getRootAttributes() ).toEqual( {
 					foo: 1,
 					bar: 2
 				} );
@@ -347,7 +345,7 @@ describe( 'ClassicEditor', () => {
 					}
 				} );
 
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -361,8 +359,8 @@ describe( 'ClassicEditor', () => {
 					attachTo: el
 				} );
 
-				expect( editor.sourceElement ).to.equal( el );
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
+				expect( editor.sourceElement ).toBe( el );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Bar</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -381,8 +379,8 @@ describe( 'ClassicEditor', () => {
 					}
 				} );
 
-				expect( editor.sourceElement ).to.equal( el );
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.sourceElement ).toBe( el );
+				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -400,7 +398,7 @@ describe( 'ClassicEditor', () => {
 					}
 				} );
 
-				sinon.assert.calledWithMatch( console.warn, 'editor-create-root-element-not-supported' );
+				expect( console.warn ).toHaveBeenCalledWith( 'editor-create-root-element-not-supported', expect.any( String ) );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -415,8 +413,8 @@ describe( 'ClassicEditor', () => {
 						root: { element: document.createElement( 'h1' ) }
 					} );
 
-					sinon.assert.calledWithMatch( console.warn, 'editor-create-root-element-not-supported' );
-					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'DIV' );
+					expect( console.warn ).toHaveBeenCalledWith( 'editor-create-root-element-not-supported', expect.any( String ) );
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).toBe( 'DIV' );
 
 					await newEditor.destroy();
 				} );
@@ -429,7 +427,7 @@ describe( 'ClassicEditor', () => {
 						root: { element: 'h1' }
 					} );
 
-					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'H1' );
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).toBe( 'H1' );
 
 					await newEditor.destroy();
 				} );
@@ -440,7 +438,7 @@ describe( 'ClassicEditor', () => {
 						root: { element: 'h1' }
 					} );
 
-					expect( newEditor.editing.view.document.getRoot( 'main' ).name ).to.equal( 'h1' );
+					expect( newEditor.editing.view.document.getRoot( 'main' ).name ).toBe( 'h1' );
 
 					await newEditor.destroy();
 				} );
@@ -451,7 +449,7 @@ describe( 'ClassicEditor', () => {
 						root: { element: 'h1' }
 					} );
 
-					expect( newEditor.getData() ).to.equal( '<p>Hello</p>' );
+					expect( newEditor.getData() ).toBe( '<p>Hello</p>' );
 
 					await newEditor.destroy();
 				} );
@@ -467,8 +465,8 @@ describe( 'ClassicEditor', () => {
 						root: { element: 'h1' }
 					} );
 
-					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'H1' );
-					expect( newEditor.getData() ).to.equal( '<p>From source</p>' );
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).toBe( 'H1' );
+					expect( newEditor.getData() ).toBe( '<p>From source</p>' );
 
 					await newEditor.destroy();
 					sourceElement.remove();
@@ -478,14 +476,14 @@ describe( 'ClassicEditor', () => {
 					expect( () => {
 						// eslint-disable-next-line no-new
 						new ClassicEditor( { root: { element: 'textarea' } } );
-					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+					} ).toThrow( CKEditorError, 'editor-wrong-element' );
 				} );
 
 				it( 'should throw when the tag name is `input`', () => {
 					expect( () => {
 						// eslint-disable-next-line no-new
 						new ClassicEditor( { root: { element: 'input' } } );
-					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+					} ).toThrow( CKEditorError, 'editor-wrong-element' );
 				} );
 			} );
 
@@ -496,7 +494,7 @@ describe( 'ClassicEditor', () => {
 						root: { element: { name: 'section' } }
 					} );
 
-					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'SECTION' );
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).toBe( 'SECTION' );
 
 					await newEditor.destroy();
 				} );
@@ -515,9 +513,9 @@ describe( 'ClassicEditor', () => {
 
 					const viewRoot = newEditor.editing.view.document.getRoot( 'main' );
 
-					expect( viewRoot.name ).to.equal( 'section' );
-					expect( viewRoot.hasClass( 'foo' ) ).to.be.true;
-					expect( viewRoot.getAttribute( 'data-id' ) ).to.equal( '123' );
+					expect( viewRoot.name ).toBe( 'section' );
+					expect( viewRoot.hasClass( 'foo' ) ).toBe( true );
+					expect( viewRoot.getAttribute( 'data-id' ) ).toBe( '123' );
 
 					await newEditor.destroy();
 				} );
@@ -530,10 +528,10 @@ describe( 'ClassicEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.classList.contains( 'ck' ) ).to.be.true;
-					expect( editable.classList.contains( 'ck-content' ) ).to.be.true;
-					expect( editable.classList.contains( 'foo' ) ).to.be.true;
-					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+					expect( editable.classList.contains( 'ck' ) ).toBe( true );
+					expect( editable.classList.contains( 'ck-content' ) ).toBe( true );
+					expect( editable.classList.contains( 'foo' ) ).toBe( true );
+					expect( editable.classList.contains( 'bar' ) ).toBe( true );
 
 					await newEditor.destroy();
 				} );
@@ -551,8 +549,8 @@ describe( 'ClassicEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.style.color ).to.equal( 'rgb(255, 0, 0)' );
-					expect( editable.style.fontWeight ).to.equal( 'bold' );
+					expect( editable.style.color ).toBe( 'rgb(255, 0, 0)' );
+					expect( editable.style.fontWeight ).toBe( 'bold' );
 
 					await newEditor.destroy();
 				} );
@@ -570,8 +568,8 @@ describe( 'ClassicEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.getAttribute( 'data-id' ) ).to.equal( '123' );
-					expect( editable.getAttribute( 'data-role' ) ).to.equal( 'editor' );
+					expect( editable.getAttribute( 'data-id' ) ).toBe( '123' );
+					expect( editable.getAttribute( 'data-role' ) ).toBe( 'editor' );
 
 					await newEditor.destroy();
 				} );
@@ -589,8 +587,8 @@ describe( 'ClassicEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.classList.contains( 'foo' ) ).to.be.true;
-					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+					expect( editable.classList.contains( 'foo' ) ).toBe( true );
+					expect( editable.classList.contains( 'bar' ) ).toBe( true );
 
 					await newEditor.destroy();
 				} );
@@ -608,8 +606,8 @@ describe( 'ClassicEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.style.color ).to.equal( 'rgb(255, 0, 0)' );
-					expect( editable.style.fontWeight ).to.equal( 'bold' );
+					expect( editable.style.color ).toBe( 'rgb(255, 0, 0)' );
+					expect( editable.style.fontWeight ).toBe( 'bold' );
 
 					await newEditor.destroy();
 				} );
@@ -628,8 +626,8 @@ describe( 'ClassicEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.classList.contains( 'foo' ) ).to.be.true;
-					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+					expect( editable.classList.contains( 'foo' ) ).toBe( true );
+					expect( editable.classList.contains( 'bar' ) ).toBe( true );
 
 					await newEditor.destroy();
 				} );
@@ -648,7 +646,7 @@ describe( 'ClassicEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.style.color ).to.equal( 'rgb(0, 128, 0)' );
+					expect( editable.style.color ).toBe( 'rgb(0, 128, 0)' );
 
 					await newEditor.destroy();
 				} );
@@ -657,14 +655,14 @@ describe( 'ClassicEditor', () => {
 					expect( () => {
 						// eslint-disable-next-line no-new
 						new ClassicEditor( { root: { element: { name: 'textarea' } } } );
-					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+					} ).toThrow( CKEditorError, 'editor-wrong-element' );
 				} );
 
 				it( 'should throw when the name is `input`', () => {
 					expect( () => {
 						// eslint-disable-next-line no-new
 						new ClassicEditor( { root: { element: { name: 'input' } } } );
-					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+					} ).toThrow( CKEditorError, 'editor-wrong-element' );
 				} );
 
 				it( 'should default to a `<div>` when the name is omitted, while still applying classes and attributes', async () => {
@@ -680,9 +678,9 @@ describe( 'ClassicEditor', () => {
 
 					const editable = newEditor.ui.getEditableElement( 'main' );
 
-					expect( editable.tagName ).to.equal( 'DIV' );
-					expect( editable.classList.contains( 'custom-editable' ) ).to.be.true;
-					expect( editable.getAttribute( 'data-id' ) ).to.equal( '123' );
+					expect( editable.tagName ).toBe( 'DIV' );
+					expect( editable.classList.contains( 'custom-editable' ) ).toBe( true );
+					expect( editable.getAttribute( 'data-id' ) ).toBe( '123' );
 
 					await newEditor.destroy();
 				} );
@@ -695,7 +693,7 @@ describe( 'ClassicEditor', () => {
 						root: { initialData: '<p>Foo</p>' }
 					} );
 
-					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'DIV' );
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).toBe( 'DIV' );
 
 					await newEditor.destroy();
 				} );
@@ -721,11 +719,11 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'creates an instance which inherits from the ClassicEditor', () => {
-			expect( editor ).to.be.instanceof( ClassicEditor );
+			expect( editor ).toBeInstanceOf( ClassicEditor );
 		} );
 
 		it( 'loads data from the editor element', () => {
-			expect( editor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+			expect( editor.getData() ).toBe( '<p><strong>foo</strong> bar</p>' );
 		} );
 
 		// #53
@@ -737,10 +735,10 @@ describe( 'ClassicEditor', () => {
 					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => {
-					expect( newEditor ).to.be.instanceof( CustomClassicEditor );
-					expect( newEditor ).to.be.instanceof( ClassicEditor );
+					expect( newEditor ).toBeInstanceOf( CustomClassicEditor );
+					expect( newEditor ).toBeInstanceOf( ClassicEditor );
 
-					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+					expect( newEditor.getData() ).toBe( '<p><strong>foo</strong> bar</p>' );
 
 					return newEditor.destroy();
 				} );
@@ -753,7 +751,7 @@ describe( 'ClassicEditor', () => {
 
 			return CustomClassicEditor.create( editorElement )
 				.then( newEditor => {
-					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+					expect( newEditor.getData() ).toBe( '<p><strong>foo</strong> bar</p>' );
 
 					return newEditor.destroy();
 				} );
@@ -763,7 +761,7 @@ describe( 'ClassicEditor', () => {
 			return ClassicEditor.create( '<p>Hello world!</p>', {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
-				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+				expect( editor.getData() ).toBe( '<p>Hello world!</p>' );
 
 				return editor.destroy();
 			} );
@@ -774,7 +772,7 @@ describe( 'ClassicEditor', () => {
 				initialData: '<p>Hello world!</p>',
 				plugins: [ Paragraph ]
 			} ).then( editor => {
-				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+				expect( editor.getData() ).toBe( '<p>Hello world!</p>' );
 
 				return editor.destroy();
 			} );
@@ -786,7 +784,7 @@ describe( 'ClassicEditor', () => {
 				initialData: '',
 				plugins: [ Paragraph ]
 			} ).then( editor => {
-				expect( editor.getData() ).to.equal( '' );
+				expect( editor.getData() ).toBe( '' );
 
 				return editor.destroy();
 			} );
@@ -798,7 +796,7 @@ describe( 'ClassicEditor', () => {
 					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => {
-					expect( newEditor.sourceElement ).to.be.undefined;
+					expect( newEditor.sourceElement ).toBeUndefined();
 
 					return newEditor.destroy();
 				} );
@@ -811,8 +809,8 @@ describe( 'ClassicEditor', () => {
 					plugins: [ Paragraph ]
 				} )
 				.then( newEditor => {
-					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
-					expect( newEditor.sourceElement ).to.be.undefined;
+					expect( newEditor.getData() ).toBe( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).toBeUndefined();
 
 					return newEditor.destroy();
 				} );
@@ -830,8 +828,8 @@ describe( 'ClassicEditor', () => {
 					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => {
-					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
-					expect( newEditor.sourceElement ).to.equal( el );
+					expect( newEditor.getData() ).toBe( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).toBe( el );
 
 					return newEditor.destroy();
 				} )
@@ -851,8 +849,8 @@ describe( 'ClassicEditor', () => {
 					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => {
-					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
-					expect( newEditor.sourceElement ).to.equal( el );
+					expect( newEditor.getData() ).toBe( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).toBe( el );
 
 					return newEditor.destroy();
 				} )
@@ -868,9 +866,9 @@ describe( 'ClassicEditor', () => {
 				await ClassicEditor.create( { attachTo: editorElement } );
 				expect.fail( 'Promise should have been rejected' );
 			} catch ( err ) {
-				expect( err ).to.be.instanceof( CKEditorError );
-				expect( err.context ).to.be.null; // avoid watchdog restart
-				expect( err.message ).to.contain( 'editor-source-element-not-attached' );
+				expect( err ).toBeInstanceOf( CKEditorError );
+				expect( err.context ).toBeNull(); // avoid watchdog restart
+				expect( err.message ).toContain( 'editor-source-element-not-attached' );
 			}
 		} );
 
@@ -888,23 +886,23 @@ describe( 'ClassicEditor', () => {
 				} );
 				expect.fail( 'Promise should have been rejected' );
 			} catch ( err ) {
-				expect( err ).to.be.instanceof( CKEditorError );
-				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+				expect( err ).toBeInstanceOf( CKEditorError );
+				expect( err.message ).toMatch( /editor-root-element-is-not-limit/ );
 			}
 		} );
 
 		describe( 'ui', () => {
 			it( 'inserts editor UI next to editor element', () => {
-				expect( editor.ui.view.element.previousSibling ).to.equal( editorElement );
+				expect( editor.ui.view.element.previousSibling ).toBe( editorElement );
 			} );
 
 			it( 'attaches editable UI as view\'s DOM root', () => {
-				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+				expect( editor.editing.view.getDomRoot() ).toBe( editor.ui.view.editable.element );
 			} );
 
 			describe( 'configurable editor label (aria-label)', () => {
 				it( 'should be set to the defaut value if not configured', () => {
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).toBe(
 						'Rich Text Editor. Editing area: main'
 					);
 				} );
@@ -917,7 +915,7 @@ describe( 'ClassicEditor', () => {
 						label: 'Custom label'
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).toBe(
 						'Custom label'
 					);
 				} );
@@ -932,7 +930,7 @@ describe( 'ClassicEditor', () => {
 						}
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).toBe(
 						'Custom label'
 					);
 				} );
@@ -944,7 +942,7 @@ describe( 'ClassicEditor', () => {
 						plugins: [ Paragraph, Bold ]
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).toBe(
 						'Rich Text Editor. Editing area: main'
 					);
 
@@ -959,7 +957,7 @@ describe( 'ClassicEditor', () => {
 						label: 'Custom label'
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).toBe(
 						'Custom label'
 					);
 
@@ -974,7 +972,7 @@ describe( 'ClassicEditor', () => {
 						root: { label: 'Root label' }
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).toBe(
 						'Root label'
 					);
 				} );
@@ -987,7 +985,7 @@ describe( 'ClassicEditor', () => {
 						root: { initialData: '<p>Foo</p>', label: 'Root label' }
 					} );
 
-					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).toBe(
 						'Root label'
 					);
 				} );
@@ -1020,7 +1018,7 @@ describe( 'ClassicEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal(
+					expect( fired ).toEqual(
 						[ 'ready-classiceditorui', 'ready-datacontroller', 'ready-classiceditor' ] );
 
 					editor = newEditor;
@@ -1043,7 +1041,7 @@ describe( 'ClassicEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( isReady ).to.be.true;
+					expect( isReady ).toBe( true );
 
 					editor = newEditor;
 				} );
@@ -1064,7 +1062,7 @@ describe( 'ClassicEditor', () => {
 
 			return editor.destroy()
 				.then( () => {
-					expect( editorElement.innerHTML ).to.equal( '' );
+					expect( editorElement.innerHTML ).toBe( '' );
 				} );
 		} );
 
@@ -1076,7 +1074,7 @@ describe( 'ClassicEditor', () => {
 
 			return editor.destroy()
 				.then( () => {
-					expect( editorElement.innerHTML ).to.equal( '<p>foo</p>' );
+					expect( editorElement.innerHTML ).toBe( '<p>foo</p>' );
 				} );
 		} );
 
@@ -1088,38 +1086,36 @@ describe( 'ClassicEditor', () => {
 					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => {
-					const spy = sinon.stub( newEditor, 'updateSourceElement' );
+					const spy = vi.spyOn( newEditor, 'updateSourceElement' ).mockImplementation( () => {} );
 
 					return newEditor.destroy()
 						.then( () => {
-							expect( spy.called ).to.be.false;
-
-							spy.restore();
+							expect( spy ).not.toHaveBeenCalled();
 						} );
 				} );
 		} );
 
 		it( 'restores the editor element', () => {
-			expect( editor.sourceElement.style.display ).to.equal( 'none' );
+			expect( editor.sourceElement.style.display ).toBe( 'none' );
 
 			return editor.destroy()
 				.then( () => {
-					expect( editor.sourceElement.style.display ).to.equal( '' );
+					expect( editor.sourceElement.style.display ).toBe( '' );
 				} );
 		} );
 	} );
 
 	describe( 'static fields', () => {
 		it( 'ClassicEditor.Context', () => {
-			expect( ClassicEditor.Context ).to.equal( Context );
+			expect( ClassicEditor.Context ).toBe( Context );
 		} );
 
 		it( 'ClassicEditor.EditorWatchdog', () => {
-			expect( ClassicEditor.EditorWatchdog ).to.equal( EditorWatchdog );
+			expect( ClassicEditor.EditorWatchdog ).toBe( EditorWatchdog );
 		} );
 
 		it( 'ClassicEditor.ContextWatchdog', () => {
-			expect( ClassicEditor.ContextWatchdog ).to.equal( ContextWatchdog );
+			expect( ClassicEditor.ContextWatchdog ).toBe( ContextWatchdog );
 		} );
 	} );
 } );

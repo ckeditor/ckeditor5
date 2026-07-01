@@ -5,6 +5,8 @@
 
 /* eslint-disable @stylistic/no-multi-spaces */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { LegacyListEditing } from '../../src/legacylist/legacylistediting.js';
 import { LegacyListCommand } from '../../src/legacylist/legacylistcommand.js';
 import { LegacyIndentCommand } from '../../src/legacylist/legacyindentcommand.js';
@@ -23,13 +25,14 @@ import { IndentEditing } from '@ckeditor/ckeditor5-indent';
 import { getCode } from '@ckeditor/ckeditor5-utils';
 import { TableEditing, TableKeyboard } from '@ckeditor/ckeditor5-table';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 
 describe( 'LegacyListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -56,7 +59,7 @@ describe( 'LegacyListEditing', () => {
 				} );
 
 				// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-				sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
+				vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 			} );
 	} );
 
@@ -65,59 +68,59 @@ describe( 'LegacyListEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( LegacyListEditing.pluginName ).to.equal( 'LegacyListEditing' );
+		expect( LegacyListEditing.pluginName ).toBe( 'LegacyListEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( LegacyListEditing.isOfficialPlugin ).to.be.true;
+		expect( LegacyListEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( LegacyListEditing.isPremiumPlugin ).to.be.false;
+		expect( LegacyListEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( LegacyListEditing ) ).to.be.instanceOf( LegacyListEditing );
+		expect( editor.plugins.get( LegacyListEditing ) ).toBeInstanceOf( LegacyListEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.isRegistered( 'listItem' ) );
 		expect( model.schema.isBlock( 'listItem' ) );
 
-		expect( model.schema.checkChild( [ '$root' ], 'listItem' ) ).to.be.true;
-		expect( model.schema.checkChild( [ '$root', 'listItem' ], '$text' ) ).to.be.true;
-		expect( model.schema.checkChild( [ '$root', 'listItem' ], 'listItem' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', 'listItem' ], '$block' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root' ], 'listItem' ) ).toBe( true );
+		expect( model.schema.checkChild( [ '$root', 'listItem' ], '$text' ) ).toBe( true );
+		expect( model.schema.checkChild( [ '$root', 'listItem' ], 'listItem' ) ).toBe( false );
+		expect( model.schema.checkChild( [ '$root', 'listItem' ], '$block' ) ).toBe( false );
 
-		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listIndent' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listType' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listIndent' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listType' ) ).toBe( true );
 	} );
 
 	describe( 'commands', () => {
 		it( 'should register bulleted list command', () => {
 			const command = editor.commands.get( 'bulletedList' );
 
-			expect( command ).to.be.instanceOf( LegacyListCommand );
-			expect( command ).to.have.property( 'type', 'bulleted' );
+			expect( command ).toBeInstanceOf( LegacyListCommand );
+			expect( command ).toHaveProperty(  'type', 'bulleted'  );
 		} );
 
 		it( 'should register numbered list command', () => {
 			const command = editor.commands.get( 'numberedList' );
 
-			expect( command ).to.be.instanceOf( LegacyListCommand );
-			expect( command ).to.have.property( 'type', 'numbered' );
+			expect( command ).toBeInstanceOf( LegacyListCommand );
+			expect( command ).toHaveProperty(  'type', 'numbered'  );
 		} );
 
 		it( 'should register indent list command', () => {
 			const command = editor.commands.get( 'indentList' );
 
-			expect( command ).to.be.instanceOf( LegacyIndentCommand );
+			expect( command ).toBeInstanceOf( LegacyIndentCommand );
 		} );
 
 		it( 'should register outdent list command', () => {
 			const command = editor.commands.get( 'outdentList' );
 
-			expect( command ).to.be.instanceOf( LegacyIndentCommand );
+			expect( command ).toBeInstanceOf( LegacyIndentCommand );
 		} );
 
 		it( 'should add indent list command to indent command', () => {
@@ -132,12 +135,12 @@ describe( 'LegacyListEditing', () => {
 					const indentListCommand = editor.commands.get( 'indentList' );
 					const indentCommand = editor.commands.get( 'indent' );
 
-					const spy = sinon.spy( indentListCommand, 'execute' );
+					const spy = vi.spyOn( indentListCommand, 'execute' );
 
 					indentListCommand.isEnabled = true;
 					indentCommand.execute();
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 		} );
 
@@ -153,12 +156,12 @@ describe( 'LegacyListEditing', () => {
 					const outdentListCommand = editor.commands.get( 'outdentList' );
 					const outdentCommand = editor.commands.get( 'outdent' );
 
-					const spy = sinon.spy( outdentListCommand, 'execute' );
+					const spy = vi.spyOn( outdentListCommand, 'execute' );
 
 					outdentListCommand.isEnabled = true;
 					outdentCommand.execute();
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 		} );
 	} );
@@ -167,28 +170,28 @@ describe( 'LegacyListEditing', () => {
 		it( 'should execute outdentList command on enter key in empty list', () => {
 			const domEvtDataStub = { preventDefault() {} };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<listItem listType="bulleted" listIndent="0">[]</listItem>' );
 
 			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute ).toHaveBeenCalledWith( 'outdentList' );
 		} );
 
 		it( 'should not execute outdentList command on enter key in non-empty list', () => {
 			const domEvtDataStub = { preventDefault() {} };
 
-			const enterCommandExecuteSpy = sinon.stub( editor.commands.get( 'enter' ), 'execute' );
-			const outdentCommandExecuteSpy = sinon.stub( editor.commands.get( 'outdentList' ), 'execute' );
+			const enterCommandExecuteSpy = vi.spyOn( editor.commands.get( 'enter' ), 'execute' ).mockImplementation( () => {} );
+			const outdentCommandExecuteSpy = vi.spyOn( editor.commands.get( 'outdentList' ), 'execute' ).mockImplementation( () => {} );
 
 			_setModelData( model, '<listItem listType="bulleted" listIndent="0">foo[]</listItem>' );
 
 			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
-			sinon.assert.calledOnce( enterCommandExecuteSpy );
-			sinon.assert.notCalled( outdentCommandExecuteSpy );
+			expect( enterCommandExecuteSpy ).toHaveBeenCalledOnce();
+			expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -196,70 +199,70 @@ describe( 'LegacyListEditing', () => {
 		it( 'should execute outdentList command on backspace key in first item of list (first node in root)', () => {
 			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+			expect( editor.execute ).toHaveBeenCalledWith( 'outdentList' );
 		} );
 
 		it( 'should execute outdentList command on backspace key in first item of list (after a paragraph)', () => {
 			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<paragraph>foo</paragraph><listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+			expect( editor.execute ).toHaveBeenCalledWith( 'outdentList' );
 		} );
 
 		it( 'should not execute outdentList command on delete key in first item of list', () => {
 			const domEvtDataStub = { preventDefault() {}, direction: 'forward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'deleteForward' );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute.mock.calls[ 0 ][ 0 ] ).toBe( 'deleteForward' );
 		} );
 
 		it( 'should not execute outdentList command when selection is not collapsed', () => {
 			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<listItem listType="bulleted" listIndent="0">[fo]o</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'delete' );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute.mock.calls[ 0 ][ 0 ] ).toBe( 'delete' );
 		} );
 
 		it( 'should not execute outdentList command if not in list item', () => {
 			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'delete' );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute.mock.calls[ 0 ][ 0 ] ).toBe( 'delete' );
 		} );
 
 		it( 'should not execute outdentList command if not in first list item', () => {
 			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData(
 				model,
@@ -268,27 +271,27 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'delete' );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute.mock.calls[ 0 ][ 0 ] ).toBe( 'delete' );
 		} );
 
 		it( 'should not execute outdentList command when selection is not on first position', () => {
 			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData( model, '<listItem listType="bulleted" listIndent="0">fo[]o</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'delete' );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute.mock.calls[ 0 ][ 0 ] ).toBe( 'delete' );
 		} );
 
 		it( 'should outdent list when previous element is nested in block quote', () => {
 			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData(
 				model,
@@ -297,13 +300,13 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+			expect( editor.execute ).toHaveBeenCalledWith( 'outdentList' );
 		} );
 
 		it( 'should outdent list when list is nested in block quote', () => {
 			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData(
 				model,
@@ -312,13 +315,13 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+			expect( editor.execute ).toHaveBeenCalledWith( 'outdentList' );
 		} );
 
 		it( 'should outdent empty list when list is nested in block quote', () => {
 			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData(
 				model,
@@ -327,7 +330,7 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+			expect( editor.execute ).toHaveBeenCalledWith( 'outdentList' );
 		} );
 
 		it( 'should not outdent list when the selection is in an element nested inside a list item', () => {
@@ -337,7 +340,7 @@ describe( 'LegacyListEditing', () => {
 
 			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
-			sinon.spy( editor, 'execute' );
+			vi.spyOn( editor, 'execute' );
 
 			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
@@ -346,8 +349,8 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'delete' );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute.mock.calls[ 0 ][ 0 ] ).toBe( 'delete' );
 		} );
 	} );
 
@@ -357,15 +360,11 @@ describe( 'LegacyListEditing', () => {
 		beforeEach( () => {
 			domEvtDataStub = {
 				keyCode: getCode( 'Tab' ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
-			sinon.spy( editor, 'execute' );
-		} );
-
-		afterEach( () => {
-			editor.execute.restore();
+			vi.spyOn( editor, 'execute' );
 		} );
 
 		it( 'should execute indentList command on tab key', () => {
@@ -377,10 +376,10 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'indentList' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute ).toHaveBeenCalledWith( 'indentList' );
+			expect( domEvtDataStub.preventDefault ).toHaveBeenCalledOnce();
+			expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should execute outdentList command on Shift+Tab keystroke', () => {
@@ -394,10 +393,10 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			expect( editor.execute ).toHaveBeenCalledOnce();
+			expect( editor.execute ).toHaveBeenCalledWith( 'outdentList' );
+			expect( domEvtDataStub.preventDefault ).toHaveBeenCalledOnce();
+			expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not indent if command is disabled', () => {
@@ -405,9 +404,9 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			expect( editor.execute.called ).to.be.false;
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			expect( editor.execute ).not.toHaveBeenCalled();
+			expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+			expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not indent or outdent if alt+tab is pressed', () => {
@@ -421,9 +420,9 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			expect( editor.execute.called ).to.be.false;
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			expect( editor.execute ).not.toHaveBeenCalled();
+			expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
+			expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should execute list indent command when in a li context and nested in an element that also listens to Tab', () => {
@@ -445,10 +444,10 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.calledWithExactly( editor.execute, 'indentList' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-			expect( _getModelData( model ) ).to.equalMarkup( output );
+			expect( editor.execute ).toHaveBeenCalledWith( 'indentList' );
+			expect( domEvtDataStub.preventDefault ).toHaveBeenCalledOnce();
+			expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledOnce();
+			expect( _getModelData( model ) ).toBe( output );
 		} );
 
 		it( 'should execute list outdent command when in a li context and nested in an element that also listens to Tab', () => {
@@ -472,10 +471,10 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-			expect( _getModelData( model ) ).to.equalMarkup( output );
+			expect( editor.execute ).toHaveBeenCalledWith( 'outdentList' );
+			expect( domEvtDataStub.preventDefault ).toHaveBeenCalledOnce();
+			expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledOnce();
+			expect( _getModelData( model ) ).toBe( output );
 		} );
 
 		it( 'should not capture event when list cannot be indented and allow other listeners to capture it', () => {
@@ -495,12 +494,12 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.neverCalledWith( editor.execute, 'indentList' );
-			sinon.assert.neverCalledWith( editor.execute, 'outdentList' );
+			expect( editor.execute ).not.toHaveBeenCalledWith( 'indentList' );
+			expect( editor.execute ).not.toHaveBeenCalledWith( 'outdentList' );
 			// The Widget plugin is not loaded here so selection does not jump but table feature adds a row.
-			// sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-			expect( _getModelData( model ) ).to.equalMarkup( output );
+			// expect( domEvtDataStub.preventDefault ).toHaveBeenCalledOnce();
+			expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledOnce();
+			expect( _getModelData( model ) ).toBe( output );
 		} );
 
 		it( 'should not capture event when not in a list and should allow other listeners to capture it', () => {
@@ -518,12 +517,12 @@ describe( 'LegacyListEditing', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.neverCalledWith( editor.execute, 'indentList' );
-			sinon.assert.neverCalledWith( editor.execute, 'outdentList' );
+			expect( editor.execute ).not.toHaveBeenCalledWith( 'indentList' );
+			expect( editor.execute ).not.toHaveBeenCalledWith( 'outdentList' );
 			// The Widget plugin is not loaded here so selection does not jump but table feature adds a row.
-			// sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-			expect( _getModelData( model ) ).to.equalMarkup( output );
+			// expect( domEvtDataStub.preventDefault ).toHaveBeenCalledOnce();
+			expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledOnce();
+			expect( _getModelData( model ) ).toBe( output );
 		} );
 	} );
 
@@ -532,7 +531,7 @@ describe( 'LegacyListEditing', () => {
 			function testList( testName, string, expectedString = null ) {
 				it( testName, () => {
 					editor.setData( string );
-					expect( editor.getData() ).to.equal( expectedString || string );
+					expect( editor.getData() ).toBe( expectedString || string );
 				} );
 			}
 
@@ -575,7 +574,7 @@ describe( 'LegacyListEditing', () => {
 					'<paragraph>yyy</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">d</listItem>';
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModelData );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( expectedModelData );
 			} );
 
 			describe( 'block elements inside list items', () => {
@@ -777,8 +776,8 @@ describe( 'LegacyListEditing', () => {
 						const viewPos = getViewPosition( viewRoot, viewPath, view );
 						const modelPos = mapper.toModelPosition( viewPos );
 
-						expect( modelPos.root ).to.equal( modelRoot );
-						expect( modelPos.path ).to.deep.equal( modelPath );
+						expect( modelPos.root ).toBe( modelRoot );
+						expect( modelPos.path ).toEqual( modelPath );
 					} );
 				}
 
@@ -802,8 +801,8 @@ describe( 'LegacyListEditing', () => {
 						const modelPos = model.createPositionFromPath( modelRoot, modelPath );
 						const viewPos = mapper.toViewPosition( modelPos );
 
-						expect( viewPos.root ).to.equal( viewRoot );
-						expect( getViewPath( viewPos ) ).to.deep.equal( viewPath );
+						expect( viewPos.root ).toBe( viewRoot );
+						expect( getViewPath( viewPos ) ).toEqual( viewPath );
 					} );
 				}
 
@@ -1446,7 +1445,7 @@ describe( 'LegacyListEditing', () => {
 			function testList( string, expectedString = null ) {
 				return () => {
 					editor.setData( string );
-					expect( editor.getData() ).to.equalMarkup( expectedString || string );
+					expect( editor.getData() ).toBe( expectedString || string );
 				};
 			}
 
@@ -2077,7 +2076,7 @@ describe( 'LegacyListEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">2</listItem>' +
 						'<paragraph>bar</paragraph>';
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModelData );
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe( expectedModelData );
 				} );
 
 				it( 'should properly listIndent when list nested in other block', () => {
@@ -2135,7 +2134,7 @@ describe( 'LegacyListEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">f</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">g</listItem>';
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModelData );
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe( expectedModelData );
 				} );
 			} );
 		} );
@@ -2190,8 +2189,8 @@ describe( 'LegacyListEditing', () => {
 						const viewPos = getViewPosition( viewRoot, viewPath, view );
 						const modelPos = mapper.toModelPosition( viewPos );
 
-						expect( modelPos.root ).to.equal( modelRoot );
-						expect( modelPos.path ).to.deep.equal( modelPath );
+						expect( modelPos.root ).toBe( modelRoot );
+						expect( modelPos.path ).toEqual( modelPath );
 					} );
 				}
 
@@ -2228,8 +2227,8 @@ describe( 'LegacyListEditing', () => {
 						const modelPos = model.createPositionFromPath( modelRoot, modelPath );
 						const viewPos = mapper.toViewPosition( modelPos );
 
-						expect( viewPos.root ).to.equal( viewRoot );
-						expect( getViewPath( viewPos ) ).to.deep.equal( viewPath );
+						expect( viewPos.root ).toBe( viewRoot );
+						expect( getViewPath( viewPos ) ).toEqual( viewPath );
 					} );
 				}
 
@@ -3718,7 +3717,7 @@ describe( 'LegacyListEditing', () => {
 						} );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe( output );
 				};
 			}
 
@@ -3841,7 +3840,7 @@ describe( 'LegacyListEditing', () => {
 					writer.append( _parseModel( item2, model.schema ), modelRoot );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( output );
 			} );
 		} );
 
@@ -3854,7 +3853,7 @@ describe( 'LegacyListEditing', () => {
 						writer.remove( modelDoc.selection.getFirstRange() );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe( output );
 				};
 			}
 
@@ -3907,7 +3906,7 @@ describe( 'LegacyListEditing', () => {
 						writer.move( modelDoc.selection.getFirstRange(), targetPosition );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe( output );
 				};
 			}
 
@@ -4069,7 +4068,7 @@ describe( 'LegacyListEditing', () => {
 					writer.rename( element, 'paragraph' );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( expectedModel );
 			} );
 		} );
 	} );
@@ -4090,7 +4089,7 @@ describe( 'LegacyListEditing', () => {
 				)
 			);
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
@@ -4117,7 +4116,7 @@ describe( 'LegacyListEditing', () => {
 				)
 			);
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">B[]X</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">Y</listItem>' +
@@ -4140,7 +4139,7 @@ describe( 'LegacyListEditing', () => {
 				model.insertContent( listItem );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX[]</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">C</listItem>'
@@ -4159,7 +4158,7 @@ describe( 'LegacyListEditing', () => {
 				model.insertContent( writer.createText( 'X' ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX[]</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">C</listItem>'
@@ -4172,7 +4171,7 @@ describe( 'LegacyListEditing', () => {
 				model.insertContent( listItem, modelRoot, 'in' );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">[]</listItem>'
 			);
 		} );
@@ -4190,7 +4189,7 @@ describe( 'LegacyListEditing', () => {
 				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
@@ -4211,7 +4210,7 @@ describe( 'LegacyListEditing', () => {
 				content: _parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BW</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">X</listItem>' +
@@ -4234,7 +4233,7 @@ describe( 'LegacyListEditing', () => {
 				content: _parseView( '<p>X</p><ul><li>Y</li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">Y[]</listItem>' +
@@ -4259,7 +4258,7 @@ describe( 'LegacyListEditing', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">B</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">X</listItem>' +
@@ -4280,7 +4279,7 @@ describe( 'LegacyListEditing', () => {
 				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">AX</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">Y[]</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">B</listItem>'
@@ -4299,7 +4298,7 @@ describe( 'LegacyListEditing', () => {
 				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>AX</paragraph>' +
 				'<listItem listIndent="0" listType="bulleted">Y[]</listItem>' +
 				'<paragraph>B</paragraph>'
@@ -4313,7 +4312,7 @@ describe( 'LegacyListEditing', () => {
 				model.change( writer => {
 					editor.model.insertContent( writer.createDocumentFragment() );
 				} );
-			} ).not.to.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should correctly handle item that is pasted without its parent', () => {
@@ -4335,7 +4334,7 @@ describe( 'LegacyListEditing', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listType="numbered">B</listItem>' +
@@ -4363,7 +4362,7 @@ describe( 'LegacyListEditing', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listType="numbered">B</listItem>' +
@@ -4386,7 +4385,7 @@ describe( 'LegacyListEditing', () => {
 				content: _parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BW</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">X</listItem>' +
@@ -4409,7 +4408,7 @@ describe( 'LegacyListEditing', () => {
 				content: _parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">AW</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">X</listItem>' +
 				'<paragraph>Y</paragraph>' +
@@ -4432,7 +4431,7 @@ describe( 'LegacyListEditing', () => {
 				content: _parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">AW</listItem>' +
 				'<paragraph>X</paragraph>' +
 				'<paragraph>Y</paragraph>' +
@@ -4470,7 +4469,7 @@ describe( 'LegacyListEditing', () => {
 				content: _parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">Aa</listItem>' +
 				'<splitBlock></splitBlock>' +
 				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
@@ -4493,7 +4492,7 @@ describe( 'LegacyListEditing', () => {
 			// Paragraph is needed, otherwise selection throws.
 			_setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted">y</listItem>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><p>y</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe( '<p>x</p><p>y</p>' );
 		} );
 
 		it( 'model remove converter should be possible to overwrite', () => {
@@ -4508,7 +4507,7 @@ describe( 'LegacyListEditing', () => {
 				writer.remove( modelRoot.getChild( 1 ) );
 			} );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><ul><li></li></ul>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe( '<p>x</p><ul><li></li></ul>' );
 		} );
 
 		it( 'model change type converter should not fire if change was already consumed', () => {
@@ -4522,7 +4521,7 @@ describe( 'LegacyListEditing', () => {
 				writer.setAttribute( 'listType', 'numbered', modelRoot.getChild( 0 ) );
 			} );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li></li></ul>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe( '<ul><li></li></ul>' );
 		} );
 
 		it( 'model change indent converter should not fire if change was already consumed', () => {
@@ -4539,7 +4538,7 @@ describe( 'LegacyListEditing', () => {
 				writer.setAttribute( 'listIndent', 1, modelRoot.getChild( 1 ) );
 			} );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li>a</li><li>b</li></ul>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe( '<ul><li>a</li><li>b</li></ul>' );
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/11490.
@@ -4566,7 +4565,7 @@ describe( 'LegacyListEditing', () => {
 
 			_setModelData( model, '<container><caption>foo</caption></container>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<custom-container></custom-container>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe( '<custom-container></custom-container>' );
 		} );
 
 		it( 'view li converter should not fire if change was already consumed', () => {
@@ -4576,7 +4575,7 @@ describe( 'LegacyListEditing', () => {
 
 			editor.setData( '<p></p><ul><li></li></ul>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph></paragraph>' );
 		} );
 
 		it( 'view ul converter should not fire if change was already consumed', () => {
@@ -4586,12 +4585,12 @@ describe( 'LegacyListEditing', () => {
 
 			editor.setData( '<p></p><ul><li></li></ul>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph></paragraph>' );
 		} );
 
 		it( 'view converter should pass model range in data.modelRange', () => {
 			editor.data.upcastDispatcher.on( 'element:ul', ( evt, data ) => {
-				expect( data.modelRange ).to.be.instanceof( ModelRange );
+				expect( data.modelRange ).toBeInstanceOf( ModelRange );
 			}, { priority: 'lowest' } );
 
 			editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
@@ -4610,7 +4609,7 @@ describe( 'LegacyListEditing', () => {
 			} );
 
 			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<ul><li>Foo<span></span></li><li>Bar</li></ul>' );
+				.toBe( '<ul><li>Foo<span></span></li><li>Bar</li></ul>' );
 
 			model.change( writer => {
 				// Change indent of the second list item.
@@ -4619,7 +4618,7 @@ describe( 'LegacyListEditing', () => {
 
 			// Check if the new <ul> was added at correct position.
 			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<ul><li>Foo<span></span><ul><li>Bar</li></ul></li></ul>' );
+				.toBe( '<ul><li>Foo<span></span><ul><li>Bar</li></ul></li></ul>' );
 		} );
 
 		// This test tests the fix in `hoistNestedLists` helper.
@@ -4635,7 +4634,7 @@ describe( 'LegacyListEditing', () => {
 			} );
 
 			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<ul><li>Foo<span></span></li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
+				.toBe( '<ul><li>Foo<span></span></li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 
 			model.change( writer => {
 				// Remove second list item. Expect that its sub-list will be moved to first list item.
@@ -4644,7 +4643,7 @@ describe( 'LegacyListEditing', () => {
 
 			// Check if the <ul> was added at correct position.
 			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<ul><li>Foo<span></span><ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
+				.toBe( '<ul><li>Foo<span></span><ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 		} );
 
 		describe( 'remove converter should properly handle ui elements', () => {
@@ -4667,7 +4666,7 @@ describe( 'LegacyListEditing', () => {
 				} );
 
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-					.to.equal( '<span></span><ul><li>Bar</li></ul>' );
+					.toBe( '<span></span><ul><li>Bar</li></ul>' );
 			} );
 
 			it( 'ui element before first <li>', () => {
@@ -4681,7 +4680,7 @@ describe( 'LegacyListEditing', () => {
 				} );
 
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-					.to.equal( '<ul><span></span><li>Bar</li></ul>' );
+					.toBe( '<ul><span></span><li>Bar</li></ul>' );
 			} );
 
 			it( 'ui element in the middle of list', () => {
@@ -4695,7 +4694,7 @@ describe( 'LegacyListEditing', () => {
 				} );
 
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-					.to.equal( '<ul><li>Foo</li><span></span></ul>' );
+					.toBe( '<ul><li>Foo</li><span></span></ul>' );
 			} );
 		} );
 	} );
@@ -4716,7 +4715,7 @@ describe( 'LegacyListEditing', () => {
 
 			editor.data.set( { title: '<ul><li>foo</li></ul>' } );
 
-			expect( _getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
+			expect( _getModelData( model, { rootName: 'title', withoutSelection: true } ) ).toBe( '' );
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - in the middle', () => {
@@ -4733,7 +4732,7 @@ describe( 'LegacyListEditing', () => {
 				'</div>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<div>abc</div>' +
 				'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 				'<div>def</div>'
@@ -4753,7 +4752,7 @@ describe( 'LegacyListEditing', () => {
 				'</div>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<div>abc</div>' +
 				'<listItem listIndent="0" listType="bulleted">foo</listItem>'
 			);
@@ -4772,7 +4771,7 @@ describe( 'LegacyListEditing', () => {
 				'</div>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 				'<div>def</div>'
 			);
@@ -4788,7 +4787,7 @@ describe( 'LegacyListEditing', () => {
 				'c'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 				'<paragraph>c</paragraph>'
@@ -4806,7 +4805,7 @@ describe( 'LegacyListEditing', () => {
 				.then( editor => {
 					editor.setData( '<ul><li><div><h2>Foo</h2></div></li></ul>' );
 
-					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<heading1>Foo</heading1>' );
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe( '<heading1>Foo</heading1>' );
 				} );
 		} );
 	} );
@@ -4932,7 +4931,7 @@ describe( 'LegacyListEditing', () => {
 
 			actionCallback( callbackSelection );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal( output );
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe( output );
 		} );
 
 		if ( testUndo ) {
@@ -4949,13 +4948,13 @@ describe( 'LegacyListEditing', () => {
 
 				editor.execute( 'undo' );
 
-				expect( _getModelData( model ) ).to.equal( modelBefore );
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal( viewBefore );
+				expect( _getModelData( model ) ).toBe( modelBefore );
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe( viewBefore );
 
 				editor.execute( 'redo' );
 
-				expect( _getModelData( model ) ).to.equal( modelAfter );
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal( viewAfter );
+				expect( _getModelData( model ) ).toBe( modelAfter );
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe( viewAfter );
 			} );
 		}
 

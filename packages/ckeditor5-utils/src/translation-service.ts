@@ -17,7 +17,7 @@ declare global {
 	var CKEDITOR_TRANSLATIONS: Translations;
 }
 
-/* istanbul ignore else -- @preserve */
+/* v8 ignore else -- @preserve */
 if ( !global.window.CKEDITOR_TRANSLATIONS ) {
 	global.window.CKEDITOR_TRANSLATIONS = {};
 }

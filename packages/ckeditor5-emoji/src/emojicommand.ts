@@ -7,23 +7,35 @@
  * @module emoji/emojicommand
  */
 
-import { Command } from '@ckeditor/ckeditor5-core';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { type EmojiPicker } from './emojipicker.js';
 
 /**
  * Command that shows the emoji user interface.
  */
 export class EmojiCommand extends Command {
+	constructor( editor: Editor ) {
+		super( editor );
+
+		const repository = editor.plugins.get( 'EmojiRepository' );
+
+		this.listenTo( repository, 'change:isRepositoryReady', () => this.refresh() );
+	}
+
 	/**
-	 * Updates the command's {@link #isEnabled} based on the current selection.
+	 * Updates the command's {@link #isEnabled} based on the current selection
+	 * and whether the emoji repository has been loaded.
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
+		const repository = editor.plugins.get( 'EmojiRepository' );
+
 		const model = editor.model;
 		const schema = model.schema;
 		const selection = model.document.selection;
 
-		this.isEnabled = schema.checkChild( selection.getFirstPosition()!, '$text' );
+		this.isEnabled = !!repository.isRepositoryReady &&
+			schema.checkChild( selection.getFirstPosition()!, '$text' );
 	}
 
 	/**

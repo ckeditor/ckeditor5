@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { CharacterInfoView } from '../../src/ui/characterinfoview.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'CharacterInfoView', () => {
 	let view;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new CharacterInfoView();
@@ -18,6 +16,7 @@ describe( 'CharacterInfoView', () => {
 
 	afterEach( () => {
 		view.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

@@ -19,7 +19,7 @@ import {
 	type ClipboardContentInsertionEvent
 } from '@ckeditor/ckeditor5-clipboard';
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import type {
 	ModelDocumentFragment,
@@ -71,8 +71,8 @@ export class TableClipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ClipboardMarkersUtils, ClipboardPipeline, TableSelection, TableUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ ClipboardMarkersUtils, ClipboardPipeline, TableSelection, TableUtils ]> {
+		return [ ClipboardMarkersUtils, ClipboardPipeline, TableSelection, TableUtils ];
 	}
 
 	/**

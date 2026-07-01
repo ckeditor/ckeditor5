@@ -7,7 +7,7 @@
  * @module bookmark/bookmark
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { Widget } from '@ckeditor/ckeditor5-widget';
 import { BookmarkUI } from './bookmarkui.js';
 import { BookmarkEditing } from './bookmarkediting.js';
@@ -28,8 +28,8 @@ export class Bookmark extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ BookmarkEditing, BookmarkUI, Widget ] as const;
+	public static get requires(): PluginDependenciesOf<[ BookmarkEditing, BookmarkUI, Widget ]> {
+		return [ BookmarkEditing, BookmarkUI, Widget ];
 	}
 
 	/**

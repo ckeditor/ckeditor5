@@ -15,6 +15,23 @@ import type { Constructor, Locale, Mixed } from '@ckeditor/ckeditor5-utils';
 import { ListItemButtonView } from './listitembuttonview.js';
 
 /**
+ * Constructor returned by {@link ~FileDialogViewMixin}. Use it to name a mixin base class before extending it.
+ *
+ * ```ts
+ * const MyFileDialogViewBase: FileDialogViewMixinConstructor<typeof BaseClass> = FileDialogViewMixin( BaseClass );
+ *
+ * class MyFileDialogView extends MyFileDialogViewBase {}
+ * ```
+ */
+export type FileDialogViewMixinConstructor<Base extends Constructor<ButtonView>> = Mixed<Base, FileDialogButtonViewBase>;
+
+const FileDialogButtonViewMixinBase: FileDialogViewMixinConstructor<typeof ButtonView> =
+	/* #__PURE__ */ FileDialogViewMixin( ButtonView );
+
+const FileDialogListItemButtonViewMixinBase: FileDialogViewMixinConstructor<typeof ListItemButtonView> =
+	/* #__PURE__ */ FileDialogViewMixin( ListItemButtonView );
+
+/**
  * The file dialog button view.
  *
  * This component provides a button that opens the native file selection dialog.
@@ -38,7 +55,7 @@ import { ListItemButtonView } from './listitembuttonview.js';
  * } );
  * ```
  */
-export class FileDialogButtonView extends /* #__PURE__ */ FileDialogViewMixin( ButtonView ) {}
+export class FileDialogButtonView extends FileDialogButtonViewMixinBase {}
 
 /**
  * The file dialog button view used in a lists.
@@ -64,7 +81,7 @@ export class FileDialogButtonView extends /* #__PURE__ */ FileDialogViewMixin( B
  * } );
  * ```
  */
-export class FileDialogListItemButtonView extends /* #__PURE__ */ FileDialogViewMixin( ListItemButtonView ) {}
+export class FileDialogListItemButtonView extends FileDialogListItemButtonViewMixinBase {}
 
 /**
  * Mixin function that enhances a base button view class with file dialog functionality. It is used
@@ -76,7 +93,7 @@ export class FileDialogListItemButtonView extends /* #__PURE__ */ FileDialogView
  * @param view The base class to be enhanced with file dialog functionality.
  * @returns A new class that extends the base class and includes the file dialog functionality.
  */
-export function FileDialogViewMixin<Base extends Constructor<ButtonView>>( view: Base ): Mixed<Base, FileDialogButtonViewBase> {
+export function FileDialogViewMixin<Base extends Constructor<ButtonView>>( view: Base ): FileDialogViewMixinConstructor<Base> {
 	abstract class FileDialogView extends view implements FileDialogButtonViewBase {
 		/**
 		 * A hidden `<input>` view used to execute file dialog.
@@ -206,7 +223,7 @@ class FileInputView extends View<HTMLInputElement> {
 
 			on: {
 				// Removing from code coverage since we cannot programmatically set input element files.
-				change: bind.to( /* istanbul ignore next -- @preserve */ () => {
+				change: bind.to( /* v8 ignore next -- @preserve */ () => {
 					if ( this.element?.files?.length ) {
 						this.fire<FileInputViewDoneEvent>( 'done', this.element.files );
 					}

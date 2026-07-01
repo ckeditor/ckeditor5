@@ -82,7 +82,10 @@ export class EmojiCategoriesView extends View {
 			}
 
 			const newCategoryButton = this.buttonViews.find( button => button.tooltip === newValue )!;
-			newCategoryButton.isOn = true;
+
+			if ( newCategoryButton ) {
+				newCategoryButton.isOn = true;
+			}
 		} );
 
 		this.set( 'categoryName', categoryName );
@@ -117,6 +120,28 @@ export class EmojiCategoriesView extends View {
 	 */
 	public focus(): void {
 		this.buttonViews.first!.focus();
+	}
+
+	/**
+	 * Sets category buttons for the provided emoji categories.
+	 */
+	public setCategories( emojiCategories: Array<EmojiCategory> ): void {
+		for ( const button of this.buttonViews ) {
+			this.focusTracker.remove( button );
+			button.destroy();
+		}
+
+		this.buttonViews.clear();
+
+		for ( const emojiCategory of emojiCategories ) {
+			const buttonView = this._createCategoryButton( emojiCategory );
+
+			this.buttonViews.add( buttonView );
+
+			if ( this.isRendered ) {
+				this.focusTracker.add( buttonView );
+			}
+		}
 	}
 
 	/**

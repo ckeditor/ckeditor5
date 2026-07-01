@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ListEditing } from '../../../src/list/listediting.js';
 import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
@@ -11,7 +12,6 @@ import { IndentEditing } from '@ckeditor/ckeditor5-indent';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { Table } from '@ckeditor/ckeditor5-table';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -30,7 +30,9 @@ describe( 'ListEditing integrations: tab key', () => {
 	let indentListcommand, outdentListcommand;
 	let commandSpies;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -51,21 +53,21 @@ describe( 'ListEditing integrations: tab key', () => {
 		eventInfo = new EventInfo( view.document, 'tab' );
 
 		tabDomEventData = new ViewDocumentDomEventData( view.document, {
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+			preventDefault: vi.fn(),
+			stopPropagation: vi.fn()
 		} );
 
 		shiftTabDomEventData = new ViewDocumentDomEventData( view.document, {
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+			preventDefault: vi.fn(),
+			stopPropagation: vi.fn()
 		}, { shiftKey: true } );
 
 		indentListcommand = editor.commands.get( 'indentList' );
 		outdentListcommand = editor.commands.get( 'outdentList' );
 
 		commandSpies = {
-			indentList: sinon.spy( indentListcommand, 'execute' ),
-			outdentList: sinon.spy( outdentListcommand, 'execute' )
+			indentList: vi.spyOn( indentListcommand, 'execute' ),
+			outdentList: vi.spyOn( outdentListcommand, 'execute' )
 		};
 
 		blocksChangedByCommands.length = 0;
@@ -1008,8 +1010,8 @@ describe( 'ListEditing integrations: tab key', () => {
 			const indentCodeBlockCommand = editor.commands.get( 'indentCodeBlock' );
 			const outdentCodeBlockcommand = editor.commands.get( 'outdentCodeBlock' );
 
-			commandSpies.indentCodeBlock = sinon.spy( indentCodeBlockCommand, 'execute' );
-			commandSpies.outdentCodeBlock = sinon.spy( outdentCodeBlockcommand, 'execute' );
+			commandSpies.indentCodeBlock = vi.spyOn( indentCodeBlockCommand, 'execute' );
+			commandSpies.outdentCodeBlock = vi.spyOn( outdentCodeBlockcommand, 'execute' );
 		} );
 
 		describe( 'tab key handling', () => {
@@ -1624,17 +1626,23 @@ describe( 'ListEditing integrations: tab key', () => {
 		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
-			expect( domEventData.domEvent.stopPropagation.called ).to.equal( eventStopped.stopPropagation, 'stopPropagation() call' );
-			expect( domEventData.domEvent.preventDefault.called ).to.equal( eventStopped.preventDefault, 'preventDefault() call' );
+			expect( domEventData.domEvent.stopPropagation.mock.calls.length > 0 ).to.equal(
+				eventStopped.stopPropagation,
+				'stopPropagation() call'
+			);
+			expect( domEventData.domEvent.preventDefault.mock.calls.length > 0 ).to.equal(
+				eventStopped.preventDefault,
+				'preventDefault() call'
+			);
 			expect( !!eventInfo.stop.called ).to.equal( eventStopped.stop, 'eventInfo.stop() call' );
 		} else {
-			expect( domEventData.domEvent.stopPropagation.callCount ).to.equal( eventStopped ? 1 : 0, 'stopPropagation() call' );
-			expect( domEventData.domEvent.preventDefault.callCount ).to.equal( eventStopped ? 1 : 0, 'preventDefault() call' );
+			expect( domEventData.domEvent.stopPropagation.mock.calls.length ).to.equal( eventStopped ? 1 : 0, 'stopPropagation() call' );
+			expect( domEventData.domEvent.preventDefault.mock.calls.length ).to.equal( eventStopped ? 1 : 0, 'preventDefault() call' );
 			expect( eventInfo.stop.called ).to.equal( eventStopped ? true : undefined, 'eventInfo.stop() call' );
 		}
 
 		for ( const name in executedCommands ) {
-			expect( commandSpies[ name ].callCount ).to.equal( executedCommands[ name ], `${ name } command call count` );
+			expect( commandSpies[ name ].mock.calls.length ).to.equal( executedCommands[ name ], `${ name } command call count` );
 		}
 
 		expect( blocksChangedByCommands.map( block => block.index ) ).to.deep.equal( changedBlocks, 'changed blocks\' indexes' );

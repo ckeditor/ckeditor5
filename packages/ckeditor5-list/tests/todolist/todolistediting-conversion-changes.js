@@ -12,7 +12,7 @@ import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, vi, beforeEach, afterEach } from 'vitest';
 
 import { TodoListEditing } from '../../src/todolist/todolistediting.js';
 import { setupTestHelpers } from '../list/_utils/utils.js';
@@ -22,7 +22,9 @@ import { stubUid } from '../list/_utils/uid.js';
 describe( 'TodoListEditing - conversion - changes', () => {
 	let editor, model, test, modelRoot;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -66,7 +68,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item in the middle of same list type', () => {
@@ -99,7 +101,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item at the end of same list type', () => {
@@ -125,7 +127,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item at the beginning of different list type', () => {
@@ -148,7 +150,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item in the middle of different list type', () => {
@@ -175,7 +177,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item at the end of different list type', () => {
@@ -198,7 +200,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'element between list items', () => {
@@ -226,7 +228,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item that is not a paragraph', () => {
@@ -259,7 +261,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'new block at the start of list item', () => {
@@ -287,8 +289,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 3 ) );
 			} );
 
 			it( 'new block at the start of list item that contains other element than paragraph', () => {
@@ -316,8 +318,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 3 ) );
 			} );
 
 			it( 'new block at the end of list item', () => {
@@ -345,8 +347,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'new block at the middle of list item', () => {
@@ -383,7 +385,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
 			} );
 
 			it( 'new list item in the middle of list item', () => {
@@ -430,8 +432,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 4 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 4 ) );
 			} );
 		} );
 
@@ -460,7 +462,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove list item from the middle', () => {
@@ -487,7 +489,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove the last list item', () => {
@@ -514,7 +516,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove the only list item', () => {
@@ -527,7 +529,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'<p>p</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove element from between lists of same type', () => {
@@ -556,7 +558,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'<p>p</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove element from between lists of different type', () => {
@@ -582,7 +584,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'<p>p</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove the first block of a list item', () => {
@@ -609,8 +611,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'remove the last block of a list item', () => {
@@ -637,7 +639,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove the middle block of a list item', () => {
@@ -659,8 +661,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 		} );
 
@@ -692,8 +694,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'change middle list item', () => {
@@ -725,8 +727,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change last list item', () => {
@@ -756,8 +758,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 3 ) );
 			} );
 
 			it( 'change only list item', () => {
@@ -773,8 +775,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'<p>p</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'change element into to-do list at the edge of two different lists (after to-do list)', () => {
@@ -811,8 +813,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'todo'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change element into to-do list at the edge of two different lists (before to-do list)', () => {
@@ -849,8 +851,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'todo'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'change element into other list at the edge of two different lists (after to-do list)', () => {
@@ -882,8 +884,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'bulleted'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change element into other list at the edge of two different lists (before to-do list)', () => {
@@ -915,8 +917,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'bulleted'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'change multiple elements - to other type', () => {
@@ -948,9 +950,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change multiple elements - to same type', () => {
@@ -990,9 +992,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'todo'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change of the first block of a list item (from todo)', () => {
@@ -1029,9 +1031,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change of the first block of a list item (into todo)', () => {
@@ -1061,9 +1063,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'todo'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change of the last block of a list item (from todo)', () => {
@@ -1100,8 +1102,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change of the last block of a list item (into todo)', () => {
@@ -1130,9 +1132,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'todo'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change of the middle block of a list item (from todo)', () => {
@@ -1176,9 +1178,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 3 ) );
 			} );
 
 			it( 'change of the middle block of a list item (into todo)', () => {
@@ -1209,10 +1211,10 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'todo'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 3 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
-				expect( test.reconvertSpy.thirdCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 3 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls[ 2 ][ 0 ] ).toBe( modelRoot.getChild( 3 ) );
 			} );
 
 			it( 'change outer list type with nested blockquote (from todo)', () => {
@@ -1256,9 +1258,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'change outer list type with nested blockquote (into todo)', () => {
@@ -1295,9 +1297,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'todo'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'change outer list type with nested code block (from todo)', () => {
@@ -1321,9 +1323,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'change outer list type with nested code block (into todo)', () => {
@@ -1352,9 +1354,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'todo'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 		} );
 
@@ -1380,8 +1382,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'rename middle list item', () => {
@@ -1412,8 +1414,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename last list item', () => {
@@ -1437,8 +1439,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename first list item to paragraph', () => {
@@ -1462,8 +1464,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'rename middle list item to paragraph', () => {
@@ -1494,8 +1496,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename last list item to paragraph', () => {
@@ -1519,8 +1521,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename first block of list item', () => {
@@ -1553,8 +1555,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename last block of list item', () => {
@@ -1587,8 +1589,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename first block of list item to paragraph', () => {
@@ -1621,8 +1623,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename last block of list item to paragraph', () => {
@@ -1655,8 +1657,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 		} );
 
@@ -1677,8 +1679,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'middle list item', () => {
@@ -1706,8 +1708,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'last list item', () => {
@@ -1726,8 +1728,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'<p>b</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'only list item', () => {
@@ -1741,8 +1743,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'<p>p</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'on non paragraph', () => {
@@ -1761,8 +1763,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'first block of list item', () => {
@@ -1781,9 +1783,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'last block of list item', () => {
@@ -1802,7 +1804,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'<p>a2</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'middle block of list item', () => {
@@ -1830,8 +1832,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 		} );
 
@@ -1850,8 +1852,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'on paragraph between paragraphs', () => {
@@ -1872,8 +1874,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'<p>x</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'on element before list of same type', () => {
@@ -1897,8 +1899,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'on element after list of same type', () => {
@@ -1922,8 +1924,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'on element before list of different type', () => {
@@ -1944,8 +1946,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'on element after list of different type', () => {
@@ -1966,8 +1968,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'on element between lists of same type', () => {
@@ -1998,8 +2000,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'before list item with the same id', () => {
@@ -2025,9 +2027,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'after list item with the same id', () => {
@@ -2053,8 +2055,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 		} );
 
@@ -2091,7 +2093,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'out list item from list', () => {
@@ -2123,7 +2125,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'the only list item', () => {
@@ -2146,7 +2148,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item between two lists of same type', () => {
@@ -2190,7 +2192,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item between two lists of different type', () => {
@@ -2228,7 +2230,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'element between list items', () => {
@@ -2258,7 +2260,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 		} );
 	} );
@@ -2290,7 +2292,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'after lower indent (multi block)', () => {
@@ -2322,8 +2324,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'after lower indent, before same indent', () => {
@@ -2358,7 +2360,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'after lower indent, before same indent (multi block)', () => {
@@ -2399,9 +2401,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 5 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 5 ) );
 			} );
 
 			it( 'after lower indent, before lower indent', () => {
@@ -2436,7 +2438,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'after lower indent, before lower indent (multi block)', () => {
@@ -2477,9 +2479,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 5 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 5 ) );
 			} );
 
 			it( 'after same indent', () => {
@@ -2514,7 +2516,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'after same indent (multi block)', () => {
@@ -2555,9 +2557,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 3 ) );
 			} );
 
 			it( 'after same indent, before higher indent', () => {
@@ -2592,8 +2594,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 3 ) );
 			} );
 
 			it( 'after same indent, before higher indent (multi block)', () => {
@@ -2634,9 +2636,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 3 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 5 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 3 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 5 ) );
 			} );
 
 			it( 'after higher indent, before higher indent', () => {
@@ -2680,8 +2682,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 4 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 4 ) );
 			} );
 
 			it( 'after higher indent, before higher indent( multi block)', () => {
@@ -2731,10 +2733,10 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 3 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 6 ) );
-				expect( test.reconvertSpy.thirdCall.firstArg ).to.equal( modelRoot.getChild( 7 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 3 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 6 ) );
+				expect( test.reconvertSpy.mock.calls[ 2 ][ 0 ] ).toBe( modelRoot.getChild( 7 ) );
 			} );
 
 			it( 'list items with too big indent', () => {
@@ -2822,8 +2824,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 		} );
 
@@ -3238,7 +3240,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 				'<paragraph listItemId="a" listIndent="0" listType="todo">2</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<p>0</p>' +
 				'<ul class="todo-list">' +
 					'<li>' +
@@ -3257,8 +3259,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 				const viewPos = getViewPosition( viewRoot, viewPath, view );
 				const modelPos = mapper.toModelPosition( viewPos );
 
-				expect( modelPos.root ).to.equal( modelRoot );
-				expect( modelPos.path ).to.deep.equal( modelPath );
+				expect( modelPos.root ).toBe( modelRoot );
+				expect( modelPos.path ).toEqual( modelPath );
 			}
 
 			it( 'before ul --> before first list item', () => {
@@ -3311,8 +3313,8 @@ describe( 'TodoListEditing - conversion - changes', () => {
 				const modelPos = model.createPositionFromPath( modelRoot, modelPath );
 				const viewPos = mapper.toViewPosition( modelPos );
 
-				expect( viewPos.root ).to.equal( viewRoot );
-				expect( getViewPath( viewPos ) ).to.deep.equal( viewPath );
+				expect( viewPos.root ).toBe( viewRoot );
+				expect( getViewPath( viewPos ) ).toEqual( viewPath );
 			}
 
 			it( 'before list item --> before ul', () => {
@@ -3347,7 +3349,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 
 				testList( [ 0, 7 ], [ 0, 0, 0, 1, 2, 3 ] );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<ul class="todo-list">' +
 						'<li>' +
 							'<span class="todo-list__label">' +
@@ -3377,7 +3379,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 
 				testList( [ 0, 6 ], [ 0, 0, 0, 1, 2, 3 ] );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<ul class="todo-list">' +
 						'<li>' +
 							'<span class="todo-list__label">' +

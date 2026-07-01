@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ViewAttributeElement } from '../../src/view/attributeelement.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
@@ -22,47 +23,47 @@ describe( 'ViewAttributeElement', () => {
 		it( 'should create element with default priority', () => {
 			const el = new ViewAttributeElement( document, 'strong' );
 
-			expect( el ).to.be.an.instanceof( ViewAttributeElement );
-			expect( el ).to.be.an.instanceof( ViewElement );
-			expect( el ).to.have.property( 'name' ).that.equals( 'strong' );
-			expect( el ).to.have.property( 'priority' ).that.equals( ViewAttributeElement.DEFAULT_PRIORITY );
+			expect( el ).toBeInstanceOf( ViewAttributeElement );
+			expect( el ).toBeInstanceOf( ViewElement );
+			expect( el ).toHaveProperty( 'name', 'strong' );
+			expect( el ).toHaveProperty( 'priority', ViewAttributeElement.DEFAULT_PRIORITY );
 		} );
 	} );
 
 	describe( 'is()', () => {
 		let el;
 
-		before( () => {
+		beforeEach( () => {
 			el = new ViewAttributeElement( document, 'span' );
 		} );
 
 		it( 'should return true for attributeElement/element, also with correct name and element name', () => {
-			expect( el.is( 'attributeElement' ) ).to.be.true;
-			expect( el.is( 'view:attributeElement' ) ).to.be.true;
-			expect( el.is( 'attributeElement', 'span' ) ).to.be.true;
-			expect( el.is( 'view:attributeElement', 'span' ) ).to.be.true;
-			expect( el.is( 'element' ) ).to.be.true;
-			expect( el.is( 'view:element' ) ).to.be.true;
-			expect( el.is( 'element', 'span' ) ).to.be.true;
-			expect( el.is( 'view:element', 'span' ) ).to.be.true;
+			expect( el.is( 'attributeElement' ) ).toBe( true );
+			expect( el.is( 'view:attributeElement' ) ).toBe( true );
+			expect( el.is( 'attributeElement', 'span' ) ).toBe( true );
+			expect( el.is( 'view:attributeElement', 'span' ) ).toBe( true );
+			expect( el.is( 'element' ) ).toBe( true );
+			expect( el.is( 'view:element' ) ).toBe( true );
+			expect( el.is( 'element', 'span' ) ).toBe( true );
+			expect( el.is( 'view:element', 'span' ) ).toBe( true );
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( el.is( 'attributeElement', 'p' ) ).to.be.false;
-			expect( el.is( 'view:attributeElement', 'p' ) ).to.be.false;
-			expect( el.is( 'element', 'p' ) ).to.be.false;
-			expect( el.is( 'view:element', 'p' ) ).to.be.false;
-			expect( el.is( 'element', 'p' ) ).to.be.false;
-			expect( el.is( 'view:p' ) ).to.be.false;
-			expect( el.is( '$text' ) ).to.be.false;
-			expect( el.is( '$textProxy' ) ).to.be.false;
-			expect( el.is( 'containerElement' ) ).to.be.false;
-			expect( el.is( 'uiElement' ) ).to.be.false;
-			expect( el.is( 'emptyElement' ) ).to.be.false;
-			expect( el.is( 'rootElement' ) ).to.be.false;
-			expect( el.is( 'documentFragment' ) ).to.be.false;
-			expect( el.is( 'node', 'span' ) ).to.be.false;
-			expect( el.is( 'view:node', 'span' ) ).to.be.false;
+			expect( el.is( 'attributeElement', 'p' ) ).toBe( false );
+			expect( el.is( 'view:attributeElement', 'p' ) ).toBe( false );
+			expect( el.is( 'element', 'p' ) ).toBe( false );
+			expect( el.is( 'view:element', 'p' ) ).toBe( false );
+			expect( el.is( 'element', 'p' ) ).toBe( false );
+			expect( el.is( 'view:p' ) ).toBe( false );
+			expect( el.is( '$text' ) ).toBe( false );
+			expect( el.is( '$textProxy' ) ).toBe( false );
+			expect( el.is( 'containerElement' ) ).toBe( false );
+			expect( el.is( 'uiElement' ) ).toBe( false );
+			expect( el.is( 'emptyElement' ) ).toBe( false );
+			expect( el.is( 'rootElement' ) ).toBe( false );
+			expect( el.is( 'documentFragment' ) ).toBe( false );
+			expect( el.is( 'node', 'span' ) ).toBe( false );
+			expect( el.is( 'view:node', 'span' ) ).toBe( false );
 		} );
 	} );
 
@@ -73,9 +74,9 @@ describe( 'ViewAttributeElement', () => {
 
 			const clone = el._clone();
 
-			expect( clone ).to.not.equal( el );
-			expect( clone.name ).to.equal( el.name );
-			expect( clone.priority ).to.equal( el.priority );
+			expect( clone ).not.toBe( el );
+			expect( clone.name ).toBe( el.name );
+			expect( clone.priority ).toBe( el.priority );
 		} );
 	} );
 
@@ -87,7 +88,7 @@ describe( 'ViewAttributeElement', () => {
 			const b2 = new ViewAttributeElement( document, 'b' );
 			b2._priority = 7;
 
-			expect( b1.isSimilar( b2 ) ).to.be.true;
+			expect( b1.isSimilar( b2 ) ).toBe( true );
 		} );
 
 		it( 'should return false if priorities are different', () => {
@@ -96,7 +97,7 @@ describe( 'ViewAttributeElement', () => {
 
 			const b2 = new ViewAttributeElement( document, 'b' ); // default priority
 
-			expect( b1.isSimilar( b2 ) ).to.be.false;
+			expect( b1.isSimilar( b2 ) ).toBe( false );
 		} );
 
 		it( 'should return true if ids are the same even if other properties are different', () => {
@@ -109,8 +110,8 @@ describe( 'ViewAttributeElement', () => {
 			const element3 = new ViewAttributeElement( document, 'span' );
 			element3._id = 'xyz';
 
-			expect( element1.isSimilar( element2 ) ).to.be.true;
-			expect( element1.isSimilar( element3 ) ).to.be.true;
+			expect( element1.isSimilar( element2 ) ).toBe( true );
+			expect( element1.isSimilar( element3 ) ).toBe( true );
 		} );
 
 		it( 'should return false if ids are different even if other properties are same', () => {
@@ -122,7 +123,7 @@ describe( 'ViewAttributeElement', () => {
 			element2._priority = 3;
 			element2._id = 'bar';
 
-			expect( element1.isSimilar( element2 ) ).to.be.false;
+			expect( element1.isSimilar( element2 ) ).toBe( false );
 		} );
 	} );
 
@@ -137,9 +138,9 @@ describe( 'ViewAttributeElement', () => {
 
 			attributeA._clonesGroup = attributeB._clonesGroup = new Set( [ attributeA, attributeB ] );
 
-			expect( attributeA.getElementsWithSameId() ).to.deep.equal( attributeA._clonesGroup );
-			expect( attributeA.getElementsWithSameId() ).not.to.equal( attributeA._clonesGroup );
-			expect( attributeA.getElementsWithSameId() ).to.deep.equal( attributeB.getElementsWithSameId() );
+			expect( attributeA.getElementsWithSameId() ).toEqual( attributeA._clonesGroup );
+			expect( attributeA.getElementsWithSameId() ).not.toBe( attributeA._clonesGroup );
+			expect( attributeA.getElementsWithSameId() ).toEqual( attributeB.getElementsWithSameId() );
 		} );
 
 		it( 'should throw if attribute element has no id', () => {
@@ -156,7 +157,7 @@ describe( 'ViewAttributeElement', () => {
 			const { selection } = _parseView( '<container:p><attribute:b>[]</attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getFillerOffset() ).to.equals( 0 );
+			expect( attribute.getFillerOffset() ).toBe( 0 );
 		} );
 
 		it( 'should return position 0 if it is the only nested element in the container', () => {
@@ -164,26 +165,26 @@ describe( 'ViewAttributeElement', () => {
 				'<container:p><attribute:b><attribute:i>[]</attribute:i></attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getFillerOffset() ).to.equals( 0 );
+			expect( attribute.getFillerOffset() ).toBe( 0 );
 		} );
 
 		it( 'should return null if element contains another element', () => {
 			const attribute = _parseView( '<attribute:b><attribute:i></attribute:i></attribute:b>' );
 
-			expect( attribute.getFillerOffset() ).to.be.null;
+			expect( attribute.getFillerOffset() ).toBeNull();
 		} );
 
 		it( 'should return null if element contains text', () => {
 			const attribute = _parseView( '<attribute:b>text</attribute:b>' );
 
-			expect( attribute.getFillerOffset() ).to.be.null;
+			expect( attribute.getFillerOffset() ).toBeNull();
 		} );
 
 		it( 'should return null if container element contains text', () => {
 			const { selection } = _parseView( '<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getFillerOffset() ).to.be.null;
+			expect( attribute.getFillerOffset() ).toBeNull();
 		} );
 
 		it( 'should return null if it is the parent contains text', () => {
@@ -191,20 +192,20 @@ describe( 'ViewAttributeElement', () => {
 				'<container:p><attribute:b><attribute:i>[]</attribute:i>foo</attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getFillerOffset() ).to.be.null;
+			expect( attribute.getFillerOffset() ).toBeNull();
 		} );
 
 		it( 'should return null if there is no parent container element', () => {
 			const { selection } = _parseView( '<attribute:b><attribute:i>[]</attribute:i>foo</attribute:b>' );
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getFillerOffset() ).to.be.null;
+			expect( attribute.getFillerOffset() ).toBeNull();
 		} );
 
 		it( 'should return null if there is no parent', () => {
 			const attribute = new ViewAttributeElement( document, 'b' );
 
-			expect( attribute.getFillerOffset() ).to.be.null;
+			expect( attribute.getFillerOffset() ).toBeNull();
 		} );
 
 		it( 'should return offset after all children if it is the only nested element in the container and has UIElement inside', () => {
@@ -213,14 +214,14 @@ describe( 'ViewAttributeElement', () => {
 			);
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getFillerOffset() ).to.equal( 1 );
+			expect( attribute.getFillerOffset() ).toBe( 1 );
 		} );
 
 		it( 'should return offset after all children if there is no parent container element and has UIElement inside', () => {
 			const { selection } = _parseView( '<attribute:b>[]<ui:span></ui:span><ui:span></ui:span></attribute:b>' );
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getFillerOffset() ).to.equal( 2 );
+			expect( attribute.getFillerOffset() ).toBe( 2 );
 		} );
 	} );
 
@@ -237,7 +238,7 @@ describe( 'ViewAttributeElement', () => {
 			const json = JSON.stringify( strong );
 			const parsed = JSON.parse( json );
 
-			expect( parsed ).to.deep.equal( {
+			expect( parsed ).toEqual( {
 				name: 'strong',
 				path: [ 0, 1 ],
 				root: 'main',

@@ -17,11 +17,7 @@ import type {
 	EditorUIUpdateEvent
 } from '../../editorui/editorui.js';
 
-import {
-	Plugin,
-	type Editor,
-	type EditorReadyEvent
-} from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type EditorReadyEvent, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	FocusTracker,
@@ -110,8 +106,8 @@ export class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ContextualBalloon ] as const;
+	public static get requires(): PluginDependenciesOf<[ ContextualBalloon ]> {
+		return [ ContextualBalloon ];
 	}
 
 	/**

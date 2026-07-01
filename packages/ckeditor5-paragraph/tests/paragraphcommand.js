@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { ParagraphCommand } from '../src/paragraphcommand.js';
 
@@ -37,33 +38,33 @@ describe( 'ParagraphCommand', () => {
 	describe( 'value', () => {
 		it( 'responds to changes in selection (collapsed selection)', () => {
 			_setModelData( model, '<heading1>foo[]bar</heading1>' );
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'responds to changes in selection (non–collapsed selection)', () => {
 			_setModelData( model, '<heading1>[foo]</heading1><paragraph>bar</paragraph>' );
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			_setModelData( model, '<heading1>[foo</heading1><paragraph>bar]</paragraph>' );
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			_setModelData( model, '<heading1>foo</heading1>[<paragraph>bar]</paragraph>' );
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 
 			_setModelData( model, '<heading1>foo</heading1><paragraph>[bar]</paragraph>' );
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 
 			_setModelData( model, '<paragraph>[bar</paragraph><heading1>foo]</heading1>' );
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'has proper value when inside non-block element', () => {
 			_setModelData( model, '<notBlock>[foo]</notBlock>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'has proper value when moved from block to element that is not a block', () => {
@@ -74,7 +75,7 @@ describe( 'ParagraphCommand', () => {
 				writer.setSelection( writer.createRangeIn( element ) );
 			} );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should be refreshed after calling refresh()', () => {
@@ -84,9 +85,9 @@ describe( 'ParagraphCommand', () => {
 			model.change( writer => {
 				writer.setSelection( writer.createRangeIn( element ) );
 
-				expect( command.value ).to.be.true;
+				expect( command.value ).toBe( true );
 				command.refresh();
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 		} );
 	} );
@@ -96,8 +97,8 @@ describe( 'ParagraphCommand', () => {
 			_setModelData( model, '<heading1>[]</heading1>' );
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
-			expect( command.value ).to.be.true;
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'should not execute when selection is in non-editable place', () => {
@@ -106,7 +107,7 @@ describe( 'ParagraphCommand', () => {
 			model.document.isReadOnly = true;
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( _getModelData( model ) ).toEqual( '<heading1>[]</heading1>' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-paragraph/issues/24
@@ -133,7 +134,7 @@ describe( 'ParagraphCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>a[bc</paragraph>' +
 				'<restricted><fooBlock></fooBlock></restricted>' +
 				'<paragraph>de]f</paragraph>'
@@ -156,7 +157,7 @@ describe( 'ParagraphCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<paragraph>a[bc</paragraph>' +
 				'<imageBlock></imageBlock>' +
 				'<paragraph>de]f</paragraph>'
@@ -167,11 +168,11 @@ describe( 'ParagraphCommand', () => {
 			_setModelData( model, '<paragraph>foo[</paragraph><heading1>bar]</heading1>' );
 
 			model.change( writer => {
-				expect( writer.batch.operations.length ).to.equal( 0 );
+				expect( writer.batch.operations.length ).toEqual( 0 );
 
 				command.execute();
 
-				expect( writer.batch.operations.length ).to.equal( 1 );
+				expect( writer.batch.operations.length ).toEqual( 1 );
 			} );
 		} );
 
@@ -180,11 +181,11 @@ describe( 'ParagraphCommand', () => {
 				_setModelData( model, '<heading1>foo[]bar</heading1>' );
 
 				model.change( writer => {
-					expect( writer.batch.operations.length ).to.equal( 0 );
+					expect( writer.batch.operations.length ).toEqual( 0 );
 
 					command.execute();
 
-					expect( writer.batch.operations.length ).to.above( 0 );
+					expect( writer.batch.operations.length ).toBeGreaterThan( 0 );
 				} );
 			} );
 
@@ -199,7 +200,7 @@ describe( 'ParagraphCommand', () => {
 				) );
 
 				command.execute( { selection } );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<heading1>foo[]bar</heading1><paragraph>baz</paragraph><paragraph>qux</paragraph>'
 				);
 			} );
@@ -210,7 +211,7 @@ describe( 'ParagraphCommand', () => {
 				_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			it( 'converts topmost blocks', () => {
@@ -220,7 +221,7 @@ describe( 'ParagraphCommand', () => {
 				_setModelData( model, '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
 			} );
 		} );
 
@@ -231,7 +232,7 @@ describe( 'ParagraphCommand', () => {
 				_setModelData( model, '<heading1>fo[o</heading1><heading2>bar</heading2><heading2>baz]</heading2>' );
 
 				command.execute();
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>fo[o</paragraph><paragraph>bar</paragraph><paragraph>baz]</paragraph>'
 				);
 			} );
@@ -242,7 +243,7 @@ describe( 'ParagraphCommand', () => {
 				_setModelData( model, '<paragraph>foo[</paragraph><heading2>bar]</heading2>' );
 
 				command.execute();
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
 			} );
 		} );
 	} );
@@ -251,19 +252,19 @@ describe( 'ParagraphCommand', () => {
 		it( 'should be enabled when inside another block', () => {
 			_setModelData( model, '<heading1>f{}oo</heading1>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be disabled if inside non-block', () => {
 			_setModelData( model, '<notBlock>f{}oo</notBlock>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be disabled if selection is placed on non-block element', () => {
 			_setModelData( model, '[<notBlock>foo</notBlock>]' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 } );

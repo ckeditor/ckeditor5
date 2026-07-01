@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ToolbarLineBreakView } from '../../src/toolbar/toolbarlinebreakview.js';
 
 describe( 'ToolbarLineBreakView', () => {
@@ -16,9 +17,9 @@ describe( 'ToolbarLineBreakView', () => {
 
 	describe( 'template', () => {
 		it( 'should create element from template', () => {
-			expect( view.element.tagName ).to.equal( 'SPAN' );
-			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-toolbar__line-break' ) ).to.true;
+			expect( view.element.tagName ).toBe( 'SPAN' );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-toolbar__line-break' ) ).toBe( true );
 		} );
 	} );
 } );

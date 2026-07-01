@@ -7,7 +7,7 @@
  * @module upload/adapters/simpleuploadadapter
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { FileRepository, type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository.js';
 import type { SimpleUploadConfig } from '../uploadconfig.js';
 import { logWarning } from '@ckeditor/ckeditor5-utils';
@@ -41,8 +41,8 @@ export class SimpleUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ FileRepository ] as const;
+	public static get requires(): PluginDependenciesOf<[ FileRepository ]> {
+		return [ FileRepository ];
 	}
 
 	/**
@@ -200,9 +200,10 @@ class Adapter implements UploadAdapter {
 		} );
 
 		// Upload progress when it is supported.
-		/* istanbul ignore else -- @preserve */
+		/* v8 ignore else -- @preserve */
 		if ( xhr.upload ) {
 			xhr.upload.addEventListener( 'progress', evt => {
+				/* v8 ignore else -- @preserve */
 				if ( evt.lengthComputable ) {
 					loader.uploadTotal = evt.total;
 					loader.uploaded = evt.loaded;

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Context } from '../src/context.js';
 import { ContextPlugin } from '../src/contextplugin.js';
 import { Plugin } from '../src/plugin.js';
@@ -15,13 +16,13 @@ describe( 'Context', () => {
 		it( 'should be created', () => {
 			const context = new Context();
 
-			expect( context.config ).to.instanceof( Config );
+			expect( context.config ).toBeInstanceOf( Config );
 		} );
 
 		it( 'should be with given configuration', () => {
 			const context = new Context( { foo: 'bar' } );
 
-			expect( context.config.get( 'foo' ) ).to.equal( 'bar' );
+			expect( context.config.get( 'foo' ) ).toBe( 'bar' );
 		} );
 
 		it( 'should not set translations in the config', () => {
@@ -33,7 +34,7 @@ describe( 'Context', () => {
 				}
 			} } );
 
-			expect( context.config.get( 'translations' ) ).to.equal( undefined );
+			expect( context.config.get( 'translations' ) ).toBeUndefined();
 		} );
 	} );
 
@@ -52,7 +53,7 @@ describe( 'Context', () => {
 				bar: 'bom'
 			} );
 
-			expect( context._getEditorConfig() ).to.be.deep.equal( {
+			expect( context._getEditorConfig() ).toEqual( {
 				language: { ui: 'pl', content: 'ar' },
 				foo: 1,
 				bar: 'bom'
@@ -62,21 +63,21 @@ describe( 'Context', () => {
 
 	describe( 'editors', () => {
 		it( 'should keep all the editors created within the context and fire event:add whenever an editor is added', async () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const context = await Context.create();
 
 			context.editors.on( 'add', spy );
 
 			const editorA = await VirtualTestEditor.create( { context } );
 
-			expect( spy.calledOnce );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			const editorB = await VirtualTestEditor.create( { context } );
 
-			expect( spy.calledTwice );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 
-			expect( context.editors.has( editorA ) );
-			expect( context.editors.has( editorB ) );
+			expect( context.editors.has( editorA ) ).toBe( true );
+			expect( context.editors.has( editorB ) ).toBe( true );
 		} );
 	} );
 
@@ -84,29 +85,29 @@ describe( 'Context', () => {
 		it( 'is instantiated and t() is exposed', () => {
 			const context = new Context();
 
-			expect( context.locale ).to.be.instanceof( Locale );
-			expect( context.t ).to.equal( context.locale.t );
+			expect( context.locale ).toBeInstanceOf( Locale );
+			expect( context.t ).toBe( context.locale.t );
 		} );
 
 		it( 'is configured with the config.language (UI and the content)', () => {
 			const context = new Context( { language: 'pl' } );
 
-			expect( context.locale.uiLanguage ).to.equal( 'pl' );
-			expect( context.locale.contentLanguage ).to.equal( 'pl' );
+			expect( context.locale.uiLanguage ).toBe( 'pl' );
+			expect( context.locale.contentLanguage ).toBe( 'pl' );
 		} );
 
 		it( 'is configured with the config.language (different for UI and the content)', () => {
 			const context = new Context( { language: { ui: 'pl', content: 'ar' } } );
 
-			expect( context.locale.uiLanguage ).to.equal( 'pl' );
-			expect( context.locale.contentLanguage ).to.equal( 'ar' );
+			expect( context.locale.uiLanguage ).toBe( 'pl' );
+			expect( context.locale.contentLanguage ).toBe( 'ar' );
 		} );
 
 		it( 'is configured with the config.language (just the content)', () => {
 			const context = new Context( { language: { content: 'ar' } } );
 
-			expect( context.locale.uiLanguage ).to.equal( 'en' );
-			expect( context.locale.contentLanguage ).to.equal( 'ar' );
+			expect( context.locale.uiLanguage ).toBe( 'en' );
+			expect( context.locale.contentLanguage ).toBe( 'ar' );
 		} );
 
 		it( 'is configured with the config.translations', () => {
@@ -120,8 +121,8 @@ describe( 'Context', () => {
 					} }
 			} );
 
-			expect( context.locale.translations.pl.dictionary.key ).to.equal( '' );
-			expect( context.locale.translations.pl.getPluralForm() ).to.equal( '' );
+			expect( context.locale.translations.pl.dictionary.key ).toBe( '' );
+			expect( context.locale.translations.pl.getPluralForm() ).toBe( '' );
 		} );
 	} );
 
@@ -137,9 +138,9 @@ describe( 'Context', () => {
 				caughtError = error;
 			}
 
-			expect( caughtError ).to.instanceof( CKEditorError );
+			expect( caughtError ).toBeInstanceOf( CKEditorError );
 			expect( caughtError.message )
-				.match( /^context-initplugins-invalid-plugin/ );
+				.toMatch( /^context-initplugins-invalid-plugin/ );
 		} );
 
 		it( 'should throw when plugin added to the context is not marked as a ContextPlugin (Function)', async () => {
@@ -153,9 +154,9 @@ describe( 'Context', () => {
 				caughtError = error;
 			}
 
-			expect( caughtError ).to.instanceof( CKEditorError );
+			expect( caughtError ).toBeInstanceOf( CKEditorError );
 			expect( caughtError.message )
-				.match( /^context-initplugins-invalid-plugin/ );
+				.toMatch( /^context-initplugins-invalid-plugin/ );
 		} );
 
 		it( 'should throw when plugin is added to the context by name', async () => {
@@ -167,9 +168,9 @@ describe( 'Context', () => {
 				caughtError = error;
 			}
 
-			expect( caughtError ).to.instanceof( CKEditorError );
+			expect( caughtError ).toBeInstanceOf( CKEditorError );
 			expect( caughtError.message )
-				.match( /^context-initplugins-constructor-only/ );
+				.toMatch( /^context-initplugins-constructor-only/ );
 		} );
 
 		it( 'should not throw when plugin as a function, marked as a ContextPlugin is added to the context', async () => {
@@ -184,7 +185,7 @@ describe( 'Context', () => {
 				caughtError = error;
 			}
 
-			expect( caughtError ).to.equal( undefined );
+			expect( caughtError ).toBeUndefined();
 		} );
 
 		it( 'should share the same instance of plugin within editors using the same context', async () => {
@@ -196,13 +197,13 @@ describe( 'Context', () => {
 			const editorA = await VirtualTestEditor.create( { context, plugins: [ ContextPluginA, EditorPluginA ] } );
 			const editorB = await VirtualTestEditor.create( { context, plugins: [ ContextPluginB, EditorPluginA ] } );
 
-			expect( editorA.plugins.get( ContextPluginA ) ).to.equal( context.plugins.get( ContextPluginA ) );
-			expect( editorA.plugins.has( ContextPluginB ) ).to.equal( false );
-			expect( editorB.plugins.get( ContextPluginB ) ).to.equal( context.plugins.get( ContextPluginB ) );
-			expect( editorB.plugins.has( ContextPluginA ) ).to.equal( false );
+			expect( editorA.plugins.get( ContextPluginA ) ).toBe( context.plugins.get( ContextPluginA ) );
+			expect( editorA.plugins.has( ContextPluginB ) ).toBe( false );
+			expect( editorB.plugins.get( ContextPluginB ) ).toBe( context.plugins.get( ContextPluginB ) );
+			expect( editorB.plugins.has( ContextPluginA ) ).toBe( false );
 
-			expect( context.plugins.has( EditorPluginA ) ).to.equal( false );
-			expect( editorA.plugins.get( EditorPluginA ) ).to.not.equal( editorB.plugins.get( EditorPluginA ) );
+			expect( context.plugins.has( EditorPluginA ) ).toBe( false );
+			expect( editorA.plugins.get( EditorPluginA ) ).not.toBe( editorB.plugins.get( EditorPluginA ) );
 
 			await context.destroy();
 		} );
@@ -225,15 +226,15 @@ describe( 'Context', () => {
 			const editorA = await VirtualTestEditor.create( { context, plugins: [ EditorPluginA ] } );
 			const editorB = await VirtualTestEditor.create( { context, plugins: [ EditorPluginB ] } );
 
-			expect( context.plugins.get( ContextPluginA ) ).to.equal( editorA.plugins.get( ContextPluginA ) );
-			expect( context.plugins.get( ContextPluginB ) ).to.equal( editorB.plugins.get( ContextPluginB ) );
+			expect( context.plugins.get( ContextPluginA ) ).toBe( editorA.plugins.get( ContextPluginA ) );
+			expect( context.plugins.get( ContextPluginB ) ).toBe( editorB.plugins.get( ContextPluginB ) );
 
 			await context.destroy();
 		} );
 
 		it( 'should not initialize twice plugin added to the context and the editor', async () => {
-			const initSpy = sinon.spy();
-			const afterInitSpy = sinon.spy();
+			const initSpy = vi.fn();
+			const afterInitSpy = vi.fn();
 
 			class ContextPluginA extends ContextPlugin {
 				init() {
@@ -248,9 +249,9 @@ describe( 'Context', () => {
 			const context = await Context.create( { plugins: [ ContextPluginA ] } );
 			const editor = await VirtualTestEditor.create( { context, plugins: [ ContextPluginA ] } );
 
-			expect( context.plugins.get( ContextPluginA ) ).to.equal( editor.plugins.get( ContextPluginA ) );
-			sinon.assert.calledOnce( initSpy );
-			sinon.assert.calledOnce( afterInitSpy );
+			expect( context.plugins.get( ContextPluginA ) ).toBe( editor.plugins.get( ContextPluginA ) );
+			expect( initSpy ).toHaveBeenCalledOnce();
+			expect( afterInitSpy ).toHaveBeenCalledOnce();
 
 			await context.destroy();
 		} );
@@ -275,8 +276,8 @@ describe( 'Context', () => {
 			const context = await Context.create( { plugins: [ ContextPluginB ] } );
 			const editor = await VirtualTestEditor.create( { context, plugins: [ 'ContextPluginA' ] } );
 
-			expect( editor.plugins.has( ContextPluginA ) ).to.equal( true );
-			expect( editor.plugins.has( ContextPluginB ) ).to.equal( false );
+			expect( editor.plugins.has( ContextPluginA ) ).toBe( true );
+			expect( editor.plugins.has( ContextPluginB ) ).toBe( false );
 		} );
 
 		it( 'should allow substituting a plugin specified as "config.plugins"', async () => {
@@ -305,8 +306,8 @@ describe( 'Context', () => {
 				substitutePlugins: [ NoErrorPlugin ]
 			} );
 
-			expect( context.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( ContextPlugin );
-			expect( context.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+			expect( context.plugins.get( 'FooPlugin' ) ).toBeInstanceOf( ContextPlugin );
+			expect( context.plugins.get( 'FooPlugin' ) ).toBeInstanceOf( NoErrorPlugin );
 		} );
 
 		it( 'should throw an error if specified an invalid type of a plugin for substituting', async () => {
@@ -326,8 +327,8 @@ describe( 'Context', () => {
 					substitutePlugins: [ 'NoErrorPlugin' ]
 				} );
 			} catch ( error ) {
-				expect( error ).to.instanceof( CKEditorError );
-				expect( error.message ).match( /^context-initplugins-constructor-only/ );
+				expect( error ).toBeInstanceOf( CKEditorError );
+				expect( error.message ).toMatch( /^context-initplugins-constructor-only/ );
 			}
 		} );
 
@@ -358,8 +359,8 @@ describe( 'Context', () => {
 					substitutePlugins: [ NoErrorPlugin ]
 				} );
 			} catch ( error ) {
-				expect( error ).to.instanceof( CKEditorError );
-				expect( error.message ).match( /^context-initplugins-invalid-plugin/ );
+				expect( error ).toBeInstanceOf( CKEditorError );
+				expect( error.message ).toMatch( /^context-initplugins-invalid-plugin/ );
 			}
 		} );
 	} );
@@ -367,11 +368,11 @@ describe( 'Context', () => {
 	describe( 'destroy()', () => {
 		it( 'should destroy plugins', async () => {
 			const context = await Context.create();
-			const spy = sinon.spy( context.plugins, 'destroy' );
+			const spy = vi.spyOn( context.plugins, 'destroy' );
 
 			await context.destroy();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should destroy all editors with injected context', async () => {
@@ -380,15 +381,15 @@ describe( 'Context', () => {
 			const editorB = await VirtualTestEditor.create( { context } );
 			const editorC = await VirtualTestEditor.create();
 
-			sinon.spy( editorA, 'destroy' );
-			sinon.spy( editorB, 'destroy' );
-			sinon.spy( editorC, 'destroy' );
+			vi.spyOn( editorA, 'destroy' );
+			vi.spyOn( editorB, 'destroy' );
+			vi.spyOn( editorC, 'destroy' );
 
 			await context.destroy();
 
-			sinon.assert.calledOnce( editorA.destroy );
-			sinon.assert.calledOnce( editorB.destroy );
-			sinon.assert.notCalled( editorC.destroy );
+			expect( editorA.destroy ).toHaveBeenCalledOnce();
+			expect( editorB.destroy ).toHaveBeenCalledOnce();
+			expect( editorC.destroy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not crash when destroyed for the second time', async () => {
@@ -425,11 +426,11 @@ describe( 'Context', () => {
 
 			return context.initPlugins()
 				.then( () => {
-					expect( getPlugins( context ).length ).to.equal( 3 );
+					expect( getPlugins( context ).length ).toBe( 3 );
 
-					expect( context.plugins.get( PluginA ) ).to.be.an.instanceof( ContextPlugin );
-					expect( context.plugins.get( PluginB ) ).to.be.an.instanceof( ContextPlugin );
-					expect( context.plugins.get( PluginC ) ).to.be.an.instanceof( ContextPlugin );
+					expect( context.plugins.get( PluginA ) ).toBeInstanceOf( ContextPlugin );
+					expect( context.plugins.get( PluginB ) ).toBeInstanceOf( ContextPlugin );
+					expect( context.plugins.get( PluginC ) ).toBeInstanceOf( ContextPlugin );
 				} );
 		} );
 
@@ -442,9 +443,9 @@ describe( 'Context', () => {
 
 			return context.initPlugins()
 				.then( () => {
-					expect( getPlugins( context ).length ).to.equal( 1 );
+					expect( getPlugins( context ).length ).toBe( 1 );
 
-					expect( context.plugins.get( PluginA ) ).to.be.an.instanceof( ContextPlugin );
+					expect( context.plugins.get( PluginA ) ).toBeInstanceOf( ContextPlugin );
 				} );
 		} );
 
@@ -477,8 +478,8 @@ describe( 'Context', () => {
 				substitutePlugins: [ NoErrorPlugin ]
 			} );
 
-			expect( context.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( ContextPlugin );
-			expect( context.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+			expect( context.plugins.get( 'FooPlugin' ) ).toBeInstanceOf( ContextPlugin );
+			expect( context.plugins.get( 'FooPlugin' ) ).toBeInstanceOf( NoErrorPlugin );
 		} );
 	} );
 
@@ -496,8 +497,8 @@ describe( 'Context', () => {
 				foo: 4
 			} );
 
-			expect( context.config.get( 'foo' ) ).to.equal( 4 );
-			expect( context.config.get( 'bar' ) ).to.equal( 2 );
+			expect( context.config.get( 'foo' ) ).toBe( 4 );
+			expect( context.config.get( 'bar' ) ).toBe( 2 );
 		} );
 	} );
 
@@ -531,15 +532,15 @@ describe( 'Context', () => {
 		} );
 
 		it( 'should not set translations in the config', () => {
-			expect( editor.config.get( 'translations' ) ).to.equal( undefined );
+			expect( editor.config.get( 'translations' ) ).toBeUndefined();
 		} );
 
 		it( 'should properly get translations with the key', () => {
-			expect( editor.locale.translations.pl.dictionary.bold ).to.equal( 'Pogrubienie' );
+			expect( editor.locale.translations.pl.dictionary.bold ).toBe( 'Pogrubienie' );
 		} );
 
 		it( 'should properly get translations with dot in the key', () => {
-			expect( editor.locale.translations.pl.dictionary[ 'a.b' ] ).to.equal( 'value' );
+			expect( editor.locale.translations.pl.dictionary[ 'a.b' ] ).toBe( 'value' );
 		} );
 	} );
 
@@ -577,15 +578,15 @@ describe( 'Context', () => {
 		} );
 
 		it( 'should not set translations in the config', () => {
-			expect( editor.config.get( 'translations' ) ).to.equal( undefined );
+			expect( editor.config.get( 'translations' ) ).toBeUndefined();
 		} );
 
 		it( 'should properly get translations with the key', () => {
-			expect( editor.locale.translations.pl.dictionary.bold ).to.equal( 'Pogrubienie' );
+			expect( editor.locale.translations.pl.dictionary.bold ).toBe( 'Pogrubienie' );
 		} );
 
 		it( 'should properly get translations with dot in the key', () => {
-			expect( editor.locale.translations.pl.dictionary[ 'a.b' ] ).to.equal( 'value' );
+			expect( editor.locale.translations.pl.dictionary[ 'a.b' ] ).toBe( 'value' );
 		} );
 	} );
 } );

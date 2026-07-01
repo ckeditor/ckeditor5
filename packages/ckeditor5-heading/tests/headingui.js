@@ -3,21 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Heading } from '../src/heading.js';
 import { HeadingEditing } from '../src/headingediting.js';
 import { HeadingUI } from '../src/headingui.js';
 import { DropdownView, MenuBarMenuListItemView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 import { add as addTranslations, _clearTranslations } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'HeadingUI', () => {
 	let editor, editorElement;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
-	before( () => {
+	beforeAll( () => {
 		addTranslations( 'en', {
 			'Choose heading': 'Choose heading',
 			'Paragraph': 'Paragraph',
@@ -35,7 +37,7 @@ describe( 'HeadingUI', () => {
 		} );
 	} );
 
-	after( () => {
+	afterAll( () => {
 		_clearTranslations();
 	} );
 
@@ -63,11 +65,11 @@ describe( 'HeadingUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( HeadingUI.isOfficialPlugin ).to.be.true;
+		expect( HeadingUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( HeadingUI.isPremiumPlugin ).to.be.false;
+		expect( HeadingUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'init()', () => {
@@ -83,49 +85,49 @@ describe( 'HeadingUI', () => {
 			} );
 
 			it( 'should register options feature component', () => {
-				expect( dropdown ).to.be.instanceOf( DropdownView );
-				expect( dropdown.buttonView.isEnabled ).to.be.true;
-				expect( dropdown.buttonView.isOn ).to.be.false;
-				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
-				expect( dropdown.buttonView.tooltip ).to.equal( 'Heading' );
-				expect( dropdown.buttonView.ariaLabel ).to.equal( 'Paragraph, Heading' );
-				expect( dropdown.buttonView.ariaLabelledBy ).to.be.undefined;
+				expect( dropdown ).toBeInstanceOf( DropdownView );
+				expect( dropdown.buttonView.isEnabled ).toBe( true );
+				expect( dropdown.buttonView.isOn ).toBe( false );
+				expect( dropdown.buttonView.label ).toEqual( 'Paragraph' );
+				expect( dropdown.buttonView.tooltip ).toEqual( 'Heading' );
+				expect( dropdown.buttonView.ariaLabel ).toEqual( 'Paragraph, Heading' );
+				expect( dropdown.buttonView.ariaLabelledBy ).toBeUndefined();
 			} );
 
 			it( 'should execute format command on model execute event for paragraph', () => {
-				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+				const executeSpy = vi.spyOn( editor, 'execute' );
 
 				dropdown.commandName = 'paragraph';
 				dropdown.fire( 'execute' );
 
-				sinon.assert.calledOnce( executeSpy );
-				sinon.assert.calledWithExactly( executeSpy, 'paragraph', undefined );
+				expect( executeSpy ).toHaveBeenCalledOnce();
+				expect( executeSpy ).toHaveBeenCalledWith( 'paragraph', undefined );
 			} );
 
 			it( 'should execute format command on model execute event for heading', () => {
-				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+				const executeSpy = vi.spyOn( editor, 'execute' );
 
 				dropdown.commandName = 'heading';
 				dropdown.commandValue = 'heading1';
 				dropdown.fire( 'execute' );
 
-				sinon.assert.calledOnce( executeSpy );
-				sinon.assert.calledWithExactly( executeSpy, 'heading', { value: 'heading1' } );
+				expect( executeSpy ).toHaveBeenCalledOnce();
+				expect( executeSpy ).toHaveBeenCalledWith( 'heading', { value: 'heading1' } );
 			} );
 
 			it( 'should focus view after command execution', () => {
-				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 				dropdown.commandName = 'paragraph';
 				dropdown.fire( 'execute' );
 
-				sinon.assert.calledOnce( focusSpy );
+				expect( focusSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should add custom CSS class to dropdown', () => {
 				dropdown.render();
 
-				expect( dropdown.element.classList.contains( 'ck-heading-dropdown' ) ).to.be.true;
+				expect( dropdown.element.classList.contains( 'ck-heading-dropdown' ) ).toBe( true );
 			} );
 
 			describe( 'model to command binding', () => {
@@ -140,58 +142,58 @@ describe( 'HeadingUI', () => {
 					command.isEnabled = false;
 					paragraphCommand.isEnabled = false;
 
-					expect( dropdown.buttonView.isEnabled ).to.be.false;
+					expect( dropdown.buttonView.isEnabled ).toBe( false );
 
 					command.isEnabled = true;
-					expect( dropdown.buttonView.isEnabled ).to.be.true;
+					expect( dropdown.buttonView.isEnabled ).toBe( true );
 
 					command.isEnabled = false;
-					expect( dropdown.buttonView.isEnabled ).to.be.false;
+					expect( dropdown.buttonView.isEnabled ).toBe( false );
 
 					paragraphCommand.isEnabled = true;
-					expect( dropdown.buttonView.isEnabled ).to.be.true;
+					expect( dropdown.buttonView.isEnabled ).toBe( true );
 				} );
 
 				it( 'label', () => {
 					command.value = false;
 					paragraphCommand.value = false;
 
-					expect( dropdown.buttonView.label ).to.equal( 'Choose heading' );
+					expect( dropdown.buttonView.label ).toEqual( 'Choose heading' );
 
 					command.value = 'heading2';
-					expect( dropdown.buttonView.label ).to.equal( 'Heading 2' );
+					expect( dropdown.buttonView.label ).toEqual( 'Heading 2' );
 					command.value = false;
 
 					paragraphCommand.value = true;
-					expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
+					expect( dropdown.buttonView.label ).toEqual( 'Paragraph' );
 				} );
 
 				it( 'label when heading and paragraph commands active', () => {
 					command.value = 'heading2';
 					paragraphCommand.value = true;
 
-					expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
+					expect( dropdown.buttonView.label ).toEqual( 'Paragraph' );
 				} );
 
 				it( 'ariaLabel', () => {
 					command.value = false;
 					paragraphCommand.value = false;
 
-					expect( dropdown.buttonView.ariaLabel ).to.equal( 'Heading' );
+					expect( dropdown.buttonView.ariaLabel ).toEqual( 'Heading' );
 
 					command.value = 'heading2';
-					expect( dropdown.buttonView.ariaLabel ).to.equal( 'Heading 2, Heading' );
+					expect( dropdown.buttonView.ariaLabel ).toEqual( 'Heading 2, Heading' );
 					command.value = false;
 
 					paragraphCommand.value = true;
-					expect( dropdown.buttonView.ariaLabel ).to.equal( 'Paragraph, Heading' );
+					expect( dropdown.buttonView.ariaLabel ).toEqual( 'Paragraph, Heading' );
 				} );
 
 				it( 'ariaLabel when heading and paragraph commands active', () => {
 					command.value = 'heading2';
 					paragraphCommand.value = true;
 
-					expect( dropdown.buttonView.ariaLabel ).to.equal( 'Paragraph, Heading' );
+					expect( dropdown.buttonView.ariaLabel ).toEqual( 'Paragraph, Heading' );
 				} );
 			} );
 
@@ -207,7 +209,7 @@ describe( 'HeadingUI', () => {
 				} );
 
 				it( 'does not alter the original config', () => {
-					expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
+					expect( editor.config.get( 'heading.options' ) ).toEqual( [
 						{ model: 'paragraph', title: 'Paragraph' },
 						{ model: 'heading1', view: { name: 'h2' }, title: 'Heading 1' },
 						{ model: 'heading2', view: { name: 'h3' }, title: 'Heading 2' }
@@ -220,21 +222,21 @@ describe( 'HeadingUI', () => {
 					// Setting manually paragraph.value to `false` because there might be some content in editor
 					// after initialisation (for example empty <p></p> inserted when editor is empty).
 					paragraphCommand.value = false;
-					expect( buttonView.label ).to.equal( 'Wybierz nagłówek' );
-					expect( buttonView.tooltip ).to.equal( 'Nagłówek' );
+					expect( buttonView.label ).toEqual( 'Wybierz nagłówek' );
+					expect( buttonView.tooltip ).toEqual( 'Nagłówek' );
 
 					paragraphCommand.value = true;
-					expect( buttonView.label ).to.equal( 'Akapit' );
+					expect( buttonView.label ).toEqual( 'Akapit' );
 
 					paragraphCommand.value = false;
 					command.value = 'heading1';
-					expect( buttonView.label ).to.equal( 'Nagłówek 1' );
+					expect( buttonView.label ).toEqual( 'Nagłówek 1' );
 				} );
 
 				it( 'works for the listView#items in the panel', () => {
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.label ) ).toEqual( [
 						'Akapit',
 						'Nagłówek 1',
 						'Nagłówek 2'
@@ -248,7 +250,7 @@ describe( 'HeadingUI', () => {
 					] ).then( () => {
 						const listView = dropdown.listView;
 
-						expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
+						expect( listView.items.map( item => item.children.first.label ) ).toEqual( [
 							'Custom paragraph title',
 							'Custom heading1 title'
 						] );
@@ -261,7 +263,7 @@ describe( 'HeadingUI', () => {
 					] ).then( () => {
 						const listView = dropdown.listView;
 
-						expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
+						expect( listView.items.map( item => item.children.first.label ) ).toEqual( [
 							'Akapit'
 						] );
 					} );
@@ -269,7 +271,7 @@ describe( 'HeadingUI', () => {
 
 				it( 'display default title if none of the commands is active', () => {
 					return localizedEditor( [] ).then( () => {
-						expect( dropdown.buttonView.label ).to.equal( 'Wybierz nagłówek' );
+						expect( dropdown.buttonView.label ).toEqual( 'Wybierz nagłówek' );
 					} );
 				} );
 
@@ -309,7 +311,7 @@ describe( 'HeadingUI', () => {
 
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.children.first.class ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.class ) ).toEqual( [
 						'ck-heading_paragraph',
 						'ck-heading_heading1',
 						'ck-heading_heading2',
@@ -325,7 +327,7 @@ describe( 'HeadingUI', () => {
 
 					_setModelData( editor.model, '<heading2>f{}oo</heading2>' );
 
-					expect( listView.items.map( item => item.children.first.isOn ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.isOn ) ).toEqual( [
 						false,
 						false,
 						true,
@@ -341,8 +343,8 @@ describe( 'HeadingUI', () => {
 
 					const listView = dropdown.listView;
 
-					expect( listView.element.role ).to.equal( 'menu' );
-					expect( listView.element.ariaLabel ).to.equal( 'Heading' );
+					expect( listView.element.role ).toEqual( 'menu' );
+					expect( listView.element.ariaLabel ).toEqual( 'Heading' );
 				} );
 			} );
 		} );
@@ -362,25 +364,25 @@ describe( 'HeadingUI', () => {
 			} );
 
 			it( 'should be created', () => {
-				expect( menuView ).to.be.instanceof( MenuBarMenuView );
+				expect( menuView ).toBeInstanceOf( MenuBarMenuView );
 			} );
 
 			it( 'should have correct property values set on various components', () => {
-				expect( menuView.class ).to.equal( 'ck-heading-dropdown' );
-				expect( menuView.buttonView.label ).to.equal( 'Heading' );
-				expect( menuView.panelView.children.first.role ).to.equal( 'menu' );
-				expect( menuView.panelView.children.first.ariaLabel ).to.equal( 'Heading' );
+				expect( menuView.class ).toEqual( 'ck-heading-dropdown' );
+				expect( menuView.buttonView.label ).toEqual( 'Heading' );
+				expect( menuView.panelView.children.first.role ).toEqual( 'menu' );
+				expect( menuView.panelView.children.first.ariaLabel ).toEqual( 'Heading' );
 			} );
 
 			it( 'should set correct button attributes', () => {
-				expect( dumpItems( 'role' ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( 'role' ) ).toEqual( [
 					[ 'Paragraph', 'menuitemradio' ],
 					[ 'Heading 1', 'menuitemradio' ],
 					[ 'Heading 2', 'menuitemradio' ],
 					[ 'Heading 3', 'menuitemradio' ]
 				] );
 
-				expect( dumpItems( 'class' ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( 'class' ) ).toEqual( [
 					[ 'Paragraph', 'ck-heading_paragraph' ],
 					[ 'Heading 1', 'ck-heading_heading1' ],
 					[ 'Heading 2', 'ck-heading_heading2' ],
@@ -392,7 +394,7 @@ describe( 'HeadingUI', () => {
 				command.value = 'heading2';
 				paragraphCommand.value = false;
 
-				expect( dumpItems( 'isOn' ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( 'isOn' ) ).toEqual( [
 					[ 'Paragraph', false ],
 					[ 'Heading 1', false ],
 					[ 'Heading 2', true ],
@@ -402,7 +404,7 @@ describe( 'HeadingUI', () => {
 				command.value = false;
 				paragraphCommand.value = true;
 
-				expect( dumpItems( 'isOn' ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( 'isOn' ) ).toEqual( [
 					[ 'Paragraph', true ],
 					[ 'Heading 1', false ],
 					[ 'Heading 2', false ],
@@ -414,7 +416,7 @@ describe( 'HeadingUI', () => {
 				command.value = 'heading2';
 				paragraphCommand.value = false;
 
-				expect( dumpItems( item => item.element.getAttribute( 'aria-checked' ) ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( item => item.element.getAttribute( 'aria-checked' ) ) ).toEqual( [
 					[ 'Paragraph', 'false' ],
 					[ 'Heading 1', 'false' ],
 					[ 'Heading 2', 'true' ],
@@ -424,7 +426,7 @@ describe( 'HeadingUI', () => {
 				command.value = false;
 				paragraphCommand.value = true;
 
-				expect( dumpItems( item => item.element.getAttribute( 'aria-checked' ) ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( item => item.element.getAttribute( 'aria-checked' ) ) ).toEqual( [
 					[ 'Paragraph', 'true' ],
 					[ 'Heading 1', 'false' ],
 					[ 'Heading 2', 'false' ],
@@ -433,31 +435,32 @@ describe( 'HeadingUI', () => {
 			} );
 
 			it( 'should execute editor command and focus editing view upon #execute', () => {
-				const execSpy = sinon.spy( editor, 'execute' );
-				const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+				const execSpy = vi.spyOn( editor, 'execute' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 				// Paragraph.
 				menuView.panelView.children.first.items.first.children.first.fire( 'execute' );
 
-				sinon.assert.calledOnceWithExactly( execSpy, 'paragraph', { value: 'paragraph' } );
-				sinon.assert.calledOnce( focusSpy );
-				sinon.assert.callOrder( execSpy, focusSpy );
+				expect( execSpy ).toHaveBeenCalledOnce();
+				expect( execSpy ).toHaveBeenCalledWith( 'paragraph', { value: 'paragraph' } );
+				expect( focusSpy ).toHaveBeenCalledOnce();
+				expect( execSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( focusSpy.mock.invocationCallOrder[ 0 ] );
 
 				// Heading.
 				menuView.panelView.children.first.items.last.children.first.fire( 'execute' );
 
-				sinon.assert.calledWithExactly( execSpy.secondCall, 'heading', { value: 'heading3' } );
-				sinon.assert.calledTwice( focusSpy );
+				expect( execSpy ).toHaveBeenNthCalledWith( 2, 'heading', { value: 'heading3' } );
+				expect( focusSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			it( 'should be disabled if all related commands are disabled', () => {
-				expect( menuView.isEnabled ).to.be.true;
+				expect( menuView.isEnabled ).toBe( true );
 
 				command.forceDisabled( 'foo' );
-				expect( menuView.isEnabled ).to.be.true;
+				expect( menuView.isEnabled ).toBe( true );
 
 				paragraphCommand.forceDisabled( 'foo' );
-				expect( menuView.isEnabled ).to.be.false;
+				expect( menuView.isEnabled ).toBe( false );
 			} );
 
 			function dumpItems( propertyName ) {

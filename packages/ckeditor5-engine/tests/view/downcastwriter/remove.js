@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewRange } from '../../../src/view/range.js';
@@ -35,8 +36,8 @@ describe( 'DowncastWriter', () => {
 			const rangeOrItem = asItem ? Array.from( range.getItems() )[ 0 ] : range;
 			const removed = writer.remove( rangeOrItem );
 
-			expect( _stringifyView( view, asItem ? null : range, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
-			expect( _stringifyView( removed, null, { showType: true, showPriority: true } ) ).to.equal( expectedRemoved );
+			expect( _stringifyView( view, asItem ? null : range, { showType: true, showPriority: true } ) ).toBe( expectedResult );
+			expect( _stringifyView( removed, null, { showType: true, showPriority: true } ) ).toBe( expectedRemoved );
 		}
 
 		beforeEach( () => {
@@ -66,9 +67,9 @@ describe( 'DowncastWriter', () => {
 			const range = ViewRange._createFromParentsAndOffsets( p, 0, p, 0 );
 			const fragment = writer.remove( range );
 
-			expect( fragment ).to.be.instanceof( ViewDocumentFragment );
-			expect( fragment.childCount ).to.equal( 0 );
-			expect( range.isCollapsed ).to.be.true;
+			expect( fragment ).toBeInstanceOf( ViewDocumentFragment );
+			expect( fragment.childCount ).toBe( 0 );
+			expect( range.isCollapsed ).toBe( true );
 		} );
 
 		it( 'should remove single text node', () => {

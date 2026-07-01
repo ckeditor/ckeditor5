@@ -55,16 +55,17 @@ export function transformTables(
 			if ( divParent && divParent.getAttribute( 'align' ) === 'center' && !item.getAttribute( 'align' ) ) {
 				writer.setStyle( 'margin-left', 'auto', item );
 				writer.setStyle( 'margin-right', 'auto', item );
-			}
 			// Right block table alignment.
-			else if ( divParent && divParent.getAttribute( 'align' ) === 'right' && !item.getAttribute( 'align' ) ) {
+			} else if ( divParent && divParent.getAttribute( 'align' ) === 'right' && !item.getAttribute( 'align' ) ) {
 				writer.setStyle( 'margin-left', 'auto', item );
 				writer.setStyle( 'margin-right', '0', item );
-			}
 			// Left block table alignment.
-			else if ( !divParent && !item.getAttribute( 'align' ) ) {
-				writer.setStyle( 'margin-left', '0', item );
-				writer.setStyle( 'margin-right', 'auto', item );
+			} else {
+				/* v8 ignore else -- @preserve */
+				if ( !divParent && !item.getAttribute( 'align' ) ) {
+					writer.setStyle( 'margin-left', '0', item );
+					writer.setStyle( 'margin-right', 'auto', item );
+				}
 			}
 		}
 

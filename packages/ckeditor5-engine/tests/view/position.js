@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { ViewPosition } from '../../src/view/position.js';
 import { ViewNode } from '../../src/view/node.js';
 import { ViewElement } from '../../src/view/element.js';
@@ -24,7 +25,7 @@ describe( 'ViewPosition', () => {
 	const parentMock = {};
 	let document;
 
-	before( () => {
+	beforeAll( () => {
 		document = new ViewDocument( new StylesProcessor() );
 	} );
 
@@ -32,8 +33,8 @@ describe( 'ViewPosition', () => {
 		it( 'should create element without attributes', () => {
 			const position = new ViewPosition( parentMock, 5 );
 
-			expect( position ).to.have.property( 'parent' ).that.equals( parentMock );
-			expect( position ).to.have.property( 'offset' ).that.equals( 5 );
+			expect( position.parent ).toBe( parentMock );
+			expect( position.offset ).toBe( 5 );
 		} );
 	} );
 
@@ -45,22 +46,22 @@ describe( 'ViewPosition', () => {
 		} );
 
 		it( 'should return true for "position"', () => {
-			expect( position.is( 'position' ) ).to.be.true;
-			expect( position.is( 'view:position' ) ).to.be.true;
+			expect( position.is( 'position' ) ).toBe( true );
+			expect( position.is( 'view:position' ) ).toBe( true );
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( position.is( 'rootElement' ) ).to.be.false;
-			expect( position.is( 'containerElement' ) ).to.be.false;
-			expect( position.is( 'element' ) ).to.be.false;
-			expect( position.is( 'element', 'p' ) ).to.be.false;
-			expect( position.is( '$text' ) ).to.be.false;
-			expect( position.is( '$textProxy' ) ).to.be.false;
-			expect( position.is( 'attributeElement' ) ).to.be.false;
-			expect( position.is( 'uiElement' ) ).to.be.false;
-			expect( position.is( 'emptyElement' ) ).to.be.false;
-			expect( position.is( 'documentFragment' ) ).to.be.false;
-			expect( position.is( 'model:position' ) ).to.be.false;
+			expect( position.is( 'rootElement' ) ).toBe( false );
+			expect( position.is( 'containerElement' ) ).toBe( false );
+			expect( position.is( 'element' ) ).toBe( false );
+			expect( position.is( 'element', 'p' ) ).toBe( false );
+			expect( position.is( '$text' ) ).toBe( false );
+			expect( position.is( '$textProxy' ) ).toBe( false );
+			expect( position.is( 'attributeElement' ) ).toBe( false );
+			expect( position.is( 'uiElement' ) ).toBe( false );
+			expect( position.is( 'emptyElement' ) ).toBe( false );
+			expect( position.is( 'documentFragment' ) ).toBe( false );
+			expect( position.is( 'model:position' ) ).toBe( false );
 		} );
 	} );
 
@@ -70,7 +71,7 @@ describe( 'ViewPosition', () => {
 			const el = new ViewElement( document, 'p', null, [ b1 ] );
 			const position = new ViewPosition( el, 1 );
 
-			expect( position.nodeBefore ).to.equal( b1 );
+			expect( position.nodeBefore ).toBe( b1 );
 		} );
 
 		it( 'should equal null if there is no node before', () => {
@@ -78,14 +79,14 @@ describe( 'ViewPosition', () => {
 			const el = new ViewElement( document, 'p', null, [ b1 ] );
 			const position = new ViewPosition( el, 0 );
 
-			expect( position.nodeBefore ).to.be.null;
+			expect( position.nodeBefore ).toBeNull();
 		} );
 
 		it( 'should equal null if position is located inside text node', () => {
 			const text = new ViewText( document, 'foobar' );
 			const position = new ViewPosition( text, 3 );
 
-			expect( position.nodeBefore ).to.be.null;
+			expect( position.nodeBefore ).toBeNull();
 		} );
 	} );
 
@@ -95,7 +96,7 @@ describe( 'ViewPosition', () => {
 			const el = new ViewElement( document, 'p', null, [ b1 ] );
 			const position = new ViewPosition( el, 0 );
 
-			expect( position.nodeAfter ).to.equal( b1 );
+			expect( position.nodeAfter ).toBe( b1 );
 		} );
 
 		it( 'should equal null if there is no node before', () => {
@@ -103,14 +104,14 @@ describe( 'ViewPosition', () => {
 			const el = new ViewElement( document, 'p', null, [ b1 ] );
 			const position = new ViewPosition( el, 1 );
 
-			expect( position.nodeAfter ).to.be.null;
+			expect( position.nodeAfter ).toBeNull();
 		} );
 
 		it( 'should equal null if position is located inside text node', () => {
 			const text = new ViewText( document, 'foobar' );
 			const position = new ViewPosition( text, 3 );
 
-			expect( position.nodeAfter ).to.be.null;
+			expect( position.nodeAfter ).toBeNull();
 		} );
 	} );
 
@@ -118,20 +119,20 @@ describe( 'ViewPosition', () => {
 		it( 'returns new instance with shifted offset', () => {
 			const position = new ViewPosition( parentMock, 10 );
 			const shifted = position.getShiftedBy( 12 );
-			expect( shifted.offset ).to.equal( 22 );
+			expect( shifted.offset ).toBe( 22 );
 		} );
 
 		it( 'accepts negative values', () => {
 			const position = new ViewPosition( parentMock, 10 );
 			const shifted = position.getShiftedBy( -5 );
-			expect( shifted.offset ).to.equal( 5 );
+			expect( shifted.offset ).toBe( 5 );
 		} );
 
 		it( 'prevents offset to be a negative value', () => {
 			const position = new ViewPosition( parentMock, 10 );
 			const shifted = position.getShiftedBy( -20 );
 
-			expect( shifted.offset ).to.equal( 0 );
+			expect( shifted.offset ).toBe( 0 );
 		} );
 	} );
 
@@ -142,7 +143,7 @@ describe( 'ViewPosition', () => {
 
 			position = position.getLastMatchingPosition( value => value.type == 'text' );
 
-			expect( _stringifyView( view, position ) ).to.equal( '<p><b>foo[]</b></p>' );
+			expect( _stringifyView( view, position ) ).toBe( '<p><b>foo[]</b></p>' );
 		} );
 
 		it( 'should skip backward', () => {
@@ -151,7 +152,7 @@ describe( 'ViewPosition', () => {
 
 			position = position.getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } );
 
-			expect( _stringifyView( view, position ) ).to.equal( '<p><b>[]foo</b></p>' );
+			expect( _stringifyView( view, position ) ).toBe( '<p><b>[]foo</b></p>' );
 		} );
 	} );
 
@@ -160,13 +161,13 @@ describe( 'ViewPosition', () => {
 			const foo = new ViewText( document, 'foo' );
 			const docFrag = new ViewDocumentFragment( document, foo );
 
-			expect( new ViewPosition( foo, 1 ).root ).to.equal( docFrag );
+			expect( new ViewPosition( foo, 1 ).root ).toBe( docFrag );
 
 			const bar = new ViewText( document, 'bar' );
 			const p = new ViewElement( document, 'p', null, bar );
 
-			expect( new ViewPosition( bar, 2 ).root ).to.equal( p );
-			expect( new ViewPosition( p, 0 ).root ).to.equal( p );
+			expect( new ViewPosition( bar, 2 ).root ).toBe( p );
+			expect( new ViewPosition( p, 0 ).root ).toBe( p );
 		} );
 	} );
 
@@ -177,40 +178,40 @@ describe( 'ViewPosition', () => {
 			const div = new ViewElement( document, 'div', null, p );
 			const docFrag = new ViewDocumentFragment( document, div );
 
-			expect( new ViewPosition( foo, 1 ).getAncestors() ).to.deep.equal( [ docFrag, div, p, foo ] );
+			expect( new ViewPosition( foo, 1 ).getAncestors() ).toEqual( [ docFrag, div, p, foo ] );
 		} );
 
 		it( 'should return DocumentFragment if position is directly in document fragment', () => {
 			const docFrag = new ViewDocumentFragment( document );
 
-			expect( new ViewPosition( docFrag, 0 ).getAncestors() ).to.deep.equal( [ docFrag ] );
+			expect( new ViewPosition( docFrag, 0 ).getAncestors() ).toEqual( [ docFrag ] );
 		} );
 	} );
 
 	describe( 'isEqual', () => {
 		it( 'should return true for same object', () => {
 			const position = new ViewPosition( {}, 12 );
-			expect( position.isEqual( position ) ).to.be.true;
+			expect( position.isEqual( position ) ).toBe( true );
 		} );
 
 		it( 'should return true for positions with same parent and offset', () => {
 			const parentMock = {};
 			const position1 = new ViewPosition( parentMock, 12 );
 			const position2 = new ViewPosition( parentMock, 12 );
-			expect( position1.isEqual( position2 ) ).to.be.true;
+			expect( position1.isEqual( position2 ) ).toBe( true );
 		} );
 
 		it( 'should return false for positions with different parents', () => {
 			const position1 = new ViewPosition( {}, 12 );
 			const position2 = new ViewPosition( {}, 12 );
-			expect( position1.isEqual( position2 ) ).to.be.false;
+			expect( position1.isEqual( position2 ) ).toBe( false );
 		} );
 
 		it( 'should return false for positions with different positions', () => {
 			const parentMock = {};
 			const position1 = new ViewPosition( parentMock, 12 );
 			const position2 = new ViewPosition( parentMock, 2 );
-			expect( position1.isEqual( position2 ) ).to.be.false;
+			expect( position1.isEqual( position2 ) ).toBe( false );
 		} );
 	} );
 
@@ -220,9 +221,9 @@ describe( 'ViewPosition', () => {
 			const position1 = new ViewPosition( node, 10 );
 			const position2 = new ViewPosition( node, 10 );
 
-			expect( position1.isBefore( position1 ) ).to.be.false;
-			expect( position1.isBefore( position2 ) ).to.be.false;
-			expect( position2.isBefore( position1 ) ).to.be.false;
+			expect( position1.isBefore( position1 ) ).toBe( false );
+			expect( position1.isBefore( position2 ) ).toBe( false );
+			expect( position2.isBefore( position1 ) ).toBe( false );
 		} );
 
 		it( 'should return false if no common ancestor is found', () => {
@@ -242,8 +243,8 @@ describe( 'ViewPosition', () => {
 			const p1 = new ViewPosition( node, 10 );
 			const p2 = new ViewPosition( node, 5 );
 
-			expect( p2.isBefore( p1 ) ).to.be.true;
-			expect( p1.isBefore( p2 ) ).to.be.false;
+			expect( p2.isBefore( p1 ) ).toBe( true );
+			expect( p1.isBefore( p2 ) ).toBe( false );
 		} );
 
 		it( 'should compare positions that have common parent', () => {
@@ -257,18 +258,18 @@ describe( 'ViewPosition', () => {
 			const position5 = new ViewPosition( t1, 0 );
 			const position6 = new ViewPosition( root, 1 );
 
-			expect( position1.isBefore( position2 ) ).to.be.true;
-			expect( position2.isBefore( position1 ) ).to.be.false;
-			expect( position3.isBefore( position1 ) ).to.be.true;
-			expect( position3.isBefore( position2 ) ).to.be.true;
-			expect( position1.isBefore( position3 ) ).to.be.false;
-			expect( position2.isBefore( position3 ) ).to.be.false;
-			expect( position4.isBefore( position1 ) ).to.be.false;
-			expect( position4.isBefore( position3 ) ).to.be.false;
-			expect( position3.isBefore( position4 ) ).to.be.true;
-			expect( position3.isBefore( position5 ) ).to.be.true;
-			expect( position6.isBefore( position2 ) ).to.be.true;
-			expect( position1.isBefore( position6 ) ).to.be.true;
+			expect( position1.isBefore( position2 ) ).toBe( true );
+			expect( position2.isBefore( position1 ) ).toBe( false );
+			expect( position3.isBefore( position1 ) ).toBe( true );
+			expect( position3.isBefore( position2 ) ).toBe( true );
+			expect( position1.isBefore( position3 ) ).toBe( false );
+			expect( position2.isBefore( position3 ) ).toBe( false );
+			expect( position4.isBefore( position1 ) ).toBe( false );
+			expect( position4.isBefore( position3 ) ).toBe( false );
+			expect( position3.isBefore( position4 ) ).toBe( true );
+			expect( position3.isBefore( position5 ) ).toBe( true );
+			expect( position6.isBefore( position2 ) ).toBe( true );
+			expect( position1.isBefore( position6 ) ).toBe( true );
 		} );
 	} );
 
@@ -278,9 +279,9 @@ describe( 'ViewPosition', () => {
 			const position1 = new ViewPosition( node, 10 );
 			const position2 = new ViewPosition( node, 10 );
 
-			expect( position1.isAfter( position1 ) ).to.be.false;
-			expect( position1.isAfter( position2 ) ).to.be.false;
-			expect( position2.isAfter( position1 ) ).to.be.false;
+			expect( position1.isAfter( position1 ) ).toBe( false );
+			expect( position1.isAfter( position2 ) ).toBe( false );
+			expect( position2.isAfter( position1 ) ).toBe( false );
 		} );
 
 		it( 'should return false if no common ancestor is found', () => {
@@ -300,8 +301,8 @@ describe( 'ViewPosition', () => {
 			const p1 = new ViewPosition( node, 10 );
 			const p2 = new ViewPosition( node, 5 );
 
-			expect( p2.isAfter( p1 ) ).to.be.false;
-			expect( p1.isAfter( p2 ) ).to.be.true;
+			expect( p2.isAfter( p1 ) ).toBe( false );
+			expect( p1.isAfter( p2 ) ).toBe( true );
 		} );
 
 		it( 'should compare positions that have common parent', () => {
@@ -315,17 +316,17 @@ describe( 'ViewPosition', () => {
 			const position5 = new ViewPosition( t1, 0 );
 			const position6 = new ViewPosition( root, 1 );
 
-			expect( position1.isAfter( position2 ) ).to.be.false;
-			expect( position2.isAfter( position1 ) ).to.be.true;
-			expect( position3.isAfter( position1 ) ).to.be.false;
-			expect( position3.isAfter( position2 ) ).to.be.false;
-			expect( position1.isAfter( position3 ) ).to.be.true;
-			expect( position2.isAfter( position3 ) ).to.be.true;
-			expect( position4.isAfter( position1 ) ).to.be.true;
-			expect( position4.isAfter( position3 ) ).to.be.true;
-			expect( position3.isAfter( position4 ) ).to.be.false;
-			expect( position5.isAfter( position3 ) ).to.be.true;
-			expect( position2.isAfter( position6 ) ).to.be.true;
+			expect( position1.isAfter( position2 ) ).toBe( false );
+			expect( position2.isAfter( position1 ) ).toBe( true );
+			expect( position3.isAfter( position1 ) ).toBe( false );
+			expect( position3.isAfter( position2 ) ).toBe( false );
+			expect( position1.isAfter( position3 ) ).toBe( true );
+			expect( position2.isAfter( position3 ) ).toBe( true );
+			expect( position4.isAfter( position1 ) ).toBe( true );
+			expect( position4.isAfter( position3 ) ).toBe( true );
+			expect( position3.isAfter( position4 ) ).toBe( false );
+			expect( position5.isAfter( position3 ) ).toBe( true );
+			expect( position2.isAfter( position6 ) ).toBe( true );
 		} );
 	} );
 
@@ -333,13 +334,13 @@ describe( 'ViewPosition', () => {
 		it( 'should return true if it is at the start of it\'s parent', () => {
 			const foo = new ViewText( document, 'foo' );
 			const position = new ViewPosition( foo, 0 );
-			expect( position.isAtStart ).to.be.true;
+			expect( position.isAtStart ).toBe( true );
 		} );
 
 		it( 'should return false if it is not at the start of it\'s parent', () => {
 			const foo = new ViewText( document, 'foo' );
 			const position = new ViewPosition( foo, 1 );
-			expect( position.isAtStart ).to.be.false;
+			expect( position.isAtStart ).toBe( false );
 		} );
 	} );
 
@@ -348,16 +349,16 @@ describe( 'ViewPosition', () => {
 			const foo = new ViewText( document, 'foo' );
 			const p = new ViewElement( document, 'p', null, foo );
 
-			expect( new ViewPosition( foo, 3 ).isAtEnd ).to.be.true;
-			expect( new ViewPosition( p, 1 ).isAtEnd ).to.be.true;
+			expect( new ViewPosition( foo, 3 ).isAtEnd ).toBe( true );
+			expect( new ViewPosition( p, 1 ).isAtEnd ).toBe( true );
 		} );
 
 		it( 'should return false if it is not at the end of it\'s parent', () => {
 			const foo = new ViewText( document, 'foo' );
 			const p = new ViewElement( document, 'p', null, foo );
 
-			expect( new ViewPosition( foo, 2 ).isAtEnd ).to.be.false;
-			expect( new ViewPosition( p, 0 ).isAtEnd ).to.be.false;
+			expect( new ViewPosition( foo, 2 ).isAtEnd ).toBe( false );
+			expect( new ViewPosition( p, 0 ).isAtEnd ).toBe( false );
 		} );
 	} );
 
@@ -367,7 +368,7 @@ describe( 'ViewPosition', () => {
 			const position = new ViewPosition( root, 0 );
 			const compared = new ViewPosition( root, 0 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'same' );
+			expect( position.compareWith( compared ) ).toBe( 'same' );
 		} );
 
 		it( 'should return before if the position is before compared one', () => {
@@ -375,7 +376,7 @@ describe( 'ViewPosition', () => {
 			const position = new ViewPosition( root, 0 );
 			const compared = new ViewPosition( root, 1 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'before' );
+			expect( position.compareWith( compared ) ).toBe( 'before' );
 		} );
 
 		it( 'should return after if the position is after compared one', () => {
@@ -383,7 +384,7 @@ describe( 'ViewPosition', () => {
 			const position = new ViewPosition( root, 4 );
 			const compared = new ViewPosition( root, 1 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'after' );
+			expect( position.compareWith( compared ) ).toBe( 'after' );
 		} );
 
 		it( 'should return different if positions are in different roots', () => {
@@ -392,7 +393,7 @@ describe( 'ViewPosition', () => {
 			const position = new ViewPosition( root1, 4 );
 			const compared = new ViewPosition( root2, 1 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'different' );
+			expect( position.compareWith( compared ) ).toBe( 'different' );
 		} );
 
 		it( 'should return correct results if position is in document fragment', () => {
@@ -402,11 +403,11 @@ describe( 'ViewPosition', () => {
 			const compared = new ViewPosition( docFrag, 1 );
 			const posInNode = new ViewPosition( node, 0 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'before' );
-			expect( compared.compareWith( position ) ).to.equal( 'after' );
-			expect( compared.compareWith( compared ) ).to.equal( 'same' );
-			expect( position.compareWith( posInNode ) ).to.equal( 'before' );
-			expect( compared.compareWith( posInNode ) ).to.equal( 'after' );
+			expect( position.compareWith( compared ) ).toBe( 'before' );
+			expect( compared.compareWith( position ) ).toBe( 'after' );
+			expect( compared.compareWith( compared ) ).toBe( 'same' );
+			expect( position.compareWith( posInNode ) ).toBe( 'before' );
+			expect( compared.compareWith( posInNode ) ).toBe( 'after' );
 		} );
 	} );
 
@@ -425,22 +426,22 @@ describe( 'ViewPosition', () => {
 				const position = new ViewPosition( p, 0 );
 				const created = ViewPosition._createAt( position, 0 );
 
-				expect( created.isEqual( position ) ).to.be.true;
-				expect( created ).to.not.be.equal( position );
+				expect( created.isEqual( position ) ).toBe( true );
+				expect( created ).not.toBe( position );
 			} );
 
 			it( 'should create positions from node and offset', () => {
 				const foo = new ViewText( document, 'foo' );
 				const p = new ViewElement( document, 'p', null, foo );
 
-				expect( ViewPosition._createAt( foo, 0 ).parent ).to.equal( foo );
-				expect( ViewPosition._createAt( foo, 0 ).offset ).to.equal( 0 );
+				expect( ViewPosition._createAt( foo, 0 ).parent ).toBe( foo );
+				expect( ViewPosition._createAt( foo, 0 ).offset ).toBe( 0 );
 
-				expect( ViewPosition._createAt( foo, 2 ).parent ).to.equal( foo );
-				expect( ViewPosition._createAt( foo, 2 ).offset ).to.equal( 2 );
+				expect( ViewPosition._createAt( foo, 2 ).parent ).toBe( foo );
+				expect( ViewPosition._createAt( foo, 2 ).offset ).toBe( 2 );
 
-				expect( ViewPosition._createAt( p, 1 ).parent ).to.equal( p );
-				expect( ViewPosition._createAt( p, 1 ).offset ).to.equal( 1 );
+				expect( ViewPosition._createAt( p, 1 ).parent ).toBe( p );
+				expect( ViewPosition._createAt( p, 1 ).offset ).toBe( 1 );
 			} );
 
 			it( 'should create positions from node and flag', () => {
@@ -454,17 +455,17 @@ describe( 'ViewPosition', () => {
 				const pEnd = ViewPosition._createAt( p, 'end' );
 				// pBefore and pAfter would throw.
 
-				expect( fooEnd.parent ).to.equal( foo );
-				expect( fooEnd.offset ).to.equal( 3 );
+				expect( fooEnd.parent ).toBe( foo );
+				expect( fooEnd.offset ).toBe( 3 );
 
-				expect( fooBefore.parent ).to.equal( p );
-				expect( fooBefore.offset ).to.equal( 0 );
+				expect( fooBefore.parent ).toBe( p );
+				expect( fooBefore.offset ).toBe( 0 );
 
-				expect( fooAfter.parent ).to.equal( p );
-				expect( fooAfter.offset ).to.equal( 1 );
+				expect( fooAfter.parent ).toBe( p );
+				expect( fooAfter.offset ).toBe( 1 );
 
-				expect( pEnd.parent ).to.equal( p );
-				expect( pEnd.offset ).to.equal( 1 );
+				expect( pEnd.parent ).toBe( p );
+				expect( pEnd.offset ).toBe( 1 );
 			} );
 
 			it( 'should create positions in document fragment', () => {
@@ -474,10 +475,10 @@ describe( 'ViewPosition', () => {
 				const pStart = ViewPosition._createAt( docFrag, 0 );
 				const pEnd = ViewPosition._createAt( docFrag, 'end' );
 
-				expect( pStart.parent ).to.equal( docFrag );
-				expect( pStart.offset ).to.equal( 0 );
-				expect( pEnd.parent ).to.equal( docFrag );
-				expect( pEnd.offset ).to.equal( 1 );
+				expect( pStart.parent ).toBe( docFrag );
+				expect( pStart.offset ).toBe( 0 );
+				expect( pEnd.parent ).toBe( docFrag );
+				expect( pEnd.offset ).toBe( 1 );
 			} );
 		} );
 
@@ -495,7 +496,7 @@ describe( 'ViewPosition', () => {
 				const position = selection.getFirstPosition();
 				const nodeAfter = position.nodeAfter;
 
-				expect( ViewPosition._createBefore( nodeAfter ).isEqual( position ) ).to.be.true;
+				expect( ViewPosition._createBefore( nodeAfter ).isEqual( position ) ).toBe( true );
 			} );
 
 			it( 'should create positions before `ModelTextProxy`', () => {
@@ -504,7 +505,7 @@ describe( 'ViewPosition', () => {
 				const textProxy = new ViewTextProxy( text, 1, 1 );
 				const position = new ViewPosition( text, 1 );
 
-				expect( ViewPosition._createBefore( textProxy ) ).deep.equal( position );
+				expect( ViewPosition._createBefore( textProxy ) ).toEqual( position );
 			} );
 		} );
 
@@ -522,7 +523,7 @@ describe( 'ViewPosition', () => {
 				const position = selection.getFirstPosition();
 				const nodeBefore = position.nodeBefore;
 
-				expect( ViewPosition._createAfter( nodeBefore ).isEqual( position ) ).to.be.true;
+				expect( ViewPosition._createAfter( nodeBefore ).isEqual( position ) ).toBe( true );
 			} );
 
 			it( 'should create positions after `ModelTextProxy`', () => {
@@ -531,7 +532,7 @@ describe( 'ViewPosition', () => {
 				const textProxy = new ViewTextProxy( text, 1, 2 );
 				const position = new ViewPosition( text, 3 );
 
-				expect( ViewPosition._createAfter( textProxy ) ).deep.equal( position );
+				expect( ViewPosition._createAfter( textProxy ) ).toEqual( position );
 			} );
 		} );
 	} );
@@ -540,7 +541,7 @@ describe( 'ViewPosition', () => {
 		it( 'should return null if position is not inside ViewEditableElement', () => {
 			const position = new ViewPosition( new ViewElement( document, 'p' ), 0 );
 
-			expect( position.editableElement ).to.be.null;
+			expect( position.editableElement ).toBeNull();
 		} );
 
 		it( 'should return ViewEditableElement when position is placed inside', () => {
@@ -548,7 +549,7 @@ describe( 'ViewPosition', () => {
 			const editable = new ViewEditableElement( document, 'div', null, p );
 			const position = new ViewPosition( p, 0 );
 
-			expect( position.editableElement ).to.equal( editable );
+			expect( position.editableElement ).toBe( editable );
 		} );
 	} );
 
@@ -635,8 +636,8 @@ describe( 'ViewPosition', () => {
 		} );
 
 		function testParent( positionA, positionB, lca ) {
-			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
-			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
+			expect( positionA.getCommonAncestor( positionB ) ).toBe( lca );
+			expect( positionB.getCommonAncestor( positionA ) ).toBe( lca );
 		}
 	} );
 
@@ -667,7 +668,7 @@ describe( 'ViewPosition', () => {
 				items.push( value.type + ':' + ( value.item.name || value.item.data ) );
 			}
 
-			expect( items ).to.deep.equal( [
+			expect( items ).toEqual( [
 				'elementStart:img',
 				'elementEnd:img',
 				'elementStart:p',
@@ -682,11 +683,11 @@ describe( 'ViewPosition', () => {
 			const position = new ViewPosition( root, 0 );
 			const walker = position.getWalker( { singleCharacters: true } );
 
-			expect( walker ).to.be.instanceof( ViewTreeWalker );
-			expect( walker ).to.have.property( 'singleCharacters' ).that.is.true;
-			expect( walker ).to.have.property( 'position' );
-			expect( walker.position.isEqual( position ) ).to.be.true;
-			expect( walker ).to.have.property( 'shallow' ).that.is.false;
+			expect( walker ).toBeInstanceOf( ViewTreeWalker );
+			expect( walker.singleCharacters ).toBe( true );
+			expect( walker ).toHaveProperty( 'position' );
+			expect( walker.position.isEqual( position ) ).toBe( true );
+			expect( walker.shallow ).toBe( false );
 		} );
 	} );
 } );

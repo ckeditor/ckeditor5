@@ -162,3 +162,19 @@ msgstr "Omslutt"
 msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "Bryt tekst"
+
+msgctxt "The label for the resize option that allows the user to enter a custom size."
+msgid "Custom"
+msgstr "Tilpasset"
+
+msgctxt "The default label for the resize option that resets the size."
+msgid "Original"
+msgstr "Original"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with a blank value."
+msgid "The value must not be empty."
+msgstr "Verdien kan ikke være tom."
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with an incorrect value."
+msgid "The value should be a plain number."
+msgstr "Verdien skal være et vanlig tall."

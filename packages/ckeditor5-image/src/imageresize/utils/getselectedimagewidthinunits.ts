@@ -7,12 +7,10 @@
  * @module image/imageresize/utils/getselectedimagewidthinunits
  */
 
-import { Rect } from '@ckeditor/ckeditor5-utils';
+import { Rect, _tryCastDimensionsToUnit, _tryParseDimensionWithUnit, type _DimensionWithUnit } from '@ckeditor/ckeditor5-utils';
 
 import { calculateResizeHostAncestorWidth } from '@ckeditor/ckeditor5-widget';
 import type { Editor } from '@ckeditor/ckeditor5-core';
-
-import { tryCastDimensionsToUnit, tryParseDimensionWithUnit, type DimensionWithUnit } from './tryparsedimensionwithunit.js';
 import { getSelectedImageEditorNodes } from './getselectedimageeditornodes.js';
 
 /**
@@ -27,14 +25,14 @@ import { getSelectedImageEditorNodes } from './getselectedimageeditornodes.js';
  * @returns Parsed image width after resize (with unit).
  * @internal
  */
-export function getSelectedImageWidthInUnits( editor: Editor, targetUnit: string ): DimensionWithUnit | null {
+export function getSelectedImageWidthInUnits( editor: Editor, targetUnit: string ): _DimensionWithUnit | null {
 	const imageNodes = getSelectedImageEditorNodes( editor );
 
 	if ( !imageNodes ) {
 		return null;
 	}
 
-	const parsedResizedWidth = tryParseDimensionWithUnit(
+	const parsedResizedWidth = _tryParseDimensionWithUnit(
 		imageNodes.model.getAttribute( 'resizedWidth' ) as string || null
 	);
 
@@ -52,5 +50,5 @@ export function getSelectedImageWidthInUnits( editor: Editor, targetUnit: string
 		value: new Rect( imageNodes.dom ).width
 	};
 
-	return tryCastDimensionsToUnit( imageParentWidthPx, imageHolderDimension, targetUnit );
+	return _tryCastDimensionsToUnit( imageParentWidthPx, imageHolderDimension, targetUnit );
 }

@@ -162,3 +162,19 @@ msgstr "Körbefuttatás"
 msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "Sortörés"
+
+msgctxt "The label for the resize option that allows the user to enter a custom size."
+msgid "Custom"
+msgstr "Egyéni"
+
+msgctxt "The default label for the resize option that resets the size."
+msgid "Original"
+msgstr "Eredeti"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with a blank value."
+msgid "The value must not be empty."
+msgstr "Az érték nem lehet üres."
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with an incorrect value."
+msgid "The value should be a plain number."
+msgstr "Az érték egy egyszerű szám kell legyen."

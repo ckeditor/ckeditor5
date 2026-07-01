@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
+
 import { Bookmark } from '../src/bookmark.js';
 import { BookmarkUI } from '../src/bookmarkui.js';
 import { BookmarkEditing } from '../src/bookmarkediting.js';
@@ -11,11 +13,11 @@ import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'Bookmark', () => {
 	it( 'should be correctly named', () => {
-		expect( Bookmark.pluginName ).to.equal( 'Bookmark' );
+		expect( Bookmark.pluginName ).toEqual( 'Bookmark' );
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( Bookmark.requires ).to.deep.equal( [
+		expect( Bookmark.requires ).toEqual( [
 			BookmarkEditing,
 			BookmarkUI,
 			Widget
@@ -23,10 +25,10 @@ describe( 'Bookmark', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Bookmark.isOfficialPlugin ).to.be.true;
+		expect( Bookmark.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Bookmark.isPremiumPlugin ).to.be.false;
+		expect( Bookmark.isPremiumPlugin ).toBe( false );
 	} );
 } );

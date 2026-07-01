@@ -9,8 +9,8 @@ import { Rect } from '@ckeditor/ckeditor5-utils';
 
 export const resizerMouseSimulator = {
 	down( editor, domTarget, options = {} ) {
-		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
-		const stop = options.stop || sinon.spy().named( 'stop' );
+		const preventDefault = options.preventDefault || ( globalThis.vi ? globalThis.vi.fn() : sinon.spy().named( 'preventDefault' ) );
+		const stop = options.stop || ( globalThis.vi ? globalThis.vi.fn() : sinon.spy().named( 'stop' ) );
 
 		this._getPlugin( editor )._mouseDownListener( { stop }, { domTarget, preventDefault } );
 	},

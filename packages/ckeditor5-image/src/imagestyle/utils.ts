@@ -386,7 +386,12 @@ function warnInvalidStyle( info: object ): void {
 /**
  * @internal
  */
-export const utils = {
+export const utils: {
+	normalizeStyles: typeof normalizeStyles;
+	getDefaultStylesConfiguration: typeof getDefaultStylesConfiguration;
+	getDefaultDropdownDefinitions: typeof getDefaultDropdownDefinitions;
+	warnInvalidStyle: typeof warnInvalidStyle;
+} = {
 	normalizeStyles,
 	getDefaultStylesConfiguration,
 	getDefaultDropdownDefinitions,

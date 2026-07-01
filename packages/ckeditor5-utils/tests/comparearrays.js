@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { compareArrays } from '../src/comparearrays.js';
 
 describe( 'utils', () => {
@@ -13,7 +14,7 @@ describe( 'utils', () => {
 
 			const result = compareArrays( a, b );
 
-			expect( result ).to.equal( 'same' );
+			expect( result ).toBe( 'same' );
 		} );
 
 		it( 'should return prefix flag, when all n elements of first array are same as n first elements of the second array', () => {
@@ -22,7 +23,7 @@ describe( 'utils', () => {
 
 			const result = compareArrays( a, b );
 
-			expect( result ).to.equal( 'prefix' );
+			expect( result ).toBe( 'prefix' );
 		} );
 
 		it( 'should return extension flag, when n first elements of first array are same as all elements of the second array', () => {
@@ -31,7 +32,7 @@ describe( 'utils', () => {
 
 			const result = compareArrays( a, b );
 
-			expect( result ).to.equal( 'extension' );
+			expect( result ).toBe( 'extension' );
 		} );
 
 		it( 'should return index on which arrays differ, when arrays are not the same', () => {
@@ -40,7 +41,7 @@ describe( 'utils', () => {
 
 			const result = compareArrays( a, b );
 
-			expect( result ).to.equal( 1 );
+			expect( result ).toBe( 1 );
 		} );
 	} );
 } );

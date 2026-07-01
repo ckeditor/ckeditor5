@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll } from 'vitest';
 import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { removeBoldWrapper } from '../../src/filters/removeboldwrapper.js';
 
@@ -11,7 +12,7 @@ describe( 'PasteFromOffice - filters', () => {
 	describe( 'removeBoldWrapper', () => {
 		let writer, viewDocument;
 
-		before( () => {
+		beforeAll( () => {
 			viewDocument = new ViewDocument();
 			writer = new ViewUpcastWriter( viewDocument );
 		} );
@@ -24,7 +25,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeBoldWrapper( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p>Hello world</p>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<p>Hello world</p>' );
 		} );
 
 		it( 'should not remove non-bold tag with google id', () => {
@@ -33,7 +34,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeBoldWrapper( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p id="docs-internal-guid-e4b9bad6-7fff-c086-3135-1234567890ab">Hello world</p>' );
 		} );
 
@@ -43,7 +44,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeBoldWrapper( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<b>Hello world</b>' );
 		} );
 	} );

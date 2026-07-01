@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
@@ -45,7 +46,7 @@ describe( 'bug #14683', () => {
 		editor.commands.get( 'style' ).execute( { styleName: 'Button' } );
 		editor.commands.get( 'enter' ).execute();
 
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toBe(
 			'<paragraph><$text htmlA="{"classes":["button"]}" linkHref="example.com">foo</$text></paragraph>' +
 			'<paragraph>[]</paragraph>'
 		);

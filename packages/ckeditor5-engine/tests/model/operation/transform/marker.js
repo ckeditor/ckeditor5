@@ -66,7 +66,7 @@ describe( 'transform', () => {
 
 				expectClients(
 					'<paragraph>' +
-						'<m1:start></m1:start><m2:start></m2:start>Foo<m1:end></m1:end><m2:end></m2:end>' +
+						'<m1:start></m1:start><m2:start></m2:start>Foo<m2:end></m2:end><m1:end></m1:end>' +
 					'</paragraph>'
 				);
 			} );

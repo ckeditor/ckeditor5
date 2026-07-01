@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ImageBlockEditing, ImageUploadEditing } from '@ckeditor/ckeditor5-image';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
@@ -17,8 +18,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 
 describe( 'CKFinderCommand', () => {
 	let editor, command, model;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -36,6 +35,8 @@ describe( 'CKFinderCommand', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
+
 		return editor.destroy();
 	} );
 
@@ -158,21 +159,21 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should use CKFinder.modal() as default CKFinder opener method', () => {
-			const spy = sinon.spy( window.CKFinder, 'modal' );
+			const spy = vi.spyOn( window.CKFinder, 'modal' );
 
 			command.execute();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should use CKFinder.popup() when ckfinder.openerMethod is set to it', () => {
-			const spy = sinon.spy( window.CKFinder, 'popup' );
+			const spy = vi.spyOn( window.CKFinder, 'popup' );
 
 			editor.config.set( 'ckfinder.openerMethod', 'popup' );
 
 			command.execute();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should throw if unsupported CKFinder opener method was set', () => {
@@ -184,7 +185,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert single chosen image', () => {
-			const url = 'assets/sample.png';
+			const url = 'sample.png';
 
 			command.execute();
 
@@ -195,7 +196,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert link if chosen file is not an image', () => {
-			const url = 'assets/sample.pdf';
+			const url = 'sample.pdf';
 
 			command.execute();
 
@@ -206,14 +207,14 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should pass CKFinder configuration options', () => {
-			const spy = sinon.spy( window.CKFinder, 'modal' );
+			const spy = vi.spyOn( window.CKFinder, 'modal' );
 
 			const connectorPath = 'foo/bar.php';
 			editor.config.set( 'ckfinder.options', { connectorPath } );
 
 			command.execute();
 
-			const openerMethodOptions = spy.args[ 0 ][ 0 ];
+			const openerMethodOptions = spy.mock.calls[ 0 ][ 0 ];
 
 			expect( openerMethodOptions ).to.have.property( 'chooseFiles', true );
 			expect( openerMethodOptions ).to.have.property( 'onInit' );
@@ -221,30 +222,31 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should call user-defined config.onInit() function', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.config.set( 'ckfinder.options.onInit', spy );
 
 			command.execute();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should pass CKFinder instance to a user-defined config.onInit() function', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			editor.config.set( 'ckfinder.options.onInit', spy );
 
 			command.execute();
 
-			sinon.assert.calledWithExactly( spy, finderMock );
+			expect( spy ).toHaveBeenCalledWith( finderMock );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should pass editor default language to the CKFinder instance', () => {
-			const spy = sinon.spy( window.CKFinder, 'modal' );
+			const spy = vi.spyOn( window.CKFinder, 'modal' );
 			command.execute();
 
-			const openerMethodOptions = spy.args[ 0 ][ 0 ];
+			const openerMethodOptions = spy.mock.calls[ 0 ][ 0 ];
 
 			expect( openerMethodOptions ).to.have.property( 'language', 'en' );
 		} );
@@ -273,32 +275,32 @@ describe( 'CKFinderCommand', () => {
 					command = new CKFinderCommand( editor );
 
 					_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-					const spy = sinon.spy( window.CKFinder, 'modal' );
+					const spy = vi.spyOn( window.CKFinder, 'modal' );
 
 					command.execute();
 
-					const openerMethodOptions = spy.args[ 0 ][ 0 ];
+					const openerMethodOptions = spy.mock.calls[ 0 ][ 0 ];
 
 					expect( openerMethodOptions ).to.have.property( 'language', 'pl' );
 				} );
 		} );
 
 		it( 'should not pass editor language if it is set in ckfinder.options', () => {
-			const spy = sinon.spy( window.CKFinder, 'modal' );
+			const spy = vi.spyOn( window.CKFinder, 'modal' );
 
 			editor.config.set( 'ckfinder.options.language', 'pl' );
 
 			command.execute();
 
-			const openerMethodOptions = spy.args[ 0 ][ 0 ];
+			const openerMethodOptions = spy.mock.calls[ 0 ][ 0 ];
 
 			expect( openerMethodOptions ).to.have.property( 'language', 'pl' );
 		} );
 
 		it( 'should insert multiple chosen images as image widget', () => {
-			const url1 = 'assets/sample.png';
-			const url2 = 'assets/sample2.png';
-			const url3 = 'assets/sample3.png';
+			const url1 = 'sample.png';
+			const url2 = 'sample2.png';
+			const url3 = 'sample3.png';
 
 			command.execute();
 
@@ -311,9 +313,9 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert images and links to a files from chosen files', () => {
-			const url1 = 'assets/sample.png';
-			const url2 = 'assets/sample2.pdf';
-			const url3 = 'assets/sample3.png';
+			const url1 = 'sample.png';
+			const url2 = 'sample2.pdf';
+			const url3 = 'sample3.png';
 
 			command.execute();
 
@@ -327,7 +329,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should use CKFinder Proxy for privately hosted files', () => {
-			const proxyUrl = '/assets/sample.png';
+			const proxyUrl = '/sample.png';
 
 			finderMock.request = () => proxyUrl;
 
@@ -341,7 +343,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert resized image as image widget', () => {
-			const url = 'assets/sample.png';
+			const url = 'sample.png';
 
 			command.execute();
 
@@ -351,58 +353,62 @@ describe( 'CKFinderCommand', () => {
 				.to.equal( `[<imageBlock src="${ url }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
-		it( 'should show warning notification if no resized image URL was returned', done => {
-			const notification = editor.plugins.get( Notification );
+		it( 'should show warning notification if no resized image URL was returned', () => {
+			return new Promise( resolve => {
+				const notification = editor.plugins.get( Notification );
 
-			notification.on( 'show:warning', ( evt, data ) => {
-				expect( data.message ).to.equal( 'Could not obtain resized image URL.' );
-				expect( data.title ).to.equal( 'Selecting resized image failed' );
-				evt.stop();
+				notification.on( 'show:warning', ( evt, data ) => {
+					expect( data.message ).to.equal( 'Could not obtain resized image URL.' );
+					expect( data.title ).to.equal( 'Selecting resized image failed' );
+					evt.stop();
 
-				done();
-			}, { priority: 'high' } );
+					resolve();
+				}, { priority: 'high' } );
 
-			command.execute();
+				command.execute();
 
-			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: undefined } );
+				mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: undefined } );
 
-			expect( _getModelData( model ) )
-				.to.equal( '<paragraph>f[o]o</paragraph>' );
+				expect( _getModelData( model ) )
+					.to.equal( '<paragraph>f[o]o</paragraph>' );
+			} );
 		} );
 
-		it( 'should show warning notification if image cannot be inserted', done => {
-			model.schema.register( 'block', {
-				inheritAllFrom: '$block',
-				allowChildren: 'paragraph'
+		it( 'should show warning notification if image cannot be inserted', () => {
+			return new Promise( resolve => {
+				model.schema.register( 'block', {
+					inheritAllFrom: '$block',
+					allowChildren: 'paragraph'
+				} );
+
+				// Block image in block.
+				model.schema.addChildCheck( ( context, childDefinition ) => {
+					if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
+						return false;
+					}
+				} );
+
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
+
+				_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+
+				const notification = editor.plugins.get( Notification );
+
+				notification.on( 'show:warning', ( evt, data ) => {
+					expect( data.message ).to.equal( 'Could not insert image at the current position.' );
+					expect( data.title ).to.equal( 'Inserting image failed' );
+					evt.stop();
+
+					resolve();
+				}, { priority: 'high' } );
+
+				command.execute();
+
+				mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: 'sample.png' } );
+
+				expect( _getModelData( model ) )
+					.to.equal( '<paragraph>f[o]o</paragraph>' );
 			} );
-
-			// Block image in block.
-			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
-					return false;
-				}
-			} );
-
-			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
-
-			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
-
-			const notification = editor.plugins.get( Notification );
-
-			notification.on( 'show:warning', ( evt, data ) => {
-				expect( data.message ).to.equal( 'Could not insert image at the current position.' );
-				expect( data.title ).to.equal( 'Inserting image failed' );
-				evt.stop();
-
-				done();
-			}, { priority: 'high' } );
-
-			command.execute();
-
-			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: 'assets/sample.png' } );
-
-			expect( _getModelData( model ) )
-				.to.equal( '<paragraph>f[o]o</paragraph>' );
 		} );
 
 		it( 'should not insert image nor crash when image could not be inserted', () => {
@@ -418,7 +424,7 @@ describe( 'CKFinderCommand', () => {
 
 			command.execute();
 
-			mockFilesChooseEvent( [ mockFinderFile( 'assets/sample.png' ) ] );
+			mockFilesChooseEvent( [ mockFinderFile( 'sample.png' ) ] );
 
 			expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
@@ -431,7 +437,7 @@ describe( 'CKFinderCommand', () => {
 			expect( editor.config.get( 'ckfinder.options' ) ).to.deep.equal( { foo: 'bar' } );
 		} );
 
-		function mockFinderFile( url = 'assets/sample.png', isImage = true ) {
+		function mockFinderFile( url = 'sample.png', isImage = true ) {
 			return {
 				isImage: () => isImage,
 				getUrl: () => url

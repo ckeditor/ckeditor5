@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { EmitterMixin, CKEditorError, Config } from '@ckeditor/ckeditor5-utils';
 import { Model } from '../../src/model/model.js';
 import { ModelText } from '../../src/model/text.js';
@@ -31,101 +32,101 @@ describe( 'Model', () => {
 
 	describe( 'constructor()', () => {
 		it( 'registers $root to the schema', () => {
-			expect( schema.isRegistered( '$root' ) ).to.be.true;
-			expect( schema.isLimit( '$root' ) ).to.be.true;
+			expect( schema.isRegistered( '$root' ) ).toBe( true );
+			expect( schema.isLimit( '$root' ) ).toBe( true );
 		} );
 
 		it( 'registers $inlineRoot to the schema', () => {
-			expect( schema.isRegistered( '$inlineRoot' ) ).to.be.true;
-			expect( schema.isLimit( '$inlineRoot' ) ).to.be.true;
-			expect( schema.checkChild( [ '$inlineRoot' ], '$text' ) ).to.be.true;
-			expect( schema.checkChild( [ '$inlineRoot' ], '$inlineObject' ) ).to.be.true;
-			expect( schema.checkChild( [ '$inlineRoot' ], '$block' ) ).to.be.false;
-			expect( schema.checkChild( [ '$inlineRoot' ], '$container' ) ).to.be.false;
-			expect( schema.checkChild( [ '$inlineRoot' ], '$blockObject' ) ).to.be.false;
+			expect( schema.isRegistered( '$inlineRoot' ) ).toBe( true );
+			expect( schema.isLimit( '$inlineRoot' ) ).toBe( true );
+			expect( schema.checkChild( [ '$inlineRoot' ], '$text' ) ).toBe( true );
+			expect( schema.checkChild( [ '$inlineRoot' ], '$inlineObject' ) ).toBe( true );
+			expect( schema.checkChild( [ '$inlineRoot' ], '$block' ) ).toBe( false );
+			expect( schema.checkChild( [ '$inlineRoot' ], '$container' ) ).toBe( false );
+			expect( schema.checkChild( [ '$inlineRoot' ], '$blockObject' ) ).toBe( false );
 
 			schema.extend( '$root', { allowAttributes: 'foo' } );
 
-			expect( schema.checkAttribute( [ '$inlineRoot' ], 'foo' ) ).to.be.true;
+			expect( schema.checkAttribute( [ '$inlineRoot' ], 'foo' ) ).toBe( true );
 		} );
 
 		it( 'registers $container to the schema', () => {
-			expect( schema.isRegistered( '$container' ) ).to.be.true;
-			expect( schema.checkChild( [ '$root' ], '$container' ) ).to.be.true;
-			expect( schema.checkChild( [ '$container' ], '$container' ) ).to.be.true;
-			expect( schema.checkChild( [ '$container' ], '$block' ) ).to.be.true;
+			expect( schema.isRegistered( '$container' ) ).toBe( true );
+			expect( schema.checkChild( [ '$root' ], '$container' ) ).toBe( true );
+			expect( schema.checkChild( [ '$container' ], '$container' ) ).toBe( true );
+			expect( schema.checkChild( [ '$container' ], '$block' ) ).toBe( true );
 		} );
 
 		it( 'registers $block to the schema', () => {
-			expect( schema.isRegistered( '$block' ) ).to.be.true;
-			expect( schema.isBlock( '$block' ) ).to.be.true;
-			expect( schema.checkChild( [ '$root' ], '$block' ) ).to.be.true;
-			expect( schema.checkChild( [ '$container' ], '$block' ) ).to.be.true;
+			expect( schema.isRegistered( '$block' ) ).toBe( true );
+			expect( schema.isBlock( '$block' ) ).toBe( true );
+			expect( schema.checkChild( [ '$root' ], '$block' ) ).toBe( true );
+			expect( schema.checkChild( [ '$container' ], '$block' ) ).toBe( true );
 		} );
 
 		it( 'registers $blockObject to the schema', () => {
-			expect( schema.isRegistered( '$blockObject' ) ).to.be.true;
-			expect( schema.isBlock( '$blockObject' ) ).to.be.true;
-			expect( schema.isObject( '$blockObject' ) ).to.be.true;
-			expect( schema.checkChild( [ '$root' ], '$blockObject' ) ).to.be.true;
-			expect( schema.checkChild( [ '$container' ], '$blockObject' ) ).to.be.true;
-			expect( schema.checkChild( [ '$block' ], '$blockObject' ) ).to.be.false;
+			expect( schema.isRegistered( '$blockObject' ) ).toBe( true );
+			expect( schema.isBlock( '$blockObject' ) ).toBe( true );
+			expect( schema.isObject( '$blockObject' ) ).toBe( true );
+			expect( schema.checkChild( [ '$root' ], '$blockObject' ) ).toBe( true );
+			expect( schema.checkChild( [ '$container' ], '$blockObject' ) ).toBe( true );
+			expect( schema.checkChild( [ '$block' ], '$blockObject' ) ).toBe( false );
 		} );
 
 		it( 'registers $inlineObject to the schema', () => {
-			expect( schema.isRegistered( '$inlineObject' ) ).to.be.true;
-			expect( schema.isInline( '$inlineObject' ) ).to.be.true;
-			expect( schema.isObject( '$inlineObject' ) ).to.be.true;
-			expect( schema.checkChild( [ '$root' ], '$inlineObject' ) ).to.be.false;
-			expect( schema.checkChild( [ '$container' ], '$inlineObject' ) ).to.be.false;
-			expect( schema.checkChild( [ '$block' ], '$inlineObject' ) ).to.be.true;
+			expect( schema.isRegistered( '$inlineObject' ) ).toBe( true );
+			expect( schema.isInline( '$inlineObject' ) ).toBe( true );
+			expect( schema.isObject( '$inlineObject' ) ).toBe( true );
+			expect( schema.checkChild( [ '$root' ], '$inlineObject' ) ).toBe( false );
+			expect( schema.checkChild( [ '$container' ], '$inlineObject' ) ).toBe( false );
+			expect( schema.checkChild( [ '$block' ], '$inlineObject' ) ).toBe( true );
 
 			schema.extend( '$text', {
 				allowAttributes: [ 'foo', 'bar' ]
 			} );
 
-			expect( schema.checkAttribute( '$inlineObject', 'foo' ) ).to.be.true;
-			expect( schema.checkAttribute( '$inlineObject', 'bar' ) ).to.be.true;
+			expect( schema.checkAttribute( '$inlineObject', 'foo' ) ).toBe( true );
+			expect( schema.checkAttribute( '$inlineObject', 'bar' ) ).toBe( true );
 		} );
 
 		it( 'registers $text to the schema', () => {
-			expect( schema.isRegistered( '$text' ) ).to.be.true;
-			expect( schema.isContent( '$text' ) ).to.be.true;
-			expect( schema.checkChild( [ '$block' ], '$text' ) ).to.be.true;
-			expect( schema.checkChild( [ '$container' ], '$text' ) ).to.be.false;
+			expect( schema.isRegistered( '$text' ) ).toBe( true );
+			expect( schema.isContent( '$text' ) ).toBe( true );
+			expect( schema.checkChild( [ '$block' ], '$text' ) ).toBe( true );
+			expect( schema.checkChild( [ '$container' ], '$text' ) ).toBe( false );
 		} );
 
 		it( 'registers $clipboardHolder to the schema', () => {
-			expect( schema.isRegistered( '$clipboardHolder' ) ).to.be.true;
-			expect( schema.isLimit( '$clipboardHolder' ) ).to.be.true;
-			expect( schema.checkChild( [ '$clipboardHolder' ], '$text' ) ).to.be.true;
-			expect( schema.checkChild( [ '$clipboardHolder' ], '$block' ) ).to.be.true;
-			expect( schema.checkChild( [ '$clipboardHolder' ], '$inlineObject' ) ).to.be.true;
+			expect( schema.isRegistered( '$clipboardHolder' ) ).toBe( true );
+			expect( schema.isLimit( '$clipboardHolder' ) ).toBe( true );
+			expect( schema.checkChild( [ '$clipboardHolder' ], '$text' ) ).toBe( true );
+			expect( schema.checkChild( [ '$clipboardHolder' ], '$block' ) ).toBe( true );
+			expect( schema.checkChild( [ '$clipboardHolder' ], '$inlineObject' ) ).toBe( true );
 		} );
 
 		it( 'registers $documentFragment to the schema', () => {
-			expect( schema.isRegistered( '$documentFragment' ) ).to.be.true;
-			expect( schema.isLimit( '$documentFragment' ) ).to.be.true;
-			expect( schema.checkChild( [ '$documentFragment' ], '$text' ) ).to.be.true;
-			expect( schema.checkChild( [ '$documentFragment' ], '$block' ) ).to.be.true;
-			expect( schema.checkChild( [ '$documentFragment' ], '$inlineObject' ) ).to.be.true;
+			expect( schema.isRegistered( '$documentFragment' ) ).toBe( true );
+			expect( schema.isLimit( '$documentFragment' ) ).toBe( true );
+			expect( schema.checkChild( [ '$documentFragment' ], '$text' ) ).toBe( true );
+			expect( schema.checkChild( [ '$documentFragment' ], '$block' ) ).toBe( true );
+			expect( schema.checkChild( [ '$documentFragment' ], '$inlineObject' ) ).toBe( true );
 		} );
 
 		it( 'registers $marker to the schema and allows it in all registered elements', () => {
 			schema.register( '$otherRoot' );
 
-			expect( schema.isRegistered( '$marker' ) ).to.be.true;
-			expect( schema.checkChild( [ '$root' ], '$marker' ) ).to.be.true;
-			expect( schema.checkChild( [ '$block' ], '$marker' ) ).to.be.true;
-			expect( schema.checkChild( [ '$otherRoot' ], '$marker' ) ).to.be.true;
-			expect( schema.checkChild( [ 'foo' ], '$marker' ) ).to.be.false;
+			expect( schema.isRegistered( '$marker' ) ).toBe( true );
+			expect( schema.checkChild( [ '$root' ], '$marker' ) ).toBe( true );
+			expect( schema.checkChild( [ '$block' ], '$marker' ) ).toBe( true );
+			expect( schema.checkChild( [ '$otherRoot' ], '$marker' ) ).toBe( true );
+			expect( schema.checkChild( [ 'foo' ], '$marker' ) ).toBe( false );
 		} );
 
 		it( 'sets the _config property', () => {
 			const config = new Config();
 			const model = new Model( config );
 
-			expect( model._config ).to.equal( config );
+			expect( model._config ).toBe( config );
 
 			model.destroy();
 		} );
@@ -137,7 +138,7 @@ describe( 'Model', () => {
 				changes += 'A';
 			} );
 
-			expect( changes ).to.equal( 'A' );
+			expect( changes ).toBe( 'A' );
 		} );
 
 		it( 'should pass returned value', () => {
@@ -149,7 +150,7 @@ describe( 'Model', () => {
 
 			changes += ret;
 
-			expect( changes ).to.equal( 'AB' );
+			expect( changes ).toBe( 'AB' );
 		} );
 
 		it( 'should not mixed the order when nested change is called', () => {
@@ -163,7 +164,7 @@ describe( 'Model', () => {
 
 			changes += ret;
 
-			expect( changes ).to.equal( 'ABCD' );
+			expect( changes ).toBe( 'ABCD' );
 
 			function nested() {
 				const ret = model.change( () => {
@@ -183,7 +184,7 @@ describe( 'Model', () => {
 				nested();
 			} );
 
-			expect( changes ).to.equal( 'ABC' );
+			expect( changes ).toBe( 'ABC' );
 
 			function nested() {
 				const ret = model.change( () => {
@@ -203,7 +204,7 @@ describe( 'Model', () => {
 				nested();
 			} );
 
-			expect( changes ).to.equal( 'AB' );
+			expect( changes ).toBe( 'AB' );
 
 			function nested() {
 				model.change( () => {
@@ -221,7 +222,7 @@ describe( 'Model', () => {
 				changes += 'D';
 			} );
 
-			expect( changes ).to.equal( 'ABCD' );
+			expect( changes ).toBe( 'ABCD' );
 
 			function nested() {
 				const ret = model.change( () => {
@@ -243,7 +244,7 @@ describe( 'Model', () => {
 				changes += 'B';
 			} );
 
-			expect( changes ).to.equal( 'ABC' );
+			expect( changes ).toBe( 'ABC' );
 
 			function nestedEnqueue() {
 				model.enqueueChange( () => {
@@ -265,7 +266,7 @@ describe( 'Model', () => {
 
 			changes += ret;
 
-			expect( changes ).to.equal( 'ABCD' );
+			expect( changes ).toBe( 'ABCD' );
 
 			function nestedEnqueue() {
 				model.enqueueChange( () => {
@@ -285,7 +286,7 @@ describe( 'Model', () => {
 				changes += 'B';
 			} );
 
-			expect( changes ).to.equal( 'ABC' );
+			expect( changes ).toBe( 'ABC' );
 		} );
 
 		it( 'should be possible to nest enqueueChange in changes event', () => {
@@ -299,7 +300,7 @@ describe( 'Model', () => {
 				changes += 'B';
 			} );
 
-			expect( changes ).to.equal( 'ABC' );
+			expect( changes ).toBe( 'ABC' );
 		} );
 
 		it( 'should be possible to nest changes in enqueueChange event', () => {
@@ -313,7 +314,7 @@ describe( 'Model', () => {
 				changes += 'C';
 			} );
 
-			expect( changes ).to.equal( 'ABC' );
+			expect( changes ).toBe( 'ABC' );
 		} );
 
 		it( 'should be possible to nest changes in changes event', () => {
@@ -327,7 +328,7 @@ describe( 'Model', () => {
 				changes += 'C';
 			} );
 
-			expect( changes ).to.equal( 'ABC' );
+			expect( changes ).toBe( 'ABC' );
 		} );
 
 		it( 'should let mix blocks', () => {
@@ -353,13 +354,13 @@ describe( 'Model', () => {
 				changes += 'B';
 			} );
 
-			expect( changes ).to.equal( 'ABCDEF' );
+			expect( changes ).toBe( 'ABCDEF' );
 		} );
 
 		it( 'should use the same writer in all change blocks (change & change)', () => {
 			model.change( outerWriter => {
 				model.change( innerWriter => {
-					expect( innerWriter ).to.equal( outerWriter );
+					expect( innerWriter ).toBe( outerWriter );
 				} );
 			} );
 		} );
@@ -367,8 +368,8 @@ describe( 'Model', () => {
 		it( 'should create new writer in enqueue block', () => {
 			model.change( outerWriter => {
 				model.enqueueChange( innerWriter => {
-					expect( innerWriter ).to.not.equal( outerWriter );
-					expect( innerWriter.batch ).to.not.equal( outerWriter.batch );
+					expect( innerWriter ).not.toBe( outerWriter );
+					expect( innerWriter.batch ).not.toBe( outerWriter.batch );
 				} );
 			} );
 		} );
@@ -380,31 +381,31 @@ describe( 'Model', () => {
 				outerBatch = outerWriter.batch;
 
 				model.enqueueChange( outerBatch, innerWriter => {
-					expect( innerWriter.batch ).to.equal( outerBatch );
+					expect( innerWriter.batch ).toBe( outerBatch );
 				} );
 			} );
 		} );
 
 		it( 'should let you create batch of given type', () => {
 			model.enqueueChange( { isUndoable: false, isLocal: false }, writer => {
-				expect( writer.batch.isUndoable ).to.be.false;
-				expect( writer.batch.isLocal ).to.be.false;
+				expect( writer.batch.isUndoable ).toBe( false );
+				expect( writer.batch.isLocal ).toBe( false );
 			} );
 		} );
 
 		it( 'should create a batch with the default type if empty value is passed', () => {
 			model.enqueueChange( null, writer => {
-				expect( writer.batch.isUndoable ).to.be.true;
-				expect( writer.batch.isLocal ).to.be.true;
-				expect( writer.batch.isTyping ).to.be.false;
-				expect( writer.batch.isUndo ).to.be.false;
+				expect( writer.batch.isUndoable ).toBe( true );
+				expect( writer.batch.isLocal ).toBe( true );
+				expect( writer.batch.isTyping ).toBe( false );
+				expect( writer.batch.isUndo ).toBe( false );
 			} );
 
 			model.enqueueChange( undefined, writer => {
-				expect( writer.batch.isUndoable ).to.be.true;
-				expect( writer.batch.isLocal ).to.be.true;
-				expect( writer.batch.isTyping ).to.be.false;
-				expect( writer.batch.isUndo ).to.be.false;
+				expect( writer.batch.isUndoable ).toBe( true );
+				expect( writer.batch.isLocal ).toBe( true );
+				expect( writer.batch.isTyping ).toBe( false );
+				expect( writer.batch.isUndo ).toBe( false );
 			} );
 		} );
 
@@ -425,7 +426,7 @@ describe( 'Model', () => {
 				} );
 			} );
 
-			expect( changes ).to.equal( 'ABCD' );
+			expect( changes ).toBe( 'ABCD' );
 		} );
 
 		it.skip( 'should rethrow native errors as they are in the dubug=true mode in the model.change() block', () => {
@@ -435,7 +436,7 @@ describe( 'Model', () => {
 				model.change( () => {
 					throw error;
 				} );
-			} ).to.throw( TypeError, /foo/ );
+			} ).toThrow( TypeError, /foo/ );
 		} );
 
 		it( 'should throw the original CKEditorError error if it was thrown inside the `change()` block', () => {
@@ -453,7 +454,7 @@ describe( 'Model', () => {
 				model.enqueueChange( () => {
 					throw error;
 				} );
-			} ).to.throw( TypeError, /foo/ );
+			} ).toThrow( TypeError, /foo/ );
 		} );
 
 		it( 'should throw the original CKEditorError error if it was thrown inside the `enqueueChange()` block', () => {
@@ -473,15 +474,15 @@ describe( 'Model', () => {
 
 					throw new Error();
 				} );
-			} ).to.throw();
+			} ).toThrow();
 
 			expect( () => {
 				model.enqueueChange( () => {
 					changes += 'B';
 				} );
-			} ).to.not.throw();
+			} ).not.toThrow();
 
-			expect( changes ).to.equal( 'AB' );
+			expect( changes ).toBe( 'AB' );
 		} );
 
 		it( 'should fire `_afterChanges` after failed change', () => {
@@ -495,22 +496,38 @@ describe( 'Model', () => {
 
 					throw new Error();
 				} );
-			} ).to.throw();
+			} ).toThrow();
 
-			expect( changes ).to.equal( 'AB' );
+			expect( changes ).toBe( 'AB' );
+		} );
+
+		it( 'should rethrow unexpected errors thrown in change() callback', () => {
+			expect( () => {
+				model.change( () => {
+					throw new Error( 'Test error' );
+				} );
+			} ).toThrow( 'Test error' );
+		} );
+
+		it( 'should rethrow unexpected errors thrown in enqueueChange() callback', () => {
+			expect( () => {
+				model.enqueueChange( () => {
+					throw new Error( 'Test error' );
+				} );
+			} ).toThrow( 'Test error' );
 		} );
 	} );
 
 	describe( 'applyOperation()', () => {
 		it( 'should execute provided operation', () => {
 			const operation = {
-				_execute: sinon.spy(),
+				_execute: vi.fn(),
 				_validate: () => true
 			};
 
 			model.applyOperation( operation );
 
-			sinon.assert.calledOnce( operation._execute );
+			expect( operation._execute ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
@@ -518,19 +535,19 @@ describe( 'Model', () => {
 		it( 'should be decorated', () => {
 			schema.extend( '$text', { allowIn: '$root' } ); // To surpress warnings.
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			model.on( 'insertContent', spy );
 
 			model.insertContent( new ModelText( 'a' ) );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should be decorated and pass all parameters in the event data', () => {
 			schema.extend( '$text', { allowIn: '$root' } ); // To surpress warnings.
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const obj1 = { foo: 'bar' };
 			const obj2 = { baz: 7 };
 			const obj3 = { abc: true };
@@ -539,10 +556,10 @@ describe( 'Model', () => {
 
 			model.insertContent( new ModelText( 'a' ), model.document.selection, obj1, obj2, obj3 );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.firstCall.args[ 1 ][ 2 ] ).to.equal( obj1 );
-			expect( spy.firstCall.args[ 1 ][ 3 ] ).to.equal( obj2 );
-			expect( spy.firstCall.args[ 1 ][ 4 ] ).to.equal( obj3 );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy.mock.calls[ 0 ][ 1 ][ 2 ] ).toBe( obj1 );
+			expect( spy.mock.calls[ 0 ][ 1 ][ 3 ] ).toBe( obj2 );
+			expect( spy.mock.calls[ 0 ][ 1 ][ 4 ] ).toBe( obj3 );
 		} );
 
 		it( 'should insert content (item)', () => {
@@ -552,7 +569,7 @@ describe( 'Model', () => {
 
 			model.insertContent( new ModelText( 'ob' ) );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>foob[]ar</paragraph>' );
 		} );
 
 		it( 'should insert content (document fragment)', () => {
@@ -562,7 +579,7 @@ describe( 'Model', () => {
 
 			model.insertContent( new ModelDocumentFragment( [ new ModelText( 'ob' ) ] ) );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>foob[]ar</paragraph>' );
 		} );
 
 		it( 'should use current model selection if no selectable passed', () => {
@@ -572,7 +589,7 @@ describe( 'Model', () => {
 
 			model.insertContent( new ModelText( 'ob' ) );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>foob[]ar</paragraph>' );
 		} );
 
 		it( 'should use parent batch', () => {
@@ -581,7 +598,7 @@ describe( 'Model', () => {
 
 			model.change( writer => {
 				model.insertContent( new ModelText( 'abc' ) );
-				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).to.length( 1 );
+				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).toHaveLength( 1 );
 			} );
 		} );
 
@@ -602,8 +619,8 @@ describe( 'Model', () => {
 				model.change( writer => {
 					const affectedRange = model.insertContent( writer.createText( 'x' ), selection );
 
-					expect( _getModelData( model ) ).to.equal( 'a[]bxc' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( 'ab[x]c' );
+					expect( _getModelData( model ) ).toBe( 'a[]bxc' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( 'ab[x]c' );
 				} );
 			} );
 
@@ -614,16 +631,16 @@ describe( 'Model', () => {
 				const selection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
 				const selectionCopy = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
 
-				expect( selection.isEqual( selectionCopy ) ).to.be.true;
+				expect( selection.isEqual( selectionCopy ) ).toBe( true );
 
 				model.change( writer => {
 					model.insertContent( writer.createText( 'x' ), selection );
 				} );
 
-				expect( selection.isEqual( selectionCopy ) ).to.be.false;
+				expect( selection.isEqual( selectionCopy ) ).toBe( false );
 
 				const insertionSelection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 3 ] ) );
-				expect( selection.isEqual( insertionSelection ) ).to.be.true;
+				expect( selection.isEqual( insertionSelection ) ).toBe( true );
 			} );
 
 			it( 'should be able to insert content at custom position', () => {
@@ -635,8 +652,8 @@ describe( 'Model', () => {
 				model.change( writer => {
 					const affectedRange = model.insertContent( writer.createText( 'x' ), position );
 
-					expect( _getModelData( model ) ).to.equal( 'a[]bxc' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( 'ab[x]c' );
+					expect( _getModelData( model ) ).toBe( 'a[]bxc' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( 'ab[x]c' );
 				} );
 			} );
 
@@ -652,8 +669,8 @@ describe( 'Model', () => {
 				model.change( writer => {
 					const affectedRange = model.insertContent( writer.createText( 'x' ), range );
 
-					expect( _getModelData( model ) ).to.equal( 'a[]bx' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( 'ab[x]' );
+					expect( _getModelData( model ) ).toBe( 'a[]bx' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( 'ab[x]' );
 				} );
 			} );
 
@@ -664,8 +681,8 @@ describe( 'Model', () => {
 				model.change( writer => {
 					const affectedRange = model.insertContent( writer.createText( 'x' ), model.document.selection );
 
-					expect( _getModelData( model ) ).to.equal( 'ax[]bc' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( 'a[x]bc' );
+					expect( _getModelData( model ) ).toBe( 'ax[]bc' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( 'a[x]bc' );
 				} );
 			} );
 
@@ -676,8 +693,8 @@ describe( 'Model', () => {
 				model.change( writer => {
 					const affectedRange = model.insertContent( writer.createText( 'x' ) );
 
-					expect( _getModelData( model ) ).to.equal( 'ax[]bc' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( 'a[x]bc' );
+					expect( _getModelData( model ) ).toBe( 'ax[]bc' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( 'a[x]bc' );
 				} );
 			} );
 
@@ -693,8 +710,8 @@ describe( 'Model', () => {
 
 					const affectedRange = model.insertContent( text, element, 2 );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>baxr</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph><paragraph>ba[x]r</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph><paragraph>baxr</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>foo</paragraph><paragraph>ba[x]r</paragraph>' );
 				} );
 			} );
 
@@ -710,8 +727,8 @@ describe( 'Model', () => {
 
 					const affectedRange = model.insertContent( text, element, 'in' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>x</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[x]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph><paragraph>x</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>foo</paragraph><paragraph>[x]</paragraph>' );
 				} );
 			} );
 
@@ -728,8 +745,8 @@ describe( 'Model', () => {
 
 					const affectedRange = model.insertContent( insertElement, element, 'on' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><foo></foo>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph>[<foo></foo>]' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph><foo></foo>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>foo</paragraph>[<foo></foo>]' );
 				} );
 			} );
 
@@ -745,8 +762,8 @@ describe( 'Model', () => {
 
 					const affectedRange = model.insertContent( text, element, 'end' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>barx</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[x]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph><paragraph>barx</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>foo</paragraph><paragraph>bar[x]</paragraph>' );
 				} );
 			} );
 
@@ -761,8 +778,8 @@ describe( 'Model', () => {
 
 					const affectedRange = model.insertContent( paragraph, doc.getRoot() );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>[]abc</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<paragraph>abc</paragraph>]' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>[]abc</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '[<paragraph>abc</paragraph>]' );
 				} );
 			} );
 		} );
@@ -785,7 +802,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should be decorated', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const element = new ModelElement( 'blockWidget' );
 			const options = {
 				findOptimalPosition: 'after',
@@ -796,16 +813,16 @@ describe( 'Model', () => {
 
 			model.insertObject( element, model.document.selection, null, options );
 
-			const args = spy.args[ 0 ][ 1 ];
+			const args = spy.mock.calls[ 0 ][ 1 ];
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( args[ 0 ] ).to.equal( element );
-			expect( args[ 1 ] ).to.equal( model.document.selection );
-			expect( args[ 2 ] ).to.equal( options );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( args[ 0 ] ).toBe( element );
+			expect( args[ 1 ] ).toBe( model.document.selection );
+			expect( args[ 2 ] ).toBe( options );
 		} );
 
 		it( 'should be decorated and pass all parameters in the event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const element = new ModelElement( 'blockWidget' );
 			const options = {
 				findOptimalPosition: 'after',
@@ -819,16 +836,16 @@ describe( 'Model', () => {
 
 			model.insertObject( element, model.document.selection, null, options, obj1, obj2, obj3 );
 
-			const args = spy.firstCall.args[ 1 ];
+			const args = spy.mock.calls[ 0 ][ 1 ];
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( args[ 0 ] ).to.equal( element );
-			expect( args[ 1 ] ).to.equal( model.document.selection );
-			expect( args[ 2 ] ).to.equal( options );
-			expect( args[ 3 ] ).to.equal( options );
-			expect( args[ 4 ] ).to.equal( obj1 );
-			expect( args[ 5 ] ).to.equal( obj2 );
-			expect( args[ 6 ] ).to.equal( obj3 );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( args[ 0 ] ).toBe( element );
+			expect( args[ 1 ] ).toBe( model.document.selection );
+			expect( args[ 2 ] ).toBe( options );
+			expect( args[ 3 ] ).toBe( options );
+			expect( args[ 4 ] ).toBe( obj1 );
+			expect( args[ 5 ] ).toBe( obj2 );
+			expect( args[ 6 ] ).toBe( obj3 );
 		} );
 
 		it( 'should insert inline object at the document selection position', () => {
@@ -836,7 +853,7 @@ describe( 'Model', () => {
 
 			model.insertObject( new ModelElement( 'inlineWidget' ) );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo<inlineWidget></inlineWidget>[]ar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>fo<inlineWidget></inlineWidget>[]ar</paragraph>' );
 		} );
 
 		it( 'should insert block object at the document selection position', () => {
@@ -844,7 +861,7 @@ describe( 'Model', () => {
 
 			model.insertObject( new ModelElement( 'blockWidget' ) );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>fo</paragraph>' +
 				'[<blockWidget></blockWidget>]' +
 				'<paragraph>ar</paragraph>'
@@ -856,7 +873,7 @@ describe( 'Model', () => {
 
 			model.change( writer => {
 				model.insertObject( new ModelElement( 'inlineWidget' ) );
-				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).to.length( 1 );
+				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).toHaveLength( 1 );
 			} );
 		} );
 
@@ -876,8 +893,8 @@ describe( 'Model', () => {
 				model.change( writer => {
 					const affectedRange = model.insertObject( writer.createElement( 'inlineWidget' ), selection );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>a[]b<inlineWidget></inlineWidget>c</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>a[]b<inlineWidget></inlineWidget>c</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>ab[<inlineWidget></inlineWidget>]c</paragraph>'
 					);
 				} );
@@ -889,16 +906,16 @@ describe( 'Model', () => {
 				const selection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 0, 2 ] ) );
 				const selectionCopy = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 0, 2 ] ) );
 
-				expect( selection.isEqual( selectionCopy ) ).to.be.true;
+				expect( selection.isEqual( selectionCopy ) ).toBe( true );
 
 				model.change( writer => {
 					model.insertObject( writer.createElement( 'inlineWidget' ), selection );
 				} );
 
-				expect( selection.isEqual( selectionCopy ) ).to.be.false;
+				expect( selection.isEqual( selectionCopy ) ).toBe( false );
 
 				const insertionSelection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 0, 3 ] ) );
-				expect( selection.isEqual( insertionSelection ) ).to.be.true;
+				expect( selection.isEqual( insertionSelection ) ).toBe( true );
 			} );
 
 			it( 'should be able to insert content at custom position', () => {
@@ -909,8 +926,8 @@ describe( 'Model', () => {
 				model.change( writer => {
 					const affectedRange = model.insertObject( writer.createElement( 'inlineWidget' ), position );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>a[]b<inlineWidget></inlineWidget>c</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>a[]b<inlineWidget></inlineWidget>c</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>ab[<inlineWidget></inlineWidget>]c</paragraph>'
 					);
 				} );
@@ -927,8 +944,8 @@ describe( 'Model', () => {
 				model.change( writer => {
 					const affectedRange = model.insertObject( writer.createElement( 'inlineWidget' ), range );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>a[]b<inlineWidget></inlineWidget></paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>ab[<inlineWidget></inlineWidget>]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>a[]b<inlineWidget></inlineWidget></paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>ab[<inlineWidget></inlineWidget>]</paragraph>' );
 				} );
 			} );
 
@@ -938,8 +955,8 @@ describe( 'Model', () => {
 				model.change( writer => {
 					const affectedRange = model.insertObject( writer.createElement( 'inlineWidget' ), model.document.selection );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>a<inlineWidget></inlineWidget>[]bc</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>a<inlineWidget></inlineWidget>[]bc</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>a[<inlineWidget></inlineWidget>]bc</paragraph>'
 					);
 				} );
@@ -951,8 +968,8 @@ describe( 'Model', () => {
 				model.change( writer => {
 					const affectedRange = model.insertObject( writer.createElement( 'inlineWidget' ) );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>a<inlineWidget></inlineWidget>[]bc</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>a<inlineWidget></inlineWidget>[]bc</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>a[<inlineWidget></inlineWidget>]bc</paragraph>'
 					);
 				} );
@@ -968,10 +985,10 @@ describe( 'Model', () => {
 
 					const affectedRange = model.insertObject( text, element, 2 );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo[]</paragraph><paragraph>ba<inlineWidget></inlineWidget>r</paragraph>'
 					);
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph><paragraph>ba[<inlineWidget></inlineWidget>]r</paragraph>'
 					);
 				} );
@@ -987,10 +1004,10 @@ describe( 'Model', () => {
 
 					const affectedRange = model.insertObject( text, element, 'in' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo[]</paragraph><paragraph><inlineWidget></inlineWidget></paragraph>'
 					);
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph><paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
 					);
 				} );
@@ -1006,8 +1023,8 @@ describe( 'Model', () => {
 
 					const affectedRange = model.insertObject( insertElement, element, 'on' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
 				} );
 			} );
 
@@ -1021,10 +1038,10 @@ describe( 'Model', () => {
 
 					const affectedRange = model.insertObject( text, element, 'end' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo[]</paragraph><paragraph>bar<inlineWidget></inlineWidget></paragraph>'
 					);
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph><paragraph>bar[<inlineWidget></inlineWidget>]</paragraph>'
 					);
 				} );
@@ -1034,13 +1051,13 @@ describe( 'Model', () => {
 
 	describe( 'deleteContent()', () => {
 		it( 'should be decorated', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			model.on( 'deleteContent', spy );
 
 			model.deleteContent( model.document.selection );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should delete selected content', () => {
@@ -1050,7 +1067,7 @@ describe( 'Model', () => {
 
 			model.deleteContent( model.document.selection );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>fo[]ar</paragraph>' );
 		} );
 
 		it( 'should use parent batch', () => {
@@ -1060,7 +1077,7 @@ describe( 'Model', () => {
 
 			model.change( writer => {
 				model.deleteContent( model.document.selection );
-				expect( writer.batch.operations ).to.length( 1 );
+				expect( writer.batch.operations ).toHaveLength( 1 );
 			} );
 		} );
 	} );
@@ -1070,13 +1087,13 @@ describe( 'Model', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			_setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			model.on( 'modifySelection', spy );
 
 			model.modifySelection( model.document.selection );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should modify a selection', () => {
@@ -1084,24 +1101,24 @@ describe( 'Model', () => {
 
 			_setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>fo[ob]ar</paragraph>' );
 
 			model.modifySelection( model.document.selection, { direction: 'backward' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[o]bar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>fo[o]bar</paragraph>' );
 		} );
 	} );
 
 	describe( 'getSelectedContent()', () => {
 		it( 'should be decorated', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const sel = new ModelSelection();
 
 			model.on( 'getSelectedContent', spy );
 
 			model.getSelectedContent( sel );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should return selected content', () => {
@@ -1111,7 +1128,7 @@ describe( 'Model', () => {
 
 			const content = model.getSelectedContent( model.document.selection );
 
-			expect( _stringifyModel( content ) ).to.equal( 'ob' );
+			expect( _stringifyModel( content ) ).toBe( 'ob' );
 		} );
 
 		it( 'should use parent batch', () => {
@@ -1122,7 +1139,7 @@ describe( 'Model', () => {
 			const version = model.document.version;
 			model.getSelectedContent( model.document.selection );
 
-			expect( model.document.version ).to.equal( version );
+			expect( model.document.version ).toBe( version );
 		} );
 	} );
 
@@ -1170,13 +1187,13 @@ describe( 'Model', () => {
 		it( 'should return true if given element has text node', () => {
 			const pFoo = root.getChild( 1 );
 
-			expect( model.hasContent( pFoo ) ).to.be.true;
+			expect( model.hasContent( pFoo ) ).toBe( true );
 		} );
 
 		it( 'should return true if given element has text node (ignoreWhitespaces)', () => {
 			const pFoo = root.getChild( 1 );
 
-			expect( model.hasContent( pFoo, { ignoreWhitespaces: true } ) ).to.be.true;
+			expect( model.hasContent( pFoo, { ignoreWhitespaces: true } ) ).toBe( true );
 		} );
 
 		it( 'should return true if given element has text node containing spaces only', () => {
@@ -1187,7 +1204,7 @@ describe( 'Model', () => {
 				writer.insertText( '    ', pEmpty, 'end' );
 			} );
 
-			expect( model.hasContent( pEmpty ) ).to.be.true;
+			expect( model.hasContent( pEmpty ) ).toBe( true );
 		} );
 
 		it( 'should false true if given element has text node containing spaces only (ignoreWhitespaces)', () => {
@@ -1198,63 +1215,63 @@ describe( 'Model', () => {
 				writer.insertText( '    ', pEmpty, 'end' );
 			} );
 
-			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).toBe( false );
 		} );
 
 		it( 'should return true if given element has element that is an object', () => {
 			const divImg = root.getChild( 2 );
 
-			expect( model.hasContent( divImg ) ).to.be.true;
+			expect( model.hasContent( divImg ) ).toBe( true );
 		} );
 
 		it( 'should return false if given element has no elements', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			expect( model.hasContent( pEmpty ) ).to.be.false;
+			expect( model.hasContent( pEmpty ) ).toBe( false );
 		} );
 
 		it( 'should return false if given element has only elements that are not objects', () => {
 			const divP = root.getChild( 0 );
 
-			expect( model.hasContent( divP ) ).to.be.false;
+			expect( model.hasContent( divP ) ).toBe( false );
 		} );
 
 		it( 'should return true if there is a text node in given range', () => {
 			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 
-			expect( model.hasContent( range ) ).to.be.true;
+			expect( model.hasContent( range ) ).toBe( true );
 		} );
 
 		it( 'should return true if there is a part of text node in given range', () => {
 			const pFoo = root.getChild( 1 );
 			const range = new ModelRange( ModelPosition._createAt( pFoo, 1 ), ModelPosition._createAt( pFoo, 2 ) );
 
-			expect( model.hasContent( range ) ).to.be.true;
+			expect( model.hasContent( range ) ).toBe( true );
 		} );
 
 		it( 'should return true if there is element that is an object in given range', () => {
 			const divImg = root.getChild( 2 );
 			const range = new ModelRange( ModelPosition._createAt( divImg, 0 ), ModelPosition._createAt( divImg, 1 ) );
 
-			expect( model.hasContent( range ) ).to.be.true;
+			expect( model.hasContent( range ) ).toBe( true );
 		} );
 
 		it( 'should return false if range is collapsed', () => {
 			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 1 ) );
 
-			expect( model.hasContent( range ) ).to.be.false;
+			expect( model.hasContent( range ) ).toBe( false );
 		} );
 
 		it( 'should return false if range has only elements that are not objects', () => {
 			const range = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) );
 
-			expect( model.hasContent( range ) ).to.be.false;
+			expect( model.hasContent( range ) ).toBe( false );
 		} );
 
 		it( 'should return false for empty list items', () => {
 			const range = new ModelRange( ModelPosition._createAt( root, 3 ), ModelPosition._createAt( root, 6 ) );
 
-			expect( model.hasContent( range ) ).to.be.false;
+			expect( model.hasContent( range ) ).toBe( false );
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=false, affectsData=false)', () => {
@@ -1266,10 +1283,10 @@ describe( 'Model', () => {
 				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
 			} );
 
-			expect( model.hasContent( pEmpty ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).toBe( false );
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=true, affectsData=false)', () => {
@@ -1281,10 +1298,10 @@ describe( 'Model', () => {
 				writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: false } );
 			} );
 
-			expect( model.hasContent( pEmpty ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).toBe( false );
 		} );
 
 		it( 'should return false (ignoreWhitespaces) for empty text with marker (usingOperation=false, affectsData=false)', () => {
@@ -1300,8 +1317,8 @@ describe( 'Model', () => {
 				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
 			} );
 
-			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true, ignoreMarkers: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true, ignoreMarkers: true } ) ).toBe( false );
 		} );
 
 		it( 'should return true for empty text with marker (usingOperation=false, affectsData=false)', () => {
@@ -1317,9 +1334,9 @@ describe( 'Model', () => {
 				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
 			} );
 
-			expect( model.hasContent( pEmpty ) ).to.be.true;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.true;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty ) ).toBe( true );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).toBe( true );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).toBe( false );
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=false, affectsData=true)', () => {
@@ -1331,10 +1348,10 @@ describe( 'Model', () => {
 				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
 			} );
 
-			expect( model.hasContent( pEmpty ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).toBe( false );
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=true, affectsData=true)', () => {
@@ -1346,10 +1363,10 @@ describe( 'Model', () => {
 				writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
 			} );
 
-			expect( model.hasContent( pEmpty ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).toBe( false );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).toBe( false );
 		} );
 
 		it( 'should return true (ignoreWhitespaces) for empty text with marker (usingOperation=false, affectsData=true)', () => {
@@ -1365,30 +1382,30 @@ describe( 'Model', () => {
 				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
 			} );
 
-			expect( model.hasContent( pEmpty ) ).to.be.true;
-			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.true;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.true;
-			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty ) ).toBe( true );
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).toBe( true );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).toBe( true );
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).toBe( false );
 		} );
 
 		it( 'should return true for an item registered as a content (isContent=true, isObject=false) in the schema', () => {
 			const contentElement = root.getChild( 6 );
 
-			expect( model.hasContent( contentElement ) ).to.be.true;
+			expect( model.hasContent( contentElement ) ).toBe( true );
 		} );
 
 		it( 'should return true if a range contains an item registered as a content (isContent=true, isObject=false) in the schema', () => {
 			// [<div><content></content></div>]
 			const range = new ModelRange( ModelPosition._createAt( root, 6 ), ModelPosition._createAt( root, 7 ) );
 
-			expect( model.hasContent( range ) ).to.be.true;
+			expect( model.hasContent( range ) ).toBe( true );
 		} );
 
 		it( 'should return true if passed selection has any meaningful content (text node in range)', () => {
 			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 			const selection = new ModelSelection( range );
 
-			expect( model.hasContent( selection ) ).to.be.true;
+			expect( model.hasContent( selection ) ).toBe( true );
 		} );
 
 		it( 'should return true if passed selection has any meaningful content (content element)', () => {
@@ -1396,7 +1413,7 @@ describe( 'Model', () => {
 			const range = new ModelRange( ModelPosition._createAt( root, 6 ), ModelPosition._createAt( root, 7 ) );
 			const selection = new ModelSelection( range );
 
-			expect( model.hasContent( selection ) ).to.be.true;
+			expect( model.hasContent( selection ) ).toBe( true );
 		} );
 
 		it( 'should return true if at least one range in selection has any meaningful content', () => {
@@ -1407,7 +1424,7 @@ describe( 'Model', () => {
 				range
 			] );
 
-			expect( model.hasContent( selection ) ).to.be.true;
+			expect( model.hasContent( selection ) ).toBe( true );
 		} );
 
 		it( 'should return false if selection has only collapsed ranges', () => {
@@ -1416,7 +1433,7 @@ describe( 'Model', () => {
 				new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 2 ) )
 			] );
 
-			expect( model.hasContent( selection ) ).to.be.false;
+			expect( model.hasContent( selection ) ).toBe( false );
 		} );
 
 		it( 'should return false if selection has only elements that are not objects', () => {
@@ -1425,13 +1442,13 @@ describe( 'Model', () => {
 				new ModelRange( ModelPosition._createAt( root, 3 ), ModelPosition._createAt( root, 4 ) )
 			] );
 
-			expect( model.hasContent( selection ) ).to.be.false;
+			expect( model.hasContent( selection ) ).toBe( false );
 		} );
 
 		it( 'should return false if selection has no ranges', () => {
 			const selection = new ModelSelection( [] );
 
-			expect( model.hasContent( selection ) ).to.be.false;
+			expect( model.hasContent( selection ) ).toBe( false );
 		} );
 	} );
 
@@ -1439,25 +1456,25 @@ describe( 'Model', () => {
 		it( 'should return true if model document is not in read-only mode', () => {
 			model.document.isReadOnly = false;
 
-			expect( model.canEditAt( model.document.selection ) ).to.be.true;
+			expect( model.canEditAt( model.document.selection ) ).toBe( true );
 		} );
 
 		it( 'should return fasle if model document is not in read-only mode', () => {
 			model.document.isReadOnly = true;
 
-			expect( model.canEditAt( model.document.selection ) ).to.be.false;
+			expect( model.canEditAt( model.document.selection ) ).toBe( false );
 		} );
 	} );
 
 	describe( 'createPositionFromPath()', () => {
 		it( 'should return instance of Position', () => {
-			expect( model.createPositionFromPath( model.document.getRoot(), [ 0 ] ) ).to.be.instanceof( ModelPosition );
+			expect( model.createPositionFromPath( model.document.getRoot(), [ 0 ] ) ).toBeInstanceOf( ModelPosition );
 		} );
 	} );
 
 	describe( 'createPositionAt()', () => {
 		it( 'should return instance of Position', () => {
-			expect( model.createPositionAt( model.document.getRoot(), 0 ) ).to.be.instanceof( ModelPosition );
+			expect( model.createPositionAt( model.document.getRoot(), 0 ) ).toBeInstanceOf( ModelPosition );
 		} );
 	} );
 
@@ -1466,7 +1483,7 @@ describe( 'Model', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			_setModelData( model, '<paragraph>fo[]ar</paragraph>' );
 
-			expect( model.createPositionAfter( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelPosition );
+			expect( model.createPositionAfter( model.document.getRoot().getChild( 0 ) ) ).toBeInstanceOf( ModelPosition );
 		} );
 	} );
 
@@ -1475,7 +1492,7 @@ describe( 'Model', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			_setModelData( model, '<paragraph>fo[]ar</paragraph>' );
 
-			expect( model.createPositionBefore( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelPosition );
+			expect( model.createPositionBefore( model.document.getRoot().getChild( 0 ) ) ).toBeInstanceOf( ModelPosition );
 		} );
 	} );
 
@@ -1484,7 +1501,7 @@ describe( 'Model', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			_setModelData( model, '<paragraph>fo[]ar</paragraph>' );
 
-			expect( model.createRange( model.createPositionAt( model.document.getRoot(), 0 ) ) ).to.be.instanceof( ModelRange );
+			expect( model.createRange( model.createPositionAt( model.document.getRoot(), 0 ) ) ).toBeInstanceOf( ModelRange );
 		} );
 	} );
 
@@ -1493,7 +1510,7 @@ describe( 'Model', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			_setModelData( model, '<paragraph>fo[]ar</paragraph>' );
 
-			expect( model.createRangeIn( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelRange );
+			expect( model.createRangeIn( model.document.getRoot().getChild( 0 ) ) ).toBeInstanceOf( ModelRange );
 		} );
 	} );
 
@@ -1502,27 +1519,27 @@ describe( 'Model', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			_setModelData( model, '<paragraph>fo[]ar</paragraph>' );
 
-			expect( model.createRangeOn( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelRange );
+			expect( model.createRangeOn( model.document.getRoot().getChild( 0 ) ) ).toBeInstanceOf( ModelRange );
 		} );
 	} );
 
 	describe( 'createSelection()', () => {
 		it( 'should return instance of Selection', () => {
-			expect( model.createSelection() ).to.be.instanceof( ModelSelection );
+			expect( model.createSelection() ).toBeInstanceOf( ModelSelection );
 		} );
 	} );
 
 	describe( 'createBatch()', () => {
 		it( 'should return instance of Batch', () => {
 			const batch = model.createBatch();
-			expect( batch ).to.be.instanceof( Batch );
+			expect( batch ).toBeInstanceOf( Batch );
 		} );
 
 		it( 'should allow to define type of Batch', () => {
 			const batch = model.createBatch( { isUndo: true, isUndoable: true } );
-			expect( batch ).to.be.instanceof( Batch );
-			expect( batch.isUndo ).to.be.true;
-			expect( batch.isUndoable ).to.be.true;
+			expect( batch ).toBeInstanceOf( Batch );
+			expect( batch.isUndo ).toBe( true );
+			expect( batch.isUndoable ).toBe( true );
 		} );
 	} );
 
@@ -1533,23 +1550,23 @@ describe( 'Model', () => {
 				baseVersion: 0
 			} );
 
-			expect( operation ).to.instanceof( NoOperation );
-			expect( operation.baseVersion ).to.equal( 0 );
+			expect( operation ).toBeInstanceOf( NoOperation );
+			expect( operation.baseVersion ).toBe( 0 );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy document', () => {
-			sinon.spy( model.document, 'destroy' );
+			vi.spyOn( model.document, 'destroy' );
 
 			model.destroy();
 
-			sinon.assert.calledOnce( model.document.destroy );
+			expect( model.document.destroy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should stop listening', () => {
 			const emitter = new ( EmitterMixin() )();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			model.listenTo( emitter, 'event', spy );
 
@@ -1557,7 +1574,7 @@ describe( 'Model', () => {
 
 			emitter.fire( 'event' );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 } );

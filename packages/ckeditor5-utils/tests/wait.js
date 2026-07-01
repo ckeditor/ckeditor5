@@ -4,16 +4,16 @@
  */
 
 import { wait } from '../src/wait.js';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe( 'utils', () => {
-	let clock;
-
 	beforeEach( () => {
-		clock = sinon.useFakeTimers();
+		vi.useFakeTimers();
 	} );
 
 	afterEach( () => {
-		sinon.restore();
+		vi.useRealTimers();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'wait', () => {
@@ -26,25 +26,25 @@ describe( 'utils', () => {
 		it( 'should wait the specified time (10ms)', async () => {
 			const promise = wait( 10 );
 
-			await clock.tickAsync( 9 );
+			await vi.advanceTimersByTimeAsync( 9 );
 
-			expect( await promiseStatus( promise ) ).to.deep.equal( { status: 'pending' } );
+			expect( await promiseStatus( promise ) ).toEqual( { status: 'pending' } );
 
-			await clock.tickAsync( 1 );
+			await vi.advanceTimersByTimeAsync( 1 );
 
-			expect( await promiseStatus( promise ) ).to.deep.equal( { status: 'fulfilled', value: undefined } );
+			expect( await promiseStatus( promise ) ).toEqual( { status: 'fulfilled', value: undefined } );
 		} );
 
 		it( 'should wait the specified time (20ms)', async () => {
 			const promise = wait( 20 );
 
-			await clock.tickAsync( 19 );
+			await vi.advanceTimersByTimeAsync( 19 );
 
-			expect( await promiseStatus( promise ) ).to.deep.equal( { status: 'pending' } );
+			expect( await promiseStatus( promise ) ).toEqual( { status: 'pending' } );
 
-			await clock.tickAsync( 1 );
+			await vi.advanceTimersByTimeAsync( 1 );
 
-			expect( await promiseStatus( promise ) ).to.deep.equal( { status: 'fulfilled', value: undefined } );
+			expect( await promiseStatus( promise ) ).toEqual( { status: 'fulfilled', value: undefined } );
 		} );
 
 		it( 'should abort', async () => {
@@ -53,14 +53,14 @@ describe( 'utils', () => {
 
 			const promise = wait( 20, { signal: controller.signal } );
 
-			await clock.tickAsync( 10 );
+			await vi.advanceTimersByTimeAsync( 10 );
 
-			expect( await promiseStatus( promise ) ).to.deep.equal( { status: 'pending' } );
+			expect( await promiseStatus( promise ) ).toEqual( { status: 'pending' } );
 
 			controller.abort( reason );
-			await clock.tickAsync( 0 );
+			await vi.advanceTimersByTimeAsync( 0 );
 
-			expect( await promiseStatus( promise ) ).to.deep.equal( { status: 'rejected', reason } );
+			expect( await promiseStatus( promise ) ).toEqual( { status: 'rejected', reason } );
 		} );
 
 		it( 'should return rejected promise if already aborted', async () => {
@@ -68,37 +68,42 @@ describe( 'utils', () => {
 
 			const promise = wait( 20, { signal: AbortSignal.abort( reason ) } );
 
-			expect( await promiseStatus( promise ) ).to.deep.equal( { status: 'rejected', reason } );
+			expect( await promiseStatus( promise ) ).toEqual( { status: 'rejected', reason } );
 		} );
 
 		it( 'should clean abort handler', async () => {
 			const signal = {
 				throwIfAborted: () => {},
-				addEventListener: sinon.stub(),
-				removeEventListener: sinon.stub()
+				addEventListener: vi.fn(),
+				removeEventListener: vi.fn()
 			};
 
 			wait( 20, { signal } );
 
-			await clock.tickAsync( 20 );
+			await vi.advanceTimersByTimeAsync( 20 );
 
-			expect( signal.addEventListener.callCount, 'addEventListener' ).to.equal( 1 );
-			expect( signal.removeEventListener.callCount, 'removeEventListener' ).to.equal( 1 );
-			sinon.assert.calledWith( signal.addEventListener, 'abort', sinon.match.func, sinon.match.has( 'once', true ) );
+			expect( signal.addEventListener, 'addEventListener' ).toHaveBeenCalledTimes( 1 );
+			expect( signal.removeEventListener, 'removeEventListener' ).toHaveBeenCalledTimes( 1 );
+			expect( signal.addEventListener ).toHaveBeenCalledWith(
+				'abort',
+				expect.any( Function ),
+				expect.objectContaining( { once: true } )
+			);
 		} );
 
 		it( 'should clean the timer', async () => {
 			const controller = new AbortController();
 
-			wait( 20, { signal: controller.signal } );
+			const promise = wait( 20, { signal: controller.signal } );
+			promise.catch( () => {} );
 
-			await clock.tickAsync( 10 );
+			await vi.advanceTimersByTimeAsync( 10 );
 
-			expect( clock.countTimers(), 'before abort' ).to.equal( 1 );
+			expect( vi.getTimerCount(), 'before abort' ).toBe( 1 );
 
 			controller.abort();
 
-			expect( clock.countTimers(), 'after abort' ).to.equal( 0 );
+			expect( vi.getTimerCount(), 'after abort' ).toBe( 0 );
 		} );
 	} );
 } );

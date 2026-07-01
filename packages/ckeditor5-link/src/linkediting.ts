@@ -7,10 +7,7 @@
  * @module link/linkediting
  */
 
-import {
-	Plugin,
-	type Editor
-} from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type {
 	ModelSchema,
 	ModelWriter,
@@ -84,9 +81,17 @@ export class LinkEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
+	public static get requires(): PluginDependenciesOf<[
+		TwoStepCaretMovement,
+		Input,
+		ClipboardPipeline
+	]> {
 		// Clipboard is required for handling cut and paste events while typing over the link.
-		return [ TwoStepCaretMovement, Input, ClipboardPipeline ] as const;
+		return [
+			TwoStepCaretMovement,
+			Input,
+			ClipboardPipeline
+		];
 	}
 
 	/**

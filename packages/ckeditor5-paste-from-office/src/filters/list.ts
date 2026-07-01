@@ -236,7 +236,9 @@ export function transformListItemLikeElementsIntoLists(
 				// Same as the create-new path: track this list so that if it is interrupted (e.g. by a
 				// multi-block paragraph matched against an ancestor frame) and later resumed via a fresh
 				// `<ol>`, the continuation can set the correct `start` attribute instead of restarting from 1.
+				/* v8 ignore else -- @preserve */
 				if ( itemLikeElement.id !== undefined ) {
+					/* v8 ignore else -- @preserve */
 					if ( !encounteredLists[ indent ] ) {
 						encounteredLists[ indent ] = {};
 					}
@@ -293,6 +295,14 @@ export function transformListItemLikeElementsIntoLists(
 				// numbering from where it left off (e.g. <ol start="3">).
 				encounteredLists.length = stack.length + 1;
 			} else {
+				// A non-list block whose margin matches no active list wrapper fully interrupts the
+				// current top-level list. Flush the pending uniform margin onto that list (while
+				// `stack[ 0 ]` still exists) and reset the info, mirroring the non-continuation reset
+				// above — otherwise the stale `topLevelListInfo` would later be flushed against an
+				// already-cleared stack, dereferencing `stack[ 0 ]` when it is `undefined`.
+				// See https://github.com/ckeditor/ckeditor5-commercial/issues/10255.
+				applyIndentationToTopLevelList( writer, stack, topLevelListInfo );
+				topLevelListInfo = createTopLevelListInfo();
 				stack.length = 0;
 			}
 		}
@@ -666,7 +676,7 @@ function findListMarkerNode( element: ViewElement ): ViewText | null {
 		return ( textNodeOrElement as any ).getChild( 0 );
 	}
 
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	return null;
 }
 

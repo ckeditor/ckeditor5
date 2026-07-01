@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 48.x | CKEditor 5 Documentation
 menu-title: Update to v48.x
 order: 76
-modified_at: 2026-06-05
+modified_at: 2026-06-30
 ---
 
 # Update to CKEditor&nbsp;5 v48.x
@@ -13,6 +13,51 @@ modified_at: 2026-06-05
 
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v48.3.0
+
+Released on 1 July, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.3.0))
+
+This release expands the programmatic APIs for CKEditor AI, lets you mark AI-generated suggestions in track changes, and promotes multi-root and multiple editor support for CKEditor AI to stable.
+
+### Programmatic API for CKEditor AI (⭐)
+
+Until now, using {@link features/ckeditor-ai-overview CKEditor AI} meant mainly going through its built-in UI. This release extends the programmatic APIs and opens the door to more custom AI workflows. You can trigger AI from your own buttons, process documents automatically in the background, or run AI server-side with no editor interface at all using the {@link features/ckeditor-ai-programmatic#server-side-editor-api Server-side Editor API}.
+
+* **{@link features/ckeditor-ai-programmatic#document-processing AI Document Processing}** &ndash; run any custom, document-level prompt entirely from code with no UI involved, for automated jobs such as summarizing, reformatting, or enriching content in the background.
+* **{@link features/ckeditor-ai-programmatic#review AI Review}** &ndash; trigger built-in or custom review commands, such as proofreading, clarity, or tone, from code, so you can build automated quality gates into your editing workflow.
+* **{@link features/ckeditor-ai-programmatic#translate AI Translate}** &ndash; translate a document into a target language on demand, with or without the translation UI.
+
+See the {@link features/ckeditor-ai-programmatic Using CKEditor AI programmatically} guide for details.
+
+### AI-generated suggestions in track changes (⭐)
+
+When AI and people edit the same document, reviewers need to know who proposed what. {@link features/ckeditor-ai-generated-suggestions AI-generated suggestions} can now be visually marked, so teams can give machine-proposed changes the right level of scrutiny, keep a clear audit trail of where content came from, and meet editorial or governance policies that require disclosing AI involvement. The feature is opt-in and configured through `config.trackChanges.showAISource` and `config.trackChanges.aiAuthor`.
+
+### Multi-root and multiple editors support for CKEditor AI is now stable (⭐)
+
+Editors that split content into separate areas, such as email layouts, structured documents, or CMS templates with distinct regions, can now use CKEditor AI with full production confidence. The {@link features/ckeditor-ai-multi-root-multi-editor-support multi-root and multiple editor support} introduced as experimental in v48.1.0 is now stable. AI Chat, AI Review, and AI Translate consistently read context from and act on the correct region, and adding or removing editor instances at runtime, including the empty "no editors" state, is handled robustly.
+
+**Migrating from the experimental version:** earlier experimental releases used each root's `label` attribute as the name the AI uses to identify an editing area. This release introduces a dedicated `title` attribute for that purpose, stored on the root and synchronized through real-time collaboration. The AI now reads `title` first and falls back to `label`, and then to the root name. If you set up the experimental multi-root or multiple editor AI support, set `title` on each root through `config.root.title` for single-root editors or `config.roots.<rootName>.title` for multi-root editors, and keep `label` as the accessible `aria-label`. Setups that only set `label` keep working through the fallback, but we recommend setting `title` explicitly. See the {@link features/ckeditor-ai-multi-root-multi-editor-support#configuration configuration section} of the guide for details.
+
+### Other improvements and fixes
+
+* Images are now supported in inline roots. A block image that cannot be placed at a given position (for example, when pasting, dropping, or loading data into an inline root) now degrades to an inline image instead of being dropped.
+* Media embeds now include a keyboard-accessible resize UI: a toolbar dropdown and standalone buttons for predefined sizes, plus a balloon-hosted input for custom widths.
+* This release resolves a range of AI Chat and AI Review issues affecting both reliability and presentation, including suggestions that did not appear or apply, crashes on certain historical or marker-heavy content, and rendering glitches in Safari.
+* Paste from Office no longer produces malformed footnotes when the Footnotes plugin is enabled, and content pasted from Excel Online no longer inserts the clipboard's CSS `<style>` block as visible text.
+* The first footnote reference no longer disappears when the list's starting value is `0` under a numbering style that does not support it, and references stay aligned with the list when using roman numbering at counter values of 4000 or above.
+* The Emoji plugin no longer blocks editor startup, resulting in noticeably faster load times.
+* Comment thread accessible names now include the first comment's text and announce reply counts, and AI-proposed track changes suggestions now state their AI origin in their accessible name.
+* Tapping the type-around buttons that insert a paragraph above or below a selected widget now works on Android and iOS.
+
+### Minor breaking changes in this release
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**:
+  * Changed the signature of `AIGateway.apply()`. `applyMethod` is now a property of the second argument (an options object) instead of a positional string: replace `apply( result, 'suggest' )` with `apply( result, { applyMethod: 'suggest' } )`.
+  * Tightened the return types of several AI Chat and AI Review getters and methods to `ReadonlyArray` / `ReadonlyMap`. They now return copies of the original collections to prevent accidental mutation of internal state. Affected: `AIChatContext#getPendingContextItems()`, `AIChatContext#getSentContextItems()`, `AIReviewRunResult#affectedBlocks`, and `AIGateway#mergeChangesIntoContent()`.
+  * The AI Chat balloon width is now declared on the inner `.ck-ai-chat-balloon-main` element instead of `.ck-ai-chat-balloon`. Custom styles that set the AI Chat balloon width by targeting `.ck-ai-chat-balloon` should target `.ck-ai-chat-balloon-main`.
+* **[collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core)**: Removed the misplaced `affectsData` property from the `CollaborationOperation` interface. The property is specific to `MarkerOperation`. Cast to `MarkerCollaborationOperation` to access it.
 
 ## Update to CKEditor&nbsp;5 v48.2.0
 

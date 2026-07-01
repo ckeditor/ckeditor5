@@ -162,3 +162,19 @@ msgstr "텍스트 줄 바꿈"
 msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "텍스트 분리"
+
+msgctxt "The label for the resize option that allows the user to enter a custom size."
+msgid "Custom"
+msgstr "사용자 지정"
+
+msgctxt "The default label for the resize option that resets the size."
+msgid "Original"
+msgstr "원본"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with a blank value."
+msgid "The value must not be empty."
+msgstr "값은 비워둘 수 없습니다."
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with an incorrect value."
+msgid "The value should be a plain number."
+msgstr "일반 숫자로 된 값을 입력해야 합니다."

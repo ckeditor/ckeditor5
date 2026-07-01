@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { FocusTracker } from '@ckeditor/ckeditor5-utils';
 import { InputBase } from '../../src/input/inputbase.js';
 import { InputView } from '../../src/input/inputview.js';
@@ -21,69 +22,68 @@ describe( 'InputBase', () => {
 
 	afterEach( () => {
 		view.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should set the #isFocused observable property', () => {
-			expect( view.isFocused ).to.be.false;
+			expect( view.isFocused ).toBe( false );
 		} );
 
 		it( 'should set the #isEmpty observable property', () => {
-			expect( view.isEmpty ).to.be.true;
+			expect( view.isEmpty ).toBe( true );
 		} );
 
 		it( 'should set the #hasError observable property', () => {
-			expect( view.hasError ).to.be.false;
+			expect( view.hasError ).toBe( false );
 		} );
 
 		it( 'should set the #isReadOnly observable property', () => {
-			expect( view.isReadOnly ).to.be.false;
+			expect( view.isReadOnly ).toBe( false );
 		} );
 
 		it( 'should create an instance of FocusTracker under #focusTracker property', () => {
-			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( view.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 	} );
 
 	describe( 'render()', () => {
 		it( 'registers #element in the #focusTracker', () => {
-			expect( view.isFocused ).to.be.false;
+			expect( view.isFocused ).toBe( false );
 
 			view.element.dispatchEvent( new Event( 'focus' ) );
 
-			expect( view.isFocused ).to.be.true;
+			expect( view.isFocused ).toBe( true );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
-			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+			const destroySpy = vi.spyOn( view.focusTracker, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'select()', () => {
 		it( 'should select input value', () => {
-			const selectSpy = sinon.spy( view.element, 'select' );
+			const selectSpy = vi.spyOn( view.element, 'select' );
 
 			view.select();
 
-			expect( selectSpy.calledOnce ).to.true;
-
-			selectSpy.restore();
+			expect( selectSpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'focuses the input in DOM', () => {
-			const spy = sinon.spy( view.element, 'focus' );
+			const spy = vi.spyOn( view.element, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -93,9 +93,9 @@ describe( 'InputBase', () => {
 
 			view.reset();
 
-			expect( view.value ).to.equal( '' );
-			expect( view.element.value ).to.equal( '' );
-			expect( view.element.classList.contains( 'ck-input-text_empty' ) ).to.be.true;
+			expect( view.value ).toBe( '' );
+			expect( view.element.value ).toBe( '' );
+			expect( view.element.classList.contains( 'ck-input-text_empty' ) ).toBe( true );
 		} );
 	} );
 
@@ -107,24 +107,24 @@ describe( 'InputBase', () => {
 
 		describe( 'value', () => {
 			it( 'should react on view#value', () => {
-				expect( view.element.value ).to.equal( 'foo' );
+				expect( view.element.value ).toBe( 'foo' );
 
 				view.value = 'baz';
 
-				expect( view.element.value ).to.equal( 'baz' );
+				expect( view.element.value ).toBe( 'baz' );
 
 				// To be sure that value can be changed multiple times using inline value attribute.
 				// There was a related bug in Chrome.
 				view.value = 'biz';
 
-				expect( view.element.value ).to.equal( 'biz' );
+				expect( view.element.value ).toBe( 'biz' );
 			} );
 
 			it( 'should set to empty string when using `falsy` values', () => {
 				[ undefined, false, null ].forEach( value => {
 					view.value = value;
 
-					expect( view.element.value ).to.equal( '' );
+					expect( view.element.value ).toBe( '' );
 				} );
 			} );
 
@@ -136,126 +136,126 @@ describe( 'InputBase', () => {
 
 				view.render();
 
-				expect( view.element.value ).to.equal( 'baz' );
+				expect( view.element.value ).toBe( 'baz' );
 			} );
 
 			it( 'should update along with the #isEmpty property', () => {
 				view.value = 'foo';
 
-				expect( view.isEmpty ).to.be.false;
+				expect( view.isEmpty ).toBe( false );
 
 				view.value = '';
-				expect( view.isEmpty ).to.be.true;
+				expect( view.isEmpty ).toBe( true );
 			} );
 		} );
 
 		describe( 'id', () => {
 			it( 'should react on view#id', () => {
-				expect( view.element.id ).to.equal( 'bar' );
+				expect( view.element.id ).toBe( 'bar' );
 
 				view.id = 'baz';
 
-				expect( view.element.id ).to.equal( 'baz' );
+				expect( view.element.id ).toBe( 'baz' );
 			} );
 		} );
 
 		describe( 'placeholder', () => {
 			it( 'should react on view#placeholder', () => {
-				expect( view.element.placeholder ).to.equal( '' );
+				expect( view.element.placeholder ).toBe( '' );
 
 				view.placeholder = 'baz';
 
-				expect( view.element.placeholder ).to.equal( 'baz' );
+				expect( view.element.placeholder ).toBe( 'baz' );
 			} );
 		} );
 
 		describe( 'isReadOnly', () => {
 			it( 'should react on view#isReadOnly', () => {
-				expect( view.element.readOnly ).to.false;
+				expect( view.element.readOnly ).toBe( false );
 
 				view.isReadOnly = true;
 
-				expect( view.element.readOnly ).to.true;
+				expect( view.element.readOnly ).toBe( true );
 			} );
 		} );
 
 		describe( 'class', () => {
 			it( 'should react on view#hasErrors', () => {
-				expect( view.element.classList.contains( 'ck-error' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-error' ) ).toBe( false );
 
 				view.hasError = true;
 
-				expect( view.element.classList.contains( 'ck-error' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-error' ) ).toBe( true );
 			} );
 
 			it( 'should react on view#isFocused', () => {
-				expect( view.element.classList.contains( 'ck-input_focused' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-input_focused' ) ).toBe( false );
 
 				view.isFocused = true;
 
-				expect( view.element.classList.contains( 'ck-input_focused' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-input_focused' ) ).toBe( true );
 			} );
 
 			it( 'should react on view#isEmpty', () => {
 				view.value = '';
 
-				expect( view.element.classList.contains( 'ck-input-text_empty' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-input-text_empty' ) ).toBe( true );
 
 				view.value = 'bar';
 
-				expect( view.element.classList.contains( 'ck-input-text_empty' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-input-text_empty' ) ).toBe( false );
 			} );
 		} );
 
 		describe( 'aria-invalid', () => {
 			it( 'should react on view#hasError', () => {
-				expect( view.element.getAttribute( 'aria-invalid' ) ).to.be.null;
+				expect( view.element.getAttribute( 'aria-invalid' ) ).toBeNull();
 
 				view.hasError = true;
 
-				expect( view.element.getAttribute( 'aria-invalid' ) ).to.equal( 'true' );
+				expect( view.element.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
 			} );
 		} );
 
 		describe( 'tabIndex', () => {
 			it( 'should react on view#tabIndex', () => {
-				expect( view.element.getAttribute( 'tabIndex' ) ).to.be.null;
+				expect( view.element.getAttribute( 'tabIndex' ) ).toBeNull();
 
 				view.tabIndex = 123;
 
-				expect( view.element.getAttribute( 'tabIndex' ) ).to.equal( '123' );
+				expect( view.element.getAttribute( 'tabIndex' ) ).toBe( '123' );
 			} );
 		} );
 
 		describe( 'aria-label', () => {
 			it( 'should react on view#ariaLabel', () => {
-				expect( view.element.getAttribute( 'aria-label' ) ).to.be.null;
+				expect( view.element.getAttribute( 'aria-label' ) ).toBeNull();
 
 				view.ariaLabel = 'reader text';
 
-				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'reader text' );
+				expect( view.element.getAttribute( 'aria-label' ) ).toBe( 'reader text' );
 			} );
 		} );
 
 		describe( 'aria-describedby', () => {
 			it( 'should react on view#hasError', () => {
-				expect( view.element.getAttribute( 'aria-describedby' ) ).to.be.null;
+				expect( view.element.getAttribute( 'aria-describedby' ) ).toBeNull();
 
 				view.ariaDescribedById = ariaDescribedById;
 
-				expect( view.element.getAttribute( 'aria-describedby' ) ).to.equal( ariaDescribedById );
+				expect( view.element.getAttribute( 'aria-describedby' ) ).toBe( ariaDescribedById );
 			} );
 		} );
 
 		describe( 'input event', () => {
 			it( 'triggers view#input', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'input', spy );
 
 				view.element.dispatchEvent( new Event( 'input' ) );
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWith( spy, sinon.match.object );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( expect.any( Object ), expect.anything() );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/10431
@@ -263,12 +263,12 @@ describe( 'InputBase', () => {
 				view.element.value = 'foo';
 				view.element.dispatchEvent( new Event( 'input' ) );
 
-				expect( view.isEmpty ).to.be.false;
+				expect( view.isEmpty ).toBe( false );
 
 				view.element.value = '';
 				view.element.dispatchEvent( new Event( 'input' ) );
 
-				expect( view.isEmpty ).to.be.true;
+				expect( view.isEmpty ).toBe( true );
 			} );
 		} );
 	} );

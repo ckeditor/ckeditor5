@@ -17,6 +17,8 @@ import { TableEditing } from '@ckeditor/ckeditor5-table';
 
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 describe( 'UndoEditing integration', () => {
 	let editor, model, doc, root, div;
 
@@ -57,15 +59,15 @@ describe( 'UndoEditing integration', () => {
 	}
 
 	function output( output ) {
-		expect( _getModelData( model ) ).to.equal( output );
+		expect( _getModelData( model ) ).toEqual( output );
 	}
 
 	function undoDisabled() {
-		expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
+		expect( editor.commands.get( 'undo' ).isEnabled ).toBe( false );
 	}
 
 	function redoDisabled() {
-		expect( editor.commands.get( 'redo' ).isEnabled ).to.be.false;
+		expect( editor.commands.get( 'redo' ).isEnabled ).toBe( false );
 	}
 
 	describe( 'adding and removing content', () => {
@@ -325,22 +327,22 @@ describe( 'UndoEditing integration', () => {
 				writer.setAttribute( 'bold', true, doc.selection.getFirstRange() );
 			} );
 			output( '<paragraph>fo[<$text bold="true">ob</$text>]ar</paragraph>' );
-			expect( doc.selection.getAttribute( 'bold' ) ).to.be.true;
+			expect( doc.selection.getAttribute( 'bold' ) ).toBe( true );
 
 			model.change( writer => {
 				setSelection( [ 0, 3 ], [ 0, 3 ] );
 				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fo<$text bold="true">o</$text>zzz[]<$text bold="true">b</$text>ar</paragraph>' );
-			expect( doc.selection.getAttribute( 'bold' ) ).to.be.undefined;
+			expect( doc.selection.getAttribute( 'bold' ) ).toBeUndefined();
 
 			editor.execute( 'undo' );
 			output( '<paragraph>fo<$text bold="true">o[]b</$text>ar</paragraph>' );
-			expect( doc.selection.getAttribute( 'bold' ) ).to.be.true;
+			expect( doc.selection.getAttribute( 'bold' ) ).toBe( true );
 
 			editor.execute( 'undo' );
 			output( '<paragraph>fo[ob]ar</paragraph>' );
-			expect( doc.selection.getAttribute( 'bold' ) ).to.be.undefined;
+			expect( doc.selection.getAttribute( 'bold' ) ).toBeUndefined();
 
 			undoDisabled();
 		} );
@@ -1018,8 +1020,8 @@ describe( 'UndoEditing integration', () => {
 			editor.execute( 'undo' );
 			editor.execute( 'redo' );
 
-			expect( p.root ).to.equal( gy );
-			expect( p.getAttribute( 'bold' ) ).to.be.true;
+			expect( p.root ).toEqual( gy );
+			expect( p.getAttribute( 'bold' ) ).toBe( true );
 		} );
 
 		it( 'undo table cells merge', () => {
@@ -1214,8 +1216,8 @@ describe( 'UndoEditing integration', () => {
 		editor.execute( 'undo' );
 
 		// Check if postfixer changes are executed together with undo and there is no additional undo steps.
-		expect( model.markers.has( 'marker' ) ).to.be.false;
-		expect( editor.commands.get( 'undo' )._stack.length ).to.equal( 1 );
+		expect( model.markers.has( 'marker' ) ).toBe( false );
+		expect( editor.commands.get( 'undo' )._stack.length ).toEqual( 1 );
 		output( '<paragraph>foo[]</paragraph>' );
 	} );
 

@@ -66,3 +66,31 @@ msgstr "মাঝখানে সারিবদ্ধ মিডিয়া"
 msgctxt "The label for the right aligned media option."
 msgid "Right aligned media"
 msgstr "ডানদিকে সারিবদ্ধ মিডিয়া"
+
+msgctxt "The label used for the dropdown in the media toolbar containing defined resize options."
+msgid "Resize media"
+msgstr "মিডিয়ার সাইজ পরিবর্তন করুন"
+
+msgctxt "The label used for the standalone resize options buttons in the media toolbar."
+msgid "Resize media to %0"
+msgstr "মিডিয়ার সাইজ %0-এ পরিবর্তন করুন"
+
+msgctxt "The accessibility label of the standalone media resize reset option button in the media toolbar for screen readers."
+msgid "Resize media to the original size"
+msgstr "মিডিয়ার সাইজ মূল অবস্থায় ফিরিয়ে আনুন"
+
+msgctxt "The label for media resize balloon input."
+msgid "Resize media (in %0)"
+msgstr "মিডিয়ার সাইজ পরিবর্তন করুন (%0-এ)"
+
+msgctxt "The accessibility label of the standalone media resize custom option button in the media toolbar for screen readers."
+msgid "Custom media size"
+msgstr "কাস্টম মিডিয়া সাইজ"
+
+msgctxt "The accessibility label of the media resize dropdown for screen readers."
+msgid "Media resize list"
+msgstr "মিডিয়ার সাইজ পরিবর্তনের তালিকা"
+
+msgctxt "The label for the header of the media resize balloon."
+msgid "Media Resize"
+msgstr "মিডিয়ার সাইজ পরিবর্তন"

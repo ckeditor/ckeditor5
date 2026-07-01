@@ -7,7 +7,7 @@
  * @module undo/undo
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { UndoEditing } from './undoediting.js';
 import { UndoUI } from './undoui.js';
 
@@ -112,8 +112,8 @@ export class Undo extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ UndoEditing, UndoUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ UndoEditing, UndoUI ]> {
+		return [ UndoEditing, UndoUI ];
 	}
 
 	/**

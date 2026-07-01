@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewElement } from '../../../src/view/element.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
@@ -32,7 +33,7 @@ describe( 'DowncastWriter', () => {
 			const { view, selection } = _parseView( input );
 
 			const newRange = writer.unwrap( selection.getFirstRange(), _parseView( unwrapAttribute ) );
-			expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+			expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true } ) ).toBe( expected );
 		}
 
 		beforeEach( () => {
@@ -493,7 +494,7 @@ describe( 'DowncastWriter', () => {
 			writer.insert( writer.createPositionAt( container, 0 ), attribute );
 			writer.unwrap( ViewRange._createOn( attribute ), unwrapper );
 
-			expect( _stringifyView( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
+			expect( _stringifyView( container, null, { showType: false, showPriority: false } ) ).toBe( '<div></div>' );
 		} );
 
 		it( 'should always unwrap whole element if both elements have same id', () => {
@@ -504,7 +505,7 @@ describe( 'DowncastWriter', () => {
 			writer.insert( writer.createPositionAt( container, 0 ), attribute );
 			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
-			expect( _stringifyView( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
+			expect( _stringifyView( container, null, { showType: false, showPriority: false } ) ).toBe( '<div></div>' );
 		} );
 
 		// Below are tests for elements with different ids.
@@ -519,7 +520,7 @@ describe( 'DowncastWriter', () => {
 			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
 			const view = _stringifyView( container, null, { showType: false, showPriority: false } );
-			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
+			expect( view ).toBe( '<div><span bar="bar" foo="foo"></span></div>' );
 		} );
 
 		it( 'should not unwrap matching attributes if the unwrapping element has id', () => {
@@ -531,7 +532,7 @@ describe( 'DowncastWriter', () => {
 			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
 			const view = _stringifyView( container, null, { showType: false, showPriority: false } );
-			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
+			expect( view ).toBe( '<div><span bar="bar" foo="foo"></span></div>' );
 		} );
 
 		it( 'should not unwrap matching attributes if the elements have different id', () => {
@@ -543,7 +544,7 @@ describe( 'DowncastWriter', () => {
 			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
 			const view = _stringifyView( container, null, { showType: false, showPriority: false } );
-			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
+			expect( view ).toBe( '<div><span bar="bar" foo="foo"></span></div>' );
 		} );
 	} );
 } );

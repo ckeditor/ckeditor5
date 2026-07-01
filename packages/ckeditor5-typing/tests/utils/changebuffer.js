@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { TypingChangeBuffer } from '../../src/utils/changebuffer.js';
 import { Model, Batch } from '@ckeditor/ckeditor5-engine';
 
@@ -19,28 +20,28 @@ describe( 'ChangeBuffer', () => {
 
 	describe( 'constructor()', () => {
 		it( 'sets all properties', () => {
-			expect( buffer ).to.have.property( 'model', model );
-			expect( buffer ).to.have.property( 'limit', CHANGE_LIMIT );
-			expect( buffer ).to.have.property( 'size', 0 );
-			expect( buffer ).to.have.property( 'isLocked', false );
+			expect( buffer ).toHaveProperty( 'model', model );
+			expect( buffer ).toHaveProperty( 'limit', CHANGE_LIMIT );
+			expect( buffer ).toHaveProperty( 'size', 0 );
+			expect( buffer ).toHaveProperty( 'isLocked', false );
 		} );
 
 		it( 'sets limit property according to default value', () => {
 			buffer = new TypingChangeBuffer( model );
 
-			expect( buffer ).to.have.property( 'limit', 20 );
+			expect( buffer ).toHaveProperty( 'limit', 20 );
 		} );
 	} );
 
 	describe( 'locking', () => {
 		it( 'is unlocked by default', () => {
-			expect( buffer.isLocked ).to.be.false;
+			expect( buffer.isLocked ).toBe( false );
 		} );
 
 		it( 'is locked by lock method', () => {
 			buffer.lock();
 
-			expect( buffer.isLocked ).to.be.true;
+			expect( buffer.isLocked ).toBe( true );
 		} );
 
 		it( 'is unlocked by unlock method', () => {
@@ -48,14 +49,14 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.unlock();
 
-			expect( buffer.isLocked ).to.be.false;
+			expect( buffer.isLocked ).toBe( false );
 		} );
 	} );
 
 	describe( 'batch', () => {
 		it( 'it is set initially', () => {
-			expect( buffer ).to.have.property( 'batch' );
-			expect( buffer.batch ).to.be.instanceof( Batch );
+			expect( buffer ).toHaveProperty( 'batch' );
+			expect( buffer.batch ).toBeInstanceOf( Batch );
 		} );
 
 		it( 'is reset once changes reaches the limit', () => {
@@ -63,15 +64,15 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.input( CHANGE_LIMIT - 1 );
 
-			expect( buffer.batch ).to.equal( batch1 );
+			expect( buffer.batch ).toBe( batch1 );
 
 			buffer.input( 1 );
 
 			const batch2 = buffer.batch;
 
-			expect( batch2 ).to.be.instanceof( Batch );
-			expect( batch2 ).to.not.equal( batch1 );
-			expect( buffer.size ).to.equal( 0 );
+			expect( batch2 ).toBeInstanceOf( Batch );
+			expect( batch2 ).not.toBe( batch1 );
+			expect( buffer.size ).toBe( 0 );
 		} );
 
 		it( 'is reset once changes exceedes the limit', () => {
@@ -80,8 +81,8 @@ describe( 'ChangeBuffer', () => {
 			// Exceed the limit with one big jump to ensure that >= operator was used.
 			buffer.input( CHANGE_LIMIT + 1 );
 
-			expect( buffer.batch ).to.not.equal( batch1 );
-			expect( buffer.size ).to.equal( 0 );
+			expect( buffer.batch ).not.toBe( batch1 );
+			expect( buffer.size ).toBe( 0 );
 		} );
 
 		it( 'is reset once a new batch appears in the document', () => {
@@ -94,8 +95,8 @@ describe( 'ChangeBuffer', () => {
 				writer.insertText( 'a', root );
 			} );
 
-			expect( buffer.batch ).to.not.equal( batch1 );
-			expect( buffer.size ).to.equal( 0 );
+			expect( buffer.batch ).not.toBe( batch1 );
+			expect( buffer.size ).toBe( 0 );
 		} );
 
 		it( 'is not reset when changes are added to the buffer\'s batch', () => {
@@ -104,12 +105,12 @@ describe( 'ChangeBuffer', () => {
 			model.enqueueChange( buffer.batch, writer => {
 				writer.insert( 'a', root );
 			} );
-			expect( buffer.batch ).to.equal( batch1 );
+			expect( buffer.batch ).toBe( batch1 );
 
 			model.enqueueChange( buffer.batch, writer => {
 				writer.insert( 'b', root );
 			} );
-			expect( buffer.batch ).to.equal( batch1 );
+			expect( buffer.batch ).toBe( batch1 );
 		} );
 
 		it( 'is not reset when changes are added to batch which existed previously', () => {
@@ -129,12 +130,12 @@ describe( 'ChangeBuffer', () => {
 				writer.insertText( 'b', root );
 			} );
 
-			expect( buffer.batch ).to.equal( bufferBatch );
+			expect( buffer.batch ).toBe( bufferBatch );
 
 			model.change( writer => {
 				writer.insertText( 'c', root );
 			} );
-			expect( buffer.batch ).to.not.equal( bufferBatch );
+			expect( buffer.batch ).not.toBe( bufferBatch );
 		} );
 
 		it( 'is not reset when changes are applied in transparent batch', () => {
@@ -144,7 +145,7 @@ describe( 'ChangeBuffer', () => {
 				writer.insert( 'a', root );
 			} );
 
-			expect( buffer.batch ).to.equal( bufferBatch );
+			expect( buffer.batch ).toBe( bufferBatch );
 		} );
 
 		it( 'is not reset while locked', () => {
@@ -157,8 +158,8 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.unlock();
 
-			expect( buffer.batch ).to.equal( initialBatch );
-			expect( buffer.size ).to.equal( 1 );
+			expect( buffer.batch ).toBe( initialBatch );
+			expect( buffer.size ).toBe( 1 );
 		} );
 
 		it( 'is reset while locked with ignoreLock used', () => {
@@ -171,8 +172,8 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.unlock();
 
-			expect( buffer.batch ).to.not.equal( initialBatch );
-			expect( buffer.size ).to.equal( 0 );
+			expect( buffer.batch ).not.toBe( initialBatch );
+			expect( buffer.size ).toBe( 0 );
 		} );
 
 		it( 'is reset while locked and limit exceeded', () => {
@@ -184,8 +185,8 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.unlock();
 
-			expect( buffer.batch ).to.not.equal( initialBatch );
-			expect( buffer.size ).to.equal( 0 );
+			expect( buffer.batch ).not.toBe( initialBatch );
+			expect( buffer.size ).toBe( 0 );
 		} );
 
 		it( 'is reset while locked and new batch is applied', () => {
@@ -199,8 +200,8 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.unlock();
 
-			expect( buffer.batch ).to.not.equal( initialBatch );
-			expect( buffer.size ).to.equal( 0 );
+			expect( buffer.batch ).not.toBe( initialBatch );
+			expect( buffer.size ).toBe( 0 );
 		} );
 
 		it( 'is reset on selection change:range', () => {
@@ -208,8 +209,8 @@ describe( 'ChangeBuffer', () => {
 
 			doc.selection.fire( 'change:range' );
 
-			expect( buffer.batch ).to.not.equal( initialBatch );
-			expect( buffer.size ).to.equal( 0 );
+			expect( buffer.batch ).not.toBe( initialBatch );
+			expect( buffer.size ).toBe( 0 );
 		} );
 
 		it( 'is reset on selection change:attribute', () => {
@@ -217,8 +218,8 @@ describe( 'ChangeBuffer', () => {
 
 			doc.selection.fire( 'change:attribute' );
 
-			expect( buffer.batch ).to.not.equal( initialBatch );
-			expect( buffer.size ).to.equal( 0 );
+			expect( buffer.batch ).not.toBe( initialBatch );
+			expect( buffer.size ).toBe( 0 );
 		} );
 
 		it( 'is not reset on selection change:range while locked', () => {
@@ -231,8 +232,8 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.unlock();
 
-			expect( buffer.batch ).to.equal( initialBatch );
-			expect( buffer.size ).to.equal( 1 );
+			expect( buffer.batch ).toBe( initialBatch );
+			expect( buffer.size ).toBe( 1 );
 		} );
 
 		it( 'is not reset on selection change:attribute while locked', () => {
@@ -245,8 +246,8 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.unlock();
 
-			expect( buffer.batch ).to.equal( initialBatch );
-			expect( buffer.size ).to.equal( 1 );
+			expect( buffer.batch ).toBe( initialBatch );
+			expect( buffer.size ).toBe( 1 );
 		} );
 	} );
 
@@ -260,7 +261,7 @@ describe( 'ChangeBuffer', () => {
 				writer.insertText( 'a', root );
 			} );
 
-			expect( buffer.batch ).to.equal( batch1 );
+			expect( buffer.batch ).toBe( batch1 );
 		} );
 
 		it( 'offs the buffer from the selection change:range', () => {
@@ -270,7 +271,7 @@ describe( 'ChangeBuffer', () => {
 
 			doc.selection.fire( 'change:attribute' );
 
-			expect( buffer.batch ).to.equal( batch1 );
+			expect( buffer.batch ).toBe( batch1 );
 		} );
 
 		it( 'offs the buffer from the selection change:attribute', () => {
@@ -280,7 +281,7 @@ describe( 'ChangeBuffer', () => {
 
 			doc.selection.fire( 'change:range' );
 
-			expect( buffer.batch ).to.equal( batch1 );
+			expect( buffer.batch ).toBe( batch1 );
 		} );
 	} );
 } );

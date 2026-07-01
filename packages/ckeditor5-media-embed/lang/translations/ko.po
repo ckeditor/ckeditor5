@@ -66,3 +66,31 @@ msgstr "중앙 정렬 미디어"
 msgctxt "The label for the right aligned media option."
 msgid "Right aligned media"
 msgstr "오른쪽 정렬 미디어"
+
+msgctxt "The label used for the dropdown in the media toolbar containing defined resize options."
+msgid "Resize media"
+msgstr "미디어 크기 조정"
+
+msgctxt "The label used for the standalone resize options buttons in the media toolbar."
+msgid "Resize media to %0"
+msgstr "미디어 크기를 %0(으)로 조정"
+
+msgctxt "The accessibility label of the standalone media resize reset option button in the media toolbar for screen readers."
+msgid "Resize media to the original size"
+msgstr "미디어를 원본 크기로 조정"
+
+msgctxt "The label for media resize balloon input."
+msgid "Resize media (in %0)"
+msgstr "미디어 크기 조정(%0)"
+
+msgctxt "The accessibility label of the standalone media resize custom option button in the media toolbar for screen readers."
+msgid "Custom media size"
+msgstr "사용자 지정 미디어 크기"
+
+msgctxt "The accessibility label of the media resize dropdown for screen readers."
+msgid "Media resize list"
+msgstr "미디어 크기 조정 목록"
+
+msgctxt "The label for the header of the media resize balloon."
+msgid "Media Resize"
+msgstr "미디어 크기 조정"

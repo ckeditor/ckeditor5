@@ -9,6 +9,7 @@
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
+/* v8 ignore next 9 -- @preserve */
 if ( false ) {
 	/**
 	 * The `config.initialData` option cannot be used together with the initial data passed as the first parameter of

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach, afterEach } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { EditingView } from '../../../src/view/view.js';
 import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
@@ -44,7 +45,7 @@ describe( 'DowncastWriter', () => {
 				const newRange = writer.wrap( selection.getFirstRange(), _parseView( wrapAttribute ) );
 
 				expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true, showAttributeElementId: true } ) )
-					.to.equal( expected );
+					.toBe( expected );
 			}
 
 			it( 'wraps single text node', () => {
@@ -451,7 +452,7 @@ describe( 'DowncastWriter', () => {
 
 				expect(
 					_stringifyView( container, newRange, { showType: true, showPriority: true, showAttributeElementId: true } )
-				).to.equal(
+				).toBe(
 					'<container:p>' +
 						'[<attribute:b view-priority="10">foo<container:span>baz</container:span>bar</attribute:b>]' +
 					'</container:p>'
@@ -582,7 +583,7 @@ describe( 'DowncastWriter', () => {
 				// Moving parsed elements to a document fragment so the view root is not shown in `stringify`.
 				const viewChildren = new ViewDocumentFragment( viewDocument, view.getChildren() );
 
-				expect( _stringifyView( viewChildren, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
+				expect( _stringifyView( viewChildren, newPosition, { showType: true, showPriority: true } ) ).toBe( expected );
 			}
 
 			it( 'should throw error when element is not instance of ViewAttributeElement', () => {

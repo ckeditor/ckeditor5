@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Title } from '../src/title.js';
@@ -37,40 +39,40 @@ describe( 'Title', () => {
 	} );
 
 	it( 'should requires Paragraph plugin', () => {
-		expect( Title.requires ).to.have.members( [ Paragraph ] );
+		expect( Title.requires ).toEqual( [ Paragraph ] );
 	} );
 
 	it( 'should have plugin name property', () => {
-		expect( Title.pluginName ).to.equal( 'Title' );
+		expect( Title.pluginName ).toEqual( 'Title' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Title.isOfficialPlugin ).to.be.true;
+		expect( Title.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Title.isPremiumPlugin ).to.be.false;
+		expect( Title.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.isRegistered( 'title' ) ).to.equal( true );
-		expect( model.schema.isBlock( 'title' ) ).to.equal( true );
-		expect( model.schema.isRegistered( 'title-content' ) ).to.equal( true );
-		expect( model.schema.isBlock( 'title-content' ) ).to.equal( true );
+		expect( model.schema.isRegistered( 'title' ) ).toEqual( true );
+		expect( model.schema.isBlock( 'title' ) ).toEqual( true );
+		expect( model.schema.isRegistered( 'title-content' ) ).toEqual( true );
+		expect( model.schema.isBlock( 'title-content' ) ).toEqual( true );
 
-		expect( model.schema.checkChild( 'title', '$text' ) ).to.equal( false );
-		expect( model.schema.checkChild( 'title', '$block' ) ).to.equal( false );
-		expect( model.schema.checkChild( 'title', 'title-content' ) ).to.equal( true );
-		expect( model.schema.checkChild( '$root', 'title' ) ).to.equal( true );
-		expect( model.schema.checkChild( '$root', 'title-content' ) ).to.equal( false );
-		expect( model.schema.checkChild( '$block', 'title-content' ) ).to.equal( false );
-		expect( model.schema.checkChild( 'title-content', '$text' ) ).to.equal( true );
-		expect( model.schema.checkChild( 'title-content', '$block' ) ).to.equal( false );
+		expect( model.schema.checkChild( 'title', '$text' ) ).toEqual( false );
+		expect( model.schema.checkChild( 'title', '$block' ) ).toEqual( false );
+		expect( model.schema.checkChild( 'title', 'title-content' ) ).toEqual( true );
+		expect( model.schema.checkChild( '$root', 'title' ) ).toEqual( true );
+		expect( model.schema.checkChild( '$root', 'title-content' ) ).toEqual( false );
+		expect( model.schema.checkChild( '$block', 'title-content' ) ).toEqual( false );
+		expect( model.schema.checkChild( 'title-content', '$text' ) ).toEqual( true );
+		expect( model.schema.checkChild( 'title-content', '$block' ) ).toEqual( false );
 
-		expect( model.schema.checkAttribute( [ 'title-content' ], 'alignment' ) ).to.equal( true );
+		expect( model.schema.checkAttribute( [ 'title-content' ], 'alignment' ) ).toEqual( true );
 
 		model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
-		expect( model.schema.checkAttribute( [ 'title-content', '$text' ], 'bold' ) ).to.equal( false );
+		expect( model.schema.checkAttribute( [ 'title-content', '$text' ], 'bold' ) ).toEqual( false );
 	} );
 
 	it( 'should convert title to h1', () => {
@@ -79,13 +81,13 @@ describe( 'Title', () => {
 			'<paragraph>Bar</paragraph>'
 		);
 
-		expect( editor.getData() ).to.equal( '<h1>Foo</h1><p>Bar</p>' );
+		expect( editor.getData() ).toEqual( '<h1>Foo</h1><p>Bar</p>' );
 	} );
 
 	it( 'should convert h1 to the title if it is the first root child', () => {
 		editor.setData( '<h1>Foo</h1><p>Bar</p>' );
 
-		expect( _getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).toEqual(
 			'<title><title-content>[]Foo</title-content></title>' +
 			'<paragraph>Bar</paragraph>'
 		);
@@ -94,7 +96,7 @@ describe( 'Title', () => {
 	it( 'should avoid calling post-fixers to parse view to correct model (h1)', () => {
 		const modelFrag = editor.data.parse( '<h1>Foo</h1><p>Bar</p>' );
 
-		expect( _stringifyModel( modelFrag ) ).to.equal(
+		expect( _stringifyModel( modelFrag ) ).toEqual(
 			'<title><title-content>Foo</title-content></title>' +
 			'<paragraph>Bar</paragraph>'
 		);
@@ -103,7 +105,7 @@ describe( 'Title', () => {
 	it( 'should avoid calling post-fixers to parse view to correct model (h2)', () => {
 		const modelFrag = editor.data.parse( '<h2>Foo</h2><p>Bar</p>' );
 
-		expect( _stringifyModel( modelFrag ) ).to.equal(
+		expect( _stringifyModel( modelFrag ) ).toEqual(
 			'<title><title-content>Foo</title-content></title>' +
 			'<paragraph>Bar</paragraph>'
 		);
@@ -112,14 +114,14 @@ describe( 'Title', () => {
 	it( 'should avoid calling post-fixers to parse view to correct model (h3)', () => {
 		const modelFrag = editor.data.parse( '<h3>Foo</h3><p>Bar</p>' );
 
-		expect( _stringifyModel( modelFrag ) ).to.equal(
+		expect( _stringifyModel( modelFrag ) ).toEqual(
 			'<title><title-content>Foo</title-content></title>' +
 			'<paragraph>Bar</paragraph>'
 		);
 	} );
 
 	it( 'should allow to override custom v->m title converter', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		editor.data.upcastDispatcher.on( 'element:h1', ( evt, data, api ) => {
 			api.consumable.consume( data.viewItem, { name: true } );
@@ -128,7 +130,7 @@ describe( 'Title', () => {
 
 		editor.setData( '<h1>Foo</h1><p>Bar</p>' );
 
-		sinon.assert.called( spy );
+		expect( spy ).toHaveBeenCalled();
 	} );
 
 	describe( 'model post-fixing', () => {
@@ -827,8 +829,8 @@ describe( 'Title', () => {
 
 			editor.keystrokes.press( eventData );
 
-			sinon.assert.calledOnce( eventData.preventDefault );
-			sinon.assert.calledOnce( eventData.stopPropagation );
+			expect( eventData.preventDefault ).toHaveBeenCalledTimes( 1 );
+			expect( eventData.stopPropagation ).toHaveBeenCalledTimes( 1 );
 			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[]bar</paragraph>'
@@ -845,8 +847,8 @@ describe( 'Title', () => {
 
 			editor.keystrokes.press( eventData );
 
-			sinon.assert.calledOnce( eventData.preventDefault );
-			sinon.assert.calledOnce( eventData.stopPropagation );
+			expect( eventData.preventDefault ).toHaveBeenCalledTimes( 1 );
+			expect( eventData.stopPropagation ).toHaveBeenCalledTimes( 1 );
 			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[]bar</paragraph>'
@@ -863,8 +865,8 @@ describe( 'Title', () => {
 
 			editor.keystrokes.press( eventData );
 
-			sinon.assert.notCalled( eventData.preventDefault );
-			sinon.assert.notCalled( eventData.stopPropagation );
+			expect( eventData.preventDefault ).not.toHaveBeenCalled();
+			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
 			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>fo[o</title-content></title>' +
 				'<paragraph>b]ar</paragraph>'
@@ -881,8 +883,8 @@ describe( 'Title', () => {
 
 			editor.keystrokes.press( eventData );
 
-			sinon.assert.notCalled( eventData.preventDefault );
-			sinon.assert.notCalled( eventData.stopPropagation );
+			expect( eventData.preventDefault ).not.toHaveBeenCalled();
+			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
 			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[]bar</paragraph>'
@@ -901,8 +903,8 @@ describe( 'Title', () => {
 
 			editor.keystrokes.press( eventData );
 
-			sinon.assert.calledOnce( eventData.preventDefault );
-			sinon.assert.calledOnce( eventData.stopPropagation );
+			expect( eventData.preventDefault ).toHaveBeenCalledTimes( 1 );
+			expect( eventData.stopPropagation ).toHaveBeenCalledTimes( 1 );
 			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]foo</title-content></title>' +
 				'<paragraph>bar</paragraph>'
@@ -919,8 +921,8 @@ describe( 'Title', () => {
 
 			editor.keystrokes.press( eventData );
 
-			sinon.assert.notCalled( eventData.preventDefault );
-			sinon.assert.notCalled( eventData.stopPropagation );
+			expect( eventData.preventDefault ).not.toHaveBeenCalled();
+			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
 			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>b[]ar</paragraph>'
@@ -937,8 +939,8 @@ describe( 'Title', () => {
 
 			editor.keystrokes.press( eventData );
 
-			sinon.assert.notCalled( eventData.preventDefault );
-			sinon.assert.notCalled( eventData.stopPropagation );
+			expect( eventData.preventDefault ).not.toHaveBeenCalled();
+			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
 			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[b]ar</paragraph>'
@@ -955,8 +957,8 @@ describe( 'Title', () => {
 
 			editor.keystrokes.press( eventData );
 
-			sinon.assert.notCalled( eventData.preventDefault );
-			sinon.assert.notCalled( eventData.stopPropagation );
+			expect( eventData.preventDefault ).not.toHaveBeenCalled();
+			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
 			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]foo</title-content></title>' +
 				'<paragraph>bar</paragraph>'
@@ -970,7 +972,7 @@ describe( 'Title', () => {
 		beforeEach( async () => {
 			// Title logs a single `title-no-supported-root` warning when no root accepts the title element;
 			// silence it here so the CI watchdog for unexpected console output does not fail the suite.
-			warnStub = sinon.stub( console, 'warn' );
+			warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			inlineElement = document.createElement( 'div' );
 			document.body.appendChild( inlineElement );
@@ -987,7 +989,7 @@ describe( 'Title', () => {
 		afterEach( async () => {
 			await inlineEditor.destroy();
 			inlineElement.remove();
-			warnStub.restore();
+			warnStub.mockRestore();
 		} );
 
 		it( 'should not allow title as a child of $inlineRoot', () => {
@@ -1050,8 +1052,8 @@ describe( 'Title', () => {
 
 			inlineEditor.keystrokes.press( eventData );
 
-			sinon.assert.notCalled( eventData.preventDefault );
-			sinon.assert.notCalled( eventData.stopPropagation );
+			expect( eventData.preventDefault ).not.toHaveBeenCalled();
+			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not throw when the view post-fixer runs after a model change on $inlineRoot', () => {
@@ -1073,7 +1075,7 @@ describe( 'Title', () => {
 		let warnStub, warnEditorElement, warnEditor;
 
 		beforeEach( () => {
-			warnStub = sinon.stub( console, 'warn' );
+			warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 			warnEditorElement = document.createElement( 'div' );
 			document.body.appendChild( warnEditorElement );
 		} );
@@ -1084,7 +1086,7 @@ describe( 'Title', () => {
 				warnEditor = null;
 			}
 			warnEditorElement.remove();
-			warnStub.restore();
+			warnStub.mockRestore();
 		} );
 
 		it( 'should not warn when at least one root supports the title element', async () => {
@@ -1107,14 +1109,14 @@ describe( 'Title', () => {
 } );
 
 function countWarnings( warnStub, id ) {
-	return warnStub.getCalls().filter( call => String( call.args[ 0 ] ).includes( id ) ).length;
+	return warnStub.mock.calls.filter( call => String( call[ 0 ] ).includes( id ) ).length;
 }
 
 function getEventData( keyCode, { shiftKey = false } = {} ) {
 	return {
 		keyCode,
 		shiftKey,
-		preventDefault: sinon.spy(),
-		stopPropagation: sinon.spy()
+		preventDefault: vi.fn(),
+		stopPropagation: vi.fn()
 	};
 }

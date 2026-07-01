@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { areConnectedThroughProperties } from '../src/areconnectedthroughproperties.js';
 
 describe( 'areConnectedThroughProperties()', () => {
@@ -10,35 +11,35 @@ describe( 'areConnectedThroughProperties()', () => {
 		const el1 = [ 'foo' ];
 		const el2 = 'foo';
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( false );
 	} );
 
 	it( 'should return `false` if one of the value is primitive #2', () => {
 		const el1 = 0;
 		const el2 = [ 0 ];
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( false );
 	} );
 
 	it( 'should return `false` if both of the values are primitives', () => {
 		const el1 = null;
 		const el2 = null;
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( false );
 	} );
 
 	it( 'should return `false` if both values are plain objects', () => {
 		const el1 = {};
 		const el2 = {};
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( false );
 	} );
 
 	it( 'should return `true` if both objects references to the same object', () => {
 		const el1 = {};
 		const el2 = el1;
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.true;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( true );
 	} );
 
 	it( 'should return `true` if both values share a common reference #1', () => {
@@ -46,7 +47,7 @@ describe( 'areConnectedThroughProperties()', () => {
 		const el1 = { foo };
 		const el2 = { foo };
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.true;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( true );
 	} );
 
 	it( 'should return `true` if both values share a common reference #2', () => {
@@ -54,7 +55,7 @@ describe( 'areConnectedThroughProperties()', () => {
 		const el1 = [ foo ];
 		const el2 = [ foo ];
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.true;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( true );
 	} );
 
 	it( 'should return `true` if the first structure is deep inside the second structure', () => {
@@ -72,7 +73,7 @@ describe( 'areConnectedThroughProperties()', () => {
 			] ) ]
 		};
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.true;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( true );
 	} );
 
 	it( 'should return `true` if the second structure is deep inside the first structure', () => {
@@ -90,7 +91,7 @@ describe( 'areConnectedThroughProperties()', () => {
 			] ) ]
 		};
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.true;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( true );
 	} );
 
 	it( 'should return `true` if both structures have a common reference', () => {
@@ -120,7 +121,7 @@ describe( 'areConnectedThroughProperties()', () => {
 			] ) ]
 		};
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.true;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( true );
 	} );
 
 	it( 'should return `false` if the structures is not connected #1', () => {
@@ -138,7 +139,7 @@ describe( 'areConnectedThroughProperties()', () => {
 			] ) ]
 		};
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( false );
 	} );
 
 	it( 'should return `false` if the structures is not connected #2', () => {
@@ -166,7 +167,7 @@ describe( 'areConnectedThroughProperties()', () => {
 			] ) ]
 		};
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( false );
 	} );
 
 	it( 'should work well with nested objects #1', () => {
@@ -176,7 +177,7 @@ describe( 'areConnectedThroughProperties()', () => {
 		const el2 = {};
 		el2.foo = el2;
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( false );
 	} );
 
 	it( 'should work well with nested objects #2', () => {
@@ -189,7 +190,7 @@ describe( 'areConnectedThroughProperties()', () => {
 			bar: el1
 		};
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.true;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( true );
 	} );
 
 	it( 'should skip DOM objects', () => {
@@ -197,7 +198,7 @@ describe( 'areConnectedThroughProperties()', () => {
 		const el1 = { window, document, evt };
 		const el2 = { window, document, evt };
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( false );
 	} );
 
 	it( 'should skip date and regexp objects', () => {
@@ -207,6 +208,6 @@ describe( 'areConnectedThroughProperties()', () => {
 		const el1 = { date, regexp };
 		const el2 = { date, regexp };
 
-		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+		expect( areConnectedThroughProperties( el1, el2 ) ).toBe( false );
 	} );
 } );

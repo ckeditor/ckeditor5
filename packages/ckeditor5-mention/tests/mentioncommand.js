@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -39,7 +40,7 @@ describe( 'MentionCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should return true if characters with the attribute can be placed at caret position', () => {
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
@@ -51,7 +52,7 @@ describe( 'MentionCommand', () => {
 			} );
 
 			_setModelData( model, '<x>fo[]o</x>' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should return false if caret is inside a code block', () => {
@@ -68,7 +69,7 @@ describe( 'MentionCommand', () => {
 			}, 'mention' );
 
 			_setModelData( model, '<codeBlock>fo[]o</codeBlock>' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -96,7 +97,7 @@ describe( 'MentionCommand', () => {
 				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
 			} );
 
-			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.be.null;
+			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).toBeNull();
 		} );
 
 		it( 'inserts mention object with data if mention was passed as object', () => {
@@ -110,7 +111,7 @@ describe( 'MentionCommand', () => {
 
 			const mentionNode = doc.getRoot().getChild( 0 ).getChild( 1 );
 			assertMention( mentionNode, '@John' );
-			expect( mentionNode.getAttribute( 'mention' ) ).to.have.property( 'userId', '123456' );
+			expect( mentionNode.getAttribute( 'mention' ) ).toHaveProperty( 'userId', '123456' );
 		} );
 
 		it( 'inserts options.text as mention text', () => {
@@ -165,7 +166,7 @@ describe( 'MentionCommand', () => {
 
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
 			assertMention( textNode, '@John' );
-			expect( textNode.hasAttribute( 'bold' ) ).to.be.true;
+			expect( textNode.hasAttribute( 'bold' ) ).toBe( true );
 		} );
 
 		it( 'should throw if marker does not match mention id', () => {
@@ -192,7 +193,7 @@ describe( 'MentionCommand', () => {
 
 			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
 
-			expect( _getModelData( model ) ).to.match(
+			expect( _getModelData( model ) ).toMatch(
 				/<paragraph>foo <\$text mention="{"uid":"[^"]+","_text":"@John","id":"@John"}">@John\[\]<\/\$text> bar<\/paragraph>/
 			);
 		} );
@@ -216,7 +217,7 @@ describe( 'MentionCommand', () => {
 
 				assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
 
-				expect( _getModelData( model ) ).to.match(
+				expect( _getModelData( model ) ).toMatch(
 					new RegExp( '<paragraph>\\' + openingBracket +
 						'<\\$text mention="{"uid":"[^"]+","_text":"@John","id":"@John"}">@John\\[\\]</\\$text>\\' +
 						closingBracket + '</paragraph>'
@@ -227,9 +228,9 @@ describe( 'MentionCommand', () => {
 	} );
 
 	function assertMention( textNode, id ) {
-		expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-		expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'uid' );
-		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', textNode.data );
-		expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', id );
+		expect( textNode.hasAttribute( 'mention' ) ).toBe( true );
+		expect( textNode.getAttribute( 'mention' ) ).toHaveProperty( 'uid' );
+		expect( textNode.getAttribute( 'mention' ) ).toHaveProperty( '_text', textNode.data );
+		expect( textNode.getAttribute( 'mention' ) ).toHaveProperty( 'id', id );
 	}
 } );

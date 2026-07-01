@@ -337,10 +337,12 @@ describe( 'ImageEditing', () => {
 
 				editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
+				// A block image cannot land here (`imageBlock` is disallowed in `$root` and `<div>` only accepts inline
+				// content), so it degrades to an inline image instead of being dropped.
 				editor.setData( '<div><figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure></div>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<div></div>' );
+					.to.equal( '<div><imageInline alt="alt text" src="/assets/sample.png"></imageInline></div>' );
 
 				model.schema.addChildCheck( ( ctx, childDef ) => {
 					if ( childDef.name == 'imageInline' ) {
@@ -354,6 +356,25 @@ describe( 'ImageEditing', () => {
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div></div>' );
+			} );
+
+			it( 'should upcast a bare <img> as a block image when inline images are disallowed', () => {
+				// The reverse of the inline-root case: an `<img>` resolves to an inline image from its view structure,
+				// but when `imageInline` is disallowed (and `imageBlock` can land via autohoisting) it degrades to a
+				// block image instead of being dropped.
+				model.schema.addChildCheck( ( ctx, childDef ) => {
+					if ( childDef.name == 'imageInline' ) {
+						return false;
+					}
+				} );
+
+				editor.setData( '<p>foo<img src="/assets/sample.png" alt="alt text" />bar</p>' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>' +
+					'<paragraph>bar</paragraph>'
+				);
 			} );
 
 			it( 'should not convert if img is already consumed', () => {
@@ -634,8 +655,11 @@ describe( 'ImageEditing', () => {
 
 					editor.setData( '<limit><div>foo<figure class="image"><img src="foo.jpg" alt="foo" /></figure>bar</div></limit>' );
 
-					// <limit> element does not have converters so it is not converted.
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<limit><div>foobar</div></limit>' );
+					// The `<limit>` element has no converters so it is not converted. The block image cannot land inside the
+					// `<div>` (and cannot break out of the limit), so it degrades to an inline image instead of being dropped.
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<limit><div>foo<imageInline alt="foo" src="foo.jpg"></imageInline>bar</div></limit>'
+					);
 
 					editor.setData( '<limit><div>foo<img src="foo.jpg" alt="foo" />bar</div></limit>' );
 

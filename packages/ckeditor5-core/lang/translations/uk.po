@@ -162,3 +162,19 @@ msgstr "Обернути текст"
 msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "Розірвати тексту"
+
+msgctxt "The label for the resize option that allows the user to enter a custom size."
+msgid "Custom"
+msgstr "Власний"
+
+msgctxt "The default label for the resize option that resets the size."
+msgid "Original"
+msgstr "Оригінал"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with a blank value."
+msgid "The value must not be empty."
+msgstr "Значення не може бути порожнім."
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with an incorrect value."
+msgid "The value should be a plain number."
+msgstr "Значення має виражатись простим числом."

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { modifySelection } from '../../../src/model/utils/modifyselection.js';
 import { _setModelData, _stringifyModel } from '../../../src/dev-utils/model.js';
@@ -68,8 +69,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>f[o]o</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>f[o]o</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -83,8 +84,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo[ba]r</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>foo[ba]r</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -98,8 +99,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[f]oo</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[f]oo</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -114,8 +115,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>foob[]ar</p>' );
-					expect( doc.selection.isBackward ).to.false;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>foob[]ar</p>' );
+					expect( doc.selection.isBackward ).toBe( false );
 				} );
 
 				test(
@@ -129,8 +130,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo[b̂]ar</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>foo[b̂]ar</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -144,8 +145,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>fo[o̻̐ͩ]bar</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>fo[o̻̐ͩ]bar</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -165,8 +166,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[\uD83D\uDCA9]</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[\uD83D\uDCA9]</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 			} );
 
@@ -182,8 +183,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p></p><p>[</p><p>]</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p></p><p>[</p><p>]</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -197,8 +198,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>a[</p><p>]bcd</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>a[</p><p>]bcd</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -212,8 +213,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>ab[c</p><p>]d</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>ab[c</p><p>]d</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -246,8 +247,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p></p><p>[]</p>' );
-					expect( doc.selection.isBackward ).to.false;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p></p><p>[]</p>' );
+					expect( doc.selection.isBackward ).toBe( false );
 				} );
 
 				it( 'shrinks over boundary of empty elements (backward)', () => {
@@ -255,8 +256,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[]</p><p></p>' );
-					expect( doc.selection.isBackward ).to.false;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[]</p><p></p>' );
+					expect( doc.selection.isBackward ).toBe( false );
 				} );
 
 				it( 'shrinks over boundary of non-empty elements', () => {
@@ -264,8 +265,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>a</p><p>[]b</p>' );
-					expect( doc.selection.isBackward ).to.false;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>a</p><p>[]b</p>' );
+					expect( doc.selection.isBackward ).toBe( false );
 				} );
 
 				test(
@@ -280,8 +281,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p><$text bold="true">foo[]</$text>b</p>' );
-					expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p><$text bold="true">foo[]</$text>b</p>' );
+					expect( doc.selection.getAttribute( 'bold' ) ).toBe( true );
 				} );
 			} );
 
@@ -341,7 +342,7 @@ describe( 'DataController utils', () => {
 
 				modifySelection( model, doc.selection, { unit: 'codePoint' } );
 
-				expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '[]' );
+				expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '[]' );
 			} );
 
 			test(
@@ -363,8 +364,8 @@ describe( 'DataController utils', () => {
 
 				modifySelection( model, doc.selection, { unit: 'codePoint', direction: 'backward' } );
 
-				expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>f[o]o</p>' );
-				expect( doc.selection.isBackward ).to.true;
+				expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>f[o]o</p>' );
+				expect( doc.selection.isBackward ).toBe( true );
 			} );
 
 			test(
@@ -383,8 +384,8 @@ describe( 'DataController utils', () => {
 				const testSelection = model.createSelection( doc.selection );
 				modifySelection( model, testSelection, { unit: 'codePoint', direction: 'backward' } );
 
-				expect( _stringifyModel( doc.getRoot(), testSelection ) ).to.equal( '<p>foob[̂]ar</p>' );
-				expect( testSelection.isBackward ).to.true;
+				expect( _stringifyModel( doc.getRoot(), testSelection ) ).toBe( '<p>foob[̂]ar</p>' );
+				expect( testSelection.isBackward ).toBe( true );
 			} );
 
 			test(
@@ -406,8 +407,8 @@ describe( 'DataController utils', () => {
 
 				modifySelection( model, doc.selection, { unit: 'codePoint', direction: 'backward' } );
 
-				expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[\uD83D\uDCA9]</p>' );
-				expect( doc.selection.isBackward ).to.true;
+				expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[\uD83D\uDCA9]</p>' );
+				expect( doc.selection.isBackward ).toBe( true );
 			} );
 		} );
 
@@ -463,8 +464,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo [baa]r</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>foo [baa]r</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -479,8 +480,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[ff]oo</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[ff]oo</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -495,8 +496,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>foob[ar] baz</p>' );
-					expect( doc.selection.isBackward ).to.false;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>foob[ar] baz</p>' );
+					expect( doc.selection.isBackward ).toBe( false );
 				} );
 
 				test(
@@ -511,8 +512,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward', unit: 'word' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[foob̂]ar</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[foob̂]ar</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -527,8 +528,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>fo[o̻̐ͩ]bar</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>fo[o̻̐ͩ]bar</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -550,8 +551,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[foo\uD83D\uDCA9]</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[foo\uD83D\uDCA9]</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				it( 'expands backward selection to the word begin in the paragraph with soft break', () => {
@@ -559,7 +560,7 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>Foo<br></br>[Bar]</p>' );
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>Foo<br></br>[Bar]</p>' );
 				} );
 
 				it( 'expands backward selection to the whole paragraph in the paragraph with soft break', () => {
@@ -568,11 +569,11 @@ describe( 'DataController utils', () => {
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>Foo[<br></br>Bar]</p>' );
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>Foo[<br></br>Bar]</p>' );
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[Foo<br></br>Bar]</p>' );
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[Foo<br></br>Bar]</p>' );
 				} );
 
 				it( 'expands forward selection to the word end in the paragraph with soft break', () => {
@@ -580,7 +581,7 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'forward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[Foo]<br></br>Bar</p>' );
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[Foo]<br></br>Bar</p>' );
 				} );
 
 				it( 'expands forward selection to the whole paragraph in the paragraph with soft break', () => {
@@ -589,11 +590,11 @@ describe( 'DataController utils', () => {
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'forward' } );
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'forward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[Foo<br></br>]Bar</p>' );
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[Foo<br></br>]Bar</p>' );
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'forward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[Foo<br></br>Bar]</p>' );
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[Foo<br></br>Bar]</p>' );
 				} );
 
 				function testStopCharacter( stopCharacter ) {
@@ -610,8 +611,8 @@ describe( 'DataController utils', () => {
 
 							modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-							expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( `<p>foo${ stopCharacter }[ba]r</p>` );
-							expect( doc.selection.isBackward ).to.true;
+							expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( `<p>foo${ stopCharacter }[ba]r</p>` );
+							expect( doc.selection.isBackward ).toBe( true );
 						} );
 
 						it( 'extends whole word backward', () => {
@@ -619,8 +620,8 @@ describe( 'DataController utils', () => {
 
 							modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-							expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( `<p>[fo]o${ stopCharacter }bar</p>` );
-							expect( doc.selection.isBackward ).to.true;
+							expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( `<p>[fo]o${ stopCharacter }bar</p>` );
+							expect( doc.selection.isBackward ).toBe( true );
 						} );
 
 						test(
@@ -652,10 +653,10 @@ describe( 'DataController utils', () => {
 
 							modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-							expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal(
+							expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe(
 								`<p>foobarbaz${ stopCharacter }[foo<$text bold="true">bar</$text>baz]</p>`
 							);
-							expect( doc.selection.isBackward ).to.true;
+							expect( doc.selection.isBackward ).toBe( true );
 						} );
 
 						it( 'extends whole word backward to the previous word ignoring attributes - case 2', () => {
@@ -666,10 +667,10 @@ describe( 'DataController utils', () => {
 
 							modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-							expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal(
+							expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe(
 								`<p>foobarbaz${ stopCharacter }[<$text bold="true">bar</$text>baz]</p>`
 							);
-							expect( doc.selection.isBackward ).to.true;
+							expect( doc.selection.isBackward ).toBe( true );
 						} );
 					} );
 				}
@@ -804,8 +805,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p></p><p>[</p><p>]</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p></p><p>[</p><p>]</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -820,8 +821,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>a[</p><p>]bcd</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>a[</p><p>]bcd</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -836,8 +837,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>ab[c</p><p>]d</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>ab[c</p><p>]d</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 
 				test(
@@ -873,8 +874,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p></p><p>[]</p>' );
-					expect( doc.selection.isBackward ).to.false;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p></p><p>[]</p>' );
+					expect( doc.selection.isBackward ).toBe( false );
 				} );
 
 				it( 'shrinks over boundary of empty elements (backward)', () => {
@@ -882,8 +883,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[]</p><p></p>' );
-					expect( doc.selection.isBackward ).to.false;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[]</p><p></p>' );
+					expect( doc.selection.isBackward ).toBe( false );
 				} );
 
 				it( 'shrinks over boundary of non-empty elements', () => {
@@ -891,8 +892,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>a</p><p>[]b</p>' );
-					expect( doc.selection.isBackward ).to.false;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>a</p><p>[]b</p>' );
+					expect( doc.selection.isBackward ).toBe( false );
 				} );
 
 				test(
@@ -907,8 +908,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>[<$text bold="true">foo</$text>]b</p>' );
-					expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>[<$text bold="true">foo</$text>]b</p>' );
+					expect( doc.selection.getAttribute( 'bold' ) ).toBe( true );
 				} );
 
 				// https://github.com/ckeditor/ckeditor5/issues/12673.
@@ -942,7 +943,7 @@ describe( 'DataController utils', () => {
 						)
 					) );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal(
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe(
 						'<p>' +
 							'ABC ' +
 							'[<$text bold="true">foo</$text>' +
@@ -1044,8 +1045,8 @@ describe( 'DataController utils', () => {
 
 				modifySelection( model, doc.selection, { direction: 'backward' } );
 
-				expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '[<obj></obj><obj></obj>]' );
-				expect( doc.selection.isBackward ).to.true;
+				expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '[<obj></obj><obj></obj>]' );
+				expect( doc.selection.isBackward ).toBe( true );
 			} );
 
 			test(
@@ -1114,8 +1115,8 @@ describe( 'DataController utils', () => {
 
 				modifySelection( model, doc.selection, { direction: 'backward' } );
 
-				expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '[<sel></sel><sel></sel>]' );
-				expect( doc.selection.isBackward ).to.true;
+				expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '[<sel></sel><sel></sel>]' );
+				expect( doc.selection.isBackward ).toBe( true );
 			} );
 
 			test(
@@ -1245,8 +1246,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { treatEmojiAsSingleUnit: true, direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo[\u{1F1E7}\u{1F1EA}ba]r</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>foo[\u{1F1E7}\u{1F1EA}ba]r</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 			} );
 
@@ -1297,8 +1298,8 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { treatEmojiAsSingleUnit: false, direction: 'backward' } );
 
-					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo\u{1F1E7}[\u{1F1EA}ba]r</p>' );
-					expect( doc.selection.isBackward ).to.true;
+					expect( _stringifyModel( doc.getRoot(), doc.selection ) ).toBe( '<p>foo\u{1F1E7}[\u{1F1EA}ba]r</p>' );
+					expect( doc.selection.isBackward ).toBe( true );
 				} );
 			} );
 		} );
@@ -1317,7 +1318,7 @@ describe( 'DataController utils', () => {
 			const testSelection = model.createSelection( doc.selection );
 			modifySelection( model, testSelection, options );
 
-			expect( _stringifyModel( doc.getRoot(), testSelection ) ).to.equal( output );
+			expect( _stringifyModel( doc.getRoot(), testSelection ) ).toBe( output );
 		} );
 	}
 } );

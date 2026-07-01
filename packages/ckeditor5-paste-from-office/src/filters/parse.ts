@@ -38,6 +38,13 @@ export function parsePasteOfficeHtml( htmlString: string, stylesProcessor: Style
 
 	normalizeSpacerunSpans( htmlDocument );
 
+	// Remove `<style>` blocks that ended up inside the `<body>`. Some sources (e.g. Excel Online) wrap a whole
+	// `<html>` document inside a `<div>`, which makes the browser flatten the document's `<style>` into the body.
+	// Such a `<style>` is not a usable stylesheet there and would otherwise be pasted as visible text.
+	// See https://github.com/ckeditor/ckeditor5/issues/20188.
+	// In-`<head>` styles are left untouched and are still collected by `extractStyles()` below.
+	removeInBodyStyleBlocks( htmlDocument );
+
 	// Get `innerHTML` first as transforming to View modifies the source document.
 	const bodyString = htmlDocument.body.innerHTML;
 
@@ -97,6 +104,20 @@ function documentToView( htmlDocument: Document, stylesProcessor: StylesProcesso
 	}
 
 	return domConverter.domToView( fragment, { skipComments: true } ) as ViewDocumentFragment;
+}
+
+/**
+ * Removes all `<style>` elements found inside the `<body>` of the provided `htmlDocument`.
+ *
+ * This guards against sources that place (or flatten) a `<style>` block into the body, where its CSS text
+ * would otherwise be converted to visible text. Styles located in the `<head>` are not affected.
+ *
+ * @param htmlDocument Native `Document` object to be cleaned.
+ */
+function removeInBodyStyleBlocks( htmlDocument: Document ): void {
+	for ( const style of Array.from( htmlDocument.body.querySelectorAll( 'style' ) ) ) {
+		style.remove();
+	}
 }
 
 /**

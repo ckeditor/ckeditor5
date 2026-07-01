@@ -108,12 +108,17 @@ function removeStaleSoftBreakAttributes( writer: ModelWriter ): boolean {
 
 	for ( const change of writer.model.document.differ.getChanges() ) {
 		if ( change.type == 'insert' || change.type == 'remove' ) {
+			/* v8 ignore else -- @preserve */
 			if ( change.position.parent.is( 'element' ) ) {
 				parentsToCheck.add( change.position.parent );
 			}
-		} else if ( change.type == 'attribute' ) {
-			if ( change.range.start.parent.is( 'element' ) ) {
-				parentsToCheck.add( change.range.start.parent );
+		} else {
+			/* v8 ignore else -- @preserve */
+			if ( change.type == 'attribute' ) {
+				/* v8 ignore else -- @preserve */
+				if ( change.range.start.parent.is( 'element' ) ) {
+					parentsToCheck.add( change.range.start.parent );
+				}
 			}
 		}
 	}

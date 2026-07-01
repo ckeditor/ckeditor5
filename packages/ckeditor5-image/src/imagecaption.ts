@@ -7,7 +7,7 @@
  * @module image/imagecaption
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ImageCaptionEditing } from './imagecaption/imagecaptionediting.js';
 import { ImageCaptionUI } from './imagecaption/imagecaptionui.js';
 
@@ -22,8 +22,8 @@ export class ImageCaption extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageCaptionEditing, ImageCaptionUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageCaptionEditing, ImageCaptionUI ]> {
+		return [ ImageCaptionEditing, ImageCaptionUI ];
 	}
 
 	/**

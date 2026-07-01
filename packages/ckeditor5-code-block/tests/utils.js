@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { canBeCodeBlock, getTextNodeAtLineStart } from '../src/utils.js';
@@ -15,8 +16,8 @@ describe( 'CodeBlock - utils', () => {
 
 			const testResult = canBeCodeBlock( model.schema, root );
 
-			expect( root.is( 'rootElement' ) ).to.be.true;
-			expect( testResult ).to.be.false;
+			expect( root.is( 'rootElement' ) ).toBe( true );
+			expect( testResult ).toBe( false );
 		} );
 
 		it( 'should not allow a limit element to become a code block', () => {
@@ -35,8 +36,8 @@ describe( 'CodeBlock - utils', () => {
 
 			const testResult = canBeCodeBlock( model.schema, limitElement );
 
-			expect( model.schema.isLimit( limitElement ) ).to.be.true;
-			expect( testResult ).to.be.false;
+			expect( model.schema.isLimit( limitElement ) ).toBe( true );
+			expect( testResult ).toBe( false );
 		} );
 
 		it( 'should not allow an element to become a code block if it isnt allowed in parent', () => {
@@ -60,7 +61,7 @@ describe( 'CodeBlock - utils', () => {
 
 			const testResult = canBeCodeBlock( model.schema, fooElement );
 
-			expect( testResult ).to.be.false;
+			expect( testResult ).toBe( false );
 		} );
 
 		it( 'should allow an element to become a code block if it is allowed in parent', () => {
@@ -84,7 +85,7 @@ describe( 'CodeBlock - utils', () => {
 
 			const testResult = canBeCodeBlock( model.schema, fooElement );
 
-			expect( testResult ).to.be.true;
+			expect( testResult ).toBe( true );
 		} );
 	} );
 
@@ -210,9 +211,9 @@ describe( 'CodeBlock - utils', () => {
 				}
 
 				if ( output ) {
-					expect( _getModelData( model ) ).to.equal( output );
+					expect( _getModelData( model ) ).toBe( output );
 				} else {
-					expect( textNode ).to.be.null;
+					expect( textNode ).toBeNull();
 				}
 			} );
 		}

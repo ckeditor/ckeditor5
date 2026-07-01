@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { TextPartLanguageCommand } from '../src/textpartlanguagecommand.js';
@@ -12,7 +13,9 @@ import { TextPartLanguageCommand } from '../src/textpartlanguagecommand.js';
 describe( 'TextPartLanguageCommand', () => {
 	let editor, command, model, doc, root;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		return ModelTestEditor
@@ -53,7 +56,7 @@ describe( 'TextPartLanguageCommand', () => {
 				writer.setSelectionAttribute( 'language', 'fr:ltr' );
 			} );
 
-			expect( command.value ).to.equal( 'fr:ltr' );
+			expect( command.value ).toEqual( 'fr:ltr' );
 		} );
 
 		it( 'is false when collapsed selection does not have the attribute', () => {
@@ -65,37 +68,37 @@ describe( 'TextPartLanguageCommand', () => {
 				writer.removeSelectionAttribute( 'language' );
 			} );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'includes language when the first item that allows attribute has the attribute #1', () => {
 			_setModelData( model, '<p><$text language="fr:ltr">fo[o</$text></p><h1>b]ar</h1>' );
 
-			expect( command.value ).to.equal( 'fr:ltr' );
+			expect( command.value ).toEqual( 'fr:ltr' );
 		} );
 
 		it( 'includes language when the first item that allows attribute has the attribute #2', () => {
 			_setModelData( model, '<h1>fo[o</h1><p><$text language="fr:ltr">f</$text>o]o</p>' );
 
-			expect( command.value ).to.equal( 'fr:ltr' );
+			expect( command.value ).toEqual( 'fr:ltr' );
 		} );
 
 		it( 'is false when the selection does not have the attribute', () => {
 			_setModelData( model, '<p>[foo]bar</p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'is false when the first item that allows attribute does not have the attribute #1', () => {
 			_setModelData( model, '<p>b[a<$text language="fr:ltr">r</$text></p><h1>fo]o</h1>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'is false when the first item that allows attribute does not have the attribute #2', () => {
 			_setModelData( model, '<h1>fo[o</h1><p>b<$text language="fr:ltr">r</$text>r]</p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'includes language when the first item that allows attribute has the attribute - object with nested editable', () => {
@@ -111,12 +114,12 @@ describe( 'TextPartLanguageCommand', () => {
 
 			_setModelData( model, '<p>[<img><caption>Some caption inside the image.</caption></img>]</p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 			command.execute( { languageCode: 'fr', textDirection: 'ltr' } );
 
-			expect( command.value ).to.equal( 'fr:ltr' );
+			expect( command.value ).toEqual( 'fr:ltr' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<p>[<img><caption><$text language="fr:ltr">Some caption inside the image.</$text></caption></img>]</p>'
 			);
 		} );
@@ -133,31 +136,31 @@ describe( 'TextPartLanguageCommand', () => {
 		describe( 'when selection is collapsed', () => {
 			it( 'should return true if characters with the attribute can be placed at caret position', () => {
 				_setModelData( model, '<p>f[]oo</p>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
 				_setModelData( model, '<x>fo[]o</x>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
 		describe( 'when selection is not collapsed', () => {
 			it( 'should return true if there is at least one node in selection that can have the attribute', () => {
 				_setModelData( model, '<p>[foo]</p>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
 				_setModelData( model, '<x>[foo]</x>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
 		it( 'should be disabled in a readonly mode', () => {
 			editor.enableReadOnlyMode( 'unit-test' );
 			_setModelData( model, '<p>f[]oo</p>' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -169,40 +172,40 @@ describe( 'TextPartLanguageCommand', () => {
 
 			command.execute( { languageCode: 'fr', textDirection: 'ltr' } );
 
-			expect( _getModelData( model ) ).to.equal( '<p>fo[ob]ar</p>' );
+			expect( _getModelData( model ) ).toEqual( '<p>fo[ob]ar</p>' );
 		} );
 
 		it( 'should add attribute on selected nodes if the command value was not set', () => {
 			_setModelData( model, '<p>a[bc<$text language="fr:ltr">fo]obar</$text>xyz</p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			command.execute( { languageCode: 'fr', textDirection: 'ltr' } );
 
-			expect( command.value ).to.equal( 'fr:ltr' );
-			expect( _getModelData( model ) ).to.equal( '<p>a[<$text language="fr:ltr">bcfo]obar</$text>xyz</p>' );
+			expect( command.value ).toEqual( 'fr:ltr' );
+			expect( _getModelData( model ) ).toEqual( '<p>a[<$text language="fr:ltr">bcfo]obar</$text>xyz</p>' );
 		} );
 
 		it( 'should remove attribute from selected nodes if the command value was not set', () => {
 			_setModelData( model, '<p>abc[<$text language="fr:ltr">foo]bar</$text>xyz</p>' );
 
-			expect( command.value ).to.equal( 'fr:ltr' );
+			expect( command.value ).toEqual( 'fr:ltr' );
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<p>abc[foo]<$text language="fr:ltr">bar</$text>xyz</p>' );
-			expect( command.value ).to.be.false;
+			expect( _getModelData( model ) ).toEqual( '<p>abc[foo]<$text language="fr:ltr">bar</$text>xyz</p>' );
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should replace attribute on selected nodes if execute parameter was set', () => {
 			_setModelData( model, '<p>abc<$text language="fr:ltr">foob[ar</$text>x]yz</p>' );
 
-			expect( command.value ).to.equal( 'fr:ltr' );
+			expect( command.value ).toEqual( 'fr:ltr' );
 
 			command.execute( { languageCode: 'ar', textDirection: 'rtl' } );
 
-			expect( command.value ).to.equal( 'ar:rtl' );
-			expect( _getModelData( model ) ).to.equal(
+			expect( command.value ).toEqual( 'ar:rtl' );
+			expect( _getModelData( model ) ).toEqual(
 				'<p>abc<$text language="fr:ltr">foob</$text>[<$text language="ar:rtl">arx</$text>]yz</p>'
 			);
 		} );
@@ -212,8 +215,8 @@ describe( 'TextPartLanguageCommand', () => {
 
 			command.execute( { languageCode: false } );
 
-			expect( command.value ).to.be.false;
-			expect( _getModelData( model ) ).to.equal( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
+			expect( command.value ).toBe( false );
+			expect( _getModelData( model ) ).toEqual( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
 		} );
 
 		it( 'should remove attribute on selected nodes if execute parameter was set to null', () => {
@@ -221,24 +224,24 @@ describe( 'TextPartLanguageCommand', () => {
 
 			command.execute( { languageCode: null } );
 
-			expect( command.value ).to.be.false;
-			expect( _getModelData( model ) ).to.equal( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
+			expect( command.value ).toBe( false );
+			expect( _getModelData( model ) ).toEqual( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
 		} );
 
 		it( 'should change selection attribute if selection is collapsed in non-empty parent', () => {
 			_setModelData( model, '<p>a[]bc<$text language="fr:ltr">foobar</$text>xyz</p><p></p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			command.execute( { languageCode: 'ar', textDirection: 'rtl' } );
 
-			expect( command.value ).to.equal( 'ar:rtl' );
-			expect( doc.selection.getAttribute( 'language' ) ).to.equal( 'ar:rtl' );
+			expect( command.value ).toEqual( 'ar:rtl' );
+			expect( doc.selection.getAttribute( 'language' ) ).toEqual( 'ar:rtl' );
 
 			command.execute( { languageCode: false } );
 
-			expect( command.value ).to.be.false;
-			expect( doc.selection.hasAttribute( 'language' ) ).to.be.false;
+			expect( command.value ).toBe( false );
+			expect( doc.selection.hasAttribute( 'language' ) ).toBe( false );
 		} );
 
 		it( 'should not store attribute change on selection if selection is collapsed in non-empty parent', () => {
@@ -260,18 +263,18 @@ describe( 'TextPartLanguageCommand', () => {
 				) );
 			} );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should change selection attribute and store it if selection is collapsed in empty parent', () => {
 			_setModelData( model, '<p>abc<$text language="fr:ltr">foobar</$text>xyz</p><p>[]</p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			command.execute( { languageCode: 'ar', textDirection: 'rtl' } );
 
-			expect( command.value ).to.equal( 'ar:rtl' );
-			expect( doc.selection.getAttribute( 'language' ) ).to.equal( 'ar:rtl' );
+			expect( command.value ).toEqual( 'ar:rtl' );
+			expect( doc.selection.getAttribute( 'language' ) ).toEqual( 'ar:rtl' );
 
 			// Attribute should be stored.
 			// Simulate clicking somewhere else in the editor.
@@ -279,7 +282,7 @@ describe( 'TextPartLanguageCommand', () => {
 				writer.setSelection( root.getNodeByPath( [ 0 ] ), 2 );
 			} );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			// Go back to where attribute was stored.
 			model.change( writer => {
@@ -287,12 +290,12 @@ describe( 'TextPartLanguageCommand', () => {
 			} );
 
 			// Attribute should be restored.
-			expect( command.value ).to.equal( 'ar:rtl' );
+			expect( command.value ).toEqual( 'ar:rtl' );
 
 			command.execute( { languageCode: false } );
 
-			expect( command.value ).to.be.false;
-			expect( doc.selection.hasAttribute( 'language' ) ).to.be.false;
+			expect( command.value ).toBe( false );
+			expect( doc.selection.hasAttribute( 'language' ) ).toBe( false );
 		} );
 
 		it( 'should force language text direction if textDirection was set', () => {
@@ -300,8 +303,8 @@ describe( 'TextPartLanguageCommand', () => {
 
 			command.execute( { languageCode: 'ar', textDirection: 'ltr' } );
 
-			expect( command.value ).to.equal( 'ar:ltr' );
-			expect( doc.selection.getAttribute( 'language' ) ).to.equal( 'ar:ltr' );
+			expect( command.value ).toEqual( 'ar:ltr' );
+			expect( doc.selection.getAttribute( 'language' ) ).toEqual( 'ar:ltr' );
 		} );
 
 		it( 'should detect language text direction if textDirection was not set', () => {
@@ -309,8 +312,8 @@ describe( 'TextPartLanguageCommand', () => {
 
 			command.execute( { languageCode: 'ar' } );
 
-			expect( command.value ).to.equal( 'ar:rtl' );
-			expect( doc.selection.getAttribute( 'language' ) ).to.equal( 'ar:rtl' );
+			expect( command.value ).toEqual( 'ar:rtl' );
+			expect( doc.selection.getAttribute( 'language' ) ).toEqual( 'ar:rtl' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/18430
@@ -323,15 +326,15 @@ describe( 'TextPartLanguageCommand', () => {
 				writer.setSelection( root.getNodeByPath( [ 1 ] ), 0 );
 			} );
 
-			expect( _getModelData( model ) ).to.include( 'selection:language="fr:ltr"' );
-			expect( command.value ).to.equal( 'fr:ltr' );
+			expect( _getModelData( model ) ).toContain( 'selection:language="fr:ltr"' );
+			expect( command.value ).toEqual( 'fr:ltr' );
 		} );
 
 		describe( 'model change event', () => {
 			let spy;
 
 			beforeEach( () => {
-				spy = sinon.spy();
+				spy = vi.fn();
 			} );
 
 			describe( 'should be fired when execute parameter was set to language', () => {
@@ -342,7 +345,7 @@ describe( 'TextPartLanguageCommand', () => {
 
 					command.execute( { languageCode: 'fr' } );
 
-					expect( spy.called ).to.be.true;
+					expect( spy ).toHaveBeenCalled();
 				} );
 
 				it( 'non-collapsed selection', () => {
@@ -352,7 +355,7 @@ describe( 'TextPartLanguageCommand', () => {
 
 					command.execute( { languageCode: 'fr' } );
 
-					expect( spy.called ).to.be.true;
+					expect( spy ).toHaveBeenCalled();
 				} );
 
 				it( 'in empty parent', () => {
@@ -362,7 +365,7 @@ describe( 'TextPartLanguageCommand', () => {
 
 					command.execute( { languageCode: 'fr' } );
 
-					expect( spy.called ).to.be.true;
+					expect( spy ).toHaveBeenCalled();
 				} );
 			} );
 
@@ -374,7 +377,7 @@ describe( 'TextPartLanguageCommand', () => {
 
 					command.execute( { languageCode: false } );
 
-					expect( spy.called ).to.be.false;
+					expect( spy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'non-collapsed selection', () => {
@@ -384,7 +387,7 @@ describe( 'TextPartLanguageCommand', () => {
 
 					command.execute( { languageCode: false } );
 
-					expect( spy.called ).to.be.false;
+					expect( spy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'in empty parent', () => {
@@ -394,7 +397,7 @@ describe( 'TextPartLanguageCommand', () => {
 
 					command.execute( { languageCode: false } );
 
-					expect( spy.called ).to.be.false;
+					expect( spy ).not.toHaveBeenCalled();
 				} );
 			} );
 		} );

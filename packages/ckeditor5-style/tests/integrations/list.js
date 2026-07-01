@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -10,15 +11,12 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { ImageBlock, ImageCaption } from '@ckeditor/ckeditor5-image';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { List } from '@ckeditor/ckeditor5-list';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ListStyleSupport } from '../../src/integrations/list.js';
 
 import { Style } from '../../src/style.js';
 
 describe( 'ListStyleSupport', () => {
 	let editor, editorElement, command, model, doc, root;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		await createEditor( [
@@ -48,14 +46,15 @@ describe( 'ListStyleSupport', () => {
 	afterEach( async () => {
 		editorElement.remove();
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListStyleSupport.isOfficialPlugin ).to.be.true;
+		expect( ListStyleSupport.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListStyleSupport.isPremiumPlugin ).to.be.false;
+		expect( ListStyleSupport.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'enabled styles', () => {
@@ -98,62 +97,73 @@ describe( 'ListStyleSupport', () => {
 			model.change( writer => writer.setSelection( root.getChild( 1 ), 0 ) );
 			command.refresh();
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 3 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
 
 			changeListType( root.getChild( 1 ), 'customNumbered' );
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 3 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
 		} );
 
 		it( 'OL style should be enabled for OL blocks (selection in the second block of the first list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 2 ), 0 ) );
 			command.refresh();
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 3 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
 
 			changeListType( root.getChild( 2 ), 'customNumbered' );
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 3 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
 		} );
 
 		it( 'OL style should be enabled for OL blocks (selection in the second list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 3 ), 0 ) );
 			command.refresh();
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 3 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
 
 			changeListType( root.getChild( 3 ), 'customNumbered' );
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 3 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
 		} );
 
 		it( 'OL style should be disabled for UL blocks (selection in the nested list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 4 ), 0 ) );
 			command.refresh();
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'UL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 3 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'UL style', 'P style' ] ) );
 
 			changeListType( root.getChild( 4 ), 'customBulleted' );
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'UL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 3 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'UL style', 'P style' ] ) );
 		} );
 
 		it( 'OL style should be enabled for OL blocks (selection in the nested list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 10 ), 0 ) );
 			command.refresh();
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 3 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
 
 			changeListType( root.getChild( 10 ), 'customNumbered' );
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 3 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
 		} );
 
 		it( 'OL style should be disabled for non list block', () => {
 			model.change( writer => writer.setSelection( root.getChild( 0 ), 0 ) );
 			command.refresh();
 
-			expect( command.enabledStyles ).to.have.members( [ 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 1 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'P style' ] ) );
 		} );
 
 		it( 'OL style should be disabled if htmlOlAttributes is disabled', () => {
@@ -166,7 +176,8 @@ describe( 'ListStyleSupport', () => {
 			model.change( writer => writer.setSelection( root.getChild( 1 ), 0 ) );
 			command.refresh();
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 2 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'P style' ] ) );
 		} );
 
 		it( 'UL style should be disabled if htmlUlAttributes is disabled', () => {
@@ -179,7 +190,8 @@ describe( 'ListStyleSupport', () => {
 			model.change( writer => writer.setSelection( root.getChild( 4 ), 0 ) );
 			command.refresh();
 
-			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 2 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'P style' ] ) );
 		} );
 
 		it( 'LI style should be disabled if htmlLiAttributes is disabled', () => {
@@ -192,7 +204,8 @@ describe( 'ListStyleSupport', () => {
 			model.change( writer => writer.setSelection( root.getChild( 1 ), 0 ) );
 			command.refresh();
 
-			expect( command.enabledStyles ).to.have.members( [ 'OL style', 'P style' ] );
+			expect( command.enabledStyles ).toHaveLength( 2 );
+			expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'OL style', 'P style' ] ) );
 		} );
 	} );
 
@@ -236,62 +249,72 @@ describe( 'ListStyleSupport', () => {
 			model.change( writer => writer.setSelection( root.getChild( 1 ), 0 ) );
 			command.refresh();
 
-			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
+			expect( command.value ).toHaveLength( 2 );
+			expect( command.value ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style' ] ) );
 
 			changeListType( root.getChild( 1 ), 'customNumbered' );
 
-			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
+			expect( command.value ).toHaveLength( 2 );
+			expect( command.value ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style' ] ) );
 		} );
 
 		it( 'OL style should be active for OL blocks (selection in the second block of the first list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 2 ), 0 ) );
 			command.refresh();
 
-			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
+			expect( command.value ).toHaveLength( 2 );
+			expect( command.value ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style' ] ) );
 
 			changeListType( root.getChild( 2 ), 'customNumbered' );
 
-			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
+			expect( command.value ).toHaveLength( 2 );
+			expect( command.value ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style' ] ) );
 		} );
 
 		it( 'OL style should be active for OL blocks (selection in the second list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 3 ), 0 ) );
 			command.refresh();
 
-			expect( command.value ).to.have.members( [ 'OL style' ] );
+			expect( command.value ).toHaveLength( 1 );
+			expect( command.value ).toEqual( expect.arrayContaining( [ 'OL style' ] ) );
 
 			changeListType( root.getChild( 3 ), 'customNumbered' );
 
-			expect( command.value ).to.have.members( [ 'OL style' ] );
+			expect( command.value ).toHaveLength( 1 );
+			expect( command.value ).toEqual( expect.arrayContaining( [ 'OL style' ] ) );
 		} );
 
 		it( 'UL style should be active for UL blocks (selection in the nested list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 4 ), 0 ) );
 			command.refresh();
 
-			expect( command.value ).to.have.members( [ 'UL style' ] );
+			expect( command.value ).toHaveLength( 1 );
+			expect( command.value ).toEqual( expect.arrayContaining( [ 'UL style' ] ) );
 
 			changeListType( root.getChild( 4 ), 'customBulleted' );
 
-			expect( command.value ).to.have.members( [ 'UL style' ] );
+			expect( command.value ).toHaveLength( 1 );
+			expect( command.value ).toEqual( expect.arrayContaining( [ 'UL style' ] ) );
 		} );
 
 		it( 'OL style should be enabled for OL blocks (selection in the nested list item)', () => {
 			model.change( writer => writer.setSelection( root.getChild( 10 ), 0 ) );
 			command.refresh();
 
-			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
+			expect( command.value ).toHaveLength( 2 );
+			expect( command.value ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style' ] ) );
 
 			changeListType( root.getChild( 10 ), 'customNumbered' );
 
-			expect( command.value ).to.have.members( [ 'LI style', 'OL style' ] );
+			expect( command.value ).toHaveLength( 2 );
+			expect( command.value ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style' ] ) );
 		} );
 
 		it( 'OL style should be disabled for non list block', () => {
 			model.change( writer => writer.setSelection( root.getChild( 0 ), 0 ) );
 			command.refresh();
 
-			expect( command.value ).to.be.empty;
+			expect( command.value ).toEqual( [] );
 		} );
 	} );
 
@@ -340,7 +363,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'OL style' } );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<p>foo</p>' +
 				'<ol class="ol-styled">' +
 					'<li>' +
@@ -382,7 +405,7 @@ describe( 'ListStyleSupport', () => {
 
 			command.execute( { styleName: 'OL style' } );
 
-			expect( root.getChild( 1 ).getAttribute( 'htmlOlAttributes' ).classes ).to.include.members( [ 'ol-styled' ] );
+			expect( root.getChild( 1 ).getAttribute( 'htmlOlAttributes' ).classes ).toEqual( expect.arrayContaining( [ 'ol-styled' ] ) );
 		} );
 
 		it( 'OL style should be applied to the closest list (without parent list)', () => {
@@ -390,7 +413,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'OL style' } );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<p>foo</p>' +
 				'<ol>' +
 					'<li>' +
@@ -431,7 +454,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'UL style' } );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<p>foo</p>' +
 				'<ol>' +
 					'<li>' +
@@ -473,7 +496,7 @@ describe( 'ListStyleSupport', () => {
 
 			command.execute( { styleName: 'UL style' } );
 
-			expect( root.getChild( 4 ).getAttribute( 'htmlUlAttributes' ).classes ).to.include.members( [ 'ul-styled' ] );
+			expect( root.getChild( 4 ).getAttribute( 'htmlUlAttributes' ).classes ).toEqual( expect.arrayContaining( [ 'ul-styled' ] ) );
 		} );
 
 		it( 'LI style should be applied to the whole list item', () => {
@@ -481,7 +504,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'LI style' } );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<p>foo</p>' +
 				'<ol>' +
 					'<li class="li-styled">' +
@@ -520,7 +543,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'LI style' } );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<p>foo</p>' +
 				'<ol>' +
 					'<li class="li-styled">' +
@@ -565,7 +588,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'OL style' } );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 				'<p>foo</p>' +
 				'<ol class="ol-styled">' +
 					'<li>' +
@@ -625,15 +648,18 @@ describe( 'ListStyleSupport', () => {
 		model.change( writer => writer.setSelection( root.getChild( 0 ), 0 ) );
 		command.refresh();
 
-		expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
-		expect( command.value ).to.be.empty;
+		expect( command.enabledStyles ).toHaveLength( 3 );
+		expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
+		expect( command.value ).toEqual( [] );
 
 		command.execute( { styleName: 'OL style' } );
 
-		expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
-		expect( command.value ).to.have.members( [ 'OL style' ] );
+		expect( command.enabledStyles ).toHaveLength( 3 );
+		expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
+		expect( command.value ).toHaveLength( 1 );
+		expect( command.value ).toEqual( expect.arrayContaining( [ 'OL style' ] ) );
 
-		expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+		expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 			'<ol class="ol-styled">' +
 				'<li>' +
 					'<p>1</p>' +
@@ -652,10 +678,11 @@ describe( 'ListStyleSupport', () => {
 
 		command.execute( { styleName: 'OL style' } );
 
-		expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
-		expect( command.value ).to.be.empty;
+		expect( command.enabledStyles ).toHaveLength( 3 );
+		expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'LI style', 'OL style', 'P style' ] ) );
+		expect( command.value ).toEqual( [] );
 
-		expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+		expect( editor.getData( { skipListItemIds: true } ) ).toBe(
 			'<ol>' +
 				'<li>' +
 					'<p>1</p>' +

@@ -27,4 +27,3 @@ viewDocument.on( 'selectionChange', ( evt, data ) => {
 		writer.setSelection( data.newSelection );
 	} );
 } );
-

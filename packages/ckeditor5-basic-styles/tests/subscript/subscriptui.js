@@ -3,18 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { SubscriptEditing } from '../../src/subscript/subscriptediting.js';
 import { SubscriptUI } from '../../src/subscript/subscriptui.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'SubscriptUI', () => {
 	let editor, subView, editorElement;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -31,6 +30,7 @@ describe( 'SubscriptUI', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
@@ -83,12 +83,12 @@ describe( 'SubscriptUI', () => {
 		} );
 
 		it( 'should execute subscript command on model execute event', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			const executeSpy = vi.spyOn( editor, 'execute' );
 
 			subView.fire( 'execute' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'subscript' );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( 'subscript' );
 		} );
 
 		it( 'should bind model to subscript command', () => {

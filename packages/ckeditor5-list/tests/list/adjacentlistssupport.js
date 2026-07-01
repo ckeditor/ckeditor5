@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -15,7 +15,9 @@ import { stubUid } from './_utils/uid.js';
 describe( 'AdjacentListsSupport', () => {
 	let editorElement, editor, model, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -46,23 +48,23 @@ describe( 'AdjacentListsSupport', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( AdjacentListsSupport.pluginName ).to.equal( 'AdjacentListsSupport' );
+		expect( AdjacentListsSupport.pluginName ).toBe( 'AdjacentListsSupport' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( AdjacentListsSupport.isOfficialPlugin ).to.be.true;
+		expect( AdjacentListsSupport.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( AdjacentListsSupport.isPremiumPlugin ).to.be.false;
+		expect( AdjacentListsSupport.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( AdjacentListsSupport ) ).to.be.instanceOf( AdjacentListsSupport );
+		expect( editor.plugins.get( AdjacentListsSupport ) ).toBeInstanceOf( AdjacentListsSupport );
 	} );
 
 	it( 'shoud set proper schema rules', () => {
-		expect( model.schema.isRegistered( 'listSeparator' ) ).to.equal( true );
+		expect( model.schema.isRegistered( 'listSeparator' ) ).toBe( true );
 	} );
 
 	describe( 'upcast', () => {
@@ -260,7 +262,9 @@ describe( 'AdjacentListsSupport', () => {
 describe( 'AdjacentListsSupport - integrations', () => {
 	let editorElement, editor, model;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );

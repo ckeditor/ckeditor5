@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, Locale, keyCodes } from '@ckeditor/ckeditor5-utils';
 
@@ -94,56 +96,57 @@ describe( 'StylePanelView', () => {
 
 	afterEach( async () => {
 		panel.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create #focusTracker instance', () => {
-			expect( panel.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( panel.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'should create #keystrokes instance', () => {
-			expect( panel.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( panel.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 
 		it( 'should set #children', () => {
-			expect( panel.children ).to.be.instanceOf( ViewCollection );
+			expect( panel.children ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should set #blockStylesGroupView', () => {
-			expect( panel.blockStylesGroupView ).to.be.instanceOf( StyleGroupView );
-			expect( panel.blockStylesGroupView.labelView.text ).to.equal( 'Block styles' );
-			expect( panel.blockStylesGroupView.gridView.children.length ).to.equal( 2 );
+			expect( panel.blockStylesGroupView ).toBeInstanceOf( StyleGroupView );
+			expect( panel.blockStylesGroupView.labelView.text ).toBe( 'Block styles' );
+			expect( panel.blockStylesGroupView.gridView.children.length ).toBe( 2 );
 		} );
 
 		it( 'should set #inlineStylesGroupView', () => {
-			expect( panel.inlineStylesGroupView ).to.be.instanceOf( StyleGroupView );
-			expect( panel.inlineStylesGroupView.labelView.text ).to.equal( 'Text styles' );
-			expect( panel.inlineStylesGroupView.gridView.children.length ).to.equal( 3 );
+			expect( panel.inlineStylesGroupView ).toBeInstanceOf( StyleGroupView );
+			expect( panel.inlineStylesGroupView.labelView.text ).toBe( 'Text styles' );
+			expect( panel.inlineStylesGroupView.gridView.children.length ).toBe( 3 );
 		} );
 
 		it( 'should set #activeStyles', () => {
-			expect( panel.activeStyles ).to.deep.equal( [] );
+			expect( panel.activeStyles ).toEqual( [] );
 		} );
 
 		it( 'should set #enabledStyles', () => {
-			expect( panel.enabledStyles ).to.deep.equal( [] );
+			expect( panel.enabledStyles ).toEqual( [] );
 		} );
 
 		it( 'should create #_focusCycler instance', () => {
-			expect( panel._focusCycler ).to.be.instanceOf( FocusCycler );
+			expect( panel._focusCycler ).toBeInstanceOf( FocusCycler );
 		} );
 
 		it( 'should create #_focusables view collection', () => {
-			expect( panel._focusables ).to.be.instanceOf( ViewCollection );
+			expect( panel._focusables ).toBeInstanceOf( ViewCollection );
 		} );
 
 		describe( 'style groups', () => {
 			it( 'should add #blockStylesGroupView to #children when there are block definitions', () => {
-				expect( panel.children.first ).to.equal( panel.blockStylesGroupView );
+				expect( panel.children.first ).toBe( panel.blockStylesGroupView );
 			} );
 
 			it( 'should add #inlineStylesGroupView to #children when there are inline definitions', () => {
-				expect( panel.children.last ).to.equal( panel.inlineStylesGroupView );
+				expect( panel.children.last ).toBe( panel.inlineStylesGroupView );
 			} );
 
 			it( 'should not add #blockStylesGroupView to #children when there are no block definitions', () => {
@@ -167,8 +170,8 @@ describe( 'StylePanelView', () => {
 					]
 				} );
 
-				expect( panel.children.first ).to.equal( panel.inlineStylesGroupView );
-				expect( panel.children.last ).to.equal( panel.inlineStylesGroupView );
+				expect( panel.children.first ).toBe( panel.inlineStylesGroupView );
+				expect( panel.children.last ).toBe( panel.inlineStylesGroupView );
 
 				panel.destroy();
 			} );
@@ -194,69 +197,73 @@ describe( 'StylePanelView', () => {
 					inline: []
 				} );
 
-				expect( panel.children.first ).to.equal( panel.blockStylesGroupView );
-				expect( panel.children.last ).to.equal( panel.blockStylesGroupView );
+				expect( panel.children.first ).toBe( panel.blockStylesGroupView );
+				expect( panel.children.last ).toBe( panel.blockStylesGroupView );
 
 				panel.destroy();
 			} );
 
 			it( 'should delegate #execute from #blockStylesGroupView grid', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				panel.on( 'execute', spy );
 				panel.blockStylesGroupView.gridView.fire( 'execute', 'foo' );
 
-				sinon.assert.calledOnceWithExactly( spy, sinon.match.object, 'foo' );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( expect.any( Object ) );
+				expect( spy.mock.calls[ 0 ][ 1 ] ).toBe( 'foo' );
 			} );
 
 			it( 'should delegate #execute from #inlineStylesGroupView grid', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				panel.on( 'execute', spy );
 				panel.inlineStylesGroupView.gridView.fire( 'execute', 'foo' );
 
-				sinon.assert.calledOnceWithExactly( spy, sinon.match.object, 'foo' );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( expect.any( Object ) );
+				expect( spy.mock.calls[ 0 ][ 1 ] ).toBe( 'foo' );
 			} );
 
 			it( 'should bind #activeStyles and #enabledStyles to #blockStylesGroupView grid', () => {
 				panel.activeStyles = [ 'foo', 'bar' ];
 				panel.enabledStyles = [ 'baz', 'qux' ];
 
-				expect( panel.blockStylesGroupView.gridView.activeStyles ).to.deep.equal( [ 'foo', 'bar' ] );
-				expect( panel.blockStylesGroupView.gridView.enabledStyles ).to.deep.equal( [ 'baz', 'qux' ] );
+				expect( panel.blockStylesGroupView.gridView.activeStyles ).toEqual( [ 'foo', 'bar' ] );
+				expect( panel.blockStylesGroupView.gridView.enabledStyles ).toEqual( [ 'baz', 'qux' ] );
 
 				panel.activeStyles = [ 'a' ];
 				panel.enabledStyles = [];
 
-				expect( panel.blockStylesGroupView.gridView.activeStyles ).to.deep.equal( [ 'a' ] );
-				expect( panel.blockStylesGroupView.gridView.enabledStyles ).to.deep.equal( [] );
+				expect( panel.blockStylesGroupView.gridView.activeStyles ).toEqual( [ 'a' ] );
+				expect( panel.blockStylesGroupView.gridView.enabledStyles ).toEqual( [] );
 			} );
 
 			it( 'should bind #activeStyles and #enabledStyles to #inlineStylesGroupView grid', () => {
 				panel.activeStyles = [ 'foo', 'bar' ];
 				panel.enabledStyles = [ 'baz', 'qux' ];
 
-				expect( panel.inlineStylesGroupView.gridView.activeStyles ).to.deep.equal( [ 'foo', 'bar' ] );
-				expect( panel.inlineStylesGroupView.gridView.enabledStyles ).to.deep.equal( [ 'baz', 'qux' ] );
+				expect( panel.inlineStylesGroupView.gridView.activeStyles ).toEqual( [ 'foo', 'bar' ] );
+				expect( panel.inlineStylesGroupView.gridView.enabledStyles ).toEqual( [ 'baz', 'qux' ] );
 
 				panel.activeStyles = [ 'a' ];
 				panel.enabledStyles = [];
 
-				expect( panel.inlineStylesGroupView.gridView.activeStyles ).to.deep.equal( [ 'a' ] );
-				expect( panel.inlineStylesGroupView.gridView.enabledStyles ).to.deep.equal( [] );
+				expect( panel.inlineStylesGroupView.gridView.activeStyles ).toEqual( [ 'a' ] );
+				expect( panel.inlineStylesGroupView.gridView.enabledStyles ).toEqual( [] );
 			} );
 		} );
 
 		it( 'should be a <div>', () => {
 			panel.render();
 
-			expect( panel.element.tagName ).to.equal( 'DIV' );
+			expect( panel.element.tagName ).toBe( 'DIV' );
 		} );
 
 		it( 'should have a static CSS class', () => {
 			panel.render();
 
-			expect( panel.element.classList.contains( 'ck-style-panel' ) ).to.be.true;
+			expect( panel.element.classList.contains( 'ck-style-panel' ) ).toBe( true );
 		} );
 
 		describe( 'focus management', () => {
@@ -273,60 +280,60 @@ describe( 'StylePanelView', () => {
 				it( 'should focus the next focusable item on "tab"', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the first style grid is focused.
 					panel.focusTracker.isFocused = true;
 					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.element;
 
-					const spy = sinon.spy( panel.inlineStylesGroupView.gridView, 'focus' );
+					const spy = vi.spyOn( panel.inlineStylesGroupView.gridView, 'focus' );
 
 					panel.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( 'should focus the previous focusable item on "sfift + tab"', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
 						shiftKey: true,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the first style grid is focused.
 					panel.focusTracker.isFocused = true;
 					panel.focusTracker.focusedElement = panel.blockStylesGroupView.gridView.element;
 
-					const spy = sinon.spy( panel.inlineStylesGroupView.gridView, 'focus' );
+					const spy = vi.spyOn( panel.inlineStylesGroupView.gridView, 'focus' );
 
 					panel.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 
 			describe( 'focus()', () => {
 				it( 'should focus the first grid', () => {
-					const spy = sinon.spy( panel.blockStylesGroupView.gridView, 'focus' );
+					const spy = vi.spyOn( panel.blockStylesGroupView.gridView, 'focus' );
 
 					panel.focus();
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 
 			describe( 'focusLast()', () => {
 				it( 'should focus the last grid', () => {
-					const spy = sinon.spy( panel.inlineStylesGroupView.gridView, 'focus' );
+					const spy = vi.spyOn( panel.inlineStylesGroupView.gridView, 'focus' );
 
 					panel.focusLast();
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 		} );
@@ -343,10 +350,11 @@ describe( 'StylePanelView', () => {
 		} );
 
 		it( 'should register styleGroupView grids in #_focusables', () => {
-			expect( panel._focusables.map( f => f ) ).to.have.members( [
+			expect( panel._focusables.map( f => f ) ).toHaveLength( 2 );
+			expect( panel._focusables.map( f => f ) ).toEqual( expect.arrayContaining( [
 				panel.blockStylesGroupView.gridView,
 				panel.inlineStylesGroupView.gridView
-			] );
+			] ) );
 		} );
 
 		it( 'should register styleGroupView grid elements in #focusTracker', () => {
@@ -385,12 +393,12 @@ describe( 'StylePanelView', () => {
 				]
 			} );
 
-			const spyView = sinon.spy( panel.focusTracker, 'add' );
+			const spyView = vi.spyOn( panel.focusTracker, 'add' );
 
 			panel.render();
 
-			sinon.assert.calledWithExactly( spyView.getCall( 0 ), panel.blockStylesGroupView.gridView.element );
-			sinon.assert.calledWithExactly( spyView.getCall( 1 ), panel.inlineStylesGroupView.gridView.element );
+			expect( spyView ).toHaveBeenNthCalledWith( 1, panel.blockStylesGroupView.gridView.element );
+			expect( spyView ).toHaveBeenNthCalledWith( 2, panel.inlineStylesGroupView.gridView.element );
 
 			panel.destroy();
 		} );

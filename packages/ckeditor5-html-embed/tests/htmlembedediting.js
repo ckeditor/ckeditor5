@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HtmlEmbedEditing } from '../src/htmlembedediting.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { HtmlEmbedCommand } from '../src/htmlembedcommand.js';
@@ -14,8 +14,6 @@ import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'HtmlEmbedEditing', () => {
 	let element, editor, model, view, viewDocument;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -34,6 +32,8 @@ describe( 'HtmlEmbedEditing', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
+
 		return editor.destroy()
 			.then( () => {
 				element.remove();
@@ -41,33 +41,33 @@ describe( 'HtmlEmbedEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( HtmlEmbedEditing.pluginName ).to.equal( 'HtmlEmbedEditing' );
+		expect( HtmlEmbedEditing.pluginName ).toBe( 'HtmlEmbedEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( HtmlEmbedEditing.isOfficialPlugin ).to.be.true;
+		expect( HtmlEmbedEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-		expect( HtmlEmbedEditing.isPremiumPlugin ).to.be.true;
+		expect( HtmlEmbedEditing.isPremiumPlugin ).toBe( true );
 	} );
 
 	it( 'should have `licenseFeatureCode` static flag set to `HE`', () => {
-		expect( HtmlEmbedEditing.licenseFeatureCode ).to.equal( 'HE' );
+		expect( HtmlEmbedEditing.licenseFeatureCode ).toBe( 'HE' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( HtmlEmbedEditing ) ).to.be.instanceOf( HtmlEmbedEditing );
+		expect( editor.plugins.get( HtmlEmbedEditing ) ).toBeInstanceOf( HtmlEmbedEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkChild( [ '$root' ], 'rawHtml' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'rawHtml' ], 'value' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'rawHtml' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'rawHtml' ], 'value' ) ).toBe( true );
 
-		expect( model.schema.isObject( 'rawHtml' ) ).to.be.true;
+		expect( model.schema.isObject( 'rawHtml' ) ).toBe( true );
 
-		expect( model.schema.checkChild( [ '$root', 'rawHtml' ], '$text' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block' ], 'rawHtml' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'rawHtml' ], '$text' ) ).toBe( false );
+		expect( model.schema.checkChild( [ '$root', '$block' ], 'rawHtml' ) ).toBe( false );
 	} );
 
 	it( 'inherits attributes from $blockObject', () => {
@@ -75,11 +75,11 @@ describe( 'HtmlEmbedEditing', () => {
 			allowAttributes: 'foo'
 		} );
 
-		expect( model.schema.checkAttribute( 'rawHtml', 'foo' ) ).to.be.true;
+		expect( model.schema.checkAttribute( 'rawHtml', 'foo' ) ).toBe( true );
 	} );
 
 	it( 'should register the htmlEmbed command', () => {
-		expect( editor.commands.get( 'htmlEmbed' ) ).to.be.instanceOf( HtmlEmbedCommand );
+		expect( editor.commands.get( 'htmlEmbed' ) ).toBeInstanceOf( HtmlEmbedCommand );
 	} );
 
 	describe( 'config', () => {
@@ -91,17 +91,17 @@ describe( 'HtmlEmbedEditing', () => {
 
 		describe( 'htmlEmbed.showPreviews', () => {
 			it( 'should be set to `false` by default', () => {
-				expect( htmlEmbed.showPreviews ).to.equal( false );
+				expect( htmlEmbed.showPreviews ).toBe( false );
 			} );
 		} );
 
 		describe( 'htmlEmbed.sanitizeHtml', () => {
 			beforeEach( () => {
-				sinon.stub( console, 'warn' );
+				vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 			} );
 
 			it( 'should return an object with cleaned html and a note whether something has changed', () => {
-				expect( htmlEmbed.sanitizeHtml( 'foo' ) ).to.deep.equal( {
+				expect( htmlEmbed.sanitizeHtml( 'foo' ) ).toEqual( {
 					html: 'foo',
 					hasChanged: false
 				} );
@@ -110,14 +110,14 @@ describe( 'HtmlEmbedEditing', () => {
 			it( 'should return an input string (without any modifications)', () => {
 				const unsafeHtml = '<img src="data:/xxx,<script>void</script>" onload="void;">';
 
-				expect( htmlEmbed.sanitizeHtml( unsafeHtml ).html ).to.deep.equal( unsafeHtml );
+				expect( htmlEmbed.sanitizeHtml( unsafeHtml ).html ).toBe( unsafeHtml );
 			} );
 
 			it( 'should display a warning when using the default sanitizer', () => {
 				htmlEmbed.sanitizeHtml( 'foo' );
 
-				expect( console.warn.callCount ).to.equal( 1 );
-				expect( console.warn.firstCall.args[ 0 ] ).to.equal( 'html-embed-provide-sanitize-function' );
+				expect( console.warn ).toHaveBeenCalledTimes( 1 );
+				expect( console.warn.mock.calls[ 0 ][ 0 ] ).toBe( 'html-embed-provide-sanitize-function' );
 			} );
 		} );
 	} );
@@ -127,7 +127,7 @@ describe( 'HtmlEmbedEditing', () => {
 			it( 'should convert an empty `rawHtml` element', () => {
 				_setModelData( model, '[<rawHtml></rawHtml>]' );
 
-				expect( editor.getData() ).to.equal( '<div class="raw-html-embed"></div>' );
+				expect( editor.getData() ).toBe( '<div class="raw-html-embed"></div>' );
 			} );
 
 			it( 'should put the HTML from the `value` attribute (in `rawHtml`) into the data', () => {
@@ -137,7 +137,7 @@ describe( 'HtmlEmbedEditing', () => {
 					writer.setAttribute( 'value', '<b>Foo.</b>', model.document.getRoot().getChild( 0 ) );
 				} );
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData() ).toBe(
 					'<div class="raw-html-embed">' +
 						'<b>Foo.</b>' +
 					'</div>'
@@ -154,7 +154,7 @@ describe( 'HtmlEmbedEditing', () => {
 				);
 
 				const rawHtml = model.document.getRoot().getChild( 0 );
-				expect( rawHtml.getAttribute( 'value' ) ).to.equal( '<b>Foo.</b>' );
+				expect( rawHtml.getAttribute( 'value' ) ).toBe( '<b>Foo.</b>' );
 			} );
 
 			it( 'should convert innerHTML (single element with children) of div.raw-html-embed', () => {
@@ -169,7 +169,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 				const rawHtml = model.document.getRoot().getChild( 0 );
 
-				expect( rawHtml.getAttribute( 'value' ) ).to.equal(
+				expect( rawHtml.getAttribute( 'value' ) ).toBe(
 					'<p>' +
 						'<b>Foo B.</b>' +
 						'<i>Foo I.</i>' +
@@ -188,7 +188,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 				const rawHtml = model.document.getRoot().getChild( 0 );
 
-				expect( rawHtml.getAttribute( 'value' ) ).to.equal(
+				expect( rawHtml.getAttribute( 'value' ) ).toBe(
 					'<b>Foo B.</b>' +
 					'<i>Foo I.</i>' +
 					'<u>Foo U.</u>'
@@ -213,8 +213,7 @@ describe( 'HtmlEmbedEditing', () => {
 					'</div>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<div></div>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<div></div>' );
 			} );
 
 			it( 'should not convert inner `div.raw-html-embed` that is a child of outer div.raw-html-embed', () => {
@@ -230,7 +229,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 				const rawHtml = model.document.getRoot().getChild( 0 );
 
-				expect( rawHtml.getAttribute( 'value' ) ).to.equal(
+				expect( rawHtml.getAttribute( 'value' ) ).toBe(
 					'<div class="raw-html-embed">' +
 						'<b>Foo B.</b>' +
 						'<i>Foo I.</i>' +
@@ -258,7 +257,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 				const rawHtml = model.document.getRoot().getChild( 0 );
 
-				expect( rawHtml.getAttribute( 'value' ) ).to.equal( rawContent );
+				expect( rawHtml.getAttribute( 'value' ) ).toBe( rawContent );
 			} );
 
 			// See https://github.com/ckeditor/ckeditor5/issues/8789.
@@ -275,13 +274,13 @@ describe( 'HtmlEmbedEditing', () => {
 
 				viewDocument.fire( 'paste', {
 					dataTransfer: dataTransferMock,
-					stopPropagation: sinon.spy(),
-					preventDefault: sinon.spy()
+					stopPropagation: vi.fn(),
+					preventDefault: vi.fn()
 				} );
 
 				const rawHtml = model.document.getRoot().getChild( 0 );
 
-				expect( rawHtml.getAttribute( 'value' ) ).to.equal(
+				expect( rawHtml.getAttribute( 'value' ) ).toBe(
 					'<b>Foo B.</b>' +
 					'<i>Foo I.</i>' +
 					'<u>Foo U.</u>'
@@ -296,26 +295,29 @@ describe( 'HtmlEmbedEditing', () => {
 				_setModelData( model, '<rawHtml></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
 
-				expect( widget.name ).to.equal( 'div' );
-				expect( isRawHtmlWidget( widget ) ).to.be.true;
+				expect( widget.name ).toBe( 'div' );
+				expect( isRawHtmlWidget( widget ) ).toBe( true );
 
 				const contentWrapper = widget.getChild( 1 );
 
-				expect( contentWrapper.hasClass( 'raw-html-embed__content-wrapper' ) );
+				expect( contentWrapper.hasClass( 'raw-html-embed__content-wrapper' ) ).toBe( true );
 			} );
 
 			it( 'the widget should have the data-html-embed-label attribute for the CSS label', () => {
 				_setModelData( model, '<rawHtml></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
 
-				expect( widget.getAttribute( 'data-html-embed-label' ) ).to.equal( 'HTML snippet' );
+				expect( widget.getAttribute( 'data-html-embed-label' ) ).toBe( 'HTML snippet' );
 			} );
 
 			it( 'the main element should expose rawHtmlApi custom property', () => {
 				_setModelData( model, '<rawHtml></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
 
-				expect( widget.getCustomProperty( 'rawHtmlApi' ) ).has.keys( [ 'makeEditable', 'save', 'cancel' ] );
+				const rawHtmlApi = widget.getCustomProperty( 'rawHtmlApi' );
+
+				expect( Object.keys( rawHtmlApi ) ).toHaveLength( 3 );
+				expect( Object.keys( rawHtmlApi ) ).toEqual( expect.arrayContaining( [ 'makeEditable', 'save', 'cancel' ] ) );
 			} );
 
 			it( 'renders a disabled textarea as a preview', () => {
@@ -324,8 +326,8 @@ describe( 'HtmlEmbedEditing', () => {
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'foo' );
-				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.true;
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).toBe( 'foo' );
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).toBe( true );
 			} );
 
 			it( 'updates the textarea preview once the model changes', () => {
@@ -337,8 +339,8 @@ describe( 'HtmlEmbedEditing', () => {
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'bar' );
-				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.true;
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).toBe( 'bar' );
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).toBe( true );
 			} );
 
 			it( 'renders the "edit" button', () => {
@@ -348,8 +350,8 @@ describe( 'HtmlEmbedEditing', () => {
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
 				// There's exactly this button, and nothing else.
-				expect( domContentWrapper.querySelectorAll( 'button' ) ).to.have.lengthOf( 1 );
-				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
+				expect( domContentWrapper.querySelectorAll( 'button' ) ).toHaveLength( 1 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).toHaveLength( 1 );
 			} );
 
 			it( 'allows editing the source after clicking the "edit" button', () => {
@@ -358,11 +360,12 @@ describe( 'HtmlEmbedEditing', () => {
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				const makeEditableStub = sinon.stub( widget.getCustomProperty( 'rawHtmlApi' ), 'makeEditable' );
+				const makeEditableStub = vi.spyOn( widget.getCustomProperty( 'rawHtmlApi' ), 'makeEditable' )
+					.mockImplementation( () => {} );
 
 				domContentWrapper.querySelector( '.raw-html-embed__edit-button' ).click();
 
-				expect( makeEditableStub.callCount ).to.equal( 1 );
+				expect( makeEditableStub ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'renders the "save changes" and "cancel" button in edit source mode', () => {
@@ -373,9 +376,9 @@ describe( 'HtmlEmbedEditing', () => {
 
 				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 
-				expect( domContentWrapper.querySelectorAll( 'button' ) ).to.have.lengthOf( 2 );
-				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__save-button' ) ).to.have.lengthOf( 1 );
-				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__cancel-button' ) ).to.have.lengthOf( 1 );
+				expect( domContentWrapper.querySelectorAll( 'button' ) ).toHaveLength( 2 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__save-button' ) ).toHaveLength( 1 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__cancel-button' ) ).toHaveLength( 1 );
 			} );
 
 			it( 'updates the model state after clicking the "save changes" button', () => {
@@ -389,7 +392,7 @@ describe( 'HtmlEmbedEditing', () => {
 				domContentWrapper.querySelector( 'textarea' ).value = 'Foo Bar.';
 				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
 
-				expect( _getModelData( model ) ).to.equal( '[<rawHtml value="Foo Bar."></rawHtml>]' );
+				expect( _getModelData( model ) ).toBe( '[<rawHtml value="Foo Bar."></rawHtml>]' );
 			} );
 
 			it( 'switches to "preview mode" after saving changes', () => {
@@ -410,8 +413,8 @@ describe( 'HtmlEmbedEditing', () => {
 				domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
 				// There's exactly this button, and nothing else.
-				expect( domContentWrapper.querySelectorAll( 'button' ) ).to.have.lengthOf( 1 );
-				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
+				expect( domContentWrapper.querySelectorAll( 'button' ) ).toHaveLength( 1 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).toHaveLength( 1 );
 			} );
 
 			it( 'switches to "preview mode" after clicking save button when there are no changes', () => {
@@ -431,8 +434,8 @@ describe( 'HtmlEmbedEditing', () => {
 				domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
 				// There's exactly this button, and nothing else.
-				expect( domContentWrapper.querySelectorAll( 'button' ) ).to.have.lengthOf( 1 );
-				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
+				expect( domContentWrapper.querySelectorAll( 'button' ) ).toHaveLength( 1 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).toHaveLength( 1 );
 			} );
 
 			it( 'destroys unused buttons when the editing view is re-rendered to prevent memory leaks', () => {
@@ -441,27 +444,27 @@ describe( 'HtmlEmbedEditing', () => {
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				const buttonDestroySpy = testUtils.sinon.spy( ButtonView.prototype, 'destroy' );
-				const buttonRenderSpy = testUtils.sinon.spy( ButtonView.prototype, 'render' );
+				const buttonDestroySpy = vi.spyOn( ButtonView.prototype, 'destroy' );
+				const buttonRenderSpy = vi.spyOn( ButtonView.prototype, 'render' );
 
 				domContentWrapper.querySelector( '.raw-html-embed__edit-button' ).click();
 
 				// The edit button was destroyed.
-				sinon.assert.calledOn( buttonDestroySpy.firstCall, sinon.match.instanceOf( ButtonView ) );
-				sinon.assert.callCount( buttonDestroySpy, 1 );
+				expect( buttonDestroySpy.mock.contexts[ 0 ] ).toBeInstanceOf( ButtonView );
+				expect( buttonDestroySpy ).toHaveBeenCalledTimes( 1 );
 
 				// Save and cancel button were created.
-				sinon.assert.calledOn( buttonRenderSpy.firstCall, sinon.match.instanceOf( ButtonView ) );
-				sinon.assert.calledOn( buttonRenderSpy.secondCall, sinon.match.instanceOf( ButtonView ) );
-				sinon.assert.callCount( buttonRenderSpy, 2 );
+				expect( buttonRenderSpy.mock.contexts[ 0 ] ).toBeInstanceOf( ButtonView );
+				expect( buttonRenderSpy.mock.contexts[ 1 ] ).toBeInstanceOf( ButtonView );
+				expect( buttonRenderSpy ).toHaveBeenCalledTimes( 2 );
 
-				buttonDestroySpy.resetHistory();
+				buttonDestroySpy.mockClear();
 				domContentWrapper.querySelector( '.raw-html-embed__cancel-button' ).click();
 
 				// Save and cancel button were destroyed.
-				sinon.assert.calledOn( buttonDestroySpy.firstCall, sinon.match.instanceOf( ButtonView ) );
-				sinon.assert.calledOn( buttonDestroySpy.secondCall, sinon.match.instanceOf( ButtonView ) );
-				sinon.assert.callCount( buttonDestroySpy, 2 );
+				expect( buttonDestroySpy.mock.contexts[ 0 ] ).toBeInstanceOf( ButtonView );
+				expect( buttonDestroySpy.mock.contexts[ 1 ] ).toBeInstanceOf( ButtonView );
+				expect( buttonDestroySpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			it( 'does not lose editor focus after saving changes', () => {
@@ -469,14 +472,14 @@ describe( 'HtmlEmbedEditing', () => {
 				const widget = viewDocument.getRoot().getChild( 0 );
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
-				const spy = sinon.spy( editor.editing.view, 'focus' );
+				const spy = vi.spyOn( editor.editing.view, 'focus' );
 
 				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 
 				domContentWrapper.querySelector( 'textarea' ).value = 'Foo Bar.';
 				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'does not update the model state after saving the same changes', () => {
@@ -485,12 +488,13 @@ describe( 'HtmlEmbedEditing', () => {
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				const executeStub = sinon.stub( editor.commands.get( 'htmlEmbed' ), 'execute' );
+				const executeStub = vi.spyOn( editor.commands.get( 'htmlEmbed' ), 'execute' )
+					.mockImplementation( () => {} );
 
 				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
 
-				expect( executeStub.callCount ).to.equal( 0 );
+				expect( executeStub ).not.toHaveBeenCalled();
 			} );
 
 			it( 'does not update the model state after clicking the "cancel" button', () => {
@@ -502,7 +506,7 @@ describe( 'HtmlEmbedEditing', () => {
 				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 				domContentWrapper.querySelector( '.raw-html-embed__cancel-button' ).click();
 
-				expect( _getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]' );
+				expect( _getModelData( model ) ).toBe( '[<rawHtml value="foo"></rawHtml>]' );
 			} );
 
 			it( 'switches to "preview mode" after canceling editing', () => {
@@ -515,8 +519,8 @@ describe( 'HtmlEmbedEditing', () => {
 
 				domContentWrapper.querySelector( '.raw-html-embed__cancel-button' ).click();
 
-				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'foo' );
-				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.true;
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).toBe( 'foo' );
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).toBe( true );
 			} );
 
 			it( 'does not lose editor focus after canceling editing', () => {
@@ -524,13 +528,13 @@ describe( 'HtmlEmbedEditing', () => {
 				const widget = viewDocument.getRoot().getChild( 0 );
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
-				const spy = sinon.spy( editor.editing.view, 'focus' );
+				const spy = vi.spyOn( editor.editing.view, 'focus' );
 
 				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 
 				domContentWrapper.querySelector( '.raw-html-embed__cancel-button' ).click();
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'does not select the unselected `rawHtml` element, if it is not in the editable mode', () => {
@@ -543,13 +547,13 @@ describe( 'HtmlEmbedEditing', () => {
 
 				domContentWrapper.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
 
-				expect( _getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
+				expect( _getModelData( model ) ).toBe( '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
 			} );
 
 			it( 'does not unnecessarily select an already selected `rawHtml` element in the editable mode', () => {
 				_setModelData( model, '[<rawHtml value="foo"></rawHtml>]' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				model.document.selection.on( 'change:range', spy );
 
@@ -561,7 +565,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 				domContentWrapper.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
 
-				expect( spy.notCalled ).to.be.true;
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'selects the unselected `rawHtml` element in editable mode after clicking on its textarea', () => {
@@ -581,30 +585,30 @@ describe( 'HtmlEmbedEditing', () => {
 
 				domContentWrapperFoo.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
 
-				expect( _getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
+				expect( _getModelData( model ) ).toBe( '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
 
 				domContentWrapperBar.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
 
-				expect( _getModelData( model ) ).to.equal( '<rawHtml value="foo"></rawHtml>[<rawHtml value="bar"></rawHtml>]' );
+				expect( _getModelData( model ) ).toBe( '<rawHtml value="foo"></rawHtml>[<rawHtml value="bar"></rawHtml>]' );
 			} );
 
 			describe( 'different setting of ui language', () => {
 				it( 'the widget should have the dir attribute for LTR language', () => {
-					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'ltr' );
+					vi.spyOn( editor.locale, 'uiLanguageDirection', 'get' ).mockReturnValue( 'ltr' );
 
 					_setModelData( model, '<rawHtml></rawHtml>' );
 					const widget = viewDocument.getRoot().getChild( 0 );
 
-					expect( widget.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+					expect( widget.getAttribute( 'dir' ) ).toBe( 'ltr' );
 				} );
 
 				it( 'the widget should have the dir attribute for RTL language', () => {
-					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'rtl' );
+					vi.spyOn( editor.locale, 'uiLanguageDirection', 'get' ).mockReturnValue( 'rtl' );
 
 					_setModelData( model, '<rawHtml></rawHtml>' );
 					const widget = viewDocument.getRoot().getChild( 0 );
 
-					expect( widget.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+					expect( widget.getAttribute( 'dir' ) ).toBe( 'rtl' );
 				} );
 			} );
 
@@ -617,8 +621,8 @@ describe( 'HtmlEmbedEditing', () => {
 
 					widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 
-					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'foo' );
-					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.false;
+					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).toBe( 'foo' );
+					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).toBe( false );
 				} );
 			} );
 
@@ -630,7 +634,7 @@ describe( 'HtmlEmbedEditing', () => {
 					widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 					widget.getCustomProperty( 'rawHtmlApi' ).save( 'bar' );
 
-					expect( _getModelData( model ) ).to.equal( '[<rawHtml value="bar"></rawHtml>]' );
+					expect( _getModelData( model ) ).toBe( '[<rawHtml value="bar"></rawHtml>]' );
 				} );
 
 				it( 'saves the new value to the model if given `rawHtml` element is not selected', () => {
@@ -666,7 +670,7 @@ describe( 'HtmlEmbedEditing', () => {
 					domSaveButtonBar.dispatchEvent( new Event( 'mouseup' ) );
 					domSaveButtonBar.dispatchEvent( new Event( 'click' ) );
 
-					expect( _getModelData( model ) ).to.equal( '<rawHtml value="FOO"></rawHtml>[<rawHtml value="BAR"></rawHtml>]' );
+					expect( _getModelData( model ) ).toBe( '<rawHtml value="FOO"></rawHtml>[<rawHtml value="BAR"></rawHtml>]' );
 				} );
 
 				it( 'turns back to the non-editable mode and updates the textarea value', () => {
@@ -679,16 +683,14 @@ describe( 'HtmlEmbedEditing', () => {
 					const newWidget = viewDocument.getRoot().getChild( 0 );
 					const contentWrapper = newWidget.getChild( 1 );
 					const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
-					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'bar' );
-					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.true;
+					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).toBe( 'bar' );
+					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).toBe( true );
 				} );
 			} );
 		} );
 
 		describe( 'with previews (htmlEmbed.showPreviews=true)', () => {
 			let element, editor, model, view, viewDocument, sanitizeHtml;
-
-			testUtils.createSinonSandbox();
 
 			beforeEach( () => {
 				element = document.createElement( 'div' );
@@ -726,11 +728,9 @@ describe( 'HtmlEmbedEditing', () => {
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' ).innerHTML )
-					.to.equal( 'foo' );
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' ).innerHTML ).toBe( 'foo' );
 
-				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-placeholder' ) )
-					.to.not.equal( null );
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-placeholder' ) ).not.toBeNull();
 			} );
 
 			it( 'should update the preview once the model changes', () => {
@@ -742,7 +742,7 @@ describe( 'HtmlEmbedEditing', () => {
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' ).innerHTML ).to.equal( 'bar' );
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' ).innerHTML ).toBe( 'bar' );
 			} );
 
 			describe( 'placeholder', () => {
@@ -758,36 +758,34 @@ describe( 'HtmlEmbedEditing', () => {
 					_setModelData( model, '<rawHtml value=""></rawHtml>' );
 					const placeholder = getPlaceholder();
 
-					expect( placeholder.classList.value ).to.contain( 'ck ck-reset_all' );
+					expect( placeholder.classList.value ).toContain( 'ck ck-reset_all' );
 				} );
 
 				it( 'should display the proper information if the snippet is empty', () => {
 					_setModelData( model, '<rawHtml value=""></rawHtml>' );
 					const placeholder = getPlaceholder();
 
-					expect( placeholder.innerHTML ).to.equal( 'Empty snippet content' );
+					expect( placeholder.innerHTML ).toBe( 'Empty snippet content' );
 				} );
 
 				it( 'should display the proper information if the snippet is not empty', () => {
 					_setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 					const placeholder = getPlaceholder();
 
-					expect( placeholder.innerHTML ).to.equal( 'No preview available' );
+					expect( placeholder.innerHTML ).toBe( 'No preview available' );
 				} );
 
 				// #8326.
 				it( 'should execute vulnerable scripts inside the <script> element', () => {
-					const logWarn = sinon.stub( console, 'warn' );
+					const logWarn = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					_setModelData( model, '[<rawHtml value=""></rawHtml>]' );
 					editor.execute( 'htmlEmbed', '<script>console.warn( \'Should be called.\' )</script>' );
 
-					logWarn.restore();
+					expect( logWarn ).toHaveBeenCalledTimes( 1 );
+					expect( logWarn ).toHaveBeenNthCalledWith( 1, 'Should be called.' );
 
-					expect( logWarn.callCount ).to.equal( 1 );
-					expect( logWarn.firstCall.args[ 0 ] ).to.equal( 'Should be called.' );
-
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<div class="raw-html-embed"><script>console.warn( \'Should be called.\' )</script></div>'
 					);
 				} );
@@ -795,51 +793,51 @@ describe( 'HtmlEmbedEditing', () => {
 
 			describe( 'different setting of ui and content language', () => {
 				it( 'the widget and preview should have the dir attribute for LTR language', () => {
-					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'ltr' );
-					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'ltr' );
+					vi.spyOn( editor.locale, 'uiLanguageDirection', 'get' ).mockReturnValue( 'ltr' );
+					vi.spyOn( editor.locale, 'contentLanguageDirection', 'get' ).mockReturnValue( 'ltr' );
 
 					_setModelData( model, '<rawHtml></rawHtml>' );
 					const widget = viewDocument.getRoot().getChild( 0 );
 					const domPreview = getDomPreview( widget );
 
-					expect( widget.getAttribute( 'dir' ) ).to.equal( 'ltr' );
-					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+					expect( widget.getAttribute( 'dir' ) ).toBe( 'ltr' );
+					expect( domPreview.getAttribute( 'dir' ) ).toBe( 'ltr' );
 				} );
 
 				it( 'the widget and preview should have the dir attribute for RTL language', () => {
-					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'rtl' );
-					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'rtl' );
+					vi.spyOn( editor.locale, 'uiLanguageDirection', 'get' ).mockReturnValue( 'rtl' );
+					vi.spyOn( editor.locale, 'contentLanguageDirection', 'get' ).mockReturnValue( 'rtl' );
 
 					_setModelData( model, '<rawHtml></rawHtml>' );
 					const widget = viewDocument.getRoot().getChild( 0 );
 					const domPreview = getDomPreview( widget );
 
-					expect( widget.getAttribute( 'dir' ) ).to.equal( 'rtl' );
-					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+					expect( widget.getAttribute( 'dir' ) ).toBe( 'rtl' );
+					expect( domPreview.getAttribute( 'dir' ) ).toBe( 'rtl' );
 				} );
 
 				it( 'the widget should have the dir attribute for LTR language, but preview for RTL', () => {
-					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'ltr' );
-					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'rtl' );
+					vi.spyOn( editor.locale, 'uiLanguageDirection', 'get' ).mockReturnValue( 'ltr' );
+					vi.spyOn( editor.locale, 'contentLanguageDirection', 'get' ).mockReturnValue( 'rtl' );
 
 					_setModelData( model, '<rawHtml></rawHtml>' );
 					const widget = viewDocument.getRoot().getChild( 0 );
 					const domPreview = getDomPreview( widget );
 
-					expect( widget.getAttribute( 'dir' ) ).to.equal( 'ltr' );
-					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+					expect( widget.getAttribute( 'dir' ) ).toBe( 'ltr' );
+					expect( domPreview.getAttribute( 'dir' ) ).toBe( 'rtl' );
 				} );
 
 				it( 'the widget should have the dir attribute for RTL language, butPreview for LTR', () => {
-					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'rtl' );
-					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'ltr' );
+					vi.spyOn( editor.locale, 'uiLanguageDirection', 'get' ).mockReturnValue( 'rtl' );
+					vi.spyOn( editor.locale, 'contentLanguageDirection', 'get' ).mockReturnValue( 'ltr' );
 
 					_setModelData( model, '<rawHtml></rawHtml>' );
 					const widget = viewDocument.getRoot().getChild( 0 );
 					const domPreview = getDomPreview( widget );
 
-					expect( widget.getAttribute( 'dir' ) ).to.equal( 'rtl' );
-					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+					expect( widget.getAttribute( 'dir' ) ).toBe( 'rtl' );
+					expect( domPreview.getAttribute( 'dir' ) ).toBe( 'ltr' );
 				} );
 
 				function getDomPreview( widget ) {
@@ -861,10 +859,10 @@ describe( 'HtmlEmbedEditing', () => {
 				const editButton = domContentWrapper.querySelector( '.raw-html-embed__edit-button' );
 
 				editor.enableReadOnlyMode( 'unit-test' );
-				expect( editButton.classList.contains( 'ck-disabled' ) ).to.be.true;
+				expect( editButton.classList.contains( 'ck-disabled' ) ).toBe( true );
 
 				editor.disableReadOnlyMode( 'unit-test' );
-				expect( editButton.classList.contains( 'ck-disabled' ) ).to.be.false;
+				expect( editButton.classList.contains( 'ck-disabled' ) ).toBe( false );
 			} );
 
 			it( 'should disable the edit button when the command gets disabled', () => {
@@ -877,10 +875,10 @@ describe( 'HtmlEmbedEditing', () => {
 				const editButton = domContentWrapper.querySelector( '.raw-html-embed__edit-button' );
 
 				htmlEmbedCommand.forceDisabled();
-				expect( editButton.classList.contains( 'ck-disabled' ) ).to.be.true;
+				expect( editButton.classList.contains( 'ck-disabled' ) ).toBe( true );
 
 				htmlEmbedCommand.clearForceDisabled();
-				expect( editButton.classList.contains( 'ck-disabled' ) ).to.be.false;
+				expect( editButton.classList.contains( 'ck-disabled' ) ).toBe( false );
 			} );
 
 			it( 'should disable the save button (but not the cancel button) when the editor goes read-only', () => {
@@ -897,12 +895,12 @@ describe( 'HtmlEmbedEditing', () => {
 				const cancelButton = domContentWrapper.querySelector( '.raw-html-embed__cancel-button' );
 
 				editor.enableReadOnlyMode( 'unit-test' );
-				expect( saveButton.classList.contains( 'ck-disabled' ) ).to.be.true;
-				expect( cancelButton.classList.contains( 'ck-disabled' ) ).to.be.false;
+				expect( saveButton.classList.contains( 'ck-disabled' ) ).toBe( true );
+				expect( cancelButton.classList.contains( 'ck-disabled' ) ).toBe( false );
 
 				editor.disableReadOnlyMode( 'unit-test' );
-				expect( saveButton.classList.contains( 'ck-disabled' ) ).to.be.false;
-				expect( cancelButton.classList.contains( 'ck-disabled' ) ).to.be.false;
+				expect( saveButton.classList.contains( 'ck-disabled' ) ).toBe( false );
+				expect( cancelButton.classList.contains( 'ck-disabled' ) ).toBe( false );
 			} );
 
 			it( 'should disable the save button (but not the cancel button) when the command gets disabled', () => {
@@ -920,12 +918,12 @@ describe( 'HtmlEmbedEditing', () => {
 				const cancelButton = domContentWrapper.querySelector( '.raw-html-embed__cancel-button' );
 
 				htmlEmbedCommand.forceDisabled();
-				expect( saveButton.classList.contains( 'ck-disabled' ) ).to.be.true;
-				expect( cancelButton.classList.contains( 'ck-disabled' ) ).to.be.false;
+				expect( saveButton.classList.contains( 'ck-disabled' ) ).toBe( true );
+				expect( cancelButton.classList.contains( 'ck-disabled' ) ).toBe( false );
 
 				htmlEmbedCommand.clearForceDisabled();
-				expect( saveButton.classList.contains( 'ck-disabled' ) ).to.be.false;
-				expect( cancelButton.classList.contains( 'ck-disabled' ) ).to.be.false;
+				expect( saveButton.classList.contains( 'ck-disabled' ) ).toBe( false );
+				expect( cancelButton.classList.contains( 'ck-disabled' ) ).toBe( false );
 			} );
 		} );
 	} );

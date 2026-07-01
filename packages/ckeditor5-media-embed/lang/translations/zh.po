@@ -66,3 +66,31 @@ msgstr "置中媒體"
 msgctxt "The label for the right aligned media option."
 msgid "Right aligned media"
 msgstr "靠右對齊媒體"
+
+msgctxt "The label used for the dropdown in the media toolbar containing defined resize options."
+msgid "Resize media"
+msgstr "調整媒體大小"
+
+msgctxt "The label used for the standalone resize options buttons in the media toolbar."
+msgid "Resize media to %0"
+msgstr "將媒體大小調整為 %0"
+
+msgctxt "The accessibility label of the standalone media resize reset option button in the media toolbar for screen readers."
+msgid "Resize media to the original size"
+msgstr "將媒體調整為原始大小"
+
+msgctxt "The label for media resize balloon input."
+msgid "Resize media (in %0)"
+msgstr "調整媒體大小（以 %0 為單位）"
+
+msgctxt "The accessibility label of the standalone media resize custom option button in the media toolbar for screen readers."
+msgid "Custom media size"
+msgstr "自訂媒體大小"
+
+msgctxt "The accessibility label of the media resize dropdown for screen readers."
+msgid "Media resize list"
+msgstr "媒體大小調整清單"
+
+msgctxt "The label for the header of the media resize balloon."
+msgid "Media Resize"
+msgstr "媒體大小調整"

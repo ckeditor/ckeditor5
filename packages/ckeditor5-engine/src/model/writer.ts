@@ -1699,10 +1699,13 @@ export class ModelWriter {
 	 * and applies a marker operation with the new marker range equal to the current range. Thanks to this, the marker range
 	 * can be later correctly processed during undo.
 	 *
+	 * Exposed so that code applying operations directly to the model can reproduce the same marker bookkeeping.
+	 *
+	 * @internal
 	 * @param type Writer action type.
 	 * @param positionOrRange Position or range where the writer action happens.
 	 */
-	private _addOperationForAffectedMarkers(
+	public _addOperationForAffectedMarkers(
 		type: 'move' | 'merge',
 		positionOrRange: ModelPosition | ModelRange
 	): void {

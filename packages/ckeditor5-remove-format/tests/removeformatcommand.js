@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { RemoveFormatCommand } from '../src/removeformatcommand.js';
 import { Command } from '@ckeditor/ckeditor5-core';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
@@ -86,12 +87,12 @@ describe( 'RemoveFormatCommand', () => {
 	} );
 
 	it( 'is a command', () => {
-		expect( RemoveFormatCommand.prototype ).to.be.instanceOf( Command );
-		expect( command ).to.be.instanceOf( Command );
+		expect( RemoveFormatCommand.prototype ).toBeInstanceOf( Command );
+		expect( command ).toBeInstanceOf( Command );
 	} );
 
 	describe( 'isEnabled', () => {
-		const expectEnabledPropertyToBe = expectedValue => expect( command ).to.have.property( 'isEnabled', expectedValue );
+		const expectEnabledPropertyToBe = expectedValue => expect( command ).toHaveProperty( 'isEnabled', expectedValue );
 		const cases = {
 			'state when in non-formatting markup': {
 				input: '<p>fo[]o</p>',
@@ -162,7 +163,7 @@ describe( 'RemoveFormatCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		const expectModelToBeEqual = expectedValue => expect( _getModelData( model ) ).to.equal( expectedValue );
+		const expectModelToBeEqual = expectedValue => expect( _getModelData( model ) ).toEqual( expectedValue );
 		const cases = {
 			'state when in non-formatting markup': {
 				input: '<p>fo[]o</p>',
@@ -198,8 +199,8 @@ describe( 'RemoveFormatCommand', () => {
 					}
 				},
 				assert: () => {
-					expect( model.document.selection.hasAttribute( 'bold' ) ).to.equal( false );
-					expect( model.document.selection.hasAttribute( 'irrelevant' ) ).to.equal( true );
+					expect( model.document.selection.hasAttribute( 'bold' ) ).toEqual( false );
+					expect( model.document.selection.hasAttribute( 'irrelevant' ) ).toEqual( true );
 				}
 			},
 			'state with formatted selection alone (selection attribute marker)': {
@@ -212,9 +213,9 @@ describe( 'RemoveFormatCommand', () => {
 					}
 				},
 				assert: () => {
-					expect( model.document.selection.hasAttribute( 'selection:someBlockFormatting' ) ).to.be.false;
-					expect( model.document.selection.hasAttribute( 'selection:fooA' ) ).to.be.false;
-					expect( model.document.selection.hasAttribute( 'selection:irrelevant' ) ).to.be.true;
+					expect( model.document.selection.hasAttribute( 'selection:someBlockFormatting' ) ).toBe( false );
+					expect( model.document.selection.hasAttribute( 'selection:fooA' ) ).toBe( false );
+					expect( model.document.selection.hasAttribute( 'selection:irrelevant' ) ).toBe( true );
 				}
 			},
 			'state with selection attribute markers on an element': {

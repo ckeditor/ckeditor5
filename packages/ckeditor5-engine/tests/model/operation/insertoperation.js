@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { ModelNodeList } from '../../../src/model/nodelist.js';
 import { ModelElement } from '../../../src/model/element.js';
@@ -28,7 +29,7 @@ describe( 'InsertOperation', () => {
 			doc.version
 		);
 
-		expect( op.type ).to.equal( 'insert' );
+		expect( op.type ).toBe( 'insert' );
 	} );
 
 	it( 'should have proper position stickiness', () => {
@@ -41,7 +42,7 @@ describe( 'InsertOperation', () => {
 			doc.version
 		);
 
-		expect( op.position.stickiness ).to.equal( 'toNone' );
+		expect( op.position.stickiness ).toBe( 'toNone' );
 	} );
 
 	it( 'should insert text node', () => {
@@ -53,9 +54,9 @@ describe( 'InsertOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 1 );
-		expect( root.getChild( 0 ).data ).to.equal( 'x' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 1 );
+		expect( root.getChild( 0 ).data ).toBe( 'x' );
 	} );
 
 	it( 'should insert element', () => {
@@ -67,9 +68,9 @@ describe( 'InsertOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 1 );
-		expect( root.getChild( 0 ).name ).to.equal( 'p' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 1 );
+		expect( root.getChild( 0 ).name ).toBe( 'p' );
 	} );
 
 	it( 'should insert set of nodes', () => {
@@ -81,18 +82,18 @@ describe( 'InsertOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 7 );
-		expect( root.childCount ).to.equal( 3 );
-		expect( root.getChild( 0 ).data ).to.equal( 'bar' );
-		expect( root.getChild( 1 ).name ).to.equal( 'p' );
-		expect( root.getChild( 2 ).data ).to.equal( 'foo' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 7 );
+		expect( root.childCount ).toBe( 3 );
+		expect( root.getChild( 0 ).data ).toBe( 'bar' );
+		expect( root.getChild( 1 ).name ).toBe( 'p' );
+		expect( root.getChild( 2 ).data ).toBe( 'foo' );
 	} );
 
 	it( 'should return position on affectedSelectable', () => {
 		const pos = new ModelPosition( root, [ 1 ] );
 		const op = new InsertOperation( pos, 'bar',	doc.version );
-		expect( op.affectedSelectable ).to.deep.equal( pos );
+		expect( op.affectedSelectable ).toEqual( pos );
 	} );
 
 	it( 'should insert between existing nodes', () => {
@@ -106,9 +107,9 @@ describe( 'InsertOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 5 );
-		expect( root.getChild( 0 ).data ).to.equal( 'xbary' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 5 );
+		expect( root.getChild( 0 ).data ).toBe( 'xbary' );
 	} );
 
 	it( 'should insert text', () => {
@@ -120,9 +121,9 @@ describe( 'InsertOperation', () => {
 			)
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( root.maxOffset ).to.equal( 7 );
-		expect( root.getChild( 0 ).data ).to.equal( 'fooxbar' );
+		expect( doc.version ).toBe( 1 );
+		expect( root.maxOffset ).toBe( 7 );
+		expect( root.getChild( 0 ).data ).toBe( 'fooxbar' );
 	} );
 
 	it( 'should create a MoveOperation as a reverse', () => {
@@ -135,10 +136,10 @@ describe( 'InsertOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		expect( reverse ).to.be.an.instanceof( MoveOperation );
-		expect( reverse.baseVersion ).to.equal( 1 );
-		expect( reverse.sourcePosition.isEqual( position ) ).to.be.true;
-		expect( reverse.howMany ).to.equal( 7 );
+		expect( reverse ).toBeInstanceOf( MoveOperation );
+		expect( reverse.baseVersion ).toBe( 1 );
+		expect( reverse.sourcePosition.isEqual( position ) ).toBe( true );
+		expect( reverse.howMany ).toBe( 7 );
 	} );
 
 	it( 'should undo insert node by applying reverse operation', () => {
@@ -152,12 +153,12 @@ describe( 'InsertOperation', () => {
 
 		model.applyOperation( operation );
 
-		expect( doc.version ).to.equal( 1 );
+		expect( doc.version ).toBe( 1 );
 
 		model.applyOperation( reverse );
 
-		expect( doc.version ).to.equal( 2 );
-		expect( root.maxOffset ).to.equal( 0 );
+		expect( doc.version ).toBe( 2 );
+		expect( root.maxOffset ).toBe( 0 );
 	} );
 
 	it( 'should undo insert set of nodes by applying reverse operation', () => {
@@ -171,12 +172,12 @@ describe( 'InsertOperation', () => {
 
 		model.applyOperation( operation );
 
-		expect( doc.version ).to.equal( 1 );
+		expect( doc.version ).toBe( 1 );
 
 		model.applyOperation( reverse );
 
-		expect( doc.version ).to.equal( 2 );
-		expect( root.maxOffset ).to.equal( 0 );
+		expect( doc.version ).toBe( 2 );
+		expect( root.maxOffset ).toBe( 0 );
 	} );
 
 	it( 'should create operation with the same parameters when cloned', () => {
@@ -191,19 +192,19 @@ describe( 'InsertOperation', () => {
 		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
-		expect( clone ).not.to.equal( op );
+		expect( clone ).not.toBe( op );
 
-		expect( clone ).to.be.instanceof( InsertOperation );
-		expect( clone.position.isEqual( position ) ).to.be.true;
+		expect( clone ).toBeInstanceOf( InsertOperation );
+		expect( clone.position.isEqual( position ) ).toBe( true );
 
 		// New node, not pointer to the old instance.
-		expect( clone.nodes.getNode( 0 ) ).not.to.equal( nodeA );
-		expect( clone.nodes.getNode( 1 ) ).not.to.equal( nodeB );
-		expect( clone.nodes.getNode( 0 ) ).to.deep.equal( nodeA );
-		expect( clone.nodes.getNode( 1 ) ).to.deep.equal( nodeB );
+		expect( clone.nodes.getNode( 0 ) ).not.toBe( nodeA );
+		expect( clone.nodes.getNode( 1 ) ).not.toBe( nodeB );
+		expect( clone.nodes.getNode( 0 ) ).toEqual( nodeA );
+		expect( clone.nodes.getNode( 1 ) ).toEqual( nodeB );
 
-		expect( clone.nodes.length ).to.equal( 2 );
-		expect( clone.baseVersion ).to.equal( baseVersion );
+		expect( clone.nodes.length ).toBe( 2 );
+		expect( clone.baseVersion ).toBe( baseVersion );
 	} );
 
 	it( 'should save copies of inserted nodes after it is executed', () => {
@@ -216,14 +217,14 @@ describe( 'InsertOperation', () => {
 		const op2 = new InsertOperation( new ModelPosition( root, [ 0, 0 ] ), text, doc.version );
 		model.applyOperation( op2 );
 
-		expect( op.nodes.getNode( 0 ) ).not.to.equal( element );
-		expect( op.nodes.getNode( 0 ).name ).to.equal( 'p' );
-		expect( Array.from( op.nodes.getNode( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'key', 'value' ] ] );
+		expect( op.nodes.getNode( 0 ) ).not.toBe( element );
+		expect( op.nodes.getNode( 0 ).name ).toBe( 'p' );
+		expect( Array.from( op.nodes.getNode( 0 ).getAttributes() ) ).toEqual( [ [ 'key', 'value' ] ] );
 
-		expect( op.nodes.getNode( 0 ).childCount ).to.equal( 0 );
-		expect( element.childCount ).to.equal( 1 );
+		expect( op.nodes.getNode( 0 ).childCount ).toBe( 0 );
+		expect( element.childCount ).toBe( 1 );
 
-		expect( op2.nodes.getNode( 0 ) ).not.to.equal( text );
+		expect( op2.nodes.getNode( 0 ) ).not.toBe( text );
 	} );
 
 	describe( '_validate()', () => {
@@ -243,7 +244,7 @@ describe( 'InsertOperation', () => {
 
 			const serialized = op.toJSON();
 
-			expect( serialized ).to.deep.equal( {
+			expect( serialized ).toEqual( {
 				__className: 'InsertOperation',
 				baseVersion: 0,
 				nodes: ( new ModelNodeList( [ new ModelText( 'x' ) ] ) ).toJSON(),
@@ -265,7 +266,7 @@ describe( 'InsertOperation', () => {
 			const serialized = op.toJSON();
 			const deserialized = InsertOperation.fromJSON( serialized, doc );
 
-			expect( deserialized ).to.deep.equal( op );
+			expect( deserialized ).toEqual( op );
 		} );
 	} );
 } );

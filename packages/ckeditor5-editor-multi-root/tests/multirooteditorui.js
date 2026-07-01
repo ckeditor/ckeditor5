@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MultiRootEditor } from '../src/multirooteditor.js';
 import { EditorUI, View } from '@ckeditor/ckeditor5-ui';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'MultiRootEditorUI', () => {
 	let editor, view, ui;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return MultiRootEditor
@@ -30,22 +28,23 @@ describe( 'MultiRootEditorUI', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'extends EditorUI', () => {
-			expect( ui ).to.instanceof( EditorUI );
+			expect( ui ).toBeInstanceOf( EditorUI );
 		} );
 	} );
 
 	describe( 'init()', () => {
 		it( 'renders the #view', () => {
-			expect( view.isRendered ).to.be.true;
+			expect( view.isRendered ).toBe( true );
 		} );
 
 		it( 'adds initial editables', () => {
-			expect( ui.getEditableElement( 'foo' ) ).not.to.be.null;
-			expect( ui.getEditableElement( 'bar' ) ).not.to.be.null;
+			expect( ui.getEditableElement( 'foo' ) ).not.toBeNull();
+			expect( ui.getEditableElement( 'bar' ) ).not.toBeNull();
 		} );
 
 		describe( 'view.toolbar', () => {
@@ -75,8 +74,8 @@ describe( 'MultiRootEditorUI', () => {
 						.then( editor => {
 							const items = editor.ui.view.toolbar.items;
 
-							expect( items.get( 0 ).name ).to.equal( 'foo' );
-							expect( items.get( 1 ).name ).to.equal( 'bar' );
+							expect( items.get( 0 ).name ).toBe( 'foo' );
+							expect( items.get( 1 ).name ).toBe( 'bar' );
 
 							return editor.destroy();
 						} );
@@ -98,8 +97,8 @@ describe( 'MultiRootEditorUI', () => {
 						.then( editor => {
 							const items = editor.ui.view.toolbar.items;
 
-							expect( items.get( 0 ).name ).to.equal( 'foo' );
-							expect( items.get( 1 ).name ).to.equal( 'bar' );
+							expect( items.get( 0 ).name ).toBe( 'foo' );
+							expect( items.get( 1 ).name ).toBe( 'bar' );
 
 							return editor.destroy();
 						} );
@@ -117,8 +116,8 @@ describe( 'MultiRootEditorUI', () => {
 						.then( editor => {
 							const items = editor.ui.view.toolbar.items;
 
-							expect( items.get( 0 ).name ).to.equal( 'foo' );
-							expect( items.length ).to.equal( 1 );
+							expect( items.get( 0 ).name ).toBe( 'foo' );
+							expect( items.length ).toBe( 1 );
 
 							return editor.destroy();
 						} );
@@ -142,33 +141,33 @@ describe( 'MultiRootEditorUI', () => {
 				ui.focusTracker.isFocused = false;
 
 				element.dispatchEvent( new Event( 'focus' ) );
-				expect( ui.focusTracker.isFocused ).to.true;
+				expect( ui.focusTracker.isFocused ).toBe( true );
 
 				ui.focusTracker.isFocused = false;
 
 				element.dispatchEvent( new Event( 'focus' ) );
-				expect( ui.focusTracker.isFocused ).to.true;
+				expect( ui.focusTracker.isFocused ).toBe( true );
 			} );
 
 			it( 'sets view.editables #name', () => {
-				expect( editable.name ).to.equal( 'new' );
+				expect( editable.name ).toBe( 'new' );
 			} );
 
 			it( 'registers editable element', () => {
-				expect( ui.getEditableElement( 'new' ) ).to.equal( element );
+				expect( ui.getEditableElement( 'new' ) ).toBe( element );
 			} );
 
 			it( 'attaches editable UI as view DOM root', () => {
-				expect( editor.editing.view.getDomRoot( 'new' ) ).to.equal( element );
+				expect( editor.editing.view.getDomRoot( 'new' ) ).toBe( element );
 			} );
 		} );
 
 		describe( 'inline root', () => {
 			it( 'leaves view.editables[].isInlineRoot false for block roots', () => {
-				expect( view.editables.foo.isInlineRoot ).to.be.false;
-				expect( view.editables.bar.isInlineRoot ).to.be.false;
-				expect( view.editables.foo.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
-				expect( view.editables.bar.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+				expect( view.editables.foo.isInlineRoot ).toBe( false );
+				expect( view.editables.bar.isInlineRoot ).toBe( false );
+				expect( view.editables.foo.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( false );
+				expect( view.editables.bar.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( false );
 			} );
 
 			it( 'sets view.editables[].isInlineRoot per editable based on the root model element', () => {
@@ -182,11 +181,11 @@ describe( 'MultiRootEditorUI', () => {
 					.then( newEditor => {
 						const editables = newEditor.ui.view.editables;
 
-						expect( editables.foo.isInlineRoot ).to.be.false;
-						expect( editables.bar.isInlineRoot ).to.be.true;
+						expect( editables.foo.isInlineRoot ).toBe( false );
+						expect( editables.bar.isInlineRoot ).toBe( true );
 
-						expect( editables.foo.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
-						expect( editables.bar.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+						expect( editables.foo.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( false );
+						expect( editables.bar.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( true );
 
 						return newEditor.destroy();
 					} );
@@ -202,8 +201,8 @@ describe( 'MultiRootEditorUI', () => {
 
 						const editable = newEditor.ui.view.editables.bar;
 
-						expect( editable.isInlineRoot ).to.be.true;
-						expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+						expect( editable.isInlineRoot ).toBe( true );
+						expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( true );
 
 						return newEditor.destroy();
 					} );
@@ -234,11 +233,11 @@ describe( 'MultiRootEditorUI', () => {
 					.then( newEditor => {
 						const editables = newEditor.ui.view.editables;
 
-						expect( editables.foo.isInlineRoot ).to.be.false;
-						expect( editables.bar.isInlineRoot ).to.be.true;
+						expect( editables.foo.isInlineRoot ).toBe( false );
+						expect( editables.bar.isInlineRoot ).toBe( true );
 
-						expect( editables.foo.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
-						expect( editables.bar.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+						expect( editables.foo.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( false );
+						expect( editables.bar.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( true );
 
 						return newEditor.destroy();
 					} );
@@ -265,8 +264,8 @@ describe( 'MultiRootEditorUI', () => {
 
 						const editable = newEditor.ui.view.editables.bar;
 
-						expect( editable.isInlineRoot ).to.be.true;
-						expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+						expect( editable.isInlineRoot ).toBe( true );
+						expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( true );
 
 						return newEditor.destroy();
 					} );
@@ -285,10 +284,10 @@ describe( 'MultiRootEditorUI', () => {
 					} )
 					.then( newEditor => {
 						const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
-						expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type foo...' );
+						expect( fooP.getAttribute( 'data-placeholder' ) ).toBe( 'Type foo...' );
 
 						const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
-						expect( barP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type bar...' );
+						expect( barP.getAttribute( 'data-placeholder' ) ).toBe( 'Type bar...' );
 
 						return newEditor.destroy();
 					} );
@@ -304,13 +303,13 @@ describe( 'MultiRootEditorUI', () => {
 					} )
 					.then( newEditor => {
 						const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
-						expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type foo...' );
+						expect( fooP.getAttribute( 'data-placeholder' ) ).toBe( 'Type foo...' );
 
 						const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
-						expect( barP.hasAttribute( 'data-placeholder' ) ).to.be.false;
+						expect( barP.hasAttribute( 'data-placeholder' ) ).toBe( false );
 
 						const bazP = newEditor.editing.view.document.getRoot( 'baz' ).getChild( 0 );
-						expect( bazP.hasAttribute( 'data-placeholder' ) ).to.be.false;
+						expect( bazP.hasAttribute( 'data-placeholder' ) ).toBe( false );
 
 						return newEditor.destroy();
 					} );
@@ -335,7 +334,7 @@ describe( 'MultiRootEditorUI', () => {
 						} );
 
 						const newP = newEditor.editing.view.document.getRoot( 'new' ).getChild( 0 );
-						expect( newP.getAttribute( 'data-placeholder' ) ).to.equal( 'Explicit placeholder' );
+						expect( newP.getAttribute( 'data-placeholder' ) ).toBe( 'Explicit placeholder' );
 
 						return newEditor.destroy();
 					} );
@@ -360,7 +359,7 @@ describe( 'MultiRootEditorUI', () => {
 						ui.addEditable( editable );
 
 						const abcP = newEditor.editing.view.document.getRoot( 'abc' ).getChild( 0 );
-						expect( abcP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type abc...' );
+						expect( abcP.getAttribute( 'data-placeholder' ) ).toBe( 'Type abc...' );
 
 						return newEditor.destroy();
 					} );
@@ -380,10 +379,10 @@ describe( 'MultiRootEditorUI', () => {
 						const barRoot = newEditor.editing.view.document.getRoot( 'bar' );
 
 						// Inline root: placeholder on the root element itself.
-						expect( fooRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'Inline placeholder' );
+						expect( fooRoot.getAttribute( 'data-placeholder' ) ).toBe( 'Inline placeholder' );
 						// Block root: placeholder on its first child (a paragraph).
-						expect( barRoot.hasAttribute( 'data-placeholder' ) ).to.be.false;
-						expect( barRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'Block placeholder' );
+						expect( barRoot.hasAttribute( 'data-placeholder' ) ).toBe( false );
+						expect( barRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).toBe( 'Block placeholder' );
 
 						return newEditor.destroy();
 					} );
@@ -399,7 +398,7 @@ describe( 'MultiRootEditorUI', () => {
 
 						const barRoot = newEditor.editing.view.document.getRoot( 'bar' );
 
-						expect( barRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'Inline placeholder' );
+						expect( barRoot.getAttribute( 'data-placeholder' ) ).toBe( 'Inline placeholder' );
 
 						return newEditor.destroy();
 					} );
@@ -417,10 +416,10 @@ describe( 'MultiRootEditorUI', () => {
 
 						// Initial editables:
 						const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
-						expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type here...' );
+						expect( fooP.getAttribute( 'data-placeholder' ) ).toBe( 'Type here...' );
 
 						const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
-						expect( barP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type here...' );
+						expect( barP.getAttribute( 'data-placeholder' ) ).toBe( 'Type here...' );
 
 						// New editable:
 						// Placeholder set to the string value from the config.
@@ -431,7 +430,7 @@ describe( 'MultiRootEditorUI', () => {
 						} );
 
 						const newP = newEditor.editing.view.document.getRoot( 'new' ).getChild( 0 );
-						expect( newP.getAttribute( 'data-placeholder' ) ).to.equal( 'Added later' );
+						expect( newP.getAttribute( 'data-placeholder' ) ).toBe( 'Added later' );
 
 						return newEditor.destroy();
 					} );
@@ -453,14 +452,14 @@ describe( 'MultiRootEditorUI', () => {
 
 						// Initial roots:
 						const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
-						expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type foo...' );
+						expect( fooP.getAttribute( 'data-placeholder' ) ).toBe( 'Type foo...' );
 
 						const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
-						expect( barP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type bar...' );
+						expect( barP.getAttribute( 'data-placeholder' ) ).toBe( 'Type bar...' );
 
 						// Placeholder not set as it was not defined in the config object.
 						const bazP = newEditor.editing.view.document.getRoot( 'baz' ).getChild( 0 );
-						expect( bazP.hasAttribute( 'data-placeholder' ) ).to.be.false;
+						expect( bazP.hasAttribute( 'data-placeholder' ) ).toBe( false );
 
 						// New editable:
 						newEditor.model.change( writer => {
@@ -470,7 +469,7 @@ describe( 'MultiRootEditorUI', () => {
 						} );
 
 						const abcP = newEditor.editing.view.document.getRoot( 'abc' ).getChild( 0 );
-						expect( abcP.getAttribute( 'data-placeholder' ) ).to.equal( 'Added later' );
+						expect( abcP.getAttribute( 'data-placeholder' ) ).toBe( 'Added later' );
 
 						// Placeholder not set as it was not provided to `ui.addEditable()`.
 						newEditor.model.change( writer => {
@@ -480,7 +479,7 @@ describe( 'MultiRootEditorUI', () => {
 						} );
 
 						const newP = newEditor.editing.view.document.getRoot( 'new' ).getChild( 0 );
-						expect( newP.hasAttribute( 'data-placeholder' ) ).to.be.false;
+						expect( newP.hasAttribute( 'data-placeholder' ) ).toBe( false );
 
 						return newEditor.destroy();
 					} );
@@ -507,7 +506,7 @@ describe( 'MultiRootEditorUI', () => {
 						} );
 
 						const abcP = newEditor.editing.view.document.getRoot( 'abc' ).getChild( 0 );
-						expect( abcP.getAttribute( 'data-placeholder' ) ).to.equal( 'Abc...' );
+						expect( abcP.getAttribute( 'data-placeholder' ) ).toBe( 'Abc...' );
 
 						// Placeholder as set in the parameter, when not defined in config:
 						newEditor.model.change( writer => {
@@ -517,7 +516,7 @@ describe( 'MultiRootEditorUI', () => {
 						} );
 
 						const newP = newEditor.editing.view.document.getRoot( 'new' ).getChild( 0 );
-						expect( newP.getAttribute( 'data-placeholder' ) ).to.equal( 'New...' );
+						expect( newP.getAttribute( 'data-placeholder' ) ).toBe( 'New...' );
 
 						return newEditor.destroy();
 					} );
@@ -538,15 +537,15 @@ describe( 'MultiRootEditorUI', () => {
 			ui.focusTracker.isFocused = false;
 
 			element.dispatchEvent( new Event( 'focus' ) );
-			expect( ui.focusTracker.isFocused ).to.be.false;
+			expect( ui.focusTracker.isFocused ).toBe( false );
 		} );
 
 		it( 'deregisters editable element', () => {
-			expect( ui.getEditableElement( 'foo' ) ).to.be.undefined;
+			expect( ui.getEditableElement( 'foo' ) ).toBeUndefined();
 		} );
 
 		it( 'detaches editable UI from view DOM root', () => {
-			expect( editor.editing.view.getDomRoot( 'foo' ) ).to.be.undefined;
+			expect( editor.editing.view.getDomRoot( 'foo' ) ).toBeUndefined();
 		} );
 	} );
 
@@ -560,56 +559,57 @@ describe( 'MultiRootEditorUI', () => {
 		const barEditable = ui.view.editables.bar;
 
 		// Starting point. Nothing is focused.
-		expect( fooEditable.isFocused ).to.be.false;
-		expect( barEditable.isFocused ).to.be.false;
-		expect( focusTracker.isFocused ).to.be.false;
+		expect( fooEditable.isFocused ).toBe( false );
+		expect( barEditable.isFocused ).toBe( false );
+		expect( focusTracker.isFocused ).toBe( false );
 
 		// Focus bar root.
 		focusTracker.focusedElement = barEditable.element;
 		focusTracker.isFocused = true;
 
 		// It is focused.
-		expect( fooEditable.isFocused ).to.be.false;
-		expect( barEditable.isFocused ).to.be.true;
+		expect( fooEditable.isFocused ).toBe( false );
+		expect( barEditable.isFocused ).toBe( true );
 
 		// Move focus to a UI element that is a part of the editor.
 		focusTracker.focusedElement = uiDom;
 
 		// Bar root is still focused.
-		expect( fooEditable.isFocused ).to.be.false;
-		expect( barEditable.isFocused ).to.be.true;
+		expect( fooEditable.isFocused ).toBe( false );
+		expect( barEditable.isFocused ).toBe( true );
 
 		// Move focus outside of the editor.
 		focusTracker.isFocused = false;
 		focusTracker.focusedElement = null;
 
 		// Bar root is not focused.
-		expect( fooEditable.isFocused ).to.be.false;
-		expect( barEditable.isFocused ).to.be.false;
+		expect( fooEditable.isFocused ).toBe( false );
+		expect( barEditable.isFocused ).toBe( false );
 
 		// Bring the focus back to the UI element.
 		focusTracker.focusedElement = uiDom;
 		focusTracker.isFocused = true;
 
 		// Neither editable is focused
-		expect( fooEditable.isFocused ).to.be.false;
-		expect( barEditable.isFocused ).to.be.false;
+		expect( fooEditable.isFocused ).toBe( false );
+		expect( barEditable.isFocused ).toBe( false );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'detaches the DOM roots then destroys the UI view', () => {
 			return MultiRootEditor.create( { foo: '', bar: '' } )
 				.then( newEditor => {
-					const destroySpy = sinon.spy( newEditor.ui.view, 'destroy' );
-					const detachSpy = sinon.spy( newEditor.editing.view, 'detachDomRoot' );
+					const destroySpy = vi.spyOn( newEditor.ui.view, 'destroy' );
+					const detachSpy = vi.spyOn( newEditor.editing.view, 'detachDomRoot' );
 
 					return newEditor.destroy()
 						.then( () => {
-							expect( detachSpy.calledTwice ).to.be.true;
-							expect( detachSpy.calledWith( 'foo' ) ).to.be.true;
-							expect( detachSpy.calledWith( 'bar' ) ).to.be.true;
+							expect( detachSpy ).toHaveBeenCalledTimes( 2 );
+							expect( detachSpy ).toHaveBeenCalledWith( 'foo' );
+							expect( detachSpy ).toHaveBeenCalledWith( 'bar' );
 
-							sinon.assert.callOrder( detachSpy, destroySpy );
+							expect( Math.max( ...detachSpy.mock.invocationCallOrder ) )
+								.toBeLessThan( destroySpy.mock.invocationCallOrder[ 0 ] );
 						} );
 				} );
 		} );
@@ -639,7 +639,7 @@ describe( 'MultiRootEditorUI', () => {
 									attributes[ attribute.name ] = attribute.value;
 								}
 
-								expect( attributes ).to.deep.equal( {
+								expect( attributes ).toEqual( {
 									foo: 'bar',
 									'data-baz': 'qux',
 									class: 'foo-class'
@@ -653,12 +653,13 @@ describe( 'MultiRootEditorUI', () => {
 			const newEditor = await MultiRootEditor.create( '' );
 			const parentEditorUIPrototype = Object.getPrototypeOf( newEditor.ui.constructor.prototype );
 
-			const parentDestroySpy = testUtils.sinon.spy( parentEditorUIPrototype, 'destroy' );
-			const viewDestroySpy = testUtils.sinon.spy( newEditor.ui.view, 'destroy' );
+			const parentDestroySpy = vi.spyOn( parentEditorUIPrototype, 'destroy' );
+			const viewDestroySpy = vi.spyOn( newEditor.ui.view, 'destroy' );
 
 			await newEditor.destroy();
 
-			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
+			expect( parentDestroySpy.mock.invocationCallOrder[ 0 ] )
+				.toBeLessThan( viewDestroySpy.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		// Some of integrations might detach the DOM editing view *before* destroying the editor.

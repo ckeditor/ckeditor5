@@ -7,7 +7,7 @@
  * @module image/autoimage
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	Clipboard,
 	type ClipboardInputTransformationEvent,
@@ -34,8 +34,8 @@ export class AutoImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Clipboard, ImageUtils, Undo, Delete ] as const;
+	public static get requires(): PluginDependenciesOf<[ Clipboard, ImageUtils, Undo, Delete ]> {
+		return [ Clipboard, ImageUtils, Undo, Delete ];
 	}
 
 	/**

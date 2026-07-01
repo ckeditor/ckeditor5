@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Collection } from '@ckeditor/ckeditor5-utils';
 
 import { FindAndReplace } from '../src/findandreplace.js';
@@ -17,8 +18,6 @@ describe( 'FindAndReplaceState', () => {
 	const FOO_BAR_PARAGRAPH = '<p>Foo bar baz</p>';
 
 	let editor, model, root, state;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editor = await DecoupledEditor.create( '', {
@@ -36,28 +35,28 @@ describe( 'FindAndReplaceState', () => {
 
 	describe( 'State initiall value', () => {
 		it( 'should create results collection', () => {
-			expect( state.results ).to.be.instanceOf( Collection );
-			expect( state.results ).to.be.length( 0 );
+			expect( state.results ).toBeInstanceOf( Collection );
+			expect( state.results ).toHaveLength( 0 );
 		} );
 
 		it( 'highlightedResult should be null', () => {
-			expect( state.highlightedResult ).to.be.null;
+			expect( state.highlightedResult ).toBeNull();
 		} );
 
 		it( 'searchText should be an empty string', () => {
-			expect( state.searchText ).to.be.equal( '' );
+			expect( state.searchText ).toBe( '' );
 		} );
 
 		it( 'replaceText should be an empty string', () => {
-			expect( state.replaceText ).to.be.equal( '' );
+			expect( state.replaceText ).toBe( '' );
 		} );
 
 		it( 'matchCase should be false', () => {
-			expect( state.matchCase ).to.be.false;
+			expect( state.matchCase ).toBe( false );
 		} );
 
 		it( 'matchWholeWords should be false', () => {
-			expect( state.matchWholeWords ).to.be.false;
+			expect( state.matchWholeWords ).toBe( false );
 		} );
 	} );
 
@@ -72,7 +71,7 @@ describe( 'FindAndReplaceState', () => {
 
 			editor.plugins.get( 'FindAndReplaceEditing' ).state.highlightedResult = matchInfo;
 
-			expect( editor.model.markers.has( 'findResultHighlighted:test-uid' ) ).to.be.true;
+			expect( editor.model.markers.has( 'findResultHighlighted:test-uid' ) ).toBe( true );
 		} );
 
 		it( 'removes the previous highlight marker', () => {
@@ -85,7 +84,7 @@ describe( 'FindAndReplaceState', () => {
 
 			editor.plugins.get( 'FindAndReplaceEditing' ).state.highlightedResult = null;
 
-			expect( editor.model.markers.has( 'findResultHighlighted:test-uid' ) ).to.be.false;
+			expect( editor.model.markers.has( 'findResultHighlighted:test-uid' ) ).toBe( false );
 		} );
 
 		it( 'moves the highlight marker', () => {
@@ -100,8 +99,8 @@ describe( 'FindAndReplaceState', () => {
 			editor.plugins.get( 'FindAndReplaceEditing' ).state.highlightedResult = firstMatch;
 			editor.plugins.get( 'FindAndReplaceEditing' ).state.highlightedResult = secondMatch;
 
-			expect( editor.model.markers.has( 'findResultHighlighted:test1' ) ).to.be.false;
-			expect( editor.model.markers.has( 'findResultHighlighted:test2' ) ).to.be.true;
+			expect( editor.model.markers.has( 'findResultHighlighted:test1' ) ).toBe( false );
+			expect( editor.model.markers.has( 'findResultHighlighted:test2' ) ).toBe( true );
 		} );
 	} );
 
@@ -117,7 +116,7 @@ describe( 'FindAndReplaceState', () => {
 
 			const markers = Array.from( editor.model.markers ).filter( markers => markers.name.startsWith( 'findResult:' ) );
 
-			expect( markers ).to.have.length( 2 );
+			expect( markers ).toHaveLength( 2 );
 		} );
 
 		describe( 'changing highlighted result', () => {
@@ -131,7 +130,7 @@ describe( 'FindAndReplaceState', () => {
 
 				state.results.remove( 0 );
 
-				expect( state.highlightedResult ).to.eql( expectedHighlightedResult );
+				expect( state.highlightedResult ).toEqual( expectedHighlightedResult );
 			} );
 
 			it( 'should automatically change last highlighted result', () => {
@@ -146,7 +145,7 @@ describe( 'FindAndReplaceState', () => {
 
 				state.results.remove( 2 );
 
-				expect( state.highlightedResult ).to.eql( expectedHighlightedResult );
+				expect( state.highlightedResult ).toEqual( expectedHighlightedResult );
 			} );
 
 			it( 'should remove highlighted result if there is nothing more to highlight', () => {
@@ -158,7 +157,7 @@ describe( 'FindAndReplaceState', () => {
 
 				state.results.remove( 0 );
 
-				expect( state.highlightedResult ).to.be.null;
+				expect( state.highlightedResult ).toBeNull();
 			} );
 		} );
 	} );
@@ -172,7 +171,7 @@ describe( 'FindAndReplaceState', () => {
 
 			state.clear( model );
 
-			expect( state.searchText ).to.be.equal( '' );
+			expect( state.searchText ).toBe( '' );
 		} );
 
 		it( 'should clear results', () => {
@@ -183,7 +182,7 @@ describe( 'FindAndReplaceState', () => {
 
 			state.clear( model );
 
-			expect( state.results ).to.be.length( 0 );
+			expect( state.results ).toHaveLength( 0 );
 		} );
 
 		it( 'should remove findResult markers', () => {
@@ -200,8 +199,8 @@ describe( 'FindAndReplaceState', () => {
 
 			state.clear( model );
 
-			expect( editor.model.markers.has( 'findResult:test1' ) ).to.be.false;
-			expect( editor.model.markers.has( 'findResult:test2' ) ).to.be.false;
+			expect( editor.model.markers.has( 'findResult:test1' ) ).toBe( false );
+			expect( editor.model.markers.has( 'findResult:test2' ) ).toBe( false );
 		} );
 
 		it( 'should remove findResultHighlighted marker', () => {
@@ -217,7 +216,7 @@ describe( 'FindAndReplaceState', () => {
 
 			state.clear( model );
 
-			expect( editor.model.markers.has( 'findResultHighlighted:test1' ) ).to.be.false;
+			expect( editor.model.markers.has( 'findResultHighlighted:test1' ) ).toBe( false );
 		} );
 
 		it( 'should not throw exception when there is no findResultHighlighted marker', () => {
@@ -232,7 +231,7 @@ describe( 'FindAndReplaceState', () => {
 			state.highlightedResult = match;
 			removeMarker( 'findResultHighlighted:test1' );
 
-			expect( () => state.clear( model ) ).to.not.throw();
+			expect( () => state.clear( model ) ).not.toThrow();
 		} );
 	} );
 

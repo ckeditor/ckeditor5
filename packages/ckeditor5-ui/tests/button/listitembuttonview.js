@@ -3,14 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ListItemButtonView, CheckIconHolderView } from '../../src/button/listitembuttonview.js';
 import { ButtonView } from '../../src/button/buttonview.js';
 
 describe( 'ListItemButtonView', () => {
 	let locale, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		locale = { t() {} };
@@ -25,19 +27,19 @@ describe( 'ListItemButtonView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should inherit from ButtonView', () => {
-			expect( view ).to.be.instanceOf( ButtonView );
+			expect( view ).toBeInstanceOf( ButtonView );
 		} );
 
 		it( 'should initialize with hasCheckSpace set to false', () => {
-			expect( view.hasCheckSpace ).to.be.false;
+			expect( view.hasCheckSpace ).toBe( false );
 		} );
 
 		it( 'should initialize with isToggleable set to false', () => {
-			expect( view.isToggleable ).to.be.false;
+			expect( view.isToggleable ).toBe( false );
 		} );
 
 		it( 'should initialize with proper class names', () => {
-			expect( [ ...view.element.classList ] ).to.be.deep.equal( [
+			expect( [ ...view.element.classList ] ).toEqual( [
 				'ck',
 				'ck-button',
 				'ck-off',
@@ -52,7 +54,7 @@ describe( 'ListItemButtonView', () => {
 			view.isToggleable = true;
 			view.render();
 
-			expect( view.element.querySelector( '.ck-list-item-button__check-holder' ) ).not.to.be.null;
+			expect( view.element.querySelector( '.ck-list-item-button__check-holder' ) ).not.toBeNull();
 		} );
 	} );
 
@@ -60,7 +62,7 @@ describe( 'ListItemButtonView', () => {
 		it( 'should bind class names properly when isToggleable is set to true', () => {
 			view.isToggleable = true;
 
-			expect( view.element.classList.contains( 'ck-list-item-button_toggleable' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-list-item-button_toggleable' ) ).toBe( true );
 		} );
 	} );
 
@@ -79,41 +81,41 @@ describe( 'ListItemButtonView', () => {
 					view.isToggleable = isToggleable;
 					view.hasCheckSpace = checkHolderSpace;
 
-					expect( !!view.element.querySelector( '.ck-list-item-button__check-holder' ) ).to.be.equal( rendered );
+					expect( !!view.element.querySelector( '.ck-list-item-button__check-holder' ) ).toBe( rendered );
 				}
 			);
 		}
 
 		it( 'should remove check holder when isToggleable is set to false', () => {
 			view.isToggleable = true;
-			expect( view.element.querySelector( '.ck-list-item-button__check-holder' ) ).not.to.be.null;
+			expect( view.element.querySelector( '.ck-list-item-button__check-holder' ) ).not.toBeNull();
 
 			view.isToggleable = false;
-			expect( view.element.querySelector( '.ck-list-item-button__check-holder' ) ).to.be.null;
+			expect( view.element.querySelector( '.ck-list-item-button__check-holder' ) ).toBeNull();
 		} );
 	} );
 
 	describe( '_checkIconHolderView', () => {
 		it( 'should be instance of CheckIconHolderView', () => {
-			expect( view._checkIconHolderView ).to.be.instanceOf( CheckIconHolderView );
+			expect( view._checkIconHolderView ).toBeInstanceOf( CheckIconHolderView );
 		} );
 
 		it( 'should have `isOn` bound to parent view', () => {
 			// When is not toggleable, the check icon should be hidden.
 			view.isToggleable = false;
 			view.isOn = true;
-			expect( view._checkIconHolderView.isOn ).to.be.false;
+			expect( view._checkIconHolderView.isOn ).toBe( false );
 
 			view.isOn = false;
-			expect( view._checkIconHolderView.isOn ).to.be.false;
+			expect( view._checkIconHolderView.isOn ).toBe( false );
 
 			// When is toggleable, the check icon should be visible.
 			view.isToggleable = true;
 			view.isOn = true;
-			expect( view._checkIconHolderView.isOn ).to.be.true;
+			expect( view._checkIconHolderView.isOn ).toBe( true );
 
 			view.isOn = false;
-			expect( view._checkIconHolderView.isOn ).to.be.false;
+			expect( view._checkIconHolderView.isOn ).toBe( false );
 		} );
 	} );
 } );
@@ -132,7 +134,7 @@ describe( 'CheckIconHolderView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should initialize with proper class names', () => {
-			expect( [ ...view.element.classList ] ).to.be.deep.equal( [
+			expect( [ ...view.element.classList ] ).toEqual( [
 				'ck',
 				'ck-list-item-button__check-holder',
 				'ck-off'
@@ -146,29 +148,38 @@ describe( 'CheckIconHolderView', () => {
 			view.isOn = true;
 			view.render();
 
-			expect( view.element.querySelector( '.ck-list-item-button__check-icon' ) ).not.to.be.null;
+			expect( view.element.querySelector( '.ck-list-item-button__check-icon' ) ).not.toBeNull();
 		} );
 	} );
 
 	describe( 'isOn', () => {
 		it( 'should bind class names properly when isOn is set to true', () => {
 			view.isOn = true;
-			expect( view.element.classList.contains( 'ck-on' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-off' ) ).to.be.false;
+			expect( view.element.classList.contains( 'ck-on' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-off' ) ).toBe( false );
 
 			view.isOn = false;
-			expect( view.element.classList.contains( 'ck-on' ) ).to.be.false;
-			expect( view.element.classList.contains( 'ck-off' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-on' ) ).toBe( false );
+			expect( view.element.classList.contains( 'ck-off' ) ).toBe( true );
 		} );
 
 		it( 'should render icon with proper class depending on isOn flag', () => {
-			expect( view.element.querySelector( '.ck-list-item-button__check-icon' ) ).to.be.null;
+			expect( view.element.querySelector( '.ck-list-item-button__check-icon' ) ).toBeNull();
 
 			view.isOn = true;
-			expect( view.element.querySelector( '.ck-list-item-button__check-icon' ) ).not.to.be.null;
+			expect( view.element.querySelector( '.ck-list-item-button__check-icon' ) ).not.toBeNull();
 
 			view.isOn = false;
-			expect( view.element.querySelector( '.ck-list-item-button__check-icon' ) ).to.be.null;
+			expect( view.element.querySelector( '.ck-list-item-button__check-icon' ) ).toBeNull();
+		} );
+
+		it( 'should not remove icon if it is already absent', () => {
+			view.isOn = true;
+			view.children.remove( view._checkIconView );
+
+			view.isOn = false;
+
+			expect( view.element.querySelector( '.ck-list-item-button__check-icon' ) ).toBeNull();
 		} );
 	} );
 } );

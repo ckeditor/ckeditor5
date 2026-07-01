@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5",
-  "version": "48.2.0",
+  "version": "48.3.0",
   "description": "A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -109,10 +109,17 @@
     "@ckeditor/ckeditor5-word-count": "workspace:*"
   },
   "devDependencies": {
+    "@vitest/browser-playwright": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.8",
+    "vitest": "^4.1.8",
     "@wiris/mathtype-ckeditor5": "^8.13.1"
   },
   "scripts": {
-    "build": "node ../../scripts/nim/build-ckeditor5.mjs"
+    "build": "node ../../scripts/nim/build-ckeditor5.mjs",
+    "test": "vitest run",
+    "test:headless": "vitest run --browser.headless",
+    "test:debug": "vitest",
+    "coverage": "pnpm run test:headless --coverage"
   },
   "files": [
     "dist",

@@ -14,7 +14,8 @@ import {
 	type Emitter,
 	type CallbackOptions,
 	type BaseEvent,
-	type GetCallback
+	type GetCallback,
+	type EmitterMixinConstructor
 } from '../emittermixin.js';
 import { uid } from '../uid.js';
 import { isNode } from './isnode.js';
@@ -23,7 +24,24 @@ import { type EventInfo } from '../eventinfo.js';
 import type { Constructor, Mixed } from '../mix.js';
 import { global } from './global.js';
 
+/**
+ * Constructor returned by {@link ~DomEmitterMixin}. Use it to name a mixin base class before extending it.
+ *
+ * ```ts
+ * const MyDomEmitterBase: DomEmitterMixinConstructor<typeof BaseClass> = DomEmitterMixin( BaseClass );
+ *
+ * class MyDomEmitter extends MyDomEmitterBase {}
+ * ```
+ */
+export type DomEmitterMixinConstructor<Base extends Constructor<Emitter> | undefined = undefined> = Base extends Constructor<Emitter> ?
+	Mixed<Base, DomEmitter> :
+	{
+		new (): DomEmitter;
+		prototype: DomEmitter;
+	};
+
 const defaultEmitterClass = /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ EmitterMixin() );
+const ProxyEmitterBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
@@ -49,7 +67,7 @@ const defaultEmitterClass = /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ Emi
  *
  * @label EXTENDS
  */
-export function DomEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, DomEmitter>;
+export function DomEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): DomEmitterMixinConstructor<Base>;
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
@@ -73,10 +91,7 @@ export function DomEmitterMixin<Base extends Constructor<Emitter>>( base: Base )
  *
  * @label NO_ARGUMENTS
  */
-export function DomEmitterMixin(): {
-	new (): DomEmitter;
-	prototype: DomEmitter;
-};
+export function DomEmitterMixin(): DomEmitterMixinConstructor;
 
 export function DomEmitterMixin( base?: Constructor<Emitter> ): unknown {
 	if ( !base ) {
@@ -200,7 +215,7 @@ export function DomEmitterMixin( base?: Constructor<Emitter> ): unknown {
  *                    +-----------------------------------------+
  *                                fire( click, DOM Event )
  */
-class ProxyEmitter extends /* #__PURE__ */ EmitterMixin() {
+class ProxyEmitter extends ProxyEmitterBase {
 	private readonly _domNode: Node | Window | EventTarget;
 	private readonly _options: { capture: boolean; passive: boolean };
 

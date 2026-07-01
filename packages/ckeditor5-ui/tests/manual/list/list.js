@@ -55,4 +55,3 @@ function createGroup( label, items ) {
 
 	return groupView;
 }
-

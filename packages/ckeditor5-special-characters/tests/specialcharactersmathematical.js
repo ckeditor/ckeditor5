@@ -3,20 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { SpecialCharacters } from '../src/specialcharacters.js';
 import { SpecialCharactersMathematical } from '../src/specialcharactersmathematical.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SpecialCharactersMathematical', () => {
-	testUtils.createSinonSandbox();
-
 	let editor, editorElement, addItemsSpy, addItemsFirstCallArgs;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 
-		addItemsSpy = sinon.spy( SpecialCharacters.prototype, 'addItems' );
+		addItemsSpy = vi.spyOn( SpecialCharacters.prototype, 'addItems' );
 
 		document.body.appendChild( editorElement );
 		return ClassicTestEditor
@@ -25,12 +23,12 @@ describe( 'SpecialCharactersMathematical', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				addItemsFirstCallArgs = addItemsSpy.args[ 0 ];
+				addItemsFirstCallArgs = addItemsSpy.mock.calls[ 0 ];
 			} );
 	} );
 
 	afterEach( () => {
-		addItemsSpy.restore();
+		vi.restoreAllMocks();
 
 		editorElement.remove();
 		return editor.destroy();
@@ -45,7 +43,7 @@ describe( 'SpecialCharactersMathematical', () => {
 	} );
 
 	it( 'adds new items', () => {
-		expect( addItemsSpy.callCount ).to.equal( 1 );
+		expect( addItemsSpy ).toHaveBeenCalledTimes( 1 );
 	} );
 
 	it( 'properly names the category', () => {

@@ -17,13 +17,16 @@ import {
 	verifyRootElements,
 	type EditorConfig,
 	type EditorReadyEvent,
-	type ViewRootElementDefinition
+	type ViewRootElementDefinition,
+	type ElementApiMixinConstructor
 } from '@ckeditor/ckeditor5-core';
 
 import { DecoupledEditorUI } from './decouplededitorui.js';
 import { DecoupledEditorUIView } from './decouplededitoruiview.js';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
+
+const DecoupledEditorBase: ElementApiMixinConstructor<typeof Editor> = /* #__PURE__ */ ElementApiMixin( Editor );
 
 /**
  * The decoupled editor implementation. It provides an inline editable and a toolbar. However, unlike other editors,
@@ -41,7 +44,7 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  * Note that you will need to attach the editor toolbar and menu bar to your web page manually, in a desired place,
  * after the editor is initialized.
  */
-export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+export class DecoupledEditor extends DecoupledEditorBase {
 	/**
 	 * @inheritDoc
 	 */

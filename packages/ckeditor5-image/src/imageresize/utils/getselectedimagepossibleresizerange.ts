@@ -11,7 +11,7 @@ import type { Editor } from '@ckeditor/ckeditor5-core';
 
 import { calculateResizeHostAncestorWidth } from '@ckeditor/ckeditor5-widget';
 import { getSelectedImageEditorNodes } from './getselectedimageeditornodes.js';
-import { tryCastDimensionsToUnit, tryParseDimensionWithUnit } from './tryparsedimensionwithunit.js';
+import { _tryCastDimensionsToUnit, _tryParseDimensionWithUnit } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Returns min and max value of resize image in specified unit.
@@ -29,12 +29,12 @@ export function getSelectedImagePossibleResizeRange( editor: Editor, targetUnit:
 	}
 
 	const imageParentWidthPx = calculateResizeHostAncestorWidth( imageNodes.dom );
-	const minimumImageWidth = tryParseDimensionWithUnit( window.getComputedStyle( imageNodes.dom ).minWidth ) || {
+	const minimumImageWidth = _tryParseDimensionWithUnit( window.getComputedStyle( imageNodes.dom ).minWidth ) || {
 		value: 1,
 		unit: 'px'
 	};
 
-	const lower = Math.max( 0.1, tryCastDimensionsToUnit( imageParentWidthPx, minimumImageWidth, targetUnit ).value );
+	const lower = Math.max( 0.1, _tryCastDimensionsToUnit( imageParentWidthPx, minimumImageWidth, targetUnit ).value );
 	const upper = targetUnit === 'px' ? imageParentWidthPx : 100;
 
 	return {

@@ -11,15 +11,15 @@ describe( 'GoogleDocsNormalizer', () => {
 
 	describe( 'isActive()', () => {
 		it( 'should return true from google docs content', () => {
-			expect( normalizer.isActive( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' ) ).to.be.true;
+			expect( normalizer.isActive( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' ) ).toBe( true );
 		} );
 
 		it( 'should return false for microsoft word content', () => {
-			expect( normalizer.isActive( '<meta name=Generator content="Microsoft Word 15"><p>Foo bar</p>' ) ).to.be.false;
+			expect( normalizer.isActive( '<meta name=Generator content="Microsoft Word 15"><p>Foo bar</p>' ) ).toBe( false );
 		} );
 
 		it( 'should return false for content form other sources', () => {
-			expect( normalizer.isActive( '<p>foo</p>' ) ).to.be.false;
+			expect( normalizer.isActive( '<p>foo</p>' ) ).toBe( false );
 		} );
 	} );
 } );

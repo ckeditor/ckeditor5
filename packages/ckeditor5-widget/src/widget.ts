@@ -7,7 +7,7 @@
  * @module widget/widget
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	PointerObserver,
@@ -49,7 +49,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { WidgetTypeAround } from './widgettypearound/widgettypearound.js';
-import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
+import { getClosestTypeAroundDomButton, getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
 import { verticalWidgetNavigationHandler } from './verticalnavigation.js';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils.js';
 
@@ -91,8 +91,8 @@ export class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ WidgetTypeAround, Delete ] as const;
+	public static get requires(): PluginDependenciesOf<[ WidgetTypeAround, Delete ]> {
+		return [ WidgetTypeAround, Delete ];
 	}
 
 	/**
@@ -300,6 +300,12 @@ export class Widget extends Plugin {
 	 */
 	private _onPointerdown( eventInfo: EventInfo, domEventData: ViewDocumentDomEventData<PointerEvent> ) {
 		if ( !domEventData.domEvent.isPrimary ) {
+			return;
+		}
+
+		// Canceling this event on a type around button would suppress the compatibility `mousedown`
+		// event that activates the button on touch devices. See https://github.com/ckeditor/ckeditor5/issues/20103.
+		if ( getClosestTypeAroundDomButton( domEventData.domTarget ) ) {
 			return;
 		}
 
@@ -744,7 +750,6 @@ export class Widget extends Plugin {
 
 		const modelElement = mapper.toModelElement( viewElement );
 
-		/* istanbul ignore next -- @preserve */
 		if ( !modelElement ) {
 			return false;
 		}
@@ -847,6 +852,7 @@ function getElementFromMouseEvent( view: EditingView, domEventData: ViewDocument
 	let viewNode = viewPosition.parent;
 
 	if ( viewPosition.parent.is( 'editableElement' ) ) {
+		/* v8 ignore else -- @preserve */
 		if ( viewPosition.isAtEnd && viewPosition.nodeBefore ) {
 			// Click after a widget tend to return position at the end of the editable element
 			// so use the node before it if range is at the end of a parent.

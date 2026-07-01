@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import { BookmarkEditing } from '../src/bookmarkediting.js';
 import { InsertBookmarkCommand } from '../src/insertbookmarkcommand.js';
 import { UpdateBookmarkCommand } from '../src/updatebookmarkcommand.js';
@@ -58,45 +60,45 @@ describe( 'BookmarkEditing', () => {
 	} );
 
 	it( 'defines plugin name', () => {
-		expect( BookmarkEditing.pluginName ).to.equal( 'BookmarkEditing' );
+		expect( BookmarkEditing.pluginName ).toEqual( 'BookmarkEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( BookmarkEditing.isOfficialPlugin ).to.be.true;
+		expect( BookmarkEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-		expect( BookmarkEditing.isPremiumPlugin ).to.be.true;
+		expect( BookmarkEditing.isPremiumPlugin ).toBe( true );
 	} );
 
 	it( 'should have `licenseFeatureCode` static flag set to `BKM`', () => {
-		expect( BookmarkEditing.licenseFeatureCode ).to.equal( 'BKM' );
+		expect( BookmarkEditing.licenseFeatureCode ).toEqual( 'BKM' );
 	} );
 
 	it( 'should register default bookmark toolbar config', () => {
-		expect( editor.config.get( 'bookmark.toolbar' ) ).to.deep.equal( [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ] );
+		expect( editor.config.get( 'bookmark.toolbar' ) ).toEqual( [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ] );
 	} );
 
 	describe( 'init', () => {
 		it( 'adds an "insertBookmark" command', () => {
-			expect( editor.commands.get( 'insertBookmark' ) ).to.be.instanceOf( InsertBookmarkCommand );
+			expect( editor.commands.get( 'insertBookmark' ) ).toBeInstanceOf( InsertBookmarkCommand );
 		} );
 
 		it( 'adds an "updateBookmark" command', () => {
-			expect( editor.commands.get( 'updateBookmark' ) ).to.be.instanceOf( UpdateBookmarkCommand );
+			expect( editor.commands.get( 'updateBookmark' ) ).toBeInstanceOf( UpdateBookmarkCommand );
 		} );
 	} );
 
 	describe( 'schema definition', () => {
 		it( 'should set proper schema rules', () => {
-			expect( model.schema.isRegistered( 'bookmark' ) ).to.be.true;
-			expect( model.schema.isObject( 'bookmark' ) ).to.be.true;
-			expect( model.schema.isInline( 'bookmark' ) ).to.be.true;
+			expect( model.schema.isRegistered( 'bookmark' ) ).toBe( true );
+			expect( model.schema.isObject( 'bookmark' ) ).toBe( true );
+			expect( model.schema.isInline( 'bookmark' ) ).toBe( true );
 
-			expect( model.schema.checkAttribute( [ 'paragraph', 'bookmark' ], 'linkHref' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ 'paragraph', 'bookmark' ], 'id' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ 'paragraph', 'bookmark' ], 'bookmarkId' ) ).to.be.true;
-			expect( model.schema.checkChild( [ 'paragraph' ], 'bookmark' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ 'paragraph', 'bookmark' ], 'linkHref' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ 'paragraph', 'bookmark' ], 'id' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ 'paragraph', 'bookmark' ], 'bookmarkId' ) ).toBe( true );
+			expect( model.schema.checkChild( [ 'paragraph' ], 'bookmark' ) ).toBe( true );
 		} );
 	} );
 
@@ -104,7 +106,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark', () => {
 			_setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>' +
 					'<a id="foo"></a>' +
 				'</p>'
@@ -114,7 +116,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark with text before', () => {
 			_setModelData( model, '<paragraph>Example text<bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>' +
 					'Example text' +
 					'<a id="foo"></a>' +
@@ -127,7 +129,7 @@ describe( 'BookmarkEditing', () => {
 			// Problem is solved when selection markers are placed after the whitespace.
 			_setModelData( model, '<paragraph>text []<bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>' +
 					'text' +
 					' ' +
@@ -139,7 +141,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark with text after', () => {
 			_setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark>Example text</paragraph>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>' +
 					'<a id="foo"></a>' +
 					'Example text' +
@@ -152,7 +154,7 @@ describe( 'BookmarkEditing', () => {
 			// Problem is solved when selection markers are placed before the whitespace.
 			_setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark>[] text</paragraph>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>' +
 					'<a id="foo"></a>' +
 					' ' +
@@ -164,7 +166,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark with surrounded text', () => {
 			_setModelData( model, '<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>' +
 					'Example' +
 					'<a id="foo"></a>' +
@@ -178,7 +180,7 @@ describe( 'BookmarkEditing', () => {
 			// Problem is solved when selection markers are placed before/after the whitespace.
 			_setModelData( model, '<paragraph>text []<bookmark bookmarkId="foo"></bookmark>[] text</paragraph>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>' +
 					'text' +
 					' ' +
@@ -192,7 +194,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark within a heading', () => {
 			_setModelData( model, '<heading1><bookmark bookmarkId="foo"></bookmark></heading1>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<h2>' +
 					'<a id="foo"></a>' +
 				'</h2>'
@@ -202,7 +204,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly change `bookmarkId` attribute of existing bookmark', () => {
 			_setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>' +
 					'<a id="foo"></a>' +
 				'</p>'
@@ -212,7 +214,7 @@ describe( 'BookmarkEditing', () => {
 				writer => writer.setAttribute( 'bookmarkId', 'bar', writer.model.document.getRoot().getChild( 0 ).getChild( 0 ) )
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>' +
 					'<a id="bar"></a>' +
 				'</p>'
@@ -224,7 +226,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark', () => {
 			_setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 				'<p>' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
@@ -236,7 +238,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark with text before', () => {
 			_setModelData( model, '<paragraph>Example text<bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 				'<p>' +
 					'Example text' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
@@ -251,7 +253,7 @@ describe( 'BookmarkEditing', () => {
 			// Problem is solved when selection markers are placed after the whitespace.
 			_setModelData( model, '<paragraph>text []<bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 				'<p>' +
 					'text' +
 					' ' +
@@ -265,7 +267,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark with text after', () => {
 			_setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark>Example text</paragraph>' );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 				'<p>' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
@@ -280,7 +282,7 @@ describe( 'BookmarkEditing', () => {
 			// Problem is solved when selection markers are placed before the whitespace.
 			_setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark>[] text</paragraph>' );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 				'<p>' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
@@ -294,7 +296,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark with surrounded text', () => {
 			_setModelData( model, '<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>' );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 				'<p>' +
 					'Example' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
@@ -310,7 +312,7 @@ describe( 'BookmarkEditing', () => {
 			// Problem is solved when selection markers are placed before/after the whitespace.
 			_setModelData( model, '<paragraph>Example []<bookmark bookmarkId="foo"></bookmark>[] text</paragraph>' );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 				'<p>' +
 					'Example' +
 					' ' +
@@ -326,7 +328,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark inside heading', () => {
 			_setModelData( model, '<heading1><bookmark bookmarkId="foo"></bookmark></heading1>' );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 				'<h2>' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
@@ -338,7 +340,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly change `bookmarkId` attribute of existing bookmark', () => {
 			_setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 				'<p>' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<span class="ck-bookmark__icon"></span>' +
@@ -350,7 +352,7 @@ describe( 'BookmarkEditing', () => {
 				writer => writer.setAttribute( 'bookmarkId', 'bar', writer.model.document.getRoot().getChild( 0 ).getChild( 0 ) )
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 				'<p>' +
 					'<a class="ck-bookmark ck-widget" contenteditable="false" id="bar">' +
 						'<span class="ck-bookmark__icon"></span>' +
@@ -362,7 +364,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly downcast bookmark with proper type', () => {
 			_setModelData( model, '<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
-			expect( _getViewData( view, { withoutSelection: true, showType: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true, showType: true } ) ).toEqual(
 				'<container:p>' +
 					'<container:a class="ck-bookmark ck-widget" contenteditable="false" id="foo">' +
 						'<ui:span class="ck-bookmark__icon"></ui:span>' +
@@ -377,22 +379,22 @@ describe( 'BookmarkEditing', () => {
 			// Get the `bookmark` widget.
 			const bookmarkWidget = view.document.getRoot().getChild( 0 ).getChild( 0 );
 
-			expect( isWidget( bookmarkWidget ) ).to.be.true;
-			expect( getLabel( bookmarkWidget ) ).to.equal( 'foo bookmark widget' );
+			expect( isWidget( bookmarkWidget ) ).toBe( true );
+			expect( getLabel( bookmarkWidget ) ).toEqual( 'foo bookmark widget' );
 
-			expect( bookmarkWidget.name ).to.equal( 'a' );
-			expect( bookmarkWidget.hasClass( 'ck-bookmark' ) ).to.be.true;
-			expect( bookmarkWidget.childCount ).to.equal( 1 );
+			expect( bookmarkWidget.name ).toEqual( 'a' );
+			expect( bookmarkWidget.hasClass( 'ck-bookmark' ) ).toBe( true );
+			expect( bookmarkWidget.childCount ).toEqual( 1 );
 
 			const iconContainer = bookmarkWidget.getChild( 0 );
 
-			expect( iconContainer.is( 'uiElement' ) ).to.be.true;
-			expect( iconContainer.isEmpty ).to.be.true;
+			expect( iconContainer.is( 'uiElement' ) ).toBe( true );
+			expect( iconContainer.isEmpty ).toBe( true );
 
-			expect( bookmarkWidget.getFillerOffset ).is.a( 'function' );
-			expect( bookmarkWidget.getFillerOffset() ).to.equal( null );
+			expect( bookmarkWidget.getFillerOffset ).toBeInstanceOf( Function );
+			expect( bookmarkWidget.getFillerOffset() ).toBeNull();
 
-			expect( bookmarkWidget.getCustomProperty( 'bookmark' ) ).to.be.true;
+			expect( bookmarkWidget.getCustomProperty( 'bookmark' ) ).toBe( true );
 		} );
 
 		it( 'should not add any filler', () => {
@@ -401,12 +403,12 @@ describe( 'BookmarkEditing', () => {
 			const element = view.document.selection.getSelectedElement();
 			const domElement = converter.viewToDom( element );
 
-			expect( domElement.outerHTML ).to.equal(
+			expect( domElement.outerHTML ).toEqual(
 				'<a class="ck-bookmark ck-widget ck-widget_selected" id="foo" contenteditable="false">' +
 					domUIElement +
 				'</a>' );
 
-			expect( domElement.children.length ).to.equal( 1 );
+			expect( domElement.children.length ).toEqual( 1 );
 		} );
 	} );
 
@@ -415,7 +417,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute', () => {
 				editor.setData( '<p><a id="foo"></a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
 				);
 			} );
@@ -423,7 +425,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute with text before', () => {
 				editor.setData( '<p>Example text<a id="foo"></a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>Example text<bookmark bookmarkId="foo"></bookmark></paragraph>'
 				);
 			} );
@@ -431,7 +433,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute with text before with space', () => {
 				editor.setData( '<p>text <a id="foo"></a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>text <bookmark bookmarkId="foo"></bookmark></paragraph>'
 				);
 			} );
@@ -439,7 +441,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute with text after', () => {
 				editor.setData( '<p><a id="foo"></a>Example text</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark>Example text</paragraph>'
 				);
 			} );
@@ -447,7 +449,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute with text after with space', () => {
 				editor.setData( '<p><a id="foo"></a> text</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark> text</paragraph>'
 				);
 			} );
@@ -455,7 +457,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute surrounded with text', () => {
 				editor.setData( '<p>Example<a id="foo"></a>text</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>Example<bookmark bookmarkId="foo"></bookmark>text</paragraph>'
 				);
 			} );
@@ -463,7 +465,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute text with spaces before and after', () => {
 				editor.setData( '<p>Example <a id="foo"></a> text</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>Example <bookmark bookmarkId="foo"></bookmark> text</paragraph>'
 				);
 			} );
@@ -471,7 +473,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should not convert an `a` with `id` and `href` attribute and without text inside', () => {
 				editor.setData( '<p><a id="foo" href="www.ckeditor.com"></a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph></paragraph>'
 				);
 			} );
@@ -479,7 +481,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should not convert `a` with `id` and `href` attribute and with text inside', () => {
 				editor.setData( '<p><a id="foo" href="www.ckeditor.com">foobar</a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><$text linkHref="www.ckeditor.com">foobar</$text></paragraph>'
 				);
 			} );
@@ -487,7 +489,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should not convert `p` with `id` attribute', () => {
 				editor.setData( '<p id="foo"></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph></paragraph>'
 				);
 			} );
@@ -495,7 +497,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should not convert `p` with `id` attribute and text inside', () => {
 				editor.setData( '<p id="foo">bar</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>bar</paragraph>'
 				);
 			} );
@@ -503,7 +505,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should not convert `h2` with `id` attribute', () => {
 				editor.setData( '<h2 id="foo"></h2>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<heading1></heading1>'
 				);
 			} );
@@ -511,7 +513,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should not convert `h2` with `id` attribute and text inside', () => {
 				editor.setData( '<h2 id="foo">bar</h2>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<heading1>bar</heading1>'
 				);
 			} );
@@ -519,7 +521,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `name` attribute (default)', () => {
 				editor.setData( '<p><a name="foo"></a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
 				);
 			} );
@@ -527,7 +529,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with same `id` and `name` attribute to bookmark', () => {
 				editor.setData( '<p><a id="foo" name="foo"></a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
 				);
 			} );
@@ -535,7 +537,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with different `id` and `name` attribute to bookmark', () => {
 				editor.setData( '<p><a id="foo" name="bar"></a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
 				);
 			} );
@@ -549,7 +551,7 @@ describe( 'BookmarkEditing', () => {
 					'</pre>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<codeBlock language="html"></codeBlock>'
 				);
 			} );
@@ -565,7 +567,7 @@ describe( 'BookmarkEditing', () => {
 					'</pre>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<codeBlock language="html">' +
 						'Some text beforeSome text after' +
 					'</codeBlock>'
@@ -579,7 +581,7 @@ describe( 'BookmarkEditing', () => {
 					'</blockquote>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<blockQuote>' +
 						'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
 					'</blockQuote>'
@@ -595,7 +597,7 @@ describe( 'BookmarkEditing', () => {
 					'</blockquote>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<blockQuote>' +
 						'<paragraph>Some text before</paragraph>' +
 						'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>' +
@@ -609,7 +611,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should convert an `a` with `id` attribute and with text inside', () => {
 				editor.setData( '<p><a id="foo">foobar</a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 				);
 			} );
@@ -617,7 +619,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute with text before', () => {
 				editor.setData( '<p>Example text<a id="foo">foobar</a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>Example text<bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 				);
 			} );
@@ -625,7 +627,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute with text before with space', () => {
 				editor.setData( '<p>text <a id="foo">foobar</a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>text <bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 				);
 			} );
@@ -633,7 +635,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute with text after', () => {
 				editor.setData( '<p><a id="foo">foobar</a>Example text</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobarExample text</paragraph>'
 				);
 			} );
@@ -641,7 +643,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute with text after with space', () => {
 				editor.setData( '<p><a id="foo">foobar</a> text</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar text</paragraph>'
 				);
 			} );
@@ -649,7 +651,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute surrounded with text', () => {
 				editor.setData( '<p>Example<a id="foo">foobar</a>text</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>Example<bookmark bookmarkId="foo"></bookmark>foobartext</paragraph>'
 				);
 			} );
@@ -657,7 +659,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `id` attribute text with spaces before and after', () => {
 				editor.setData( '<p>Example <a id="foo">foobar</a> text</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>Example <bookmark bookmarkId="foo"></bookmark>foobar text</paragraph>'
 				);
 			} );
@@ -665,7 +667,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should convert an `a` with `id` attribute and containing formatted text', () => {
 				editor.setData( '<p>before <a id="foo">f<i>oo</i>b<strong>ar</strong></a> after</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>' +
 						'before ' +
 						'<bookmark bookmarkId="foo"></bookmark>' +
@@ -681,7 +683,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should convert an `a` with `id` attribute and containing inline image', () => {
 				editor.setData( '<p>before <a id="foo">foo<img src="#"></img>bar</a> after</p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>' +
 						'before ' +
 						'<bookmark bookmarkId="foo"></bookmark>' +
@@ -696,7 +698,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should convert an `a` with `id` attribute and containing block image', () => {
 				editor.setData( '<a id="foo"><figure class="image"><img src="#"></figure></a>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>' +
 						'<bookmark bookmarkId="foo"></bookmark>' +
 					'</paragraph>' +
@@ -711,7 +713,7 @@ describe( 'BookmarkEditing', () => {
 					'</a>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>' +
 						'<bookmark bookmarkId="foo"></bookmark>' +
 					'</paragraph>' +
@@ -728,7 +730,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with `name` attribute', () => {
 				editor.setData( '<p><a name="foo">foobar</a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 				);
 			} );
@@ -736,7 +738,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with same `id` and `name` attribute to bookmark', () => {
 				editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 				);
 			} );
@@ -744,7 +746,7 @@ describe( 'BookmarkEditing', () => {
 			it( 'should properly convert an `a` with different `id` and `name` attribute to bookmark', () => {
 				editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 				);
 			} );
@@ -777,7 +779,7 @@ describe( 'BookmarkEditing', () => {
 				it( 'should not convert an `a` with `id` attribute to bookmark', () => {
 					editor.setData( '<p><a id="foo">foobar</a></p>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>foobar</paragraph>'
 					);
 				} );
@@ -785,7 +787,7 @@ describe( 'BookmarkEditing', () => {
 				it( 'should not convert an `a` with `name` attribute to bookmark', () => {
 					editor.setData( '<p><a name="foo">foobar</a></p>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>foobar</paragraph>'
 					);
 				} );
@@ -793,7 +795,7 @@ describe( 'BookmarkEditing', () => {
 				it( 'should not convert an `a` with same `id` and `name` attribute to bookmark', () => {
 					editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>foobar</paragraph>'
 					);
 				} );
@@ -801,7 +803,7 @@ describe( 'BookmarkEditing', () => {
 				it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', () => {
 					editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>foobar</paragraph>'
 					);
 				} );
@@ -844,7 +846,7 @@ describe( 'BookmarkEditing', () => {
 				it( 'should properly convert an `a` with `id` attribute', () => {
 					editor.setData( '<p><a id="foo"></a>foobar</p>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 					);
 				} );
@@ -852,7 +854,7 @@ describe( 'BookmarkEditing', () => {
 				it( 'should properly convert an `a` with `name` attribute to bookmark', () => {
 					editor.setData( '<p><a name="foo"></a>foobar</p>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 					);
 				} );
@@ -860,7 +862,7 @@ describe( 'BookmarkEditing', () => {
 				it( 'should properly convert an `a` with same `id` and `name` attribute to bookmark', () => {
 					editor.setData( '<p><a id="foo" name="foo"></a>foobar</p>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 					);
 				} );
@@ -868,7 +870,7 @@ describe( 'BookmarkEditing', () => {
 				it( 'should properly convert an `a` with different `id` and `name` attribute to bookmark', () => {
 					editor.setData( '<p><a id="foo" name="bar"></a>foobar</p>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 					);
 				} );
@@ -876,14 +878,14 @@ describe( 'BookmarkEditing', () => {
 				it( 'should consume only the `id` attribute from anchor elements if `id` and `name` are different', () => {
 					editor.conversion.for( 'upcast' ).add( dispatcher => {
 						dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'name' ] } ) ).to.be.true;
-							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'id' ] } ) ).to.be.false;
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'name' ] } ) ).toBe( true );
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'id' ] } ) ).toBe( false );
 						} );
 					}, { priority: 'low' } );
 
 					editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>' +
 							'<bookmark bookmarkId="foo"></bookmark>' +
 							'<$text htmlA="{"attributes":{"name":"bar"}}">foobar</$text>' +
@@ -894,14 +896,14 @@ describe( 'BookmarkEditing', () => {
 				it( 'should consume both attributes from anchor elements if `id` and `name` are the same', () => {
 					editor.conversion.for( 'upcast' ).add( dispatcher => {
 						dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'name' ] } ) ).to.be.false;
-							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'id' ] } ) ).to.be.false;
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'name' ] } ) ).toBe( false );
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'id' ] } ) ).toBe( false );
 						} );
 					}, { priority: 'low' } );
 
 					editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph><bookmark bookmarkId="foo"></bookmark>foobar</paragraph>'
 					);
 				} );
@@ -949,7 +951,7 @@ describe( 'BookmarkEditing', () => {
 					it( 'should not convert an `a` with `id` attribute to bookmark', () => {
 						editor.setData( '<p><a id="foo">foobar</a></p>' );
 
-						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 							'<paragraph><$text htmlA="{"attributes":{"id":"foo"}}">foobar</$text></paragraph>'
 						);
 					} );
@@ -957,7 +959,7 @@ describe( 'BookmarkEditing', () => {
 					it( 'should not convert an `a` with `name` attribute to bookmark', () => {
 						editor.setData( '<p><a name="foo">foobar</a></p>' );
 
-						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 							'<paragraph><$text htmlA="{"attributes":{"name":"foo"}}">foobar</$text></paragraph>'
 						);
 					} );
@@ -965,7 +967,7 @@ describe( 'BookmarkEditing', () => {
 					it( 'should not convert an `a` with same `id` and `name` attribute to bookmark', () => {
 						editor.setData( '<p><a id="foo" name="foo">foobar</a></p>' );
 
-						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 							'<paragraph><$text htmlA="{"attributes":{"id":"foo","name":"foo"}}">foobar</$text></paragraph>'
 						);
 					} );
@@ -973,7 +975,7 @@ describe( 'BookmarkEditing', () => {
 					it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', () => {
 						editor.setData( '<p><a id="foo" name="bar">foobar</a></p>' );
 
-						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 							'<paragraph><$text htmlA="{"attributes":{"id":"foo","name":"bar"}}">foobar</$text></paragraph>'
 						);
 					} );
@@ -986,17 +988,17 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly add bookmark to _bookmarkElements map', () => {
 			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 0 );
 
 			editor.setData( '<p><a id="foo"></a></p>' );
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 1 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 1 );
 		} );
 
 		it( 'should properly add all bookmarks to _bookmarkElements map', () => {
 			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 0 );
 
 			editor.setData(
 				'<p>' +
@@ -1019,13 +1021,13 @@ describe( 'BookmarkEditing', () => {
 				'</p>'
 			);
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 6 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 6 );
 		} );
 
 		it( 'should properly add all bookmarks to _bookmarkElements map even with duplicated ids', () => {
 			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 0 );
 
 			editor.setData(
 				'<p>' +
@@ -1045,13 +1047,13 @@ describe( 'BookmarkEditing', () => {
 				'</p>'
 			);
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 5 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 5 );
 		} );
 
 		it( 'should properly remove all bookmarks from _bookmarkElements map after removed all content', () => {
 			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 0 );
 
 			editor.setData(
 				'<p>' +
@@ -1074,14 +1076,14 @@ describe( 'BookmarkEditing', () => {
 				'</p>'
 			);
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 6 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 6 );
 
 			editor.execute( 'selectAll' );
 			editor.execute( 'delete' );
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 0 );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 				'<paragraph></paragraph>'
 			);
 		} );
@@ -1089,7 +1091,7 @@ describe( 'BookmarkEditing', () => {
 		it( 'should properly remove all bookmarks from _bookmarkElements map which were in a removed paragraph', () => {
 			const bookmarkEditing = editor.plugins.get( 'BookmarkEditing' );
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 0 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 0 );
 
 			editor.setData(
 				'<p>' +
@@ -1100,7 +1102,7 @@ describe( 'BookmarkEditing', () => {
 				'</p>'
 			);
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 4 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 4 );
 
 			const root = editor.model.document.getRoot();
 
@@ -1115,9 +1117,9 @@ describe( 'BookmarkEditing', () => {
 			// Remove everything what is selected.
 			editor.execute( 'delete' );
 
-			expect( bookmarkEditing._bookmarkElements.size ).to.equal( 1 );
+			expect( bookmarkEditing._bookmarkElements.size ).toEqual( 1 );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 				'<paragraph><bookmark bookmarkId="foo"></bookmark></paragraph>'
 			);
 		} );
@@ -1139,8 +1141,8 @@ describe( 'BookmarkEditing', () => {
 				'</p>'
 			);
 
-			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ) ).is.instanceof( ModelElement );
-			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ).getAttribute( 'bookmarkId' ) ).is.equal( 'foo' );
+			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ) ).toBeInstanceOf( ModelElement );
+			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ).getAttribute( 'bookmarkId' ) ).toBe( 'foo' );
 		} );
 
 		it( 'returns null when there is no bookmark with passed id', () => {
@@ -1158,7 +1160,7 @@ describe( 'BookmarkEditing', () => {
 				'</p>'
 			);
 
-			expect( bookmarkEditing.getElementForBookmarkId( 'xyz' ) ).is.null;
+			expect( bookmarkEditing.getElementForBookmarkId( 'xyz' ) ).toBeNull();
 		} );
 	} );
 
@@ -1178,8 +1180,8 @@ describe( 'BookmarkEditing', () => {
 				'</p>'
 			);
 
-			expect( bookmarkEditing.getAllBookmarkNames() ).is.instanceof( Set );
-			expect( bookmarkEditing.getAllBookmarkNames() ).is.deep.equal( new Set( [ 'foo', 'bar', 'baz' ] ) );
+			expect( bookmarkEditing.getAllBookmarkNames() ).toBeInstanceOf( Set );
+			expect( bookmarkEditing.getAllBookmarkNames() ).toEqual( new Set( [ 'foo', 'bar', 'baz' ] ) );
 		} );
 
 		it( 'should return all unique bookmark names', () => {
@@ -1197,7 +1199,7 @@ describe( 'BookmarkEditing', () => {
 				'</p>'
 			);
 
-			expect( bookmarkEditing.getAllBookmarkNames() ).is.deep.equal( new Set( [ 'foo', 'bar' ] ) );
+			expect( bookmarkEditing.getAllBookmarkNames() ).toEqual( new Set( [ 'foo', 'bar' ] ) );
 		} );
 	} );
 
@@ -1210,7 +1212,7 @@ describe( 'BookmarkEditing', () => {
 		} );
 
 		describe( 'pointed bookmarks', () => {
-			it( 'should paste `a` with the same `id` and `name` attributes', done => {
+			it( 'should paste `a` with the same `id` and `name` attributes', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1218,9 +1220,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a id="xyz" name="xyz"></a>foo</p>',
 					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` with different `id` and `name` attributes', done => {
+			it( 'should paste `a` with different `id` and `name` attributes', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1228,9 +1230,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a id="xyz" name="foo"></a>foo</p>',
 					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` with identical `id` and `name` attributes (content before bookmark)', done => {
+			it( 'should paste `a` with identical `id` and `name` attributes (content before bookmark)', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1238,9 +1240,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p>foo<a id="xyz" name="xyz"></a></p>',
 					expectedModel: '<paragraph>foo<bookmark bookmarkId="xyz"></bookmark></paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` with `id` attribute', done => {
+			it( 'should paste `a` with `id` attribute', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1248,9 +1250,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a id="xyz"></a>foo</p>',
 					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` with `name` attribute', done => {
+			it( 'should paste `a` with `name` attribute', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1258,9 +1260,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a name="xyz"></a>foo</p>',
 					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` with `name` attribute (content before bookmark)', done => {
+			it( 'should paste `a` with `name` attribute (content before bookmark)', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1268,13 +1270,13 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p>foo<a name="xyz"></a></p>',
 					expectedModel: '<paragraph>foo<bookmark bookmarkId="xyz"></bookmark></paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` when bookmark with the same `id` already exists', done => {
+			it( 'should paste `a` when bookmark with the same `id` already exists', () => new Promise( done => {
 				const html = '<p><a name="xyz"></a></p>';
 				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
-				const preventDefaultSpy = sinon.spy();
-				const stopPropagation = sinon.spy();
+				const preventDefaultSpy = vi.fn();
+				const stopPropagation = vi.fn();
 
 				_setModelData( model,
 					'<paragraph><bookmark bookmarkId="xyz"></bookmark>bar</paragraph>' +
@@ -1286,7 +1288,7 @@ describe( 'BookmarkEditing', () => {
 					'<paragraph><bookmark bookmarkId="xyz"></bookmark></paragraph>';
 					const modeldata = _getModelData( model, { withoutSelection: true } );
 
-					expect( modeldata ).to.equal( expectedModel );
+					expect( modeldata ).toEqual( expectedModel );
 
 					done();
 				} );
@@ -1296,11 +1298,11 @@ describe( 'BookmarkEditing', () => {
 					preventDefault: preventDefaultSpy,
 					stopPropagation
 				} );
-			} );
+			} ) );
 		} );
 
 		describe( 'wrapped bookmarks', () => {
-			it( 'should paste `a` with the same `id` and `name` attributes', done => {
+			it( 'should paste `a` with the same `id` and `name` attributes', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1308,9 +1310,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
 					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` with different `id` and `name` attributes', done => {
+			it( 'should paste `a` with different `id` and `name` attributes', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1318,9 +1320,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a id="xyz" name="foo">foo</a></p>',
 					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` with `id` attribute', done => {
+			it( 'should paste `a` with `id` attribute', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1328,9 +1330,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a id="xyz">foo</a></p>',
 					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` with `name` attribute', done => {
+			it( 'should paste `a` with `name` attribute', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1338,9 +1340,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a name="xyz">foo</a></p>',
 					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` with image (bookmark after)', done => {
+			it( 'should paste `a` with image (bookmark after)', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1348,9 +1350,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><img src="#"></img><a name="xyz"></a></p>',
 					expectedModel: '<paragraph><imageInline src="#"></imageInline><bookmark bookmarkId="xyz"></bookmark></paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` with image (bookmark before)', done => {
+			it( 'should paste `a` with image (bookmark before)', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1358,13 +1360,13 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a name="xyz"></a><img src="#"></img></p>',
 					expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark><imageInline src="#"></imageInline></paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should paste `a` when bookmark with the same `id` already exists', done => {
+			it( 'should paste `a` when bookmark with the same `id` already exists', () => new Promise( done => {
 				const html = '<p><a name="xyz">foo</a></p>';
 				const dataTransferMock = createDataTransfer( { 'text/html': html, 'text/plain': 'y' } );
-				const preventDefaultSpy = sinon.spy();
-				const stopPropagation = sinon.spy();
+				const preventDefaultSpy = vi.fn();
+				const stopPropagation = vi.fn();
 
 				_setModelData( model,
 					'<paragraph><bookmark bookmarkId="xyz"></bookmark>bar</paragraph>' +
@@ -1376,7 +1378,7 @@ describe( 'BookmarkEditing', () => {
 					'<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>';
 					const modeldata = _getModelData( model, { withoutSelection: true } );
 
-					expect( modeldata ).to.equal( expectedModel );
+					expect( modeldata ).toEqual( expectedModel );
 
 					done();
 				} );
@@ -1386,7 +1388,7 @@ describe( 'BookmarkEditing', () => {
 					preventDefault: preventDefaultSpy,
 					stopPropagation
 				} );
-			} );
+			} ) );
 		} );
 
 		describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
@@ -1416,7 +1418,7 @@ describe( 'BookmarkEditing', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should not convert an `a` with `name` attribute to bookmark', done => {
+			it( 'should not convert an `a` with `name` attribute to bookmark', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1424,9 +1426,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a name="xyz">foo</a></p>',
 					expectedModel: '<paragraph>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should not convert an `a` with `id` attribute to bookmark', done => {
+			it( 'should not convert an `a` with `id` attribute to bookmark', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1434,9 +1436,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a id="xyz">foo</a></p>',
 					expectedModel: '<paragraph>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should not convert an `a` with the same `id` and `name` attribute to bookmark', done => {
+			it( 'should not convert an `a` with the same `id` and `name` attribute to bookmark', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1444,9 +1446,9 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
 					expectedModel: '<paragraph>foo</paragraph>'
 				} );
-			} );
+			} ) );
 
-			it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', done => {
+			it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', () => new Promise( done => {
 				testClipboardPaste( {
 					clipboardPlugin,
 					viewDocument,
@@ -1454,7 +1456,7 @@ describe( 'BookmarkEditing', () => {
 					pastedHtml: '<p><a id="foo" name="bar">foo</a></p>',
 					expectedModel: '<paragraph>foo</paragraph>'
 				} );
-			} );
+			} ) );
 		} );
 
 		describe( 'with GHS enabled', () => {
@@ -1495,7 +1497,7 @@ describe( 'BookmarkEditing', () => {
 					await editor.destroy();
 				} );
 
-				it( 'should convert an `a` with `name` attribute to bookmark', done => {
+				it( 'should convert an `a` with `name` attribute to bookmark', () => new Promise( done => {
 					testClipboardPaste( {
 						clipboardPlugin,
 						viewDocument,
@@ -1503,9 +1505,9 @@ describe( 'BookmarkEditing', () => {
 						pastedHtml: '<p><a name="xyz">foo</a></p>',
 						expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 					} );
-				} );
+				} ) );
 
-				it( 'should convert an `a` with `id` attribute to bookmark', done => {
+				it( 'should convert an `a` with `id` attribute to bookmark', () => new Promise( done => {
 					testClipboardPaste( {
 						clipboardPlugin,
 						viewDocument,
@@ -1513,9 +1515,9 @@ describe( 'BookmarkEditing', () => {
 						pastedHtml: '<p><a id="xyz">foo</a></p>',
 						expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 					} );
-				} );
+				} ) );
 
-				it( 'should convert an `a` with the same `id` and `name` attribute to bookmark', done => {
+				it( 'should convert an `a` with the same `id` and `name` attribute to bookmark', () => new Promise( done => {
 					testClipboardPaste( {
 						clipboardPlugin,
 						viewDocument,
@@ -1523,9 +1525,9 @@ describe( 'BookmarkEditing', () => {
 						pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
 						expectedModel: '<paragraph><bookmark bookmarkId="xyz"></bookmark>foo</paragraph>'
 					} );
-				} );
+				} ) );
 
-				it( 'should convert an `a` with different `id` and `name` attribute to bookmark', done => {
+				it( 'should convert an `a` with different `id` and `name` attribute to bookmark', () => new Promise( done => {
 					testClipboardPaste( {
 						clipboardPlugin,
 						viewDocument,
@@ -1537,7 +1539,7 @@ describe( 'BookmarkEditing', () => {
 								'<$text htmlA="{"attributes":{"name":"bar"}}">foo</$text>' +
 							'</paragraph>'
 					} );
-				} );
+				} ) );
 			} );
 
 			describe( 'wrapped bookmarks', () => {
@@ -1581,7 +1583,7 @@ describe( 'BookmarkEditing', () => {
 						await editor.destroy();
 					} );
 
-					it( 'should not convert an `a` with `name` attribute to bookmark', done => {
+					it( 'should not convert an `a` with `name` attribute to bookmark', () => new Promise( done => {
 						testClipboardPaste( {
 							clipboardPlugin,
 							viewDocument,
@@ -1589,9 +1591,9 @@ describe( 'BookmarkEditing', () => {
 							pastedHtml: '<p><a name="xyz">foo</a></p>',
 							expectedModel: '<paragraph><$text htmlA="{"attributes":{"name":"xyz"}}">foo</$text></paragraph>'
 						} );
-					} );
+					} ) );
 
-					it( 'should not convert an `a` with `id` attribute to bookmark', done => {
+					it( 'should not convert an `a` with `id` attribute to bookmark', () => new Promise( done => {
 						testClipboardPaste( {
 							clipboardPlugin,
 							viewDocument,
@@ -1599,9 +1601,9 @@ describe( 'BookmarkEditing', () => {
 							pastedHtml: '<p><a id="xyz">foo</a></p>',
 							expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"xyz"}}">foo</$text></paragraph>'
 						} );
-					} );
+					} ) );
 
-					it( 'should not convert an `a` with the same `id` and `name` attribute to bookmark', done => {
+					it( 'should not convert an `a` with the same `id` and `name` attribute to bookmark', () => new Promise( done => {
 						testClipboardPaste( {
 							clipboardPlugin,
 							viewDocument,
@@ -1609,9 +1611,9 @@ describe( 'BookmarkEditing', () => {
 							pastedHtml: '<p><a id="xyz" name="xyz">foo</a></p>',
 							expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"xyz","name":"xyz"}}">foo</$text></paragraph>'
 						} );
-					} );
+					} ) );
 
-					it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', done => {
+					it( 'should not convert an `a` with different `id` and `name` attribute to bookmark', () => new Promise( done => {
 						testClipboardPaste( {
 							clipboardPlugin,
 							viewDocument,
@@ -1619,7 +1621,7 @@ describe( 'BookmarkEditing', () => {
 							pastedHtml: '<p><a id="foo" name="bar">foo</a></p>',
 							expectedModel: '<paragraph><$text htmlA="{"attributes":{"id":"foo","name":"bar"}}">foo</$text></paragraph>'
 						} );
-					} );
+					} ) );
 				} );
 			} );
 		} );
@@ -1648,13 +1650,13 @@ function testClipboardPaste( {
 	expectedModel
 } ) {
 	const dataTransferMock = createDataTransfer( { 'text/html': pastedHtml, 'text/plain': 'y' } );
-	const preventDefaultSpy = sinon.spy();
-	const stopPropagation = sinon.spy();
+	const preventDefaultSpy = vi.fn();
+	const stopPropagation = vi.fn();
 
 	clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
-		expect( data.dataTransfer ).to.equal( dataTransferMock );
-		expect( data.method ).to.equal( 'paste' );
-		expect( _stringifyModel( data.content ) ).to.equal( expectedModel );
+		expect( data.dataTransfer ).toEqual( dataTransferMock );
+		expect( data.method ).toEqual( 'paste' );
+		expect( _stringifyModel( data.content ) ).toEqual( expectedModel );
 
 		done();
 	} );

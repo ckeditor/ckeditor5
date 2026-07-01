@@ -11,6 +11,7 @@ import type { ModelElement, ModelWriter } from '@ckeditor/ckeditor5-engine';
 import { Command } from '@ckeditor/ckeditor5-core';
 
 import { ImageBlockEditing } from '../image/imageblockediting.js';
+import { isImageTypePlaceable } from '../image/utils.js';
 import { type ImageCaptionUtils } from './imagecaptionutils.js';
 import { type ImageUtils } from '../imageutils.js';
 import { type ImageCaptionEditing } from './imagecaptionediting.js';
@@ -74,6 +75,17 @@ export class ToggleImageCaptionCommand extends Command {
 		// Block images support captions by default but the command should also be enabled for inline
 		// images because toggling the caption when one is selected should convert it into a block image.
 		this.isEnabled = imageUtils.isImage( selectedElement );
+
+		// For an inline image the toggle requires an inline → block conversion. Make sure that
+		// `imageBlock` can actually land somewhere reachable from the current position (e.g. inside
+		// `$inlineRoot` or another limit ancestor that disallows `imageBlock`, the conversion would
+		// otherwise be a no-op and the writer would still try to append the caption to the inline
+		// image - which the schema rejects).
+		if ( this.isEnabled && imageUtils.isInlineImage( selectedElement ) ) {
+			const position = editor.model.createPositionBefore( selectedElement );
+
+			this.isEnabled = isImageTypePlaceable( editor.model.schema, position, 'imageBlock' );
+		}
 
 		if ( !this.isEnabled ) {
 			this.value = false;
