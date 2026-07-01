@@ -3,7 +3,7 @@ packages:
 
 allowBuilds:
   '@ckeditor/ckeditor5-dev-tests': true
-  '@ckeditor/ckeditor5-mermaid': true
+  '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/a6d020ca6941e35e2a3110e54896d2f4096383c1': true
   '@parcel/watcher': true
   '@swc/core': true
   'core-js': true
@@ -44,3 +44,4 @@ shamefullyHoist: true
 preferFrozenLockfile: true
 linkWorkspacePackages: true
 ignoreWorkspaceCycles: true
+verifyDepsBeforeRun: false

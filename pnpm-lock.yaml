@@ -196,7 +196,7 @@ importers:
         version: 8.0.5
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -398,7 +398,7 @@ importers:
         version: 8.15.2(ckeditor5@packages+ckeditor5)
       terser-webpack-plugin:
         specifier: ^5.0.0
-        version: 5.6.0(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack@5.107.1)
+        version: 5.6.0(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(esbuild@0.25.12)(postcss@8.5.15)(webpack@5.107.1)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -407,7 +407,7 @@ importers:
         version: 2.0.1
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -465,7 +465,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -526,7 +526,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -590,7 +590,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -630,7 +630,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -679,7 +679,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -743,7 +743,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -831,7 +831,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -907,7 +907,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -962,7 +962,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1095,7 +1095,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1126,7 +1126,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1205,7 +1205,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1272,7 +1272,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1318,7 +1318,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1379,7 +1379,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1443,7 +1443,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1504,7 +1504,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1568,7 +1568,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1644,7 +1644,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1714,7 +1714,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1793,7 +1793,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1836,7 +1836,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1885,7 +1885,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1967,7 +1967,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2019,7 +2019,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2158,7 +2158,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2231,7 +2231,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2292,7 +2292,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2347,7 +2347,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2411,7 +2411,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2538,7 +2538,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2550,7 +2550,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2671,7 +2671,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2774,7 +2774,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2814,7 +2814,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2899,7 +2899,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3026,7 +3026,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3156,7 +3156,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3229,7 +3229,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3302,7 +3302,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3372,7 +3372,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3427,7 +3427,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3479,7 +3479,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3564,7 +3564,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3631,7 +3631,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3707,7 +3707,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3756,7 +3756,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3892,7 +3892,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3950,7 +3950,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3999,7 +3999,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4126,7 +4126,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4238,7 +4238,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4345,7 +4345,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4469,7 +4469,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4521,7 +4521,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4540,7 +4540,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4678,7 +4678,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4745,7 +4745,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -14310,7 +14310,7 @@ snapshots:
       socket.io: 4.8.3
       typescript: 5.3.3
       upath: 2.0.1
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@rspack/core'
@@ -16372,17 +16372,17 @@ snapshots:
 
   '@webpack-cli/configtest@3.0.1(webpack-cli@6.0.1)(webpack@5.107.1)':
     dependencies:
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli: 6.0.1(webpack@5.107.1)
 
   '@webpack-cli/info@3.0.1(webpack-cli@6.0.1)(webpack@5.107.1)':
     dependencies:
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli: 6.0.1(webpack@5.107.1)
 
   '@webpack-cli/serve@3.0.1(webpack-cli@6.0.1)(webpack@5.107.1)':
     dependencies:
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli: 6.0.1(webpack@5.107.1)
 
   '@webspellchecker/wproofreader-ckeditor5@3.1.3(ckeditor5@packages+ckeditor5)':
@@ -16581,7 +16581,7 @@ snapshots:
       '@babel/core': 7.29.0
       find-up: 5.0.0
     optionalDependencies:
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
 
   babel-plugin-istanbul@7.0.1:
     dependencies:
@@ -17162,7 +17162,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.8.1
     optionalDependencies:
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
 
   css-select@4.3.0:
     dependencies:
@@ -17852,7 +17852,7 @@ snapshots:
       esbuild: 0.27.7
       get-tsconfig: 4.14.0
       loader-utils: 2.0.4
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-sources: 3.5.0
 
   esbuild@0.25.12:
@@ -19220,7 +19220,7 @@ snapshots:
     dependencies:
       glob: 7.2.3
       minimatch: 9.0.9
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-merge: 4.2.2
 
   karma@6.4.4:
@@ -20167,7 +20167,7 @@ snapshots:
     dependencies:
       schema-utils: 4.3.3
       tapable: 2.3.3
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
 
   minimatch@10.2.5:
     dependencies:
@@ -20830,7 +20830,7 @@ snapshots:
       postcss: 8.5.15
       semver: 7.8.1
     optionalDependencies:
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
     transitivePeerDependencies:
       - typescript
 
@@ -21342,7 +21342,7 @@ snapshots:
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
 
   react-clientside-effect@1.2.8(react@19.2.6):
     dependencies:
@@ -22200,7 +22200,7 @@ snapshots:
 
   style-loader@4.0.0(webpack@5.107.1):
     dependencies:
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
 
   style-search@0.1.0: {}
 
@@ -22399,7 +22399,7 @@ snapshots:
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.48.0
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
     optionalDependencies:
       '@minify-html/node': 0.17.1
       '@swc/core': 1.15.40
@@ -22412,7 +22412,7 @@ snapshots:
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.48.0
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
     optionalDependencies:
       '@swc/core': 1.15.40
       cssnano: 7.1.9(postcss@8.5.15)
@@ -22859,7 +22859,7 @@ snapshots:
       import-local: 3.2.0
       interpret: 3.1.1
       rechoir: 0.8.0
-      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-merge: 6.0.1
 
   webpack-merge@4.2.2:
@@ -22899,6 +22899,47 @@ snapshots:
       schema-utils: 4.3.3
       tapable: 2.3.3
       terser-webpack-plugin: 5.6.0(@minify-html/node@0.17.1)(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack@5.107.1)
+      watchpack: 2.5.1
+      webpack-sources: 3.5.0
+    optionalDependencies:
+      webpack-cli: 6.0.1(webpack@5.107.1)
+    transitivePeerDependencies:
+      - '@minify-html/node'
+      - '@swc/core'
+      - '@swc/css'
+      - '@swc/html'
+      - clean-css
+      - cssnano
+      - csso
+      - esbuild
+      - html-minifier-terser
+      - lightningcss
+      - postcss
+      - uglify-js
+
+  webpack@5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1):
+    dependencies:
+      '@types/estree': 1.0.9
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.16.0
+      acorn-import-phases: 1.0.4(acorn@8.16.0)
+      browserslist: 4.28.2
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.22.0
+      es-module-lexer: 2.1.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      loader-runner: 4.3.2
+      mime-db: 1.54.0
+      neo-async: 2.6.2
+      schema-utils: 4.3.3
+      tapable: 2.3.3
+      terser-webpack-plugin: 5.6.0(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(esbuild@0.25.12)(postcss@8.5.15)(webpack@5.107.1)
       watchpack: 2.5.1
       webpack-sources: 3.5.0
     optionalDependencies:
