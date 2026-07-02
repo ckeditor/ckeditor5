@@ -9,7 +9,7 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
-import { View, Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
+import { View, Dialog, DialogViewPosition, ContextualBalloon, BalloonPanelView } from '@ckeditor/ckeditor5-ui';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
@@ -222,6 +222,56 @@ describe( 'AbstractHandler', () => {
 			abstractHandler.disable();
 			customContainer.remove();
 		} );
+
+		it( 'should register a getPositionOptions correction that adjusts viewport offset by top bar height', async () => {
+			const tempDomElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( tempDomElement );
+
+			const tempEditor = await ClassicEditor.create( {
+				attachTo: tempDomElement,
+				plugins: [ Paragraph, Essentials, Fullscreen, ContextualBalloon ]
+			} );
+
+			const contextualBalloon = tempEditor.plugins.get( 'ContextualBalloon' );
+			let capturedListener;
+
+			const originalOn = contextualBalloon.on.bind( contextualBalloon );
+
+			vi.spyOn( contextualBalloon, 'on' ).mockImplementation( ( eventName, listener, opts ) => {
+				if ( eventName === 'getPositionOptions' ) {
+					capturedListener = listener;
+				}
+
+				return originalOn( eventName, listener, opts );
+			} );
+
+			const tempHandler = new FullscreenAbstractEditorHandler( tempEditor );
+
+			tempHandler.enable();
+
+			// Mock the toolbar slot height so the listener has something to add.
+			const toolbarSlot = tempHandler.getWrapper().querySelector( '[data-ck-fullscreen="toolbar"]' );
+
+			vi.spyOn( toolbarSlot, 'getBoundingClientRect' ).mockReturnValue(
+				{ height: 50, width: 800, top: 0, bottom: 50, left: 0, right: 800, x: 0, y: 0, toJSON: () => {} }
+			);
+
+			const mockEvt = {
+				return: {
+					positions: [ BalloonPanelView.defaultPositions.viewportStickyNorth ],
+					viewportOffsetConfig: { top: 0 }
+				}
+			};
+
+			capturedListener( mockEvt );
+
+			expect( mockEvt.return.viewportOffsetConfig.top ).toBe( 50 );
+
+			tempHandler.disable();
+			tempDomElement.remove();
+
+			return tempEditor.destroy();
+		} );
 	} );
 
 	describe( '#disable()', () => {
@@ -408,6 +458,44 @@ describe( 'AbstractHandler', () => {
 			innerElement.remove();
 			global.document.body.parentElement.style.height = '';
 			global.document.body.parentElement.style.scrollBehavior = '';
+		} );
+
+		it( 'should remove the getPositionOptions correction so it no longer adjusts the viewport offset', async () => {
+			const tempDomElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( tempDomElement );
+
+			const tempEditor = await ClassicEditor.create( {
+				attachTo: tempDomElement,
+				plugins: [ Paragraph, Essentials, Fullscreen, ContextualBalloon ]
+			} );
+
+			const contextualBalloon = tempEditor.plugins.get( 'ContextualBalloon' );
+			let registeredListener;
+
+			const originalOn = contextualBalloon.on.bind( contextualBalloon );
+
+			vi.spyOn( contextualBalloon, 'on' ).mockImplementation( ( eventName, listener, opts ) => {
+				if ( eventName === 'getPositionOptions' ) {
+					registeredListener = listener;
+				}
+
+				return originalOn( eventName, listener, opts );
+			} );
+
+			const tempHandler = new FullscreenAbstractEditorHandler( tempEditor );
+
+			tempHandler.enable();
+
+			const offSpy = vi.spyOn( contextualBalloon, 'off' );
+
+			tempHandler.disable();
+
+			// The exact same function reference that was registered must be unregistered.
+			expect( offSpy ).toHaveBeenCalledWith( 'getPositionOptions', registeredListener );
+
+			tempDomElement.remove();
+
+			return tempEditor.destroy();
 		} );
 	} );
 

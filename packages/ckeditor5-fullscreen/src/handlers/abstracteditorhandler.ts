@@ -11,6 +11,7 @@ import { BodyCollection, ButtonView, DialogViewPosition } from '@ckeditor/ckedit
 import { global, createElement, Rect, type EventInfo, ResizeObserver } from '@ckeditor/ckeditor5-utils';
 import type { ElementApi, Editor, EditorConfig } from '@ckeditor/ckeditor5-core';
 import { IconDocumentOutlineToggle, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
+import { registerFullscreenBalloonOffsetCorrection } from './integrations/contextualballoon.js';
 
 const DIALOG_OFFSET = 28;
 
@@ -136,6 +137,11 @@ export class FullscreenAbstractEditorHandler {
 	 * It is then immediately set back to `false`.
 	 */
 	private _forceShowLeftSidebar: boolean = false;
+
+	/**
+	 * A cleanup function returned by `registerFullscreenBalloonOffsetCorrection`.
+	 */
+	private _disableContextualBalloonPositionHandler: VoidFunction = () => {};
 
 	/**
 	 * A callback that hides the document outline header when the source editing mode is enabled.
@@ -280,6 +286,7 @@ export class FullscreenAbstractEditorHandler {
 	 */
 	public enable(): void {
 		this._saveAncestorsScrollPositions( this._editor.ui.getEditableElement()! )!;
+
 		this.defaultOnEnter();
 
 		// Block scroll if the fullscreen container is the body element. Otherwise the document has to stay scrollable.
@@ -381,6 +388,9 @@ export class FullscreenAbstractEditorHandler {
 		this._adjustVisibleElements();
 		this._setupResizeObserver();
 
+		// Must be called after all elements are moved so the slot heights are final.
+		this._disableContextualBalloonPositionHandler = registerFullscreenBalloonOffsetCorrection( this._editor, this.getWrapper() );
+
 		if ( this._editor.config.get( 'fullscreen.onEnterCallback' ) ) {
 			this._editor.config.get( 'fullscreen.onEnterCallback' )!( this.getWrapper() );
 		}
@@ -467,6 +477,8 @@ export class FullscreenAbstractEditorHandler {
 		if ( this._editor.plugins.has( 'Dialog' ) ) {
 			this._unregisterFullscreenDialogPositionAdjustments();
 		}
+
+		this._disableContextualBalloonPositionHandler();
 
 		// Reset the behavior of the left sidebar.
 		this._keepLeftSidebarHidden = false;
@@ -1003,6 +1015,7 @@ export class FullscreenAbstractEditorHandler {
 
 			// If adding right sidebar width to the factual width of the wrapper
 			// would still be less than the client width, expand right sidebar.
+			/* v8 ignore else -- @preserve */
 			if ( actualWidth + this._sidebarsWidths.right < editableWrapper.clientWidth ) {
 				this._showRightSidebar();
 
