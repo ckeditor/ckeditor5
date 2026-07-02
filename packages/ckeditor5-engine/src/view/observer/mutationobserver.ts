@@ -18,7 +18,7 @@ import { type ViewNode } from '../node.js';
 import { type ViewText } from '../text.js';
 import type { ViewDocumentChangeType } from '../document.js';
 
-// @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
+// @if CK_DEBUG_TYPING // import { _debouncedLine, _buildLogMessage } from '../../dev-utils/utils.js';
 
 /**
  * Mutation observer's role is to watch for any DOM changes inside the editor that weren't

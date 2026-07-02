@@ -19,7 +19,7 @@ import { type ModelRange } from './range.js';
 
 import { isIterable } from '@ckeditor/ckeditor5-utils';
 
-// @if CK_DEBUG_ENGINE // const { stringifyMap } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // import { convertMapToTags } from '../dev-utils/utils.js';
 
 /**
  * ModelDocumentFragment represents a part of model which does not have a common root but its top-level nodes
@@ -375,7 +375,7 @@ export class ModelDocumentFragment extends ModelTypeCheckable implements Iterabl
 	// @if CK_DEBUG_ENGINE // 		string += '\n';
 
 	// @if CK_DEBUG_ENGINE // 		if ( child.is( '$text' ) ) {
-	// @if CK_DEBUG_ENGINE // 			const textAttrs = stringifyMap( child._attrs );
+	// @if CK_DEBUG_ENGINE // 			const textAttrs = convertMapToTags( child._attrs );
 
 	// @if CK_DEBUG_ENGINE // 			string += '\t'.repeat( 1 );
 

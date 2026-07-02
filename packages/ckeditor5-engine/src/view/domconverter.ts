@@ -40,7 +40,7 @@ import { type ViewEditableElement } from './editableelement.js';
 import { type ViewTextProxy } from './textproxy.js';
 import { type ViewRawElement } from './rawelement.js';
 
-// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '../dev-utils/utils.js' );
+// @if CK_DEBUG_TYPING // import { _buildLogMessage } from '../dev-utils/utils.js';
 
 type DomNode = globalThis.Node;
 type DomElement = globalThis.HTMLElement;

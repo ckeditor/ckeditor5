@@ -18,7 +18,7 @@ import { type ViewDocument } from './document.js';
 import { type ViewItem } from './item.js';
 import { ViewTokenList } from './tokenlist.js';
 
-// @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // import { convertMapToTags } from '../dev-utils/utils.js';
 
 /**
  * View element.

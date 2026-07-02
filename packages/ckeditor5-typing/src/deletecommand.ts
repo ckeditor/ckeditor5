@@ -13,7 +13,7 @@ import type { ModelDocumentSelection, ModelElement, ModelSelection, ModelWriter 
 
 import { TypingChangeBuffer } from './utils/changebuffer.js';
 
-// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
+// @if CK_DEBUG_TYPING // import { _buildLogMessage } from '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js';
 
 /**
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and

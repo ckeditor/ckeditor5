@@ -32,7 +32,7 @@ import {
 
 import { debounce } from 'es-toolkit/compat';
 
-// @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
+// @if CK_DEBUG_TYPING // import { _debouncedLine, _buildLogMessage } from '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js';
 
 /**
  * Handles text input coming from the keyboard or other input methods.

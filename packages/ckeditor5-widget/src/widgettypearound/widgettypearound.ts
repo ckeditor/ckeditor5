@@ -65,7 +65,7 @@ import {
 import { isWidget } from '../utils.js';
 import { type Widget } from '../widget.js';
 
-// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
+// @if CK_DEBUG_TYPING // import { _buildLogMessage } from '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js';
 
 import '../../theme/widgettypearound.css';
 

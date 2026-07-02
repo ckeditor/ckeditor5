@@ -9,7 +9,7 @@
 
 import { ModelNode, type ModelNodeAttributes } from './node.js';
 
-// @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // import { convertMapToStringifiedObject } from '../dev-utils/utils.js';
 
 /**
  * Model text node. Type of {@link module:engine/model/node~ModelNode node} that

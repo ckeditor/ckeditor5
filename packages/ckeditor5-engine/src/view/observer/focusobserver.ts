@@ -12,7 +12,7 @@ import { type ViewDocumentDomEventData } from './domeventdata.js';
 import { type EditingView } from '../view.js';
 import type { ViewDocumentInputEvent } from './inputobserver.js';
 
-// @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
+// @if CK_DEBUG_TYPING // import { _debouncedLine, _buildLogMessage } from '../../dev-utils/utils.js';
 
 /**
  * {@link module:engine/view/document~ViewDocument#event:focus Focus}

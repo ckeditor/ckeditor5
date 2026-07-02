@@ -42,8 +42,8 @@ import {
 
 import type { EngineConfig } from '../engineconfig.js';
 
-// @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
-// @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
+// @if CK_DEBUG_ENGINE // import { dumpTrees, initDocumentDumping } from '../dev-utils/utils.js';
+// @if CK_DEBUG_ENGINE // import { OperationReplayer } from '../dev-utils/operationreplayer.js';
 
 const ModelBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
 

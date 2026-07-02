@@ -14,7 +14,7 @@ import { ViewDataTransfer } from '../datatransfer.js';
 import { env, isText, indexOf } from '@ckeditor/ckeditor5-utils';
 import { INLINE_FILLER_LENGTH, startsWithFiller } from '../filler.js';
 
-// @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
+// @if CK_DEBUG_TYPING // import { _debouncedLine, _buildLogMessage } from '../../dev-utils/utils.js';
 
 /**
  * Observer for events connected with data input.

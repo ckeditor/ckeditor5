@@ -15,7 +15,7 @@ import { type ModelText } from './text.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-// @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // import { convertMapToStringifiedObject } from '../dev-utils/utils.js';
 
 /**
  * `ModelTextProxy` represents a part of {@link module:engine/model/text~ModelText text node}.

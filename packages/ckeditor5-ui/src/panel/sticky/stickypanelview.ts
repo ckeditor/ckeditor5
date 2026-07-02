@@ -21,10 +21,10 @@ import {
 	global
 } from '@ckeditor/ckeditor5-utils';
 
-// @if CK_DEBUG_STICKYPANEL // const {
-// @if CK_DEBUG_STICKYPANEL // 	default: RectDrawer,
+// @if CK_DEBUG_STICKYPANEL // import {
+// @if CK_DEBUG_STICKYPANEL // 	RectDrawer,
 // @if CK_DEBUG_STICKYPANEL // 	diagonalStylesBlack
-// @if CK_DEBUG_STICKYPANEL // } = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' );
+// @if CK_DEBUG_STICKYPANEL // } from '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer.js';
 
 import '../../../theme/components/panel/stickypanel.css';
 

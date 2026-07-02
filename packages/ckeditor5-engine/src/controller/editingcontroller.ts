@@ -43,7 +43,7 @@ import type { Marker } from '../model/markercollection.js';
 import type { StylesProcessor } from '../view/stylesmap.js';
 import type { ViewDocumentObserverSelectionChangeEvent } from '../view/observer/selectionobserver.js';
 
-// @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // import { dumpTrees, initDocumentDumping } from '../dev-utils/utils.js';
 
 const EditingControllerBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
 

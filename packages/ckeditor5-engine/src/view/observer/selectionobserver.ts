@@ -19,7 +19,7 @@ import type { ViewDomConverter } from '../domconverter.js';
 import type { ViewSelection } from '../selection.js';
 import type { ViewDocumentCompositionStartEvent } from './compositionobserver.js';
 
-// @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
+// @if CK_DEBUG_TYPING // import { _debouncedLine, _buildLogMessage } from '../../dev-utils/utils.js';
 
 type DomSelection = globalThis.Selection;
 
