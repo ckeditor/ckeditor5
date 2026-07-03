@@ -5,6 +5,7 @@
 
 import { dirname, resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { availableParallelism } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, mergeConfig, type ViteUserConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
@@ -46,7 +47,7 @@ export function createVitestConfig( packageDir: string, { name, ...testOverrides
 
 			test: {
 				name,
-
+				maxWorkers: Math.min( availableParallelism(), 4 ),
 				include: [
 					'tests/**/*.{js,ts}'
 				],
