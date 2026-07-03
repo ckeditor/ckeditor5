@@ -63,9 +63,9 @@
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs",
     "test": "vitest run",
-    "test:headless": "vitest run --browser.headless",
-    "test:debug": "vitest",
-    "coverage": "pnpm run test:headless --coverage"
+    "test:browser": "vitest run --browser.headless=false",
+    "test:debug": "vitest --browser.headless=false",
+    "coverage": "pnpm run test --coverage"
   },
   "files": [
     "dist",
