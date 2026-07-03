@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { mergeConfig, defineConfig, type ViteUserConfig } from 'vitest/config';
 import { createVitestConfig } from '../../vitest.config';
 
-const base: ViteUserConfig = createVitestConfig( {
+const base: ViteUserConfig = createVitestConfig( import.meta.dirname, {
 	name: 'paste-from-office',
 	exclude: [
 		'**/_data/**'

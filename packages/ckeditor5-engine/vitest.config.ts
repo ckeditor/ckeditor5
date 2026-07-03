@@ -10,7 +10,7 @@ import { createVitestConfig } from '../../vitest.config';
 
 const __dirname = dirname( fileURLToPath( import.meta.url ) );
 
-const config: ViteUserConfig = createVitestConfig( {
+const config: ViteUserConfig = createVitestConfig( import.meta.dirname, {
 	name: 'engine',
 	setupFiles: [
 		resolve( __dirname, 'tests/common.js' )

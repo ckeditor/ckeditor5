@@ -23,18 +23,27 @@ type TestOptions = NonNullable<ViteUserConfig[ 'test' ]>;
  * ```ts
  * import { createVitestConfig } from '../../vitest.config';
  *
- * const config: ViteUserConfig = createVitestConfig( { name: 'special-characters' } );
+ * const config: ViteUserConfig = createVitestConfig( import.meta.dirname, { name: 'special-characters' } );
  *
  * export default config;
  * ```
  *
+ * The `packageDir` argument must be the absolute path to the package directory (always pass
+ * `import.meta.dirname`). It is used as the Vite `root`, so that all relative paths (test include
+ * globs, coverage globs, report directories) resolve against the package directory regardless of
+ * the process working directory. This makes the configuration work identically for the test runner
+ * wrapper (which spawns Vitest with cwd set to the package directory) and for IDE integrations
+ * like WebStorm (which spawn Vitest from the repository root).
+ *
  * The `name` option must be the short package name (without the `ckeditor5-` prefix),
- * as the test runner wrapper selects packages via `--project <short-name>`.
+ * as the test runner wrapper selects packages by this name.
  * Any other properties are merged into the `test` configuration as overrides.
  */
-export function createVitestConfig( { name, ...testOverrides }: TestOptions ): ViteUserConfig {
+export function createVitestConfig( packageDir: string, { name, ...testOverrides }: TestOptions ): ViteUserConfig {
 	return mergeConfig(
 		defineConfig( {
+			root: packageDir,
+
 			test: {
 				name,
 
@@ -65,8 +74,9 @@ export function createVitestConfig( { name, ...testOverrides }: TestOptions ): V
 					]
 				},
 
-				// Applies to standalone runs (`pnpm vitest` in a package directory). In workspace
-				// runs, the root-level coverage configuration from `createWorkspaceConfig()` wins.
+				// Applies to standalone runs (`pnpm vitest` in a package directory or an IDE run).
+				// The test runner wrapper overrides the reporters and the reports directory
+				// via `--coverage.*` flags when merging per-package coverage.
 				coverage: {
 					provider: 'v8',
 					clean: true,
@@ -108,26 +118,22 @@ export function createVitestConfig( { name, ...testOverrides }: TestOptions ): V
 }
 
 /**
- * Creates the workspace configuration read by Vitest when run from a repository root.
- * The coverage setup is shared by all repositories using this factory: the `json` and
- * `lcovonly` reporters are required by the test runner wrapper and the CI coverage checks.
- * The wrapper prints the final combined `text-summary` after merging per-package JSON
- * reports, so the workspace coverage configuration intentionally omits `text-summary` to
- * avoid printing the summary twice.
+ * The workspace configuration read by Vitest when it is launched from the repository root
+ * without an explicit configuration file, which is how IDE integrations (for example
+ * WebStorm) run tests. Vitest matches the test file filter against the listed projects
+ * and runs it with the package's own configuration.
+ *
+ * It is intended for filtered, single-package runs only. Do not run all projects at once
+ * through this configuration (a bare `vitest --run` from the repository root) — dependency
+ * optimization across all browser-mode projects takes excessive time. The test runner
+ * wrapper instead spawns a separate Vitest process per package.
  */
-export function createWorkspaceConfig( projects: Array<string> ): ViteUserConfig {
-	return defineConfig( {
-		test: {
-			projects,
-			coverage: {
-				provider: 'v8',
-				reporter: [ 'html', 'json', 'lcovonly' ],
-				reportsDirectory: 'coverage-vitest'
-			}
-		}
-	} );
-}
-
-const workspaceConfig: ViteUserConfig = createWorkspaceConfig( [ 'packages/*/vitest.config.ts' ] );
+const workspaceConfig: ViteUserConfig = defineConfig( {
+	test: {
+		projects: [
+			'packages/*'
+		]
+	}
+} );
 
 export default workspaceConfig;
