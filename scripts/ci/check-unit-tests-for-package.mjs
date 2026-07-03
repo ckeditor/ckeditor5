@@ -7,7 +7,7 @@
 
 import { execSync } from 'node:child_process';
 import fs from 'node:fs/promises';
-import { glob } from 'glob';
+import path from 'node:path';
 import minimist from 'minimist';
 
 main()
@@ -18,58 +18,43 @@ main()
 	} );
 
 async function main() {
-	const { packageName, checkCoverage, allowNonFullCoverage, coverageFile, attempts } = getOptions( process.argv.slice( 2 ) );
+	const { packageName, checkCoverage, coverageFile, attempts } = getOptions( process.argv.slice( 2 ) );
+	const packageDirectory = path.join( 'packages', packageName );
+	const coverageDirectory = path.join( packageDirectory, 'coverage' );
 
-	// Batched CI jobs run many packages sequentially in the same workspace. Remove coverage
-	// artifacts left by previous packages so stale data is not merged into this check.
-	await Promise.all( [
-		fs.rm( 'coverage', { recursive: true, force: true } ),
-		fs.rm( 'coverage-vitest', { recursive: true, force: true } ),
-		fs.rm( '.nyc_output/karma-coverage.json', { force: true } ),
-		fs.rm( '.nyc_output/vitest-coverage.json', { force: true } )
-	] );
+	// The `coverage.clean` option also handles this, but remove artifacts from a previous
+	// (possibly crashed) run explicitly, so a failed run cannot leak a stale lcov report.
+	await fs.rm( coverageDirectory, { recursive: true, force: true } );
 
-	await fs.mkdir( '.nyc_output', { recursive: true } );
+	runTests( { packageDirectory, checkCoverage, attempts } );
 
-	runTests( { packageName, checkCoverage, attempts } );
+	if ( checkCoverage && coverageFile ) {
+		// The lcov report contains repository-relative `SF:` paths (`createVitestConfig()` sets the
+		// reporter's `projectRoot`), so per-package reports can be concatenated verbatim.
+		const lcov = await fs.readFile( path.join( coverageDirectory, 'lcov.info' ), 'utf-8' );
 
-	if ( checkCoverage && !allowNonFullCoverage ) {
-		const exitCode = checkCodeCoverage();
-
-		if ( coverageFile ) {
-			// Karma writes to coverage/<BrowserName>/lcov.info,
-			// Vitest writes to coverage-vitest/lcov.info (merged from coverage-vitest/<project>/ by the test runner).
-			const matches = await glob( [ 'coverage/*/lcov.info', 'coverage-vitest/lcov.info' ] );
-
-			for ( const filePath of matches ) {
-				const buffer = await fs.readFile( filePath );
-
-				await fs.writeFile( coverageFile, buffer, { flag: 'as' } );
-			}
-		}
-
-		process.exit( exitCode );
+		await fs.writeFile( coverageFile, lcov, { flag: 'as' } );
 	}
 }
 
 /**
+ * Runs the package's native test script. When checking coverage, the 100% coverage thresholds
+ * configured by `createVitestConfig()` make Vitest exit with a non-zero code on a violation,
+ * so no external coverage check is needed.
+ *
  * @param {Object} options
- * @param {String} options.packageName
+ * @param {String} options.packageDirectory
  * @param {Boolean} options.checkCoverage
  * @param {Number} options.attempts
  */
-function runTests( { packageName, checkCoverage, attempts = 3 } ) {
-	const shortName = packageName.replace( /^ckeditor5?-/, '' );
-
+function runTests( { packageDirectory, checkCoverage, attempts = 3 } ) {
 	const testCommand = [
 		'pnpm',
+		'--dir',
+		packageDirectory,
 		'run',
 		'test',
-		'--reporter=dots',
-		'--production',
-		'-b ChromeHeadless',
-		`-f ${ shortName }`,
-		checkCoverage ? '--coverage' : null
+		checkCoverage ? '--coverage.enabled' : null
 	].filter( Boolean );
 
 	try {
@@ -85,37 +70,11 @@ function runTests( { packageName, checkCoverage, attempts = 3 } ) {
 		console.log( `\n⚠️ Retry the test execution. Remaining attempts: ${ attempts - 1 }.` );
 
 		return runTests( {
-			packageName,
+			packageDirectory,
 			checkCoverage,
 			attempts: attempts - 1
 		} );
 	}
-}
-
-function checkCodeCoverage() {
-	// Karma writes coverage-final.json to coverage/<BrowserName>/,
-	// Vitest writes it to coverage-vitest/. Copy whichever exists
-	// with distinct names so nyc can merge both.
-	execSync( 'cp coverage/*/coverage-final.json .nyc_output/karma-coverage.json 2>/dev/null || true', {
-		cwd: process.cwd(),
-		stdio: 'inherit'
-	} );
-
-	execSync( 'cp coverage-vitest/coverage-final.json .nyc_output/vitest-coverage.json 2>/dev/null || true', {
-		cwd: process.cwd(),
-		stdio: 'inherit'
-	} );
-
-	try {
-		execSync( 'pnpx nyc check-coverage --branches 100 --functions 100 --lines 100 --statements 100', {
-			cwd: process.cwd(),
-			stdio: 'inherit'
-		} );
-	} catch {
-		return 1;
-	}
-
-	return 0;
 }
 
 /**
@@ -123,7 +82,6 @@ function checkCodeCoverage() {
  * @returns {Object} options
  * @returns {String} options.packageName
  * @returns {Boolean} options.checkCoverage
- * @returns {Boolean} options.allowNonFullCoverage
  * @returns {String|null} options.coverageFile
  * @returns {Number} options.attempts
  */
@@ -135,11 +93,9 @@ function getOptions( argv ) {
 			'attempts'
 		],
 		boolean: [
-			'check-coverage',
-			'allow-non-full-coverage'
+			'check-coverage'
 		],
 		default: {
-			'allow-non-full-coverage': false,
 			'coverage-file': null
 		}
 	} );
@@ -148,7 +104,6 @@ function getOptions( argv ) {
 	options.packageName = options[ 'package-name' ];
 	options.coverageFile = options[ 'coverage-file' ];
 	options.checkCoverage = options[ 'check-coverage' ];
-	options.allowNonFullCoverage = options[ 'allow-non-full-coverage' ];
 
 	return options;
 }

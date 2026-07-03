@@ -6,13 +6,6 @@
 import type { ViteUserConfig } from 'vitest/config';
 import { createVitestConfig } from '../../vitest.config';
 
-const config: ViteUserConfig = createVitestConfig( import.meta.dirname, {
-	name: 'editor-multi-root',
-	coverage: {
-		exclude: [
-			'src/legacyerrors.ts'
-		]
-	}
-} );
+const config: ViteUserConfig = createVitestConfig( import.meta.dirname );
 
 export default config;

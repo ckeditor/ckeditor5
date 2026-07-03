@@ -3,17 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { dirname, resolve } from 'node:path';
+import { basename, dirname, resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { availableParallelism } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, mergeConfig, type ViteUserConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
+import { NON_FULL_COVERAGE_PACKAGES } from './scripts/ci/constants.mjs';
 
 const REPO_ROOT = dirname( fileURLToPath( import.meta.url ) );
 const CHROME_EXECUTABLE_PATH = process.env.PUPPETEER_EXECUTABLE_PATH;
 
 type TestOptions = NonNullable<ViteUserConfig[ 'test' ]>;
+
+export interface PackageTestOptions extends TestOptions {
+
+	/**
+	 * Disables the 100% coverage thresholds enforced by default in coverage runs.
+	 * Defaults to whether the package is listed in the repository's non-full-coverage policy
+	 * (`NON_FULL_COVERAGE_PACKAGES`), so package configurations do not need to set it.
+	 */
+	allowNonFullCoverage?: boolean;
+}
 
 /**
  * Creates a Vitest configuration for a single package.
@@ -24,7 +35,7 @@ type TestOptions = NonNullable<ViteUserConfig[ 'test' ]>;
  * ```ts
  * import { createVitestConfig } from '../../vitest.config';
  *
- * const config: ViteUserConfig = createVitestConfig( import.meta.dirname, { name: 'special-characters' } );
+ * const config: ViteUserConfig = createVitestConfig( import.meta.dirname );
  *
  * export default config;
  * ```
@@ -36,11 +47,21 @@ type TestOptions = NonNullable<ViteUserConfig[ 'test' ]>;
  * wrapper (which spawns Vitest with cwd set to the package directory) and for IDE integrations
  * like WebStorm (which spawn Vitest from the repository root).
  *
- * The `name` option must be the short package name (without the `ckeditor5-` prefix),
- * as the test runner wrapper selects packages by this name.
+ * The directory basename also derives the project name (the short package name, without
+ * the `ckeditor5-` prefix, as the test runner wrapper selects packages by this name) and
+ * the default value of the `allowNonFullCoverage` option, which disables the 100% coverage
+ * thresholds for packages listed in the repository's non-full-coverage policy.
  * Any other properties are merged into the `test` configuration as overrides.
  */
-export function createVitestConfig( packageDir: string, { name, ...testOverrides }: TestOptions ): ViteUserConfig {
+export function createVitestConfig( packageDir: string, options: PackageTestOptions = {} ): ViteUserConfig {
+	const packageName = basename( packageDir );
+
+	const {
+		name = packageName.replace( /^ckeditor5-/, '' ),
+		allowNonFullCoverage = NON_FULL_COVERAGE_PACKAGES.includes( packageName ),
+		...testOverrides
+	} = options;
+
 	return mergeConfig(
 		defineConfig( {
 			root: packageDir,
@@ -87,20 +108,29 @@ export function createVitestConfig( packageDir: string, { name, ...testOverrides
 					]
 				},
 
-				// Applies to standalone runs (`pnpm vitest` in a package directory or an IDE run).
-				// The test runner wrapper overrides the reporters and the reports directory
-				// via `--coverage.*` flags when merging per-package coverage.
 				coverage: {
 					provider: 'v8',
 					clean: true,
-					reporter: [ 'text', 'html' ],
+					reporter: [
+						'text',
+						// The per-file HTML report is useful locally but a waste of time in CI.
+						...( process.env.CI ? [] : [ 'html' ] ),
+						// The `projectRoot` option makes the lcov `SF:` paths relative to the
+						// repository root instead of the package directory, so CI can concatenate
+						// per-package reports into a single file consumable by coverage services.
+						[ 'lcovonly', { projectRoot: resolve( packageDir, '..', '..' ) } ]
+					] as NonNullable<TestOptions[ 'coverage' ]>[ 'reporter' ],
 					include: [ 'src/**' ],
+					// `mergeConfig()` concatenates arrays, so `coverage.exclude` entries passed by
+					// a package configuration extend this list instead of replacing it.
 					exclude: [
 						'src/index.ts',
 						'src/augmentation.ts',
+						'src/legacyerrors.ts',
+						'src/lib/**',
 						'src/**/*config.ts'
 					],
-					thresholds: {
+					thresholds: allowNonFullCoverage ? undefined : {
 						100: true
 					}
 				}

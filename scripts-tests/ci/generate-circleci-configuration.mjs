@@ -32,14 +32,14 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 		expect( config.jobs.cke5_tests_framework ).toBeDefined();
 	} );
 
-	it( 'allows non-full coverage for the `ckeditor5-minimap` package', async () => {
+	it( 'does not emit the removed `--allow-non-full-coverage` flag', async () => {
 		const config = await generateCircleConfiguration( {
 			featurePackages: [ 'ckeditor5-minimap' ]
 		} );
 
 		const minimapTestCommand = getPackageTestCommand( config.jobs.cke5_tests_features_batch_1, 'ckeditor5-minimap' );
 
-		expect( minimapTestCommand ).toContain( '--allow-non-full-coverage' );
+		expect( minimapTestCommand ).not.toContain( '--allow-non-full-coverage' );
 	} );
 
 	it( 'replaces the feature batch placeholder with generated jobs', async () => {

@@ -73,7 +73,6 @@
     "listr2": "^8.0.0",
     "local-web-server": "^5.4.0",
     "minimist": "^1.2.8",
-    "nyc": "^17.1.0",
     "postcss-loader": "^8.0.0",
     "publint": "^0.3.4",
     "puppeteer": "^24.43.1",

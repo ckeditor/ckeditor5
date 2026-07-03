@@ -16,7 +16,6 @@ import fs from 'node:fs/promises';
 import { glob } from 'glob';
 import yaml from 'js-yaml';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
-import { NON_FULL_COVERAGE_PACKAGES } from './constants.mjs';
 import { parseArgs } from 'node:util';
 
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
@@ -78,7 +77,7 @@ const prepareCodeCoverageDirectories = () => ( {
 	run: {
 		when: 'always',
 		name: 'Prepare the code coverage directory',
-		command: 'mkdir .nyc_output .out'
+		command: 'mkdir .out'
 	}
 } );
 
@@ -282,15 +281,12 @@ const persistToWorkspace = fileName => ( {
  */
 function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
 	return packages.map( packageName => {
-		const allowNonFullCoverage = NON_FULL_COVERAGE_PACKAGES.includes( packageName );
-
 		const testCommand = [
 			'node',
 			'scripts/ci/check-unit-tests-for-package.mjs',
 			'--package-name',
 			packageName,
 			checkCoverage ? '--check-coverage' : null,
-			allowNonFullCoverage ? '--allow-non-full-coverage' : null,
 			coverageFile ? `--coverage-file ${ coverageFile }` : null
 		].filter( Boolean ).join( ' ' );
 
