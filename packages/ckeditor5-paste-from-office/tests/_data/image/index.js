@@ -37,7 +37,11 @@ import onlineOfflineModel from './online-offline/model.word2016.html?raw';
 import shapesOnlineOfflineModel from './shapes-online-offline/model.word2016.html?raw';
 import mixedImagesFromFilesystemModel from './mixed-images-from-filesystem/model.word2023.html?raw';
 
-import mixedImagesFromFilesystemBlob from './mixed-images-from-filesystem/input.word2023.rtf?raw';
+// The file is too large to be inlined as a JS module by the `?raw` query (parsing such a module
+// exceeds the maximum memory of the ES module lexer used by Vite), so it is fetched as an asset instead.
+import mixedImagesFromFilesystemBlobUrl from './mixed-images-from-filesystem/input.word2023.rtf?url';
+
+const mixedImagesFromFilesystemBlob = await fetch( mixedImagesFromFilesystemBlobUrl ).then( response => response.text() );
 
 const genericFixtures = {
 	input: {
