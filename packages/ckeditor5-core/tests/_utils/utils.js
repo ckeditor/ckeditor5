@@ -3,37 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { afterEach, vi } from 'vitest';
-
 /**
  * General test utils for CKEditor.
  */
 export const testUtils = {
-	/**
-	 * Creates a cleanup hook that restores all mocks after each test using `vi.restoreAllMocks()`.
-	 *
-	 * Usage:
-	 *
-	 *		import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-	 *
-	 *		describe( 'MyClass', () => {
-	 *			testUtils.createSinonSandbox();
-	 *
-	 *			it( 'does something', () => {
-	 *				vi.spyOn( obj, 'method' );
-	 *			} );
-	 *		}
-	 *
-	 * **Note**: Do not use `testUtils.createSinonSandbox()` outside `describe()` block as it will attach `afterEach()` calls
-	 * to all tests - not only those in current file.
-	 */
-	createSinonSandbox() {
-		// eslint-disable-next-line mocha/no-top-level-hooks
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-	},
-
 	/**
 	 * Executes specified assertions. It expects that at least one function will not throw an error.
 	 *

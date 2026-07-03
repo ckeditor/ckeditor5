@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { insertContent } from '../../../src/model/utils/insertcontent.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
@@ -17,10 +17,6 @@ import { Config } from '@ckeditor/ckeditor5-utils';
 
 describe( 'DataController utils', () => {
 	let model, doc, root, config;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	describe( 'insertContent', () => {
 		beforeEach( () => {

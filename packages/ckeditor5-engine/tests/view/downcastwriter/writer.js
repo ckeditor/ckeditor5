@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { ViewEditableElement } from '../../../src/view/editableelement.js';
@@ -20,10 +20,6 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		attributes = { foo: 'bar', baz: 'quz' };

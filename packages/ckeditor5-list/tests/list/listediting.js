@@ -33,10 +33,6 @@ import { modelList, prepareTest } from './_utils/utils.js';
 describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [ Paragraph, ClipboardPipeline, BoldEditing, ListEditing, UndoEditing,

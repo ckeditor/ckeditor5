@@ -28,7 +28,6 @@ describe( 'PageBreakEditing', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have pluginName', () => {

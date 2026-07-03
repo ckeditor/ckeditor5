@@ -25,10 +25,6 @@ import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 describe( 'SourceEditing', () => {
 	let editor, editorElement, plugin, button;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
 
@@ -1109,10 +1105,6 @@ describe( 'SourceEditing', () => {
 describe( 'SourceEditing - integration with Markdown', () => {
 	let editor, editorElement, button;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
 
@@ -1157,10 +1149,6 @@ describe( 'SourceEditing - integration with Markdown', () => {
 
 describe( 'Focus handling and navigation between source editing and editor toolbar', () => {
 	let editorElement, editor, ui, toolbarView, domRoot, sourceEditingButton;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );

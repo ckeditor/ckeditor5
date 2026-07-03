@@ -29,7 +29,6 @@ describe( 'EmojiToneView', () => {
 
 	afterEach( () => {
 		emojiToneView.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

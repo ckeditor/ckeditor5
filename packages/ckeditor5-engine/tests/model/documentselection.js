@@ -55,7 +55,6 @@ describe( 'DocumentSelection', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		model.destroy();
 		liveRange.detach();
 	} );

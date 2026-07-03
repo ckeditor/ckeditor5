@@ -35,10 +35,6 @@ import {
 describe( 'MenuBarView', () => {
 	let menuBarView, locale, factory;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeAll( () => {
 		addTranslations( 'en', {
 			'MENU_BAR_MENU_EDIT': 'Edit',

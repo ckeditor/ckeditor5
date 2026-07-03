@@ -30,7 +30,6 @@ describe( 'PageBreakUI', () => {
 	afterEach( async () => {
 		await editor.destroy();
 		editorElement.remove();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {

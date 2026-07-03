@@ -14,10 +14,6 @@ import { ListSeparatorView, MenuBarMenuListItemView, MenuBarMenuView } from '@ck
 describe( 'HighlightUI', () => {
 	let editor, command, element;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeAll( () => {
 		addTranslations( 'en', {
 			'Highlight': 'Highlight',

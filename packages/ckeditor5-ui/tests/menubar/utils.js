@@ -28,10 +28,6 @@ describe( 'MenuBarView utils', () => {
 	const locale = new Locale();
 	let factory;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		factory = new ComponentFactory( {} );
 		factory.add( 'A#1', getButtonCreator( 'A#1', locale ) );

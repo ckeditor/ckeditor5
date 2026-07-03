@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
 	enableViewPlaceholder,
 	disableViewPlaceholder,
@@ -25,10 +25,6 @@ describe( 'placeholder', () => {
 		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
 		viewDocument.isFocused = true;
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'enableViewPlaceholder', () => {

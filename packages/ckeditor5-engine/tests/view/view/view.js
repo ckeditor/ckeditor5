@@ -32,10 +32,6 @@ describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 9;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		domRoot = createElement( document, 'div', {
 			id: 'editor',

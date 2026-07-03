@@ -14,10 +14,6 @@ import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 describe( 'FullPage', () => {
 	let editor;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	afterEach( async () => {
 		if ( editor ) {
 			await editor.destroy();

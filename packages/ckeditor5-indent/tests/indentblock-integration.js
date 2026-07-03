@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -16,8 +16,6 @@ describe( 'IndentBlock - integration', () => {
 	let editor, doc;
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		if ( editor ) {
 			return editor.destroy();
 		}

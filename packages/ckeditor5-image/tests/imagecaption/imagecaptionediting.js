@@ -47,10 +47,6 @@ describe( 'ImageCaptionEditing', () => {
 		}
 	}
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [

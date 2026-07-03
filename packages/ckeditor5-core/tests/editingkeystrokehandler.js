@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { VirtualTestEditor } from '../tests/_utils/virtualtesteditor.js';
 import { EditingKeystrokeHandler } from '../src/editingkeystrokehandler.js';
 import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
@@ -18,10 +18,6 @@ describe( 'EditingKeystrokeHandler', () => {
 				keystrokes = new EditingKeystrokeHandler( editor );
 				executeSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 			} );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'set()', () => {

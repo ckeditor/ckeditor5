@@ -15,10 +15,6 @@ import { StandardEditingModeEditing } from '../src/standardeditingmodeediting.js
 describe( 'StandardEditingModeUI', () => {
 	let editor, button, editorElement;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

@@ -55,8 +55,6 @@ describe( 'ImageStyle integration', () => {
 
 			editorElement1.remove();
 			editorElement2.remove();
-
-			vi.restoreAllMocks();
 		} );
 
 		it( 'should only restart the editor in which the error occurred', async () => {

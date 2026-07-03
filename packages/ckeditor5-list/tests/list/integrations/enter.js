@@ -86,7 +86,6 @@ describe( 'ListEditing integrations: enter key', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'collapsed selection', () => {

@@ -144,7 +144,6 @@ describe( 'image utils', () => {
 			} );
 
 			afterEach( async () => {
-				vi.restoreAllMocks();
 				editor.destroy();
 			} );
 
@@ -352,10 +351,6 @@ describe( 'image utils', () => {
 		beforeEach( () => {
 			const document = new ViewDocument( new StylesProcessor() );
 			writer = new ViewDowncastWriter( document );
-		} );
-
-		afterEach( () => {
-			vi.restoreAllMocks();
 		} );
 
 		it( 'should create a figure element for "image" type', () => {

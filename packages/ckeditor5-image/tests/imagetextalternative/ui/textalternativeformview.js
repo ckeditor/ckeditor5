@@ -11,10 +11,6 @@ import { View, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
 describe( 'TextAlternativeFormView', () => {
 	let view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		view = new TextAlternativeFormView( { t: () => {} } );
 	} );

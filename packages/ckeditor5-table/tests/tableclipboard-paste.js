@@ -37,8 +37,6 @@ describe( 'table clipboard', () => {
 		await editor.destroy();
 
 		element.remove();
-
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'Clipboard integration - paste (selection scenarios)', () => {

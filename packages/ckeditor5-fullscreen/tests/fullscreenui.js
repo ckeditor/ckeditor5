@@ -30,7 +30,6 @@ describe( 'FullscreenUI', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		domElement.remove();
 		return editor.destroy();
 	} );

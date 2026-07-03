@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -46,7 +46,6 @@ describe( 'ListStyleSupport', () => {
 	afterEach( async () => {
 		editorElement.remove();
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {

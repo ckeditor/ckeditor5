@@ -33,8 +33,6 @@ describe( 'MediaEmbedResizeHandles', () => {
 	} );
 
 	afterEach( async () => {
-		vi.restoreAllMocks();
-
 		if ( editorElement ) {
 			editorElement.remove();
 		}

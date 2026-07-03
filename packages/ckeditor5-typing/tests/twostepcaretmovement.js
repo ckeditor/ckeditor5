@@ -16,10 +16,6 @@ describe( 'TwoStepCaretMovement', () => {
 	let editor, model, emitter, selection, view, plugin;
 	let preventDefaultSpy, evtStopSpy;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		emitter = new ( DomEmitterMixin() )();
 

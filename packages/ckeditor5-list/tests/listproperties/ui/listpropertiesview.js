@@ -51,7 +51,6 @@ describe( 'ListPropertiesView', () => {
 	afterEach( () => {
 		view.element.remove();
 		view.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

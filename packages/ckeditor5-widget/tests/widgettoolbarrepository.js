@@ -21,10 +21,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 describe( 'WidgetToolbarRepository', () => {
 	let editor, model, balloon, widgetToolbarRepository, editorElement, addToolbarSpy;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
@@ -749,7 +745,6 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	let clock, editor, model, balloon, balloonToolbar, widgetToolbarRepository, editorElement;
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 	} );
 

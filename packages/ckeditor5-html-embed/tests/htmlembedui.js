@@ -27,8 +27,6 @@ describe( 'HtmlEmbedUI', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		element.remove();
 		return editor.destroy();
 	} );

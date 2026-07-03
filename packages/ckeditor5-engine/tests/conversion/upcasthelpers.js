@@ -60,10 +60,6 @@ describe( 'UpcastHelpers', () => {
 		upcastHelpers = new UpcastHelpers( [ upcastDispatcher ] );
 	} );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'elementToElement()', () => {
 		it( 'should be chainable', () => {
 			expect( upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } ) ).toBe( upcastHelpers );

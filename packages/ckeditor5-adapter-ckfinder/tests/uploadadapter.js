@@ -36,8 +36,6 @@ describe( 'CKFinderUploadAdapter', () => {
 	} );
 
 	afterEach( () => {
-		vi.unstubAllGlobals();
-
 		if ( editorElement ) {
 			editorElement.remove();
 		}

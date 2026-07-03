@@ -24,7 +24,6 @@ describe( 'Document', () => {
 
 	afterEach( () => {
 		domRoot.remove();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

@@ -31,7 +31,6 @@ describe( 'PasteFromOffice', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		element.remove();
 
 		return editor.destroy();

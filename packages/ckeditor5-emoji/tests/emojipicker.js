@@ -92,7 +92,6 @@ describe( 'EmojiPicker', () => {
 	afterEach( async () => {
 		await editor.destroy();
 		editorElement.remove();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should be correctly named', () => {

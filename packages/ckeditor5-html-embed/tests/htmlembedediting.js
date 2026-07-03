@@ -32,8 +32,6 @@ describe( 'HtmlEmbedEditing', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		return editor.destroy()
 			.then( () => {
 				element.remove();

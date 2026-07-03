@@ -60,7 +60,6 @@ describe( 'CKBoxImageEditEditing', () => {
 	afterEach( async () => {
 		domElement.remove();
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should be correctly named', () => {

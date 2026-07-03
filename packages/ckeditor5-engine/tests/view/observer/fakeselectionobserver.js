@@ -25,7 +25,6 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 		view.destroy();
 	} );

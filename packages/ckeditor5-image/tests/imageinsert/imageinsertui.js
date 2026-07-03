@@ -19,10 +19,6 @@ import { ImageInsertFormView } from '../../src/imageinsert/ui/imageinsertformvie
 describe( 'ImageInsertUI', () => {
 	let editor, editorElement, insertImageUI;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	afterEach( async () => {
 		if ( editorElement ) {
 			editorElement.remove();

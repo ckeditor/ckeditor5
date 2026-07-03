@@ -16,7 +16,6 @@ import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 import { _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 
 describe( 'ImageUploadProgress', () => {
@@ -35,8 +34,6 @@ describe( 'ImageUploadProgress', () => {
 			};
 		}
 	}
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		vi.spyOn( window, 'FileReader' ).mockImplementation( function() {

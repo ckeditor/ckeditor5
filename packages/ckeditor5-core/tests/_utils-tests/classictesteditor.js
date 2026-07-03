@@ -20,10 +20,6 @@ import { removeEditorBodyOrphans } from '../_utils/cleanup.js';
 describe( 'ClassicTestEditor', () => {
 	let editorElement;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

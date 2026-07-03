@@ -55,10 +55,6 @@ class IndentBlockListIntegrationWithoutListIndentCommands extends IndentBlockLis
 describe( 'IndentBlockListIntegration', () => {
 	let editor, model, view, viewDoc;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [

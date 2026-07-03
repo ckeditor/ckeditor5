@@ -32,7 +32,6 @@ describe( 'BlockToolbar', () => {
 	let resizeCallback, addToolbarSpy;
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 	} );
 

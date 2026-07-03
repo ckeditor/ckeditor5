@@ -69,11 +69,6 @@ describe( 'Token', () => {
 		requests = fakeXHR.requests;
 	} );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-		vi.unstubAllGlobals();
-	} );
-
 	describe( 'constructor()', () => {
 		it( 'should throw an error when no tokenUrl provided', () => {
 			expect( () => new Token() ).toThrow( 'token-missing-token-url' );

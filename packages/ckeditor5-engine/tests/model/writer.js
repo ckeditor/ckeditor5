@@ -20,14 +20,10 @@ import { getNodesAndText } from '../../tests/model/_utils/utils.js';
 import { ModelDocumentSelection } from '../../src/model/documentselection.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 describe( 'Writer', () => {
 	let model, doc, batch;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		model = new Model();

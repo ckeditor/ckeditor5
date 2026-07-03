@@ -29,7 +29,6 @@ describe( 'getSelectedMediaEmbedPossibleResizeRange()', () => {
 	} );
 
 	afterEach( async () => {
-		vi.restoreAllMocks();
 		editorElement.remove();
 		await editor.destroy();
 	} );

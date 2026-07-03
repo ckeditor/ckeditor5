@@ -13,10 +13,6 @@ import { keyCodes, KeystrokeHandler, FocusTracker } from '@ckeditor/ckeditor5-ut
 describe( 'ImageInsertFormView', () => {
 	let view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		view = new ImageInsertFormView( { t: val => val } );
 		view.render();

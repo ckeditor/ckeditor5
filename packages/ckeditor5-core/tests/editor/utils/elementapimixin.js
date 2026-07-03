@@ -23,7 +23,6 @@ describe( 'ElementApiMixin', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'updateSourceElement()', () => {

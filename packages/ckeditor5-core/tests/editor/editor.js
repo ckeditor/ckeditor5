@@ -115,8 +115,6 @@ describe( 'Editor', () => {
 	afterEach( () => {
 		delete TestEditor.builtinPlugins;
 		delete TestEditor.defaultConfig;
-
-		vi.restoreAllMocks();
 	} );
 
 	it( 'imports the version helper', () => {
@@ -1458,10 +1456,6 @@ describe( 'Editor', () => {
 		} );
 
 		describe( 'getData()', () => {
-			afterEach( () => {
-				vi.restoreAllMocks();
-			} );
-
 			it( 'should be added to editor interface', () => {
 				expect( editor ).toHaveProperty( 'getData' );
 				expect( typeof editor.getData ).toBe( 'function' );

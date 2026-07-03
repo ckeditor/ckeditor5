@@ -45,10 +45,6 @@ function mockEmojiRepositoryValues( editor ) {
 }
 
 describe( 'EmojiMention', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	let editor, editorElement, fetchStub, emojiRepository;
 
 	beforeEach( async () => {

@@ -3,16 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 import { getVisualViewportOffset } from '../../src/dom/getvisualviewportoffset.js';
 import { env } from '../../src/env.js';
 
 describe( 'getVisualViewportOffset()', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	it( 'should return 0 offsets if there is no window.visualViewport', () => {
 		vi.spyOn( window, 'visualViewport', 'get' ).mockReturnValue( null );
 

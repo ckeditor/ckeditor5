@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UpcastDispatcher } from '../../src/conversion/upcastdispatcher.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewElement } from '../../src/view/element.js';
@@ -30,10 +30,6 @@ describe( 'UpcastDispatcher', () => {
 	beforeEach( () => {
 		model = new Model();
 		viewDocument = new ViewDocument( new StylesProcessor() );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

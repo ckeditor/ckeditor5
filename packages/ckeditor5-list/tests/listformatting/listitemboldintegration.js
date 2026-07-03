@@ -22,10 +22,6 @@ import { ListItemBoldIntegration } from '../../src/listformatting/listitemboldin
 describe( 'ListItemBoldIntegration', () => {
 	let editor, model, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [

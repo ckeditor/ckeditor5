@@ -137,7 +137,6 @@ describe( 'CKBoxImageEditCommand', () => {
 
 		await editor.destroy();
 
-		vi.restoreAllMocks();
 		// Restore the real isEqual implementation (mock is preserved by `vi.mock`).
 		vi.mocked( isEqualMock ).mockImplementation( isEqualMock.__originalIsEqual );
 		vi.mocked( isEqualMock ).mockClear();

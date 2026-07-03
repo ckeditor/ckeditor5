@@ -22,10 +22,6 @@ import { ListItemItalicIntegration } from '../../src/listformatting/listitemital
 describe( 'ListItemItalicIntegration', () => {
 	let editor, model, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [

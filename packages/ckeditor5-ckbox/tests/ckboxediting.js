@@ -31,10 +31,6 @@ import { CKBoxUtils } from '../src/ckboxutils.js';
 describe( 'CKBoxEditing', () => {
 	let editor, model, view, originalCKBox, replaceImageSourceCommand;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		TokenMock.initialToken = 'ckbox-token';
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { assertBinding, expectToThrowCKEditorError } from '../tests/_utils/utils.js';
 import { ObservableMixin } from '../src/observablemixin.js';
 import { EmitterMixin } from '../src/emittermixin.js';
@@ -70,10 +70,6 @@ describe( 'ObservableMixin', () => {
 } );
 
 describe( 'Observable', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	class BaseObservable extends ObservableMixin() {
 		constructor( properties ) {
 			super();

@@ -21,10 +21,6 @@ import { ListItemFontFamilyIntegration } from '../../src/listformatting/listitem
 describe( 'ListItemFontFamilyIntegration', () => {
 	let editor, model, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [

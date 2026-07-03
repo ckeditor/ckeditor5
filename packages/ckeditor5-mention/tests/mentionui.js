@@ -38,7 +38,6 @@ describe( 'MentionUI', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 		editorElement.remove();
 

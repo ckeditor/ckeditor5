@@ -28,8 +28,6 @@ describe( 'SpecialCharactersText', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		editorElement.remove();
 		return editor.destroy();
 	} );

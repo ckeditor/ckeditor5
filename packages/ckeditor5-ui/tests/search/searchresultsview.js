@@ -25,7 +25,6 @@ describe( 'SearchResultsView', () => {
 	afterEach( () => {
 		view.destroy();
 		view.element.remove();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

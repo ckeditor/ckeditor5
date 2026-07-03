@@ -22,10 +22,6 @@ describe( 'Rect', () => {
 		vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 	} );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'constructor()', () => {
 		it( 'should store passed object in #_source property', () => {
 			const obj = {};

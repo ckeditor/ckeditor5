@@ -31,7 +31,6 @@ describe( 'InlineEditor', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		editorElement.remove();
 	} );
 

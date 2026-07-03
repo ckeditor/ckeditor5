@@ -32,10 +32,6 @@ import { BodyCollection, ButtonLabelView, DropdownMenuRootListView, ListItemGrou
 describe( 'utils', () => {
 	let locale, dropdownView;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		locale = new Locale();
 	} );

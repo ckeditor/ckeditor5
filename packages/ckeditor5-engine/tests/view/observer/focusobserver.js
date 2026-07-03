@@ -21,7 +21,6 @@ describe( 'FocusObserver', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 		view.destroy();
 	} );

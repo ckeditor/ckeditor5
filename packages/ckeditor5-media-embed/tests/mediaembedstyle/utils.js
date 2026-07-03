@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { normalizeStyles } from '../../src/mediaembedstyle/utils.js';
 import {
 	DEFAULT_DROPDOWN_DEFINITIONS,
@@ -12,10 +12,6 @@ import {
 } from '../../src/mediaembedstyle/constants.js';
 
 describe( 'MediaEmbedStyle utils', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 	} );

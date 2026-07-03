@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { collectStylesheets } from '../src/collectstylesheets.js';
 
 describe( 'collectStylesheets', () => {
@@ -41,10 +41,6 @@ describe( 'collectStylesheets', () => {
 		];
 
 		vi.spyOn( document, 'styleSheets', 'get' ).mockImplementation( () => styleSheetsMock );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should not return any styles if no paths to stylesheets provided', async () => {

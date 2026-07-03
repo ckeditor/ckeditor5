@@ -28,8 +28,6 @@ describe( 'SpecialCharactersMathematical', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		editorElement.remove();
 		return editor.destroy();
 	} );

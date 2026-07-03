@@ -17,10 +17,6 @@ describe( 'ImageToolbar integration', () => {
 	describe( 'with the BalloonToolbar', () => {
 		let balloon, balloonToolbar, newEditor, editorElement;
 
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		beforeEach( () => {
 			editorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( editorElement );

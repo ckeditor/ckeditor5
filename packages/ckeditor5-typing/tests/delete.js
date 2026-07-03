@@ -386,10 +386,6 @@ describe( 'Delete feature', () => {
 describe( 'Delete using the beforeinput event', () => {
 	let element, editor, view, viewDocument, executeSpy;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

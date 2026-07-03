@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { insertObject } from '../../../src/model/utils/insertobject.js';
 import { ModelElement } from '../../../src/model/element.js';
@@ -16,10 +16,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 describe( 'insertObject()', () => {
 	let model, doc, root, schema;
 	let insertContentSpy;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -588,10 +584,6 @@ describe( 'insertObject()', () => {
 
 describe( 'findOptimalInsertionRange()', () => {
 	let model, doc, schema;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		model = new Model();

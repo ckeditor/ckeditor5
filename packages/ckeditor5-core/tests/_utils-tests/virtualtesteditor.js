@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 import { Editor } from '../../src/editor/editor.js';
 import { VirtualTestEditor } from '../../tests/_utils/virtualtesteditor.js';
@@ -12,10 +12,6 @@ import { HtmlDataProcessor, ModelRootElement } from '@ckeditor/ckeditor5-engine'
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'VirtualTestEditor', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'constructor()', () => {
 		it( 'creates an instance of editor', async () => {
 			const editor = new VirtualTestEditor( { foo: 1 } );

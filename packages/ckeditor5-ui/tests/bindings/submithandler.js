@@ -3,17 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { submitHandler } from '../../src/bindings/submithandler.js';
 
 import { View } from '../../src/view.js';
 
 describe( 'submitHandler', () => {
 	let view;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		view = new View();

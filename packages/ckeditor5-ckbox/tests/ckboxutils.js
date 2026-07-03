@@ -59,8 +59,6 @@ describe( 'CKBoxUtils', () => {
 		window.CKBox = originalCKBox;
 
 		await editor.destroy();
-
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have proper name', () => {

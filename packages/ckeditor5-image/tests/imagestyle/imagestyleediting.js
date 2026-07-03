@@ -57,10 +57,6 @@ describe( 'ImageStyleEditing', () => {
 	} );
 
 	describe( 'init()', () => {
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		describe( 'default styles configuration', () => {
 			it( 'should not alter the image.styles configuration', async () => {
 				const editor = await ModelTestEditor.create( {

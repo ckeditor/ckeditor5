@@ -56,8 +56,6 @@ describe( 'FindAndReplace', () => {
 	} );
 
 	afterEach( async () => {
-		vi.restoreAllMocks();
-
 		await editor.destroy();
 
 		editorElement.remove();

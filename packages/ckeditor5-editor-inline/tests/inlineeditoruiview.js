@@ -39,7 +39,6 @@ describe( 'InlineEditorUIView', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		view.destroy();
 	} );
 

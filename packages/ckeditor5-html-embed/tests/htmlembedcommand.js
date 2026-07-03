@@ -28,8 +28,6 @@ describe( 'HtmlEmbedCommand', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		return editor.destroy()
 			.then( () => {
 				editorElement.remove();

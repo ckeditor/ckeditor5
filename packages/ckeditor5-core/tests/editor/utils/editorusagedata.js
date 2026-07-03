@@ -18,10 +18,6 @@ import { getEditorUsageData } from '../../../src/editor/utils/editorusagedata.js
 describe( 'getEditorUsageData()', () => {
 	let domElement, editor;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editor = null;
 		domElement = global.document.body.appendChild( global.document.createElement( 'div' ) );

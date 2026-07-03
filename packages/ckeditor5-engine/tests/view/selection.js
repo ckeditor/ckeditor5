@@ -11,7 +11,7 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewPosition } from '../../src/view/position.js';
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { count } from '@ckeditor/ckeditor5-utils';
 import { createViewRoot } from './_utils/createroot.js';
 import { _parseView } from '../../src/dev-utils/view.js';
@@ -20,10 +20,6 @@ import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Selection', () => {
 	let selection, el, range1, range2, range3, viewDocument;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );

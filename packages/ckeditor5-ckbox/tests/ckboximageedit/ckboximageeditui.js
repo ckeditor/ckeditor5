@@ -85,8 +85,6 @@ describe( 'CKBoxImageEditUI', () => {
 			global.document.querySelector( '.ck.ckbox-wrapper' ).remove();
 		}
 
-		vi.restoreAllMocks();
-
 		return editor.destroy();
 	} );
 

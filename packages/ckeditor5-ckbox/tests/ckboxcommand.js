@@ -70,7 +70,6 @@ describe( 'CKBoxCommand', () => {
 	afterEach( async () => {
 		window.CKBox = originalCKBox;
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'isEnabled', () => {
@@ -161,7 +160,6 @@ describe( 'CKBoxCommand', () => {
 
 			afterEach( () => {
 				vi.useRealTimers();
-				vi.restoreAllMocks();
 			} );
 
 			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {

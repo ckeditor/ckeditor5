@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { diff } from '../src/diff.js';
 
@@ -14,10 +14,6 @@ describe( 'diff', () => {
 
 	beforeEach( () => {
 		fastDiffSpy = vi.spyOn( diff, 'fastDiff' );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should diff strings', () => {

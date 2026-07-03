@@ -12,10 +12,6 @@ import { Rect, ResizeObserver, global } from '@ckeditor/ckeditor5-utils';
 describe( 'BalloonPanelView', () => {
 	let view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		view = new BalloonPanelView();
 		view.render();

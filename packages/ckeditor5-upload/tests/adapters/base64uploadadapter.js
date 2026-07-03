@@ -32,7 +32,6 @@ describe( 'Base64UploadAdapter', () => {
 
 	afterEach( () => {
 		window.document.body.removeChild( div );
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should require the FileRepository plugin', () => {

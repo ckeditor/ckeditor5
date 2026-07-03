@@ -47,6 +47,17 @@ export function createVitestConfig( packageDir: string, { name, ...testOverrides
 
 			test: {
 				name,
+
+				// Restore all spies, stubbed globals, and stubbed environment variables before each
+				// test, so no test can leak mocked state into the next one. Tests should not call
+				// `vi.restoreAllMocks()`, `vi.unstubAllGlobals()`, or `vi.unstubAllEnvs()` in cleanup
+				// hooks, with one exception: a manual restore is still needed when a mock applied by
+				// a `beforeEach()` hook must be removed for a single test, or when the teardown itself
+				// (for example `editor.destroy()`) must run against the real, unmocked implementations.
+				restoreMocks: true,
+				unstubGlobals: true,
+				unstubEnvs: true,
+
 				maxWorkers: Math.min( availableParallelism(), 4 ),
 				include: [
 					'tests/**/*.{js,ts}'

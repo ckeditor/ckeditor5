@@ -29,7 +29,6 @@ describe( 'ShiftEnter feature', () => {
 
 	afterEach( () => {
 		element.remove();
-		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );

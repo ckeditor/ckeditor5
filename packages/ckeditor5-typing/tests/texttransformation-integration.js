@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
@@ -14,10 +14,6 @@ import { Typing } from '../src/typing.js';
 
 describe( 'Text transformation feature - integration', () => {
 	let editorElement, editor, model, doc;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );

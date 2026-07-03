@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
@@ -15,10 +15,6 @@ import { ImageInline } from '../../src/imageinline.js';
 
 describe( 'ImagePlaceholder', () => {
 	let editor, element, model, doc, view;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	it( 'should have pluginName', () => {
 		expect( ImagePlaceholder.pluginName ).toBe( 'ImagePlaceholder' );

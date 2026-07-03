@@ -15,10 +15,6 @@ import { TableEditing } from '../../src/tableediting.js';
 describe( 'TableCaptionUI', () => {
 	let editor, tableCaption, editorElement;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

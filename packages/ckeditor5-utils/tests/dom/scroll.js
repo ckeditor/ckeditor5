@@ -7,10 +7,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { stubGeometry, assertScrollPosition } from '../_utils/scroll.js';
 import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll.js';
 
-afterEach( () => {
-	vi.restoreAllMocks();
-} );
-
 describe( 'scrollAncestorsToShowTarget()', () => {
 	let target, element, firstAncestor, secondAncestor;
 	const ancestorOffset = 10;

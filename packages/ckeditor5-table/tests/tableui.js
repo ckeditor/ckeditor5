@@ -100,8 +100,6 @@ describe( 'TableUI', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		element.remove();
 
 		return editor.destroy();

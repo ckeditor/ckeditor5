@@ -21,10 +21,6 @@ import { _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-
 describe( 'ImageSizeAttributes', () => {
 	let editor, model, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [ Paragraph, ImageBlockEditing, ImageInlineEditing, ImageSizeAttributes ]

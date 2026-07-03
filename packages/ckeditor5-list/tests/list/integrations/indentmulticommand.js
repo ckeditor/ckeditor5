@@ -27,10 +27,6 @@ describe( 'Indent MultiCommand integrations', () => {
 	let indentListcommand, outdentListcommand,
 		commandSpies;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

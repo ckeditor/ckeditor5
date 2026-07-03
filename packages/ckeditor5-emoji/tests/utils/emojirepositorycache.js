@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { EmojiRepositoryCache } from '../../src/utils/emojirepositorycache.js';
 
 const URL_V16 = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json';
@@ -22,10 +22,6 @@ describe( 'EmojiRepositoryCache', () => {
 		cache.clear();
 
 		fetchStub = vi.spyOn( window, 'fetch' );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'fetch()', () => {

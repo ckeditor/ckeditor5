@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
 	utils,
 	DEFAULT_DROPDOWN_DEFINITIONS,
@@ -127,10 +127,6 @@ describe( 'ImageStyle utils', () => {
 				isInlinePluginLoaded
 			} );
 		}
-
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
 
 		beforeEach( () => {
 			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );

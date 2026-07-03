@@ -16,10 +16,6 @@ import { viewTable } from '../_utils/utils.js';
 describe( 'Table cell refresh handler', () => {
 	let editor, model, doc, root, view, element;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

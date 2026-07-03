@@ -11,10 +11,6 @@ import { Notification } from '../../src/notification/notification.js';
 describe( 'Notification', () => {
 	let editor, notification;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {

@@ -42,7 +42,6 @@ describe( 'DraggableViewMixin', () => {
 
 	afterEach( () => {
 		view.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should set `isDragging` to false', () => {

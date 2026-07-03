@@ -16,10 +16,6 @@ import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 describe( 'ToggleImageCaptionCommand', () => {
 	let editor, model, command;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [

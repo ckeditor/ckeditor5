@@ -35,10 +35,6 @@ describe( 'DomConverter', () => {
 		converter = new ViewDomConverter( viewDocument );
 	} );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'viewToDom()', () => {
 		it( 'should create tree of DOM elements from view elements', () => {
 			const viewImg = new ViewElement( viewDocument, 'img' );

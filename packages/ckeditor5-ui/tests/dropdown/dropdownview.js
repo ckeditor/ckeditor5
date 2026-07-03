@@ -12,10 +12,6 @@ import { DropdownPanelView } from '../../src/dropdown/dropdownpanelview.js';
 describe( 'DropdownView', () => {
 	let view, buttonView, panelView, locale;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		locale = {
 			uiLanguageDirection: 'ltr',

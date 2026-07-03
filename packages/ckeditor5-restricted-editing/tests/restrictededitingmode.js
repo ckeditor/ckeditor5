@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 
@@ -13,10 +13,6 @@ import { RestrictedEditingModeEditing } from './../src/restrictededitingmodeedit
 
 describe( 'RestrictedEditingMode', () => {
 	let editor, element;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );

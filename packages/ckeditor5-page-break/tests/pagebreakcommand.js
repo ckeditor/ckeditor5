@@ -30,7 +30,6 @@ describe( 'PageBreakCommand', () => {
 	afterEach( async () => {
 		await editor.destroy();
 		editorElement.remove();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'isEnabled', () => {

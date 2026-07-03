@@ -26,8 +26,6 @@ describe( 'FindCommand', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		return editor.destroy();
 	} );
 

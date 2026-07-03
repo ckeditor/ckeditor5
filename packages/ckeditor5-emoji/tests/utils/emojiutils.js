@@ -25,8 +25,6 @@ describe( 'EmojiUtils', () => {
 		editorElement.remove();
 
 		await editor.destroy();
-
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have proper name', () => {

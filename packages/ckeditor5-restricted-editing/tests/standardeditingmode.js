@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { StandardEditingMode } from './../src/standardeditingmode.js';
@@ -21,8 +21,6 @@ describe( 'StandardEditingMode', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		element.remove();
 
 		return editor.destroy();

@@ -50,7 +50,6 @@ describe( 'StyleGridView', () => {
 
 	afterEach( async () => {
 		grid.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
@@ -251,7 +250,6 @@ describe( 'StyleGridView', () => {
 
 			afterEach( async () => {
 				grid.destroy();
-				vi.restoreAllMocks();
 			} );
 
 			it( '"arrow right" should focus the next focusable style', () => {

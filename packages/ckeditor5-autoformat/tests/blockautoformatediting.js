@@ -30,7 +30,6 @@ describe( 'blockAutoformatEditing', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'command name', () => {

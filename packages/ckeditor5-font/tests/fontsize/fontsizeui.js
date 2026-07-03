@@ -15,10 +15,6 @@ import { normalizeOptions } from '../../src/fontsize/utils.js';
 describe( 'FontSizeUI', () => {
 	let editor, command, element;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeAll( () => {
 		addTranslations( 'en', {
 			'Font Size': 'Font Size',

@@ -19,10 +19,6 @@ const YOUTUBE_URL = 'https://www.youtube.com/watch?v=foo';
 describe( 'MediaEmbedCustomResizeUI', () => {
 	let element, model, modelRoot, editor, dropdown, button, plugin, balloon;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

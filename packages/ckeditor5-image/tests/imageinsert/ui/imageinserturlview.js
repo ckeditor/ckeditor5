@@ -14,10 +14,6 @@ import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 describe( 'ImageInsertUrlView', () => {
 	let view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		view = new ImageInsertUrlView( { t: val => val } );
 		view.render();

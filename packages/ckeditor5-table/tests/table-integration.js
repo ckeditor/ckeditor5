@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { Widget } from '@ckeditor/ckeditor5-widget';
 
@@ -24,10 +24,6 @@ import { modelTable, viewTable } from './_utils/utils.js';
 import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'Table feature – integration', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'with clipboard', () => {
 		let editor, clipboard;
 

@@ -13,10 +13,6 @@ describe( 'Widget - Events', () => {
 	const EVENT_NAME = 'keyup';
 	let editor, editorElement, eventCallback, buttonIgnored, buttonRegular;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editorElement = createEditorElement();
 		editor = await createEditor( editorElement );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { DowncastDispatcher } from '../../src/conversion/downcastdispatcher.js';
 import { Mapper } from '../../src/conversion/mapper.js';
@@ -48,10 +48,6 @@ describe( 'DowncastDispatcher', () => {
 			getMarkersToAdd: () => [],
 			getRefreshedItems: () => []
 		};
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

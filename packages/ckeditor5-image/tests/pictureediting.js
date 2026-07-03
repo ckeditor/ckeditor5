@@ -28,10 +28,6 @@ import { ImageUploadEditing } from '../src/imageupload/imageuploadediting.js';
 describe( 'PictureEditing', () => {
 	let editor, model, modelDocument, view, imageUtils;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [

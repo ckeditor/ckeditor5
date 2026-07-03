@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
 import { BodyCollection } from '../../src/editorui/bodycollection.js';
@@ -17,8 +17,6 @@ describe( 'BodyCollection', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		const wrappers = Array.from( document.querySelectorAll( '.ck-body-wrapper' ) );
 
 		for ( const wrapper of wrappers ) {

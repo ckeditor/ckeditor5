@@ -32,10 +32,6 @@ describe( 'CKBoxUploadAdapter', () => {
 
 	const jwtToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

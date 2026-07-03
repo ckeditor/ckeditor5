@@ -35,10 +35,6 @@ import {
 describe( 'ToolbarView', () => {
 	let locale, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeAll( () => {
 		addTranslations( 'pl', {
 			'Editor toolbar': 'Pasek narzędzi edytora'
@@ -1167,8 +1163,6 @@ describe( 'ToolbarView', () => {
 		} );
 
 		afterEach( () => {
-			vi.unstubAllGlobals();
-			vi.restoreAllMocks();
 			view.element.remove();
 			view.destroy();
 		} );

@@ -23,7 +23,6 @@ describe( 'MultiCommand', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		multiCommand.destroy();
 		return editor.destroy();
 	} );

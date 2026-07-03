@@ -12,10 +12,6 @@ import { Locale } from '@ckeditor/ckeditor5-utils';
 describe( 'EditableUIView', () => {
 	let view, editableElement, editingView, editingViewRoot, locale;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		locale = new Locale();
 		editableElement = document.createElement( 'div' );

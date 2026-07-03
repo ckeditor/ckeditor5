@@ -45,8 +45,6 @@ describe( 'WidgetResize', () => {
 	afterEach( () => {
 		editorElement.remove();
 
-		vi.restoreAllMocks();
-
 		if ( editor ) {
 			return editor.destroy();
 		}

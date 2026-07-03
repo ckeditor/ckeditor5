@@ -28,10 +28,6 @@ import { ImageSizeAttributes } from '../../src/imagesizeattributes.js';
 describe( 'ImageInlineEditing', () => {
 	let editor, model, doc, view, viewDocument;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		stubUid();
 

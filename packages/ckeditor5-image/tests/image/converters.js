@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ImageEditing } from '../../src/image/imageediting.js';
 import {
 	upcastImageFigure,
@@ -19,10 +19,6 @@ import { _getViewData, _setModelData, _getModelData } from '@ckeditor/ckeditor5-
 
 describe( 'Image converters', () => {
 	let editor, model, document, viewDocument;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {

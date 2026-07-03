@@ -19,10 +19,6 @@ import { ImageStyle } from '../src/imagestyle.js';
 describe( 'ImageToolbar', () => {
 	let editor, model, doc, toolbar, balloon, widgetToolbarRepository, editorElement;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );

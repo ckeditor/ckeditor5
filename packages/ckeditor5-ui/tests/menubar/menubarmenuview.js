@@ -31,7 +31,6 @@ describe( 'MenuBarMenuView', () => {
 
 	afterEach( () => {
 		menuView.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

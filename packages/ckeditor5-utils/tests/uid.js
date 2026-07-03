@@ -4,14 +4,10 @@
  */
 
 import { uid } from '../src/uid.js';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 describe( 'utils', () => {
 	describe( 'uid', () => {
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		it( 'should return different ids', () => {
 			const id1 = uid();
 			const id2 = uid();

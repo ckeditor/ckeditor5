@@ -28,10 +28,6 @@ describe( 'AccessibilityHelpContentView', () => {
 		]
 	] );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'constructor()', () => {
 		let view;
 

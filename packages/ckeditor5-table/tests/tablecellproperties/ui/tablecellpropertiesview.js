@@ -46,10 +46,6 @@ describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesView', () => {
 		let view, locale;
 
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		beforeEach( () => {
 			locale = { t: val => val };
 			view = new TableCellPropertiesView( locale, VIEW_OPTIONS );

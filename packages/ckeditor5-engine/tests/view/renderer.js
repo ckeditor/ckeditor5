@@ -34,10 +34,6 @@ import { StylesProcessor } from '../../src/view/stylesmap.js';
 describe( 'Renderer', () => {
 	let selection, domConverter, renderer, viewDocument;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
 		selection = new ViewDocumentSelection();

@@ -32,7 +32,6 @@ describe( 'Alignment UI', () => {
 		element.remove();
 
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {

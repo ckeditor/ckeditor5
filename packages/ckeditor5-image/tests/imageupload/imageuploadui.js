@@ -26,12 +26,9 @@ import { IconImageUpload } from '@ckeditor/ckeditor5-icons';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ImageUploadUI', () => {
 	let editor, model, editorElement, fileRepository, button;
-
-	testUtils.createSinonSandbox();
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {

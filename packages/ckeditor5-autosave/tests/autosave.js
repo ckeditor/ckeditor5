@@ -17,7 +17,6 @@ describe( 'Autosave', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 	} );
 

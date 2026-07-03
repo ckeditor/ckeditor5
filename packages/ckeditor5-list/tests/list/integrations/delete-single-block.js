@@ -30,10 +30,6 @@ describe( 'ListEditing (multiBlock=false) integrations: backspace & delete', () 
 		commandSpies,
 		splitAfterCommandExecuteSpy, outdentCommandExecuteSpy;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

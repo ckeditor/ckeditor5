@@ -14,7 +14,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _parseModel } from '@ckeditor/ckeditor5-engine';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { ListEditing } from '../../src/list/listediting.js';
 import { setupTestHelpers } from '../list/_utils/utils.js';
@@ -23,10 +23,6 @@ import { stubUid } from '../list/_utils/uid.js';
 
 describe( 'ListEditing - conversion - custom list marker - changes', () => {
 	let editor, model, test, modelRoot;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {

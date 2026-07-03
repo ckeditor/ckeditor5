@@ -14,10 +14,6 @@ describe( 'ListMergeCommand', () => {
 	let editor, model, doc, command, attributeNames;
 	let blocksChangedByCommands = [];
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editor = new Editor();
 		editor.model = new Model();

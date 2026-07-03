@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { ListEditing } from '../../../src/list/listediting.js';
 import { stubUid } from '../_utils/uid.js';
@@ -31,10 +31,6 @@ describe( 'Inserting widgets in document lists', () => {
 	let element;
 	let editor, model, modelRoot;
 	let insertCommand;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );

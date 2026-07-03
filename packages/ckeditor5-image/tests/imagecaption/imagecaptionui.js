@@ -16,10 +16,6 @@ import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 describe( 'ImageCaptionUI', () => {
 	let editor, editorElement;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

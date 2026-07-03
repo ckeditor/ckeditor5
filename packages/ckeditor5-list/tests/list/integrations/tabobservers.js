@@ -30,10 +30,6 @@ describe( 'ListEditing integrations: tab key', () => {
 	let indentListcommand, outdentListcommand;
 	let commandSpies;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

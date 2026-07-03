@@ -25,10 +25,6 @@ import {
 describe( 'BlockQuote integration', () => {
 	let editor, model, element, viewDocument;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		stubUid();
 

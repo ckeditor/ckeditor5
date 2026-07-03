@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 import { MultiRootEditor } from '../src/multirooteditor.js';
 
@@ -12,10 +12,6 @@ describe( 'MultiRootEditor - license check', () => {
 
 	beforeEach( () => {
 		showErrorStub = vi.spyOn( MultiRootEditor.prototype, '_showLicenseError' ).mockImplementation( () => {} );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should not throw if license key is invalid', () => {

@@ -23,10 +23,6 @@ import { LinkEditing } from '../src/linkediting.js';
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {

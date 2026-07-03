@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -15,10 +15,6 @@ import { modelList } from '../list/_utils/utils.js';
 
 describe( 'ListStyleCommand', () => {
 	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		editor = new Editor();

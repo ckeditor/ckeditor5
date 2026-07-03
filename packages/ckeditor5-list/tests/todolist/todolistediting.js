@@ -29,10 +29,6 @@ import { stubUid } from '../list/_utils/uid.js';
 describe( 'TodoListEditing', () => {
 	let editor, model, view, editorElement, modelRoot;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

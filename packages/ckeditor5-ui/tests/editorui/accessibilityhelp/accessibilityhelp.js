@@ -32,7 +32,6 @@ describe( 'AccessibilityHelp', () => {
 	afterEach( async () => {
 		domElement.remove();
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have a name', () => {

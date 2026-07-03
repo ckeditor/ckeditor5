@@ -26,10 +26,6 @@ import { stubUid } from './_utils/uid.js';
 describe( 'ListEditing - converters - data pipeline', () => {
 	let editor, model, view, test;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, ListEditing, UndoEditing,

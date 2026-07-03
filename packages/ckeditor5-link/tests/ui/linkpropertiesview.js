@@ -86,7 +86,6 @@ describe( 'LinkPropertiesView', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		view.element.remove();
 		view.destroy();
 		collection.clear();

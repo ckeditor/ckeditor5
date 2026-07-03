@@ -26,10 +26,6 @@ import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 describe( 'Autoformat', () => {
 	let editor, model, doc;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'Plugin', () => {
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {

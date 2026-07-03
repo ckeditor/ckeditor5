@@ -30,10 +30,6 @@ import { stubUid } from '../_utils/uid.js';
 describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste', () => {
 	let element, editor, model, modelDoc, modelRoot, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

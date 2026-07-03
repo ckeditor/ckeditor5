@@ -50,7 +50,6 @@ describe( 'table properties', () => {
 		} );
 
 		afterEach( () => {
-			vi.restoreAllMocks();
 			vi.useRealTimers();
 			editorElement.remove();
 
@@ -818,8 +817,6 @@ describe( 'table properties', () => {
 			} );
 
 			afterEach( () => {
-				vi.restoreAllMocks();
-
 				editorElement.remove();
 
 				return editor.destroy();
@@ -1007,8 +1004,6 @@ describe( 'table properties', () => {
 		} );
 
 		afterEach( () => {
-			vi.restoreAllMocks();
-
 			editorElement.remove();
 
 			return editor.destroy();

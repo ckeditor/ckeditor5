@@ -35,10 +35,6 @@ class MyEditorUI extends EditorUI {
 describe( 'EditorUI', () => {
 	let editor, ui;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editor = new Editor();
 		editor.ui = ui = new MyEditorUI( editor );

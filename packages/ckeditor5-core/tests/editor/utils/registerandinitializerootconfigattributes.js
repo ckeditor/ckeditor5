@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Editor } from '../../../src/editor/editor.js';
 import { ElementApiMixin } from '../../../src/editor/utils/elementapimixin.js';
 import { normalizeRootsConfig, normalizeSingleRootEditorConstructorParams } from '../../../src/editor/utils/normalizerootsconfig.js';
@@ -21,7 +21,6 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 	} );
 
 	afterEach( async () => {
-		vi.restoreAllMocks();
 		domElement.remove();
 
 		if ( editor && editor.state !== 'destroyed' ) {

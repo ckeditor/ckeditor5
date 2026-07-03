@@ -23,7 +23,6 @@ describe( 'MenuBarMenuPanelView', () => {
 
 	afterEach( () => {
 		panelView.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

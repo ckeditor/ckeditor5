@@ -10,10 +10,6 @@ import { AriaLiveAnnouncerRegionView, AriaLiveAnnouncerView } from '../../src/ar
 describe( 'AriaLiveAnnouncer', () => {
 	let editor, sourceElement, announcer;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		sourceElement = document.createElement( 'div' );
 		document.body.appendChild( sourceElement );
@@ -131,7 +127,6 @@ describe( 'AriaLiveAnnouncerRegionView', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 	} );
 

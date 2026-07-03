@@ -18,10 +18,6 @@ import { toWidget } from '../../src/utils.js';
 describe( 'WidgetTypeAround', () => {
 	let element, plugin, editor, editingView, viewDocument, modelRoot, viewRoot, model, modelSelection;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = global.document.createElement( 'div' );
 		global.document.body.appendChild( element );

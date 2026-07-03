@@ -23,16 +23,12 @@ import { RenameOperation } from '../../src/model/operation/renameoperation.js';
 import { MergeOperation } from '../../src/model/operation/mergeoperation.js';
 import { SplitOperation } from '../../src/model/operation/splitoperation.js';
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ModelLivePosition } from '../../src/model/liveposition.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Position', () => {
 	let doc, model, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	// root
 	//  |- p         Before: [ 0 ]       After: [ 1 ]

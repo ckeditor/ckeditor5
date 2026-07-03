@@ -28,10 +28,6 @@ import { prepareTest } from './_utils/utils.js';
 describe( 'ListEditing (multiBlock=false)', () => {
 	let editor, model, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			list: {

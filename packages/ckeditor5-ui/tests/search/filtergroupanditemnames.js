@@ -67,7 +67,6 @@ describe( 'filterGroupAndItemNames()', () => {
 
 	afterEach( async () => {
 		element.remove();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'used as the list filter() method', () => {

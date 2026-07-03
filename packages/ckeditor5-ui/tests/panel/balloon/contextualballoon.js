@@ -18,10 +18,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 describe( 'ContextualBalloon', () => {
 	let editor, editorElement, balloon, viewA, viewB, viewC, viewD;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeAll( () => {
 		addTranslations( 'en', {
 			'Choose heading': '%0 of %1',

@@ -22,10 +22,6 @@ import { ImageLoadObserver } from '../../src/image/imageloadobserver.js';
 describe( 'ImageBlockEditing', () => {
 	let editor, model, doc, view, viewDocument;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {

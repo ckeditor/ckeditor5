@@ -10,10 +10,6 @@ import { ViewCollection } from '@ckeditor/ckeditor5-ui';
 describe( 'EmojiCategoriesView', () => {
 	let locale, emojiCategoriesView, emojiCategories;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		locale = {
 			t: val => val

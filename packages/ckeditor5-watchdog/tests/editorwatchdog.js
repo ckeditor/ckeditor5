@@ -161,7 +161,6 @@ describe( 'EditorWatchdog', () => {
 
 	afterEach( () => {
 		element.remove();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'create()', () => {

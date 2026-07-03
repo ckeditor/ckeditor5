@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { normalizeSpacing, normalizeSpacerunSpans } from '../../src/filters/space.js';
 
 describe( 'PasteFromOffice - filters', () => {
@@ -115,10 +115,6 @@ describe( 'PasteFromOffice - filters', () => {
 		} );
 
 		describe( 'normalizeSpacerunSpans()', () => {
-			afterEach( () => {
-				vi.restoreAllMocks();
-			} );
-
 			it( 'should normalize spaces inside special "span.spacerun" elements', () => {
 				const input = '<p> <span style=\'mso-spacerun:yes\'>   </span>Foo</p>' +
 					'<p> Baz <span style=\'mso-spacerun:yes\'>      </span></p>';

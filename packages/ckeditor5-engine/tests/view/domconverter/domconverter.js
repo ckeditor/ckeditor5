@@ -25,10 +25,6 @@ describe( 'ViewDomConverter', () => {
 		converter = new ViewDomConverter( viewDocument );
 	} );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'constructor()', () => {
 		it( 'should create converter with BR block filler mode by default', () => {
 			expect( converter.blockFillerMode ).toBe( 'br' );

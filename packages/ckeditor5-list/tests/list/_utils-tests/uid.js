@@ -3,16 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 import { stubUid } from '../_utils/uid.js';
 import { ListItemUid } from '../../../src/list/utils/model.js';
 
 describe( 'stubUid()', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	it( 'Should start from 0', () => {
 		stubUid( 0 );
 

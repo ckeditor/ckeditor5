@@ -20,10 +20,6 @@ import { TableUI } from '../../src/tableui.js';
 describe( 'TableLayoutUI', () => {
 	let editor, element;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

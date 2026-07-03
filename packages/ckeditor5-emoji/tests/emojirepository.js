@@ -52,7 +52,6 @@ describe( 'EmojiRepository', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 	} );
 

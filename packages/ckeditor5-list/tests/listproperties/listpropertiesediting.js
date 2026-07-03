@@ -16,10 +16,6 @@ import { stubUid } from '../list/_utils/uid.js';
 describe( 'ListPropertiesEditing', () => {
 	let editor, model;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	it( 'should have pluginName', () => {
 		expect( ListPropertiesEditing.pluginName ).toBe( 'ListPropertiesEditing' );
 	} );

@@ -15,10 +15,6 @@ import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine'
 describe( 'ListIndentCommand', () => {
 	let editor, model, doc, root, attributeNames;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editor = new Editor();
 		editor.model = new Model();

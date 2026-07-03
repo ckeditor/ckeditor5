@@ -16,8 +16,6 @@ describe( 'MentionEditing', () => {
 	let editor, model, doc;
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		if ( editor ) {
 			return editor.destroy();
 		}

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { transform, transformOperationSets } from '../../../src/model/operation/transform.js';
 
@@ -31,10 +31,6 @@ describe( 'transform', () => {
 
 		nodeA = new ModelNode();
 		nodeB = new ModelNode();
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	function expectOperation( op, params ) {

@@ -31,8 +31,6 @@ describe( 'OutdentCodeBlockCommand', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		return editor.destroy();
 	} );
 

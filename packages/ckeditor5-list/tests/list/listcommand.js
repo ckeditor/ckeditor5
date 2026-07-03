@@ -15,10 +15,6 @@ import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine'
 describe( 'ListCommand', () => {
 	let editor, command, model, doc, root, changedBlocks, attributeNames;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = new Editor();
 

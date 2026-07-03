@@ -23,7 +23,6 @@ describe( 'ButtonView', () => {
 
 	afterEach( () => {
 		view.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

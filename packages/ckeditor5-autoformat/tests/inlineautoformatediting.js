@@ -33,7 +33,6 @@ describe( 'inlineAutoformatEditing', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'regExp', () => {

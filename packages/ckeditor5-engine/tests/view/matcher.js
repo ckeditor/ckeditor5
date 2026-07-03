@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Matcher } from '../../src/view/matcher.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
@@ -14,10 +14,6 @@ import { addBackgroundStylesRules } from '../../src/view/styles/background.js';
 
 describe( 'Matcher', () => {
 	let document;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		document = new ViewDocument( new StylesProcessor() );

@@ -48,8 +48,6 @@ describe( 'UploadImageCommand', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		return editor.destroy();
 	} );
 

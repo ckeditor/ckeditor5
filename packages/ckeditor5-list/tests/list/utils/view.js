@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 import {
 	createListElement,
@@ -19,10 +19,6 @@ import { ViewUpcastWriter, ViewDowncastWriter, StylesProcessor, ViewDocument, _p
 
 describe( 'List - utils - view', () => {
 	let viewUpcastWriter, viewDowncastWriter;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		const viewDocument = new ViewDocument( new StylesProcessor() );

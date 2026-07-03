@@ -16,10 +16,6 @@ import { ImageInsertViaUrl } from '../../src/index.js';
 describe( 'ImageInsertViaUrlUI', () => {
 	let editor, editorElement, insertImageUI, button;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	afterEach( async () => {
 		if ( editorElement ) {
 			editorElement.remove();

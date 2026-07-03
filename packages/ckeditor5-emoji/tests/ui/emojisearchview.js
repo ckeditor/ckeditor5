@@ -45,7 +45,6 @@ describe( 'EmojiSearchView', () => {
 
 	afterEach( () => {
 		emojiSearchView.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

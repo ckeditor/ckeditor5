@@ -978,10 +978,6 @@ describe( 'LinkEditing', () => {
 			stub = vi.spyOn( window, 'open' ).mockReturnValue( undefined );
 		} );
 
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		describe( 'using mouse', () => {
 			const initialEnvMac = env.isMac;
 

@@ -51,8 +51,6 @@ describe( 'CKBox', () => {
 		editorElement.remove();
 
 		await editor.destroy();
-
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should load CKBox, CKBoxUI and CKBoxEditing plugins', () => {

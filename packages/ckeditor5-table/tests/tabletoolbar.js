@@ -17,10 +17,6 @@ import { ImageToolbar, Image, ImageStyle } from '@ckeditor/ckeditor5-image';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 describe( 'TableToolbar', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
 		expect( TableToolbar.isOfficialPlugin ).toBe( true );
 	} );

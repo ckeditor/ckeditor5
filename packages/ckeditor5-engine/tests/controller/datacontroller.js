@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Model } from '../../src/model/model.js';
 import { ModelRange } from '../../src/model/range.js';
 import { ViewRange } from '../../src/view/range.js';
@@ -26,10 +26,6 @@ import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'DataController', () => {
 	let model, modelDocument, data, schema, upcastHelpers, downcastHelpers, viewDocument;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		const stylesProcessor = new StylesProcessor();

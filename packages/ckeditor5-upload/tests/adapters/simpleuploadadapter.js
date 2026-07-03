@@ -33,9 +33,6 @@ describe( 'SimpleUploadAdapter', () => {
 	} );
 
 	afterEach( () => {
-		vi.unstubAllGlobals();
-		vi.restoreAllMocks();
-
 		editorElement.remove();
 
 		return editor.destroy();

@@ -27,10 +27,6 @@ import { LinkManualDecorator } from '../src/utils/manualdecorator.js';
 describe( 'LinkUI', () => {
 	let editor, model, linkUIFeature, linkButton, balloon, formView, toolbarView, editorElement, propertiesView;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

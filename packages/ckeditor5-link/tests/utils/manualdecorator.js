@@ -3,15 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LinkManualDecorator } from '../../src/utils/manualdecorator.js';
 
 describe( 'Manual Decorator', () => {
 	let manualDecorator;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		manualDecorator = new LinkManualDecorator( {

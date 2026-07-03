@@ -22,10 +22,6 @@ import { ListItemFontSizeIntegration } from '../../src/listformatting/listitemfo
 describe( 'ListItemFontSizeIntegration', () => {
 	let editor, model, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { _stringifyModel, _parseModel, _getModelData, _setModelData } from '../../src/dev-utils/model.js';
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
@@ -48,10 +48,6 @@ describe( 'model test utils', () => {
 		model.schema.extend( '$text', {
 			allowIn: [ '$root', 'a', 'b' ]
 		} );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'getData', () => {

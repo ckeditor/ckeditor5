@@ -42,7 +42,6 @@ describe( 'InputObserver', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		view.destroy();
 		domEditable.remove();
 	} );

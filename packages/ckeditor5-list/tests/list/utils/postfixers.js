@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 import {
 	findAndAddListHeadToMap,
@@ -20,10 +20,6 @@ import { Model, _stringifyModel, _parseModel } from '@ckeditor/ckeditor5-engine'
 
 describe( 'List - utils - postfixers', () => {
 	let model, schema;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		model = new Model();

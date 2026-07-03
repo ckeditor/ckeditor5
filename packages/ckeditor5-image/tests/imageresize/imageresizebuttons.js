@@ -47,10 +47,6 @@ describe( 'ImageResizeButtons', () => {
 		value: '75'
 	} ];
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -14,10 +14,6 @@ import { stubUid } from './_utils/uid.js';
 
 describe( 'AdjacentListsSupport', () => {
 	let editorElement, editor, model, view;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -261,10 +257,6 @@ describe( 'AdjacentListsSupport', () => {
 
 describe( 'AdjacentListsSupport - integrations', () => {
 	let editorElement, editor, model;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );

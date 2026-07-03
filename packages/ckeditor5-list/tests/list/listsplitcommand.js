@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { ListSplitCommand } from '../../src/list/listsplitcommand.js';
 import { stubUid } from './_utils/uid.js';
@@ -15,10 +15,6 @@ import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine'
 describe( 'ListSplitCommand', () => {
 	let editor, command, model, doc, root;
 	let changedBlocks;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		editor = new Editor();

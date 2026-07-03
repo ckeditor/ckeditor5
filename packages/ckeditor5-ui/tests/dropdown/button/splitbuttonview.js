@@ -3,17 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { ButtonView } from '../../../src/button/buttonview.js';
 import { SplitButtonView } from '../../../src/dropdown/button/splitbuttonview.js';
 
 describe( 'SplitButtonView', () => {
 	let locale, view;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		locale = { t() {} };

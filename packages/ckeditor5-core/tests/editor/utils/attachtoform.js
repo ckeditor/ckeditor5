@@ -35,7 +35,6 @@ describe( 'attachToForm()', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		form.remove();
 
 		if ( editor ) {

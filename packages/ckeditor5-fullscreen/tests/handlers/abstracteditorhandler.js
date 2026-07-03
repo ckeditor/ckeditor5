@@ -36,7 +36,6 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		domElement.remove();
 		abstractHandler.disable();
 
@@ -1143,7 +1142,11 @@ describe( 'AbstractHandler', () => {
 		} );
 
 		afterEach( () => {
+			// The automatic `restoreMocks` cleanup runs only before the next test, so restore manually
+			// first: the outer `afterEach()` calls `abstractHandler.disable()`, which must use the real
+			// `editor.plugins.get()` instead of the mock returning `undefined` for non-AITabs plugins.
 			vi.restoreAllMocks();
+
 			aiElement.remove();
 		} );
 
@@ -1185,10 +1188,6 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '_aiTabsTransitionEndCallback', () => {
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		it( 'should forward the transition event to _handleAISidebarTransitions', () => {
 			const handleAISidebarTransitionsStub = vi.spyOn( abstractHandler, '_handleAISidebarTransitions' )
 				.mockImplementation( () => {} );

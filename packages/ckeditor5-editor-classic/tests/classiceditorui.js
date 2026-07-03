@@ -38,7 +38,6 @@ describe( 'ClassicEditorUI', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
@@ -1075,7 +1074,6 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		editorElement.remove();
 
 		return editor.destroy();

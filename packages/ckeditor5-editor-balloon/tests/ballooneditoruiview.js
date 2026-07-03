@@ -4,7 +4,7 @@
  */
 
 import { EditingView } from '@ckeditor/ckeditor5-engine';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BalloonEditorUIView } from '../src/ballooneditoruiview.js';
 import { InlineEditableUIView, MenuBarView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
@@ -19,10 +19,6 @@ describe( 'BalloonEditorUIView', () => {
 		editingViewRoot = createViewRoot( editingView.document );
 		view = new BalloonEditorUIView( locale, editingView );
 		view.editable.name = editingViewRoot.rootName;
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

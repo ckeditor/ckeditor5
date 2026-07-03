@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { GeneralHtmlSupport } from '../src/index.js';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
@@ -125,7 +125,6 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 	} );
 
 	afterEach( async () => {
-		vi.restoreAllMocks();
 		element.remove();
 
 		await editor.destroy();

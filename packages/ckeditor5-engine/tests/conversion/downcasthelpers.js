@@ -43,10 +43,6 @@ import { toWidget } from '@ckeditor/ckeditor5-widget';
 describe( 'DowncastHelpers', () => {
 	let model, modelRoot, viewRoot, downcastHelpers, controller, modelRootStart;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		model = new Model();
 		const modelDoc = model.document;
@@ -3557,10 +3553,6 @@ describe( 'DowncastHelpers', () => {
 	} );
 
 	describe( 'attributeToAttribute()', () => {
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		beforeEach( () => {
 			downcastHelpers.elementToElement( { model: 'imageBlock', view: 'img' } );
 			downcastHelpers.elementToElement( {

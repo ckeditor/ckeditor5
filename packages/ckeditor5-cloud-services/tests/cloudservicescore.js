@@ -73,9 +73,6 @@ describe( 'CloudServicesCore', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-		vi.unstubAllGlobals();
-
 		return context.destroy();
 	} );
 

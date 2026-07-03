@@ -35,8 +35,6 @@ describe( 'CKFinderCommand', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		return editor.destroy();
 	} );
 

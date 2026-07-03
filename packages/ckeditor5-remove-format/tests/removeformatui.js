@@ -17,10 +17,6 @@ import {
 describe( 'RemoveFormatUI', () => {
 	let editor, element, button;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeAll( () => {
 		addTranslations( 'en', {
 			'Remove Format': 'Remove Format'

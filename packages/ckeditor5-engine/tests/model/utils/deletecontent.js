@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { ModelPosition } from '../../../src/model/position.js';
 import { ModelRange } from '../../../src/model/range.js';
@@ -16,10 +16,6 @@ import { _stringifyView } from '../../../src/dev-utils/view.js';
 
 describe( 'DataController utils', () => {
 	let model, doc;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	describe( 'deleteContent', () => {
 		it( 'should use parent batch', () => {

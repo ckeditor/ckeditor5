@@ -22,7 +22,6 @@ describe( 'InputBase', () => {
 
 	afterEach( () => {
 		view.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

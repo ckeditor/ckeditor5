@@ -13,10 +13,6 @@ import { ViewCollection } from '../../../src/viewcollection.js';
 describe( 'StickyPanelView', () => {
 	let view, element, contentPanelElement, placeholderElement, limiterElement, locale;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		locale = {};
 		limiterElement = document.createElement( 'div' );

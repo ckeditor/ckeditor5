@@ -3,15 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { ContextPlugin } from '../src/contextplugin.js';
 
 describe( 'ContextPlugin', () => {
 	const contextMock = {};
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	it( 'should be marked as a context plugin', () => {
 		expect( ContextPlugin.isContextPlugin ).toBe( true );

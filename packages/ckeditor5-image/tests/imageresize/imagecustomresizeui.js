@@ -51,7 +51,6 @@ describe( 'ImageCustomResizeUI', () => {
 	afterEach( async () => {
 		await editor.destroy();
 		element.remove();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should be named', () => {

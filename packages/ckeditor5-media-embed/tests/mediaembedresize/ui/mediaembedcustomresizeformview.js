@@ -11,10 +11,6 @@ import { MediaEmbedCustomResizeFormView } from '../../../src/mediaembedresize/ui
 describe( 'MediaEmbedCustomResizeFormView', () => {
 	let view, locale;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		locale = new Locale();
 

@@ -31,8 +31,6 @@ describe( 'ContextWatchdog', () => {
 
 		element1.remove();
 		element2.remove();
-
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should disable adding items once the ContextWatchdog is destroyed', async () => {
@@ -738,8 +736,6 @@ describe( 'ContextWatchdog - config-based editor creator', () => {
 
 	afterEach( () => {
 		window.onerror = originalErrorHandler;
-
-		vi.restoreAllMocks();
 	} );
 
 	function configBasedCreator( elementOrData, config ) {

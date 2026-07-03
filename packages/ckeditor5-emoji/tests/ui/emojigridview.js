@@ -11,10 +11,6 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils';
 describe( 'EmojiGridView', () => {
 	let view, locale, emojiCategories;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		locale = {
 			t: str => str

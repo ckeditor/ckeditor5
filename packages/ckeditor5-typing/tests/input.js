@@ -19,7 +19,6 @@ import { InsertTextCommand } from '../src/inserttextcommand.js';
 
 describe( 'Input', () => {
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 	} );
 

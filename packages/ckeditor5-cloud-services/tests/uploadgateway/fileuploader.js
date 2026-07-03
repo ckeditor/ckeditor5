@@ -200,11 +200,6 @@ describe( 'FileUploader', () => {
 			( { requests } = createFakeXHRServer() );
 		} );
 
-		afterEach( () => {
-			vi.restoreAllMocks();
-			vi.unstubAllGlobals();
-		} );
-
 		it( 'should sent request with correct data (url, method, type, headers)', () => {
 			return new Promise( ( resolve, reject ) => {
 				fileUploader
@@ -328,11 +323,6 @@ describe( 'FileUploader', () => {
 
 		beforeEach( () => {
 			( { requests } = createFakeXHRServer() );
-		} );
-
-		afterEach( () => {
-			vi.restoreAllMocks();
-			vi.unstubAllGlobals();
 		} );
 
 		it( 'should abort xhr request', () => {

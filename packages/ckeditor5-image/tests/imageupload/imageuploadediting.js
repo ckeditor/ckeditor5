@@ -17,7 +17,6 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { ViewDataTransfer, _setModelData, _getModelData, _getViewData, _stringifyView, ModelWriter } from '@ckeditor/ckeditor5-engine';
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { FileRepository } from '@ckeditor/ckeditor5-upload';
 import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
@@ -32,8 +31,6 @@ describe( 'ImageUploadEditing', () => {
 
 	let adapterMocks = [];
 	let editor, editorElement, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader;
-
-	testUtils.createSinonSandbox();
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -82,7 +79,6 @@ describe( 'ImageUploadEditing', () => {
 
 	afterEach( () => {
 		editorElement.remove();
-		vi.restoreAllMocks();
 		adapterMocks = [];
 
 		return editor.destroy();

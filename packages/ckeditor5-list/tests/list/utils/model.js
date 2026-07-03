@@ -25,16 +25,12 @@ import {
 import { modelList } from '../_utils/utils.js';
 import { stubUid } from '../_utils/uid.js';
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 import { Model, _stringifyModel, _parseModel } from '@ckeditor/ckeditor5-engine';
 
 describe( 'List - utils - model', () => {
 	let model, schema, attributeNames;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		model = new Model();

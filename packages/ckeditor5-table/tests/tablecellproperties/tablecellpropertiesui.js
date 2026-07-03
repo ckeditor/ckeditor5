@@ -30,7 +30,6 @@ describe( 'table cell properties', () => {
 			tableCellPropertiesUI, tableCellPropertiesView, tableCellPropertiesButton;
 
 		afterEach( () => {
-			vi.restoreAllMocks();
 			vi.useRealTimers();
 		} );
 
@@ -815,10 +814,6 @@ describe( 'table cell properties', () => {
 			let editor, editorElement, contextualBalloon,
 				tableCellPropertiesUI, tableCellPropertiesView, tableCellPropertiesButton;
 
-			afterEach( () => {
-				vi.restoreAllMocks();
-			} );
-
 			beforeEach( () => {
 				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
@@ -1006,10 +1001,6 @@ describe( 'table cell properties', () => {
 
 		describe( 'table properties without color picker', () => {
 			let editor, editorElement, contextualBalloon, tableCellPropertiesUI;
-
-			afterEach( () => {
-				vi.restoreAllMocks();
-			} );
 
 			beforeEach( () => {
 				editorElement = document.createElement( 'div' );

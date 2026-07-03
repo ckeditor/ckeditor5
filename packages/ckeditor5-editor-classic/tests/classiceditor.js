@@ -29,7 +29,6 @@ describe( 'ClassicEditor', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		editorElement.remove();
 	} );
 

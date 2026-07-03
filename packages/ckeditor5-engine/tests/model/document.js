@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Model } from '../../src/model/model.js';
 import { ModelDocument } from '../../src/model/document.js';
 import { ModelRootElement } from '../../src/model/rootelement.js';
@@ -18,10 +18,6 @@ describe( 'Document', () => {
 	beforeEach( () => {
 		model = new Model();
 		doc = model.document;
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

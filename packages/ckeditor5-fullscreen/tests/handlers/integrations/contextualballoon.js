@@ -52,7 +52,6 @@ describe( 'ContextualBalloon - integration', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		domElement.remove();
 		wrapper.remove();
 
@@ -311,7 +310,6 @@ describe( 'ContextualBalloon - integration', () => {
 			viewportElement.remove();
 			targetElement.remove();
 			balloonElement.remove();
-			vi.restoreAllMocks();
 		} );
 
 		it( 'should be appended to the positions array', () => {

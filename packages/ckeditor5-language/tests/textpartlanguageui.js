@@ -15,10 +15,6 @@ import { TextPartLanguageUI } from '../src/textpartlanguageui.js';
 describe( 'TextPartLanguageUI', () => {
 	let editor, editorElement, command;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

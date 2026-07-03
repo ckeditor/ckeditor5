@@ -24,14 +24,10 @@ import {
 	fillToolbar,
 	getLabeledColorInputCreator
 } from '../../../src/utils/ui/table-properties.js';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe( 'table utils', () => {
 	let editor, editorElement;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );

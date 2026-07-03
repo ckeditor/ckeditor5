@@ -24,10 +24,6 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 describe( 'LegacyTodoListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {

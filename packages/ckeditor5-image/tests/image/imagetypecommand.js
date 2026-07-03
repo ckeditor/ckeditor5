@@ -15,10 +15,6 @@ import { ImageCaptionEditing } from '../../src/imagecaption/imagecaptionediting.
 describe( 'ImageTypeCommand', () => {
 	let editor, blockCommand, inlineCommand, model, root;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {

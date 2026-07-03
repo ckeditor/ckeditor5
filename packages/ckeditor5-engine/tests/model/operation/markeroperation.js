@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { ModelText } from '../../../src/model/text.js';
 import { MarkerOperation } from '../../../src/model/operation/markeroperation.js';
@@ -17,10 +17,6 @@ describe( 'MarkerOperation', () => {
 		root = doc.createRoot();
 		root._appendChild( new ModelText( 'foo' ) );
 		range = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 0 ) );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have property type equal to "marker"', () => {

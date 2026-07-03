@@ -3,16 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { isDefault, isSupported, supportedOptions, normalizeAlignmentOptions } from '../src/utils.js';
 
 describe( 'utils', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'isDefault()', () => {
 		it( 'should return true for "left" alignment only (LTR)', () => {
 			const locale = {

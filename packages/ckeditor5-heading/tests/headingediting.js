@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HeadingEditing } from '../src/headingediting.js';
 import { HeadingCommand } from '../src/headingcommand.js';
 import { Paragraph, ParagraphCommand } from '@ckeditor/ckeditor5-paragraph';
@@ -137,10 +137,6 @@ describe( 'HeadingEditing', () => {
 
 	describe( 'default h1 conversion', () => {
 		let addDefaultConversionSpy;
-
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
 
 		beforeEach( () => {
 			addDefaultConversionSpy = vi.spyOn( HeadingEditing.prototype, '_addDefaultH1Conversion' );

@@ -10,10 +10,6 @@ import { Rect } from '../../src/dom/rect.js';
 
 let element, target, limiter;
 
-afterEach( () => {
-	vi.restoreAllMocks();
-} );
-
 //	+--------+-----+
 //	|    E   |  T  |
 //	|        |-----+

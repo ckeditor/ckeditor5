@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -33,10 +33,6 @@ class CloudServicesCoreMock extends CloudServicesCore {
 }
 
 describe( 'EasyImage', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	it( 'should require other plugins', () => {
 		expect( EasyImage.requires ).toContain( CloudServicesUploadAdapter );
 	} );
@@ -102,27 +98,20 @@ describe( 'EasyImage', () => {
 	describe( 'integration tests', () => {
 		let div;
 
-		beforeAll( () => {
+		beforeEach( () => {
 			vi.stubGlobal( 'FileReader', vi.fn( function() {
 				this.readAsDataURL = () => {
 					this.result = 'http://some-fake-url.jpg';
 					this.onload();
 				};
 			} ) );
-		} );
 
-		afterAll( () => {
-			vi.unstubAllGlobals();
-		} );
-
-		beforeEach( () => {
 			div = window.document.createElement( 'div' );
 			window.document.body.appendChild( div );
 		} );
 
 		afterEach( () => {
 			window.document.body.removeChild( div );
-			vi.restoreAllMocks();
 		} );
 
 		it( 'should enable easy image uploading', () => {
