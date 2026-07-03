@@ -28,13 +28,13 @@ Each group of fixtures contains an index file (`index.js` in a group folder – 
 ```js
 // Import default/generic fixtures.
 // Input fixtures.
-import { boldWithinText } from './bold-within-text/input.word2016.html';
+import boldWithinText from './bold-within-text/input.word2016.html?raw';
 
 // Expected normalized fixtures.
-import { boldWithinTextNormalized } from './bold-within-text/normalized.word2016.html';
+import boldWithinTextNormalized from './bold-within-text/normalized.word2016.html?raw';
 
 // Expected model fixtures.
-import { boldWithinTextModel } from './bold-within-text/model.word2016.html';
+import boldWithinTextModel from './bold-within-text/model.word2016.html?raw';
 
 // Export imported generic fixtures for future use.
 export const fixtures = {

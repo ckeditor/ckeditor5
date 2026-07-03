@@ -4,40 +4,40 @@
  */
 
 // Generic.
-import offline from './offline/input.word2016.html';
-import linked from './linked/input.word2016.html';
-import rotated from './rotated/input.word2016.html';
-import wrapped from './wrapped/input.word2016.html';
-import alternativeText from './alternative-text/input.word2016.html';
-import reflection from './reflection/input.word2016.html';
-import adjacentGroups from './adjacent-groups/input.word2016.html';
-import onlineOffline from './online-offline/input.word2016.html';
-import shapesOnlineOffline from './shapes-online-offline/input.word2016.html';
-import mixedImagesFromFilesystem from './mixed-images-from-filesystem/input.word2023.html';
+import offline from './offline/input.word2016.html?raw';
+import linked from './linked/input.word2016.html?raw';
+import rotated from './rotated/input.word2016.html?raw';
+import wrapped from './wrapped/input.word2016.html?raw';
+import alternativeText from './alternative-text/input.word2016.html?raw';
+import reflection from './reflection/input.word2016.html?raw';
+import adjacentGroups from './adjacent-groups/input.word2016.html?raw';
+import onlineOffline from './online-offline/input.word2016.html?raw';
+import shapesOnlineOffline from './shapes-online-offline/input.word2016.html?raw';
+import mixedImagesFromFilesystem from './mixed-images-from-filesystem/input.word2023.html?raw';
 
-import offlineNormalized from './offline/normalized.word2016.html';
-import linkedNormalized from './linked/normalized.word2016.html';
-import rotatedNormalized from './rotated/normalized.word2016.html';
-import wrappedNormalized from './wrapped/normalized.word2016.html';
-import alternativeTextNormalized from './alternative-text/normalized.word2016.html';
-import reflectionNormalized from './reflection/normalized.word2016.html';
-import adjacentGroupsNormalized from './adjacent-groups/normalized.word2016.html';
-import onlineOfflineNormalized from './online-offline/normalized.word2016.html';
-import shapesOnlineOfflineNormalized from './shapes-online-offline/normalized.word2016.html';
-import mixedImagesFromFilesystemNormalized from './mixed-images-from-filesystem/normalized.word2023.html';
+import offlineNormalized from './offline/normalized.word2016.html?raw';
+import linkedNormalized from './linked/normalized.word2016.html?raw';
+import rotatedNormalized from './rotated/normalized.word2016.html?raw';
+import wrappedNormalized from './wrapped/normalized.word2016.html?raw';
+import alternativeTextNormalized from './alternative-text/normalized.word2016.html?raw';
+import reflectionNormalized from './reflection/normalized.word2016.html?raw';
+import adjacentGroupsNormalized from './adjacent-groups/normalized.word2016.html?raw';
+import onlineOfflineNormalized from './online-offline/normalized.word2016.html?raw';
+import shapesOnlineOfflineNormalized from './shapes-online-offline/normalized.word2016.html?raw';
+import mixedImagesFromFilesystemNormalized from './mixed-images-from-filesystem/normalized.word2023.html?raw';
 
-import offlineModel from './offline/model.word2016.html';
-import linkedModel from './linked/model.word2016.html';
-import rotatedModel from './rotated/model.word2016.html';
-import wrappedModel from './wrapped/model.word2016.html';
-import alternativeTextModel from './alternative-text/model.word2016.html';
-import reflectionModel from './reflection/model.word2016.html';
-import adjacentGroupsModel from './adjacent-groups/model.word2016.html';
-import onlineOfflineModel from './online-offline/model.word2016.html';
-import shapesOnlineOfflineModel from './shapes-online-offline/model.word2016.html';
-import mixedImagesFromFilesystemModel from './mixed-images-from-filesystem/model.word2023.html';
+import offlineModel from './offline/model.word2016.html?raw';
+import linkedModel from './linked/model.word2016.html?raw';
+import rotatedModel from './rotated/model.word2016.html?raw';
+import wrappedModel from './wrapped/model.word2016.html?raw';
+import alternativeTextModel from './alternative-text/model.word2016.html?raw';
+import reflectionModel from './reflection/model.word2016.html?raw';
+import adjacentGroupsModel from './adjacent-groups/model.word2016.html?raw';
+import onlineOfflineModel from './online-offline/model.word2016.html?raw';
+import shapesOnlineOfflineModel from './shapes-online-offline/model.word2016.html?raw';
+import mixedImagesFromFilesystemModel from './mixed-images-from-filesystem/model.word2023.html?raw';
 
-import mixedImagesFromFilesystemBlob from './mixed-images-from-filesystem/input.word2023.rtf';
+import mixedImagesFromFilesystemBlob from './mixed-images-from-filesystem/input.word2023.rtf?raw';
 
 const genericFixtures = {
 	input: {
@@ -86,81 +86,81 @@ export const fixtures = genericFixtures;
 // Browser specific.
 
 // Chrome
-import offlineRtfChrome from './offline/input.chrome.word2016.rtf';
-import linkedRtfChrome from './linked/input.chrome.word2016.rtf';
-import rotatedRtfChrome from './rotated/input.chrome.word2016.rtf';
-import wrappedRtfChrome from './wrapped/input.chrome.word2016.rtf';
-import alternativeTextRtfChrome from './alternative-text/input.chrome.word2016.rtf';
-import reflectionRtfChrome from './reflection/input.chrome.word2016.rtf';
-import adjacentGroupsRtfChrome from './adjacent-groups/input.chrome.word2016.rtf';
-import onlineOfflineRtfChrome from './online-offline/input.chrome.word2016.rtf';
-import shapesOnlineOfflineRtfChrome from './shapes-online-offline/input.chrome.word2016.rtf';
-import noImgTagRtfChrome from './no-img-tag/input.chrome.word2016.rtf';
-import noImgTagRtfAltTextChrome from './no-img-tag-alt-text/input.chrome.word2016.rtf';
+import offlineRtfChrome from './offline/input.chrome.word2016.rtf?raw';
+import linkedRtfChrome from './linked/input.chrome.word2016.rtf?raw';
+import rotatedRtfChrome from './rotated/input.chrome.word2016.rtf?raw';
+import wrappedRtfChrome from './wrapped/input.chrome.word2016.rtf?raw';
+import alternativeTextRtfChrome from './alternative-text/input.chrome.word2016.rtf?raw';
+import reflectionRtfChrome from './reflection/input.chrome.word2016.rtf?raw';
+import adjacentGroupsRtfChrome from './adjacent-groups/input.chrome.word2016.rtf?raw';
+import onlineOfflineRtfChrome from './online-offline/input.chrome.word2016.rtf?raw';
+import shapesOnlineOfflineRtfChrome from './shapes-online-offline/input.chrome.word2016.rtf?raw';
+import noImgTagRtfChrome from './no-img-tag/input.chrome.word2016.rtf?raw';
+import noImgTagRtfAltTextChrome from './no-img-tag-alt-text/input.chrome.word2016.rtf?raw';
 
-import noImgTagChrome from './no-img-tag/input.chrome.word2016.html';
-import noImgTagAltTextChrome from './no-img-tag-alt-text/input.chrome.word2016.html';
+import noImgTagChrome from './no-img-tag/input.chrome.word2016.html?raw';
+import noImgTagAltTextChrome from './no-img-tag-alt-text/input.chrome.word2016.html?raw';
 
-import noImgTagNormalizedChrome from './no-img-tag/normalized.chrome.word2016.html';
-import noImgTagNormalizedAltTextChrome from './no-img-tag-alt-text/normalized.chrome.word2016.html';
+import noImgTagNormalizedChrome from './no-img-tag/normalized.chrome.word2016.html?raw';
+import noImgTagNormalizedAltTextChrome from './no-img-tag-alt-text/normalized.chrome.word2016.html?raw';
 
-import noImgTagModelChrome from './no-img-tag/model.chrome.word2016.html';
-import noImgTagModelAltTextChrome from './no-img-tag-alt-text/model.chrome.word2016.html';
+import noImgTagModelChrome from './no-img-tag/model.chrome.word2016.html?raw';
+import noImgTagModelAltTextChrome from './no-img-tag-alt-text/model.chrome.word2016.html?raw';
 
 // Firefox
-import offlineRtfFirefox from './offline/input.firefox.word2016.rtf';
-import linkedRtfFirefox from './linked/input.firefox.word2016.rtf';
-import rotatedRtfFirefox from './rotated/input.firefox.word2016.rtf';
-import wrappedRtfFirefox from './wrapped/input.firefox.word2016.rtf';
-import alternativeTextRtfFirefox from './alternative-text/input.firefox.word2016.rtf';
-import reflectionRtfFirefox from './reflection/input.firefox.word2016.rtf';
-import adjacentGroupsRtfFirefox from './adjacent-groups/input.firefox.word2016.rtf';
-import onlineOfflineRtfFirefox from './online-offline/input.firefox.word2016.rtf';
-import shapesOnlineOfflineRtfFirefox from './shapes-online-offline/input.firefox.word2016.rtf';
+import offlineRtfFirefox from './offline/input.firefox.word2016.rtf?raw';
+import linkedRtfFirefox from './linked/input.firefox.word2016.rtf?raw';
+import rotatedRtfFirefox from './rotated/input.firefox.word2016.rtf?raw';
+import wrappedRtfFirefox from './wrapped/input.firefox.word2016.rtf?raw';
+import alternativeTextRtfFirefox from './alternative-text/input.firefox.word2016.rtf?raw';
+import reflectionRtfFirefox from './reflection/input.firefox.word2016.rtf?raw';
+import adjacentGroupsRtfFirefox from './adjacent-groups/input.firefox.word2016.rtf?raw';
+import onlineOfflineRtfFirefox from './online-offline/input.firefox.word2016.rtf?raw';
+import shapesOnlineOfflineRtfFirefox from './shapes-online-offline/input.firefox.word2016.rtf?raw';
 
 // Edge
-import offlineRtfEdge from './offline/input.edge.word2016.rtf';
-import linkedRtfEdge from './linked/input.edge.word2016.rtf';
-import rotatedRtfEdge from './rotated/input.edge.word2016.rtf';
-import wrappedRtfEdge from './wrapped/input.edge.word2016.rtf';
-import alternativeTextRtfEdge from './alternative-text/input.edge.word2016.rtf';
-import reflectionRtfEdge from './reflection/input.edge.word2016.rtf';
-import adjacentGroupsRtfEdge from './adjacent-groups/input.edge.word2016.rtf';
-import onlineOfflineRtfEdge from './online-offline/input.edge.word2016.rtf';
-import shapesOnlineOfflineRtfEdge from './shapes-online-offline/input.edge.word2016.rtf';
+import offlineRtfEdge from './offline/input.edge.word2016.rtf?raw';
+import linkedRtfEdge from './linked/input.edge.word2016.rtf?raw';
+import rotatedRtfEdge from './rotated/input.edge.word2016.rtf?raw';
+import wrappedRtfEdge from './wrapped/input.edge.word2016.rtf?raw';
+import alternativeTextRtfEdge from './alternative-text/input.edge.word2016.rtf?raw';
+import reflectionRtfEdge from './reflection/input.edge.word2016.rtf?raw';
+import adjacentGroupsRtfEdge from './adjacent-groups/input.edge.word2016.rtf?raw';
+import onlineOfflineRtfEdge from './online-offline/input.edge.word2016.rtf?raw';
+import shapesOnlineOfflineRtfEdge from './shapes-online-offline/input.edge.word2016.rtf?raw';
 
-import adjacentGroupsModelEdge from './adjacent-groups/model.edge.word2016.html';
+import adjacentGroupsModelEdge from './adjacent-groups/model.edge.word2016.html?raw';
 
 // Safari
-import offlineSafari from './offline/input.safari.word2016.html';
-import linkedSafari from './linked/input.safari.word2016.html';
-import rotatedSafari from './rotated/input.safari.word2016.html';
-import wrappedSafari from './wrapped/input.safari.word2016.html';
-import alternativeTextSafari from './alternative-text/input.safari.word2016.html';
-import reflectionSafari from './reflection/input.safari.word2016.html';
-import adjacentGroupsSafari from './adjacent-groups/input.safari.word2016.html';
-import onlineOfflineSafari from './online-offline/input.safari.word2016.html';
-import shapesOnlineOfflineSafari from './shapes-online-offline/input.safari.word2016.html';
+import offlineSafari from './offline/input.safari.word2016.html?raw';
+import linkedSafari from './linked/input.safari.word2016.html?raw';
+import rotatedSafari from './rotated/input.safari.word2016.html?raw';
+import wrappedSafari from './wrapped/input.safari.word2016.html?raw';
+import alternativeTextSafari from './alternative-text/input.safari.word2016.html?raw';
+import reflectionSafari from './reflection/input.safari.word2016.html?raw';
+import adjacentGroupsSafari from './adjacent-groups/input.safari.word2016.html?raw';
+import onlineOfflineSafari from './online-offline/input.safari.word2016.html?raw';
+import shapesOnlineOfflineSafari from './shapes-online-offline/input.safari.word2016.html?raw';
 
-import offlineNormalizedSafari from './offline/normalized.safari.word2016.html';
-import linkedNormalizedSafari from './linked/normalized.safari.word2016.html';
-import rotatedNormalizedSafari from './rotated/normalized.safari.word2016.html';
-import wrappedNormalizedSafari from './wrapped/normalized.safari.word2016.html';
-import alternativeTextNormalizedSafari from './alternative-text/normalized.safari.word2016.html';
-import reflectionNormalizedSafari from './reflection/normalized.safari.word2016.html';
-import adjacentGroupsNormalizedSafari from './adjacent-groups/normalized.safari.word2016.html';
-import onlineOfflineNormalizedSafari from './online-offline/normalized.safari.word2016.html';
-import shapesOnlineOfflineNormalizedSafari from './shapes-online-offline/normalized.safari.word2016.html';
+import offlineNormalizedSafari from './offline/normalized.safari.word2016.html?raw';
+import linkedNormalizedSafari from './linked/normalized.safari.word2016.html?raw';
+import rotatedNormalizedSafari from './rotated/normalized.safari.word2016.html?raw';
+import wrappedNormalizedSafari from './wrapped/normalized.safari.word2016.html?raw';
+import alternativeTextNormalizedSafari from './alternative-text/normalized.safari.word2016.html?raw';
+import reflectionNormalizedSafari from './reflection/normalized.safari.word2016.html?raw';
+import adjacentGroupsNormalizedSafari from './adjacent-groups/normalized.safari.word2016.html?raw';
+import onlineOfflineNormalizedSafari from './online-offline/normalized.safari.word2016.html?raw';
+import shapesOnlineOfflineNormalizedSafari from './shapes-online-offline/normalized.safari.word2016.html?raw';
 
-import offlineModelSafari from './offline/model.safari.word2016.html';
-import linkedModelSafari from './linked/model.safari.word2016.html';
-import rotatedModelSafari from './rotated/model.safari.word2016.html';
-import wrappedModelSafari from './wrapped/model.safari.word2016.html';
-import alternativeTextModelSafari from './alternative-text/model.safari.word2016.html';
-import reflectionModelSafari from './reflection/model.safari.word2016.html';
-import adjacentGroupsModelSafari from './adjacent-groups/model.safari.word2016.html';
-import onlineOfflineModelSafari from './online-offline/model.safari.word2016.html';
-import shapesOnlineOfflineModelSafari from './shapes-online-offline/model.safari.word2016.html';
+import offlineModelSafari from './offline/model.safari.word2016.html?raw';
+import linkedModelSafari from './linked/model.safari.word2016.html?raw';
+import rotatedModelSafari from './rotated/model.safari.word2016.html?raw';
+import wrappedModelSafari from './wrapped/model.safari.word2016.html?raw';
+import alternativeTextModelSafari from './alternative-text/model.safari.word2016.html?raw';
+import reflectionModelSafari from './reflection/model.safari.word2016.html?raw';
+import adjacentGroupsModelSafari from './adjacent-groups/model.safari.word2016.html?raw';
+import onlineOfflineModelSafari from './online-offline/model.safari.word2016.html?raw';
+import shapesOnlineOfflineModelSafari from './shapes-online-offline/model.safari.word2016.html?raw';
 
 export const browserFixtures = {
 	chrome: {
