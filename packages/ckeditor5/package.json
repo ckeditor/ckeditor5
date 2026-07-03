@@ -109,10 +109,10 @@
     "@ckeditor/ckeditor5-word-count": "workspace:*"
   },
   "devDependencies": {
-    "@vitest/browser-playwright": "^4.1.8",
-    "@vitest/coverage-v8": "^4.1.8",
-    "vitest": "^4.1.8",
-    "@wiris/mathtype-ckeditor5": "^8.13.1"
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "@wiris/mathtype-ckeditor5": "^8.13.1",
+    "vitest": "catalog:"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-ckeditor5.mjs",

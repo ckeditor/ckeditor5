@@ -34,9 +34,9 @@
     }
   },
   "devDependencies": {
-    "@vitest/browser-playwright": "^4.1.8",
-    "@vitest/coverage-v8": "^4.1.8",
-    "vitest": "^4.1.8"
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs && node ../../scripts/update-icons-typings.mjs",

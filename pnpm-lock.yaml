@@ -4,6 +4,18 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@vitest/browser-playwright':
+      specifier: ^4.1.8
+      version: 4.1.8
+    '@vitest/coverage-v8':
+      specifier: ^4.1.8
+      version: 4.1.8
+    vitest:
+      specifier: ^4.1.8
+      version: 4.1.8
+
 overrides:
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   diff@^7: ^8.0.3
@@ -74,10 +86,10 @@ importers:
         specifier: ^2.0.16
         version: 2.0.22(@inquirer/prompts@7.10.1(@types/node@25.9.1))
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       '@webspellchecker/wproofreader-ckeditor5':
         specifier: ^3.0.0
@@ -185,7 +197,7 @@ importers:
         specifier: ^8.1.0
         version: 8.1.1(@types/node@25.9.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
       wait-on:
         specifier: ^9.0.4
@@ -375,16 +387,16 @@ importers:
         version: link:../ckeditor5-word-count
     devDependencies:
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       '@wiris/mathtype-ckeditor5':
         specifier: ^8.13.1
         version: 8.15.2(ckeditor5@packages+ckeditor5)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-adapter-ckfinder:
@@ -430,13 +442,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-alignment:
@@ -482,13 +494,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-autoformat:
@@ -537,13 +549,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-autosave:
@@ -571,13 +583,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-source-editing
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-basic-styles:
@@ -611,13 +623,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-block-quote:
@@ -666,13 +678,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-bookmark:
@@ -748,13 +760,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-ckbox:
@@ -815,13 +827,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-ckfinder:
@@ -861,13 +873,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-clipboard:
@@ -994,13 +1006,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-cloud-services:
@@ -1019,13 +1031,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-code-block:
@@ -1089,13 +1101,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-core:
@@ -1156,13 +1168,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-easy-image:
@@ -1193,13 +1205,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-editor-balloon:
@@ -1245,13 +1257,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-editor-classic:
@@ -1300,13 +1312,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-editor-decoupled:
@@ -1352,13 +1364,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-editor-inline:
@@ -1407,13 +1419,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-editor-multi-root:
@@ -1468,13 +1480,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-emoji:
@@ -1532,13 +1544,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-engine:
@@ -1608,13 +1620,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-widget
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-enter:
@@ -1651,13 +1663,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-essentials:
@@ -1691,13 +1703,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-find-and-replace:
@@ -1764,13 +1776,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-widget
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-font:
@@ -1807,13 +1819,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-fullscreen:
@@ -1937,13 +1949,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-heading:
@@ -2001,13 +2013,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-upload
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-highlight:
@@ -2053,13 +2065,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-horizontal-line:
@@ -2099,13 +2111,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-html-embed:
@@ -2148,10 +2160,10 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       es-toolkit:
         specifier: 1.45.1
@@ -2160,7 +2172,7 @@ importers:
         specifier: ^2.13.0
         version: 2.17.4
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-html-support:
@@ -2272,25 +2284,25 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-icons:
     devDependencies:
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-image:
@@ -2399,13 +2411,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-indent:
@@ -2493,13 +2505,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-language:
@@ -2524,13 +2536,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-link:
@@ -2600,13 +2612,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-list:
@@ -2721,13 +2733,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-widget
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-markdown-gfm:
@@ -2842,13 +2854,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-media-embed:
@@ -2906,16 +2918,16 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       es-toolkit:
         specifier: 1.45.1
         version: 1.45.1
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-mention:
@@ -2976,13 +2988,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-widget
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-minimap:
@@ -3037,13 +3049,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-page-break:
@@ -3083,13 +3095,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-paragraph:
@@ -3135,13 +3147,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-paste-from-office:
@@ -3211,13 +3223,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-remove-format:
@@ -3269,13 +3281,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-restricted-editing:
@@ -3336,13 +3348,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-select-all:
@@ -3385,13 +3397,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-show-blocks:
@@ -3515,13 +3527,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-source-editing:
@@ -3564,13 +3576,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-special-characters:
@@ -3604,13 +3616,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-image
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-style:
@@ -3722,13 +3734,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-word-count
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-table:
@@ -3822,16 +3834,16 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       json-diff-ts:
         specifier: ^4.10.4
         version: 4.10.4
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-typing:
@@ -3904,13 +3916,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-widget
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-ui:
@@ -4031,13 +4043,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-undo:
@@ -4083,13 +4095,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-upload:
@@ -4102,13 +4114,13 @@ importers:
         version: link:../ckeditor5-utils
     devDependencies:
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-utils:
@@ -4130,13 +4142,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-engine
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-watchdog:
@@ -4176,13 +4188,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-widget:
@@ -4255,13 +4267,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
   packages/ckeditor5-word-count:
@@ -4313,13 +4325,13 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(playwright@1.60.0)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.8)
       '@vitest/coverage-v8':
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(vite@8.1.1(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
 
 packages:

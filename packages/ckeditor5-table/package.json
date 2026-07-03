@@ -48,6 +48,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "workspace:*",
     "@ckeditor/ckeditor5-autoformat": "workspace:*",
+    "@ckeditor/ckeditor5-autosave": "workspace:*",
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
@@ -65,11 +66,10 @@
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
-    "@ckeditor/ckeditor5-autosave": "workspace:*",
-    "@vitest/browser-playwright": "^4.1.8",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "json-diff-ts": "^4.10.4",
-    "vitest": "^4.1.8"
+    "vitest": "catalog:"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs",

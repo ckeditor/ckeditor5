@@ -47,9 +47,6 @@
     "es-toolkit": "1.45.1"
   },
   "devDependencies": {
-    "@vitest/browser-playwright": "^4.1.8",
-    "@vitest/coverage-v8": "^4.1.8",
-    "vitest": "^4.1.8",
     "@ckeditor/ckeditor5-alignment": "workspace:*",
     "@ckeditor/ckeditor5-autoformat": "workspace:*",
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
@@ -75,7 +72,10 @@
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
-    "@ckeditor/ckeditor5-widget": "workspace:*"
+    "@ckeditor/ckeditor5-widget": "workspace:*",
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs",
