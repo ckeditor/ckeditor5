@@ -535,10 +535,10 @@ describe( 'ImageUtils plugin', () => {
 			it( 'should insert image with given attributes', () => {
 				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-				imageUtils.insertImage( { src: '/assets/sample.png' } );
+				imageUtils.insertImage( { src: '/sample.png' } );
 
 				expect( _getModelData( model ) )
-					.toBe( '<paragraph>f[<imageInline src="/assets/sample.png"></imageInline>]o</paragraph>' );
+					.toBe( '<paragraph>f[<imageInline src="/sample.png"></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should use the inline image type when there is only ImageInlineEditing plugin enabled', async () => {
@@ -583,38 +583,38 @@ describe( 'ImageUtils plugin', () => {
 				_setModelData( model, '[]' );
 				model.schema.extend( 'imageBlock', { allowAttributes: 'customAttribute' } );
 
-				imageUtils.insertImage( { src: '/assets/sample.png', customAttribute: 'value' } );
+				imageUtils.insertImage( { src: '/sample.png', customAttribute: 'value' } );
 
 				expect( _getModelData( model ) )
-					.toBe( '[<imageBlock customAttribute="value" src="/assets/sample.png"></imageBlock>]' );
+					.toBe( '[<imageBlock customAttribute="value" src="/sample.png"></imageBlock>]' );
 			} );
 
 			it( 'should omit the disallowed attributes while inserting a block image', () => {
 				_setModelData( model, '[]' );
 
-				imageUtils.insertImage( { src: '/assets/sample.png', customAttribute: 'value' } );
+				imageUtils.insertImage( { src: '/sample.png', customAttribute: 'value' } );
 
 				expect( _getModelData( model ) )
-					.toBe( '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
+					.toBe( '[<imageBlock src="/sample.png"></imageBlock>]' );
 			} );
 
 			it( 'should pass the allowed custom attributes to the inserted inline image', () => {
 				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 				model.schema.extend( 'imageInline', { allowAttributes: 'customAttribute' } );
 
-				imageUtils.insertImage( { src: '/assets/sample.png', customAttribute: 'value' } );
+				imageUtils.insertImage( { src: '/sample.png', customAttribute: 'value' } );
 
 				expect( _getModelData( model ) )
-					.toBe( '<paragraph>f[<imageInline customAttribute="value" src="/assets/sample.png"></imageInline>]o</paragraph>' );
+					.toBe( '<paragraph>f[<imageInline customAttribute="value" src="/sample.png"></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should omit the disallowed attributes while inserting an inline image', () => {
 				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-				imageUtils.insertImage( { src: '/assets/sample.png', customAttribute: 'value' } );
+				imageUtils.insertImage( { src: '/sample.png', customAttribute: 'value' } );
 
 				expect( _getModelData( model ) )
-					.toBe( '<paragraph>f[<imageInline src="/assets/sample.png"></imageInline>]o</paragraph>' );
+					.toBe( '<paragraph>f[<imageInline src="/sample.png"></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should return the inserted image element', () => {

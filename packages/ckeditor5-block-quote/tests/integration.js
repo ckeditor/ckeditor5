@@ -434,7 +434,7 @@ describe( 'BlockQuote integration', () => {
 				.then( editor => {
 					_setModelData( editor.model,
 						'<paragraph>fo[o</paragraph>' +
-						'<imageBlock src="/assets/sample.png"></imageBlock>' +
+						'<imageBlock src="/sample.png"></imageBlock>' +
 						'<paragraph>b]ar</paragraph>'
 					);
 
@@ -443,7 +443,7 @@ describe( 'BlockQuote integration', () => {
 					expect( _getModelData( editor.model ) ).toEqual(
 						'<blockQuote>' +
 							'<paragraph>fo[o</paragraph>' +
-							'<imageBlock src="/assets/sample.png"></imageBlock>' +
+							'<imageBlock src="/sample.png"></imageBlock>' +
 							'<paragraph>b]ar</paragraph>' +
 						'</blockQuote>'
 					);
@@ -456,7 +456,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'quotes an image with caption', () => {
 			_setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
-				'<imageBlock src="/assets/sample.png">' +
+				'<imageBlock src="/sample.png">' +
 					'<caption>xxx</caption>' +
 				'</imageBlock>' +
 				'<paragraph>b]ar</paragraph>'
@@ -467,7 +467,7 @@ describe( 'BlockQuote integration', () => {
 			expect( _getModelData( model ) ).toEqual(
 				'<blockQuote>' +
 					'<paragraph>fo[o</paragraph>' +
-					'<imageBlock src="/assets/sample.png">' +
+					'<imageBlock src="/sample.png">' +
 						'<caption>xxx</caption>' +
 					'</imageBlock>' +
 					'<paragraph>b]ar</paragraph>' +
@@ -478,7 +478,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'adds an image to an existing quote', () => {
 			_setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
-				'<imageBlock src="/assets/sample.png">' +
+				'<imageBlock src="/sample.png">' +
 					'<caption>xxx</caption>' +
 				'</imageBlock>' +
 				'<blockQuote><paragraph>b]ar</paragraph></blockQuote>'
@@ -490,7 +490,7 @@ describe( 'BlockQuote integration', () => {
 			expect( _getModelData( model ) ).toEqual(
 				'<blockQuote>' +
 					'<paragraph>foo</paragraph>' +
-					'<imageBlock src="/assets/sample.png">' +
+					'<imageBlock src="/sample.png">' +
 						'<caption>xxx</caption>' +
 					'</imageBlock>' +
 					'<paragraph>[b]ar</paragraph>' +

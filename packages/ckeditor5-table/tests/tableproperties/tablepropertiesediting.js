@@ -1758,10 +1758,10 @@ describe( 'table properties', () => {
 					} );
 					const model = editor.model;
 
-					editor.setData( '<figure class="image" style="width:50%"><img src="/assets/sample.png" alt="alt text"></figure>' );
+					editor.setData( '<figure class="image" style="width:50%"><img src="/sample.png" alt="alt text"></figure>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" resizedWidth="50%" src="/assets/sample.png"></imageBlock>'
+						'<imageBlock alt="alt text" resizedWidth="50%" src="/sample.png"></imageBlock>'
 					);
 
 					await editor.destroy();
@@ -1979,10 +1979,10 @@ describe( 'table properties', () => {
 					} );
 					const model = editor.model;
 
-					editor.setData( '<figure class="image" style="height:50%"><img src="/assets/sample.png" alt="alt text"></figure>' );
+					editor.setData( '<figure class="image" style="height:50%"><img src="/sample.png" alt="alt text"></figure>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" resizedHeight="50%" src="/assets/sample.png"></imageBlock>'
+						'<imageBlock alt="alt text" resizedHeight="50%" src="/sample.png"></imageBlock>'
 					);
 
 					await editor.destroy();
@@ -2185,10 +2185,10 @@ describe( 'table properties', () => {
 						expect( conversionApi.consumable.test( data.viewItem, { styles: 'float' } ) ).to.be.true;
 					}, { priority: 'lowest' } ) );
 
-					editor.setData( '<figure class="image" style="float:right"><img src="/assets/sample.png" alt="alt text"></figure>' );
+					editor.setData( '<figure class="image" style="float:right"><img src="/sample.png" alt="alt text"></figure>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>'
+						'<imageBlock alt="alt text" src="/sample.png"></imageBlock>'
 					);
 
 					await editor.destroy();
@@ -2215,12 +2215,12 @@ describe( 'table properties', () => {
 
 					editor.setData(
 						'<figure class="image" style="margin-left:auto;margin-right:auto;">' +
-							'<img src="/assets/sample.png" alt="alt text">' +
+							'<img src="/sample.png" alt="alt text">' +
 						'</figure>'
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>'
+						'<imageBlock alt="alt text" src="/sample.png"></imageBlock>'
 					);
 
 					await editor.destroy();

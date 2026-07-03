@@ -137,7 +137,7 @@ describe( 'CKBoxImageEditUI', () => {
 
 			expect( button.isEnabled ).toBe( false );
 
-			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 
 			expect( button.isEnabled ).toBe( true );
 		} );
@@ -153,7 +153,7 @@ describe( 'CKBoxImageEditUI', () => {
 
 			expect( button.isOn ).toBe( false );
 
-			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 
 			command.execute();
 

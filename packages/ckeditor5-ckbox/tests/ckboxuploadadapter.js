@@ -1160,7 +1160,7 @@ describe( 'CKBoxUploadAdapter', () => {
 	describe( 'adding the "ckboxImageId" attribute to the uploaded asset', () => {
 		let nativeReaderMock, loader, adapterMock;
 
-		const imgPath = '/assets/sample.png';
+		const imgPath = '/sample.png';
 		const file = createNativeFileMock();
 		file.name = 'image.jpg';
 

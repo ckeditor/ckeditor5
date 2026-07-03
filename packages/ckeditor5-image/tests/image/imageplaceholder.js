@@ -68,39 +68,39 @@ describe( 'ImagePlaceholder', () => {
 		} );
 
 		it( 'should apply placeholder to the img in the editing view (only)', () => {
-			_setModelData( model, '<imageBlock src="/assets/sample.png" placeholder="#blurImage"></imageBlock>' );
+			_setModelData( model, '<imageBlock src="/sample.png" placeholder="#blurImage"></imageBlock>' );
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-					'<img class="image_placeholder" src="/assets/sample.png" style="background-image:url(#blurImage)"></img>' +
+					'<img class="image_placeholder" src="/sample.png" style="background-image:url(#blurImage)"></img>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<figure class="image"><img src="/assets/sample.png"></figure>'
+				'<figure class="image"><img src="/sample.png"></figure>'
 			);
 		} );
 
 		it( 'should remove placeholder from the img in the editing view (only)', () => {
-			_setModelData( model, '<imageBlock src="/assets/sample.png" placeholder="#blurImage"></imageBlock>' );
+			_setModelData( model, '<imageBlock src="/sample.png" placeholder="#blurImage"></imageBlock>' );
 
 			model.change( writer => writer.removeAttribute( 'placeholder', doc.getRoot().getChild( 0 ) ) );
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-					'<img src="/assets/sample.png"></img>' +
+					'<img src="/sample.png"></img>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<figure class="image"><img src="/assets/sample.png"></figure>'
+				'<figure class="image"><img src="/sample.png"></figure>'
 			);
 		} );
 
 		it( 'should remove placeholder when the image is loaded', () => {
-			_setModelData( model, '<imageBlock src="/assets/sample.png" placeholder="#blurImage"></imageBlock>' );
+			_setModelData( model, '<imageBlock src="/sample.png" placeholder="#blurImage"></imageBlock>' );
 
 			const modelElement = doc.getRoot().getChild( 0 );
 			const viewElement = editor.editing.mapper.toViewElement( modelElement ).getChild( 0 );
@@ -110,13 +110,13 @@ describe( 'ImagePlaceholder', () => {
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-					'<img class="image_placeholder" src="/assets/sample.png" style="background-image:url(#blurImage)"></img>' +
+					'<img class="image_placeholder" src="/sample.png" style="background-image:url(#blurImage)"></img>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<figure class="image"><img src="/assets/sample.png"></figure>'
+				'<figure class="image"><img src="/sample.png"></figure>'
 			);
 
 			view.document.fire( 'imageLoaded', {
@@ -124,29 +124,29 @@ describe( 'ImagePlaceholder', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
-				'<imageBlock src="/assets/sample.png"></imageBlock>'
+				'<imageBlock src="/sample.png"></imageBlock>'
 			);
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-					'<img src="/assets/sample.png"></img>' +
+					'<img src="/sample.png"></img>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>'
 			);
 		} );
 
 		it( 'should not remove placeholder when some other image is loaded', () => {
-			_setModelData( model, '<imageBlock src="/assets/sample.png" placeholder="#blurImage"></imageBlock>' );
+			_setModelData( model, '<imageBlock src="/sample.png" placeholder="#blurImage"></imageBlock>' );
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-					'<img class="image_placeholder" src="/assets/sample.png" style="background-image:url(#blurImage)"></img>' +
+					'<img class="image_placeholder" src="/sample.png" style="background-image:url(#blurImage)"></img>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<figure class="image"><img src="/assets/sample.png"></figure>'
+				'<figure class="image"><img src="/sample.png"></figure>'
 			);
 
 			view.document.fire( 'imageLoaded', {
@@ -154,12 +154,12 @@ describe( 'ImagePlaceholder', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
-				'<imageBlock placeholder="#blurImage" src="/assets/sample.png"></imageBlock>'
+				'<imageBlock placeholder="#blurImage" src="/sample.png"></imageBlock>'
 			);
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-					'<img class="image_placeholder" src="/assets/sample.png" style="background-image:url(#blurImage)"></img>' +
+					'<img class="image_placeholder" src="/sample.png" style="background-image:url(#blurImage)"></img>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>'
 			);
@@ -171,31 +171,31 @@ describe( 'ImagePlaceholder', () => {
 			editor.conversion.attributeToAttribute( { model: 'src', view: 'data-src' } );
 			editor.conversion.attributeToAttribute( { model: 'placeholder', view: 'data-placeholder' } );
 
-			_setModelData( model, '<test src="/assets/sample.png" placeholder="#blurImage"></test>' );
+			_setModelData( model, '<test src="/sample.png" placeholder="#blurImage"></test>' );
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
-				'<div data-placeholder="#blurImage" data-src="/assets/sample.png"></div>'
+				'<div data-placeholder="#blurImage" data-src="/sample.png"></div>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<div data-src="/assets/sample.png" data-placeholder="#blurImage">&nbsp;</div>'
+				'<div data-src="/sample.png" data-placeholder="#blurImage">&nbsp;</div>'
 			);
 		} );
 
 		it( 'should not apply placeholder consumed by other converter', () => {
 			editor.conversion.attributeToAttribute( { model: 'placeholder', view: 'data-placeholder', converterPriority: 'high' } );
 
-			_setModelData( model, '<imageBlock src="/assets/sample.png" placeholder="#blurImage"></imageBlock>' );
+			_setModelData( model, '<imageBlock src="/sample.png" placeholder="#blurImage"></imageBlock>' );
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-placeholder="#blurImage">' +
-					'<img src="/assets/sample.png"></img>' +
+					'<img src="/sample.png"></img>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<figure class="image" data-placeholder="#blurImage"><img src="/assets/sample.png"></figure>'
+				'<figure class="image" data-placeholder="#blurImage"><img src="/sample.png"></figure>'
 			);
 		} );
 	} );
@@ -232,41 +232,41 @@ describe( 'ImagePlaceholder', () => {
 		} );
 
 		it( 'should apply placeholder to the img in the editing view (only)', () => {
-			_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" placeholder="#blurImage"></imageInline></paragraph>' );
+			_setModelData( model, '<paragraph><imageInline src="/sample.png" placeholder="#blurImage"></imageInline></paragraph>' );
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget image-inline" contenteditable="false">' +
-						'<img class="image_placeholder" src="/assets/sample.png" style="background-image:url(#blurImage)"></img>' +
+						'<img class="image_placeholder" src="/sample.png" style="background-image:url(#blurImage)"></img>' +
 					'</span>' +
 				'</p>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<p><img src="/assets/sample.png"></p>'
+				'<p><img src="/sample.png"></p>'
 			);
 		} );
 
 		it( 'should remove placeholder from the img in the editing view (only)', () => {
-			_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" placeholder="#blurImage"></imageInline></paragraph>' );
+			_setModelData( model, '<paragraph><imageInline src="/sample.png" placeholder="#blurImage"></imageInline></paragraph>' );
 
 			model.change( writer => writer.removeAttribute( 'placeholder', doc.getRoot().getChild( 0 ).getChild( 0 ) ) );
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget image-inline" contenteditable="false">' +
-						'<img src="/assets/sample.png"></img>' +
+						'<img src="/sample.png"></img>' +
 					'</span>' +
 				'</p>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<p><img src="/assets/sample.png"></p>'
+				'<p><img src="/sample.png"></p>'
 			);
 		} );
 
 		it( 'should remove placeholder when the image is loaded', () => {
-			_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" placeholder="#blurImage"></imageInline></paragraph>' );
+			_setModelData( model, '<paragraph><imageInline src="/sample.png" placeholder="#blurImage"></imageInline></paragraph>' );
 
 			const modelElement = doc.getRoot().getChild( 0 ).getChild( 0 );
 			const viewElement = editor.editing.mapper.toViewElement( modelElement ).getChild( 0 );
@@ -277,13 +277,13 @@ describe( 'ImagePlaceholder', () => {
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget image-inline" contenteditable="false">' +
-						'<img class="image_placeholder" src="/assets/sample.png" style="background-image:url(#blurImage)"></img>' +
+						'<img class="image_placeholder" src="/sample.png" style="background-image:url(#blurImage)"></img>' +
 					'</span>' +
 				'</p>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<p><img src="/assets/sample.png"></p>'
+				'<p><img src="/sample.png"></p>'
 			);
 
 			view.document.fire( 'imageLoaded', {
@@ -291,31 +291,31 @@ describe( 'ImagePlaceholder', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
-				'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
+				'<paragraph><imageInline src="/sample.png"></imageInline></paragraph>'
 			);
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget image-inline" contenteditable="false">' +
-						'<img src="/assets/sample.png"></img>' +
+						'<img src="/sample.png"></img>' +
 					'</span>' +
 				'</p>'
 			);
 		} );
 
 		it( 'should not remove placeholder when some other image is loaded', () => {
-			_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" placeholder="#blurImage"></imageInline></paragraph>' );
+			_setModelData( model, '<paragraph><imageInline src="/sample.png" placeholder="#blurImage"></imageInline></paragraph>' );
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget image-inline" contenteditable="false">' +
-						'<img class="image_placeholder" src="/assets/sample.png" style="background-image:url(#blurImage)"></img>' +
+						'<img class="image_placeholder" src="/sample.png" style="background-image:url(#blurImage)"></img>' +
 					'</span>' +
 				'</p>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<p><img src="/assets/sample.png"></p>'
+				'<p><img src="/sample.png"></p>'
 			);
 
 			view.document.fire( 'imageLoaded', {
@@ -323,13 +323,13 @@ describe( 'ImagePlaceholder', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
-				'<paragraph><imageInline placeholder="#blurImage" src="/assets/sample.png"></imageInline></paragraph>'
+				'<paragraph><imageInline placeholder="#blurImage" src="/sample.png"></imageInline></paragraph>'
 			);
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget image-inline" contenteditable="false">' +
-						'<img class="image_placeholder" src="/assets/sample.png" style="background-image:url(#blurImage)"></img>' +
+						'<img class="image_placeholder" src="/sample.png" style="background-image:url(#blurImage)"></img>' +
 					'</span>' +
 				'</p>'
 			);
@@ -341,32 +341,32 @@ describe( 'ImagePlaceholder', () => {
 			editor.conversion.attributeToAttribute( { model: 'src', view: 'data-src' } );
 			editor.conversion.attributeToAttribute( { model: 'placeholder', view: 'data-placeholder' } );
 
-			_setModelData( model, '<paragraph><test src="/assets/sample.png" placeholder="#blurImage"></test></paragraph>' );
+			_setModelData( model, '<paragraph><test src="/sample.png" placeholder="#blurImage"></test></paragraph>' );
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
-				'<p><span data-placeholder="#blurImage" data-src="/assets/sample.png"></span></p>'
+				'<p><span data-placeholder="#blurImage" data-src="/sample.png"></span></p>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<p><span data-src="/assets/sample.png" data-placeholder="#blurImage">&nbsp;</span></p>'
+				'<p><span data-src="/sample.png" data-placeholder="#blurImage">&nbsp;</span></p>'
 			);
 		} );
 
 		it( 'should not apply placeholder consumed by other converter', () => {
 			editor.conversion.attributeToAttribute( { model: 'placeholder', view: 'data-placeholder', converterPriority: 'high' } );
 
-			_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" placeholder="#blurImage"></imageInline></paragraph>' );
+			_setModelData( model, '<paragraph><imageInline src="/sample.png" placeholder="#blurImage"></imageInline></paragraph>' );
 
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<p>' +
 					'<span class="ck-widget image-inline" contenteditable="false" data-placeholder="#blurImage">' +
-						'<img src="/assets/sample.png"></img>' +
+						'<img src="/sample.png"></img>' +
 					'</span>' +
 				'</p>'
 			);
 
 			expect( editor.getData() ).toBe(
-				'<p><img src="/assets/sample.png" data-placeholder="#blurImage"></p>'
+				'<p><img src="/sample.png" data-placeholder="#blurImage"></p>'
 			);
 		} );
 	} );

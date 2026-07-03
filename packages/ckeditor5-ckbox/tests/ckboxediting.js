@@ -248,9 +248,9 @@ describe( 'CKBoxEditing', () => {
 				editor.setData(
 					'<p>' +
 						'<picture>' +
-							'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-							'<source srcset="/assets/sample.png">' +
-							'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+							'<source srcset="/sample.png" media="(max-width: 600px)">' +
+							'<source srcset="/sample.png">' +
+							'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 						'</picture>' +
 					'</p>'
 				);
@@ -260,7 +260,7 @@ describe( 'CKBoxEditing', () => {
 						'<imageInline ' +
 							'ckboxImageId="image-id" ' +
 							'sources="[object Object],[object Object]" ' +
-							'src="/assets/sample.png">' +
+							'src="/sample.png">' +
 						'</imageInline>' +
 					'</paragraph>'
 				);
@@ -269,12 +269,12 @@ describe( 'CKBoxEditing', () => {
 			it( 'should convert both "data-ckbox-resource-id" attributes from a linked inline image', () => {
 				editor.setData(
 					'<p>' +
-						'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+						'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 							'Foobar' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 							'</picture>' +
 						'</a>' +
 					'</p>'
@@ -282,13 +282,13 @@ describe( 'CKBoxEditing', () => {
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph>' +
-						'<$text ckboxLinkId="link-id" linkHref="/assets/sample.png">Foobar</$text>' +
+						'<$text ckboxLinkId="link-id" linkHref="/sample.png">Foobar</$text>' +
 						'<imageInline ' +
 							'ckboxImageId="image-id" ' +
 							'ckboxLinkId="link-id" ' +
-							'linkHref="/assets/sample.png" ' +
+							'linkHref="/sample.png" ' +
 							'sources="[object Object],[object Object]" ' +
-							'src="/assets/sample.png">' +
+							'src="/sample.png">' +
 						'</imageInline>' +
 					'</paragraph>'
 				);
@@ -298,9 +298,9 @@ describe( 'CKBoxEditing', () => {
 				editor.setData(
 					'<figure class="image" data-ckbox-resource-id="image-id">' +
 						'<picture>' +
-							'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-							'<source srcset="/assets/sample.png">' +
-							'<img src="/assets/sample.png">' +
+							'<source srcset="/sample.png" media="(max-width: 600px)">' +
+							'<source srcset="/sample.png">' +
+							'<img src="/sample.png">' +
 						'</picture>' +
 					'</figure>'
 				);
@@ -309,7 +309,7 @@ describe( 'CKBoxEditing', () => {
 					'<imageBlock ' +
 						'ckboxImageId="image-id" ' +
 						'sources="[object Object],[object Object]" ' +
-						'src="/assets/sample.png">' +
+						'src="/sample.png">' +
 					'</imageBlock>'
 				);
 			} );
@@ -317,11 +317,11 @@ describe( 'CKBoxEditing', () => {
 			it( 'should convert both "data-ckbox-resource-id" attributes from a linked block image', () => {
 				editor.setData(
 					'<figure class="image" data-ckbox-resource-id="image-id">' +
-						'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+						'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 						'</a>' +
 					'</figure>'
@@ -331,9 +331,9 @@ describe( 'CKBoxEditing', () => {
 					'<imageBlock ' +
 						'ckboxImageId="image-id" ' +
 						'ckboxLinkId="link-id" ' +
-						'linkHref="/assets/sample.png" ' +
+						'linkHref="/sample.png" ' +
 						'sources="[object Object],[object Object]" ' +
-						'src="/assets/sample.png">' +
+						'src="/sample.png">' +
 					'</imageBlock>'
 				);
 			} );
@@ -342,12 +342,12 @@ describe( 'CKBoxEditing', () => {
 				editor.setData(
 					'<figure class="image" data-ckbox-resource-id="image-id">' +
 						'<picture>' +
-							'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-							'<source srcset="/assets/sample.png">' +
-							'<img src="/assets/sample.png">' +
+							'<source srcset="/sample.png" media="(max-width: 600px)">' +
+							'<source srcset="/sample.png">' +
+							'<img src="/sample.png">' +
 						'</picture>' +
 						'<figcaption>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'Text of the caption' +
 							'</a>' +
 						'</figcaption>' +
@@ -358,9 +358,9 @@ describe( 'CKBoxEditing', () => {
 					'<imageBlock ' +
 						'ckboxImageId="image-id" ' +
 						'sources="[object Object],[object Object]" ' +
-						'src="/assets/sample.png">' +
+						'src="/sample.png">' +
 						'<caption>' +
-							'<$text ckboxLinkId="link-id" linkHref="/assets/sample.png">' +
+							'<$text ckboxLinkId="link-id" linkHref="/sample.png">' +
 								'Text of the caption' +
 							'</$text>' +
 						'</caption>' +
@@ -402,12 +402,12 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<p>' +
-						'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+						'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 							'Foobar' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 							'</picture>' +
 						'</a>' +
 					'</p>'
@@ -415,12 +415,12 @@ describe( 'CKBoxEditing', () => {
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>' +
-						'<$text linkHref="/assets/sample.png">Foobar</$text>' +
+						'<$text linkHref="/sample.png">Foobar</$text>' +
 						'<imageInline ' +
 							'ckboxImageId="image-id" ' +
-							'linkHref="/assets/sample.png" ' +
+							'linkHref="/sample.png" ' +
 							'sources="[object Object],[object Object]" ' +
-							'src="/assets/sample.png">' +
+							'src="/sample.png">' +
 						'</imageInline>' +
 					'</paragraph>'
 					);
@@ -439,11 +439,11 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<p>' +
-						'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+						'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 							'</picture>' +
 						'</a>' +
 					'</p>'
@@ -453,9 +453,9 @@ describe( 'CKBoxEditing', () => {
 						'<paragraph>' +
 						'<imageInline ' +
 							'ckboxImageId="image-id" ' +
-							'linkHref="/assets/sample.png" ' +
+							'linkHref="/sample.png" ' +
 							'sources="[object Object],[object Object]" ' +
-							'src="/assets/sample.png">' +
+							'src="/sample.png">' +
 						'</imageInline>' +
 					'</paragraph>'
 					);
@@ -474,11 +474,11 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-						'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+						'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 						'</a>' +
 					'</figure>'
@@ -487,9 +487,9 @@ describe( 'CKBoxEditing', () => {
 					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 						'<imageBlock ' +
 						'ckboxImageId="image-id" ' +
-						'linkHref="/assets/sample.png" ' +
+						'linkHref="/sample.png" ' +
 						'sources="[object Object],[object Object]" ' +
-						'src="/assets/sample.png">' +
+						'src="/sample.png">' +
 					'</imageBlock>'
 					);
 				}
@@ -529,10 +529,10 @@ describe( 'CKBoxEditing', () => {
 						}
 					} );
 
-					editor.setData( '<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' );
+					editor.setData( '<img src="/sample.png" data-ckbox-resource-id="image-id">' );
 
 					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
-						'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
+						'<paragraph><imageInline src="/sample.png"></imageInline></paragraph>'
 					);
 
 					return editor.destroy();
@@ -548,11 +548,11 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -561,9 +561,9 @@ describe( 'CKBoxEditing', () => {
 					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>' +
 							'<imageInline ' +
-								'linkHref="/assets/sample.png" ' +
+								'linkHref="/sample.png" ' +
 								'sources="[object Object],[object Object]" ' +
-								'src="/assets/sample.png">' +
+								'src="/sample.png">' +
 							'</imageInline>' +
 						'</paragraph>'
 					);
@@ -581,11 +581,11 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -593,9 +593,9 @@ describe( 'CKBoxEditing', () => {
 
 					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<imageBlock ' +
-							'linkHref="/assets/sample.png" ' +
+							'linkHref="/sample.png" ' +
 							'sources="[object Object],[object Object]" ' +
-							'src="/assets/sample.png">' +
+							'src="/sample.png">' +
 						'</imageBlock>'
 					);
 
@@ -623,10 +623,10 @@ describe( 'CKBoxEditing', () => {
 				it( 'should not convert the "data-ckbox-resource-id" for an image element', async () => {
 					const editor = await createTestEditor();
 
-					editor.setData( '<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' );
+					editor.setData( '<img src="/sample.png" data-ckbox-resource-id="image-id">' );
 
 					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
-						'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
+						'<paragraph><imageInline src="/sample.png"></imageInline></paragraph>'
 					);
 
 					return editor.destroy();
@@ -637,11 +637,11 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -650,9 +650,9 @@ describe( 'CKBoxEditing', () => {
 					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<paragraph>' +
 							'<imageInline ' +
-								'linkHref="/assets/sample.png" ' +
+								'linkHref="/sample.png" ' +
 								'sources="[object Object],[object Object]" ' +
-								'src="/assets/sample.png">' +
+								'src="/sample.png">' +
 							'</imageInline>' +
 						'</paragraph>'
 					);
@@ -665,11 +665,11 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -677,9 +677,9 @@ describe( 'CKBoxEditing', () => {
 
 					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual(
 						'<imageBlock ' +
-							'linkHref="/assets/sample.png" ' +
+							'linkHref="/sample.png" ' +
 							'sources="[object Object],[object Object]" ' +
-							'src="/assets/sample.png">' +
+							'src="/sample.png">' +
 						'</imageBlock>'
 					);
 
@@ -704,9 +704,9 @@ describe( 'CKBoxEditing', () => {
 					editor.setData(
 						'<p>' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 							'</picture>' +
 						'</p>'
 					);
@@ -715,9 +715,9 @@ describe( 'CKBoxEditing', () => {
 						'<p>' +
 							'<span class="ck-widget image-inline" contenteditable="false" data-ckbox-resource-id="image-id">' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-									'<source srcset="/assets/sample.png"></source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+									'<source srcset="/sample.png"></source>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 							'</span>' +
 						'</p>'
@@ -727,12 +727,12 @@ describe( 'CKBoxEditing', () => {
 				it( 'should convert both "data-ckbox-resource-id" attributes from a linked inline image', () => {
 					editor.setData(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -740,13 +740,13 @@ describe( 'CKBoxEditing', () => {
 
 					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p>' +
-							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
+							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/sample.png">' +
 								'Foobar' +
 								'<span class="ck-widget image-inline" contenteditable="false" data-ckbox-resource-id="image-id">' +
 									'<picture>' +
-										'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-										'<source srcset="/assets/sample.png"></source>' +
-										'<img src="/assets/sample.png"></img>' +
+										'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+										'<source srcset="/sample.png"></source>' +
+										'<img src="/sample.png"></img>' +
 									'</picture>' +
 								'</span>' +
 							'</a>' +
@@ -758,9 +758,9 @@ describe( 'CKBoxEditing', () => {
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 						'</figure>'
 					);
@@ -768,9 +768,9 @@ describe( 'CKBoxEditing', () => {
 					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
-								'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-								'<source srcset="/assets/sample.png"></source>' +
-								'<img src="/assets/sample.png"></img>' +
+								'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+								'<source srcset="/sample.png"></source>' +
+								'<img src="/sample.png"></img>' +
 							'</picture>' +
 						'</figure>'
 					);
@@ -780,12 +780,12 @@ describe( 'CKBoxEditing', () => {
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 							'<figcaption>' +
-								'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+								'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 									'Text of the caption' +
 								'</a>' +
 							'</figcaption>' +
@@ -795,9 +795,9 @@ describe( 'CKBoxEditing', () => {
 					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
-								'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-								'<source srcset="/assets/sample.png"></source>' +
-								'<img src="/assets/sample.png"></img>' +
+								'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+								'<source srcset="/sample.png"></source>' +
+								'<img src="/sample.png"></img>' +
 							'</picture>' +
 							'<figcaption ' +
 								'aria-label="Caption for the image" ' +
@@ -806,7 +806,7 @@ describe( 'CKBoxEditing', () => {
 								'data-placeholder="Enter image caption" ' +
 								'role="textbox" ' +
 								'tabindex="-1">' +
-								'<a data-ckbox-resource-id="link-id" href="/assets/sample.png">Text of the caption</a>' +
+								'<a data-ckbox-resource-id="link-id" href="/sample.png">Text of the caption</a>' +
 							'</figcaption>' +
 						'</figure>'
 					);
@@ -815,11 +815,11 @@ describe( 'CKBoxEditing', () => {
 				it( 'should convert both "data-ckbox-resource-id" attributes from a linked block image', () => {
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -827,11 +827,11 @@ describe( 'CKBoxEditing', () => {
 
 					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
-							'<a data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
+							'<a data-ckbox-resource-id="link-id" href="/sample.png">' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-									'<source srcset="/assets/sample.png"></source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+									'<source srcset="/sample.png"></source>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -847,11 +847,11 @@ describe( 'CKBoxEditing', () => {
 				it( 'should not add the "data-ckbox-resource-id" attribute when removed from the model element (<imageBlock>)', () => {
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -864,11 +864,11 @@ describe( 'CKBoxEditing', () => {
 
 					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png">' +
+							'<a href="/sample.png">' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-									'<source srcset="/assets/sample.png"></source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+									'<source srcset="/sample.png"></source>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -879,11 +879,11 @@ describe( 'CKBoxEditing', () => {
 					() => {
 						editor.setData(
 							'<figure class="image" data-ckbox-resource-id="image-id">' +
-						'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+						'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 						'<picture>' +
-						'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-						'<source srcset="/assets/sample.png">' +
-						'<img src="/assets/sample.png">' +
+						'<source srcset="/sample.png" media="(max-width: 600px)">' +
+						'<source srcset="/sample.png">' +
+						'<img src="/sample.png">' +
 						'</picture>' +
 						'</a>' +
 						'</figure>'
@@ -896,11 +896,11 @@ describe( 'CKBoxEditing', () => {
 
 						expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 							'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
-						'<a data-ckbox-resource-id="foo-bar-test" href="/assets/sample.png">' +
+						'<a data-ckbox-resource-id="foo-bar-test" href="/sample.png">' +
 						'<picture>' +
-						'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-						'<source srcset="/assets/sample.png"></source>' +
-						'<img src="/assets/sample.png"></img>' +
+						'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+						'<source srcset="/sample.png"></source>' +
+						'<img src="/sample.png"></img>' +
 						'</picture>' +
 						'</a>' +
 						'</figure>'
@@ -911,11 +911,11 @@ describe( 'CKBoxEditing', () => {
 				it( 'should not wrap the image in the "<a>" element when the "linkHref" attribute is removed (<imageBlock>)', () => {
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -929,9 +929,9 @@ describe( 'CKBoxEditing', () => {
 					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
-								'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-								'<source srcset="/assets/sample.png"></source>' +
-								'<img src="/assets/sample.png"></img>' +
+								'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+								'<source srcset="/sample.png"></source>' +
+								'<img src="/sample.png"></img>' +
 							'</picture>' +
 						'</figure>'
 					);
@@ -946,11 +946,11 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -958,11 +958,11 @@ describe( 'CKBoxEditing', () => {
 
 					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<figure class="ck-widget image" contenteditable="false" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png">' +
+							'<a href="/sample.png">' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-									'<source srcset="/assets/sample.png"></source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+									'<source srcset="/sample.png"></source>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -972,12 +972,12 @@ describe( 'CKBoxEditing', () => {
 				it( 'should not add the "data-ckbox-resource-id" attribute when removed from the model element (<imageInline>)', () => {
 					editor.setData(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -990,15 +990,15 @@ describe( 'CKBoxEditing', () => {
 
 					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p>' +
-							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
+							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/sample.png">' +
 								'Foobar' +
 							'</a>' +
-							'<a class="ck-link_selected" href="/assets/sample.png">' +
+							'<a class="ck-link_selected" href="/sample.png">' +
 								'<span class="ck-widget image-inline" contenteditable="false" data-ckbox-resource-id="image-id">' +
 									'<picture>' +
-										'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-										'<source srcset="/assets/sample.png"></source>' +
-										'<img src="/assets/sample.png"></img>' +
+										'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+										'<source srcset="/sample.png"></source>' +
+										'<img src="/sample.png"></img>' +
 									'</picture>' +
 								'</span>' +
 							'</a>' +
@@ -1010,12 +1010,12 @@ describe( 'CKBoxEditing', () => {
 					() => {
 						editor.setData(
 							'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -1028,15 +1028,15 @@ describe( 'CKBoxEditing', () => {
 
 						expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 							'<p>' +
-							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
+							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/sample.png">' +
 								'Foobar' +
 							'</a>' +
-							'<a class="ck-link_selected" data-ckbox-resource-id="foo-bar-test" href="/assets/sample.png">' +
+							'<a class="ck-link_selected" data-ckbox-resource-id="foo-bar-test" href="/sample.png">' +
 								'<span class="ck-widget image-inline" contenteditable="false" data-ckbox-resource-id="image-id">' +
 									'<picture>' +
-										'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-										'<source srcset="/assets/sample.png"></source>' +
-										'<img src="/assets/sample.png"></img>' +
+										'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+										'<source srcset="/sample.png"></source>' +
+										'<img src="/sample.png"></img>' +
 									'</picture>' +
 								'</span>' +
 							'</a>' +
@@ -1048,12 +1048,12 @@ describe( 'CKBoxEditing', () => {
 				it( 'should not wrap the image in the "<a>" element when the "linkHref" attribute is removed (<imageInline>)', () => {
 					editor.setData(
 						'<p>' +
-						'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+						'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 						'Foobar' +
 						'<picture>' +
-						'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-						'<source srcset="/assets/sample.png">' +
-						'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+						'<source srcset="/sample.png" media="(max-width: 600px)">' +
+						'<source srcset="/sample.png">' +
+						'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 						'</picture>' +
 						'</a>' +
 						'</p>'
@@ -1066,14 +1066,14 @@ describe( 'CKBoxEditing', () => {
 
 					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p>' +
-							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
+							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/sample.png">' +
 								'Foobar' +
 							'</a>' +
 							'<span class="ck-widget image-inline" contenteditable="false" data-ckbox-resource-id="image-id">' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-									'<source srcset="/assets/sample.png"></source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+									'<source srcset="/sample.png"></source>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 							'</span>' +
 						'</p>'
@@ -1089,12 +1089,12 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -1102,15 +1102,15 @@ describe( 'CKBoxEditing', () => {
 
 					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 						'<p>' +
-							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/assets/sample.png">' +
+							'<a class="ck-link_selected" data-ckbox-resource-id="link-id" href="/sample.png">' +
 								'Foobar' +
 							'</a>' +
-							'<a class="ck-link_selected" href="/assets/sample.png">' +
+							'<a class="ck-link_selected" href="/sample.png">' +
 								'<span class="ck-widget image-inline" contenteditable="false" data-ckbox-resource-id="image-id">' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png"></source>' +
-									'<source srcset="/assets/sample.png"></source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<source media="(max-width: 600px)" srcset="/sample.png"></source>' +
+									'<source srcset="/sample.png"></source>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 								'</span>' +
 							'</a>' +
@@ -1195,9 +1195,9 @@ describe( 'CKBoxEditing', () => {
 					const data =
 						'<p>' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 							'</picture>' +
 						'</p>';
 
@@ -1209,12 +1209,12 @@ describe( 'CKBoxEditing', () => {
 				it( 'should convert both "data-ckbox-resource-id" attributes from a linked inline image', () => {
 					const data =
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>';
@@ -1228,9 +1228,9 @@ describe( 'CKBoxEditing', () => {
 					const data =
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 						'</figure>';
 
@@ -1243,12 +1243,12 @@ describe( 'CKBoxEditing', () => {
 					const data =
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 							'<figcaption>' +
-								'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+								'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 									'Text of the caption' +
 								'</a>' +
 							'</figcaption>' +
@@ -1268,11 +1268,11 @@ describe( 'CKBoxEditing', () => {
 				it( 'should not add the "data-ckbox-resource-id" attribute when removed from the model element (<imageBlock>)', () => {
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source media="(max-width: 600px)" srcset="/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -1285,11 +1285,11 @@ describe( 'CKBoxEditing', () => {
 
 					expect( editor.getData() ).toEqual(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png">' +
+							'<a href="/sample.png">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -1300,11 +1300,11 @@ describe( 'CKBoxEditing', () => {
 					() => {
 						editor.setData(
 							'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source media="(max-width: 600px)" srcset="/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -1317,11 +1317,11 @@ describe( 'CKBoxEditing', () => {
 
 						expect( editor.getData() ).toEqual(
 							'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="foo-bar-test">' +
+							'<a href="/sample.png" data-ckbox-resource-id="foo-bar-test">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -1332,11 +1332,11 @@ describe( 'CKBoxEditing', () => {
 				it( 'should not wrap the image in the "<a>" element when the "linkHref" attribute is removed (<imageBlock>)', () => {
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source media="(max-width: 600px)" srcset="/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -1350,9 +1350,9 @@ describe( 'CKBoxEditing', () => {
 					expect( editor.getData() ).toEqual(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 						'</figure>'
 					);
@@ -1367,11 +1367,11 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source media="(max-width: 600px)" srcset="/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -1379,11 +1379,11 @@ describe( 'CKBoxEditing', () => {
 
 					expect( editor.getData() ).toEqual(
 						'<figure class="image" data-ckbox-resource-id="image-id">' +
-							'<a href="/assets/sample.png">' +
+							'<a href="/sample.png">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 						'</figure>'
@@ -1393,12 +1393,12 @@ describe( 'CKBoxEditing', () => {
 				it( 'should not add the "data-ckbox-resource-id" attribute when removed from the model element (<imageInline>)', () => {
 					editor.setData(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source media="(max-width: 600px)" srcset="/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -1411,14 +1411,14 @@ describe( 'CKBoxEditing', () => {
 
 					expect( editor.getData() ).toEqual(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 							'Foobar' +
 							'</a>' +
-							'<a href="/assets/sample.png">' +
+							'<a href="/sample.png">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -1429,12 +1429,12 @@ describe( 'CKBoxEditing', () => {
 					() => {
 						editor.setData(
 							'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 							'Foobar' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source media="(max-width: 600px)" srcset="/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -1447,14 +1447,14 @@ describe( 'CKBoxEditing', () => {
 
 						expect( editor.getData() ).toEqual(
 							'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
 							'</a>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="foo-bar-test">' +
+							'<a href="/sample.png" data-ckbox-resource-id="foo-bar-test">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -1465,12 +1465,12 @@ describe( 'CKBoxEditing', () => {
 				it( 'should not wrap the image in the "<a>" element when the "linkHref" attribute is removed (<imageInline>)', () => {
 					editor.setData(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source media="(max-width: 600px)" srcset="/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -1483,13 +1483,13 @@ describe( 'CKBoxEditing', () => {
 
 					expect( editor.getData() ).toEqual(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 								'Foobar' +
 							'</a>' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-								'<source srcset="/assets/sample.png">' +
-								'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+								'<source srcset="/sample.png" media="(max-width: 600px)">' +
+								'<source srcset="/sample.png">' +
+								'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 							'</picture>' +
 						'</p>'
 					);
@@ -1504,12 +1504,12 @@ describe( 'CKBoxEditing', () => {
 
 					editor.setData(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 							'Foobar' +
 								'<picture>' +
-									'<source media="(max-width: 600px)" srcset="/assets/sample.png">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source media="(max-width: 600px)" srcset="/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -1517,14 +1517,14 @@ describe( 'CKBoxEditing', () => {
 
 					expect( editor.getData() ).toEqual(
 						'<p>' +
-							'<a href="/assets/sample.png" data-ckbox-resource-id="link-id">' +
+							'<a href="/sample.png" data-ckbox-resource-id="link-id">' +
 							'Foobar' +
 							'</a>' +
-							'<a href="/assets/sample.png">' +
+							'<a href="/sample.png">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(max-width: 600px)">' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png" data-ckbox-resource-id="image-id">' +
+									'<source srcset="/sample.png" media="(max-width: 600px)">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png" data-ckbox-resource-id="image-id">' +
 								'</picture>' +
 							'</a>' +
 						'</p>'
@@ -1842,7 +1842,7 @@ describe( 'CKBoxEditing', () => {
 
 		expect( element.getAttribute( 'ckboxImageId' ) ).toEqual( 'id' );
 
-		replaceImageSourceCommand.execute( { source: '/assets/sample.png' } );
+		replaceImageSourceCommand.execute( { source: '/sample.png' } );
 
 		expect( element.getAttribute( 'ckboxImageId' ) ).toBeUndefined();
 	} );

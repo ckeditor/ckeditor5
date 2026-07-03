@@ -155,7 +155,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 	describe( 'execute', () => {
 		it( 'should open CKBox image editor', async () => {
-			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 			command.execute();
 
 			await tick();
@@ -168,7 +168,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			let mountImageEditor;
 
 			beforeEach( () => {
-				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 
 				mountImageEditor = window.CKBox.mountImageEditor;
 			} );
@@ -225,7 +225,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {
-				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 				command.execute();
 
 				const wrapper = command._wrapper;
@@ -235,7 +235,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should create and mount a wrapper only once', () => {
-				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 				command.execute();
 
 				const wrapper1 = command._wrapper;
@@ -269,7 +269,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should open the CKBox Image Editor dialog instance only once', async () => {
-				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 
 				command.execute();
 				command.execute();
@@ -284,7 +284,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -389,7 +389,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -415,7 +415,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -439,7 +439,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -467,7 +467,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				vi.useFakeTimers();
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -498,7 +498,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -534,7 +534,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				_setModelData( model,
 					`[<imageBlock alt="alt text" height="50" ckboxImageId="${ ckboxImageId }"\
-					src="/assets/sample.png" width="50"></imageBlock>]`
+					src="/sample.png" width="50"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -890,7 +890,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				} );
 
 				_setModelData( model, '[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/sample.png" width="50">' +
 							'<caption>' +
 								'caption' +
 							'</caption>' +
@@ -918,7 +918,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should not replace image with saved one before it is processed', () => {
 				const modelData =
 					'[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/sample.png" ' +
 						'tempServerAssetId="image-id1" width="50">' +
 					'</imageBlock>]';
 
@@ -931,7 +931,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should replace inline image with saved one after it is processed', () => {
 				_setModelData( model, '<paragraph>[<imageInline ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/sample.png" width="50">' +
 					'</imageInline>]</paragraph>' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -952,7 +952,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should replace image with saved one after it is processed', () => {
 				_setModelData( model, '[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/sample.png" width="50">' +
 					'</imageBlock>]' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -973,7 +973,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should not be alt attribute if there is no one in the original image', () => {
 				_setModelData( model, '[<imageBlock ' +
-						'ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'ckboxImageId="example-id" height="50" src="/sample.png" width="50">' +
 					'</imageBlock>]' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -995,7 +995,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const placeholder = blurHashToDataUrl( dataWithBlurHashMock.data.metadata.blurHash );
 
 				_setModelData( model, '[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/sample.png" width="50">' +
 					'</imageBlock>]' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -1019,7 +1019,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				'while waiting for the processed image', async () => {
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual(
 					'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-ckbox-resource-id="example-id">' +
-						'<img alt="alt text" height="50" loading="lazy" src="/assets/sample.png" style="aspect-ratio:50/50" width="50">' +
+						'<img alt="alt text" height="50" loading="lazy" src="/sample.png" style="aspect-ratio:50/50" width="50">' +
 						'</img>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</figure>'
@@ -1030,7 +1030,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual(
 					'<figure class="ck-widget ck-widget_selected image image-processing" ' +
 						'contenteditable="false" data-ckbox-resource-id="example-id">' +
-						'<img alt="alt text" height="100" loading="lazy" src="/assets/sample.png" ' +
+						'<img alt="alt text" height="100" loading="lazy" src="/sample.png" ' +
 							'style="height:100px;width:100px" width="100">' +
 						'</img>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +

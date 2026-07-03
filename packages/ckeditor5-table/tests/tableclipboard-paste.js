@@ -962,7 +962,7 @@ describe( 'table clipboard', () => {
 					_setModelData( model, modelTable( [
 						[ '00', '01', '02' ],
 						[ '10', '11', '12' ],
-						[ '20', '21', '[<imageBlock src="/assets/sample.png"><caption></caption></imageBlock>]' ]
+						[ '20', '21', '[<imageBlock src="/sample.png"><caption></caption></imageBlock>]' ]
 					] ) );
 
 					pasteTable( [
@@ -985,7 +985,7 @@ describe( 'table clipboard', () => {
 					_setModelData( model, modelTable( [
 						[ '00', '01', '02' ],
 						[ '10', '11', '12' ],
-						[ '20', '21', '<imageBlock src="/assets/sample.png"><caption>fo[]o</caption></imageBlock>' ]
+						[ '20', '21', '<imageBlock src="/sample.png"><caption>fo[]o</caption></imageBlock>' ]
 					] ) );
 
 					pasteTable( [
@@ -4217,12 +4217,12 @@ describe( 'table clipboard', () => {
 			);
 
 			pasteTable( [
-				[ '<img src="/assets/sample.png">', 'ab' ],
+				[ '<img src="/sample.png">', 'ab' ],
 				[ 'ba', 'bb' ]
 			] );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ '<imageBlock src="/assets/sample.png"></imageBlock>', 'ab', '02' ],
+				[ '<imageBlock src="/sample.png"></imageBlock>', 'ab', '02' ],
 				[ 'ba', 'bb', '12' ],
 				[ '02', '21', '22' ]
 			] ) );
@@ -4242,7 +4242,7 @@ describe( 'table clipboard', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const img = '<img src="/assets/sample.png">';
+			const img = '<img src="/sample.png">';
 			const list = '<ul><li>foo</li><li>bar</li></ul>';
 			const blockquote = `<blockquote><p>baz</p>${ list }</blockquote>`;
 
@@ -4253,7 +4253,7 @@ describe( 'table clipboard', () => {
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[
-					'<imageBlock src="/assets/sample.png"></imageBlock>' +
+					'<imageBlock src="/sample.png"></imageBlock>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">bar</paragraph>' +
 					'<blockQuote>' +

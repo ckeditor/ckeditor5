@@ -645,13 +645,13 @@ describe( 'ImageUploadEditing', () => {
 
 		await new Promise( res => {
 			model.document.once( 'change', res, { priority: 'lowest' } );
-			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: '/assets/sample2.png' } ) );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/sample.png', 800: '/sample2.png' } ) );
 		} );
 
 		await timeout( 100 );
 
 		expect( _getModelData( model ) ).toBe(
-			'[<imageBlock src="/assets/sample.png" srcset="/assets/sample2.png 800w" width="50"></imageBlock>]<paragraph>foo</paragraph>'
+			'[<imageBlock src="/sample.png" srcset="/sample2.png 800w" width="50"></imageBlock>]<paragraph>foo</paragraph>'
 		);
 	} );
 
@@ -677,13 +677,13 @@ describe( 'ImageUploadEditing', () => {
 
 		await new Promise( res => {
 			model.document.once( 'change', res, { priority: 'lowest' } );
-			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: '/assets/sample2.png' } ) );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/sample.png', 800: '/sample2.png' } ) );
 		} );
 
 		await timeout( 100 );
 
 		expect( _getModelData( model ) ).toBe(
-			'[<imageBlock height="50" src="/assets/sample.png" srcset="/assets/sample2.png 800w"></imageBlock>]<paragraph>foo</paragraph>'
+			'[<imageBlock height="50" src="/sample.png" srcset="/sample2.png 800w"></imageBlock>]<paragraph>foo</paragraph>'
 		);
 	} );
 
@@ -1868,11 +1868,11 @@ describe( 'ImageUploadEditing', () => {
 			// Let's resolve uploading status and ensure that image is loaded.
 			await new Promise( res => {
 				model.document.once( 'change', res, { priority: 'lowest' } );
-				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'assets/sample2.png' } ) );
+				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/sample.png', 800: 'assets/sample2.png' } ) );
 			} );
 
 			expect( editor.getData() ).toBe(
-				'<p><img src="/assets/sample.png" srcset="assets/sample2.png 800w" sizes="100vw" width="800">foo</p>'
+				'<p><img src="/sample.png" srcset="assets/sample2.png 800w" sizes="100vw" width="800">foo</p>'
 			);
 
 			// Make sure it's no longer present in registry, so image upload is completed.
@@ -1888,7 +1888,7 @@ describe( 'ImageUploadEditing', () => {
 			} );
 
 			expect( editor.getData() ).toBe(
-				'<p>hello<img src="/assets/sample.png" srcset="assets/sample2.png 800w" sizes="100vw" width="800"></p>'
+				'<p>hello<img src="/sample.png" srcset="assets/sample2.png 800w" sizes="100vw" width="800"></p>'
 			);
 		} );
 	} );
@@ -1916,7 +1916,7 @@ describe( 'ImageUploadEditing', () => {
 			model.schema.addChildCheck( () => false, 'imageInline' );
 
 			expect( () => {
-				editor.setData( '<p><img src="/assets/sample.png" data-ck-upload-id="123"></p>' );
+				editor.setData( '<p><img src="/sample.png" data-ck-upload-id="123"></p>' );
 			} ).not.toThrow();
 		} );
 
