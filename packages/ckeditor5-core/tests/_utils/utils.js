@@ -3,18 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, vi } from 'vitest';
+
 /**
  * General test utils for CKEditor.
  */
 export const testUtils = {
-	// In Karma context `sinon` is a global; in Vitest it is not available.
-	// TODO: Remove once all packages are migrated to Vitest. See: https://github.com/ckeditor/ckeditor5-internal/issues/4309
-	sinon: typeof sinon !== 'undefined' ? sinon : null,
-
 	/**
-	 * Creates a cleanup hook that restores all mocks after each test.
-	 *
-	 * In Vitest context uses `vi.restoreAllMocks()`. In Karma/Sinon context falls back to `testUtils.sinon.restore()`.
+	 * Creates a cleanup hook that restores all mocks after each test using `vi.restoreAllMocks()`.
 	 *
 	 * Usage:
 	 *
@@ -31,16 +27,10 @@ export const testUtils = {
 	 * **Note**: Do not use `testUtils.createSinonSandbox()` outside `describe()` block as it will attach `afterEach()` calls
 	 * to all tests - not only those in current file.
 	 */
-
 	createSinonSandbox() {
 		// eslint-disable-next-line mocha/no-top-level-hooks
 		afterEach( () => {
-			if ( typeof vi !== 'undefined' ) {
-				// eslint-disable-next-line no-undef
-				vi.restoreAllMocks();
-			} else {
-				testUtils.sinon.restore();
-			}
+			vi.restoreAllMocks();
 		} );
 	},
 

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { expect } from 'vitest';
+
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { TableWalker } from '../../src/tablewalker.js';
 

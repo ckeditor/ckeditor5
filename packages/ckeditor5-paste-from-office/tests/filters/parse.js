@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
+
 import { ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
 
 import { parsePasteOfficeHtml } from '../../src/filters/parse.js';

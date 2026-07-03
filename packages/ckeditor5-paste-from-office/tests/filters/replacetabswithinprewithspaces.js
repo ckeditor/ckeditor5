@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { replaceTabsWithinPreWithSpaces } from '../../src/filters/replacetabswithinprewithspaces.js';
 

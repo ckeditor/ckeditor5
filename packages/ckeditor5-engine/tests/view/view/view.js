@@ -28,37 +28,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { stubGeometry, assertScrollPosition } from '@ckeditor/ckeditor5-utils/tests/_utils/scroll.js';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-function stubWithVi( obj, property ) {
-	const methodSpy = typeof obj[ property ] == 'function' ?
-		vi.spyOn( obj, property ).mockImplementation( () => {} ) :
-		null;
-
-	return {
-		returns( value ) {
-			if ( methodSpy ) {
-				methodSpy.mockReturnValue( value );
-			} else {
-				vi.spyOn( obj, property, 'get' ).mockReturnValue( value );
-			}
-		},
-
-		value( value ) {
-			vi.spyOn( obj, property, 'get' ).mockReturnValue( value );
-		},
-
-		get( getter ) {
-			vi.spyOn( obj, property, 'get' ).mockImplementation( getter );
-		}
-	};
-}
-
-// Adapter so that stubGeometry (which calls testUtils.sinon.stub) works with vi.
-const testUtilsAdapter = {
-	sinon: {
-		stub: stubWithVi
-	}
-};
-
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 9;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
@@ -469,18 +438,18 @@ describe( 'view', () => {
 
 			view.attachDomRoot( domRoot );
 
-			stubGeometry( testUtilsAdapter, domRootAncestor, {
+			stubGeometry( domRootAncestor, {
 				top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
 			}, {
 				scrollLeft: 100, scrollTop: 100
 			} );
 
-			stubWithVi( global.window, 'innerWidth' ).value( 1000 );
-			stubWithVi( global.window, 'innerHeight' ).value( 500 );
-			stubWithVi( global.window, 'scrollX' ).value( 100 );
-			stubWithVi( global.window, 'scrollY' ).value( 100 );
-			stubWithVi( global.window, 'scrollTo' );
-			stubWithVi( global.window, 'getComputedStyle' ).returns( {
+			vi.spyOn( global.window, 'innerWidth', 'get' ).mockReturnValue( 1000 );
+			vi.spyOn( global.window, 'innerHeight', 'get' ).mockReturnValue( 500 );
+			vi.spyOn( global.window, 'scrollX', 'get' ).mockReturnValue( 100 );
+			vi.spyOn( global.window, 'scrollY', 'get' ).mockReturnValue( 100 );
+			vi.spyOn( global.window, 'scrollTo' ).mockImplementation( () => {} );
+			vi.spyOn( global.window, 'getComputedStyle' ).mockReturnValue( {
 				borderTopWidth: '0px',
 				borderRightWidth: '0px',
 				borderBottomWidth: '0px',
@@ -489,7 +458,7 @@ describe( 'view', () => {
 			} );
 
 			// Assuming 20px v- and h-scrollbars here.
-			stubWithVi( global.window.document, 'documentElement' ).value( {
+			vi.spyOn( global.window.document, 'documentElement', 'get' ).mockReturnValue( {
 				clientWidth: 980,
 				clientHeight: 480
 			} );
@@ -688,7 +657,7 @@ describe( 'view', () => {
 			domRange.setStart( domRoot, 0 );
 			domRange.setEnd( domRoot, 0 );
 
-			stubGeometry( testUtilsAdapter, domRange, geometry );
+			stubGeometry( domRange, geometry );
 
 			view.change( writer => {
 				writer.setSelection( ViewRange._createIn( viewRoot ) );

@@ -16,7 +16,7 @@ import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { vi, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';

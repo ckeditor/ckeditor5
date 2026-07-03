@@ -3,17 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { expect, it, vi } from 'vitest';
+
 import { isVisible, parseKeystroke, wait } from '@ckeditor/ckeditor5-utils';
 import { View, type ViewCollection } from '../../src/index.js';
 import type { FocusableView, FocusCyclerActions, ViewWithFocusCycler } from '../../src/focuscycler.js';
-// sinon and vi are globals injected by Karma and Vitest respectively.
-// No imports — adding either as a dependency of ckeditor5-ui is not desired.
-declare const sinon: any;
-
-// vi is a Vitest global; not available in Karma environments.
-// Captured once at module load to avoid repeated typeof checks throughout the file.
-// See: https://github.com/ckeditor/ckeditor5-internal/issues/4309
-const _vi: any = ( globalThis as any ).vi ?? null;
 
 /**
  * Automates testing of focus cycling in a view with a focus cycler. It runs a test per each configured action.
@@ -110,9 +104,7 @@ export function testFocusCycling( {
 			}
 
 			const visibleFocusables = Array.from( focusables ).filter( view => isVisible( view.element ) );
-			const focusSpies: Array<any> = visibleFocusables.map( view =>
-				_vi ? _vi.spyOn( view, 'focus' ) : sinon.spy( view, 'focus' )
-			);
+			const focusSpies: Array<any> = visibleFocusables.map( view => vi.spyOn( view, 'focus' ) );
 
 			getView().focusCycler.focusFirst();
 
@@ -136,13 +128,8 @@ export function testFocusCycling( {
 				await wait( 10 );
 
 				if ( event ) {
-					if ( _vi ) {
-						expect( event.preventDefault ).toHaveBeenCalledOnce();
-						expect( event.stopPropagation ).toHaveBeenCalledOnce();
-					} else {
-						sinon.assert.calledOnce( event.preventDefault );
-						sinon.assert.calledOnce( event.stopPropagation );
-					}
+					expect( event.preventDefault ).toHaveBeenCalledOnce();
+					expect( event.stopPropagation ).toHaveBeenCalledOnce();
 				}
 
 				currentElement = document.activeElement as HTMLElement;
@@ -155,32 +142,19 @@ export function testFocusCycling( {
 				expect( visitedElements, 'Elements visited by focus' ).to.have.ordered.members( expectedElements );
 			}
 
-			if ( _vi ) {
-				expect(
-					focusSpies.map( spy => spy.mock.calls.length > 0 ).every( isCalled => isCalled ),
-					'Focus was called'
-				).toBe( true );
+			expect(
+				focusSpies.map( spy => spy.mock.calls.length > 0 ).every( isCalled => isCalled ),
+				'Focus was called'
+			).toBe( true );
 
-				const orderedSpies = action === 'focusNext' ? focusSpies : focusSpies.reverse();
-				const callOrders = orderedSpies.map( ( spy, index, arr ) => {
-					const isWrappedSpy = action === 'focusPrevious' && index === arr.length - 1;
-					return spy.mock.invocationCallOrder.at( isWrappedSpy ? -1 : 0 );
-				} );
+			const orderedSpies = action === 'focusNext' ? focusSpies : focusSpies.reverse();
+			const callOrders = orderedSpies.map( ( spy, index, arr ) => {
+				const isWrappedSpy = action === 'focusPrevious' && index === arr.length - 1;
+				return spy.mock.invocationCallOrder.at( isWrappedSpy ? -1 : 0 );
+			} );
 
-				for ( let i = 1; i < callOrders.length; i++ ) {
-					expect( callOrders[ i ] ).toBeGreaterThan( callOrders[ i - 1 ] );
-				}
-			} else {
-				expect(
-					focusSpies.map( spy => spy.called ).every( isCalled => isCalled ),
-					'Focus was called'
-				).to.be.true;
-
-				if ( action === 'focusNext' ) {
-					sinon.assert.callOrder( ...focusSpies );
-				} else {
-					sinon.assert.callOrder( ...focusSpies.reverse() );
-				}
+			for ( let i = 1; i < callOrders.length; i++ ) {
+				expect( callOrders[ i ] ).toBeGreaterThan( callOrders[ i - 1 ] );
 			}
 		} );
 	}
@@ -192,13 +166,8 @@ export function getDomKeyboardEvent( keyCode: number, options = { bubbles: true 
 		...options
 	} );
 
-	if ( _vi ) {
-		_vi.spyOn( event, 'preventDefault' );
-		_vi.spyOn( event, 'stopPropagation' );
-	} else {
-		sinon.spy( event, 'preventDefault' );
-		sinon.spy( event, 'stopPropagation' );
-	}
+	vi.spyOn( event, 'preventDefault' );
+	vi.spyOn( event, 'stopPropagation' );
 
 	return event;
 }

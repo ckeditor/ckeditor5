@@ -3,14 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
+
 import { WidgetResize } from '../../../src/widgetresize.js';
 
 import { Rect } from '@ckeditor/ckeditor5-utils';
 
 export const resizerMouseSimulator = {
 	down( editor, domTarget, options = {} ) {
-		const preventDefault = options.preventDefault || ( globalThis.vi ? globalThis.vi.fn() : sinon.spy().named( 'preventDefault' ) );
-		const stop = options.stop || ( globalThis.vi ? globalThis.vi.fn() : sinon.spy().named( 'stop' ) );
+		const preventDefault = options.preventDefault || vi.fn();
+		const stop = options.stop || vi.fn();
 
 		this._getPlugin( editor )._mouseDownListener( { stop }, { domTarget, preventDefault } );
 	},

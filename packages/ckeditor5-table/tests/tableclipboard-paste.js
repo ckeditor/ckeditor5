@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';

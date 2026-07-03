@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
+
 import { createImageTypeRegExp } from '../../src/imageupload/utils.js';
 
 describe( 'Upload utils', () => {

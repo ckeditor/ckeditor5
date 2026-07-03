@@ -37,7 +37,6 @@ export function createVitestConfig( { name, ...testOverrides }: TestOptions ): V
 		defineConfig( {
 			test: {
 				name,
-				globals: true,
 
 				include: [
 					'tests/**/*.{js,ts}'

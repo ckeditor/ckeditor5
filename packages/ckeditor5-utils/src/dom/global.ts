@@ -25,7 +25,7 @@ export interface GlobalType {
  * import { global } from 'ckeditor5';
  *
  * // This stub will work for any code using global module.
- * testUtils.sinon.stub( global, 'window', {
+ * vi.spyOn( global, 'window', 'get' ).mockReturnValue( {
  * 	innerWidth: 10000
  * } );
  *

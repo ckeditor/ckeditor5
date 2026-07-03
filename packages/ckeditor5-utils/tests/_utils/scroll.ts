@@ -3,21 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { expect, vi } from 'vitest';
+
 import { isRange } from '../../src/dom/isrange.js';
 
 /**
  * A helper that stubs DOM target's geometry (client rects and scroll) to be used in tests that verify UI behaviors.
  */
 export function stubGeometry(
-	testUtils: any,
 	target: HTMLElement | Range,
 	geometryStub: { top: number; left: number; bottom: number; right: number; width: number; height: number },
-	scrollStub: { scrollTop: number; scrollLeft: number }
+	scrollStub?: { scrollTop: number; scrollLeft: number }
 ): void {
 	if ( isRange( target ) ) {
-		testUtils.sinon.stub( target, 'getClientRects' ).returns( [ geometryStub ] );
+		vi.spyOn( target, 'getClientRects' ).mockReturnValue( [ geometryStub ] as unknown as DOMRectList );
 	} else {
-		testUtils.sinon.stub( target, 'getBoundingClientRect' ).returns( geometryStub );
+		vi.spyOn( target, 'getBoundingClientRect' ).mockReturnValue( geometryStub as DOMRect );
 
 		// Make the element immune to the border-width-* styles in the test environment.
 		Object.defineProperties( target, {

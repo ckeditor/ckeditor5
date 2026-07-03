@@ -8,7 +8,8 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { Autoformat } from '../src/autoformat.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ListEditing, ListPropertiesEditing, TodoListEditing, _ListItemUid as ListItemUid } from '@ckeditor/ckeditor5-list';
+import { ListEditing, ListPropertiesEditing, TodoListEditing } from '@ckeditor/ckeditor5-list';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 import { HeadingEditing, HeadingCommand } from '@ckeditor/ckeditor5-heading';
 import { BoldEditing, StrikethroughEditing, CodeEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
@@ -2934,11 +2935,5 @@ describe( 'Autoformat', () => {
 		model.change( writer => {
 			writer.insertText( ' ', doc.selection.getFirstPosition() );
 		} );
-	}
-
-	function stubUid( start = 0xa00 ) {
-		let num = start;
-
-		vi.spyOn( ListItemUid, 'next' ).mockImplementation( () => ( num++ ).toString( 16 ).padStart( 3, '000' ) );
 	}
 } );

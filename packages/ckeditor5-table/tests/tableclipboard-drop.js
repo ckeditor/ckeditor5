@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';

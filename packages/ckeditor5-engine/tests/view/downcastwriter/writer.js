@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { ViewEditableElement } from '../../../src/view/editableelement.js';

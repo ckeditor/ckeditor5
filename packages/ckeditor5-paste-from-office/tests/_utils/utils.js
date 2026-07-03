@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
@@ -158,19 +160,11 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip, only )
 			editor = await VirtualTestEditor.create( await editorConfig() );
 
 			// Stub `editor.editing.view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-			if ( globalThis.vi ) {
-				globalThis.vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
-			} else {
-				globalThis.sinon.stub( editor.editing.view, 'scrollToTheSelection' );
-			}
+			vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		} );
 
 		afterEach( async () => {
-			if ( globalThis.vi ) {
-				globalThis.vi.restoreAllMocks();
-			} else {
-				globalThis.sinon.restore();
-			}
+			vi.restoreAllMocks();
 
 			await editor.destroy();
 		} );
@@ -225,8 +219,7 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 		let element, editor;
 		let data = {};
 
-		// `beforeAll` is Vitest's equivalent of Mocha's `before`. Use whichever is available.
-		( globalThis.beforeAll || globalThis.before )( async () => {
+		beforeAll( async () => {
 			element = document.createElement( 'div' );
 
 			document.body.appendChild( element );
@@ -242,33 +235,19 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 
 			data = {};
 
-			if ( globalThis.vi ) {
-				globalThis.vi.spyOn( editorModel, 'insertContent' ).mockImplementation( ( content, selection ) => {
-					// Save model string representation now as it may change after `insertContent()` function call
-					// so accessing it later may not work as it may have emptied/changed structure.
-					data.actual = _stringifyModel( content );
-					insertContent.call( editorModel, content, selection );
-				} );
-			} else {
-				globalThis.sinon.stub( editorModel, 'insertContent' ).callsFake( ( content, selection ) => {
-					// Save model string representation now as it may change after `insertContent()` function call
-					// so accessing it later may not work as it may have emptied/changed structure.
-					data.actual = _stringifyModel( content );
-					insertContent.call( editorModel, content, selection );
-				} );
-			}
+			vi.spyOn( editorModel, 'insertContent' ).mockImplementation( ( content, selection ) => {
+				// Save model string representation now as it may change after `insertContent()` function call
+				// so accessing it later may not work as it may have emptied/changed structure.
+				data.actual = _stringifyModel( content );
+				insertContent.call( editorModel, content, selection );
+			} );
 		} );
 
 		afterEach( () => {
-			if ( globalThis.vi ) {
-				globalThis.vi.restoreAllMocks();
-			} else {
-				globalThis.sinon.restore();
-			}
+			vi.restoreAllMocks();
 		} );
 
-		// `afterAll` is Vitest's equivalent of Mocha's `after`. Use whichever is available.
-		( globalThis.afterAll || globalThis.after )( () => {
+		afterAll( () => {
 			return editor.destroy()
 				.then( () => {
 					element.remove();

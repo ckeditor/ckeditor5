@@ -12,7 +12,7 @@ import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
-import { describe, it, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { TodoListEditing } from '../../src/todolist/todolistediting.js';
 import { setupTestHelpers } from '../list/_utils/utils.js';

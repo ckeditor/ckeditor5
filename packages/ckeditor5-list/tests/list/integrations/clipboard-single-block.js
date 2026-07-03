@@ -17,7 +17,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ImageBlockEditing, ImageInlineEditing } from '@ckeditor/ckeditor5-image';
 import { Widget } from '@ckeditor/ckeditor5-widget';
 
-import { describe, it, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	_getModelData,

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
+
 import { convertCssLengthToPx, isPx, toPx } from '../../src/filters/utils.js';
 
 describe( 'PasteFromOffice - filters - utils', () => {
