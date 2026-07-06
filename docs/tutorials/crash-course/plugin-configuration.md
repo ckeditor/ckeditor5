@@ -9,6 +9,8 @@ modified_at: 2025-03-14
 
 # Plugin configuration
 
+In this part of the crash course, you will add a configuration option to the `highlight` plugin so integrators can customize its keyboard shortcut.
+
 ## Configuration convention
 
 As we learned at the beginning of this tutorial, the editor accepts a configuration object that allows you to change its default behavior and appearance. The convention used in CKEditor 5 is to have a unique object key for each plugin to avoid conflicts and to make it obvious what each part of the configuration does.

@@ -8,6 +8,8 @@ modified_at: 2023-08-16
 
 # Events and observables
 
+In this part of the crash course, you will learn how events and observable properties make the editor reactive and use them to keep the toolbar button in sync with the command.
+
 ## Reactivity
 
 In the previous chapter of this tutorial, we wrote the following code to bind selected properties between the button and command objects:

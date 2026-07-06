@@ -8,7 +8,7 @@ meta-description: Install and configure your copy of CKEditor 5, deep-dive into 
 
 # Tutorials
 
-Whether a newcomer to CKEditor&nbsp;5 or already a seasoned user &ndash; be sure to find something useful in the tutorial section. These easy-to-follow, clear, and informative guides will help you better tailor the CKEditor 5 WYSIWYG editor to your specific needs.
+Whether you are new to CKEditor&nbsp;5 or already a seasoned user, these step-by-step tutorials help you extend and tailor the editor to your needs: a crash course on the framework, plus guides for building simple plugins and custom widgets.
 
 ## Crash course
 
