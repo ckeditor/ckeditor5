@@ -9,6 +9,8 @@ order: 40
 
 # Editor toolbars
 
+CKEditor&nbsp;5 provides several toolbars that give users access to editor features: the main editor toolbar, an optional block toolbar, and feature-specific contextual toolbars. You configure the main toolbar's buttons and their arrangement through the `toolbar` configuration option.
+
 ## Main editor toolbar
 
 The toolbar is the most basic user interface element of CKEditor&nbsp;5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.

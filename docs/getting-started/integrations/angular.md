@@ -9,7 +9,7 @@ modified_at: 2026-05-27
 
 # Integrating CKEditor&nbsp;5 with Angular from npm
 
-Angular is a TypeScript-based, open-source, single-page web application framework. The CKEditor 5 component for Angular supports integrating different editor types.
+CKEditor&nbsp;5 has an official Angular component that you can use to add a rich text editor to your application, whether you use standalone or NGModule components. It works with multiple editor types, including classic, inline, and decoupled (document), and integrates with Angular forms through `ngModel`. This guide will help you install and configure it using the npm distribution of CKEditor&nbsp;5.
 
 {@snippet getting-started/use-builder}
 

@@ -9,11 +9,7 @@ modified_at: 2023-11-14
 
 # Integrating CKEditor&nbsp;5 with Next.js from npm
 
-[Next.js](https://nextjs.org/) is a React meta-framework that helps create full-stack web applications. It offers different rendering strategies like server-side rendering (SSR), client-side rendering (CSR), or static site generation (SSG). Additionally, it provides file-based routing, automatic code splitting, and other handy features out of the box.
-
-Next.js 13 introduced a new App Router as an alternative to the previous Pages Router. App Router supports server components and is more server-centric than Pages Router, which is client-side oriented.
-
-CKEditor&nbsp;5 does not support server-side rendering, but you can integrate it with the Next.js framework. In this guide, you will add the editor to a Next.js project using both routing paradigms. For this purpose, you will need [Next.js CLI](https://nextjs.org/docs/app/api-reference/create-next-app), and the official {@link getting-started/integrations/react-default-npm CKEditor&nbsp;5 React component}.
+You can integrate CKEditor&nbsp;5 with [Next.js](https://nextjs.org/) using the official {@link getting-started/integrations/react-default-npm CKEditor&nbsp;5 React component} in projects using either the App Router or the Pages Router. Because CKEditor&nbsp;5 relies on browser APIs, it cannot be pre-rendered with server-side rendering (SSR) or static site generation (SSG); instead, you load it on the client side (client-side rendering, CSR). You will need a Next.js project, which you can create with the [Next.js CLI](https://nextjs.org/docs/app/api-reference/create-next-app).
 
 {@snippet getting-started/use-builder}
 

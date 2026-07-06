@@ -8,6 +8,8 @@ meta-description: Managing the "Powered by CKEditor" logo.
 
 # Whitelabelling CKEditor&nbsp;5
 
+Open-source (GPL) installations of CKEditor&nbsp;5 display a small "Powered by CKEditor" logo in the editing area. To white-label the editor and remove the logo, obtain a commercial license and set your key in the {@link module:core/editor/editorconfig~EditorConfig#licenseKey `config.licenseKey`} option. Paid customers can also choose to keep the logo if they wish.
+
 ## Why the "Powered by CKEditor" logo?
 
 Starting from version [v38.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v38.0.0), all **open-source** installations of CKEditor&nbsp;5 display a small “Powered by CKEditor” logo in the bottom-right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.

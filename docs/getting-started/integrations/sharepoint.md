@@ -9,7 +9,7 @@ modified_at: 2026-01-28
 
 # Integrating CKEditor&nbsp;5 rich-text editor with SharePoint SPFx from npm
 
-[The SharePoint Framework (SPFx)](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview) is Microsoft's modern, client-side development model for building custom experiences that run in the SharePoint Online, Microsoft Teams, Viva Connections, Outlook, and the Microsoft 365 applications.
+You can integrate the CKEditor&nbsp;5 rich-text editor into [SharePoint Framework (SPFx)](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview) solutions by installing the CKEditor&nbsp;5 npm packages and using the editor inside an SPFx web part.
 
 ## Prerequisites
 

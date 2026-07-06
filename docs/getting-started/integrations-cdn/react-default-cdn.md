@@ -9,7 +9,7 @@ modified_at: 2026-05-25
 
 # Integrating CKEditor&nbsp;5 with React from CDN
 
-CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the CDN distribution of the CKEditor&nbsp;5.
+CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. It provides a `<CKEditor>` component that you configure with props for the editor build, its configuration, and event handlers. The component works with multiple editor types, including classic, inline, and decoupled (document). For the multi-root editor, use the dedicated {@link getting-started/integrations-cdn/react-multiroot-cdn multi-root editor hook}. This guide will help you install and configure it to use the CDN distribution of CKEditor&nbsp;5.
 
 {@snippet getting-started/use-builder}
 

@@ -9,9 +9,7 @@ modified_at: 2025-03-13
 
 # Integrating CKEditor&nbsp;5 with Nuxt from npm
 
-[Nuxt](https://nuxt.com/) is a Vue.js meta-framework for creating full-stack web applications. It offers everything you would expect from a modern framework, including various rendering modes, file-based routing, automatic code splitting, a large ecosystem of plugins and hosting integrations, and more.
-
-The CKEditor&nbsp;5 HTML editor does not support server-side rendering, but you can integrate it with the Nuxt framework. In this guide, you will add the editor to a Nuxt project. For this purpose, you will need a [Nuxt project](https://nuxt.com/docs/getting-started/installation) and the official {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 Vue component}.
+You can integrate CKEditor&nbsp;5 with [Nuxt](https://nuxt.com/) using the official {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 Vue component}. Because CKEditor&nbsp;5 relies on browser APIs, it cannot be pre-rendered with server-side rendering (SSR) or static site generation (SSG); instead, you load it on the client side (client-side rendering, CSR). You will need a [Nuxt project](https://nuxt.com/docs/getting-started/installation).
 
 {@snippet getting-started/use-builder}
 

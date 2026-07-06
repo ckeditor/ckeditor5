@@ -9,7 +9,7 @@ modified_at: 2025-04-24
 
 # Integrating CKEditor&nbsp;5 with Svelte from npm
 
-[Svelte](https://svelte.dev/) is a modern JavaScript compiler that builds highly optimized, reactive web applications. Unlike traditional frameworks, Svelte shifts most of the work from runtime to build time, resulting in highly efficient applications. CKEditor&nbsp;5 rich-text editor can be easily integrated with Svelte applications, providing powerful rich text editing capabilities to your projects.
+You can integrate the CKEditor&nbsp;5 rich-text editor into a [Svelte](https://svelte.dev/) application by installing the CKEditor&nbsp;5 npm packages and initializing the editor inside your own Svelte component. There is no dedicated Svelte component for CKEditor&nbsp;5, so you create the editor when the component mounts and destroy it when it unmounts.
 
 {@snippet getting-started/use-builder}
 

@@ -9,7 +9,7 @@ modified_at: 2026-05-25
 
 # Integrating CKEditor&nbsp;5 with Vue.js 3+ from CDN
 
-CKEditor&nbsp;5 has an official Vue integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the CDN distribution of the CKEditor&nbsp;5.
+CKEditor&nbsp;5 has an official Vue integration that you can use to add a rich text editor to your application. It provides a `<ckeditor>` component with two-way data binding through `v-model`. The component works with multiple editor types, including classic and decoupled (document). This guide will help you install and configure it to use the CDN distribution of CKEditor&nbsp;5.
 
 {@snippet getting-started/use-builder}
 
@@ -282,7 +282,7 @@ This prop has no effect when [`disable-watchdog`](#disable-watchdog) is set to `
 
 Allows disabling the built-in watchdog. The default value is `false`.
 
-By default, the `<ckeditor>` component wraps the editor with CKEditor&nbsp;5's {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`}, which automatically detects and recovers from editor crashes. Setting `disable-watchdog` to `true` opts out of this behavior — the editor will run without crash recovery.
+By default, the `<ckeditor>` component wraps the editor with CKEditor&nbsp;5's {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`}, which automatically detects and recovers from editor crashes. Setting `disable-watchdog` to `true` opts out of this behavior - the editor will run without crash recovery.
 
 When the watchdog is disabled, the [`ready`](#ready) and [`destroy`](#destroy) events will each fire at most once during the component's lifetime, and the [`error`](#error) event will never be emitted.
 
@@ -309,7 +309,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 ```
 
 <info-box note>
-When the watchdog is active (the default), this event can fire **multiple times** during the component's lifetime — once after the initial mount and again after each watchdog-triggered editor restart. If you need one-time initialization logic (for example, inserting a toolbar into the DOM for the Document editor type), make sure your handler is idempotent or guard it with a flag.
+When the watchdog is active (the default), this event can fire **multiple times** during the component's lifetime - once after the initial mount and again after each watchdog-triggered editor restart. If you need one-time initialization logic (for example, inserting a toolbar into the DOM for the Document editor type), make sure your handler is idempotent or guard it with a flag.
 </info-box>
 
 ### `focus`
@@ -338,7 +338,7 @@ Corresponds to the {@link module:engine/model/document~ModelDocument#event:chang
 
 ### `error`
 
-Fired when an error is detected by the watchdog — either during editor initialization or at runtime.
+Fired when an error is detected by the watchdog - either during editor initialization or at runtime.
 
 ```vue
 <ckeditor :editor="editor" @error="onEditorError" />
@@ -386,7 +386,7 @@ Because the destruction of the editor is promise–driven, this event can be fir
 </info-box>
 
 <info-box note>
-When the watchdog is active (the default), this event can fire **multiple times** during the component's lifetime — once for each editor instance destroyed during a watchdog restart. It is **not** fired when the component unmounts before the editor finishes initializing. If you need to react to component unmount, use Vue's `onBeforeUnmount` lifecycle hook instead.
+When the watchdog is active (the default), this event can fire **multiple times** during the component's lifetime - once for each editor instance destroyed during a watchdog restart. It is **not** fired when the component unmounts before the editor finishes initializing. If you need to react to component unmount, use Vue's `onBeforeUnmount` lifecycle hook instead.
 </info-box>
 
 ## How to?

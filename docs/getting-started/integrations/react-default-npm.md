@@ -1,6 +1,6 @@
 ---
 menu-title: Default integration
-meta-title: Using CKEditor 5 with React rich text editor componentfrom npm | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with React rich text editor component from npm | CKEditor 5 Documentation
 meta-description: Install, integrate, and configure CKEditor 5 using the default React component with npm.
 category: react-npm
 order: 10
@@ -9,7 +9,7 @@ modified_at: 2026-05-25
 
 # Integrating CKEditor&nbsp;5 with React rich text editor component from npm
 
-CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the npm distribution of the CKEditor&nbsp;5.
+CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. It provides a `<CKEditor>` component that you configure with props for the editor build, its configuration, and event handlers. The component works with multiple editor types, including classic, inline, and decoupled (document). For the multi-root editor, use the dedicated {@link getting-started/integrations/react-multiroot-npm multi-root editor hook}. This guide will help you install and configure it to use the npm distribution of CKEditor&nbsp;5.
 
 {@snippet getting-started/use-builder}
 
