@@ -9,6 +9,8 @@ modified_at: 2023-08-16
 
 # Data conversion
 
+In this part of the crash course, you will use conversion helpers to convert the `highlight` attribute between the model and the editing and data views.
+
 ## Conversion helpers
 
 There are three conversion helpers:

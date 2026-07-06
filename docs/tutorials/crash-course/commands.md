@@ -9,6 +9,8 @@ modified_at: 2025-03-14
 
 # Commands
 
+In this part of the crash course, you will register a `highlight` command that encapsulates the feature's logic so it can be run from code or the toolbar.
+
 ## Commands purpose
 
 Now that we have the data conversion sorted out, let's register a `highlight` command. Commands encapsulate logic that can be executed by other plugins or from the user interface, for example by clicking a button in the editor's toolbar.
