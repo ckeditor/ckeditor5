@@ -8,7 +8,7 @@ modified_at: 2024-06-25
 
 # Editor lifecycle
 
-Each CKEditor&nbsp;5 **type** provides a different **editor class** that handles the creation of editor instances. Most of the examples in the documentation use the {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} class, but things should work similarly with other types.
+You manage the CKEditor&nbsp;5 lifecycle with two static methods on the editor class: `create()` to initialize an editor instance and `destroy()` to tear it down and release its resources. Each editor type provides its own editor class - most examples use the {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} class - but the lifecycle works the same way across types.
 
 ## Creating an editor with `create()`
 

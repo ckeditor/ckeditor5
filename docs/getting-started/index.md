@@ -10,6 +10,8 @@ meta-description: Learn how to start with CKEditor 5, the modern JavaScript-rich
 
 CKEditor&nbsp;5 is a flexible editing framework that provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Notion, Slack, or Twitter-like applications, all is possible within a single editing framework. It is a modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent support for modern bundlers. Find out the most convenient way to start using it!
 
+To start using CKEditor&nbsp;5, choose an installation method: the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) for the quickest setup, or install from npm, CDN, or a ZIP file. You can also use one of the official framework integrations. This section walks you through installation, integration, configuration, and licensing.
+
 {@snippet getting-started/use-builder}
 
 ## Are you new to CKEditor&nbsp;5?

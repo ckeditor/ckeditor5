@@ -9,7 +9,7 @@ modified_at: 2025-04-07
 
 # Customizing icons
 
-CKEditor&nbsp;5 comes with a set of icons that are used in the editor UI. If you are using self-hosted installation method like npm or ZIP, you can customize the icons by overriding the default npm package that contains them.
+In self-hosted installations (npm or ZIP), you can customize the CKEditor&nbsp;5 UI icons by overriding the `@ckeditor/ckeditor5-icons` package that provides them.
 
 There are two ways to do this, and both require overriding the `@ckeditor/ckeditor5-icons` package. One way is to create a custom icons package and override the default icons package in your project using a package manager. The other is to use resolve aliases to replace the icons during the build process.
 

@@ -9,7 +9,7 @@ modified_at: 2026-05-25
 
 # Integrating CKEditor&nbsp;5 with React rich text multi-root editor hook from npm
 
-This page focuses on describing the usage of the multi-root editor in React applications. If you would like to use a different type of editor, you can find more information {@link getting-started/integrations/react-default-npm in this guide}.
+You can add the CKEditor&nbsp;5 multi-root editor to a React application using the `useMultiRootEditor` hook from the official CKEditor&nbsp;5 React integration. A multi-root editor has several separate editable areas (roots) that form a single document while sharing one toolbar, configuration, and undo stack. The hook returns the toolbar and editable elements to render, along with the editor instance and its data. For other editor types, see the {@link getting-started/integrations/react-default-npm default React integration}.
 
 <info-box hint>
 	The multi-root editors in React are supported since version 6.2.0 of this package.
