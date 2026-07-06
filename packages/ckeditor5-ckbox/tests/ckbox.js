@@ -8,7 +8,7 @@ import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { PictureEditing, ImageUpload, ImageBlockEditing, ImageInlineEditing } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 
 import { CKBox } from '../src/ckbox.js';
 import { CKBoxUI } from '../src/ckboxui.js';
@@ -24,6 +24,7 @@ describe( 'CKBox', () => {
 		// rejections that fail the Vitest run.
 		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
 		vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).mockResolvedValue();
+		mockCreateToken( 'ckbox-token' );
 
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
@@ -37,9 +38,6 @@ describe( 'CKBox', () => {
 				ImageUpload,
 				CloudServices,
 				CKBox
-			],
-			substitutePlugins: [
-				CloudServicesCoreMock
 			],
 			ckbox: {
 				tokenUrl: 'foo'

@@ -20,13 +20,13 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { CommandCollection } from '@ckeditor/ckeditor5-core';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
-import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 
 import { CKBoxEditing } from '../src/ckboxediting.js';
 import { CKBoxImageEditEditing } from '../src/ckboximageedit/ckboximageeditediting.js';
 import { CKBoxCommand } from '../src/ckboxcommand.js';
 import { CKBoxUploadAdapter } from '../src/ckboxuploadadapter.js';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 import { CKBoxUtils } from '../src/ckboxutils.js';
 
 describe( 'CKBoxEditing', () => {
@@ -34,6 +34,7 @@ describe( 'CKBoxEditing', () => {
 
 	beforeEach( async () => {
 		TokenMock.initialToken = 'ckbox-token';
+		mockCreateToken( 'ckbox-token' );
 
 		// `CKBoxEditing#init()` fires an unawaited upload permission request. Stub the network layer out so
 		// the request does not end up as an unhandled rejection that fails the Vitest run. Tests exercising
@@ -2026,9 +2027,6 @@ describe( 'CKBoxEditing', () => {
 					CKBoxUploadAdapter,
 					CKBoxEditing
 				],
-				substitutePlugins: [
-					CloudServicesCoreMock
-				],
 				ckbox: {
 					tokenUrl: CKBOX_TOKEN_URL,
 					serviceOrigin: CKBOX_API_URL
@@ -2092,9 +2090,6 @@ function createTestEditor( config = {}, loadCKBoxFirst = false ) {
 
 	return VirtualTestEditor.create( {
 		plugins,
-		substitutePlugins: [
-			CloudServicesCoreMock
-		],
 		...config
 	} );
 }

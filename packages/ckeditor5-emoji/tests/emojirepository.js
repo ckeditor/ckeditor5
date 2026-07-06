@@ -12,24 +12,11 @@ import { EmojiRepository } from '../src/emojirepository.js';
 import { EmojiUtils } from '../src/emojiutils.js';
 import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
-class EmojiUtilsMockVersion15 extends EmojiUtils {
-	getEmojiSupportedVersionByOs() {
-		return 15;
-	}
-
-	isEmojiZwjSupported( item ) {
-		return item.emoji !== '🙂‍↔️';
-	}
-}
-
-class EmojiUtilsMockVersion16 extends EmojiUtils {
-	getEmojiSupportedVersionByOs() {
-		return 16;
-	}
-
-	isEmojiZwjSupported( item ) {
-		return item.emoji !== '🙂‍↔️';
-	}
+// Mocks the emoji version supported by the operating system and marks the '🙂‍↔️' emoji as an unsupported ZWJ sequence.
+// Call it before `createTestEditor()` in a test that needs a deterministic emoji support detection.
+function mockEmojiVersion( version ) {
+	vi.spyOn( EmojiUtils.prototype, 'getEmojiSupportedVersionByOs' ).mockReturnValue( version );
+	vi.spyOn( EmojiUtils.prototype, 'isEmojiZwjSupported' ).mockImplementation( item => item.emoji !== '🙂‍↔️' );
 }
 
 function getCachedResults( plugin ) {
@@ -156,6 +143,8 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should fetch both emoji versions 16 and 15 when creating two different editors', async () => {
+			mockEmojiVersion( 16 );
+
 			const { editor: editor1, domElement: domElement1 } = await createTestEditor( resolve => {
 				const response = JSON.stringify( [
 					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 16 },
@@ -163,8 +152,6 @@ describe( 'EmojiRepository', () => {
 				] );
 
 				resolve( new Response( response ) );
-			}, {
-				substitutePlugins: [ EmojiUtilsMockVersion16 ]
 			} );
 
 			const { editor: editor2, domElement: domElement2 } = await createTestEditor(
@@ -280,6 +267,8 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should filter out unsupported ZWJ emojis from the fetched emoji', async () => {
+			mockEmojiVersion( 16 );
+
 			const { editor, domElement } = await createTestEditor( resolve => {
 				const response = JSON.stringify( [
 					{ emoji: '🙂‍↔️', annotation: 'head shaking horizontally', group: 0, version: 16 },
@@ -287,11 +276,9 @@ describe( 'EmojiRepository', () => {
 				] );
 
 				resolve( new Response( response ) );
-			}, {
-				substitutePlugins: [ EmojiUtilsMockVersion16 ]
 			} );
 
-			// `Head shaking horizontally` is mocked to be an unsupported emoji in `EmojiUtilsMock`.
+			// `Head shaking horizontally` is mocked to be an unsupported emoji in `mockEmojiVersion()`.
 			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 			const headShakingHorizontallyEmoji = results.find( item => item.annotation === 'head shaking horizontally' );
 			const unamusedFaceEmoji = results.find( item => item.annotation === 'unamused face' );
@@ -304,20 +291,17 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should filter out emojis based on the version supported by the operating system', async () => {
-			const { editor, domElement } = await createTestEditor(
-				resolve => {
-					const response = JSON.stringify( [
-						{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
-						{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 },
-						{ emoji: '🔬', annotation: 'microscope', group: 7, version: 15 }
-					] );
+			mockEmojiVersion( 15 );
 
-					resolve( new Response( response ) );
-				},
-				{
-					substitutePlugins: [ EmojiUtilsMockVersion15 ]
-				}
-			);
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
+					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 },
+					{ emoji: '🔬', annotation: 'microscope', group: 7, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
 
 			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
@@ -332,6 +316,8 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should not filter out emojis when passing the `emoji.useCustomFont=true` option', async () => {
+			mockEmojiVersion( 15 );
+
 			const { editor, domElement } = await createTestEditor(
 				resolve => {
 					const response = JSON.stringify( [
@@ -343,7 +329,6 @@ describe( 'EmojiRepository', () => {
 					resolve( new Response( response ) );
 				},
 				{
-					substitutePlugins: [ EmojiUtilsMockVersion15 ],
 					emoji: {
 						useCustomFont: true
 					}
@@ -352,7 +337,7 @@ describe( 'EmojiRepository', () => {
 
 			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
-			// EmojiUtilsMockVersion15 removes emoji assigned to version `16`.
+			// `mockEmojiVersion( 15 )` removes emoji assigned to version `16`.
 			// However, the filtering mechanism is disabled by passing `emoji.useCustomFont=true`.
 			// Hence, all definitions returned from the server should be available.
 			const hasNeutralFaceEmoji = results.find( item => item.annotation === 'neutral face' );

@@ -19,8 +19,7 @@ import { CKBoxUploadAdapter } from '../src/ckboxuploadadapter.js';
 import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-
-import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 
 import { _getModelData } from '@ckeditor/ckeditor5-engine';
 import { CKBoxUtils } from '../src/ckboxutils.js';
@@ -38,6 +37,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		document.body.appendChild( editorElement );
 
 		TokenMock.initialToken = jwtToken;
+		mockCreateToken( 'ckbox-token' );
 
 		// `CKBoxEditing#init()` fires an unawaited upload permission request. Stub the network layer out so
 		// the request does not end up as an unhandled rejection that fails the Vitest run. Tests exercising
@@ -58,9 +58,6 @@ describe( 'CKBoxUploadAdapter', () => {
 					CloudServices,
 					CKBoxEditing,
 					CKBoxUploadAdapter
-				],
-				substitutePlugins: [
-					CloudServicesCoreMock
 				],
 				ckbox: {
 					serviceOrigin: CKBOX_API_URL,
@@ -134,9 +131,6 @@ describe( 'CKBoxUploadAdapter', () => {
 						CloudServices,
 						CKBoxEditing,
 						CKBoxUploadAdapter
-					],
-					substitutePlugins: [
-						CloudServicesCoreMock
 					]
 				} );
 
@@ -164,9 +158,6 @@ describe( 'CKBoxUploadAdapter', () => {
 						CloudServices,
 						CKBoxEditing,
 						CKBoxUploadAdapter
-					],
-					substitutePlugins: [
-						CloudServicesCoreMock
 					],
 					ckbox: {
 						tokenUrl: 'http://example.com'
@@ -201,9 +192,6 @@ describe( 'CKBoxUploadAdapter', () => {
 						CloudServices,
 						CKBoxEditing,
 						CKBoxUploadAdapter
-					],
-					substitutePlugins: [
-						CloudServicesCoreMock
 					],
 					cloudServices: {
 						tokenUrl: 'http://cs.example.com'
@@ -1221,9 +1209,6 @@ describe( 'CKBoxUploadAdapter', () => {
 						CloudServices,
 						CKBoxEditing,
 						CKBoxUploadAdapter
-					],
-					substitutePlugins: [
-						CloudServicesCoreMock
 					],
 					ckbox: {
 						tokenUrl: 'http://example.com',

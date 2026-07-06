@@ -18,9 +18,9 @@ import {
 } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 
 import { CKBoxEditing } from '../src/ckboxediting.js';
 import { CKBoxCommand } from '../src/ckboxcommand.js';
@@ -36,6 +36,7 @@ describe( 'CKBoxCommand', () => {
 		// rejections that fail the Vitest run.
 		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
 		vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).mockResolvedValue();
+		mockCreateToken( 'ckbox-token' );
 
 		TokenMock.initialToken = [
 			// Header.
@@ -56,10 +57,7 @@ describe( 'CKBoxCommand', () => {
 		editor = await createTestEditor( {
 			ckbox: {
 				tokenUrl: 'foo'
-			},
-			substitutePlugins: [
-				CloudServicesCoreMock
-			]
+			}
 		} );
 
 		model = editor.model;
@@ -1406,9 +1404,6 @@ function createTestEditor( config = {} ) {
 			ImageUploadProgress,
 			CloudServices,
 			CKBoxEditing
-		],
-		substitutePlugins: [
-			CloudServicesCoreMock
 		],
 		image: { insert: { type: 'auto' } },
 		...config

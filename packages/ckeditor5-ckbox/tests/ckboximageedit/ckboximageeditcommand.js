@@ -28,7 +28,7 @@ vi.mock( 'es-toolkit/compat', async importOriginal => {
 		isEqual: isEqualFn
 	};
 } );
-import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 import { CKBoxEditing } from '../../src/ckboxediting.js';
 import { CKBoxImageEditEditing } from '../../src/ckboximageedit/ckboximageeditediting.js';
@@ -56,6 +56,7 @@ describe( 'CKBoxImageEditCommand', () => {
 		// HTTP requests replace `window.XMLHttpRequest` with a fake server, so they are not affected.
 		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
 		vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).mockResolvedValue();
+		mockCreateToken( 'ckbox-token' );
 
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );
@@ -82,10 +83,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				serviceOrigin: CKBOX_API_URL,
 				tokenUrl: 'foo',
 				allowExternalImagesEditing: () => true
-			},
-			substitutePlugins: [
-				CloudServicesCoreMock
-			]
+			}
 		} );
 
 		command = editor.commands.get( 'ckboxImageEdit' );

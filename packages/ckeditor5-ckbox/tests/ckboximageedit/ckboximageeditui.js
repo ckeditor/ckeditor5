@@ -13,7 +13,7 @@ import { Image, ImageUploadEditing, ImageUploadProgress, PictureEditing } from '
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 
 import { CKBoxImageEditEditing } from '../../src/ckboximageedit/ckboximageeditediting.js';
 import { CKBoxImageEditUI } from '../../src/ckboximageedit/ckboximageeditui.js';
@@ -29,6 +29,7 @@ describe( 'CKBoxImageEditUI', () => {
 		// rejections that fail the Vitest run.
 		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
 		vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).mockResolvedValue();
+		mockCreateToken( 'ckbox-token' );
 
 		TokenMock.initialToken = [
 			// Header.
@@ -62,10 +63,7 @@ describe( 'CKBoxImageEditUI', () => {
 				],
 				ckbox: {
 					tokenUrl: 'foo'
-				},
-				substitutePlugins: [
-					CloudServicesCoreMock
-				]
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;

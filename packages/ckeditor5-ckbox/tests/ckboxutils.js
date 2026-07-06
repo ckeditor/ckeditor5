@@ -18,11 +18,11 @@ import {
 import { CloudServices, Token } from '@ckeditor/ckeditor5-cloud-services';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
-import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 
 import { CKBoxEditing } from '../src/ckboxediting.js';
 import { CKBoxUploadAdapter } from '../src/ckboxuploadadapter.js';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 import { CKBoxUtils } from '../src/ckboxutils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -32,10 +32,11 @@ describe( 'CKBoxUtils', () => {
 	let editor, ckboxUtils, originalCKBox;
 	const token = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
 
-	let fetchStub;
+	let fetchStub, createTokenSpy;
 
 	beforeEach( async () => {
 		TokenMock.initialToken = token;
+		createTokenSpy = mockCreateToken( 'ckbox-token' );
 		fetchStub = vi.spyOn( window, 'fetch' ).mockResolvedValue();
 
 		// `CKBoxEditing#init()` fires an unawaited upload permission request. Stub the network layer out so
@@ -165,9 +166,6 @@ describe( 'CKBoxUtils', () => {
 					CKBoxUploadAdapter,
 					CKBoxEditing
 				],
-				substitutePlugins: [
-					CloudServicesCoreMock
-				],
 				ckbox: {
 					tokenUrl: 'http://cs.example.com',
 					serviceOrigin: CKBOX_API_URL
@@ -188,12 +186,15 @@ describe( 'CKBoxUtils', () => {
 
 			expect( resolvedToken ).toBeInstanceOf( Token );
 			expect( resolvedToken.value ).toEqual( token );
-			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).toEqual( 'http://cs.example.com' );
+			expect( createTokenSpy ).toHaveBeenCalledTimes( 1 );
+			expect( createTokenSpy ).toHaveBeenCalledWith( 'http://cs.example.com', { autoRefresh: true } );
 		} );
 
 		it( 'should not create a new token if already created (specified cloudServices.tokenUrl)', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
+
+			createTokenSpy.mockClear();
 
 			const editor = await ClassicTestEditor
 				.create( editorElement, {
@@ -206,9 +207,6 @@ describe( 'CKBoxUtils', () => {
 						CloudServices,
 						CKBoxEditing,
 						CKBoxUploadAdapter
-					],
-					substitutePlugins: [
-						CloudServicesCoreMock
 					],
 					cloudServices: {
 						tokenUrl: 'http://cs.example.com'
@@ -223,7 +221,8 @@ describe( 'CKBoxUtils', () => {
 
 			expect( resolvedToken ).toBeInstanceOf( Token );
 			expect( resolvedToken.value ).toEqual( token );
-			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).toEqual( 'http://cs.example.com' );
+			expect( createTokenSpy ).toHaveBeenCalledTimes( 1 );
+			expect( createTokenSpy ).toHaveBeenCalledWith( 'http://cs.example.com', { autoRefresh: true } );
 
 			editorElement.remove();
 			return editor.destroy();
@@ -232,6 +231,8 @@ describe( 'CKBoxUtils', () => {
 		it( 'should create a new token when passed "ckbox.tokenUrl" and "cloudServices.tokenUrl" values are different', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
+
+			createTokenSpy.mockClear();
 
 			const editor = await ClassicTestEditor
 				.create( editorElement, {
@@ -244,9 +245,6 @@ describe( 'CKBoxUtils', () => {
 						CloudServices,
 						CKBoxEditing,
 						CKBoxUploadAdapter
-					],
-					substitutePlugins: [
-						CloudServicesCoreMock
 					],
 					cloudServices: {
 						tokenUrl: 'http://cs.example.com'
@@ -262,7 +260,9 @@ describe( 'CKBoxUtils', () => {
 
 			expect( resolvedToken ).toBeInstanceOf( Token );
 			expect( resolvedToken.value ).toEqual( token );
-			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).toEqual( 'http://ckbox.example.com' );
+			expect( createTokenSpy ).toHaveBeenCalledTimes( 2 );
+			expect( createTokenSpy ).toHaveBeenNthCalledWith( 1, 'http://cs.example.com', { autoRefresh: true } );
+			expect( createTokenSpy ).toHaveBeenNthCalledWith( 2, 'http://ckbox.example.com', { autoRefresh: true } );
 
 			editorElement.remove();
 			return editor.destroy();
@@ -271,6 +271,8 @@ describe( 'CKBoxUtils', () => {
 		it( 'should not create a new token when passed "ckbox.tokenUrl" and "cloudServices.tokenUrl" values are equal', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
+
+			createTokenSpy.mockClear();
 
 			const editor = await ClassicTestEditor
 				.create( editorElement, {
@@ -283,9 +285,6 @@ describe( 'CKBoxUtils', () => {
 						CloudServices,
 						CKBoxEditing,
 						CKBoxUploadAdapter
-					],
-					substitutePlugins: [
-						CloudServicesCoreMock
 					],
 					cloudServices: {
 						tokenUrl: 'http://example.com'
@@ -301,7 +300,8 @@ describe( 'CKBoxUtils', () => {
 
 			expect( resolvedToken ).toBeInstanceOf( Token );
 			expect( resolvedToken.value ).toEqual( token );
-			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).toEqual( 'http://example.com' );
+			expect( createTokenSpy ).toHaveBeenCalledTimes( 1 );
+			expect( createTokenSpy ).toHaveBeenCalledWith( 'http://example.com', { autoRefresh: true } );
 
 			editorElement.remove();
 			return editor.destroy();
@@ -823,9 +823,6 @@ function createTestEditor( config = {} ) {
 			CloudServices,
 			CKBoxUploadAdapter,
 			CKBoxEditing
-		],
-		substitutePlugins: [
-			CloudServicesCoreMock
 		],
 		...config
 	} );

@@ -17,22 +17,17 @@ import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mo
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { CloudServices, CloudServicesCore } from '@ckeditor/ckeditor5-cloud-services';
-import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-
-// EasyImage requires the `CloudServicesCore` plugin as a dependency.
-// In order to mock the `Token` class, we create a new class that extend the `CloudServicesCore` plugin
-// and override the `#createToken()` method which creates an instance of the `Token` class.
-class CloudServicesCoreMock extends CloudServicesCore {
-	createToken( tokenUrlOrRefreshToken ) {
-		return new TokenMock( tokenUrlOrRefreshToken );
-	}
-
-	createUploadGateway( token, apiAddress ) {
-		return new UploadGatewayMock( token, apiAddress );
-	}
-}
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 
 describe( 'EasyImage', () => {
+	beforeEach( () => {
+		// EasyImage requires the `CloudServicesCore` plugin as a dependency.
+		// In order to mock the `Token` and `UploadGateway` classes, we stub the factory methods of the `CloudServicesCore` plugin.
+		mockCreateToken();
+		vi.spyOn( CloudServicesCore.prototype, 'createUploadGateway' )
+			.mockImplementation( ( token, apiAddress ) => new UploadGatewayMock( token, apiAddress ) );
+	} );
+
 	it( 'should require other plugins', () => {
 		expect( EasyImage.requires ).toContain( CloudServicesUploadAdapter );
 	} );
@@ -56,7 +51,6 @@ describe( 'EasyImage', () => {
 		return ClassicTestEditor
 			.create( div, {
 				plugins: [ Clipboard, Image, ImageUpload, CloudServices, EasyImage ],
-				substitutePlugins: [ CloudServicesCoreMock ],
 				cloudServices: {
 					tokenUrl: 'abc',
 					uploadUrl: 'def'
@@ -80,7 +74,6 @@ describe( 'EasyImage', () => {
 
 		const editor = await ClassicTestEditor.create( div, {
 			plugins: [ Clipboard, ImageUpload, CloudServices, EasyImage ],
-			substitutePlugins: [ CloudServicesCoreMock ],
 			cloudServices: {
 				tokenUrl: 'abc',
 				uploadUrl: 'def'
@@ -118,7 +111,6 @@ describe( 'EasyImage', () => {
 			return ClassicTestEditor
 				.create( div, {
 					plugins: [ Clipboard, Image, ImageUpload, CloudServices, Paragraph, EasyImage ],
-					substitutePlugins: [ CloudServicesCoreMock ],
 					cloudServices: {
 						tokenUrl: 'abc',
 						uploadUrl: 'http://upload.mock.url/'
