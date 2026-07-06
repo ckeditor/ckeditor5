@@ -8,6 +8,8 @@ modified_at: 2022-09-07
 
 # Testing environment
 
+The CKEditor&nbsp;5 testing environment lets you run the project's automated (unit) and manual tests. This article explains how to run them.
+
 Before reading this article we recommend getting familiar with the CKEditor&nbsp;5 {@link framework/contributing/development-environment development environment}.
 
 ## Introduction

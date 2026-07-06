@@ -7,7 +7,7 @@ order: 10
 
 # Theme customization
 
-Below you can see a demo of an editor with the dark theme as a result of customizations described later in this guide:
+You can customize the CKEditor&nbsp;5 UI theme by overriding its CSS variables (custom properties) to change colors, spacing, fonts, and more. The demo below shows the default theme restyled as a dark theme using this approach:
 
 **Mode:**
 

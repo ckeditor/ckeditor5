@@ -7,6 +7,8 @@ meta-description: Explore CKEditor 5 widget internals, including structure, beha
 
 # Deep dive into widget internals
 
+Widgets are self-contained, object-like elements in the editor content (such as images, tables, or media embeds) that users select and move as a single unit. This guide covers advanced widget internals: configuring the type-around feature and excluding DOM events from a widget's default handlers.
+
 ## Disabling the widget type around feature
 
 The {@link module:widget/widgettypearound/widgettypearound~WidgetTypeAround `WidgetTypeAround`} plugin allows users to type around the widgets, in places where it is normally impossible to place the caret due to limitations of the web browsers. Although this feature boosts productivity and ease of typing, some integrations may not want or need it, for instance:

@@ -8,7 +8,7 @@ feedback-widget: false
 
 # Introduction to CKEditor&nbsp;5 architecture
 
-This guide introduces the main pillars of the CKEditor&nbsp;5 architecture.
+CKEditor&nbsp;5 has a plugin-based architecture in which every feature (even typing and paragraph support) is a plugin. It rests on three main pillars: the {@link framework/architecture/core-editor-architecture core editor architecture}, the {@link framework/architecture/editing-engine editing engine}, and the {@link framework/architecture/ui-library UI library}. The core is schema-less, built around a custom tree-structured data model and an editing-oriented virtual DOM.
 
 ## Basic CKEditor&nbsp;5 architecture
 

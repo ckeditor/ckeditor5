@@ -7,9 +7,7 @@ order: 30
 
 # Document editor
 
-The {@link examples/builds/document-editor document editor example} showcases the document editor designed for document editing with a customized UI representing the layout of a sheet of paper. It was created on top of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} class and makes the best of what it offers: the freedom to choose the location of the crucial UI elements in the application.
-
-In this tutorial, you will learn how to create your own document editor with a customized user interface, step–by–step.
+This tutorial builds a document editor with a customized, paper-like UI on top of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} class, which lets you place the editor's UI elements anywhere in your application. See the {@link examples/builds/document-editor document editor example} for the end result.
 
 {@snippet examples/document-editor}
 
