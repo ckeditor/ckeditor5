@@ -9,11 +9,11 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Context } from '@ckeditor/ckeditor5-core';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { stubWindowOnError } from './_utils/stubwindowonerror.js';
 
 describe( 'ContextWatchdog', () => {
 	let element1, element2;
 	let watchdog;
-	let originalErrorHandler;
 
 	beforeEach( () => {
 		element1 = document.createElement( 'div' );
@@ -22,13 +22,10 @@ describe( 'ContextWatchdog', () => {
 		document.body.appendChild( element1 );
 		document.body.appendChild( element2 );
 
-		originalErrorHandler = window.onerror;
-		window.onerror = vi.fn();
+		stubWindowOnError();
 	} );
 
 	afterEach( () => {
-		window.onerror = originalErrorHandler;
-
 		element1.remove();
 		element2.remove();
 	} );
@@ -727,15 +724,9 @@ describe( 'ContextWatchdog', () => {
 
 describe( 'ContextWatchdog - config-based editor creator', () => {
 	let watchdog;
-	let originalErrorHandler;
 
 	beforeEach( () => {
-		originalErrorHandler = window.onerror;
-		window.onerror = vi.fn();
-	} );
-
-	afterEach( () => {
-		window.onerror = originalErrorHandler;
+		stubWindowOnError();
 	} );
 
 	function configBasedCreator( elementOrData, config ) {

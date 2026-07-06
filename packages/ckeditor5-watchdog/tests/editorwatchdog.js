@@ -11,6 +11,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { stubWindowOnError } from './_utils/stubwindowonerror.js';
 
 class CommentsRepository extends Plugin {
 	static get pluginName() {
@@ -149,7 +150,6 @@ class TrackChangesEditing extends Plugin {
 }
 
 // The error handling testing with mocha & chai is quite broken and hard to test.
-// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 //
 describe( 'EditorWatchdog', () => {
 	let element;
@@ -205,10 +205,7 @@ describe( 'EditorWatchdog', () => {
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			stubWindowOnError();
 
 			await watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } );
 
@@ -217,10 +214,7 @@ describe( 'EditorWatchdog', () => {
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-					res();
-				} );
+				watchdog.on( 'restart', res );
 			} );
 
 			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
@@ -236,10 +230,7 @@ describe( 'EditorWatchdog', () => {
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			stubWindowOnError();
 
 			await watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } );
 
@@ -254,10 +245,7 @@ describe( 'EditorWatchdog', () => {
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-					res();
-				} );
+				watchdog.on( 'restart', res );
 			} );
 
 			expect( root.getAttribute( 'test' ) ).toBe( 1 );
@@ -270,10 +258,7 @@ describe( 'EditorWatchdog', () => {
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			stubWindowOnError();
 
 			await watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } );
 
@@ -306,10 +291,7 @@ describe( 'EditorWatchdog', () => {
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-					res();
-				} );
+				watchdog.on( 'restart', res );
 			} );
 
 			expect( watchdog.editor.model.markers.get( 'first' ) ).toBeNull();
@@ -351,10 +333,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should be the current editor instance', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			stubWindowOnError();
 
 			expect( watchdog.editor ).toBeNull();
 
@@ -368,10 +347,7 @@ describe( 'EditorWatchdog', () => {
 					return new Promise( res => {
 						setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-						watchdog.on( 'restart', () => {
-							window.onerror = originalErrorHandler;
-							res();
-						} );
+						watchdog.on( 'restart', res );
 					} );
 				} )
 				.then( () => {
@@ -407,9 +383,7 @@ describe( 'EditorWatchdog', () => {
 				}
 			} );
 
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			stubWindowOnError();
 
 			const commentsRepository = watchdog.editor.plugins.get( 'CommentsRepository' );
 
@@ -423,11 +397,7 @@ describe( 'EditorWatchdog', () => {
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-
-					res();
-				} );
+				watchdog.on( 'restart', res );
 			} );
 
 			const restoredCommentThreads = watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThreads();
@@ -444,9 +414,7 @@ describe( 'EditorWatchdog', () => {
 				}
 			} );
 
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			stubWindowOnError();
 
 			const suggestionData = {
 				id: '1',
@@ -469,10 +437,7 @@ describe( 'EditorWatchdog', () => {
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-					res();
-				} );
+				watchdog.on( 'restart', res );
 			} );
 
 			const restoredSuggestions = watchdog.editor.plugins.get( 'TrackChanges' ).getSuggestions();
@@ -502,9 +467,7 @@ describe( 'EditorWatchdog', () => {
 				}
 			} );
 
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			stubWindowOnError();
 
 			// Set comment thread attributes to test if it will be restored after restart.
 			const commentThread = watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' );
@@ -515,10 +478,7 @@ describe( 'EditorWatchdog', () => {
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-					res();
-				} );
+				watchdog.on( 'restart', res );
 			} );
 
 			// Should keep the comment thread up to date even if the InitPlugin creates the new instance.
@@ -548,9 +508,7 @@ describe( 'EditorWatchdog', () => {
 				}
 			} );
 
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			stubWindowOnError();
 
 			const commentThread = watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' );
 			commentThread.remove();
@@ -560,10 +518,7 @@ describe( 'EditorWatchdog', () => {
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-					res();
-				} );
+				watchdog.on( 'restart', res );
 			} );
 
 			// Should not keep the comment since it has been removed before crash.
@@ -598,9 +553,7 @@ describe( 'EditorWatchdog', () => {
 				}
 			} );
 
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			stubWindowOnError();
 
 			// Set comment thread attributes to test if it will be restored after restart.
 			const suggestion = watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' );
@@ -613,10 +566,7 @@ describe( 'EditorWatchdog', () => {
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-					res();
-				} );
+				watchdog.on( 'restart', res );
 			} );
 
 			// Should keep the suggestion attributes up to date even if the InitPlugin creates the new instance.
@@ -653,9 +603,7 @@ describe( 'EditorWatchdog', () => {
 				}
 			} );
 
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			stubWindowOnError();
 
 			const suggestion = watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' );
 			watchdog.editor.plugins.get( 'TrackChangesEditing' )._removeSuggestion( suggestion );
@@ -665,10 +613,7 @@ describe( 'EditorWatchdog', () => {
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-					res();
-				} );
+				watchdog.on( 'restart', res );
 			} );
 
 			// Should not keep the suggestion since it has been removed before crash.
@@ -725,18 +670,13 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should not hide intercepted errors', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = vi.fn();
-			window.onerror = windowErrorSpy;
+			const windowErrorSpy = stubWindowOnError();
 
 			return watchdog.create( element ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
-
 						expect( windowErrorSpy ).toHaveBeenCalledOnce();
 
 						// Various browsers will display the error slightly differently.
@@ -751,17 +691,13 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should intercept editor errors and restart the editor during the runtime', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			return watchdog.create( element ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
-
 						watchdog.destroy().then( res );
 					} );
 				} );
@@ -776,9 +712,7 @@ describe( 'EditorWatchdog', () => {
 
 			const watchdogErrorHandlerSpy = vi.spyOn( watchdog, '_handleError' );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError( { swallowAllErrors: true } );
 
 			return watchdog.create( element ).then( () => {
 				const error = new Error( 'foo' );
@@ -797,8 +731,6 @@ describe( 'EditorWatchdog', () => {
 
 				return new Promise( res => {
 					setTimeout( () => {
-						window.onerror = originalErrorHandler;
-
 						expect( editorErrorSpy ).not.toHaveBeenCalled();
 
 						// Assert that only instances of the `Error` class will be checked deeper.
@@ -819,9 +751,7 @@ describe( 'EditorWatchdog', () => {
 				plugins: []
 			};
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			return Promise.all( [
 				watchdog1.create( element, config ),
@@ -837,8 +767,6 @@ describe( 'EditorWatchdog', () => {
 					setTimeout( () => throwCKEditorError( 'foo', watchdog2.editor ) );
 
 					setTimeout( () => {
-						window.onerror = originalErrorHandler;
-
 						expect( watchdog1ErrorSpy ).not.toHaveBeenCalled();
 						expect( watchdog2ErrorSpy ).toHaveBeenCalledOnce();
 
@@ -852,9 +780,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( element );
 
@@ -862,8 +788,6 @@ describe( 'EditorWatchdog', () => {
 
 			await new Promise( res => {
 				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-
 					watchdog.destroy().then( res );
 				} );
 			} );
@@ -872,9 +796,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context #2', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( element );
 
@@ -891,8 +813,6 @@ describe( 'EditorWatchdog', () => {
 
 			await new Promise( res => {
 				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-
 					watchdog.destroy().then( res );
 				} );
 			} );
@@ -908,9 +828,7 @@ describe( 'EditorWatchdog', () => {
 			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( element );
 
@@ -925,8 +843,6 @@ describe( 'EditorWatchdog', () => {
 			expect( watchdog.crashes.length ).toBe( 4 );
 			expect( restartSpy ).toHaveBeenCalledTimes( 3 );
 
-			window.onerror = originalErrorHandler;
-
 			await watchdog.destroy();
 		} );
 
@@ -940,9 +856,7 @@ describe( 'EditorWatchdog', () => {
 			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( element );
 
@@ -957,8 +871,6 @@ describe( 'EditorWatchdog', () => {
 			expect( watchdog.crashes.length ).toBe( 3 );
 			expect( restartSpy ).toHaveBeenCalledTimes( 2 );
 
-			window.onerror = originalErrorHandler;
-
 			await watchdog.destroy();
 		} );
 
@@ -972,9 +884,7 @@ describe( 'EditorWatchdog', () => {
 			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( element );
 
@@ -991,17 +901,13 @@ describe( 'EditorWatchdog', () => {
 			expect( watchdog.crashes.length ).toBe( 4 );
 			expect( restartSpy ).toHaveBeenCalledTimes( 4 );
 
-			window.onerror = originalErrorHandler;
-
 			await watchdog.destroy();
 		} );
 
 		it.skip( 'Watchdog should warn if the CKEditorError is missing its context', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
@@ -1010,8 +916,6 @@ describe( 'EditorWatchdog', () => {
 			setTimeout( () => throwCKEditorError( 'foo' ) );
 
 			await waitCycle();
-
-			window.onerror = originalErrorHandler;
 
 			expect( watchdog.crashes ).toEqual( [] );
 
@@ -1025,17 +929,13 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should omit error if the CKEditorError context is equal to null', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( element );
 
 			setTimeout( () => throwCKEditorError( 'foo', null ) );
 
 			await waitCycle();
-
-			window.onerror = originalErrorHandler;
 
 			expect( watchdog.crashes ).toEqual( [] );
 
@@ -1045,9 +945,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'editor should be restarted with the data from before the crash #1', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			return watchdog.create( element, {
 				initialData: '<p>foo</p>',
@@ -1057,8 +955,6 @@ describe( 'EditorWatchdog', () => {
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
-
 						expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 						watchdog.destroy().then( res );
@@ -1070,9 +966,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'editor should be restarted with the data before the crash #2', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			return watchdog.create( element, {
 				initialData: '<p>foo</p>',
@@ -1088,8 +982,6 @@ describe( 'EditorWatchdog', () => {
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
-
 						expect( watchdog.editor.getData() ).toBe( '<p>foo</p>bar' );
 
 						watchdog.destroy().then( res );
@@ -1101,9 +993,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'editor should be restarted with the data of the latest document version before the crash', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = vi.fn();
+			stubWindowOnError();
 
 			await watchdog.create( element, {
 				initialData: '<p>foo</p>',
@@ -1114,11 +1004,7 @@ describe( 'EditorWatchdog', () => {
 			const doc = model.document;
 
 			const watchdogRestartPromise = new Promise( res => {
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-
-					res();
-				} );
+				watchdog.on( 'restart', res );
 			} );
 
 			// Throw an error inside the change() block.
@@ -1141,9 +1027,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'editor should be restarted with the latest available data before the crash', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			const consoleErrorStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
@@ -1172,8 +1056,6 @@ describe( 'EditorWatchdog', () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				watchdog.on( 'restart', async () => {
-					window.onerror = originalErrorHandler;
-
 					// It is called second time by during the default editor destruction
 					// to update the source element.
 					expect( getDataStub ).toHaveBeenCalledTimes( 2 );
@@ -1205,17 +1087,13 @@ describe( 'EditorWatchdog', () => {
 				return editor.destroy();
 			} );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			return watchdog.create( element ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
-
 						expect( destructionSpy ).toHaveBeenCalledOnce();
 
 						watchdog.destroy().then( res );
@@ -1227,9 +1105,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should handle the error when the editor destroying failed', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			const consoleErrorStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
@@ -1252,8 +1128,6 @@ describe( 'EditorWatchdog', () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				watchdog.on( 'restart', async () => {
-					window.onerror = originalErrorHandler;
-
 					expect( consoleErrorStub ).toHaveBeenCalledWith(
 						'An error happened during the editor destroying.',
 						expect.anything()
@@ -1286,9 +1160,8 @@ describe( 'EditorWatchdog', () => {
 			}
 
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
-			const originalErrorHandler = window.onerror;
 
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			return watchdog.create( element, {
 				initialData: '<p>foo</p>',
@@ -1300,8 +1173,6 @@ describe( 'EditorWatchdog', () => {
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
-
 						expect( watchdog.editor ).not.toBe( oldEditor );
 						expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
@@ -1317,10 +1188,9 @@ describe( 'EditorWatchdog', () => {
 			}
 
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
-			const originalErrorHandler = window.onerror;
 			const editorErrorSpy = vi.fn();
 
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			return watchdog.create( element, {
 				initialData: '<p>foo</p>',
@@ -1351,8 +1221,6 @@ describe( 'EditorWatchdog', () => {
 
 				return bothRejectionsDispatched;
 			} ).then( () => {
-				window.onerror = originalErrorHandler;
-
 				expect( editorErrorSpy ).not.toHaveBeenCalled();
 				expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
@@ -1456,9 +1324,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should be an array of caught errors by the watchdog', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			return watchdog.create( element ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1466,8 +1332,6 @@ describe( 'EditorWatchdog', () => {
 
 				return new Promise( res => {
 					setTimeout( () => {
-						window.onerror = originalErrorHandler;
-
 						expect( watchdog.crashes[ 0 ].message ).toMatch( /^foo/ );
 						expect( watchdog.crashes[ 0 ].stack ).toBeTypeOf( 'string' );
 						expect( watchdog.crashes[ 0 ].date ).toBeTypeOf( 'number' );
@@ -1491,9 +1355,7 @@ describe( 'EditorWatchdog', () => {
 
 				const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-				// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-				const originalErrorHandler = window.onerror;
-				window.onerror = undefined;
+				stubWindowOnError();
 
 				return watchdog.create( element ).then( () => {
 					Promise.resolve().then( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1502,8 +1364,6 @@ describe( 'EditorWatchdog', () => {
 						// This `setTimeout` needs to have a timer defined because Firefox calls the code in random order
 						// and causes the test failed.
 						setTimeout( () => {
-							window.onerror = originalErrorHandler;
-
 							expect( watchdog.crashes[ 0 ].message ).toMatch( /^foo/ );
 							expect( watchdog.crashes[ 0 ].stack ).toBeTypeOf( 'string' );
 							expect( watchdog.crashes[ 0 ].date ).toBeTypeOf( 'number' );
@@ -1523,9 +1383,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should reflect the state of the watchdog', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			expect( watchdog.state ).toBe( 'initializing' );
 
@@ -1537,8 +1395,6 @@ describe( 'EditorWatchdog', () => {
 			setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
 
 			await waitCycle();
-
-			window.onerror = originalErrorHandler;
 
 			expect( watchdog.state ).toBe( 'ready' );
 
@@ -1555,8 +1411,7 @@ describe( 'EditorWatchdog', () => {
 				states.push( watchdog.state );
 			} );
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( element );
 
@@ -1566,8 +1421,6 @@ describe( 'EditorWatchdog', () => {
 			setTimeout( () => throwCKEditorError( 'biz', watchdog.editor ) );
 
 			await waitCycle();
-
-			window.onerror = originalErrorHandler;
 
 			await watchdog.destroy();
 
@@ -1627,8 +1480,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should properly restart a single-root editor after crash', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				root: { initialData: '<p>foo</p>' },
@@ -1642,8 +1494,6 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			window.onerror = originalErrorHandler;
-
 			expect( restartSpy ).toHaveBeenCalledOnce();
 
 			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
@@ -1654,8 +1504,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should properly restart a single-root editor and keep root attributes', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				root: { initialData: '<p>foo</p>' },
@@ -1676,8 +1525,6 @@ describe( 'EditorWatchdog', () => {
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 			await waitCycle();
-
-			window.onerror = originalErrorHandler;
 
 			expect( restartSpy ).toHaveBeenCalledOnce();
 
@@ -1708,8 +1555,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should properly restart a multi-root editor after crash', async () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				roots: {
@@ -1732,8 +1578,6 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			window.onerror = originalErrorHandler;
-
 			expect( restartSpy ).toHaveBeenCalledOnce();
 
 			expect( watchdog.editor.getFullData() ).toEqual( {
@@ -1752,8 +1596,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should restore a root containing an empty element after crash', async () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				roots: {
@@ -1769,8 +1612,6 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			window.onerror = originalErrorHandler;
-
 			expect( restartSpy ).toHaveBeenCalledOnce();
 
 			// The empty paragraph (an element node without children) is restored along with the non-empty one.
@@ -1783,8 +1624,7 @@ describe( 'EditorWatchdog', () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
 			const contentElement = document.createElement( 'div' );
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				roots: {
@@ -1800,8 +1640,6 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			window.onerror = originalErrorHandler;
-
 			expect( restartSpy ).toHaveBeenCalledOnce();
 			expect( watchdog.editor.getData( { rootName: 'content' } ) ).toBe( '<p>Bar</p>' );
 
@@ -1812,8 +1650,7 @@ describe( 'EditorWatchdog', () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
 			vi.useFakeTimers();
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				roots: {
@@ -1843,8 +1680,6 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			window.onerror = originalErrorHandler;
-
 			expect( restartSpy ).toHaveBeenCalledOnce();
 
 			expect( watchdog.editor.getFullData() ).toEqual( {
@@ -1863,8 +1698,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should bring back an inline root as an inline root after crash', async () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				roots: {
@@ -1891,8 +1725,6 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			window.onerror = originalErrorHandler;
-
 			expect( restartSpy ).toHaveBeenCalledOnce();
 
 			// The inline root must not degrade to a generic `$root` after the restart.
@@ -1908,8 +1740,7 @@ describe( 'EditorWatchdog', () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
 			vi.useFakeTimers();
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				roots: {
@@ -1937,8 +1768,6 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			window.onerror = originalErrorHandler;
-
 			expect( restartSpy ).toHaveBeenCalledOnce();
 
 			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).toBe( '$inlineRoot' );
@@ -1951,8 +1780,7 @@ describe( 'EditorWatchdog', () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
 			vi.useFakeTimers();
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				roots: {
@@ -1982,8 +1810,6 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			window.onerror = originalErrorHandler;
-
 			expect( restartSpy ).toHaveBeenCalledOnce();
 
 			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).toBe( '$inlineRoot' );
@@ -2002,8 +1828,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should reuse a connected DOM editable after crash in config-based mode', async () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				roots: {
@@ -2025,8 +1850,6 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			window.onerror = originalErrorHandler;
-
 			expect( restartSpy ).toHaveBeenCalledOnce();
 
 			// The previously connected DOM editable is reused instead of creating a fresh detached one.
@@ -2043,8 +1866,7 @@ describe( 'EditorWatchdog', () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
 			vi.useFakeTimers();
 
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 
 			await watchdog.create( {
 				roots: {
@@ -2072,8 +1894,6 @@ describe( 'EditorWatchdog', () => {
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 			await waitCycle();
-
-			window.onerror = originalErrorHandler;
 
 			// The invalid value must be ignored instead of breaking the restart.
 			expect( restartSpy ).toHaveBeenCalledOnce();
@@ -2171,7 +1991,7 @@ describe( 'EditorWatchdog', () => {
 	} );
 
 	describe( 'multi-root editor', () => {
-		let element2, watchdog, originalErrorHandler, restartSpy;
+		let element2, watchdog, restartSpy;
 
 		beforeEach( () => {
 			element2 = document.createElement( 'div' );
@@ -2181,14 +2001,11 @@ describe( 'EditorWatchdog', () => {
 
 			restartSpy = vi.fn();
 
-			originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			stubWindowOnError();
 		} );
 
 		afterEach( async () => {
 			element2.remove();
-
-			window.onerror = originalErrorHandler;
 
 			await watchdog.destroy();
 		} );
@@ -2361,8 +2178,6 @@ describe( 'EditorWatchdog', () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				await waitCycle();
-
-				window.onerror = originalErrorHandler;
 
 				expect( restartSpy ).toHaveBeenCalledOnce();
 

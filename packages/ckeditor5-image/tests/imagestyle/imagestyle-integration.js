@@ -8,6 +8,7 @@ import { Image } from '../../src/image.js';
 import { ImageStyle } from '../../src/imagestyle.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
+import { stubWindowOnError } from '@ckeditor/ckeditor5-watchdog/tests/_utils/stubwindowonerror.js';
 import { Context } from '@ckeditor/ckeditor5-core';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -16,7 +17,6 @@ describe( 'ImageStyle integration', () => {
 	describe( 'with Watchdog plugin', () => {
 		let editorElement1, editorElement2, editorConfig;
 		let watchdog;
-		let originalErrorHandler;
 
 		beforeEach( async () => {
 			watchdog = new ContextWatchdog( Context );
@@ -44,14 +44,11 @@ describe( 'ImageStyle integration', () => {
 			document.body.appendChild( editorElement1 );
 			document.body.appendChild( editorElement2 );
 
-			originalErrorHandler = window.onerror;
-			window.onerror = vi.fn();
+			stubWindowOnError();
 		} );
 
 		afterEach( async () => {
 			await watchdog.destroy();
-
-			window.onerror = originalErrorHandler;
 
 			editorElement1.remove();
 			editorElement2.remove();
