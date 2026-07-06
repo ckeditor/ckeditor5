@@ -19,6 +19,7 @@ import { ModelElement, _getModelData, _setModelData, _getViewData } from '@ckedi
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { CommandCollection } from '@ckeditor/ckeditor5-core';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 
 import { CKBoxEditing } from '../src/ckboxediting.js';
@@ -2096,99 +2097,4 @@ function createTestEditor( config = {}, loadCKBoxFirst = false ) {
 		],
 		...config
 	} );
-}
-
-// Minimal fake XHR server used in this file:
-// - `respondWith( method, url, [ status, headers, body ] )` — register an immediate response.
-// - `restore()` — revert the `XMLHttpRequest` global.
-//
-// Responses fire synchronously from `send()`.
-function createFakeXHRServer() {
-	const responses = [];
-	const OriginalXMLHttpRequest = window.XMLHttpRequest;
-
-	class FakeXMLHttpRequest {
-		constructor() {
-			this.listeners = new Map();
-			this.requestHeaders = {};
-			this.upload = {
-				addEventListener: () => {},
-				removeEventListener: () => {}
-			};
-			this.status = 0;
-			this.response = null;
-			this.responseText = '';
-			this.responseType = '';
-			this.aborted = false;
-		}
-
-		open( method, url ) {
-			this.method = method;
-			this.url = url;
-		}
-
-		setRequestHeader( name, value ) {
-			this.requestHeaders[ name ] = value;
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		removeEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			const index = callbacks.indexOf( callback );
-
-			if ( index !== -1 ) {
-				callbacks.splice( index, 1 );
-			}
-		}
-
-		abort() {
-			this.aborted = true;
-			this._dispatchEvent( 'abort' );
-		}
-
-		send() {
-			this._dispatchEvent( 'loadstart' );
-
-			const match = responses.find( entry => entry.method === this.method && entry.url === this.url );
-
-			if ( !match ) {
-				this.status = 404;
-				this._dispatchEvent( 'load' );
-				this._dispatchEvent( 'loadend' );
-				return;
-			}
-
-			const [ status, headers, body ] = match.response;
-
-			this.status = status;
-			this.responseHeaders = headers;
-			this.responseText = body;
-			this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
-
-			this._dispatchEvent( 'load' );
-			this._dispatchEvent( 'loadend' );
-		}
-
-		_dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	window.XMLHttpRequest = FakeXMLHttpRequest;
-
-	return {
-		respondWith( method, url, response ) {
-			responses.push( { method, url, response } );
-		},
-		restore() {
-			window.XMLHttpRequest = OriginalXMLHttpRequest;
-		}
-	};
 }

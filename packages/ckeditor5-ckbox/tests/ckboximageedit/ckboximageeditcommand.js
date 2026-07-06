@@ -29,6 +29,7 @@ vi.mock( 'es-toolkit/compat', async importOriginal => {
 	};
 } );
 import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
+import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 import { CKBoxEditing } from '../../src/ckboxediting.js';
 import { CKBoxImageEditEditing } from '../../src/ckboximageedit/ckboximageeditediting.js';
 
@@ -544,7 +545,8 @@ describe( 'CKBoxImageEditCommand', () => {
 					ckboxImageId,
 					controller: new AbortController()
 				} );
-				fakeXHRServer = createFakeXHRServer();
+				// Defer the responses so the code under test can finish attaching its listeners after `send()`.
+				fakeXHRServer = createFakeXHRServer( { respondDelay: 10 } );
 			} );
 
 			afterEach( () => {
@@ -1049,137 +1051,4 @@ function createToken( tokenClaims ) {
 		// Signature.
 		'signature'
 	].join( '.' );
-}
-
-// Minimal fake XHR server used in this file:
-// - `respondWith( method, url, [ status, headers, body ] )` — register a deferred response.
-// - `respondWith( method, url, xhr => { ... } )` — register a callback response.
-//   The callback receives the request and may call `xhr.error()`.
-// - `requests` — array of issued requests (tracked from `open()`).
-// - `restore()` — revert the `XMLHttpRequest` global.
-//
-// Responses fire on the next macrotask (via `setTimeout( 0 )`) so the requesting
-// code can finish attaching its listeners first. The latest matching `respondWith`
-// entry wins, so callers can override earlier ones mid-test.
-function createFakeXHRServer() {
-	const responses = [];
-	const requests = [];
-	const OriginalXMLHttpRequest = window.XMLHttpRequest;
-
-	class FakeXMLHttpRequest {
-		constructor() {
-			this.listeners = new Map();
-			this.requestHeaders = {};
-			this.upload = {
-				addEventListener: () => {},
-				removeEventListener: () => {}
-			};
-			this.status = 0;
-			this.response = null;
-			this.responseText = '';
-			this.responseType = '';
-			this.aborted = false;
-			this._sent = false;
-		}
-
-		open( method, url ) {
-			this.method = method;
-			this.url = url;
-
-			if ( !requests.includes( this ) ) {
-				requests.push( this );
-			}
-		}
-
-		setRequestHeader( name, value ) {
-			this.requestHeaders[ name ] = value;
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		removeEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			const index = callbacks.indexOf( callback );
-
-			if ( index !== -1 ) {
-				callbacks.splice( index, 1 );
-			}
-		}
-
-		abort() {
-			this.aborted = true;
-			this._dispatchEvent( 'abort' );
-		}
-
-		send() {
-			this._sent = true;
-			this._dispatchEvent( 'loadstart' );
-
-			// Defer the response so the requesting code can finish attaching its listeners first.
-			window.setTimeout( () => {
-				if ( this.aborted ) {
-					return;
-				}
-
-				// Find the latest matching response (so callers can override earlier ones).
-				let match;
-				for ( let i = responses.length - 1; i >= 0; i-- ) {
-					const entry = responses[ i ];
-					if ( entry.method === this.method && entry.url === this.url ) {
-						match = entry;
-						break;
-					}
-				}
-
-				if ( !match ) {
-					this.status = 404;
-					this._dispatchEvent( 'load' );
-					this._dispatchEvent( 'loadend' );
-					return;
-				}
-
-				if ( typeof match.response === 'function' ) {
-					match.response( this );
-					return;
-				}
-
-				const [ status, headers, body ] = match.response;
-
-				this.status = status;
-				this.responseHeaders = headers;
-				this.responseText = body;
-				this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
-
-				this._dispatchEvent( 'load' );
-				this._dispatchEvent( 'loadend' );
-			}, 10 );
-		}
-
-		error() {
-			this._dispatchEvent( 'error' );
-			this._dispatchEvent( 'loadend' );
-		}
-
-		_dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	window.XMLHttpRequest = FakeXMLHttpRequest;
-
-	return {
-		requests,
-		respondWith( method, url, response ) {
-			responses.push( { method, url, response } );
-		},
-		restore() {
-			window.XMLHttpRequest = OriginalXMLHttpRequest;
-		}
-	};
 }

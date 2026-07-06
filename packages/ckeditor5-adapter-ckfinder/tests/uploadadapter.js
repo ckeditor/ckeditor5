@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Image, ImageUpload } from '@ckeditor/ckeditor5-image';
@@ -228,88 +229,3 @@ describe( 'CKFinderUploadAdapter', () => {
 		} );
 	} );
 } );
-
-function createFakeXHRServer() {
-	const requests = [];
-
-	class FakeXMLHttpRequest {
-		constructor() {
-			this.aborted = false;
-			this.listeners = new Map();
-			this.upload = new FakeXMLHttpRequestUpload();
-
-			requests.push( this );
-		}
-
-		open( method, url, async ) {
-			this.method = method;
-			this.url = url;
-			this.async = async;
-		}
-
-		send( body ) {
-			this.requestBody = body;
-		}
-
-		abort() {
-			this.aborted = true;
-			this.dispatchEvent( 'abort' );
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		respond( status, headers, body ) {
-			this.status = status;
-			this.responseHeaders = headers;
-			this.responseText = body;
-			this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
-
-			this.dispatchEvent( 'load' );
-		}
-
-		error() {
-			this.dispatchEvent( 'error' );
-		}
-
-		uploadProgress( event ) {
-			this.upload.dispatchEvent( 'progress', {
-				lengthComputable: true,
-				...event
-			} );
-		}
-
-		dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	class FakeXMLHttpRequestUpload {
-		constructor() {
-			this.listeners = new Map();
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	vi.stubGlobal( 'XMLHttpRequest', FakeXMLHttpRequest );
-
-	return { requests };
-}

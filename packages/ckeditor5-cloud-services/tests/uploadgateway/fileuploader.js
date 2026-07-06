@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 import { FileUploader } from '../../src/uploadgateway/fileuploader.js';
 import { Token } from '../../src/token/token.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -11,93 +12,6 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 const API_ADDRESS = 'https://example.dev';
 const BASE_64_FILE = 'data:image/gif;base64,R0lGODlhCQAJAPIAAGFhYZXK/1FRUf///' +
 	'9ra2gD/AAAAAAAAACH5BAEAAAUALAAAAAAJAAkAAAMYWFqwru2xERcYJLSNNWNBVimC5wjfaTkJADs=';
-
-function createFakeXHRServer() {
-	const requests = [];
-
-	class FakeXMLHttpRequestUpload {
-		constructor() {
-			this.listeners = new Map();
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	class FakeXMLHttpRequest {
-		constructor() {
-			this.aborted = false;
-			this.listeners = new Map();
-			this.requestHeaders = {};
-			this.responseType = '';
-			this.upload = new FakeXMLHttpRequestUpload();
-			requests.push( this );
-		}
-
-		open( method, url, async ) {
-			this.method = method;
-			this.url = url;
-			this.async = async;
-		}
-
-		setRequestHeader( name, value ) {
-			this.requestHeaders[ name ] = value;
-		}
-
-		send( body ) {
-			this.requestBody = body;
-		}
-
-		abort() {
-			this.aborted = true;
-			this.dispatchEvent( 'abort' );
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		respond( status, headers, body ) {
-			this.status = status;
-			this.responseHeaders = headers;
-			this.responseText = body;
-			this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
-			this.dispatchEvent( 'load' );
-		}
-
-		error() {
-			this.dispatchEvent( 'error' );
-		}
-
-		uploadProgress( event ) {
-			this.upload.dispatchEvent( 'progress', {
-				lengthComputable: true,
-				...event
-			} );
-		}
-
-		dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	vi.stubGlobal( 'XMLHttpRequest', FakeXMLHttpRequest );
-
-	return { requests };
-}
 
 describe( 'FileUploader', () => {
 	const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;

@@ -4,65 +4,12 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 import { Token } from '../../src/token/token.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 describe( 'Token', () => {
-	let requests;
-
-	function createFakeXHRServer() {
-		const requests = [];
-		class FakeXMLHttpRequest {
-			constructor() {
-				this.aborted = false;
-				this.listeners = new Map();
-				this.upload = new FakeXMLHttpRequestUpload();
-				requests.push( this );
-			}
-			open( method, url ) {
-				this.method = method;
-				this.url = url;
-			}
-			send() {}
-			abort() {
-				this.aborted = true;
-				this.dispatchEvent( 'abort' );
-			}
-			addEventListener( event, callback ) {
-				const callbacks = this.listeners.get( event ) || [];
-				callbacks.push( callback );
-				this.listeners.set( event, callbacks );
-			}
-			respond( status, headers, body ) {
-				this.status = status;
-				this.response = body;
-				this.dispatchEvent( 'load' );
-			}
-			error() { this.dispatchEvent( 'error' ); }
-			dispatchEvent( event, data ) {
-				for ( const callback of this.listeners.get( event ) || [] ) {
-					callback( data );
-				}
-			}
-		}
-		class FakeXMLHttpRequestUpload {
-			constructor() { this.listeners = new Map(); }
-			addEventListener( event, callback ) {
-				const callbacks = this.listeners.get( event ) || [];
-				callbacks.push( callback );
-				this.listeners.set( event, callbacks );
-			}
-			dispatchEvent( event, data ) {
-				for ( const callback of this.listeners.get( event ) || [] ) {
-					callback( data );
-				}
-			}
-		}
-		vi.stubGlobal( 'XMLHttpRequest', FakeXMLHttpRequest );
-		return { requests };
-	}
-
-	let fakeXHR;
+	let requests, fakeXHR;
 
 	beforeEach( () => {
 		fakeXHR = createFakeXHRServer();

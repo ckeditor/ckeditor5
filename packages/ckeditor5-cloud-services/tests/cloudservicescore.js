@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Context } from '@ckeditor/ckeditor5-core';
+import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 import { CloudServicesCore } from '../src/cloudservicescore.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { UploadGateway } from '../src/uploadgateway/uploadgateway.js';
@@ -14,62 +15,13 @@ describe( 'CloudServicesCore', () => {
 	let context, cloudServicesCorePlugin, requests;
 
 	beforeEach( async () => {
-		requests = [];
-
 		context = await Context.create( {
 			plugins: [ CloudServicesCore ]
 		} );
 
 		cloudServicesCorePlugin = context.plugins.get( CloudServicesCore );
 
-		class FakeXMLHttpRequest {
-			constructor() {
-				this.aborted = false;
-				this.listeners = new Map();
-				requests.push( this );
-			}
-
-			open( method, url, async ) {
-				this.method = method;
-				this.url = url;
-				this.async = async;
-			}
-
-			send( body ) {
-				this.requestBody = body;
-			}
-
-			abort() {
-				this.aborted = true;
-				this.dispatchEvent( 'abort' );
-			}
-
-			addEventListener( event, callback ) {
-				const callbacks = this.listeners.get( event ) || [];
-				callbacks.push( callback );
-				this.listeners.set( event, callbacks );
-			}
-
-			respond( status, headers, body ) {
-				this.status = status;
-				this.responseHeaders = headers;
-				this.responseText = body;
-				this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
-				this.dispatchEvent( 'load' );
-			}
-
-			error() {
-				this.dispatchEvent( 'error' );
-			}
-
-			dispatchEvent( event, data ) {
-				for ( const callback of this.listeners.get( event ) || [] ) {
-					callback( data );
-				}
-			}
-		}
-
-		vi.stubGlobal( 'XMLHttpRequest', FakeXMLHttpRequest );
+		( { requests } = createFakeXHRServer() );
 	} );
 
 	afterEach( () => {

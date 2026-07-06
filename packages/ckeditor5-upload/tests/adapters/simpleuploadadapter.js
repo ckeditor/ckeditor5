@@ -5,6 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 import { SimpleUploadAdapter } from '../../src/adapters/simpleuploadadapter.js';
 import { FileRepository } from '../../src/filerepository.js';
 import { createNativeFileMock } from '../_utils/mocks.js';
@@ -553,94 +554,3 @@ describe( 'SimpleUploadAdapter', () => {
 		} );
 	} );
 } );
-
-function createFakeXHRServer() {
-	const requests = [];
-
-	class FakeXMLHttpRequest {
-		constructor() {
-			this.aborted = false;
-			this.withCredentials = false;
-			this.requestHeaders = {};
-			this.listeners = new Map();
-			this.upload = new FakeXMLHttpRequestUpload();
-
-			requests.push( this );
-		}
-
-		open( method, url, async ) {
-			this.method = method;
-			this.url = url;
-			this.async = async;
-		}
-
-		setRequestHeader( name, value ) {
-			this.requestHeaders[ name ] = value;
-		}
-
-		send( body ) {
-			this.requestBody = body;
-		}
-
-		abort() {
-			this.aborted = true;
-			this.dispatchEvent( 'abort' );
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		respond( status, headers, body ) {
-			this.status = status;
-			this.responseHeaders = headers;
-			this.responseText = body;
-			this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
-
-			this.dispatchEvent( 'load' );
-		}
-
-		error() {
-			this.dispatchEvent( 'error' );
-		}
-
-		uploadProgress( event ) {
-			this.upload.dispatchEvent( 'progress', {
-				lengthComputable: true,
-				...event
-			} );
-		}
-
-		dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	class FakeXMLHttpRequestUpload {
-		constructor() {
-			this.listeners = new Map();
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	vi.stubGlobal( 'XMLHttpRequest', FakeXMLHttpRequest );
-
-	return { requests };
-}
