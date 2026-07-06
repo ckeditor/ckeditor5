@@ -7,7 +7,7 @@ modified_at: 2026-02-18
 
 # Editing engine
 
-The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) is the largest package in CKEditor&nbsp;5. This guide introduces the main architecture and key concepts. More detailed guides are available for specific topics.
+The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) package is the largest and most complex part of CKEditor&nbsp;5. It is built around three layers: the model (the editor's data), the view (its rendering layer), and the conversion that maps between them.
 
 <info-box tip>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

@@ -9,7 +9,7 @@ modified_at: 2025-01-30
 
 # Attributes and inline formatting
 
-In this guide, we will dive deeper into how inline formatting works in CKEditor&nbsp;5 through the lens of model text attributes. To fully understand the concepts presented here, you should first study how {@link framework/deep-dive/conversion/intro conversion} works, particularly how attributes are transformed between the model and view layers.
+In CKEditor&nbsp;5, inline formatting (such as bold, italic, or font size) is stored as text attributes on the model's text nodes. This guide explains how those attributes work and how they are converted between the model and view layers. To follow it, you should first understand how {@link framework/deep-dive/conversion/intro conversion} works.
 
 ## Inline and block content
 

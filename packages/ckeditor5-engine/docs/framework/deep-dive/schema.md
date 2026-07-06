@@ -7,15 +7,13 @@ meta-description: Explore the CKEditor 5 schema system, defining document struct
 
 # Schema
 
-This article assumes that you have already read the {@link framework/architecture/editing-engine#schema "Schema"} section of the {@link framework/architecture/editing-engine introduction to the editing engine architecture}.
-
-## Quick recap
-
 The editor's schema is available in the {@link module:engine/model/model~Model#schema `editor.model.schema`} property. It defines allowed model structures (how model elements can be nested), allowed attributes (of both elements and text nodes), and other characteristics (inline vs. block, atomicity in regards of external actions). This information is later used by editing features and the editing engine to decide how to process the model, where to enable features, etc.
 
 Schema rules can be defined by using the {@link module:engine/model/schema~ModelSchema#register `Schema#register()`} or the {@link module:engine/model/schema~ModelSchema#extend `Schema#extend()`} methods. The former can be used only once for a given item name which ensures that only a single editing feature can introduce this item. Similarly, `extend()` can only be used for defined items.
 
 Elements and attributes are checked by features separately by using the {@link module:engine/model/schema~ModelSchema#checkChild `Schema#checkChild()`} and the {@link module:engine/model/schema~ModelSchema#checkAttribute `Schema#checkAttribute()`} methods.
+
+This article assumes that you have already read the {@link framework/architecture/editing-engine#schema "Schema"} section of the {@link framework/architecture/editing-engine introduction to the editing engine architecture}.
 
 ## Defining allowed structures
 

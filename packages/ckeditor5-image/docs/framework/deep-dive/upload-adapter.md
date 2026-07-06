@@ -8,7 +8,7 @@ classes: custom-adapter
 
 # Custom image upload adapter
 
-In this guide, you will learn the basic concepts of the file upload architecture in CKEditor&nbsp;5 WYSIWYG editor which will help you implement your custom upload adapter.
+An upload adapter connects CKEditor&nbsp;5's file upload to a server or storage of your choice. This guide explains the file upload architecture and how to implement a custom upload adapter.
 
 While this guide is mainly focused on image upload (the most common kind of upload), the presented concepts and the API allow development of all sorts of file upload adapters for different file types like PDF files, movies, etc.
 
