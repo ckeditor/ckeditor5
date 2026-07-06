@@ -2622,7 +2622,7 @@ function createChangeReducerCallback( model: NormalizedModelElementConfig ) {
 				return true;
 			}
 		} else {
-			/* istanbul ignore else: This is always true because otherwise it would not register a reducer callback. -- @preserve */
+			/* v8 ignore else: This is always true because otherwise it would not register a reducer callback. -- @preserve */
 			if ( model.children ) {
 				return true;
 			}
