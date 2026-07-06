@@ -102,10 +102,14 @@ describe( 'utils', () => {
 		it( 'should wait specified time between invocations', async () => {
 			const callback = vi.fn().mockRejectedValue( undefined );
 
-			retry( callback, {
+			// All attempts fail, so the promise eventually rejects. Catch it to avoid an unhandled rejection.
+			const promise = retry( callback, {
 				retryDelay: attempt => ( attempt + 1 ) * 5,
 				maxAttempts: 3
-			} );
+			} ).then(
+				() => { throw new Error( 'unexpected success' ); },
+				() => {}
+			);
 
 			expect( callback ).toHaveBeenCalledTimes( 1 );
 
@@ -136,12 +140,18 @@ describe( 'utils', () => {
 			await vi.advanceTimersByTimeAsync( 20 );
 
 			expect( callback ).toHaveBeenCalledTimes( 3 );
+
+			await promise;
 		} );
 
 		it( 'should exponentially back off by default', async () => {
 			const callback = vi.fn().mockRejectedValue( undefined );
 
-			retry( callback );
+			// All attempts fail, so the promise eventually rejects. Catch it to avoid an unhandled rejection.
+			const promise = retry( callback ).then(
+				() => { throw new Error( 'unexpected success' ); },
+				() => {}
+			);
 
 			expect( callback ).toHaveBeenCalledTimes( 1 );
 
@@ -172,14 +182,20 @@ describe( 'utils', () => {
 			await vi.advanceTimersByTimeAsync( 8000 );
 
 			expect( callback ).toHaveBeenCalledTimes( 4 );
+
+			await promise;
 		} );
 
 		it( 'should exponentially back off by default (custom `maxAttempts`)', async () => {
 			const callback = vi.fn().mockRejectedValue( undefined );
 
-			retry( callback, {
+			// All attempts fail, so the promise eventually rejects. Catch it to avoid an unhandled rejection.
+			const promise = retry( callback, {
 				maxAttempts: 6
-			} );
+			} ).then(
+				() => { throw new Error( 'unexpected success' ); },
+				() => {}
+			);
 
 			expect( callback ).toHaveBeenCalledTimes( 1 );
 
@@ -226,6 +242,8 @@ describe( 'utils', () => {
 			await vi.advanceTimersByTimeAsync( 10000 );
 
 			expect( callback ).toHaveBeenCalledTimes( 6 );
+
+			await promise;
 		} );
 
 		it.skip( 'should start waiting delay after the callback resolves', async () => {

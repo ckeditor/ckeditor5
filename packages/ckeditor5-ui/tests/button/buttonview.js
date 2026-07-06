@@ -400,12 +400,11 @@ describe( 'ButtonView', () => {
 			} );
 
 			describe( 'in Safari', () => {
-				let view, clock;
+				let view;
 
 				beforeEach( () => {
 					vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
 					vi.useFakeTimers();
-					clock = { tick: ms => vi.advanceTimersByTime( ms ) };
 					view = new ButtonView( locale );
 					view.render();
 				} );
@@ -418,7 +417,7 @@ describe( 'ButtonView', () => {
 				it( 'the button is focused', () => {
 					const spy = vi.spyOn( view.element, 'focus' );
 					view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
-					clock.tick( 0 );
+					vi.advanceTimersByTime( 0 );
 
 					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
@@ -429,7 +428,7 @@ describe( 'ButtonView', () => {
 					view.element.dispatchEvent( new Event( 'mouseup', { cancelable: true } ) );
 
 					document.body.focus();
-					clock.tick( 0 );
+					vi.advanceTimersByTime( 0 );
 
 					expect( spy ).toHaveBeenCalledTimes( 0 );
 				} );

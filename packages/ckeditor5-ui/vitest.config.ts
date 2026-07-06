@@ -10,10 +10,11 @@ const config: ViteUserConfig = createVitestConfig( import.meta.dirname, {
 	exclude: [
 		'**/_utils',
 		'**/fixtures',
-		'**/manual',
-		'tests/_utils-tests/testfocuscycling.ts'
+		'**/manual'
 	],
 	coverage: {
+		// Type-only modules (interfaces and event typings). They are never loaded at runtime,
+		// so no test can produce coverage for them.
 		exclude: [
 			'src/button/button.ts',
 			'src/button/buttonlabel.ts',

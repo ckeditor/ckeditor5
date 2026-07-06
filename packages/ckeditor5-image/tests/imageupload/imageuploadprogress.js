@@ -307,7 +307,6 @@ describe( 'ImageUploadProgress', () => {
 
 	it( 'should convert image\'s "complete" uploadStatus attribute and display temporary icon', () => new Promise( ( resolve, reject ) => {
 		vi.useFakeTimers();
-		const clock = { tick: ms => vi.advanceTimersByTime( ms ) };
 
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
@@ -322,7 +321,7 @@ describe( 'ImageUploadProgress', () => {
 						'</span>}foo</p>'
 					);
 
-					clock.tick( 3000 );
+					vi.advanceTimersByTime( 3000 );
 
 					expect( _getViewData( view ) ).toBe(
 						'<p>[<span class="ck-widget image-inline" contenteditable="false">' +
