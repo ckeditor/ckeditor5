@@ -7,14 +7,11 @@ meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at a
 
 # Updating CKEditor&nbsp;5
 
+CKEditor&nbsp;5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
+
 <info-box>
 	This guide covers the topic of keeping your CKEditor&nbsp;5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor&nbsp;5, please see the {@link updating/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
 </info-box>
-
-
-## Updating the editor
-
-CKEditor&nbsp;5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
 
 Before proceeding with an update, it is highly recommended to [read the release notes](https://github.com/ckeditor/ckeditor5/releases) for the latest version to learn about all changes introduced in the release. You should especially pay attention to any possible {@link updating/versioning-policy#breaking-changes breaking changes}. This step is crucial if you develop your own custom features and modify the editor, as sometimes, changes in our code might affect these custom solutions.
 
@@ -34,7 +31,7 @@ You can simply visit our [CKEditor&nbsp;5 download page](https://ckeditor.com/ck
 
 Below you will find an example that will guide you through the updating process and give you an idea on how it should be done.
 
-### Example
+## Example
 
 Imagine that you use the editor in and older version and you want to update it to the current {@var ckeditor5-version} version.
 
@@ -79,7 +76,7 @@ rm -rf node_modules && npm install && npm run build
 
 This is it! Your editor is updated and now you can focus on adjusting your custom solutions (if needed). If you use real-time collaboration, you should check the next section.
 
-### Real-time collaboration
+## Real-time collaboration
 
 While using real-time collaboration it is important to remember about preparing existing documents for the updated editor. Basically, it is not possible to join the document that was created with a CKEditor&nbsp;5 version different than the one used by the client. For example, imagine a situation when the document has been initialized with the editor version 30.0.0 and after the update, a user connects to this document with the editor version 31.0.0. In such a case, an error about an incompatible engine version will be thrown.
 
