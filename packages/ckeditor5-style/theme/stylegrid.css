@@ -57,6 +57,10 @@
 			align-items: center;
 			flex-grow: 1;
 			flex-basis: 100%;
+
+			/* This element carries `.ck-reset_all-excluded`, so it no longer inherits `box-sizing`
+			from the global reset. Set it explicitly, since the layout below relies on border-box. */
+			box-sizing: border-box;
 		}
 
 		&.ck-disabled {
