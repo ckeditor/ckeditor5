@@ -89,7 +89,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ]
@@ -106,7 +106,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ]
@@ -121,7 +121,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ) );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '11[]', '12' ],
 				[ '21', '22' ]
@@ -137,7 +137,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -154,7 +154,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '', '' ],
@@ -193,7 +193,7 @@ describe( 'TableUtils', () => {
 			// |         | 22 | 23 |
 			// +----+----+----+----+
 			//                     ^-- heading columns
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', colspan: 2 }, '02', '03' ],
 				[ { contents: '10[]', colspan: 2, rowspan: 5 }, '12', '13' ],
 				[ '', '' ],
@@ -232,7 +232,7 @@ describe( 'TableUtils', () => {
 			// +----+----+----+
 			// | 20 | 21 | 22 |
 			// +----+----+----+
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', rowspan: 2 }, '01', '02' ],
 				[ '11[]', '12' ],
 				[ '', '', '' ],
@@ -271,7 +271,7 @@ describe( 'TableUtils', () => {
 			// +----+----+----+
 			// | 20           |
 			// +----+----+----+
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', rowspan: 2 }, '01', '02' ],
 				[ '11[]', '12' ],
 				[ '', '', '' ],
@@ -290,7 +290,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '', '' ],
@@ -307,7 +307,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -346,7 +346,7 @@ describe( 'TableUtils', () => {
 			// | 10      | 22 | 23 |
 			// +----+----+----+----+
 			//                     ^-- heading columns
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', colspan: 2, rowspan: 5 }, '02', '03' ],
 				[ '', '' ],
 				[ '', '' ],
@@ -385,7 +385,7 @@ describe( 'TableUtils', () => {
 			// +    +----+----+
 			// |    | 21 | 22 |
 			// +----+----+----+
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '', '', '' ],
 				[ '', '', '' ],
@@ -424,7 +424,7 @@ describe( 'TableUtils', () => {
 			// +    +----+----+
 			// |    | 21 | 22 |
 			// +----+----+----+
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00[]', colspan: 3 } ],
 				[ '', '', '' ],
 				[ '', '', '' ],
@@ -442,7 +442,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '', '' ],
@@ -464,7 +464,7 @@ describe( 'TableUtils', () => {
 				'tableutils-insertrows-insert-out-of-range'
 			);
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
@@ -487,7 +487,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -549,7 +549,7 @@ describe( 'TableUtils', () => {
 				// +----+         +    +----+----+
 				// | 10 |         |    | 14      |
 				// +----+----+----+----+----+----+
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '', { contents: '', colspan: 2 }, '', '', '' ],
 					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
 					[ '10', { contents: '14', colspan: 2 } ]
@@ -566,7 +566,7 @@ describe( 'TableUtils', () => {
 				// +----+         +    +----+----+
 				// | 10 |         |    | 14      |
 				// +----+----+----+----+----+----+
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { contents: '01', colspan: 2, rowspan: 3 }, { contents: '03', rowspan: 3 }, '04', '05' ],
 					[ '', '', '' ],
 					[ '10', { contents: '14', colspan: 2 } ]
@@ -583,7 +583,7 @@ describe( 'TableUtils', () => {
 				// +----+----+----+----+----+----+
 				// |    |         |    |         |
 				// +----+----+----+----+----+----+
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
 					[ '10', { contents: '14', colspan: 2 } ],
 					[ '', { contents: '', colspan: 2 }, '', { contents: '', colspan: 2 } ]
@@ -600,7 +600,7 @@ describe( 'TableUtils', () => {
 				// +----+         +    +----+----+
 				// | 10 |         |    | 14      |
 				// +----+----+----+----+----+----+
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { contents: '01', colspan: 2, rowspan: 3 }, { contents: '03', rowspan: 3 }, '04', '05' ],
 					[ '', { contents: '', colspan: 2 } ],
 					[ '10', { contents: '14', colspan: 2 } ]
@@ -622,7 +622,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '', '12' ],
 				[ '21', '', '22' ]
 			] ) );
@@ -638,7 +638,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '', '12' ],
 				[ '21', '', '22' ]
 			] ) );
@@ -652,7 +652,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ) );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '11[]', '12' ],
 				[ '', '21', '22' ]
 			] ) );
@@ -666,7 +666,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ) );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '11[]', '12' ],
 				[ '', '21', '22' ]
 			] ) );
@@ -682,7 +682,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2, columns: 2 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00[]', '01', '', '' ],
 				[ { colspan: 2, contents: '10' }, '', '' ],
 				[ '20', { rowspan: 2, contents: '21' }, '', '' ],
@@ -701,7 +701,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 0, columns: 2 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '', '00[]', '01' ],
 				[ '', '', { colspan: 2, contents: '10' } ],
 				[ '', '', '20', { rowspan: 2, contents: '21' } ],
@@ -720,7 +720,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 1 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11', '', '12', '13' ],
 				[ '21', '', { colspan: 2, rowspan: 2, contents: '22[]' } ],
 				[ '31', '' ],
@@ -737,7 +737,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '', '12' ],
 				[ '21', '', '22' ],
 				[ '31', '', '32' ]
@@ -753,7 +753,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11[]', '12', '', '13' ],
 				[ '21', '22', '', '23' ],
 				[ '31', '32', '', '33' ]
@@ -769,7 +769,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00[]', '', '01' ],
 				[ { colspan: 3, contents: '10' } ],
 				[ '20', '', '21' ]
@@ -801,7 +801,7 @@ describe( 'TableUtils', () => {
 			// | 20                          | 24      |
 			// +----+----+----+----+----+----+----+----+
 			//                               ^-- heading columns
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01[]', '', '', '02', '03', '04', '05' ],
 				[ '10', '11', '', '', { contents: '12', colspan: 2 }, '14', '15' ],
 				[ { contents: '20', colspan: 6 }, { contents: '24', colspan: 2 } ]
@@ -824,7 +824,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { colspan: 4, rowspan: 2, contents: '00[]' }, '02' ],
 				[ '12' ],
 				[ '20', '', '', '21', '22' ]
@@ -841,7 +841,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 1 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { rowspan: 4, contents: '00[]' }, '', { rowspan: 2, contents: '01' }, '02' ],
 				[ '', '12' ],
 				[ '', { rowspan: 2, contents: '21' }, '22' ],
@@ -866,7 +866,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -912,7 +912,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 3 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -945,7 +945,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ), 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', { colspan: 3, contents: '01' }, '02' ],
 				[ '10', '[]11', '', '', '12' ],
 				[ '20', { colspan: 4, contents: '21' } ],
@@ -963,7 +963,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ) );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', { colspan: 2, contents: '01' }, '02' ],
 				[ '10', '[]11', '', '12' ],
 				[ '20', { colspan: 3, contents: '21' } ],
@@ -981,7 +981,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 2, 1 ] ), 2 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20', '21[]', '' ],
@@ -997,7 +997,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ { colspan: 2, contents: '10[]' }, '' ]
 			] ) );
@@ -1011,7 +1011,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02', '03' ],
 				[ { colspan: 2, contents: '10[]' }, { colspan: 2, contents: '' } ]
 			] ) );
@@ -1026,7 +1026,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02', '03', '04', '05' ],
 				[ { colspan: 3, rowspan: 2, contents: '10[]' }, { colspan: 2, rowspan: 2, contents: '' }, '15' ],
 				[ '25' ]
@@ -1042,7 +1042,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { colspan: 2, contents: '00' }, '01', '02' ],
 				[ { rowspan: 2, contents: '10[]' }, { rowspan: 2, contents: '' }, { rowspan: 2, contents: '' }, '12' ],
 				[ '22' ]
@@ -1057,7 +1057,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 6 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { colspan: 3, contents: '00' }, '01', '02', '03' ],
 				[ '10[]', '', '', '', '', '' ]
 			] ) );
@@ -1071,7 +1071,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { colspan: 3, contents: '00' }, '01' ],
 				[ '10[]', '', '', '11' ]
 			], { headingColumns: 3 } ) );
@@ -1086,7 +1086,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 2, 0 ] ), 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20[]', { rowspan: 3, contents: '21' }, { rowspan: 3, contents: '22' } ],
@@ -1112,7 +1112,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell colspan="3"><paragraph>00</paragraph></tableCell>' +
@@ -1140,7 +1140,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ) );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 2, contents: '10' }, '[]11', { rowspan: 2, contents: '12' } ],
 				[ '' ],
@@ -1157,7 +1157,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ), 4 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 4, contents: '10' }, '[]11', { rowspan: 4, contents: '12' } ],
 				[ '' ],
@@ -1176,7 +1176,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { rowspan: 4, contents: '00' }, '01', { rowspan: 5, contents: '02' } ],
 				[ '[]11' ],
 				[ '' ],
@@ -1196,7 +1196,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01[]' ],
 				[ '10', '' ],
 				[ '20', '21' ]
@@ -1214,7 +1214,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', { colspan: 2, contents: '01[]' } ],
 				[ '10', { colspan: 2, contents: '' } ],
 				[ '20', '21', '22' ]
@@ -1236,7 +1236,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', { rowspan: 4, contents: '01[]' } ],
 				[ '10' ],
 				[ '20' ],
@@ -1267,7 +1267,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { rowspan: 2, contents: '00' }, { colspan: 2, contents: '01' }, { colspan: 2, contents: '02' } ],
 				[ '10', '11', '12', '13' ],
 				[ { rowspan: 5, contents: '20[]' }, '21', '22', '23', '24' ],
@@ -1299,7 +1299,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', { rowspan: 3, contents: '01[]' } ],
 				[ '10' ],
 				[ '20' ],
@@ -1322,7 +1322,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01[]' ],
 				[ '' ],
 				[ '10', '' ],
@@ -1340,7 +1340,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { rowspan: 3, contents: '00' }, { colspan: 2, contents: '01[]' } ],
 				[ { colspan: 2, contents: '' } ],
 				[ { colspan: 2, contents: '' } ],
@@ -1357,7 +1357,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ), 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00[]', { rowspan: 3, contents: '01' }, { rowspan: 3, contents: '02' } ],
 				[ '' ],
 				[ '' ],
@@ -1379,7 +1379,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ), 3 );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'[<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -1490,7 +1490,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '10', '11' ],
 					[ '20', '21' ]
 				] ) );
@@ -1504,7 +1504,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ]
 				] ) );
 			} );
@@ -1518,7 +1518,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '20', '21' ]
 				], { headingRows: 1 } ) );
@@ -1533,7 +1533,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '10', { contents: '11', rowspan: 2 } ],
 					[ '20' ]
 				] ) );
@@ -1576,7 +1576,7 @@ describe( 'TableUtils', () => {
 				// +----+----+----+----+----+
 				// | 50 | 51 | 52 | 53 | 54 |
 				// +----+----+----+----+----+
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01', { contents: '02', rowspan: 2 }, { contents: '03', rowspan: 3 }, { contents: '04', rowspan: 4 } ],
 					[ '20', '21' ],
 					[ '30', '31', '32' ],
@@ -1595,7 +1595,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 					[ '13', '14' ],
 					[ '31', '32', '33', '34' ]
@@ -1612,7 +1612,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '12' ],
 					[ '21', '22' ],
 					[ '30', '31', '32' ]
@@ -1628,7 +1628,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { rowspan: 2, contents: '01' }, '02', '03', '04' ],
 					[ '20', '12', '23', '24' ]
 				] ) );
@@ -1651,7 +1651,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -1674,7 +1674,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '30', '31' ]
 				] ) );
@@ -1690,7 +1690,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 2, rows: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
 				] ) );
@@ -1706,7 +1706,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '20', '21' ],
 					[ '30', '31' ]
 				] ) );
@@ -1722,7 +1722,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '20', '21' ],
 					[ '30', '31' ]
 				], { headingRows: 1 } ) );
@@ -1739,7 +1739,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 3 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '40', '41' ]
 				], { headingRows: 1 } ) );
@@ -1754,7 +1754,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '20', '21' ]
 				] ) );
 			} );
@@ -1768,7 +1768,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '20', '21' ]
 				], { footerRows: 1 } ) );
@@ -1783,7 +1783,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { contents: '01', rowspan: 2 } ],
 					[ '10' ]
 				] ) );
@@ -1799,7 +1799,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 2, rows: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
 				], { footerRows: 1 } ) );
@@ -1816,7 +1816,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 3 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '40', '41' ]
 				], { footerRows: 1 } ) );
@@ -1831,7 +1831,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ]
 				] ) );
 			} );
@@ -1845,7 +1845,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '10', '11' ],
 					[ '20', '21' ]
 				], { footerRows: 1 } ) );
@@ -1862,7 +1862,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01', '02', '03' ],
 					[ { rowspan: 2, contents: '10' }, '11', '32', { rowspan: 2, contents: '23' } ],
 					[ '41', '42' ]
@@ -1879,7 +1879,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '02', '03' ],
 					[ '31', '32', '33' ]
 				] ) );
@@ -1920,7 +1920,7 @@ describe( 'TableUtils', () => {
 				// +----+----+----+----+----+
 				// | 50 | 51 | 52 | 53 | 54 |
 				// +----+----+----+----+----+
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 2 }, { contents: '03', rowspan: 2 },
 						{ contents: '04', rowspan: 3 } ],
 					[ '10' ],
@@ -1988,7 +1988,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '02' ],
 					[ '10', '12' ],
 					[ '20', '22' ]
@@ -2004,7 +2004,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '01' ],
 					[ '11' ],
 					[ '21' ]
@@ -2020,7 +2020,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '01' ],
 					[ '11' ],
 					[ '21' ]
@@ -2038,7 +2038,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { colspan: 3, contents: '00' }, '04' ],
 					[ { colspan: 2, contents: '10' }, '13', '14' ],
 					[ { colspan: 2, contents: '20' }, '23', '24' ],
@@ -2057,7 +2057,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { colspan: 2, contents: '00' }, '03' ],
 					[ '10', '12', '13' ],
 					[ '21', '22', '23' ]
@@ -2072,7 +2072,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '01' ],
 					[ '11' ]
 				] ) );
@@ -2086,7 +2086,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '10' ]
 				] ) );
@@ -2100,7 +2100,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '01' ]
 				] ) );
 			} );
@@ -2113,7 +2113,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00' ]
 				] ) );
 			} );
@@ -2127,7 +2127,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '01', '02' ],
 					[ '21', '22' ]
 				] ) );
@@ -2142,7 +2142,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '01', '02' ]
 				] ) );
 			} );
@@ -2164,7 +2164,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getChild( 0 ), { at: 0 } );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>01</paragraph></tableCell>' +
@@ -2189,7 +2189,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0, columns: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '02' ],
 					[ '12' ],
 					[ '22' ],
@@ -2207,7 +2207,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '03' ],
 					[ '10', '13' ],
 					[ '20', '23' ],
@@ -2225,7 +2225,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '10' ],
 					[ '20' ],
@@ -2241,7 +2241,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 3 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '04' ],
 					[ '10', '14' ]
 				], { headingColumns: 1 } ) );
@@ -2256,7 +2256,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0, columns: 2 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '12' ],
 					[ '22' ]
@@ -2280,7 +2280,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getChild( 0 ), { at: 1, columns: 1 } );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -2305,7 +2305,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -2321,7 +2321,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -2337,7 +2337,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -2353,7 +2353,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -2369,7 +2369,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ]
 			], { headingRows: 2, headingColumns: 2 } ) );
@@ -2384,7 +2384,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ]
 			], { headingRows: 2, headingColumns: 2 } ) );
@@ -2399,7 +2399,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ]
 			], { headingRows: 2, headingColumns: 2 } ) );
@@ -2414,7 +2414,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -2430,7 +2430,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ],
@@ -2447,7 +2447,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -2869,7 +2869,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setHeadingRowsCount( writer, table, 1 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ '10', '11' ],
 				[ '20', '21' ]
@@ -2889,7 +2889,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setHeadingRowsCount( writer, table, 1 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ '10', '11' ],
 				[ '20', '21' ]
@@ -2908,7 +2908,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setHeadingRowsCount( writer, table, 1 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ '10', '11' ]
 			], { headingRows: 1 } ) );
@@ -2936,7 +2936,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 			// Row 1: Body (manually changed)
 			// Row 2: Header (should remain header because processing stopped at Row 1)
 			// Row 3: Body
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ '10', '11' ],
 				[ { contents: '20', tableCellType: 'header' }, { contents: '21', tableCellType: 'header' } ],
@@ -2956,7 +2956,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setHeadingRowsCount( writer, table, 5 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ { contents: '10', tableCellType: 'header-column' }, { contents: '11', tableCellType: 'header-column' } ]
 			], { headingRows: 2 } ) );
@@ -2975,7 +2975,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setHeadingRowsCount( writer, table, 3 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ { contents: '10', tableCellType: 'header-column' }, { contents: '11', tableCellType: 'header-column' } ],
 				[ { contents: '20', tableCellType: 'header-column' }, { contents: '21', tableCellType: 'header-column' } ]
@@ -2996,7 +2996,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setHeadingColumnsCount( writer, table, 1 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-row' }, '01' ],
 				[ { contents: '10', tableCellType: 'header-row' }, '11' ]
 			], { headingColumns: 1 } ) );
@@ -3014,7 +3014,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setHeadingColumnsCount( writer, table, 1 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-row' }, '01' ],
 				[ { contents: '10', tableCellType: 'header-row' }, '11' ]
 			], { headingColumns: 1 } ) );
@@ -3032,7 +3032,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setHeadingColumnsCount( writer, table, 1 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-row' }, '01' ],
 				[ { contents: '10', tableCellType: 'header-row' }, '11' ]
 			], { headingColumns: 1 } ) );
@@ -3068,7 +3068,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 			// Col 1: Body (manually changed)
 			// Col 2: Header (should remain header because processing stopped at Col 1)
 			// Col 3: Body
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-row' }, '01', { contents: '02', tableCellType: 'header' }, '03' ],
 				[ { contents: '10', tableCellType: 'header-row' }, '11', { contents: '12', tableCellType: 'header' }, '13' ]
 			], { headingColumns: 1 } ) );
@@ -3086,7 +3086,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setHeadingColumnsCount( writer, table, 5 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-row' }, { contents: '01', tableCellType: 'header-row' } ],
 				[ { contents: '10', tableCellType: 'header-row' }, { contents: '11', tableCellType: 'header-row' } ]
 			], { headingColumns: 2 } ) );
@@ -3106,7 +3106,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setFooterRowsCount( writer, table, 1 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			], { footerRows: 1 } ) );
@@ -3124,7 +3124,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setFooterRowsCount( writer, table, 1 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			], { footerRows: 1 } ) );
@@ -3142,7 +3142,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setFooterRowsCount( writer, table, 2 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			], { footerRows: 2 } ) );
@@ -3161,7 +3161,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				tableUtils.setFooterRowsCount( writer, table, 1 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ { contents: '10', tableCellType: 'header-column' }, { contents: '11', tableCellType: 'header-column' } ],
 				[ '20', '21' ]
@@ -3180,7 +3180,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 			tableUtils.insertRows( table, { at: 0, rows: 1 } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '', tableCellType: 'header-column' }, { contents: '', tableCellType: 'header-column' } ],
 				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 				[ '10', '11' ]
@@ -3197,7 +3197,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 			tableUtils.insertRows( table, { at: 0, rows: 1 } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '', tableCellType: 'header-row' }, '' ],
 				[ { contents: '00', tableCellType: 'header' }, '01' ],
 				[ { contents: '10', tableCellType: 'header' }, '11' ]
@@ -3214,7 +3214,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 			tableUtils.insertRows( table, { at: 2 } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header' }, '01' ],
 				[ { contents: '10', tableCellType: 'header' }, '11' ],
 				[ { contents: '', tableCellType: 'header-row' }, '' ]
@@ -3233,7 +3233,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 			tableUtils.insertColumns( table, { at: 0 } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '', tableCellType: 'header-row' }, { contents: '00', tableCellType: 'header' }, '01' ],
 				[ { contents: '', tableCellType: 'header-row' }, { contents: '10', tableCellType: 'header' }, '11' ]
 			], { headingColumns: 2 } ) );
@@ -3249,7 +3249,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 			tableUtils.insertColumns( table, { at: 0 } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[
 					{ contents: '', tableCellType: 'header-column' },
 					{ contents: '00', tableCellType: 'header' },
@@ -3269,7 +3269,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 			tableUtils.insertColumns( table, { at: 2 } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[
 					{ contents: '00', tableCellType: 'header' },
 					{ contents: '01', tableCellType: 'header' },
@@ -3292,7 +3292,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 			tableUtils.removeRows( table, { at: 0 } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ],
 				[ '20', '21' ]
 			], { headingRows: 1 } ) );
@@ -3310,7 +3310,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 			tableUtils.removeColumns( table, { at: 0 } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { contents: '01', tableCellType: 'header' }, '02' ],
 				[ { contents: '11', tableCellType: 'header' }, '12' ]
 			], { headingColumns: 1 } ) );
@@ -3336,7 +3336,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 					tableUtils.setHeadingRowsCount( writer, table, 1 );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 					[ '10', '11' ],
 					[ '20', '21' ]
@@ -3358,7 +3358,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 					tableUtils.setHeadingColumnsCount( writer, table, 1 );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header-row' }, '01' ],
 					[ { contents: '10', tableCellType: 'header-row' }, '11' ],
 					[ { contents: '20', tableCellType: 'header-row' }, '21' ]
@@ -3379,7 +3379,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 					tableUtils.setHeadingColumnsCount( writer, table, 1 );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 					[ { contents: '10', tableCellType: 'header-row' }, '11' ],
 					[ { contents: '20', tableCellType: 'header-row' }, '21' ]
@@ -3398,7 +3398,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 				tableUtils.insertRows( table, { at: 0, rows: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '', tableCellType: 'header-column' }, { contents: '', tableCellType: 'header-column' } ],
 					[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 					[ '10', '11' ]
@@ -3417,7 +3417,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 				tableUtils.insertColumns( table, { at: 0, columns: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '', tableCellType: 'header-row' }, { contents: '00', tableCellType: 'header-row' }, '01' ],
 					[ { contents: '', tableCellType: 'header-row' }, { contents: '10', tableCellType: 'header-row' }, '11' ]
 				], { headingColumns: 2 } ) );
@@ -3443,7 +3443,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 						tableUtils.setHeadingRowsCount( writer, table, 1 );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 						[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 						[ '10', '11' ],
 						[ '20', '21' ]

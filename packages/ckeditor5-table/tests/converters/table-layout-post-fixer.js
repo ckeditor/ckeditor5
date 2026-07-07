@@ -44,7 +44,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '', '' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '' ]
@@ -63,7 +63,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', { rowspan: 2, contents: '10' }, '', '' ],
 				[ '10', { colspan: 2, contents: '12' } ],
 				[ '20', '21', '', '' ]
@@ -82,7 +82,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
 				[ '21', '22', '', '', '' ]
@@ -102,7 +102,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '' ],
 				[ '20', '21', '22' ]
 			] ) );
@@ -120,7 +120,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ { rowspan: 2, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
 				[ '12' ],
 				[ '20', '21', '22' ]
@@ -139,7 +139,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 2, contents: '10' }, { rowspan: 2, contents: '11' }, '12' ],
 				[ '22' ]
@@ -182,7 +182,7 @@ describe( 'Table layout post-fixer', () => {
 
 			const expectedTables = expectedTableA + expectedTableB + expectedTableC;
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedTables );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( expectedTables );
 		} );
 
 		it( 'should not crash on table remove', () => {
@@ -396,15 +396,15 @@ describe( 'Table layout post-fixer', () => {
 
 			model.enqueueChange( { isUndoable: false }, externalCallback );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelAfter );
 
 			editor.execute( 'undo' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfterUndo );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelAfterUndo );
 
 			editor.execute( 'redo' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelAfter );
 		}
 
 		function _removeColumn( writer, columnIndex, rows ) {

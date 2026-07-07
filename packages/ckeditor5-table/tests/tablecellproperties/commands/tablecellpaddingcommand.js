@@ -315,7 +315,7 @@ describe( 'table cell properties', () => {
 					it( 'should set the "padding" attribute value of selected table cells', () => {
 						command.execute( { value: '25px' } );
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ { contents: '00', style: 'padding:25px;' }, '01' ],
 							[ '10', { contents: '11', style: 'padding:25px;' } ]
 						] ) );
@@ -329,7 +329,7 @@ describe( 'table cell properties', () => {
 
 						command.execute();
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );
@@ -431,7 +431,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '10px' } );
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );

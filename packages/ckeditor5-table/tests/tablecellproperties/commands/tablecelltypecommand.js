@@ -77,7 +77,7 @@ describe( 'TableCellTypeCommand', () => {
 
 			command.execute( { value: 'header' } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable(
 				[ [ { tableCellType: 'header', contents: 'foo' } ] ],
 				{ headingRows: 1 }
 			) );
@@ -88,7 +88,7 @@ describe( 'TableCellTypeCommand', () => {
 
 			command.execute( { value: 'data' } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [ [ 'foo' ] ] ) );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [ [ 'foo' ] ] ) );
 		} );
 
 		describe( 'multiple cells changes', () => {
@@ -100,7 +100,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'header' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 					[ '10', '11' ]
 				], { headingRows: 1 } ) );
@@ -126,7 +126,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'header' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 					[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
 				], { headingRows: 2 } ) );
@@ -146,7 +146,7 @@ describe( 'TableCellTypeCommand', () => {
 				const table = model.document.getRoot().getChild( 0 );
 
 				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ { tableCellType: 'header', contents: '10' }, { tableCellType: 'header', contents: '11' } ]
 				] ) );
@@ -179,7 +179,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'data' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 					[ '10', '11' ]
 				], { headingRows: 1 } ) );
@@ -231,7 +231,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'data' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[
 						{ contents: '00', tableCellType: 'header' },
 						{ contents: '01' },
@@ -258,7 +258,7 @@ describe( 'TableCellTypeCommand', () => {
 				const table = model.document.getRoot().getChild( 0 );
 
 				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { tableCellType: 'header', contents: '00' }, '01' ],
 					[ '10', '11' ]
 				] ) );
@@ -275,7 +275,7 @@ describe( 'TableCellTypeCommand', () => {
 				const table = model.document.getRoot().getChild( 0 );
 
 				expect( table.hasAttribute( 'headingColumns' ) ).to.be.false;
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { tableCellType: 'header', contents: '00' }, '01' ],
 					[ '10', '11' ]
 				] ) );
@@ -289,7 +289,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'header' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { tableCellType: 'header', contents: '00' }, '01' ],
 					[ { tableCellType: 'header', contents: '10' }, { tableCellType: 'header', contents: '11' } ]
 				], { headingColumns: 1 } ) );
@@ -306,7 +306,7 @@ describe( 'TableCellTypeCommand', () => {
 				const table = model.document.getRoot().getChild( 0 );
 
 				expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { tableCellType: 'header', contents: '00' }, { tableCellType: 'header', contents: '01' } ],
 					[ { tableCellType: 'header', contents: '10' }, { tableCellType: 'header', contents: '11' } ]
 				], { headingRows: 2 } ) );
@@ -326,7 +326,7 @@ describe( 'TableCellTypeCommand', () => {
 				const table = model.document.getRoot().getChild( 0 );
 
 				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { contents: '01', tableCellType: 'header' } ],
 					[ '10', '11' ]
 				] ) );
@@ -346,7 +346,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'data' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { tableCellType: 'header', contents: '01' } ],
 					[
 						{ tableCellType: 'header', contents: '10' },
@@ -369,7 +369,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'data' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 					[ { contents: '10', tableCellType: 'header' }, '11' ]
 				], { headingColumns: 1, headingRows: 1 } ) );
@@ -386,7 +386,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'header' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header' } ],
 					[ { contents: '10', tableCellType: 'header' } ],
 					[ { contents: '20' } ]
@@ -403,7 +403,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'header' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header' } ],
 					[ { contents: '10', tableCellType: 'header' } ],
 					[ { contents: '20', tableCellType: 'header' } ],
@@ -453,7 +453,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 			command.execute( { value: 'header-row' } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable(
 				[ [ { tableCellType: 'header-row', contents: 'foo' } ] ],
 				{ headingRows: 1 }
 			) );
@@ -464,7 +464,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 			command.execute( { value: 'header-column' } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable(
 				[ [ { tableCellType: 'header-column', contents: 'foo' } ] ],
 				{ headingRows: 1 }
 			) );
@@ -475,7 +475,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 			command.execute( { value: 'header-column' } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable(
 				[ [ { tableCellType: 'header-column', contents: 'foo' }, 'bar' ] ],
 				{ headingColumns: 1 }
 			) );
@@ -486,7 +486,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 			command.execute( { value: 'header-row' } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable(
 				[ [ { tableCellType: 'header-row', contents: 'foo' } ], [ 'bar' ] ],
 				{ headingRows: 1 }
 			) );
@@ -497,7 +497,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 			command.execute( { value: 'data' } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [ [ 'foo' ] ] ) );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [ [ 'foo' ] ] ) );
 		} );
 
 		it( 'should change cell type from "header-column" to "data"', () => {
@@ -505,7 +505,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 			command.execute( { value: 'data' } );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [ [ 'foo' ] ] ) );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [ [ 'foo' ] ] ) );
 		} );
 
 		describe( 'intersection of heading rows and columns', () => {
@@ -517,7 +517,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 				command.execute( { value: 'header-row' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header-row' }, { contents: '01', tableCellType: 'header' } ],
 					[ { contents: '10', tableCellType: 'header' }, '11' ]
 				], { headingRows: 1, headingColumns: 1 } ) );
@@ -531,7 +531,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 				command.execute( { value: 'header-column' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header' } ],
 					[ { contents: '10', tableCellType: 'header' }, '11' ]
 				], { headingRows: 1, headingColumns: 1 } ) );
@@ -545,7 +545,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 				command.execute( { value: 'header-column' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header-column' } ],
 					[ { contents: '10', tableCellType: 'header' }, '11' ]
 				], { headingRows: 1, headingColumns: 1 } ) );
@@ -559,7 +559,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 				command.execute( { value: 'header-row' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 					[ { contents: '10', tableCellType: 'header-row' }, '11' ]
 				], { headingRows: 1, headingColumns: 1 } ) );
@@ -578,7 +578,7 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
 				expect( table.hasAttribute( 'headingColumns' ) ).to.be.false;
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { contents: '01', tableCellType: 'header' } ],
 					[ { contents: '10', tableCellType: 'header' }, '11' ]
 				] ) );

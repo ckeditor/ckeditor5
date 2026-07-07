@@ -358,7 +358,7 @@ describe( 'TableSelection', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '', '13' ],
 				[ '', '[]', '23' ],
 				[ '31', '32', '33' ]
@@ -373,7 +373,7 @@ describe( 'TableSelection', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '', '13' ],
 				[ '', '[]', '23' ],
 				[ '31', '32', '33' ]
@@ -388,7 +388,7 @@ describe( 'TableSelection', () => {
 
 			editor.execute( 'deleteForward' );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]', '12', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -405,7 +405,7 @@ describe( 'TableSelection', () => {
 				model.deleteContent( model.document.selection );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '', '13' ],
 				[ '', '[]', '23' ],
 				[ '31', '32', '33' ]
@@ -429,7 +429,7 @@ describe( 'TableSelection', () => {
 				writer.setSelection( selection );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '[]', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -455,7 +455,7 @@ describe( 'TableSelection', () => {
 				writer.setSelection( selection );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]', '', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]

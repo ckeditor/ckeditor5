@@ -135,7 +135,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'* [] {id:a00}'
 				] ) );
@@ -154,7 +154,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'* [] {id:a00}'
@@ -175,7 +175,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'* [] {id:a00}',
@@ -197,7 +197,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -220,7 +220,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -247,7 +247,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -358,7 +358,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* []',
 					'* a {id:a00}'
 				] ) );
@@ -377,7 +377,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  []',
 					'* c {id:a00}'
@@ -398,7 +398,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  []',
 					'* c {id:a00}',
@@ -420,7 +420,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * a[]',
@@ -443,7 +443,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -469,7 +469,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',

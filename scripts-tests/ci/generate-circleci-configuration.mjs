@@ -361,11 +361,11 @@ function getFeatureBatchJobNames( config ) {
 }
 
 function getPackageTestStepCount( job ) {
-	return job.steps.filter( step => step.run?.command?.includes( 'scripts/ci/check-unit-tests-for-package.mjs' ) ).length;
+	return job.steps.filter( step => step.run?.command?.startsWith( 'pnpm run test' ) ).length;
 }
 
 function getPackageTestCommand( job, packageName ) {
-	return job.steps.find( step => step.run?.command?.includes( `--package-name ${ packageName }` ) )?.run.command;
+	return job.steps.find( step => step.run?.command?.includes( `-f ${ packageName }` ) )?.run.command;
 }
 
 function getChromeInstallStep( steps ) {

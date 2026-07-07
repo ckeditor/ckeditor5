@@ -3,7 +3,7 @@ category: framework-contributing
 meta-title: Testing environment | CKEditor 5 Framework Documentation
 meta-description: Test CKEditor 5 using the official testing environment. Run unit and manual tests effectively.
 order: 30
-modified_at: 2022-09-07
+modified_at: 2026-07-06
 ---
 
 # Testing environment
@@ -14,9 +14,9 @@ Before reading this article we recommend getting familiar with the CKEditor&nbsp
 
 ## Introduction
 
-The CKEditor&nbsp;5 testing environment uses a popular setup with [Karma](https://karma-runner.github.io), [webpack](https://webpack.github.io/), [babel-loader](https://github.com/babel/babel-loader) and [Istanbul](https://github.com/gotwarlost/istanbul). We created some [npm scripts](https://docs.npmjs.com/cli/v11/using-npm/scripts) which glue all these pieces and special requirements for CKEditor together.
+The CKEditor&nbsp;5 testing environment uses [Vitest](https://vitest.dev/) running automated tests in real browsers (the [browser mode](https://vitest.dev/guide/browser/)), while manual tests are compiled with [webpack](https://webpack.js.org/). We created some [npm scripts](https://docs.npmjs.com/cli/v11/using-npm/scripts) which glue all these pieces and special requirements for CKEditor together.
 
-Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests)). However, the test runner is available in the root of the [`ckeditor5`](https://github.com/ckeditor/ckeditor5) repository which is the central development environment. The actual code of the test runner is implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be reused outside of `ckeditor5`.
+Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests)) together with its own Vitest configuration and `test` script. Automated tests are executed directly with [pnpm](https://pnpm.io/), without any custom test runner. The manual test server and the custom Vitest matchers are implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be reused outside of `ckeditor5`.
 
 <info-box hint>
 	Both automated and manual tests support TypeScript. Simply use the `.ts` extension.
@@ -24,51 +24,82 @@ Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engin
 
 ## Running automated tests
 
-To run the automated tests, use the `pnpm run test [<args>...]` command.
+Automated tests are executed with the packages' own `test` scripts, run directly via pnpm. There is no dedicated test runner binary.
 
-It accepts the following arguments (you can also run with `--help` to see all available options):
+The root `pnpm run test` script is a thin wrapper that translates a shorthand package selection into [pnpm filters](https://pnpm.io/filtering). It accepts the following options:
 
-* `--watch` (alias `-w`) &ndash; Whether to watch the files and execute tests whenever any file changes.
-* `--source-map` (alias `-s`) &ndash; Whether to generate useful source maps for the code.
-* `--coverage` (alias `-c`) &ndash; Whether to generate code coverage.
-* `--verbose` (alias `-v`) &ndash; Allows switching on webpack logs.
-* `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
-* `--browsers` &ndash; Browsers that will be used to run the tests. Defaults to `Chrome`.
-* `--port` &ndash; Specifies the port for the server to use. Defaults to `9876`.
-* `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
+* `--filter` (alias `-f`) &ndash; Comma-separated short package names selecting the packages to test. Globs are allowed, for example `-f editor-*`.
+* `--coverage` (alias `-c`) &ndash; Runs the `coverage` script of the selected packages instead of `test`.
+* `--attempts` &ndash; The number of attempts for each package's test run. Failed runs are retried per package. It is meant for continuous integration environments and defaults to `1`.
+
+All remaining arguments are passed to Vitest. Positional arguments are treated by Vitest as test file filters (they match a part of the test file path). You can also pass any other [Vitest CLI option](https://vitest.dev/guide/cli.html).
+
+You can run the automated tests for the whole repository, a single package, a directory, or a single file:
+
+<table>
+	<tr>
+		<th width="30%">Scope</th>
+		<th width="70%">Command</th>
+	</tr>
+	<tr>
+		<td>The whole repository</td>
+		<td><code>pnpm run test</code> (it sequentially runs the <code>test</code> script of every package)</td>
+	</tr>
+	<tr>
+		<td>A single package</td>
+		<td><code>pnpm run test -f engine</code><br>or natively: <code>pnpm --filter ckeditor5-engine run test</code></td>
+	</tr>
+	<tr>
+		<td>Multiple packages</td>
+		<td><code>pnpm run test -f editor-*,core</code></td>
+	</tr>
+	<tr>
+		<td>A directory inside a package</td>
+		<td><code>pnpm run test -f engine tests/view</code></td>
+	</tr>
+	<tr>
+		<td>A single file</td>
+		<td><code>pnpm run test -f basic-styles tests/bold.js</code></td>
+	</tr>
+</table>
+
+Apart from the `test` and `coverage` scripts, each package provides the following scripts:
+
+* `test:browser` &ndash; Runs the tests in a visible (non-headless) browser.
+* `test:debug` &ndash; Runs the tests in a visible browser in the watch mode. Useful for debugging with the browser developer tools.
 
 ### Examples
 
-Run all tests with the code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests) package:
+Run all tests of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests) package with the code coverage check:
 
 ```bash
-pnpm run test -c --files=core
+pnpm run test -c -f core
 ```
 
-Run and watch with the code coverage check the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing/tests):
+Run the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view):
 
 ```bash
-pnpm run test -cw --files=engine/view/,typing
+pnpm run test -f engine tests/view
 ```
 
-Run and watch the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package:
+Run and debug the `bold.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package in a visible browser:
 
 ```bash
-pnpm run test -w --files=basic-styles/bold*
+pnpm --filter ckeditor5-basic-styles run test:debug tests/bold.js
 ```
 
-### Custom Chai assertions
+### Custom Vitest matchers
 
-The testing environment allows for some custom `Chai` assertions. There is no need to import them, as they are imported by default inside all tests.
+The testing environment registers some custom [Vitest matchers](https://vitest.dev/guide/extending-matchers.html). There is no need to import them, as they are registered by default inside all tests.
 
-#### `equalMarkup`
+#### `toEqualMarkup`
 
-Tests whether two given strings containing markup language are equal. Unlike `expect().to.equal()` from the Chai assertion library, this assertion formats the markup before showing a diff. It can be used to test HTML strings and strings containing a serialized model.
+Tests whether two given strings containing markup language are equal. Unlike `expect().toEqual()`, this matcher formats the markup before showing a diff. It can be used to test HTML strings and strings containing a serialized model.
 
 This assertion will pass:
 
 ```js
-expect( `<b>foo</b>` ).to.equalMarkup( `<b>foo</b>` )
+expect( `<b>foo</b>` ).toEqualMarkup( `<b>foo</b>` )
 ```
 
 This assertion will throw an error:
@@ -76,29 +107,9 @@ This assertion will throw an error:
 ```js
 expect(
 	'<paragraph>foo bXXX[]r baz</paragraph>'
-).to.equalMarkup(
+).toEqualMarkup(
 	'<paragraph>foo bYYY[]r baz</paragraph>'
 );
-```
-
-#### `attribute`
-
-Asserts that the target has an attribute with the given key name. See {@link module:engine/model/documentselection~ModelDocumentSelection#hasAttribute hasAttribute}.
-
-```js
-expect( selection ).to.have.attribute( 'linkHref' );
-```
-
-When an optional `value` is provided, `.attribute` also asserts that the attribute's value is equal to the given `value`. See {@link module:engine/model/documentselection~ModelDocumentSelection#getAttribute getAttribute}.
-
-```js
-expect( selection ).to.have.attribute( 'linkHref', 'example.com' );
-```
-
-Negations work as well.
-
-```js
-expect( selection ).to.not.have.attribute( 'linkHref' );
 ```
 
 ## Running manual tests
@@ -116,6 +127,33 @@ The `pnpm run manual` task accepts the following options (you can also run with 
 * `--disable-watch` &ndash; It is enabled by default when there are no `--files` specified. This is due to high RAM memory usage when running watchers on all files. Disabling watch mode causes the files to no longer be rebuilt automatically when changed.
 
 It starts the server available at [http://localhost:8125](http://localhost:8125).
+
+### Choosing what to serve
+
+You can serve the manual tests of the whole repository, a single package, a directory, or a single test:
+
+<table>
+	<tr>
+		<th width="30%">Scope</th>
+		<th width="70%">Command</th>
+	</tr>
+	<tr>
+		<td>The whole repository</td>
+		<td><code>pnpm run manual</code> (watch mode is disabled in this case)</td>
+	</tr>
+	<tr>
+		<td>A single package</td>
+		<td><code>pnpm run manual --files=engine</code></td>
+	</tr>
+	<tr>
+		<td>A directory inside a package</td>
+		<td><code>pnpm run manual --files=engine/view/</code></td>
+	</tr>
+	<tr>
+		<td>A single test</td>
+		<td><code>pnpm run manual --files=engine/view/focus</code></td>
+	</tr>
+</table>
 
 ### Creating a manual test
 
@@ -251,7 +289,7 @@ After the run completes, the summary table reports:
 
 ## Rules for using the `--files` option
 
-The `--files` (alias `-f`) option is used by both the manual and automated tests. Running tests for the root of the mono-repository is no longer supported. Each set of tests should be assigned to a package, and placed in `tests` directory. It accepts the following types of patterns:
+The `--files` (alias `-f`) option is used by the manual test server (`pnpm run manual`). Each set of tests should be assigned to a package, and placed in `tests` directory. It accepts the following types of patterns:
 
 <table>
 	<tr>

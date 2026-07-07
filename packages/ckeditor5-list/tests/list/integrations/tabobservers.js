@@ -1619,7 +1619,7 @@ describe( 'ListEditing integrations: tab key', () => {
 
 		view.document.fire( eventInfo, domEventData );
 
-		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
+		expect( _getModelData( model ) ).toEqualMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
 			expect( domEventData.domEvent.stopPropagation.mock.calls.length > 0 ).to.equal(

@@ -6686,7 +6686,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 			expect( () => skipView.document.fire( skipEventInfo, skipDomEventData ) ).to.not.throw();
 
-			expect( _getModelData( skipModel ) ).to.equalMarkup( modelList( [
+			expect( _getModelData( skipModel ) ).toEqualMarkup( modelList( [
 				'    # aaa',
 				'      []bbb'
 			] ) );
@@ -6700,7 +6700,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 			expect( () => skipView.document.fire( skipEventInfo, skipDomEventData ) ).to.not.throw();
 
-			expect( _getModelData( skipModel ) ).to.equalMarkup( modelList( [
+			expect( _getModelData( skipModel ) ).toEqualMarkup( modelList( [
 				'      # aaa',
 				'        []bbb'
 			] ) );
@@ -6715,7 +6715,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 			expect( () => skipView.document.fire( skipEventInfo, skipDomEventData ) ).to.not.throw();
 
-			expect( _getModelData( skipModel ) ).to.equalMarkup( modelList( [
+			expect( _getModelData( skipModel ) ).toEqualMarkup( modelList( [
 				'    # aaa',
 				'      []bbb',
 				'      # ccc'
@@ -6768,7 +6768,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 			expect( () => view.document.fire( eventInfo, domEventData ) ).to.not.throw();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<blockQuote>' +
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
 				'</blockQuote>' +
@@ -6788,7 +6788,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 		view.document.fire( eventInfo, domEventData );
 
-		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
+		expect( _getModelData( model ) ).toEqualMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
 			expect( domEventData.domEvent.preventDefault.mock.calls.length > 0 ).to.equal(

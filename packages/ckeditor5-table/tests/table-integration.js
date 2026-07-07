@@ -49,7 +49,7 @@ describe( 'Table feature – integration', () => {
 				content: _parseView( '<td>bar</td>' )
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).toEqualMarkup( modelTable( [
 				[ 'foobar[]' ]
 			] ) );
 		} );
@@ -61,7 +61,7 @@ describe( 'Table feature – integration', () => {
 				content: _parseView( '<td>bar</td>' )
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equalMarkup( '<paragraph>foobar[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).toEqualMarkup( '<paragraph>foobar[]</paragraph>' );
 		} );
 
 		it( 'pastes list into the td', () => {
@@ -71,7 +71,7 @@ describe( 'Table feature – integration', () => {
 				content: _parseView( '<li>bar</li>' )
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).toEqualMarkup( modelTable( [
 				[ '<paragraph listIndent="0" listItemId="a00" listType="bulleted">bar[]</paragraph>' ]
 			] ) );
 		} );
@@ -83,7 +83,7 @@ describe( 'Table feature – integration', () => {
 				content: _parseView( '<blockquote>bar</blockquote>' )
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).toEqualMarkup( modelTable( [
 				[ '<blockQuote><paragraph>bar[]</paragraph></blockQuote>' ]
 			] ) );
 		} );
@@ -184,7 +184,7 @@ describe( 'Table feature – integration', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).toEqualMarkup( modelTable( [
 				[ '<blockQuote><paragraph>Foo[]Bar</paragraph></blockQuote>' ]
 			] ) );
 		} );

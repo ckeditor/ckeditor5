@@ -405,7 +405,7 @@ describe( 'InsertImageCommand', () => {
 					}
 				} );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'[<imageBlock pretty="true" smart="true" src="assets/sample.png"></imageBlock>]'
 				);
 			} );
@@ -419,7 +419,7 @@ describe( 'InsertImageCommand', () => {
 					}
 				} );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph pretty="true" smart="true">' +
 						'Foo [<imageInline src="assets/sample.png"></imageInline>]' +
 					'</paragraph>'
@@ -435,7 +435,7 @@ describe( 'InsertImageCommand', () => {
 					}
 				} );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph>' +
 						'[<imageInline src="assets/sample.png"></imageInline>]' +
 					'</paragraph>'
@@ -451,7 +451,7 @@ describe( 'InsertImageCommand', () => {
 					}
 				} );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'[<imageBlock pretty="true" smart="true" src="assets/sample.png"></imageBlock>]'
 				);
 			} );
@@ -468,7 +468,7 @@ describe( 'InsertImageCommand', () => {
 					}
 				} );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'[<imageBlock pretty="true" smart="true" src="assets/sample.png"></imageBlock>]'
 				);
 			} );

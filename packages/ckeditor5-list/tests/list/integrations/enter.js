@@ -97,7 +97,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'[]'
 				] ) );
 
@@ -121,7 +121,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'[]'
 				] ) );
@@ -145,7 +145,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'* [] {id:a00}'
 				] ) );
@@ -172,7 +172,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  # b',
 					'    * c',
@@ -203,7 +203,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* <softBreak></softBreak>[]'
 					] ) );
 
@@ -225,7 +225,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* Foo',
 						'* <softBreak></softBreak>[]'
 					] ) );
@@ -248,7 +248,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* Foo',
 						'  * <softBreak></softBreak>[]'
 					] ) );
@@ -275,7 +275,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  # b',
 					'* []'
@@ -303,7 +303,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  # b',
 					'  # []',
@@ -331,7 +331,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  []',
 					'  b',
@@ -357,7 +357,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* ',
 					'  []a',
 					'  b',
@@ -383,7 +383,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  ',
@@ -409,7 +409,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  c',
@@ -435,7 +435,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  ',
 					'  []',
@@ -460,7 +460,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'* [] {id:a00}'
 				] ) );
@@ -486,7 +486,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'* [] {id:a00}'
@@ -514,7 +514,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'* [] {id:a00}',
@@ -541,7 +541,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* []',
 					'* b {id:a00}'
 				] ) );
@@ -567,7 +567,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* []',
 					'* a {id:a00}',
 					'  b'
@@ -597,7 +597,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* []',
 						'* a {id:a00}',
 						'  b',
@@ -630,7 +630,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* ',
 						'  <softBreak></softBreak>[]'
 					] ) );
@@ -654,7 +654,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* Foo',
 						'* ',
 						'  <softBreak></softBreak>[]'
@@ -682,7 +682,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'* [] {id:a00}'
 				] ) );
@@ -706,7 +706,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* ',
 					'* []b {id:a00}'
 				] ) );
@@ -731,7 +731,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'[]'
 				] ) );
 
@@ -753,7 +753,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'* []'
 				] ) );
@@ -778,7 +778,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  # b',
 					'    * []'
@@ -806,7 +806,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* <softBreak></softBreak>[]'
 					] ) );
 
@@ -828,7 +828,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* F',
 						'* []'
 					] ) );
@@ -853,7 +853,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'[]'
 					] ) );
 
@@ -876,7 +876,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'foo',
 						'* []'
 					] ) );
@@ -900,7 +900,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'foo',
 						'* a',
 						'  # []d'
@@ -926,7 +926,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* []',
 						'  * gh {id:003}'
 					] ) );
@@ -951,7 +951,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* a',
 						'  * []f {id:002}',
 						'  * gh {id:003}'
@@ -978,7 +978,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'foo',
 						'* []'
 					] ) );
@@ -1004,7 +1004,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'[]'
 					] ) );
 
@@ -1029,7 +1029,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* a',
 						'  # []h {id:003}',
 						'* ij {id:004}'
@@ -1055,7 +1055,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* ab',
 						'  # []'
 					] ) );
@@ -1080,7 +1080,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* ab',
 						'  # c',
 						'    * []h {id:003}'
@@ -1106,7 +1106,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* ab',
 						'  # c',
 						'  # []h {id:003}'
@@ -1133,7 +1133,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* ab',
 						'  # []',
 						'* ij {id:004}'
@@ -1161,7 +1161,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* ab',
 						'  # cd',
 						'  # []',
@@ -1189,7 +1189,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'* []d {id:a00}'
 				] ) );
@@ -1215,7 +1215,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'foo',
 					'* []'
 				] ) );
@@ -1239,7 +1239,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* ab',
 					'  []',
 					'  ef'
@@ -1272,7 +1272,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				//	* ab
 				//	  []
 				// and the algorithm falls back to splitting in this case. There's even a test for this kind of selection.
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* ab',
 					'* [] {id:a00}'
 				] ) );
@@ -1298,7 +1298,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* ab',
 					'  c',
 					'  []f'
@@ -1324,7 +1324,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* []',
 					'* gh {id:003}'
 				] ) );
@@ -1350,7 +1350,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'foo',
 					'* []'
 				] ) );
@@ -1375,7 +1375,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* ',
 					'* []h {id:003}'
 				] ) );
@@ -1400,7 +1400,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				view.document.fire( eventInfo, domEventData );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* ab',
 					'  cd',
 					'  e',
@@ -1432,7 +1432,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* A',
 						'* [] {id:003}'
 					] ) );
@@ -1460,7 +1460,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* ab',
 						'  * cd',
 						'    e',
@@ -1488,7 +1488,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* ab',
 						'  * cd',
 						'    e',
@@ -1516,7 +1516,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					view.document.fire( eventInfo, domEventData );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* ab',
 						'  c',
 						'  * []h',

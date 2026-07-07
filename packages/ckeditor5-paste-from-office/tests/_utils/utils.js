@@ -342,7 +342,7 @@ function compareContentWithBase64Images( actual, expected ) {
 
 	// In some rare cases there might be `&nbsp;` in a model data
 	// (see https://github.com/ckeditor/ckeditor5-paste-from-office/issues/27).
-	expect( actualModel.replace( /\u00A0/g, ' ' ) ).to.equalMarkup( expectedModel );
+	expect( actualModel.replace( /\u00A0/g, ' ' ) ).toEqualMarkup( expectedModel );
 
 	if ( actualImages.length > 0 && expectedImages.length > 0 ) {
 		expect( actualImages.length ).toBe( expectedImages.length );

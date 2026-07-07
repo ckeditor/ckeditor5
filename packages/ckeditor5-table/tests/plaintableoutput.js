@@ -570,7 +570,7 @@ describe( 'PlainTableOutput', () => {
 			function assertPlainTableStyle( editor, tableStyle ) {
 				const tableStyleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData() ).toEqualMarkup(
 					`<table class="table"${ tableStyleEntry }>` +
 						'<tbody><tr><td>foo</td></tr></tbody>' +
 					'</table>'
@@ -580,7 +580,7 @@ describe( 'PlainTableOutput', () => {
 			function assertPlainTableClass( editor, tableClass ) {
 				const tableClassEntry = tableClass ? ` ${ tableClass }` : '';
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData() ).toEqualMarkup(
 					`<table class="table${ tableClassEntry }">` +
 						'<tbody><tr><td>foo</td></tr></tbody>' +
 					'</table>'

@@ -93,7 +93,7 @@ describe( 'ListFormatting', () => {
 
 				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered" selection:inlineFormat="foo">' +
 					'</paragraph>'
 				);
@@ -106,7 +106,7 @@ describe( 'ListFormatting', () => {
 
 				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph selection:inlineFormat="foo"></paragraph>'
 				);
 			} );
@@ -118,14 +118,14 @@ describe( 'ListFormatting', () => {
 
 				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered" selection:inlineFormat="foo">' +
 					'</paragraph>'
 				);
 
 				setSelectionAttribute( model, 'inlineFormat', 'bar' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="bar" listItemId="a" listType="numbered" selection:inlineFormat="bar">' +
 					'</paragraph>'
 				);
@@ -138,14 +138,14 @@ describe( 'ListFormatting', () => {
 
 				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered" selection:inlineFormat="foo">' +
 					'</paragraph>'
 				);
 
 				removeSelectionAttribute( model, 'inlineFormat' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="numbered"></paragraph>'
 				);
 			} );
@@ -159,7 +159,7 @@ describe( 'ListFormatting', () => {
 
 				setAttribute( model, 'inlineFormat', 'foo', docSelection.getFirstRange() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 					'</paragraph>'
@@ -173,7 +173,7 @@ describe( 'ListFormatting', () => {
 
 				setAttribute( model, 'inlineFormat', 'foo', docSelection.getFirstRange() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">fo</$text>' +
 						'o' +
@@ -188,7 +188,7 @@ describe( 'ListFormatting', () => {
 
 				setAttribute( model, 'inlineFormat', 'foo', docSelection.getFirstRange() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph><$text inlineFormat="foo">foo</$text></paragraph>'
 				);
 			} );
@@ -202,7 +202,7 @@ describe( 'ListFormatting', () => {
 
 				setAttribute( model, 'inlineFormat', 'bar', docSelection.getFirstRange() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="bar" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="bar">foo</$text>' +
 					'</paragraph>'
@@ -218,7 +218,7 @@ describe( 'ListFormatting', () => {
 
 				setAttribute( model, 'inlineFormat', 'bar', docSelection.getFirstRange() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="bar">fo</$text>' +
 						'<$text inlineFormat="foo">o</$text>' +
@@ -235,7 +235,7 @@ describe( 'ListFormatting', () => {
 
 				removeAttribute( model, 'inlineFormat', docSelection.getFirstRange() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
 						'foo' +
 					'</paragraph>'
@@ -253,7 +253,7 @@ describe( 'ListFormatting', () => {
 					setAttribute( model, 'inlineFormat', 'foo', docSelection.getLastRange() );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 					'</paragraph>' +
@@ -276,7 +276,7 @@ describe( 'ListFormatting', () => {
 
 					editor.execute( 'removeFormat' );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
 							'[foo]' +
 						'</paragraph>' +
@@ -298,7 +298,7 @@ describe( 'ListFormatting', () => {
 
 					editor.execute( 'removeFormat' );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
 							'<$text inlineFormat="foo">f</$text>' +
 							'[o]' +
@@ -322,7 +322,7 @@ describe( 'ListFormatting', () => {
 
 					editor.execute( 'removeFormat' );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 							'<$text inlineFormat="foo">foo</$text>[]' +
 						'</paragraph>' +
@@ -342,7 +342,7 @@ describe( 'ListFormatting', () => {
 
 				insertText( model, 'foo', { inlineFormat: 'foo' }, docSelection.getFirstPosition() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 					'</paragraph>'
@@ -356,7 +356,7 @@ describe( 'ListFormatting', () => {
 
 				insertText( model, 'foo', { inlineFormat: 'foo' }, docSelection.getFirstPosition() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph><$text inlineFormat="foo">foo</$text></paragraph>'
 				);
 			} );
@@ -368,7 +368,7 @@ describe( 'ListFormatting', () => {
 
 				insertText( model, 'bar', { inlineFormat: 'bar' }, docSelection.getFirstPosition() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
 						'foo' +
 						'<$text inlineFormat="bar">bar</$text>' +
@@ -385,7 +385,7 @@ describe( 'ListFormatting', () => {
 
 				insertText( model, 'bar', { inlineFormat: 'foo' }, docSelection.getFirstPosition() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foobar</$text>' +
 					'</paragraph>'
@@ -407,7 +407,7 @@ describe( 'ListFormatting', () => {
 					writer.insert( writer.createElement( 'inlineObject' ), docSelection.getFirstPosition() );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 						'<inlineObject></inlineObject>' +
@@ -424,7 +424,7 @@ describe( 'ListFormatting', () => {
 
 				insertText( model, 'bar', { inlineFormat: 'bar' }, docSelection.getFirstPosition() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 						'<$text inlineFormat="bar">bar</$text>' +
@@ -443,7 +443,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'delete' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered" selection:inlineFormat="foo">' +
 					'</paragraph>'
 				);
@@ -459,7 +459,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'delete' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph></paragraph>'
 				);
 			} );
@@ -474,7 +474,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'delete' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="bar" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="bar">bar</$text>' +
 					'</paragraph>'
@@ -491,7 +491,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'delete' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph>' +
 						'<$text inlineFormat="bar">bar</$text>' +
 					'</paragraph>'
@@ -515,7 +515,7 @@ describe( 'ListFormatting', () => {
 					writer.insert( blockQuote, model.document.getRoot(), 'end' );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph></paragraph>' +
 					'<blockQuote>' +
 						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
@@ -535,7 +535,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 					'</paragraph>' +
@@ -546,7 +546,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'codeBlock' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<codeBlock language="plaintext" listIndent="0" listItemId="a" listType="numbered">' +
 						'foo' +
 					'</codeBlock>' +
@@ -565,7 +565,7 @@ describe( 'ListFormatting', () => {
 					'</blockObject>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<blockObject listIndent="0" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">abc</$text>' +
 					'</blockObject>'
@@ -579,7 +579,7 @@ describe( 'ListFormatting', () => {
 					'</blockObject>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<blockObject listIndent="0" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">abc</$text>' +
 					'</blockObject>'
@@ -593,7 +593,7 @@ describe( 'ListFormatting', () => {
 
 				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<blockObject listIndent="0" listItemId="a" listType="numbered" selection:inlineFormat="foo"></blockObject>'
 				);
 			} );
@@ -607,7 +607,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<inlineObject inlineFormat="foo">' +
 							'<$text inlineFormat="bar">foo</$text>' +
@@ -627,7 +627,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">abc</$text>' +
 						'<inlineObject inlineFormat="foo">' +
@@ -647,7 +647,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">abc</$text>' +
 						'<inlineObject inlineFormat="bar"></inlineObject>' +
@@ -667,7 +667,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'enter' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 					'</paragraph>' +
@@ -689,7 +689,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'enter' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 					'</paragraph>' +
@@ -714,7 +714,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'delete' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">fooyz</$text>' +
 					'</paragraph>'
@@ -736,7 +736,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'delete' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">fo</$text>' +
 						'<$text inlineFormat="bar">ar</$text>' +
@@ -761,7 +761,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'mergeListItemBackward' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 					'</paragraph>' +
@@ -786,7 +786,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'mergeListItemBackward' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 					'</paragraph>' +
@@ -805,7 +805,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'bulletedList' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a00" listType="bulleted">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 					'</paragraph>'
@@ -819,7 +819,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'bulletedList' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 						'bar' +
@@ -836,7 +836,7 @@ describe( 'ListFormatting', () => {
 
 				editor.execute( 'bulletedList' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a00" listType="bulleted" selection:inlineFormat="foo">' +
 					'</paragraph>'
 				);
@@ -855,7 +855,7 @@ describe( 'ListFormatting', () => {
 				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 				setSelectionAttribute( model, 'inlineFormat2', 'bar' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemFormat2="bar" ' +
 						'listItemId="a" listType="numbered" selection:inlineFormat="foo" selection:inlineFormat2="bar">' +
 					'</paragraph>'
@@ -874,7 +874,7 @@ describe( 'ListFormatting', () => {
 
 				setAttribute( model, 'inlineFormat', 'baz', docSelection.getFirstRange() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="baz" listItemFormat2="bar" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="baz" inlineFormat2="bar">foo</$text>' +
 					'</paragraph>'
@@ -893,7 +893,7 @@ describe( 'ListFormatting', () => {
 
 				removeAttribute( model, 'inlineFormat', docSelection.getFirstRange() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat2="bar" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat2="bar">foo</$text>' +
 					'</paragraph>'
@@ -912,7 +912,7 @@ describe( 'ListFormatting', () => {
 
 				setAttribute( model, 'inlineFormat2', 'baz', docSelection.getFirstRange() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo" inlineFormat2="baz">fo</$text>' +
 						'<$text inlineFormat="foo" inlineFormat2="bar">o</$text>' +
@@ -955,7 +955,7 @@ describe( 'ListFormatting', () => {
 
 				setAttribute( model, 'inlineFormat', 'foo', docSelection.getFirstRange() );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="a">' +
 						'<$text inlineFormat="foo">foo</$text>' +
 					'</paragraph>'

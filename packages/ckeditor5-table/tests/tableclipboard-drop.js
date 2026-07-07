@@ -73,7 +73,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( domNode, 'before' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', modelTable( [ [ 'aa', 'ab' ], [ 'ba', 'bb' ] ] ) + '<paragraph>11</paragraph>', '12' ],
 				[ '20', '21', '22' ]
@@ -108,7 +108,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( domNode, 'before' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					'10',
@@ -176,7 +176,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( firstParagraphDomNode, 'after' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					'<paragraph>Foo</paragraph>' +
@@ -234,7 +234,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( domNode, 'before' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					modelTable( [ [ 'aa', 'ab' ], [ 'ba', 'bb' ] ] ) +
@@ -297,7 +297,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( firstParagraphDomNode, 'after' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					'<imageBlock src="/sample.png"><caption>Caption</caption></imageBlock>' +
@@ -354,7 +354,7 @@ describe( 'table clipboard', () => {
 			} );
 
 			// Expect the table to be inserted at the position where it was dropped,
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph>Some text</paragraph>' +
 				modelTable( [
 					[ 'aa', 'ab' ],

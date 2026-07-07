@@ -1354,7 +1354,7 @@ describe( 'table properties', () => {
 						} );
 
 						expect(
-							editor.getData() ).to.equalMarkup(
+							editor.getData() ).toEqualMarkup(
 							'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>'
 						);
 					} );
@@ -1546,7 +1546,7 @@ describe( 'table properties', () => {
 
 				model.change( writer => writer.setAttribute( 'tableBackgroundColor', '#ba7', table ) );
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData() ).toEqualMarkup(
 					'<figure class="table">' +
 						'<table style="background-color:#ba7;">' +
 							'<tbody>' +
@@ -3893,7 +3893,7 @@ describe( 'table properties', () => {
 		}
 
 		function expectModel( data ) {
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( data );
 		}
 	} );
 } );

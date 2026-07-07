@@ -215,7 +215,7 @@ describe( 'TableCellWidthEditing', () => {
 				model.change( writer => writer.setAttribute( 'tableCellWidth', '20px', tableCell ) );
 
 				expect(
-					editor.getData() ).to.equalMarkup(
+					editor.getData() ).toEqualMarkup(
 					'<figure class="table"><table><tbody><tr><td style="width:20px;">foo</td></tr></tbody></table></figure>'
 				);
 			} );

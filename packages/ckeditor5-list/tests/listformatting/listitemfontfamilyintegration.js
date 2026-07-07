@@ -130,7 +130,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<span style="font-family:Arial;">foo</span>' +
@@ -166,7 +166,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<span style="font-family:Arial;">foo</span>' +
@@ -203,7 +203,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<p>' +
@@ -238,7 +238,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<blockquote>' +
@@ -268,7 +268,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<h2>' +
@@ -292,7 +292,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>foo</li>' +
 				'</ul>'
@@ -335,7 +335,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<figure class="table">' +
@@ -365,7 +365,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>'
@@ -381,7 +381,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ol>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="numbered">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>'
@@ -400,7 +400,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'<p class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Helvetica;">baz</p>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>' +
@@ -422,7 +422,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a01" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>' +
@@ -446,7 +446,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>' +
@@ -467,7 +467,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<blockQuote listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text fontFamily="Arial">foo</$text>' +
@@ -487,7 +487,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<heading1 listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</heading1>'
@@ -514,7 +514,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<table listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -543,7 +543,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>'
@@ -634,7 +634,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>' +
 						'<p>' +
@@ -676,7 +676,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
 					'foo' +
 				'</paragraph>'

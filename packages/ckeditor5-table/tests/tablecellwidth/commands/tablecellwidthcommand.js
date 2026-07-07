@@ -289,7 +289,7 @@ describe( 'table cell width property commands', () => {
 				it( 'should set the "width" attribute value of selected table cells', () => {
 					command.execute( { value: '25px' } );
 
-					expect( editor.getData() ).to.equalMarkup( viewTable( [
+					expect( editor.getData() ).toEqualMarkup( viewTable( [
 						[ { contents: '00', style: 'width:25px;' }, '01' ],
 						[ '10', { contents: '11', style: 'width:25px;' } ]
 					] ) );
@@ -303,7 +303,7 @@ describe( 'table cell width property commands', () => {
 
 					command.execute();
 
-					expect( editor.getData() ).to.equalMarkup( viewTable( [
+					expect( editor.getData() ).toEqualMarkup( viewTable( [
 						[ '00', '01' ],
 						[ '10', '11' ]
 					] ) );
@@ -393,7 +393,7 @@ describe( 'table cell width property commands', () => {
 
 					command.execute( { value: '50px' } );
 
-					expect( editor.getData() ).to.equalMarkup( viewTable( [
+					expect( editor.getData() ).toEqualMarkup( viewTable( [
 						[ '00', '01' ],
 						[ '10', '11' ]
 					] ) );

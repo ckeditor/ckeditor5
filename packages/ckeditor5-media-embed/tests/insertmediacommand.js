@@ -182,7 +182,7 @@ describe( 'MediaEmbedCommand', () => {
 
 				command.execute( 'http://cksource.com' );
 
-				expect( _getModelData( model ) ).to.equalMarkup( '[<media pretty="true" smart="true" url="http://cksource.com"></media>]' );
+				expect( _getModelData( model ) ).toEqualMarkup( '[<media pretty="true" smart="true" url="http://cksource.com"></media>]' );
 			} );
 
 			it( 'should copy attributes from first selected element', () => {
@@ -190,7 +190,7 @@ describe( 'MediaEmbedCommand', () => {
 
 				command.execute( 'http://cksource.com' );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'[<media pretty="true" url="http://cksource.com"></media>]' +
 					'<p pretty="true">foo</p>' +
 					'<p smart="true">bar</p>'
@@ -202,7 +202,7 @@ describe( 'MediaEmbedCommand', () => {
 
 				command.execute( 'http://cksource.com' );
 
-				expect( _getModelData( model ) ).to.equalMarkup( '[<media pretty="true" smart="true" url="http://cksource.com"></media>]' );
+				expect( _getModelData( model ) ).toEqualMarkup( '[<media pretty="true" smart="true" url="http://cksource.com"></media>]' );
 			} );
 
 			it( 'should copy attributes from object when it is selected during insertion', () => {
@@ -213,7 +213,7 @@ describe( 'MediaEmbedCommand', () => {
 
 				command.execute( 'http://cksource.com' );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<p>foo</p>[<media pretty="true" smart="true" url="http://cksource.com"></media>]<p>bar</p>'
 				);
 			} );

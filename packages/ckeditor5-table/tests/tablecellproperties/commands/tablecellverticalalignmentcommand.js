@@ -235,7 +235,7 @@ describe( 'table cell properties', () => {
 					it( 'should set the "tableCellVerticalAlignment" attribute value of selected table cells', () => {
 						command.execute( { value: 'top' } );
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ { contents: '00', style: 'vertical-align:top;' }, '01' ],
 							[ '10', { contents: '11', style: 'vertical-align:top;' } ]
 						] ) );
@@ -249,7 +249,7 @@ describe( 'table cell properties', () => {
 
 						command.execute();
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );
@@ -343,7 +343,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'bottom' } );
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );

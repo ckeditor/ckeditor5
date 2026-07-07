@@ -77,7 +77,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -125,7 +125,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -160,7 +160,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'[<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -186,7 +186,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'[<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -210,7 +210,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute( { focusCaptionOnShow: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -236,7 +236,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -248,7 +248,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -275,7 +275,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 			// Hide the caption.
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -300,7 +300,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 			command.execute();
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +

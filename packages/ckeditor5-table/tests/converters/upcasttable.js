@@ -40,7 +40,7 @@ describe( 'upcastTable()', () => {
 	} );
 
 	function expectModel( data ) {
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( data );
 	}
 
 	it( 'should convert table figure', () => {

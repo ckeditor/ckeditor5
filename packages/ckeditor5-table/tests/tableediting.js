@@ -380,7 +380,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			expect( editor.execute ).not.toHaveBeenCalled();
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]foo</paragraph>' );
+			expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>[]foo</paragraph>' );
 		} );
 
 		it( 'should do nothing if table cell has already a block content', () => {
@@ -391,7 +391,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			expect( editor.execute ).not.toHaveBeenCalled();
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '<paragraph>[]11</paragraph>' ]
 			] ) );
 		} );
@@ -418,7 +418,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			expect( editor.execute ).not.toHaveBeenCalled();
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]11' ]
 			] ) );
 		} );

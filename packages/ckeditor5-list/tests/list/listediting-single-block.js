@@ -242,7 +242,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 					writer.removeAttribute( 'listType', element );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( expectedModel );
 			} );
 
 			it( 'add list attributes', () => {
@@ -274,7 +274,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 					writer.setAttribute( 'listIndent', 2, element.nextSibling );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( expectedModel );
 			} );
 		} );
 	} );
@@ -290,7 +290,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<listItem listIndent="0" listItemId="a00" listType="bulleted">foo</listItem>' +
 				'<listItem listIndent="0" listItemId="a01" listType="bulleted">bar</listItem>'
 			);
@@ -310,7 +310,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<listItem listIndent="0" listItemId="a01" listType="bulleted"></listItem>' +
 				'<listItem listIndent="1" listItemId="a00" listType="bulleted">foo</listItem>' +
 				'<listItem listIndent="1" listItemId="a02" listType="bulleted">bar</listItem>'
@@ -333,7 +333,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<listItem listIndent="0" listItemId="a01" listType="bulleted">foo</listItem>' +
 				'<listItem listIndent="1" listItemId="a00" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listItemId="a02" listType="bulleted">b</listItem>' +
@@ -350,7 +350,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<listItem listIndent="0" listItemId="c" listType="bulleted">foo</listItem>'
 			);
 		} );
@@ -383,7 +383,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<listItem listIndent="0" listItemId="c" listType="bulleted">foo</listItem>'
 			);
 		} );
@@ -395,7 +395,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">foo</listItem>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'</ul>'
@@ -407,7 +407,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li><p style="text-align:center">foo</p></li>' +
 				'</ul>'
@@ -421,7 +421,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li><p style="text-align:center">foo</p></li>' +
 				'</ul>'
@@ -435,7 +435,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 
 			editor.execute( 'alignment', { value: 'left' } );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'</ul>'
@@ -449,7 +449,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 
 			editor.execute( 'alignment', { value: 'left' } );
 
-			expect( _getViewData( view, { withoutSelection: true, skipListItemIds: false } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true, skipListItemIds: false } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li data-list-item-id="a"><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'</ul>'
@@ -465,7 +465,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 
 			editor.execute( 'alignment', { value: 'left' } );
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData() ).toEqualMarkup(
 				'<ul>' +
 					'<li data-list-item-id="a">foo</li>' +
 				'</ul>'
@@ -479,7 +479,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 
 			editor.execute( 'alignment', { value: 'left' } );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>foo</li>' +
 				'</ul>'

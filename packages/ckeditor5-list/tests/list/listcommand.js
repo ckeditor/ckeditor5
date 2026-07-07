@@ -260,7 +260,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { forceValue: true } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* fo[]o {id:a00}'
 					] ) );
 				} );
@@ -272,7 +272,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { forceValue: true } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* fo[]o'
 					] ) );
 				} );
@@ -284,7 +284,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { forceValue: false } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
@@ -296,7 +296,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { forceValue: false } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
@@ -310,7 +310,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { additionalAttributes: { foo: 'foo' } } );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph foo="foo" listIndent="0" listItemId="000" listType="bulleted">a[]</paragraph>'
 					);
 				} );
@@ -324,7 +324,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { additionalAttributes: { foo: 'foo' } } );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph foo="foo" listIndent="0" listItemId="000" listType="bulleted">[a</paragraph>' +
 						'<paragraph foo="foo" listIndent="0" listItemId="001" listType="bulleted">b]</paragraph>' +
 						'<paragraph listIndent="0" listItemId="002" listType="numbered">c</paragraph>'
@@ -338,7 +338,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { additionalAttributes: { foo: 'foo' } } );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph foo="foo" listIndent="0" listItemId="a00" listType="bulleted">a[]</paragraph>'
 					);
 				} );
@@ -371,7 +371,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* a',
 							'  * b[]',
 							'    * c',
@@ -407,7 +407,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'# a',
 							'p',
 							'* b',
@@ -440,7 +440,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'# a',
 							'  * [b',
 							'    * c]',
@@ -469,7 +469,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* foo',
 							'b[]ar',
 							'* baz',
@@ -492,7 +492,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* fo[]o {id:a00}'
 					] ) );
 
@@ -508,7 +508,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* fo[]o'
 					] ) );
 
@@ -525,7 +525,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* fo[o {id:a00}',
 						'* ba]r {id:a01}'
 					] ) );
@@ -548,7 +548,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'a',
 						'* [b {id:a00}',
 						'* c',
@@ -575,7 +575,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* a',
 						'  [b',
 						'* c {id:a00}',
@@ -604,7 +604,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* [a',
 						'* b]',
 						'  # c',
@@ -629,7 +629,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* a',
 						'* b[]',
 						'  # c',
@@ -657,7 +657,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'a',
 						'* b',
 						'  c[]',
@@ -685,7 +685,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 
@@ -704,7 +704,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'f[]oo',
 						'* bar',
 						'* baz'
@@ -725,7 +725,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* foo',
 						'b[]ar',
 						'* baz'
@@ -746,7 +746,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* foo',
 						'* bar',
 						'b[]az'
@@ -769,7 +769,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'f[]oo',
 							'* bar',
 							'* baz',
@@ -795,7 +795,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* foo',
 							'b[]ar',
 							'* baz',
@@ -833,7 +833,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'0',
 							'* 1',
 							'  * 2',
@@ -876,7 +876,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'fo[]o',
 							'* bar {id:a00}',
 							'  baz'
@@ -899,7 +899,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* foo',
 							'ba[]r',
 							'* baz {id:a00}'
@@ -925,7 +925,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'a[]',
 							'* b {id:a00}',
 							'  * c',
@@ -1165,7 +1165,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { forceValue: true } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# fo[]o {id:a00}'
 					] ) );
 				} );
@@ -1177,7 +1177,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { forceValue: true } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# fo[]o'
 					] ) );
 				} );
@@ -1189,7 +1189,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { forceValue: false } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
@@ -1201,7 +1201,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { forceValue: false } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
@@ -1215,7 +1215,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { additionalAttributes: { foo: 'foo' } } );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph foo="foo" listIndent="0" listItemId="000" listType="numbered">a[]</paragraph>'
 					);
 				} );
@@ -1229,7 +1229,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { additionalAttributes: { foo: 'foo' } } );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph foo="foo" listIndent="0" listItemId="000" listType="numbered">[a</paragraph>' +
 						'<paragraph foo="foo" listIndent="0" listItemId="001" listType="numbered">b]</paragraph>' +
 						'<paragraph listIndent="0" listItemId="002" listType="bulleted">c</paragraph>'
@@ -1243,7 +1243,7 @@ describe( 'ListCommand', () => {
 
 					command.execute( { additionalAttributes: { foo: 'foo' } } );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph foo="foo" listIndent="0" listItemId="a00" listType="numbered">a[]</paragraph>'
 					);
 				} );
@@ -1276,7 +1276,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'# a',
 							'  # b[]',
 							'    # c',
@@ -1312,7 +1312,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* a',
 							'p',
 							'# b',
@@ -1345,7 +1345,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* a',
 							'  # [b',
 							'    # c]',
@@ -1374,7 +1374,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'# foo',
 							'b[]ar',
 							'# baz',
@@ -1397,7 +1397,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# fo[]o {id:a00}'
 					] ) );
 
@@ -1413,7 +1413,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# fo[]o'
 					] ) );
 
@@ -1430,7 +1430,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# fo[o {id:a00}',
 						'# ba]r {id:a01}'
 					] ) );
@@ -1453,7 +1453,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'a',
 						'# [b {id:a00}',
 						'# c',
@@ -1480,7 +1480,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# a',
 						'  [b',
 						'# c {id:a00}',
@@ -1509,7 +1509,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# [a',
 						'# b]',
 						'  * c',
@@ -1534,7 +1534,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# a',
 						'# b[]',
 						'  * c',
@@ -1562,7 +1562,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'a',
 						'# b',
 						'  c[]',
@@ -1590,7 +1590,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 
@@ -1609,7 +1609,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'f[]oo',
 						'# bar',
 						'# baz'
@@ -1630,7 +1630,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# foo',
 						'b[]ar',
 						'# baz'
@@ -1651,7 +1651,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# foo',
 						'# bar',
 						'b[]az'
@@ -1674,7 +1674,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'f[]oo',
 							'# bar',
 							'# baz',
@@ -1700,7 +1700,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'# foo',
 							'b[]ar',
 							'# baz',
@@ -1738,7 +1738,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'0',
 							'# 1',
 							'  # 2',
@@ -1781,7 +1781,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'fo[]o',
 							'# bar {id:a00}',
 							'  baz'
@@ -1804,7 +1804,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'# foo',
 							'ba[]r',
 							'# baz {id:a00}'
@@ -1830,7 +1830,7 @@ describe( 'ListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'a[]',
 							'# b {id:a00}',
 							'  * c',

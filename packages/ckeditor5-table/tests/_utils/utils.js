@@ -238,7 +238,7 @@ export function assertTableStyle( editor, tableStyle, figureStyle ) {
 	const tableStyleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
 	const figureStyleEntry = figureStyle ? ` style="${ figureStyle }"` : '';
 
-	expect( editor.getData() ).to.equalMarkup(
+	expect( editor.getData() ).toEqualMarkup(
 		`<figure class="table"${ figureStyleEntry }>` +
 			`<table${ tableStyleEntry }>` +
 				'<tbody><tr><td>foo</td></tr></tbody>' +
@@ -254,7 +254,7 @@ export function assertTableClass( editor, tableClass, figureClass ) {
 	const tableClassEntry = tableClass ? ` class="${ tableClass }"` : '';
 	const figureClassEntry = figureClass ? ` ${ figureClass }` : '';
 
-	expect( editor.getData() ).to.equalMarkup(
+	expect( editor.getData() ).toEqualMarkup(
 		`<figure class="table${ figureClassEntry }">` +
 			`<table${ tableClassEntry }>` +
 				'<tbody><tr><td>foo</td></tr></tbody>' +
@@ -270,7 +270,7 @@ export function assertTableClass( editor, tableClass, figureClass ) {
  * @param {String} [tableCellStyle=''] A style to assert on td.
  */
 export function assertTableCellStyle( editor, tableCellStyle ) {
-	expect( editor.getData() ).to.equalMarkup(
+	expect( editor.getData() ).toEqualMarkup(
 		'<figure class="table"><table><tbody><tr>' +
 		`<td${ tableCellStyle ? ` style="${ tableCellStyle }"` : '' }>foo</td>` +
 		'</tr></tbody></table></figure>'

@@ -235,7 +235,7 @@ describe( 'table cell properties', () => {
 					it( 'should set the "tableCellHorizontalAlignment" attribute value of selected table cells', () => {
 						command.execute( { value: 'right' } );
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ { contents: '00', style: 'text-align:right;' }, '01' ],
 							[ '10', { contents: '11', style: 'text-align:right;' } ]
 						] ) );
@@ -250,7 +250,7 @@ describe( 'table cell properties', () => {
 
 						command.execute();
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );
@@ -346,7 +346,7 @@ describe( 'table cell properties', () => {
 
 							command.execute( { value: 'left' } );
 
-							expect( editor.getData() ).to.equalMarkup( viewTable( [
+							expect( editor.getData() ).toEqualMarkup( viewTable( [
 								[ '00', '01' ],
 								[ '10', '11' ]
 							] ) );

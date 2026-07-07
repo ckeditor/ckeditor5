@@ -2686,7 +2686,7 @@ describe( 'ListEditing (multiBlock=false) integrations: backspace & delete', () 
 
 		view.document.fire( eventInfo, domEventData );
 
-		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
+		expect( _getModelData( model ) ).toEqualMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
 			expect( domEventData.domEvent.preventDefault.mock.calls.length > 0 ).to.equal(

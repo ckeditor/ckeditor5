@@ -60,7 +60,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00[]', '01' ],
 					[ '', '' ],
 					[ '10', '11' ]
@@ -76,7 +76,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '<paragraph>[]10</paragraph>' ],
 					[ '' ],
@@ -93,7 +93,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00[]', '01' ],
 					[ '', '' ],
 					[ '10', '11' ],
@@ -110,7 +110,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10[]', '11' ],
 					[ '', '' ],
@@ -145,7 +145,7 @@ describe( 'InsertRowCommand', () => {
 				// |         | 22 | 23 |
 				// +----+----+----+----+
 				//                     ^-- heading columns
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', colspan: 2 }, '02', '03' ],
 					[ { contents: '10[]', colspan: 2, rowspan: 3 }, '12', '13' ],
 					[ '', '' ],
@@ -178,7 +178,7 @@ describe( 'InsertRowCommand', () => {
 				// +----+----+----+
 				// | 20 | 21 | 22 |
 				// +----+----+----+
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', rowspan: 2 }, '01', '02' ],
 					[ '11[]', '12' ],
 					[ '', '', '' ],
@@ -211,7 +211,7 @@ describe( 'InsertRowCommand', () => {
 				// +----+----+----+
 				// | 20           |
 				// +----+----+----+
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ { contents: '00', rowspan: 2 }, '01', '02' ],
 					[ '11[]', '12' ],
 					[ '', '', '' ],
@@ -227,7 +227,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10[]', '11' ],
 					[ '', '' ]
@@ -251,7 +251,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '11', '12' ],
 					[ '21', '22' ],
 					[ '', '' ],
@@ -275,7 +275,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '11', '12' ],
 					[ '21', '22' ],
 					[ '31', '<horizontalLine></horizontalLine>' ],
@@ -303,7 +303,7 @@ describe( 'InsertRowCommand', () => {
 				// +----+----+----+
 				// | 10 | 11 | 12 |
 				// +----+----+----+
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { contents: '01', colspan: 2 } ],
 					[ '', { contents: '', colspan: 2 } ],
 					[ '10', '11', '12' ]
@@ -360,7 +360,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '' ],
 					[ '<paragraph>[]10</paragraph>' ],
@@ -376,7 +376,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '', '' ],
 					[ '00[]', '01' ],
 					[ '10', '11' ]
@@ -392,7 +392,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '', '' ],
@@ -409,7 +409,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '', '' ],
 					[ '00[]', '01' ],
 					[ '10', '11' ],
@@ -426,7 +426,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '', '' ],
@@ -451,7 +451,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '', '' ],
 					[ '11', '12' ],
 					[ '21', '22' ],
@@ -486,7 +486,7 @@ describe( 'InsertRowCommand', () => {
 				// +----+----+----+
 				// | 10 | 11 | 12 |
 				// +----+----+----+
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '', { contents: '', colspan: 2 } ],
 					[ '00', { contents: '01', colspan: 2 } ],
 					[ '10', '11', '12' ]

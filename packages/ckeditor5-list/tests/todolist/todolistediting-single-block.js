@@ -326,7 +326,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
 			);
@@ -340,7 +340,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 				'</ol>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
 			);
@@ -389,7 +389,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph' +
 						' listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">' +
 					'foo' +
@@ -409,7 +409,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<htmlH2 listIndent="0" listItemId="a00" listType="todo">foo</htmlH2>'
 			);
 		} );
@@ -417,7 +417,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 		it( 'should not consume other label elements', () => {
 			editor.setData( '<p><label>foo</label></p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph><$text htmlLabel="{}">foo</$text></paragraph>'
 			);
 		} );
@@ -550,7 +550,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 				'<listItem listIndent="0" listItemId="a00" listType="todo">foo</listItem>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label">' +
@@ -565,7 +565,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 
 			editor.execute( 'alignment', { value: 'right' } );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label todo-list__label_without-description">' +
@@ -582,7 +582,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 
 			editor.execute( 'alignment', { value: 'left' } );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label">' +
@@ -603,11 +603,11 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 
 			model.change( writer => writer.setSelectionAttribute( 'bold', true ) );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<listItem listIndent="0" listItemId="a00" listType="todo" selection:bold="true"></listItem>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label">' +
@@ -740,16 +740,16 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 
 	function testUpcast( input, output ) {
 		editor.setData( input );
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( output );
 	}
 
 	function testEditing( input, output ) {
 		_setModelData( model, input );
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( output );
 	}
 
 	function testData( input, output ) {
 		_setModelData( model, input );
-		expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( output );
+		expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup( output );
 	}
 } );

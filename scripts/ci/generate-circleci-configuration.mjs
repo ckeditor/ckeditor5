@@ -281,13 +281,16 @@ const persistToWorkspace = fileName => ( {
  */
 function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
 	return packages.map( packageName => {
+		// When checking coverage, the 100% coverage thresholds configured by `createVitestConfig()`
+		// make Vitest exit with a non-zero code on a violation, so no external coverage check is needed.
+		//
+		// The lcov report contains repository-relative `SF:` paths (`createVitestConfig()` sets the
+		// reporter's `projectRoot`), so per-package reports can be concatenated verbatim.
 		const testCommand = [
-			'node',
-			'scripts/ci/check-unit-tests-for-package.mjs',
-			'--package-name',
-			packageName,
-			checkCoverage ? '--check-coverage' : null,
-			coverageFile ? `--coverage-file ${ coverageFile }` : null
+			'pnpm run test --attempts 3',
+			checkCoverage ? '-c' : null,
+			`-f ${ packageName }`,
+			coverageFile ? `&& cat packages/${ packageName }/coverage/lcov.info >> ${ coverageFile }` : null
 		].filter( Boolean ).join( ' ' );
 
 		return {

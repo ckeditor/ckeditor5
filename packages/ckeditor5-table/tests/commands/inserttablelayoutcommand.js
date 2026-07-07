@@ -104,7 +104,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
@@ -118,7 +118,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '' ],
@@ -133,7 +133,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '', '', '' ],
@@ -149,7 +149,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 				command.execute( { rows: 3, columns: 4, headingRows: 1, headingColumns: 2 } );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '', '', '' ],
@@ -164,7 +164,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
@@ -179,7 +179,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					modelTable( [
 						[ '[]', '', '', '' ],
 						[ '', '', '', '' ],
@@ -244,7 +244,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						modelTable( [
 							[ '[]', '' ],
 							[ '', '' ]
@@ -258,7 +258,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph>foo</paragraph>' +
 						modelTable( [
 							[ '[]', '' ],
@@ -273,7 +273,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 					command.execute( { rows: 3, columns: 4 } );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph>foo</paragraph>' +
 						modelTable( [
 							[ '[]', '', '', '' ],
@@ -289,7 +289,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 					command.execute( { rows: 3, columns: 4, headingRows: 1, headingColumns: 2 } );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph>foo</paragraph>' +
 						modelTable( [
 							[ '[]', '', '', '' ],
@@ -305,7 +305,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						modelTable( [
 							[ '[]', '' ],
 							[ '', '' ]
@@ -320,7 +320,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 					command.execute( { rows: 3, columns: 4 } );
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						modelTable( [
 							[ '[]', '', '', '' ],
 							[ '', '', '', '' ],

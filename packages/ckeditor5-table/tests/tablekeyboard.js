@@ -110,7 +110,7 @@ describe( 'TableKeyboard', () => {
 
 			expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
 			expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11', '12[]' ]
 			] ) );
 		} );
@@ -126,7 +126,7 @@ describe( 'TableKeyboard', () => {
 
 			expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
 			expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '11', '12[]' ]
 			] ) );
 		} );
@@ -138,7 +138,7 @@ describe( 'TableKeyboard', () => {
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph></paragraph>[' + modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( '<paragraph></paragraph>[' + modelTable( [
 					[ '11', '12' ]
 				] ) + ']' );
 			} );
@@ -152,7 +152,7 @@ describe( 'TableKeyboard', () => {
 
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '11', '[12]' ]
 				] ) );
 			} );
@@ -164,7 +164,7 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '11', '12' ],
 					[ '[]', '' ]
 				] ) );
@@ -194,7 +194,7 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -220,7 +220,7 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					modelTable( [ [ '11', '12' ] ] ) + '<paragraph>[]x</paragraph>'
 				);
 			} );
@@ -233,7 +233,7 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '11', '12' ],
 					[ '[21]', '22' ]
 				] ) );
@@ -246,7 +246,7 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[
 						'11',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
@@ -264,7 +264,7 @@ describe( 'TableKeyboard', () => {
 
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '11', '<paragraph>[foo</paragraph><imageBlock><caption></caption></imageBlock>]' ]
 				] ) );
 			} );
@@ -284,7 +284,7 @@ describe( 'TableKeyboard', () => {
 
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '11', '<blockQuote><paragraph>[foo]</paragraph></blockQuote>' ]
 				] ) );
 			} );
@@ -299,7 +299,7 @@ describe( 'TableKeyboard', () => {
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '11', '12' ],
 					[ '[]', '' ]
 				] ) );
@@ -321,7 +321,7 @@ describe( 'TableKeyboard', () => {
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '11', '12' ],
 					[ '[]', '' ]
 				], { headingRows: 1 } ) );
@@ -343,7 +343,7 @@ describe( 'TableKeyboard', () => {
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '11', '12' ],
 					[ '[]', '' ]
 				], { footerRows: 2 } ) );
@@ -378,7 +378,7 @@ describe( 'TableKeyboard', () => {
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '11', '12[]' ]
 				], { headingRows: 1 } ) );
 			} );
@@ -410,7 +410,7 @@ describe( 'TableKeyboard', () => {
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 				expect( lowerPriorityListenerSpy ).not.toHaveBeenCalled();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable(
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable(
 					[
 						[ '11', '12' ],
 						[ '[]', '' ]
@@ -442,7 +442,7 @@ describe( 'TableKeyboard', () => {
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ innerTable + '<paragraph>A</paragraph>', '[' + innerTable + '<paragraph>B]</paragraph>' ],
 					[ 'C', 'D' ]
 				], { headingColumns: 1 } ) );
@@ -469,7 +469,7 @@ describe( 'TableKeyboard', () => {
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ innerTable + '<paragraph>A</paragraph>', innerTable + '<paragraph>B</paragraph>' ],
 					[ '[C]', 'D' ]
 				], { headingColumns: 1 } ) );
@@ -500,7 +500,7 @@ describe( 'TableKeyboard', () => {
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					modelTable(
 						[
 							[ innerTableOutput, 'B' ],
@@ -537,7 +537,7 @@ describe( 'TableKeyboard', () => {
 					expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 					// expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 						[ '[11]', '12' ]
 					] ) );
 
@@ -557,7 +557,7 @@ describe( 'TableKeyboard', () => {
 					expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
 					expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 
-					expect( _getModelData( model ) ).to.equalMarkup( '[<block>foo</block>]' );
+					expect( _getModelData( model ) ).toEqualMarkup( '[<block>foo</block>]' );
 
 					// Should not cancel event.
 					expect( spy ).toHaveBeenCalledTimes( 1 );
@@ -579,7 +579,7 @@ describe( 'TableKeyboard', () => {
 
 					expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
 					expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
-					expect( _getModelData( model ) ).to.equalMarkup( '[<fakeFigure></fakeFigure>]' );
+					expect( _getModelData( model ) ).toEqualMarkup( '[<fakeFigure></fakeFigure>]' );
 				} );
 
 				it( 'table tab handler for td should not capture event if selection is not in a tableCell', () => {
@@ -598,7 +598,7 @@ describe( 'TableKeyboard', () => {
 
 					expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
 					expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
-					expect( _getModelData( model ) ).to.equalMarkup( '[<fakeTableCell></fakeTableCell>]' );
+					expect( _getModelData( model ) ).toEqualMarkup( '[<fakeTableCell></fakeTableCell>]' );
 				} );
 
 				it( 'table tab handler for th should not capture event if selection is not in a tableCell marked as a header', () => {
@@ -617,7 +617,7 @@ describe( 'TableKeyboard', () => {
 
 					expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
 					expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
-					expect( _getModelData( model ) ).to.equalMarkup( '[<fakeTableHeader></fakeTableHeader>]' );
+					expect( _getModelData( model ) ).toEqualMarkup( '[<fakeTableHeader></fakeTableHeader>]' );
 				} );
 			} );
 		} );
@@ -639,7 +639,7 @@ describe( 'TableKeyboard', () => {
 
 				expect( domEvtDataStub.preventDefault ).not.toHaveBeenCalled();
 				expect( domEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]</paragraph>' + modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>[]</paragraph>' + modelTable( [
 					[ '11', '12' ]
 				] ) );
 			} );
@@ -654,7 +654,7 @@ describe( 'TableKeyboard', () => {
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '[11]', '12' ]
 				] ) );
 			} );
@@ -666,7 +666,7 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph>foo[]</paragraph>' + modelTable( [ [ '11', '12' ] ] )
 				);
 			} );
@@ -679,7 +679,7 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '11', '[12]' ],
 					[ '21', '22' ]
 				] ) );
@@ -692,7 +692,7 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[
 						'[11]',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
@@ -710,7 +710,7 @@ describe( 'TableKeyboard', () => {
 
 				expect( domEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 				expect( domEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '<paragraph>[foo</paragraph><imageBlock><caption></caption></imageBlock>]', 'bar' ]
 				] ) );
 			} );
@@ -759,7 +759,7 @@ describe( 'TableKeyboard', () => {
 			expect( leftArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
 			expect( leftArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01[]' ]
 			] ) );
 		} );
@@ -774,7 +774,7 @@ describe( 'TableKeyboard', () => {
 			expect( upArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
 			expect( upArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelData );
+			expect( _getModelData( model ) ).toEqualMarkup( modelData );
 		} );
 
 		it( 'should do nothing if the selection is on a table', () => {
@@ -787,7 +787,7 @@ describe( 'TableKeyboard', () => {
 			expect( upArrowDomEvtDataStub.preventDefault ).not.toHaveBeenCalled();
 			expect( upArrowDomEvtDataStub.stopPropagation ).not.toHaveBeenCalled();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelData );
+			expect( _getModelData( model ) ).toEqualMarkup( modelData );
 		} );
 
 		describe( '#_navigateFromCellInDirection (finding a proper cell to move the selection to)', () => {
@@ -810,7 +810,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the start position of the cell on the right when the direction is "right"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '[]01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -820,7 +820,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the start position of the cell below when the direction is "down"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '[]10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -830,7 +830,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should select a whole table when the direction is "up"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>[' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>[' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -840,7 +840,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should select a whole table when the direction is "left"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>[' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>[' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -858,7 +858,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the end position of the cell on the left when the direction is "left"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21[]', '22' ]
@@ -868,7 +868,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the end position of the cell above when the direction is "up"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12[]' ],
 							[ '20', '21', '22' ]
@@ -878,7 +878,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should select a whole table when the direction is "down"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>[' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>[' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -888,7 +888,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should select a whole table when the direction is "right"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>[' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>[' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -906,7 +906,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to start position of the cell on the right when the direction is "right"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '[]11', '12' ],
 							[ '20', '21', '22' ]
@@ -916,7 +916,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the end position of the cell above when the direction is "up"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00[]', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -926,7 +926,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the start position of the cell below when the direction is "down"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '[]20', '21', '22' ]
@@ -936,7 +936,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the end position of the last cell in the previous row when the direction is "left"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02[]' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -954,7 +954,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the end position of the cell on the left when the direction is "left"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11[]', '12' ],
 							[ '20', '21', '22' ]
@@ -964,7 +964,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the end position the cell above when the direction is "up"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02[]' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -974,7 +974,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the start position of the cell below when the direction is "down"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '[]22' ]
@@ -984,7 +984,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the start position of the first cell in the next row when the direction is "right"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo</paragraph>' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '[]20', '21', '22' ]
@@ -1021,7 +1021,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '[]11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1035,7 +1035,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '[]11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1049,7 +1049,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '[]13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1063,7 +1063,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '[]14' ],
 							[ '20', '24' ],
@@ -1077,7 +1077,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1091,7 +1091,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1107,7 +1107,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13[]', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1121,7 +1121,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13[]', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1135,7 +1135,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11[]', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1149,7 +1149,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10[]', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1163,7 +1163,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1177,7 +1177,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1193,7 +1193,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '[]11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1207,7 +1207,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '[]11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1221,7 +1221,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1235,7 +1235,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1249,7 +1249,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '[]13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1263,7 +1263,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1279,7 +1279,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1293,7 +1293,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1307,7 +1307,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11[]', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1321,7 +1321,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01[]', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1335,7 +1335,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13[]', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1349,7 +1349,7 @@ describe( 'TableKeyboard', () => {
 
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03[]', '04' ],
 							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
 							[ '20', '24' ],
@@ -1397,7 +1397,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should select a whole table when the direction is "up"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up', true );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '[' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '[' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -1407,7 +1407,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should select a whole table when the direction is "left"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left', true );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '[' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '[' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -1442,7 +1442,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should select a whole table when the direction is "down"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down', true );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '[' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '[' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -1452,7 +1452,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should select a whole table when the direction is "right"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right', true );
 
-						expect( _getModelData( model ) ).to.equalMarkup( '[' + modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( '[' + modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -1567,7 +1567,7 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10[]', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -1580,7 +1580,7 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '[]12' ],
 							[ '20', '21', '22' ]
@@ -1593,7 +1593,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -1606,7 +1606,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '[]21', '22' ]
@@ -1627,7 +1627,7 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10[]', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -1635,7 +1635,7 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '[]20', '21', '22' ]
@@ -1716,7 +1716,7 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ '10[]', '11', '12', '13' ],
 							[ '20', '21', '22', '23' ],
@@ -1730,7 +1730,7 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ '10', '11', '12', '13' ],
 							[ '20', '21', '[]22', '23' ],
@@ -1744,7 +1744,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01[]', '02', '03' ],
 							[ '10', '11', '12', '13' ],
 							[ '20', '21', '22', '23' ],
@@ -1758,7 +1758,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ '10', '11', '12', '13' ],
 							[ '20', '21', '22', '23' ],
@@ -1845,7 +1845,7 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ '10[]', '11', '12', '13' ],
 							[ '20', '21', '22', '23' ],
@@ -1859,7 +1859,7 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ '10', '11', '12', '13' ],
 							[ '20', '21', '[]22', '23' ],
@@ -1873,7 +1873,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01[]', '02', '03' ],
 							[ '10', '11', '12', '13' ],
 							[ '20', '21', '22', '23' ],
@@ -1887,7 +1887,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ '10', '11', '12', '13' ],
 							[ '20', '21', '22', '23' ],
@@ -1974,7 +1974,7 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ '10[]', '11', '12', '13' ],
 							[ '20', '21', '22', '23' ],
@@ -1988,7 +1988,7 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ '10', '11', '12', '[]13' ],
 							[ '20', '21', '22', '23' ],
@@ -2002,7 +2002,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01[]', '02', '03' ],
 							[ '10', '11', '12', '13' ],
 							[ '20', '21', '22', '23' ],
@@ -2016,7 +2016,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ '10', '11', '12', '13' ],
 							[ '20', '21', '[]22', '23' ],
@@ -2100,7 +2100,7 @@ describe( 'TableKeyboard', () => {
 					expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 					expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 						[ '00', '01', '02', '03' ],
 						[ '10[]', '11', '12', '13' ],
 						[ '20', '21', '22', '23' ],
@@ -2114,7 +2114,7 @@ describe( 'TableKeyboard', () => {
 					expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 					expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 						[ '00', '01', '02', '03' ],
 						[ '10', '11', '12', '13' ],
 						[ '20', '21', '22', '[]23' ],
@@ -2128,7 +2128,7 @@ describe( 'TableKeyboard', () => {
 					expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 					expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 						[ '00', '01[]', '02', '03' ],
 						[ '10', '11', '12', '13' ],
 						[ '20', '21', '22', '23' ],
@@ -2142,7 +2142,7 @@ describe( 'TableKeyboard', () => {
 					expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 					expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 						[ '00', '01', '02', '03' ],
 						[ '10', '11', '12', '13' ],
 						[ '20', '21', '22', '23' ],
@@ -2167,7 +2167,7 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10[]', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -2186,7 +2186,7 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '[]12' ],
 							[ '20', '21', '22' ]
@@ -2205,7 +2205,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '21', '22' ]
@@ -2224,7 +2224,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11', '12' ],
 							[ '20', '[]21', '22' ]
@@ -2322,7 +2322,7 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10[]', '<paragraph>11</paragraph><paragraph>x</paragraph>', '12' ],
 							[ '20', '21', '22' ]
@@ -2341,7 +2341,7 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '<paragraph>11</paragraph><paragraph>x</paragraph>', '[]12' ],
 							[ '20', '21', '22' ]
@@ -2360,7 +2360,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
 							[ '10', '<paragraph>11</paragraph><paragraph>x</paragraph>', '12' ],
 							[ '20', '21', '22' ]
@@ -2379,7 +2379,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '<paragraph>11</paragraph><paragraph>x</paragraph>', '12' ],
 							[ '20', '[]21', '22' ]
@@ -2400,7 +2400,7 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10[]', `<imageBlock src="${ imageUrl }"><caption>11</caption></imageBlock>`, '12' ],
 							[ '20', '21', '22' ]
@@ -2419,7 +2419,7 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `<imageBlock src="${ imageUrl }"><caption>11</caption></imageBlock>`, '[]12' ],
 							[ '20', '21', '22' ]
@@ -2438,7 +2438,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
 							[ '10', `<imageBlock src="${ imageUrl }"><caption>11</caption></imageBlock>`, '12' ],
 							[ '20', '21', '22' ]
@@ -2457,7 +2457,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `<imageBlock src="${ imageUrl }"><caption>11</caption></imageBlock>`, '12' ],
 							[ '20', '[]21', '22' ]
@@ -2482,7 +2482,7 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10[]', '<horizontalLine></horizontalLine>', '12' ],
 							[ '20', '21', '22' ]
@@ -2497,7 +2497,7 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '<horizontalLine></horizontalLine>', '[]12' ],
 							[ '20', '21', '22' ]
@@ -2512,7 +2512,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
 							[ '10', '<horizontalLine></horizontalLine>', '12' ],
 							[ '20', '21', '22' ]
@@ -2527,7 +2527,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '<horizontalLine></horizontalLine>', '12' ],
 							[ '20', '[]21', '22' ]
@@ -2550,7 +2550,7 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10[]', '<horizontalLine></horizontalLine><horizontalLine></horizontalLine>', '12' ],
 							[ '20', '21', '22' ]
@@ -2571,7 +2571,7 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '<horizontalLine></horizontalLine><horizontalLine></horizontalLine>', '[]12' ],
 							[ '20', '21', '22' ]
@@ -2592,7 +2592,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01[]', '02' ],
 							[ '10', '<horizontalLine></horizontalLine><horizontalLine></horizontalLine>', '12' ],
 							[ '20', '21', '22' ]
@@ -2613,7 +2613,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalled();
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalled();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '<horizontalLine></horizontalLine><horizontalLine></horizontalLine>', '12' ],
 							[ '20', '[]21', '22' ]
@@ -2694,7 +2694,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '[]11', '12' ],
 							[ '20', '21', '22' ]
@@ -2713,7 +2713,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '11[]', '12' ],
 							[ '20', '21', '22' ]
@@ -2754,7 +2754,7 @@ describe( 'TableKeyboard', () => {
 							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', '[1]1', '12' ],
 								[ '20', '21', '22' ]
@@ -2767,7 +2767,7 @@ describe( 'TableKeyboard', () => {
 							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', '1[1]', '12' ],
 								[ '20', '21', '22' ]
@@ -2804,7 +2804,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '[]word word' + text, '12' ],
 							[ '20', '21', '22' ]
@@ -2823,7 +2823,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', text + 'word word[]', '12' ],
 							[ '20', '21', '22' ]
@@ -2902,7 +2902,7 @@ describe( 'TableKeyboard', () => {
 							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', '[word] word' + text, '12' ],
 								[ '20', '21', '22' ]
@@ -2921,7 +2921,7 @@ describe( 'TableKeyboard', () => {
 							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', '[word ]word' + text, '12' ],
 								[ '20', '21', '22' ]
@@ -2940,7 +2940,7 @@ describe( 'TableKeyboard', () => {
 							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', '[word word]' + text, '12' ],
 								[ '20', '21', '22' ]
@@ -3019,7 +3019,7 @@ describe( 'TableKeyboard', () => {
 							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', text + 'word[ word]', '12' ],
 								[ '20', '21', '22' ]
@@ -3051,7 +3051,7 @@ describe( 'TableKeyboard', () => {
 							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', text + '[word word]', '12' ],
 								[ '20', '21', '22' ]
@@ -3080,7 +3080,7 @@ describe( 'TableKeyboard', () => {
 							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', text + ' word word word[]', '12' ],
 								[ '20', '21', '22' ]
@@ -3099,7 +3099,7 @@ describe( 'TableKeyboard', () => {
 							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', text + ' word word word[]', '12' ],
 								[ '20', '21', '22' ]
@@ -3137,7 +3137,7 @@ describe( 'TableKeyboard', () => {
 								expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 								expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-								expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+								expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 									[ '00', '01', '02' ],
 									[ '10', text + '[ word word word]', '12' ],
 									[ '20', '21', '22' ]
@@ -3156,7 +3156,7 @@ describe( 'TableKeyboard', () => {
 								expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 								expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-								expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+								expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 									[ '00', '01', '02' ],
 									[ '10', text + '[ word word word]', '12' ],
 									[ '20', '21', '22' ]
@@ -3194,7 +3194,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `<paragraph>[]word${ text }</paragraph><paragraph>foobar</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
@@ -3226,7 +3226,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `<paragraph>foobar</paragraph><paragraph>${ text }word word[]</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
@@ -3251,7 +3251,7 @@ describe( 'TableKeyboard', () => {
 							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', `<paragraph>[word] ${ text }</paragraph><paragraph>${ text }</paragraph>`, '12' ],
 								[ '20', '21', '22' ]
@@ -3270,7 +3270,7 @@ describe( 'TableKeyboard', () => {
 							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', `<paragraph>${ text }</paragraph><paragraph>${ text } [word]</paragraph>`, '12' ],
 								[ '20', '21', '22' ]
@@ -3307,7 +3307,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `<horizontalLine></horizontalLine><paragraph>[]word ${ text }</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
@@ -3326,7 +3326,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `<paragraph>${ text } word word[]</paragraph><horizontalLine></horizontalLine>`, '12' ],
 							[ '20', '21', '22' ]
@@ -3348,7 +3348,7 @@ describe( 'TableKeyboard', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `${ paragraph }${ hr }<paragraph>[]${ text }</paragraph>${ hr }`, '12' ],
 							[ '20', '21', '22' ]
@@ -3367,7 +3367,7 @@ describe( 'TableKeyboard', () => {
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `${ paragraph }[${ hr }]`, '12' ],
 							[ '20', '21', '22' ]
@@ -3392,7 +3392,7 @@ describe( 'TableKeyboard', () => {
 							expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', '<horizontalLine></horizontalLine><paragraph>[foo]bar</paragraph>', '12' ],
 								[ '20', '21', '22' ]
@@ -3411,7 +3411,7 @@ describe( 'TableKeyboard', () => {
 							expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', '<paragraph>foo[bar]</paragraph><horizontalLine></horizontalLine>', '12' ],
 								[ '20', '21', '22' ]
@@ -3468,7 +3468,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[
 								'10',
@@ -3509,7 +3509,7 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[
 								'10',
@@ -3534,7 +3534,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[
 								'10',
@@ -3575,7 +3575,7 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `<paragraph>foo</paragraph><imageBlock src="${ imageUrl }"><caption>11</caption></imageBlock>`, '12' ],
 							[ '20', '[]21', '22' ]
@@ -3593,7 +3593,7 @@ describe( 'TableKeyboard', () => {
 
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `[<imageBlock src="${ imageUrl }"><caption></caption></imageBlock>]<paragraph>foo</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
@@ -3611,7 +3611,7 @@ describe( 'TableKeyboard', () => {
 
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', `<paragraph>foo</paragraph>[<imageBlock src="${ imageUrl }"><caption></caption></imageBlock>]`, '12' ],
 							[ '20', '21', '22' ]
@@ -3663,7 +3663,7 @@ describe( 'TableKeyboard', () => {
 					expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 					expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 						[ '00', '01', '02' ],
 						[ '10', '11', '[]12' ],
 						[ '20', '21', '22' ]
@@ -3676,7 +3676,7 @@ describe( 'TableKeyboard', () => {
 					expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 					expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 						[ '00', '01', '02' ],
 						[ '10[]', '11', '12' ],
 						[ '20', '21', '22' ]
@@ -3689,7 +3689,7 @@ describe( 'TableKeyboard', () => {
 					expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 					expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 						[ '00', '01[]', '02' ],
 						[ '10', '11', '12' ],
 						[ '20', '21', '22' ]
@@ -3702,7 +3702,7 @@ describe( 'TableKeyboard', () => {
 					expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 					expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 						[ '00', '01', '02' ],
 						[ '10', '11', '12' ],
 						[ '20', '[]21', '22' ]

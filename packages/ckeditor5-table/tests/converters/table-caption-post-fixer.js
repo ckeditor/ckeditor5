@@ -54,7 +54,7 @@ describe( 'Table caption post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -99,7 +99,7 @@ describe( 'Table caption post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -164,7 +164,7 @@ describe( 'Table caption post-fixer', () => {
 				expect( slots[ 3 ].column ).toBe( 1 );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -207,7 +207,7 @@ describe( 'Table caption post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -242,7 +242,7 @@ describe( 'Table caption post-fixer', () => {
 				writer.insert( caption, writer.createPositionFromPath( editor.model.document.getRoot(), [ 0, 0 ] ) );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +

@@ -290,7 +290,7 @@ describe( 'table cell properties', () => {
 					it( 'should set the "height" attribute value of selected table cells', () => {
 						command.execute( { value: '100px' } );
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ { contents: '00', style: 'height:100px;' }, '01' ],
 							[ '10', { contents: '11', style: 'height:100px;' } ]
 						] ) );
@@ -304,7 +304,7 @@ describe( 'table cell properties', () => {
 
 						command.execute();
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );
@@ -394,7 +394,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '30px' } );
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );

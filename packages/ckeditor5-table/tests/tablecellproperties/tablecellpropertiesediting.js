@@ -801,7 +801,7 @@ describe( 'table cell properties', () => {
 						} );
 
 						expect(
-							editor.getData() ).to.equalMarkup(
+							editor.getData() ).toEqualMarkup(
 							'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>'
 						);
 					} );
@@ -2383,7 +2383,7 @@ describe( 'table cell properties', () => {
 					model.change( writer => writer.setAttribute( 'tableCellHeight', '20px', tableCell ) );
 
 					expect(
-						editor.getData() ).to.equalMarkup(
+						editor.getData() ).toEqualMarkup(
 						'<figure class="table"><table><tbody><tr><td style="height:20px;">foo</td></tr></tbody></table></figure>'
 					);
 				} );

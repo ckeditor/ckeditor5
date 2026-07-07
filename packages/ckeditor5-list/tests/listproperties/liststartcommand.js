@@ -187,7 +187,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {start:5}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# 1.[] {start:5}' ] ) );
 		} );
 
 		it( 'should set the `listStart` attribute for non-collapsed selection', () => {
@@ -195,7 +195,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# [1.] {start:5}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# [1.] {start:5}' ] ) );
 		} );
 
 		it( 'should set the `listStart` attribute for all the same list items (collapsed selection)', () => {
@@ -207,7 +207,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1. {start:5}
 				# 2.[]
 				# 3.
@@ -226,7 +226,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1.[] {start:5}
 				# 2.
 				  # 2.1. {start:3}
@@ -245,7 +245,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# Foo. {start:5}
 				# [<blockWidget></blockWidget>]
 				# Bar.
@@ -264,7 +264,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1. {start:1}
 				# 2.
 				  # 2.1.[] {start:5}
@@ -284,7 +284,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				Foo.
 				# 1.[] {start:5}
 				# 2.
@@ -302,7 +302,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				Foo.
 				# 1.[] {start:5}
 				# 2.
@@ -323,7 +323,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1. {start:5}
 				# 2a.
 				  [2b.
@@ -344,7 +344,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 5 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1. {start:5}
 				# 2.
 				  [3].
@@ -384,7 +384,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 7 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1. {start:7}
 				# [2.
 				  # 2.1. {start:7}
@@ -402,7 +402,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {start:1}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# 1.[] {start:1}' ] ) );
 		} );
 
 		it( 'should use `1` value if not specified (passed an empty object)', () => {
@@ -410,7 +410,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( {} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {start:1}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# 1.[] {start:1}' ] ) );
 		} );
 
 		it( 'should allow 0 as start index', () => {
@@ -418,7 +418,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 0 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {start:0}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# 1.[] {start:0}' ] ) );
 		} );
 
 		it( 'should set start index to 1 if attempted to set a negative number', () => {
@@ -426,7 +426,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: -2 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {start:1}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# 1.[] {start:1}' ] ) );
 		} );
 
 		it( 'should set the `listStart` attribute for collapsed selection (listType: customNumbered)', () => {
@@ -434,7 +434,7 @@ describe( 'ListStartCommand', () => {
 
 			listStartCommand.execute( { startIndex: 6 } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a" listStart="6" listType="customNumbered">foo[]</paragraph>'
 			);
 		} );

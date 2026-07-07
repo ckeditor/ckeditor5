@@ -128,7 +128,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<strong>foo</strong>' +
@@ -164,7 +164,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<strong>foo</strong>' +
@@ -203,7 +203,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<p>' +
@@ -238,7 +238,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<blockquote>' +
@@ -268,7 +268,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<h2>' +
@@ -292,7 +292,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>foo</li>' +
 				'</ul>'
@@ -335,7 +335,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<figure class="table">' +
@@ -374,7 +374,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<strong>foo</strong>' +
@@ -394,7 +394,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>'
@@ -410,7 +410,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ol>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listType="numbered">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>'
@@ -426,7 +426,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>'
@@ -445,7 +445,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'<p class="ck-list-marker-bold">baz</p>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>' +
@@ -467,7 +467,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemBold="true" listItemId="a01" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>' +
@@ -491,7 +491,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>' +
@@ -512,7 +512,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<blockQuote listIndent="0" listItemBold="true" listItemId="a00" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text bold="true">foo</$text>' +
@@ -532,7 +532,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<heading1 listIndent="0" listItemBold="true" listItemId="a00" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</heading1>'
@@ -559,7 +559,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<table listIndent="0" listItemBold="true" listItemId="a00" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -587,7 +587,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>'
@@ -675,7 +675,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>' +
 						'<p>' +
@@ -723,7 +723,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>' +
 						'<p>' +

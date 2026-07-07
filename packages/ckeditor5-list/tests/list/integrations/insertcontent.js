@@ -1008,7 +1008,7 @@ describe( 'Inserting widgets in document lists', () => {
 			const expectedModel = '<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>' +
 			'<imageBlock listIndent="0" listItemId="000" listType="bulleted" src=""></imageBlock>';
 
-			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).toEqualMarkup( expectedModel );
 		} );
 
 		it( 'should insert a paragraph after an image block as a second block', () => {
@@ -1021,7 +1021,7 @@ describe( 'Inserting widgets in document lists', () => {
 			const expectedModel = '<imageBlock listIndent="0" listItemId="000" listType="bulleted" src=""></imageBlock>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>';
 
-			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).toEqualMarkup( expectedModel );
 		} );
 
 		it( 'should insert a paragraph before an image block as a second block of a list item', () => {
@@ -1036,7 +1036,7 @@ describe( 'Inserting widgets in document lists', () => {
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>' +
 			'<imageBlock listIndent="0" listItemId="000" listType="bulleted" src=""></imageBlock>';
 
-			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).toEqualMarkup( expectedModel );
 		} );
 
 		it( 'should insert a paragraph after an image block as a third block of a list item', () => {
@@ -1051,7 +1051,7 @@ describe( 'Inserting widgets in document lists', () => {
 			'<imageBlock listIndent="0" listItemId="000" listType="bulleted" src=""></imageBlock>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>';
 
-			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).toEqualMarkup( expectedModel );
 		} );
 
 		it( 'should insert a paragraph before an image block in and indented list item', () => {
@@ -1066,7 +1066,7 @@ describe( 'Inserting widgets in document lists', () => {
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]</paragraph>' +
 			'<imageBlock listIndent="1" listItemId="001" listType="bulleted" src=""></imageBlock>';
 
-			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).toEqualMarkup( expectedModel );
 		} );
 
 		it( 'should insert a paragraph after an image block in and indented list item', () => {
@@ -1081,7 +1081,7 @@ describe( 'Inserting widgets in document lists', () => {
 			'<imageBlock listIndent="1" listItemId="001" listType="bulleted" src=""></imageBlock>' +
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]</paragraph>';
 
-			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).toEqualMarkup( expectedModel );
 		} );
 	} );
 
@@ -1098,6 +1098,6 @@ describe( 'Inserting widgets in document lists', () => {
 			expectedModel = modelList( expected );
 		}
 
-		expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
+		expect( _getModelData( model ) ).toEqualMarkup( expectedModel );
 	}
 } );

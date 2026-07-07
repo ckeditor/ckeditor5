@@ -390,7 +390,7 @@ describe( 'ListEditing', () => {
 					writer.insert( _parseModel( item, model.schema ), modelRoot, 1 );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( output );
 			} );
 		} );
 
@@ -667,7 +667,7 @@ describe( 'ListEditing', () => {
 					writer.removeAttribute( 'listType', element );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( expectedModel );
 			} );
 
 			it( 'add list attributes', () => {
@@ -699,7 +699,7 @@ describe( 'ListEditing', () => {
 					writer.setAttribute( 'listIndent', 2, element.nextSibling );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( expectedModel );
 			} );
 
 			it( 'middle block indent', () => {
@@ -720,7 +720,7 @@ describe( 'ListEditing', () => {
 					writer.setAttribute( 'listIndent', 1, element );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( expectedModel );
 			} );
 
 			it( 'middle blocks indent', () => {
@@ -744,7 +744,7 @@ describe( 'ListEditing', () => {
 					}
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( expectedModel );
 			} );
 
 			it( 'middle block outdent', () => {
@@ -765,7 +765,7 @@ describe( 'ListEditing', () => {
 					writer.setAttribute( 'listIndent', 0, element );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( expectedModel );
 			} );
 		} );
 	} );
@@ -797,7 +797,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			* <paragraph someFoo="123">bar</paragraph>
 		` ) );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 			'<ul data-foo="123">' +
 				'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'<li><span class="ck-list-bogus-paragraph">bar</span></li>' +
@@ -830,7 +830,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			* <paragraph someFoo="321">bar</paragraph>
 		` ) );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 			'<ul>' +
 				'<li data-foo="123"><span class="ck-list-bogus-paragraph" data-bar="123">foo</span></li>' +
 				'<li data-foo="321"><span class="ck-list-bogus-paragraph" data-bar="321">bar</span></li>' +
@@ -864,7 +864,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			* <paragraph someFoo="321">bar</paragraph>
 		` ) );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 			'<ul>' +
 				'<li data-foo="123"><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'<li data-foo="321"><span class="ck-list-bogus-paragraph">bar</span></li>' +
@@ -897,7 +897,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			* <paragraph someFoo="321">bar</paragraph>
 		` ) );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 			'<ul>' +
 				'<li data-foo="123"><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'<li data-foo="321"><span class="ck-list-bogus-paragraph">bar</span></li>' +
@@ -928,7 +928,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 		` ) );
 
 		expect( setAttributeOnDowncast ).toHaveBeenCalledTimes( 2 );
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 			'<ul>' +
 				'<li data-foo="123-paragraph"><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'<li data-foo="321-paragraph"><span class="ck-list-bogus-paragraph">bar</span></li>' +
@@ -955,7 +955,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			* <paragraph someFoo="321">bar</paragraph>
 		` ) );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 			'<ul>' +
 				'<li data-foo="123"><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'<li data-foo="321"><span class="ck-list-bogus-paragraph">bar</span></li>' +
@@ -990,14 +990,14 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					* <paragraph someFoo="321">bar</paragraph>
 				` ) );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 					'<ul>' +
 						'<li><input type="checkbox" value="123"></input><span class="ck-list-bogus-paragraph">foo</span></li>' +
 						'<li><input type="checkbox" value="321"></input><span class="ck-list-bogus-paragraph">bar</span></li>' +
 					'</ul>'
 				);
 
-				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
 						'<li><input type="checkbox" value="123" disabled="disabled">foo</li>' +
 						'<li><input type="checkbox" value="321" disabled="disabled">bar</li>' +
@@ -1011,7 +1011,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					  <paragraph someFoo="321">bar</paragraph>
 				` ) );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 					'<ul>' +
 						'<li>' +
 							'<input type="checkbox" value="123"></input>' +
@@ -1021,7 +1021,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
 						'<li>' +
 							'<input type="checkbox" value="123" disabled="disabled">' +
@@ -1077,7 +1077,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					* <paragraph someFoo="321">bar</paragraph>
 				` ) );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 					'<ul>' +
 						'<li>' +
 							'<span class="label">' +
@@ -1094,7 +1094,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +
@@ -1118,7 +1118,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					  <paragraph someFoo="321">bar</paragraph>
 				` ) );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 					'<ul>' +
 						'<li>' +
 							'<span class="label">' +
@@ -1130,7 +1130,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +
@@ -1148,7 +1148,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					* <heading1 someFoo="123">foo</heading1>
 				` ) );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 					'<ul>' +
 						'<li>' +
 							'<span class="label">' +
@@ -1159,7 +1159,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +

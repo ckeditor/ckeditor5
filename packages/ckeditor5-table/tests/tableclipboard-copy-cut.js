@@ -382,7 +382,7 @@ describe( 'table clipboard', () => {
 				preventDefault: vi.fn()
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true }, '02' ],
 				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true }, '12' ],
 				[ '20', '21', '22' ]
@@ -404,7 +404,7 @@ describe( 'table clipboard', () => {
 				preventDefault: vi.fn()
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '', '02' ],
 				[ '', '[]', '12' ],
 				[ '20', '21', '22' ]
@@ -451,7 +451,7 @@ describe( 'table clipboard', () => {
 			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( data.dataTransfer.getData( 'text/html' ) ).toBeUndefined();
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '22' ]
