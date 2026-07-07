@@ -5,7 +5,7 @@ meta-description: Customize text appearance in CKEditor 5 with font family, size
 category: features
 ---
 
-The font feature lets you change font family, size, and color (including background color).
+The font feature lets you change the font family, size, color, and background color. These are four separate plugins, so you can enable only the ones you need.
 
 ## Demo
 
