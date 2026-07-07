@@ -34,6 +34,13 @@ const FEATURE_BATCH_SIZES = [
 	15
 ];
 
+// The aggregate packages provide no tests for the modules they re-export, so the test wrapper
+// (`scripts/test.mjs`) always runs their plain `test` script and no coverage report is produced.
+const AGGREGATE_PACKAGES = [
+	'ckeditor5',
+	'ckeditor5-premium-features'
+];
+
 const FRAMEWORK_PACKAGES = [
 	'ckeditor5-clipboard',
 	'ckeditor5-core',
@@ -286,11 +293,15 @@ function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
 		//
 		// The lcov report contains repository-relative `SF:` paths (`createVitestConfig()` sets the
 		// reporter's `projectRoot`), so per-package reports can be concatenated verbatim.
+		//
+		// The aggregate packages never produce a coverage report, so their steps skip
+		// the coverage flag and the report concatenation.
+		const collectCoverage = checkCoverage && !AGGREGATE_PACKAGES.includes( packageName );
 		const testCommand = [
 			'pnpm run test --attempts 3',
-			checkCoverage ? '-c' : null,
+			collectCoverage ? '-c' : null,
 			`-f ${ packageName }`,
-			coverageFile ? `&& cat packages/${ packageName }/coverage/lcov.info >> ${ coverageFile }` : null
+			collectCoverage && coverageFile ? `&& cat packages/${ packageName }/coverage/lcov.info >> ${ coverageFile }` : null
 		].filter( Boolean ).join( ' ' );
 
 		return {
