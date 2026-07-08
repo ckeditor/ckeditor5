@@ -9,7 +9,7 @@ modified_at: 2026-05-26
 
 # Lists editing behavior
 
-This article describes the functionality and behaviors of lists in CKEditor&nbsp;5.
+This article explains how lists behave in CKEditor&nbsp;5 and the options for configuring them. It covers what content a list item can hold, how to nest and indent items, and how to enable skip-level lists. It also explains how to edit lists with the keyboard and how adjacent lists merge.
 
 ## Block lists
 
