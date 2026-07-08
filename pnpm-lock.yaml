@@ -38,8 +38,8 @@ importers:
         specifier: ^7.23.3
         version: 7.29.3
       '@ckbox/uploader':
-        specifier: 2.12.0
-        version: 2.12.0(@types/node@25.9.1)
+        specifier: 2.13.0
+        version: 2.13.0(@types/node@25.9.1)
       '@ckeditor/ckeditor5-dev-build-tools':
         specifier: ^57.0.0-alpha.0
         version: 57.0.0-alpha.0(postcss@8.5.16)(rollup@4.60.4)
@@ -107,8 +107,8 @@ importers:
         specifier: ^5.0.0
         version: 5.6.2
       ckbox:
-        specifier: 2.12.0
-        version: 2.12.0(@types/node@25.9.1)
+        specifier: 2.13.0
+        version: 2.13.0(@types/node@25.9.1)
       date-fns:
         specifier: ^4.0.0
         version: 4.3.0
@@ -4863,24 +4863,24 @@ packages:
   '@chevrotain/types@11.1.2':
     resolution: {integrity: sha512-U+HFai5+zmJCkK86QsaJtoITlboZHBqrVketcO2ROv865xfCMSFpELQoz1GkX5GzME8pTa+3kbKrZHQtI0gdbw==}
 
-  '@ckbox/components@2.12.0':
-    resolution: {integrity: sha512-EhL2l5ReT731qSuHFOr5dokJYZ9ADWPzl4Zeehl+KVcKuJpzfx1VEGk9qoYkhk2wNNJnnrhRauN9nWELugWUig==}
+  '@ckbox/components@2.13.0':
+    resolution: {integrity: sha512-cpizAZmtVR+vttCRdWUVyavJN3hiQbNefj5ilRDeLhW2GeaR5b7cWscs7tQAQI8FJ+7oCOGW8uKQfGwdYhkSsg==}
     peerDependencies:
       react: ^19
       react-dom: ^19
 
-  '@ckbox/core@2.12.0':
-    resolution: {integrity: sha512-U9y91/PWmVY3wYlQxBVywME2WmLur0xSGRw/bSM+FYTriHlziPzcxPc6JJWY4QHvuk7ZSNUAcsLzyifqRotklw==}
+  '@ckbox/core@2.13.0':
+    resolution: {integrity: sha512-ogonCakCNz+cUdJRYkDjBI9kUcrty1NGTgM+yp3EPl1yYe9sIVqm0dx5pXoijPd3KttqeJdcINiV+vD/l+31xg==}
     peerDependencies:
       react: ^19
 
-  '@ckbox/i18n@2.12.0':
-    resolution: {integrity: sha512-2HJ6iPWJgeJM8oezB0b9V79oGFT+XkMGk6malcfJKK8GrmrvdAXblUQMGrl7pMYMAUCRrM2i/YwpZthSJXn/RA==}
+  '@ckbox/i18n@2.13.0':
+    resolution: {integrity: sha512-8x8qhGAwmiARUmPym/96kQEXNsx4xaCKJAVVHEufB4myMIUesqFlzuxGlrAr/wU29UwogotU+wqgeE1pzX05iA==}
     peerDependencies:
       react: ^19
 
-  '@ckbox/uploader@2.12.0':
-    resolution: {integrity: sha512-MgeimgEUAdgqhRYBQBf3P5dsXGb+kLy6QPJZcyGPgWX8N4AmW+8t4pGHoBBlS1GswS0tFVA/7rM7CwD/g//c9Q==}
+  '@ckbox/uploader@2.13.0':
+    resolution: {integrity: sha512-VmQ/yZtw0P7PeFJ+TWS19FOC8XhwnUkIBPGtCuBJu1WUKDED7Yc95SxxlJFn+XXr0y0PWKM/N6jIpL7Ujtg7zA==}
 
   '@ckeditor/ckeditor5-dev-build-tools@57.0.0-alpha.0':
     resolution: {integrity: sha512-ugKsqtR7cMlJII046u6trKcj8FQcRrOKETLqV4DbpItylANecCkFg8y/+nZ/ipvS1Q6SHtb/U3rkFboNgK6Hrw==}
@@ -7395,8 +7395,8 @@ packages:
     peerDependencies:
       devtools-protocol: '*'
 
-  ckbox@2.12.0:
-    resolution: {integrity: sha512-CbABQiE3YxdpxK3o/L+39OS7mkjb7IsQd5kWyUlm3VqMnLcHhnM7RHJ7zOpRSu8GbsSEZRcYPbQr0IbXBceqjA==}
+  ckbox@2.13.0:
+    resolution: {integrity: sha512-HzC/s7sLPjEZu8WJuoE/FVSpQXN19RjyM5DP4ERpXip41LJE9Dd0p9VvN/l49YfCpmFj5yomwsWPnJR7f/8Smg==}
 
   cli-columns@4.0.0:
     resolution: {integrity: sha512-XW2Vg+w+L9on9wtwKpyzluIPCWXjaBahI7mTcYjx+BVIYD9c3yqcv/yKC7CmdCZat4rq2yiE1UMSJC5ivKfMtQ==}
@@ -12320,7 +12320,7 @@ snapshots:
 
   '@chevrotain/types@11.1.2': {}
 
-  '@ckbox/components@2.12.0(@types/node@25.9.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@ckbox/components@2.13.0(@types/node@25.9.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@popperjs/core': 2.11.8
       '@types/react-transition-group': 4.4.12(@types/react@19.2.15)
@@ -12342,10 +12342,10 @@ snapshots:
       - '@types/node'
       - '@types/react'
 
-  '@ckbox/core@2.12.0(@types/node@25.9.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@ckbox/core@2.13.0(@types/node@25.9.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
-      '@ckbox/components': 2.12.0(@types/node@25.9.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@ckbox/i18n': 2.12.0(react@19.2.6)
+      '@ckbox/components': 2.13.0(@types/node@25.9.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@ckbox/i18n': 2.13.0(react@19.2.6)
       '@tanstack/react-query': 5.100.14(react@19.2.6)
       crypto-js: 4.2.0
       lodash: 4.18.1
@@ -12359,15 +12359,15 @@ snapshots:
       - '@types/react'
       - react-dom
 
-  '@ckbox/i18n@2.12.0(react@19.2.6)':
+  '@ckbox/i18n@2.13.0(react@19.2.6)':
     dependencies:
       react: 19.2.6
       sprintf-js: 1.1.3
       tslib: 2.8.1
 
-  '@ckbox/uploader@2.12.0(@types/node@25.9.1)':
+  '@ckbox/uploader@2.13.0(@types/node@25.9.1)':
     dependencies:
-      '@ckbox/core': 2.12.0(@types/node@25.9.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@ckbox/core': 2.13.0(@types/node@25.9.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@types/react': 19.2.15
       '@types/react-dom': 19.2.3(@types/react@19.2.15)
       react: 19.2.6
@@ -14797,9 +14797,9 @@ snapshots:
       mitt: 3.0.1
       zod: 3.25.76
 
-  ckbox@2.12.0(@types/node@25.9.1):
+  ckbox@2.13.0(@types/node@25.9.1):
     dependencies:
-      '@ckbox/core': 2.12.0(@types/node@25.9.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@ckbox/core': 2.13.0(@types/node@25.9.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@types/react': 19.2.15
       '@types/react-dom': 19.2.3(@types/react@19.2.15)
       react: 19.2.6
