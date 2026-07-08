@@ -153,7 +153,7 @@ Adding translations to the editor can be done in three ways to satisfy various n
 - By [extending the global `window.CKEDITOR_TRANSLATIONS` object](#using-the-windowckeditor_translations-object).
 	This can be done before initiating the CKEditor&nbsp;5 editor instance.
 - By [creating `.po` files with translations](#creating-po-files) in the `lang/translations/` directory of the published package like other CKEditor&nbsp;5 packages do.
-	This option will be useful for third-party plugin creators as it allows bundling translations only for needed languages during the webpack compilation step.
+	This option will be useful for third-party plugin creators as it allows bundling translations only for needed languages during the build step.
 
 ### Using the `add()` function
 
@@ -237,10 +237,8 @@ msgid "Align left"
 msgstr "Alinear a la izquierda"
 ```
 
-<info-box warning>
-	Note that by default, the [CKEditor&nbsp;5 translations plugin](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations) is configured to parse only the CKEditor&nbsp;5 source code when looking for *localizable messages* and generating *translation assets*.
-
-	If you develop your own plugin outside the CKEditor&nbsp;5 ecosystem and localize it by creating *PO files*, you should override both the `sourceFilesPattern` and the `packageNamePattern` options to allow the CKEditor&nbsp;5 webpack plugin to analyze the code and find *messages* with corresponding translations. You should also mention these webpack plugin changes in your package README to make other users build the localized CKEditor&nbsp;5 editor with your plugin correctly. This obstacle may be simplified in the future when the localization feature gets more popular.
+<info-box>
+	If you develop your own plugin outside the CKEditor&nbsp;5 ecosystem, the easiest way to process the `.po` files and generate *translation assets* for your package is to use the {@link framework/development-tools/package-generator/using-package-generator package generator}. Its build setup handles the `lang/` directory, including translation synchronization.
 </info-box>
 
 To build and configure a localized editor, follow the steps from the {@link getting-started/setup/ui-language Setting the UI language guide}.
@@ -273,4 +271,3 @@ public getDefaultCommands() {
 ## Known limitations
 
 - Currently it is impossible to change the chosen editor's language at runtime without destroying the editor.
-- Currently it is impossible to add more than one language to the bundle using the CKEditor&nbsp;5 webpack plugin. In case where multiple *translation assets* should be added to the application, they should be added using the `<script>` tags or imports to the generated *translation assets*.
