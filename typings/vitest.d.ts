@@ -5,11 +5,10 @@
 
 import 'vitest';
 
-// Registers the types of the custom matchers added by `test_setup.js`, since no file included
-// in the TypeScript program imports them. The augmentation must be declared here (instead of
-// relying on the declaration shipped with `@ckeditor/ckeditor5-dev-tests`), so that it binds
-// to the `vitest` instance resolved by this repository — with a workspace-linked development
-// checkout of `ckeditor5-dev`, the shipped declaration would bind to a different copy.
+// Registers the types of the custom matchers added by `scripts/vitest/test_setup.mjs`, since
+// no file included in the TypeScript program imports them. The matchers themselves are
+// implemented in the `scripts/vitest/` directory, outside of the TypeScript program, so their
+// types must be maintained here manually.
 declare module 'vitest' {
 	interface Matchers<T = any> {
 

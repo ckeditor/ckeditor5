@@ -4,7 +4,7 @@
  */
 
 import { expect } from 'vitest';
-import { toEqualMarkup } from '@ckeditor/ckeditor5-dev-tests';
+import { toEqualMarkup } from './matchers.mjs';
 
 globalThis.CKEDITOR_GLOBAL_LICENSE_KEY = 'GPL';
 

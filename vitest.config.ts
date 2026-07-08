@@ -89,7 +89,7 @@ export function createVitestConfig( packageDir: string, options: PackageTestOpti
 					'**/manual'
 				],
 				setupFiles: [
-					resolve( REPO_ROOT, 'test_setup.js' )
+					resolve( REPO_ROOT, 'scripts', 'vitest', 'test_setup.mjs' )
 				],
 				testTimeout: 5_000,
 

@@ -41,37 +41,34 @@ importers:
         specifier: 2.13.0
         version: 2.13.0(@types/node@25.9.1)
       '@ckeditor/ckeditor5-dev-build-tools':
-        specifier: ^57.0.0-alpha.1
+        specifier: ^57.0.0
         version: 57.0.0(postcss@8.5.16)(rollup@4.60.4)
       '@ckeditor/ckeditor5-dev-bump-year':
-        specifier: ^57.0.0-alpha.1
+        specifier: ^57.0.0
         version: 57.0.0
       '@ckeditor/ckeditor5-dev-changelog':
-        specifier: ^57.0.0-alpha.1
+        specifier: ^57.0.0
         version: 57.0.0(@types/node@25.9.1)
       '@ckeditor/ckeditor5-dev-ci':
-        specifier: ^57.0.0-alpha.1
+        specifier: ^57.0.0
         version: 57.0.0
       '@ckeditor/ckeditor5-dev-dependency-checker':
-        specifier: ^57.0.0-alpha.1
+        specifier: ^57.0.0
         version: 57.0.0
       '@ckeditor/ckeditor5-dev-docs':
-        specifier: ^57.0.0-alpha.1
+        specifier: ^57.0.0
         version: 57.0.0(typescript@5.5.4)
       '@ckeditor/ckeditor5-dev-license-checker':
-        specifier: ^57.0.0-alpha.1
+        specifier: ^57.0.0
         version: 57.0.0
       '@ckeditor/ckeditor5-dev-manual-server':
-        specifier: ^57.0.0-alpha.1
+        specifier: ^57.0.0
         version: 57.0.0(@types/node@25.9.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
       '@ckeditor/ckeditor5-dev-release-tools':
-        specifier: ^57.0.0-alpha.1
+        specifier: ^57.0.0
         version: 57.0.0(@types/node@25.9.1)
-      '@ckeditor/ckeditor5-dev-tests':
-        specifier: ^57.0.0-alpha.1
-        version: 57.0.0-alpha.1
       '@ckeditor/ckeditor5-dev-web-crawler':
-        specifier: ^57.0.0-alpha.1
+        specifier: ^57.0.0
         version: 57.0.0(typescript@5.5.4)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.1
@@ -142,6 +139,9 @@ importers:
       globals:
         specifier: ^16.1.0
         version: 16.5.0
+      js-beautify:
+        specifier: ^1.15.4
+        version: 1.15.4
       js-yaml:
         specifier: ^4.1.1
         version: 4.3.0
@@ -4923,10 +4923,6 @@ packages:
 
   '@ckeditor/ckeditor5-dev-release-tools@57.0.0':
     resolution: {integrity: sha512-q0tg7nZvxY9utS5BkYgX/80GfuLDcJadJZYUa+p1VUtmb7O8GMk7XcupdeeE3OpBuZgqHXvS5bkrKzm97NRh1w==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-tests@57.0.0-alpha.1':
-    resolution: {integrity: sha512-YYw9q0RFT4PUiTFpmcTaetyYZaWrgQX9DcM+k4mGE4voYnviS4kHOvj+lP6UnDNXhsVUm05GPu1ekHn9cHwrPg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-dev-utils@57.0.0':
@@ -12267,10 +12263,6 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
       - supports-color
-
-  '@ckeditor/ckeditor5-dev-tests@57.0.0-alpha.1':
-    dependencies:
-      js-beautify: 1.15.4
 
   '@ckeditor/ckeditor5-dev-utils@57.0.0':
     dependencies:
