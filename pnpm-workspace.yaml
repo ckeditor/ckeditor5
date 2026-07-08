@@ -2,7 +2,6 @@ packages:
   - packages/*
 
 allowBuilds:
-  '@ckeditor/ckeditor5-dev-tests': true
   '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/68116cca61fcc93c0026bd5499c9fd5e39391e03': true
   '@parcel/watcher': true
   '@swc/core': true

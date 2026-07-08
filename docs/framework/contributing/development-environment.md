@@ -53,29 +53,19 @@ pnpm install
 
 ## Running tests
 
-To run tests, you need to use the `test` and `manual` tasks.
+Automated tests are executed with the packages' own `test` scripts. The root `test` script translates a shorthand package selection into [pnpm filters](https://pnpm.io/filtering):
 
 ```bash
-pnpm run test --watch --coverage --source-map --files=engine
+pnpm run test -f engine
 ```
 
-or, shorter:
+This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckeditor5-engine) package's tests. To also generate the code coverage report, add the `--coverage` (alias `-c`) option.
 
-```bash
-pnpm run test -- -wcs --files=engine
-```
-
-This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckeditor5-engine) package's tests.
-
-**Note:** It is not possible to run tests of all packages with code coverage at once because the size of the project (the number of test files and source modules) exceeds webpack's capabilities (it runs out of memory).
-
-To create a server for manual tests use the `manual` task:
+To start a server for manual tests, use the `manual` task in the root of the repository:
 
 ```bash
 pnpm run manual
 ```
-
-To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and in most scenarios, you do not need to change it. The latter brings more languages to manual tests, which is helpful for example,when working with {@link getting-started/setup/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
 
 You can read more about the {@link framework/contributing/testing-environment Testing environment}.
 
