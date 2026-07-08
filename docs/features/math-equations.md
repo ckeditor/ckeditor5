@@ -8,7 +8,7 @@ badges: [ premium ]
 
 # Math equations and chemical formulas
 
-[MathType](http://www.wiris.com/en/mathtype) is a popular mathematical and science formula editor with classical and handwriting input modes. You can use it to create math equations or chemical formulas right inside the CKEditor&nbsp;5 content.
+You can add and edit mathematical equations and chemical formulas in CKEditor&nbsp;5 using [MathType](https://www.wiris.com/en/mathtype), a popular formula editor with classical and handwriting input modes.
 
 <info-box>
 	This is a premium add-on that is a part of CKEditor Custom Plan, and delivered by our partner, [Wiris](https://www.wiris.com/en/). [Choose the Custom Plan](https://ckeditor.com/pricing/) to enable it.
@@ -194,7 +194,7 @@ To install the PHP service, follow the steps below:
 
 To install the .NET service, follow the steps below:
 
-1. Download the [MathType Web Integration Services - Aspx](http://www.wiris.com/en/plugins/services/download) package.
+1. Download the [MathType Web Integration Services - Aspx](https://www.wiris.com/en/plugins/services/download) package.
 2. Copy the `generic_wiris/integration` folder into your project. In this example, it was assumed the services are located at `DOCUMENT_ROOT/aspx-services/`.
 3. Add `mathTypeParameters` to CKEditor&nbsp;5 with this configuration:
 
@@ -218,7 +218,7 @@ To install the .NET service, follow the steps below:
 
 To install the Ruby on Rails service, follow the steps below:
 
-1. Download the [MathType Web Integration Services - Ruby on Rails](http://www.wiris.com/en/plugins/services/download) package.
+1. Download the [MathType Web Integration Services - Ruby on Rails](https://www.wiris.com/en/plugins/services/download) package.
 2. Install the `wirispluginengine.gem` gem.
 
 	```bash
