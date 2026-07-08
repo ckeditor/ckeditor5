@@ -1,0 +1,242 @@
+<!doctype html>
+<head>
+	<title>Semanticmediaembed</title>
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"console-error": [ "<svg> attribute preserveAspectRatio", "transparent NaN" ]
+	}'
+	/>
+
+	<style>
+		input {
+			width: 500px;
+		}
+
+		body {
+			width: 700px;
+		}
+	</style>
+	<script type="module" src="./semanticmediaembed.js"></script>
+</head>
+
+<ck-manual-header>
+	<h2>Media Embed</h2>
+	<h3>Embed the media</h3>
+	<ol>
+		<li>Put an URL in the clipboard,</li>
+		<li>Use the button in the dropdown or paste the URL directly in the editor,</li>
+		<li>Insert the media,</li>
+		<li>Check if media was inserted and is selected.</li>
+	</ol>
+	<h3>Update the media</h3>
+	<ol>
+		<li>Put an URL in the clipboard,</li>
+		<li>Select some media,</li>
+		<li>Use the button in the dropdown,</li>
+		<li>Update the URL,</li>
+		<li>Check if media was updated and remains selected.</li>
+	</ol>
+	<h3>Data output</h3>
+	<ol>
+		<li>Call <code>editor.getData()</code>,</li>
+		<li>
+			All the media should be represented without previews, using only the
+			<code>&#x3C;oembed></code> tag.
+		</li>
+	</ol>
+	<h3>URL validation</h3>
+	<h4>Invalid</h4>
+	<ol>
+		<li>In the previous scenarios try using a non–media URL,</li>
+		<li>The error should be displayed next to the URL field,</li>
+		<li>Nothing should be inserted/updated.</li>
+	</ol>
+	<h4>Empty</h4>
+	<ol>
+		<li>In the previous scenarios try using an empty URL,</li>
+		<li>The error should be displayed next to the URL field,</li>
+		<li>Nothing should be inserted/updated.</li>
+	</ol>
+	<h3>Copy&#x26;Paste</h3>
+	<ol>
+		<li>Play with media copy&#x26;paste.</li>
+		<li>It should work just like images or any other widget.</li>
+	</ol>
+	<h3>Open media in new tab</h3>
+	<ol>
+		<li>Locate any generic media in the content,</li>
+		<li>Hover the URL in the content (the tooltip should show up),</li>
+		<li>Click the URL,</li>
+		<li>A new browser tab should open with the media URL.</li>
+	</ol>
+	<h3>Resize handles (semantic mode)</h3>
+	<ol>
+		<li>Click on a video embed (YouTube, Vimeo),</li>
+		<li>Four resize handles should appear at the corners of the media wrapper,</li>
+		<li>Drag a corner handle to resize — a size label should appear during the drag,</li>
+		<li>The resized media should stay centered,</li>
+		<li>Both left and right handles should resize symmetrically,</li>
+		<li>
+			Release the handle — the new width should persist (check <code>editor.getData()</code>),
+		</li>
+		<li>
+			The data output <code>&#x3C;figure></code> should include
+			<code>style="width: …"</code> and class <code>media_resized</code>,
+		</li>
+		<li>The inner element should remain <code>&#x3C;oembed></code> (not a preview div),</li>
+		<li>Undo (<code>Ctrl+Z</code>) should restore the original size.</li>
+	</ol>
+	<h3>Resize minimum width (semantic mode)</h3>
+	<ol>
+		<li>Drag a resize handle to shrink the embed as far as possible,</li>
+		<li>
+			The embed should floor at the base <code>.media { min-width: 15em }</code> (~240px).
+			Handles should remain reachable at that floor.
+		</li>
+	</ol>
+	<h3>Spotify default size and min-width (semantic mode)</h3>
+	<ol>
+		<li>
+			A freshly inserted (or pre-existing, never-resized) Spotify embed should render at its
+			default 300px width (height ~378px from the 100/126 aspect ratio),
+		</li>
+		<li>
+			The figure has <code>min-width: 300px</code> so the resize handles cannot drag it below
+			the default width (Spotify's player breaks layout below ~280px).
+		</li>
+	</ol>
+	<h3>Resize upcast (semantic mode)</h3>
+	<ol>
+		<li>The "Pre-resized media (50%)" section should load at 50% width, centered.</li>
+	</ol>
+	<h3>Resize for generic media, no preview (semantic mode)</h3>
+	<ol>
+		<li>Click a generic media (Twitter, Flickr, Instagram, etc.),</li>
+		<li>Resize handles should appear around the placeholder,</li>
+		<li>Dragging should change the figure width,</li>
+		<li>The placeholder should scale within the resized figure.</li>
+	</ol>
+	<h3>Resize + URL change (semantic mode)</h3>
+	<ol>
+		<li>Resize a media embed to ~50%,</li>
+		<li>Change the media URL (select it, click the media embed button, enter a new URL),</li>
+		<li>The new media should retain the 50% width.</li>
+	</ol>
+	<h3>Aspect ratio in the editing view (semantic mode)</h3>
+	<ol>
+		<li>Inspect a YouTube or Vimeo iframe in the DOM,</li>
+		<li>
+			The iframe should be wrapped in a plain <code>&#x3C;div></code> (no
+			<code>padding-bottom</code> or <code>position</code> styles on the wrapper),
+		</li>
+		<li>
+			The iframe's inline CSS should include <code>aspect-ratio: 16 / 9</code> and
+			<code>height: auto</code>,
+		</li>
+		<li>Resizing the embed should preserve the 16:9 proportion.</li>
+	</ol>
+	<h3>Alignment classes survive in semantic data output</h3>
+	<ol>
+		<li>
+			Insert a media embed and apply each alignment in turn (use the
+			<strong>Wrap text</strong> and <strong>Break text</strong> dropdowns),
+		</li>
+		<li>Call <code>editor.getData()</code> after each application,</li>
+		<li>
+			Output <code>&#x3C;figure></code> should include the matching class for
+			<code>alignLeft</code
+			>/<code>alignBlockLeft</code>/<code>alignBlockRight</code>/<code>alignRight</code>:
+			<ul>
+				<li><code>media-style-align-left</code> (float)</li>
+				<li><code>media-style-block-align-left</code> (block)</li>
+				<li><code>media-style-block-align-right</code> (block)</li>
+				<li><code>media-style-align-right</code> (float)</li>
+			</ul>
+		</li>
+		<li>
+			For <code>alignCenter</code> (default), the output <code>&#x3C;figure></code> should be
+			<code>class="media"</code> only — no alignment class.
+		</li>
+		<li>
+			The inner element should remain <code>&#x3C;oembed url="…"></code> — alignment changes
+			the figure class, not the inner element.
+		</li>
+	</ol>
+	<h3>Resize + alignment in semantic mode</h3>
+	<ol>
+		<li>
+			Resize a media to ~50% then apply <code>alignLeft</code> from the
+			<strong>Wrap text</strong> dropdown,
+		</li>
+		<li>
+			Output <code>&#x3C;figure></code> should include both <code>media_resized</code> (with
+			<code>style="width: 50%"</code>) and <code>media-style-align-left</code>,
+		</li>
+		<li>The inner <code>&#x3C;oembed></code> is unchanged.</li>
+	</ol>
+</ck-manual-header>
+
+<h2>Example URLs</h2>
+<ul>
+	<li><input type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4" /></li>
+	<li>
+		<input
+			type="text"
+			value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA"
+		/>
+	</li>
+</ul>
+
+<h2>Test editor</h2>
+<div id="editor">
+	<h2>Media with previews</h2>
+
+	<figure class="media">
+		<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" />
+	</figure>
+
+	<figure class="media">
+		<oembed url="https://vimeo.com/1084537" />
+	</figure>
+
+	<figure class="media">
+		<oembed
+			url="https://open.spotify.com/artist/7GaxyUddsPok8BuhxN6OUW?si=LM7Q50vqQ4-NYnAIcMTNuQ"
+		/>
+	</figure>
+
+	<h2>Pre-resized media (50%)</h2>
+
+	<figure class="media media_resized" style="width: 50%">
+		<oembed url="https://www.youtube.com/watch?v=H08tGjXNHO4" />
+	</figure>
+
+	<h2>Generic media</h2>
+
+	<figure class="media">
+		<oembed url="https://twitter.com/ckeditor/status/1021777799844126720" />
+	</figure>
+
+	<figure class="media">
+		<oembed url="https://www.flickr.com/photos/nasahqphoto/28396473968/" />
+	</figure>
+
+	<figure class="media">
+		<oembed url="https://www.instagram.com/p/BmMZgokAGGQ/?taken-by=nasa" />
+	</figure>
+
+	<figure class="media">
+		<oembed
+			url="https://www.google.com/maps/place/Poland/@51.9537505,19.1343786,6z/data=!3m1!4b1!4m5!3m4!1s0x47009964a4640bbb:0x97573ca49cc55ea!8m2!3d51.919438!4d19.145136?hl=en"
+		/>
+	</figure>
+
+	<figure class="media">
+		<oembed url="https://www.facebook.com/ckeditor/posts/1885390224856207" />
+	</figure>
+
+	<figure class="media">
+		<oembed url="https://ckeditor.com" />
+	</figure>
+</div>

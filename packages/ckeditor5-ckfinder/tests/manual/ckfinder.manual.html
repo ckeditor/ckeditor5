@@ -1,0 +1,43 @@
+<!doctype html>
+<head>
+	<title>Ckfinder</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	/>
+	<script type="module" src="./ckfinder.js"></script>
+</head>
+
+<ck-manual-header>
+	<h3>CKFinder sample</h3>
+	<ol>
+		<li>Use the toolbar icon insert an image.</li>
+		<li>Use the toolbar icon insert link to a non-image file.</li>
+		<li>
+			Use the button below the editor to change opener method to "popup" and repeat steps 1-2.
+		</li>
+	</ol>
+</ck-manual-header>
+
+<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+
+<style>
+	/* CKFinder's modal base z-index is 9000. The manual test header renders its bar and panel at
+	 * z-index 99999/99998, so give the header host its own stacking context below 9000 to keep the
+	 * whole header (bar and panel) beneath the CKFinder modal during manual verification.
+	 */
+	ck-manual-header {
+		position: relative;
+		z-index: 8999;
+	}
+</style>
+
+<div id="editor">
+	<h2>CKFinder sample</h2>
+	<p>Use the toolbar icon to insert an image or link to a file to the content.</p>
+</div>
+
+<div style="margin-top: 1em">
+	CKFinder opener method: <span id="opener-method-label" style="font-weight: bold">modal</span> -
+	<button id="opener-method">Switch to popup</button>
+</div>

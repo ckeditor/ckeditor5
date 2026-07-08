@@ -1,0 +1,53 @@
+<!doctype html>
+<head>
+	<title>Ckbox</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://*.ckbox.io https://ckbox.cloud 'unsafe-inline' 'unsafe-eval'"
+	/>
+
+	<script src="https://cdn.ckbox.io/ckbox/2.13.0/ckbox.js"></script>
+	<script type="module" src="./ckbox.js"></script>
+</head>
+
+<ck-manual-header>
+	<h3>CKBox sample</h3>
+	<h2>Adding assets</h2>
+	<ol>
+		<li>
+			The model element representing the "<em>Example Link</em>" text node should have the
+			<code>[ckboxLinkId]</code> attribute with the value: <code>example-id-for-link</code>.
+		</li>
+		<li>
+			The model element representing the inline image should have the
+			<code>[ckboxImageId]</code> attribute with the value: <code>example-id-for-image</code>.
+		</li>
+		<li>Click the "Open file manager" icon to open the CKBox dialog.</li>
+		<li>Chose assets that you want to insert into the editor, then click "Choose".</li>
+		<li>
+			Selected assets should be inserted into the editor with the following rules:
+			<ul>
+				<li>
+					When adding a non-embeddable asset - a text node with URL pointing to that asset
+					should be created.
+				</li>
+				<li>When adding an embeddable asset - it should be visible in the editor.</li>
+			</ul>
+		</li>
+		<li>
+			Inserted assets should have the <code>[data-ckbox-resource-id]</code> attribute in the
+			data.
+		</li>
+	</ol>
+</ck-manual-header>
+
+<div id="editor">
+	<h2>CKBox sample</h2>
+	<p>
+		Use the toolbar icon to insert an image or link to a file to the content.
+		<img src="./sample.png" />
+	</p>
+	<p>
+		<a href="https://example.com" data-ckbox-resource-id="example-id-for-link">Example link</a>
+	</p>
+</div>

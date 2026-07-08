@@ -1,0 +1,596 @@
+<!doctype html>
+<head>
+	<title>All Features</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	/>
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"console-error": [ "<svg> attribute preserveAspectRatio", "transparent NaN" ]
+	}'
+	/>
+	<script type="module" src="./all-features.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>All features test</h1>
+	<h2>Toolbar</h2>
+	<p>
+		It should contain as many features as we developed. By resizing your viewport you can
+		observe whether grouping toolbar items work.
+	</p>
+	<hr />
+	<h2>Editor</h2>
+	<p>
+		There should be "three pages" with couple of sections per each page. Pages should be
+		separated by the page break feature.
+	</p>
+	<h3>First page</h3>
+	<p>
+		<strong>Lists in the table</strong> – In the table (2x3) in the second row should be 3 lists
+		(bulleted, numbered and todo). The styles for list item markers for unordered and ordered
+		list can be changed via the dropdown that opens when you click the arrow next to the
+		appropriate list button in the toolbar. There are 3 styles for unordered lists and 6 styles
+		for ordered lists.
+	</p>
+	<p>
+		<strong>Basic features overview</strong> - a few paragraphs of text (that contain text
+		formatted using basic styles feature), an image, and a blockquote.
+	</p>
+	<h3>Second page</h3>
+	<p>
+		<strong>Media with previews in the table</strong> - in the table (3x3), in the middle column
+		you should see a preview of attached media embed elements.
+	</p>
+	<p>
+		<strong>Code blocks in the table</strong> - in the table (4x3), in the second and fourth
+		columns should be visible code snippets.
+	</p>
+	<p>
+		<strong>Horizontal line</strong> - There is the <code>&#x3C;hr></code> in the source HTML.
+		It should be displayed in the editor.
+	</p>
+	<p>
+		<strong>Link images + Link decorators</strong> - in the table (3x2), there are a linked text
+		and two linked images that uses the manual decorators feature:
+	</p>
+	<ul>
+		<li>
+			Left column: the text with two decorators enabled: <code>Open in a new tab</code>,
+			<code>Downloadable</code>
+		</li>
+		<li>Middle column: an image with the caption that is a <code>Gallery link</code></li>
+		<li>
+			Right column: an image without the caption with enabled all decorators (listed above)
+		</li>
+	</ul>
+	<h3>Third page</h3>
+	<p><strong>HTML embed</strong> - there are 3 widgets with embedded HTML:</p>
+	<ul>
+		<li><code>video</code></li>
+		<li><code>details</code> and <code>summary</code></li>
+		<li><code>iframe</code></li>
+	</ul>
+	<p>The "previews in view" mode is enabled, which means that previews should be visible.</p>
+	<p><strong>Paste from Office</strong> - Copy &#x26; paste some content from Word.</p>
+	<p>
+		<strong>Text part language</strong> - There are 2 paragraphs with applied language: Spanish
+		with left-to-right direction and Arabic with right-to-left direction. Both should have
+		italic style. Play with the selection and the language dropdown.
+	</p>
+	<p>
+		<strong>HTML comments</strong> - There are 10 comments in this section: from
+		<code>C1</code> to <code>C10</code>. Open the source editing mode (or just call the
+		<code>editor.getData()</code>) and verify that they are present.
+	</p>
+	<hr />
+	<h2>Action buttons</h2>
+	<ul>
+		<li>Clear editor - calls <code>editor.setData( '' )</code></li>
+		<li>Open print preview - opens the print preview window</li>
+		<li>Turn on/off read-only mode - toggle read-only mode</li>
+	</ul>
+	<hr />
+	<h2>Console</h2>
+	<p>
+		Wordcount plugin logs into the console number of characters and words in the editor's data.
+	</p>
+	<hr />
+	<h2>Additional</h2>
+	<ul>
+		<li>Empty editor should display a placeholder: <code>'Type the content here!'</code></li>
+		<li>
+			Mention plugin is configured with an array of feed:
+			<code>[ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ],</code>
+		</li>
+		<li>ImageUpload uses EasyImage</li>
+		<li>Styles for printing preview are served by official docs</li>
+		<li>
+			The <code>SourceEditing</code> plugin should be disabled if there is at least one
+			pending action.
+		</li>
+	</ul>
+</ck-manual-header>
+
+<div style="margin-bottom: 10px">
+	<button type="button" id="clear-content">Clear editor</button>
+	<button type="button" id="print-data-action">Open print preview</button>
+	<button id="read-only">Turn on read-only mode</button>
+
+	<iframe id="print-data-container" aria-hidden="true" tabindex="-1"></iframe>
+</div>
+
+<div id="editor">
+	<h2>Lists in the table</h2>
+	<figure class="table">
+		<table
+			style="
+				width: 600px;
+				border-bottom: 2px dashed hsl(0, 0%, 60%);
+				border-left: 2px dashed hsl(0, 0%, 60%);
+				border-right: 2px dashed hsl(0, 0%, 60%);
+				border-top: 2px dashed hsl(0, 0%, 60%);
+			"
+		>
+			<tbody>
+				<tr>
+					<td style="text-align: center">
+						<span class="text-big" style="font-weight: bold">Bulleted list</span>
+					</td>
+					<td style="text-align: center">
+						<span class="text-big" style="font-weight: bold">Numbered list</span>
+					</td>
+					<td style="text-align: center">
+						<span class="text-big" style="font-weight: bold">To do list</span>
+					</td>
+				</tr>
+				<tr>
+					<td style="vertical-align: top; width: 33%">
+						<ul>
+							<li>UL List item 1</li>
+							<li>UL List item 2</li>
+						</ul>
+					</td>
+					<td style="vertical-align: top; width: 33%">
+						<ol>
+							<li>OL List item 1</li>
+							<li>OL List item 2</li>
+						</ol>
+					</td>
+					<td style="vertical-align: top; width: 33%">
+						<ul class="todo-list">
+							<li>
+								<label class="todo-list__label">
+									<input type="checkbox" />
+									<span class="todo-list__label__description">Foo</span>
+								</label>
+							</li>
+							<li>
+								<label class="todo-list__label">
+									<input type="checkbox" checked="checked" />
+									<span class="todo-list__label__description">Foo</span>
+								</label>
+							</li>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<h2><a id="basic-features-overview"></a>Basic features overview</h2>
+	<p>Lorem <b>ipsum dolor sit </b>amet, consectetur <i>adipisicing elit</i>.<sub>1</sub></p>
+	<h3>Basic styles</h3>
+	<p>
+		<a id="in-text-bookmark"></a>Ad alias, <s>architecto</s> culpa
+		<b><i>cumque</i></b> dignissimos <code>dolor eos incidunt ipsa itaque</code>
+		<u>laboriosam</u> magnam molestias nihil <i><u>numquam</u></i> odit quam, suscipit
+		<i><s>veritatis</s></i> voluptate voluptatum.<sup>2</sup>
+	</p>
+	<h3>Image</h3>
+	<figure class="image">
+		<img alt="bar" src="sample.jpg" />
+		<figcaption>Caption</figcaption>
+	</figure>
+	<h3>Blockquote</h3>
+	<blockquote>
+		<p>Quote</p>
+		<ul>
+			<li><a href="#">Quoted</a> UL List item 1</li>
+			<li>Quoted UL List item 2</li>
+		</ul>
+		<p>Quote</p>
+	</blockquote>
+
+	<div class="page-break" style="page-break-after: always">
+		<span style="display: none">&nbsp;</span>
+	</div>
+
+	<h2>Media with previews in the table</h2>
+	<figure class="table">
+		<table
+			style="
+				background-color: hsl(0, 0%, 90%);
+				border-bottom: 2px solid hsl(0, 0%, 0%);
+				border-left: 2px solid hsl(0, 0%, 0%);
+				border-right: 2px solid hsl(0, 0%, 0%);
+				border-top: 2px solid hsl(0, 0%, 0%);
+			"
+		>
+			<tbody>
+				<tr>
+					<td style="text-align: center">
+						<span class="text-big" style="font-weight: bold">Service</span>
+					</td>
+					<td style="text-align: center">
+						<span class="text-big" style="font-weight: bold">Preview</span>
+					</td>
+					<td style="text-align: center">
+						<span class="text-big" style="font-weight: bold">URL</span>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: center"><u>YouTube</u></td>
+					<td>
+						<figure class="media">
+							<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>
+						</figure>
+					</td>
+					<td>
+						<span class="text-small"
+							><a href="https://www.youtube.com/watch?v=ZVv7UMQPEWk"
+								>https://www.youtube.com/watch?v=ZVv7UMQPEWk</a
+							></span
+						>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: center"><u>Vimeo</u></td>
+					<td>
+						<figure class="media">
+							<oembed url="https://vimeo.com/1084537"></oembed>
+						</figure>
+					</td>
+					<td>
+						<span class="text-small"
+							><a href="https://vimeo.com/1084537">https://vimeo.com/1084537</a></span
+						>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<h2>Code blocks in the table</h2>
+	<figure class="table">
+		<table
+			style="
+				border-bottom: 2px dashed hsl(0, 0%, 60%);
+				border-left: 2px dashed hsl(0, 0%, 60%);
+				border-right: 2px dashed hsl(0, 0%, 60%);
+				border-top: 2px dashed hsl(0, 0%, 60%);
+			"
+		>
+			<tbody>
+				<tr>
+					<td style="text-align: center">
+						<span class="text-big" style="font-weight: bold">Language</span>
+					</td>
+					<td style="text-align: center">
+						<span class="text-big" style="font-weight: bold">Code snippet</span>
+					</td>
+					<td style="text-align: center">
+						<span class="text-big" style="font-weight: bold">Language</span>
+					</td>
+					<td style="text-align: center">
+						<span class="text-big" style="font-weight: bold">Code snippet</span>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: center; vertical-align: top">CSS</td>
+					<td style="vertical-align: top">
+						<pre><code class="language-css">body {
+	color: red;
+}
+
+p {
+	font-size: 10px;
+}</code></pre>
+					</td>
+					<td style="text-align: center; vertical-align: top">PHP</td>
+					<td style="vertical-align: top">
+						<pre><code class="language-php">&lt;?php
+
+function dump( array ...$args ) {
+	foreach ( $args as $item ) {
+		var_dump( $item );
+	}
+
+	die;
+}</code></pre>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: center; vertical-align: top">JavaScript</td>
+					<td style="vertical-align: top">
+						<pre><code class="language-javascript">function foo() {
+	console.log( 'indented using 1 tab' );
+}
+
+function bar() {
+    console.log( 'indented using spaces' );
+}</code></pre>
+					</td>
+					<td style="text-align: center; vertical-align: top">Plaintext</td>
+					<td style="vertical-align: top">
+						<pre><code class="language-plaintext">Plain text</code></pre>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<hr />
+
+	<h2>Link images + Link decorators</h2>
+
+	<table>
+		<tr>
+			<td>Linked text</td>
+			<td>Linked image (<code>figure > a > img</code>)</td>
+			<td>Linked image (<code>a > img</code>)</td>
+		</tr>
+		<tr>
+			<td>
+				<p>
+					<a
+						href="https://cksource.com"
+						target="_blank"
+						rel="noopener noreferrer"
+						download="download"
+						>https://cksource.com</a
+					>
+				</p>
+			</td>
+			<td>
+				<figure class="image">
+					<a class="gallery" href="https://cksource.com">
+						<img src="sample.jpg" alt="bar" />
+					</a>
+					<figcaption>Caption</figcaption>
+				</figure>
+			</td>
+			<td>
+				<a
+					class="gallery"
+					href="https://cksource.com"
+					target="_blank"
+					rel="noopener noreferrer"
+					download="download"
+				>
+					<img src="sample.jpg" alt="bar" />
+				</a>
+			</td>
+		</tr>
+	</table>
+
+	<div class="page-break" style="page-break-after: always">
+		<span style="display: none">&nbsp;</span>
+	</div>
+
+	<h2>HTML embed</h2>
+
+	<h3><code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code> tags as HTML snippet</h3>
+	<div class="raw-html-embed">
+		<details open>
+			<summary>Details</summary>
+			Something small enough to escape casual notice.
+		</details>
+	</div>
+
+	<h3><code>&lt;video&gt;</code> tag as HTML snippet</h3>
+	<div class="raw-html-embed">
+		<video width="320" height="240" controls>
+			<source src="sample.mp4" type="video/mp4" />
+			Your browser does not support the video tag.
+		</video>
+	</div>
+
+	<h3><code>&lt;iframe&gt;</code> tag as HTML snippet</h3>
+	<div class="raw-html-embed">
+		<iframe src="sample.txt"></iframe>
+	</div>
+
+	<h2>Paste from Office</h2>
+	<h3>Paste here:</h3>
+	<p></p>
+
+	<h2>Text part language</h2>
+	<p>
+		<span lang="es" dir="ltr">
+			<strong>Un lenguaje</strong> (del provenzal lenguatge y este del latín lingua) es un
+			sistema de comunicación estructurado para el que existe un contexto de uso y ciertos
+			principios combinatorios formales. Existen <strong>contextos</strong> tanto naturales
+			como artificiales.
+		</span>
+	</p>
+	<p>
+		<span lang="ar" dir="rtl">
+			اللغة نسق من الإشارات والرموز، يشكل أداة من أدوات المعرفة، وتعتبر اللغة أهم
+			<strong>وسائل</strong> التفاهم والاحتكاك بين أفراد امجتمع في
+			<strong>جميع</strong> ميادين الحياة. وبدون اللغة يتعذر نشاط الناس المعرفي.
+		</span>
+	</p>
+
+	<h2>HTML comments</h2>
+	<!-- C1 -->
+	<p><!-- C2 -->Paragraph<!-- C3 --></p>
+	<!-- C4 -->
+	<table>
+		<tr>
+			<td><!-- C5 -->Table cell #1<!-- C6 --></td>
+			<td>Table cell #2</td>
+			<td>Table cell #3</td>
+		</tr>
+	</table>
+	<ol>
+		<li><!-- C7 -->Item #1<!-- C8 --></li>
+		<li>Item #2</li>
+		<li>
+			Item #3
+			<ul>
+				<li><!-- C9 -->Nested item #3.1<!-- C10 --></li>
+				<li>Nested item #3.2</li>
+				<li>Nested item #3.3</li>
+			</ul>
+		</li>
+	</ol>
+</div>
+
+<style>
+	@import url("https://fonts.googleapis.com/css2?family=~&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap");
+
+	#print-data-container {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		border: 0;
+		padding: 0;
+		white-space: nowrap;
+		clip-path: inset(100%);
+		clip: rect(0 0 0 0);
+		overflow: hidden;
+	}
+
+	/* Styles necessary for the Styles dropdown: */
+
+	.ck.ck-content h3.category {
+		font-family: "Oswald";
+		font-size: 20px;
+		font-weight: bold;
+		color: #d1d1d1;
+		letter-spacing: 10px;
+		margin: 0;
+		padding: 0;
+	}
+
+	.ck.ck-content h2.document-title {
+		font-family: "Oswald";
+		font-size: 50px;
+		font-weight: bold;
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+
+	.ck.ck-content h3.document-subtitle {
+		font-size: 20px;
+		color: #e91e63;
+		margin: 0 0 1em;
+		font-weight: normal;
+		padding: 0;
+	}
+
+	.ck.ck-content p.info-box {
+		--background-size: 30px;
+		--background-color: #e91e63;
+		padding: 1.2em 2em;
+		border: 1px solid var(--background-color);
+		background:
+			linear-gradient(
+				135deg,
+				var(--background-color) 0%,
+				var(--background-color) var(--background-size),
+				transparent var(--background-size)
+			),
+			linear-gradient(
+				135deg,
+				transparent calc(100% - var(--background-size)),
+				var(--background-color) calc(100% - var(--background-size)),
+				var(--background-color)
+			);
+		border-radius: 10px;
+		margin: 1.5em 2em;
+		box-shadow: 5px 5px 0 #ffe6ef;
+	}
+
+	.ck.ck-content blockquote.side-quote {
+		font-family: "Oswald";
+		font-style: normal;
+		float: right;
+		width: 35%;
+		position: relative;
+		border: 0;
+		overflow: visible;
+		z-index: 1;
+		margin-left: 1em;
+	}
+
+	.ck.ck-content blockquote.side-quote::before {
+		content: "“";
+		position: absolute;
+		top: -37px;
+		left: -10px;
+		display: block;
+		font-size: 200px;
+		color: #e7e7e7;
+		z-index: -1;
+		line-height: 1;
+	}
+
+	.ck.ck-content blockquote.side-quote p {
+		font-size: 2em;
+		line-height: 1;
+	}
+
+	.ck.ck-content blockquote.side-quote p:last-child:not(:first-child) {
+		font-size: 1.3em;
+		text-align: right;
+		color: #555;
+	}
+
+	.ck.ck-content span.marker {
+		background: yellow;
+	}
+
+	.ck.ck-content span.spoiler {
+		background: #000;
+		color: #000;
+	}
+
+	.ck.ck-content span.spoiler:hover {
+		background: #000;
+		color: #fff;
+	}
+
+	.ck.ck-content pre.fancy-code {
+		border: 0;
+		margin-left: 2em;
+		margin-right: 2em;
+		border-radius: 10px;
+	}
+
+	.ck.ck-content pre.fancy-code::before {
+		content: "";
+		display: block;
+		height: 13px;
+		background: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NCAxMyI+CiAgPGNpcmNsZSBjeD0iNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGMzZCNUMiLz4KICA8Y2lyY2xlIGN4PSIyNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGOUJFNEQiLz4KICA8Y2lyY2xlIGN4PSI0Ny41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiM1NkM0NTMiLz4KPC9zdmc+Cg==);
+		margin-bottom: 8px;
+		background-repeat: no-repeat;
+	}
+
+	.ck.ck-content pre.fancy-code-dark {
+		background: #272822;
+		color: #fff;
+		box-shadow: 5px 5px 0 #0000001f;
+	}
+
+	.ck.ck-content pre.fancy-code-bright {
+		background: #dddfe0;
+		color: #000;
+		box-shadow: 5px 5px 0 #b3b3b3;
+	}
+</style>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Mention Custom Dropdownlimit</title>
+		<script type="module" src="./mention-custom-dropdownlimit.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Mention</h2>
+			<p>
+				The mention configuration with a custom
+				<code>config.mention.dropdownLimit</code> configuration and a static list of
+				autocomplete feed. You can also limit the dropdown per feeds object:
+			</p>
+			<pre><code class="language-json">{
+	marker: '#',
+	feed: [
+		...
+	],
+	dropdownLimit: 3
+}
+</code></pre>
+			<h3>Configuration</h3>
+			<p>
+				Type "@" to display the list of 20 mentions out of 21 available or type "#" to see
+				shorter list limited to 3.
+			</p>
+			<h3>Interaction</h3>
+			<ul>
+				<li>Move arrows up/down to select an item.</li>
+				<li>
+					Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the document.
+				</li>
+				<li>The <kbd>esc</kbd> should close the panel.</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Hello <span class="mention" data-mention="@01">@01</span>.</p>
+			<p>Hello <span class="mention" data-mention="#a01">#a01</span></p>
+
+			<figure class="image">
+				<img src="sample.jpg" />
+				<figcaption>CKEditor logo - caption</figcaption>
+			</figure>
+		</div>
+	</body>
+</html>

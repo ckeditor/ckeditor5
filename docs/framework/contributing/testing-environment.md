@@ -157,45 +157,49 @@ You can serve the manual tests of the whole repository, a single package, a dire
 
 ### Creating a manual test
 
-A manual test consists of 3 files:
+A manual test consists of 2 files:
 
-* A `<name>.md` file with the test description.
-* A `<name>.js` or `<name>.ts` file with the JavaScript or TypeScript part of the test (for example, the code initializing an editor).
-* A `<name>.html` file with the HTML part of the test. It does not need to be an entire HTML page (with the DOCTYPE, etc.). It can include just the HTML elements that you want to define.
+* A `<name>.manual.html` file &ndash; a complete HTML document (with the DOCTYPE, `<head>`, and `<body>`) that you fully own. You can freely add a Content Security Policy `<meta>` tag, external scripts, `<style>`, or `<link>` tags in the `<head>`. The `.manual.html` suffix is what marks the file as a manual test.
+* A `<name>.js` or `<name>.ts` file with the JavaScript or TypeScript part of the test (for example, the code initializing an editor). Reference it from the document with a `<script type="module">` tag.
 
-All 3 files are combined and create a single manual test.
+Test instructions live inside the document in a `<ck-manual-header>` element &ndash; its children are rendered as a collapsible instructions panel. In the tests list, each test is identified by its file path relative to the `tests/manual/` directory.
 
-An example Markdown file:
+<info-box>
+	Only files with the `.manual.html` suffix are treated as manual tests. A plain `.html` file placed in a `tests/manual/` directory is treated as a static fixture (for example, content loaded into an `<iframe>`) and is never registered as a test.
+</info-box>
 
-```md
-## Create a new link
-
-1. Select a fragment of the regular text.
-2. Click the toolbar "Link" button.
-3. Check if the balloon panel attached to the selection appeared.
-4. Fill in the "Link URL" input in the panel.
-5. Click the "Save" button.
-6. Check if the selected text is converted into a link.
-```
-
-An example HTML file:
+An example `<name>.manual.html` file, which also serves as a template for new tests:
 
 ```html
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <style>
-        /*
-          Some additional styles which this test needs.
-          And yes – the test builder will merge this tag with the head defined in the template.
-        */
-    </style>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Create a new link</title>
+	<script type="module" src="./link.ts"></script>
 </head>
+<body>
+	<ck-manual-header>
+		<h2>Create a new link</h2>
+		<ol>
+			<li>Select a fragment of the regular text.</li>
+			<li>Click the toolbar "Link" button.</li>
+			<li>Check if the balloon panel attached to the selection appeared.</li>
+			<li>Fill in the "Link URL" input in the panel.</li>
+			<li>Click the "Save" button.</li>
+			<li>Check if the selected text is converted into a link.</li>
+		</ol>
+	</ck-manual-header>
 
-<div id="editor">...</div>
+	<div id="editor">...</div>
+</body>
+</html>
 ```
 
-An example JavaScript file:
+An example script file (`link.ts`):
 
-```js
+```ts
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 
 ClassicEditor
@@ -232,11 +236,13 @@ ClassicEditor
 
 To verify that all manual tests can be **opened** without any errors (the crawler does not execute the manual test steps, it just visits the page), you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
 
-To check manual tests, start the server (`pnpm manual --files=XYZ`), and then run the crawler:
+To check manual tests, run:
 
 ```bash
 pnpm run manual:verify
 ```
+
+It builds the manual tests, starts a local preview server, and runs the crawler against it — no separate server is needed.
 
 Read more about the crawler in the {@link framework/contributing/development-environment#verifying-documentation Verifying documentation} guide.
 

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Decouplededitor</title>
+		<script type="module" src="./decouplededitor.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>Click "Init editor".</li>
+				<li>Expected:</li>
+			</ol>
+			<ul>
+				<li>The containers should fill up with the respective editor UI.</li>
+				<li>
+					There should be a toolbar with "Heading", "Bold", "Italic", "Undo" and "Redo"
+					buttons.
+				</li>
+			</ul>
+			<ol start="3">
+				<li>Click "Destroy editor".</li>
+				<li>Expected:</li>
+			</ol>
+			<ul>
+				<li>Editor should be destroyed.</li>
+				<li><strong>The editor UI should remain in the containers</strong>.</li>
+				<li>The <code>.ck-body</code> region should be removed.</li>
+			</ul>
+			<h2>Notes:</h2>
+			<ul>
+				<li>
+					You can play with:
+					<ul>
+						<li><code>editable.isReadOnly</code>,</li>
+					</ul>
+				</li>
+				<li>Changes to <code>editable.isFocused</code> should be logged to the console.</li>
+				<li>Features should work.</li>
+			</ul>
+		</ck-manual-header>
+
+		<p>
+			<button id="destroyEditor">Destroy editor</button>
+			<button id="initEditor">Init editor</button>
+		</p>
+
+		<h2>The menu bar</h2>
+		<div class="menubar-container"></div>
+
+		<h2>The toolbar</h2>
+		<div class="toolbar-container"></div>
+
+		<h2>The editable</h2>
+		<div class="editable-container"></div>
+
+		<style>
+			.menubar-container,
+			.editable-container,
+			.toolbar-container {
+				position: relative;
+				border: 1px solid red;
+			}
+
+			.menubar-container::after,
+			.editable-container::after,
+			.toolbar-container::after {
+				content: attr(class);
+				position: absolute;
+				background: red;
+				color: #fff;
+				top: 0;
+				right: 0;
+				font: 10px/2 monospace;
+				padding: 0.1em 0.3em;
+			}
+
+			.menubar-container,
+			.toolbar-container {
+				padding: 1em;
+			}
+
+			.editable-container {
+				padding: 3em;
+				overflow-y: scroll;
+				max-height: 300px;
+			}
+
+			.editable-container .ck-editor__editable {
+				min-height: 21cm;
+				padding: 2em;
+				border: 1px #d3d3d3 solid;
+				border-radius: var(--ck-border-radius);
+				background: white;
+				box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+			}
+		</style>
+	</body>
+</html>

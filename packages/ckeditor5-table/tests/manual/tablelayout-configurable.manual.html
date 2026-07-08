@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Tablelayout Configurable</title>
+		<script type="module" src="./tablelayout-configurable.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Configuration of the Layout Table</h3>
+			<p>
+				By default the feature heuristic, upcasted tables will be set to layout tables when
+				one of the below conditions is met:
+			</p>
+			<ul>
+				<li>there is no figure wrapper,</li>
+				<li>
+					there is no <code>&#x3C;caption</code>> element inside
+					<code>&#x3C;table></code>,
+				</li>
+				<li>there is no <code>content-table</code> class.</li>
+			</ul>
+			<p>
+				But it can be changed using configuration option, for example to prefer the external
+				table type to be <code>content</code> use:
+			</p>
+			<pre><code>table: {
+  tableLayout: {
+    preferredExternalTableType: 'content'
+  }
+}
+</code></pre>
+			<p>Similar for layout tables:</p>
+			<pre><code>table: {
+  tableLayout: {
+    preferredExternalTableType: 'layout'
+  }
+}
+</code></pre>
+			<p>
+				<em
+					>Note: The highest priority has recognition by CSS classnames:
+					<code>content-table</code> and <code>layout-table</code>.</em
+				>
+			</p>
+		</ck-manual-header>
+
+		<div class="configuration-wrapper">
+			<fieldset>
+				<legend>Table layout configuration (upcast heuristics)</legend>
+				<div class="form-group">
+					<label for="tableType">preferred type of the external table</label>
+					<select id="tableType" class="form-control">
+						<option value="default">Default</option>
+						<option value="content">Content table</option>
+						<option value="layout">Layout table</option>
+					</select>
+				</div>
+			</fieldset>
+		</div>
+
+		<div id="editor"></div>
+
+		<style>
+			.configuration-wrapper {
+				margin: 2em 0;
+			}
+
+			.external-table-wrapper {
+				margin-top: 20px;
+				padding: 2em;
+				background-color: rgba(0, 0, 0, 0.1);
+				border: 1px solid grey;
+				border-radius: 8px;
+			}
+
+			.external-table-wrapper table,
+			.external-table-wrapper td,
+			.external-table-wrapper th {
+				border: 1px solid black;
+				border-collapse: collapse;
+			}
+		</style>
+	</body>
+</html>

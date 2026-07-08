@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Font Color Picker</title>
+		<script type="module" src="./font-color-picker.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Color picker manual test</h2>
+			<h3>Description</h3>
+			<p>This manual test contains 3 editors:</p>
+			<ul>
+				<li>the first one has the default color picker config;</li>
+				<li>
+					the second one has the output colors set to <code>rgb</code> for font color and
+					<code>hex</code> for background color;
+				</li>
+				<li>the last one has color picker disabled.</li>
+			</ul>
+			<h3>Testing</h3>
+			<p>To test the feature, ensure that:</p>
+			<ul>
+				<li>The "Color picker" button is visible by default.</li>
+				<li>
+					Clicking the "Color picker" button toggles the dropdown view to color picker.
+				</li>
+				<li>
+					Upon color picker opening, the current selection color is set in the palette and
+					color input (converted to the <code>hex</code> format).
+				</li>
+				<li>
+					Colors set through the color picker are applied in the model and data in the
+					right formats.
+				</li>
+				<li>Font and font background color configs are independent.</li>
+				<li>"Save" button applies changes and hides the dropdown.</li>
+				<li>"Cancel" button cancels the changes done through the color picker.</li>
+				<li>
+					Color input only accepts colors in <code>hex</code> format (both with or without
+					<code>#</code> at the beginning).
+				</li>
+				<li>
+					Multiple color changes through the color picker are batched in one undo step.
+				</li>
+				<li>
+					Keyboard navigation (with <code>tab</code> and arrows) works (all items in color
+					picker view are accessible).
+				</li>
+				<li>Focus is clearly indicated on all focusable items.</li>
+			</ul>
+		</ck-manual-header>
+
+		<h2>Editor with default color picker</h2>
+
+		<div id="editor-with-default-picker">
+			<p><span>01. no-color; no-color</span></p>
+			<p>
+				<span style="color: hsl(0, 0%, 100%); background-color: hsl(0, 0%, 0%)"
+					>02. color:hsl(0, 0%, 100%);background-color:hsl(0, 0%, 0%);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsl(0, 75%, 60%)">03. color:hsl(0, 75%, 60%); no-color;</span>
+			</p>
+			<p>
+				<span style="background-color: hsl(90, 75%, 60%)"
+					>04. no-color; background-color:hsl(90, 75%, 60%);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsl(30, 75%, 60%); background-color: hsl(0, 0%, 30%)"
+					>05. color:hsl(30, 75%, 60%); background-color:hsl(0, 0%, 30%);</span
+				>
+			</p>
+			<p>
+				<span style="color: #00ffff; background-color: rgb(255, 0, 0)"
+					>06. color:#00FFFF;background-color:rgb(255, 0, 0);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsla(0, 0%, 0%, 0.7); background-color: gold"
+					>07. color:hsla( 0, 0%, 0%, .7); background-color:gold;</span
+				>
+			</p>
+			<p>
+				<span
+					style="
+						color: rgba(0, 120, 250, 0.8);
+						background-color: hsla(270, 100%, 50%, 0.3);
+					"
+					>08. color:;background-color:hsla(270, 100%, 50%, 0.3);</span
+				>
+			</p>
+			<p>
+				<span style="color: #ddd; background-color: hsl(150, 75%, 60%)"
+					>09. color:#ddd;background-color:hsl(150, 75%, 60%);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsl(270, 75%, 60%); background-color: #d82"
+					>10. color:hsl(270, 75%, 60%);background-color:#d82;</span
+				>
+			</p>
+		</div>
+
+		<h2>Editor with color picker output set to "rgb" for font color "hex" for background</h2>
+
+		<div id="editor-with-custom-picker">
+			<p><span>01. no-color; no-color</span></p>
+			<p>
+				<span style="color: hsl(0, 0%, 100%); background-color: hsl(0, 0%, 0%)"
+					>02. color:hsl(0, 0%, 100%);background-color:hsl(0, 0%, 0%);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsl(0, 75%, 60%)">03. color:hsl(0, 75%, 60%); no-color;</span>
+			</p>
+			<p>
+				<span style="background-color: hsl(90, 75%, 60%)"
+					>04. no-color; background-color:hsl(90, 75%, 60%);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsl(30, 75%, 60%); background-color: hsl(0, 0%, 30%)"
+					>05. color:hsl(30, 75%, 60%); background-color:hsl(0, 0%, 30%);</span
+				>
+			</p>
+			<p>
+				<span style="color: #00ffff; background-color: rgb(255, 0, 0)"
+					>06. color:#00FFFF;background-color:rgb(255, 0, 0);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsla(0, 0%, 0%, 0.7); background-color: gold"
+					>07. color:hsla( 0, 0%, 0%, .7); background-color:gold;</span
+				>
+			</p>
+			<p>
+				<span
+					style="
+						color: rgba(0, 120, 250, 0.8);
+						background-color: hsla(270, 100%, 50%, 0.3);
+					"
+					>08. color:;background-color:hsla(270, 100%, 50%, 0.3);</span
+				>
+			</p>
+			<p>
+				<span style="color: #ddd; background-color: hsl(150, 75%, 60%)"
+					>09. color:#ddd;background-color:hsl(150, 75%, 60%);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsl(270, 75%, 60%); background-color: #d82"
+					>10. color:hsl(270, 75%, 60%);background-color:#d82;</span
+				>
+			</p>
+		</div>
+
+		<h2>Editor without color picker</h2>
+
+		<div id="editor-without-picker">
+			<p><span>01. no-color; no-color</span></p>
+			<p>
+				<span style="color: hsl(0, 0%, 100%); background-color: hsl(0, 0%, 0%)"
+					>02. color:hsl(0, 0%, 100%);background-color:hsl(0, 0%, 0%);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsl(0, 75%, 60%)">03. color:hsl(0, 75%, 60%); no-color;</span>
+			</p>
+			<p>
+				<span style="background-color: hsl(90, 75%, 60%)"
+					>04. no-color; background-color:hsl(90, 75%, 60%);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsl(30, 75%, 60%); background-color: hsl(0, 0%, 30%)"
+					>05. color:hsl(30, 75%, 60%); background-color:hsl(0, 0%, 30%);</span
+				>
+			</p>
+			<p>
+				<span style="color: #00ffff; background-color: rgb(255, 0, 0)"
+					>06. color:#00FFFF;background-color:rgb(255, 0, 0);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsla(0, 0%, 0%, 0.7); background-color: gold"
+					>07. color:hsla( 0, 0%, 0%, .7); background-color:gold;</span
+				>
+			</p>
+			<p>
+				<span
+					style="
+						color: rgba(0, 120, 250, 0.8);
+						background-color: hsla(270, 100%, 50%, 0.3);
+					"
+					>08. color:;background-color:hsla(270, 100%, 50%, 0.3);</span
+				>
+			</p>
+			<p>
+				<span style="color: #ddd; background-color: hsl(150, 75%, 60%)"
+					>09. color:#ddd;background-color:hsl(150, 75%, 60%);</span
+				>
+			</p>
+			<p>
+				<span style="color: hsl(270, 75%, 60%); background-color: #d82"
+					>10. color:hsl(270, 75%, 60%);background-color:#d82;</span
+				>
+			</p>
+		</div>
+
+		<div id="color-box" style="margin-top: 10px; border: 1px solid black; padding: 5px">
+			<p>
+				You can use this helper to generate text with a particular color / background
+				applied. Change inputs and accept it with enter key.
+			</p>
+			<label>
+				Color:
+				<input type="text" name="color" id="color" placeholder="#3d3d3d" />
+			</label>
+			<label>
+				Background Color:
+				<input type="text" name="bgcolor" id="bgcolor" placeholder="pink" />
+			</label>
+			<p contenteditable="true"><span>Text for copying.</span></p>
+		</div>
+	</body>
+</html>

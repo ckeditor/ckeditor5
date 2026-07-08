@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				Selection direction manual test
+				<a href="https://github.com/ckeditor/ckeditor5-engine/issues/401">#401</a>
+			</h3>
+			<ol>
+				<li>Click somewhere in word "amet".</li>
+				<li>Drag slowly to the beginning of text, selecting all other words.</li>
+			</ol>
+			<p>
+				Expected result: selection from "Lorem" to "amet" is made. Unexpected result:
+				selection got broken or is incorrect.
+			</p>
+			<ol>
+				<li>Focus somewhere in word "amet".</li>
+				<li>
+					Using <kbd>left arrow</kbd> and <kbd>shift</kbd> expand selection to the
+					beginning of the text.
+				</li>
+			</ol>
+			<p>
+				Expected result: selection from "Lorem" to "amet" is made. Unexpected result:
+				selection got broken or is incorrect.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Lorem <strong>ipsum</strong> dol &nbsp; &nbsp;or<strong> sit </strong>amet.</p>
+		</div>
+	</body>
+</html>

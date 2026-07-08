@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Scroll Iframe</title>
+		<script type="module" src="./scroll-iframe.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>scrollViewportToShowTarget() helper in an iframe</h2>
+			<p>
+				The aim of this test is checking if the helper function works for targets residing
+				in a child document (window) within an <code>&#x3C;iframe></code>. There are 3
+				elements that interact in this test:
+			</p>
+			<ol>
+				<li>
+					the <strong>target</strong>, which is a
+					<span style="background: red; border: 3px solid green"
+						>red square with green border</span
+					>,
+				</li>
+				<li>
+					the <strong>iframe</strong>, which is a
+					<span style="background: white; border: 3px solid blue"
+						>blue–bordered square</span
+					>,
+				</li>
+				<li>
+					the scrollable <strong>iframe parent</strong>
+					<span style="background: white; border: 3px solid orange"
+						>has an orange border</span
+					>.
+				</li>
+			</ol>
+			<h2>Scenario #1</h2>
+			<ol>
+				<li>Click the "Scroll" button in the upper–right corner of the viewport.</li>
+			</ol>
+			<p><strong>Expected</strong>:</p>
+			<p>
+				The viewport should scroll so the red (target) square (and its green border). It
+				should be revealed and completely visible in the viewport. Most certainly, it will
+				land directly in the bottom–right corner of the viewport.
+			</p>
+			<h2>Scenario #2</h2>
+			<ol>
+				<li>Click the "Scroll" button again.</li>
+			</ol>
+			<p><strong>Expected</strong>:</p>
+			<p>Basically, nothing should happen (nothing should get scrolled).</p>
+			<h2>Scenario #3</h2>
+			<ol>
+				<li>
+					Play with the scrollbars of each element (iframe, iframe's parent, top window),
+					e.g. to partially hide the target or to completely hide it to to hide it to the
+					left/right/top/bottom. Be creative.
+				</li>
+				<li>Click the "Scroll" button.</li>
+			</ol>
+			<p><strong>Expected</strong>:</p>
+			<p>
+				The target should always be scrolled back and become completely visible. Mind the
+				green border, it should become visible too. The location of the target on the screen
+				will vary, depending on where you "hide" in its scrollable ancestors.
+			</p>
+		</ck-manual-header>
+
+		<button id="scroll">Scroll</button>
+
+		<div id="scrollable">
+			<iframe src="assets/scroll-iframe-child.manual.html"></iframe>
+		</div>
+
+		<style>
+			body {
+				height: 3000px;
+				width: 3000px;
+			}
+
+			button {
+				display: block;
+				position: fixed;
+				top: 1em;
+				right: 1em;
+				padding: 1em;
+			}
+
+			#scrollable {
+				border: 30px solid orange;
+				width: 500px;
+				height: 500px;
+				overflow: scroll;
+				margin-top: 2000px;
+				margin-left: 2000px;
+			}
+
+			iframe {
+				margin: 1000px;
+				border: 20px solid blue;
+				height: 300px;
+				width: 300px;
+			}
+		</style>
+	</body>
+</html>

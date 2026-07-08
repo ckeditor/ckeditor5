@@ -1,0 +1,40 @@
+<!doctype html>
+<head>
+	<title>Imagetypetoggle</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	/>
+	<script type="module" src="./imagetypetoggle.js"></script>
+</head>
+
+<ck-manual-header>
+	<h2>Convert block image to inline image</h2>
+	<ol>
+		<li>Select block image.</li>
+		<li>Run the <code>'imageTypeInline'</code> command from the inspector commands list.</li>
+	</ol>
+	<h2>Convert inline image to block image</h2>
+	<ol>
+		<li>Select inline image.</li>
+		<li>Run the <code>'imageTypeBlock'</code> command from the inspector commands list.</li>
+	</ol>
+</ck-manual-header>
+
+<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+
+<div id="editor">
+	<h2>Inline image</h2>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+	<figure class="image">
+		<img src="https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg" alt="Example image" />
+		<figcaption>test</figcaption>
+	</figure>
+	<p>Nulla finibus consequat placerat.</p>
+	<p>
+		Vestibulum id tellus et mauris sagittis
+		<img src="https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg" alt="Example image" />
+		tincidunt quis id mauris.
+	</p>
+	<p>Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.</p>
+</div>

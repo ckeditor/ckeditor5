@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Highlight Buttons</title>
+		<script type="module" src="./highlight-buttons.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Loading</h3>
+			<ol>
+				<li>The data should be loaded with different markers and pens.</li>
+				<li>
+					The toolbar should have 5 highlight buttons and one remove highlight button.
+				</li>
+			</ol>
+			<h3>Testing</h3>
+			<p>You should be able to:</p>
+			<ul>
+				<li>see different markers class</li>
+				<li>manually invoke highlight command in console:</li>
+			</ul>
+			<pre><code>editor.execute( 'highlight', { value: 'yellowMarker' } );
+editor.execute( 'highlight', { value: 'greenMarker' } );
+editor.execute( 'highlight', { value: 'pinkMarker' } );
+editor.execute( 'highlight', { value: 'blueMarker' } );
+
+editor.execute( 'highlight', { value: 'redPen' } );
+editor.execute( 'highlight', { value: 'greenPen' } );
+</code></pre>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Highlight feature example.</p>
+			<p>Here are some markers:</p>
+			<ul>
+				<li>the <mark class="marker-yellow">yellow</mark> one,</li>
+				<li>the <mark class="marker-pink">pink</mark> one,</li>
+				<li>the <mark class="marker-green">green</mark> one,</li>
+				<li>the <mark class="marker-blue">blue</mark> one</li>
+			</ul>
+			<p>
+				Here are some pens:
+				<mark class="pen-red">red pen</mark> and <mark class="pen-green">green one</mark>.
+			</p>
+			<figure class="image">
+				<img src="sample.jpg" alt="CKEditor logo" />
+				<figcaption>
+					Some image with caption and <mark class="marker-yellow">highlighted text</mark>.
+				</figcaption>
+			</figure>
+		</div>
+	</body>
+</html>

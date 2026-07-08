@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Wordcount</title>
+		<script type="module" src="./wordcount.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>
+					Try to type in the editor. The container below should be automatically updated
+					with the current amount of words and characters.
+				</li>
+				<li>
+					Special characters are not treated as separators for words. For example
+					<ul>
+						<li><code>Hello world</code> - 2 words</li>
+						<li><code>Hello(World)</code> - 1 word</li>
+						<li><code>Hello\nWorld</code> - 2 words</li>
+					</ul>
+				</li>
+				<li>Numbers are treated as words.</li>
+				<li>
+					There are logged values of <code>WordCount:event-update</code> in the console.
+					Values should change in same way as container in html.
+				</li>
+				<li>
+					After destroying the editor, the container with word and character values should
+					be also removed.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<style>
+			body {
+				width: 50vw;
+			}
+		</style>
+		<h2>Test editor</h2>
+		<button id="destroy-editor">Destroy editor</button>
+		<div id="editor">Hello world.</div>
+		<div id="words-container"></div>
+	</body>
+</html>

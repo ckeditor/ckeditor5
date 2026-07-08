@@ -1,0 +1,158 @@
+<!doctype html>
+<head>
+	<title>Image</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	/>
+	<script type="module" src="./image.js"></script>
+</head>
+
+<ck-manual-header>
+	<h2>Image</h2>
+	<p>
+		<strong>Case 1:</strong> Has its own <code>data-validation-allow</code> attribute and blue
+		border. Also, in Source Editing mode you can see class <code>allowed-class</code> and style
+		<code>color: blue</code>.
+	</p>
+	<p>
+		<strong>Case 2:</strong> Doesn't have <code>data-validation-disallow</code> attribute or red
+		border. Also, in Source Editing mode you must not see class
+		<code>disallowed-class</code> and style <code>color: red</code>.
+	</p>
+	<p><strong>Please ignore other rendering issues.</strong></p>
+</ck-manual-header>
+
+<style>
+	[contenteditable="true"] [data-validation-allow] {
+		border: 1px solid blue !important;
+		display: inherit;
+	}
+
+	[contenteditable="true"] [data-validation-disallow] {
+		border: 1px solid red !important;
+	}
+</style>
+
+<div id="editor">
+	<h3>Inline Image</h3>
+
+	<p>
+		<img
+			alt="Image description"
+			class="allowed-class disallowed-class"
+			data-validation-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute"
+			style="color: blue"
+			src="./sample.jpg"
+		/>
+	</p>
+	<p>
+		<img
+			class="allowed-class disallowed-class"
+			data-validation-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute"
+			style="color: red"
+			src="./sample.jpg"
+		/>
+	</p>
+
+	<h3>Block Image</h3>
+
+	<figure
+		class="image allowed-class disallowed-class"
+		data-validation-allow="Allowed attribute"
+		data-validation-disallow="Disallowed attribute"
+		style="color: blue"
+	>
+		<img
+			src="./sample.jpg"
+			class="allowed-class disallowed-class"
+			data-validation-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute"
+			style="color: blue"
+		/>
+		<figcaption
+			class="allowed-class disallowed-class"
+			data-validation-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute"
+			style="color: blue"
+		>
+			Image caption
+		</figcaption>
+	</figure>
+
+	<figure
+		class="image allowed-class disallowed-class"
+		data-validation-allow="Allowed attribute"
+		data-validation-disallow="Disallowed attribute"
+		style="color: red"
+	>
+		<img
+			src="./sample.jpg"
+			class="allowed-class disallowed-class"
+			data-validation-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute"
+			style="color: red"
+		/>
+		<figcaption
+			class="allowed-class disallowed-class"
+			data-validation-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute"
+			style="color: red"
+		>
+			Image caption
+		</figcaption>
+	</figure>
+
+	<h3>Linking images</h3>
+
+	<figure
+		class="image allowed-class disallowed-class"
+		data-validation-allow="Allowed attribute"
+		data-validation-disallow="Disallowed attribute"
+		style="color: red"
+	>
+		<a
+			href="./"
+			class="image allowed-class disallowed-class"
+			data-validation-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute"
+			style="color: red"
+		>
+			<img
+				src="./sample.jpg"
+				class="allowed-class disallowed-class"
+				data-validation-allow="Allowed attribute"
+				data-validation-disallow="Disallowed attribute"
+				style="color: red"
+			/>
+		</a>
+		<figcaption
+			class="allowed-class disallowed-class"
+			data-validation-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute"
+			style="color: red"
+		>
+			Image caption
+		</figcaption>
+	</figure>
+
+	<p>
+		<a
+			href="./"
+			class="image allowed-class disallowed-class"
+			data-validation-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute"
+			style="color: red"
+		>
+			<img
+				src="./sample.jpg"
+				class="allowed-class disallowed-class"
+				data-validation-allow="Allowed attribute"
+				data-validation-disallow="Disallowed attribute"
+				style="color: red"
+			/>
+		</a>
+	</p>
+</div>

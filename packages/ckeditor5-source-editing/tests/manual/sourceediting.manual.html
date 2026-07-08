@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Sourceediting</title>
+		<script type="module" src="./sourceediting.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Source editing</h2>
+			<ol>
+				<li>
+					Start the source editing mode and verify that the HTML code for a heading,
+					paragraph, table and both lists is shown.
+				</li>
+				<li>
+					Verify that all buttons, except the source editing, are disabled and off. The
+					source editing button should be enabled and on.
+				</li>
+				<li>Make some changes in the HTML code.</li>
+				<li>
+					Go back from the source editing mode and verify that changes made in the
+					previous step are present in the document content.
+				</li>
+				<li>
+					Add a new table (or use the existing one) and click/tap in the table cell to
+					open the balloon panel.
+				</li>
+				<li>
+					While the balloon panel is shown, start the source editing mode and verify that
+					this balloon panel is gone.
+				</li>
+				<li>
+					Verify if <code>Undo</code> works with this feature.
+					<ol>
+						<li>
+							Do some changes in the document, toggle the source editing on and off.
+							Check if <code>Undo</code> works. Check if no empty undo step has been
+							added.
+						</li>
+						<li>
+							Toggle the source editing on. Do some changes. Toggle it off. You should
+							be able to undo these changes with the <code>Undo</code> button.
+						</li>
+					</ol>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Heading 1</h2>
+			<p><i>Example</i> <strong>paragraph</strong> with basic styles.</p>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td>table cell #1</td>
+							<td>table cell #2</td>
+							<td>table cell #3</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<ol>
+				<li>Numbered list item #1.</li>
+				<li>Numbered list item #2.</li>
+				<li>Numbered list item #3.</li>
+			</ol>
+			<ul>
+				<li>Bulleted list item #1.</li>
+				<li>Bulleted list item #2.</li>
+				<li>Bulleted list item #3.</li>
+			</ul>
+		</div>
+	</body>
+</html>

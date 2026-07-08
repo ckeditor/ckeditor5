@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Draggableviewmixin</title>
+		<script type="module" src="./draggableviewmixin.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>DraggableViewMixin</h1>
+			<p>
+				In this test two examples of using <code>DraggableViewMixin</code> are presented.
+				The first one is a simple draggable view, the second one is a draggable view with a
+				handle.
+			</p>
+			<p>Make sure both work as expected.</p>
+		</ck-manual-header>
+
+		<style>
+			.draggable {
+				border: 1px solid #000;
+				padding: 10px;
+				position: absolute;
+				width: 200px;
+				height: 200px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.draggable > div {
+				background: #000;
+				color: #fff;
+				padding: 10px;
+			}
+		</style>
+	</body>
+</html>

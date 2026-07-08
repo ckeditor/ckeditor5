@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Inlineeditor</title>
+		<script type="module" src="./inlineeditor.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>Click "Init editors".</li>
+				<li>Expected:</li>
+			</ol>
+			<ul>
+				<li>Two inline editor should be created.</li>
+				<li>
+					Elements used as editables should remain visible.
+					<ul>
+						<li>
+							They should preserve <code>.custom-class</code> and
+							<code>custom-attr="foo"</code>.
+						</li>
+					</ul>
+				</li>
+				<li>
+					There should be floating toolbars with "Bold", "Italic", "Undo", "Redo", "Link"
+					and "Unlink" buttons.
+				</li>
+			</ul>
+			<ol start="3">
+				<li>Scroll the webpage.</li>
+				<li>Expected:</li>
+			</ol>
+			<ul>
+				<li>Focused editor's toolbar should float around but always stick to editable.</li>
+				<li>
+					Focused editor's toolbar should stick to the bottom of the editable if there's
+					not enough space above.
+				</li>
+			</ul>
+			<ol start="5">
+				<li>Press <kbd>Alt+F10</kbd> when focusing the editor.</li>
+				<li>Expected:</li>
+			</ol>
+			<ul>
+				<li>Toolbar should gain focus. Editable should keep its styling.</li>
+			</ul>
+			<ol start="7">
+				<li>Click "Destroy editors".</li>
+				<li>Expected:</li>
+			</ol>
+			<ul>
+				<li>Editors should be destroyed.</li>
+				<li>
+					Element used as editables should remain visible.
+					<ul>
+						<li>
+							They should preserve <code>.custom-class</code> and
+							<code>custom-attr="foo"</code>.
+						</li>
+					</ul>
+				</li>
+				<li>Elements should contain its data (updated).</li>
+				<li>
+					<code>.ck-body</code> regions should be removed from <code>&#x3C;body></code>.
+				</li>
+			</ul>
+			<h2>Notes:</h2>
+			<ul>
+				<li>
+					You can play with:
+					<ul>
+						<li><code>window.editables[ N ].isReadOnly</code>,</li>
+					</ul>
+				</li>
+				<li>
+					Changes to <code>window.editors[ name ].focusTracker.isFocused</code> should be
+					logged to the console.
+				</li>
+				<li>Features should work.</li>
+			</ul>
+		</ck-manual-header>
+
+		<p>
+			<button id="destroyEditors">Destroy editor</button>
+			<button id="initEditors">Init editors</button>
+		</p>
+
+		<div id="editor-1" contenteditable="true" class="custom-class" custom-attr="foo">
+			<h2>Editor 1</h2>
+			<p>This is an editor instance.</p>
+		</div>
+
+		<div id="editor-2" class="custom-class" custom-attr="foo">
+			<h2>Editor 2</h2>
+			<p>This is another editor instance.</p>
+			<p>
+				Unlike Editor 1 it doesn't have contenteditable=true initially. Check if it's
+				editable after initializing the editors and back to non-editable after destroying
+				them.
+			</p>
+		</div>
+
+		<style>
+			body {
+				width: 10000px;
+				height: 10000px;
+			}
+
+			.custom-class {
+				margin-top: 100px;
+				margin-left: 100px;
+				margin-bottom: 100px;
+				width: 450px;
+			}
+		</style>
+	</body>
+</html>

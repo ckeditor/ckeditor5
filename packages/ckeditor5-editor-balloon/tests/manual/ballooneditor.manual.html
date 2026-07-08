@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Ballooneditor</title>
+		<script type="module" src="./ballooneditor.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>Click the "Init editors" button.</li>
+				<li>
+					Expected:
+					<ul>
+						<li>Two editor instances should be created.</li>
+						<li>
+							Elements used as editables should remain visible.
+							<ul>
+								<li>
+									They should preserve <code>.custom-class</code> and
+									<code>custom-attr="foo"</code>.
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>
+					Select some text in the editor.
+					<ul>
+						<li>
+							A floating toolbar should appear at the end (forward selection) or at
+							the beginning (backward selection) of the selection.
+						</li>
+					</ul>
+				</li>
+				<li>Scroll the webpage.</li>
+				<li>
+					Expected:
+					<ul>
+						<li>The toolbar should always stick to the selection.</li>
+					</ul>
+				</li>
+				<li>Press <kbd>Alt+F10</kbd> when focusing the editor.</li>
+				<li>
+					Expected:
+					<ul>
+						<li>Toolbar should gain focus. Editable should keep its styling.</li>
+					</ul>
+				</li>
+				<li>Click "Destroy editors".</li>
+				<li>
+					Expected:
+					<ul>
+						<li>Editors should be destroyed.</li>
+						<li>
+							Element used as editables should remain visible.
+							<ul>
+								<li>
+									They should preserve <code>.custom-class</code> and
+									<code>custom-attr="foo"</code>.
+								</li>
+							</ul>
+						</li>
+						<li>Elements should contain its data (updated).</li>
+						<li>
+							<code>.ck-body</code> regions should be removed from
+							<code>&#x3C;body></code>.
+						</li>
+					</ul>
+				</li>
+			</ol>
+			<h2>Notes:</h2>
+			<ul>
+				<li>
+					You can play with:
+					<ul>
+						<li><code>window.editables[ N ].isReadOnly</code>,</li>
+					</ul>
+				</li>
+				<li>
+					Changes to <code>window.editors[ name ].focusTracker.isFocused</code> should be
+					logged to the console.
+				</li>
+				<li>Features should work.</li>
+			</ul>
+		</ck-manual-header>
+
+		<p>
+			<button id="destroyEditors">Destroy editor</button>
+			<button id="initEditors">Init editors</button>
+		</p>
+
+		<div id="menubar-container-1" class="custom-class"></div>
+		<div id="editor-1" contenteditable="true" class="custom-class" custom-attr="foo">
+			<h2>Editor 1</h2>
+			<p>
+				This is an editor instance. And there's <a href="http://ckeditor.com">some link</a>.
+			</p>
+		</div>
+
+		<br />
+
+		<div id="menubar-container-2" class="custom-class"></div>
+		<div id="editor-2" class="custom-class" custom-attr="foo">
+			<h2>Editor 2</h2>
+			<p>This is another editor instance.</p>
+			<img src="sample.jpg" />
+			<p>
+				Unlike Editor 1 it doesn't have contenteditable=true initially. Check if it's
+				editable after initializing the editors and back to non-editable after destroying
+				them.
+			</p>
+		</div>
+
+		<style>
+			body {
+				width: 10000px;
+				height: 10000px;
+			}
+
+			.custom-class {
+				margin-left: 100px;
+				width: 450px;
+			}
+		</style>
+	</body>
+</html>

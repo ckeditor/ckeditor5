@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Imagesizeattributesallcases</title>
+		<script type="module" src="./imagesizeattributesallcases.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Image size attributes</h2>
+			<p>
+				This manual tests consists of many use cases for different combinations of image
+				attributes and styles:
+			</p>
+			<ul>
+				<li><code>width</code> (image width attribute)</li>
+				<li><code>height</code> (image height attribute)</li>
+				<li><code>resizedWidth</code> (image width style)</li>
+				<li><code>resizedHeight</code> (image height style)</li>
+			</ul>
+			<p>
+				Image in the editor should look like the image next to the editor (created from
+				editor's output data):
+			</p>
+			<ul>
+				<li>
+					after initial editor load
+					<ul>
+						<li>
+							the exception to this are inline images that have not been resized
+							(because in the editor they have <code>max-width: 100%</code>)
+						</li>
+					</ul>
+				</li>
+				<li>after resizing image in the editor</li>
+			</ul>
+			<p>
+				<strong>Note</strong>: Every time an image is resized, the code blocks below the
+				editor are updated with refreshed output data and model. It's then easier to compare
+				what has changed after resizing.
+			</p>
+		</ck-manual-header>
+
+		<style>
+			img {
+				outline: 2px dashed darkgray;
+			}
+			.editor-wrapper {
+				display: flex;
+				margin: 20px 0;
+				flex-wrap: wrap;
+			}
+			.editor-wrapper > .ck.ck-editor {
+				width: 50%;
+				min-width: 50%;
+			}
+
+			/* model & data (texts) */
+			.editor-model,
+			.editor-data-text {
+				width: 50%;
+				min-width: 50%;
+				word-wrap: break-word;
+				padding: 10px;
+				font-family: monospace;
+				box-sizing: border-box;
+			}
+
+			.editor-data-text.inlineColor {
+				background-color: #cdd;
+			}
+
+			.editor-model.inlineColor {
+				background-color: #ccd;
+			}
+
+			.editor-data-text.blockColor {
+				background-color: #ccc;
+			}
+
+			.editor-model.blockColor {
+				background-color: #cdc;
+			}
+
+			/* data (html) */
+			.editor-data {
+				width: 50%;
+				min-width: 50%;
+				margin-top: 40px;
+				overflow: auto;
+			}
+		</style>
+	</body>
+</html>

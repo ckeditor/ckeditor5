@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>
+				Issue <a href="https://github.com/ckeditor/ckeditor5-ui/issues/198">#198</a> manual
+				test.
+			</h1>
+			<h2>
+				Position of the <code>BalloonToolbar</code> should be updated on external changes.
+			</h2>
+			<h3>Insert:</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select some text
+					following the place where external changes will appear (contextual toolbar
+					should show up).
+				</li>
+				<li>Observe if the balloon remains attached to the target selection.</li>
+			</ol>
+			<h3>Delete:</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select some text from
+					the second paragraph (contextual toolbar should appear).
+				</li>
+				<li>Check if the balloon hides and there are no errors in the browser console.</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>External changes (insert)</h2>
+		<p><button id="button-insert">Start external changes</button></p>
+		<div id="editor-insert">
+			<p>
+				EXTERNAL CHANGES WILL START HERE -> This specification defines the 5th major
+				revision of the core language of the World Wide Web: the Hypertext Markup Language
+				(HTML).
+			</p>
+		</div>
+
+		<h2>External changes (delete)</h2>
+		<p><button id="button-delete">Start external changes</button></p>
+		<div id="editor-delete">
+			<p>
+				This specification defines the 5th major revision of the core language of the World
+				Wide Web: the Hypertext Markup Language (HTML).
+			</p>
+			<p>
+				THIS PARAGRAPH WILL BE REMOVED This specification defines the 5th major revision of
+				the core language of the World Wide Web: the Hypertext Markup Language (HTML).
+			</p>
+			<p>
+				This specification defines the 5th major revision of the core language of the World
+				Wide Web: the Hypertext Markup Language (HTML).
+			</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Tablecolumnresizewithoutproperties</title>
+		<script type="module" src="./tablecolumnresizewithoutproperties.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Table column resize without table properties</h1>
+			<h3>Paste into the console:</h3>
+			<p>
+				<code
+					>editor.setData('&#x3C;h3>Center aligned table&#x3C;/h3>&#x3C;figure
+					class="table" style="width:87.27%;">&#x3C;table>&#x3C;colgroup>&#x3C;col
+					style="width:57.18%;">&#x3C;col
+					style="width:42.82%;">&#x3C;/colgroup>&#x3C;tbody>&#x3C;tr>&#x3C;td>foo&#x3C;/td>&#x3C;td>bar&#x3C;/td>&#x3C;/tr>&#x3C;tr>&#x3C;td>&#x26;nbsp;&#x3C;/td>&#x3C;td>&#x26;nbsp;&#x3C;/td>&#x3C;/tr>&#x3C;/tbody>&#x3C;/table>&#x3C;/figure>')</code
+				>
+			</p>
+			<p>Model should have the tableWidth attribute</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h3>Center aligned table</h3>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td>11</td>
+							<td>12</td>
+						</tr>
+						<tr>
+							<td>21</td>
+							<td>22</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Inlineeditor Data</title>
+		<script type="module" src="./inlineeditor-data.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>Click "Init editor".</li>
+				<li>
+					New editor instance should be appended to the document with initial data in it.
+					You can create more than one editor.
+				</li>
+				<li>
+					After clicking "Destroy editor" all editors should be removed from the document.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<p>
+			<button id="destroyEditors">Destroy editors</button>
+			<button id="initEditor">Init editor</button>
+		</p>
+
+		<div class="container"></div>
+
+		<style>
+			body {
+				width: 10000px;
+				height: 10000px;
+			}
+
+			.container {
+				padding: 20px;
+				width: 500px;
+			}
+		</style>
+	</body>
+</html>

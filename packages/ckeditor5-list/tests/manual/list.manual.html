@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>List</title>
+		<script type="module" src="./list.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Loading</h3>
+			<ol>
+				<li>The data should be loaded with:</li>
+			</ol>
+			<ul>
+				<li>two paragraphs,</li>
+				<li>bulleted list with eight items,</li>
+				<li>two paragraphs,</li>
+				<li>numbered list with one item,</li>
+				<li>bullet list with one item.</li>
+			</ul>
+			<ol start="2">
+				<li>Toolbar should have two buttons: for bullet and for numbered list.</li>
+			</ol>
+			<h3>Testing</h3>
+			<p>
+				After each step test undo (whole stack) -> redo (whole stack) -> undo (whole stack).
+			</p>
+			<p>Creating:</p>
+			<ol>
+				<li>Convert first paragraph to list item</li>
+				<li>Create empty paragraph and convert to list item</li>
+				<li>Enter in the middle of item</li>
+				<li>Enter at the start of item</li>
+				<li>Enter at the end of item</li>
+			</ol>
+			<p>Removing:</p>
+			<ol>
+				<li>Delete all contents from list item and then the list item</li>
+				<li>Press enter in empty list item</li>
+				<li>Click on highlighted button ("turn off" list feature)</li>
+				<li>Do it for first, second and last list item</li>
+			</ol>
+			<p>Changing type:</p>
+			<ol>
+				<li>Change type from bulleted to numbered</li>
+				<li>Do it for first, second and last item</li>
+				<li>Do it for multiple items at once</li>
+			</ol>
+			<p>Merging:</p>
+			<ol>
+				<li>Convert paragraph before list to same type of list</li>
+				<li>Convert paragraph after list to same type of list</li>
+				<li>Convert paragraph before list to different type of list</li>
+				<li>Convert paragraph after list to different type of list</li>
+				<li>
+					Convert first paragraph to bulleted list, then convert second paragraph to
+					bulleted list
+				</li>
+				<li>Convert multiple items and paragraphs at once</li>
+			</ol>
+			<p>Selection deletion. Make selection between items and press delete button:</p>
+			<ol>
+				<li>two items from the same list</li>
+				<li>all items in a list</li>
+				<li>paragraph before list and second item of list</li>
+				<li>paragraph after list and one-but-last item of list</li>
+				<li>two paragraphs that have list between them</li>
+				<li>two items from different lists of same type</li>
+				<li>two items from different lists of different type</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>This is a test for list feature.</p>
+			<p>Some more text for testing.</p>
+			<ul>
+				<li>Bullet list item 1</li>
+				<li>Bullet list item 2</li>
+				<li>Bullet list item 3</li>
+				<li>Bullet list item 4</li>
+				<li>Bullet list item 5</li>
+				<li>Bullet list item 6</li>
+				<li>Bullet list item 7</li>
+				<li>Bullet list item 8</li>
+			</ul>
+			<p>Paragraph.</p>
+			<p>Another testing paragraph.</p>
+			<ol>
+				<li>Numbered list item 1</li>
+			</ol>
+			<ul>
+				<li>Another bullet list</li>
+			</ul>
+		</div>
+	</body>
+</html>

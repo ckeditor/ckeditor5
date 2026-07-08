@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Keyobserver</title>
+		<script type="module" src="./keyobserver.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ul>
+				<li>Expected initialization: <code>foo{}bar</code>.</li>
+				<li>Press some keys - nothing should be added to editor's contents.</li>
+				<li>
+					When press some key - event <code>keydown</code> should be logged. When the key
+					is released - event <code>keyup</code> should be logged.
+				</li>
+				<li>
+					You can hold the key in order to check whether <code>keydown</code> event is
+					fired multiple times. After releasing the key, <code>keyup</code> event should
+					be fired once.
+				</li>
+				<li>
+					Check whether key events are logged to the console with proper data:
+					<ul>
+						<li><code>keyCode</code>,</li>
+						<li><code>altKey</code>,</li>
+						<li><code>ctrlKey</code> (covers <kbd>Ctrl</kbd> and <kbd>Cmd</kbd>),</li>
+						<li><code>shitKey</code>,</li>
+						<li><code>domTarget</code> and <code>target</code>.</li>
+					</ul>
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div contenteditable="true" id="editable" style="border: solid 1px blue"></div>
+	</body>
+</html>

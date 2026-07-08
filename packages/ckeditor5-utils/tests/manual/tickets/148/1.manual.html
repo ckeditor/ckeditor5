@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				<code>getOptimalPosition()</code> with the <code>limiter</code> restricted by
+				overflowed parents
+				<a href="https://github.com/ckeditor/ckeditor5-utils/issues/148">#146</a>
+			</h3>
+			<p>Vertically scroll the container up and down.</p>
+			<p><strong>Expected</strong>:</p>
+			<ol>
+				<li>
+					The red square should <strong>always</strong> remain visible regardless of the
+					position of the scroll.
+				</li>
+				<li>
+					In the initial position, the shapes should represent a small letter "i", with
+					the red dot above.
+				</li>
+				<li>
+					In the opposite scroll position, the shapes should represent an exclamation mark
+					"!" with the red dot underneath.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div class="wrapper">
+			<div class="limiter">
+				<div class="target"></div>
+			</div>
+
+			<div class="source"></div>
+		</div>
+
+		<style>
+			.wrapper {
+				overflow: scroll;
+				outline: 1px solid #000;
+				height: 400px;
+				position: relative;
+				padding: 20px;
+				margin-top: 100px;
+			}
+
+			.limiter {
+				height: 500px;
+				overflow: hidden;
+			}
+
+			.target {
+				height: 150px;
+				background: #ccc;
+				width: 50px;
+				margin: 170px auto 0;
+			}
+
+			.source {
+				height: 50px;
+				width: 50px;
+				background: red;
+				position: absolute;
+			}
+		</style>
+	</body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Memory</title>
+		<script type="module" src="./memory.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>Open DevTools on Chrome.</li>
+				<li>Go to Memory tab.</li>
+				<li>Select "Heap snapshot" profiling type.</li>
+				<li>
+					Click "Collect Garbage" (trash icon) and "Clear all profiles" (don't go icon).
+				</li>
+				<li>Take heap snapshot (record icon).</li>
+				<li>
+					Repeat multiple times:
+					<ul>
+						<li>click "Init editor",</li>
+						<li>wait to editor show up ,</li>
+						<li>click "Destroy editor".</li>
+					</ul>
+				</li>
+				<li>Record heap snapshot again.</li>
+				<li>
+					Compare Snapshot 1 with Snapshot 2 and look for:
+					<ul>
+						<li>"detached" - HTML Elements/DOM nodes</li>
+						<li>"EventListener" - there should be only 1</li>
+						<li>Any CKEditor5 classes instances like "Editor" or "LivePosition"</li>
+					</ul>
+				</li>
+			</ol>
+			<h2>Notes:</h2>
+			<ul>
+				<li>
+					<p>
+						Browser extensions might attach event listeners to the DOM so the safest way
+						to run this test is by running Chrome from command line:
+					</p>
+					<pre><code>google-chrome \
+--enable-precise-memory-info \
+--disable-extensions \
+--disable-plugins \
+--incognito \
+http://localhost:8125
+</code></pre>
+					<p>
+						The above will run Chrome without extensions or plugins in incognito mode
+						and open manual tests page.
+					</p>
+				</li>
+				<li>
+					<p>
+						Close any running Chrome instance beforehand because otherwise it will open
+						a tab in currently opened Chrome (look for "Opening in existing browser
+						session." in command line).
+					</p>
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<p>
+			<button id="destroyEditors">Destroy editor</button>
+			<button id="initEditors">Init editors</button>
+		</p>
+
+		<div id="editor-1" contenteditable="true" class="custom-class" custom-attr="foo">
+			<h2>Editor 1</h2>
+			<p>
+				This is an editor instance. And there's <a href="http://ckeditor.com">some link</a>.
+			</p>
+		</div>
+
+		<div id="editor-2" class="custom-class" custom-attr="foo">
+			<h2>Editor 2</h2>
+			<p>This is another editor instance.</p>
+			<img src="sample.jpg" />
+			<p>
+				Unlike Editor 1 it doesn't have contenteditable=true initially. Check if it's
+				editable after initializing the editors and back to non-editable after destroying
+				them.
+			</p>
+		</div>
+
+		<style>
+			.custom-class {
+				margin-top: 100px;
+				margin-left: 100px;
+				margin-bottom: 100px;
+				width: 450px;
+			}
+		</style>
+	</body>
+</html>

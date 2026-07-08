@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>
+				Issue <a href="https://github.com/ckeditor/ckeditor5-ui/issues/198">#113</a> manual
+				test.
+			</h1>
+			<h2>Position of the link panel should be updated on external changes.</h2>
+			<h3>Edit (existing link):</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select the link in
+					the content (the link editing balloon should show up).
+				</li>
+				<li>Observe if the balloon remains attached to the link.</li>
+			</ol>
+			<h3>Create (a new link):</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select some text
+					which is not a link yet and press the Link button in the toolbar (the link
+					editing balloon should show up).
+				</li>
+				<li>Observe if the balloon remains attached the selection.</li>
+			</ol>
+			<h3>Delete (existing link):</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select the link in
+					the content (the link editing balloon should show up).
+				</li>
+				<li>Check if the balloon hides and there are no errors in the browser console.</li>
+			</ol>
+			<h3>Delete (a new link):</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select some text in
+					the <strong>second paragraph</strong> which is not a link yet and press the Link
+					button in the toolbar (the link editing balloon should show up).
+				</li>
+				<li>
+					Observe if the balloon remains attached to the the selection after the removal.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>External changes (insert/edit)</h2>
+		<p><button id="button-insert">Start external changes</button></p>
+		<div id="editor-insert">
+			<p>
+				EXTERNAL CHANGES WILL START HERE -> This specification defines the 5th
+				<a href="http://ckeditor.com">major revision</a> of the core language of the [Select
+				this text]: the Hypertext Markup Language (HTML).
+			</p>
+		</div>
+
+		<h2>External changes (delete)</h2>
+		<p><button id="button-delete">Start external changes</button></p>
+		<div id="editor-delete">
+			<p>A first paragraph.</p>
+			<p>
+				THIS PARAGRAPH WILL BE REMOVED <a href="http://ckeditor.com">major revision</a>.
+				[Select this text].
+			</p>
+			<p>A third paragraph.</p>
+		</div>
+	</body>
+</html>

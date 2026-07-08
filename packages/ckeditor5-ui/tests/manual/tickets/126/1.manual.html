@@ -1,0 +1,108 @@
+<!doctype html>
+<head>
+	<title>1</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	/>
+	<script type="module" src="./1.js"></script>
+</head>
+
+<ck-manual-header>
+	<h3>
+		Invalid <code>BalloonPanelView</code> positioning
+		<a href="https://github.com/ckeditor/ckeditor5-ui-default/issues/126">#126</a>
+	</h3>
+	<h3>Pre–requirements</h3>
+	<ol>
+		<li>Click "<strong>Scroll to the squares</strong>" button.</li>
+		<li>There should be 4 red squares displayed in this test.</li>
+	</ol>
+	<h3>Test</h3>
+	<ol>
+		<li>Click "<strong>Attach the panels</strong>" button.</li>
+		<li>There should be 4 balloon panels displayed in this test.</li>
+		<li>Each balloon panel should be <strong>perfectly</strong> attached to a square.</li>
+		<li>Each balloon panel's triangle should hit directly into the spot (square).</li>
+	</ol>
+</ck-manual-header>
+
+<button id="scroll" type="button">Scroll to the squares</button>
+
+<div id="anchors">
+	<div id="anchor-static" class="anchor"></div>
+	<div id="anchor-relative" class="anchor"></div>
+	<div id="anchor-absolute" class="anchor"></div>
+	<div id="anchor-fixed" class="anchor"></div>
+
+	<button id="attach" type="button">Attach the panels</button>
+</div>
+
+<div class="ck-reset_all" id="static-container"></div>
+<div class="ck-reset_all" id="relative-container"></div>
+<div class="ck-reset_all" id="absolute-container"></div>
+<div class="ck-reset_all" id="fixed-container"></div>
+
+<script>
+	(() => {
+		document.querySelector("#scroll").addEventListener("click", () => {
+			window.scrollTo(900, 900);
+		});
+
+		document.querySelector("#attach").addEventListener("click", () => {
+			window.createPanel("static");
+			window.createPanel("relative");
+			window.createPanel("absolute");
+			window.createPanel("fixed");
+		});
+	})();
+</script>
+
+<style>
+	body {
+		width: 10000px;
+		height: 10000px;
+	}
+
+	#anchors {
+		margin-top: 1000px;
+		margin-left: 1000px;
+	}
+
+	.anchor {
+		width: 10px;
+		height: 10px;
+		background: red;
+		margin: 5em;
+	}
+
+	#static-container {
+		margin: 5em;
+		padding: 5em;
+		position: static;
+	}
+
+	#relative-container {
+		margin: 5em;
+		padding: 5em;
+		position: relative;
+		top: 10em;
+		left: 10em;
+	}
+
+	#absolute-container {
+		margin: 5em;
+		padding: 5em;
+		position: absolute;
+		top: 4em;
+		right: 4em;
+	}
+
+	#fixed-container {
+		margin: 5em;
+		padding: 5em;
+		position: fixed;
+		right: 14em;
+		top: 6em;
+	}
+</style>

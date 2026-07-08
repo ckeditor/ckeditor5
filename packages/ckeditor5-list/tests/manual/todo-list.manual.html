@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Todo List</title>
+		<script type="module" src="./todo-list.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Loading</h2>
+			<ol>
+				<li>The data should be loaded with:</li>
+			</ol>
+			<ul>
+				<li>two paragraphs,</li>
+				<li>to-do list with eight items, where 2,4 and 7 are checked,</li>
+				<li>two paragraphs,</li>
+				<li>numbered list with one item,</li>
+				<li>to-do list with one unchecked item,</li>
+				<li>bullet list with one item.</li>
+			</ul>
+			<ol start="2">
+				<li>Toolbar should have three buttons: for bullet, numbered and to-do list.</li>
+			</ol>
+			<h2>Testing</h2>
+			<h3>Creating:</h3>
+			<ol>
+				<li>Convert first paragraph to to-do list item</li>
+				<li>Create empty paragraph and convert to to-do list item</li>
+				<li>Press <code>Enter</code> in the middle of item</li>
+				<li>Press <code>Enter</code> at the start of item</li>
+				<li>Press <code>Enter</code> at the end of item</li>
+			</ol>
+			<h3>Removing:</h3>
+			<ol>
+				<li>Delete all contents from list item and then the list item</li>
+				<li>Press enter in empty list item</li>
+				<li>Click on highlighted button ("turn off" list feature)</li>
+				<li>Do it for first, second and last list item</li>
+			</ol>
+			<h3>Changing type:</h3>
+			<ol>
+				<li>Change type from todo to numbered for checked and unchecked list item</li>
+				<li>Do it for multiple items at once</li>
+			</ol>
+			<h3>Merging:</h3>
+			<ol>
+				<li>Convert paragraph before to-do list to same type of list</li>
+				<li>Convert paragraph after to-do list to same type of list</li>
+				<li>Convert paragraph before to-do list to different type of list</li>
+				<li>Convert paragraph after to-do list to different type of list</li>
+				<li>
+					Convert first paragraph to to-do list, then convert second paragraph to to-do
+					list
+				</li>
+				<li>Convert multiple items and paragraphs at once</li>
+			</ol>
+			<h3>Toggling check state:</h3>
+			<ol>
+				<li>Put selection in the middle of unchecked the to-do list item</li>
+				<li>Check list item (selection should not move)</li>
+			</ol>
+			<hr />
+			<ol>
+				<li>Select multiple to-do list items</li>
+				<li>Check or uncheck to-do list item (selection should not move)</li>
+			</ol>
+			<hr />
+			<ol>
+				<li>Check to-do list item</li>
+				<li>Convert checked list item to other list item</li>
+				<li>Convert this list item once again to to-do list item ()should be unchecked)</li>
+			</ol>
+			<hr />
+			<ol>
+				<li>Put collapsed selection to to-do list item</li>
+				<li>Press <code>Ctrl+Space</code> (check state should toggle)</li>
+			</ol>
+			<h3>Toggling check state for multiple items:</h3>
+			<ol>
+				<li>Select two unchecked list items</li>
+				<li>Press <code>Ctrl+Space</code> (both should be checked)</li>
+				<li>Press <code>Ctrl+Space</code> once again (both should be unchecked)</li>
+			</ol>
+			<hr />
+			<ol>
+				<li>Select checked and unchecked list item</li>
+				<li>Press <code>Ctrl+Space</code> (both should be checked)</li>
+			</ol>
+			<hr />
+			<ol>
+				<li>Select the entire content</li>
+				<li>Press <code>Ctrl+Space</code> (all to-do list items should be checked)</li>
+				<li>
+					Press <code>Ctrl+Space</code> once again (all to-do list items should be
+					unchecked)
+				</li>
+			</ol>
+			<h3>Integration with attribute elements:</h3>
+			<ol>
+				<li>Select multiple to-do list items</li>
+				<li>Highlight selected text</li>
+				<li>Check or uncheck highlighted to-do list item</li>
+				<li>Type inside highlighted to-do list item</li>
+			</ol>
+			<h3>Content styles</h3>
+			<ol>
+				<li>Inspect list styles in the editor and in the content preview (below).</li>
+				<li>There should be no major visual difference between them.</li>
+				<li>
+					Check marks in the content preview should be rich custom components (no native
+					checkboxes).
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>Editor</h2>
+		<div id="editor">
+			<p>This is a test for list feature.</p>
+			<p>Some more text for testing.</p>
+			<ul>
+				<li><input type="checkbox" />To-do list item 1</li>
+				<li><input type="checkbox" checked="checked" />To-do list item 2</li>
+				<li><input type="checkbox" />To-do list item 3</li>
+				<li><input type="checkbox" checked="checked" />To-do list item 4</li>
+				<li><input type="checkbox" />To-do list item 5</li>
+				<li>
+					<input type="checkbox" />To-do list item 6
+					<ul class="todo-list">
+						<li>
+							<label class="todo-list__label">
+								<input type="checkbox" disabled="disabled" checked="checked" />
+								Nested item
+							</label>
+						</li>
+					</ul>
+				</li>
+				<li><input type="checkbox" checked="checked" />To-do list item 7</li>
+				<li><input type="checkbox" />To-do list item 8</li>
+			</ul>
+			<p>Paragraph.</p>
+			<p>Another testing paragraph.</p>
+			<ol>
+				<li>Numbered list item</li>
+			</ol>
+			<ul>
+				<li><input type="checkbox" />To-do list item</li>
+			</ul>
+			<ul>
+				<li>Bullet list</li>
+			</ul>
+		</div>
+
+		<h2>Editor content preview</h2>
+		<div id="preview" class="ck-content"></div>
+
+		<style>
+			#preview {
+				outline: 1px solid red;
+				padding: 10px;
+			}
+		</style>
+	</body>
+</html>

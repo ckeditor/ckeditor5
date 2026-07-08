@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Caption</title>
+		<script type="module" src="./caption.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Image captioning</h2>
+			<p>
+				First image should have <code>CKEditor logo - caption</code> displayed. Second image
+				shouldn't have any caption and caption editable area should not be visible.
+			</p>
+			<ul>
+				<li>Click on second image - editable area should be visible.</li>
+				<li>Click on editable area and add some text.</li>
+				<li>
+					Put selection inside paragraph. Caption text and editable area should stay
+					visible.
+				</li>
+				<li>Click on editable area in first image.</li>
+				<li>Remove whole caption text.</li>
+				<li>
+					Put selection inside paragraph. Caption editable area from first image should be
+					hidden.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat
+				placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris.
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+			</p>
+			<figure class="image">
+				<img src="sample.jpg" />
+				<figcaption>CKEditor logo - caption</figcaption>
+			</figure>
+			<p>
+				Lorem ipsum dolor<img src="sample.jpg" /> sit amet, consectetur adipiscing elit.
+				Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt
+				quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis
+				leo interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus
+				consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id
+				mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+				interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus
+				consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id
+				mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+				interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus
+				consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id
+				mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+				interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus
+				consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id
+				mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+				interdum.
+			</p>
+			<figure class="image">
+				<img src="sample.jpg" />
+			</figure>
+		</div>
+	</body>
+</html>

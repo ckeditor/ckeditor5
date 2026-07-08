@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Mention</title>
+		<script type="module" src="./mention.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Mention</h2>
+			<p>The minimal mention configuration with a static list of autocomplete feed:</p>
+			<h3>Configuration</h3>
+			<p>The feeds:</p>
+			<ol>
+				<li>
+					<p>Static list with <code>@</code> marker:</p>
+					<ul>
+						<li>Barney Stinson</li>
+						<li>Lily Aldrin</li>
+						<li>Marshall Eriksen</li>
+						<li>Robin Sherbatsky</li>
+						<li>Ted Mosby</li>
+					</ul>
+				</li>
+				<li>
+					<p>Static list of 20 items (<code>#</code> marker)</p>
+					<ul>
+						<li>a01</li>
+						<li>a02</li>
+						<li>...</li>
+						<li>a20</li>
+					</ul>
+				</li>
+				<li>
+					<p>Static list of "special characters" items (<code>:</code> marker)</p>
+					<ul>
+						<li>:+1:</li>
+						<li>:-1:</li>
+						<li>:@(at-sign):</li>
+						<li>:$(dollar-sign):</li>
+						<li>:#(hash-sign):</li>
+					</ul>
+				</li>
+			</ol>
+			<h3>Interaction</h3>
+			<p>You can interact with mention panel with keyboard:</p>
+			<ul>
+				<li>Move arrows up/down to select an item.</li>
+				<li>
+					Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the document.
+				</li>
+				<li>The <kbd>esc</kbd> should close the panel.</li>
+			</ul>
+			<p>Mention panel should be closed on:</p>
+			<ul>
+				<li>Click outside the panel view.</li>
+				<li>Changing selection - like placing it in other part of text.</li>
+			</ul>
+			<h3>Editing behavior:</h3>
+			<p>The mention should be removed from the text when:</p>
+			<ul>
+				<li>typing inside a mention</li>
+				<li>removing characters from a mention</li>
+				<li>breaking the mention (<kbd>enter</kbd>)</li>
+				<li>pasting part of a mention</li>
+			</ul>
+			<p>
+				Mention UI should not appear when mention command is disabled (<strong
+					>Mentions</strong
+				>
+				toggle in toolbar).
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Hello <span class="mention" data-mention="@Ted Mosby">@Ted Mosby</span>.</p>
+			<p>
+				Hello <span class="mention" data-mention="@Ted Mosby">@Ted Mosby</span
+				><span class="mention" data-mention="@Ted Mosby">@Ted Mosby</span>.
+			</p>
+
+			<figure class="image">
+				<img src="sample.jpg" />
+				<figcaption>CKEditor logo - caption</figcaption>
+			</figure>
+		</div>
+	</body>
+</html>

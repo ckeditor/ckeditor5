@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Tableborderattribute</title>
+		<script type="module" src="./tableborderattribute.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Upcast deprecated table <code>border</code> attribute</h3>
+			<p>The demo is split into three columns:</p>
+			<ol>
+				<li><strong>Editor</strong></li>
+				<li><strong>Source data (user agent styles)</strong></li>
+				<li>
+					<strong>Source data wrapped in the <code>.ck-content</code> class</strong>
+				</li>
+			</ol>
+			<p>
+				Each table has the deprecated <code>border</code> attribute set to
+				<code>10</code> (except those which are marked as 0-border tables), along with
+				additional inline styles that affect how the table border is rendered.
+			</p>
+			<p>
+				By default, CKEditor 5 applies a <code>double</code> border style to tables and sets
+				<code>border-collapse</code> to <code>collapse</code>.
+			</p>
+		</ck-manual-header>
+
+		<div class="grid">
+			<div>
+				<div id="editor-table-border-attribute">
+					<table border="10">
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+					</table>
+
+					<table border="10" style="border: 2px solid red">
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+					</table>
+
+					<table border="10" style="border-left: 2px solid red">
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+					</table>
+
+					<table
+						border="10"
+						style="border-left: 2px solid red; border-right: 2px solid red"
+					>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+					</table>
+					<p></p>
+
+					<table border="0" style="border-left: 2px solid red">
+						<caption>
+							border="0"
+						</caption>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+					</table>
+
+					<table border="0">
+						<caption>
+							border="0"
+						</caption>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+						<tr>
+							<td>foo</td>
+							<td>bar</td>
+							<td>baz</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div>
+				<h2>Source data</h2>
+
+				<div id="cloned-source"></div>
+			</div>
+			<div>
+				<h2>Source data wrapped with<code>.ck-content</code> class</h2>
+
+				<div id="cloned-source2" class="ck-content"></div>
+			</div>
+		</div>
+
+		<style>
+			.grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr;
+				gap: 20px;
+			}
+		</style>
+	</body>
+</html>

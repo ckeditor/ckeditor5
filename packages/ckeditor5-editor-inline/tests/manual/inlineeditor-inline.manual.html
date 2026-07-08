@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Inlineeditor Inline</title>
+		<script type="module" src="./inlineeditor-inline.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<p>
+				Editor is attached to an existing <code>&#x3C;blockquote></code> element used as the
+				editable.
+			</p>
+		</ck-manual-header>
+
+		<blockquote id="editor" contenteditable="true" class="custom-class" custom-attr="foo">
+			<h2>Editor</h2>
+			<p>This is an editor instance.</p>
+		</blockquote>
+
+		<style>
+			.custom-class {
+				margin-top: 100px;
+				margin-left: 100px;
+				margin-bottom: 100px;
+				width: 450px;
+			}
+		</style>
+	</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Mutationobserver</title>
+		<script type="module" src="./mutationobserver.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<p>Try to:</p>
+			<ul>
+				<li>type,</li>
+				<li>break paragraph,</li>
+				<li>delete break,</li>
+				<li>bold,</li>
+				<li>move text/paragraph,</li>
+				<li>insert/delete paragraph.</li>
+			</ul>
+			<h2>Mutation Preventing</h2>
+			<p>
+				Document should not change, all changes should be prevented before rendering.
+				Selection may change.
+			</p>
+		</ck-manual-header>
+
+		<div contenteditable="true" id="editor"></div>
+	</body>
+</html>

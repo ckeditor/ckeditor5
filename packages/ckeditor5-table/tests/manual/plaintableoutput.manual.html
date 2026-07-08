@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Plaintableoutput</title>
+		<script type="module" src="./plaintableoutput.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Plain table output</h3>
+			<p>
+				Any table added to this editor should be downcasted in the data pipeline to the
+				plain table HTML.
+			</p>
+			<p>
+				It should have no <code>&#x3C;figure></code> or
+				<code>&#x3C;figcaption></code> elements.
+			</p>
+			<p>The markup should be similar to this:</p>
+			<pre><code class="language-html">&#x3C;table>
+    &#x3C;caption>Monthly savings&#x3C;/caption>
+    &#x3C;tbody>
+        &#x3C;tr>
+            &#x3C;td>
+                Month
+            &#x3C;/td>
+            &#x3C;td>
+                Savings
+            &#x3C;/td>
+        &#x3C;/tr>
+        &#x3C;tr>
+            &#x3C;td>
+                January
+            &#x3C;/td>
+            &#x3C;td>
+                $100
+            &#x3C;/td>
+        &#x3C;/tr>
+    &#x3C;/tbody>
+&#x3C;/table>
+</code></pre>
+			<h4>Image captions</h4>
+			<p>Image captions should still be <code>&#x3C;figcpation></code> elements.</p>
+		</ck-manual-header>
+
+		<h2>Editor:</h2>
+		<div id="editor">
+			<table>
+				<caption>
+					Monthly savings
+				</caption>
+				<tr>
+					<td>Month</td>
+					<td>Savings</td>
+				</tr>
+				<tr>
+					<td>January</td>
+					<td>$100</td>
+				</tr>
+			</table>
+			<figure class="image">
+				<img src="sample.jpg" />
+				<figcaption>CKEditor logo - caption</figcaption>
+			</figure>
+		</div>
+
+		<h2>Editor output preview:</h2>
+		<div id="editor-output-preview" class="ck-content"></div>
+
+		<h2>Editor data:</h2>
+		<div class="editor-output">
+			<pre id="editor-data" rows="20"></pre>
+		</div>
+
+		<style>
+			.editor-output {
+				padding: 10px;
+				border: 1px solid #ccc;
+			}
+
+			#editor-data {
+				width: 100%;
+			}
+
+			#editor-output-preview {
+				border: 1px solid #ccc;
+			}
+		</style>
+	</body>
+</html>

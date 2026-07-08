@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Spellchecking</title>
+		<script type="module" src="./spellchecking.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Input (typing) feature with spell checking</h2>
+			<p>
+				Try to correct all misspelled words using native spell checking mechanism in the
+				browser.
+			</p>
+			<ul>
+				<li>Words should be corrected and selection placed after corrected word.</li>
+			</ul>
+			<p>
+				<em
+					>In Safari selection contains whole corrected word (same as in native
+					contenteditable)</em
+				>.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>
+			<p>Banana, orenge, appfle and the new comppputer</p>
+		</div>
+	</body>
+</html>

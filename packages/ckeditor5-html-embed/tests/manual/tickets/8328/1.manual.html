@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				Can't save an HTML embed after pasting a text from the editor
+				<a href="https://github.com/ckeditor/ckeditor5/issues/8328">#8328</a>
+			</h2>
+			<h3>Scenario 1</h3>
+			<ol>
+				<li>Click on <code>Edit source</code> button in the existing HTML embed widget.</li>
+				<li>
+					Select the text above the widget - this removes the selection from the HTML
+					embed.
+				</li>
+				<li>Copy selected text.</li>
+				<li>Paste it to the HTML embed.</li>
+				<li>Save changes.</li>
+			</ol>
+			<p><strong>Expected result</strong>: Copied text is saved.</p>
+			<h3>Scenario 2</h3>
+			<ol>
+				<li>Insert new HTML embed widget below the existing one.</li>
+				<li>Click on <code>Edit source</code> button in the first HTML embed.</li>
+				<li>Click on <code>Edit source</code> button in the second HTML embed.</li>
+				<li>
+					Make sure that the <strong>second</strong> HTML embed is currently selected.
+				</li>
+				<li>Type some text in the <strong>first</strong> HTML embed and save changes.</li>
+				<li>Make sure that the <strong>first</strong> HTML embed is currently selected.</li>
+				<li>Type some text in the <strong>second</strong> HTML embed and save changes.</li>
+			</ol>
+			<p>
+				<strong>Expected result</strong>: Typed text is saved in the appropriate HTML embed.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Sample text</p>
+			<div class="raw-html-embed">Text inside HTML embed widget</div>
+		</div>
+	</body>
+</html>

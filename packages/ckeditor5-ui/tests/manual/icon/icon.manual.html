@@ -1,0 +1,94 @@
+<!doctype html>
+<head>
+	<title>Icon</title>
+	<style>
+		.test-cases li {
+			width: 200px;
+			text-align: center;
+		}
+
+		#icons-rich,
+		#icons-rich-reference {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr 1fr;
+			grid-gap: 30px;
+			width: fit-content;
+		}
+
+		#icons-rich .ck-icon,
+		#icons-rich-reference svg {
+			width: 120px;
+			height: 120px;
+		}
+	</style>
+	<script type="module" src="./icon.js"></script>
+</head>
+
+<ck-manual-header>
+	<h2>Icons with inline SVG</h2>
+	<h3>Sizing</h3>
+	<ol>
+		<li>First icon should be small and dark.</li>
+		<li>Second icon should be medium and dark.</li>
+		<li>Third icon should be large and dark.</li>
+	</ol>
+	<h2>Colors</h2>
+	<ol>
+		<li>First icon should be small and red.</li>
+		<li>Second icon should be small and blue, just like text around.</li>
+	</ol>
+	<h2>Dirtiness</h2>
+	<ol>
+		<li>First icon should be large and green.</li>
+	</ol>
+	<h2>ViewBox</h2>
+	<ol>
+		<li>First icon should be large and green, same as the previous one.</li>
+	</ol>
+	<h2>Colorful icons</h2>
+	<ol>
+		<li>There should be seven colorful icon rendered without any distortions.</li>
+		<li>Check the reference icons to see what they should look like.</li>
+	</ol>
+</ck-manual-header>
+
+<div class="test-cases">
+	<h2>Monochrome icons</h2>
+	<h3>Icon sizing</h3>
+
+	<ol>
+		<li id="icon20"></li>
+		<li id="icon40"></li>
+		<li id="icon60"></li>
+	</ol>
+
+	<h3>Icon colors</h3>
+
+	<ol>
+		<li>icon <span id="icon-red"></span> has own color</li>
+		<li style="color: blue">icon <span id="icon-blue-inherited"></span> inherits color</li>
+	</ol>
+
+	<h3>Icon with dirty markup</h3>
+
+	<ol>
+		<li id="icon-dirty"></li>
+	</ol>
+
+	<h3>Icon with own viewBox</h3>
+
+	<ol>
+		<li id="icon-view-box"></li>
+	</ol>
+
+	<h2>
+		Colorful icons with <code>IconView</code> component (attributes on &lt;svg&gt;, in
+		<code>.ck-reset_all</code> parent)
+	</h2>
+
+	<div id="icons-rich" class="ck ck-reset_all"></div>
+
+	<h4>Reference icons (raw)</h4>
+
+	<div id="icons-rich-reference"></div>
+</div>

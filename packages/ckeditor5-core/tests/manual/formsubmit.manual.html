@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Formsubmit</title>
+		<script type="module" src="./formsubmit.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Updating editor element when submitting a form</h2>
+			<ol>
+				<li>
+					Change the content of the editor and press the "Submit form" button. Check if
+					the content of the editor element has been updated.
+				</li>
+				<li>
+					Change the content of the editor again and press "Submit by calling
+					form.submit()" button. Check if the content of the editor element has been
+					updated.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<style>
+			textarea#editor {
+				display: block !important;
+				width: 100%;
+				height: 100px;
+				margin-bottom: 20px;
+			}
+		</style>
+
+		<form id="form" action="http://localhost/" method="post">
+			<p>Editor textarea element (normally hidden):</p>
+			<textarea name="editor" id="editor"><p>foo bar baz</p></textarea>
+			<button type="submit">Submit form</button>
+		</form>
+		<br />
+		<button id="submit-with-js">Submit by calling form.submit()</button>
+	</body>
+</html>

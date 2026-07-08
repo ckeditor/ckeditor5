@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Placeholder</title>
+		<script type="module" src="./placeholder.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Placeholder creation</h3>
+			<ul>
+				<li>
+					You should see two placeholders:
+					<ul>
+						<li>for heading: <code>Type some header text...</code>,</li>
+						<li>and for paragraph: <code>Type some paragraph text...</code>.</li>
+					</ul>
+				</li>
+				<li>Clicking on header and paragraph should remove placeholder.</li>
+				<li>Clicking outside the editor should show both placeholders.</li>
+				<li>
+					Type some text into paragraph, and click outside. Paragraph placeholder should
+					be hidden.
+				</li>
+				<li>
+					Remove added text and click outside - paragraph placeholder should now be
+					visible again.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2></h2>
+			<p></p>
+		</div>
+	</body>
+</html>

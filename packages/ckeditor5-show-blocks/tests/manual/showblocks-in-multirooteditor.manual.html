@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Showblocks In Multirooteditor</title>
+		<script type="module" src="./showblocks-in-multirooteditor.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>
+					Press the "Show blocks" button in the toolbar or type
+					<code>editor.execute( 'showBlocks' )</code> in the console. Check if all
+					elements besides the widgets are wrapped into blocks with labels.
+				</li>
+				<li>
+					Play with the editor (add new elements, modify and remove existing ones). Make
+					sure that block outlines and labels are refreshed.
+				</li>
+				<li>Press the "Show blocks" button again. Ensure all the outlines are gone.</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>The toolbar</h2>
+		<div class="toolbar-container"></div>
+
+		<h2>The editable</h2>
+		<div class="editable-container">
+			<div id="editor-intro">
+				<p><strong>Exciting</strong> intro text to an article.</p>
+			</div>
+			<div id="editor-content">
+				<h2>Exciting news!</h2>
+				<p>Lorem ipsum dolor sit amet.</p>
+			</div>
+			<div id="editor-outro"><p>Closing text.</p></div>
+		</div>
+
+		<style>
+			.editable-container,
+			.toolbar-container {
+				position: relative;
+				border: 1px solid red;
+			}
+
+			.editable-container::after,
+			.toolbar-container::after {
+				content: attr(class);
+				position: absolute;
+				background: red;
+				color: #fff;
+				top: 0;
+				right: 0;
+				font: 10px/2 monospace;
+				padding: 0.1em 0.3em;
+			}
+
+			.toolbar-container {
+				padding: 1em;
+			}
+
+			.editable-container {
+				padding: 1em;
+			}
+
+			.editable-container > div + div {
+				margin-top: 1em;
+			}
+
+			.editable-container .ck-editor__editable {
+				padding: 2em;
+				border: 1px #d3d3d3 solid;
+				border-radius: var(--ck-border-radius);
+				background: white;
+				box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+			}
+		</style>
+	</body>
+</html>

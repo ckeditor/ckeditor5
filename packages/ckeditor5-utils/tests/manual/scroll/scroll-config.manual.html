@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Scroll Config</title>
+		<script type="module" src="./scroll-config.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>scrollViewportToShowTarget() helper (config options)</h2>
+			<ol start="0">
+				<li>Scroll the entire webpage to any position. Try top-left, bottom-right, etc.</li>
+				<li>
+					Use "Scroll to #..." buttons to scroll the container to reveal a corresponding
+					div.
+				</li>
+				<li>
+					Repeat for other buttons and divs, scrolling the container manually to different
+					positions.
+				</li>
+				<li>
+					Change the configuration of the
+					<code>scrollViewportToShowTarget()</code> method.
+				</li>
+				<li>See how the config affects the scrolling.</li>
+				<li>
+					The most interesting cases are when the container renders partially off-screen
+					(sticks to the top or the bottom).
+				</li>
+				<li>
+					Try setting the same value of viewport and ancestor offsets. Then set them to
+					different values.
+				</li>
+				<li>Expect the helper to always reveal a div respecting the configuration.</li>
+			</ol>
+		</ck-manual-header>
+
+		<form id="config">
+			<label for="viewportOffset">viewportOffset</label>
+			<input type="number" id="viewportOffset" step="10" value="0" />
+			<br />
+			<br />
+			<label for="ancestorOffset">ancestorOffset</label>
+			<input type="number" id="ancestorOffset" step="10" value="0" />
+			<br />
+			<br />
+			<label for="alignToTop">alignToTop</label>
+			<input type="checkbox" id="alignToTop" />
+			<br />
+			<br />
+			<label for="forceScroll">forceScroll</label>
+			<input type="checkbox" id="forceScroll" />
+		</form>
+
+		<ul id="navigation">
+			<li><button type="button" data-scroll-to="A">Scroll to #A</button></li>
+			<li><button type="button" data-scroll-to="B">Scroll to #B</button></li>
+			<li><button type="button" data-scroll-to="C">Scroll to #C</button></li>
+			<li><button type="button" data-scroll-to="D">Scroll to #D</button></li>
+			<li><button type="button" data-scroll-to="E">Scroll to #E</button></li>
+			<li><button type="button" data-scroll-to="F">Scroll to #F</button></li>
+			<li><button type="button" data-scroll-to="G">Scroll to #G</button></li>
+			<li><button type="button" data-scroll-to="H">Scroll to #H</button></li>
+			<li><button type="button" data-scroll-to="I">Scroll to #I</button></li>
+			<li><button type="button" data-scroll-to="J">Scroll to #J</button></li>
+		</ul>
+
+		<div id="scrollable">
+			<div id="A">A</div>
+			<div id="B">B</div>
+			<div id="C">C</div>
+			<div id="D">D</div>
+			<div id="E">E</div>
+			<div id="F">F</div>
+			<div id="G">G</div>
+			<div id="H">H</div>
+			<div id="I">I</div>
+			<div id="J">J</div>
+		</div>
+
+		<style>
+			body {
+				height: 5000px;
+				width: 5000px;
+			}
+
+			#config {
+				top: 20px;
+				right: 20px;
+			}
+
+			#config input {
+				width: 40px;
+			}
+
+			#navigation,
+			#config {
+				position: fixed;
+				opacity: 0.7;
+				padding: 20px;
+				background: #fff;
+				border: 1px solid #ddd;
+				box-shadow: 2px 2px 0px #aaa;
+			}
+
+			#navigation {
+				margin: 0;
+				list-style-type: none;
+				top: 220px;
+				right: 20px;
+			}
+
+			#navigation li {
+				padding: 2px;
+			}
+
+			#scrollable {
+				overflow-y: scroll;
+				padding: 50px;
+				height: 550px;
+				background: #e5e5e5;
+				width: 800px;
+				margin-top: 2000px;
+				margin-left: 2000px;
+				box-shadow: inset 0 0 5px #676767;
+			}
+
+			#scrollable > div {
+				text-align: center;
+				margin: 300px 1000px;
+				padding: 20px;
+				outline: 3px solid red;
+				outline-offset: -3px;
+				transition: background 0.2s;
+				width: 600px;
+			}
+
+			#scrollable > div.highlight {
+				background: yellow;
+			}
+		</style>
+	</body>
+</html>

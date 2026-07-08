@@ -1,0 +1,33 @@
+<!doctype html>
+<head>
+	<title>Version Collision</title>
+	<!-- "script-src 'unsafe-inline'" is required if we want to execute the inline <script> -->
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="default-src 'none'; connect-src 'self' https://cksource.com http://*.cke-cs.com; script-src 'self' 'unsafe-inline' https://cksource.com; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *"
+	/>
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"uncaught-exception": "ckeditor-duplicated-modules"
+	}'
+	/>
+	<script type="module" src="./version-collision.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>The editor module duplication</h1>
+	<p>
+		<strong>Expected</strong>: Running this manual test <strong>must</strong> result in the
+		<code>ckeditor-duplicated-modules</code> error in the console. The error is a safeguard
+		against duplicated/invalid editor builds.
+	</p>
+</ck-manual-header>
+
+<script>
+	window.CKEDITOR_VERSION = "the.colliding.version";
+</script>
+
+<div id="editor">
+	<p>Foo</p>
+</div>

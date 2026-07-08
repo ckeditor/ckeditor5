@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				Issue
+				<a href="https://github.com/ckeditor/ckeditor5-typing/issues/40">#40</a> manual test
+			</h2>
+			<ul>
+				<li>
+					select a fragment of the heading and paragraph,
+					<pre><code class="language-html">&#x3C;h2>Head{ing&#x3C;/h2>
+&#x3C;p>Parag}raph&#x3C;/p>
+</code></pre>
+				</li>
+				<li>delete the selected text.</li>
+			</ul>
+			<p>Expected result:</p>
+			<pre><code class="language-html">&#x3C;h2>Head{}raph&#x3C;/h2>
+		</code></pre>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Heading</h2>
+			<p>Paragraph</p>
+		</div>
+	</body>
+</html>

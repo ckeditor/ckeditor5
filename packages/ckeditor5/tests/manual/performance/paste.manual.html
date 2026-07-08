@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Paste</title>
+		<script type="module" src="./paste.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Performance: pasting data</h1>
+			<ol>
+				<li>Begin performance recording in devtools.</li>
+				<li>Click a button for a content that you'd like to paste into the editor.</li>
+				<li>Stop performance recording.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="test-controls">
+			Click a button to paste a relevant markup to the editor:
+			<span id="fixture-buttons"></span>
+			<br /><br />
+			Cases marked with "(semantic)" contain elements known by the editor. Cases with
+			"(styled)" focuses on styling using the <code>[style]</code> attribute.
+		</div>
+
+		<hr />
+
+		<div id="editor"></div>
+	</body>
+</html>

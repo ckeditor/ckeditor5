@@ -1,0 +1,434 @@
+<!doctype html>
+<head>
+	<title>Mediaembed</title>
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"console-error": [ "<svg> attribute preserveAspectRatio", "transparent NaN" ]
+	}'
+	/>
+
+	<style>
+		input {
+			width: 500px;
+		}
+
+		body {
+			width: 700px;
+		}
+	</style>
+	<script type="module" src="./mediaembed.js"></script>
+</head>
+
+<ck-manual-header>
+	<h2>Media Embed</h2>
+	<h3>Embed the media</h3>
+	<ol>
+		<li>Put an URL in the clipboard,</li>
+		<li>Use the button in the dropdown or paste the URL directly in the editor,</li>
+		<li>Insert the media,</li>
+		<li>Check if media was inserted and is selected.</li>
+	</ol>
+	<h3>Update the media</h3>
+	<ol>
+		<li>Put an URL in the clipboard,</li>
+		<li>Select some media,</li>
+		<li>Use the button in the dropdown,</li>
+		<li>Update the URL,</li>
+		<li>Check if media was updated and remains selected.</li>
+	</ol>
+	<h3>Data output</h3>
+	<ol>
+		<li>Call <code>editor.getData()</code>,</li>
+		<li>
+			Media with previews should include their previews. Preview–less media should be
+			represented using only the <code>&#x3C;oembed></code> tag.
+		</li>
+	</ol>
+	<h3>URL validation</h3>
+	<h4>Invalid</h4>
+	<ol>
+		<li>In the previous scenarios try using a non–media URL,</li>
+		<li>The error should be displayed next to the URL field,</li>
+		<li>Nothing should be inserted/updated.</li>
+	</ol>
+	<h4>Empty</h4>
+	<ol>
+		<li>In the previous scenarios try using an empty URL,</li>
+		<li>The error should be displayed next to the URL field,</li>
+		<li>Nothing should be inserted/updated.</li>
+	</ol>
+	<h3>Copy&#x26;Paste</h3>
+	<ol>
+		<li>Play with media copy&#x26;paste.</li>
+		<li>It should work just like images or any other widget.</li>
+	</ol>
+	<h3>Open media in new tab</h3>
+	<ol>
+		<li>Locate any generic media in the content,</li>
+		<li>Hover the URL in the content (the tooltip should show up),</li>
+		<li>Click the URL,</li>
+		<li>A new browser tab should open with the media URL.</li>
+	</ol>
+	<h3>Media embed toolbar</h3>
+	<ol>
+		<li>Click the media,</li>
+		<li>The block quote button should be visible,</li>
+		<li>Click the block quote button,</li>
+		<li>The block quote should be applied to the media.</li>
+	</ol>
+	<h3>Resize handles</h3>
+	<ol>
+		<li>Click on a video embed (YouTube, Vimeo),</li>
+		<li>Four resize handles should appear at the corners of the media wrapper,</li>
+		<li>Drag a corner handle to resize — a size label should appear during the drag,</li>
+		<li>The resized media should stay centered,</li>
+		<li>Both left and right handles should resize symmetrically,</li>
+		<li>
+			Release the handle — the new width should persist (check <code>editor.getData()</code>),
+		</li>
+		<li>
+			The data output <code>&#x3C;figure></code> should include
+			<code>style="width: …"</code> and class <code>media_resized</code>,
+		</li>
+		<li>Undo (<code>Ctrl+Z</code>) should restore the original size.</li>
+	</ol>
+	<h3>Resize minimum width</h3>
+	<ol>
+		<li>Drag a resize handle to shrink the embed as far as possible,</li>
+		<li>
+			The embed should floor at the base <code>.media { min-width: 15em }</code> (~240px).
+			Handles should remain reachable at that floor.
+		</li>
+	</ol>
+	<h3>Spotify default size and min-width</h3>
+	<ol>
+		<li>
+			A freshly inserted (or pre-existing, never-resized) Spotify embed should render at its
+			default 300px width (height ~378px from the 100/126 aspect ratio),
+		</li>
+		<li>
+			The figure has <code>min-width: 300px</code> so the resize handles cannot drag it below
+			the default width (Spotify's player breaks layout below ~280px).
+		</li>
+	</ol>
+	<h3>Resize upcast</h3>
+	<ol>
+		<li>The "Pre-resized media (50%)" section should load at 50% width, centered,</li>
+		<li>Clicking it should show resize handles,</li>
+		<li>Dragging handles should work normally.</li>
+	</ol>
+	<h3>Resize for generic media (no preview)</h3>
+	<ol>
+		<li>Click a generic media (Twitter, Flickr, etc.),</li>
+		<li>Resize handles should appear around the placeholder,</li>
+		<li>Dragging should change the figure width,</li>
+		<li>The placeholder should scale within the resized figure.</li>
+	</ol>
+	<h3>Resize + URL change</h3>
+	<ol>
+		<li>Resize a media embed to ~50%,</li>
+		<li>Change the media URL (select it, click the media embed button, enter a new URL),</li>
+		<li>The new media should retain the 50% width.</li>
+	</ol>
+	<h3>Aspect ratio (modern CSS)</h3>
+	<ol>
+		<li>Inspect a YouTube or Vimeo iframe in the DOM,</li>
+		<li>
+			The iframe should be wrapped in a plain <code>&#x3C;div></code> (no
+			<code>padding-bottom</code> or <code>position</code> styles on the wrapper),
+		</li>
+		<li>
+			The iframe's inline CSS should include <code>aspect-ratio: 16 / 9</code> and
+			<code>height: auto</code>,
+		</li>
+		<li>Resizing the embed should preserve the 16:9 proportion.</li>
+	</ol>
+	<h3>Data migration</h3>
+	<ol>
+		<li>
+			Load the existing document (the "Media with previews" section uses the old
+			<code>padding-bottom</code> wrapper format),
+		</li>
+		<li>
+			The editor should render them correctly — upcast reads only the URL and regenerates the
+			preview using the current provider HTML,
+		</li>
+		<li>
+			Call <code>editor.getData()</code> — the iframe should carry inline
+			<code>aspect-ratio</code> CSS directly, wrapped only in a plain
+			<code>&#x3C;div></code> (no <code>padding-bottom</code> or <code>position</code> styles
+			on the wrapper).
+		</li>
+	</ol>
+	<h3>Default centering</h3>
+	<ol>
+		<li>Insert a new media embed,</li>
+		<li>
+			An unresized YouTube/Vimeo figure spans the full editor width; an unresized Spotify
+			figure stays at 300px and is centered horizontally,
+		</li>
+		<li>
+			The data output <code>&#x3C;figure></code> should be <code>class="media"</code> only —
+			no alignment class.
+		</li>
+	</ol>
+	<h3>Alignment toolbar — buttons active on insert</h3>
+	<ol>
+		<li>Insert a media embed and select it,</li>
+		<li>
+			The "Centered media" entry inside the <strong>Break text</strong> dropdown should be
+			active by default,
+		</li>
+		<li>
+			The data <code>&#x3C;figure></code> has no <code>media-style-*</code> class while the
+			center button is on (default style is encoded as attribute-absence).
+		</li>
+	</ol>
+	<h3>Block alignment</h3>
+	<ol>
+		<li>
+			Resize a media embed to ~50% (a full-width figure has no spare space to shift into),
+		</li>
+		<li>
+			From the <strong>Break text</strong> dropdown, click "Left aligned media" — the figure
+			should pin to the left edge of the content area,
+		</li>
+		<li>
+			The data <code>&#x3C;figure></code> should include
+			<code>media-style-block-align-left</code>,
+		</li>
+		<li>
+			Repeat for "Right aligned media" — the figure should pin to the right edge, class
+			becomes <code>media-style-block-align-right</code>,
+		</li>
+		<li>
+			Click "Centered media" — both classes should be removed and the figure should re-center.
+		</li>
+	</ol>
+	<h3>Text-wrap (float) alignment</h3>
+	<ol>
+		<li>Below a paragraph of text, select a resized media (~50% width),</li>
+		<li>
+			From the <strong>Wrap text</strong> dropdown, click "Left aligned media" — the figure
+			should float left and the surrounding paragraph text should wrap around it,
+		</li>
+		<li>
+			The data <code>&#x3C;figure></code> should include
+			<code>media-style-align-left</code> (no "block-"),
+		</li>
+		<li>
+			Repeat with "Right aligned media" — the figure should float right with text wrapping on
+			the left.
+		</li>
+	</ol>
+	<h3>Side-by-side floats</h3>
+	<ol>
+		<li>Insert two media embeds in a row,</li>
+		<li>Float-align the first one left and the second one right,</li>
+		<li>
+			Both should sit on the same line (the <code>clear: none</code> override allows this)
+			with text wrapping between or below.
+		</li>
+	</ol>
+	<h3>Alignment + resize coexist</h3>
+	<ol>
+		<li>Resize a media to ~50%,</li>
+		<li>
+			Apply each alignment in turn — the figure should keep its 50% width and reposition
+			correctly,
+		</li>
+		<li>
+			The data <code>&#x3C;figure></code> should include both <code>media_resized</code> (with
+			<code>style="width: …"</code>) and the corresponding alignment class.
+		</li>
+	</ol>
+	<h3>Alignment URL change</h3>
+	<ol>
+		<li>Apply alignment to a media (e.g. <code>alignBlockLeft</code>),</li>
+		<li>
+			Change the URL to any other provider — alignment should be preserved across providers.
+		</li>
+	</ol>
+</ck-manual-header>
+
+<h2>Example URLs</h2>
+<ul>
+	<li><input type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4" /></li>
+	<li>
+		<input
+			type="text"
+			value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA"
+		/>
+	</li>
+</ul>
+
+<h2>Test editor</h2>
+<div id="editor">
+	<h2>Media with previews</h2>
+
+	<figure class="media">
+		<div data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">
+			<div
+				style="
+					position: relative;
+					padding-bottom: 100%;
+					height: 0;
+					padding-bottom: 56.2493%;
+				"
+			>
+				<iframe
+					src="https://www.youtube.com/embed/ZVv7UMQPEWk"
+					style="position: absolute; width: 100%; height: 100%; top: 0; left: 0"
+					frameborder="0"
+					allow="autoplay; encrypted-media"
+					referrerpolicy="strict-origin-when-cross-origin"
+					allowfullscreen=""
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<figure class="media">
+		<div data-oembed-url="https://vimeo.com/1084537">
+			<div
+				style="
+					position: relative;
+					padding-bottom: 100%;
+					height: 0;
+					padding-bottom: 56.2493%;
+				"
+			>
+				<iframe
+					src="https://player.vimeo.com/video/1084537"
+					style="position: absolute; width: 100%; height: 100%; top: 0; left: 0"
+					frameborder="0"
+					webkitallowfullscreen=""
+					mozallowfullscreen=""
+					allowfullscreen=""
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<figure class="media">
+		<div
+			data-oembed-url="https://open.spotify.com/artist/7GaxyUddsPok8BuhxN6OUW?si=LM7Q50vqQ4-NYnAIcMTNuQ"
+		>
+			<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%">
+				<iframe
+					src="https://open.spotify.com/embed/artist/7GaxyUddsPok8BuhxN6OUW"
+					style="position: absolute; width: 100%; height: 100%; top: 0; left: 0"
+					frameborder="0"
+					allowtransparency="true"
+					allow="encrypted-media"
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<h2>Media with previews (new aspect-ratio format)</h2>
+	<p>
+		Same videos as above, but serialized with the modern CSS format. Visually, both sections
+		should look identical.
+	</p>
+
+	<figure class="media">
+		<div data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">
+			<div>
+				<iframe
+					src="https://www.youtube.com/embed/ZVv7UMQPEWk"
+					width="1280"
+					height="720"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 16 / 9;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					allow="autoplay; encrypted-media"
+					referrerpolicy="strict-origin-when-cross-origin"
+					allowfullscreen=""
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<figure class="media">
+		<div data-oembed-url="https://vimeo.com/1084537">
+			<div>
+				<iframe
+					src="https://player.vimeo.com/video/1084537"
+					width="1280"
+					height="720"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 16 / 9;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					webkitallowfullscreen=""
+					mozallowfullscreen=""
+					allowfullscreen=""
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<h2>Pre-resized media (50%)</h2>
+
+	<figure class="media media_resized" style="width: 50%">
+		<div data-oembed-url="https://www.youtube.com/watch?v=H08tGjXNHO4">
+			<div>
+				<iframe
+					src="https://www.youtube.com/embed/H08tGjXNHO4"
+					width="1280"
+					height="720"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 16 / 9;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					allow="autoplay; encrypted-media"
+					referrerpolicy="strict-origin-when-cross-origin"
+					allowfullscreen=""
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<h2>Generic media</h2>
+
+	<figure class="media">
+		<oembed url="https://twitter.com/ckeditor/status/1021777799844126720" />
+	</figure>
+
+	<figure class="media">
+		<oembed url="https://www.flickr.com/photos/nasahqphoto/28396473968/" />
+	</figure>
+
+	<figure class="media">
+		<oembed url="https://www.instagram.com/p/BmMZgokAGGQ/?taken-by=nasa" />
+	</figure>
+
+	<figure class="media">
+		<oembed
+			url="https://www.google.com/maps/place/Poland/@51.9537505,19.1343786,6z/data=!3m1!4b1!4m5!3m4!1s0x47009964a4640bbb:0x97573ca49cc55ea!8m2!3d51.919438!4d19.145136?hl=en"
+		/>
+	</figure>
+
+	<figure class="media">
+		<oembed url="https://www.facebook.com/ckeditor/posts/1885390224856207" />
+	</figure>
+
+	<figure class="media">
+		<oembed url="https://ckeditor.com" />
+	</figure>
+</div>

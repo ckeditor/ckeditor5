@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				Two-steps caret movement
+				<a href="https://github.com/ckeditor/ckeditor5-engine/issues/1301"
+					>ckeditor5-engine#1301</a
+				>
+			</h2>
+			<ol>
+				<li>Put the selection at the end of the content.</li>
+				<li>Press the <kbd>←</kbd> key 3 times.</li>
+			</ol>
+			<h2>Expected:</h2>
+			<p>
+				The selection should be
+				<code>&#x3C;b>bol{}d&#x3C;/b>&#x3C;i>i&#x3C;/i></code> (after "l" but before "d").
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p><b>bold</b><i>i</i></p>
+		</div>
+	</body>
+</html>

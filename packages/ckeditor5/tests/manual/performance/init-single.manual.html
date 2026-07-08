@@ -1,0 +1,36 @@
+<!doctype html>
+<head>
+	<title>Init Single</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	/>
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"console-error": [ "<svg> attribute preserveAspectRatio" ]
+	}'
+	/>
+	<script type="module" src="./init-single.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>Performance: Editor init time</h1>
+	<p><strong>! Test with console off, in incognito mode !</strong></p>
+	<p>
+		This performance test measures how long editor initializes for various kinds of documents.
+		Each data set presents a "heavy" document case, which takes substantial amount of time to
+		load.
+	</p>
+	<p>
+		This file is for measuring a single data set with a one try (as opposed to
+		<code>init.html</code> which measures whole suite multiple times).
+	</p>
+	<p>The test starts after you click "Start" button.</p>
+	<p>You can change the tested data set in the source.</p>
+	<p>The test result is logged in the console.</p>
+</ck-manual-header>
+
+<button id="btnStart">Start</button>
+
+<div id="editor"></div>

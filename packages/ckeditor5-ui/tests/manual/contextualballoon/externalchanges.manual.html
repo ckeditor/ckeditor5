@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Externalchanges</title>
+		<script type="module" src="./externalchanges.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Link panel opened from BalloonToolbar should be updated on external changes.</h2>
+			<h3>Create #1:</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select some text
+					which is not a link yet and press the Link button in the toolbar (the link
+					editing balloon should show up).
+				</li>
+				<li>Observe if the balloon remains attached to the selection.</li>
+				<li>Repeat this for a backward selection.</li>
+			</ol>
+			<h3>Create #2:</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select text to wrap
+					place where external changes will be inserted e.g
+					<code>HE[RE -> The spe]cification</code> then open link click by link icon in
+					contextual toolbar.
+				</li>
+				<li>Observe if the balloon remains attached to the selection.</li>
+				<li>Repeat this for a backward selection.</li>
+			</ol>
+			<h3>Delete:</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select some text in
+					the <strong>second paragraph</strong> press the Link button in the contextual
+					toolbar (the link editing balloon should show up).
+				</li>
+				<li>
+					Observe if the balloon remains attached to the the selection after the removal.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>External changes (insert/edit)</h2>
+		<p><button id="button-insert">Start external changes</button></p>
+		<div id="editor-insert">
+			<p>
+				EXTERNAL CHANGES WILL START HERE -> This specification defines the 5th
+				<a href="http://ckeditor.com">major revision</a> of the core language of the [Select
+				this text]: the Hypertext Markup Language (HTML).
+			</p>
+		</div>
+
+		<h2>External changes (delete)</h2>
+		<p><button id="button-delete">Start external changes</button></p>
+		<div id="editor-delete">
+			<p>A first paragraph.</p>
+			<p>
+				THIS PARAGRAPH WILL BE REMOVED <a href="http://ckeditor.com">major revision</a>.
+				[Select this text].
+			</p>
+			<p>A third paragraph.</p>
+		</div>
+	</body>
+</html>

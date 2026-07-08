@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Selectionobserver</title>
+		<script type="module" src="./selectionobserver.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Move selection</h3>
+			<p>Selection should be moved and events should be fired on console:</p>
+			<ul>
+				<li><code>selectionChange</code> event should be fired after every change</li>
+				<li>
+					<code>selectionChangeDone</code> event should be fired when selection stop
+					changing
+				</li>
+			</ul>
+			<h3>Change document</h3>
+			<p>Nothing should happen (no change nor event).</p>
+		</ck-manual-header>
+
+		<div contenteditable="true" id="editor"></div>
+	</body>
+</html>

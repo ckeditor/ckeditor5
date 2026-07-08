@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				Issue
+				<a href="https://github.com/ckeditor/ckeditor5-ui-default/issues/76">#76</a> manual
+				test
+			</h3>
+			<ul>
+				<li>make sure that entire editor is visible in browser viewport,</li>
+				<li>
+					click on the <code>First link</code> and check if balloon panel appeared on
+					bottom of the selection,
+				</li>
+				<li>
+					close panel, click on the <code>Second link</code> and check if balloon panel
+					appeared on bottom of the selection,
+				</li>
+				<li>
+					close panel, click on the <code>Third link</code> and check if balloon panel
+					appeared on top of the selection,
+				</li>
+				<li>
+					close panel, scroll page to the <code>SCROLL HERE</code> marker, click on the
+					<code>Third link</code> and check if balloon panel appeared on bottom of the
+					selection.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p><a href="http://ckeditor.com">First link</a></p>
+			<p><a href="http://ckeditor.com">First link</a></p>
+			<p></p>
+			<p>SCROLL HERE</p>
+			<p></p>
+			<p><a href="http://ckeditor.com">Third link</a></p>
+		</div>
+
+		<div style="height: 3000px"></div>
+		<p>Bottom content</p>
+	</body>
+</html>

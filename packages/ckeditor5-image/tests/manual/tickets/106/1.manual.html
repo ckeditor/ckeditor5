@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>
+				Issue
+				<a href="https://github.com/ckeditor/ckeditor5-image/issues/106">#106</a> manual
+				test.
+			</h1>
+			<h2>Position of the text alternative balloon should be updated on external changes.</h2>
+			<h3>Edit:</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select the image in
+					the content, then from the toolbar open the
+					<strong>text alternative</strong> editing balloon.
+				</li>
+				<li>
+					Observe if the balloon remains attached to the image as the new content shows
+					up.
+				</li>
+			</ol>
+			<h3>Delete:</h3>
+			<ol>
+				<li>
+					Click <strong>Start external changes</strong> then quickly select the image in
+					the content, then from the toolbar open the
+					<strong>text alternative</strong> editing balloon.
+				</li>
+				<li>
+					Observe if the balloon remains attached to the image as the content is deleted.
+				</li>
+				<li>
+					Wait a bit more and observe if the balloon is removed together with an image.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>External changes (edit)</h2>
+		<p><button id="button-insert">Start external changes</button></p>
+
+		<div id="editor-insert">
+			<p>
+				EXTERNAL CHANGES WILL START HERE -> This specification defines the 5th of the core
+				language of the the Hypertext Markup Language (HTML).
+			</p>
+			<figure class="image">
+				<img src="../../sample.jpg" alt="CKEditor logo" />
+			</figure>
+		</div>
+
+		<h2>External changes (delete)</h2>
+		<p><button id="button-delete">Start external changes</button></p>
+
+		<div id="editor-delete">
+			<p>A first paragraph.</p>
+			<p>THIS PARAGRAPH WILL BE REMOVED <a href="http://ckeditor.com">major revision</a>.</p>
+			<figure class="image">
+				<img src="../../sample.jpg" alt="CKEditor logo" />
+			</figure>
+			<p>A third paragraph.</p>
+		</div>
+	</body>
+</html>

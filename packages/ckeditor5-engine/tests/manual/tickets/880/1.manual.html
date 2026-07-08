@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Renderer - infinite <code>selectionChange</code> event</h2>
+			<p>Place the selection like this:</p>
+			<pre><code>This is {an &#x3C;strong>editor}&#x3C;/strong> instance.
+		</code></pre>
+			<p>(it must end at the end of the inline style)</p>
+			<p><strong>Expected</strong>:</p>
+			<ul>
+				<li>
+					Every time selection is changed, console log with
+					<code>selectionChange</code> is printed once.
+				</li>
+				<li>
+					While creating selection from <strong>2.</strong>, there might be
+					<code>renderer-selection-similar</code> warning visible in the console.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>This is an <strong>editor</strong> instance.</p>
+		</div>
+	</body>
+</html>

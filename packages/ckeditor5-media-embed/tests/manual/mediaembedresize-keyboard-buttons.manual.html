@@ -1,0 +1,167 @@
+<!doctype html>
+<head>
+	<title>Mediaembedresize Keyboard Buttons</title>
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"console-error": [ "<svg> attribute preserveAspectRatio", "transparent NaN" ]
+	}'
+	/>
+
+	<style>
+		body {
+			width: 800px;
+		}
+	</style>
+	<script type="module" src="./mediaembedresize-keyboard-buttons.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>Keyboard-accessible resize UI for media embeds — standalone buttons</h1>
+	<p>
+		This test verifies that media embeds can be resized without a pointing device using
+		standalone toolbar buttons.
+	</p>
+	<p>
+		The editor uses <code>MediaEmbedResize</code> (full plugin including handles) with
+		<code>resizeMediaEmbed.toolbar</code> configured to show individual buttons:
+		<code>resizeMediaEmbed:25</code>, <code>resizeMediaEmbed:50</code>,
+		<code>resizeMediaEmbed:75</code>, <code>resizeMediaEmbed:original</code>, and
+		<code>resizeMediaEmbed:custom</code>.
+	</p>
+	<h2>Test plan</h2>
+	<h3>Preset resize (standalone buttons)</h3>
+	<ol>
+		<li>Click into the editor content to focus it.</li>
+		<li>Use <strong>Tab</strong> (or click) to select a media widget.</li>
+		<li>
+			Use <strong>Tab</strong> to navigate to the media embed toolbar. Five resize buttons
+			should be visible.
+		</li>
+		<li>
+			Press <strong>Space</strong> or <strong>Enter</strong> on one of the size buttons (e.g.
+			25%). Verify the media resizes.
+		</li>
+		<li>
+			The pressed button should appear toggled on (<code>isOn: true</code>). Other size
+			buttons should be off.
+		</li>
+		<li>
+			Press <strong>Original</strong> — resize is removed, <code>resizedWidth</code> attribute
+			disappears, no button is toggled.
+		</li>
+	</ol>
+	<h3>Custom resize (balloon via standalone button)</h3>
+	<ol>
+		<li>Select a media widget using keyboard.</li>
+		<li>Navigate to the toolbar and press the <strong>Custom</strong> button.</li>
+		<li>Verify the custom resize balloon opens.</li>
+		<li>
+			Type a valid number (e.g. <code>40</code>) and press <strong>Enter</strong>. Verify the
+			media resizes to <code>40%</code> and the balloon closes.
+		</li>
+		<li>
+			Now none of the preset buttons should be toggled (because <code>40%</code> doesn't match
+			any preset).
+		</li>
+	</ol>
+	<h3>Validation</h3>
+	<ol>
+		<li>Open the custom resize balloon via the <strong>Custom</strong> button.</li>
+		<li>
+			Clear the input and press <strong>Enter</strong>. Verify error "The value must not be
+			empty." appears.
+		</li>
+		<li>
+			Type <code>abc</code> and press <strong>Enter</strong>. Verify error "The value should
+			be a plain number." appears.
+		</li>
+	</ol>
+	<h3>Click outside</h3>
+	<ol>
+		<li>Open the custom resize balloon.</li>
+		<li>Click outside the balloon. Verify the balloon closes without changes.</li>
+	</ol>
+	<h3>Drag handles interop</h3>
+	<ol>
+		<li>Apply a preset size via a button.</li>
+		<li>Grab a drag handle and resize further.</li>
+		<li>Verify the drag starts from the correct current width.</li>
+		<li>
+			After dragging, verify no preset button is toggled (the value no longer matches any
+			preset).
+		</li>
+	</ol>
+	<h3>Spotify embed</h3>
+	<ol>
+		<li>Select the Spotify widget (it has its own responsive layout and a minimum width).</li>
+		<li>
+			Apply a preset size and a custom size. Verify the widget resizes without console errors
+			and is not shrunk below its usable minimum width.
+		</li>
+		<li>Press <strong>Original</strong> to reset.</li>
+	</ol>
+	<h3>Generic (non-previewable) media</h3>
+	<ol>
+		<li>Select the Facebook placeholder widget.</li>
+		<li>Press any preset size button. Verify the figure resizes without console errors.</li>
+		<li>Press <strong>Original</strong> to reset.</li>
+	</ol>
+</ck-manual-header>
+
+<h2>Standalone resize buttons</h2>
+
+<div id="editor">
+	<figure class="media media_resized" style="width: 50%">
+		<div data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">
+			<div>
+				<iframe
+					src="https://www.youtube.com/embed/ZVv7UMQPEWk"
+					width="1280"
+					height="720"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 16 / 9;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					allow="autoplay; encrypted-media"
+					referrerpolicy="strict-origin-when-cross-origin"
+					allowfullscreen=""
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<p>Spotify embed (responsive widget with its own minimum width):</p>
+
+	<figure class="media">
+		<div data-oembed-url="https://open.spotify.com/artist/7GaxyUddsPok8BuhxN6OUW">
+			<div>
+				<iframe
+					src="https://open.spotify.com/embed/artist/7GaxyUddsPok8BuhxN6OUW"
+					width="300"
+					height="378"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 100 / 126;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					allowtransparency="true"
+					allow="encrypted-media"
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<p>Generic (non-previewable) media:</p>
+
+	<figure class="media">
+		<oembed url="https://www.facebook.com/ckeditor/posts/1885390224856207" />
+	</figure>
+</div>

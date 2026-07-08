@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Iconset</title>
+		<script type="module" src="./iconset.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Project icons</h2>
+			<p>Make sure all icons in the toolbar render correctly.</p>
+			<ul>
+				<li>
+					Make sure all red icons are evenly filled with color (e.g. no black pieces).
+				</li>
+				<li>
+					Make sure all white icons (inverted toolbar) are evenly filled with color (e.g.
+					no black pieces).
+				</li>
+				<li>
+					Check out the scaled up iconset. It is the same as the first one but the
+					<code>font-size</code> of buttons hosting the icons is non-standard. Look for
+					glitches and rendering issues.
+				</li>
+			</ul>
+			<h2>Notes</h2>
+			<ul>
+				<li>
+					Some icons like "marker" and "pen" should be filled with yellow color. This
+					<strong>must</strong> work regardless of the color of the icon (black, red, or
+					white).
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<style>
+			#color .ck-toolbar .ck-button {
+				color: hsl(0deg 100% 50%);
+			}
+
+			#inverted .ck-toolbar {
+				--ck-custom-background: hsl(270, 1%, 29%);
+				--ck-custom-border: hsl(300, 1%, 22%);
+
+				--ck-color-base-foreground: var(--ck-custom-background);
+				--ck-color-focus-border: hsl(208, 90%, 62%);
+				--ck-color-text: hsl(0, 0%, 98%);
+				--ck-color-shadow-drop: hsla(0, 0%, 0%, 0.2);
+				--ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1);
+
+				--ck-color-button-default-background: var(--ck-custom-background);
+				--ck-color-button-default-hover-background: hsl(270, 1%, 22%);
+				--ck-color-button-default-active-background: hsl(270, 2%, 20%);
+				--ck-color-button-default-active-shadow: hsl(270, 2%, 23%);
+				--ck-color-button-default-disabled-background: var(--ck-custom-background);
+
+				--ck-color-toolbar-background: var(--ck-custom-background);
+				--ck-color-toolbar-border: var(--ck-custom-border);
+			}
+
+			#zoom .ck-toolbar .ck-button {
+				font-size: 25px;
+			}
+		</style>
+
+		<h2>Standard</h2>
+		<div id="standard"></div>
+
+		<h2>Colors</h2>
+		<div id="color"></div>
+
+		<h2>Colors inverted</h2>
+		<div id="inverted"></div>
+
+		<h2>Scaled up</h2>
+		<div id="zoom"></div>
+	</body>
+</html>

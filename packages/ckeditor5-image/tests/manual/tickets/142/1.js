@@ -33,7 +33,7 @@ ClassicEditor
 			} );
 
 			setTimeout( () => {
-				editor.ui.view.element.querySelector( 'img' ).src = '../../sample.jpg';
+				editor.ui.view.element.querySelector( 'img' ).src = new URL( '../../sample.jpg', import.meta.url ).href;
 			}, 3000 );
 		} );
 	} )

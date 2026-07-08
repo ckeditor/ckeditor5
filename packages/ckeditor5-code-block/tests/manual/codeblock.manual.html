@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Codeblock</title>
+		<script type="module" src="./codeblock.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Creating</h2>
+			<ul>
+				<li>
+					<p>
+						Put selection in the single paragraph, and press code block button.
+						Paragraph should change to code block.
+					</p>
+				</li>
+				<li>
+					<p>
+						Select multiple paragraphs and press code block icon. All blocks should be
+						changed into one code block element with a multiple lines.
+					</p>
+				</li>
+				<li>
+					<p>
+						Change the middle paragraph into code block, select the preceding and the
+						following paragraph, and press code block button. All selected blocks should
+						be merged into one code block.
+					</p>
+				</li>
+				<li>
+					<p>Try to create code block into block quote - it should work fine.</p>
+				</li>
+				<li>
+					<p>Try to create create a block quote into a table - it should work fine.</p>
+				</li>
+			</ul>
+			<h2>Leaving the code block using enter</h2>
+			<h3>Block end</h3>
+			<ul>
+				<li>Create two empty lines at the end of the block and put the selection there.</li>
+				<li>Press <kbd>Enter</kbd> again.</li>
+				<li>The new lines created in the code block should no longer be there.</li>
+				<li>A new empty paragraph should be created after the code block.</li>
+				<li>The selection should be in that paragraph.</li>
+			</ul>
+			<h3>Block beginning</h3>
+			<ul>
+				<li>
+					Similarly, create an empty line at the beginning of the block and put the
+					selection there.
+				</li>
+				<li>
+					The operation should be mirrored upon enter (empty paragraph created before, not
+					after, etc.).
+				</li>
+			</ul>
+			<h3><kbd>Shift</kbd>+<kbd>Enter</kbd></h3>
+			<ul>
+				<li>
+					The above scenarios should <strong>not</strong> work when using
+					<kbd>Shift</kbd>+<kbd>Enter</kbd>.
+				</li>
+			</ul>
+			<h2>Indenting and outdenting</h2>
+			<ul>
+				<li>
+					Use <kbd>Tab</kbd> to insert tab (selection in the middle of the line) or indent
+					entire line (selection before line's text).
+				</li>
+				<li>Use <kbd>Shift</kbd>+<kbd>Tab</kbd> to outdent the line.</li>
+				<li>Try both with different selections, e.g. containing multiple lines.</li>
+				<li>It should act similarly to native code editors.</li>
+				<li>
+					Use the "Increase indent" and "Decrease indent" buttons in the toolbar – their
+					actions should correspond to the keystrokes.
+				</li>
+			</ul>
+			<h2>Preserving indent on enter</h2>
+			<ul>
+				<li>Having indented some line put the caret at the end of it.</li>
+				<li>Press <kbd>Enter</kbd>.</li>
+				<li>The new line should have the same indentation level as the previous one.</li>
+			</ul>
+			<h2>Integration with Autoformat</h2>
+			<ul>
+				<li>Type <code>```</code> in an empty paragraph.</li>
+				<li>A new empty code block should be inserted with the selection inside of it.</li>
+				<li>
+					Try to undo. There should be 2 undo steps (code block removal, and
+					<code>```</code>).
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<pre><code class="language-plaintext">Plain text</code></pre>
+			<p>
+				Getting used to an entirely different culture can be challenging. While it’s also
+				nice to learn about cultures online or from books, nothing comes close to
+				experiencing cultural diversity in person.
+			</p>
+			<p>
+				You learn to appreciate each and every single one of the differences while you
+				become more culturally fluid.
+			</p>
+			<pre><code class="language-javascript">function foo() {
+		console.log( 'indented using 1 tab' );
+	}
+
+	function bar() {
+	    console.log( 'indented using spaces' );
+	}</code></pre>
+			<p>
+				Getting used to an entirely different culture can be challenging. While it’s also
+				nice to learn about cultures online or from books, nothing comes close to
+				experiencing cultural diversity in person. You learn to appreciate each and every
+				single one of the differences while you become more culturally fluid.
+			</p>
+			<pre><code class="language-css">body { color: red }</code></pre>
+			<p>
+				You learn to appreciate each and every single one of the differences while you
+				become more culturally fluid.
+			</p>
+			<pre><code class="language-css">p { font-size: 10px; }</code></pre>
+			<p>Some ASCII art:</p>
+			<pre><code> ________________
+	/                \
+	| How about moo? |  ^__^
+	\________________/  (oo)\_______
+	                  \ (__)\       )\/\
+	                        ||----w |
+	                        ||     ||</code></pre>
+		</div>
+	</body>
+</html>

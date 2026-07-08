@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Title</title>
+		<script type="module" src="./title.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<p>Note: use any editor if not specified.</p>
+			<h3>Placeholder</h3>
+			<ul>
+				<li>
+					make sure that the first editor has default placeholders:
+					<code>Type your title</code> and <code>Type or paste your content here.</code>
+				</li>
+				<li>
+					make sure that the second editor has custom placeholders:
+					<code>Custom title placeholder</code> and <code>Custom body placeholder</code>.
+				</li>
+			</ul>
+			<h2>Title feature</h2>
+			<ul>
+				<li>you should see placeholders when there is no text in any of the sections.</li>
+				<li>
+					you should be able to put the selection to the both sections and jump between
+					them using <code>Shift</code> and <code>Tab+Shift</code>.
+				</li>
+			</ul>
+			<h3>Prevent extra paragraphing (typing)</h3>
+			<ul>
+				<li>type <code>FooBar</code> in the title</li>
+				<li>place selection in the middle of the title <code>Foo{}Bar</code></li>
+				<li>press <code>Enter</code></li>
+			</ul>
+			<p>
+				There should be no empty paragraph at the end of document, title should contains
+				<code>Foo</code> body <code>Bar</code>.
+			</p>
+			<h3>Prevent extra paragraphing (pasting)</h3>
+			<ul>
+				<li>type <code>Foo</code> in the title</li>
+				<li>type <code>Bar</code> in the body</li>
+				<li>
+					select and cut all text (you should see an empty document with selection in the
+					title element)
+				</li>
+				<li>paste text</li>
+			</ul>
+			<p>
+				There should be no empty paragraph at the end of document, title should contains
+				<code>Foo</code> body <code>Bar</code>.
+			</p>
+			<h3>Changing title</h3>
+			<ul>
+				<li>type something in the title</li>
+				<li>put selection in the middle of the title</li>
+			</ul>
+			<p>
+				Heading dropdown, upload and bold icons should be disabled as long as selection stay
+				in the title element. Alignment feature should be enabled.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor1"></div>
+		<hr />
+		<div id="editor2"></div>
+	</body>
+</html>

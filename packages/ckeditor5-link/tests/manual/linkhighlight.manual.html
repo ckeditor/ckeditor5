@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Linkhighlight</title>
+		<script type="module" src="./linkhighlight.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Link highlight</h2>
+			<ol>
+				<li>
+					Put selection inside "linked text" - whole linked text should be highlighted.
+				</li>
+				<li>Move selection inside linked text, it should stay highlighted.</li>
+				<li>
+					Check if it works correctly with two-step caret movement when entering and
+					leaving linked text.
+				</li>
+				<li>Use enter to split linked text, check if links are highlighted separately.</li>
+			</ol>
+			<p>NOTE: No additional undo steps should be added when preparing steps 1-3.</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>foo <a href="http://ckeditor.com">linked text</a> baz</p>
+		</div>
+	</body>
+</html>

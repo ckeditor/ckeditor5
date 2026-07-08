@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Token</title>
+		<script type="module" src="./token.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Token sample</h2>
+			<h3>Scenario 1</h3>
+			<p><strong>Actions</strong></p>
+			<ol>
+				<li>
+					Click <code>Resolve</code> button to resolve the pending promise with the XHR
+					response.
+				</li>
+			</ol>
+			<p><strong>Expected result</strong></p>
+			<ul>
+				<li>Editor isn't initialized at the start of the scenario.</li>
+				<li>
+					After clicking the button the editor initializes with no error in the console.
+				</li>
+				<li>The token used in the editor should be visible in the output.</li>
+			</ul>
+			<h3>Scenario 2</h3>
+			<p><strong>Actions</strong></p>
+			<ol>
+				<li>Restart the page with <kbd>CMD</kbd> + <kbd>R</kbd></li>
+				<li>
+					Click <code>Reject</code> button to reject the pending promise with an error.
+				</li>
+			</ol>
+			<p><strong>Expected result</strong></p>
+			<ul>
+				<li>Editor isn't initialized at the start of the scenario.</li>
+				<li>The token is different than the previous token.</li>
+				<li>
+					After clicking the button the editor doesn't initialize and there is an error in
+					the output - <code>Cannot download new token!</code>.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Token URL callback example</h2>
+		</div>
+
+		<style>
+			pre {
+				white-space: pre-wrap;
+				white-space: -moz-pre-wrap;
+				white-space: -pre-wrap;
+				white-space: -o-pre-wrap;
+				word-wrap: break-word;
+			}
+		</style>
+
+		<div id="request"></div>
+
+		<pre id="output"></pre>
+	</body>
+</html>

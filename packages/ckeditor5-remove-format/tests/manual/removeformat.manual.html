@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Removeformat</title>
+		<script type="module" src="./removeformat.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Remove Format</h1>
+			<p>Select the content and press the "Remove Format" button in the toolbar.</p>
+			<h2>Things to consider</h2>
+			<ul>
+				<li>Bold, emphasize and underline should be removed.</li>
+				<li>Links <strong>must not</strong> be removed.</li>
+				<li>Image <strong>must not</strong> change its size.</li>
+				<li>
+					Try to remove some formatting from an image caption by creating a selection
+					containing the entire widget.
+				</li>
+				<li>
+					The button should be disabled if your selection doesn't contain any formatting
+					that might be removed.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>
+				Paragraph with
+				<strong>bold</strong>
+				,
+				<em>emphasize</em>
+				and some
+				<u>underline</u>
+				.
+			</p>
+
+			<figure class="image image_resized" style="width: 18%">
+				<img src="assets/sample.png" alt="Autumn fields" />
+				<figcaption>Autumn <em>fields</em> by Aleksander Nowodziński</figcaption>
+			</figure>
+
+			<p><a href="#">Links</a> are not removed.</p>
+		</div>
+	</body>
+</html>

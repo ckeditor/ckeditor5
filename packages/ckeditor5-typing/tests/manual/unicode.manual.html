@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Unicode</title>
+		<script type="module" src="./unicode.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Unicode support</h2>
+			<h3>Selection</h3>
+			<ol>
+				<li>Put caret somewhere before surrogate pair characters.</li>
+				<li>Using right arrow key move caret to the end of paragraph.</li>
+				<li>Caret should be placed after each character.</li>
+				<li>No errors in console.</li>
+				<li>Do the same but make selection using mouse.</li>
+				<li>
+					Do the same for combined marks. Note that some browsers (i.e. Chrome) forbid
+					putting selection between லை and க்கு.
+				</li>
+			</ol>
+			<h3>Removing</h3>
+			<ol>
+				<li>
+					<p>Put caret at the end of first paragraph.</p>
+				</li>
+				<li>
+					<p>Start removing surrogate pair characters using backspace.</p>
+				</li>
+				<li>
+					<p>Characters should be removed one by one.</p>
+				</li>
+				<li>
+					<p>Put caret at the end of second paragraph.</p>
+				</li>
+				<li>
+					<p>Start removing combined characters using backspace.</p>
+				</li>
+				<li>
+					<p>
+						Combining mark and base characters should be removed separately (not at
+						once).
+					</p>
+				</li>
+				<li>
+					<p>You may need to refresh test if you removed too many combined characters.</p>
+				</li>
+				<li>
+					<p>Put caret before combined character.</p>
+				</li>
+				<li>
+					<p>Start removing combined characters using delete key.</p>
+				</li>
+				<li>
+					<p>Combining marks should be removed together with base characters.</p>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Some surrogate pair characters: 🐛🐛 and 𨭎𨭎</p>
+			<p>Some base characters with combining marks: a̻̐ and zͤͣ</p>
+		</div>
+	</body>
+</html>

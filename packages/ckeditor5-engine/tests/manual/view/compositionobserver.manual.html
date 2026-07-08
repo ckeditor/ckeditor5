@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Compositionobserver</title>
+		<script type="module" src="./compositionobserver.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ul>
+				<li>Expected initialization: <code>{}foo bar</code>.</li>
+				<li>
+					Check whether composition events are logged to the console with proper data:
+					<ul>
+						<li><code>compositionstart</code>,</li>
+						<li><code>compositionupdate</code>,</li>
+						<li><code>compositionend</code></li>
+					</ul>
+				</li>
+			</ul>
+			<p><strong>Composition events are fired while typing:</strong></p>
+			<ul>
+				<li>Hiragana,</li>
+				<li>Spanish-ISO: accent <code>' + a</code>,</li>
+				<li>MacOS: long <code>a</code> press (accent balloon)</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>foo bar</p>
+		</div>
+	</body>
+</html>

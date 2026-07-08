@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Restrictedediting Focus</title>
+		<script type="module" src="./restrictedediting-focus.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Restricted editing - focus cycling in an editor surrounded by forms</h2>
+			<h2>Standard mode</h2>
+			<ol>
+				<li>Make sure the "Standard" mode is selected.</li>
+				<li>Focus the "Standard" radio button in the "Mode" form.</li>
+				<li>Start cycling the focus using the <kbd>Tab</kbd> key.</li>
+			</ol>
+			<p><strong>Expected behaviour</strong>:</p>
+			<ul>
+				<li>
+					The focus should cycle across:
+					<ol>
+						<li>The "Mode" form,</li>
+						<li>The editor,</li>
+						<li>The radio form below the editor,</li>
+					</ol>
+				</li>
+				<li>
+					Pressing <kbd>Shift</kbd>+<kbd>Tab</kbd> should cycle focus in the opposite
+					direction.
+				</li>
+			</ul>
+			<h2>Restricted mode</h2>
+			<ol>
+				<li>Switch to the "Restricted" mode.</li>
+			</ol>
+			<p><strong>Expected behaviour</strong>:</p>
+			<ul>
+				<li>
+					When selection is in the <strong>first</strong> restricted exception, pressing
+					<kbd>Shift</kbd>+<kbd>Tab</kbd> should set focus in the text input with a
+					"value" ("Nick") above the editor
+				</li>
+				<li>
+					When selection is in the <strong>last</strong> restricted exception, pressing
+					<kbd>Tab</kbd> should set focus in the radio input with a "label" ("Test 1")
+					below the editor.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<p>
+			<b>Mode</b>:
+			<input type="radio" id="mode-standard" name="mode" value="standard" checked /><label
+				for="mode-standard"
+				>Standard</label
+			>
+			<input type="radio" id="mode-restricted" name="mode" value="restricted" /><label
+				for="mode-restricted"
+				>Restricted</label
+			>
+		</p>
+
+		<form style="margin: 20px 0">
+			<input type="text" placeholder="Type your name..." value="Nick" />
+			<input type="text" placeholder="Type your surname..." value="Thomas" disabled />
+		</form>
+
+		<div id="editor">
+			<h2>Heading 1</h2>
+			<p>Paragraph <span class="restricted-editing-exception">it is editable</span></p>
+			<p>
+				Exception on part of a word: <a href="ckeditor.com">coompi</a
+				><span class="restricted-editing-exception"
+					><a href="ckeditor.com">ter</a> (fix spelling in Firefox).</span
+				>
+			</p>
+			<p><strong>Bold</strong> <i>Italic</i> <a href="foo">Link</a></p>
+			<ul>
+				<li>UL List item 1</li>
+				<li>UL List item 2</li>
+			</ul>
+			<ol>
+				<li><span class="restricted-editing-exception">OL List item 1</span></li>
+				<li>OL List item 2</li>
+			</ol>
+			<blockquote>
+				<p>Quote</p>
+				<ul>
+					<li>Quoted UL List item 1</li>
+					<li>Quoted UL List item <span class="restricted-editing-exception">2</span></li>
+				</ul>
+				<p>Quote</p>
+			</blockquote>
+		</div>
+
+		<form style="margin: 20px 0">
+			<label><input type="radio" name="test" value="test1" checked />Test 1</label>
+			<label><input type="radio" name="test" value="test2" /> Test 2</label>
+		</form>
+	</body>
+</html>

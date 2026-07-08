@@ -215,10 +215,8 @@ examples.forEach( async ( example, index ) => {
 	const tableNumber = index + 1;
 	const exampleHtml = generateExample( tableNumber, example );
 
-	const wrapper = document.querySelector( '.manual-test-container' ) || document.body;
-
 	// Use insertAdjacentHTML to avoid disrupting the DOM
-	wrapper.insertAdjacentHTML( 'beforeend', exampleHtml );
+	document.body.insertAdjacentHTML( 'beforeend', exampleHtml );
 
 	await createTableInPre( tableNumber, example, 'example' );
 	createEditor( tableNumber, example, 'standard' );

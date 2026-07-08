@@ -1,0 +1,129 @@
+<!doctype html>
+<head>
+	<title>14911</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="default-src 'none'; connect-src 'self' https://cksource.com http://*.cke-cs.com; script-src 'self' https://cksource.com https://unpkg.com 'unsafe-inline'; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *"
+	/>
+	<style>
+		body,
+		html {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		pre {
+			margin: 0;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			margin: 20px;
+		}
+
+		.row {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 20px;
+		}
+
+		.column {
+			flex: 0 0 30%; /* Set a specific width for the columns */
+			margin: 0 10px;
+			padding: 10px;
+			border: 1px solid #ddd;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+			overflow: auto;
+		}
+
+		.column-title {
+			font-size: 20px;
+			font-weight: bold;
+			margin: 0 10px 5px; /* Adjusted to align with column padding */
+			flex: 0 0 30%; /* Match column width for alignment */
+			text-align: center;
+		}
+
+		.code-block {
+			background-color: #f5f5f5;
+			word-wrap: break-word;
+			overflow-x: auto; /* Ensures code block is scrollable if content is too wide */
+		}
+
+		.raw-table table {
+			border-collapse: collapse;
+		}
+
+		.raw-table table,
+		th,
+		td {
+			border: 1px solid black;
+		}
+	</style>
+	<script src="https://unpkg.com/prettier@3.2.5/standalone.js"></script>
+	<script src="https://unpkg.com/prettier@3.2.5/plugins/html.js"></script>
+	<script>
+		window.prettier = prettier;
+		window.prettierPlugins = prettierPlugins;
+	</script>
+	<script type="module" src="./14911.js"></script>
+</head>
+<body>
+	<ck-manual-header>
+		<h1>
+			Ticket test: <a href="https://github.com/ckeditor/ckeditor5/issues/14911">#14911</a>
+		</h1>
+		<p>Tables are changed.</p>
+		<h2>Table 1</h2>
+		<p>
+			CKEditor has moved the parent row for "Rowgroup Header 1" into the thead element, which
+			makes the table inaccessible to screen readers.
+		</p>
+		<h2>Table 2</h2>
+		<p>
+			CKEditor has moved all the parent rows for rowgroup headers into the thead element. It
+			has also put all the rows after the thead block into one tbody block. This makes the
+			table inaccessible to screen readers and is a loss of data, since we can no longer
+			reconstruct the original table due to loss of the tbody blocks.
+		</p>
+		<h2>Table 3</h2>
+		<p>
+			CKEditor has not moved all the parent rows for rowgroup headers into the thead element,
+			but has put all the rows after the thead block into one tbody block. This causes data
+			loss, since we can no longer reconstruct the original table due to loss of the tbody
+			blocks, and makes the table inaccessible to screen readers. CKEditor has also turned row
+			headers in the second column to td elements with a scope attribute, which is invalid,
+			and causes further accessibility issues.
+		</p>
+		<h2>Table 4</h2>
+		<p>
+			CKEditor has added inline styles to col elements (strange), put all the rows after the
+			thead block into one tbody block (again, potential data loss and makes the table
+			inaccessible to screen readers). I'm not sure what the practical implications of this
+			next quirk are, but I want to note it. CKEditor has added a non-breaking space character
+			to an empty th tag. I don't think non-breaking spaces are ASCII whitespace. This means
+			that the header cell is non-empty and user agents (including screen readers) should add
+			it to the header list for the cells beneath it, according to the spec.
+		</p>
+		<h2>Table 5</h2>
+		<p>
+			If you copy/paste the table example from Curriculum for Web Content Accessibility
+			Guidelines 1.0 (created in year 2000!) into the CKEditor 5 demo page (via the Source
+			mode button) it is broken.
+		</p>
+		<p>It appears that several things are happening:</p>
+		<ul>
+			<li>multiple <code>&#x3C;tbody></code> sections are collapsed into a single one.</li>
+			<li>
+				any <code>&#x3C;tr></code> in <code>&#x3C;tbody></code> consisting of only
+				<code>&#x3C;th></code> tags (no <code>&#x3C;td></code> tags) are considered by
+				CKEditor to be a header, and thus pulled out of order up into the
+				<code>&#x3C;thead></code> section.
+			</li>
+		</ul>
+	</ck-manual-header>
+</body>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Decouplededitor Editable</title>
+		<script type="module" src="./decouplededitor-editable.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>Click "Init editor".</li>
+				<li>Expected:</li>
+			</ol>
+			<ul>
+				<li>The toolbar container should get the toolbar.</li>
+				<li>
+					The toolbar should appear with "Heading", "Bold", "Italic", "Undo" and "Redo"
+					buttons.
+				</li>
+				<li><strong>The yellow element should become an editable</strong>.</li>
+			</ul>
+			<ol start="3">
+				<li>Do some editing and formatting.</li>
+				<li>Click "Destroy editor".</li>
+				<li>Expected:</li>
+			</ol>
+			<ul>
+				<li>Editor should be destroyed.</li>
+				<li>The toolbar should disappear from the container.</li>
+				<li><strong>The editable must remain</strong>.</li>
+				<li><strong>The editable must retain the editor data</strong>.</li>
+				<li>The <code>.ck-body</code> region should be removed.</li>
+			</ul>
+			<h2>Notes:</h2>
+			<ul>
+				<li>
+					You can play with:
+					<ul>
+						<li><code>editable.isReadOnly</code>,</li>
+					</ul>
+				</li>
+				<li>Changes to <code>editable.isFocused</code> should be logged to the console.</li>
+				<li>Features should work.</li>
+			</ul>
+		</ck-manual-header>
+
+		<p>
+			<button id="destroyEditor">Destroy editor</button>
+			<button id="initEditor">Init editor</button>
+		</p>
+
+		<h2>The toolbar</h2>
+		<div class="toolbar-container"></div>
+
+		<h2>The editable</h2>
+		<div class="editable-container">
+			<div class="editor__editable">
+				<h2>This element becomes the editable</h2>
+				<p>
+					It has the initial editor data. It should keep it after the editor is destroyed
+					too.
+				</p>
+			</div>
+		</div>
+
+		<style>
+			.editable-container,
+			.toolbar-container {
+				position: relative;
+				border: 1px solid red;
+			}
+
+			.editable-container::after,
+			.toolbar-container::after {
+				content: attr(class);
+				position: absolute;
+				background: red;
+				color: #fff;
+				top: 0;
+				right: 0;
+				font: 10px/2 monospace;
+				padding: 0.1em 0.3em;
+			}
+
+			.toolbar-container {
+				padding: 1em;
+			}
+
+			.editable-container {
+				padding: 3em;
+				overflow-y: scroll;
+				max-height: 300px;
+			}
+
+			.editable-container div.editor__editable {
+				background: yellow;
+			}
+
+			.editable-container .ck-editor__editable {
+				min-height: 21cm;
+				padding: 2em;
+				border: 1px #d3d3d3 solid;
+				border-radius: var(--ck-border-radius);
+				background: white;
+				box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+			}
+		</style>
+	</body>
+</html>

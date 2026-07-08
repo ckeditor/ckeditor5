@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Mention Custom Commitkeys</title>
+		<script type="module" src="./mention-custom-commitkeys.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Mention</h2>
+			<p>
+				The mention configuration with a custom
+				<code>config.mention.commitKeys</code> configuration and a static list of
+				autocomplete feed:
+			</p>
+			<h3>Configuration</h3>
+			<p>Type "@" to display the list of available mentions.</p>
+			<h3>Interaction</h3>
+			<ul>
+				<li>
+					Use <strong><kbd>arrowup</kbd></strong> to select previous item
+				</li>
+				<li>
+					Use <strong><kbd>arrowdown</kbd></strong> to select next item
+				</li>
+				<li>
+					Use <strong><kbd>space</kbd></strong> or <strong><kbd>a</kbd></strong> keys to
+					insert a mention into the document.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Hello <span class="mention" data-mention="@Ted">@Ted</span>.</p>
+
+			<figure class="image">
+				<img src="sample.jpg" />
+				<figcaption>CKEditor logo - caption</figcaption>
+			</figure>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Deep Render</title>
+		<script type="module" src="./deep-render.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				Text nodes deep rendering (<a
+					href="https://github.com/ckeditor/ckeditor5-engine/issues/1125"
+					>#1125</a
+				>)
+			</h2>
+			<h3>
+				Deep space rerender (<a
+					href="https://github.com/ckeditor/ckeditor5-engine/issues/1093"
+					>#1093</a
+				>)
+			</h3>
+			<ol>
+				<li>Put caret after each <code>Foo</code> text (<code>Foo^</code>).</li>
+				<li>Press space.</li>
+			</ol>
+			<p>
+				<strong>Expected</strong>: Inserted space is visible. Space on the beginning of the
+				next text node is replaced with <code>&#x26;nbsp;</code>.
+			</p>
+			<h3>
+				Link ending with styles (<a
+					href="https://github.com/ckeditor/ckeditor5-typing/issues/120"
+					>ckeditor5-typing#120</a
+				>)
+			</h3>
+			<ol>
+				<li>Put caret on the end of the link (<code>Link Bold^</code>).</li>
+				<li>Insert some text.</li>
+			</ol>
+			<p>
+				<strong>Expected</strong>: Bold text is inserted as a part of the link. No errors
+				thrown in the browser dev console.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Foo<u> bar</u></p>
+			<p><u>Foo</u><i> buz</i></p>
+			<p>
+				Foo<a href="#"><b> biz</b></a>
+			</p>
+			<p>
+				Text <a href="#">Link <b>Bold</b></a> Text
+			</p>
+		</div>
+
+		<p>Editor HTML preview:</p>
+		<code id="preview"></code>
+	</body>
+</html>

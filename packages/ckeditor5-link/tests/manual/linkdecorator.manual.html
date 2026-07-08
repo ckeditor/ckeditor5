@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Linkdecorator</title>
+		<script type="module" src="./linkdecorator.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Link decorators</h2>
+			<h3>Manual decorators (window.editors.manualDecorators):</h3>
+			<ol>
+				<li>Should be available for every link.</li>
+				<li>Should be applied to the content only when "Save" was clicked.</li>
+				<li>
+					There should be initially set some decorators over specific links based on
+					source data of the editor:
+					<ul>
+						<li><code>CKEditor5</code> has: "Open in a new tab"</li>
+						<li><code>CKSource</code> has: "Open in a new tab" and "Downloadable"</li>
+						<li><code>CKEditor5</code> (schemaless) has: "Gallery"</li>
+						<li><code>ftp address</code> has: "Downloadable"</li>
+					</ul>
+				</li>
+				<li>
+					There should be 3 manual decorators available:
+					<ul>
+						<li>Open in new a new tab</li>
+						<li>Downloadable</li>
+						<li>Gallery link</li>
+					</ul>
+				</li>
+				<li>
+					State of the decorator switches should reflect the model of the currently
+					selected link.
+				</li>
+				<li>
+					Switch buttons should be focusable (with the tab key), after the URL input. The
+					"save" and "cancel" buttons should be focused last.
+				</li>
+			</ol>
+			<h3>Automatic decorators (window.editors.automaticDecorators).</h3>
+			<ol>
+				<li>
+					There should be a default automatic decorator turned on, which adds
+					<code>target="_blank"</code> and
+					<code>rel="noopener noreferrer"</code> attributes to all external links (links
+					starting with <code>http://</code>, <code>https://</code> or <code>//</code>).
+				</li>
+				<li>There should be no changes to the model or the view of the editors.</li>
+				<li>
+					Decorator data should be added during downcast (run
+					<code>window.editors.automaticDecorators.getData()</code> to see how it works).
+				</li>
+				<li>
+					There are 2 additional decorators in this editor:
+					<ul>
+						<li>
+							phone, which detects all links starting with <code>tel:</code> and adds
+							the <code>phone</code> CSS class to such link,
+						</li>
+						<li>
+							internal, which adds the <code>internal</code> CSS class to all links
+							starting with <code>#</code>.
+						</li>
+					</ul>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>Manual decorators</h2>
+		<div id="editor">
+			<a href="">Link with empty anchor</a>
+			<p>
+				This is
+				<a href="http://ckeditor.com" target="_blank" rel="noopener noreferrer"
+					>CKEditor5</a
+				>
+				from
+				<a
+					href="http://cksource.com"
+					download="download"
+					target="_blank"
+					rel="noopener noreferrer"
+					>CKSource</a
+				>.
+			</p>
+			<p>This is <a href="//ckeditor.com" class="gallery">CKEditor5</a> as schemaless url.</p>
+			<p>This is <a href="#anchor">anchor</a> on this page.</p>
+			<p>
+				This is some random <a href="ftp://127.0.0.1" download="download">ftp address</a>.
+			</p>
+			<p>This is some <a href="mailto:random@user.org">mail</a>.</p>
+			<p>This is some <a href="tel:123456789">phone number</a> with gallery decorator</p>
+			<p>
+				This is a link with multiple decorators
+				<a href="http://cksource.com" target="_blank" rel="noopener noreferrer nofollow"
+					>using rel</a
+				>
+				attribute
+			</p>
+
+			<p>Test linked images:</p>
+			<figure class="image">
+				<a href="http://ckeditor.com" target="_blank" rel="noopener noreferrer">
+					<img src="../manual/sample.jpg" alt="Linked block image with decorators" />
+				</a>
+				<figcaption>Linked block image with manual decorators</figcaption>
+			</figure>
+
+			<p>
+				Inline linked image with decorators:
+				<a href="http://ckeditor.com" class="gallery" download="download">
+					<img src="../manual/sample50.png" alt="Linked inline image" />
+				</a>
+			</p>
+		</div>
+
+		<h2>Automatic decorators</h2>
+		<div id="editor2">
+			<p>
+				This is
+				<a
+					href="http://ckeditor.com"
+					target="_blank"
+					rel="noopener noreferrer"
+					download="download"
+					>CKEditor5</a
+				>
+				from <a href="http://cksource.com">CKSource</a>.
+			</p>
+			<p>This is <a href="//ckeditor.com">CKEditor5</a> as schemaless url.</p>
+			<p>This is <a href="#anchor">anchor</a> on this page.</p>
+			<p>This is some random <a href="ftp://127.0.0.1">ftp address</a>.</p>
+			<p>This is some <a href="mailto:random@user.org">mail</a>.</p>
+			<p>This is some <a href="tel:123456789">phone number</a>.</p>
+
+			<p>Test linked images with automatic decorators:</p>
+			<figure class="image">
+				<a href="http://ckeditor.com">
+					<img src="../manual/sample.jpg" alt="External link image" />
+				</a>
+				<figcaption>Block image with automatic external link decorator</figcaption>
+			</figure>
+
+			<p>
+				Inline images:
+				<a href="tel:123456789">
+					<img src="../manual/sample50.png" alt="Telephone link image" />
+				</a>
+				and
+				<a href="#internal-section">
+					<img src="../manual/sample50.png" alt="Internal link image" />
+				</a>
+			</p>
+		</div>
+
+		<h2>Conflicting decorators (automatic vs manual)</h2>
+		<div id="editor3">
+			<p>Test conflicting <code>rel</code> attributes:</p>
+			<ul>
+				<li><a href="/page">Link with no rel</a></li>
+				<li><a href="/about" rel="nofollow">Link with nofollow</a></li>
+				<li><a href="/contact" rel="ugc">Link with ugc</a></li>
+				<li><a href="/blog" rel="sponsored">Link with sponsored</a></li>
+				<li><a href="/docs" rel="nofollow ugc">Link with multiple rel values</a></li>
+			</ul>
+
+			<p>Test conflicting <code>target</code> attributes:</p>
+			<ul>
+				<li><a href="/home">Link with no target</a></li>
+				<li><a href="/internal" target="_self">Local link opening in same tab</a></li>
+				<li><a href="/external-page" target="_blank">Local link opening in new tab</a></li>
+				<li>
+					<a href="http://example.com" target="_self"
+						>External link opening in same tab</a
+					>
+				</li>
+				<li>
+					<a href="http://example.com" target="_blank"
+						>External link opening in new tab</a
+					>
+				</li>
+				<li>
+					<a href="https://example.com"
+						>External link opening in new tab (automatic append external attribute)</a
+					>
+				</li>
+			</ul>
+
+			<p>Test toggling classes (they should never conflict):</p>
+			<ul>
+				<li><a href="/page1" class="important">Important link</a></li>
+			</ul>
+
+			<p>Test conflicting <code>style</code> attributes by toggling blue color:</p>
+			<ul>
+				<li><a href="/red-page" style="color: red; font-style: italic">Red link</a></li>
+			</ul>
+
+			<p>Test linked images with conflicting decorators:</p>
+			<figure class="image">
+				<a
+					href="http://example.com"
+					target="_blank"
+					rel="nofollow sponsored"
+					class="important highlighted"
+					style="color: blue"
+				>
+					<img src="../manual/sample.jpg" alt="Image with multiple decorators" />
+				</a>
+				<figcaption>
+					Block image with conflicting manual decorators (rel, target, classes, styles)
+				</figcaption>
+			</figure>
+
+			<p>
+				Inline image with decorators:
+				<a
+					href="/local-page"
+					target="_self"
+					class="primary"
+					style="color: red; font-style: italic"
+				>
+					<img src="../manual/sample50.png" alt="Inline image with styles" />
+				</a>
+			</p>
+		</div>
+	</body>
+</html>

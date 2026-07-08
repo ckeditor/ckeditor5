@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				Issue
+				<a href="https://github.com/ckeditor/ckeditor5-editor-inline/issues/4">#4</a> manual
+				test
+			</h3>
+			<ol>
+				<li>Focus the editor,</li>
+				<li>Scroll the web page until the toolbar is visible below editable,</li>
+				<li>Type a couple of new lines in the editor,</li>
+			</ol>
+			<p>
+				Expected: The toolbar should stick to the bottom edge of editable as the editable
+				has grown up.
+			</p>
+		</ck-manual-header>
+
+		<style>
+			body {
+				height: 10000px;
+			}
+		</style>
+
+		<div id="editor">
+			<p>Content of the editor.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Fullpage With Head Styles</title>
+		<script type="module" src="./fullpage-with-head-styles.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Styles rendering from <code>&lt;head&gt;</code></h2>
+			<p>
+				When <code>fullPage.allowRenderStylesFromHead</code> is set to
+				<code>true</code> styles from <code>&#x3C;head></code> are rendered.
+			</p>
+			<p>
+				With this option on we recommend to use a CSS sanitizer function to increase the
+				security.
+			</p>
+			<p>
+				In this manual test sanitizer function is added and it simply removes
+				<code>color: green;</code> from stylesheet; This property is initially added to the
+				<code>h2</code> but as you can see the headline is not green but black (default
+				color). When you click the <code>Source</code> button, you will see that style that
+				is set to the <code>h2</code> remains the same. Sanitizer function only works during
+				rendering the style on page while editing it in the editor. It does not affect the
+				source style.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor"></div>
+	</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Customelements</title>
+		<script type="module" src="./customelements.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>GHS custom elements</h2>
+			<p>
+				Add custom HTML elements to the editor. One of the following registered elements can
+				be used:
+			</p>
+			<ul>
+				<li><code>element-inline</code>,</li>
+				<li><code>element-block</code>,</li>
+				<li><code>object-inline</code>,</li>
+				<li><code>object-block</code></li>
+			</ul>
+			<ol>
+				<li>
+					<p>
+						Toggle the source editing mode and verify that all elements displayed in
+						editor are visible in source of the document.
+					</p>
+				</li>
+				<li>
+					<p>
+						Remove the whole HTML content in the source editing mode and create one of
+						the registered elements.
+					</p>
+				</li>
+				<li>
+					<p>
+						Toggle the source editing mode again (switch back to WYSIWYG) to ensure that
+						your element is present in the editor content.
+					</p>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>
+				Sample inline element:
+				<element-inline data-foo="foo">Element Inline</element-inline>
+			</p>
+			<p>Sample block element: <element-block data-foo="foo">Element Block</element-block></p>
+			<p>Sample inline object element: <object-inline data-foo="foo"></object-inline></p>
+			<p>Sample block object element: <object-block data-foo="foo"></object-block></p>
+		</div>
+	</body>
+</html>

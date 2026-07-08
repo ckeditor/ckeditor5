@@ -1,0 +1,111 @@
+<!doctype html>
+<head>
+	<title>Slot Conversion</title>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.box {
+			border: 1px solid hsl(0, 0%, 20%);
+			padding: 2px;
+			background: hsl(0, 0%, 40%);
+		}
+
+		.box-meta {
+			border: 1px solid hsl(0, 0%, 80%);
+			background: hsl(0, 0%, 60%);
+		}
+
+		.box-footer {
+			border: 1px solid hsl(0, 0%, 80%);
+			background: hsl(0, 0%, 40%);
+			color: hsl(0, 0%, 80%);
+		}
+
+		.box-content-field {
+			padding: 0.5em;
+			background: hsl(0, 0%, 100%);
+			border: 1px solid hsl(0, 0%, 80%);
+		}
+
+		.ck.ck-content [data-insert-count] {
+			position: relative;
+		}
+		.ck.ck-content [data-insert-count]:after {
+			content: attr(data-insert-count);
+			position: absolute;
+			font-size: 10px;
+			top: 2px;
+			right: 2px;
+			border: 1px solid hsl(219, 86%, 31%);
+			background: hsl(219, 100%, 91%);
+			padding: 0 2px;
+			opacity: 0.8;
+		}
+	</style>
+	<script type="module" src="./slot-conversion.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>Slot conversion</h1>
+	<p>
+		The editor should be loaded with a "box" element that contains multiple fields in which user
+		can edit content.
+	</p>
+	<p>
+		An additional converter adds <code>"data-insert-count"</code> attribute to view elements to
+		show when it was rendered. It is displayed with a CSS in the top-right corner of rendered
+		element. If a view element was not re-rendered this attribute should not change.
+		<em>Note</em>: it only acts on "insert" changes, so it can omit attribute-to-element changes
+		or insertions not passed through dispatcher.
+	</p>
+	<p>Observe which view elements are re-rendered when using UI-buttons:</p>
+	<ul>
+		<li>
+			<code>Box title</code> - updates title attribute which triggers re-rendering of a "box".
+		</li>
+		<li>
+			<code>Box author</code> - updates author attribute which triggers re-rendering of a
+			"box".
+		</li>
+		<li><code>+</code> - adds field to box which triggers re-rendering of a "box".</li>
+		<li><code>-</code> - removes field from box which triggers re-rendering of a "box".</li>
+	</ul>
+	<p>
+		There is a switch above the editor to load single slot version of the plugin (where all
+		fields are in a single wrapper), and a multi-slot version (where first 2 fields are in one
+		wrapper and the rest in the other wrapper).
+	</p>
+</ck-manual-header>
+
+<div style="margin-bottom: 10px">
+	<label><input type="radio" name="box-mode" value="single" checked />Single slot</label>
+	<label><input type="radio" name="box-mode" value="multi" />Multi slot</label>
+</div>
+
+<div id="editor">
+	<div class="box">
+		<div class="box__wrapper">
+			<div class="box-meta box-meta-header">
+				<div class="box-meta-header-icon"></div>
+				<div class="box-meta-header-title">
+					<h2>I'm a title</h2>
+				</div>
+			</div>
+			<div class="box-content">
+				<div class="box-content-field"><p>Foo</p></div>
+				<div class="box-content-field">
+					<ul>
+						<li>Bar</li>
+					</ul>
+				</div>
+				<div class="box-content-field"><p>Baz</p></div>
+			</div>
+			<div class="box-meta box-meta-author">
+				<a href="www.example.com">@john</a>
+			</div>
+		</div>
+	</div>
+</div>

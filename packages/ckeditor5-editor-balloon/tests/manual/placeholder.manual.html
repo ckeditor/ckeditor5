@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Placeholder</title>
+		<script type="module" src="./placeholder.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Editor placeholder</h2>
+			<ol>
+				<li>Make sure the placeholder is visible in the editor without content.</li>
+				<li>Focus the editor — the placeholder should disappear.</li>
+				<li>Blur the editor — the placeholder should re–appear.</li>
+				<li>Focus the editor with the content</li>
+				<li>Remove the content, no placeholder should be visible.</li>
+				<li>Blur the editor, the placeholder should appear.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor-1" placeholder="Placeholder from the attribute">
+			<p>Remove this text to see the placeholder.</p>
+		</div>
+		<br />
+		<div id="editor-2" data-placeholder="Placeholder from the attribute"></div>
+	</body>
+</html>

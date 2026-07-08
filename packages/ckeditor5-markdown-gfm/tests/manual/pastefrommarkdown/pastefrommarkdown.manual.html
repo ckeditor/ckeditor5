@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Pastefrommarkdown</title>
+		<script type="module" src="./pastefrommarkdown.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h4>GitHub Flavored Markdown Editor</h4>
+			<ul>
+				<li>
+					Play around with
+					<a href="https://guides.github.com/features/mastering-markdown/"
+						>GitHub Flavored Markdown</a
+					>.
+				</li>
+				<li>See the markdown generated in the "output" box.</li>
+				<li>
+					You can copy and paste markdown to set markdown content e.g. from here
+					<a href="https://dillinger.io/">dillinger.io</a>
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<style>
+			pre.markdown-output {
+				background: hsl(70, 7%, 16%);
+				color: hsl(0, 0%, 100%);
+				display: block;
+				font-size: 1em;
+				font-family:
+					Monaco, Menlo, Consolas, "Roboto Mono", "Courier New", "Ubuntu Mono", monospace;
+				padding: 1.333em;
+			}
+		</style>
+
+		<div id="editor"><h2>Markdown output 🛫</h2></div>
+
+		<p>Output:</p>
+
+		<pre class="markdown-output"><code id="markdown-output"></code></pre>
+	</body>
+</html>

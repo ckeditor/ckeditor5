@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Tableblockcontent</title>
+		<script type="module" src="./tableblockcontent.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Loading</h3>
+			<ol>
+				<li>
+					<p>
+						The data should be loaded with a table with block contents in second column:
+					</p>
+					<ul>
+						<li>
+							Paragraph - it should be rendered as <code>&#x3C;span></code> if single
+							paragraph is inside table cell.
+						</li>
+						<li>List</li>
+						<li>Heading</li>
+						<li>Block Quote (with inner paragraph)</li>
+						<li>Image</li>
+					</ul>
+				</li>
+				<li>
+					<p>The third column consist blocks with text alignment.</p>
+					<ul>
+						<li>
+							Paragraph - should be rendered was <code>&#x3C;p></code> when alignment
+							is set (apart from default) for single paragraph.
+						</li>
+					</ul>
+				</li>
+			</ol>
+			<h3>Testing</h3>
+			<ol>
+				<li>
+					Use <kbd>Enter</kbd> in cells with single <code>&#x3C;paragraph></code>. When
+					two <code>&#x3C;paragraph></code>'s are in one table cell they should be
+					rendered as <code>&#x3C;p></code>.
+				</li>
+				<li>
+					Undo previous step - the <code>&#x3C;p></code> element should be changed to
+					<code>&#x3C;span></code> for single paragraph.
+				</li>
+				<li>
+					Change <code>&#x3C;heading></code> to paragraph - it should be rendered as
+					<code>&#x3C;p></code> element if there are other headings or other block
+					content.
+				</li>
+				<li>
+					Change one <code>&#x3C;heading></code> to paragraph and remove other headings.
+					The <code>&#x3C;paragraph></code> should be rendered as
+					<code>&#x3C;span></code>.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<style>
+			body {
+				font-family: Helvetica, Arial, sans-serif;
+				font-size: 14px;
+			}
+		</style>
+
+		<div id="editor">
+			<p>Table with block contents:</p>
+
+			<table>
+				<tbody>
+					<tr>
+						<td>$text</td>
+						<td>Foo</td>
+						<td>Brownie carrot cake soufflé jelly-o lemon drops cupcake tart.</td>
+					</tr>
+					<tr>
+						<td>paragraph</td>
+						<td><p>Foo</p></td>
+						<td>
+							<p>A paragraph with default alignment</p>
+							<p style="text-align: right">A paragraph with right alignment</p>
+							<p style="text-align: center">A paragraph with center alignment</p>
+							<p style="text-align: justify">A paragraph with justify alignment</p>
+						</td>
+					</tr>
+					<tr>
+						<td>list</td>
+						<td>
+							<ul>
+								<li>Foo</li>
+								<li>Bar</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>A list item with default alignment</li>
+								<li style="text-align: right">A list item with right alignment</li>
+								<li style="text-align: center">
+									A list item with center alignment
+								</li>
+								<li style="text-align: justify">
+									A list item with justify alignment
+								</li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td>heading</td>
+						<td>
+							<h2>An h2 title.</h2>
+							<h3>An h3 title.</h3>
+							<h4>An h4 title.</h4>
+						</td>
+						<td>
+							<h2>An h2 with default alignment.</h2>
+							<h2 style="text-align: right">An h2 with right alignment.</h2>
+							<h2 style="text-align: center">An h2 with center alignment.</h2>
+							<h2 style="text-align: justify">An h2 with justify alignment.</h2>
+						</td>
+					</tr>
+					<tr>
+						<td>block quote</td>
+						<td>
+							<blockquote><p>A quote</p></blockquote>
+						</td>
+						<td>
+							<blockquote>
+								<p style="text-align: right">
+									A quote with paragraph with right alignment
+								</p>
+							</blockquote>
+						</td>
+					</tr>
+					<tr>
+						<td>image</td>
+						<td>
+							<img alt="sample image" src="sample.jpg" />
+						</td>
+						<td>
+							<p>An image aligned to right:</p>
+							<figure class="image image-style-side" contenteditable="false">
+								<img src="sample.jpg" alt="sample image" />
+							</figure>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

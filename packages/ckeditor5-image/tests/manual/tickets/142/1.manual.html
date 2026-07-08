@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				Update the UI after image load
+				<a href="https://github.com/ckeditor/ckeditor5-image/issues/142">#142</a>
+			</h3>
+			<ol>
+				<li>
+					Click <strong>Insert image</strong> then quickly select the link in the content
+					(the link editing balloon should show up).
+				</li>
+				<li>
+					Observe if the link balloon and block toolbar remains properly positioned after
+					replacing image source to the biggest one (replacing source is made using DOM
+					API).
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<p><button class="start">Insert image</button></p>
+
+		<div id="editor">
+			<p>lorem ipsum</p>
+			<p>foo <a href="foo">bar</a> biz</p>
+		</div>
+	</body>
+</html>

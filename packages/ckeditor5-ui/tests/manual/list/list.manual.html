@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>List</title>
+		<script type="module" src="./list.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>ListView component</h1>
+			<ol>
+				<li>There are two examples of a list in this test.</li>
+				<li>Make sure both render correctly, especially the one with the item groups.</li>
+				<li>
+					Verify accessibility: click the first item and then navigate across the list.
+					The navigation should be smooth, all items should get focus in the right order.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="playground" class="ck-reset ck-reset_all"></div>
+
+		<style>
+			#playground {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-around;
+			}
+
+			#playground > .ck.ck-list {
+				border: 1px solid #000;
+			}
+		</style>
+	</body>
+</html>

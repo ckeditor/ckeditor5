@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Blocktoolbar</title>
+		<script type="module" src="./blocktoolbar.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Block toolbar demo</h2>
+			<p>
+				<em
+					>To make sure that the toolbar button appears next to selected block element
+					(see points below) we want to simulate real environment with wrappers
+					differently positioned and some random content above the editor.</em
+				>
+			</p>
+			<ol>
+				<li>
+					Check if the button appears next to all block elements except the image (no
+					toolbar item available).
+				</li>
+				<li>
+					Change the format of one of the block elements, panel attached to button should
+					hide after that.
+				</li>
+				<li>
+					Put the selection in the one of the last blocks, click the button to display the
+					panel then start resizing the browser window and observe if the button and panel
+					are properly repositioned.
+				</li>
+			</ol>
+			<h3>External changes</h3>
+			<h2>Typing</h2>
+			<ol>
+				<li>Click <code>Start external typing</code></li>
+				<li>
+					Put the selection in the first paragraph (<code
+						>Like all the great things...</code
+					>) and click the button to open the panel (be quick).
+				</li>
+				<li>Check if the button and the panel are repositioned correctly.</li>
+			</ol>
+			<h2>Removing</h2>
+			<ol>
+				<li>Click <code>Start external deleting</code></li>
+				<li>
+					Put the selection in the first paragraph (<code
+						>Like all the great things...</code
+					>) and click the button to open the panel (be quick).
+				</li>
+				<li>Check if the button and the panel are reattached.</li>
+			</ol>
+		</ck-manual-header>
+
+		<button class="external-type">Start external typing</button>
+		<button class="external-delete">Start external deleting</button>
+
+		<div class="wrapper-outer">
+			<h3>Appreciation of diversity</h3>
+			<p>
+				Getting used to an entirely different culture can be challenging. While it’s also
+				nice to learn about cultures online or from books, nothing comes close to
+				experiencing cultural diversity in person. You learn to appreciate each and every
+				single one of the differences while you become more culturally fluid.
+			</p>
+
+			<h3>Improvisation</h3>
+			<p>
+				Life doesn't allow us to execute every single plan perfectly. This especially seems
+				to be the case when you travel. You plan it down to every minute with a big
+				checklist. But when it comes to executing it, something always comes up and you’re
+				left with your improvising skills. You learn to adapt as you go. Here’s how my
+				travel checklist looks now:
+			</p>
+
+			<div class="wrapper">
+				<h3>Appreciation of diversity</h3>
+				<p>
+					Getting used to an entirely different culture can be challenging. While it’s
+					also nice to learn about cultures online or from books, nothing comes close to
+					experiencing cultural diversity in person. You learn to appreciate each and
+					every single one of the differences while you become more culturally fluid.
+				</p>
+
+				<h3>Improvisation</h3>
+				<p>
+					Life doesn't allow us to execute every single plan perfectly. This especially
+					seems to be the case when you travel. You plan it down to every minute with a
+					big checklist. But when it comes to executing it, something always comes up and
+					you’re left with your improvising skills. You learn to adapt as you go. Here’s
+					how my travel checklist looks now:
+				</p>
+
+				<div id="editor">
+					<h2>The three greatest things you learn from traveling</h2>
+					<p>
+						Like all the great things on earth traveling teaches us by example. Here are
+						some of the most precious lessons I’ve learned over the years of traveling.
+					</p>
+
+					<figure class="image">
+						<img
+							src="./umbrellas.jpg"
+							alt="Three monks ascending the stairs of an ancient temple."
+						/>
+						<figcaption>
+							Three monks ascending the stairs of an ancient temple.
+						</figcaption>
+					</figure>
+
+					<h3>Appreciation of diversity</h3>
+					<p>
+						Getting used to an entirely different culture can be challenging. While it’s
+						also nice to learn about cultures online or from books, nothing comes close
+						to experiencing cultural diversity in person. You learn to appreciate each
+						and every single one of the differences while you become more culturally
+						fluid.
+					</p>
+
+					<h3>Improvisation</h3>
+					<p>
+						Life doesn't allow us to execute every single plan perfectly. This
+						especially seems to be the case when you travel. You plan it down to every
+						minute with a big checklist. But when it comes to executing it, something
+						always comes up and you’re left with your improvising skills. You learn to
+						adapt as you go. Here’s how my travel checklist looks now:
+					</p>
+
+					<ul>
+						<li>buy the ticket</li>
+						<li>start your adventure</li>
+					</ul>
+
+					<h3>Confidence</h3>
+					<p>
+						Going to a new place can be quite terrifying. While change and uncertainty
+						makes us scared, traveling teaches us how ridiculous it is to be afraid of
+						something before it happens. The moment you face your fear and see there is
+						nothing to be afraid of, is the moment you discover bliss.
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			#editor {
+				margin: 0 auto;
+				max-width: 800px;
+			}
+
+			.wrapper,
+			.wrapper-outer {
+				position: relative;
+				padding: 50px 20px;
+			}
+
+			/* Random position to check if toolbar button is on the right place */
+			.wrapper-outer {
+				position: absolute;
+				top: 200px;
+				left: 30px;
+			}
+
+			.ck-block-toolbar-button {
+				transform: translateX(-10px);
+			}
+
+			[dir="rtl"] .ck-block-toolbar-button {
+				transform: translateX(10px);
+			}
+		</style>
+	</body>
+</html>

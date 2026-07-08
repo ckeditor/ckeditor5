@@ -1,0 +1,69 @@
+<!doctype html>
+<head>
+	<title>Imageinsertviaurl</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	/>
+	<script type="module" src="./imageinsertviaurl.js"></script>
+</head>
+
+<ck-manual-header>
+	<h2>Image insert via URL</h2>
+	<ol>
+		<li>
+			Click on the button in <code>insertImage</code> plugin to reveal the image insert panel.
+		</li>
+		<li>
+			Paste the URL to the input (eg:
+			<code>https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg</code>).
+		</li>
+		<li>Click <code>Insert</code> button.</li>
+	</ol>
+	<h2>Image replace via URL</h2>
+	<ol>
+		<li>Click on the image in the editor.</li>
+		<li>
+			Click on the button in <code>insertImage</code> plugin to reveal the image insert panel.
+		</li>
+		<li>Edit the value of the input.</li>
+		<li>Click <code>Update</code> button.</li>
+	</ol>
+	<h2>Image insert via pasting URL into editor</h2>
+	<ol>
+		<li>
+			Copy image URL to clipboard (eg:
+			<code>https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg</code>).
+		</li>
+		<li>Paste the URL to the editor.</li>
+	</ol>
+</ck-manual-header>
+
+<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+
+<style>
+	code {
+		word-break: break-all;
+	}
+</style>
+
+<div id="editor">
+	<h2>Image insert via URL</h2>
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat.
+		Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur consectetur
+		lectus sit amet tellus mattis, non lobortis leo interdum.
+	</p>
+</div>
+
+<div id="button-container"></div>
+
+<style>
+	#button-container div {
+		margin-top: 10px;
+	}
+
+	#button-container button {
+		margin-right: 10px;
+	}
+</style>

@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Stickypanelview</title>
+		<script type="module" src="./stickypanelview.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Vertical scrolling</h2>
+			<h3>Sticky to the top of the viewport</h3>
+			<ol>
+				<li>
+					When the page is scrolled vertically, the panel should
+					<ol>
+						<li>stick to the top of the viewport first,</li>
+						<li>
+							then disappear beyond the upper edge of the viewport as it touches the
+							red area
+						</li>
+						<li>
+							but never cover the red area or go beyond the upper edge of editor
+							mock–up.
+						</li>
+					</ol>
+				</li>
+			</ol>
+			<h3>Sticky to the green box</h3>
+			<ol>
+				<li>
+					When the page is scrolled vertically, the panel should
+					<ol>
+						<li>stick to the bottom of the green box first,</li>
+						<li>
+							then disappear beyond the bottom edge of the green box as it touches the
+							red area
+						</li>
+						<li>
+							but never cover the red area or go beyond the upper edge of editor
+							mock–up.
+						</li>
+					</ol>
+				</li>
+			</ol>
+			<h2>Horizontal scrolling</h2>
+			<ol>
+				<li>
+					The panel should always fit horizontally within the editor mock–up, regardless
+					of the position of the h– and v–scrolls of the web page.
+				</li>
+			</ol>
+			<h2>On–load positioning</h2>
+			<ol>
+				<li>Scroll the web page vertically and horizontally, so the panel is sticky.</li>
+				<li>Reload the web page.</li>
+				<li>
+					The panel should get sticky as the page reloads, if the position of scrollbars
+					and the geometry of the viewport creates such a need.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="columns">
+			<div class="column">
+				<h2>Sticky to the top of the viewport</h2>
+
+				<div class="ck-reset ck-editor ck-sticky_to-the-top">
+					<div class="ck-reset_all ck-editor__top"></div>
+					<p class="ck-reset limiter">
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter.
+					</p>
+					<div class="ck-reset_all offset-visualizer"></div>
+				</div>
+			</div>
+			<div class="column">
+				<h2>Sticky to the green box</h2>
+
+				<div class="ck-reset ck-editor ck-sticky_to-the-box">
+					<div class="ck-reset_all ck-editor__top"></div>
+					<p class="ck-reset limiter">
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+						Panel limiter.
+					</p>
+					<div class="ck-reset_all offset-visualizer"></div>
+				</div>
+
+				<div class="fixed">The panel should stick to me instead of the viewport.</div>
+			</div>
+
+			<div class="column">
+				<h2>In scrollable ancestors</h2>
+
+				<div class="scrollable">
+					<div class="scrollable">
+						<div class="ck-reset ck-editor ck-sticky_with-scrollable-ancestors">
+							<div class="ck-reset_all ck-editor__top"></div>
+							<p class="ck-reset limiter">
+								Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel
+								limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+								Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel
+								limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+								Panel limiter. Panel limiter. Panel limiter. Panel limiter. Panel
+								limiter. Panel limiter. Panel limiter. Panel limiter. Panel limiter.
+								Panel limiter.
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="fixed">The panel should stick to me instead of the viewport.</div>
+			</div>
+		</div>
+
+		<style>
+			body {
+				width: 3000px;
+				height: 3000px;
+				padding-top: 150px;
+			}
+
+			.ck-reset {
+				font-size: 10px;
+			}
+
+			h2 {
+				font-size: 18px;
+			}
+
+			#columns {
+				overflow: hidden;
+				margin-top: 50px;
+			}
+
+			.column {
+				float: left;
+				width: 300px;
+				padding: 1em;
+			}
+
+			.ck-editor {
+				height: 200px;
+				background: #ccc;
+				position: relative;
+			}
+
+			.ck-sticky-panel__content {
+				background: yellow !important;
+				padding: 1em;
+			}
+
+			.ck-sticky-panel__content:after {
+				content: "Sticky panel.";
+				text-align: center;
+				width: 100%;
+				display: block;
+			}
+
+			.offset-visualizer {
+				height: 50px;
+				width: 100%;
+				position: absolute;
+				bottom: 0;
+				background: red;
+				color: #fff;
+				opacity: 0.8;
+			}
+
+			.offset-visualizer:after {
+				content: "An offset mock–up. Toolbar should *never* cover the red area.";
+			}
+
+			.fixed {
+				height: 100px;
+				width: 300px;
+				position: fixed;
+				top: 0;
+				z-index: 9999;
+				background: green;
+				opacity: 0.8;
+				color: #fff;
+				box-sizing: border-box;
+				padding: 30px;
+			}
+
+			.scrollable {
+				border: 1px solid #aaa;
+				padding: 30px;
+				padding-bottom: 200px;
+				box-sizing: border-box;
+				height: 150px;
+				overflow: auto;
+			}
+
+			.scrollable > .scrollable {
+				margin-bottom: 200px;
+			}
+
+			.scrollable > .ck-reset {
+				margin-bottom: 100px;
+			}
+
+			.limiter {
+				overflow: hidden;
+			}
+		</style>
+	</body>
+</html>

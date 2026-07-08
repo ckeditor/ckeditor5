@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Selectall</title>
+		<script type="module" src="./selectall.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>The select all feature</h2>
+			<h3>Selecting the entire editor content</h3>
+			<ol>
+				<li>Put the selection anywhere but inside the image caption or table cell.</li>
+				<li>Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd>.</li>
+				<li>
+					The entire content should be selected. You should be able to remove it using the
+					<kbd>Backspace</kbd> key.
+				</li>
+				<li>Repeat the scenario but instead of the keystroke use the toolbar button.</li>
+			</ol>
+			<h3>Selecting the nested editable content</h3>
+			<ol>
+				<li>
+					Put the selection inside: a. an image caption b. the caption of the image in the
+					table c. the table cell.
+				</li>
+				<li>Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd>.</li>
+				<li>
+					The caption content should be selected.
+					<strong>The selection should not go beyond the nested editable.</strong>
+				</li>
+				<li>Repeat the scenario but instead of the keystroke use the toolbar button.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>This is an <a href="https://ckeditor.com">editor</a> instance.</p>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<p>
+									Apple pie marshmallow brownie. Tootsie roll dragée macaroon
+									donut dessert caramels chocolate bar biscuit. Topping chocolate
+									candy powder cake lollipop brownie sugar plum. Marzipan sweet
+									roll lemon drops.
+								</p>
+								<p>
+									Dessert oat cake candy canes gummi bears cupcake marzipan
+									chocolate liquorice liquorice. Jelly-o candy canes biscuit
+									soufflé cake cookie. Chocolate cake pudding gummi bears
+									chocolate bar cookie dragée cotton candy. Wafer pastry donut
+									chocolate bar chocolate bar sugar plum macaroon donut.
+								</p>
+							</td>
+							<td>
+								<p>
+									Apple pie marshmallow brownie. Tootsie roll dragée macaroon
+									donut dessert caramels chocolate bar biscuit. Topping chocolate
+									candy powder cake lollipop brownie sugar plum. Marzipan sweet
+									roll lemon drops.
+								</p>
+								<figure class="image">
+									<img src="./sample.jpg" />
+									<figcaption>Caption</figcaption>
+								</figure>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>An image at the end of the content.</p>
+			<figure class="image">
+				<img src="./sample.jpg" />
+				<figcaption>Caption</figcaption>
+			</figure>
+		</div>
+	</body>
+</html>

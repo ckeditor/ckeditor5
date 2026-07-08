@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				Renderer should handle nested editables [FF]
+				<a href="https://github.com/ckeditor/ckeditor5/issues/721">ckeditor5#721</a>
+			</h2>
+			<h3>TC1</h3>
+			<ol>
+				<li>Put the caret in the first paragraph and type something.</li>
+				<li>Put the caret inside the widget (in "bar").</li>
+				<li>Click "Undo" or press <kbd>Ctrl</kbd>+<kbd>Z</kbd> (check both).</li>
+			</ol>
+			<p><strong>Expected</strong>:</p>
+			<p>No error in the console.</p>
+			<h3>TC2</h3>
+			<p>
+				Try the same TC as above but use both nested editables. See if the focus is
+				correctly moved between them.
+			</p>
+		</ck-manual-header>
+
+		<style>
+			.ck-widget {
+				border: solid 3px blue;
+			}
+		</style>
+
+		<div id="editor">
+			<p>This is an <strong>editor</strong> instance.</p>
+		</div>
+	</body>
+</html>

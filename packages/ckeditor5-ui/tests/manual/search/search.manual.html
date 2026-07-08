@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Search</title>
+		<script type="module" src="./search.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>SearchTextView component</h1>
+			<ol>
+				<li>There are 3 examples of the component in this test.</li>
+				<li>Make sure searching works and the list/toolbar gets filtered.</li>
+				<li>Check accessibility, make sure Tab/Shift+Tab navigation works.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div dir="ltr" class="ck ck-reset_all ck-rounded-corners playground"></div>
+
+		<style>
+			.ck.playground {
+				display: flex;
+				align-items: flex-start;
+			}
+
+			.ck.playground > div {
+				border: 1px dashed red;
+				padding: 10px;
+				max-width: 500px;
+				margin: 10px;
+				flex-grow: 1;
+				flex-shrink: 1;
+			}
+
+			.ck.playground > div > h2 {
+				font-size: 16px;
+				font-weight: bold;
+				margin-bottom: 20px;
+			}
+
+			.ck.ck-search + * {
+				margin-left: 20px;
+			}
+
+			.ck.ck-search .ck-toolbar {
+				margin-top: 10px;
+			}
+		</style>
+	</body>
+</html>

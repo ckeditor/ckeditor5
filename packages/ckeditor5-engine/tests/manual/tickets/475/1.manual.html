@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				Auto-linking manual test
+				<a href="https://github.com/ckeditor/ckeditor5-engine/issues/475">#475</a>
+			</h3>
+			<ul>
+				<li>put the caret at the end of the line,</li>
+				<li>type the link (<a href="http://cksource.com">http://cksource.com</a>).</li>
+			</ul>
+			<p>
+				Expected result: link should appear where you typed it. It should change the
+				<code>src</code> property as you type.
+			</p>
+			<p>Note: this is not a full feature, some other cases may not work.</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>ckeditor from http://www.cksource.com is awesome!</p>
+		</div>
+	</body>
+</html>

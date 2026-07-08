@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Documentlist Skip Levels</title>
+		<script type="module" src="./documentlist-skip-levels.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>List with skip levels (<code>enableSkipLevelLists: true</code>)</h1>
+			<p>
+				Editor with <code>list.enableSkipLevelLists</code> set to <code>true</code>. List
+				items can be indented by more than one level relative to their parent.
+			</p>
+			<h2>Testing</h2>
+			<ol>
+				<li>
+					Place the cursor on a list item and press <code>Tab</code> (or use the indent
+					button) multiple times. The item should keep indenting without limit.
+				</li>
+				<li>
+					The first item of a list should also be indentable (the list can start at level
+					> 0).
+				</li>
+				<li>Outdenting should work as expected (one level at a time).</li>
+				<li>
+					Check the source editing view to verify the nested <code>&#x3C;ol></code>/<code
+						>&#x3C;ul></code
+					>
+					structure.
+				</li>
+				<li>Copy-paste list items between levels and verify the structure is preserved.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="controls">
+			<div class="col">
+				<label><input type="checkbox" id="skipLevels" checked />Skip Levels</label>
+				<label><input type="checkbox" id="indentBlock" checked />IndentBlock</label>
+				<label><input type="checkbox" id="ghs" />GHS</label>
+			</div>
+			<div class="col">
+				<label><input type="checkbox" id="pfo" />PasteFromOffice</label>
+				<label><input type="checkbox" id="listProperties" checked />ListProperties</label>
+			</div>
+		</div>
+
+		<style>
+			#controls {
+				display: flex;
+				gap: 24px;
+				margin-bottom: 12px;
+			}
+
+			.col {
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+			}
+		</style>
+
+		<div id="editor">
+			<h3>Numbered list (try indenting multiple times)</h3>
+			<ol>
+				<li>Item at level 0</li>
+				<li>
+					Item at level 0
+					<ol>
+						<li>
+							Item at level 1
+							<ol>
+								<li>Item at level 2</li>
+							</ol>
+						</li>
+					</ol>
+				</li>
+				<li>Item at level 0</li>
+			</ol>
+
+			<h3>Bulleted list</h3>
+			<ul>
+				<li>Item at level 0</li>
+				<li>Item at level 0</li>
+				<li>Item at level 0</li>
+			</ul>
+
+			<h3>Mixed content</h3>
+			<ol style="list-style-type: lower-roman" start="3">
+				<li>A numbered list with lower-roman numbering that starts at 3.</li>
+				<li>
+					Item with multiple blocks...
+					<hr />
+					...and this is the 3rd block of it.
+				</li>
+				<li>
+					<p>This is a list item with two paragraphs.</p>
+					<p>And here is the last one.</p>
+				</li>
+			</ol>
+		</div>
+	</body>
+</html>

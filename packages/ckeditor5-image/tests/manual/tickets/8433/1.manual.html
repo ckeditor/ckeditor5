@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				The ImageResize plugin crashes if HtmlEmbed plugin has enabled showPreviews option
+				<a href="https://github.com/ckeditor/ckeditor5/issues/8433">#8433</a>
+			</h3>
+			<ol>
+				<li>Confirm that there is no error in the console.</li>
+				<li>
+					Confirm that the image in "Regular image" section can be resized: focus the
+					image (four image resizers should be visible) and then resize the image using
+					any of the resizer.
+				</li>
+				<li>Confirm that the image in "HTML embed preview" can't be resized.</li>
+				<li>Insert new image and confirm that it can be resized.</li>
+				<li>
+					Add new HTML code containing an image (e.g.
+					<code>&#x3C;img src="sample.jpg"></code>) and confirm that it is not possible to
+					resize it.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h3>Regular image</h3>
+			<figure class="image">
+				<img alt="sample" src="sample.jpg" />
+				<figcaption>Caption</figcaption>
+			</figure>
+
+			<h3>HTML embed preview</h3>
+			<div class="raw-html-embed">
+				<img alt="sample" src="sample.jpg" />
+			</div>
+		</div>
+	</body>
+</html>

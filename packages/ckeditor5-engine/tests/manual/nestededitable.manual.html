@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Nestededitable</title>
+		<script type="module" src="./nestededitable.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Nested editable manual test</h3>
+			<ul>
+				<li>
+					Put selection inside <code>foo bar baz</code> nested editable. Main editable and
+					nested one should be focused (blue outline should be visible).
+				</li>
+				<li>
+					Change selection inside nested editable and see if
+					<code>Model contents</code> change accordingly.
+				</li>
+				<li>
+					Click outside the editor. Outline from main editable and nested editable should
+					be removed.
+				</li>
+				<li>
+					Check following scenario:
+					<ul>
+						<li>put selection inside nested editable: <code>foo bar baz{}</code>,</li>
+						<li>click outside the editor (outlines should be removed),</li>
+						<li>
+							put selection at exact same place as before: <code>foo bar baz{}</code>,
+						</li>
+						<li>both editables should be focused (blue outline should be visible).</li>
+					</ul>
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>paragraph</p>
+			<figure>
+				Caption:
+				<figcaption>foo bar baz</figcaption>
+			</figure>
+		</div>
+		<h2>Model contents:</h2>
+		<div id="model"></div>
+	</body>
+</html>

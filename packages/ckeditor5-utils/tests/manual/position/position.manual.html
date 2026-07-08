@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Position</title>
+		<script type="module" src="./position.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>getOptimalPosition() utility</h2>
+			<p>
+				<strong>Expected</strong>: At the bottom of the page, in a nested, scrolled
+				container hierarchy, a <strong>perfect</strong> square divided equally into 4
+				sub–squares should be visible.
+			</p>
+			<p>The colors of the sub–squares should be as follows:</p>
+			<ul>
+				<li>Upper-left corner: <span style="color: cyan">cyan</span>,</li>
+				<li>Upper-right corner: <span style="color: magenta">magenta</span>,</li>
+				<li>
+					Bottom-left corner:
+					<span style="color: yellow; background: black">yellow</span>,
+				</li>
+				<li>Bottom-right corner: <span style="color: black">black</span>.</li>
+			</ul>
+		</ck-manual-header>
+
+		<div class="test-box" style="height: 200px; width: 200px">
+			<div class="test-box" style="height: 400px; width: 400px">
+				<div class="test-box" style="height: 800px; width: 800px">
+					<div class="target"></div>
+					<div class="source source-se"></div>
+				</div>
+				<div class="source source-sw"></div>
+			</div>
+			<div class="source source-ne"></div>
+		</div>
+		<div class="source source-nw"></div>
+
+		<style>
+			body {
+				padding-top: 2000px;
+			}
+
+			.test-box {
+				padding: 15px;
+				border: 25px solid #000;
+				overflow: scroll;
+				position: relative;
+			}
+
+			.source {
+				width: 40px;
+				height: 40px;
+				background: red;
+				position: absolute;
+			}
+
+			.source-nw {
+				background: cyan;
+			}
+
+			.source-ne {
+				background: magenta;
+			}
+
+			.source-sw {
+				background: yellow;
+			}
+
+			.source-se {
+				background: black;
+			}
+
+			.target {
+				width: 80px;
+				height: 80px;
+				background: blue;
+				position: absolute;
+				bottom: 0;
+				right: 0;
+			}
+		</style>
+	</body>
+</html>

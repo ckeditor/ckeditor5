@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Todo List Rtl</title>
+		<script type="module" src="./todo-list-rtl.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>To–do list and RTL (right–to–left content)</h2>
+			<h3>UI</h3>
+			<ol>
+				<li>
+					Make sure the list is displayed correctly.
+					<ol>
+						<li>Check boxes should be on the left side of the text.</li>
+						<li>There should be some space between the text and the check mark.</li>
+						<li>List should be indented from the right side.</li>
+					</ol>
+				</li>
+			</ol>
+			<h3>Keyboard navigation</h3>
+			<ol>
+				<li>Put a selection at the beginning of the document.</li>
+				<li>Use the <strong>right arrow</strong> key to navigate forwards.</li>
+				<li>Go through the to–do list.</li>
+				<li>
+					The navigation should
+					<ul>
+						<li>be uninterrupted,</li>
+						<li>go always forward.</li>
+					</ul>
+				</li>
+				<li>Reach the end of the document.</li>
+				<li>
+					Go backwards using the <strong>left arrow</strong> key and repeat the entire
+					scenario.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>مرحبا</p>
+			<ul>
+				<li><input type="checkbox" />مرحبا</li>
+				<li><input type="checkbox" checked="checked" />مرحبا</li>
+				<li><input type="checkbox" />مرحبا</li>
+				<li><input type="checkbox" checked="checked" />مرحبا</li>
+				<li><input type="checkbox" />مرحبا</li>
+				<li><input type="checkbox" />مرحبا</li>
+				<li><input type="checkbox" checked="checked" />مرحبا</li>
+				<li><input type="checkbox" />مرحبا</li>
+			</ul>
+			<p>مرحبا.</p>
+			<p>مرحبا</p>
+			<ol>
+				<li>مرحبا</li>
+			</ol>
+			<ul>
+				<li><input type="checkbox" />مرحبا</li>
+			</ul>
+			<ul>
+				<li>مرحبا</li>
+			</ul>
+		</div>
+	</body>
+</html>

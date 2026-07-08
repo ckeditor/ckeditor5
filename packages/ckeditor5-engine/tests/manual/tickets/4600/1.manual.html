@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Ignoring events propagation</h2>
+			<p>
+				It's a test for ignoring events fired in elements with a
+				<code>data-cke-ignore-events</code> attribute (<a
+					href="https://github.com/ckeditor/ckeditor5/issues/4600"
+					>#4600</a
+				>).
+			</p>
+			<p>Events are logged in the browser's console.</p>
+			<h3>Case 1: Events ignoring</h3>
+			<ol>
+				<li>
+					<p>Focus the widget by clicking it.</p>
+				</li>
+				<li>
+					<p>
+						Move mouse cursor over the left container (<code
+							>Ignored container with data-cke-ignore-events="true"</code
+						>).
+					</p>
+				</li>
+				<li>
+					<p>Keep moving the cursor over the container.</p>
+					<p>
+						<strong>Expected:</strong> no further "Received mousemove event." logs are
+						added.
+					</p>
+				</li>
+				<li>
+					<p>Click on a "Click!" button in the container.</p>
+					<p><strong>Expected:</strong> No "Received click event." gets logged.</p>
+				</li>
+				<li>
+					<p>Click on the text input in the container.</p>
+					<p><strong>Expected:</strong> Text input gets focused.</p>
+				</li>
+				<li>
+					<p>Type few characters into the focused input.</p>
+					<p>
+						<strong>Expected:</strong> Text is inserted. No keyboard events are logged.
+					</p>
+				</li>
+			</ol>
+			<p>
+				Note: you might get unexpected <code>focus</code> nad <code>blur</code> events in
+				the process, it's a
+				<a href="https://github.com/ckeditor/ckeditor5/issues/8309">known issue</a>.
+			</p>
+			<h3>Case 2: Container without event ignoring</h3>
+			<ol>
+				<li>
+					<p>Focus the widget by clicking it.</p>
+				</li>
+				<li>
+					<p>
+						Move mouse cursor over the right container (<code>Regular container</code>).
+					</p>
+				</li>
+				<li>
+					<p>Keep moving the cursor over the container.</p>
+					<p><strong>Expected:</strong> "Received mousemove event." logs are added.</p>
+				</li>
+				<li>
+					<p>Click on a "Click!" button in the container.</p>
+					<p><strong>Expected:</strong> "Received click event." is logged.</p>
+				</li>
+				<li>
+					<p>Click on the text input in the container.</p>
+					<p>
+						<strong>Expected:</strong> Click events are logged. Editor decides what to
+						do with the selection.
+					</p>
+				</li>
+			</ol>
+			<h3>Case 3: <code>imageLoaded</code> event</h3>
+			<ol>
+				<li>
+					<p>Reload the page (test).</p>
+				</li>
+				<li>
+					<p>Check the console.</p>
+					<p>
+						<strong>Expected:</strong> There's only <strong>one</strong>
+						<code>Received imageLoaded event.</code> log.
+					</p>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<style>
+			.simple-widget-container {
+				margin: 10px 0;
+				font-family: sans-serif;
+			}
+
+			.simple-widget-element {
+				display: flex;
+			}
+
+			.simple-widget-element > fieldset {
+				margin: 18px;
+				width: 50%;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+			}
+
+			.simple-widget-element > fieldset > * {
+				margin: 8px 0;
+			}
+
+			.simple-widget-element > fieldset > legend {
+				font-size: 13px;
+				padding: 4px 16px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				background: #fff;
+			}
+
+			.simple-widget-element > fieldset > input {
+				width: 100%;
+				box-sizing: border-box;
+			}
+
+			.simple-widget-element > fieldset > button {
+				padding: 4px 18px;
+			}
+
+			.simple-widget-element > fieldset > img {
+				display: block;
+			}
+		</style>
+
+		<div id="editor">
+			<section class="simple-widget-container"></section>
+		</div>
+	</body>
+</html>

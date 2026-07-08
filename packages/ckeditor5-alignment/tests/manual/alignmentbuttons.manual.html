@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Alignmentbuttons</title>
+		<script type="module" src="./alignmentbuttons.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Loading</h3>
+			<ol>
+				<li>The data should be loaded with:</li>
+			</ol>
+			<ul>
+				<li>first paragraph with default (left) alignment,</li>
+				<li>second paragraph aligned to right,</li>
+				<li>third paragraph should be centered,</li>
+				<li>fourth paragraph should be justified,</li>
+				<li>an image with caption between first and second paragraphs.</li>
+			</ul>
+			<ol start="2">
+				<li>
+					Toolbar should have four alignment buttons for alignment control: left, right,
+					center and justify.
+				</li>
+			</ol>
+			<h3>Testing</h3>
+			<p>You should be able to:</p>
+			<ol>
+				<li>Change alignment on any paragraph.</li>
+				<li>Change alignment on any selection of paragraphs.</li>
+			</ol>
+			<p>You should not be able to change alignment of figcaption by:</p>
+			<ol>
+				<li>Placing cursor inside caption.</li>
+				<li>Selecting image with other paragraphs.</li>
+			</ol>
+			<p>You should be able to create blocks that can be aligned:</p>
+			<ol>
+				<li>paragraphs</li>
+				<li>headings</li>
+				<li>lists</li>
+			</ol>
+			<p>Alignment UI should:</p>
+			<ol>
+				<li>
+					make "left" button highlight "left" when selection is inside left aligned block
+					(default one)
+				</li>
+				<li>
+					make "right" button highlight "right" when selection is inside right aligned
+					block
+				</li>
+				<li>
+					make "center" button highlight "center" when selection is inside centered block
+				</li>
+				<li>
+					make "justify" button highlight "justify" when selection is inside justified
+					block
+				</li>
+				<li>only one button should be active at once inside dropdown</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>
+				<strong>This should be aligned to the left</strong>. This is a test for text
+				alignment feature.
+			</p>
+			<figure class="image">
+				<img src="sample.jpg" alt="CKEditor logo" />
+				<figcaption>An image</figcaption>
+			</figure>
+			<p style="text-align: right">
+				<strong>This should be aligned to the right</strong>. Lorem ipsum dolor sit amet,
+				consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+				magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+				nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+				voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+				cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+				laborum.
+			</p>
+
+			<p style="text-align: center">
+				<strong>This should be centered</strong>. Lorem ipsum dolor sit amet, consectetur
+				adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+				Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+				ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+				esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+				proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			</p>
+
+			<p style="text-align: justify">
+				<strong>This should be justified</strong>. Lorem ipsum dolor sit amet, consectetur
+				adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+				Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+				ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+				esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+				proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			</p>
+		</div>
+	</body>
+</html>

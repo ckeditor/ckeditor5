@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Rtl</title>
+		<script type="module" src="./rtl.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Inline editor with right–to–left UI</h2>
+			<p>
+				<strong>Note</strong>: For the best testing, run manual tests adding Arabic to
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/testing-environment.html#running-manual-tests"
+					>additional languages configuration</a
+				>.
+			</p>
+			<hr />
+			<h3>Expected</h3>
+			<ol>
+				<li>
+					The main editor toolbar should be displayed on the <strong>right</strong> side
+					of editable.
+				</li>
+				<li>
+					Same as above but also when the viewport is scrolled and the toolbar is attached
+					to the bottom of editable.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor" contenteditable="true">
+			<h2>Editor 1</h2>
+			<p>This is an editor instance.</p>
+		</div>
+
+		<style>
+			body {
+				height: 10000px;
+			}
+		</style>
+	</body>
+</html>

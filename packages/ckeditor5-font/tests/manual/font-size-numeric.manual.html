@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Font Size Numeric</title>
+		<script type="module" src="./font-size-numeric.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Loading</h3>
+			<p>The data should be loaded with:</p>
+			<ul>
+				<li>7 paragraphs with font sizes (10, 12, 14, default, 18, 20, 22),</li>
+			</ul>
+			<h3>Testing</h3>
+			<p>Try to:</p>
+			<ul>
+				<li>Change font by selecting many paragraphs.</li>
+				<li>Change font by selecting some text.</li>
+				<li>Change to default font by selecting many paragraphs.</li>
+				<li>Change to default font by selecting some text.</li>
+			</ul>
+			<h3>Converters mode</h3>
+			<p>
+				The "Restricted value matching" option means that all font-size values that aren't
+				defined in the plugin's configuration will be removed (e.g. when pasted from Google
+				Docs). This behaviour can be disabled by selecting the "Disabled value matching"
+				option.
+			</p>
+			<p>
+				All font-size above 22 aren't specified in the plugin's configuration and should be
+				restored to default size when the "Restricted value matching" option is selected.
+			</p>
+			<p>By default editor should load with the "Disabled value matching" option.</p>
+		</ck-manual-header>
+
+		<p>
+			<b>Font-size converters mode</b>:
+			<input
+				type="radio"
+				id="mode-restricted-values"
+				name="mode"
+				value="restricted-values"
+			/><label for="mode-restricted-values">Restricted value matching</label>
+			<input
+				type="radio"
+				id="mode-disable-value-matching"
+				name="mode"
+				value="disable-value"
+				checked
+			/><label for="mode-disable-value-matching">Disabled value matching</label>
+		</p>
+
+		<div id="editor">
+			<h2>Font Size feature sample.</h2>
+
+			<p><span style="font-size: 10px">Some text with font-size set to: 10px.</span></p>
+			<p><span style="font-size: 12px">Some text with font-size set to: 12px.</span></p>
+			<p><span style="font-size: 14px">Some text with font-size set to: 14px.</span></p>
+			<p>Some text with the default size</p>
+			<p><span style="font-size: 18px">Some text with font-size set to: 18px.</span></p>
+			<p><span style="font-size: 20px">Some text with font-size set to: 20px.</span></p>
+			<p><span style="font-size: 22px">Some text with font-size set to: 22px.</span></p>
+			<p><span style="font-size: 36px">Some text with font-size set to: 36px.</span></p>
+			<p><span style="font-size: 48px">Some text with font-size set to: 48px.</span></p>
+			<p><span style="font-size: 64px">Some text with font-size set to: 64px.</span></p>
+			<p><span style="font-size: 2em">Some text with font-size set to: 2em.</span></p>
+			<p><span style="font-size: 15.5pt">Some text with font-size set to: 15.5pt.</span></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Menubar</title>
+		<script type="module" src="./menubar.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Menu bar for the editor</h1>
+			<ol>
+				<li>Open menu bars in different editors.</li>
+				<li>Navigate menus using mouse (hover).</li>
+				<li>Navigate menus using keyboard (arrow keys, Esc).</li>
+				<li>
+					You should be able to seamlessly move from mouse navigation to keyboard
+					navigation.
+				</li>
+				<li>Use Alt+F9 to focus the menu bar.</li>
+				<li>Use Esc to get back to the editing root.</li>
+				<li>
+					Make sure menu bars that open with not enough space to the bottom display to the
+					top of the button.
+				</li>
+				<li>
+					Make sure menu bars that open with not enough space to the right display to the
+					left of the button (this reverses in RTL).
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>LTR UI editor</h2>
+		<div id="editor-ltr">
+			<p>Editor content</p>
+		</div>
+
+		<h2>RTL UI editor</h2>
+		<div id="editor-rtl">
+			<p>Editor content</p>
+		</div>
+
+		<h2>Editor with custom config</h2>
+		<div id="editor-custom-config">
+			<p>Editor content</p>
+		</div>
+
+		<style>
+			.ck.ck-editor {
+				margin-bottom: 150px;
+			}
+		</style>
+	</body>
+</html>

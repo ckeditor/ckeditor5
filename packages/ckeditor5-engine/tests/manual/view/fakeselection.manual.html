@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Fakeselection</title>
+		<script type="module" src="./fakeselection.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Fake selection</h2>
+			<p>
+				Click on bold <code>bar</code> to create fake selection over it before each of
+				following steps:
+			</p>
+			<ul>
+				<li>
+					Press left/up arrow key - collapsed selection should appear before
+					<code>bar</code>
+				</li>
+				<li>
+					Press right/down arrow key - collapsed selection should appear after
+					<code>bar</code>
+				</li>
+			</ul>
+			<p>Notes:</p>
+			<ul>
+				<li>Focus shouldn't disappear from the editable element.</li>
+				<li>No #blur event should be logged on the console.</li>
+				<li>The viewport shouldn't scroll when selecting the <code>bar</code>.</li>
+			</ul>
+			<hr />
+			<p>
+				Open console and check if
+				<code
+					>&#x3C;div style="position: fixed; top: 0px; left: -9999px;">fake selection over
+					bar&#x3C;/div></code
+				>
+				is added to editable when fake selection is present. It should be removed when fake
+				selection is not present.
+			</p>
+			<hr />
+			<p>
+				Click on bold <code>bar</code> to create fake selection over it. Click outside
+				editable and check if yellow fake selection turns to gray one.
+			</p>
+		</ck-manual-header>
+
+		<style>
+			#editor {
+				padding: 5px;
+				border: solid 1px #000;
+			}
+
+			#editor strong {
+				cursor: pointer;
+			}
+
+			#editor strong.selected {
+				background-color: #dadada;
+			}
+
+			#editor strong.selected.focused {
+				background-color: yellow;
+			}
+		</style>
+
+		<p>Scroll down.</p>
+
+		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+		<div contenteditable="true" id="editor"></div>
+
+		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+	</body>
+</html>

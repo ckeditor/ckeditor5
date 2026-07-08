@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Clickobserver</title>
+		<script type="module" src="./clickobserver.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ul>
+				<li>Open console.</li>
+				<li>Click Clicker A.</li>
+				<li>2 events should be fired.</li>
+				<li>Click Clicker B.</li>
+				<li>2 events should be fired.</li>
+				<li>disable event "1".</li>
+				<li>Click Clicker A.</li>
+				<li>1 event should be fired.</li>
+			</ul>
+		</ck-manual-header>
+
+		<div contenteditable="true" id="editor"></div>
+
+		<button id="clickerA">Clicker A</button>
+		<button id="clickerB">Clicker B</button>
+
+		<button id="enable1">Enable event 1</button>
+		<button id="disable1">Disable event 1</button>
+	</body>
+</html>

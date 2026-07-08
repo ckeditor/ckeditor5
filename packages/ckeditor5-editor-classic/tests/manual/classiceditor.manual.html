@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Classiceditor</title>
+		<script type="module" src="./classiceditor.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>Click "Init editor".</li>
+				<li>Expected:</li>
+			</ol>
+			<ul>
+				<li>Framed editor should be created.</li>
+				<li>Source element should disappear.</li>
+				<li>There should be a toolbar with "Bold", "Italic", "Undo" and "Redo" buttons.</li>
+			</ul>
+			<ol start="3">
+				<li>Click "Destroy editor".</li>
+				<li>Expected:</li>
+			</ol>
+			<ul>
+				<li>Editor should be destroyed.</li>
+				<li>Source element should be visible.</li>
+				<li>The element should contain its data (updated).</li>
+				<li>The 'ck-body region' should be removed.</li>
+			</ul>
+			<h2>Notes:</h2>
+			<ul>
+				<li>
+					You can play with:
+					<ul>
+						<li><code>editable.isReadOnly</code>,</li>
+					</ul>
+				</li>
+				<li>Changes to <code>editable.isFocused</code> should be logged to the console.</li>
+				<li>Features should work.</li>
+			</ul>
+		</ck-manual-header>
+
+		<p>
+			<button id="destroyEditor">Destroy editor</button>
+			<button id="initEditor">Init editor</button>
+		</p>
+
+		<div id="editor">
+			<h2>Hello world!</h2>
+			<p>This is an editor instance.</p>
+		</div>
+
+		<style>
+			body {
+				width: 10000px;
+				height: 10000px;
+			}
+
+			.ck-editor {
+				margin-top: 200px;
+				margin-left: 100px;
+				margin-bottom: 200px;
+				width: 450px;
+			}
+		</style>
+	</body>
+</html>

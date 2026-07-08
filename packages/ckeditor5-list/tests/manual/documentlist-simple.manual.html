@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Documentlist Simple</title>
+		<script type="module" src="./documentlist-simple.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Loading</h3>
+			<ol>
+				<li>The data should be loaded with:</li>
+			</ol>
+			<ul>
+				<li>two paragraphs,</li>
+				<li>bulleted list with eight items,</li>
+				<li>two paragraphs,</li>
+				<li>numbered list with one item,</li>
+				<li>bullet list with one item.</li>
+			</ul>
+			<ol start="2">
+				<li>Toolbar should have two buttons: for bullet and for numbered list.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>This is a test for list feature.</p>
+			<p>Some more text for testing.</p>
+			<ul>
+				<li>Bullet list item 1</li>
+				<li>Bullet list item 2</li>
+				<li>Bullet list item 3</li>
+				<li>Bullet list item 4</li>
+				<li>Bullet list item 5</li>
+				<li>Bullet list item 6</li>
+				<li>Bullet list item 7</li>
+				<li>Bullet list item 8</li>
+			</ul>
+			<p>Paragraph.</p>
+			<p>Another testing paragraph.</p>
+			<ol>
+				<li>Numbered list item 1</li>
+			</ol>
+			<ul>
+				<li>Another bullet list</li>
+			</ul>
+		</div>
+
+		<h2>Editor content preview</h2>
+		<div id="preview" class="ck-content"></div>
+
+		<style>
+			#preview {
+				outline: 1px solid red;
+				padding: 10px;
+			}
+		</style>
+	</body>
+</html>

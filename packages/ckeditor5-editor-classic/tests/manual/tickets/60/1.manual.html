@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				The toolbar should support a vertical offset from the top of the web page
+				<a href="https://github.com/ckeditor/ckeditor5-editor-classic/issues/60">#60</a>
+			</h3>
+			<h2>Focus then scroll</h2>
+			<ol>
+				<li>Focus the editor.</li>
+				<li>Scroll the web page until the toolbar reaches the green box boundaries.</li>
+			</ol>
+			<p><strong>Expected:</strong></p>
+			<ol>
+				<li>
+					The toolbar should stick to the green box instead of the viewport edge,
+					respecting <code>toolbar.viewportTopOffset</code> configuration.
+				</li>
+				<li>
+					At some point, the toolbar should disappear below the green box, leaving some
+					space for the last paragraph of the content to remain visible.
+				</li>
+			</ol>
+			<h2>Scroll then focus</h2>
+			<ol>
+				<li>Scroll the web page until the toolbar is underneath the green box.</li>
+				<li>Focus the editor.</li>
+			</ol>
+			<p><strong>Expected:</strong></p>
+			<ol>
+				<li>The toolbar should stick to the lower boundary of the green box.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Hello world!</h2>
+			<p>This is an editor instance.</p>
+			<p>This is an editor instance.</p>
+			<p>This is an editor instance.</p>
+			<p>This is an editor instance.</p>
+			<p>This is an editor instance.</p>
+			<p>This is an editor instance.</p>
+		</div>
+
+		<div id="fixed">The toolbar should stick to me instead of the viewport.</div>
+
+		<style>
+			body {
+				height: 10000px;
+			}
+
+			.ck-editor {
+				margin-top: 200px;
+				margin-left: 100px;
+				margin-bottom: 200px;
+				width: 450px;
+			}
+
+			#fixed {
+				width: 100%;
+				height: 100px;
+				position: fixed;
+				top: 0;
+				z-index: 9999;
+				background: green;
+				opacity: 0.8;
+				color: #fff;
+				box-sizing: border-box;
+				padding: 40px;
+			}
+		</style>
+	</body>
+</html>

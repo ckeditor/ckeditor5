@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Rtl</title>
+		<script type="module" src="./rtl.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Text alignment and RTL content</h2>
+			<ol>
+				<li>The editor should run in RTL mode.</li>
+				<li>Paragraphs in the content should be aligned according to the text inside.</li>
+				<li>
+					See the toolbar (dropdown) icon as you travel across the document with your
+					caret. The icon should reflect the alignment (default is
+					<strong>right</strong>).
+				</li>
+				<li>
+					You should be able to use the dropdown to change the alignment of existing and
+					new text.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>This should be aligned to the right</p>
+
+			<p style="text-align: left">This should be aligned to the left.</p>
+
+			<p style="text-align: center">This should be centered.</p>
+
+			<p style="text-align: justify">
+				This should be justified but also to the right. This should be justified but also to
+				the right. This should be justified but also to the right.
+			</p>
+		</div>
+	</body>
+</html>

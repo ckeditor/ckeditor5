@@ -686,7 +686,7 @@ function input( {
 }
 
 function setManualTestDirection( direction ) {
-	const wrapper = document.querySelector( '.manual-test-container' ) || document.body;
+	const wrapper = document.body;
 
 	wrapper.classList.add( 'ck' );
 	wrapper.setAttribute( 'dir', direction );

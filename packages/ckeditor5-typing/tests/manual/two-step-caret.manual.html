@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Two Step Caret</title>
+		<script type="module" src="./two-step-caret.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				Two-steps caret movement
+				<a href="https://github.com/ckeditor/ckeditor5-engine/issues/1289"
+					>ckeditor5-engine#1286</a
+				>
+			</h2>
+			<h3>Moving right</h3>
+			<ol>
+				<li>Put selection one character before the underline</li>
+				<li>
+					Move selection by one character to the right using right arrow
+					<ul>
+						<li>underline button should be not selected</li>
+					</ul>
+				</li>
+				<li>
+					Press right arrow once again
+					<ul>
+						<li>selection should be at the same position</li>
+						<li>underline button should be selected</li>
+					</ul>
+				</li>
+				<li>
+					Using right arrow move selection at the end of the underline
+					<ul>
+						<li>underline button should be selected</li>
+					</ul>
+				</li>
+				<li>
+					Press right arrow once again
+					<ul>
+						<li>selection should be at the same position</li>
+						<li>underline button should be not selected</li>
+					</ul>
+				</li>
+			</ol>
+			<h3>Moving left</h3>
+			<ol>
+				<li>Put selection one character after the underline</li>
+				<li>
+					Move selection by one character to the left using left arrow
+					<ul>
+						<li>underline button should be not selected</li>
+					</ul>
+				</li>
+				<li>
+					Press left arrow once again
+					<ul>
+						<li>selection should be at the same position</li>
+						<li>underline button should be selected</li>
+					</ul>
+				</li>
+				<li>
+					Using left arrow move selection at the beginning of the underline
+					<ul>
+						<li>underline button should be selected</li>
+					</ul>
+				</li>
+				<li>
+					Press left arrow once again
+					<ul>
+						<li>selection should be at the same position</li>
+						<li>underline button should be not selected</li>
+					</ul>
+				</li>
+			</ol>
+			<h3>Mouse</h3>
+			<ol>
+				<li>
+					Put selection at the beginning of the underline
+					<ul>
+						<li>underline button should be not selected</li>
+					</ul>
+				</li>
+				<li>
+					Put selection at the end of the underline
+					<ul>
+						<li>underline button should be selected</li>
+					</ul>
+				</li>
+			</ol>
+			<h3>Attributes set explicit</h3>
+			<ol>
+				<li>Put selection one character before the end of the underline</li>
+				<li>
+					Move selection by one character to the right using right arrow
+					<ul>
+						<li>underline button should be selected</li>
+					</ul>
+				</li>
+				<li>Turn on bold attribute (<code>Ctrl + B</code>)</li>
+				<li>
+					Press right arrow once again
+					<ul>
+						<li>selection should be at the same position</li>
+						<li>underline button should be not selected</li>
+						<li>bold button should stay selected</li>
+					</ul>
+				</li>
+			</ol>
+			<h3>Moving from one bound attribute to another</h3>
+			<ol>
+				<li>
+					Make sure that moving between underline and italic text from second paragraph
+					works the same way as above.
+				</li>
+			</ol>
+			<h3>Not bounded attribute</h3>
+			<p>
+				Just make sure that two-steps caret movement is disabled for bold text from the
+				third paragraph.
+			</p>
+			<h3>Right–to–left content</h3>
+			<p><strong>Tip</strong>: Change the system keyboard to Hebrew before testing.</p>
+			<p>
+				Two-steps caret movement should also work when the content is right–to–left. Repeat
+				all previous steps keeping in mind that the flow of the text is "reversed".
+			</p>
+		</ck-manual-header>
+
+		<h2>Left-to–right content</h2>
+
+		<div id="editor-ltr">
+			<p>Foo <u>bar</u> biz</p>
+			<p>Foo <u>bar</u><i>biz</i> buz?</p>
+			<p>
+				Foo <i><u>barbiz</u></i> buz?
+			</p>
+			<p>Foo <b>bar</b> biz</p>
+			<p>Foo <u>bar</u><i>biz</i></p>
+		</div>
+
+		<h2>Right–to–left content</h2>
+
+		<div id="editor-rtl">
+			<p>&nbsp;היא <u>תכונה</u> של</p>
+			<p>&nbsp;זהה <i>לזה</i><u>שיוצג</u> בתוצאה</p>
+			<p>
+				&nbsp;זהה <i><u>לזהשיוצג</u></i> בתוצאה
+			</p>
+			<p>וכדומה. <strong>תכונה</strong> זו מאפיינת</p>
+		</div>
+
+		<style>
+			u {
+				background: rgba(255, 0, 0, 0.3);
+			}
+
+			i {
+				background: rgba(0, 255, 0, 0.3);
+			}
+		</style>
+	</body>
+</html>

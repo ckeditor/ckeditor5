@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				Classic editor's editable should have a background
+				<a href="https://github.com/ckeditor/ckeditor5/issues/3384">#3384</a>
+			</h2>
+			<ol>
+				<li>The background of body should be red.</li>
+				<li>
+					The classic editor's editable background <strong>should not</strong> be red.
+				</li>
+				<li>The balloon editor's editable background <strong>should</strong> be red.</li>
+			</ol>
+		</ck-manual-header>
+
+		<style>
+			body {
+				background: red;
+			}
+		</style>
+
+		<h2>Editor-classic</h2>
+
+		<div id="editor-classic">
+			<p>This editable should have a background.</p>
+			<p>This editable should have a background.</p>
+			<p>This editable should have a background.</p>
+			<p>This editable should have a background.</p>
+		</div>
+
+		<h2>Editor-balloon</h2>
+
+		<div id="editor-balloon">
+			<p>This editable's background should be transparent.</p>
+			<p>This editable's background should be transparent.</p>
+			<p>This editable's background should be transparent.</p>
+			<p>This editable's background should be transparent.</p>
+		</div>
+	</body>
+</html>

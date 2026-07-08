@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				BlockToolbar and BalloonToolbar collision
+				<a href="https://github.com/ckeditor/ckeditor5-ui/issues/418">#418</a>
+			</h2>
+			<ul>
+				<li>select some text, balloon toolbar should show up</li>
+				<li>click block toolbar button, balloon toolbar should hide</li>
+				<li>
+					press <code>Esc</code> to move focus back to editable, balloon toolbar should
+					show up
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div class="wrapper">
+			<div id="editor">
+				<h2>The three greatest things you learn from traveling</h2>
+				<p>
+					Like all the great things on earth traveling teaches us by example. Here are
+					some of the most precious lessons I’ve learned over the years of traveling.
+				</p>
+
+				<h3>Appreciation of diversity</h3>
+				<p>
+					Getting used to an entirely different culture can be challenging. While it’s
+					also nice to learn about cultures online or from books, nothing comes close to
+					experiencing cultural diversity in person. You learn to appreciate each and
+					every single one of the differences while you become more culturally fluid.
+				</p>
+			</div>
+		</div>
+
+		<style>
+			#editor {
+				margin: 0 auto;
+				max-width: 800px;
+			}
+
+			.wrapper {
+				padding: 50px 20px;
+			}
+
+			.ck-block-toolbar-button {
+				transform: translateX(-10px);
+			}
+		</style>
+	</body>
+</html>

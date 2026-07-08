@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Blockquote</title>
+		<script type="module" src="./blockquote.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Block quote feature</h2>
+			<p>Check block quote related behaviors:</p>
+			<ul>
+				<li>applying quotes to multiple blocks,</li>
+				<li>removing quotes,</li>
+				<li><kbd>Enter</kbd> (should leave quote when pressed in an empty block),</li>
+				<li><kbd>Backspace</kbd>,</li>
+				<li>undo/redo,</li>
+				<li>applying headings and lists,</li>
+				<li>stability when used with nested lists,</li>
+				<li>stability when used with nested block quotes.</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat
+				placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris.
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+			</p>
+			<blockquote>
+				<p>
+					Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis
+					tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis,
+					non lobortis leo interdum.
+				</p>
+			</blockquote>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat
+				placerat.
+			</p>
+			<figure class="image">
+				<img src="logo.png" alt="CKEditor logo" />
+			</figure>
+			<p>
+				Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur
+				consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+			</p>
+			<blockquote>
+				<p>
+					Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis
+					tincidunt quis id mauris.
+				</p>
+				<ul>
+					<li>
+						Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+						interdum.
+					</li>
+				</ul>
+			</blockquote>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat
+				placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris.
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+			</p>
+			<blockquote>
+				<p>
+					Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis
+					tincidunt quis id mauris.
+				</p>
+				<blockquote>
+					<p>
+						Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+						interdum.
+					</p>
+				</blockquote>
+			</blockquote>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat
+				placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris.
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+			</p>
+		</div>
+	</body>
+</html>

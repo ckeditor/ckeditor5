@@ -83,7 +83,7 @@ draggableAsWholeView.left = 420;
 draggableByHandleView.render();
 draggableAsWholeView.render();
 
-const wrapper = document.querySelector( '.manual-test-container' ) || document.body;
+const wrapper = document.body;
 
 wrapper.appendChild( draggableByHandleView.element! );
 wrapper.appendChild( draggableAsWholeView.element! );

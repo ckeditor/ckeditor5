@@ -1,0 +1,162 @@
+<!doctype html>
+<head>
+	<title>Type Around</title>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		placeholder {
+			display: inline-block;
+			background: hsla(100, 100%, 50%);
+			padding: 4px 2px;
+			outline-offset: -2px;
+			margin-right: 1px;
+			margin-left: 3px;
+		}
+
+		placeholder::selection {
+			display: none;
+		}
+	</style>
+	<script type="module" src="./type-around.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>Typing around block widgets</h1>
+	<h2>General idea</h2>
+	<ol>
+		<li>Move the mouse cursor over various block widgets.</li>
+		<li>
+			There should be buttons appearing at the top/bottom boundaries of a widget when there is
+			no way to put the caret before/after.
+		</li>
+		<li>Clicking an individual button should insert a paragraph before/after the widget.</li>
+	</ol>
+	<h2>States</h2>
+	<ol>
+		<li>
+			Check the look of the buttons when widgets are in a different states:
+			<ul>
+				<li>Not selected but hovered by the cursor.</li>
+				<li>Selected and hovered by the cursor.</li>
+				<li>
+					Selected but the editor is blurred (use dev tools console to test that) and
+					hovered by the cursor.
+				</li>
+			</ul>
+		</li>
+		<li>
+			In each of these states, the buttons that insert paragraphs around widgets should blend
+			in with the style of the widget.
+		</li>
+	</ol>
+	<h2>Exceptions</h2>
+	<ol>
+		<li>
+			Inline widgets should <strong>never</strong> display the UI (buttons) regardless of
+			their position in the document and their surroundings.
+		</li>
+		<li>
+			Blocks widgets should display the UI only when there's a "tight spot" next to them. If
+			you can type freely before/after a widget, the UI (buttons) related to that position
+			should never appear.
+			<ul>
+				<li>
+					If you can type before the widget (e.g. preceded by a paragraph), the top button
+					should never appear.
+				</li>
+				<li>
+					If you can type after the widget (e.g. followed by a paragraph), the bottom
+					button should never appear.
+				</li>
+			</ul>
+		</li>
+	</ol>
+</ck-manual-header>
+<button id="toggleReadOnly" type="button">Toggle read–only mode</button>
+<hr />
+<div id="editor">
+	<figure class="image">
+		<img src="sample.jpg" alt="bar" />
+		<figcaption>Caption</figcaption>
+	</figure>
+	<h2>Heading 1</h2>
+	<hr />
+	<hr />
+	<p><placeholder></placeholder> some text <placeholder></placeholder></p>
+	<figure class="table">
+		<table>
+			<tbody>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>
+						<figure class="media">
+							<div
+								data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"
+							></div>
+						</figure>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td style="background: hsl(0, 100%, 0%)">
+						<p>&nbsp;</p>
+						<figure class="image">
+							<img src="sample.jpg" alt="bar" />
+							<figcaption>Caption</figcaption>
+						</figure>
+					</td>
+					<td>
+						<figure class="image">
+							<img src="sample.jpg" alt="bar" />
+							<figcaption>Caption</figcaption>
+						</figure>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>e&nbsp;</td>
+					<td>
+						<figure class="image">
+							<img src="sample.jpg" alt="bar" />
+							<figcaption>Caption</figcaption>
+						</figure>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<hr />
+	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+	<ul>
+		<li>UL List <placeholder></placeholder> item 1</li>
+		<li>UL List item 2</li>
+	</ul>
+	<ol>
+		<li>OL List item 1</li>
+		<li>OL List item 2</li>
+	</ol>
+	<figure class="image">
+		<img src="sample.jpg" alt="bar" />
+		<figcaption>Caption</figcaption>
+	</figure>
+	<figure class="image">
+		<img src="sample.jpg" alt="bar" />
+		<figcaption>Caption</figcaption>
+	</figure>
+	<blockquote>
+		<p>Quote</p>
+		<ul>
+			<li>Quoted UL List item 1</li>
+			<li>Quoted UL List item 2</li>
+		</ul>
+		<p>Quote</p>
+	</blockquote>
+	<figure class="image">
+		<img src="sample.jpg" alt="bar" />
+		<figcaption>Caption</figcaption>
+	</figure>
+</div>

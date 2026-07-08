@@ -1,0 +1,43 @@
+<!doctype html>
+<head>
+	<title>Rtl</title>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+	</style>
+	<script type="module" src="./rtl.js"></script>
+</head>
+
+<ck-manual-header>
+	<h2>Indent block with right–to–left content</h2>
+	<p>
+		<strong>Note</strong>: For the best testing, run manual tests adding Arabic to
+		<a
+			href="https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/testing-environment.html#running-manual-tests"
+			>additional languages configuration</a
+		>.
+	</p>
+	<hr />
+	<h3>Expected</h3>
+	<ol>
+		<li>All the content in the editor should be aligned to the right.</li>
+		<li>The indentation should start on the right–side of each block.</li>
+	</ol>
+</ck-manual-header>
+<div id="editor">
+	<h2>Heading 1</h2>
+	<p style="margin-right: 1.5em">Paragraph indented 1.5em</p>
+	<p style="margin-right: 30px">Paragraph indented 30px</p>
+	<p style="margin: 0 40px 0 0">Paragraph indented with margin: 0 40px 0 0</p>
+	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+	<blockquote>
+		<p>Quote</p>
+		<ul>
+			<li>Quoted UL List item 1</li>
+			<li>Quoted UL List item 2</li>
+		</ul>
+		<p>Quote</p>
+	</blockquote>
+</div>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Basic Styles</title>
+		<script type="module" src="./basic-styles.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Basic styles</h2>
+			<ol>
+				<li>The data should be loaded with:</li>
+			</ol>
+			<ul>
+				<li>italic <em>"This"</em>,</li>
+				<li>bold <strong>"editor"</strong>,</li>
+				<li>underline "instance",</li>
+				<li>strikethrough <del>"is"</del>,</li>
+				<li>code <code>"an"</code>,</li>
+				<li>subscript X<sub>1</sub>,</li>
+				<li>superscript X<sup>2</sup>.</li>
+			</ul>
+			<ol start="2">
+				<li>
+					The second sentence should bold the following words: <code>bold</code>,
+					<code>600</code>, <code>700</code>, <code>800</code>, <code>900</code>.
+				</li>
+				<li>
+					Test the bold, italic, strikethrough, underline, code, subscript and superscript
+					features live.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>
+				<i>This</i> <s>is</s> <code>an</code> <strong>editor</strong> <u>instance</u>,
+				X<sub>1</sub>, X<sup>2</sup>.
+			</p>
+			<p>
+				The <code>font-weight</code> attribute check:
+				<span style="font-weight: bold">bold</span>,
+				<span style="font-weight: 400">400</span>,
+				<span style="font-weight: 500">500</span>,
+				<span style="font-weight: 600">600</span>,
+				<span style="font-weight: 700">700</span>,
+				<span style="font-weight: 800">800</span>,
+				<span style="font-weight: 900">900</span>.
+			</p>
+		</div>
+	</body>
+</html>

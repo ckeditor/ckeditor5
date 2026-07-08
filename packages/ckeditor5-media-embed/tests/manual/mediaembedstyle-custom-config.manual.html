@@ -1,0 +1,232 @@
+<!doctype html>
+<head>
+	<title>Mediaembedstyle Custom Config</title>
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"console-error": [ "<svg> attribute preserveAspectRatio", "transparent NaN" ]
+	}'
+	/>
+
+	<style>
+		input {
+			width: 500px;
+			margin-bottom: 0.5em;
+		}
+
+		ul {
+			list-style: none;
+			padding: 0;
+		}
+
+		body {
+			width: 700px;
+		}
+
+		/* Integrator-owned CSS for the two custom "side media" variants. */
+		.ck-content .media.media-style-side-orange,
+		.ck-content .media.media-style-side-green {
+			float: right;
+			margin: 0 0 1em 1.5em;
+			clear: none;
+		}
+
+		.media-style-side-orange {
+			box-shadow:
+				0 0 0 5px #ffffff,
+				0 0 0 9px #cb602b;
+		}
+
+		.media-style-side-green {
+			box-shadow:
+				0 0 0 5px #ffffff,
+				0 0 0 9px #4caf50;
+		}
+	</style>
+	<script type="module" src="./mediaembedstyle-custom-config.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>Media embed styles (custom <code>config.mediaEmbed.styles</code>)</h1>
+	<p>
+		Editor with <code>MediaEmbed</code> + <code>MediaEmbedStyle</code> +
+		<code>MediaEmbedResize</code> and a non-default config:
+	</p>
+	<ol>
+		<li>
+			Only <code>alignBlockLeft</code> and <code>alignCenter</code> kept from the built-ins
+			(<code>wrapText</code> auto-skips, <code>breakText</code> not placed in the toolbar).
+		</li>
+		<li>
+			Two custom styles <code>sideOrange</code> / <code>sideGreen</code> – both float right
+			with text wrapping, differ only in box-shadow ring color.
+		</li>
+		<li>
+			Inline <code>mediaEmbed:sideMedia</code> split-button dropdown groups them in
+			<code>config.mediaEmbed.toolbar</code>.
+		</li>
+	</ol>
+	<p>The YouTube embed loads pre-resized to 50% width so alignment shifts are visible.</p>
+	<h2>Toolbar contents</h2>
+	<ol>
+		<li>Select an embed,</li>
+		<li>
+			The contextual toolbar should show three entries:
+			<strong>Left aligned media</strong> (flat, <code>mediaEmbed:alignBlockLeft</code>),
+			<strong>Centered media</strong> (flat, <code>mediaEmbed:alignCenter</code>), and
+			<strong>Side media</strong> (split-button dropdown, <code>mediaEmbed:sideMedia</code>),
+		</li>
+		<li>
+			There should be no <code>mediaEmbed:alignLeft</code>,
+			<code>mediaEmbed:alignRight</code>, or <code>mediaEmbed:alignBlockRight</code> buttons.
+		</li>
+	</ol>
+	<h2>Flat buttons</h2>
+	<ol>
+		<li>
+			Click <strong>Left aligned media</strong> — the figure should pin left and the data
+			<code>&#x3C;figure></code> should include <code>media-style-block-align-left</code>,
+		</li>
+		<li>
+			Click <strong>Centered media</strong> — the figure should re-center and the data
+			<code>&#x3C;figure></code> should have only <code>class="media"</code> (default, no
+			class).
+		</li>
+	</ol>
+	<h2>Side media dropdown</h2>
+	<ol>
+		<li>
+			With no side style applied, the action button should show
+			<strong>Side media (orange border)</strong> (the <code>defaultItem</code>),
+		</li>
+		<li>Clicking the action should apply <code>sideOrange</code>,</li>
+		<li>
+			The flyout should contain <strong>(orange border)</strong> and
+			<strong>(green border)</strong>,
+		</li>
+		<li>
+			Click <strong>(green border)</strong> — the figure should gain a green ring and the data
+			<code>&#x3C;figure></code> should include <code>media-style-side-green</code>,
+		</li>
+		<li>
+			Click the action while green is active — the dropdown should open instead of firing
+			(action only fires when no child is on),
+		</li>
+		<li>
+			Click <strong>(orange border)</strong> from the flyout — the ring should switch to
+			orange and the data <code>&#x3C;figure></code> should include
+			<code>media-style-side-orange</code>.
+		</li>
+	</ol>
+	<h2>Resize interaction</h2>
+	<ol>
+		<li>Apply <strong>Side media (orange border)</strong> to the pre-resized YouTube embed,</li>
+		<li>
+			Drag-resize the figure — the orange ring should remain attached as the width changes
+			(proves the custom class composes with <code>media_resized</code>).
+		</li>
+	</ol>
+	<h2>Filtered values silently rejected</h2>
+	<ol>
+		<li>
+			In the browser console, run
+			<code>editor.execute('mediaStyle', { value: 'alignRight' })</code>,
+		</li>
+		<li>Nothing should change in the editor,</li>
+		<li>
+			<code>editor.commands.get('mediaStyle').value</code> should still report the previously
+			applied style.
+		</li>
+	</ol>
+	<h2>Clearing the style</h2>
+	<ol>
+		<li>Apply <strong>Side media (orange border)</strong>,</li>
+		<li>
+			In the console run <code>editor.execute('mediaStyle', { value: null })</code> (or click
+			<strong>Centered media</strong>),
+		</li>
+		<li>The figure should clear to the default centered state.</li>
+	</ol>
+</ck-manual-header>
+
+<h2>Example URLs</h2>
+<ul>
+	<li><input type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4" /></li>
+	<li>
+		<input
+			type="text"
+			value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA"
+		/>
+	</li>
+</ul>
+
+<h2>Test editor</h2>
+<div id="editor">
+	<h2>Configurable styles demo</h2>
+	<p>
+		The config keeps only the two block alignments (<code>alignBlockLeft</code>,
+		<code>alignCenter</code>) and adds two custom "side media" variants distinguished by border
+		color (orange / green). Both built-in dropdowns (<strong>Wrap text</strong>,
+		<strong>Break text</strong>) auto-skip; the toolbar uses two flat buttons plus a custom
+		<strong>Side media</strong> split-button dropdown declared inline in
+		<code>config.mediaEmbed.toolbar</code>.
+	</p>
+
+	<figure class="media media_resized" style="width: 50%">
+		<div data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">
+			<div>
+				<iframe
+					src="https://www.youtube.com/embed/ZVv7UMQPEWk"
+					width="1280"
+					height="720"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 16 / 9;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					allow="autoplay; encrypted-media"
+					referrerpolicy="strict-origin-when-cross-origin"
+					allowfullscreen=""
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+		labore et dolore magna aliqua.
+	</p>
+
+	<figure class="media media-style-side-orange">
+		<div
+			data-oembed-url="https://open.spotify.com/artist/7GaxyUddsPok8BuhxN6OUW?si=LM7Q50vqQ4-NYnAIcMTNuQ"
+		>
+			<div>
+				<iframe
+					src="https://open.spotify.com/embed/artist/7GaxyUddsPok8BuhxN6OUW"
+					width="300"
+					height="378"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 100 / 126;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					allowtransparency="true"
+					allow="encrypted-media"
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<p>
+		Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+		commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+		dolore eu fugiat nulla pariatur.
+	</p>
+</div>

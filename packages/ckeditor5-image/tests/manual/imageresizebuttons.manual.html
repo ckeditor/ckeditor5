@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Imageresizebuttons</title>
+		<script type="module" src="./imageresizebuttons.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Image Resize UI</h2>
+			<p>
+				Tests for manual image resizing using the UI in the image toolbar.
+				<strong>NOTE</strong>: Both editors have disabled resize handles. The only way to
+				resize the images is to do it by the UI in the image toolbar.
+			</p>
+			<h2>Dropdown</h2>
+			<ol>
+				<li>Select an image in the editor.</li>
+				<li>
+					A dropdown with configured options (<code>config.image.resizeOptions</code>)
+					should be visible in the toolbar.
+					<ul>
+						<li>The plugin icon should appear only next to the dropdown button.</li>
+						<li>
+							Each option should have a label text corresponding to an option value
+							defined in the configuration.
+						</li>
+						<li>The selected option should be "on" when the dropdown is open.</li>
+						<li>
+							The editor is using the combination of
+							<code>ImageResizeEditing</code> and <code>ImageResizeButtons</code>.
+						</li>
+						<li>
+							The dropdown should be enabled if the selection in inside the image
+							caption.
+						</li>
+					</ul>
+				</li>
+			</ol>
+			<h2>Buttons</h2>
+			<ol>
+				<li>Select an image in the editor.</li>
+				<li>
+					Standalone buttons should be displayed in the image toolbar (corresponding to
+					<code>config.image.resizeOptions</code>).
+					<ul>
+						<li>
+							Each button should have an icon as in the configuration
+							(<code>small</code>, <code>medium</code>, <code>large</code> or
+							<code>original</code>).
+						</li>
+						<li>No label should be rendered,</li>
+						<li>
+							The tooltip text and the <code>aria-label</code> attribute should be the
+							same (and more verbose).
+						</li>
+						<li>The selected option button should be "on".</li>
+						<li>
+							The editor is using the combination of
+							<code>ImageResizeEditing</code> and <code>ImageResizeButtons</code>.
+						</li>
+						<li>
+							The buttons should be enabled if the selection in inside the image
+							caption.
+						</li>
+					</ul>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<style>
+			.fancy-editor-wrapper figure {
+				padding: 20px;
+			}
+
+			.ck-editor {
+				max-width: 800px;
+			}
+
+			h2.header {
+				background: hsl(0, 0%, 90%);
+			}
+		</style>
+
+		<h2 class="header">Dropdown</h2>
+
+		<div id="editor1">
+			<h2>Responsive image (width style: not set, width attribute present on the image)</h2>
+
+			<figure class="image">
+				<img alt="Picture of the Warsaw Old Town." src="sample.jpg" />
+			</figure>
+
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat
+				placerat. Vestibulum id telluset mauris sagittis tincidunt quis id mauris. Curabitur
+				consectetur lectus sit amet tellus mattis, non lobortisleo interdum.
+			</p>
+		</div>
+
+		<h2 class="header">Standalone buttons</h2>
+
+		<div id="editor2">
+			<h2>Responsive image (width style: not set, width attribute present on the image)</h2>
+
+			<figure class="image">
+				<img alt="Picture of the Warsaw Old Town." src="sample.jpg" />
+			</figure>
+
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat
+				placerat. Vestibulum id telluset mauris sagittis tincidunt quis id mauris. Curabitur
+				consectetur lectus sit amet tellus mattis, non lobortisleo interdum.
+			</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Multipleeditors</title>
+		<script type="module" src="./multipleeditors.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Performance: multiple editors</h1>
+			<ol>
+				<li>Begin performance recording in devtools.</li>
+				<li>Use any button to initialize multiple editors with a given content.</li>
+				<li>Stop performance recording.</li>
+			</ol>
+			<p>
+				<strong>Note:</strong> You should execute this test only once. Refresh the page if
+				you want to repeat it.
+			</p>
+		</ck-manual-header>
+
+		<div id="test-controls">
+			Initialize multiple editors with:
+			<span id="fixture-buttons"></span>
+			HTML payload.
+			<br /><br />
+			Cases marked with "(semantic)" contain elements known by the editor. Cases with
+			"(styled)" focuses on styling using the <code>[style]</code> attribute.
+		</div>
+
+		<hr />
+
+		<div id="editors-wrapper"></div>
+	</body>
+</html>

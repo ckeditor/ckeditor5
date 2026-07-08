@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				Firefox should visually move the caret to the new line after a soft break
+				<a href="https://github.com/ckeditor/ckeditor5-engine/issues/1439">#1439</a>
+			</h2>
+			<ol>
+				<li>Open Firefox,</li>
+				<li>In an empty editor type "foo",</li>
+				<li>Press <kbd>Shift</kbd>+<kbd>Enter</kbd>.</li>
+			</ol>
+			<p><strong>Expected</strong></p>
+			<ol>
+				<li>The soft break should be created,</li>
+				<li>The caret should be <strong>in the new line and blinking</strong>.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor"></div>
+	</body>
+</html>

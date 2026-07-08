@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>11400</title>
+		<script type="module" src="./11400.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>
+				Matching with existing mentions and whitespaces (<a
+					href="https://github.com/ckeditor/ckeditor5/issues/11400"
+					>#11400</a
+				>)
+			</h1>
+			<p>
+				In this test, a couple of feed items were provided for the <code>@</code> marker.
+				The most relevant, though, is <code>@marry</code> that matches against three
+				different entries.
+			</p>
+			<p>
+				The point of this test is to make sure the UI will not show up when the selection is
+				after an existing mention even if there's a white space between them and it matches
+				against one of the items in the feed ("Marry Foo", "Marry Bar", or "Marry Baz").
+			</p>
+			<ol>
+				<li>
+					Put the caret at the end of the mention. The UI should <strong>not</strong> show
+					up.
+				</li>
+				<li>
+					Type a whitespace after the mention. The UI should <strong>not</strong> show up.
+				</li>
+				<li>
+					Create a new line and type <code>@marry</code>. The UI should pop up with three
+					suggestions.
+					<ol>
+						<li>
+							After accepting the mention, the UI should disappear and stay out of
+							sight.
+						</li>
+					</ol>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div class="ck ck-content" id="snippet-mention-customization">
+			<p><span class="mention" data-mention="@marry">@marry</span>&nbsp;</p>
+		</div>
+
+		<style>
+			.custom-item {
+				display: block;
+				padding: 1em;
+			}
+
+			.custom-item.ck-on {
+				color: white;
+			}
+
+			.custom-item .custom-item-username {
+				color: #666;
+			}
+
+			.custom-item.ck-on .custom-item-username {
+				color: #ddd;
+			}
+		</style>
+	</body>
+</html>

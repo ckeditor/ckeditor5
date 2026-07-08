@@ -1,0 +1,33 @@
+<!doctype html>
+<head>
+	<title>Nested Widgets</title>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.ck-content .widget {
+			background: rgba(0, 0, 0, 0.1);
+			padding: 20px !important;
+			min-height: 50px;
+		}
+	</style>
+	<script type="module" src="./nested-widgets.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>Nested widgets</h1>
+	<ul>
+		<li>When selecting the most top-outer widget, nested widgets should not be selected.</li>
+	</ul>
+</ck-manual-header>
+<div id="editor">
+	<h2>Heading 1</h2>
+	<p>Paragraph</p>
+	<div class="widget">
+		<div class="widget"></div>
+		<div class="widget"></div>
+	</div>
+	<p>Paragraph</p>
+</div>

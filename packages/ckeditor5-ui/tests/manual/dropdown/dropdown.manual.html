@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Dropdown</title>
+		<script type="module" src="./dropdown.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>Make sure each dropdown opens when clicked.</li>
+				<li>
+					The panel that shows up should be positioned precisely below and to the left
+					edge of the parent dropdown.
+				</li>
+				<li>
+					The panel that shows up should float <strong>over</strong> the rest of the page.
+				</li>
+				<li>Each dropdown should have <strong>equal</strong> width.</li>
+			</ol>
+			<h2>ListDropdown</h2>
+			<ol>
+				<li>
+					<code>ListDropdown</code> should close when any of the dropdown items is
+					clicked. Clicked item's model should be logged in console.
+				</li>
+				<li>
+					<code>ListDropdown</code> should close when clicked beyond the dropdown like
+					page body or other elements.
+				</li>
+			</ol>
+			<h2>Long label</h2>
+			<ol>
+				<li>Make sure that the label is truncated and followed by <em>"..."</em>.</li>
+				<li>Dropdown button "triangle" should be placed after <em>"..."</em>.</li>
+				<li>Text should not wrap to the next line.</li>
+			</ol>
+			<h3>Notes:</h3>
+			<ul>
+				<li>
+					Play with <code>listDropdownModel.isOn</code> to control its "on/off" state.
+				</li>
+				<li>
+					Play with <code>listDropdownModel.isEnabled</code> to control whether it's
+					disabled.
+				</li>
+				<li>Play with <code>listDropdownModel.label</code> to control dropdown label.</li>
+				<li>Play with <code>listDropdownCollection</code>, i.e. add new item:</li>
+			</ul>
+			<pre><code>listDropdownCollection.add(
+	new window.Model( {
+		label: '2.5em',
+		style: 'font-size: 2.5em'
+	} )
+);
+</code></pre>
+			<h2>Toolbar Dropdown</h2>
+			<ol>
+				<li>
+					Play with <code>buttons[ n ].isOn</code> to control buttonDropdown active icon.
+				</li>
+				<li>
+					Play with <code>buttons[ n ].isEnabled</code> to control buttonDropdown disabled
+					state (all buttons must be set to <code>false</code>).
+				</li>
+				<li>
+					Play with <code>toolbarDropdown.toolbarView.isVertical</code> to control
+					buttonDropdown vertical/horizontal alignment.
+				</li>
+			</ol>
+			<h2>SplitButton Dropdown</h2>
+			<ul>
+				<li>It should have two distinct fields: action button and arrow.</li>
+				<li>Click on action button should be logged in console.</li>
+				<li>Click on arrow button should open panel and should be logged in console.</li>
+			</ul>
+			<h2>Menu Dropdown</h2>
+			<ul>
+				<li>It should focus first item when dropdown button is pressed.</li>
+				<li>It should have a "Top A" button and a few nested menus on the top level.</li>
+				<li>It should close and log the button ID when a "leaf" button is pressed.</li>
+				<li>It should have keyboard navigation (arrows, enter).</li>
+				<li>Arrow left on top level should close the panel.</li>
+			</ul>
+		</ck-manual-header>
+
+		<h2>Empty</h2>
+
+		<div id="dropdown" class="ck ck-reset_all"></div>
+
+		<h2>Dropdown with ListView</h2>
+
+		<div id="list-dropdown" class="ck ck-reset_all"></div>
+
+		<h2>Dropdown with ListView (and groups)</h2>
+
+		<div id="list-dropdown-with-groups" class="ck ck-reset_all"></div>
+
+		<h2>Long label (truncated)</h2>
+
+		<div id="dropdown-label" class="ck ck-reset_all"></div>
+
+		<h2>Dropdown with ToolbarView</h2>
+
+		<div id="dropdown-toolbar" class="ck ck-reset_all"></div>
+
+		<h2>SplitButton Dropdown</h2>
+
+		<div id="dropdown-splitbutton" class="ck ck-reset_all"></div>
+
+		<h2>Menu Dropdown</h2>
+
+		<div id="menu-dropdown" class="ck ck-reset_all" dir="ltr"></div>
+	</body>
+</html>

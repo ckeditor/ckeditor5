@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Autosave</title>
+		<script type="module" src="./autosave.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ol>
+				<li>
+					<p>
+						Play with the editor. You should logs of the changing autosave's states. You
+						should not see logs when you changes the selection.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type something and quickly try to reload the page. You should see something
+						like this:
+						<code>Reload site? Changes that you made may not be saved.</code>.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type something and quickly and click the <code>destroy editor</code> button.
+						Most recent changes should be logged to the console.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type something without big time gaps. Once you stop typing there should be
+						the first <code>waiting -> saving</code> and then the response should show
+						up with the whole editor's content.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type something. Once you'll see the <code>waiting -> saving</code> change,
+						type something else. Then you should see the response and the
+						<code>saving->waiting</code> change. Then you should see another response
+						from the fake server.
+					</p>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<button id="destroy-editor-button">Destroy editor</button>
+
+		<div id="editor">
+			<h2>Heading 1</h2>
+			<p>Paragraph</p>
+		</div>
+	</body>
+</html>

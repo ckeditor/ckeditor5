@@ -1,0 +1,23 @@
+<!doctype html>
+<head>
+	<title>Noselection Iframe</title>
+	<!--
+		For a totally unknown reason, loading a large script inside an iframe is aborted in Puppeteer,
+		so this request has been added to exclusions for the crawler.
+	-->
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"request-failure": [ "immutable.js", "localhost" ]
+	}'
+	/>
+	<script type="module" src="./noselection-iframe.js"></script>
+</head>
+
+<body>
+	<ck-manual-header>
+		<p>It should not be possible to put selection in the editor placed in iframe.</p>
+	</ck-manual-header>
+
+	<iframe id="iframe" src="immutable.manual.html"></iframe>
+</body>

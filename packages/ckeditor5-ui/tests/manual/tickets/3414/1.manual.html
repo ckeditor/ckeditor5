@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				The -webkit-appearance of the buttons in the Bootstrap 4 modal
+				<a href="https://github.com/ckeditor/ckeditor5/issues/3414">#3414</a>
+			</h2>
+			<ol>
+				<li>Click the link in the content of the <strong>plain editor</strong>.</li>
+				<li>
+					Click the link in the content of the
+					<strong>editor inside the bootstrap modal</strong>.
+				</li>
+				<li>In both cases, the link editing UI should show up.</li>
+			</ol>
+			<p><strong>Expected</strong></p>
+			<p>
+				In both cases, all buttons (including the link preview) should look
+				<strong>exactly the same</strong>.
+			</p>
+		</ck-manual-header>
+
+		<h2>Plain editor</h2>
+		<div id="editor">
+			<p>Content of <a href="https://ckeditor.com">the editor</a>.</p>
+		</div>
+
+		<h2>Editor in a bootstrap modal</h2>
+		<iframe src="assets/iframe-content.manual.html"></iframe>
+
+		<style>
+			iframe {
+				width: 100%;
+				height: 300px;
+			}
+		</style>
+	</body>
+</html>

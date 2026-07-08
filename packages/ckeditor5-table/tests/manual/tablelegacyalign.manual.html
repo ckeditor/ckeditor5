@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Tablelegacyalign</title>
+		<script type="module" src="./tablelegacyalign.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Table Legacy Align</h3>
+			<p>
+				This test verifies the behavior of the legacy <code>align</code> attribute applied
+				to <code>&#x3C;td></code> elements. It ensures that table content and columns align
+				correctly when the deprecated <code>align</code> attribute (e.g.,
+				<code>align="left"</code>, <code>align="center"</code>, <code>align="right"</code>)
+				is present on cells in the source HTML.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<table>
+				<tr>
+					<td align="center">
+						<p>Content table should NOT have `tableAlignment` attribute</p>
+						<figure class="table">
+							<table>
+								<tbody>
+									<tr>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>
+
+						<p>Layout table should have `center` `tableAlignment` attribute/p></p>
+						<table>
+							<tbody>
+								<tr>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td align="center">Single raw text</td>
+				</tr>
+				<tr>
+					<td align="right" style="width: 400px">
+						<p>td[align=right]</p>
+						<table style="width: 200px; border: 1px solid black">
+							<tr>
+								<td>a</td>
+							</tr>
+						</table>
+						<figure class="image">
+							<img
+								style="aspect-ratio: 800/376"
+								src="sample.jpg"
+								alt=""
+								width="200"
+							/>
+						</figure>
+					</td>
+				</tr>
+			</table>
+
+			<table>
+				<tr>
+					<td align="center" style="width: 400px">
+						<p>td[align=center]</p>
+						<table style="width: 200px; border: 1px solid black">
+							<tr>
+								<td>a</td>
+							</tr>
+						</table>
+						<figure class="image">
+							<img
+								style="aspect-ratio: 800/376"
+								src="sample.jpg"
+								alt=""
+								width="200"
+							/>
+						</figure>
+					</td>
+				</tr>
+			</table>
+
+			<table>
+				<tr>
+					<td align="left" style="width: 400px">
+						<p>td[align=left]</p>
+						<table style="width: 200px; border: 1px solid black">
+							<tr>
+								<td>a</td>
+							</tr>
+						</table>
+						<figure class="image">
+							<img
+								style="aspect-ratio: 800/376"
+								src="sample.jpg"
+								alt=""
+								width="200"
+							/>
+						</figure>
+					</td>
+				</tr>
+			</table>
+
+			<table>
+				<tr>
+					<td align="left" style="width: 400px">
+						<p style="text-align: right">
+							td[align=left] (forced text and image to right)
+						</p>
+						<table style="width: 200px; border: 1px solid black">
+							<tr>
+								<td>a</td>
+							</tr>
+						</table>
+						<figure class="image-style-block-align-right image">
+							<img
+								style="aspect-ratio: 800/376"
+								src="sample.jpg"
+								alt=""
+								width="200"
+							/>
+						</figure>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

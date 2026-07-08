@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Nestedlists</title>
+		<script type="module" src="./nestedlists.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Nested lists</h2>
+			<h3>Loading data</h3>
+			<p>The loaded data should look like this:</p>
+			<ul>
+				<li>
+					Bullet list item 1
+					<ul>
+						<li>
+							Bullet list item 1.1
+							<ul>
+								<li>Bullet list item 1.1.1</li>
+							</ul>
+						</li>
+						<li>
+							Bullet list item 1.2
+							<ul>
+								<li>Bullet list item 1.2.1</li>
+								<li>Bullet list item 1.2.2</li>
+								<li>Bullet list item 1.2.3</li>
+								<li>Bullet list item 1.2.4</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>
+					&nbsp;
+					<ul>
+						<li>
+							&nbsp;
+							<ol>
+								<li>Numbered list item 2.1.1</li>
+								<li>Numbered list item 2.1.2</li>
+							</ol>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3>Testing</h3>
+			<p>Check if:</p>
+			<ol>
+				<li>
+					You can write and delete in indented list items and remove indented list items.
+				</li>
+				<li>Tab key indents list item (other than first item on the list).</li>
+				<li>Shift+tab key outdents list item.</li>
+				<li>Enter key creates list item with same indent.</li>
+				<li>Enter key in empty list item outdents it.</li>
+				<li>Indenting and outdenting list item also indents/outdents following items.</li>
+				<li>Outdenting not-indented item converts it to paragraph.</li>
+				<li>Enter in not-indented item converts it to paragraph.</li>
+				<li>Lists are correctly merged after outdenting.</li>
+				<li>
+					Lists are correctly merged when removing list item from between lists (for
+					example 1.2, 1.1, 2.1 (empty)).
+				</li>
+				<li>Lists are correctly merged when deleting multi-level selection.</li>
+				<li>You can put selection in empty list item, write something there, remove it.</li>
+				<li>Changing list type works correctly with nested lists.</li>
+				<li>Turning off list item works correctly.</li>
+				<li>
+					Changing list item to heading works correctly (undo may not work correctly for
+					this one).
+				</li>
+				<li>Undo works correctly.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<ul>
+				<li>
+					Bullet list item 1
+					<ul>
+						<li>
+							Bullet list item 1.1
+							<ul>
+								<li>Bullet list item 1.1.1</li>
+							</ul>
+						</li>
+						<li>
+							Bullet list item 1.2
+							<ul>
+								<li>Bullet list item 1.2.1</li>
+								<li>Bullet list item 1.2.2</li>
+								<li>Bullet list item 1.2.3</li>
+								<li>Bullet list item 1.2.4</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>
+							<ol>
+								<li>Numbered list item 2.1.1</li>
+								<li>Numbered list item 2.1.2</li>
+							</ol>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</body>
+</html>

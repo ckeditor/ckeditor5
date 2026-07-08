@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Renderer - MacOS accent balloon on inline element boundary</h2>
+			<ol>
+				<li>
+					<p>Place the selection like this:</p>
+					<p><code>This is an &#x3C;strong>editor{}&#x3C;/strong> instance.</code></p>
+				</li>
+				<li>
+					<p>Open MacOS accent balloon (e.g. long <code>a</code> press).</p>
+				</li>
+				<li>
+					<p>Navigate through the balloon panel using arrow keys.</p>
+				</li>
+			</ol>
+			<p>
+				<strong>Expected</strong>: It is possible to navigate with arrow keys inside the
+				MacOS balloon panel. While navigating, there might be
+				<code>renderer-selection-similar</code> warning visible in the console.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>This is an <strong>editor</strong> instance.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				Stripping disallowed attributes by <code>(insert|delete)Content</code>
+				<a href="https://github.com/ckeditor/ckeditor5-engine/issues/1088">#1088</a>
+			</h2>
+			<h3>Simple scenario.</h3>
+			<ol>
+				<li>Copy a paragraph with italic and link.</li>
+				<li>Paste it to the Heading 1. Inserted text should be stripped</li>
+				<li>Paste it to the Heading 2. Inserted text should be a link only.</li>
+				<li>Paste it to paragraph. Inserted text should not be stripped.</li>
+			</ol>
+			<h3>Simple scenario (element).</h3>
+			<ol>
+				<li>Copy image.</li>
+				<li>
+					Paste it to the editor. Image should be inserted with an alternative text
+					"Sample image".
+				</li>
+			</ol>
+			<h3>Nested nodes.</h3>
+			<ol>
+				<li>Copy a list item with bold and link.</li>
+				<li>
+					Paste it into the empty block (directly to the root) . Inserted list item should
+					be a bold link.
+				</li>
+				<li>
+					Paste it into the empty block in BlockQuote. Inserted list item should be a bold
+					only.
+				</li>
+			</ol>
+			<h3>Auto paragraphing.</h3>
+			<ol>
+				<li>Copy a text with bold.</li>
+				<li>Select all content in the editor.</li>
+				<li>
+					Paste copied text. Inserted content should be a paragraph and should be stripped
+					from bold.
+				</li>
+			</ol>
+			<h3>Auto paragraphing (disallowed block).</h3>
+			<ol>
+				<li>Copy Heading 3 with bold and italic.</li>
+				<li>Select all content in the editor.</li>
+				<li>
+					Paste copied text. Inserted content should be a paragraph and should be stripped
+					from bold.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div style="padding: 20px">
+			<div id="editor">
+				<h2>Heading 1 (disallowed: italic, link)</h2>
+				<p>This is a paragraph</p>
+				<h3>Heading 2 (disallowed: italic)</h3>
+				<p></p>
+				<blockquote>
+					<p>This is a paragraph in a blockQuote</p>
+					<p></p>
+				</blockquote>
+			</div>
+
+			<div>
+				<p>
+					<a href="https://ckeditor.com"><i>Paragraph with link and italic</i></a>
+				</p>
+
+				<ul>
+					<li>
+						<a href="https://ckeditor.com"><b>List item with link and bold</b></a>
+					</li>
+				</ul>
+
+				<h4>
+					<b><i>Heading 3 with bold and italic</i></b>
+				</h4>
+
+				<div><b>Just a text with bold</b></div>
+
+				<br />
+
+				<img src="sample.jpg" alt="Sample image" height="150" />
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Setdata</title>
+		<script type="module" src="./setdata.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Performance: <code>editor.setData()</code></h1>
+			<ol>
+				<li>Begin performance recording in devtools.</li>
+				<li>Use any button to call <code>editor.setData()</code> with chosen data size.</li>
+				<li>Stop performance recording.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="test-controls">
+			Call <code>editor.setData()</code> with:
+			<span id="fixture-buttons"></span>
+			HTML payload.
+			<br /><br />
+			Cases marked with "(semantic)" contain elements known by the editor. Cases with
+			"(styled)" focuses on styling using the <code>[style]</code> attribute.
+		</div>
+
+		<hr />
+
+		<div id="editor"></div>
+	</body>
+</html>

@@ -29,7 +29,7 @@ import { WordCount } from '@ckeditor/ckeditor5-word-count';
 
 import { getPerformanceData, renderPerformanceDataButtons } from '../../_utils/utils.js';
 
-import smallTablesInlineCssFixture from '../../_data/small-tables-inline-css.html';
+import smallTablesInlineCssFixture from '../../_data/small-tables-inline-css.html?raw';
 
 renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ), {
 	'smallTablesInlineCss': 'text and tables (styled)'

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Inline Filler</title>
+		<script type="module" src="./inline-filler.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ul>
+				<li>initialization expected: <code>foo{}bar</code></li>
+				<li>press arrow left,</li>
+				<li>expected: <code>fo{}obar</code></li>
+				<li>press 2 times arrow right,</li>
+				<li>expected: <code>foob{}ar</code></li>
+			</ul>
+		</ck-manual-header>
+
+		<div contenteditable="true" id="editor"></div>
+	</body>
+</html>

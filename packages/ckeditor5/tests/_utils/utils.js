@@ -8,11 +8,11 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 import { FontColor, FontBackgroundColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
 import { Underline, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
 
-import smallFixture from '../_data/small.html';
-import mediumFixture from '../_data/medium.html';
-import largeFixture from '../_data/large.html';
-import smallInlineCssFixture from '../_data/small-inline-css.html';
-import fullWebsitesStyledFixture from '../_data/full-websites-styled.html';
+import smallFixture from '../_data/small.html?raw';
+import mediumFixture from '../_data/medium.html?raw';
+import largeFixture from '../_data/large.html?raw';
+import smallInlineCssFixture from '../_data/small-inline-css.html?raw';
+import fullWebsitesStyledFixture from '../_data/full-websites-styled.html?raw';
 
 /**
  * Renders a button for each performance fixture in a given `container`.

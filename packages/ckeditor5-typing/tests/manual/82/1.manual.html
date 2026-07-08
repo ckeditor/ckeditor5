@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Input - non-collapsed IME</h2>
+			<p><em>Check composition on non-collapsed selection</em>:</p>
+			<ul>
+				<li>Hiragana,</li>
+				<li>Spanish-ISO: accent (it's under <code>'</code>) + "a",</li>
+				<li>MacOS: long "a" press (accent balloon).</li>
+			</ul>
+			<p>
+				<strong>Expected</strong>: Composition should be started correctly, character
+				starting the composition should be visible. The selected text should be replaced by
+				composition start character.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>This is an editor instance.</p>
+		</div>
+	</body>
+</html>

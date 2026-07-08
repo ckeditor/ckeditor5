@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Alignmentconfig</title>
+		<script type="module" src="./alignmentconfig.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Loading</h3>
+			<ol>
+				<li>The data should be loaded with:</li>
+			</ol>
+			<ul>
+				<li>four paragraphs each with different text-alignment set,</li>
+				<li>two first paragraphs should be aligned to left,</li>
+				<li>third paragraph should be centered,</li>
+				<li>fourth paragraph should be justified,</li>
+				<li>an image with caption between first and second paragraphs.</li>
+			</ul>
+			<ol start="2">
+				<li>
+					Toolbar should have button dropdown with only two buttons for alignment control:
+					center and justify.
+				</li>
+			</ol>
+			<h3>Testing</h3>
+			<p>Alignment dropdown button should change to:</p>
+			<ul>
+				<li>"left" icon when text has default (left) alignment,</li>
+				<li>"center" icon when text is centered,</li>
+				<li>"justify" icon when text is justified.</li>
+			</ul>
+			<p>"Center" alignment button:</p>
+			<ol>
+				<li>should be highlighted only in third paragraph,</li>
+				<li>should enable/disable center alignment on any paragraph.</li>
+			</ol>
+			<p>"Justify" alignment button should be:</p>
+			<ol>
+				<li>highlighted only in third paragraph,</li>
+				<li>should enable/disable justify alignment on any paragraph.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p style="text-align: left">
+				<strong>This paragraph has text-align:left style</strong>
+			</p>
+
+			<p style="text-align: right">
+				<strong>This paragraph has text-align:right style</strong>
+			</p>
+
+			<p style="text-align: center">
+				<strong>This paragraph has text-align:center style</strong>
+			</p>
+
+			<p style="text-align: justify">
+				<strong>This paragraph has text-align:justify style</strong>. Lorem ipsum dolor sit
+				amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+				dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+				laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+				reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+				Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+				mollit anim id est laborum.
+			</p>
+		</div>
+	</body>
+</html>

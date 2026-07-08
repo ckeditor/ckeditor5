@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>
+				Issue <a href="https://github.com/ckeditor/ckeditor5/issues/6053">#6053</a> manual
+				test.
+			</h1>
+			<h2>
+				The link selection attributes should cleared in certain situations after the link
+				was pasted
+			</h2>
+			<ol>
+				<li>Copy a part of a link in the content.</li>
+				<li>Paste it a paragraph.</li>
+			</ol>
+			<p>
+				<strong>Expected</strong>: The link should be pasted but you should be able to type
+				unlinked text right away.
+			</p>
+			<ol>
+				<li>
+					Try copying and pasting links in different places:
+					<ol>
+						<li>In the middle of another link.</li>
+						<li>At the beginning/end of another link.</li>
+						<li>Using links with different URLs.</li>
+						<li>
+							When the selection gravity is overridden at the boundary of an existing
+							link (use arrow left and right keys).
+						</li>
+					</ol>
+				</li>
+			</ol>
+			<p>
+				<strong>Expected</strong>: If a pasted link is not followed by another link, you
+				should always be able to type unlinked text right away after pasting. There should
+				be no selection attributes starting with "link".
+			</p>
+			<p>
+				<strong>Tip</strong>: If not sure, check the Model/Selection tab in the inspector
+				and look for selection attributes.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>
+				Some <b>bold</b> text
+				<a href="https://ckeditor.com" download="download">CKEditor decorated</a> and
+				<a href="https://cksource.com">CKSource</a>.
+			</p>
+			<p>An "empty" paragraph to paste links:</p>
+		</div>
+	</body>
+</html>

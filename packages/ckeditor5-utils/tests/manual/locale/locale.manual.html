@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Locale</title>
+		<script type="module" src="./locale.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Editor locales</h2>
+			<p>
+				<strong>Note</strong>: For the best testing, run manual tests adding Arabic to
+				<a
+					href="https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/testing-environment.html#running-manual-tests"
+					>additional languages configuration</a
+				>.
+			</p>
+			<hr />
+			<p>
+				Play with different editor configurations to make sure localization and the
+				right–to–left language support work fine.
+			</p>
+			<h3>language = 'en' (LTR)</h3>
+			<ol>
+				<li>Make sure the UI of the editor is English.</li>
+				<li>
+					Make sure the language of the content is English (<code>lang</code> attribute of
+					th editable) and aligned to the <strong>left</strong> side.
+				</li>
+				<li>Delete <strong>all</strong> the content.</li>
+				<li>Write something in Arabic.</li>
+				<li>The text you've just written should be aligned <strong>right</strong>.</li>
+			</ol>
+			<h3>language = 'ar' (RTL)</h3>
+			<ol>
+				<li>Make sure the UI of the editor is Arabic.</li>
+				<li>
+					Make sure the language of the content is Arabic (<code>lang</code> attribute of
+					th editable) and aligned to the <strong>right</strong> side.
+				</li>
+				<li>Delete <strong>all</strong> the content.</li>
+				<li>Write something in English.</li>
+				<li>The text you've just written should be aligned <strong>left</strong>.</li>
+			</ol>
+			<h3>language = 'en' (LTR), contentLanguage = 'ar' (RTL)</h3>
+			<ol>
+				<li>Make sure the UI of the editor is English.</li>
+				<li>
+					Make sure the language of the content is Arabic (<code>lang</code> attribute of
+					th editable) and aligned to the <strong>right</strong> side.
+				</li>
+				<li>Delete <strong>all</strong> the content.</li>
+				<li>Write something in English.</li>
+				<li>The text you've just written should be aligned <strong>right</strong>.</li>
+			</ol>
+			<h3>language = 'ar' (RTL), contentLanguage = 'en' (LTR)</h3>
+			<ol>
+				<li>Make sure the UI of the editor is Arabic.</li>
+				<li>
+					Make sure the language of the content is English (<code>lang</code> attribute of
+					th editable) and aligned to the <strong>left</strong> side.
+				</li>
+				<li>Delete <strong>all</strong> the content.</li>
+				<li>Write something in Arabic.</li>
+				<li>The text you've just written should be aligned <strong>left</strong>.</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>language = 'en' (LTR)</h2>
+
+		<div id="editor-language">
+			<p>This is an <a href="https://ckeditor.com">editor</a> instance.</p>
+			<figure class="image image-style-side">
+				<img src="./sample.jpg" />
+				<figcaption>Caption</figcaption>
+			</figure>
+		</div>
+
+		<h2>language = 'ar' (RTL)</h2>
+
+		<div id="editor-language-rtl">
+			<p>مرحبا <a href="https://ckeditor.com">editor</a></p>
+			<figure class="image image-style-side">
+				<img src="./sample.jpg" />
+				<figcaption>Caption</figcaption>
+			</figure>
+		</div>
+
+		<h2>language = 'en' (LTR), <br />contentLanguage = 'ar' (RTL)</h2>
+
+		<div id="editor-language-rtl-content">
+			<p>مرحبا <a href="https://ckeditor.com">editor</a></p>
+			<figure class="image image-style-side">
+				<img src="./sample.jpg" />
+				<figcaption>Caption</figcaption>
+			</figure>
+		</div>
+
+		<h2>language = 'ar' (RTL), <br />contentLanguage = 'en' (LTR)</h2>
+
+		<div id="editor-language-rtl-ui">
+			<p>This is an <a href="https://ckeditor.com">editor</a> instance.</p>
+			<figure class="image image-style-side">
+				<img src="./sample.jpg" />
+				<figcaption>Caption</figcaption>
+			</figure>
+		</div>
+	</body>
+</html>

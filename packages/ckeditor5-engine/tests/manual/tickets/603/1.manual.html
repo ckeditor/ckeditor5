@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				Selection events test
+				<a href="https://github.com/ckeditor/ckeditor5-engine/issues/603">#603</a>
+			</h3>
+			<p>Test that each selection change fires:</p>
+			<ul>
+				<li>only one <code>change:range</code> for position change.</li>
+				<li>
+					only one <code>change:attribute</code> for attribute(s) change (if anything has
+					changed).
+				</li>
+			</ul>
+			<p>Test following ways of changing selection:</p>
+			<ul>
+				<li>clicking in various positions,</li>
+				<li>arrow keys,</li>
+				<li>applying styles,</li>
+				<li>enter and backspace keys,</li>
+				<li>typing.</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Foo <i>bar</i></h2>
+			<p>
+				Lorem <strong><em>ips</em>um</strong> dolor <strong>sit</strong> amet.
+			</p>
+		</div>
+	</body>
+</html>

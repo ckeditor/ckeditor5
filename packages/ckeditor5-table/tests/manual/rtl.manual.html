@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Rtl</title>
+		<script type="module" src="./rtl.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Tables and RTL (right–to–left) content</h1>
+			<p>
+				The editor has English UI and Arabic content. In Arabic, the table is mirrored so
+				some features of the editor must work differently to provide the right UX.
+			</p>
+			<h2>Adding columns</h2>
+			<ol>
+				<li>Focus the "5" cell.</li>
+				<li>Using the toolbar menu, add column to the right.</li>
+				<li>The column should visually appear on the right–hand side of the "5" cell.</li>
+				<li>Focus the "5" cell.</li>
+				<li>Using the toolbar menu, add column to the left.</li>
+				<li>The column should visually appear on the left–hand side of the "5" cell.</li>
+			</ol>
+			<h2>Merging cells</h2>
+			<ol>
+				<li>Focus the "5" cell.</li>
+				<li>Using the toolbar menu, merge cell to the right.</li>
+				<li>"5" and "4" cells should be merged.</li>
+				<li>Focus the "5" cell.</li>
+				<li>Using the toolbar menu, merge cell to the left.</li>
+				<li>"5" and "6" cells should be merged.</li>
+			</ol>
+		</ck-manual-header>
+
+		<style>
+			body {
+				font-family: Helvetica, Arial, sans-serif;
+				font-size: 14px;
+			}
+		</style>
+
+		<div id="editor">
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>5</td>
+							<td>6</td>
+						</tr>
+						<tr>
+							<td>7</td>
+							<td>8</td>
+							<td>9</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+		</div>
+	</body>
+</html>

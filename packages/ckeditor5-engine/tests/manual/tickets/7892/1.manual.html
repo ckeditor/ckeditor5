@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				Selecting an Image from bottom to top throws exceptions
+				<a href="https://github.com/ckeditor/ckeditor5/issues/7892">#7892</a>
+			</h3>
+			<ol>
+				<li>Open Firefox.</li>
+				<li>Start the selection below the image using mouse.</li>
+				<li>Finish the selection above the image.</li>
+			</ol>
+			<p><strong>Expected result</strong>: there is no error in the console.</p>
+			<p>
+				<strong>Unexpected result</strong>: there is an
+				<code
+					>Uncaught CKEditorError: model-selection-range-intersects: Trying to add a range
+					that intersects with another range in the selection</code
+				>
+				error in the console.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Finish the selection HERE.</p>
+			<figure class="image">
+				<img src="sample.jpg" alt="sample image" />
+			</figure>
+			<p>Start the selection HERE.</p>
+		</div>
+	</body>
+</html>

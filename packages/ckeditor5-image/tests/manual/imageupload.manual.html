@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Imageupload</title>
+		<script type="module" src="./imageupload.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Image upload</h2>
+			<ol>
+				<li>Drop an image into editor.</li>
+				<li>Image should be read and displayed.</li>
+				<li>Press "Upload progress" button couple times to simulate upload process.</li>
+				<li>
+					After uploading is complete your image should be replaced with sample image from
+					server.
+				</li>
+			</ol>
+			<p>
+				On the occasionn – when you drop an image on another image in the editor, your
+				browser
+				<a href="https://github.com/ckeditor/ckeditor5-upload/issues/32"
+					><strong>should not</strong> redirect to the image</a
+				>.
+			</p>
+			<p>Repeat all the steps with:</p>
+			<ul>
+				<li>dropping multiple images,</li>
+				<li>using toolbar button to add one and multiple images,</li>
+				<li>
+					using <code>Simulate error</code> button to stop upload, show error and remove
+					image,
+				</li>
+				<li>
+					using <code>Simulate aborting</code> button to stop upload and remove image.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Image upload</h2>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat
+				placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris.
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+			</p>
+		</div>
+
+		<div id="button-container"></div>
+
+		<style>
+			#button-container div {
+				margin-top: 10px;
+			}
+
+			#button-container button {
+				margin-right: 10px;
+			}
+		</style>
+	</body>
+</html>

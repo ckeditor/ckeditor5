@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Tablecaption</title>
+		<script type="module" src="./tablecaption.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Table Caption</h3>
+			<p>Adding a caption to a table</p>
+			<ol>
+				<li>Put selection in the table.</li>
+				<li>
+					In the opened toolbar click the last icon on the right to turn on the caption.
+				</li>
+				<li>
+					The table caption should:
+					<ul>
+						<li>show up <strong>above</strong> the table with a highlight effect</li>
+						<li>be focused</li>
+						<li>have a placeholder <code>Enter table caption</code> visible</li>
+					</ul>
+				</li>
+			</ol>
+			<p>Editing the caption</p>
+			<ol>
+				<li>Once there is a caption visible, type in any text.</li>
+				<li>Turn off the caption.</li>
+				<li>
+					Toolbar button for toggling the caption should change from
+					<code>Toggle caption off</code> to <code>Toggle caption on</code>.
+				</li>
+				<li>Turn on the caption.</li>
+				<li>
+					Toolbar button for toggling the caption should change from
+					<code>Toggle caption on</code> to <code>Toggle caption off</code>.
+				</li>
+				<li>The text typed previously should be kept in the caption.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<figure class="table">
+				<table>
+					<thead>
+						<tr>
+							<th>0</th>
+							<th>1</th>
+							<th>2</th>
+							<th>3</th>
+							<th>4</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+							<td>c</td>
+							<td>d</td>
+							<td>e</td>
+						</tr>
+						<tr>
+							<td>f</td>
+							<td>g</td>
+							<td>h</td>
+							<td>i</td>
+							<td>j</td>
+						</tr>
+						<tr>
+							<td>k</td>
+							<td>l</td>
+							<td>m</td>
+							<td>n</td>
+							<td>o</td>
+						</tr>
+						<tr>
+							<td>p</td>
+							<td>q</td>
+							<td>r</td>
+							<td>s</td>
+							<td>t</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+		</div>
+	</body>
+</html>

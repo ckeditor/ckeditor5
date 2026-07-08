@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Highlight</title>
+		<script type="module" src="./highlight.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Highlight manual test</h3>
+			<ol>
+				<li>
+					Create selection that starts before the last word of the first paragraph and
+					ends after first word of the second paragraph and press
+					<code>Set yellow highlight</code>.
+				</li>
+				<li>Yellow highlight should be visible on text and widget.</li>
+				<li>
+					Select whole contents of the editor and press <code>Set red highlight</code>.
+				</li>
+				<li>
+					Yellow highlight should be visible as before, red highlight should be visible on
+					ranges where yellow highlight is not applied.
+				</li>
+				<li>Click <code>Remove yellow highlight</code>.</li>
+				<li>Red highlight should be visible on the whole content, including the widget.</li>
+				<li>
+					Play with highlights, add and remove them, check if they are applied correctly.
+				</li>
+			</ol>
+			<h3>Highlighting table cells</h3>
+			<ol>
+				<li>You can select the entire table cell and apply a highlight to it.</li>
+				<li>
+					The highlight should change the background of an
+					<strong>entire cell</strong> (not only its content).
+				</li>
+			</ol>
+			<p>
+				NOTE: Yellow highlight should be visible over red and blue one. Red highlight should
+				be visible over blue one.
+			</p>
+		</ck-manual-header>
+
+		<style>
+			:root {
+				--ck-manual-test-highlight-yellow: hsla(60, 100%, 50%, 0.5);
+				--ck-manual-test-highlight-red: hsla(0, 100%, 50%, 0.5);
+				--ck-manual-test-highlight-blue: hsla(240, 100%, 50%, 0.5);
+			}
+
+			span.highlight-yellow {
+				background-color: var(--ck-manual-test-highlight-yellow);
+			}
+
+			span.highlight-blue {
+				background-color: var(--ck-manual-test-highlight-blue);
+			}
+
+			span.highlight-red {
+				background-color: var(--ck-manual-test-highlight-red);
+			}
+
+			.ck-widget.fancy-widget {
+				background-color: hsl(0, 0%, 0%);
+				color: hsl(0, 0%, 100%);
+				text-align: center;
+				height: 40px;
+				line-height: 40px;
+			}
+
+			.ck-widget.fancy-widget.highlight-yellow {
+				background-color: var(--ck-manual-test-highlight-yellow);
+				color: hsl(0, 0%, 0%);
+			}
+
+			.ck-widget.fancy-widget.highlight-blue {
+				background-color: var(--ck-manual-test-highlight-blue);
+				color: hsl(0, 0%, 0%);
+			}
+
+			.ck-widget.fancy-widget.highlight-red {
+				background-color: var(--ck-manual-test-highlight-red);
+				color: hsl(0, 0%, 0%);
+			}
+
+			.table td.highlight-yellow,
+			.table th.highlight-yellow {
+				/* !important to override selected editable styles. */
+				background-color: var(--ck-manual-test-highlight-yellow) !important;
+			}
+
+			.table td.highlight-blue,
+			.table th.highlight-blue {
+				/* !important to override selected editable styles. */
+				background-color: var(--ck-manual-test-highlight-blue) !important;
+			}
+
+			.table td.highlight-red,
+			.table th.highlight-red {
+				/* !important to override selected editable styles. */
+				background-color: var(--ck-manual-test-highlight-red) !important;
+			}
+
+			button {
+				width: 200px;
+			}
+		</style>
+
+		<div id="editor">
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at diam quis justo
+				imperdiet posuere non eu tortor. Mauris vel magna eu sem hendrerit varius. Ut
+				imperdiet velit ut ante interdum convallis. Vestibulum vitae lacinia mi.
+			</p>
+			<figure></figure>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at diam quis justo
+				imperdiet posuere non eu tortor. Mauris vel magna eu sem hendrerit varius. Ut
+				imperdiet velit ut ante interdum convallis. Vestibulum vitae lacinia mi.
+			</p>
+			<table>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+				</tr>
+				<tr>
+					<td>baz</td>
+					<td>qux</td>
+				</tr>
+			</table>
+		</div>
+		<h2>Markers</h2>
+		<button id="add-marker-yellow">Set yellow highlight</button
+		><button id="remove-marker-yellow">Remove yellow highlight</button>
+		<br />
+		<button id="add-marker-red">Set red highlight</button
+		><button id="remove-marker-red">Remove red highlight</button>
+		<br />
+		<button id="add-marker-blue">Set blue highlight</button
+		><button id="remove-marker-blue">Remove blue highlight</button>
+		<br />
+		<button id="remove-markers">Remove all highlights</button>
+	</body>
+</html>

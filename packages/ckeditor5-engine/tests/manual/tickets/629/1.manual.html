@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				Selection infinite loop
+				<a href="https://github.com/ckeditor/ckeditor5-engine/issues/629">#629</a>
+			</h3>
+			<p>Before testing open console.</p>
+			<ol>
+				<li>
+					<p>Select part of text.</p>
+				</li>
+				<li>
+					<p>Click bold or press <kbd>ctrl + b</kbd>.</p>
+				</li>
+				<li>
+					<p>There should be no errors or warnings in console.</p>
+				</li>
+				<li>
+					<p>Put caret somewhere in text.</p>
+				</li>
+				<li>
+					<p>Press <kbd>left arrow</kbd>, then <kbd>right arrow</kbd>.</p>
+				</li>
+				<li>
+					<p>Repeat as fast as you can for 2-3 seconds.</p>
+				</li>
+				<li>
+					<p>There should be no errors or warnings in console.</p>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Lorem ipsum dolor sit amet.</p>
+		</div>
+	</body>
+</html>

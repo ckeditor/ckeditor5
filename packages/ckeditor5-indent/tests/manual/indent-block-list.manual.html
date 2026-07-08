@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Indent Block List</title>
+		<script type="module" src="./indent-block-list.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ul>
+				<li>
+					Use checkboxes above the editor to:
+					<ul>
+						<li>Add or remove certain plugins.</li>
+						<li>Change Indent Block config to use classes.</li>
+					</ul>
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="controls">
+			<div class="col">
+				<label><input type="checkbox" id="ghs" />GHS</label>
+				<label><input type="checkbox" id="pfo" checked />PFO</label>
+				<label><input type="checkbox" id="indent" checked />Indent</label>
+				<label><input type="checkbox" id="indentBlock" checked />IndentBlock</label>
+			</div>
+
+			<div class="col">
+				<label><input type="checkbox" id="list" checked />List</label>
+				<label><input type="checkbox" id="listProperties" checked />ListProperties</label>
+				<label><input type="checkbox" id="useClasses" />Use Classes</label>
+			</div>
+		</div>
+
+		<div id="editor"></div>
+
+		<style>
+			#controls {
+				display: flex;
+				gap: 24px;
+			}
+
+			.col {
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+			}
+
+			.indent-1 {
+				margin-left: 40px;
+			}
+			.indent-2 {
+				margin-left: 80px;
+			}
+			.indent-3 {
+				margin-left: 120px;
+			}
+			.indent-4 {
+				margin-left: 160px;
+			}
+		</style>
+	</body>
+</html>

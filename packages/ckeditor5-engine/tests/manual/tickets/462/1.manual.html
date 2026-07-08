@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				Selection attributes conversion test
+				<a href="https://github.com/ckeditor/ckeditor5-engine/issues/462">#462</a>
+			</h3>
+			<p>Open the console. Watch the logged data.</p>
+			<h4>Test 1</h4>
+			<ol>
+				<li>Put caret inside unstyled word.</li>
+				<li>Press <kbd>Ctrl+I</kbd>.</li>
+			</ol>
+			<p>Expected results:</p>
+			<ul>
+				<li><code>&#x3C;em>@@@@@@@&#x3C;/em></code> was inserted into editable.</li>
+				<li>selection has the <code>'italic'</code> attribute.</li>
+				<li>selection anchor's parent node is <code>&#x3C;em></code>.</li>
+			</ul>
+			<h4>Test 2</h4>
+			<ol>
+				<li>Put caret inside bold word.</li>
+				<li>Press <kbd>Ctrl+B</kbd>.</li>
+			</ol>
+			<p>Expected results:</p>
+			<ul>
+				<li><code>&#x3C;em></code> element from previous test got removed.</li>
+				<li><code>&#x3C;strong></code> element got broken.</li>
+				<li>selection doesn't have the <code>'bold'</code> attribute.</li>
+				<li>selection anchor's parent node is <code>&#x3C;p></code>.</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Lorem <strong>ipsum.</strong></p>
+		</div>
+	</body>
+</html>

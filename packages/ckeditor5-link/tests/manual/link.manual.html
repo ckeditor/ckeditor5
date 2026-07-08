@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Link</title>
+		<script type="module" src="./link.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Link</h2>
+			<h3>Create new link from text</h3>
+			<ol>
+				<li>Select fragment of regular text.</li>
+				<li>Click toolbar link button.</li>
+				<li>Check if balloon panel attached to the selection appeared.</li>
+				<li>Fill in <code>Link URL</code> input in the panel.</li>
+				<li>Click <code>Save</code> button.</li>
+				<li>Check if the selection is after the text that was converted into a link.</li>
+				<li>Typing should not modify the link node.</li>
+			</ol>
+			<h3>Insert new link</h3>
+			<ol>
+				<li>Set collapsed selection inside a regular text.</li>
+				<li>Click toolbar link button.</li>
+				<li>Check if balloon panel attached to the selection appeared.</li>
+				<li>Fill in <code>Link URL</code> input in the panel.</li>
+				<li>Click <code>Save</code> button.</li>
+				<li>Check if new link with anchor text the same as url value has been inserted.</li>
+				<li>
+					Check if the selection is after the text node. Typing should not modify the
+					node.
+				</li>
+			</ol>
+			<h3>Edit link</h3>
+			<ol>
+				<li>Click a link element.</li>
+				<li>Check if balloon panel attached to the link element appeared.</li>
+				<li>Change <code>Link URL</code> input value.</li>
+				<li>Click <code>Save</code> button.</li>
+				<li>Check if link href value has changed.</li>
+				<li>
+					Check if the selection is after the updated text node. Typing should not modify
+					the node.
+				</li>
+			</ol>
+			<h3>Keyboard support</h3>
+			<ol>
+				<li>
+					Check if above use cases works for keyboard support. For opening Link panel
+					press <code>Ctrl+K</code>, for submitting form press <code>Enter</code>.
+				</li>
+			</ol>
+			<h3>Unlink link fragment</h3>
+			<ol>
+				<li>Select link fragment.</li>
+				<li>Click the toolbar link button.</li>
+				<li>Click the "Unlink" button.</li>
+				<li>Check if selected text has been converted into a regular text.</li>
+			</ol>
+			<h3>Unlink whole link</h3>
+			<ol>
+				<li>Click a link element.</li>
+				<li>Click toolbar unlink button.</li>
+				<li>Check if link has been converted into a regular text.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>
+				This is <a href="http://ckeditor.com"><strong>CKEditor5</strong></a> from
+				<a href="http://cksource.com">CKSource</a>.
+			</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				The toolbar offset should be adjustable in runtime
+				<a href="https://github.com/ckeditor/ckeditor5/issues/9672">#9672</a>
+			</h3>
+			<h2>Focus then scroll</h2>
+			<ol>
+				<li>Focus the editor.</li>
+				<li>Scroll the web page until the toolbar reaches the green box boundaries.</li>
+				<li>Click "Set random top offset" button.</li>
+				<li>Scroll the web page until the toolbar reaches the green box boundaries.</li>
+			</ol>
+			<p><strong>Expected:</strong></p>
+			<ol>
+				<li>
+					The toolbar should stick to the green box instead of the viewport edge,
+					respecting <code>ui.viewportOffset.top</code> configuration.
+				</li>
+				<li>
+					At some point, the toolbar should disappear below the green box, leaving some
+					space for the last paragraph of the content to remain visible.
+				</li>
+				<li>
+					Each time you click "Set random top offset" the toolbar should stick to the
+					resized green box when scrolling down.
+				</li>
+			</ol>
+			<h2>Auto update top offset</h2>
+			<p>
+				In this example we do update <code>viewportOffset</code> without focusing out of the
+				editor editable area.
+			</p>
+			<ol>
+				<li>Click on "Toggle updating offset..." button.</li>
+				<li>Wait 2 seconds.</li>
+				<li>Observe the UI.</li>
+			</ol>
+			<p><strong>Expected:</strong></p>
+			<ol>
+				<li>The toolbar should be moving as we update the top offset.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Hello world!</h2>
+			<p>This is an editor instance.</p>
+			<p>This is an editor instance.</p>
+			<p>This is an editor instance.</p>
+			<p>This is an editor instance.</p>
+			<p>This is an editor instance.</p>
+			<p>This is an editor instance.</p>
+		</div>
+
+		<div id="fixed">The toolbar should stick to me instead of the viewport.</div>
+
+		<button id="change-offset">Set random top offset (100 - 200px)</button>
+		<button id="change-offset-interval">
+			Toggle updating offset (100 - 200px) randomly every 2 seconds
+		</button>
+
+		<style>
+			:root {
+				--top-offset: 100px;
+			}
+
+			body {
+				height: 10000px;
+			}
+
+			.ck.ck-editor {
+				margin-top: calc(var(--top-offset) * 2);
+				margin-left: 100px;
+				margin-bottom: 100px;
+			}
+
+			#fixed {
+				display: flex;
+				align-items: center;
+				width: 100%;
+				height: var(--top-offset);
+				position: fixed;
+				top: 0;
+				z-index: 9999;
+				background: green;
+				opacity: 0.8;
+				color: #fff;
+				box-sizing: border-box;
+				padding: 40px;
+			}
+		</style>
+	</body>
+</html>

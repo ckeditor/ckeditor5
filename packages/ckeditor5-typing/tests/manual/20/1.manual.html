@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				New undo step on changing selection (<a
+					href="https://github.com/ckeditor/ckeditor5-typing/issues/20"
+					>#20</a
+				>)
+			</h2>
+			<p><em>Every selection change should create a new undo step.</em></p>
+			<p><strong>Check</strong>:</p>
+			<ol>
+				<li>Type "aaa" in one place.</li>
+				<li>Move selection to another.</li>
+				<li>Type "bbb".</li>
+				<li>Move selection to another place.</li>
+				<li>Type "ccc".</li>
+				<li>Undo 3 times.</li>
+			</ol>
+			<p>
+				<strong>Expected</strong>: 3 undo steps were created. It is possible to undo 3
+				times, each time 3 letters from steps 5, 3, 1 are undone.
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Heading 1</h2>
+			<p><i>This</i> is an <strong>editor</strong> instance.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Balloontoolbar Multi Root</title>
+		<script type="module" src="./balloontoolbar-multi-root.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Contextual toolbar multi root demo</h2>
+			<ol>
+				<li>Context toolbar should be usable on all roots.</li>
+				<li>Adding / removal of root should be handled.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="toolbar">
+			<button id="add-root">Add root</button>
+			<button id="remove-root">Remove root</button>
+		</div>
+
+		<br />
+
+		<div id="editables">
+			<div id="header">Header root</div>
+			<div id="content">Content root</div>
+		</div>
+
+		<style>
+			#toolbar {
+				display: flex;
+				flex-direction: row;
+				gap: 8px;
+			}
+
+			#editables {
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+
+				& .ck-editor__editable {
+					border: 1px solid black;
+				}
+			}
+		</style>
+	</body>
+</html>

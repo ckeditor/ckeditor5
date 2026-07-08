@@ -34,9 +34,7 @@ for ( const i in defaultPositions ) {
 	balloon.render();
 	balloon.element.textContent = i;
 
-	const wrapper = document.querySelector( '.manual-test-container' ) || document.body;
-
-	wrapper.appendChild( balloon.element );
+	document.body.appendChild( balloon.element );
 
 	// Without it the position could be wrong because the element has just been rendered in DOM.
 	setTimeout( () => {

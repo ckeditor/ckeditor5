@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				Incorrect BalloonToolbar position in a case of multi-range selection
+				<a href="https://github.com/ckeditor/ckeditor5-ui/issues/385">#385</a>
+			</h2>
+			<h3>Use Firefox to this test, check the ticket for the explanation.</h3>
+			<ol>
+				<li>
+					Make a forward selection that starts in the text before the image and ends in
+					the text after the image
+					<pre><code>&#x3C;p>Line of text&#x3C;/p>
+&#x3C;p>Line o{f text&#x3C;/p>
+&#x3C;figure>...&#x3C;/figure>
+&#x3C;p>Line o}f text&#x3C;/p>
+&#x3C;p>Line of text&#x3C;/p>
+</code></pre>
+				</li>
+				<li>Check if the balloon toolbar is attached to the end of the selection</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>This is a line of text.</p>
+			<p>This is a line of text.</p>
+			<p>This is a line of text.</p>
+			<p>This is a line of text.</p>
+			<figure class="image">
+				<img src="sample.jpg" alt="Sample image" />
+			</figure>
+			<p>This is a line of text.</p>
+			<p>This is a line of text.</p>
+			<p>This is a line of text.</p>
+			<p>This is a line of text.</p>
+		</div>
+	</body>
+</html>

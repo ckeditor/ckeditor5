@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>6062</title>
+		<script type="module" src="./6062.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>
+				Ticket test: <a href="https://github.com/ckeditor/ckeditor5/issues/6062">#6062</a>
+			</h1>
+			<ol>
+				<li>Right-click the misspelled word.</li>
+				<li>Choose one of the corrections.</li>
+			</ol>
+			<p>Expected:</p>
+			<ul>
+				<li>No errors.</li>
+				<li>
+					The misspelled word should be correctly replaced. E.g., you shouldn't see a new
+					paragraph being created.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<figure class="table">
+				<table>
+					<thead>
+						<tr>
+							<th>at the end:</th>
+							<th>at the beginning:</th>
+							<th>entire cell:</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Hello, commter</td>
+							<td>Commter, hello!</td>
+							<td>Commter</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				New undo step on applying attribute (<a
+					href="https://github.com/ckeditor/ckeditor5-typing/issues/21"
+					>#21</a
+				>)
+			</h2>
+			<p><em>Every attribute change should create a new undo step.</em></p>
+			<p><strong>Check</strong>:</p>
+			<ol>
+				<li>Type few letters.</li>
+				<li>Press styling button (italic, bold, etc).</li>
+				<li>Type few more letters.</li>
+				<li>Press undo button.</li>
+			</ol>
+			<p><strong>Expected</strong>: Only the letters typed in step 3 should be undone.</p>
+			<ol start="5">
+				<li>Press undo button.</li>
+			</ol>
+			<p><strong>Expected</strong>: Letters typed in step 1 should be undone.</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Heading 1</h2>
+			<p><i>This</i> is an <strong>editor</strong> instance.</p>
+		</div>
+	</body>
+</html>

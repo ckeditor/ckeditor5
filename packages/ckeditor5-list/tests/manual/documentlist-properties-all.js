@@ -110,7 +110,5 @@ ClassicEditor
 	} );
 
 document.getElementById( 'chbx-show-borders' ).addEventListener( 'change', () => {
-	const wrapper = document.querySelector( '.manual-test-container' ) || document.body;
-
-	wrapper.classList.toggle( 'show-borders' );
+	document.body.classList.toggle( 'show-borders' );
 } );

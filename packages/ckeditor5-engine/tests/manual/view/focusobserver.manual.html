@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Focusobserver</title>
+		<script type="module" src="./focusobserver.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<p>Focused editable should be green. Blurred editable should be red.</p>
+			<ul>
+				<li>Selection should be placed in 1st editable</li>
+				<li>Open console.</li>
+				<li>Focus in the 1st editable should be logged.</li>
+				<li>
+					Focus the second editable.
+					<ul>
+						<li>Blur in the 1st editable should be logged.</li>
+						<li>Focus in the 2nd editable should be logged.</li>
+					</ul>
+				</li>
+				<li>
+					Focus the first editable.
+					<ul>
+						<li>Blur in the 2nd editable should be logged.</li>
+						<li>Focus in the 1st editable should be logged.</li>
+					</ul>
+				</li>
+				<li>
+					Click outside editables.
+					<ul>
+						<li>Blur in the 1st editable should be logged.</li>
+					</ul>
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div contenteditable="true" id="editor"></div>
+		<div
+			contenteditable="true"
+			id="editable1"
+			style="border: solid 1px black; background-color: red"
+		></div>
+		<div
+			contenteditable="true"
+			id="editable2"
+			style="border: solid 1px black; background-color: red"
+		></div>
+	</body>
+</html>

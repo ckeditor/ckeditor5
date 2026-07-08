@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>10042</title>
+		<script type="module" src="./10042.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>
+				Ticket test: <a href="https://github.com/ckeditor/ckeditor5/issues/10042">#10042</a>
+			</h1>
+			<h2>Case 1: colspan is 0</h2>
+			<ol>
+				<li>Click "Insert invalid cell with colspan 0" button.</li>
+			</ol>
+			<p>Expected:</p>
+			<ul>
+				<li>No errors.</li>
+				<li>Table should be inserted properly.</li>
+				<li>Editor should not freeze.</li>
+				<li>Inserted table cell should have no colspan attribute</li>
+			</ul>
+			<h2>Case 2: colspan is string</h2>
+			<ol>
+				<li>Click "Insert invalid cell with colspan "abc"" button.</li>
+			</ol>
+			<p>Expected:</p>
+			<ul>
+				<li>No errors.</li>
+				<li>Table should be inserted properly.</li>
+				<li>Editor should not freeze.</li>
+				<li>Inserted table cell should have no colspan attribute</li>
+			</ul>
+			<h2>Case 3: negative colspan and rowspan</h2>
+			<ol>
+				<li>Click "Insert invalid cell with negative colspan and rowspan" button.</li>
+			</ol>
+			<p>Expected:</p>
+			<ul>
+				<li>No errors.</li>
+				<li>Table should be inserted properly.</li>
+				<li>Editor should not freeze.</li>
+				<li>Inserted table cell should have no colspan or rowspan attributes</li>
+			</ul>
+		</ck-manual-header>
+
+		<button id="editor1-button">Insert invalid cell with colspan 0</button>
+		<br />
+		<br />
+		<div id="editor1"></div>
+
+		<br />
+		<br />
+		<button id="editor2-button">Insert invalid cell with colspan "abc"</button>
+		<br />
+		<br />
+		<div id="editor2"></div>
+
+		<br />
+		<br />
+		<button id="editor3-button">Insert invalid cell with negative colspan and rowspan</button>
+		<br />
+		<br />
+		<div id="editor3"></div>
+	</body>
+</html>

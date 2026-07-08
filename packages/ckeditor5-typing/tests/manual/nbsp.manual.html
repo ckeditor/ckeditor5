@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Nbsp</title>
+		<script type="module" src="./nbsp.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3><code>&#x26;nbsp;</code> handling test</h3>
+			<p>Typing plugin should correctly handle spaces and   characters.</p>
+			<p><strong>Requirements:</strong></p>
+			<ol>
+				<li>
+					Non-breakable spaces created by browser when using <kbd>space</kbd> should be
+					changed to normal space characters when inserted to model (and then, to view).
+				</li>
+				<li>In DOM we still need to render them as <code>&#x26;nbsp;</code>s.</li>
+				<li>
+					Multiple consecutive spaces should be allowed, as well as spaces at the
+					beginning or end of element.
+				</li>
+				<li>
+					<code>&#x26;nbsp;</code> characters inserted intentionally should be kept as
+					<code>&#x26;nbsp;</code> in model (and view).
+				</li>
+				<li>Whitespaces should be removed when editor data is set.</li>
+			</ol>
+			<p><strong>Test steps:</strong></p>
+			<ol>
+				<li>
+					Open console and start using <kbd>space</kbd>. After each change, console is
+					refreshed with output:
+					<ul>
+						<li>
+							There should be no <code>&#x26;nbsp;</code> inserted in view and model
+							after using <kbd>space</kbd>.
+						</li>
+						<li>
+							There should be <code>&#x26;nbsp;</code> in DOM and
+							<code>getData</code> output, where needed.
+						</li>
+					</ul>
+				</li>
+				<li>
+					Use <code>editor.setData()</code> to test whether whitespaces in input HTML are
+					correctly removed and <code>&#x26;nbsp;</code> are correctly saved in model and
+					view. <code>&#x26;nbsp;</code> inserted through
+					<code>editor.setData()</code> should be kept, not changed to normal spaces.
+				</li>
+				<li>
+					Use the button to test whether <code>&#x26;nbsp;</code>s are correctly preserved
+					in model, view and DOM.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>This is an editor instance.</p>
+		</div>
+		<br /><br />
+		<button id="nbsp">Insert &amp;nbsp;</button>
+	</body>
+</html>

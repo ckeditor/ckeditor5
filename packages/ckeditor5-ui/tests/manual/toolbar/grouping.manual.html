@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Grouping</title>
+		<script type="module" src="./grouping.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Automatic toolbar grouping</h1>
+			<h2>Grouping on load</h2>
+			<ol>
+				<li>
+					Narrow the browser window so some toolbar items should wrap to the next row.
+				</li>
+				<li>Refresh the test.</li>
+				<li>
+					The toolbar should looks the same. Make sure none of toolbar items wrapped or
+					overflow.
+				</li>
+				<li>
+					The dropdown button should be displayed at the end of the toolbar, allowing to
+					access grouped features.
+					<ul>
+						<li>
+							The drop–down should be displayed <strong>under</strong> the main
+							toolbar.
+						</li>
+					</ul>
+				</li>
+				<li>
+					Grouped items toolbar should never start or end with a separator, even if one
+					was in the main toolbar space.
+				</li>
+				<li>Other separators (between items) should be preserved.</li>
+			</ol>
+			<h2>Grouping and ungrouping on resize</h2>
+			<ol>
+				<li>Play with the size of the browser window.</li>
+				<li>
+					Toolbar items should group and ungroup automatically but
+					<ul>
+						<li>the should never wrap to the next line,</li>
+						<li>or stick out beyond the toolbar boundaries.</li>
+					</ul>
+				</li>
+			</ol>
+			<h2>Accessibility</h2>
+			<ol>
+				<li>Make sure no toolbar items are grouped.</li>
+				<li>
+					Use <kbd>Alt</kbd> + <kbd>F10</kbd> (+ <kbd>Fn</kbd> on Mac) to focus the
+					toolbar.
+				</li>
+				<li>
+					Navigate the toolbar using the keyboard
+					<ul>
+						<li>it should work naturally,</li>
+						<li>
+							the navigation should cycle (leaving the last item focuses the first
+							item, and going back from the first items focuses the last)
+						</li>
+					</ul>
+				</li>
+				<li>Resize the window so some items are grouped.</li>
+				<li>
+					Check if navigation works in the same way but includes the button that
+					aggregates grouped items.
+				</li>
+				<li>
+					Enter the group button, navigate across grouped items, go back (<kbd>Esc</kbd>).
+				</li>
+				<li>There should be no interruptions or glitches in the navigation.</li>
+			</ol>
+			<h2>RTL content with LTR UI</h2>
+			<ol>
+				<li>Perform the same scenarios as for the initial editor.</li>
+				<li>
+					There should be no visual or behavioral difference between the first editor and
+					this one except that the content is mirrored.
+				</li>
+				<li>
+					The button aggregating grouped toolbar items should be displayed on the
+					right-hand side.
+				</li>
+			</ol>
+			<h2>RTL UI support</h2>
+			<ol>
+				<li>Perform the same scenarios in the editor with RTL (right–to–left) UI.</li>
+				<li>
+					There should be no visual or behavioral difference between LTR and RTL editors
+					except that the toolbar is mirrored.
+				</li>
+				<li>
+					The button aggregating grouped toolbar items should be displayed on the
+					left–hand side.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>Editor with LTR UI</h2>
+
+		<div id="editor-ltr">
+			<p>Editor content</p>
+		</div>
+
+		<h2>Editor with RTL content, LTR UI</h2>
+
+		<div id="editor-rtl-mixed">
+			<p>Editor content</p>
+		</div>
+
+		<h2>Editor with RTL UI</h2>
+
+		<div id="editor-rtl">
+			<p>Editor content</p>
+		</div>
+
+		<style>
+			.ck.ck-editor {
+				margin-left: 200px;
+				margin-right: 200px;
+			}
+		</style>
+	</body>
+</html>

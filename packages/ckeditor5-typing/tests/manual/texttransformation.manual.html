@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Texttransformation</title>
+		<script type="module" src="./texttransformation.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Text transformation</h2>
+			<p>The list of default transformations is available in the docs.</p>
+			<p>Some of the transformations are:</p>
+			<ol>
+				<li>
+					<p>Symbols:</p>
+					<ul>
+						<li>Copyright: <code>(c)</code> to <code>©</code>.</li>
+						<li>Registered treademark: <code>(r)</code> to <code>®</code>.</li>
+						<li>Trade mark: <code>(tm)</code> to <code>™.</code></li>
+					</ul>
+				</li>
+				<li>
+					<p>Mathematical:</p>
+					<ul>
+						<li>
+							Fractions of 2, 3 &#x26; 4, like <code>½</code> to <code>½</code> or
+							<code>3/4</code> to <code>¾</code>. (ps.: there's no
+							<code>2/4</code> 😉)
+						</li>
+						<li>Arrows: <code>-></code>, <code>&#x3C;-</code>.</li>
+						<li>
+							Operators: <code>&#x3C;=</code> to <code>≤</code>, <code>>=</code> to
+							<code>≥</code>, <code>!=</code> to <code>≠</code>.
+						</li>
+					</ul>
+				</li>
+				<li>
+					<p>Typography:</p>
+					<ul>
+						<li>Dashes: <code>--</code>, <code>---</code>.</li>
+						<li>Ellipsis: <code>...</code> to <code>…</code></li>
+					</ul>
+				</li>
+				<li>
+					<p>Quotes:</p>
+					<ul>
+						<li>
+							Primary quotes (english): <code>'Foo bar'</code> to
+							<code>‘Foo bar’</code>
+						</li>
+						<li>
+							Secondary quotes (english): <code>"Foo bar's"</code> to
+							<code>“Foo bar's”</code>
+						</li>
+					</ul>
+				</li>
+			</ol>
+			<h3>Testing</h3>
+			<ul>
+				<li>
+					Check if the transformation works. Note that some might need a space to trigger
+					(dashes).
+				</li>
+				<li>Undo a text transformation and type - it should not re-transform it.</li>
+				<li>Change selection - the not transformed elements should stay.</li>
+			</ul>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Let's type(tm</h2>
+			<p>Divide 1/2 should stay on selection change.</p>
+		</div>
+	</body>
+</html>

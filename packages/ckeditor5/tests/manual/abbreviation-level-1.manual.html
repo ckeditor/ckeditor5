@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Abbreviation Level 1</title>
+		<script type="module" src="./abbreviation-level-1.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<hr />
+			<h2>category: abbreviation-plugin order: 25</h2>
+			<h1>Abbreviation plugin tutorial - part 1</h1>
+			<p>
+				This guide will show you how to create a simple abbreviation plugin for CKEditor 5.
+			</p>
+			<info-box>
+				Before you get to work,be sure to check out the {@link
+				framework/using-package-generatorpackage generator guide}.
+			</info-box>
+			<p>
+				We’ll create a toolbar button that lets the users insert abbreviations into their
+				document. The abbreviations will use
+				<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr"
+					>the <code>&#x3C;abbr></code> <abbr title="HyperText Markup Language"
+						> HTML
+					</abbr>
+					element</a
+				>, with a ‘title’ attribute that will show up in a tooltip when the user hovers over
+				the element.
+			</p>
+			<p>
+				This first part will cover only the basics, and we will just insert one possible
+				abbreviation: "WYSIWYG". We will get user input in the next part of this tutorial
+				series.
+			</p>
+			<p>
+				If you want to see the final product of this tutorial before you plunge in, check
+				out the <a href="#demo">demo</a>.
+			</p>
+			<h2>Let's start</h2>
+			<p>Start by installing all the necessary dependencies:</p>
+			<ul>
+				<li>
+					The
+					<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-core"
+						><code>@ckeditor/ckeditor5-core</code></a
+					>
+					package which contains the {@link module:core/plugin~Plugin} class.
+				</li>
+				<li>
+					The
+					<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-ui"
+						><code>@ckeditor/ckeditor5-ui</code></a
+					>
+					package which contains the UI library and framework.
+				</li>
+			</ul>
+			<pre><code class="language-bash">npm install --save @ckeditor/ckeditor5-core \
+@ckeditor/ckeditor5-ui
+</code></pre>
+			<p>
+				Your entry point to the plugin is <code>app.js</code> and it should look like this
+				(maybe with a couple of different imports):
+			</p>
+			<pre><code class="language-js">// app.js
+
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+</code></pre>
+			<p>
+				Now look at <code>index.html</code>. We will add here the
+				<code>&#x3C;abbr></code> element - it won't work just yet, but we will fix that in a
+				couple of steps.
+			</p>
+			<pre><code class="language-html">&#x3C;!DOCTYPE html>
+&#x3C;html lang="en">
+	&#x3C;head>
+		&#x3C;meta charset="utf-8">
+		&#x3C;title>CKEditor 5 Framework – abbreviation plugin&#x3C;/title>
+	&#x3C;/head>
+	&#x3C;body>
+		&#x3C;div id="editor">
+ 			&#x3C;h2>Abbreviation plugin&#x3C;/h2>
+    		&#x3C;p>CKEditor5 is a modern, feature-rich, world-class &#x3C;abbr title="What You See Is What You Get">WYSIWYG&#x3C;/abbr> editor.&#x3C;/p>
+		&#x3C;/div>
+
+		&#x3C;script src="dist/bundle.js">&#x3C;/script>
+	&#x3C;/body>
+&#x3C;/html>
+</code></pre>
+			<h2>Plugin structure</h2>
+			<p>
+				We’ll divide our abbreviation plugin into three components -
+				<code>Abbreviation</code>, <code>AbbreviationUI</code>, and
+				<code>AbbreviationEditing</code>:
+			</p>
+			<ul>
+				<li>
+					<code>AbbreviationEditing</code> will enable the abbreviation attribute in the
+					model and introduce a proper model ←→ view conversion.
+				</li>
+				<li>
+					<code>AbbreviationUI</code> will be responsible for the UI - the toolbar button.
+				</li>
+				<li>
+					<code>Abbreviation</code> will be the glue that holds the UI and the editing
+					together.
+				</li>
+			</ul>
+			<p>
+				You could keep them all in one file, since this part of the tutorial won't have too
+				much code. If you're planning to go through all parts of the tutorial, it's best to
+				separate the components. We suggest creating this directory structure:
+			</p>
+			<pre><code class="language-plain">├── app.js
+├── dist
+│   ├── bundle.js
+│   └── bundle.js.map
+├── index.html
+├── node_modules
+├── package.json
+├── abbreviation
+│   ├── abbreviation.js
+│   ├── abbreviationediting.js
+│   └── abbreviationui.js
+│
+└── webpack.config.js
+</code></pre>
+			<p>Let's define the 3 components.</p>
+			<pre><code class="language-js">// abbreviation/abbreviation.js
+
+import AbbreviationEditing from './abbreviationediting';
+import AbbreviationUI from './abbreviationui';
+import { Plugin } from 'ckeditor5';
+
+export default class Abbreviation extends Plugin {
+	static get requires() {
+		return [ AbbreviationEditing, AbbreviationUI ];
+	}
+}
+</code></pre>
+			<pre><code class="language-js">// abbreviation/abbreviationui.js
+
+import { Plugin } from 'ckeditor5';
+
+export default class AbbreviationUI extends Plugin {
+	init() {
+		console.log( 'AbbreviationUI#init() got called' );
+	}
+}
+</code></pre>
+			<pre><code class="language-js">// abbreviation/abbreviationediting.js
+
+import { Plugin } from 'ckeditor5';
+
+export default class AbbreviationEditing extends Plugin {
+	init() {
+		console.log( 'AbbreviationEditing#init() got called' );
+	}
+}
+</code></pre>
+			<p>
+				Now you need to load the <code>Abbreviation</code> plugin in your
+				<code>app.js</code> file. The editor will load the <code>AbbreviationUI</code> and
+				the <code>AbbreviationEditing</code> by itself, as they are required by our 'glue'
+				plugin.
+			</p>
+			<pre><code class="language-js">// app.js
+
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+import Abbreviation from './abbreviation/abbreviation'; // ADDED
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		plugins: [
+			Essentials, Paragraph, Heading, List, Bold, Italic,
+			Abbreviation														// ADDED
+		],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+</code></pre>
+			<p>
+				Rebuild your project, refresh the browser and you should see that the
+				<code>AbbreviationEditing</code> and <code>AbbreviationUI</code> plugins were
+				loaded.
+			</p>
+			<h2>The model and the view layers</h2>
+			<p>
+				CKEditor 5 implements its own custom data model, which does not map to the DOM 1:1.
+				The model document is converted into the view, which represents the content that the
+				user is editing - the DOM structure you see in the browser.
+			</p>
+			<info-box>
+				Before moving forward, it is important to understand the editor architecture. Read
+				more about the {@link framework/architecture/editing-engine#model model} and the
+				{@link framework/architecture/editing-engine#view view} to get familiar with the
+				basic concepts.
+			</info-box>
+			<p>
+				In the view layer, we will have the <code>&#x3C;abbr></code> HTML element, with a
+				title attribute.
+			</p>
+			<p>
+				In the model, inline elements, such as <code>&#x3C;abbr></code>, are represented as
+				attributes, not as separate elements. In order for our plugin to work, we will need
+				to make sure that we can add abbreviation attribute to the text node.
+			</p>
+			<h3>Defining the schema</h3>
+			<p>
+				We can do it by defining the model's schema. Thanks to a couple lines of code, we
+				will allow all text nodes to receive the model abbreviation attribute.
+			</p>
+			<info-box>
+				Schema defines what is allowed in the model in terms of structures, attributes, and
+				other characteristics. This information is then used by the features and the engine
+				to make decisions on how to process the model, so it is crucial that your custom
+				plugins have a well-defined schema. Read more about it in our{@link
+				framework/architecture/editing-engine#schema introduction to the editing engine
+				architecture}.
+			</info-box>
+			<p>
+				So, we will just extend the text node's schema to accept our abbreviation attribute,
+				using the {@link module:engine/model/schema~ModelSchema#extend
+				<code>Schema#extend()</code>} method.
+			</p>
+			<p>Update the <code>AbbreviationEditing</code> plugin with this definition:</p>
+			<pre><code class="language-js">// abbreviation/abbreviationediting.js)
+
+import { Plugin } from 'ckeditor5';
+
+export default class AbbreviationEditing extends Plugin {
+	init() {
+		this._defineSchema();                                                  // ADDED
+	}
+
+	_defineSchema() {                                                          // ADDED
+		const schema = this.editor.model.schema;
+
+		// Extend the text node's schema to accept the abbreviation attribute.
+		schema.extend( '$text', {
+			allowAttributes: [ 'abbreviation' ]
+		} );
+	}
+}
+</code></pre>
+			<h3>Defining converters</h3>
+			<p>
+				Converters tell the editor how to transform the view to the model (e.g. when loading
+				the data to the editor or handling pasted content) and how to render the model to
+				the view (for editing purposes, or when retrieving the editor data).
+			</p>
+			<info-box>
+				Conversion is one of the more complex topics in our editing engine architecture.
+				It's definitely worth to read up on it before you move on. more about the {@link
+				framework/deep-dive/conversion/downcast conversion in the editor}.
+			</info-box>
+			<p>
+				We will need to convert the model abbreviation attribute into an HTML element in the
+				view (downcast) and vice versa (upcast). We will do that by using our {@link
+				framework/deep-dive/conversion/helpers/intro conversion helpers} and defining what
+				the model and the view is supposed to look like for both conversions.
+			</p>
+			<p>
+				Converting the full title of the abbreviation is a little bit tricky, because we
+				need to make sure that its value is synchronized between the model and the view.
+			</p>
+			<h4>Downcast conversion</h4>
+			<p>
+				In the downcast conversion, we will use one of our conversion helpers - {@link
+				framework/deep-dive/conversion/helpers/downcast#attribute-to-element-conversion-helper
+				<code>attributeToElement()</code>} - to transform the model abbreviation attribute
+				into the view <code>&#x3C;abbr></code> element.
+			</p>
+			<p>
+				We will need to use a callback function, in order to get the title stored as a model
+				attribute value and transform it into the title value of the view element. Here, the
+				second parameter of the view callback is the {@link
+				module:engine/conversion/downcastdispatcher~DowncastConversionApi
+				<code>DowncastConversionApi</code>} object. We will use its
+				<code>writer</code> property, which will allow us to manipulate the data during
+				downcast conversion, as it contains an instance of the {@link
+				module:engine/view/downcastwriter~ViewDowncastWriter
+				<code>ViewDowncastWriter</code>}.
+			</p>
+			<pre><code class="language-js">// abbreviation/abbreviationediting.js
+
+import { Plugin } from 'ckeditor5';
+
+export default class AbbreviationEditing extends Plugin {
+	init() {
+		this._defineSchema();
+		this._defineConverters();                                              // ADDED
+	}
+
+	_defineSchema() {
+		// ...
+	}
+
+	_defineConverters() {                                                      // ADDED
+		const conversion = this.editor.conversion;
+
+		// Conversion from a model attribute to a view element
+		conversion.for( 'downcast' ).attributeToElement( {
+			model: 'abbreviation',
+
+			// Callback function provides access to the model attribute value
+			// and the ViewDowncastWriter
+			view: ( modelAttributeValue, conversionApi ) => {
+				const { writer } = conversionApi;
+
+				return writer.createAttributeElement( 'abbr', {
+					title: modelAttributeValue
+				} );
+			}
+		} );
+
+	}
+}
+</code></pre>
+			<h4>Upcast conversion</h4>
+			<p>
+				In the upcast conversion, we're telling the editor how the view
+				<code>&#x3C;abbr></code> element is supposed to look like in the model. We will
+				transform it using another conversion helper - {@link
+				framework/deep-dive/conversion/helpers/upcast#element-to-attribute-conversion-helper
+				<code>elementToAttribute()</code>}.
+			</p>
+			<p>
+				We also need to grab the title value from content and use it in the model. We can do
+				that thanks to a callback function, which gives us the access to the {@link
+				module:engine/view/element~ViewElement view element}.
+			</p>
+			<pre><code class="language-js">// abbreviation/abbreviationediting.js
+
+import { Plugin } from 'ckeditor5';
+
+export default class AbbreviationEditing extends Plugin {
+	init() {
+		// ...
+	}
+
+	_defineSchema() {
+		// ...
+	}
+
+	_defineConverters() {
+		const conversion = this.editor.conversion;
+
+		conversion.for( 'downcast' ).attributeToElement(
+			// ...
+		);
+
+		// Conversion from a view element to a model attribute
+		conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'abbr',
+				attributes: [ "title" ]
+			},
+			model: {
+				key: 'abbreviation',
+
+				// Callback function provides access to the view element
+				value: viewElement => {
+					const title = viewElement.getAttribute( 'title' );
+
+					return title;
+				}
+			}
+		} );
+	}
+}
+</code></pre>
+			<p>
+				Thanks to the upcast conversion, our abbreviation added in the
+				<code>index.html</code> should work now. Rebuild and check it out yourself.
+			</p>
+			<h2>Creating a toolbar button</h2>
+			<p>
+				Now we can create our <code>Abbreviation</code> toolbar button using the {@link
+				module:ui/button/buttonview~ButtonView <code>ButtonView</code>} class.
+			</p>
+			<p>
+				We need to register it in the editor's UI {@link
+				module:ui/componentfactory~ComponentFactory <code>componentFactory</code>}, so it
+				can be displayed in the toolbar. We can localize the button by using the editor's
+				{@link module:utils/locale~Locale} instance, and the translation {@link
+				module:utils/locale~Locale#t <code>t()</code> function}.
+			</p>
+			<pre><code class="language-js">// abbreviation/abbreviationui.js
+
+class AbbreviationUI extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		// The translation function.
+		const { t } = editor.locale;
+
+		editor.ui.componentFactory.add( 'abbreviation', locale => {
+			const button = new ButtonView( locale );
+
+			// The localized label.
+			button.label = t( 'Abbreviation' );
+			button.tooltip = true;
+			button.withText = true;
+
+			return button;
+		} );
+	}
+}
+</code></pre>
+			<p>
+				We passed the name of the button in the <code>componentFactory.add</code>, so it's
+				now available to use in the toolbar config. You can now simply add it to the toolbar
+				in <code>app.js</code>:
+			</p>
+			<pre><code class="language-js">// app.js
+
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+import Abbreviation from './simplebox/abbreviation';
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		plugins: [
+			Essentials, Paragraph, Heading, List, Bold, Italic, Abbreviation
+		],
+		toolbar: [
+			'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|',
+			'abbreviation'														 // ADDED
+		]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+</code></pre>
+			<p>We have the button, so let's define what should happen after the user clicks it.</p>
+			<p>
+				We will use the {@link module:engine/model/model~Model#insertContent
+				<code>writer.insertContent()</code>} method to insert our abbreviation and its
+				title attribute into the document. Inside, we just need to create a new text node
+				with {@link module:engine/model/writer~ModelWriter#createText
+				<code>writer.createText()</code>}.
+			</p>
+			<pre><code class="language-js">// abbreviation/abbreviationui.js
+
+import { Plugin } from 'ckeditor5';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+
+class AbbreviationUI extends Plugin {
+	init() {
+		const editor = this.editor;
+		const { t } = editor.locale;
+
+		editor.ui.componentFactory.add( 'abbreviation', locale => {
+			//...
+
+			this.listenTo( button, 'execute', () => {
+				const selection = editor.model.document.selection;
+				const title = 'What You See Is What You Get';
+				const abbr = 'WYSIWYG';
+
+				editor.model.change( writer => {
+					editor.model.insertContent( writer.createText( abbr, { abbreviation: title } ) );
+				} );
+			} );
+
+			return button;
+		} );
+	}
+}
+</code></pre>
+			<p>
+				That's it for the first part of this tutorial! Your plugin should now work (in its
+				most basic form). Go on to {@link
+				tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 the second part},
+				where you will create a balloon with a form to get user's input, replacing our
+				hard-coded "WYSIWYG" abbreviation.
+			</p>
+			<h2>Demo</h2>
+			<p>{@snippet framework/abbreviation-level-1}</p>
+			<h2>Final code</h2>
+			<p>
+				If you got lost at any point, this is the final implementation of the plugin. You
+				can paste it into the <code>app.js</code> and it will run out-of-the-box:
+			</p>
+			<pre><code class="language-js">
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+import { Plugin } from 'ckeditor5';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+
+class AbbreviationUI extends Plugin {
+	init() {
+		const editor = this.editor;
+		const { t } = editor.locale;
+
+		editor.ui.componentFactory.add( 'abbreviation', locale => {
+			const button = new ButtonView( locale );
+
+			button.label = t( 'Abbreviation' );
+			button.tooltip = true;
+			button.withText = true;
+
+			this.listenTo( button, 'execute', () => {
+				const selection = editor.model.document.selection;
+				const title = 'What You See Is What You Get';
+				const abbr = 'WYSIWYG';
+
+				editor.model.change( writer => {
+					editor.model.insertContent( writer.createText( abbr, { abbreviation: title } ) );
+				} );
+			} );
+
+			return button;
+		} );
+	}
+}
+
+class AbbreviationEditing extends Plugin {
+	init() {
+		this._defineSchema();
+		this._defineConverters();
+	}
+	_defineSchema() {
+		const schema = this.editor.model.schema;
+
+		schema.extend( '$text', {
+			allowAttributes: [ 'abbreviation' ]
+		} );
+	}
+	_defineConverters() {
+		const conversion = this.editor.conversion;
+
+		conversion.for( 'downcast' ).attributeToElement( {
+			model: 'abbreviation',
+			view: ( modelAttributeValue, conversionApi ) => {
+				const { writer } = conversionApi;
+
+				return writer.createAttributeElement( 'abbr', {
+					title: modelAttributeValue
+				} );
+			}
+		} );
+
+		conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'abbr',
+				attributes: [ 'title' ]
+			},
+			model: {
+				key: 'abbreviation',
+				value: viewElement => {
+					const title = viewElement.getAttribute( 'title' );
+
+					return title;
+				}
+			}
+		} );
+	}
+}
+
+class Abbreviation extends Plugin {
+	static get requires() {
+		return [ AbbreviationEditing, AbbreviationUI ];
+	}
+}
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#snippet-abbreviation-plugin' ),
+		plugins: [ Essentials, Bold, Italic, Heading, List, Paragraph, Abbreviation ],
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'abbreviation' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err );
+	} );
+
+</code></pre>
+		</ck-manual-header>
+
+		<div class="ck ck-content" id="snippet-abbreviation-plugin">
+			<h2>Abbreviation plugin</h2>
+			<p>
+				CKEditor5 is a modern, feature-rich, world-class
+				<abbr title="What You See Is What You Get">WYSIWYG</abbr> editor.
+			</p>
+		</div>
+	</body>
+</html>

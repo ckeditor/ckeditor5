@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>List Properties</title>
+		<script type="module" src="./list-properties.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>List properties feature</h1>
+			<p>Several editors were configured in this manual.</p>
+			<h2>Basics</h2>
+			<ol>
+				<li>Open the numbered list dropdown in each editor.</li>
+				<li>Make sure the UI of the dropdown matches the description of the editor.</li>
+				<li>Open the bulleted list dropdown and make sure it always looks the same.</li>
+			</ol>
+			<p>
+				<strong>Note</strong>: When list styles are disabled, the bulleted list dropdown
+				should become a simple button.
+			</p>
+			<h2>Accessibility</h2>
+			<ol>
+				<li>In each editor, focus the editing root and hit <kbd>(Fn+)Alt+F10</kbd>.</li>
+				<li>Hit arrow down when the numbered list dropdown is highlighted.</li>
+				<li>
+					Hit arrow down (or up) again to focus the first (last) item in the dropdown.
+				</li>
+				<li>Navigate using <kbd>Tab</kbd> across the UI.</li>
+				<li>
+					Make sure the navigation works both ways by using
+					<kbd>Shift</kbd>+<kbd>Tab</kbd>.
+				</li>
+				<li>Make sure you can enter numbered list properties when collapsed.</li>
+			</ol>
+		</ck-manual-header>
+
+		<h2>With styles and other properties</h2>
+
+		<h3>Styles + Start index + Reversed</h3>
+		<div id="editor-a"></div>
+
+		<h3>Styles + Start index</h3>
+		<div id="editor-b"></div>
+
+		<h3>Styles + Reversed</h3>
+		<div id="editor-c"></div>
+
+		<h2>Without styles, just extra properties</h2>
+
+		<h3>Start index + Reversed</h3>
+		<div id="editor-d"></div>
+
+		<h3>Start index</h3>
+		<div id="editor-e"></div>
+
+		<h3>Reversed</h3>
+		<div id="editor-f"></div>
+
+		<h2>Just styles</h2>
+
+		<div id="editor-g"></div>
+
+		<h2>No properties enabled</h2>
+
+		<div id="editor-h"></div>
+
+		<h2>Hidden lower-latin and upper-latin styles</h2>
+
+		<div id="editor-i"></div>
+	</body>
+</html>

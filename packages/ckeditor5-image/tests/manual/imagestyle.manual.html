@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Imagestyle</title>
+		<script type="module" src="./imagestyle.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>ImageStyle feature</h2>
+			<h3>Image toolbar</h3>
+			<ul>
+				<li>
+					The drop-down buttons should have labels like "Drop-down name: Selected style
+					name".
+				</li>
+				<li>
+					On the first image the "Break text" button should be highlighted.
+					<ul>
+						<li>
+							After opening the drop-down the nested button "Centered image" should be
+							highlighted.
+						</li>
+					</ul>
+				</li>
+				<li>
+					On the second image the "In line" button should be highlighted.
+					<ul>
+						<li>
+							After opening the drop-down the nested button "Left aligned image"
+							should be highlighted.
+						</li>
+					</ul>
+				</li>
+				<li>
+					The highlighted "Break text" button on the first image should look and behave
+					like the drop-down:
+					<ul>
+						<li>it should have uniform background with the arrow on hover,</li>
+						<li>it should have uniform background with the arrow if it"s open,</li>
+						<li>it should open on click on the icon or the arrow,</li>
+						<li>it should close on click on the icon or the arrow,</li>
+					</ul>
+				</li>
+				<li>
+					The not highlighted "Wrap text" button on the first image should look and behave
+					like the split button:
+					<ul>
+						<li>the arrow and the icon should be separated visually on hover</li>
+						<li>it should have uniform background with the arrow if it"s open,</li>
+						<li>
+							clicking the icon should change the image styling and should not open
+							the drop-down
+						</li>
+						<li>
+							clicking the arrow should open the drop-down without affecting the image
+							styling
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3>Image styling</h3>
+			<ul>
+				<li>
+					The first image
+					<ul>
+						<li>
+							The "Break text" styles:
+							<ul>
+								<li>Should make the "Break text" button highlighted.</li>
+								<li>
+									Should display the image between the paragraphs aligned to the
+									left/center/right.
+								</li>
+								<li>
+									The image should have side margins if aligned to the left/right.
+								</li>
+							</ul>
+						</li>
+						<li>
+							The "Wrap text" styles:
+							<ul>
+								<li>Should make the "Wrap text" button highlighted.</li>
+								<li>
+									The image should have the top, bottom and side margins and
+									should be aligned to the left/right.
+								</li>
+								<li>
+									The text should be wrapped around the image if there is enough
+									space for that.
+								</li>
+								<li>
+									If the button was clicked after one of the "Break text" options,
+									the <code>img</code> should be wrapped with the
+									<code>figure</code> HTML element.
+								</li>
+								<li>
+									If the button was clicked after the "In line" option, the
+									<code>img</code> should be wrapped with the
+									<code>span</code> HTML element.
+								</li>
+							</ul>
+						</li>
+						<li>
+							The "In line" style:
+							<ul>
+								<li>
+									The image should have no margins and should be displayed in the
+									text line (if image was in the block-mode previously, it has to
+									dragged into a paragraph, otherwise it gets wrapped with an
+									empty paragraph).
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3>The "semantic–oriented" editor</h3>
+			<ul>
+				<li>
+					Click on image - toolbar with icons should appear.
+					<ul>
+						<li>"Centered image" icon should be selected for the first image.</li>
+						<li>"In line" icon should be selected for the second image.</li>
+					</ul>
+				</li>
+				<li>
+					Resize the browser window so the scrollbar is visible. Click on image and scroll
+					editor contents - check if toolbar is placed in proper position.
+				</li>
+			</ul>
+			<h3>The "formatting–oriented" editor</h3>
+			<ul>
+				<li>
+					Click on image - toolbar with icons should appear.
+					<ul>
+						<li>
+							"Break text: Centered image" icon should be selected for the first
+							image.
+						</li>
+						<li>
+							"Wrap text: Left aligned image" icon should be selected for the second
+							image.
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<h3>The "declarative drop-downs" editor</h3>
+			<ul>
+				<li>
+					Click on image - toolbar with drop-downs should appear.
+					<ul>
+						<li>
+							The first drop-down should have the "Inline image: Left aligned image"
+							label and should be selected for the second image. It should contain "In
+							line", "Left aligned image", and "Right aligned image" buttons.
+						</li>
+						<li>
+							The second drop-down should have the "Block image: Centered image" label
+							and should be selected for the first image. It should contain "Left
+							aligned image", "Centered image", and "Right aligned image" buttons.
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<style>
+			.row {
+				display: flex;
+				gap: 20px;
+				margin-bottom: 20px;
+			}
+			.column {
+				flex: 1;
+				min-width: 0;
+			}
+			.preview-box {
+				border: 1px solid #c4c4c4;
+				background: #fcfcfc;
+				height: 100%;
+				width: 100%;
+			}
+		</style>
+
+		<h2>Semantic–oriented images</h2>
+		<div class="row">
+			<div class="column">
+				<div id="editor-semantic">
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+						non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					</p>
+					<figure class="image">
+						<img src="sample.jpg" alt="" />
+					</figure>
+
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+						non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					</p>
+					<p></p>
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor<img
+							src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Run.svg/120px-Run.svg.png"
+							alt="Example image"
+							style="width: 20px"
+						/>
+						in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+						pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+						officia deserunt mollit anim id est laborum.
+					</p>
+					<p>Image alignment:</p>
+					<p>
+						<img
+							alt="Right align"
+							src="game_boy.jpg"
+							style="float: right; height: 75px; width: 75px"
+						/>
+						Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+						interdum.
+						<img
+							alt="Left align"
+							src="game_boy.jpg"
+							style="float: left; height: 75px; width: 75px"
+						/>
+						Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi,
+					</p>
+					<figure class="image" style="float: left">
+						<img src="sample.jpg" alt="Left aligned block image" />
+					</figure>
+					<p>
+						Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+						interdum.
+					</p>
+					<figure class="image" style="float: right">
+						<img src="sample.jpg" alt="Right aligned block image" />
+					</figure>
+					<p>Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi.</p>
+				</div>
+			</div>
+			<div class="column">
+				<div id="preview-semantic" class="preview-box ck-content"></div>
+			</div>
+		</div>
+
+		<h2>Formatting–oriented images</h2>
+		<div class="row">
+			<div class="column">
+				<div id="editor-formatting">
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+						non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					</p>
+					<figure class="image">
+						<img src="sample.jpg" alt="" />
+					</figure>
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+						non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					</p>
+					<p></p>
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor<img
+							class="image-style-align-left"
+							src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Run.svg/120px-Run.svg.png"
+							alt="Example image"
+							style="width: 20px"
+						/>
+						in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+						pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+						officia deserunt mollit anim id est laborum.
+					</p>
+					<p>Image alignment:</p>
+					<figure class="image" style="float: right">
+						<img src="sample.jpg" alt="Right aligned block image" />
+					</figure>
+					<p>
+						<img
+							alt="Right align"
+							src="game_boy.jpg"
+							style="float: right; height: 75px; width: 75px"
+						/>
+						Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+						interdum.
+						<img
+							alt="Left align"
+							src="game_boy.jpg"
+							style="float: left; height: 75px; width: 75px"
+						/>
+						Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi,
+					</p>
+					<figure class="image" style="float: left">
+						<img src="sample.jpg" alt="Left aligned block image" />
+					</figure>
+					<p>
+						Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+						interdum.
+					</p>
+				</div>
+			</div>
+			<div class="column">
+				<div id="preview-formatting" class="preview-box ck-content"></div>
+			</div>
+		</div>
+
+		<h2>Declarative drop-downs</h2>
+		<div class="row">
+			<div class="column">
+				<div id="editor-with-dropdown">
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+						non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					</p>
+					<figure class="image">
+						<img src="sample.jpg" alt="" />
+					</figure>
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+						non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					</p>
+					<p></p>
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor<img
+							class="image-style-align-left"
+							src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Run.svg/120px-Run.svg.png"
+							alt="Example image"
+							style="width: 20px"
+						/>
+						in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+						pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+						officia deserunt mollit anim id est laborum.
+					</p>
+					<p>Image alignment:</p>
+					<figure class="image" style="float: right">
+						<img src="sample.jpg" alt="Right aligned block image" />
+					</figure>
+					<p>
+						<img
+							alt="Right align"
+							src="game_boy.jpg"
+							style="float: right; height: 75px; width: 75px"
+						/>
+						Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+						interdum.
+						<img
+							alt="Left align"
+							src="game_boy.jpg"
+							style="float: left; height: 75px; width: 75px"
+						/>
+						Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi,
+					</p>
+					<figure class="image" style="float: left">
+						<img src="sample.jpg" alt="Left aligned block image" />
+					</figure>
+					<p>
+						Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo
+						interdum.
+					</p>
+				</div>
+			</div>
+			<div class="column">
+				<div id="preview-with-dropdown" class="preview-box ck-content"></div>
+			</div>
+		</div>
+	</body>
+</html>

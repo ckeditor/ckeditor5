@@ -1,0 +1,62 @@
+<!doctype html>
+<head>
+	<title>Markers</title>
+	<style>
+		.h-red {
+			display: inline-block;
+			background: #ff0000;
+		}
+		.h-yellow {
+			display: inline-block;
+			background: #ffff00;
+		}
+	</style>
+	<script type="module" src="./markers.js"></script>
+</head>
+
+<ck-manual-header>
+	<h3>
+		Markers integration
+		<a href="https://github.com/ckeditor/ckeditor5-engine/issues/643">#643</a>
+	</h3>
+	<ol>
+		<li>Write before, after and inside marked text.</li>
+		<li>Remove before, after and inside marked text.</li>
+		<li>Make selection intersecting with marked text and remove it.</li>
+		<li>Make selection intersecting with marked text and start typing.</li>
+		<li>Style text and see if marked selection brakes in some way.</li>
+		<li>Click enter inside marked text.</li>
+		<li>Change a paragraph with marked text to a list item or header.</li>
+		<li>Remove all marked text and see if there are no artifacts.</li>
+		<li>Use undo.</li>
+		<li>Use buttons to create and remove markers.</li>
+		<li>Make different selections and play with "move to start" button.</li>
+	</ol>
+</ck-manual-header>
+
+<div id="editor">
+	<p>Lorem ipsum dolor sit amet.</p>
+	<p>Foobar.</p>
+</div>
+<br />
+<div class="buttons">
+	<button id="add-yellow">Add yellow</button>
+	<button id="add-red">Add red</button>
+	<button id="remove-marker">Remove marker</button>
+	<br />
+	<button id="move-to-start">Move selection to start</button>
+	<button id="move-left">Move selection one char left</button>
+	<button id="move-right">Move selection one char right</button>
+</div>
+<br /><br />
+<small>
+	<em>
+		Keep in mind that this is just a simple demo.<br />
+		Highlighted markers do not merge (in model), remove button removes the first marker range
+		which contains selection anchor.<br />
+		Once highlighted, highlight cannot be overwritten.<br />
+		Multi-element ranges are not supported<br />
+		Moving to the start button works only for flat ranges<br />
+		These are all known limitations of the demo.
+	</em>
+</small>

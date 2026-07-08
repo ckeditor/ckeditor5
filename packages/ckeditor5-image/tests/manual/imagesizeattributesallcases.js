@@ -337,9 +337,8 @@ initEditors().catch( err => {
 
 function insertEditorStructure( editorObj ) {
 	const colorClass = editorObj.id.startsWith( 'inline' ) ? 'inlineColor' : 'blockColor';
-	const wrapper = document.querySelector( '.manual-test-container' ) || document.body;
 
-	wrapper.insertAdjacentHTML( 'beforeend',
+	document.body.insertAdjacentHTML( 'beforeend',
 		`<h2>${ editorObj.title }</h2>` +
 		`<span>Editor id: <strong>${ editorObj.id }<strong></span>` +
 		'<div class="editor-wrapper">' +

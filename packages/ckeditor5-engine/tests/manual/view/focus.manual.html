@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Focus</title>
+		<script type="module" src="./focus.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<ul>
+				<li>Click <code>Focus first editable</code> button.</li>
+				<li>
+					First editable should be focused and selection around <code>bar</code> should be
+					visible.
+				</li>
+				<li>Click <code>Focus second editable</code> button.</li>
+				<li>
+					Second editable should be focused and selection around <code>Foo</code> should
+					be visible.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div contenteditable="true" id="editor"></div>
+
+		<div contenteditable="true" id="editable1"></div>
+		<div contenteditable="true" id="editable2"></div>
+		<button id="button1">Focus first editable</button>
+		<button id="button2">Focus second editable</button>
+	</body>
+</html>

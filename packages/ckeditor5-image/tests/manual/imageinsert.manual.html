@@ -1,0 +1,105 @@
+<!doctype html>
+<head>
+	<title>Imageinsert</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	/>
+	<script type="module" src="./imageinsert.js"></script>
+</head>
+
+<ck-manual-header>
+	<h2>Image insert via URL</h2>
+	<ol>
+		<li>
+			Click on the arrow button in <code>insertImage</code> plugin to reveal the image insert
+			panel.
+		</li>
+		<li>
+			Paste the URL to the input (eg:
+			<code>https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg</code>).
+		</li>
+		<li>Click <code>Insert</code> button.</li>
+	</ol>
+	<h2>Image replace via URL</h2>
+	<ol>
+		<li>Click on the image in the editor.</li>
+		<li>
+			Click on the arrow button in <code>insertImage</code> plugin to reveal the image insert
+			panel.
+		</li>
+		<li>Edit the value of the input.</li>
+		<li>Click <code>Update</code> button.</li>
+	</ol>
+	<h2>Image insert via integrations</h2>
+	<ol>
+		<li>
+			In the <strong>Editor 2</strong> click on the arrow button in
+			<code>insertImage</code> plugin to reveal the image insert panel.
+		</li>
+		<li>Click on the <strong>CKFinder</strong> button.</li>
+		<li>Choose image and confirm.</li>
+	</ol>
+	<h2>Image insert via pasting URL into editor</h2>
+	<ol>
+		<li>
+			Copy image URL to clipboard (eg:
+			<code>https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg</code>).
+		</li>
+		<li>Paste the URL to the editor.</li>
+	</ol>
+</ck-manual-header>
+
+<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+
+<style>
+	code {
+		word-break: break-all;
+	}
+</style>
+
+<p>
+	Insert image integrations:
+	<label
+		><input type="checkbox" name="imageInsertIntegration" value="upload" checked /> Upload from
+		computer</label
+	>
+	<label
+		><input type="checkbox" name="imageInsertIntegration" value="assetManager" checked /> Insert
+		with file manager</label
+	>
+	<label
+		><input type="checkbox" name="imageInsertIntegration" value="url" checked /> Insert via
+		URL</label
+	>
+</p>
+
+<h3>Insert configured as "auto"</h3>
+<div id="editor1">
+	<h2>Image upload via URL with CKFinder integration</h2>
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat.
+		Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur consectetur
+		lectus sit amet tellus mattis, non lobortis leo interdum.
+	</p>
+</div>
+
+<h3>Insert configured as "block"</h3>
+<div id="editor2">
+	<h2>Image upload via URL with CKFinder integration</h2>
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat.
+		Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur consectetur
+		lectus sit amet tellus mattis, non lobortis leo interdum.
+	</p>
+</div>
+
+<h3>Insert configured as "inline"</h3>
+<div id="editor3">
+	<h2>Image upload via URL with CKFinder integration</h2>
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat.
+		Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur consectetur
+		lectus sit amet tellus mattis, non lobortis leo interdum.
+	</p>
+</div>

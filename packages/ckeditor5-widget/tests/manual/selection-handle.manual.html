@@ -1,0 +1,65 @@
+<!doctype html>
+<head>
+	<title>Selection Handle</title>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.ck-content .widget {
+			background: rgba(0, 0, 0, 0.1);
+			min-height: 50px;
+		}
+	</style>
+	<script type="module" src="./selection-handle.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>Widget selection handle</h1>
+	<p>
+		<strong>Note</strong>: For the best testing, run manual tests adding Arabic to
+		<a
+			href="https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/testing-environment.html#running-manual-tests"
+			>additional languages configuration</a
+		>.
+	</p>
+	<hr />
+	<ol>
+		<li>Focus the widget.</li>
+		<li>The outline of the widget and the selection handle should be continuous.</li>
+		<li>The selection handle should be attached to the top of the widget.</li>
+	</ol>
+	<h2>LTR</h2>
+	<ol>
+		<li>
+			The selection handle should be displayed on the <strong>left</strong> side of the
+			widget.
+		</li>
+	</ol>
+	<h2>RTL</h2>
+	<ol>
+		<li>
+			The selection handle should be displayed on the <strong>right</strong> side of the
+			widget.
+		</li>
+	</ol>
+</ck-manual-header>
+
+<h2>LTR UI</h2>
+
+<div id="editor-ltr">
+	<h2>Heading 1</h2>
+	<p>Paragraph</p>
+	<div class="widget"></div>
+	<p>Paragraph</p>
+</div>
+
+<h2>RTL UI</h2>
+
+<div id="editor-rtl">
+	<h2>Heading 1</h2>
+	<p>Paragraph</p>
+	<div class="widget"></div>
+	<p>Paragraph</p>
+</div>

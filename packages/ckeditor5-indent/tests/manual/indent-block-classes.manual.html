@@ -1,0 +1,70 @@
+<!doctype html>
+<head>
+	<title>Indent Block Classes</title>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.indent-1 {
+			margin-left: 20px;
+		}
+
+		.indent-2 {
+			margin-left: 40px;
+		}
+
+		.indent-3 {
+			margin-left: 60px;
+		}
+
+		.indent-4 {
+			margin-left: 80px;
+		}
+	</style>
+	<script type="module" src="./indent-block-classes.js"></script>
+</head>
+
+<ck-manual-header>
+	<h2>Loading</h2>
+	<p>
+		The editor should be loaded with first paragraph indented with class <code>indent-1</code>.
+	</p>
+	<h2>Testing</h2>
+	<ul>
+		<li>
+			The indentation should be done by changing classes <code>indent-1</code> to
+			<code>indent-4</code>.
+		</li>
+		<li>
+			The indent button should indent list, block and heading up to <code>indent-4</code>.
+		</li>
+		<li>The outdent button should outdent list, block and heading.</li>
+	</ul>
+</ck-manual-header>
+<div id="editor">
+	<h2>Heading 1</h2>
+	<p class="indent-1">Paragraph</p>
+	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+	<ul>
+		<li>UL List item 1</li>
+		<li>UL List item 2</li>
+	</ul>
+	<ol>
+		<li>OL List item 1</li>
+		<li>OL List item 2</li>
+	</ol>
+	<figure class="image image-style-side">
+		<img alt="bar" src="sample.jpg" />
+		<figcaption>Caption</figcaption>
+	</figure>
+	<blockquote>
+		<p>Quote</p>
+		<ul>
+			<li>Quoted UL List item 1</li>
+			<li>Quoted UL List item 2</li>
+		</ul>
+		<p>Quote</p>
+	</blockquote>
+</div>

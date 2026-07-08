@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Autoformat</title>
+		<script type="module" src="./autoformat.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Autoformat</h2>
+			<p>Note: autoformat should not work in a code blocks.</p>
+			<ol>
+				<li>
+					<p>
+						Type <code>#</code> and press the space at the beginning of a block to
+						replace it with a heading.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type <code>*</code> or <code>-</code> and the press space at the beginning
+						of a block to replace it with a list item.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type <code>></code> and press the space at the beginning of a block to
+						replace it with a block quote.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type <code>1</code> followed by a <code>.</code> or <code>)</code> and press
+						space (at the beginning of a block) to replace it with a numbered list item.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type <code>*foobar*</code>/<code>_foobar_</code> to italicize
+						<code>foobar</code>. <code>*</code>/<code>_</code> should be removed.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type <code>**foobar**</code>/<code>__foobar__</code> to bold
+						<code>foobar</code>. <code>**</code>/<code>__</code> should be removed.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type <code>`foobar`</code> to mark as code <code>foobar</code>.
+						<code> `</code> should be removed.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type <code>~~foobar~~</code> to strikethrough <code>foobar</code>.
+						<code>~~</code> should be removed.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type <code>```</code> in a new line to create an empty code block.
+						<code>```</code> should be removed.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type <code>---</code> in a new line to create a horizontal line.
+						<code>---</code> should be removed.
+					</p>
+				</li>
+				<li>
+					<p>
+						For every autoformat pattern: Undo until you'll see just the pattern (e.g.
+						<code>- </code>). Typing should be then possible without triggering the
+						autoformatting again.
+					</p>
+				</li>
+				<li>
+					<p>
+						Type inline formatting (bold, italic, code, strikethrough) after a soft
+						break (<kbd>Shift</kbd>+<kbd>Enter</kbd>).
+					</p>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>This is the editor instance, with a <code>code_element*2;</code> inside.</p>
+		</div>
+	</body>
+</html>

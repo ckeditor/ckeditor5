@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Panelposition</title>
+		<script type="module" src="./panelposition.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Automatic position of the dropdown panel</h2>
+			<ol>
+				<li>Open a dropdown located in the corner of the page.</li>
+				<li>Check if the panel shows up fully visible in the viewport.</li>
+				<li>
+					Repeat for the rest of dropdowns. Panels should appear above, below, right and
+					left to the button.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<style>
+			div[id^="dropdown-"].ck {
+				position: fixed;
+			}
+
+			#dropdown-nw {
+				top: 20px;
+			}
+
+			#dropdown-ne {
+				top: 20px;
+				right: 20px;
+			}
+
+			#dropdown-sw {
+				bottom: 20px;
+			}
+
+			#dropdown-se {
+				bottom: 20px;
+				right: 20px;
+			}
+		</style>
+
+		<div id="dropdown-nw" class="ck ck-reset_all"></div>
+		<div id="dropdown-ne" class="ck ck-reset_all"></div>
+		<div id="dropdown-se" class="ck ck-reset_all"></div>
+		<div id="dropdown-sw" class="ck ck-reset_all"></div>
+	</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Tableautoheadings</title>
+		<script type="module" src="./tableautoheadings.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Editor 1: Auto insert header in the first row</h3>
+			<ol>
+				<li>Insert table of chosen size.</li>
+				<li>First row should be marked as header by default.</li>
+				<li>You should be able to make it back to a regular row.</li>
+			</ol>
+			<h3>Editor 2: Auto insert header in the first column</h3>
+			<ol>
+				<li>Insert table of chosen size.</li>
+				<li>First column should be marked as header by default.</li>
+				<li>You should be able to make it back to a regular column.</li>
+			</ol>
+			<h3>Editor 3: Auto insert header in the first row and column</h3>
+			<ol>
+				<li>Insert table of chosen size.</li>
+				<li>First row and first column should be marked as header by default.</li>
+				<li>You should be able to make it back to a regular row and column.</li>
+			</ol>
+			<h3>Editor 4: Auto insert header in multiple rows and columns</h3>
+			<ol>
+				<li>Insert table of chosen size (at least 3 by 4 to see the effect).</li>
+				<li>
+					First three rows and first two columns should be marked as header by default.
+				</li>
+				<li>You should be able to make it back to a regular rows and columns.</li>
+				<li>
+					In case of table smaller than 3 by 4, all cells in the table should be headings.
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<h1>Editor 1: first row as a heading</h1>
+		<div id="editor-1"></div>
+
+		<h1>Editor 2: first column as a heading</h1>
+		<div id="editor-2"></div>
+
+		<h1>Editor 3: first row and column as a heading</h1>
+		<div id="editor-3"></div>
+
+		<h1>Editor 4: first three rows and two column as a heading</h1>
+		<p>(pick size at least 3 by 4 to see the effect)</p>
+		<div id="editor-4"></div>
+	</body>
+</html>

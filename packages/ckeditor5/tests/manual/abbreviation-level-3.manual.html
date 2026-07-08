@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Abbreviation Level 3</title>
+		<script type="module" src="./abbreviation-level-3.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<hr />
+			<h2>category: abbreviation-plugin order: 25</h2>
+			<h1>Abbreviation plugin tutorial - part 3</h1>
+			<p>
+				This guide will show you how to create a simple abbreviation plugin for CKEditor 5.
+				We’ll create a toolbar button that lets the users insert abbreviations into their
+				document through a dialog box. The abbreviations will use the
+				<code>&#x3C;abbr></code> <abbr title="HyperText Markup Language"> HTML </abbr>
+				element, with a ‘title’ property that will show up in a tooltip when the user hovers
+				over the element.
+			</p>
+			<info-box>
+				If you want to see the final product of this tutorial before you plunge in, check
+				out the [demo](#demo).
+			</info-box>
+			<h2>Let's start</h2>
+			<p>
+				This guide assumes that you are familiar with npm. If not, see the
+				<a href="https://docs.npmjs.com/getting-started/what-is-npm">npm documentation</a>
+				or call <code>npm init</code> in an empty directory and keep your fingers crossed.
+			</p>
+			<p>
+				First, install packages needed to build and set up a basic CKEditor 5 instance. On
+				top of that, we will need:
+			</p>
+			<ul>
+				<li>
+					The
+					<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-core"
+						><code>@ckeditor/ckeditor5-core</code></a
+					>
+					package which contains the {@link module:core/plugin~Plugin} and {@link
+					module:core/command~Command} classes.
+				</li>
+				<li>
+					The
+					<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-ui"
+						><code>@ckeditor/ckeditor5-ui</code></a
+					>
+					package which contains the UI library and framework.
+				</li>
+			</ul>
+			<pre><code class="language-bash">npm install --save \
+css-loader@5 \
+postcss-loader@4 \
+raw-loader@4 \
+style-loader@2 \
+webpack@5 \
+webpack-cli@4 \
+@ckeditor/ckeditor5-editor-classic \
+@ckeditor/ckeditor5-essentials \
+@ckeditor/ckeditor5-paragraph \
+@ckeditor/ckeditor5-heading \
+@ckeditor/ckeditor5-list \
+@ckeditor/ckeditor5-basic-styles \
+@ckeditor/ckeditor5-ui \
+@ckeditor/ckeditor5-core
+</code></pre>
+			<p>Create a minimal webpack configuration:</p>
+			<pre><code class="language-js">// webpack.config.js
+
+'use strict';
+
+const path = require( 'path' );
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+
+module.exports = {
+	entry: './app.js',
+
+	output: {
+		path: path.resolve( __dirname, 'dist' ),
+		filename: 'bundle.js'
+	},
+
+	module: {
+		rules: [
+			{
+				test: /\.svg$/,
+				use: [ 'raw-loader' ]
+			},
+			{
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+				use: [
+					{
+						loader: 'style-loader',
+						options: {
+							injectType: 'singletonStyleTag',
+							attributes: {
+								'data-cke': true
+							}
+						}
+					},
+					'css-loader',
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								minify: true
+							} )
+						}
+					}
+				]
+			}
+		]
+	},
+
+	// Useful for debugging.
+	devtool: 'source-map',
+
+	// By default webpack logs warnings if the bundle is bigger than 200kb.
+	performance: { hints: false }
+};
+</code></pre>
+			<p>Create your project's entry point:</p>
+			<pre><code class="language-js">// app.js
+
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+
+		// Expose for playing in the console.
+		window.editor = editor;
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+</code></pre>
+			<p>
+				And an <code>index.html</code> page. We will add here the
+				<code>&#x3C;abbr></code> element - it won't work just yet, but we will fix that in a
+				couple of steps.
+			</p>
+			<pre><code class="language-html">&#x3C;!DOCTYPE html>
+&#x3C;html lang="en">
+	&#x3C;head>
+		&#x3C;meta charset="utf-8">
+		&#x3C;title>CKEditor 5 Framework – abbreviation plugin&#x3C;/title>
+	&#x3C;/head>
+	&#x3C;body>
+		&#x3C;div id="editor">
+ 			&#x3C;h2>Abbreviation plugin&#x3C;/h2>
+    		&#x3C;p>CKEditor5 is a modern, feature-rich, world-class &#x3C;abbr title="What You See Is What You Get">WYSIWYG&#x3C;/abbr> editor.&#x3C;/p>
+		&#x3C;/div>
+
+		&#x3C;script src="dist/bundle.js">&#x3C;/script>
+	&#x3C;/body>
+&#x3C;/html>
+</code></pre>
+			<info-box>
+				Running webpack with the `-w` option will start it in the watch mode. This means
+				that webpack will watch your files for changes and rebuild the application every
+				time you save them.
+			</info-box>
+			<h2>Plugin structure</h2>
+			<p>
+				We’ll divide our abbreviation plugin into three parts - <code>Abbreviation</code>,
+				<code>AbbreviationUI</code> and <code>AbbreviationEditing</code>.
+			</p>
+			<p>
+				<code>AbbreviationEditing</code> will hold the model and the view layer (read more
+				about them in the intro to our editing engine). <code>AbbreviationUI</code> will be
+				responsible for the UI - our dialog box (with two input fields for the abbreviation
+				and the full title, and two buttons to submit or cancel) and the toolbar button.
+				Finally, <code>Abbreviation</code> will be the glue that holds the UI and the
+				editing together.
+			</p>
+			<p>
+				Additionally, you will be adding new files for our command and the dialog box view.
+				In order not to mix up these files with your project's <code>app.js</code> and
+				<code>webpack.config.js</code> files, create this directory structure:
+			</p>
+			<pre><code class="language-plain">├── app.js
+├── dist
+│   ├── bundle.js
+│   └── bundle.js.map
+├── index.html
+├── node_modules
+├── package.json
+├── abbreviation
+│   ├── abbreviation.js
+│   ├── abbreviationediting.js
+│   └── abbreviationui.js
+│
+│   ... the rest of plugin files goes here as well
+│
+└── webpack.config.js
+</code></pre>
+			<p>Let's define the 3 plugins.</p>
+			<pre><code class="language-js">// abbreviation/abbreviation.js
+
+import AbbreviationEditing from './abbreviationediting';
+import AbbreviationUI from './abbreviationui';
+import { Plugin } from 'ckeditor5';
+
+export default class Abbreviation extends Plugin {
+	static get requires() {
+		return [ AbbreviationEditing, AbbreviationUI ];
+	}
+}
+</code></pre>
+			<pre><code class="language-js">// abbreviation/abbreviationui.js
+
+import { Plugin } from 'ckeditor5';
+
+export default class AbbreviationUI extends Plugin {
+	init() {
+		console.log( 'AbbreviationUI#init() got called' );
+	}
+}
+</code></pre>
+			<pre><code class="language-js">// abbreviation/abbreviationediting.js
+
+import { Plugin } from 'ckeditor5';
+
+export default class AbbreviationEditing extends Plugin {
+	init() {
+		console.log( 'AbbreviationEditing#init() got called' );
+	}
+}
+</code></pre>
+			<p>
+				Now you need to load the <code>Abbreviation</code> plugin in your
+				<code>app.js</code> file:
+			</p>
+			<pre><code class="language-js">// app.js
+
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+import Abbreviation from './simplebox/abbreviation'; // ADDED
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		plugins: [
+			Essentials, Paragraph, Heading, List, Bold, Italic,
+			Abbreviation                                                          // ADDED
+		],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+
+		// Expose for playing in the console.
+		window.editor = editor;
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+</code></pre>
+			<p>
+				Rebuild your project, refresh the browser and you should see that the the
+				<code>AbbreviationEditing</code> and <code>AbbreviationUI</code> plugins were
+				loaded. SCREENSHOT
+			</p>
+			<h2>The model and the view layers</h2>
+			<p>
+				CKEditor 5 implements its custom data model, which does not map to the DOM 1:1.
+				Inline elements, such as <code>&#x3C;abbr></code>, are represented as attributes in
+				the model, not as separate elements. In order for our plugin to work, we will need
+				to make sure that we can add abbreviation attribute to the text node.
+			</p>
+			<h3>Defining the schema</h3>
+			<p>
+				We can do it by defining the model's schema. We will just extend the text node's
+				schema to accept our abbreviation attribute.
+			</p>
+			<info-box>
+				Read more about the {@link framework/architecture/editing-engine#schema schema}.
+			</info-box>
+			<p>Update the <code>AbbreviationEditing</code> plugin with this definition.</p>
+			<pre><code class="language-js">// abbreviation/abbreviationediting.js
+
+import { Plugin } from 'ckeditor5';
+
+export default class AbbreviationEditing extends Plugin {
+	init() {
+		console.log( 'AbbreviationEditing#init() got called' );
+
+		this._defineSchema();                                                  // ADDED
+	}
+
+	_defineSchema() {                                                          // ADDED
+		const schema = this.editor.model.schema;
+		schema.extend( '$text', {
+			allowAttributes: [ 'abbreviation' ]
+		} );
+	}
+}
+</code></pre>
+			<h3>Defining converters</h3>
+			<p>
+				Converters tell the editor how to convert the view to the model (e.g. when loading
+				the data to the editor or handling pasted content) and how to render the model to
+				the view (for editing purposes, or when retrieving the editor data).
+			</p>
+			<info-box>
+				Read more about the {@link framework/deep-dive/conversion/downcast conversion in the
+				editor}.
+			</info-box>
+			<p>
+				We will need to convert the model abbreviation attribute into an HTML element in the
+				view (downcast) and vice versa (upcast) with the use of our conversion helpers(<code
+					>attributeToElement()</code
+				>
+				and <code>elementToAttribute()</code>). We just need to define what the model and
+				the view is supposed to look like in both conversions.
+			</p>
+			<p>
+				Getting the title is a little bit tricky. In upcast conversion, we will need a
+				simple callback function to get the title attribute of the
+				<code>&#x3C;abbr></code> element. In downcast conversion, we will need to use our
+				<code>conversionApi</code> to get the title stored as a model attribute value.
+			</p>
+			<pre><code class="language-js">// abbreviation/abbreviationediting.js
+
+import { Plugin } from 'ckeditor5';
+
+export default class AbbreviationEditing extends Plugin {
+	init() {
+		console.log( 'AbbreviationEditing#init() got called' );
+
+		this._defineSchema();
+		this._defineConverters();                                              // ADDED
+	}
+
+	_defineSchema() {
+		// ...
+	}
+
+	_defineConverters() {                                                      // ADDED
+		const conversion = this.editor.conversion;
+
+		conversion.for( 'downcast' ).attributeToElement( {
+			model: 'abbreviation',
+			view: ( modelAttributeValue, conversionApi ) => {
+				const { writer } = conversionApi;
+				return writer.createAttributeElement( 'abbr', {
+					title: modelAttributeValue
+				} );
+			}
+		} );
+
+	}
+}
+</code></pre>
+			<pre><code class="language-js">// abbreviation/abbreviationediting.js
+
+import { Plugin } from 'ckeditor5';
+
+export default class AbbreviationEditing extends Plugin {
+	init() {
+		// ...
+	}
+
+	_defineSchema() {
+		// ...
+	}
+
+	_defineConverters() {
+		const conversion = this.editor.conversion;
+
+		conversion.for( 'downcast' ).attributeToElement(
+			// ...
+		);
+
+		conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'abbr',
+				attributes: {
+					title: true
+				}
+			},
+			model: {
+				key: 'abbreviation',
+				value: viewElement => {
+					const title = viewElement.getAttribute( 'title' );
+					return title;
+				}
+			}
+		} );
+	}
+}
+</code></pre>
+			<p>
+				Thanks to the upcast conversion, our abbreviation added in the
+				<code>index.html</code> should work now. Rebuild and check it out yourself.
+			</p>
+			<h2>Creating a command</h2>
+			<p>
+				We will create a simple command to insert a text with our abbreviation attribute
+				into the model.
+			</p>
+			<info-box>
+				Read more about {@link framework/architecture/core-editor-architecture#commands
+				commands}.
+			</info-box>
+			<p>
+				We will pass an object with the title value and the abbreviation value into the
+				command. We will use the {link module:engine/model/writer~ModelWriter#insertText
+				<code>writer.insertText()</code>} method to add the abbreviation to the model, along
+				with the title attribute. We will also need to give it a position of the user's
+				current selection to indicate where to insert our abbreviation. Finally, if the
+				user's selection has a range (so it's a letter, word, or a whole text fragment), we
+				will remove that and replace it with our abbreviation.
+			</p>
+			<p>
+				Create a new file <code>abbreviationcommand.js</code> in the
+				<code>abbreviation/</code> directory.
+			</p>
+			<pre><code class="language-js">// abbreviation/abbreviationcommand.js
+
+import { Command } from '@ckeditor/ckeditor5-core';
+
+export default class Abbreviationommand extends Command {
+	execute( value ) {
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
+		const title = value.title;
+		const abbr = value.abbr;
+
+		editor.model.change( writer => {
+			writer.insertText( abbr, { 'abbreviation': title }, selection.getFirstPosition() );
+			for ( const range of selection.getRanges() ) {
+				writer.remove( range );
+			}
+		} );
+	}
+}
+
+</code></pre>
+			<p>
+				Import the command and register it in the <code>AbbreviationEditing</code> plugin:
+			</p>
+			<pre><code class="language-js">// abbreviation/abbreviationediting.js
+
+import { Plugin } from 'ckeditor5';
+
+import AbbreviationCommand from './abbreviationcommand';                 // ADDED
+
+export default class Abbreviation extends Plugin {
+
+	init() {
+		console.log( 'AbbreviationEditing#init() got called' );
+
+		this._defineSchema();
+		this._defineConverters();
+
+		// ADDED
+		this.editor.commands.add( 'addAbbreviation', new AbbreviationCommand( this.editor ) );
+	}
+
+	_defineSchema() {
+		// ...
+	}
+
+	_defineConverters() {
+		// ...
+	}
+}
+</code></pre>
+			<p>
+				You can now execute this command in order to insert an abbreviation. Try this out in
+				the console:
+			</p>
+			<pre><code class="language-js">const value = {
+	abbr: 'HTML',
+	title: 'HyperText Markup Language'
+};
+editor.execute( 'addAbbreviation', value );
+</code></pre>
+			<h2>Creating the UI</h2>
+			<p>
+				The UI for this plugin will consist of a dialog box with a form, which will use
+				<code>ContextualBalloon</code>, and a toolbar button, which will execute our
+				command. Let's start with our form.
+			</p>
+			<h3>Creating a form view</h3>
+			<p>
+				We now need to create a dialog box with a form, which will include two input fields
+				(for the abbreviation and the title), and the 'submit' and 'cancel' buttons. We will
+				do it in a separate view. Create a new file <code>abbreviationview.js</code> in the
+				<code>abbreviation/</code> directory.
+			</p>
+			<p>
+				We need to import a couple of things from our UI library, most importantly the
+				{@link framework/architecture/ui-library#view view} class. We will also get the
+				<code>ButtonView</code> and <code>LabeledInputView</code>, as well as useful helper
+				functions - <code>createLabeledInputText()</code> and <code>submitHandler()</code>.
+				We will use 'check' and 'cancel' icons for our buttons.
+			</p>
+			<p>
+				Let's create our <code>FromView</code> class, where we will set a template for our
+				abbreviation form.
+			</p>
+			<p>
+				In the <code>constructor</code> we will pass <code>locale</code> that will allow us
+				to access <code>t()</code> function, which helps localize the editor. All strings
+				enclosed in t() can be translated and change when the language of the editor
+				changes.
+			</p>
+			<p>
+				In the <code>render</code> function, let's add our <code>submitHandler()</code>,
+				which intercepts a native DOM submit event, prevents the default web browser
+				behavior (navigation and page reload) and fires the submit event on a view instead.
+			</p>
+			<pre><code class="language-js">// abbreviation/abbreviationview.js
+
+import {
+	View,
+	LabeledFieldView,
+	createLabeledInputText,
+	ButtonView,
+	submitHandler
+} from '@ckeditor/ckeditor5-ui';
+import { icons } from '@ckeditor/ckeditor5-core';
+
+export default class FormView extends View {
+	constructor( locale ) {
+		super( locale );
+		const t = locale.t;
+
+		const classList = [ 'ck', 'ck-responsive-form' ];
+
+		this.setTemplate( {
+			tag: 'form',
+			attributes: {
+				classList,
+				tabindex: '-1',
+				style: { 'padding': '2px' }
+			}
+		} );
+	}
+
+	render() {
+		super.render();
+
+		submitHandler( {
+			view: this
+		} );
+	}
+
+}
+</code></pre>
+			<p>Now let's write two functions to create our buttons and inputs.</p>
+			<p>
+				We will pass the names of our inputs (so 'abbreviation' and 'title') into the
+				<code>_createInput()</code> function, so we can set their labels accordingly.
+			</p>
+			<pre><code class="language-js">// abbreviation/abbreviationview.js
+
+//imports
+export default class FormView extends View {
+	constructor( locale ) {
+		//...
+	}
+
+	render() {
+		//...
+	}
+
+	_createInput( inputName ) {
+		const t = this.locale.t;
+
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+
+		labeledInput.label = t( `Add ${ inputName }` );
+
+		labeledInput.extendTemplate( {
+			attributes: {
+				style: {
+					'padding': '2px',
+					'padding-top': '6px'
+				}
+			}
+		} );
+		return labeledInput;
+	}
+
+	_createButton( label, icon, className, eventName ) {
+		const button = new ButtonView( this.locale );
+
+		button.set( {
+			label,
+			icon,
+			tooltip: true
+		} );
+
+		button.extendTemplate( {
+			attributes: {
+				class: className
+			}
+		} );
+
+		if ( eventName ) {
+			button.delegate( 'execute' ).to( this, eventName );
+		}
+
+		return button;
+	}
+}
+</code></pre>
+			<p>
+				Using these new functions, we can create finish our
+				<code>FormView</code> constructor.
+			</p>
+			<h3>Adding the Contextual Balloon</h3>
+			<h3>Showing and hiding the form view</h3>
+			<h3>Creating a toolbar button</h3>
+			<h2>Wrapping up</h2>
+			<h2>Demo</h2>
+			<p>{@snippet framework/abbreviation-level-3}</p>
+		</ck-manual-header>
+
+		<div class="ck ck-content" id="snippet-abbreviation-plugin">
+			<h2>Abbreviation plugin</h2>
+			<p>
+				CKEditor5 is a modern, feature-rich, world-class
+				<abbr title="What You See Is What You Get">WYSIWYG</abbr> editor.
+			</p>
+		</div>
+
+		<style>
+			.ck.ck-abbr-form {
+				padding: var(--ck-spacing-large);
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				grid-template-rows: repeat(3, 1fr);
+				grid-column-gap: 0px;
+				grid-row-gap: var(--ck-spacing-standard);
+			}
+
+			.ck.ck-abbr-form .ck.ck-labeled-field-view:nth-of-type(1) {
+				grid-area: 1 / 1 / 2 / 3;
+			}
+
+			.ck.ck-abbr-form .ck.ck-labeled-field-view:nth-of-type(2) {
+				grid-area: 2 / 1 / 3 / 3;
+			}
+
+			.ck.ck-abbr-form .ck-button:nth-of-type(1) {
+				grid-area: 3 / 1 / 4 / 2;
+			}
+
+			.ck.ck-abbr-form .ck-button:nth-of-type(2) {
+				grid-area: 3 / 2 / 4 / 3;
+			}
+		</style>
+	</body>
+</html>

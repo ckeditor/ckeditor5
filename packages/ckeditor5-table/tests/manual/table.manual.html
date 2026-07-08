@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Table</title>
+		<script type="module" src="./table.js"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Loading</h3>
+			<ol>
+				<li>The data should be loaded with:</li>
+			</ol>
+			<ul>
+				<li>
+					a complex table with:
+					<ul>
+						<li>one heading row,</li>
+						<li>two heading columns,</li>
+						<li>merged cells in heading columns section,</li>
+					</ul>
+				</li>
+				<li>
+					a table with 2 tbody sections in the DOM - should be rendered as a table with
+					one tbody.
+				</li>
+				<li>
+					a table with no tbody sections in the DOM - should be rendered as a table with
+					one tbody.
+				</li>
+				<li>
+					a table with a thead section between two tbody sections in dom - should be
+					rendered as a table with one thead and on tbody section in proper order: 1, 2,
+					3.
+				</li>
+			</ul>
+			<ol start="2">
+				<li>
+					<p>Main toolbar should have insert table dropdown.</p>
+				</li>
+				<li>
+					<p>
+						While the table cell is selected there should be a toolbar attached to the
+						table with 3 dropdowns:
+					</p>
+				</li>
+			</ol>
+			<ul>
+				<li>
+					column dropdown with items:
+					<ul>
+						<li>header column,</li>
+						<li>insert column left,</li>
+						<li>insert column right,</li>
+						<li>delete column.</li>
+					</ul>
+				</li>
+				<li>
+					row dropdown with items:
+					<ul>
+						<li>header row,</li>
+						<li>insert row below,</li>
+						<li>insert row above,</li>
+						<li>delete row.</li>
+					</ul>
+				</li>
+				<li>
+					merge cell dropdown with items:
+					<ul>
+						<li>merge cell up,</li>
+						<li>merge cell right,</li>
+						<li>merge cell down,</li>
+						<li>merge cell left,</li>
+						<li>split cell vertically,</li>
+						<li>split cell horizontally,</li>
+					</ul>
+				</li>
+			</ul>
+			<ol start="4">
+				<li>
+					While the table widget is selected there should be <code>bold</code> and
+					<code>italic</code> buttons
+				</li>
+			</ol>
+			<h3>Testing</h3>
+			<p>Inserting table:</p>
+			<ol>
+				<li>
+					Insert table of chosen size - the inserted table should have number columns
+					&#x26; rows as selected in dropdown.
+				</li>
+				<li>Re-opening dropdown should reset selected table size.</li>
+				<li>Table cannot be inserted into other table.</li>
+			</ol>
+			<p>Column manipulation:</p>
+			<ol>
+				<li>Insert column in table heading section.</li>
+				<li>Insert column in merged cell.</li>
+				<li>Insert column at the end/beginning of a table.</li>
+				<li>Remove column from table heading section.</li>
+				<li>Remove column of merged cell.</li>
+				<li>Change column heading status.</li>
+			</ol>
+			<p>Column manipulation:</p>
+			<ol>
+				<li>Insert row in table heading section.</li>
+				<li>Insert row in merged cell.</li>
+				<li>Insert row at the end/beginning of a table.</li>
+				<li>Remove row from table heading section.</li>
+				<li>Remove row of merged cell.</li>
+				<li>Change row heading status.</li>
+			</ol>
+			<p>Merging cells:</p>
+			<ol>
+				<li>Merge cell on the left/right/top/bottom of current cell.</li>
+				<li>
+					Merge cell on the left/right/top/bottom touching another table section (mergin a
+					table cell from header row with a cell from body should not be possible).
+				</li>
+				<li>Merge cells that are already merged.</li>
+			</ol>
+			<p>Splitting cells:</p>
+			<ol>
+				<li>Split not merged cell vertically/horizontally.</li>
+				<li>Split already merged cell vertically/horizontally.</li>
+			</ol>
+			<p>Nested tables:</p>
+			<ol>
+				<li>
+					Verify that nested tables are displayed correctly and do not throw an error.
+				</li>
+				<li>Verify that it is possible to insert new table inside existing table cell.</li>
+				<li>
+					Verify that it is possible to copy &#x26; paste nested table below the existing
+					one (in the editor root).
+				</li>
+				<li>
+					Verify that it is possible to copy &#x26; paste nested table inside other table
+					cell.
+				</li>
+			</ol>
+			<ul>
+				<li>
+					Copying &#x26; pasting a table only (in the clipboard there is only a table with
+					no siblings) should merge content of this table with the nearest ancestor table.
+					In other words: pasted table is not inserted as a table (as a widget) in table
+					cell, but it is merged with the first found table ancestor.
+				</li>
+				<li>
+					Copying &#x26; pasting a table with any sibling (e.g. a paragraph) should paste
+					exactly what has been copied.
+				</li>
+			</ul>
+			<ol start="5">
+				<li>
+					Hover the outer table with the mouse cursor. Verify that the yellow border and
+					selection handle on the inner table is not visible (they should be visible only
+					for the hovered table).
+				</li>
+				<li>
+					Select the outer table. Verify that the blue selection handle on the inner table
+					is not visible (it should be visible only for the selected table).
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<style>
+			body {
+				font-family: Helvetica, Arial, sans-serif;
+				font-size: 14px;
+			}
+		</style>
+
+		<div id="editor">
+			<p>Complex table:</p>
+
+			<figure class="table">
+				<figcaption>
+					Data about the planets of our solar system (Planetary facts taken from
+					<a href="http://nssdc.gsfc.nasa.gov/planetary/factsheet/"
+						>Nasa's Planetary Fact Sheet - Metric</a
+					>.
+				</figcaption>
+				<table>
+					<thead>
+						<tr>
+							<td colspan="2">&nbsp;</td>
+							<th scope="col">Name</th>
+							<th scope="col">Mass (10<sup>24</sup>kg)</th>
+							<th scope="col">Diameter (km)</th>
+							<th scope="col">Density (kg/m<sup>3</sup>)</th>
+							<th scope="col">Gravity (m/s<sup>2</sup>)</th>
+							<th scope="col">Length of day (hours)</th>
+							<th scope="col">Distance from Sun (10<sup>6</sup>km)</th>
+							<th scope="col">Mean temperature (°C)</th>
+							<th scope="col">Number of moons</th>
+							<th scope="col">Notes</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th colspan="2" rowspan="4" scope="rowgroup">Terrestrial planets</th>
+							<th scope="row">Mercury</th>
+							<td>0.330</td>
+							<td>4,879</td>
+							<td>5427</td>
+							<td>3.7</td>
+							<td>4222.6</td>
+							<td>57.9</td>
+							<td>167</td>
+							<td>0</td>
+							<td>Closest to the Sun</td>
+						</tr>
+						<tr>
+							<th scope="row">Venus</th>
+							<td>4.87</td>
+							<td>12,104</td>
+							<td>5243</td>
+							<td>8.9</td>
+							<td>2802.0</td>
+							<td>108.2</td>
+							<td>464</td>
+							<td>0</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<th scope="row">Earth</th>
+							<td>5.97</td>
+							<td>12,756</td>
+							<td>5514</td>
+							<td>9.8</td>
+							<td>24.0</td>
+							<td>149.6</td>
+							<td>15</td>
+							<td>1</td>
+							<td>Our world</td>
+						</tr>
+						<tr>
+							<th scope="row">Mars</th>
+							<td>0.642</td>
+							<td>6,792</td>
+							<td>3933</td>
+							<td>3.7</td>
+							<td>24.7</td>
+							<td>227.9</td>
+							<td>-65</td>
+							<td>2</td>
+							<td>The red planet</td>
+						</tr>
+						<tr>
+							<th scope="rowgroup" rowspan="4">Jovian planets</th>
+							<th scope="rowgroup" rowspan="2">Gas giants</th>
+							<th scope="row">Jupiter</th>
+							<td>1898</td>
+							<td>142,984</td>
+							<td>1326</td>
+							<td>23.1</td>
+							<td>9.9</td>
+							<td>778.6</td>
+							<td>-110</td>
+							<td>67</td>
+							<td>The largest planet</td>
+						</tr>
+						<tr>
+							<th scope="row">Saturn</th>
+							<td>568</td>
+							<td>120,536</td>
+							<td>687</td>
+							<td>9.0</td>
+							<td>10.7</td>
+							<td>1433.5</td>
+							<td>-140</td>
+							<td>62</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<th scope="rowgroup" rowspan="2">Ice giants</th>
+							<th scope="row">Uranus</th>
+							<td>86.8</td>
+							<td>51,118</td>
+							<td>1271</td>
+							<td>8.7</td>
+							<td>17.2</td>
+							<td>2872.5</td>
+							<td>-195</td>
+							<td>27</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<th scope="row">Neptune</th>
+							<td>102</td>
+							<td>49,528</td>
+							<td>1638</td>
+							<td>11.0</td>
+							<td>16.1</td>
+							<td>4495.1</td>
+							<td>-200</td>
+							<td>14</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<th colspan="2" scope="rowgroup">Dwarf planets</th>
+							<th scope="row">Pluto</th>
+							<td>0.0146</td>
+							<td>2,370</td>
+							<td>2095</td>
+							<td>0.7</td>
+							<td>153.3</td>
+							<td>5906.4</td>
+							<td>-225</td>
+							<td>5</td>
+							<td>
+								Declassified as a planet in 2006, but this
+								<a
+									href="http://www.usatoday.com/story/tech/2014/10/02/pluto-planet-solar-system/16578959/"
+									>remains controversial</a
+								>.
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<p>Table with 2 tbody:</p>
+
+			<table>
+				<tbody>
+					<tr>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<p>Table with no tbody:</p>
+
+			<table>
+				<tr>
+					<td>a</td>
+					<td>b</td>
+					<td>c</td>
+				</tr>
+				<tr>
+					<td>a</td>
+					<td>b</td>
+					<td>c</td>
+				</tr>
+			</table>
+
+			<p>Table with thead section between two tbody sections</p>
+
+			<table>
+				<tbody>
+					<tr>
+						<td>2</td>
+					</tr>
+				</tbody>
+				<thead>
+					<tr>
+						<td>1</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>3</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<p>Nested tables</p>
+
+			<table>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<p>Paragraph before table</p>
+						<table>
+							<tr>
+								<td>Nested table</td>
+							</tr>
+						</table>
+						<p>Paragraph after table</p>
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,260 @@
+<!doctype html>
+<head>
+	<title>Mediaembedresize Keyboard</title>
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"console-error": [ "<svg> attribute preserveAspectRatio", "transparent NaN" ]
+	}'
+	/>
+
+	<style>
+		body {
+			width: 800px;
+		}
+	</style>
+	<script type="module" src="./mediaembedresize-keyboard.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>Keyboard-accessible resize UI for media embeds — dropdown</h1>
+	<p>
+		This test verifies that media embeds can be resized without a pointing device using the
+		resize dropdown.
+	</p>
+	<p>Three editors are shown:</p>
+	<ol>
+		<li>
+			<strong>Resize dropdown (%) with drag handles</strong> — full
+			<code>MediaEmbedResize</code>, <code>resizeUnit: '%'</code>.
+		</li>
+		<li>
+			<strong>Resize dropdown (%) without drag handles</strong> —
+			<code
+				>MediaEmbedResizeEditing + MediaEmbedResizeButtons + MediaEmbedCustomResizeUI</code
+			>
+			(no <code>MediaEmbedResizeHandles</code>).
+		</li>
+		<li>
+			<strong>Resize dropdown (px) with drag handles</strong> — full
+			<code>MediaEmbedResize</code>, <code>resizeUnit: 'px'</code>, custom pixel-based
+			options.
+		</li>
+	</ol>
+	<h2>Test plan</h2>
+	<h3>Preset resize (dropdown)</h3>
+	<ol>
+		<li>Click into the editor content to focus it.</li>
+		<li>Use <strong>Tab</strong> (or click) to select a media widget.</li>
+		<li>
+			Use <strong>Tab</strong> to navigate to the media embed toolbar. The resize dropdown
+			button (<code>resizeMediaEmbed</code>) should be visible.
+		</li>
+		<li>
+			Press <strong>Enter</strong> or <strong>Space</strong> to open the dropdown. Verify the
+			list shows: Original, Custom, 25%, 50%, 75% (or the configured values for the px
+			editor).
+		</li>
+		<li>
+			Use <strong>Arrow Down / Arrow Up</strong> to navigate the list, then press
+			<strong>Enter</strong> to apply a size.
+		</li>
+		<li>
+			Verify the media embed resizes visually and the model attribute
+			<code>resizedWidth</code> reflects the change.
+		</li>
+		<li>
+			Reopen the dropdown — the selected option should be highlighted (<code>isOn: true</code
+			>).
+		</li>
+		<li>
+			Select <strong>Original</strong> — the resize is removed,
+			<code>resizedWidth</code> attribute disappears.
+		</li>
+	</ol>
+	<h3>Custom resize (balloon)</h3>
+	<ol>
+		<li>Select a media widget using keyboard.</li>
+		<li>Navigate to the toolbar and open the resize dropdown.</li>
+		<li>Choose <strong>Custom</strong> from the list.</li>
+		<li>
+			Verify the custom resize balloon opens with a number input pre-filled with the current
+			width (empty if not resized).
+		</li>
+		<li>
+			Type a valid number (e.g. <code>60</code>) and press <strong>Enter</strong>. Verify the
+			media resizes to <code>60%</code> (or <code>60px</code> in the px editor) and the
+			balloon closes.
+		</li>
+		<li>
+			Reopen the dropdown and choose <strong>Custom</strong> again. The input should be
+			pre-filled with the previously set value.
+		</li>
+		<li>Press <strong>Escape</strong> — the balloon closes without applying a change.</li>
+	</ol>
+	<h3>Validation</h3>
+	<ol>
+		<li>Open the custom resize balloon.</li>
+		<li>
+			Clear the input and press <strong>Enter</strong> (or click Save). Verify error "The
+			value must not be empty." appears.
+		</li>
+		<li>
+			Type a non-numeric value (e.g. <code>abc</code>) and press <strong>Enter</strong>.
+			Verify error "The value should be a plain number." appears.
+		</li>
+		<li>
+			Type a valid number and press <strong>Enter</strong>. Verify the form submits and the
+			error disappears.
+		</li>
+	</ol>
+	<h3>Click outside</h3>
+	<ol>
+		<li>Open the custom resize balloon.</li>
+		<li>
+			Click outside the balloon (on the document body or another part of the editor). Verify
+			the balloon closes without applying a change.
+		</li>
+	</ol>
+	<h3>Generic (non-previewable) media</h3>
+	<ol>
+		<li>In editor 1, select the Facebook placeholder widget.</li>
+		<li>
+			Navigate to the resize dropdown and apply a preset size. Verify the figure resizes
+			without errors in the console (no NaN, no exceptions).
+		</li>
+		<li>
+			Press <strong>Original</strong> to reset. Verify the <code>media_resized</code> class is
+			removed.
+		</li>
+	</ol>
+	<h3>Drag handles interop (editors 1 and 3)</h3>
+	<ol>
+		<li>After resizing via the dropdown, grab a drag handle and resize further.</li>
+		<li>Verify the drag starts from the current width (not 0 or some incorrect value).</li>
+		<li>Verify the dropdown label updates to reflect the new drag-resize value.</li>
+	</ol>
+	<h3>Spotify embed (editor 3, px)</h3>
+	<ol>
+		<li>
+			In the px editor, select the Spotify widget (it has its own responsive layout and a
+			minimum width).
+		</li>
+		<li>
+			Apply a preset size and a custom size via the dropdown. Verify the widget resizes
+			without console errors and is not shrunk below its usable minimum width.
+		</li>
+		<li>Select <strong>Original</strong> to reset.</li>
+	</ol>
+</ck-manual-header>
+
+<h2>Resize dropdown (%) — with drag handles</h2>
+
+<div id="editor">
+	<figure class="media media_resized" style="width: 50%">
+		<div data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">
+			<div>
+				<iframe
+					src="https://www.youtube.com/embed/ZVv7UMQPEWk"
+					width="1280"
+					height="720"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 16 / 9;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					allow="autoplay; encrypted-media"
+					referrerpolicy="strict-origin-when-cross-origin"
+					allowfullscreen=""
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<p>Generic (non-previewable) media:</p>
+
+	<figure class="media">
+		<oembed url="https://www.facebook.com/ckeditor/posts/1885390224856207" />
+	</figure>
+</div>
+
+<h2>Resize dropdown (%) — no drag handles</h2>
+
+<div id="editor-handles-disabled">
+	<figure class="media media_resized" style="width: 75%">
+		<div data-oembed-url="https://vimeo.com/1084537">
+			<div>
+				<iframe
+					src="https://player.vimeo.com/video/1084537"
+					width="1280"
+					height="720"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 16 / 9;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					webkitallowfullscreen=""
+					mozallowfullscreen=""
+					allowfullscreen=""
+				></iframe>
+			</div>
+		</div>
+	</figure>
+</div>
+
+<h2>Resize dropdown (px) — with drag handles</h2>
+
+<div id="editor-px">
+	<figure class="media media_resized" style="width: 400px">
+		<div data-oembed-url="https://www.youtube.com/watch?v=H08tGjXNHO4">
+			<div>
+				<iframe
+					src="https://www.youtube.com/embed/H08tGjXNHO4"
+					width="1280"
+					height="720"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 16 / 9;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					allow="autoplay; encrypted-media"
+					referrerpolicy="strict-origin-when-cross-origin"
+					allowfullscreen=""
+				></iframe>
+			</div>
+		</div>
+	</figure>
+
+	<p>Spotify embed (responsive widget with its own minimum width):</p>
+
+	<figure class="media">
+		<div data-oembed-url="https://open.spotify.com/artist/7GaxyUddsPok8BuhxN6OUW">
+			<div>
+				<iframe
+					src="https://open.spotify.com/embed/artist/7GaxyUddsPok8BuhxN6OUW"
+					width="300"
+					height="378"
+					style="
+						width: 100%;
+						height: auto;
+						aspect-ratio: 100 / 126;
+						border: 0;
+						display: block;
+					"
+					frameborder="0"
+					allowtransparency="true"
+					allow="encrypted-media"
+				></iframe>
+			</div>
+		</div>
+	</figure>
+</div>

@@ -1,0 +1,53 @@
+<!doctype html>
+<head>
+	<title>Init</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'"
+	/>
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"console-error": [ "<svg> attribute preserveAspectRatio" ]
+	}'
+	/>
+	<script type="module" src="./init.js"></script>
+</head>
+
+<ck-manual-header>
+	<h1>Performance: Editor init time</h1>
+	<p><strong>! Test with console off, in incognito mode !</strong></p>
+	<p><strong>! Test on localhost domain !</strong></p>
+	<p>
+		This performance test measures how long editor initializes for various kinds of documents.
+		Each data set presents a "heavy" document case, which takes substantial amount of time to
+		load.
+	</p>
+	<p>The test starts after you click "Start" button.</p>
+	<p>
+		By default, the test goes through all data sets and performs 10 tries for each. Default run
+		will take around 10-15 minutes. You can narrow it down using the test config in test source.
+	</p>
+	<p>The status message will inform you about current progress.</p>
+	<p>
+		After each single editor initialization, the initialization time is stored and the page is
+		refreshed, until the whole suite is done.
+	</p>
+	<p>
+		After all tests are done, the results will be inserted into the clipboard, in a format that
+		can be directly pasted to a spreadsheet. Allow the browser to use the clipboard when
+		prompted (<u
+			>this requires testing on <a href="http://localhost:8125/">http://localhost:8125/</a></u
+		>). Results are also displayed in the console.
+	</p>
+	<p>
+		Between test runs, data is stored in <code>SessionStorage</code>. Close the tab to finish
+		and "reset" the test run before it ended.
+	</p>
+</ck-manual-header>
+
+<button id="btnStart">Start</button>
+
+<div id="status"></div>
+
+<div id="editor"></div>

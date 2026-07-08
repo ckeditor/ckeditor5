@@ -1,0 +1,31 @@
+<!doctype html>
+<head>
+	<title>Tablepropertiesuiiframe</title>
+	<!--
+		For a totally unknown reason, loading a large script inside an iframe is aborted in Puppeteer,
+		so this request has been added to exclusions for the crawler.
+	-->
+	<meta
+		name="x-cke-crawler-ignore-patterns"
+		content='{
+		"request-failure": [ "tablepropertiesui.js", "localhost" ]
+	}'
+	/>
+	<script type="module" src="./tablepropertiesuiiframe.js"></script>
+</head>
+
+<body>
+	<ck-manual-header>
+		<h3>Table properties balloon positioning when editor is inside an iframe.</h3>
+	</ck-manual-header>
+
+	<iframe id="iframe" src="tablepropertiesui.manual.html"></iframe>
+</body>
+
+<style>
+	#iframe {
+		width: 1000px;
+		height: 500px;
+		margin: 4em 0;
+	}
+</style>
