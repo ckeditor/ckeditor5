@@ -124,6 +124,9 @@ export default defineConfig( [
 		files: [ '**/*.css' ],
 
 		rules: {
+			// TODO: remove this entry once the upstream config enforces this.
+			'css/no-important': 'error',
+
 			// TODO (RTL): off pending a migration of physical properties/values to logical. Step 1
 			// (required first): fix the ~10 logical-*value* cases in source - text-align/float/resize
 			// `right`/`left`/`vertical` - which have no allow option, so they block enabling. Then, as a
@@ -197,11 +200,6 @@ export default defineConfig( [
 					'starting-style'
 				],
 
-				allowFunctions: [
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/anchor
-					'anchor'
-				],
-
 				allowPropertyValues: {
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/break-after
 					'break-after': [ 'column' ],
@@ -211,6 +209,16 @@ export default defineConfig( [
 					'text-decoration': [ 'currentColor' ]
 				}
 			} ]
+		}
+	},
+	{
+		// Less strict checks for non-production code.
+		files: [ '**/manual/**/*.css' ],
+
+		rules: {
+			'css/no-important': 'off',
+			'css/prefer-logical-properties': 'off',
+			'css/use-baseline': 'off'
 		}
 	},
 	{

@@ -15,7 +15,7 @@
 	border-radius: 5px;
 
 	/* Override main styles. */
-	box-shadow: none !important;
+	box-shadow: none !important; /* eslint-disable-line css/no-important */
 }
 
 .ck-inspector.ck-mini-inspector .ck-inspector-code {

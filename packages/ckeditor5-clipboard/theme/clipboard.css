@@ -50,7 +50,7 @@
 	 * Styles of the widget that it a drop target.
 	 */
 	& .ck-widget.ck-clipboard-drop-target-range {
-		outline: var(--ck-widget-outline-thickness) solid var(--ck-clipboard-drop-target-color) !important;
+		outline: var(--ck-widget-outline-thickness) solid var(--ck-clipboard-drop-target-color) !important; /* eslint-disable-line css/no-important */
 	}
 
 	/*
@@ -58,7 +58,7 @@
 	 */
 	& .ck-widget:-webkit-drag {
 		zoom: 0.6;
-		outline: none !important;
+		outline: none !important; /* eslint-disable-line css/no-important */
 		& > .ck-widget__selection-handle {
 			display: none;
 		}

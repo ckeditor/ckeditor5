@@ -56,25 +56,25 @@ This way it will be easier to override it in custom themes if needed.
 
 	/* Any fully removed border */
 	& :where(td, th):where([style*="border:none"], [style*="border:0"], [style*="border-style:none"], [style*="border-width:0"]) {
-		border: var(--ck-table-border-none-helper-line) !important;
+		border: var(--ck-table-border-none-helper-line) !important; /* eslint-disable-line css/no-important */
 	}
 
 	/* Side-specific removed borders */
 	& :where(table, td, th) {
 		&:where([style*="border-top-style:none"], [style*="border-top-width:0"]) {
-			border-top: var(--ck-table-border-none-helper-line) !important;
+			border-top: var(--ck-table-border-none-helper-line) !important; /* eslint-disable-line css/no-important */
 		}
 
 		&:where([style*="border-right-style:none"], [style*="border-right-width:0"]) {
-			border-right: var(--ck-table-border-none-helper-line) !important;
+			border-right: var(--ck-table-border-none-helper-line) !important; /* eslint-disable-line css/no-important */
 		}
 
 		&:where([style*="border-bottom-style:none"], [style*="border-bottom-width:0"]) {
-			border-bottom: var(--ck-table-border-none-helper-line) !important;
+			border-bottom: var(--ck-table-border-none-helper-line) !important; /* eslint-disable-line css/no-important */
 		}
 
 		&:where([style*="border-left-style:none"], [style*="border-left-width:0"]) {
-			border-left: var(--ck-table-border-none-helper-line) !important;
+			border-left: var(--ck-table-border-none-helper-line) !important; /* eslint-disable-line css/no-important */
 		}
 	}
 }
