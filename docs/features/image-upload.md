@@ -8,7 +8,7 @@ order: 10
 
 # Image upload overview
 
-Inserting {@link features/images-overview images} into content created with CKEditor&nbsp;5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images:
+In CKEditor&nbsp;5, an upload adapter sends uploaded images to your own server or a storage service such as CKBox. In a properly configured editor, there are several ways for users to insert {@link features/images-overview images}:
 
 * **Pasting** an image from the clipboard.
 * **Dragging** a file from the file system.
