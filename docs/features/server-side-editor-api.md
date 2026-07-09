@@ -9,7 +9,7 @@ badges: [ premium ]
 
 # Server-side editor API
 
-Server-side Editor API enables deep and complex integration of your application with all document data, enabling you to manipulate content and manage collaborative data such as suggestions, comments, and revision history, and much more, directly from your server-side code (without running editor instance on the client).
+The Server-side Editor API lets you integrate your application deeply with all document data &ndash; manipulating content and managing collaborative data such as suggestions, comments, and revision history directly from your server-side code, without running an editor instance on the client.
 
 The server-side editor REST API endpoint allows you to execute any JavaScript code that uses the CKEditor&nbsp;5 API, that could be executed by a browser, but without a need to open the editor by a human user. Instead, the script is executed on the Cloud Services server. Please note that there are some [security-related limitations](https://ckeditor.com/docs/cs/latest/developer-resources/server-side-editor-api/security.html) for the executed JavaScript code.
 
