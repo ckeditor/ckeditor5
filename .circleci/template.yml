@@ -12,10 +12,14 @@ orbs:
 parameters:
 
 commands:
-  install_newest_emoji:
+  prepare_environment_command:
+    description: "Prepare environment (browsers, fonts, etc.)"
     steps:
+      - browser-tools/install_chrome:
+          chrome_version: << pipeline.parameters.chromeVersion >>
+          timeout: 5m
       - run:
-          name: Install the emoji font
+          name: Install newest emoji to enable emoji picker testing
           command: |
             sudo apt install fonts-noto-color-emoji
 
@@ -61,9 +65,8 @@ jobs:
     resource_class: large
     steps:
       - checkout_command
-      - browser-tools/install_chrome
       - bootstrap_repository_command
-      - install_newest_emoji
+      - prepare_environment_command
       - run:
           name: Verify CKEditor 5 manual tests
           command: |
@@ -140,8 +143,8 @@ jobs:
       - attach_workspace:
           at: .out
       - run:
-          name: Merge the code coverage of the framework and features
-          command: cat .out/combined_framework.info .out/combined_features_batch_n.info > .out/combined_lcov.info
+          name: Merge the code coverage of the test batches
+          command: cat .out/combined_tests_batch_n.info > .out/combined_lcov.info
       - codecov/upload:
           files: .out/combined_lcov.info
 
@@ -165,12 +168,12 @@ workflows:
   version: 2
   main:
     jobs:
-      - cke5_tests_framework
-      - cke5_tests_features_batch_n
+      # The `tests_batch_n` placeholder is expanded into the batch jobs generated
+      # by `scripts/ci/generate-circleci-configuration.mjs`.
+      - tests_batch_n
       - cke5_coverage:
           requires:
-            - cke5_tests_framework
-            - cke5_tests_features_batch_n
+            - tests_batch_n
       - cke5_validators
       - cke5_manual
       - release_prepare

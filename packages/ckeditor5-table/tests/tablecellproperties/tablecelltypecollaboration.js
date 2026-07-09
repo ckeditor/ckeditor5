@@ -4,8 +4,6 @@
  */
 
 import { describe, it, beforeEach, afterEach } from 'vitest';
-
-// eslint-disable-next-line ckeditor5-rules/allow-imports-only-from-main-package-entry-point
 import { Client, clearBuffer, expectClients, syncClients } from '@ckeditor/ckeditor5-engine/tests/model/operation/transform/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 

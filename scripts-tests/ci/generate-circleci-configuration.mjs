@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import fs from 'node:fs/promises';
 import { glob } from 'glob';
 import yaml from 'js-yaml';
@@ -22,52 +22,134 @@ const CIRCLECI_CONFIG_DIRECTORY_PATH = '/workspace/ckeditor5/.circleci';
 const CONFIG_TESTS_PATH = `${ CIRCLECI_CONFIG_DIRECTORY_PATH }/config-tests.yml`;
 
 describe( 'scripts/ci/generate-circleci-configuration', () => {
-	afterEach( () => {
-		vi.unstubAllEnvs();
+	it( 'creates one batch job per contiguous chunk of the sorted package list', async () => {
+		const config = await generateCircleConfiguration( {
+			packages: [
+				'ckeditor5-table',
+				'ckeditor5-alignment',
+				'ckeditor5-core',
+				'ckeditor5-engine',
+				'ckeditor5-link',
+				'ckeditor5-basic-styles',
+				'ckeditor5-utils'
+			]
+		} );
+
+		expect( getBatchJobNames( config ) ).toEqual( [
+			'tests_batch_1',
+			'tests_batch_2',
+			'tests_batch_3'
+		] );
+		expect( getPackageTestOrder( config.jobs.tests_batch_1 ) ).toEqual( [
+			'ckeditor5-alignment',
+			'ckeditor5-basic-styles',
+			'ckeditor5-core'
+		] );
+		expect( getPackageTestOrder( config.jobs.tests_batch_2 ) ).toEqual( [
+			'ckeditor5-engine',
+			'ckeditor5-link'
+		] );
+		expect( getPackageTestOrder( config.jobs.tests_batch_3 ) ).toEqual( [
+			'ckeditor5-table',
+			'ckeditor5-utils'
+		] );
 	} );
 
-	it( 'creates the `cke5_tests_framework` job', async () => {
+	it( 'bootstraps each batch job before running the package tests', async () => {
 		const config = await generateCircleConfiguration();
 
-		expect( config.jobs.cke5_tests_framework ).toBeDefined();
+		const { steps } = config.jobs.tests_batch_1;
+
+		expect( steps.slice( 0, 3 ) ).toEqual( [
+			'checkout_command',
+			'bootstrap_repository_command',
+			'prepare_environment_command'
+		] );
+		expect( steps[ 3 ].run.command ).toBe( 'mkdir .out' );
 	} );
 
-	it( 'does not emit the removed `--allow-non-full-coverage` flag', async () => {
-		const config = await generateCircleConfiguration( {
-			featurePackages: [ 'ckeditor5-minimap' ]
-		} );
+	it( 'collects the coverage of each package into the batch coverage file', async () => {
+		const config = await generateCircleConfiguration();
 
-		const minimapTestCommand = getPackageTestCommand( config.jobs.cke5_tests_features_batch_1, 'ckeditor5-minimap' );
+		const testStep = config.jobs.tests_batch_1.steps.find( step => step.run?.command?.startsWith( 'pnpm run test' ) );
 
-		expect( minimapTestCommand ).not.toContain( '--allow-non-full-coverage' );
+		expect( testStep.run.when ).toBe( 'always' );
+		expect( testStep.run.command ).toBe(
+			'pnpm run test --attempts 3 -c -f ckeditor5-alignment && ' +
+			'cat packages/ckeditor5-alignment/coverage/lcov.info >> .out/combined_tests_batch_1.info'
+		);
 	} );
 
-	it( 'replaces the feature batch placeholder with generated jobs', async () => {
+	it( 'skips the coverage collection for the aggregate packages', async () => {
 		const config = await generateCircleConfiguration( {
-			featurePackages: [ 'ckeditor5-feature-a' ]
+			packages: [ 'ckeditor5', 'ckeditor5-core', 'ckeditor5-premium-features' ]
 		} );
+
+		expect( getPackageTestCommand( config.jobs.tests_batch_1, 'ckeditor5' ) ).toBe(
+			'pnpm run test --attempts 3 -f ckeditor5'
+		);
+		expect( getPackageTestCommand( config.jobs.tests_batch_2, 'ckeditor5-core' ) ).toBe(
+			'pnpm run test --attempts 3 -c -f ckeditor5-core && ' +
+			'cat packages/ckeditor5-core/coverage/lcov.info >> .out/combined_tests_batch_2.info'
+		);
+		expect( getPackageTestCommand( config.jobs.tests_batch_3, 'ckeditor5-premium-features' ) ).toBe(
+			'pnpm run test --attempts 3 -f ckeditor5-premium-features'
+		);
+	} );
+
+	it( 'persists the batch coverage file to the workspace', async () => {
+		const config = await generateCircleConfiguration();
+
+		const persistStep = config.jobs.tests_batch_2.steps.find( step => step.persist_to_workspace );
+
+		expect( persistStep ).toEqual( {
+			persist_to_workspace: {
+				root: '.out',
+				paths: [ 'combined_tests_batch_2.info' ]
+			}
+		} );
+	} );
+
+	it( 'replaces the batch placeholder with the generated job names', async () => {
+		const config = await generateCircleConfiguration();
 
 		const workflowJobs = config.workflows.tests.jobs;
 
-		expect( config.jobs.cke5_tests_features_batch_n ).toBeUndefined();
-		expect( config.jobs.cke5_tests_features_batch_1 ).toBeDefined();
-		expect( workflowJobs ).not.toContain( 'cke5_tests_features_batch_n' );
-		expect( workflowJobs.some( job => job.cke5_tests_features_batch_n ) ).toBe( false );
+		expect( config.jobs.tests_batch_n ).toBeUndefined();
+		expect( workflowJobs ).not.toContain( 'tests_batch_n' );
+		expect( workflowJobs ).toContain( 'tests_batch_1' );
+		expect( workflowJobs ).toContain( 'tests_batch_2' );
+		expect( workflowJobs ).toContain( 'tests_batch_3' );
+
+		const coverageJob = workflowJobs.find( job => job.cke5_coverage );
+
+		expect( coverageJob.cke5_coverage.requires ).toEqual( [
+			'tests_batch_1',
+			'tests_batch_2',
+			'tests_batch_3'
+		] );
 	} );
 
-	it( 'calculates feature batches using configured sizes and overflow batch', async () => {
-		const config = await generateCircleConfiguration( {
-			featurePackages: createFeaturePackages( 38 )
-		} );
+	it( 'expands a batch placeholder job that carries additional configuration', async () => {
+		const branchesFilter = { filters: { branches: { ignore: [ 'stable' ] } } };
+		const config = await generateCircleConfiguration();
 
-		expect( getFeatureBatchJobNames( config ) ).toEqual( [
-			'cke5_tests_features_batch_1',
-			'cke5_tests_features_batch_2',
-			'cke5_tests_features_batch_3'
+		expect( config.workflows.nightly.jobs ).toEqual( [
+			{ tests_batch_1: branchesFilter },
+			{ tests_batch_2: branchesFilter },
+			{ tests_batch_3: branchesFilter }
 		] );
-		expect( getPackageTestStepCount( config.jobs.cke5_tests_features_batch_1 ) ).toBe( 20 );
-		expect( getPackageTestStepCount( config.jobs.cke5_tests_features_batch_2 ) ).toBe( 15 );
-		expect( getPackageTestStepCount( config.jobs.cke5_tests_features_batch_3 ) ).toBe( 3 );
+	} );
+
+	it( 'merges the batch coverage files in the coverage job', async () => {
+		const config = await generateCircleConfiguration();
+
+		const mergeStep = config.jobs.cke5_coverage.steps.find( step => step.run?.command );
+
+		expect( mergeStep.run.command ).toBe(
+			'cat .out/combined_tests_batch_1.info .out/combined_tests_batch_2.info .out/combined_tests_batch_3.info ' +
+			'> .out/combined_lcov.info'
+		);
 	} );
 
 	it( 'inherits parameters from the `config.yml` file', async () => {
@@ -90,25 +172,6 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 		expect( config.parameters.placeholder ).toBeUndefined();
 	} );
 
-	it( 'substitutes the provided chrome version in jobs and commands', async () => {
-		const config = await generateCircleConfiguration( {
-			cliArgs: [ '--chrome-version=123.0.0.0' ]
-		} );
-
-		expect( getChromeInstallStep( config.jobs.cke5_manual.steps ) ).toEqual( {
-			'browser-tools/install_chrome': {
-				chrome_version: '123.0.0.0',
-				timeout: '5m'
-			}
-		} );
-		expect( getChromeInstallStep( config.commands.command_with_chrome.steps ) ).toEqual( {
-			'browser-tools/install_chrome': {
-				chrome_version: '123.0.0.0',
-				timeout: '5m'
-			}
-		} );
-	} );
-
 	it( 'uses the `GPL` license key in non-LTS pipelines', async () => {
 		const config = await generateCircleConfiguration();
 
@@ -116,10 +179,7 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 			EXISTING_ENV: 'keep-me',
 			CKEDITOR_LICENSE_KEY: 'GPL'
 		} );
-		expect( config.jobs.cke5_tests_framework.environment ).toEqual( {
-			CKEDITOR_LICENSE_KEY: 'GPL'
-		} );
-		expect( config.jobs.cke5_tests_features_batch_1.environment ).toEqual( {
+		expect( config.jobs.tests_batch_1.environment ).toEqual( {
 			CKEDITOR_LICENSE_KEY: 'GPL'
 		} );
 	} );
@@ -132,16 +192,7 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 		expect( config.jobs.cke5_manual.environment ).toEqual( {
 			EXISTING_ENV: 'keep-me'
 		} );
-		expect( config.jobs.cke5_tests_framework.environment ).toBeUndefined();
-		expect( config.jobs.cke5_tests_features_batch_1.environment ).toBeUndefined();
-	} );
-
-	it( 'keeps `checkout_command` in generated jobs', async () => {
-		const config = await generateCircleConfiguration();
-
-		expect( config.jobs.cke5_manual.steps ).toContain( 'checkout_command' );
-		expect( config.jobs.cke5_tests_framework.steps ).toContain( 'checkout_command' );
-		expect( config.jobs.cke5_manual.steps ).not.toContain( 'checkout' );
+		expect( config.jobs.tests_batch_1.environment ).toBeUndefined();
 	} );
 
 	it( 'stores the generated configuration file as `config-tests.yml`', async () => {
@@ -149,7 +200,7 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 
 		expect( fs.writeFile ).toHaveBeenCalledTimes( 1 );
 		expect( fs.writeFile ).toHaveBeenCalledWith( CONFIG_TESTS_PATH, 'serialized-config' );
-		expect( yaml.dump ).toHaveBeenCalledWith( config, { lineWidth: -1 } );
+		expect( yaml.dump ).toHaveBeenCalledWith( config, { lineWidth: -1, noRefs: true } );
 	} );
 
 	it( 'reads `template.yml` and `config.yml` configuration files', async () => {
@@ -163,8 +214,15 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 
 async function generateCircleConfiguration( {
 	cliArgs = [],
-	frameworkEntries = [ 'index.ts', 'foo.js', 'bar.ts' ],
-	featurePackages = [ 'ckeditor5-feature-a' ],
+	packages = [
+		'ckeditor5-table',
+		'ckeditor5-alignment',
+		'ckeditor5-core',
+		'ckeditor5-engine',
+		'ckeditor5-link',
+		'ckeditor5-basic-styles',
+		'ckeditor5-utils'
+	],
 	templateConfig = getTemplateConfigFixture(),
 	rootConfig = getRootConfigFixture()
 } = {} ) {
@@ -175,8 +233,7 @@ async function generateCircleConfiguration( {
 		values: parseScriptOptionsFromCliArgs( cliArgs )
 	} );
 
-	vi.mocked( fs.readdir ).mockResolvedValue( frameworkEntries );
-	vi.mocked( glob ).mockResolvedValue( featurePackages );
+	vi.mocked( glob ).mockResolvedValue( [ ...packages ] );
 	vi.mocked( fs.readFile ).mockImplementation( async filePath => {
 		if ( filePath.endsWith( 'template.yml' ) ) {
 			return 'template-yaml';
@@ -225,13 +282,7 @@ function getTemplateConfigFixture() {
 			}
 		},
 		commands: {
-			command_with_chrome: {
-				steps: [
-					'browser-tools/install_chrome',
-					'noop_command_step'
-				]
-			},
-			command_without_chrome: {
+			noop_command: {
 				steps: [
 					'noop_command_step'
 				]
@@ -247,7 +298,8 @@ function getTemplateConfigFixture() {
 				},
 				steps: [
 					'checkout_command',
-					'browser-tools/install_chrome',
+					'bootstrap_repository_command',
+					'prepare_environment_command',
 					{
 						run: {
 							name: 'Manual verification',
@@ -270,7 +322,7 @@ function getTemplateConfigFixture() {
 					{
 						run: {
 							name: 'Merge coverage',
-							command: 'cat .out/combined_framework.info .out/combined_features_batch_n.info > .out/combined_lcov.info'
+							command: 'cat .out/combined_tests_batch_n.info > .out/combined_lcov.info'
 						}
 					},
 					{
@@ -294,28 +346,34 @@ function getTemplateConfigFixture() {
 			},
 			tests: {
 				jobs: [
-					'cke5_tests_framework',
-					'cke5_tests_features_batch_n',
+					'tests_batch_n',
 					{
 						cke5_coverage: {
 							requires: [
-								'cke5_tests_framework',
-								'cke5_tests_features_batch_n'
+								'tests_batch_n'
 							]
 						}
 					},
 					{
 						some_job: {
 							requires: [
-								'cke5_tests_framework'
+								'cke5_validators'
 							]
 						}
-					},
+					}
+				]
+			},
+			nightly: {
+				jobs: [
 					{
-						cke5_tests_features_batch_n: {
-							requires: [
-								'cke5_tests_framework'
-							]
+						tests_batch_n: {
+							filters: {
+								branches: {
+									ignore: [
+										'stable'
+									]
+								}
+							}
 						}
 					}
 				]
@@ -325,7 +383,7 @@ function getTemplateConfigFixture() {
 					{
 						cke5_manual: {
 							requires: [
-								'cke5_tests_framework'
+								'some_job'
 							]
 						}
 					}
@@ -350,26 +408,18 @@ function getRootConfigFixture() {
 	};
 }
 
-function createFeaturePackages( amount ) {
-	return Array.from( { length: amount }, ( _, index ) => {
-		return `ckeditor5-feature-${ String( index + 1 ).padStart( 2, '0' ) }`;
-	} );
+function getBatchJobNames( config ) {
+	return Object.keys( config.jobs ).filter( jobName => jobName.startsWith( 'tests_batch_' ) );
 }
 
-function getFeatureBatchJobNames( config ) {
-	return Object.keys( config.jobs ).filter( jobName => jobName.startsWith( 'cke5_tests_features_batch_' ) );
-}
-
-function getPackageTestStepCount( job ) {
-	return job.steps.filter( step => step.run?.command?.startsWith( 'pnpm run test' ) ).length;
+function getPackageTestOrder( job ) {
+	return job.steps
+		.map( step => step.run?.name?.match( /^Execute tests for "(.+)"$/ )?.[ 1 ] )
+		.filter( Boolean );
 }
 
 function getPackageTestCommand( job, packageName ) {
-	return job.steps.find( step => step.run?.command?.includes( `-f ${ packageName }` ) )?.run.command;
-}
-
-function getChromeInstallStep( steps ) {
-	return steps.find( step => step[ 'browser-tools/install_chrome' ] );
+	return job.steps.find( step => step.run?.name === `Execute tests for "${ packageName }"` )?.run.command;
 }
 
 function deepClone( value ) {
@@ -378,15 +428,10 @@ function deepClone( value ) {
 
 function parseScriptOptionsFromCliArgs( cliArgs ) {
 	const options = {
-		'chrome-version': 'latest',
 		'is-lts-pipeline': 'false'
 	};
 
 	for ( const arg of cliArgs ) {
-		if ( arg.startsWith( '--chrome-version=' ) ) {
-			options[ 'chrome-version' ] = arg.replace( '--chrome-version=', '' );
-		}
-
 		if ( arg.startsWith( '--is-lts-pipeline=' ) ) {
 			options[ 'is-lts-pipeline' ] = arg.replace( '--is-lts-pipeline=', '' );
 		}

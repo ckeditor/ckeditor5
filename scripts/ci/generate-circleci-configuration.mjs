@@ -9,30 +9,27 @@
 // the `.circleci/config-tests.yml` path, a source for a new workflow triggered from the main
 // thread when a new build starts.
 //
+// It generates the `tests_batch_<n>` jobs: the sorted package list is split into `BATCH_COUNT`
+// contiguous alphabetical chunks, one per batch job, with one step per package. Each batch
+// concatenates the coverage reports of its packages into a single lcov file that the
+// `cke5_coverage` job merges and uploads.
+//
 // See: https://circleci.com/docs/using-dynamic-configuration/.
 
 import upath from 'upath';
 import fs from 'node:fs/promises';
 import { glob } from 'glob';
 import yaml from 'js-yaml';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 import { parseArgs } from 'node:util';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
 
-const FEATURE_TEST_BATCH_NAME_PLACEHOLDER = 'cke5_tests_features_batch_n';
-const FEATURE_COVERAGE_BATCH_FILENAME_PLACEHOLDER = '.out/combined_features_batch_n.info';
-
-/**
- * This variable determines amount and size of feature test batches.
- *
- * If there are more feature packages than the sum of all batches defined here,
- * one batch will be automatically added to cover remaining tests.
- */
-const FEATURE_BATCH_SIZES = [
-	20,
-	15
-];
+// Fewer batchs duplicate less environment setup, but each batch job runs longer — keep the batch
+// jobs shorter than the pipeline's critical path (the slowest non-test job).
+const BATCH_COUNT = 3;
+const BATCH_JOB_PLACEHOLDER = 'tests_batch_n';
+const BATCH_COVERAGE_FILE_PLACEHOLDER = `.out/combined_${ BATCH_JOB_PLACEHOLDER }.info`;
 
 // The aggregate packages provide no tests for the modules they re-export, so the test wrapper
 // (`scripts/test.mjs`) always runs their plain `test` script and no coverage report is produced.
@@ -41,29 +38,8 @@ const AGGREGATE_PACKAGES = [
 	'ckeditor5-premium-features'
 ];
 
-const FRAMEWORK_PACKAGES = [
-	'ckeditor5-clipboard',
-	'ckeditor5-core',
-	'ckeditor5-engine',
-	'ckeditor5-enter',
-	'ckeditor5-icons',
-	'ckeditor5-paragraph',
-	'ckeditor5-select-all',
-	'ckeditor5-typing',
-	'ckeditor5-ui',
-	'ckeditor5-undo',
-	'ckeditor5-upload',
-	'ckeditor5-utils',
-	'ckeditor5-watchdog',
-	'ckeditor5-widget'
-];
-
 const { values: options } = parseArgs( {
 	options: {
-		'chrome-version': {
-			type: 'string',
-			default: 'latest'
-		},
 		// A boolean flag does not accept positional arguments. Hence, `string`, and custom casting.
 		'is-lts-pipeline': {
 			type: 'string',
@@ -74,219 +50,87 @@ const { values: options } = parseArgs( {
 
 const isLtsPipeline = options[ 'is-lts-pipeline' ] === 'true';
 
-const bootstrapCommands = () => ( [
-	'checkout_command',
-	'bootstrap_repository_command',
-	'browser-tools/install_chrome'
-] );
+const packages = await listPackages( upath.join( CKEDITOR5_ROOT_PATH, 'packages' ) );
 
-const prepareCodeCoverageDirectories = () => ( {
-	run: {
-		when: 'always',
-		name: 'Prepare the code coverage directory',
-		command: 'mkdir .out'
-	}
-} );
+const config = yaml.load( await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'template.yml' ) ) );
+const rootConfig = yaml.load( await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config.yml' ) ) );
 
-const listBatchPackages = packageNames => {
-	const text = [
-		`A total of ${ packageNames.length } packages will be tested in this batch:`,
-		packageNames.map( packageName => ` - ${ packageName }` ).join( '\\n' ),
-		''
-	].join( '\\n\\n' );
+config.parameters = rootConfig.parameters;
 
-	return {
-		run: {
-			when: 'always',
-			name: 'List packages tested in this batch',
-			command: `printf "${ text }"`
-		}
-	};
-};
+const batchJobNames = Array.from( { length: BATCH_COUNT }, ( _, index ) => BATCH_JOB_PLACEHOLDER.replace( /(?<=_)n$/, index + 1 ) );
+const batchCoverageFiles = batchJobNames.map( jobName => `.out/combined_${ jobName }.info` );
 
-const persistToWorkspace = fileName => ( {
-	persist_to_workspace: {
-		root: '.out',
-		paths: [ fileName ]
-	}
-} );
+batchJobNames.forEach( ( jobName, batchIndex ) => {
+	const coverageFile = batchCoverageFiles[ batchIndex ];
 
-( async () => {
-	const featurePackages = ( await glob( '*/', { cwd: upath.join( CKEDITOR5_ROOT_PATH, 'packages' ) } ) )
-		.filter( packageName => !FRAMEWORK_PACKAGES.includes( packageName ) );
-
-	featurePackages.sort();
-
-	/**
-	 * @type CircleCIConfiguration
-	 */
-	const config = yaml.load(
-		await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'template.yml' ) )
-	);
-
-	const rootConfig = yaml.load(
-		await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config.yml' ) )
-	);
-
-	config.parameters = rootConfig.parameters;
-
-	const featureTestBatches = featurePackages.reduce( ( output, packageName, packageIndex ) => {
-		let currentBatch = FEATURE_BATCH_SIZES.findIndex( ( batchSize, batchIndex, allBatches ) => {
-			return packageIndex < allBatches.slice( 0, batchIndex + 1 ).reduce( ( a, b ) => a + b );
-		} );
-
-		// Additional batch for the remaining tests not included in defined batch sizes.
-		if ( currentBatch === -1 ) {
-			currentBatch = FEATURE_BATCH_SIZES.length;
-		}
-
-		if ( !output[ currentBatch ] ) {
-			output[ currentBatch ] = [];
-		}
-
-		output[ currentBatch ].push( packageName );
-
-		return output;
-	}, [] );
-
-	const featureTestBatchNames = featureTestBatches.map( ( batch, batchIndex ) => {
-		return FEATURE_TEST_BATCH_NAME_PLACEHOLDER.replace( /(?<=_)n$/, batchIndex + 1 );
-	} );
-	const featureCoverageBatchFilenames = featureTestBatches.map( ( batch, batchIndex ) => {
-		return FEATURE_COVERAGE_BATCH_FILENAME_PLACEHOLDER.replace( /(?<=_)n(?=\.info$)/, batchIndex + 1 );
-	} );
-
-	config.jobs.cke5_tests_framework = {
-		docker: [
-			{ image: 'cimg/node:24.11.0-browsers' }
-		],
+	config.jobs[ jobName ] = {
+		docker: [ { image: 'cimg/node:24.11.0-browsers' } ],
 		steps: [
-			...bootstrapCommands(),
-			prepareCodeCoverageDirectories(),
-			...generateTestSteps( FRAMEWORK_PACKAGES, {
-				checkCoverage: true,
-				coverageFile: '.out/combined_framework.info'
-			} ),
-			persistToWorkspace( 'combined_framework.info' )
+			'checkout_command',
+			'bootstrap_repository_command',
+			'prepare_environment_command',
+			{
+				run: {
+					when: 'always',
+					name: 'Prepare the code coverage directory',
+					command: 'mkdir .out'
+				}
+			},
+			...generateTestSteps( batchOf( packages, batchIndex ), { coverageFile } ),
+			{
+				persist_to_workspace: {
+					root: '.out',
+					paths: [ coverageFile.replace( /^\.out\//, '' ) ]
+				}
+			}
 		]
 	};
+} );
 
-	// Adding batches to the root `jobs`.
-	featureTestBatches.forEach( ( batch, batchIndex ) => {
-		config.jobs[ featureTestBatchNames[ batchIndex ] ] = {
-			docker: [
-				{ image: 'cimg/node:24.11.0-browsers' }
-			],
-			steps: [
-				...bootstrapCommands(),
-				'install_newest_emoji',
-				prepareCodeCoverageDirectories(),
-				listBatchPackages( batch ),
-				...generateTestSteps( batch, {
-					checkCoverage: true,
-					coverageFile: featureCoverageBatchFilenames[ batchIndex ]
-				} ),
-				persistToWorkspace( featureCoverageBatchFilenames[ batchIndex ].replace( /^\.out\//, '' ) )
-			]
-		};
-	} );
-
-	// Force using the `GPL` license by default.
-	if ( !isLtsPipeline ) {
-		const environment = {
+// Force using the `GPL` license by default; the LTS pipeline tests against the license
+// configured in the project environment variables.
+if ( !isLtsPipeline ) {
+	for ( const jobName of [ 'cke5_manual', ...batchJobNames ] ) {
+		config.jobs[ jobName ].environment = {
+			...config.jobs[ jobName ].environment,
 			CKEDITOR_LICENSE_KEY: 'GPL'
 		};
-
-		for ( const jobName of [ 'cke5_manual', 'cke5_tests_framework' ] ) {
-			config.jobs[ jobName ].environment ??= {};
-
-			config.jobs[ jobName ].environment = {
-				...config.jobs[ jobName ].environment,
-				...environment
-			};
-		}
-
-		featureTestBatches.forEach( ( _, batchIndex ) => {
-			config.jobs[ featureTestBatchNames[ batchIndex ] ].environment ??= {};
-
-			config.jobs[ featureTestBatchNames[ batchIndex ] ].environment = {
-				...config.jobs[ featureTestBatchNames[ batchIndex ] ].environment,
-				...environment
-			};
-		} );
 	}
+}
 
-	Object.values( config.workflows ).forEach( workflow => {
-		if ( !( workflow instanceof Object ) ) {
-			return;
-		}
+expandPlaceholderInWorkflows( config, BATCH_JOB_PLACEHOLDER, batchJobNames );
 
-		if ( !workflow.jobs ) {
-			return;
-		}
+// Replacing the coverage filename placeholder in the coverage job steps.
+for ( const step of config.jobs.cke5_coverage.steps ) {
+	if ( step instanceof Object && step.run && step.run.command ) {
+		step.run.command = step.run.command.replace( BATCH_COVERAGE_FILE_PLACEHOLDER, batchCoverageFiles.join( ' ' ) );
+	}
+}
 
-		// Replacing the placeholder batch names in `requires` arrays in `workflows`.
-		workflow.jobs.forEach( job => {
-			const { requires } = Object.values( job )[ 0 ];
+await fs.writeFile(
+	upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config-tests.yml' ),
+	yaml.dump( config, { lineWidth: -1, noRefs: true } )
+);
 
-			if ( requires ) {
-				replacePlaceholderBatchNameInArray( requires, featureTestBatchNames );
-			}
-		} );
+async function listPackages( absolutePackagesDir ) {
+	const names = await glob( '*/', { cwd: absolutePackagesDir } );
 
-		// Replacing the placeholder batch names in `jobs` arrays in `workflows`.
-		replacePlaceholderBatchNameInArray( workflow.jobs, featureTestBatchNames );
+	return names.sort();
+}
 
-		// Replacing the placeholder batch objects in `jobs` arrays in `workflows`.
-		const placeholderJobIndex = workflow.jobs.findIndex( job => job[ FEATURE_TEST_BATCH_NAME_PLACEHOLDER ] );
+// Contiguous alphabetical chunks (not round-robin), so it is predictable which batch runs
+// a given package.
+function batchOf( packages, batchIndex ) {
+	const baseSize = Math.floor( packages.length / BATCH_COUNT );
+	const remainder = packages.length % BATCH_COUNT;
 
-		if ( placeholderJobIndex === -1 ) {
-			return;
-		}
+	const start = batchIndex * baseSize + Math.min( batchIndex, remainder );
+	const size = baseSize + ( batchIndex < remainder ? 1 : 0 );
 
-		const placeholderJobContent = workflow.jobs[ placeholderJobIndex ][ FEATURE_TEST_BATCH_NAME_PLACEHOLDER ];
-		const newBatchJobs = featureTestBatchNames.map( featureTestBatchName => {
-			return {
-				[ featureTestBatchName ]: placeholderJobContent
-			};
-		} );
+	return packages.slice( start, start + size );
+}
 
-		workflow.jobs.splice( placeholderJobIndex, 1, ...newBatchJobs );
-	} );
-
-	// Replacing the coverage filename placeholder in coverage steps.
-	Object.values( config.jobs.cke5_coverage.steps ).forEach( step => {
-		if ( !( step instanceof Object ) ) {
-			return;
-		}
-
-		if ( !step.run || !step.run.command ) {
-			return;
-		}
-
-		step.run.command = step.run.command.replace(
-			FEATURE_COVERAGE_BATCH_FILENAME_PLACEHOLDER,
-			featureCoverageBatchFilenames.join( ' ' )
-		);
-	} );
-
-	config.jobs = substituteChromeVersion( options[ 'chrome-version' ], config.jobs );
-	config.commands = substituteChromeVersion( options[ 'chrome-version' ], config.commands );
-
-	await fs.writeFile(
-		upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config-tests.yml' ),
-		yaml.dump( config, { lineWidth: -1 } )
-	);
-} )();
-
-/**
- * @param {Array.<String>}packages
- * @param {Object} options
- * @param {Boolean} options.checkCoverage
- * @param {String|null} [options.coverageFile=null]
- * @returns {Array.<CircleCITask>}
- */
-function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
+function generateTestSteps( packages, { coverageFile } ) {
 	return packages.map( packageName => {
 		// When checking coverage, the 100% coverage thresholds configured by `createVitestConfig()`
 		// make Vitest exit with a non-zero code on a violation, so no external coverage check is needed.
@@ -296,12 +140,12 @@ function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
 		//
 		// The aggregate packages never produce a coverage report, so their steps skip
 		// the coverage flag and the report concatenation.
-		const collectCoverage = checkCoverage && !AGGREGATE_PACKAGES.includes( packageName );
+		const collectCoverage = !AGGREGATE_PACKAGES.includes( packageName );
 		const testCommand = [
 			'pnpm run test --attempts 3',
 			collectCoverage ? '-c' : null,
 			`-f ${ packageName }`,
-			collectCoverage && coverageFile ? `&& cat packages/${ packageName }/coverage/lcov.info >> ${ coverageFile }` : null
+			collectCoverage ? `&& cat packages/${ packageName }/coverage/lcov.info >> ${ coverageFile }` : null
 		].filter( Boolean ).join( ' ' );
 
 		return {
@@ -315,106 +159,45 @@ function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
 	} );
 }
 
-function replacePlaceholderBatchNameInArray( array, featureTestBatchNames ) {
-	const placeholderIndex = array.findIndex( item => item === FEATURE_TEST_BATCH_NAME_PLACEHOLDER );
+function expandPlaceholderInWorkflows( config, placeholder, jobNames ) {
+	Object.values( config.workflows ).forEach( workflow => {
+		if ( !( workflow instanceof Object ) || !workflow.jobs ) {
+			return;
+		}
 
-	if ( placeholderIndex === -1 ) {
+		workflow.jobs.forEach( job => {
+			const { requires } = Object.values( job )[ 0 ] || {};
+
+			if ( requires ) {
+				replacePlaceholderInArray( requires, placeholder, jobNames );
+			}
+		} );
+
+		replacePlaceholderInArray( workflow.jobs, placeholder, jobNames );
+
+		while ( true ) {
+			const placeholderJobIndex = workflow.jobs.findIndex( job => {
+				return typeof job === 'object' && job[ placeholder ];
+			} );
+
+			if ( placeholderJobIndex === -1 ) {
+				break;
+			}
+
+			const placeholderJobContent = workflow.jobs[ placeholderJobIndex ][ placeholder ];
+			const newJobs = jobNames.map( jobName => ( { [ jobName ]: placeholderJobContent } ) );
+
+			workflow.jobs.splice( placeholderJobIndex, 1, ...newJobs );
+		}
+	} );
+}
+
+function replacePlaceholderInArray( array, placeholder, replacements ) {
+	const i = array.findIndex( item => item === placeholder );
+
+	if ( i === -1 ) {
 		return;
 	}
 
-	array.splice( placeholderIndex, 1, ...featureTestBatchNames );
+	array.splice( i, 1, ...replacements );
 }
-
-function substituteChromeVersion( version, items ) {
-	const stepChrome = 'browser-tools/install_chrome';
-
-	return Object.fromEntries(
-		Object.entries( items ).map( ( [ key, { steps, ...rest } ] ) => {
-			return [
-				key,
-				{
-					...rest,
-					steps: steps.map( step => {
-						if ( step !== stepChrome ) {
-							return step;
-						}
-
-						return {
-							'browser-tools/install_chrome': {
-								chrome_version: version,
-								timeout: '5m'
-							}
-						};
-					} )
-				}
-			];
-		} )
-	);
-}
-
-/**
- * This type partially covers supported options on CircleCI.
- * To see the complete guide, follow: https://circleci.com/docs/configuration-reference.
- *
- * @typedef {Object} CircleCIConfiguration
- *
- * @property {String} version
- *
- * @property {Object.<String, CircleCIParameter>} parameters
- *
- * @property {Object.<String, CircleCIJob>} jobs
- *
- * @property {Object.<String, CircleCICommand>} command
- *
- * @property {Object} workflows
- *
- * @property {Boolean} [setup]
- */
-
-/**
- * @typedef {Object} CircleCIParameter
- *
- * @property {'string'|'boolean'|'integer'|'enum'} type
- *
- * @property {String|Number|Boolean} default
- */
-
-/**
- * @typedef {Object} CircleCIJob
- *
- * @property {Boolean} machine
- *
- * @property {Array.<String|CircleCITask>} steps
- *
- * @property {Object.<String, CircleCIParameter>} [parameters]
- */
-
-/**
- * @typedef {Object} CircleCICommand
- *
- * @property {String} description
- *
- * @property {Array.<String|CircleCITask>} steps
- *
- * @property {Object.<String, CircleCIParameter>} [parameters]
- */
-
-/**
- * @typedef {Object} CircleCITask
- *
- * @property {Object} [persist_to_workspace]
- *
- * @property {String} [persist_to_workspace.root]
- *
- * @property {Array.<String>} [persist_to_workspace.paths]
- *
- * @property {Object} [run]
- *
- * @property {String} [run.name]
- *
- * @property {String} [run.command]
- *
- * @property {String} [run.when]
- *
- * @property {String} [run.working_directory]
- */
