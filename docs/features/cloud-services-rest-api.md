@@ -10,6 +10,8 @@ badges: [ premium ]
 
 # REST API and Webhooks
 
+CKEditor Cloud Services expose REST APIs and webhooks for server-side integration. The REST APIs let you control and manage data such as content revisions, users, and document conversions, while webhooks notify your application when events occur.
+
 ## Cloud Services RESTful APIs
 
 CKEditor Cloud Services offer several REST APIs that can be used for server integration. They provide a lot of powerful methods that make it possible to control and manage data. They can be used to control content revisions, handle users or manage document conversions.
