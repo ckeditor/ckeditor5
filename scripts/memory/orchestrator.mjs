@@ -9,7 +9,9 @@
  * This script coordinates the test execution by:
  * 1. Starting a local HTTP server with COOP/COEP headers (required for precise memory measurement).
  * 2. Launching a Puppeteer browser with memory-tracking flags.
- * 3. Iterating through different editor types, running each in a fresh, isolated browser context.
+ * 3. Running each editor type in a fresh, isolated browser context, up to `concurrency` at a time.
+ *    Browser contexts never share renderer processes, and `performance.measureUserAgentSpecificMemory()`
+ *    only measures the page's own process, so concurrent runs do not affect each other's measurements.
  * 4. Calculating and reporting results (Baseline, Growth, Tail Growth) in a formatted table.
  * 5. Exiting with a non-zero code if any leaks or errors are detected.
  */
@@ -26,19 +28,26 @@ export async function startMemoryTest( {
 	timeout,
 	memoryThreshold,
 	editorNames,
-	editorData
+	editorData,
+	concurrency = editorNames.length
 } ) {
+	if ( !Number.isInteger( concurrency ) || concurrency < 1 ) {
+		throw new Error( `Invalid "concurrency" value: ${ concurrency }. Expected a positive integer.` );
+	}
+
 	const server = await startServer( assetsDir );
 	const port = server.address().port;
 
 	let browser;
-	const results = [];
+	const results = new Array( editorNames.length );
 	let hasFailure = false;
 
 	try {
 		browser = await startBrowser();
 
-		for ( const editorName of editorNames ) {
+		const runSingleTest = async index => {
+			const editorName = editorNames[ index ];
+
 			console.log( `Testing ${ editorName }... ` );
 
 			try {
@@ -46,7 +55,7 @@ export async function startMemoryTest( {
 					browser,
 					url: `http://127.0.0.1:${ port }/${ html }`,
 					editorName,
-					editorData,
+					editorData: typeof editorData === 'function' ? editorData( editorName ) : editorData,
 					timeout
 				} );
 
@@ -56,27 +65,36 @@ export async function startMemoryTest( {
 					hasFailure = true;
 				}
 
-				results.push( {
+				results[ index ] = {
 					Editor: editorName,
 					'Baseline (MB)': bytesToMiB( result.baseline ),
 					'Growth (MB)': bytesToMiB( result.memoryDifference ),
 					'Tail Growth (MB)': bytesToMiB( result.tailGrowth ),
 					Status: exceedsThreshold ? 'Exceeds threshold' : 'OK'
-				} );
+				};
 			} catch ( error ) {
 				hasFailure = true;
 
-				results.push( {
+				results[ index ] = {
 					Editor: editorName,
 					'Baseline (MB)': '-',
 					'Growth (MB)': '-',
 					'Tail Growth (MB)': '-',
 					Status: 'Error'
-				} );
+				};
 
-				console.error( error.message );
+				console.error( `${ editorName }: ${ error.message }` );
 			}
-		}
+		};
+
+		let nextIndex = 0;
+		const workerCount = Math.max( 1, Math.min( concurrency, editorNames.length ) );
+
+		await Promise.all( Array.from( { length: workerCount }, async () => {
+			while ( nextIndex < editorNames.length ) {
+				await runSingleTest( nextIndex++ );
+			}
+		} ) );
 	} finally {
 		if ( browser ) {
 			await browser.close();
