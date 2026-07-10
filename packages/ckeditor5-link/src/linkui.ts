@@ -32,6 +32,7 @@ import { Collection, type ObservableChangeEvent, type DomOptimalPositionOptions 
 import { isWidget } from '@ckeditor/ckeditor5-widget';
 
 import { LinkEditing } from './linkediting.js';
+import { resolveConflictingDecorators } from './utils/conflictingdecorators.js';
 
 import { LinkPreviewButtonView, type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 import { LinkFormView, type LinkFormValidatorCallback } from './ui/linkformview.js';
@@ -41,6 +42,7 @@ import { LinkButtonView } from './ui/linkbuttonview.js';
 
 import { type LinkCommand } from './linkcommand.js';
 import { type UnlinkCommand } from './unlinkcommand.js';
+import { type LinkManualDecorator } from './utils/manualdecorator.js';
 
 import {
 	addLinkProtocolIfApplicable,
@@ -349,6 +351,16 @@ export class LinkUI extends Plugin {
 			provider => this._createLinksListProviderButton( provider )
 		);
 
+		// The "Link properties" button makes sense only when there is something to configure.
+		formView.manualDecoratorsButtonView.isVisible = linkCommand.manualDecorators.length > 0;
+
+		// Let the user open the link properties view directly from the form, that is, also while
+		// creating a brand new link that has not been inserted into the document yet. In that case,
+		// the properties view operates on the not–yet–inserted link. See #_createPropertiesView.
+		this.listenTo( formView, 'showDecorators', () => {
+			this._addPropertiesView();
+		} );
+
 		return formView;
 	}
 
@@ -421,10 +433,18 @@ export class LinkUI extends Plugin {
 
 		// Hide the panel after clicking the back button.
 		this.listenTo( view, 'back', () => {
-			// Move focus back to the editing view to prevent from losing it while current view is removed.
-			editor.editing.view.focus();
+			// The properties view can be opened either straight from the toolbar (for an already
+			// inserted link) or from within the form (while creating or editing a link). Bring focus
+			// back to whichever view will become visible once the properties view is removed.
+			if ( this._isFormInPanel ) {
+				this._removePropertiesView();
+				this.formView!.focus();
+			} else {
+				// Move focus back to the editing view to prevent from losing it while current view is removed.
+				editor.editing.view.focus();
 
-			this._removePropertiesView();
+				this._removePropertiesView();
+			}
 		} );
 
 		view.listChildren.bindTo( linkCommand.manualDecorators ).using( manualDecorator => {
@@ -442,10 +462,23 @@ export class LinkUI extends Plugin {
 			} );
 
 			button.on( 'execute', () => {
-				editor.execute( 'link', linkCommand.value!, {
-					...this._getDecoratorSwitchesState(),
-					[ manualDecorator.id ]: !button.isOn
-				} );
+				const newValue = !button.isOn;
+
+				if ( linkCommand.value !== undefined ) {
+					// There is an existing link under the selection (or command value) — apply the
+					// decorator change to the document immediately, as before.
+					editor.execute( 'link', linkCommand.value!, {
+						...this._getDecoratorSwitchesState(),
+						[ manualDecorator.id ]: newValue
+					} );
+				} else {
+					// The link has not been inserted into the document yet (it's still being created
+					// in the form). There is nothing to execute the command on, so instead we keep the
+					// toggled state on the decorator itself. It will be picked up by
+					// #_getDecoratorSwitchesState and applied together with the link once the form
+					// is submitted.
+					this._togglePendingManualDecorator( manualDecorator, newValue );
+				}
 			} );
 
 			return button;
@@ -472,6 +505,53 @@ export class LinkUI extends Plugin {
 					[ manualDecorator.id ]: !!value
 				};
 			}, {} );
+	}
+
+	/**
+	 * Toggles the state of a manual decorator while a new link is being created, that is, before it is
+	 * inserted into the document. Since there is no link (and no command value) to execute the `'link'`
+	 * command against yet, the new state is kept on the decorator's own observable
+	 * {@link module:link/utils/manualdecorator~LinkManualDecorator#value} instead of the model.
+	 */
+	private _togglePendingManualDecorator( manualDecorator: LinkManualDecorator, newValue: boolean ): void {
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+		const allDecorators = Array.from( linkCommand.manualDecorators );
+
+		const decoratorStates = this._getDecoratorSwitchesState();
+
+		// A decorator that is only "on" via its `defaultValue` (never explicitly toggled) still has
+		// `#value === undefined`, which `resolveConflictingDecorators()` would mistake for "newly
+		// enabled" just like the decorator actually being toggled — causing both to evict each other.
+		// Normalize to the same default-aware boolean as above so only genuine toggles count as new.
+		const previousDecoratorStates = allDecorators.map( decorator => ( {
+			id: decorator.id,
+			attributes: decorator.attributes,
+			styles: decorator.styles,
+			value: decoratorStates[ decorator.id ]
+		} ) );
+
+		decoratorStates[ manualDecorator.id ] = newValue;
+
+		const resolvedStates = resolveConflictingDecorators( {
+			decoratorStates,
+			allDecorators: previousDecoratorStates
+		} );
+
+		for ( const decorator of allDecorators ) {
+			decorator.value = resolvedStates[ decorator.id ];
+		}
+	}
+
+	/**
+	 * Clears the state of all manual decorators that may have been toggled while creating a link that,
+	 * in the end, was never inserted into the document (for example, the user canceled the form).
+	 */
+	private _resetPendingManualDecoratorsState(): void {
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+
+		for ( const manualDecorator of linkCommand.manualDecorators ) {
+			manualDecorator.value = undefined;
+		}
 	}
 
 	/**
@@ -646,7 +726,7 @@ export class LinkUI extends Plugin {
 				linkCommand, 'isEnabled',
 				linkCommand, 'value',
 				linkCommand, 'manualDecorators',
-				( isEnabled, href, manualDecorators ) => isEnabled && !!href && manualDecorators.length > 0
+				( isEnabled, href, manualDecorators ) => isEnabled && href !== undefined && manualDecorators.length > 0
 			);
 
 			this.listenTo<ButtonExecuteEvent>( button, 'execute', () => {
@@ -939,6 +1019,8 @@ export class LinkUI extends Plugin {
 	 */
 	private _removeFormView( updateFocus: boolean = true ): void {
 		if ( this._isFormInPanel ) {
+			const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
+
 			// Blur the input element before removing it from DOM to prevent issues in some browsers.
 			// See https://github.com/ckeditor/ckeditor5/issues/1501.
 			this.formView!.saveButtonView.focus();
@@ -946,6 +1028,14 @@ export class LinkUI extends Plugin {
 			// Reset fields to update the state of the submit button.
 			this.formView!.displayedTextInputView.fieldView.reset();
 			this.formView!.urlInputView.fieldView.reset();
+
+			// If there is still no link at this point, the form is being closed without the link having
+			// been inserted (e.g. the user canceled the creation). Any decorator states toggled in the
+			// meantime (see #_togglePendingManualDecorator) belonged to that abandoned, not-yet-inserted
+			// link and must not leak into the next time a new link is created.
+			if ( linkCommand.value === undefined ) {
+				this._resetPendingManualDecoratorsState();
+			}
 
 			this._balloon.remove( this.formView! );
 

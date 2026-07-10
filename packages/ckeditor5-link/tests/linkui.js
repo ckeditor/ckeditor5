@@ -389,7 +389,7 @@ describe( 'LinkUI', () => {
 				expect( button.icon ).not.toBeUndefined();
 			} );
 
-			it( 'should be disabled if link value is empty or command is disabled', () => {
+			it( 'should be disabled if there is no link (command value is `undefined`) or the command is disabled', () => {
 				const linkCommand = editor.commands.get( 'link' );
 
 				linkCommand.value = 'http://ckeditor.com';
@@ -399,11 +399,17 @@ describe( 'LinkUI', () => {
 				expect( button.isEnabled ).toBe( false );
 
 				linkCommand.isEnabled = true;
-				linkCommand.value = '';
+				linkCommand.value = undefined;
 				expect( button.isEnabled ).toBe( false );
+			} );
 
-				linkCommand.value = null;
-				expect( button.isEnabled ).toBe( false );
+			it( 'should be enabled for a link with an empty URL (e.g. when `config.link.allowCreatingEmptyLinks` is used)', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.isEnabled = true;
+				linkCommand.value = '';
+
+				expect( button.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be disabled if there are no manual decorators', () => {
@@ -1235,6 +1241,14 @@ describe( 'LinkUI', () => {
 			linkUIFeature._addFormView();
 
 			expect( linkUIFeature.formView.disableCssTransitions ).toBeTypeOf( 'function' );
+		} );
+
+		it( 'should hide the "Link properties" button when there are no manual decorators configured', () => {
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._addFormView();
+
+			expect( linkUIFeature.formView.manualDecoratorsButtonView.isVisible ).toBe( false );
 		} );
 	} );
 
@@ -2911,6 +2925,273 @@ describe( 'LinkUI', () => {
 		} );
 	} );
 
+	describe( 'configuring manual decorators while creating a new link (not yet inserted)', () => {
+		let editorElement, editor, model, formView, propertiesView, linkUIFeature, balloon;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ LinkEditing, LinkUI, Paragraph ],
+				link: {
+					decorators: {
+						decorator1: {
+							mode: 'manual',
+							label: 'Foo',
+							attributes: {
+								foo: 'bar'
+							}
+						},
+						decorator2: {
+							mode: 'manual',
+							label: 'Open in a new tab',
+							attributes: {
+								target: '_blank'
+							}
+						},
+						decorator3: {
+							mode: 'manual',
+							label: 'Different target',
+							attributes: {
+								target: '_self'
+							}
+						}
+					}
+				}
+			} );
+
+			model = editor.model;
+
+			model.schema.extend( '$text', {
+				allowIn: '$root',
+				allowAttributes: 'linkHref'
+			} );
+
+			linkUIFeature = editor.plugins.get( LinkUI );
+			balloon = editor.plugins.get( ContextualBalloon );
+
+			vi.spyOn( balloon.view, 'attachTo' ).mockReturnValue( {} );
+			vi.spyOn( balloon.view, 'pin' ).mockReturnValue( {} );
+
+			editor.editing.view.document.isFocused = true;
+
+			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			linkUIFeature._showUI( true );
+
+			formView = linkUIFeature.formView;
+			propertiesView = linkUIFeature.propertiesView;
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'shows the "Link properties" button in the form when there are manual decorators', () => {
+			expect( formView.manualDecoratorsButtonView.isVisible ).toBe( true );
+		} );
+
+		it( 'opens #propertiesView on formView#showDecorators without executing the link command', () => {
+			const executeSpy = vi.spyOn( editor, 'execute' );
+
+			formView.fire( 'showDecorators' );
+
+			expect( balloon.visibleView ).toBe( propertiesView );
+			expect( executeSpy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'toggles a decorator locally (without executing the command) while the link has not been inserted yet', () => {
+			const executeSpy = vi.spyOn( editor, 'execute' );
+			const linkCommand = editor.commands.get( 'link' );
+
+			formView.fire( 'showDecorators' );
+			propertiesView.listChildren.first.fire( 'execute' );
+
+			expect( executeSpy ).not.toHaveBeenCalled();
+			expect( linkCommand.manualDecorators.first.value ).toBe( true );
+			expect( propertiesView.listChildren.first.isOn ).toBe( true );
+		} );
+
+		it( 'applies the pending decorator state together with the link once the form is submitted', () => {
+			const executeSpy = vi.spyOn( editor, 'execute' );
+
+			formView.fire( 'showDecorators' );
+			propertiesView.listChildren.first.fire( 'execute' ); // Turn "Foo" on.
+
+			formView.urlInputView.fieldView.value = 'https://ckeditor.com';
+			formView.fire( 'submit' );
+
+			expect( executeSpy ).toHaveBeenCalledExactlyOnceWith(
+				'link',
+				'https://ckeditor.com',
+				{
+					linkDecorator1: true,
+					linkDecorator2: false,
+					linkDecorator3: false
+				},
+				undefined
+			);
+		} );
+
+		it( 'resolves conflicts between manual decorators sharing the same attribute', () => {
+			const linkCommand = editor.commands.get( 'link' );
+			const [ , decorator2, decorator3 ] = linkCommand.manualDecorators;
+
+			formView.fire( 'showDecorators' );
+
+			// Turn decorator2 ("target: _blank") on.
+			propertiesView.listChildren.get( 1 ).fire( 'execute' );
+
+			expect( decorator2.value ).toBe( true );
+			expect( decorator3.value ).toBe( false );
+
+			// Turn the conflicting decorator3 ("target: _self") on.
+			propertiesView.listChildren.get( 2 ).fire( 'execute' );
+
+			expect( decorator3.value ).toBe( true );
+			expect( decorator2.value ).toBe( false );
+			expect( propertiesView.listChildren.get( 1 ).isOn ).toBe( false );
+			expect( propertiesView.listChildren.get( 2 ).isOn ).toBe( true );
+		} );
+
+		it( 'resets the pending decorator state when the link creation is canceled', () => {
+			const linkCommand = editor.commands.get( 'link' );
+
+			formView.fire( 'showDecorators' );
+			propertiesView.listChildren.first.fire( 'execute' );
+
+			expect( linkCommand.manualDecorators.first.value ).toBe( true );
+
+			formView.fire( 'cancel' );
+
+			expect( linkCommand.manualDecorators.first.value ).toBeUndefined();
+		} );
+
+		it( 'resets the pending decorator state when the UI is hidden while still creating the link', () => {
+			const linkCommand = editor.commands.get( 'link' );
+
+			formView.fire( 'showDecorators' );
+			propertiesView.listChildren.first.fire( 'execute' );
+
+			expect( linkCommand.manualDecorators.first.value ).toBe( true );
+
+			linkUIFeature._hideUI();
+
+			expect( linkCommand.manualDecorators.first.value ).toBeUndefined();
+		} );
+
+		it( 'does not reset the decorator state once the link has actually been inserted', () => {
+			formView.fire( 'showDecorators' );
+			propertiesView.listChildren.first.fire( 'execute' );
+
+			formView.urlInputView.fieldView.value = 'https://ckeditor.com';
+			formView.fire( 'submit' );
+
+			// Note: the selection ends up right after the newly inserted link (not inside it) because of
+			// the two-step caret movement feature, so `linkCommand#value` is `undefined` at this point.
+			// What matters here is that the decorator was actually written to the model together with the link.
+			expect( _getModelData( model ) ).toBe(
+				'<paragraph>f<$text linkDecorator1="true" linkHref="https://ckeditor.com">https://ckeditor.com</$text>[]oo</paragraph>'
+			);
+		} );
+
+		it( 'returns focus to the form (not the editing view) when going back from the properties view', () => {
+			const editingFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+
+			formView.fire( 'showDecorators' );
+
+			const formFocusSpy = vi.spyOn( formView, 'focus' );
+
+			propertiesView.backButtonView.fire( 'execute' );
+
+			expect( balloon.visibleView ).toBe( formView );
+			expect( formFocusSpy ).toHaveBeenCalledOnce();
+			expect( editingFocusSpy ).not.toHaveBeenCalled();
+		} );
+	} );
+
+	describe( 'conflict resolution with a decorator enabled via defaultValue while creating a new link', () => {
+		let editorElement, editor, model, formView, propertiesView, linkUIFeature, balloon;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ LinkEditing, LinkUI, Paragraph ],
+				link: {
+					decorators: {
+						openInNewTab: {
+							mode: 'manual',
+							label: 'Open in a new tab',
+							defaultValue: true,
+							attributes: {
+								target: '_blank'
+							}
+						},
+						openInSameTab: {
+							mode: 'manual',
+							label: 'Open in the same tab',
+							attributes: {
+								target: '_self'
+							}
+						}
+					}
+				}
+			} );
+
+			model = editor.model;
+
+			model.schema.extend( '$text', {
+				allowIn: '$root',
+				allowAttributes: 'linkHref'
+			} );
+
+			linkUIFeature = editor.plugins.get( LinkUI );
+			balloon = editor.plugins.get( ContextualBalloon );
+
+			vi.spyOn( balloon.view, 'attachTo' ).mockReturnValue( {} );
+			vi.spyOn( balloon.view, 'pin' ).mockReturnValue( {} );
+
+			editor.editing.view.document.isFocused = true;
+
+			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			linkUIFeature._showUI( true );
+
+			formView = linkUIFeature.formView;
+			propertiesView = linkUIFeature.propertiesView;
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'does not disable both decorators when enabling one that conflicts with another enabled only via defaultValue', () => {
+			const linkCommand = editor.commands.get( 'link' );
+			const [ openInNewTab, openInSameTab ] = linkCommand.manualDecorators;
+
+			// "Open in a new tab" is on by default and has never been toggled explicitly yet.
+			expect( openInNewTab.value ).toBeUndefined();
+			expect( propertiesView.listChildren.first.isOn ).toBe( true );
+
+			formView.fire( 'showDecorators' );
+
+			// Turn the conflicting "Open in the same tab" on.
+			propertiesView.listChildren.get( 1 ).fire( 'execute' );
+
+			expect( openInSameTab.value ).toBe( true );
+			expect( openInNewTab.value ).toBe( false );
+			expect( propertiesView.listChildren.get( 1 ).isOn ).toBe( true );
+			expect( propertiesView.listChildren.first.isOn ).toBe( false );
+		} );
+	} );
+
 	describe( 'properties view', () => {
 		beforeEach( () => {
 			editor.commands.get( 'link' ).manualDecorators.add( new LinkManualDecorator( {
@@ -2958,6 +3239,26 @@ describe( 'LinkUI', () => {
 			} );
 
 			expect( removeBalloonSpy ).toHaveBeenCalledWith( linkUIFeature.propertiesView );
+		} );
+
+		it( 'moves focus back to the editing view (instead of the form) when it was opened without the form ' +
+			'in the balloon, e.g. via the "linkProperties" toolbar button on an existing link', () => {
+			_setModelData( editor.model, '<paragraph>fo<$text linkHref="abc">o[]b</$text>ar</paragraph>' );
+
+			linkUIFeature._showUI(); // ToolbarView only – there is a link under the selection, form is not shown yet.
+			linkUIFeature._addPropertiesView();
+
+			expect( linkUIFeature._isFormInPanel ).toBe( false );
+			expect( balloon.visibleView ).toBe( linkUIFeature.propertiesView );
+
+			const editingFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+			const removeBalloonSpy = vi.spyOn( balloon, 'remove' );
+
+			linkUIFeature.propertiesView.backButtonView.fire( 'execute' );
+
+			expect( editingFocusSpy ).toHaveBeenCalledOnce();
+			expect( removeBalloonSpy ).toHaveBeenCalledWith( linkUIFeature.propertiesView );
+			expect( balloon.visibleView ).toBe( linkUIFeature.toolbarView );
 		} );
 	} );
 

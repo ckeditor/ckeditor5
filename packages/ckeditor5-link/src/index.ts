@@ -29,7 +29,8 @@ export type { LinkProvidersCancelEvent } from './ui/linkprovideritemsview.js';
 export type {
 	LinkFormValidatorCallback,
 	LinkFormSubmitEvent,
-	LinkFormCancelEvent
+	LinkFormCancelEvent,
+	LinkFormShowDecoratorsEvent
 } from './ui/linkformview.js';
 
 export {

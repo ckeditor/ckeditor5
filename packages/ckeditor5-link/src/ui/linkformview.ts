@@ -27,7 +27,7 @@ import {
 	KeystrokeHandler,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
-import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
+import { IconPreviousArrow, IconSettings } from '@ckeditor/ckeditor5-icons';
 
 import '../../theme/linkform.css';
 
@@ -54,6 +54,12 @@ export class LinkFormView extends View {
 	 * The Save button view.
 	 */
 	public saveButtonView: ButtonView;
+
+	/**
+	 * A button that opens the {@link module:link/ui/linkpropertiesview~LinkPropertiesView} allowing the user to
+	 * configure manual decorators for the link handled by this form.
+	 */
+	public manualDecoratorsButtonView: ButtonView;
 
 	/**
 	 * The "Displayed text" input view.
@@ -109,6 +115,7 @@ export class LinkFormView extends View {
 		// Create buttons.
 		this.backButtonView = this._createBackButton();
 		this.saveButtonView = this._createSaveButton();
+		this.manualDecoratorsButtonView = this._createManualDecoratorsButton();
 
 		// Create input fields.
 		this.displayedTextInputView = this._createDisplayedTextInput();
@@ -172,6 +179,7 @@ export class LinkFormView extends View {
 
 		const childViews = [
 			this.urlInputView,
+			this.manualDecoratorsButtonView,
 			this.saveButtonView,
 			...this.providersListChildren,
 			this.backButtonView,
@@ -276,6 +284,25 @@ export class LinkFormView extends View {
 	}
 
 	/**
+	 * Creates a button that opens the link properties view.
+	 */
+	private _createManualDecoratorsButton(): ButtonView {
+		const t = this.locale!.t;
+		const button = new ButtonView( this.locale );
+
+		button.set( {
+			label: t( 'Link properties' ),
+			icon: IconSettings,
+			tooltip: true,
+			isVisible: false
+		} );
+
+		button.delegate( 'execute' ).to( this, 'showDecorators' );
+
+		return button;
+	}
+
+	/**
 	 * Creates a header view for the form.
 	 */
 	private _createHeaderView(): FormHeaderView {
@@ -360,6 +387,7 @@ export class LinkFormView extends View {
 		this.children.add( new FormRowView( this.locale!, {
 			children: [
 				this.urlInputView,
+				this.manualDecoratorsButtonView,
 				this.saveButtonView
 			],
 			class: [
@@ -413,5 +441,16 @@ export type LinkFormSubmitEvent = {
  */
 export type LinkFormCancelEvent = {
 	name: 'cancel';
+	args: [];
+};
+
+/**
+ * Fired when the {@link ~LinkFormView#manualDecoratorsButtonView} is pressed, requesting the link properties
+ * (manual decorators) view to be displayed.
+ *
+ * @eventName ~LinkFormView#showDecorators
+ */
+export type LinkFormShowDecoratorsEvent = {
+	name: 'showDecorators';
 	args: [];
 };

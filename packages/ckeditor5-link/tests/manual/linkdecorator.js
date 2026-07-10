@@ -19,6 +19,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, LinkImage ],
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
+			allowCreatingEmptyLinks: true,
 			decorators: {
 				isExternal: {
 					mode: 'manual',

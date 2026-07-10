@@ -34,6 +34,7 @@ describe( 'LinkFormView', () => {
 		it( 'should create child views', () => {
 			expect( view.backButtonView ).toBeInstanceOf( View );
 			expect( view.saveButtonView ).toBeInstanceOf( View );
+			expect( view.manualDecoratorsButtonView ).toBeInstanceOf( View );
 			expect( view.displayedTextInputView ).toBeInstanceOf( View );
 			expect( view.urlInputView ).toBeInstanceOf( View );
 		} );
@@ -68,6 +69,26 @@ describe( 'LinkFormView', () => {
 			expect( view.urlInputView.fieldView.inputMode ).toBe( 'url' );
 		} );
 
+		it( 'should hide the #manualDecoratorsButtonView by default', () => {
+			expect( view.manualDecoratorsButtonView.isVisible ).toBe( false );
+		} );
+
+		it( 'should set #manualDecoratorsButtonView label and icon', () => {
+			expect( view.manualDecoratorsButtonView.label ).toBe( 'Link properties' );
+			expect( view.manualDecoratorsButtonView.icon ).not.toBeUndefined();
+			expect( view.manualDecoratorsButtonView.tooltip ).toBe( true );
+		} );
+
+		it( 'should fire `showDecorators` event on manualDecoratorsButtonView#execute', () => {
+			const spy = vi.fn();
+
+			view.on( 'showDecorators', spy );
+
+			view.manualDecoratorsButtonView.fire( 'execute' );
+
+			expect( spy ).toHaveBeenCalledOnce();
+		} );
+
 		describe( 'template', () => {
 			/**
 				 * form
@@ -78,6 +99,7 @@ describe( 'LinkFormView', () => {
 				 * 		displayedTextInputView
 				 * 	formRow
 				 * 		urlInputView
+				 * 		manualDecoratorsButtonView
 				 * 		saveButtonView
 				 * 	linksButton
 				 */
@@ -95,7 +117,8 @@ describe( 'LinkFormView', () => {
 				const secondFormRow = view.template.children[ 0 ].get( 2 );
 
 				expect( headerChildren.get( 0 ) ).toBe( view.backButtonView );
-				expect( secondFormRow.template.children[ 0 ].get( 1 ) ).toBe( view.saveButtonView );
+				expect( secondFormRow.template.children[ 0 ].get( 1 ) ).toBe( view.manualDecoratorsButtonView );
+				expect( secondFormRow.template.children[ 0 ].get( 2 ) ).toBe( view.saveButtonView );
 			} );
 
 			it( 'should `saveButtonView` has no tooltip', () => {
@@ -122,6 +145,7 @@ describe( 'LinkFormView', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).toEqual( expect.arrayContaining( [
 				view.urlInputView,
+				view.manualDecoratorsButtonView,
 				view.saveButtonView,
 				view.backButtonView,
 				view.displayedTextInputView
@@ -135,9 +159,10 @@ describe( 'LinkFormView', () => {
 			view.render();
 
 			expect( spy ).toHaveBeenNthCalledWith( 1, view.urlInputView.element );
-			expect( spy ).toHaveBeenNthCalledWith( 2, view.saveButtonView.element );
-			expect( spy ).toHaveBeenNthCalledWith( 3, view.backButtonView.element );
-			expect( spy ).toHaveBeenNthCalledWith( 4, view.displayedTextInputView.element );
+			expect( spy ).toHaveBeenNthCalledWith( 2, view.manualDecoratorsButtonView.element );
+			expect( spy ).toHaveBeenNthCalledWith( 3, view.saveButtonView.element );
+			expect( spy ).toHaveBeenNthCalledWith( 4, view.backButtonView.element );
+			expect( spy ).toHaveBeenNthCalledWith( 5, view.displayedTextInputView.element );
 
 			view.destroy();
 		} );
@@ -191,6 +216,25 @@ describe( 'LinkFormView', () => {
 
 				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
 				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledOnce();
+			} );
+
+			it( 'so "tab" focuses the visible #manualDecoratorsButtonView between the url input and the save button', () => {
+				view.manualDecoratorsButtonView.isVisible = true;
+
+				const spy = vi.spyOn( view.manualDecoratorsButtonView, 'focus' );
+
+				const keyEvtData = {
+					keyCode: keyCodes.tab,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				};
+
+				// Mock the url input is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.urlInputView.element;
+				view.keystrokes.press( keyEvtData );
+
 				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
@@ -332,10 +376,11 @@ describe( 'LinkFormView', () => {
 			view.render();
 
 			expect( spy ).toHaveBeenNthCalledWith( 1, view.urlInputView.element );
-			expect( spy ).toHaveBeenNthCalledWith( 2, view.saveButtonView.element );
-			expect( spy ).toHaveBeenNthCalledWith( 3, element );
-			expect( spy ).toHaveBeenNthCalledWith( 4, view.backButtonView.element );
-			expect( spy ).toHaveBeenNthCalledWith( 5, view.displayedTextInputView.element );
+			expect( spy ).toHaveBeenNthCalledWith( 2, view.manualDecoratorsButtonView.element );
+			expect( spy ).toHaveBeenNthCalledWith( 3, view.saveButtonView.element );
+			expect( spy ).toHaveBeenNthCalledWith( 4, element );
+			expect( spy ).toHaveBeenNthCalledWith( 5, view.backButtonView.element );
+			expect( spy ).toHaveBeenNthCalledWith( 6, view.displayedTextInputView.element );
 
 			view.destroy();
 		} );
