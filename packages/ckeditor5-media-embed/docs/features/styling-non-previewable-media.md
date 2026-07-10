@@ -8,7 +8,7 @@ order: 60
 
 # Styling non-previewable media
 
-While the editor comes with default styles for popular media providers like Facebook, Instagram, or X, you can create additional styles for non-previewable media in your editor content to help users identify them.
+You can create additional styles for non-previewable media in your editor content to help users identify them. The editor styles popular providers such as Facebook, Instagram, and X by default, but leaves media it cannot preview without a distinct look.
 
 The HTML structure of every non-previewable media in the editor is as follows:
 
