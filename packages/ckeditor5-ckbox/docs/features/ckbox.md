@@ -10,7 +10,7 @@ badges: [ premium ]
 
 # CKBox file manager
 
-CKBox is a dedicated asset manager and management platform service that provides a comprehensive digital asset management experience for CKEditor 5. 
+CKBox is a dedicated asset manager and management platform service that provides a comprehensive digital asset management experience for CKEditor 5.
 
 It handles file uploads and significantly reduces the effort required to build a complete modern editing solution that supports optimized and {@link features/images-responsive responsive images}. Functionally, CKBox replaces the basic CKEditor&nbsp;5 image upload feature by integrating a comprehensive file manager.
 
@@ -73,7 +73,7 @@ CKBox works natively with CKEditor&nbsp;5. Implementation is straightforward, sa
 	If you already have a valid license, please log into your [Customer Portal](https://portal.ckeditor.com/) to access the feature settings.
 </info-box>
 
-### Key features 
+### Key features
 
 <table>
 	<thead>
@@ -157,7 +157,7 @@ CKBox offers significant architectural flexibility, providing users with full co
 	</tbody>
 </table>
 
-To find out more about CKBox, the brand-new file manager and image editor, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html). 
+To find out more about CKBox, the brand-new file manager and image editor, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
 
 You can read more about the storage options in the dedicated [CKBox Deployment](https://ckeditor.com/docs/cs/latest/onpremises/ckbox-onpremises/deployment.html) guide.
 
@@ -368,18 +368,26 @@ ClassicEditor
 
 ### Configuring the API service
 
-If you host the cloud service in your environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option:
+Using the CKBox cloud service, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option. The default region is United States (Northern Virginia).
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// ... Other configuration options ...
 		ckbox: {
-			serviceOrigin: 'https://example.com/'
+			serviceOrigin: 'https://api.ckbox.io'
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
+```
+
+If you are using the EU cloud region instead, remember to adjust the endpoint:
+
+```js
+ckbox: {
+	serviceOrigin: 'https://api-eu.ckbox.io'
+}
 ```
 
 ### Editing external images

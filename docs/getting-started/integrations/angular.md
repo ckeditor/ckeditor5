@@ -71,7 +71,7 @@ export class AppComponent {
 
 	public Editor = ClassicEditor;
 	public config = {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
@@ -146,7 +146,7 @@ export class AppComponent {
 
 	public Editor = ClassicEditor;
 	public config = {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}

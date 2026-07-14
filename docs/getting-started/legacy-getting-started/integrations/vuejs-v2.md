@@ -196,7 +196,7 @@ Unpack it into you application main directory. The directory with the editor bui
 
 Then, add the package located in the `ckeditor5` directory as a dependency of your project:
 
-```
+```bash
 yarn add file:./ckeditor5
 ```
 

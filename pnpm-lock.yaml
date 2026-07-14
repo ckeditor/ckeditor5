@@ -183,7 +183,7 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
       umberto:
-        specifier: ^10.0.0
+        specifier: ^10.1.3
         version: 10.5.1(@swc/core@1.15.40)(chokidar@3.6.0)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
       upath:
         specifier: ^2.0.0

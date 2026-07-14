@@ -64,7 +64,6 @@ import {
 	IconFontColor,
 	registerIcon
 } from 'ckeditor5';
-import { EasyImage } from 'ckeditor5-premium-features';
 
 const fontColorIcon =/* #__PURE__ */ registerIcon( 'fontColor', IconFontColor );
 
@@ -170,7 +169,6 @@ DecoupledEditor
 			Autoformat,
 			BlockQuote,
 			Bold,
-			EasyImage,
 			Essentials,
 			Font,
 			Heading,
@@ -194,7 +192,6 @@ DecoupledEditor
 			Table,
 			TableToolbar,
 			Underline,
-
 			FormattingOptions
 		],
 		toolbar: [
@@ -260,14 +257,7 @@ DecoupledEditor
 				'tableRow',
 				'mergeTableCells'
 			]
-		},
-		cloudServices: {
-			// This editor configuration includes the Easy Image feature.
-			// Provide correct configuration values to use it.
-			tokenUrl: 'https://example.com/cs-token-endpoint',
-			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
-			// For other image upload methods see the guide - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html.
-		},
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
