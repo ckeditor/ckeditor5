@@ -25,8 +25,20 @@
 			bottom: 0;
 		}
 
-		& ::selection,
 		&:focus {
+			background-color: transparent;
+		}
+
+		/*
+		 * `::selection` is not Baseline "widely available" because Safari on iOS (and iOS WebView, which
+		 * mirrors it) doesn't implement it. This is a purely cosmetic override: if unsupported, the native
+		 * selection highlight would simply show alongside the custom cell-selection overlay, which is a
+		 * minor visual overlap, not a functional issue.
+		 * Kept in its own rule (not grouped with `&:focus` above) because a selector list containing an
+		 * unsupported selector can cause the whole rule to be ignored in some browsers.
+		 */
+		/* eslint-disable-next-line css/use-baseline */
+		& ::selection {
 			background-color: transparent;
 		}
 

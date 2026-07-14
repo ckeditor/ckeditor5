@@ -119,7 +119,13 @@
 			 * Make sure the native browser selection style is not displayed.
 			 * Inline image widgets have their own styles for the selected state and
 			 * leaving this up to the browser is asking for a visual collision.
+			 *
+			 * `::selection` is not Baseline "widely available" because Safari on iOS (and iOS WebView, which
+			 * mirrors it) doesn't implement it. This is a purely cosmetic override: if unsupported, the browser's
+			 * default selection overlay would simply show alongside the widget's own selected-state outline,
+			 * which is a minor visual overlap, not a functional issue.
 			 */
+			/* eslint-disable-next-line css/use-baseline */
 			& ::selection {
 				display: none;
 			}
