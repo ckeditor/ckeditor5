@@ -9,7 +9,7 @@ modified_at: 2025-03-13
 
 # Integrating CKEditor&nbsp;5 with Nuxt from npm
 
-You can integrate CKEditor&nbsp;5 with [Nuxt](https://nuxt.com/) using the official {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 Vue component}. Because CKEditor&nbsp;5 relies on browser APIs, it cannot be pre-rendered with server-side rendering (SSR) or static site generation (SSG); instead, you load it on the client side (client-side rendering, CSR). You will need a [Nuxt project](https://nuxt.com/docs/getting-started/installation).
+You can integrate CKEditor&nbsp;5 with [Nuxt](https://nuxt.com/) using the official {@link getting-started/integrations/vue-default-npm CKEditor&nbsp;5 Vue component}. Because CKEditor&nbsp;5 relies on browser APIs, it cannot be pre-rendered with server-side rendering (SSR) or static site generation (SSG); instead, you load it on the client side (client-side rendering, CSR). You will need a [Nuxt project](https://nuxt.com/docs/getting-started/installation).
 
 {@snippet getting-started/use-builder}
 
@@ -92,7 +92,7 @@ Notice that the `<Editor>` component is wrapped in a `<ClientOnly>` component. I
 You can run your project now using the `npm run dev` command to see your application in the browser.
 
 <info-box>
-	In the example above, we only used basic features of the `<ckeditor>` component. To learn more about additional features and configuration options &ndash; including inline editors &ndash; refer to the {@link getting-started/integrations/vuejs-v3 Vue.js integration guide}.
+	In the example above, we only used basic features of the `<ckeditor>` component. To learn more about additional features and configuration options &ndash; including inline editors &ndash; refer to the {@link getting-started/integrations/vue-default-npm Vue.js integration guide}.
 </info-box>
 
 ## Next steps

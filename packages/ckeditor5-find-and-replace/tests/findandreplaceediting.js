@@ -11,7 +11,7 @@ import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
-import { _getViewData, _getModelData } from '@ckeditor/ckeditor5-engine';
+import { _getViewData, _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
 
 import { FindAndReplace } from '../src/findandreplace.js';
@@ -187,6 +187,52 @@ describe( 'FindAndReplaceEditing', () => {
 
 			return viewData.replaceAll( /\s*data-find-result="[^"]*"/g, '' );
 		}
+	} );
+
+	describe( 'find (marker collaboration edge cases)', () => {
+		it( 'should not create duplicate results when an external marker covers already-found content', () => {
+			_setModelData( model, '<paragraph>foo bar foo</paragraph>' );
+
+			const findAndReplaceEditing = editor.plugins.get( 'FindAndReplaceEditing' );
+			findAndReplaceEditing.find( 'foo' );
+
+			expect( findAndReplaceEditing.state.results.length ).toBe( 2 );
+
+			model.change( writer => {
+				writer.addMarker( 'external:1', {
+					usingOperation: true,
+					affectsData: true,
+					range: model.createRangeIn( model.document.getRoot().getChild( 0 ) )
+				} );
+			} );
+
+			expect( findAndReplaceEditing.state.results.length ).toBe( 2 );
+		} );
+
+		it( 'should pick up matches inside a range introduced by an external marker', () => {
+			_setModelData( model, '<paragraph>bar</paragraph><paragraph>foo</paragraph>' );
+
+			const findAndReplaceEditing = editor.plugins.get( 'FindAndReplaceEditing' );
+			findAndReplaceEditing.find( 'foo' );
+
+			// Simulate results being absent for paragraph 2 (e.g. cleared by a collaborator).
+			[ ...findAndReplaceEditing.state.results ].forEach( r => {
+				findAndReplaceEditing.state.results.remove( r );
+			} );
+
+			expect( findAndReplaceEditing.state.results.length ).toBe( 0 );
+
+			// External marker added over paragraph 2 — triggers changedMarkers path only.
+			model.change( writer => {
+				writer.addMarker( 'external:1', {
+					usingOperation: true,
+					affectsData: true,
+					range: writer.createRangeOn( model.document.getRoot().getChild( 1 ) )
+				} );
+			} );
+
+			expect( findAndReplaceEditing.state.results.length ).toBe( 1 );
+		} );
 	} );
 
 	describe( 'downcast conversion', () => {

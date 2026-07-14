@@ -9,7 +9,7 @@ order: 60
 # Integrating CKeditor&nbsp;5 with Vue.js 2.x from npm
 
 <info-box warning>
-	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations/vuejs-v3 Vue.js 3+ rich text editor component} guide.
+	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations/vue-default-npm Vue.js 3+ rich text editor component} guide.
 </info-box>
 
 You can use the CKEditor&nbsp;5 Vue 2 component to add a rich text editor to your application. This guide will help you install and configure the npm distribution of CKEditor&nbsp;5.

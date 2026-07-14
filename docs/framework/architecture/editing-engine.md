@@ -176,6 +176,8 @@ Markers are a special type of range with these characteristics:
 
 Markers are perfect for storing and maintaining additional data related to document portions, such as comments or other users' selections.
 
+When multiple markers share a position in the model, the downcast dispatcher sorts them into a deterministic order — see {@link framework/deep-dive/conversion/downcast#downcasting-overlapping-markers Downcasting overlapping markers} for the exact rules.
+
 ### Schema
 
 The {@link module:engine/model/schema~ModelSchema model's schema} defines several aspects of the model structure:

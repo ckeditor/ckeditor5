@@ -268,6 +268,21 @@ export class FindAndReplaceEditing extends Plugin {
 		// Remove results from the changed part of content.
 		removedMarkers.forEach( markerName => {
 			if ( !results.has( markerName ) ) {
+				// The `replaceAll` command can be executed with a search phrase (a string) instead
+				// of a collection of previously found results. In that case it runs its own internal
+				// search and creates markers for the matches it finds, without ever registering them
+				// in `state.results`. Once the replacement is done, those markers are never removed
+				// through the normal "remove from results" path above, so they would otherwise stay
+				// alive in the model forever — clean them up here before they silently accumulate.
+				if ( markerName.startsWith( 'findResult:' ) ) {
+					const orphanMarker = model.markers.get( markerName );
+
+					/* v8 ignore else -- @preserve */
+					if ( orphanMarker ) {
+						model.change( writer => writer.removeMarker( orphanMarker ) );
+					}
+				}
+
 				return;
 			}
 
@@ -283,16 +298,32 @@ export class FindAndReplaceEditing extends Plugin {
 		const findAndReplaceUtils: FindAndReplaceUtils = this.editor.plugins.get( 'FindAndReplaceUtils' );
 
 		changedNodes.forEach( nodeToCheck => {
+			// For inline roots the node itself is the text container, so scanning
+			// its contents means scanning "inside" it, not "around" it.
+			const searchRange = nodeToCheck.is( 'rootElement' ) ?
+				model.createRangeIn( nodeToCheck ) :
+				model.createRangeOn( nodeToCheck );
+
 			const changedNodeSearchResults = findAndReplaceUtils.updateFindResultFromRange(
-				model.createRangeOn( nodeToCheck ), model, this.state!.lastSearchCallback!, results
+				searchRange, model, this.state!.lastSearchCallback!, results
 			);
 
 			changedSearchResults.push( ...changedNodeSearchResults );
 		} );
 
 		changedMarkers.forEach( markerToCheck => {
+			// Every re-scan above registers newly added highlight markers in the differ.
+			// On the next document change those markers surface here, and re-scanning them
+			// would spawn yet another batch of markers — a feedback loop that doubles with
+			// every keystroke. Highlights are always up to date after the re-scan above,
+			// so skip them unconditionally.
+			if ( markerToCheck.name.startsWith( 'findResult' ) ) {
+				return;
+			}
+
 			// Handle search result highlight update when T&C plugin is active.
 			// Lookup is performed only on newly inserted markers.
+			/* v8 ignore else -- @preserve */
 			if ( markerToCheck.data.newRange ) {
 				const changedNodeSearchResults = findAndReplaceUtils.updateFindResultFromRange(
 					markerToCheck.data.newRange, model, this.state!.lastSearchCallback!, results
