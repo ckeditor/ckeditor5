@@ -27,9 +27,6 @@ bumpYear( {
 			}
 		},
 		{
-			pattern: '.husky/*'
-		},
-		{
 			pattern: '.circleci/*'
 		},
 		{

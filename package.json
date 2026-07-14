@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-root",
-  "version": "47.7.2",
+  "version": "47.7.3",
   "description": "The development environment of CKEditor 5 LTS Edition - the best browser-based rich text editor.",
   "private": true,
   "keywords": [
@@ -22,17 +22,17 @@
   ],
   "devDependencies": {
     "@babel/parser": "^7.23.3",
-    "@ckbox/uploader": "2.9.2",
-    "@ckeditor/ckeditor5-dev-build-tools": "^54.7.2",
-    "@ckeditor/ckeditor5-dev-bump-year": "^54.7.2",
-    "@ckeditor/ckeditor5-dev-changelog": "^54.7.2",
-    "@ckeditor/ckeditor5-dev-ci": "^54.7.2",
-    "@ckeditor/ckeditor5-dev-dependency-checker": "^54.7.2",
-    "@ckeditor/ckeditor5-dev-docs": "^54.7.2",
-    "@ckeditor/ckeditor5-dev-license-checker": "^54.7.2",
-    "@ckeditor/ckeditor5-dev-release-tools": "^54.7.2",
-    "@ckeditor/ckeditor5-dev-tests": "^54.7.2",
-    "@ckeditor/ckeditor5-dev-web-crawler": "^54.7.2",
+    "@ckbox/uploader": "2.13.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "^54.8.0",
+    "@ckeditor/ckeditor5-dev-bump-year": "^54.8.0",
+    "@ckeditor/ckeditor5-dev-changelog": "^54.8.0",
+    "@ckeditor/ckeditor5-dev-ci": "^54.8.0",
+    "@ckeditor/ckeditor5-dev-dependency-checker": "^54.8.0",
+    "@ckeditor/ckeditor5-dev-docs": "^54.8.0",
+    "@ckeditor/ckeditor5-dev-license-checker": "^54.8.0",
+    "@ckeditor/ckeditor5-dev-release-tools": "^54.8.0",
+    "@ckeditor/ckeditor5-dev-tests": "^54.8.0",
+    "@ckeditor/ckeditor5-dev-web-crawler": "^54.8.0",
     "@ckeditor/ckeditor5-inspector": "^5.0.0",
     "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.6",
     "@ckeditor/ckeditor5-react": "^9.5.0",
@@ -43,7 +43,7 @@
     "acorn": "^8.11.3",
     "assert": "^2.0.0",
     "chalk": "^5.0.0",
-    "ckbox": "2.9.2",
+    "ckbox": "2.13.0",
     "date-fns": "^4.0.0",
     "esbuild": "^0.25.0",
     "eslint": "^9.34.0",
@@ -54,9 +54,7 @@
     "fs-extra": "^11.0.0",
     "glob": "^13.0.0",
     "globals": "^16.1.0",
-    "husky": "^9.1.7",
     "js-yaml": "^4.1.1",
-    "lint-staged": "^16.1.0",
     "listr2": "^8.0.0",
     "local-web-server": "^5.4.0",
     "minimist": "^1.2.8",
@@ -97,7 +95,6 @@
   },
   "scripts": {
     "nice": "ckeditor5-dev-changelog-create-entry",
-    "postinstall": "husky",
     "lint": "eslint --format ./scripts/eslint-formatter.cjs --concurrency=4",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
     "test": "ckeditor5-dev-tests-run-automated",
@@ -111,9 +108,6 @@
     "docs:content-styles": "node -e \"import( './scripts/docs/build-content-styles.mjs' ).then( m => m.default() );\"",
     "docs:serve": "ws --directory ./build/docs/ --compress --https --port 8080",
     "docs:verify": "node ./scripts/web-crawler/index.mjs --docs",
-    "translations:synchronize": "node ./scripts/translations/synchronize.mjs",
-    "translations:validate": "node ./scripts/translations/synchronize.mjs --validate-only",
-    "translations:move": "node ./scripts/translations/move.mjs",
     "dll:build": "node scripts/dll/build-dlls.mjs",
     "build:dist": "node scripts/nim/build-ckeditor5.mjs",
     "release:prepare-changelog": "node ./scripts/release/preparechangelog.mjs",
@@ -134,17 +128,6 @@
     "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run",
     "test:memory": "node ./scripts/memory/test-memory.mjs",
     "validate-license-files": "node ./scripts/ci/validate-license-files.mjs"
-  },
-  "lint-staged": {
-    "**/*": [
-      "eslint --quiet"
-    ],
-    "packages/**/*.css": [
-      "stylelint --quiet --allow-empty-input"
-    ],
-    "docs/**/*.css": [
-      "stylelint --quiet --allow-empty-input"
-    ]
   },
   "ck-lts-versions": [
     47
