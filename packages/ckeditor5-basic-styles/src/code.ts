@@ -11,8 +11,6 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { CodeEditing } from './code/codeediting.js';
 import { CodeUI } from './code/codeui.js';
 
-import '../theme/code.css';
-
 /**
  * The code feature.
  *

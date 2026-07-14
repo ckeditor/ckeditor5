@@ -19,8 +19,6 @@ import type { Model } from '@ckeditor/ckeditor5-engine';
 import { ColorGridsFragmentView } from './colorgridsfragmentview.js';
 import { ColorPickerFragmentView } from './colorpickerfragmentview.js';
 
-import '../../theme/components/colorselector/colorselector.css';
-
 /**
  * The configurable color selector view class. It allows users to select colors from a predefined set of colors as well as from
  * a color picker.

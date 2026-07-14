@@ -26,9 +26,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { IconNextArrow, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
-import '../../../theme/components/panel/balloonrotator.css';
-import '../../../theme/components/panel/fakepanel.css';
-
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**

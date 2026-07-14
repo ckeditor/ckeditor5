@@ -64,4 +64,5 @@ export type {
 	LinkDecoratorManualDefinition
 } from './linkconfig.js';
 
+import '../theme/index.css';
 import './augmentation.js';

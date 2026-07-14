@@ -18,8 +18,6 @@ import { View } from '../view.js';
 import { ViewCollection } from '../viewcollection.js';
 import { FocusCycler, type FocusableView } from '../focuscycler.js';
 
-import '../../theme/components/dialog/dialogactions.css';
-
 /**
  * A dialog actions view class. It contains button views which are used to execute dialog actions.
  */

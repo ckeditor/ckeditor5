@@ -7,8 +7,6 @@
  * @module engine/view/placeholder
  */
 
-import '../../theme/placeholder.css';
-
 import { type ViewDocument } from './document.js';
 import { type ViewDowncastWriter } from './downcastwriter.js';
 import { type ViewEditableElement } from './editableelement.js';

@@ -42,4 +42,5 @@ export { StyleGridView as _StyleGridView } from './ui/stylegridview.js';
 export { StyleGroupView as _StyleGroupView } from './ui/stylegroupview.js';
 export { StylePanelView as _StylePanelView } from './ui/stylepanelview.js';
 
+import '../theme/index.css';
 import './augmentation.js';

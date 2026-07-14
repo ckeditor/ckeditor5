@@ -11,8 +11,6 @@ import { View, ButtonView, addKeyboardHandlingForGrid, type ViewCollection } fro
 
 import { KeystrokeHandler, FocusTracker, type Locale } from '@ckeditor/ckeditor5-utils';
 
-import './../../theme/inserttable.css';
-
 /**
  * The table size view.
  *

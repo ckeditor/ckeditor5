@@ -18,4 +18,5 @@ export type { HeadingConfig, HeadingParagraphOption } from './headingconfig.js';
 
 export { getLocalizedOptions as _getLocalizedHeadingOptions } from './utils.js';
 
+import '../theme/index.css';
 import './augmentation.js';

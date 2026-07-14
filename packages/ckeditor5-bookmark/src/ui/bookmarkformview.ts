@@ -27,8 +27,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
-import '../../theme/bookmarkform.css';
-
 /**
  * The bookmark form view controller class.
  *

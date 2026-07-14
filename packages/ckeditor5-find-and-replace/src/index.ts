@@ -38,4 +38,5 @@ export {
 	type FindCallbackResult
 } from './findandreplacestate.js';
 
+import '../theme/index.css';
 import './augmentation.js';

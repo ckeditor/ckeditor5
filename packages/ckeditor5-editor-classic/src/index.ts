@@ -10,3 +10,5 @@
 export { ClassicEditor } from './classiceditor.js';
 export { ClassicEditorUI } from './classiceditorui.js';
 export { ClassicEditorUIView } from './classiceditoruiview.js';
+
+import '../theme/index.css';

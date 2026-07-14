@@ -12,4 +12,5 @@ export { ShowBlocksCommand } from './showblockscommand.js';
 export { ShowBlocksEditing } from './showblocksediting.js';
 export { ShowBlocksUI } from './showblocksui.js';
 
+import '../theme/index.css';
 import './augmentation.js';

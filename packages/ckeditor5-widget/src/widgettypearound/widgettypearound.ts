@@ -67,8 +67,6 @@ import { type Widget } from '../widget.js';
 
 // @if CK_DEBUG_TYPING // import { _buildLogMessage } from '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js';
 
-import '../../theme/widgettypearound.css';
-
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ] as const;
 
 // Do the SVG parsing once and then clone the result <svg> DOM element for each new button.

@@ -30,4 +30,5 @@ export {
 	_toMentionAttribute as _toMentionAttribute
 } from './mentionediting.js';
 
+import '../theme/index.css';
 import './augmentation.js';

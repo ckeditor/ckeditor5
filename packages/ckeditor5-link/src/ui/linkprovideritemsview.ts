@@ -26,8 +26,6 @@ import {
 
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
-import '../../theme/linkprovideritems.css';
-
 /**
  * The link provider items view.
  */

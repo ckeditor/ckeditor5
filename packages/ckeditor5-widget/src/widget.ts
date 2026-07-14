@@ -53,8 +53,6 @@ import { getClosestTypeAroundDomButton, getTypeAroundFakeCaretPosition } from '.
 import { verticalWidgetNavigationHandler } from './verticalnavigation.js';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils.js';
 
-import '../theme/widget.css';
-
 /**
  * The widget plugin. It enables base support for widgets.
  *

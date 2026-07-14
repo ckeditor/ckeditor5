@@ -17,8 +17,6 @@ import { TableClipboard } from './tableclipboard.js';
 import { TableKeyboard } from './tablekeyboard.js';
 import { TableMouse } from './tablemouse.js';
 
-import '../theme/table.css';
-
 /**
  * The table plugin.
  *

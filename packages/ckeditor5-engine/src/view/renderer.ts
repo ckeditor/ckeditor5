@@ -36,8 +36,6 @@ import { type ViewNode } from './node.js';
 
 // @if CK_DEBUG_TYPING // import { _buildLogMessage } from '../dev-utils/utils.js';
 
-import '../../theme/renderer.css';
-
 type DomText = globalThis.Text;
 type DomNode = globalThis.Node;
 type DomDocument = globalThis.Document;

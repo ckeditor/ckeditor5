@@ -25,8 +25,6 @@ import type { ParagraphCommand } from '@ckeditor/ckeditor5-paragraph';
 import { getLocalizedOptions } from './utils.js';
 import { type HeadingCommand } from './headingcommand.js';
 
-import '../theme/heading.css';
-
 /**
  * The headings UI feature. It introduces the `headings` dropdown.
  */

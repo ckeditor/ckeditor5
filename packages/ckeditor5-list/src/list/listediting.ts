@@ -73,9 +73,6 @@ import {
 	type ClipboardOutputTransformationEvent
 } from '@ckeditor/ckeditor5-clipboard';
 
-import '../../theme/documentlist.css';
-import '../../theme/list.css';
-
 /**
  * A list of base list model attributes.
  */

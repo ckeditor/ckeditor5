@@ -83,4 +83,5 @@ export {
 	type EditorUsageData as _EditorUsageData
 } from './editor/utils/editorusagedata.js';
 
+import '../theme/index.css';
 import './augmentation.js';

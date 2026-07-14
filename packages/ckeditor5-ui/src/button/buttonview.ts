@@ -25,8 +25,6 @@ import {
 	type DelayedFunc
 } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/button/button.css';
-
 /**
  * The button view class.
  *

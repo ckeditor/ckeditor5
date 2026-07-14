@@ -15,8 +15,6 @@ import { utils } from './utils.js';
 import type { ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';
 import { type ImageStyleCommand } from './imagestylecommand.js';
 
-import '../../theme/imagestyle.css';
-
 /**
  * The image style UI plugin.
  *

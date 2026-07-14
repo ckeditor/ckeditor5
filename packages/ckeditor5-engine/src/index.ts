@@ -527,3 +527,5 @@ export {
 } from './view/matcher.js';
 
 export { injectUiElementHandling as _injectViewUIElementHandling } from './view/uielement.js';
+
+import '../theme/index.css';

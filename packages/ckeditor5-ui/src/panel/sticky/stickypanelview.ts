@@ -26,8 +26,6 @@ import {
 // @if CK_DEBUG_STICKYPANEL // 	diagonalStylesBlack
 // @if CK_DEBUG_STICKYPANEL // } from '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer.js';
 
-import '../../../theme/components/panel/stickypanel.css';
-
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**

@@ -47,4 +47,5 @@ export {
 	isTypeAroundWidget
 } from './widgettypearound/utils.js';
 
+import '../theme/index.css';
 import './augmentation.js';

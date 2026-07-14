@@ -14,8 +14,6 @@ import { ImageTextAlternative } from './imagetextalternative.js';
 import { ImageInlineEditing } from './image/imageinlineediting.js';
 import { ImageInsertUI } from './imageinsert/imageinsertui.js';
 
-import '../theme/image.css';
-
 /**
  * The image inline plugin.
  *

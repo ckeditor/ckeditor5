@@ -24,8 +24,6 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/colorgrid/colorgrid.css';
-
 /**
  * A grid of {@link module:ui/colorgrid/colortileview~ColorTileView color tiles}.
  */

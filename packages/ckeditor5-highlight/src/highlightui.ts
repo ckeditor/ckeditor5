@@ -26,8 +26,6 @@ import {
 import type { HighlightOption } from './highlightconfig.js';
 import { type HighlightCommand } from './highlightcommand.js';
 
-import './../theme/highlight.css';
-
 /**
  * The default highlight UI plugin. It introduces:
  *

@@ -35,4 +35,5 @@ export {
 	getTextNodeAtLineStart as _getCodeBlockTextNodeAtLineStart
 } from './utils.js';
 
+import '../theme/index.css';
 import './augmentation.js';

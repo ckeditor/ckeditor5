@@ -24,7 +24,6 @@ import { Collection } from '@ckeditor/ckeditor5-utils';
 import { normalizeOptions } from './utils.js';
 import { FONT_SIZE } from '../utils.js';
 
-import '../../theme/fontsize.css';
 import type { FontSizeOption } from '../fontconfig.js';
 import { type FontSizeCommand } from './fontsizecommand.js';
 

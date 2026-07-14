@@ -11,8 +11,6 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { LinkImageEditing } from './linkimageediting.js';
 import { LinkImageUI } from './linkimageui.js';
 
-import '../theme/linkimage.css';
-
 /**
  * The `LinkImage` plugin.
  *

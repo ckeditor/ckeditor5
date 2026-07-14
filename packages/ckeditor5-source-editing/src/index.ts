@@ -10,4 +10,5 @@
 export { SourceEditing } from './sourceediting.js';
 export type { SourceEditingConfig } from './sourceeditingconfig.js';
 
+import '../theme/index.css';
 import './augmentation.js';

@@ -11,8 +11,6 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ImageBlock } from './imageblock.js';
 import { ImageInline } from './imageinline.js';
 
-import '../theme/image.css';
-
 /**
  * The image plugin.
  *

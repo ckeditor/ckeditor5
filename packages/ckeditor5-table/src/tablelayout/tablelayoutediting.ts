@@ -24,8 +24,6 @@ import { TableTypeCommand } from './commands/tabletypecommand.js';
 import { createEmptyTableCell } from '../utils/common.js';
 import type { TableType } from '../tableconfig.js';
 
-import '../../theme/tablelayout.css';
-
 const TABLE_TYPES: Array<TableType> = [ 'content', 'layout' ];
 
 /**

@@ -52,8 +52,6 @@ import {
 	LINK_KEYSTROKE
 } from './utils.js';
 
-import '../theme/linktoolbar.css';
-
 const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
 /**

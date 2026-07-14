@@ -16,8 +16,6 @@ import {
 } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/mediaform.css';
-
 /**
  * The media form view controller class.
  *

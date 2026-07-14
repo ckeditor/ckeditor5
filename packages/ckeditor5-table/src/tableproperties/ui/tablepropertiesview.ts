@@ -47,10 +47,6 @@ import {
 import { type ColorInputView } from '../../ui/colorinputview.js';
 import type { TablePropertiesOptions } from '../../tableconfig.js';
 
-import '../../../theme/formrow.css';
-import '../../../theme/tableform.css';
-import '../../../theme/tableproperties.css';
-
 /**
  * Additional configuration of the view.
  */

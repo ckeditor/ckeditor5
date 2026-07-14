@@ -23,8 +23,6 @@ import {
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
-import '../../../theme/textalternativeform.css';
-
 /**
  * The TextAlternativeFormView class.
  *

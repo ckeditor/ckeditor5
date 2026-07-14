@@ -213,4 +213,5 @@ export {
 	getTableWidgetAncestor as _getTableWidgetAncestor
 } from './utils/ui/widget.js';
 
+import '../theme/index.css';
 import './augmentation.js';

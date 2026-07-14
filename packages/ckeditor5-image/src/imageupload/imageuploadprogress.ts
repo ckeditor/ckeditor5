@@ -10,9 +10,6 @@
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import { FileRepository, type FileLoader } from '@ckeditor/ckeditor5-upload';
 
-import '../../theme/imageuploadprogress.css';
-import '../../theme/imageuploadicon.css';
-import '../../theme/imageuploadloader.css';
 import type { GetCallback } from '@ckeditor/ckeditor5-utils';
 import type {
 	ViewDowncastWriter,

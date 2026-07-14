@@ -29,8 +29,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { IconPreviousArrow, IconSettings } from '@ckeditor/ckeditor5-icons';
 
-import '../../theme/linkform.css';
-
 /**
  * The link form view.
  */

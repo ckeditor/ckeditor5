@@ -11,8 +11,6 @@ import { View } from '../view.js';
 
 import { CKEditorError, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/icon/icon.css';
-
 /**
  * The icon view class.
  */

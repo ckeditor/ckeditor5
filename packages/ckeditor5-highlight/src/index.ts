@@ -13,4 +13,5 @@ export { HighlightUI } from './highlightui.js';
 export { HighlightCommand } from './highlightcommand.js';
 export type { HighlightOption, HighlightConfig } from './highlightconfig.js';
 
+import '../theme/index.css';
 import './augmentation.js';

@@ -4,7 +4,7 @@
  */
 
 import { basename, dirname, resolve } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { availableParallelism } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, mergeConfig, type ViteUserConfig } from 'vitest/config';
@@ -89,7 +89,15 @@ export function createVitestConfig( packageDir: string, options: PackageTestOpti
 					'**/manual'
 				],
 				setupFiles: [
-					resolve( REPO_ROOT, 'scripts', 'vitest', 'test_setup.mjs' )
+					resolve( REPO_ROOT, 'scripts', 'vitest', 'test_setup.mjs' ),
+
+					// Package stylesheets are imported by the package entry module (`src/index.ts`),
+					// not by individual source modules. Tests import source modules directly, so the
+					// package theme entry stylesheet must be loaded explicitly. Stylesheets of other
+					// packages still arrive transitively through their `@ckeditor/*` entry imports.
+					...existsSync( resolve( packageDir, 'theme', 'index.css' ) ) ?
+						[ resolve( packageDir, 'theme', 'index.css' ) ] :
+						[]
 				],
 				testTimeout: 5_000,
 

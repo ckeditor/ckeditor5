@@ -13,8 +13,6 @@ import { IconView } from '../icon/iconview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/formheader/formheader.css';
-
 /**
  * The class component representing a form header view. It should be used in more advanced forms to
  * describe the main purpose of the form.

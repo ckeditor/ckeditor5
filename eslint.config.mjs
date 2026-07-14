@@ -230,6 +230,7 @@ export default defineConfig( [
 			'ckeditor5-rules/validate-module-tag': 'error',
 			'ckeditor5-rules/no-default-export': 'error',
 			'ckeditor5-rules/allow-svg-imports-only-in-icons-package': 'error',
+			'ckeditor5-rules/allow-css-imports-only-in-main-package-entry-point': 'error',
 			'ckeditor5-rules/no-literal-dollar-root': [ 'error', {
 				allowedPackages: [ 'ckeditor5-engine', 'ckeditor5-core' ],
 				allowedCalls: [ 'is' ]

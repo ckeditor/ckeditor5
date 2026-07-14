@@ -20,8 +20,6 @@ import {
 
 // @if CK_DEBUG_MINIMAP // import { RectDrawer } from '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer.js';
 
-import '../theme/minimap.css';
-
 /**
  * The content minimap feature.
  */

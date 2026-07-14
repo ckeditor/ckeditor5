@@ -27,8 +27,6 @@ import type { FindResultType } from './findandreplace.js';
 
 import { debounce } from 'es-toolkit/compat';
 
-import '../theme/findandreplace.css';
-
 const HIGHLIGHT_CLASS = 'ck-find-result_selected';
 
 /**

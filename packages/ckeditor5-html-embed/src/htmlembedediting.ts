@@ -16,8 +16,6 @@ import { IconCancel, IconCheck, IconPencil } from '@ckeditor/ckeditor5-icons';
 import type { HtmlEmbedConfig } from './htmlembedconfig.js';
 import { HtmlEmbedCommand } from './htmlembedcommand.js';
 
-import '../theme/htmlembed.css';
-
 /**
  * The HTML embed editing feature.
  */

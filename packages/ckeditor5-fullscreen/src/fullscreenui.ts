@@ -13,7 +13,6 @@ import { IconFullscreenEnter, IconFullscreenLeave } from '@ckeditor/ckeditor5-ic
 import { env } from '@ckeditor/ckeditor5-utils';
 
 import { FullscreenEditing } from './fullscreenediting.js';
-import '../theme/fullscreen.css';
 
 const COMMAND_NAME = 'toggleFullscreen';
 

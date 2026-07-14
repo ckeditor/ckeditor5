@@ -15,4 +15,5 @@ export type { HtmlEmbedConfig, HtmlEmbedSanitizeOutput } from './htmlembedconfig
 
 export type { RawHtmlApi as _RawHtmlEmbedApi } from './htmlembedediting.js';
 
+import '../theme/index.css';
 import './augmentation.js';

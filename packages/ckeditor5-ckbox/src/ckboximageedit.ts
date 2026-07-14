@@ -12,8 +12,6 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { CKBoxImageEditEditing } from './ckboximageedit/ckboximageeditediting.js';
 import { CKBoxImageEditUI } from './ckboximageedit/ckboximageeditui.js';
 
-import '../theme/ckboximageedit.css';
-
 /**
  * The CKBox image edit feature.
  */

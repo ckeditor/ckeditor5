@@ -11,8 +11,6 @@ import { ButtonView } from '../../button/buttonview.js';
 
 import { toUnit, type Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../../theme/components/toolbar/blocktoolbar.css';
-
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**

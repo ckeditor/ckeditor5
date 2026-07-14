@@ -55,10 +55,6 @@ import { type ColorInputView } from '../../ui/colorinputview.js';
 import type { TableCellPropertiesOptions } from '../../tableconfig.js';
 import type { TableCellType } from '../tablecellpropertiesutils.js';
 
-import '../../../theme/formrow.css';
-import '../../../theme/tableform.css';
-import '../../../theme/tablecellproperties.css';
-
 export interface TableCellPropertiesViewOptions {
 	borderColors: Array<NormalizedColorOption>;
 	backgroundColors: Array<NormalizedColorOption>;

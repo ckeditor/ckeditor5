@@ -135,4 +135,5 @@ export {
 	isLocalImage as _isLocalImage
 } from './imageupload/utils.js';
 
+import '../theme/index.css';
 import './augmentation.js';

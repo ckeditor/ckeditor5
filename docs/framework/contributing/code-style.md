@@ -1128,6 +1128,10 @@ The `isFooPlugin` flag is required and set to `true`, and the `isBarPlugin` flag
 
 This rule ensures that SVG files are imported and exported only in the `@ckeditor/ckeditor5-icons` package. This package should include all icons used in CKEditor&nbsp;5.
 
+### CSS imports only in the main package entry point
+
+This rule ensures that CSS files are imported only in the main package entry point (`src/index.ts`). Each package imports its stylesheets through a single `theme/index.css` entry point, which lists all stylesheets from the package `theme` directory. Individual source modules must not import CSS files.
+
 ### Valid changelog entries
 
 This rule ensures that changelog entry files are populated with proper data and a clear description of the change. For a full guide on how to populate changelog entries, see the {@link framework/contributing/changelog-entries Changelog entries} guide.

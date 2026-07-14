@@ -28,4 +28,5 @@ export {
 	getScrollable as _getMinimapScrollable
 } from './utils.js';
 
+import '../theme/index.css';
 import './augmentation.js';

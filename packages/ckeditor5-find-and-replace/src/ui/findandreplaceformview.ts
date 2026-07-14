@@ -34,8 +34,6 @@ import {
 
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
-import '../../theme/findandreplaceform.css';
-
 /**
  * The find and replace form view class.
  *

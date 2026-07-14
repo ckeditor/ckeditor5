@@ -11,8 +11,6 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
 import { TableCellWidthEditing } from './tablecellwidth/tablecellwidthediting.js';
 
-import '../theme/tablecolumnresize.css';
-
 /**
  * The table column resize feature.
  *

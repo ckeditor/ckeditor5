@@ -36,6 +36,7 @@
   },
   "sideEffects": [
     "*.css",
+    "src/index.ts",
     "dist/translations/*.umd.js"
   ],
   "dependencies": {

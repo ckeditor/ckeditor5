@@ -10,8 +10,6 @@
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import { ListItemButtonView } from '../button/listitembuttonview.js';
 
-import '../../theme/components/menubar/menubarmenulistitembutton.css';
-
 /**
  * A menu bar list button view. Buttons like this one execute user actions.
  */

@@ -27,8 +27,6 @@ import type {
 import { InsertBookmarkCommand } from './insertbookmarkcommand.js';
 import { UpdateBookmarkCommand } from './updatebookmarkcommand.js';
 
-import '../theme/bookmark.css';
-
 /**
  * The bookmark editing plugin.
  */

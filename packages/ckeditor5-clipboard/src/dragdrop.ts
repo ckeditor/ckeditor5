@@ -60,8 +60,6 @@ import {
 import { DragDropTarget } from './dragdroptarget.js';
 import { DragDropBlockToolbar } from './dragdropblocktoolbar.js';
 
-import '../theme/clipboard.css';
-
 // Drag and drop events overview:
 //
 //                ┌──────────────────┐

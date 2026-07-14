@@ -32,4 +32,5 @@ export { AttributeCommand } from './attributecommand.js';
 
 export { getButtonCreator as _getBasicStylesButtonCreator } from './utils.js';
 
+import '../theme/index.css';
 import './augmentation.js';

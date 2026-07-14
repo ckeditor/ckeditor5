@@ -7,9 +7,6 @@
  * @module ui
  */
 
-// This import must be at the top to ensure that `index.css` is imported first
-export { View, type UIViewRenderEvent } from './view.js';
-
 export {
 	AriaLiveAnnouncerPoliteness,
 	AriaLiveAnnouncer,
@@ -272,6 +269,7 @@ export { BalloonToolbar, type BalloonToolbarShowEvent } from './toolbar/balloon/
 export { BlockToolbar } from './toolbar/block/blocktoolbar.js';
 export { BlockButtonView } from './toolbar/block/blockbuttonview.js';
 
+export { View, type UIViewRenderEvent } from './view.js';
 export { ViewCollection } from './viewcollection.js';
 
 export {
@@ -325,4 +323,5 @@ export { type RenderData as _TemplateRenderData } from './template.js';
 export { NESTED_TOOLBAR_ICONS } from './toolbar/toolbarview.js';
 export { type ToolbarBehavior as _ToolbarBehavior } from './toolbar/toolbarview.js';
 
+import '../theme/index.css';
 import './augmentation.js';

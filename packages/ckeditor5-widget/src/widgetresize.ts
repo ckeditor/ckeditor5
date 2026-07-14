@@ -42,8 +42,6 @@ import {
 
 import { throttle } from 'es-toolkit/compat';
 
-import '../theme/widgetresize.css';
-
 /**
  * The widget resize feature plugin.
  *

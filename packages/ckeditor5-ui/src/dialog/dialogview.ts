@@ -40,7 +40,6 @@ import { DialogActionsView, type DialogActionButtonDefinition } from './dialogac
 import { DialogContentView } from './dialogcontentview.js';
 import { type EditorUI } from '../editorui/editorui.js';
 
-import '../../theme/components/dialog/dialog.css';
 import type { DialogPositionCallback } from './dialog.js';
 // @if CK_DEBUG_DIALOG // import { RectDrawer } from '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer.js';
 

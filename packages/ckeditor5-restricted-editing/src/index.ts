@@ -48,4 +48,5 @@ export {
 	isSelectionInMarker as _isRestrictedEditingSelectionInMarker
 } from './restrictededitingmode/utils.js';
 
+import '../theme/index.css';
 import './augmentation.js';

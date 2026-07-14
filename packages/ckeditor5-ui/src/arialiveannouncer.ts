@@ -13,8 +13,6 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 import { type ViewCollection } from './viewcollection.js';
 import { View } from './view.js';
 
-import '../theme/components/arialiveannouncer/arialiveannouncer.css';
-
 /**
  * The politeness level of an `aria-live` announcement.
  *
