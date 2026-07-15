@@ -20,6 +20,7 @@ import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
 import { type Operation } from './operation/operation.js';
 import { type SplitOperation } from './operation/splitoperation.js';
+import { type DetachOperation } from './operation/detachoperation.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
@@ -497,6 +498,8 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 				return [ this._getTransformedBySplitOperation( operation as SplitOperation ) ];
 			case 'merge':
 				return [ this._getTransformedByMergeOperation( operation as MergeOperation ) ];
+			case 'detach':
+				return this._getTransformedByDetachOperation( operation as DetachOperation );
 		}
 
 		return [ new ModelRange( this.start, this.end ) ];
@@ -716,6 +719,19 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 		}
 
 		return new ModelRange( start, end );
+	}
+
+	/**
+	 * Returns a result of transforming a copy of this range by detach operation.
+	 *
+	 * If the range is completely removed, an empty array is returned.
+	 *
+	 * @internal
+	 */
+	public _getTransformedByDetachOperation( operation: DetachOperation ): Array<ModelRange> {
+		const result = this._getTransformedByDeletion( operation.sourcePosition, operation.howMany );
+
+		return result ? [ result ] : [];
 	}
 
 	/**

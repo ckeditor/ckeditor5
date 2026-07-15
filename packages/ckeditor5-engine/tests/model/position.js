@@ -22,6 +22,7 @@ import { MoveOperation } from '../../src/model/operation/moveoperation.js';
 import { RenameOperation } from '../../src/model/operation/renameoperation.js';
 import { MergeOperation } from '../../src/model/operation/mergeoperation.js';
 import { SplitOperation } from '../../src/model/operation/splitoperation.js';
+import { DetachOperation } from '../../src/model/operation/detachoperation.js';
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ModelLivePosition } from '../../src/model/liveposition.js';
@@ -1037,6 +1038,52 @@ describe( 'Position', () => {
 				const transformed = pos.getTransformedByOperation( op );
 
 				expect( transformed.path ).toEqual( [ 3, 7 ] );
+			} );
+		} );
+
+		describe( 'by DetachOperation', () => {
+			it( 'should use _getTransformedByDetachOperation', () => {
+				vi.spyOn( pos, '_getTransformedByDetachOperation' );
+
+				const op = new DetachOperation( new ModelPosition( root, [ 3, 0 ] ), 1 );
+				pos.getTransformedByOperation( op );
+
+				expect( pos._getTransformedByDetachOperation ).toHaveBeenCalledWith( op );
+			} );
+
+			it( 'should decrement offset when nodes are detached from before the position', () => {
+				const op = new DetachOperation( new ModelPosition( root, [ 3, 0 ] ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).toEqual( [ 3, 1 ] );
+			} );
+
+			it( 'should decrement path index when a node is detached from before an ancestor', () => {
+				const op = new DetachOperation( new ModelPosition( root, [ 1 ] ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).toEqual( [ 2, 2 ] );
+			} );
+
+			it( 'should not change when nodes are detached from after the position', () => {
+				const op = new DetachOperation( new ModelPosition( root, [ 3, 3 ] ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).toEqual( [ 3, 2 ] );
+			} );
+
+			it( 'should not change when nodes are detached from a different root', () => {
+				const op = new DetachOperation( new ModelPosition( otherRoot, [ 0 ] ), 3 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).toEqual( [ 3, 2 ] );
+			} );
+
+			it( 'should fall back to the detach source position when the position is inside the detached range', () => {
+				const op = new DetachOperation( new ModelPosition( root, [ 3, 0 ] ), 5 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).toEqual( [ 3, 0 ] );
 			} );
 		} );
 	} );

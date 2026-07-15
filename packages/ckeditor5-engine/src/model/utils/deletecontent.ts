@@ -11,7 +11,7 @@ import { ModelDocumentSelection } from '../documentselection.js';
 import { ModelLivePosition } from '../liveposition.js';
 import { ModelRange } from '../range.js';
 
-import { type ModelDocumentFragment } from '../documentfragment.js';
+import { ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
 import { type ModelPosition } from '../position.js';
@@ -127,7 +127,10 @@ export function deleteContent(
 		// Get the live positions for the range adjusted to span only blocks selected from the user perspective.
 		let startPosition, endPosition;
 
-		if ( !options.doNotFixSelection ) {
+		if ( selRange.root instanceof ModelDocumentFragment ) {
+			startPosition = ModelLivePosition._fromPositionInDocumentFragment( selRange.start, model, 'toPrevious' );
+			endPosition = ModelLivePosition._fromPositionInDocumentFragment( selRange.end, model, 'toNext' );
+		} else if ( !options.doNotFixSelection ) {
 			[ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
 		} else {
 			startPosition = ModelLivePosition.fromPosition( selRange.start, 'toPrevious' );

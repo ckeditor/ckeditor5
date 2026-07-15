@@ -6,13 +6,16 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
 import { ModelRange } from '../../src/model/range.js';
 import { ModelText } from '../../src/model/text.js';
 import { MoveOperation } from '../../src/model/operation/moveoperation.js';
 import { MergeOperation } from '../../src/model/operation/mergeoperation.js';
+import { DetachOperation } from '../../src/model/operation/detachoperation.js';
 import { _stringifyModel, _setModelData } from '../../src/dev-utils/model.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'LiveRange', () => {
 	let model, doc, root, ul, p;
@@ -66,6 +69,23 @@ describe( 'LiveRange', () => {
 		expect( spy ).toHaveBeenCalled();
 
 		spy.mockRestore();
+	} );
+
+	it( 'should throw if given root is not a ModelRootElement and no model is provided', () => {
+		const docFrag = new ModelDocumentFragment( [ new ModelElement( 'paragraph', [], new ModelText( 'abc' ) ) ] );
+
+		expectToThrowCKEditorError( () => {
+			new ModelLiveRange( new ModelPosition( docFrag, [ 0 ] ), new ModelPosition( docFrag, [ 1 ] ) ); // eslint-disable-line no-new
+		}, /model-liverange-no-model-reference/, docFrag );
+	} );
+
+	it( 'should not throw if given root is not a ModelRootElement but a model is provided', () => {
+		const docFrag = new ModelDocumentFragment( [ new ModelElement( 'paragraph', [], new ModelText( 'abc' ) ) ] );
+
+		expect( () => {
+			const live = new ModelLiveRange( new ModelPosition( docFrag, [ 0 ] ), new ModelPosition( docFrag, [ 1 ] ), model );
+			live.detach();
+		} ).not.toThrow();
 	} );
 
 	it( '_createIn should return ModelLiveRange', () => {
@@ -204,6 +224,162 @@ describe( 'LiveRange', () => {
 			expect( live.is( 'model:node' ) ).toBe( false );
 			expect( live.is( '$text' ) ).toBe( false );
 			expect( live.is( 'element', 'paragraph' ) ).toBe( false );
+		} );
+	} );
+
+	describe( '_fromRangeInDocumentFragment()', () => {
+		let docFrag, el1, el2;
+
+		beforeEach( () => {
+			el1 = new ModelElement( 'paragraph', [], new ModelText( 'abc' ) );
+			el2 = new ModelElement( 'paragraph', [], new ModelText( 'xyz' ) );
+			docFrag = new ModelDocumentFragment( [ el1, el2 ] );
+		} );
+
+		it( 'should return a ModelLiveRange', () => {
+			const live = ModelLiveRange._fromRangeInDocumentFragment(
+				new ModelRange( new ModelPosition( docFrag, [ 0 ] ), new ModelPosition( docFrag, [ 2 ] ) ),
+				model
+			);
+
+			expect( live ).toBeInstanceOf( ModelLiveRange );
+			expect( live.root ).toBe( docFrag );
+			expect( live.start.path ).toEqual( [ 0 ] );
+			expect( live.end.path ).toEqual( [ 2 ] );
+
+			live.detach();
+		} );
+
+		it( 'should listen to the provided model applyOperation event', () => {
+			const spy = vi.spyOn( ModelLiveRange.prototype, 'listenTo' );
+
+			const live = ModelLiveRange._fromRangeInDocumentFragment(
+				new ModelRange( new ModelPosition( docFrag, [ 0 ] ), new ModelPosition( docFrag, [ 2 ] ) ),
+				model
+			);
+
+			expect( spy ).toHaveBeenCalledWith( model, 'applyOperation', expect.any( Function ), expect.any( Object ) );
+
+			live.detach();
+			spy.mockRestore();
+		} );
+
+		it( 'should get transformed when content is detached from before the range', () => {
+			const live = ModelLiveRange._fromRangeInDocumentFragment(
+				new ModelRange( new ModelPosition( docFrag, [ 1 ] ), new ModelPosition( docFrag, [ 2 ] ) ),
+				model
+			);
+			const spy = vi.fn();
+			live.on( 'change:range', spy );
+
+			model.applyOperation( new DetachOperation( ModelPosition._createBefore( el1 ), 1 ) );
+
+			expect( live.start.path ).toEqual( [ 0 ] );
+			expect( live.end.path ).toEqual( [ 1 ] );
+			expect( spy ).toHaveBeenCalledOnce();
+
+			live.detach();
+		} );
+
+		it( 'should get transformed even though the operation is not a document operation', () => {
+			const live = ModelLiveRange._fromRangeInDocumentFragment(
+				new ModelRange( new ModelPosition( docFrag, [ 1, 1 ] ), new ModelPosition( docFrag, [ 1, 2 ] ) ),
+				model
+			);
+
+			const op = new DetachOperation( new ModelPosition( docFrag, [ 1, 0 ] ), 1 );
+
+			expect( op.isDocumentOperation ).toBe( false );
+
+			model.applyOperation( op );
+
+			expect( live.start.path ).toEqual( [ 1, 0 ] );
+			expect( live.end.path ).toEqual( [ 1, 1 ] );
+
+			live.detach();
+		} );
+
+		it( 'should fire change:drop and collapse at deletionPosition when the whole range is removed', () => {
+			const live = ModelLiveRange._fromRangeInDocumentFragment(
+				new ModelRange( new ModelPosition( docFrag, [ 0, 1 ] ), new ModelPosition( docFrag, [ 0, 2 ] ) ),
+				model
+			);
+			const dropSpy = vi.fn();
+			const rangeSpy = vi.fn();
+			live.on( 'change:drop', dropSpy );
+			live.on( 'change:range', rangeSpy );
+
+			const sourcePosition = ModelPosition._createBefore( el1 );
+
+			model.applyOperation( new DetachOperation( sourcePosition, 1 ) );
+
+			expect( dropSpy ).toHaveBeenCalledOnce();
+			expect( rangeSpy ).not.toHaveBeenCalled();
+			expect( dropSpy.mock.calls[ 0 ][ 2 ].deletionPosition.isEqual( sourcePosition ) ).toBe( true );
+
+			// The event range and the live range itself are collapsed at the deletion position.
+			expect( dropSpy.mock.calls[ 0 ][ 1 ].isCollapsed ).toBe( true );
+			expect( dropSpy.mock.calls[ 0 ][ 1 ].start.isEqual( sourcePosition ) ).toBe( true );
+			expect( live.isCollapsed ).toBe( true );
+			expect( live.start.isEqual( sourcePosition ) ).toBe( true );
+
+			live.detach();
+		} );
+
+		it( 'should fire change:range when the range collapses but stays in the fragment', () => {
+			const live = ModelLiveRange._fromRangeInDocumentFragment(
+				new ModelRange( new ModelPosition( docFrag, [ 0, 0 ] ), new ModelPosition( docFrag, [ 0, 3 ] ) ),
+				model
+			);
+			const dropSpy = vi.fn();
+			const rangeSpy = vi.fn();
+			live.on( 'change:drop', dropSpy );
+			live.on( 'change:range', rangeSpy );
+
+			// Detach the whole content of the first paragraph. The range shrinks to a collapsed range at [ 0, 0 ]
+			// but is not removed from the fragment.
+			model.applyOperation( new DetachOperation( new ModelPosition( docFrag, [ 0, 0 ] ), 3 ) );
+
+			expect( dropSpy ).not.toHaveBeenCalled();
+			expect( rangeSpy ).toHaveBeenCalledOnce();
+			expect( rangeSpy.mock.calls[ 0 ][ 2 ].deletionPosition ).toBeNull();
+			expect( live.isCollapsed ).toBe( true );
+			expect( live.start.path ).toEqual( [ 0, 0 ] );
+
+			live.detach();
+		} );
+
+		it( 'should not get transformed by an operation applied in a different root', () => {
+			const live = ModelLiveRange._fromRangeInDocumentFragment(
+				new ModelRange( new ModelPosition( docFrag, [ 0 ] ), new ModelPosition( docFrag, [ 2 ] ) ),
+				model
+			);
+			const spy = vi.fn();
+			live.on( 'change', spy );
+
+			model.change( writer => {
+				writer.insertText( 'foo', new ModelPosition( root, [ 1 ] ) );
+			} );
+
+			expect( live.start.path ).toEqual( [ 0 ] );
+			expect( live.end.path ).toEqual( [ 2 ] );
+			expect( spy ).not.toHaveBeenCalled();
+
+			live.detach();
+		} );
+
+		it( 'should stop listening when detached', () => {
+			const spy = vi.spyOn( ModelLiveRange.prototype, 'stopListening' );
+
+			const live = ModelLiveRange._fromRangeInDocumentFragment(
+				new ModelRange( new ModelPosition( docFrag, [ 0 ] ), new ModelPosition( docFrag, [ 2 ] ) ),
+				model
+			);
+			live.detach();
+
+			expect( spy ).toHaveBeenCalled();
+
+			spy.mockRestore();
 		} );
 	} );
 

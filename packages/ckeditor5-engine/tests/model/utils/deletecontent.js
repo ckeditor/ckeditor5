@@ -10,8 +10,9 @@ import { ModelRange } from '../../../src/model/range.js';
 import { ModelSelection } from '../../../src/model/selection.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { ModelWriter } from '../../../src/model/writer.js';
+import { ModelLivePosition } from '../../../src/model/liveposition.js';
 import { deleteContent } from '../../../src/model/utils/deletecontent.js';
-import { _setModelData, _getModelData } from '../../../src/dev-utils/model.js';
+import { _setModelData, _getModelData, _parseModel, _stringifyModel } from '../../../src/dev-utils/model.js';
 import { _stringifyView } from '../../../src/dev-utils/view.js';
 
 describe( 'DataController utils', () => {
@@ -132,6 +133,70 @@ describe( 'DataController utils', () => {
 				'w[x<imageBlock></imageBlock>y]z',
 				'w[]z'
 			);
+		} );
+
+		describe( 'in a detached document fragment', () => {
+			beforeEach( () => {
+				model = new Model();
+				doc = model.document;
+				doc.createRoot();
+
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			} );
+
+			function parseFragment( data ) {
+				const { model: fragment, selection } = _parseModel( data, model.schema );
+
+				return { fragment, selection };
+			}
+
+			it( 'should delete content within a single block of a fragment', () => {
+				const { fragment, selection } = parseFragment(
+					'<paragraph>fo[ob]ar</paragraph><paragraph>baz</paragraph>'
+				);
+
+				deleteContent( model, selection );
+
+				expect( _stringifyModel( fragment, selection ) ).toBe(
+					'<paragraph>fo[]ar</paragraph><paragraph>baz</paragraph>'
+				);
+			} );
+
+			it( 'should merge blocks when deleting across elements of a fragment', () => {
+				const { fragment, selection } = parseFragment(
+					'<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>'
+				);
+
+				deleteContent( model, selection );
+
+				expect( _stringifyModel( fragment, selection ) ).toBe(
+					'<paragraph>fo[]ar</paragraph>'
+				);
+			} );
+
+			it( 'should keep the blocks unmerged when the `leaveUnmerged` option is set', () => {
+				const { fragment, selection } = parseFragment(
+					'<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>'
+				);
+
+				deleteContent( model, selection, { leaveUnmerged: true } );
+
+				expect( _stringifyModel( fragment, selection ) ).toBe(
+					'<paragraph>fo[]</paragraph><paragraph>ar</paragraph>'
+				);
+			} );
+
+			it( 'should use detached-root live positions for a fragment selection', () => {
+				const spy = vi.spyOn( ModelLivePosition, '_fromPositionInDocumentFragment' );
+
+				const { selection } = parseFragment(
+					'<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>'
+				);
+
+				deleteContent( model, selection );
+
+				expect( spy ).toHaveBeenCalledTimes( 2 );
+			} );
 		} );
 
 		describe( 'with text attributes', () => {
