@@ -6,10 +6,10 @@
  */
 
 /**
- * A minimal wrapper for running automated tests of the CKEditor 5 packages with pnpm.
+ * A minimal wrapper for running automated tests of the CKEditor 5 packages.
  *
- * It translates the shorthand package selection into pnpm filters and spawns pnpm with
- * inherited standard streams:
+ * It translates the shorthand package selection into pnpm filters and spawns the package
+ * scripts with inherited standard streams:
  *
  *   pnpm test                        # Run tests of all packages in `packages/`.
  *   pnpm test -f core                # Run tests of the `ckeditor5-core` package.
@@ -87,7 +87,9 @@ const filterArgs = filters.length ?
 
 // A selection matching no packages would otherwise succeed without running any tests
 // (e.g. for a package name with a typo), so it is verified before spawning the test runs.
-const selectedPackages = resolveSelectedPackages( filterArgs );
+const selectedProjects = resolveSelectedPackages( filterArgs );
+const selectedPackages = selectedProjects.map( project => project.name );
+const packageDirs = new Map( selectedProjects.map( project => [ project.name, project.path ] ) );
 
 if ( !selectedPackages.length ) {
 	console.error( `No packages match the selection (${ filterArgs.join( ' ' ) }). Check the "--filter" values for typos.` );
@@ -166,15 +168,18 @@ function resolveSelectedPackages( filterArgs ) {
 	}
 
 	return JSON.parse( result.stdout )
-		.map( project => project.name )
-		.sort();
+		.map( ( { name, path } ) => ( { name, path } ) )
+		.sort( ( a, b ) => a.name.localeCompare( b.name ) );
 }
 
 function runPackageWithRetries( packageName ) {
 	const script = AGGREGATE_PACKAGES.includes( packageName ) ? 'test' : packageScript;
 
+	const runArgs = [ '--run', script, ...( forwardedArgs.length ? [ '--', ...forwardedArgs ] : [] ) ];
+
 	for ( let attempt = 1; attempt <= attempts; attempt++ ) {
-		const result = spawnSync( 'pnpm', [ `--filter=${ packageName }`, 'run', script, ...forwardedArgs ], {
+		const result = spawnSync( 'node', runArgs, {
+			cwd: packageDirs.get( packageName ),
 			stdio: 'inherit',
 			shell: USE_SHELL
 		} );

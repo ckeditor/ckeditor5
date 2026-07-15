@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { basename, dirname, resolve } from 'node:path';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { availableParallelism } from 'node:os';
-import { fileURLToPath } from 'node:url';
+import { basename, resolve } from 'node:path';
 import { defineConfig, mergeConfig, type ViteUserConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
+import { rawSvgPlugin } from '@ckeditor/ckeditor5-dev-manual-server';
 import { NON_FULL_COVERAGE_PACKAGES } from './scripts/ci/constants.mjs';
+import { prebundleDependencies } from './scripts/vitest/prebundle-dependencies.js';
 
-const REPO_ROOT = dirname( fileURLToPath( import.meta.url ) );
 const CHROME_EXECUTABLE_PATH = process.env.PUPPETEER_EXECUTABLE_PATH;
 
 type TestOptions = NonNullable<ViteUserConfig[ 'test' ]>;
@@ -52,6 +52,9 @@ export interface PackageTestOptions extends TestOptions {
  * the default value of the `allowNonFullCoverage` option, which disables the 100% coverage
  * thresholds for packages listed in the repository's non-full-coverage policy.
  * Any other properties are merged into the `test` configuration as overrides.
+ *
+ * On CI (or on `CK_PREBUNDLE` request) the configuration also pre-bundles the tested
+ * package's CKEditor 5 dependencies.
  */
 export function createVitestConfig( packageDir: string, options: PackageTestOptions = {} ): ViteUserConfig {
 	const packageName = basename( packageDir );
@@ -89,7 +92,7 @@ export function createVitestConfig( packageDir: string, options: PackageTestOpti
 					'**/manual'
 				],
 				setupFiles: [
-					resolve( REPO_ROOT, 'scripts', 'vitest', 'test_setup.mjs' ),
+					resolve( import.meta.dirname, 'scripts', 'vitest', 'test_setup.mjs' ),
 
 					// Package stylesheets are imported by the package entry module (`src/index.ts`),
 					// not by individual source modules. Tests import source modules directly, so the
@@ -144,24 +147,24 @@ export function createVitestConfig( packageDir: string, options: PackageTestOpti
 				}
 			},
 
-			publicDir: resolve( REPO_ROOT, 'packages/ckeditor5-utils/tests/_assets' ),
+			publicDir: resolve( import.meta.dirname, 'packages', 'ckeditor5-utils', 'tests', '_assets' ),
 
 			optimizeDeps: {
-				include: [ '@vitest/coverage-v8/browser' ]
+				include: [ '@vitest/coverage-v8/browser' ],
+				// The dependency optimizer does not run the regular Vite plugins, so `.svg`
+				// imports inside pre-bundled dependencies need the extension registered
+				// (instead of being externalized as assets) and the plugin passed explicitly.
+				extensions: [ '.svg' ],
+				rolldownOptions: {
+					plugins: [
+						rawSvgPlugin()
+					]
+				}
 			},
 
 			plugins: [
-				{
-					name: 'load-svg',
-					enforce: 'pre',
-					load( id: string ) {
-						if ( id.endsWith( '.svg' ) ) {
-							const content = readFileSync( id, 'utf-8' );
-
-							return `export default ${ JSON.stringify( content ) };`;
-						}
-					}
-				}
+				prebundleDependencies( packageDir ),
+				rawSvgPlugin()
 			]
 		} ),
 		defineConfig( { test: testOverrides } )

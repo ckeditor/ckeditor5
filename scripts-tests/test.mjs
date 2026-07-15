@@ -207,17 +207,17 @@ describe( 'scripts/test', () => {
 
 	describe( 'retry mechanism (`--attempts`)', () => {
 		function stubPackages( packageResults ) {
-			vi.mocked( spawnSync ).mockImplementation( ( command, args ) => {
+			vi.mocked( spawnSync ).mockImplementation( ( command, args, options ) => {
 				if ( args.includes( 'ls' ) ) {
 					return {
 						status: 0,
 						stdout: JSON.stringify(
-							Object.keys( packageResults ).map( name => ( { name } ) )
+							Object.keys( packageResults ).map( name => ( { name, path: `/workspace/${ name }` } ) )
 						)
 					};
 				}
 
-				const packageName = args.find( arg => arg.startsWith( '--filter=' ) ).split( '=' )[ 1 ];
+				const packageName = Object.keys( packageResults ).find( name => options.cwd === `/workspace/${ name }` );
 				const results = packageResults[ packageName ];
 
 				return { status: results.shift() };
@@ -232,7 +232,7 @@ describe( 'scripts/test', () => {
 
 			await runScript( [ '--attempts', '2' ] );
 
-			// One `pnpm ls` call and one `pnpm run test` call per package.
+			// One `pnpm ls` call and one `node --run test` call per package.
 			expect( vi.mocked( spawnSync ) ).toHaveBeenCalledTimes( 3 );
 			expect( vi.mocked( spawn ) ).not.toHaveBeenCalled();
 			expect( processExitStub ).not.toHaveBeenCalled();
@@ -272,12 +272,12 @@ describe( 'scripts/test', () => {
 			await runScript( [ '--attempts', '2', '-c' ] );
 
 			const runCalls = vi.mocked( spawnSync ).mock.calls
-				.map( ( [ , args ] ) => args )
-				.filter( args => !args.includes( 'ls' ) );
+				.filter( ( [ , args ] ) => !args.includes( 'ls' ) )
+				.map( ( [ command, args, options ] ) => [ command, ...args, options.cwd ] );
 
 			expect( runCalls ).toEqual( [
-				[ '--filter=@ckeditor/ckeditor5-core', 'run', 'coverage' ],
-				[ '--filter=ckeditor5', 'run', 'test' ]
+				[ 'node', '--run', 'coverage', '/workspace/@ckeditor/ckeditor5-core' ],
+				[ 'node', '--run', 'test', '/workspace/ckeditor5' ]
 			] );
 		} );
 
