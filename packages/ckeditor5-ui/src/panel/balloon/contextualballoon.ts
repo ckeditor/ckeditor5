@@ -744,6 +744,14 @@ export class RotatorView extends View {
 			tooltip: true
 		} );
 
+		// Keep the focus in the editor when switching stacks. Otherwise blurring the editor could hide
+		// focus-sensitive views in the balloon (e.g. the balloon toolbar) and collapse the balloon.
+		view.extendTemplate( {
+			on: {
+				mousedown: view.bindTemplate.to( evt => evt.preventDefault() )
+			}
+		} );
+
 		return view;
 	}
 }

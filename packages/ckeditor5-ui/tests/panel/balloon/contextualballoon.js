@@ -1070,6 +1070,16 @@ describe( 'ContextualBalloon', () => {
 			expect( editableFocusSpy ).toHaveBeenCalledOnce();
 		} );
 
+		it( 'should prevent the default action of the navigation buttons mousedown to not steal the focus', () => {
+			for ( const button of [ rotatorView.buttonPrevView, rotatorView.buttonNextView ] ) {
+				const event = new MouseEvent( 'mousedown', { bubbles: true, cancelable: true } );
+
+				button.element.dispatchEvent( event );
+
+				expect( event.defaultPrevented ).toBe( true );
+			}
+		} );
+
 		it( 'should add hidden view with fake panels to editor body collection', () => {
 			const fakePanelsView = editor.ui.view.body.last;
 
