@@ -117,14 +117,14 @@ importers:
         specifier: ^9.34.0
         version: 9.39.4(jiti@2.7.0)
       eslint-config-ckeditor5:
-        specifier: ^17.1.0
-        version: 17.1.0(eslint@9.39.4(jiti@2.7.0))(typescript@5.5.4)
+        specifier: ^17.1.1
+        version: 17.1.1(eslint@9.39.4(jiti@2.7.0))(typescript@5.5.4)
       eslint-formatter-stylish:
         specifier: ^8.40.0
         version: 8.40.0
       eslint-plugin-ckeditor5-rules:
-        specifier: ^17.1.0
-        version: 17.1.0
+        specifier: ^17.1.1
+        version: 17.1.1
       estree-walker:
         specifier: ^3.0.3
         version: 3.0.3
@@ -4717,8 +4717,8 @@ packages:
     resolution: {integrity: sha512-nxMparyhqVWQvadx9x8dIfubfIPOE+X2b2waua8fzdnM9vdp9rgVtwEZlG0TmCwEUz/d/f40fzvO/eqBwdxz0A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@eslint/css@1.3.0':
-    resolution: {integrity: sha512-MwY657chvFQWtXmO86syZgD+JpWlzDq7VkKZyi65PwHDbhELQPMzPXh5s8rhrjptG6FCuls0puCmlXk66+14uA==}
+  '@eslint/css@1.4.0':
+    resolution: {integrity: sha512-OnRNKgnbX+tufPuZc2kOJS+v1iIARvfJHRNEAVwN77DBpojl+rGjEP8NKTL6pEZ7BR+HtwIuSSdrymEFlANGxg==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   '@eslint/eslintrc@3.3.5':
@@ -7286,8 +7286,8 @@ packages:
     engines: {node: '>=6.0'}
     hasBin: true
 
-  eslint-config-ckeditor5@17.1.0:
-    resolution: {integrity: sha512-17SAVeug8gWJn384+qPqZ5gzs9he0htpWmRcnbvd7BCF9RQKWhGgtxOjLHzGD1g9UYJQIV73SrYkd4pKN++1yw==}
+  eslint-config-ckeditor5@17.1.1:
+    resolution: {integrity: sha512-T3ujgvXqo7f2W1pXmsOK5e/tLQPJ9CBU1xGXKlQMj3gBq8GqNi9XIqIet6h4Kn1zi72QS/a/Ot0g67ZCGmDitQ==}
     engines: {node: '>=24.11.0'}
     peerDependencies:
       eslint: ^9.0.0
@@ -7297,8 +7297,8 @@ packages:
     resolution: {integrity: sha512-blbD5ZSQnjNEUaG38VCO4WG9nfDQWE8/IOmt8DFRHXUIfZikaIXmsQTdWNFk0/e0j7RgIVRza86MpsJ+aHgFLg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  eslint-plugin-ckeditor5-rules@17.1.0:
-    resolution: {integrity: sha512-dxLWDheASwViAefCDW+vcOVPPMvcZjFAjvUEWFpbprIRuNhp3RKNeL8n6ngKiwB2RlnoySgSEKp4Bc8dIrdOPw==}
+  eslint-plugin-ckeditor5-rules@17.1.1:
+    resolution: {integrity: sha512-nVMWQhvHPwJC+sB5cQY756ru4G1baFlnhrL9eeddTc/XT0+uKc2R28imV3BOwlhX64Xcm2QIIckygKFGUb/kOw==}
     engines: {node: '>=24.11.0'}
 
   eslint-plugin-mocha@11.3.0:
@@ -8779,8 +8779,8 @@ packages:
     resolution: {integrity: sha512-WWdIxpyjEn+FhQJQQv9aQAYlHoNVdzIzUySNV1gHUPDSdZJ3yZn7pAAbQcV7B56Mvu881q9FZV+0Vx2xC44VWA==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  nanoid@3.3.15:
-    resolution: {integrity: sha512-y7Wygv/7mEOvxTuEQDB8StXdMRBWf1kR/tlhAzBRUFkB2jfcLOAxO/SHmOO2zgz1pVgK29/kyupn059/bCHdjA==}
+  nanoid@3.3.16:
+    resolution: {integrity: sha512-bzlKTyNJ7+LdGIIwy8ijFpIqEQIvafahV7eYykJ8Cvh42EdJeODoJ6gUJXpQJvej1BddH8OqTXZNE/KfbWAu8Q==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -10898,7 +10898,7 @@ snapshots:
       mdn-data: 2.28.1
       source-map-js: 1.2.1
 
-  '@eslint/css@1.3.0':
+  '@eslint/css@1.4.0':
     dependencies:
       '@eslint/core': 1.2.1
       '@eslint/css-tree': 4.0.4
@@ -13396,14 +13396,14 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-config-ckeditor5@17.1.0(eslint@9.39.4(jiti@2.7.0))(typescript@5.5.4):
+  eslint-config-ckeditor5@17.1.1(eslint@9.39.4(jiti@2.7.0))(typescript@5.5.4):
     dependencies:
-      '@eslint/css': 1.3.0
+      '@eslint/css': 1.4.0
       '@eslint/js': 9.39.4
       '@eslint/markdown': 6.6.0
       '@stylistic/eslint-plugin': 4.4.1(eslint@9.39.4(jiti@2.7.0))(typescript@5.5.4)
       eslint: 9.39.4(jiti@2.7.0)
-      eslint-plugin-ckeditor5-rules: 17.1.0
+      eslint-plugin-ckeditor5-rules: 17.1.1
       eslint-plugin-mocha: 11.3.0(eslint@9.39.4(jiti@2.7.0))
       globals: 16.5.0
       typescript: 5.5.4
@@ -13417,7 +13417,7 @@ snapshots:
       strip-ansi: 6.0.1
       text-table: 0.2.0
 
-  eslint-plugin-ckeditor5-rules@17.1.0:
+  eslint-plugin-ckeditor5-rules@17.1.1:
     dependencies:
       '@es-joy/jsdoccomment': 0.50.2
       '@eslint/css-tree': 4.0.4
@@ -15284,7 +15284,7 @@ snapshots:
 
   mute-stream@2.0.0: {}
 
-  nanoid@3.3.15: {}
+  nanoid@3.3.16: {}
 
   nanoid@5.1.11: {}
 
@@ -15782,7 +15782,7 @@ snapshots:
 
   postcss@8.5.17:
     dependencies:
-      nanoid: 3.3.15
+      nanoid: 3.3.16
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -17106,7 +17106,7 @@ snapshots:
       hexo-log: 4.1.0
       is-plain-object: 5.0.0
       jsonparse: 1.3.1
-      nanoid: 3.3.15
+      nanoid: 3.3.16
       rfdc: 1.4.1
       through2: 4.0.2
 

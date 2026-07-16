@@ -169,9 +169,7 @@ export default defineConfig( [
 					// Baseline 2023, all modern browsers
 					'has',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/::marker
-					'marker',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/:dir
-					'dir'
+					'marker'
 				],
 
 				allowProperties: [
@@ -183,8 +181,6 @@ export default defineConfig( [
 					'text-wrap',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/transition-behavior
 					'transition-behavior',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/mask
-					'mask',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/zoom (legacy non-standard)
 					'zoom',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior
