@@ -28,6 +28,16 @@
 		margin-bottom: 0;
 	}
 
+	/*
+	 * `::marker` is not Baseline "widely available" because of a Safari partial-implementation flag, but that gap
+	 * is about unrelated properties (content, text-shadow, line-height, letter-spacing, direction,
+	 * unicode-bidi, text-combine-upright, font-kerning - see https://bugs.webkit.org/show_bug.cgi?id=204163),
+	 * not the font-weight/font-style/font-family/font-size/color properties used below, which were manually
+	 * verified across Chrome, Safari, and Firefox (see https://github.com/ckeditor/ckeditor5/issues/18537).
+	 * `::marker` is also the only way to style a native list marker independently of its list item's content,
+	 * so there is no alternative CSS mechanism to fall back to.
+	 */
+	/* eslint-disable css/use-baseline */
 	&.ck-list-marker-bold::marker {
 		font-weight: bold;
 	}
@@ -63,4 +73,5 @@
 	&.ck-list-marker-font-size-huge::marker {
 		font-size: var(--ck-content-font-size-huge);
 	}
+	/* eslint-enable css/use-baseline */
 }

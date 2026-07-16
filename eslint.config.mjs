@@ -167,9 +167,7 @@ export default defineConfig( [
 					'nesting',
 					// https://developer.mozilla.org/en-US/docs/Web/CSS/:has
 					// Baseline 2023, all modern browsers
-					'has',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/::marker
-					'marker'
+					'has'
 				],
 
 				allowProperties: [
