@@ -36,6 +36,7 @@
 	right: var(--ck-table-column-resizer-position-offset);
 	width: var(--ck-table-column-resizer-width);
 	cursor: col-resize;
+	-webkit-user-select: none;
 	user-select: none;
 	z-index: var(--ck-z-default);
 }

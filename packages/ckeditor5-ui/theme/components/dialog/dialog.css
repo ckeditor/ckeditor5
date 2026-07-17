@@ -16,6 +16,12 @@
 	animation: ck-dialog-fade-in .3s;
 	background: var(--ck-dialog-overlay-background-color);
 	z-index: var(--ck-z-dialog);
+	-webkit-user-select: none;
+	/*
+	 * Note: aisuggestionstreamablecontent.css and accessibilityhelp.css override this to `text` for
+	 * their own content and must keep the same -webkit- prefix pairing, otherwise selection would
+	 * silently break for them on Safari.
+	 */
 	user-select: none;
 	overscroll-behavior: none;
 

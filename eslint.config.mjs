@@ -171,7 +171,10 @@ export default defineConfig( [
 				],
 
 				allowProperties: [
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/user-select
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/user-select
+					// Not Baseline because Safari has never shipped an unprefixed version - every usage in
+					// this codebase already pairs it with `-webkit-user-select`, so this is a syntax
+					// limitation, not a cross-browser behavior gap.
 					'user-select',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/resize
 					'resize',
