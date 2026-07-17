@@ -200,12 +200,7 @@ export default defineConfig( [
 				allowAtRules: [
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/@starting-style
 					'starting-style'
-				],
-
-				allowPropertyValues: {
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration
-					'text-decoration': [ 'currentColor' ]
-				}
+				]
 			} ]
 		}
 	},
