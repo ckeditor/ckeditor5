@@ -176,7 +176,10 @@ export default defineConfig( [
 					// this codebase already pairs it with `-webkit-user-select`, so this is a syntax
 					// limitation, not a cross-browser behavior gap.
 					'user-select',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/resize
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/resize
+					// Not Baseline solely because Firefox for Android and Safari on iOS recognize it but apply
+					// no effect (mobile browsers show no resize handle regardless of this property) - a no-op
+					// gap on the browsers where it doesn't apply, not a real cross-browser risk.
 					'resize',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap
 					'text-wrap',
