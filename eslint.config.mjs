@@ -181,7 +181,9 @@ export default defineConfig( [
 					// no effect (mobile browsers show no resize handle regardless of this property) - a no-op
 					// gap on the browsers where it doesn't apply, not a real cross-browser risk.
 					'resize',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap
+					// Baseline "newly available" - already supported across major browsers since March
+					// 2024 and on track to reach "widely available" around September 2026.
 					'text-wrap',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/transition-behavior
 					'transition-behavior',
