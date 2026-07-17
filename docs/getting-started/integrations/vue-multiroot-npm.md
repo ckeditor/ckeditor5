@@ -237,14 +237,6 @@ await addRoot( {
 
 Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the schema still permits blocks inside the root.
 
-### Using the editor with collaboration plugins
-
-We provide several **ready-to-use integrations** featuring collaborative editing with multi-root in Vue applications:
-
-* [CKEditor&nbsp;5 multi-root with real-time collaboration features and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-editor-multi-root-for-vue)
-
-It is not necessary to build applications on top of the above samples, however, they should help you get started.
-
 ## Contributing and reporting issues
 
 The source code of rich text editor component for Vue is available on GitHub in [https://github.com/ckeditor/ckeditor5-vue](https://github.com/ckeditor/ckeditor5-vue).
