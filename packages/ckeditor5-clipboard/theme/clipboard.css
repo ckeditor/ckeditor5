@@ -57,6 +57,14 @@
 	 * Styles of the widget being dragged (its preview).
 	 */
 	& .ck-widget:-webkit-drag {
+		/*
+		 * `zoom` is not Baseline "widely available" solely because Firefox only added support in
+		 * version 126 (May 2024); Chrome and Safari have supported it for years. This rule is already
+		 * scoped behind `:-webkit-drag`, a non-standard, WebKit-only selector Firefox doesn't implement,
+		 * so Firefox never evaluates this rule regardless of `zoom` support. `transform: scale()` isn't
+		 * a safe swap here - unlike `zoom`, it doesn't resize the element's layout box, only its paint.
+		 */
+		/* eslint-disable-next-line css/use-baseline */
 		zoom: 0.6;
 		outline: none !important; /* eslint-disable-line css/no-important */
 		& > .ck-widget__selection-handle {

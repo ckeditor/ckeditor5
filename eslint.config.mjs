@@ -187,8 +187,6 @@ export default defineConfig( [
 					'text-wrap',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/transition-behavior
 					'transition-behavior',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/zoom (legacy non-standard)
-					'zoom',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior
 					'overscroll-behavior',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior-y
