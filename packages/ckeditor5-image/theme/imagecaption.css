@@ -16,6 +16,14 @@
 	caption-side: bottom;
 	word-break: normal;
 	overflow-wrap: anywhere;
+	/*
+	 * `break-before: avoid` is not Baseline "widely available" because its support for print/paged-media
+	 * contexts specifically is reportedly unreliable in Firefox, even where nominally supported. There is
+	 * no alternative CSS mechanism to keep this caption attached to its image across a page break, so this
+	 * is an accepted, soft degradation (the caption may occasionally be orphaned onto the next printed page
+	 * in Firefox specifically), not a functional break introduced by this change.
+	 */
+	/* eslint-disable-next-line css/use-baseline */
 	break-before: avoid;
 	color: var(--ck-content-color-image-caption-text);
 	background-color: var(--ck-content-color-image-caption-background);

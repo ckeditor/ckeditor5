@@ -203,10 +203,6 @@ export default defineConfig( [
 				],
 
 				allowPropertyValues: {
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/break-after
-					'break-after': [ 'column' ],
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/break-before
-					'break-before': [ 'avoid' ],
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration
 					'text-decoration': [ 'currentColor' ]
 				}
