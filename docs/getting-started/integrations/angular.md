@@ -613,14 +613,11 @@ Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the sch
 
 ### Using the editor with collaboration plugins
 
-We provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
+We provide **ready-to-use integration** featuring collaborative editing in an Angular application:
 
 * [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
-* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-angular)
-* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-angular)
-* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
 
-It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+It is not mandatory to build an application on top of the above samples, however, it should help you get started.
 
 ### Localization
 
