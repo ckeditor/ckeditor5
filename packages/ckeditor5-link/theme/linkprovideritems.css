@@ -42,7 +42,8 @@
 				white-space: nowrap;
 			}
 		}
-		overscroll-behavior: contain
+
+		overscroll-behavior: contain;
 	}
 
 	& .ck-link__empty-list-info {

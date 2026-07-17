@@ -187,9 +187,13 @@ export default defineConfig( [
 					'text-wrap',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/transition-behavior
 					'transition-behavior',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior-y
+					// Not Baseline solely because of a partial-implementation caveat noting no effect on
+					// non-scrollable containers - uniform across browsers and irrelevant to every usage here,
+					// which is always on a genuinely scrollable element. Core behavior (preventing scroll
+					// chaining) has been supported by Chrome, Firefox, Safari, and Edge since 2017-2022.
 					'overscroll-behavior',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior-y
 					'overscroll-behavior-y'
 				],
 
