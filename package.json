@@ -39,7 +39,6 @@
     "@ckeditor/ckeditor5-dev-build-tools": "^56.4.0",
     "@ckeditor/ckeditor5-dev-bump-year": "^56.4.0",
     "@ckeditor/ckeditor5-dev-changelog": "^56.4.0",
-    "@ckeditor/ckeditor5-dev-ci": "^56.4.0",
     "@ckeditor/ckeditor5-dev-dependency-checker": "^56.4.0",
     "@ckeditor/ckeditor5-dev-docs": "^56.4.0",
     "@ckeditor/ckeditor5-dev-license-checker": "^56.4.0",
