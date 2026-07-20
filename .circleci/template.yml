@@ -152,22 +152,6 @@ jobs:
       - codecov/upload:
           files: .out/combined_lcov.info
 
-  notify_ci_failure:
-    docker:
-      - image: cimg/node:24.11.0
-    resource_class: small
-    parameters:
-      hideAuthor:
-        type: string
-        default: "false"
-    steps:
-      - checkout_command
-      - bootstrap_repository_command
-      - run:
-          name: Waiting for other jobs to finish and sending notification on failure
-          command: pnpm ckeditor5-dev-ci-circle-workflow-notifier --task "pnpm ckeditor5-dev-ci-notify-circle-status --pipeline-id << pipeline.number >> --hide-author << parameters.hideAuthor >>"
-          no_output_timeout: 30m
-
 workflows:
   version: 2
   main:
@@ -181,4 +165,3 @@ workflows:
       - cke5_validators
       - cke5_manual
       - release_prepare
-      - notify_ci_failure
