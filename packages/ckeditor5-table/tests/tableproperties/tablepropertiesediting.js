@@ -3544,6 +3544,126 @@ describe( 'table properties', () => {
 				editor.setData( '<div align="right"><table>xyz</table></div>' );
 			} );
 
+			it( 'should not consume the div if the table inside was already consumed by another converter', () => {
+				editor.data.upcastDispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
+					const viewTable = data.viewItem.getChild( 0 );
+
+					conversionApi.consumable.consume( viewTable, { name: true } );
+				}, { priority: 'highest' } );
+
+				const converter = vi.fn( ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { name: true } ) ).to.be.false;
+				} );
+
+				editor.data.upcastDispatcher.on( 'element:div', converter, { priority: 'low' } );
+				editor.setData(
+					'<div align="right">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+
+				expect( converter ).to.be.calledOnce;
+				expect( editor.getData() ).to.be.equal( '' );
+			} );
+
+			it( 'should pass down the model range and cursor when the table view element converts ' +
+				'into some non-table content', () => {
+				editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+					if ( !conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+						return;
+					}
+
+					const paragraph = conversionApi.writer.createElement( 'paragraph' );
+
+					conversionApi.writer.insert( paragraph, data.modelCursor );
+
+					data.modelRange = conversionApi.writer.createRangeOn( paragraph );
+					data.modelCursor = data.modelRange.end;
+				}, { priority: 'highest' } );
+
+				editor.setData(
+					'<div align="right">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph>[]</paragraph>' +
+					'<paragraph></paragraph>'
+				);
+			} );
+
+			describe( 'when div contains more than a single table', () => {
+				it( 'should not throw and should not upcast alignment when div wraps two tables', () => {
+					expect( () => {
+						editor.setData(
+							'<div align="left">' +
+								'<table>' +
+									'<colgroup><col style="width:100px;"></colgroup>' +
+									'<tbody><tr><td>a</td></tr></tbody>' +
+								'</table>' +
+								'<table>' +
+									'<colgroup><col style="width:100px;"></colgroup>' +
+									'<tbody><tr><td>a</td></tr></tbody>' +
+								'</table>' +
+							'</div>'
+						);
+					} ).to.not.throw();
+
+					const firstTable = model.document.getRoot().getNodeByPath( [ 0 ] );
+					const secondTable = model.document.getRoot().getNodeByPath( [ 1 ] );
+
+					expect( firstTable.is( 'element', 'table' ) ).to.be.true;
+					expect( secondTable.is( 'element', 'table' ) ).to.be.true;
+					expect( firstTable.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( secondTable.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast alignment when div wraps a table and other block content', () => {
+					editor.setData(
+						'<div align="left">' +
+							'<table>' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>' +
+							'<p>bar</p>' +
+						'</div>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.is( 'element', 'table' ) ).to.be.true;
+					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should still upcast alignment when the table is the only significant child ' +
+					'and is surrounded by whitespace-only text nodes', () => {
+					editor.setData(
+						'<div align="left">\n\t' +
+							'<table>' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>' +
+							'\n\t' +
+						'</div>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockLeft' );
+				} );
+			} );
+
 			describe( 'in limited container allowing only inline content', () => {
 				beforeEach( () => {
 					model.schema.register( 'limitContainer', {
@@ -3573,6 +3693,21 @@ describe( 'table properties', () => {
 					);
 
 					expect( _getModelData( editor.model ) ).to.equal( '<limitContainer>[]123foo456</limitContainer>' );
+				} );
+
+				it( 'should strip an empty table in section if parent does not allow it and there is nothing ' +
+					'left to convert (table conversion produced no content)', () => {
+					editor.setData(
+						'<section>' +
+							'123' +
+							'<div align="right">' +
+								'<table></table>' +
+							'</div>' +
+							'456' +
+						'</section>'
+					);
+
+					expect( _getModelData( editor.model ) ).to.equal( '<limitContainer>[]123456</limitContainer>' );
 				} );
 			} );
 		} );
