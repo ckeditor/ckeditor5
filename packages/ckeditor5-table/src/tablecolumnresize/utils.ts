@@ -161,6 +161,18 @@ export function getElementWidthInPixels( domElement: HTMLElement ): number {
 }
 
 /**
+ * Returns the inner pixel width of a given editing root, or `null` if the root has no
+ * DOM element attached yet (e.g. it hasn't been rendered for the first time).
+ *
+ * @internal
+ */
+export function getEditableWidth( editor: Editor, rootName: string ): number | null {
+	const domRoot = editor.editing.view.getDomRoot( rootName );
+
+	return domRoot ? getElementWidthInPixels( domRoot as HTMLElement ) : null;
+}
+
+/**
  * Returns the column indexes on the left and right edges of a cell. They differ if the cell spans
  * across multiple columns.
  *

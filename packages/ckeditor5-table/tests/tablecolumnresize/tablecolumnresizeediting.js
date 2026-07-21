@@ -4,8 +4,9 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { TableColumnResizeEditing } from '../../src/tablecolumnresize/tablecolumnresizeediting.js';
+import { TableColumnResizeEditing, applyContainerWidthResistance } from '../../src/tablecolumnresize/tablecolumnresizeediting.js';
 import { TableColumnResize } from '../../src/tablecolumnresize.js';
+import { TableScrollEditing } from '../../src/tablescroll/tablescrollediting.js';
 import { TableCaption } from '../../src/tablecaption.js';
 import { TableToolbar } from '../../src/tabletoolbar.js';
 import { Table } from '../../src/table.js';
@@ -39,7 +40,9 @@ import {
 } from './_utils/utils.js';
 import {
 	COLUMN_MIN_WIDTH_IN_PIXELS,
-	COLUMN_RESIZE_DISTANCE_THRESHOLD
+	COLUMN_RESIZE_DISTANCE_THRESHOLD,
+	TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS,
+	TABLE_WIDTH_GROWTH_RESISTANCE_IN_PIXELS
 } from '../../src/tablecolumnresize/constants.js';
 import {
 	clamp,
@@ -1046,6 +1049,123 @@ describe( 'TableColumnResizeEditing', () => {
 			resizePlugin._isResizingAllowed = false;
 
 			expect( editor.editing.view.document.getRoot().hasClass( 'ck-column-resize_disabled' ) ).toBe( true );
+		} );
+	} );
+
+	describe( 'resize cursor', () => {
+		const RESIZE_CURSOR_CLASS = 'ck-table-column-resize__resizing-cursor';
+
+		afterEach( () => {
+			document.body.classList.remove( RESIZE_CURSOR_CLASS );
+		} );
+
+		it( 'should be absent before any resize starts', () => {
+			expect( resizePlugin._isResizingActive ).toBe( false );
+			expect( document.body.classList.contains( RESIZE_CURSOR_CLASS ) ).toBe( false );
+		} );
+
+		it( 'should not be added while only hovering the resizer', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			tableColumnResizeMouseSimulator.over( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+
+			expect( resizePlugin._isResizingActive ).toBe( false );
+			expect( document.body.classList.contains( RESIZE_CURSOR_CLASS ) ).toBe( false );
+		} );
+
+		it( 'should be added once dragging actually starts', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			expect( resizePlugin._isResizingActive ).toBe( true );
+			expect( document.body.classList.contains( RESIZE_CURSOR_CLASS ) ).toBe( true );
+		} );
+
+		it( 'should be removed on mouseup', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			expect( document.body.classList.contains( RESIZE_CURSOR_CLASS ) ).toBe( true );
+
+			tableColumnResizeMouseSimulator.up( editor );
+
+			expect( resizePlugin._isResizingActive ).toBe( false );
+			expect( document.body.classList.contains( RESIZE_CURSOR_CLASS ) ).toBe( false );
+		} );
+
+		it( 'should be removed if resizing becomes disallowed mid-drag', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			expect( document.body.classList.contains( RESIZE_CURSOR_CLASS ) ).toBe( true );
+
+			resizePlugin._isResizingAllowed = false;
+
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			expect( resizePlugin._isResizingActive ).toBe( false );
+			expect( document.body.classList.contains( RESIZE_CURSOR_CLASS ) ).toBe( false );
+		} );
+
+		it( 'should stay absent on mouseup if resizing was never started', () => {
+			tableColumnResizeMouseSimulator.up( editor );
+
+			expect( resizePlugin._isResizingActive ).toBe( false );
+			expect( document.body.classList.contains( RESIZE_CURSOR_CLASS ) ).toBe( false );
+		} );
+
+		it( 'should fire "change:_isResizingActive" once when a drag starts and once when it ends', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			const spy = vi.fn();
+
+			editor.listenTo( resizePlugin, 'change:_isResizingActive', spy );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+
+			// Further drag steps within the same resize must not re-fire the change event.
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+
+			tableColumnResizeMouseSimulator.up( editor );
+
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+		} );
+
+		it( 'should be removed if the editor is destroyed while a resize is active', async () => {
+			resizePlugin._isResizingActive = true;
+
+			expect( document.body.classList.contains( RESIZE_CURSOR_CLASS ) ).toBe( true );
+
+			await editor.destroy();
+			editor = null;
+
+			expect( document.body.classList.contains( RESIZE_CURSOR_CLASS ) ).toBe( false );
 		} );
 	} );
 
@@ -3565,6 +3685,519 @@ describe( 'TableColumnResizeEditing', () => {
 			expect( finalViewColumnWidthsPx ).toEqual( initialViewColumnWidthsPx );
 			expect( resizePlugin._isResizingActive ).toBe( false );
 			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).toEqual( [ '20%', '25%', '55%' ] );
+		} );
+	} );
+
+	describe( 'resizingTable', () => {
+		it( 'should be `null` when no resize is in progress', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			expect( resizePlugin.resizingTable ).toBe( null );
+		} );
+
+		it( 'should return the table being resized once the resize threshold is exceeded', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			expect( resizePlugin.resizingTable ).toBe( table );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		it( 'should keep returning the resized table across multiple mousemove events', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			expect( resizePlugin.resizingTable ).toBe( table );
+
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 20, y: 0 } );
+
+			expect( resizePlugin.resizingTable ).toBe( table );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		it( 'should be `null` again once the resize finishes on mouseup', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+			tableColumnResizeMouseSimulator.up( editor );
+
+			expect( resizePlugin.resizingTable ).toBe( null );
+		} );
+
+		it( 'should be `null` for a table other than the one currently being resized', () => {
+			_setModelData( model,
+				modelTable( [ [ '00', '01', '02' ], [ '10', '11', '12' ] ], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) +
+				modelTable( [ [ '00', '01', '02' ], [ '10', '11', '12' ] ], { columnWidths: '20%,25%,55%', tableWidth: '500px' } )
+			);
+
+			const [ firstTable, secondTable ] = Array.from( model.document.getRoot().getChildren() );
+
+			const firstDomTable = view.domConverter.mapViewToDom(
+				editor.editing.mapper.toViewElement( firstTable )
+			).querySelector( 'table' );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( firstDomTable, 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( firstDomTable, 0, 0 ), { x: 10, y: 0 } );
+
+			expect( resizePlugin.resizingTable ).toBe( firstTable );
+			expect( resizePlugin.resizingTable ).not.toBe( secondTable );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+	} );
+
+	describe( 'applyContainerWidthResistance()', () => {
+		const containerWidth = 300;
+		const resistanceZone = TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS + TABLE_WIDTH_GROWTH_RESISTANCE_IN_PIXELS;
+
+		it( 'should snap to the container width when shrinking to just within the snap threshold', () => {
+			const naturalTableWidth = containerWidth - TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS;
+
+			expect( applyContainerWidthResistance( naturalTableWidth, containerWidth ) ).toBe( containerWidth );
+		} );
+
+		it( 'should leave the width untouched when shrinking further than the snap threshold', () => {
+			const naturalTableWidth = containerWidth - TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS - 1;
+
+			expect( applyContainerWidthResistance( naturalTableWidth, containerWidth ) ).toBe( naturalTableWidth );
+		} );
+
+		it( 'should snap to the container width when the natural width matches it exactly', () => {
+			expect( applyContainerWidthResistance( containerWidth, containerWidth ) ).toBe( containerWidth );
+		} );
+
+		it( 'should stay pinned to the container width while growing within the resistance zone', () => {
+			const naturalTableWidth = containerWidth + resistanceZone;
+
+			expect( applyContainerWidthResistance( naturalTableWidth, containerWidth ) ).toBe( containerWidth );
+		} );
+
+		it( 'should resume 1:1 growth, offset by the resistance zone, once past it', () => {
+			const naturalTableWidth = containerWidth + resistanceZone + 30;
+
+			expect( applyContainerWidthResistance( naturalTableWidth, containerWidth ) ).toBe( containerWidth + 30 );
+		} );
+	} );
+
+	describe( 'integration with TableScrollEditing', () => {
+		let editor, model, view, resizePlugin, scrollPlugin, editorElement;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicEditor.create( editorElement, {
+				plugins: [
+					Table, TableColumnResize, TableColumnResizeEditing, TableScrollEditing,
+					Paragraph, WidgetResize, Undo, ClipboardPipeline
+				]
+			} );
+
+			await focusEditor( editor );
+
+			model = editor.model;
+			view = editor.editing.view;
+			resizePlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+			scrollPlugin = editor.plugins.get( 'TableScrollEditing' );
+		} );
+
+		afterEach( async () => {
+			if ( editorElement ) {
+				editorElement.remove();
+			}
+
+			if ( editor ) {
+				await editor.destroy();
+			}
+		} );
+
+		it( 'should change overflowing table\'s pixel `tableWidth` into a percentage when only a column is resized', () => {
+			view.getDomRoot().style.width = '300px';
+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '900px' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+			const viewFigure = editor.editing.mapper.toViewElement( table );
+
+			expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+			tableColumnResizeMouseSimulator.up( editor );
+
+			expect( Math.abs( parseFloat( table.getAttribute( 'tableWidth' ) ) - 300 ) ).toBeLessThan( 1 );
+		} );
+
+		it( 'should skip the table currently being column-resized when ' +
+				'TableScrollEditing recalculates overflow on window resize', async () => {
+			_setModelData( model,
+				modelTable( [ [ '00', '01', '02' ], [ '10', '11', '12' ] ], { columnWidths: '20%,25%,55%', tableWidth: '900px' } ) +
+				modelTable( [ [ '00', '01', '02' ], [ '10', '11', '12' ] ], { columnWidths: '20%,25%,55%', tableWidth: '900px' } )
+			);
+
+			const [ firstTable, secondTable ] = Array.from( model.document.getRoot().getChildren() );
+
+			const firstDomTable = view.domConverter.mapViewToDom(
+				editor.editing.mapper.toViewElement( firstTable )
+			).querySelector( 'table' );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( firstDomTable, 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( firstDomTable, 0, 0 ), { x: 10, y: 0 } );
+
+			expect( resizePlugin.resizingTable ).toBe( firstTable );
+
+			const updateSpy = vi.spyOn( scrollPlugin, '_updateTableScrollOverflowState' );
+
+			window.dispatchEvent( new Event( 'resize' ) );
+
+			await new Promise( resolve => setTimeout( resolve, 150 ) );
+
+			expect( updateSpy ).not.toHaveBeenCalledWith( firstTable );
+			expect( updateSpy ).toHaveBeenCalledWith( secondTable );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		it( 'should update the scroll offset of a table that keeps overflowing after a real column resize', () => {
+			view.getDomRoot().style.width = '300px';
+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '900px' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+			tableColumnResizeMouseSimulator.up( editor );
+
+			const viewFigure = editor.editing.mapper.toViewElement( table );
+
+			expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+
+			const domFigure = view.domConverter.mapViewToDom( viewFigure );
+
+			Object.defineProperty( domFigure, 'scrollLeft', { value: 37, configurable: true } );
+			domFigure.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( viewFigure.getStyle( '--ck-table-scroll-offset' ) ).toBe( '37px' );
+		} );
+
+		it( 'should let a non-centered table grow past its container width when dragging the right edge (dxUpperBound = Infinity)', () => {
+			view.getDomRoot().style.width = '300px';
+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '200px', tableAlignment: 'left' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+			const viewFigure = editor.editing.mapper.toViewElement( table );
+
+			expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 2, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 2, 0 ), { x: 500, y: 0 } );
+
+			expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		it( 'should not let a layout table grow past its container width by default (not in `table.tableScroll.tableTypes`)', () => {
+			view.getDomRoot().style.width = '300px';
+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '200px', tableAlignment: 'left', tableType: 'layout' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+			const viewFigure = editor.editing.mapper.toViewElement( table );
+
+			expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 2, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 2, 0 ), { x: 500, y: 0 } );
+
+			// Unlike a content table, it stays capped at the container's width.
+			expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		it( 'should let a layout table grow past its container width when included via `table.tableScroll.tableTypes`', async () => {
+			const customElement = document.createElement( 'div' );
+
+			document.body.appendChild( customElement );
+
+			const customEditor = await ClassicEditor.create( customElement, {
+				plugins: [
+					Table, TableColumnResize, TableColumnResizeEditing, TableScrollEditing,
+					Paragraph, WidgetResize, Undo, ClipboardPipeline
+				],
+				table: {
+					tableScroll: {
+						tableTypes: [ 'content', 'layout' ]
+					}
+				}
+			} );
+
+			await focusEditor( customEditor );
+
+			const customModel = customEditor.model;
+			const customView = customEditor.editing.view;
+
+			customView.getDomRoot().style.width = '300px';
+
+			_setModelData( customModel, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '200px', tableAlignment: 'left', tableType: 'layout' } ) );
+
+			const table = customModel.document.getRoot().getChild( 0 );
+			const viewFigure = customEditor.editing.mapper.toViewElement( table );
+
+			tableColumnResizeMouseSimulator.down( customEditor, getDomResizer( getDomTable( customView ), 2, 0 ) );
+			tableColumnResizeMouseSimulator.move( customEditor, getDomResizer( getDomTable( customView ), 2, 0 ), { x: 500, y: 0 } );
+
+			expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+
+			tableColumnResizeMouseSimulator.up( customEditor );
+
+			await customEditor.destroy();
+			customElement.remove();
+		} );
+
+		it( 'should not let a table nested inside another table grow past its container width even with TableScrollEditing loaded', () => {
+			view.getDomRoot().style.width = '300px';
+
+			_setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+			const outerTable = model.document.getRoot().getChild( 0 );
+			const outerCell = outerTable.getChild( 0 ).getChild( 0 );
+
+			let nestedTable;
+
+			model.change( writer => {
+				nestedTable = writer.createElement( 'table', { tableWidth: '200px', tableAlignment: 'left' } );
+				const row = writer.createElement( 'tableRow' );
+				const cell = writer.createElement( 'tableCell' );
+
+				writer.append( cell, row );
+				writer.append( row, nestedTable );
+				writer.append( nestedTable, outerCell );
+			} );
+
+			const nestedViewFigure = editor.editing.mapper.toViewElement( nestedTable );
+			const nestedViewTable = Array.from( nestedViewFigure.getChildren() )
+				.find( child => child.is( 'element', 'table' ) );
+			const nestedDomTable = view.domConverter.mapViewToDom( nestedViewTable );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( nestedDomTable, 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( nestedDomTable, 0, 0 ), { x: 500, y: 0 } );
+
+			expect( nestedViewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		it( 'should not shrink the resized column narrower than its minimum width ' +
+				'when resistance snaps the table to the container width', () => {
+			view.getDomRoot().style.width = '300px';
+
+			const containerWidth = 300;
+			const resistanceZone = TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS + TABLE_WIDTH_GROWTH_RESISTANCE_IN_PIXELS;
+			const dragDistance = 50;
+			const startingTableWidth = containerWidth + resistanceZone + dragDistance;
+
+			const lastColumnWidthPx = COLUMN_MIN_WIDTH_IN_PIXELS + dragDistance + Math.floor( resistanceZone / 2 );
+			const lastColumnWidthPercentage = lastColumnWidthPx / startingTableWidth * 100;
+
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], {
+				columnWidths: `${ 100 - lastColumnWidthPercentage }%,${ lastColumnWidthPercentage }%`,
+				tableWidth: `${ startingTableWidth }px`,
+				tableAlignment: 'left'
+			} ) );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 1, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 1, 0 ), { x: -dragDistance, y: 0 } );
+
+			const finalColumnWidthPx = getViewColumnWidthsPx( getDomTable( view ) )[ 1 ];
+
+			expect( finalColumnWidthPx ).toBeGreaterThanOrEqual( COLUMN_MIN_WIDTH_IN_PIXELS - PIXEL_PRECISION );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		describe( 'dragging the right edge of a centered, overflow-aware table', () => {
+			const RESIZE_LIVE_WIDTH_PERCENTAGE_TOLERANCE = 2;
+
+			it( 'should double the growth while the table still fits its container', () => {
+				view.getDomRoot().style.width = '300px';
+
+				_setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { columnWidths: '20%,25%,55%', tableWidth: '200px' } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+				const viewFigure = editor.editing.mapper.toViewElement( table );
+
+				tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 2, 0 ) );
+				tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 2, 0 ), { x: 30, y: 0 } );
+
+				expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+				expect( Math.abs( parseFloat( viewFigure.getStyle( 'width' ) ) - ( 260 / 300 * 100 ) ) )
+					.toBeLessThan( RESIZE_LIVE_WIDTH_PERCENTAGE_TOLERANCE );
+
+				tableColumnResizeMouseSimulator.up( editor );
+			} );
+
+			it( 'should switch to 1:1 growth once the drag clears the resistance zone around the container width', () => {
+				view.getDomRoot().style.width = '300px';
+
+				const containerWidth = 300;
+				const startingTableWidth = 200;
+
+				_setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { columnWidths: '20%,25%,55%', tableWidth: `${ startingTableWidth }px` } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+				const viewFigure = editor.editing.mapper.toViewElement( table );
+
+				// Drag comfortably past the point where the table would cross over into overflow, plus the
+				// full snap + resistance zone around the container's width, so growth has definitely resumed.
+				const crossoverPoint = ( containerWidth - startingTableWidth ) / 2;
+				const resistanceZone = TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS + TABLE_WIDTH_GROWTH_RESISTANCE_IN_PIXELS;
+				const dragDistance = crossoverPoint + resistanceZone + 30;
+				const naturalTableWidth = containerWidth + ( dragDistance - crossoverPoint );
+				const expectedTableWidth = applyContainerWidthResistance( naturalTableWidth, containerWidth );
+
+				tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 2, 0 ) );
+				tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 2, 0 ), { x: dragDistance, y: 0 } );
+
+				expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+				expect( Math.abs( parseFloat( getViewTable( view ).getStyle( 'width' ) ) - ( expectedTableWidth / containerWidth * 100 ) ) )
+					.toBeLessThan( RESIZE_LIVE_WIDTH_PERCENTAGE_TOLERANCE );
+
+				tableColumnResizeMouseSimulator.up( editor );
+			} );
+
+			it( 'should stay pinned at exactly 100% while the drag is still within the resistance zone', () => {
+				view.getDomRoot().style.width = '300px';
+
+				const containerWidth = 300;
+				const startingTableWidth = 200;
+
+				_setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { columnWidths: '20%,25%,55%', tableWidth: `${ startingTableWidth }px` } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+				const viewFigure = editor.editing.mapper.toViewElement( table );
+
+				// Drag just past the crossover, but still inside the resistance zone - the table should
+				// refuse to grow past 100%, no matter how far short of the full zone the drag lands.
+				const crossoverPoint = ( containerWidth - startingTableWidth ) / 2;
+				const resistanceZone = TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS + TABLE_WIDTH_GROWTH_RESISTANCE_IN_PIXELS;
+				const dragDistance = crossoverPoint + Math.max( resistanceZone - 1, 0 );
+
+				tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 2, 0 ) );
+				tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 2, 0 ), { x: dragDistance, y: 0 } );
+
+				expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+				expect( Math.abs( parseFloat( viewFigure.getStyle( 'width' ) ) - 100 ) )
+					.toBeLessThan( RESIZE_LIVE_WIDTH_PERCENTAGE_TOLERANCE );
+
+				tableColumnResizeMouseSimulator.up( editor );
+			} );
+
+			it( 'should grow 1:1 while already overflowing', () => {
+				view.getDomRoot().style.width = '300px';
+
+				const containerWidth = 300;
+				const startingTableWidth = 400;
+				const dragDistance = 50;
+
+				_setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { columnWidths: '20%,25%,55%', tableWidth: `${ startingTableWidth }px` } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+				const viewFigure = editor.editing.mapper.toViewElement( table );
+
+				expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+
+				const naturalTableWidth = startingTableWidth + dragDistance;
+				const expectedTableWidth = applyContainerWidthResistance( naturalTableWidth, containerWidth );
+
+				tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 2, 0 ) );
+				tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 2, 0 ), { x: dragDistance, y: 0 } );
+
+				expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+				expect( Math.abs( parseFloat( getViewTable( view ).getStyle( 'width' ) ) - ( expectedTableWidth / containerWidth * 100 ) ) )
+					.toBeLessThan( RESIZE_LIVE_WIDTH_PERCENTAGE_TOLERANCE );
+
+				tableColumnResizeMouseSimulator.up( editor );
+			} );
+
+			it( 'should double the shrink once dragged back below the crossover, possibly leaving overflow', () => {
+				view.getDomRoot().style.width = '300px';
+
+				_setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { columnWidths: '20%,25%,55%', tableWidth: '400px' } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+				const viewFigure = editor.editing.mapper.toViewElement( table );
+
+				expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+
+				tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 2, 0 ) );
+				tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 2, 0 ), { x: -120, y: 0 } );
+
+				expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+				expect( Math.abs( parseFloat( viewFigure.getStyle( 'width' ) ) - ( 260 / 300 * 100 ) ) )
+					.toBeLessThan( RESIZE_LIVE_WIDTH_PERCENTAGE_TOLERANCE );
+
+				tableColumnResizeMouseSimulator.up( editor );
+			} );
 		} );
 	} );
 

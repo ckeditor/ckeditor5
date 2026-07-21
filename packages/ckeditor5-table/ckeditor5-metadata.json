@@ -234,6 +234,17 @@
 			]
 		},
 		{
+			"name": "Table scroll",
+			"className": "TableScroll",
+			"description": "Adds horizontal scrolling to tables that are wider than the space available to them, so their content stays readable instead of squeezing the columns or breaking the page layout.",
+			"docs": "features/tables/tables-scroll.html",
+			"path": "src/tablescroll.ts",
+			"requires": [
+				"Table",
+				"TableProperties"
+			]
+		},
+		{
 			"name": "PlainTableOutput",
 			"className": "PlainTableOutput",
 			"description": "This plugin strips the `<figure>` tag which surrounds tables, and moves attributes to the `<table>` in the data downcast.",

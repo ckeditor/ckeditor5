@@ -27,6 +27,7 @@ import type {
 	TableProperties,
 	TablePropertiesEditing,
 	TablePropertiesUI,
+	TableScroll,
 	TableSelection,
 	TableToolbar,
 	TableUI,
@@ -66,7 +67,8 @@ import type {
 	TableHeightCommand,
 	TableWidthCommand,
 	TableCellTypeCommand,
-	SetFooterRowCommand
+	SetFooterRowCommand,
+	TableScrollEditing
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -100,6 +102,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TableProperties.pluginName ]: TableProperties;
 		[ TablePropertiesEditing.pluginName ]: TablePropertiesEditing;
 		[ TablePropertiesUI.pluginName ]: TablePropertiesUI;
+		[ TableScroll.pluginName ]: TableScroll;
+		[ TableScrollEditing.pluginName ]: TableScrollEditing;
 		[ TableSelection.pluginName ]: TableSelection;
 		[ TableToolbar.pluginName ]: TableToolbar;
 		[ TableUI.pluginName ]: TableUI;

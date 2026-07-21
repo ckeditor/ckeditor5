@@ -259,6 +259,17 @@ export interface TableConfig {
 	tableCaption?: TableCaptionConfig;
 
 	/**
+	 * Configuration of the table scroll feature.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableScroll: ... // Table scroll feature config.
+	 * };
+	 * ```
+	 */
+	tableScroll?: TableScrollConfig;
+
+	/**
 	 * When set to `true` (default), the editor visually displays dashed borders around table elements (`<table>`, `<td>`, `<th>`)
 	 * that contain inline styles explicitly removing borders (for example: `border: none`, `border-top-style: none`, etc.).
 	 *
@@ -729,6 +740,36 @@ export interface TableCaptionConfig {
 	 * ```
 	 */
 	useCaptionElement?: boolean;
+}
+
+/**
+ * The configuration of the table scroll feature.
+ */
+export interface TableScrollConfig {
+
+	/**
+	 * The list of table types for which a table that is wider than its container is allowed to become
+	 * horizontally scrollable, and for which the column resize handle is allowed to drag the table's width
+	 * past 100% of the container width.
+	 *
+	 * By default, only `'content'` tables are scrollable. Layout tables are not included by default, since
+	 * letting a layout table grow past the container width can easily break the intended page layout - to
+	 * allow it anyway, add `'layout'` to the list:
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableScroll: {
+	 * 		tableTypes: [ 'content', 'layout' ]
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * Note that regardless of this setting, only a table that is a direct child of the editing root can become
+	 * scrollable - a table nested inside another table, a block quote, or any other container never scrolls.
+	 *
+	 * @default [ 'content' ]
+	 */
+	tableTypes?: Array<TableType>;
 }
 
 /**

@@ -55,11 +55,18 @@ import {
 	updateColumnElements,
 	getColumnGroupElement,
 	getTableColumnElements,
-	getTableColumnsWidths
+	getTableColumnsWidths,
+	getEditableWidth
 } from './utils.js';
 
-import { COLUMN_MIN_WIDTH_IN_PIXELS, COLUMN_RESIZE_DISTANCE_THRESHOLD } from './constants.js';
-import { type TableColumnResize } from '../tablecolumnresize.js';
+import {
+	COLUMN_MIN_WIDTH_IN_PIXELS,
+	COLUMN_RESIZE_DISTANCE_THRESHOLD,
+	TABLE_WIDTH_GROWTH_RESISTANCE_IN_PIXELS,
+	TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS
+} from './constants.js';
+
+import type { TableColumnResize } from '../tablecolumnresize.js';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
@@ -69,18 +76,21 @@ type ResizingData = {
 		isRightEdge: boolean;
 		isTableCentered: boolean;
 		isLtrContent: boolean;
+		isTableWidthWithinContainerAtDragStart: boolean;
+		isTableScrollAllowed: boolean;
 	};
 	elements: {
 		viewResizer: ViewElement;
 		modelTable: ModelElement;
 		viewFigure: ViewElement;
+		viewTable: ViewElement;
 		viewColgroup: ViewElement;
 		viewLeftColumn: ViewElement;
 		viewRightColumn?: ViewElement;
 	};
 	widths: {
-		viewFigureParentWidth: number;
 		viewFigureWidth: number;
+		viewFigureParentWidth: number;
 		tableWidth: number;
 		leftColumnWidth: number;
 		rightColumnWidth?: number;
@@ -93,8 +103,11 @@ type ResizingData = {
 export class TableColumnResizeEditing extends Plugin {
 	/**
 	 * A flag indicating if the column resizing is in progress.
+	 *
+	 * @observable
+	 * @internal
 	 */
-	private _isResizingActive: boolean;
+	public declare _isResizingActive: boolean;
 
 	/**
 	 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only
@@ -168,7 +181,7 @@ export class TableColumnResizeEditing extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this._isResizingActive = false;
+		this.set( '_isResizingActive', false );
 		this.set( '_isResizingAllowed', true );
 		this._resizingData = null;
 		this._domEmitter = new ( DomEmitterMixin() )();
@@ -184,6 +197,12 @@ export class TableColumnResizeEditing extends Plugin {
 				}
 			} );
 		} );
+
+		this.on<ObservableChangeEvent<boolean>>( 'change:_isResizingActive', ( evt, name, value ) => {
+			const classAction = value ? 'add' : 'remove';
+
+			global.document.body.classList[ classAction ]( 'ck-table-column-resize__resizing-cursor' );
+		} );
 	}
 
 	/**
@@ -195,6 +214,9 @@ export class TableColumnResizeEditing extends Plugin {
 		this._registerConverters();
 		this._registerResizingListeners();
 		this._registerResizerInserter();
+
+		this.decorate( '_setResizingTableWidth' );
+		this.decorate( '_getResizingTableWidth' );
 
 		const editor = this.editor;
 		const columnResizePlugin: TableColumnResize = editor.plugins.get( 'TableColumnResize' );
@@ -229,7 +251,17 @@ export class TableColumnResizeEditing extends Plugin {
 	 */
 	public override destroy(): void {
 		this._domEmitter.stopListening();
+		this._isResizingActive = false;
+
 		super.destroy();
+	}
+
+	/**
+	 * The table for which a column resize is currently in progress, or `null` if no resize is active.
+	 * Only one table can be resized at a time.
+	 */
+	public get resizingTable(): ModelElement | null {
+		return this._resizingData ? this._resizingData.elements.modelTable : null;
 	}
 
 	/**
@@ -260,6 +292,30 @@ export class TableColumnResizeEditing extends Plugin {
 	 */
 	public getTableColumnsWidths( element: ModelElement ): Array<string> {
 		return getTableColumnsWidths( element );
+	}
+
+	/**
+	 * Applies `width` to whichever element currently represents the table's actual width - by default the
+	 * widget's `<figure>`. Passing `null` clears it instead of setting anything.
+	 *
+	 * @internal
+	 */
+	public _setResizingTableWidth( writer: ViewDowncastWriter, viewFigure: ViewElement, width: string | null ): void {
+		if ( width === null ) {
+			writer.removeStyle( 'width', viewFigure );
+		} else {
+			writer.setStyle( 'width', width, viewFigure );
+		}
+	}
+
+	/**
+	 * Returns the table's current actual width, read from whichever element holds it - by default the
+	 * widget's `<figure>`.
+	 *
+	 * @internal
+	 */
+	public _getResizingTableWidth( viewFigure: ViewElement ): string {
+		return viewFigure.getStyle( 'width' )!;
 	}
 
 	/**
@@ -640,6 +696,7 @@ export class TableColumnResizeEditing extends Plugin {
 
 		const modelTable = this.editor.editing.mapper.toModelElement( target.findAncestor( 'figure' )! )!;
 		const viewTable = target.findAncestor( 'table' )!;
+		const viewFigure = target.findAncestor( 'figure' ) as ViewElement;
 
 		// Calculate the initial column widths in pixels.
 		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._tableUtilsPlugin, this.editor );
@@ -656,7 +713,11 @@ export class TableColumnResizeEditing extends Plugin {
 
 		// At this point we change only the editor view - we don't want other users to see our changes yet,
 		// so we can't apply them in the model.
-		this.editor.editing.view.change( writer => _applyResizingAttributesToTable( writer, viewTable, this._resizingData! ) );
+		this.editor.editing.view.change( writer => {
+			const initialWidth = _applyResizingAttributesToTable( writer, viewTable, this._resizingData! );
+
+			this._setResizingTableWidth( writer, viewFigure, initialWidth );
+		} );
 
 		/**
 		 * Calculates the DOM columns' widths. It is done by taking the width of the widest cell
@@ -707,18 +768,27 @@ export class TableColumnResizeEditing extends Plugin {
 		}
 
 		/**
-		 * Applies the style and classes to the view table as the resizing begun.
+		 * Applies the classes to the view table as the resizing begun, and computes the initial live width.
 		 *
 		 * @param viewWriter A writer instance.
 		 * @param viewTable A table containing the clicked resizer.
 		 * @param resizingData Data related to the resizing.
+		 * @returns The table's current width as a `%` string, e.g. for seeding {@link #_setResizingTableWidth}.
 		 */
-		function _applyResizingAttributesToTable( viewWriter: ViewDowncastWriter, viewTable: ViewElement, resizingData: ResizingData ) {
-			const figureInitialPcWidth = resizingData.widths.viewFigureWidth / resizingData.widths.viewFigureParentWidth;
+		function _applyResizingAttributesToTable(
+			viewWriter: ViewDowncastWriter,
+			viewTable: ViewElement,
+			resizingData: ResizingData
+		): string {
+			// The figure might be capped to 100% when scrolling is active, in that scenario pick table width.
+			const figureInitialPcWidth =
+				Math.max( resizingData.widths.tableWidth, resizingData.widths.viewFigureWidth ) /
+				resizingData.widths.viewFigureParentWidth;
 
 			viewWriter.addClass( 'ck-table-resized', viewTable );
 			viewWriter.addClass( 'ck-table-column-resizer__active', resizingData.elements.viewResizer );
-			viewWriter.setStyle( 'width', `${ toPrecision( figureInitialPcWidth * 100 ) }%`, viewTable.findAncestor( 'figure' )! );
+
+			return `${ toPrecision( figureInitialPcWidth * 100 ) }%`;
 		}
 	}
 
@@ -754,14 +824,18 @@ export class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
+		const { plugins } = this.editor;
 		const {
 			columnPosition,
 			flags: {
 				isRightEdge,
 				isTableCentered,
-				isLtrContent
+				isLtrContent,
+				isTableWidthWithinContainerAtDragStart,
+				isTableScrollAllowed
 			},
 			elements: {
+				modelTable,
 				viewFigure,
 				viewLeftColumn,
 				viewRightColumn,
@@ -776,21 +850,74 @@ export class TableColumnResizeEditing extends Plugin {
 		} = this._resizingData!;
 
 		const dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
+		const tableScrollPlugin = plugins.has( 'TableScrollEditing' ) ? plugins.get( 'TableScrollEditing' ) : null;
+		const isTableScrollActive = !!tableScrollPlugin && isTableScrollAllowed;
+		const containerWidth = getEditableWidth( this.editor, modelTable.root.rootName! )!;
 
-		const dxUpperBound = isRightEdge ?
-			viewFigureParentWidth - tableWidth :
-			rightColumnWidth! - COLUMN_MIN_WIDTH_IN_PIXELS;
+		let dxUpperBound: number;
 
-		// The multiplier is needed for calculating the proper movement offset:
-		// - it should negate the sign if content language direction is right-to-left,
-		// - it should double the offset if the table edge is resized and table is centered.
-		const multiplier = ( isLtrContent ? 1 : -1 ) * ( isRightEdge && isTableCentered ? 2 : 1 );
+		if ( isRightEdge ) {
+			dxUpperBound = isTableScrollActive ? Infinity : viewFigureParentWidth - tableWidth;
+		} else {
+			dxUpperBound = rightColumnWidth! - COLUMN_MIN_WIDTH_IN_PIXELS;
+		}
 
-		const dx = clamp(
-			( mouseEventData.clientX - columnPosition ) * multiplier,
+		const rawDx = mouseEventData.clientX - columnPosition;
+		const ltrSign = isLtrContent ? 1 : -1;
+		const isCenteredRightEdge = isRightEdge && isTableCentered;
+
+		let dx: number;
+
+		// A centered table grows symmetrically (both margins shrink), so dragging by 1px widens it by 2px -
+		// until it fills the container. Past that point it can't stay centered (margins can't go negative),
+		// so it sits flush and grows 1:1 instead. In other words, width as a function of mouse movement is
+		// a single line that changes slope (2 before the crossover, 1 after) exactly where the table's
+		// width equals the container's width.
+		if ( isTableScrollActive && isCenteredRightEdge ) {
+			const mouseDelta = rawDx * ltrSign;
+
+			let newTableWidth: number;
+
+			if ( isTableWidthWithinContainerAtDragStart ) {
+				// Starts within the container: doubled growth up to the crossover, then 1:1 past it.
+				const crossoverPoint = ( containerWidth - tableWidth ) / 2;
+
+				newTableWidth = mouseDelta <= crossoverPoint ?
+					tableWidth + 2 * mouseDelta :
+					containerWidth + ( mouseDelta - crossoverPoint );
+			} else {
+				// Starts already overflowing: 1:1 until shrunk back under the crossover, then doubled past it.
+				const crossoverPoint = containerWidth - tableWidth;
+
+				newTableWidth = mouseDelta >= crossoverPoint ?
+					tableWidth + mouseDelta :
+					containerWidth + 2 * ( mouseDelta - crossoverPoint );
+			}
+
+			dx = newTableWidth - tableWidth;
+		} else {
+			const multiplier = ltrSign * ( isCenteredRightEdge ? 2 : 1 );
+
+			dx = rawDx * multiplier;
+		}
+
+		dx = clamp(
+			dx,
 			Math.min( dxLowerBound, 0 ),
 			Math.max( dxUpperBound, 0 )
 		);
+
+		// Snap onto exactly 100% of the container width when close, and make it deliberately hard (but not
+		// impossible) to drag the table's right edge past that point.
+		if ( isTableScrollActive && isRightEdge ) {
+			const resistedTableWidth = applyContainerWidthResistance( tableWidth + dx, containerWidth );
+
+			dx = clamp(
+				resistedTableWidth - tableWidth,
+				Math.min( dxLowerBound, 0 ),
+				Math.max( dxUpperBound, 0 )
+			);
+		}
 
 		if ( dx === 0 ) {
 			return;
@@ -804,7 +931,7 @@ export class TableColumnResizeEditing extends Plugin {
 			if ( isRightEdge ) {
 				const tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / viewFigureParentWidth );
 
-				writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
+				this._setResizingTableWidth( writer, viewFigure, `${ tableWidthAsPercentage }%` );
 			} else {
 				const rightColumnWidthAsPercentage = toPrecision( ( rightColumnWidth! - dx ) * 100 / tableWidth );
 
@@ -832,6 +959,7 @@ export class TableColumnResizeEditing extends Plugin {
 			viewResizer,
 			modelTable,
 			viewFigure,
+			viewTable,
 			viewColgroup
 		} = this._resizingData!.elements;
 
@@ -852,7 +980,7 @@ export class TableColumnResizeEditing extends Plugin {
 		const isColumnWidthsAttributeChanged = !isEqual( columnWidthsAttributeOld, columnWidthsAttributeNew );
 
 		const tableWidthAttributeOld = modelTable.getAttribute( 'tableWidth' ) as string;
-		const tableWidthAttributeNew = viewFigure.getStyle( 'width' )!;
+		const tableWidthAttributeNew = this._getResizingTableWidth( viewFigure );
 
 		const isTableWidthAttributeChanged = tableWidthAttributeOld !== tableWidthAttributeNew;
 
@@ -880,20 +1008,13 @@ export class TableColumnResizeEditing extends Plugin {
 					if ( isTableWidthAttributeChanged ) {
 						// If the whole table was already resized before, restore the previous table width.
 						// Otherwise clean up the view from the temporary table resizing markup.
-						if ( tableWidthAttributeOld ) {
-							writer.setStyle( 'width', tableWidthAttributeOld, viewFigure );
-						} else {
-							writer.removeStyle( 'width', viewFigure );
-						}
+						this._setResizingTableWidth( writer, viewFigure, tableWidthAttributeOld || null );
 					}
 
 					// If a table and its columns weren't resized before,
 					// prune the remaining common resizing markup.
 					if ( !columnWidthsAttributeOld && !tableWidthAttributeOld ) {
-						writer.removeClass(
-							'ck-table-resized',
-							[ ... viewFigure.getChildren() as IterableIterator<ViewElement> ].find( element => element.name === 'table' )!
-						);
+						writer.removeClass( 'ck-table-resized', viewTable );
 					}
 				} );
 			}
@@ -954,29 +1075,40 @@ export class TableColumnResizeEditing extends Plugin {
 		const viewFigureParentWidth = getElementWidthInPixels(
 			editor.editing.view.domConverter.mapViewToDom( viewFigure.parent! ) as HTMLElement
 		);
+
 		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure )! );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
 		const leftColumnWidth = columnWidths[ leftColumnIndex ];
 		const rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex + 1 ];
+		const isTableWidthWithinContainerAtDragStart = tableWidth <= getEditableWidth( editor, modelTable.root.rootName! )!;
+
+		// Whether the `TableScrollEditing` plugin considers this specific table eligible to overflow its
+		// container (see `TableScrollEditing#_isTableScrollable`). Computed once, at the start of the drag,
+		// since a table's type or position in the document doesn't change mid-resize.
+		const tableScrollPlugin = editor.plugins.has( 'TableScrollEditing' ) ? editor.plugins.get( 'TableScrollEditing' ) : null;
+		const isTableScrollAllowed = !!tableScrollPlugin && tableScrollPlugin._isTableScrollable( modelTable );
 
 		return {
 			columnPosition,
 			flags: {
 				isRightEdge,
 				isTableCentered,
-				isLtrContent
+				isLtrContent,
+				isTableWidthWithinContainerAtDragStart,
+				isTableScrollAllowed
 			},
 			elements: {
 				viewResizer,
 				modelTable,
 				viewFigure,
+				viewTable,
 				viewColgroup,
 				viewLeftColumn,
 				viewRightColumn
 			},
 			widths: {
-				viewFigureParentWidth,
 				viewFigureWidth,
+				viewFigureParentWidth,
 				tableWidth,
 				leftColumnWidth,
 				rightColumnWidth
@@ -1001,4 +1133,29 @@ export class TableColumnResizeEditing extends Plugin {
 			}, { priority: 'lowest' } );
 		} );
 	}
+}
+
+/**
+ * Given the table width a drag would naturally produce, returns the width that should actually be applied
+ * once snapping and growth resistance around the container's width are taken into account:
+ *
+ *  * if the natural width lands close to the container's width (on either side), it's pulled to exactly
+ *    match it,
+ *  * if the natural width is past the container's width, it stays pinned at the container's width until the
+ *    drag has gone far enough beyond it (the "resistance" zone) - past that point it keeps growing 1:1,
+ *    continuing smoothly from where the resistance was overcome instead of jumping,
+ *  * shrinking below the container's width is never resisted, only snapped when close.
+ *
+ * @internal
+ */
+export function applyContainerWidthResistance( naturalTableWidth: number, containerWidth: number ): number {
+	const distance = naturalTableWidth - containerWidth;
+
+	if ( distance < 0 ) {
+		return -distance <= TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS ? containerWidth : naturalTableWidth;
+	}
+
+	const resistanceZone = TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS + TABLE_WIDTH_GROWTH_RESISTANCE_IN_PIXELS;
+
+	return distance <= resistanceZone ? containerWidth : containerWidth + ( distance - resistanceZone );
 }

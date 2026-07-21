@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Tablescroll + GHS (without column resize)</title>
+		<script type="module" src="./tablescrollghs.js"></script>
+		<style>
+			.roots-container {
+				display: flex;
+				gap: 24px;
+				flex-wrap: wrap;
+				align-items: flex-start;
+			}
+
+			.root-controls {
+				margin-bottom: 8px;
+			}
+
+			.root-wrapper {
+				resize: horizontal;
+				overflow: hidden;
+				border: 1px dashed hsl(0, 0%, 70%);
+				padding: 0 1px;
+			}
+		</style>
+	</head>
+	<body>
+		<ck-manual-header>
+			Check if it's possible to scroll table using scrollbar.
+		</ck-manual-header>
+
+		<div id="toolbar-container"></div>
+		<div class="roots-container">
+			<div>
+				<h3>Root: main</h3>
+
+				<div class="root-controls">
+					<input type="number" class="root-width-input" data-root="main" value="600" min="150" max="1600" step="10">
+					<span>px</span>
+					<button type="button" class="root-width-apply" data-root="main">Apply</button>
+				</div>
+
+				<div id="root-wrapper-main" class="root-wrapper" data-root="main" style="width: 600px;">
+					<div id="main">
+						<h3>Table with colgroup</h3>
+						<figure class="table" style="width:400px;">
+							<table>
+								<colgroup>
+									<col style="width:35.79%;">
+									<col style="width:64.21%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th colspan="2">Saturday, July 14</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>9:30 AM - 11:30 AM</td>
+										<td>
+											<p><strong>Americano vs. Brewed</strong> - “know your coffee” with:&nbsp;</p>
+											<ul>
+												<li>Giulia Bianchi</li>
+												<li>Stefano Garau</li>
+												<li>Giuseppe Russo</li>
+											</ul>
+										</td>
+									</tr>
+									<tr>
+										<td>1:00 PM - 3:00 PM</td>
+										<td>
+											<p><strong>Pappardelle al pomodoro</strong> - live cooking</p>
+											<p>Incorporate the freshest ingredients&nbsp;<br>with Rita Fresco</p>
+										</td>
+									</tr>
+									<tr>
+										<td>5:00 PM - 8:00 PM</td>
+										<td><strong>Tuscan vineyards at a glance</strong> - wine-tasting&nbsp;<br>with Frederico Riscoli</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>
+
+						<h3>Table with headers only</h3>
+						<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:20%;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Region</th>
+										<th>Orbital radius (AU)</th>
+										<th>Orbital period (years)</th>
+										<th>Number of moons</th>
+									</tr>
+								</thead>
+							</table>
+						</figure>
+					</div>
+				</div>
+			</div>
+
+			<div>
+				<h3>Root: sidebar</h3>
+
+				<div class="root-controls">
+					<input type="number" class="root-width-input" data-root="sidebar" value="350" min="150" max="1600" step="10">
+					<span>px</span>
+					<button type="button" class="root-width-apply" data-root="sidebar">Apply</button>
+				</div>
+
+				<div id="root-wrapper-sidebar" class="root-wrapper" data-root="sidebar" style="width: 350px;">
+					<div id="sidebar">
+						<h3>Table with a single cell and a table width style</h3>
+						<figure class="table" style="width:700px;">
+							<table>
+								<tbody>
+									<tr>
+										<td style="text-align:center;" colspan="4"><span class="text-small"><strong>Color coding for
+													missions</strong></span></td>
+									</tr>
+									<tr>
+										<td style="background-color:hsl(0, 0%, 90%);text-align:center;width:300px;"><span
+												class="text-small"><i>Failed</i></span></td>
+										<td style="background-color:hsl(150, 75%, 60%);text-align:center;"><span
+												class="text-small"><i>Successful</i></span></td>
+										<td style="background-color:hsl(180, 75%, 60%);text-align:center;"><span class="text-small"><i>In
+													progress</i></span></td>
+										<td style="background-color:hsl(210, 75%, 60%);text-align:center;"><span
+												class="text-small"><i>Planned</i></span></td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>
+
+						<h3>Left aligned table</h3>
+						<figure class="table" style="width: 800px;float:left;">
+							<table>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+										<td>14</td>
+									</tr>
+									<tr>
+										<td>21</td>
+										<td>22</td>
+										<td>23</td>
+										<td>24</td>
+									</tr>
+									<tr>
+										<td>31</td>
+										<td>32</td>
+										<td>33</td>
+										<td>34</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
