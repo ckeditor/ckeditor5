@@ -17,10 +17,12 @@ commands:
     steps:
       - browser-tools/install_chrome:
           chrome_version: << pipeline.parameters.chromeVersion >>
+          use_cache: true
           timeout: 5m
       - run:
           name: Install newest emoji to enable emoji picker testing
           command: |
+            sudo apt-get update
             sudo apt install fonts-noto-color-emoji
 
   install_ssh_keys_command:
@@ -40,11 +42,21 @@ commands:
       - run:
           name: Install pnpm
           command: sudo npm i -g pnpm@^11
+      - restore_cache:
+          name: Restore pnpm store cache
+          keys:
+            - pnpm-store-v1-{{ checksum "pnpm-lock.yaml" }}
       - run:
           name: Install dependencies
           environment:
             PUPPETEER_SKIP_DOWNLOAD: true
-          command: pnpm install --frozen-lockfile
+          command: pnpm install --frozen-lockfile --prefer-offline --store-dir ~/.pnpm-store
+      - save_cache:
+          name: Save pnpm store cache
+          key: pnpm-store-v1-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - ~/.pnpm-store
+            - ~/.cache/pnpm/lockfile-verified.jsonl
 
   checkout_command:
     description: "Clone the CKEditor 5 repository with limited depth and branches"

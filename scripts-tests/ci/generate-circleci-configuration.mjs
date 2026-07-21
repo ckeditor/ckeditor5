@@ -4,13 +4,13 @@
  */
 
 import { describe, expect, it, vi } from 'vitest';
+import { globSync } from 'node:fs';
 import fs from 'node:fs/promises';
-import { glob } from 'glob';
 import yaml from 'js-yaml';
 import { parseArgs } from 'node:util';
 
+vi.mock( 'node:fs' );
 vi.mock( 'node:fs/promises' );
-vi.mock( 'glob' );
 vi.mock( 'js-yaml' );
 vi.mock( 'node:util' );
 vi.mock( '../../scripts/constants.mjs', () => ( {
@@ -71,11 +71,11 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 	it( 'collects the coverage of each package into the batch coverage file', async () => {
 		const config = await generateCircleConfiguration();
 
-		const testStep = config.jobs.tests_batch_1.steps.find( step => step.run?.command?.startsWith( 'pnpm run test' ) );
+		const testStep = config.jobs.tests_batch_1.steps.find( step => step.run?.command?.startsWith( 'node --run test' ) );
 
 		expect( testStep.run.when ).toBe( 'always' );
 		expect( testStep.run.command ).toBe(
-			'pnpm run test --attempts 3 -c -f ckeditor5-alignment && ' +
+			'node --run test -- --attempts 3 -c -f ckeditor5-alignment && ' +
 			'cat packages/ckeditor5-alignment/coverage/lcov.info >> .out/combined_tests_batch_1.info'
 		);
 	} );
@@ -86,14 +86,14 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 		} );
 
 		expect( getPackageTestCommand( config.jobs.tests_batch_1, 'ckeditor5' ) ).toBe(
-			'pnpm run test --attempts 3 -f ckeditor5'
+			'node --run test -- --attempts 3 -f ckeditor5'
 		);
 		expect( getPackageTestCommand( config.jobs.tests_batch_2, 'ckeditor5-core' ) ).toBe(
-			'pnpm run test --attempts 3 -c -f ckeditor5-core && ' +
+			'node --run test -- --attempts 3 -c -f ckeditor5-core && ' +
 			'cat packages/ckeditor5-core/coverage/lcov.info >> .out/combined_tests_batch_2.info'
 		);
 		expect( getPackageTestCommand( config.jobs.tests_batch_3, 'ckeditor5-premium-features' ) ).toBe(
-			'pnpm run test --attempts 3 -f ckeditor5-premium-features'
+			'node --run test -- --attempts 3 -f ckeditor5-premium-features'
 		);
 	} );
 
@@ -233,7 +233,7 @@ async function generateCircleConfiguration( {
 		values: parseScriptOptionsFromCliArgs( cliArgs )
 	} );
 
-	vi.mocked( glob ).mockResolvedValue( [ ...packages ] );
+	vi.mocked( globSync ).mockReturnValue( [ ...packages ] );
 	vi.mocked( fs.readFile ).mockImplementation( async filePath => {
 		if ( filePath.endsWith( 'template.yml' ) ) {
 			return 'template-yaml';

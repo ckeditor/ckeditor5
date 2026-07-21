@@ -16,14 +16,14 @@
 //
 // See: https://circleci.com/docs/using-dynamic-configuration/.
 
-import upath from 'upath';
-import fs from 'node:fs/promises';
-import { glob } from 'glob';
+import { globSync } from 'node:fs';
+import { readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import yaml from 'js-yaml';
 import { parseArgs } from 'node:util';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
-const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
+const CIRCLECI_CONFIGURATION_DIRECTORY = join( CKEDITOR5_ROOT_PATH, '.circleci' );
 
 // Fewer batchs duplicate less environment setup, but each batch job runs longer — keep the batch
 // jobs shorter than the pipeline's critical path (the slowest non-test job).
@@ -50,10 +50,10 @@ const { values: options } = parseArgs( {
 
 const isLtsPipeline = options[ 'is-lts-pipeline' ] === 'true';
 
-const packages = await listPackages( upath.join( CKEDITOR5_ROOT_PATH, 'packages' ) );
+const packages = listPackages( join( CKEDITOR5_ROOT_PATH, 'packages' ) );
 
-const config = yaml.load( await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'template.yml' ) ) );
-const rootConfig = yaml.load( await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config.yml' ) ) );
+const config = yaml.load( await readFile( join( CIRCLECI_CONFIGURATION_DIRECTORY, 'template.yml' ) ) );
+const rootConfig = yaml.load( await readFile( join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config.yml' ) ) );
 
 config.parameters = rootConfig.parameters;
 
@@ -107,15 +107,13 @@ for ( const step of config.jobs.cke5_coverage.steps ) {
 	}
 }
 
-await fs.writeFile(
-	upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config-tests.yml' ),
+await writeFile(
+	join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config-tests.yml' ),
 	yaml.dump( config, { lineWidth: -1, noRefs: true } )
 );
 
-async function listPackages( absolutePackagesDir ) {
-	const names = await glob( '*/', { cwd: absolutePackagesDir } );
-
-	return names.sort();
+function listPackages( absolutePackagesDir ) {
+	return globSync( '*/', { cwd: absolutePackagesDir } ).sort();
 }
 
 // Contiguous alphabetical chunks (not round-robin), so it is predictable which batch runs
@@ -142,7 +140,7 @@ function generateTestSteps( packages, { coverageFile } ) {
 		// the coverage flag and the report concatenation.
 		const collectCoverage = !AGGREGATE_PACKAGES.includes( packageName );
 		const testCommand = [
-			'pnpm run test --attempts 3',
+			'node --run test -- --attempts 3',
 			collectCoverage ? '-c' : null,
 			`-f ${ packageName }`,
 			collectCoverage ? `&& cat packages/${ packageName }/coverage/lcov.info >> ${ coverageFile }` : null
