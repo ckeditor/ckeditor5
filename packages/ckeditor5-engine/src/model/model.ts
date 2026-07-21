@@ -1128,6 +1128,7 @@ export class Model extends ModelBase {
 	 */
 	public destroy(): void {
 		this.document.destroy();
+		this.markers.destroy();
 		this.stopListening();
 	}
 

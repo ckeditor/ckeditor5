@@ -312,6 +312,14 @@ describe( 'MarkerCollection', () => {
 			expect( markerA._liveRange ).toBeNull();
 			expect( markerB._liveRange ).toBeNull();
 		} );
+
+		it( 'should be safe to call more than once', () => {
+			markers._set( 'a', range );
+
+			markers.destroy();
+
+			expect( () => markers.destroy() ).not.toThrow();
+		} );
 	} );
 } );
 
