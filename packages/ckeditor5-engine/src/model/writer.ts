@@ -1715,7 +1715,7 @@ export class ModelWriter {
 			}
 
 			const markerRange = marker.getRange();
-			let isAffected = false;
+			let isAffected;
 
 			if ( type === 'move' ) {
 				const range = positionOrRange as ModelRange;

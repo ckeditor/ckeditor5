@@ -22,7 +22,9 @@ import { LinkManualDecorator } from '../../src/utils/manualdecorator.js';
 const mockLocale = { t: val => val };
 
 describe( 'LinkPropertiesView', () => {
-	let view, collection, linkCommand, decorator1, decorator2, decorator3;
+	let view, collection, decorator1, decorator2, decorator3;
+	// eslint-disable-next-line no-unassigned-vars -- Intentionally left undefined; the view under test accepts a missing command.
+	let linkCommand;
 
 	beforeEach( () => {
 		collection = new Collection();

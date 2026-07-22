@@ -2748,7 +2748,7 @@ function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Ar
 	return ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
-		let children: Array<ModelNode> | null = null;
+		let children: Array<ModelNode> | null;
 
 		if ( modeOrFilter === 'children' ) {
 			children = Array.from( element.getChildren() );

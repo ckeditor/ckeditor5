@@ -709,7 +709,7 @@ export class Collection<T extends Record<string, any>> extends CollectionBase im
 	 */
 	private _remove( subject: T | number | string ): [ item: T, index: number ] {
 		let index: number, id: string, item: T;
-		let itemDoesNotExist = false;
+		let itemDoesNotExist;
 		const idProperty = this._idProperty;
 
 		if ( typeof subject == 'string' ) {

@@ -253,7 +253,7 @@ function generateExample( number, table ) {
 }
 
 async function createTableInPre( number, table, target ) {
-	let divForExample = '';
+	let divForExample;
 	switch ( target ) {
 		case 'ghs':
 			divForExample = `html-from-editor-ghs-${ number }`;
@@ -311,7 +311,7 @@ function createEditor( number, table, type ) {
 		}
 	};
 
-	let element = '';
+	let element;
 	switch ( type ) {
 		case 'ghs':
 			element = `editor-ghs-${ number }`;

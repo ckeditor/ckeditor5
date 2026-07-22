@@ -768,7 +768,7 @@ export class ViewDomConverter {
 		inlineNodes: Array<ViewNode> = []
 	): IterableIterator<ViewNode> {
 		// Get child nodes from content document fragment if element is template
-		let childNodes: Array<ChildNode> = [];
+		let childNodes: Array<ChildNode>;
 
 		if ( domElement instanceof HTMLTemplateElement ) {
 			childNodes = [ ...domElement.content.childNodes ];

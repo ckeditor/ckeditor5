@@ -274,7 +274,7 @@ export class MediaEmbedResizeButtons extends Plugin {
 		} );
 
 		for ( const option of optionsWithSerializedValues ) {
-			let definition: ListDropdownItemDefinition | null = null;
+			let definition: ListDropdownItemDefinition | null;
 
 			if ( editor.plugins.has( 'MediaEmbedCustomResizeUI' ) && isCustomMediaEmbedResizeOption( option ) ) {
 				const customResizeUI = editor.plugins.get( 'MediaEmbedCustomResizeUI' );

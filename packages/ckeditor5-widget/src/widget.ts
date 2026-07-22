@@ -827,7 +827,7 @@ function findClosestEditableOrWidgetAncestor( element: ViewElement ): ViewElemen
  */
 function getElementFromMouseEvent( view: EditingView, domEventData: ViewDocumentDomEventData<MouseEvent> ): ViewElement | null {
 	const domRange = getRangeFromMouseEvent( domEventData.domEvent );
-	let viewRange: ViewRange | null = null;
+	let viewRange: ViewRange | null;
 
 	if ( domRange ) {
 		viewRange = view.domConverter.domRangeToView( domRange );

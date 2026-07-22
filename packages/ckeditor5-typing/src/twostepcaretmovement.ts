@@ -229,7 +229,7 @@ export class TwoStepCaretMovement extends Plugin {
 			}
 
 			const contentDirection = locale.contentLanguageDirection;
-			let isMovementHandled = false;
+			let isMovementHandled;
 
 			if ( ( contentDirection === 'ltr' && arrowRightPressed ) || ( contentDirection === 'rtl' && arrowLeftPressed ) ) {
 				isMovementHandled = this._handleForwardMovement( data );

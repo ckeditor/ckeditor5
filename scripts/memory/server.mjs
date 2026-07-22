@@ -55,7 +55,7 @@ async function handleRequest( req, res, assetsDir ) {
 		return badRequest( res );
 	}
 
-	let pathname = '/';
+	let pathname;
 
 	try {
 		pathname = new URL( req.url ?? '/', 'http://localhost' ).pathname;

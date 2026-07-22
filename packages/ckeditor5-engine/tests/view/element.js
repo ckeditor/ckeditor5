@@ -1359,7 +1359,7 @@ describe( 'Element', () => {
 
 				expect( iterator.next() ).toEqual( { value: names[ i++ ], done: false } );
 				expect( iterator.next() ).toEqual( { value: names[ i++ ], done: false } );
-				expect( iterator.next() ).toEqual( { value: names[ i++ ], done: false } );
+				expect( iterator.next() ).toEqual( { value: names[ i ], done: false } );
 				expect( iterator.next() ).toEqual( { value: undefined, done: true } );
 			} );
 		} );

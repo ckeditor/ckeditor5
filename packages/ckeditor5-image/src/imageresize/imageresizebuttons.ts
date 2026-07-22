@@ -293,7 +293,7 @@ export class ImageResizeButtons extends Plugin {
 		} );
 
 		for ( const option of optionsWithSerializedValues ) {
-			let definition: ListDropdownItemDefinition | null = null;
+			let definition: ListDropdownItemDefinition | null;
 
 			if ( editor.plugins.has( 'ImageCustomResizeUI' ) && isCustomImageResizeOption( option ) ) {
 				const customResizeUI = editor.plugins.get( 'ImageCustomResizeUI' );
