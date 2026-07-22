@@ -54,6 +54,10 @@ CKEditor&nbsp;5 can be used in an open-source, GPL-compliant setup with:
 
 In both cases, the editor will {@link getting-started/licensing/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
 
+<info-box warning>
+	The `'GPL'` key works **only with the self-hosted distribution** (npm or ZIP download). The cloud-hosted distribution served via our CDN does not accept the `'GPL'` key and always requires a commercial license key. A [free commercial plan](https://portal.ckeditor.com/checkout?plan=free) is available for cloud use.
+</info-box>
+
 If you are running an Open Source project under an OSS license incompatible with GPL, please [contact us](https://ckeditor.com/contact/). We will be happy to [support your project with a free CKEditor&nbsp;5 license](https://ckeditor.com/wysiwyg-editor-open-source/).
 
 For commercial purposes, {@link getting-started/licensing/license-and-legal trial, development, and production license keys} are available.
