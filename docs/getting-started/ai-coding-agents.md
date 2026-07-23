@@ -31,7 +31,7 @@ The skill loads automatically when you ask your agent to install, set up, config
 
 ## Supported agents
 
-The skill uses the open [Agent Skills](https://agentskills.io/home) format, so it works in any agent that supports it &ndash; including **Claude&nbsp;Code**, **Cursor**, **Codex**, **OpenCode**, **GitHub Copilot**, **Windsurf**, **Gemini**, **Cline**, **AMP**, **Zed**, and more.
+The skill uses the open [Agent Skills](https://agentskills.io/home) format, so it works in any agent that supports it &ndash; including **Claude Code**, **Cursor**, **Codex**, **OpenCode**, **GitHub Copilot**, **Windsurf**, **Gemini**, **Cline**, **AMP**, **Zed**, and more.
 
 ## Other ways to install
 
@@ -59,9 +59,11 @@ The skill works on its own, but it is more effective when your agent can search 
 * **Endpoint:** `https://ckeditor5.mcp.kapa.ai`
 * **Authentication:** Google or GitHub SSO, which Kapa uses to control abuse of the MCP server.
 
-Add the server to your agent's MCP configuration.
+The server requires a one-time sign-in. The first time your agent calls it, a browser window opens – sign in with your Google or GitHub account, then retry the question. If no prompt appears in Claude Code, run `/mcp`, select `ckeditor5`, and choose **Authenticate**.
 
-### Claude Code
+### Add the server to your agent's MCP configuration
+
+#### Claude Code
 
 ```bash
 claude mcp add --transport http --scope project ckeditor5 https://ckeditor5.mcp.kapa.ai
@@ -83,7 +85,7 @@ claude mcp add --transport http --scope project ckeditor5 https://ckeditor5.mcp.
 
 </details>
 
-### Cursor
+#### Cursor
 
 Add it to `.cursor/mcp.json`:
 
@@ -97,7 +99,7 @@ Add it to `.cursor/mcp.json`:
 }
 ```
 
-### Codex
+#### Codex
 
 ```bash
 codex mcp add ckeditor5-docs --url https://ckeditor5.mcp.kapa.ai
@@ -116,7 +118,7 @@ enabled = true
 
 </details>
 
-### OpenCode
+#### OpenCode
 
 Add it to `opencode.json`:
 
@@ -134,6 +136,18 @@ Add it to `opencode.json`:
 ```
 
 For any other agent, point its MCP client at the streamable HTTP endpoint above and authenticate with Google or GitHub SSO.
+
+## Read the documentation as markdown
+
+Even without the MCP server, agents can read the documentation efficiently: every page of the **latest** documentation is also served as clean, token-friendly markdown, in two ways. Replace `.html` with `.md` in the page URL, for example:
+
+```text
+https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.md
+```
+
+Alternatively, request the original `.html` page with an `Accept: text/markdown` header and the server returns the markdown version.
+
+For bulk access, [https://ckeditor.com/docs/llms-full.txt](https://ckeditor.com/docs/llms-full.txt) bundles all the guides in a single plain-text file.
 
 ## Feedback
 
