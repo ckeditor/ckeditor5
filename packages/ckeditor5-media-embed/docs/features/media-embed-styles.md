@@ -51,7 +51,7 @@ The plugin provides the following five style options out of the box. Each option
 <info-box>
 	The actual styling of the media embeds is the job of the integrator. CKEditor&nbsp;5 comes with some default styles, but they will only be applied to the media inside the editor. The integrator needs to style them appropriately on the target pages.
 
-	You can find the source of the default styles applied by the editor here: [`ckeditor5-media-embed/theme/mediaembedstyle.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/theme/mediaembedstyle.css).
+	You can find the source of the default styles applied by the editor here: [`ckeditor5-media-embed/theme/index-content.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/theme/index-content.css).
 
 	Read more about {@link getting-started/setup/css styling the content of the editor}.
 </info-box>

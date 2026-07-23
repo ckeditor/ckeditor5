@@ -96,11 +96,12 @@ export function createVitestConfig( packageDir: string, options: PackageTestOpti
 
 					// Package stylesheets are imported by the package entry module (`src/index.ts`),
 					// not by individual source modules. Tests import source modules directly, so the
-					// package theme entry stylesheet must be loaded explicitly. Stylesheets of other
+					// package theme entry stylesheets must be loaded explicitly. Stylesheets of other
 					// packages still arrive transitively through their `@ckeditor/*` entry imports.
-					...existsSync( resolve( packageDir, 'theme', 'index.css' ) ) ?
-						[ resolve( packageDir, 'theme', 'index.css' ) ] :
-						[]
+					...[
+						resolve( packageDir, 'theme', 'index-editor.css' ),
+						resolve( packageDir, 'theme', 'index-content.css' )
+					].filter( entryStylesheet => existsSync( entryStylesheet ) )
 				],
 				testTimeout: 5_000,
 

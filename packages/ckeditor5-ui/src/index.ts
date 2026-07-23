@@ -323,5 +323,6 @@ export { type RenderData as _TemplateRenderData } from './template.js';
 export { NESTED_TOOLBAR_ICONS } from './toolbar/toolbarview.js';
 export { type ToolbarBehavior as _ToolbarBehavior } from './toolbar/toolbarview.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

@@ -18,5 +18,6 @@ export type { BookmarkConfig } from './bookmarkconfig.js';
 
 export { isBookmarkIdValid as _isBookmarkIdValid } from './utils.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

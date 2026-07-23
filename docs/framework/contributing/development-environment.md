@@ -185,6 +185,13 @@ Content styles let you customize the appearance of editor content presented to t
 
 For a complete explanation of what content styles are, how they work, and how to configure them in your project, refer to the {@link getting-started/setup/css Content styles} guide.
 
+Packages that provide styles use two entry points in their `theme` directory:
+
+* `index-editor.css` imports styles used only by the editor UI and editing view.
+* `index-content.css` contains styles used when displaying editor data outside the editor. Content selectors must use the `.ck-content` scope.
+
+The package's `src/index.ts` imports both entry points. The build generates `dist/index-editor.css`, `dist/index-content.css`, and a combined `dist/index.css` file. Run `pnpm check-css-imports` to verify that every theme stylesheet is reachable from exactly one entry point.
+
 ## Additional information for contributors
 
 ### SVG icons

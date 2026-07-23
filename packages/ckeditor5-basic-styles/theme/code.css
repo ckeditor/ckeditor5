@@ -3,12 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck-content code {
-	background-color: hsla(0, 0%, 78%, 0.3);
-	padding: .15em;
-	border-radius: 2px;
-}
-
 .ck.ck-editor__editable .ck-code_selected  {
 	background-color: hsla(0, 0%, 78%, 0.5);
 }

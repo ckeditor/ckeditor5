@@ -59,5 +59,6 @@ export { LineView as _ClipboardLineView } from './lineview.js';
 
 export { normalizeClipboardData as _normalizeClipboardData } from './utils/normalizeclipboarddata.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

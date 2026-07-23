@@ -1,0 +1,35 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-content pre {
+	padding: 1em;
+	color: hsl(0, 0%, 20.8%);
+	background: hsla(0, 0%, 78%, 0.3);
+	border: 1px solid hsl(0, 0%, 77%);
+	border-radius: 2px;
+
+	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+	margin: 0.9em 0;
+
+	/* Code block are language direction–agnostic. */
+	text-align: left;
+	direction: ltr;
+
+	tab-size: 4;
+	white-space: pre-wrap;
+
+	/* Don't inherit the style, e.g. when in a block quote. */
+	font-style: normal;
+
+	/* Don't let the code be squashed e.g. when in a table cell. */
+	min-width: 200px;
+
+	& code {
+		background: unset;
+		padding: 0;
+		border-radius: 0;
+	}
+}

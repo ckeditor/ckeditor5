@@ -529,4 +529,5 @@ export {
 
 export { injectUiElementHandling as _injectViewUIElementHandling } from './view/uielement.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';

@@ -216,5 +216,6 @@ export {
 	getTableWidgetAncestor as _getTableWidgetAncestor
 } from './utils/ui/widget.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

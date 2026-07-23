@@ -126,8 +126,12 @@ jobs:
           command: pnpm run check-exports
       - run:
           when: always
-          name: Check if all package stylesheets are imported in the "theme/index.css" entry points
+          name: Check if all package stylesheets are imported in the CSS entry points
           command: pnpm run check-css-imports
+      - run:
+          when: always
+          name: Check if the editor and content stylesheets consume only declared CSS custom properties
+          command: pnpm run check-css-variables
       - run:
           when: always
           name: Check if all package members are exported correctly from the index.ts file

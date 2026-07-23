@@ -3,32 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* Preserve aspect ratio of the resized image after introducing image height attribute. */
-.ck-content img.image_resized {
-	height: auto;
-}
-
-.ck-content .image.image_resized {
-	max-width: 100%;
-	/*
-	The `<figure>` element for resized images must not use `display:table` as browsers do not support `max-width` for it well.
-	See https://stackoverflow.com/questions/4019604/chrome-safari-ignoring-max-width-in-table/14420691#14420691 for more.
-	Fortunately, since we control the width, there is no risk that the image will look bad.
-	*/
-	display: block;
-	box-sizing: border-box;
-
-	& img {
-		/* For resized images it is the `<figure>` element that determines the image width. */
-		width: 100%;
-	}
-
-	& > figcaption {
-		/* The `<figure>` element uses `display:block`, so `<figcaption>` also has to. */
-		display: block;
-	}
-}
-
 .ck.ck-editor__editable {
 	/* The resized inline image nested in the table should respect its parent size.
 	See https://github.com/ckeditor/ckeditor5/issues/9117. */

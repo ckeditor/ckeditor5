@@ -1,0 +1,83 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-content .media {
+	/* Don't allow floated content overlap the media.
+	https://github.com/ckeditor/ckeditor5-media-embed/issues/53 */
+	clear: both;
+
+	/* Make sure there is some space between the content and the media. */
+	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+	margin: 0.9em auto;
+
+	/* Make sure media is not overriden with Bootstrap default `flex` value.
+	See: https://github.com/ckeditor/ckeditor5/issues/1373. */
+	display: block;
+
+	/* Give the media some minimal width in the content to prevent them
+	from being "squashed" in tight spaces, e.g. in table cells (https://github.com/ckeditor/ckeditor5-media-embed/issues/44) */
+	min-width: 15em;
+}
+
+/* Preserve the historical 300px default size for unresized Spotify embeds (backward
+   compatibility). Set on the figure so the selection outline hugs the embed; an inline
+   `style="width: X%"` from resize beats this rule.
+   Spotify's responsive breakpoint is 280px — below it the embed's internal layout
+   switches and the iframe's declared aspect ratio no longer matches. The 286px min-width
+   reserves 3px per side for the widget border that track changes suggestion markers
+   (insertion, deletion, formatInline) paint on the figure, so the iframe interior stays
+   at or above 280px even with an active marker. */
+.ck-content .media:has(> div[data-oembed-url*="open.spotify.com"]) {
+	width: 300px;
+	min-width: 286px;
+}
+.ck-content .media.media_resized {
+	display: block;
+	box-sizing: border-box;
+	max-width: 100%;
+
+	/* The wrapper should fill the figure when an explicit width is set. */
+	& > div[data-oembed-url] {
+		width: 100%;
+	}
+}
+:root {
+	/* Side spacing between a floated media and surrounding text. */
+	--ck-content-media-style-spacing: 1.5em;
+}
+.ck-content {
+	/* `clear: none` lets multiple floats stack horizontally. `width: 100%` keeps float
+	   from collapsing the iframe to its 300×150 default; resize's inline `style="width: …"`
+	   and Spotify's `:has()` rule in mediaembedediting.css both win on specificity. */
+	& .media.media-style-align-left,
+	& .media.media-style-align-right {
+		clear: none;
+		width: 100%;
+	}
+
+	& .media.media-style-align-left {
+		float: left;
+		margin-right: var(--ck-content-media-style-spacing);
+	}
+
+	& .media.media-style-align-right {
+		float: right;
+		margin-left: var(--ck-content-media-style-spacing);
+	}
+
+	/* Margin-auto shifts a width-constrained figure within its line — a no-op for full-width
+	   figures, visible once a width constraint applies (resize's inline width, or Spotify's
+	   backward-compat 300px). */
+	& .media.media-style-block-align-left {
+		margin-left: 0;
+		margin-right: auto;
+	}
+
+	& .media.media-style-block-align-right {
+		margin-left: auto;
+		margin-right: 0;
+	}
+}

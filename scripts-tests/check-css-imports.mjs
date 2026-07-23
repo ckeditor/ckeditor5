@@ -5,53 +5,35 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock( 'fs-extra' );
-vi.mock( 'glob' );
-
-vi.mock( 'chalk', () => {
-	const passthrough = text => text;
-
-	passthrough.bold = passthrough;
-
-	return {
-		default: {
-			red: passthrough,
-			green: passthrough
-		}
-	};
-} );
+vi.mock( 'node:fs' );
 
 describe( 'scripts/check-css-imports', () => {
-	let fs, glob;
+	let fs;
 
 	beforeEach( async () => {
 		vi.resetModules();
 
-		fs = await import( 'fs-extra' );
-		glob = await import( 'glob' );
+		fs = await import( 'node:fs' );
 
 		vi.spyOn( process, 'cwd' ).mockReturnValue( '/repo' );
 		vi.spyOn( console, 'log' ).mockImplementation( () => {} );
 		vi.spyOn( process, 'exit' ).mockImplementation( () => {} );
 	} );
 
-	function setupPackage( { packageName = 'ckeditor5-example', themeFiles = [], cssContents = {}, indexContent, sideEffects } = {} ) {
+	function setupPackage( {
+		packageName = 'ckeditor5-example',
+		themeFiles = [],
+		cssContents = {},
+		indexContent,
+		sideEffects
+	} = {} ) {
 		const packageDir = `/repo/packages/${ packageName }`;
 
-		vi.mocked( fs.default.readJsonSync ).mockImplementation( path => {
-			if ( path === `${ packageDir }/package.json` ) {
-				return sideEffects === undefined ? {} : { sideEffects };
-			}
-
-			throw new Error( `Unexpected JSON read: ${ path }` );
-		} );
-
-		// Resolve the stylesheet map keys the same way the tested script resolves `@import` targets.
 		const resolvePath = file => file.startsWith( '../' ) ?
 			`${ packageDir }/${ file.slice( 3 ) }` :
 			`${ packageDir }/theme/${ file }`;
 
-		vi.mocked( glob.globSync ).mockImplementation( pattern => {
+		vi.mocked( fs.globSync ).mockImplementation( pattern => {
 			if ( pattern.endsWith( 'package.json' ) ) {
 				return [ `${ packageDir }/package.json` ];
 			}
@@ -59,11 +41,7 @@ describe( 'scripts/check-css-imports', () => {
 			return themeFiles.map( file => `${ packageDir }/theme/${ file }` );
 		} );
 
-		vi.mocked( fs.default.existsSync ).mockImplementation( path => {
-			if ( path === `${ packageDir }/theme/index.css` ) {
-				return 'index.css' in cssContents;
-			}
-
+		vi.mocked( fs.existsSync ).mockImplementation( path => {
 			if ( path === `${ packageDir }/src/index.ts` ) {
 				return indexContent !== undefined;
 			}
@@ -71,7 +49,11 @@ describe( 'scripts/check-css-imports', () => {
 			return Object.keys( cssContents ).some( file => path === resolvePath( file ) );
 		} );
 
-		vi.mocked( fs.default.readFileSync ).mockImplementation( path => {
+		vi.mocked( fs.readFileSync ).mockImplementation( path => {
+			if ( path === `${ packageDir }/package.json` ) {
+				return JSON.stringify( sideEffects === undefined ? {} : { sideEffects } );
+			}
+
 			if ( path === `${ packageDir }/src/index.ts` ) {
 				return indexContent;
 			}
@@ -86,15 +68,23 @@ describe( 'scripts/check-css-imports', () => {
 		} );
 	}
 
-	const VALID_INDEX_TS = 'export { Example } from \'./example.js\';\n\nimport \'../theme/index.css\';\n';
+	const VALID_INDEX_TS = [
+		'export { Example } from \'./example.js\';',
+		'',
+		'import \'../theme/index-editor.css\';',
+		'import \'../theme/index-content.css\';',
+		''
+	].join( '\n' );
 
-	it( 'should pass when all theme stylesheets are reachable from the entry point', async () => {
+	it( 'passes when each theme stylesheet is reachable from exactly one entry point', async () => {
 		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css', 'nested/other.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css', 'editor.css', 'content.css', 'nested/content.css' ],
 			cssContents: {
-				'index.css': '@import "./example.css";\n@import "./nested/other.css";\n',
-				'example.css': '.ck {}',
-				'nested/other.css': '.ck {}'
+				'index-editor.css': '@import "./editor.css";\n',
+				'index-content.css': '@import url("./content.css");\n',
+				'editor.css': '.ck-editor {}',
+				'content.css': '@import \'./nested/content.css\';\n.ck-content {}',
+				'nested/content.css': '.ck-content p {}'
 			},
 			indexContent: VALID_INDEX_TS
 		} );
@@ -102,40 +92,24 @@ describe( 'scripts/check-css-imports', () => {
 		await import( '../scripts/check-css-imports.mjs' );
 
 		expect( process.exit ).not.toHaveBeenCalled();
-		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'All package stylesheets are imported' ) );
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'exactly one CSS entry point' ) );
 	} );
 
-	it( 'should pass for a package without theme stylesheets', async () => {
-		setupPackage( { themeFiles: [] } );
+	it( 'passes for a package without theme stylesheets', async () => {
+		setupPackage();
 
 		await import( '../scripts/check-css-imports.mjs' );
 
 		expect( process.exit ).not.toHaveBeenCalled();
 	} );
 
-	it( 'should follow imports through nested stylesheets', async () => {
+	it( 'allows a flat content entry point', async () => {
 		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css', 'nested/other.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css', 'feature.css' ],
 			cssContents: {
-				'index.css': '@import "./example.css";\n',
-				'example.css': '@import "./nested/other.css";\n.ck {}',
-				'nested/other.css': '.ck {}'
-			},
-			indexContent: VALID_INDEX_TS
-		} );
-
-		await import( '../scripts/check-css-imports.mjs' );
-
-		expect( process.exit ).not.toHaveBeenCalled();
-	} );
-
-	it( 'should support single-quoted and url() import forms', async () => {
-		setupPackage( {
-			themeFiles: [ 'index.css', 'single.css', 'url.css' ],
-			cssContents: {
-				'index.css': '@import \'./single.css\';\n@import url("./url.css");\n',
-				'single.css': '.ck {}',
-				'url.css': '.ck {}'
+				'index-editor.css': '@import "./feature.css";',
+				'index-content.css': '.ck-content {}',
+				'feature.css': '.ck-content {}'
 			},
 			indexContent: VALID_INDEX_TS
 		} );
@@ -145,12 +119,13 @@ describe( 'scripts/check-css-imports', () => {
 		expect( process.exit ).not.toHaveBeenCalled();
 	} );
 
-	it( 'should ignore commented-out imports', async () => {
+	it( 'allows bare imports of stylesheets from other packages', async () => {
 		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css', 'feature.css' ],
 			cssContents: {
-				'index.css': '/* @import "./missing.css"; */\n@import "./example.css";\n',
-				'example.css': '.ck {}'
+				'index-editor.css': '@import "@ckeditor/ckeditor5-ui/theme/index-editor.css";\n@import "./feature.css";',
+				'index-content.css': '',
+				'feature.css': '.ck {}'
 			},
 			indexContent: VALID_INDEX_TS
 		} );
@@ -160,26 +135,12 @@ describe( 'scripts/check-css-imports', () => {
 		expect( process.exit ).not.toHaveBeenCalled();
 	} );
 
-	it( 'should tolerate bare import specifiers pointing to other packages', async () => {
+	it( 'rejects bare imports from the content entry point', async () => {
 		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css' ],
 			cssContents: {
-				'index.css': '@import "@example/other-package/styles.css";\n@import "./example.css";\n',
-				'example.css': '.ck {}'
-			},
-			indexContent: VALID_INDEX_TS
-		} );
-
-		await import( '../scripts/check-css-imports.mjs' );
-
-		expect( process.exit ).not.toHaveBeenCalled();
-	} );
-
-	it( 'should fail when the entry point is missing', async () => {
-		setupPackage( {
-			themeFiles: [ 'example.css' ],
-			cssContents: {
-				'example.css': '.ck {}'
+				'index-editor.css': '',
+				'index-content.css': '@import "@ckeditor/ckeditor5-ui/theme/index-content.css";'
 			},
 			indexContent: VALID_INDEX_TS
 		} );
@@ -187,15 +148,49 @@ describe( 'scripts/check-css-imports', () => {
 		await import( '../scripts/check-css-imports.mjs' );
 
 		expect( process.exit ).toHaveBeenCalledWith( 1 );
-		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'missing the "theme/index.css" entry point' ) );
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'content styles must not import' ) );
 	} );
 
-	it( 'should fail when a theme stylesheet is not reachable from the entry point', async () => {
+	it( 'rejects an unsupported @import', async () => {
 		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css', 'orphan.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css' ],
 			cssContents: {
-				'index.css': '@import "./example.css";\n',
-				'example.css': '.ck {}',
+				'index-editor.css': '@import foo;',
+				'index-content.css': ''
+			},
+			indexContent: VALID_INDEX_TS
+		} );
+
+		await import( '../scripts/check-css-imports.mjs' );
+
+		expect( process.exit ).toHaveBeenCalledWith( 1 );
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'contains an unsupported @import: "foo"' ) );
+	} );
+
+	it.each( [ 'index-editor.css', 'index-content.css' ] )( 'fails when %s is missing', async missingEntry => {
+		const existingEntry = missingEntry === 'index-editor.css' ? 'index-content.css' : 'index-editor.css';
+
+		setupPackage( {
+			themeFiles: [ existingEntry, 'feature.css' ],
+			cssContents: {
+				[ existingEntry ]: '@import "./feature.css";',
+				'feature.css': '.ck {}'
+			},
+			indexContent: VALID_INDEX_TS
+		} );
+
+		await import( '../scripts/check-css-imports.mjs' );
+
+		expect( process.exit ).toHaveBeenCalledWith( 1 );
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( `missing the "theme/${ missingEntry }"` ) );
+	} );
+
+	it( 'fails when a stylesheet is unreachable', async () => {
+		setupPackage( {
+			themeFiles: [ 'index-editor.css', 'index-content.css', 'orphan.css' ],
+			cssContents: {
+				'index-editor.css': '',
+				'index-content.css': '',
 				'orphan.css': '.ck {}'
 			},
 			indexContent: VALID_INDEX_TS
@@ -204,15 +199,16 @@ describe( 'scripts/check-css-imports', () => {
 		await import( '../scripts/check-css-imports.mjs' );
 
 		expect( process.exit ).toHaveBeenCalledWith( 1 );
-		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( '"theme/orphan.css" is not imported in "theme/index.css"' ) );
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( '"theme/orphan.css" is not imported' ) );
 	} );
 
-	it( 'should fail when an import points to a non-existing file', async () => {
+	it( 'fails when a stylesheet is reachable from both entry points', async () => {
 		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css', 'shared.css' ],
 			cssContents: {
-				'index.css': '@import "./example.css";\n@import "./missing.css";\n',
-				'example.css': '.ck {}'
+				'index-editor.css': '@import "./shared.css";',
+				'index-content.css': '@import "./shared.css";',
+				'shared.css': '.ck {}'
 			},
 			indexContent: VALID_INDEX_TS
 		} );
@@ -220,15 +216,15 @@ describe( 'scripts/check-css-imports', () => {
 		await import( '../scripts/check-css-imports.mjs' );
 
 		expect( process.exit ).toHaveBeenCalledWith( 1 );
-		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'imports the non-existing file "./missing.css"' ) );
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'imported by both theme entry points' ) );
 	} );
 
-	it( 'should fail when an import escapes the theme directory', async () => {
+	it( 'fails when entry points import one another', async () => {
 		setupPackage( {
-			themeFiles: [ 'index.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css' ],
 			cssContents: {
-				'index.css': '@import "../src/example.css";\n',
-				'../src/example.css': '.ck {}'
+				'index-editor.css': '@import "./index-content.css";',
+				'index-content.css': ''
 			},
 			indexContent: VALID_INDEX_TS
 		} );
@@ -236,62 +232,66 @@ describe( 'scripts/check-css-imports', () => {
 		await import( '../scripts/check-css-imports.mjs' );
 
 		expect( process.exit ).toHaveBeenCalledWith( 1 );
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'must not import "theme/index-content.css"' ) );
+	} );
+
+	it( 'fails for missing and outside-theme imports', async () => {
+		setupPackage( {
+			themeFiles: [ 'index-editor.css', 'index-content.css' ],
+			cssContents: {
+				'index-editor.css': '@import "./missing.css";\n@import "../src/outside.css";',
+				'index-content.css': '',
+				'../src/outside.css': '.ck {}'
+			},
+			indexContent: VALID_INDEX_TS
+		} );
+
+		await import( '../scripts/check-css-imports.mjs' );
+
+		expect( process.exit ).toHaveBeenCalledWith( 1 );
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'non-existing file "./missing.css"' ) );
 		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'from outside the "theme" directory' ) );
 	} );
 
-	it( 'should fail when "src/index.ts" does not import the entry point', async () => {
+	it.each( [ 'index-editor.css', 'index-content.css' ] )( 'requires the %s import in src/index.ts', async missingImport => {
 		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css' ],
 			cssContents: {
-				'index.css': '@import "./example.css";\n',
-				'example.css': '.ck {}'
+				'index-editor.css': '',
+				'index-content.css': ''
 			},
-			indexContent: 'export { Example } from \'./example.js\';\n'
+			indexContent: VALID_INDEX_TS.replace( `import '../theme/${ missingImport }';\n`, '' )
 		} );
 
 		await import( '../scripts/check-css-imports.mjs' );
 
 		expect( process.exit ).toHaveBeenCalledWith( 1 );
-		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( '"src/index.ts" does not import "../theme/index.css"' ) );
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( `does not import "../theme/${ missingImport }"` ) );
 	} );
 
-	it( 'should not treat a commented-out entry point import in "src/index.ts" as valid', async () => {
+	it( 'ignores commented-out imports in CSS and TypeScript', async () => {
 		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css', 'feature.css' ],
 			cssContents: {
-				'index.css': '@import "./example.css";\n',
-				'example.css': '.ck {}'
+				'index-editor.css': '/* @import "./missing.css"; */\n@import "./feature.css";',
+				'index-content.css': '',
+				'feature.css': '.ck {}'
 			},
-			indexContent: '/* import \'../theme/index.css\'; */\nexport { Example } from \'./example.js\';\n'
+			indexContent: '/*\nimport \'../theme/index-content.css\';\n*/\nimport \'../theme/index-editor.css\';\n'
 		} );
 
 		await import( '../scripts/check-css-imports.mjs' );
 
 		expect( process.exit ).toHaveBeenCalledWith( 1 );
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'does not import "../theme/index-content.css"' ) );
 	} );
 
-	it( 'should pass when the "sideEffects" list includes the package entry point', async () => {
+	it( 'validates the package sideEffects metadata', async () => {
 		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css' ],
 			cssContents: {
-				'index.css': '@import "./example.css";\n',
-				'example.css': '.ck {}'
-			},
-			indexContent: VALID_INDEX_TS,
-			sideEffects: [ '*.css', 'src/index.ts' ]
-		} );
-
-		await import( '../scripts/check-css-imports.mjs' );
-
-		expect( process.exit ).not.toHaveBeenCalled();
-	} );
-
-	it( 'should fail when the "sideEffects" list does not include the package entry point', async () => {
-		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css' ],
-			cssContents: {
-				'index.css': '@import "./example.css";\n',
-				'example.css': '.ck {}'
+				'index-editor.css': '',
+				'index-content.css': ''
 			},
 			indexContent: VALID_INDEX_TS,
 			sideEffects: [ '*.css' ]
@@ -303,12 +303,12 @@ describe( 'scripts/check-css-imports', () => {
 		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'must include "src/index.ts"' ) );
 	} );
 
-	it( 'should fail when the "sideEffects" field disables all side effects', async () => {
+	it( 'rejects package metadata that disables all side effects', async () => {
 		setupPackage( {
-			themeFiles: [ 'index.css', 'example.css' ],
+			themeFiles: [ 'index-editor.css', 'index-content.css' ],
 			cssContents: {
-				'index.css': '@import "./example.css";\n',
-				'example.css': '.ck {}'
+				'index-editor.css': '',
+				'index-content.css': ''
 			},
 			indexContent: VALID_INDEX_TS,
 			sideEffects: false

@@ -12,5 +12,6 @@ export { HorizontalLineEditing } from './horizontallineediting.js';
 export { HorizontalLineUI } from './horizontallineui.js';
 export { HorizontalLineCommand } from './horizontallinecommand.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

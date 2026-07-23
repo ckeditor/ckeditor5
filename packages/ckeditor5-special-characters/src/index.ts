@@ -29,5 +29,6 @@ export { CharacterInfoView as _SpecialCharactersInfoView } from './ui/characteri
 export { SpecialCharactersCategoriesView as _SpecialCharactersCategoriesView } from './ui/specialcharacterscategoriesview.js';
 export { SpecialCharactersView as _SpecialCharactersView } from './ui/specialcharactersview.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

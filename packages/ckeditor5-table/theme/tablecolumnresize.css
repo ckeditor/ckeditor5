@@ -12,17 +12,6 @@
 	--ck-table-column-resizer-position-offset: calc(var(--ck-table-column-resizer-width) * -0.5 - 0.5px);
 }
 
-.ck-content .table .ck-table-resized {
-	table-layout: fixed;
-}
-
-.ck-content .table td,
-.ck-content .table th {
-	/* To prevent text overflowing beyond its cell when columns are resized by resize handler
-	(https://github.com/ckeditor/ckeditor5/pull/14379#issuecomment-1589460978). */
-	overflow-wrap: break-word;
-}
-
 .ck.ck-editor__editable .table td,
 .ck.ck-editor__editable .table th {
 	/* The resizer element is placed inside each cell, so it must be positioned relatively to the cell. */

@@ -129,19 +129,6 @@
 	}
 }
 
-/* Preserve the historical 300px default size for unresized Spotify embeds (backward
-   compatibility). Set on the figure so the selection outline hugs the embed; an inline
-   `style="width: X%"` from resize beats this rule.
-   Spotify's responsive breakpoint is 280px — below it the embed's internal layout
-   switches and the iframe's declared aspect ratio no longer matches. The 286px min-width
-   reserves 3px per side for the widget border that track changes suggestion markers
-   (insertion, deletion, formatInline) paint on the figure, so the iframe interior stays
-   at or above 280px even with an active marker. */
-.ck-content .media:has(> div[data-oembed-url*="open.spotify.com"]) {
-	width: 300px;
-	min-width: 286px;
-}
-
 /* Disable all mouse interaction as long as the editor is not read–only.
    https://github.com/ckeditor/ckeditor5-media-embed/issues/58 */
 

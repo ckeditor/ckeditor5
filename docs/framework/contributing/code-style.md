@@ -1130,7 +1130,7 @@ This rule ensures that SVG files are imported and exported only in the `@ckedito
 
 ### CSS imports only in the main package entry point
 
-This rule ensures that CSS files are imported only in the main package entry point (`src/index.ts`). Each package imports its stylesheets through a single `theme/index.css` entry point, which lists all stylesheets from the package `theme` directory. Individual source modules must not import CSS files.
+This rule ensures that CSS files are imported only in the main package entry point (`src/index.ts`). Each package imports `theme/index-editor.css` followed by `theme/index-content.css`. Individual source modules must not import CSS files.
 
 ### Valid changelog entries
 
@@ -1256,3 +1256,11 @@ This rule aims to enforce convention of all variables targeting styling of eleme
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/18805)
+
+### Content stylesheet placement: `ckeditor5-rules/content-styles-in-index-content`
+
+This rule requires content styles scoped with `.ck-content` to be placed in `theme/index-content.css`. Editor-only content hosts, such as `.ck-editor__editable.ck-content`, stay in editor stylesheets.
+
+### Editor stylesheet placement: `ckeditor5-rules/no-editor-styles-in-index-content`
+
+This rule prevents editor UI and editing-view selectors from being placed in `theme/index-content.css`. The content entry point may also contain supporting custom properties, font definitions, and keyframes.

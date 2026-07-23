@@ -51,5 +51,6 @@ export type {
 export { createEditabilityChecker as _createCKBoxEditabilityChecker } from './ckboximageedit/utils.js';
 export { prepareImageAssetAttributes as _prepareCKBoxImageAssetAttributes } from './ckboxcommand.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

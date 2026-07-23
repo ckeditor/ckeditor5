@@ -1,0 +1,216 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `tableproperties.css`. */
+	--ck-content-table-style-spacing: 1.5em;
+
+	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `tablecaption.css`. */
+	--ck-content-color-table-caption-background: hsl(0, 0%, 97%);
+	--ck-content-color-table-caption-text: hsl(0, 0%, 20%);
+}
+
+.ck-content {
+	/* Ensure that table header text is aligned to the start by default. See https://github.com/ckeditor/ckeditor5/issues/19454. */
+	& .table th {
+		text-align: start;
+	}
+
+	/* Text alignment of the table header should match the editor settings and override the native browser styling,
+	when content is available outside the editor. See https://github.com/ckeditor/ckeditor5/issues/6638. */
+	&[dir="rtl"] .table th {
+		text-align: right;
+	}
+
+	&[dir="ltr"] .table th {
+		text-align: left;
+	}
+
+	& figure.table:not(.layout-table) {
+		display: table;
+
+		& > table {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	& .table:not(.layout-table) {
+		/* Give the table widget some air and center it horizontally */
+		/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+		to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+		margin: 0.9em auto;
+	}
+
+	& table.table:not(.layout-table),
+	& figure.table:not(.layout-table) > table {
+		/* The table cells should have slight borders */
+		border-collapse: collapse;
+		border-spacing: 0;
+
+		/* The outer border of the table should be slightly darker than the inner lines.
+		Also see https://github.com/ckeditor/ckeditor5-table/issues/50. */
+		border: 1px double hsl(0, 0%, 70%);
+
+		& > thead,
+		& > tfoot,
+		& > tbody {
+			/* The linter is disabled here because linter is confused when resolving the `table.table:not(.layout-table)`
+			and `figure.table:not(.layout-table) > table` selectors combined with below selectors.
+			There is no need to split it into two large structures with same code just to make linter happy. */
+			& > tr {
+				& > th {
+					font-weight: bold;
+					background: hsla(0, 0%, 0%, 5%);
+				}
+
+				& > td,
+				& > th {
+					/* Opinionated table content styling: prevents content from shifting
+					 * when Enter is pressed in the first cell.
+					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+					 */
+					& > p:first-of-type {
+						margin-top: 0;
+					}
+
+					/* Mirrors the rule above for the last paragraph to keep the
+					 * experience consistent with the first paragraph.
+					 *
+					 * Together, these rules prevent margins from appearing when a
+					 * bogus paragraph becomes a real paragraph after it receives line
+					 * height, text alignment, or other block style.
+					 *
+					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+					 */
+					& > p:last-of-type {
+						margin-bottom: 0;
+					}
+
+					min-width: 2em;
+					padding: 0.4em;
+
+					/* The border is inherited from .ck-editor__nested-editable styles, so theoretically it's not necessary here.
+					However, the border is a content style, so it should use .ck-content (so it works outside the editor).
+					Hence, the duplication. See https://github.com/ckeditor/ckeditor5/issues/6314 */
+					border: 1px solid hsl(0, 0%, 75%);
+				}
+			}
+		}
+	}
+}
+
+@media print {
+	.ck-content figure.table {
+		/**
+		 * Sometimes Chrome incorrectly calculates the height of the last table row and some
+		 * of the content overlaps the paragraph that is placed directly after the table. It affects
+		 * the column split mode pagination calculation which causes mismatch between the print mode and
+		 * the preview mode.
+		 *
+		 * This issue happens only if:
+		 *
+		 * 	* The table is inside a figure element.
+		 * 	* The table has `display: table` style set.
+		 * 	* The block element is placed directly after the table.
+		 */
+		&:not(.layout-table) {
+			width: fit-content;
+			height: fit-content;
+		}
+
+		/**
+		 * Expanding the table to the full height of the parent container is necessary because tables
+		 * are rendered inside <figure> elements, which is kinda buggy in table height calculation.
+		 * While setting `height: 100%` fixes the issue in the editing mode described here:
+		 * https://github.com/ckeditor/ckeditor5/issues/6186
+		 *
+		 * it's causing another issue with the table height in the print preview mode here:
+		 * https://github.com/ckeditor/ckeditor5/issues/16856
+		 *
+		 * For now, resetting the height to `initial` in the print mode works as a workaround.
+		 */
+		&:not(.layout-table) > table {
+			height: initial;
+		}
+	}
+}
+
+.ck-content {
+	& table.table.layout-table,
+	& figure.table.layout-table {
+		/* Do not reserve space above and below the layout table. */
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+	& table.table.layout-table {
+		border-spacing: 0;
+	}
+
+	& figure.table.layout-table > table {
+		border-spacing: 0;
+	}
+}
+
+.ck-content {
+	& .table {
+		&.table-style-align-left {
+			float: left;
+			margin-right: var(--ck-content-table-style-spacing);
+		}
+
+		&.table-style-align-right {
+			float: right;
+			margin-left: var(--ck-content-table-style-spacing);
+		}
+
+		&.table-style-align-center {
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		&.table-style-block-align-left {
+			margin-left: 0;
+			margin-right: auto;
+		}
+
+		&.table-style-block-align-right {
+			margin-left: auto;
+			margin-right: 0;
+		}
+	}
+}
+
+.ck-content .table > figcaption,
+.ck-content figure.table > table > caption {
+	display: table-caption;
+	caption-side: top;
+	word-break: normal;
+	overflow-wrap: anywhere;
+	text-align: center;
+	color: var(--ck-content-color-table-caption-text);
+	background-color: var(--ck-content-color-table-caption-background);
+	padding: .6em;
+	font-size: .75em;
+	outline-offset: -1px;
+
+	/* Improve placeholder rendering in high-constrast mode (https://github.com/ckeditor/ckeditor5/issues/14907). */
+	@media (forced-colors: active) {
+		background-color: unset;
+		color: unset;
+	}
+}
+
+.ck-content .table .ck-table-resized {
+	table-layout: fixed;
+}
+
+.ck-content .table td,
+.ck-content .table th {
+	/* To prevent text overflowing beyond its cell when columns are resized by resize handler
+	(https://github.com/ckeditor/ckeditor5/pull/14379#issuecomment-1589460978). */
+	overflow-wrap: break-word;
+}

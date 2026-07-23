@@ -47,5 +47,6 @@ export { EmojiToneView } from './ui/emojitoneview.js';
 
 export { isEmojiSupported as _isEmojiSupported } from './utils/isemojisupported.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

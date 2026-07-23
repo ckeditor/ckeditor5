@@ -3,42 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-
 :root {
+	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `index-content.css`. */
 	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
-	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
 	--ck-color-image-caption-highlighted-background: hsl(52deg 100% 50%);
 }
 
-/* Content styles */
-.ck-content .image > figcaption {
-	display: table-caption;
-	caption-side: bottom;
-	word-break: normal;
-	overflow-wrap: anywhere;
-	/*
-	 * `break-before: avoid` is not Baseline "widely available" because its support for print/paged-media
-	 * contexts specifically is reportedly unreliable in Firefox, even where nominally supported. There is
-	 * no alternative CSS mechanism to keep this caption attached to its image across a page break, so this
-	 * is an accepted, soft degradation (the caption may occasionally be orphaned onto the next printed page
-	 * in Firefox specifically), not a functional break introduced by this change.
-	 */
-	/* eslint-disable-next-line css/use-baseline */
-	break-before: avoid;
-	color: var(--ck-content-color-image-caption-text);
-	background-color: var(--ck-content-color-image-caption-background);
-	padding: .6em;
-	font-size: .75em;
-	outline-offset: -1px;
-
-	/* Improve placeholder rendering in high-constrast mode (https://github.com/ckeditor/ckeditor5/issues/14907). */
-	@media (forced-colors: active) {
-		background-color: unset;
-		color: unset;
-	}
-}
-
-/* Editing styles */
 .ck.ck-editor__editable .image > figcaption.image__caption_highlighted {
 	@media (forced-colors: none) {
 		animation: ck-image-caption-highlight .6s ease-out;

@@ -194,5 +194,6 @@ export type {
 
 export { AdjacentListsSupport } from './list/adjacentlistssupport.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

@@ -51,5 +51,6 @@ export type {
 export { normalizeOptions as _normalizeFontFamilyOptions } from './fontfamily/utils.js';
 export { normalizeOptions as _normalizeFontSizeOptions } from './fontsize/utils.js';
 
-import '../theme/index.css';
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

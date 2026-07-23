@@ -32,36 +32,8 @@
 }
 
 :root {
+	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `index-content.css`. */
 	--ck-content-table-style-spacing: 1.5em;
-}
-
-.ck-content {
-	& .table {
-		&.table-style-align-left {
-			float: left;
-			margin-right: var(--ck-content-table-style-spacing);
-		}
-
-		&.table-style-align-right {
-			float: right;
-			margin-left: var(--ck-content-table-style-spacing);
-		}
-
-		&.table-style-align-center {
-			margin-left: auto;
-			margin-right: auto;
-		}
-
-		&.table-style-block-align-left {
-			margin-left: 0;
-			margin-right: auto;
-		}
-
-		&.table-style-block-align-right {
-			margin-left: auto;
-			margin-right: 0;
-		}
-	}
 }
 
 .ck-editor__editable {
