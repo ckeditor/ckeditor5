@@ -92,7 +92,7 @@
   "scripts": {
     "typecheck": "tsc --emitDeclarationOnly --declarationDir ./build/tmp/types",
     "nice": "ckeditor5-dev-changelog-create-entry",
-    "lint": "eslint --format ./scripts/eslint-formatter.cjs --concurrency=4",
+    "lint": "eslint --format ./scripts/eslint-formatter.cjs --concurrency=2",
     "test": "node scripts/test.mjs",
     "manual": "vite --config ./vite.manual.mts",
     "manual:build": "vite --config ./vite.manual.mts build",
