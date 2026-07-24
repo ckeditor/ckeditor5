@@ -1,0 +1,27 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
+import { ImageUploadEditing } from '../../src/imageupload/imageuploadediting.js';
+import { ImageUploadProgress } from '../../src/imageupload/imageuploadprogress.js';
+
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor' ) as HTMLElement,
+	plugins: [ ImageBlockEditing, ImageUploadEditing, ImageUploadProgress ]
+} )
+	.then( editor => {
+		window.editor = editor;
+
+		editor.model.change( writer => {
+			writer.appendElement( 'imageBlock', {
+				uploadId: 'fake',
+				uploadStatus: 'uploading'
+			}, editor.model.document.getRoot()! );
+		} );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );

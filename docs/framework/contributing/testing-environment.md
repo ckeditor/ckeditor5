@@ -192,8 +192,8 @@ ClassicEditor
 <info-box>
 	The <code>manual/</code> test directories should always be located in the root of the <code>tests/</code> directories.
 	<ul>
-		<li><code>packages/ckeditor5-engine/tests/manual/view/focus.js</code> &ndash; correct path.</li>
-		<li><code>packages/ckeditor5-engine/tests/view/manual/focus.js</code> &ndash; incorrect path.</li>
+		<li><code>packages/ckeditor5-engine/tests/manual/view/focus.ts</code> &ndash; correct path.</li>
+		<li><code>packages/ckeditor5-engine/tests/view/manual/focus.ts</code> &ndash; incorrect path.</li>
 	</ul>
 </info-box>
 

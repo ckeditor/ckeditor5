@@ -55,7 +55,7 @@ function createPlainTextareaWithFixedSizeAndResizeBoth() {
 	addToPlayground( '3 fixed rows, resize: both', textareaView );
 }
 
-function addToPlayground( name, view ) {
+function addToPlayground( name: string, view: TextareaView ) {
 	view.render();
 
 	const setLargeTextButton = new ButtonView();

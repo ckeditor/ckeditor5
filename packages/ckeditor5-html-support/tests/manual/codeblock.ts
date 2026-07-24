@@ -1,0 +1,60 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold, Italic, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
+
+declare global {
+	interface Window { editor: any }
+}
+
+/**
+ * Client custom plugin extending HTML support for compatibility.
+ */
+class ExtendHTMLSupport extends Plugin {
+	public static get requires() {
+		return [ GeneralHtmlSupport ];
+	}
+
+	public init(): void {
+		const dataFilter = this.editor.plugins.get( 'DataFilter' );
+
+		dataFilter.allowElement( /^(pre|code)$/ );
+		dataFilter.allowAttributes( { name: /^(pre|code)$/, styles: { color: /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: /^(pre|code)$/, styles: { background: /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
+
+		dataFilter.disallowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': 'bar' } } );
+		dataFilter.disallowAttributes( { name: /^(pre|code)$/, styles: { background: 'yellow' } } );
+	}
+}
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ) as HTMLElement,
+		plugins: [
+			Bold,
+			CodeBlock,
+			Essentials,
+			ExtendHTMLSupport,
+			Italic,
+			Paragraph,
+			Strikethrough
+		],
+		toolbar: [ 'codeBlock', '|', 'bold', 'italic', 'strikethrough' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

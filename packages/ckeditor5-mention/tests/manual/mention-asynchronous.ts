@@ -1,0 +1,95 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { global } from '@ckeditor/ckeditor5-utils';
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Mention } from '../../src/mention.js';
+import { Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { Font } from '@ckeditor/ckeditor5-font';
+
+declare global {
+	interface Window { editor: any }
+}
+
+ClassicEditor
+	.create( {
+		attachTo: global.document.querySelector( '#editor' ) as HTMLElement,
+		plugins: [ ArticlePluginSet, Underline, Font, Mention ],
+		toolbar: [
+			'heading',
+			'|', 'bulletedList', 'numberedList', 'blockQuote',
+			'|', 'bold', 'italic', 'underline', 'link',
+			'|', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
+			'|', 'insertTable',
+			'|', 'undo', 'redo'
+		],
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
+		},
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+			tableToolbar: [ 'bold', 'italic' ]
+		},
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: getFeed,
+					itemRenderer: ( { fullName, id, thumbnail }: any ) => {
+						const div = document.createElement( 'div' );
+
+						div.classList.add( 'custom' );
+						div.classList.add( 'mention__item' );
+
+						div.innerHTML =
+							`<img class="mention__item__thumbnail" src="${ thumbnail }">` +
+							'<div class="mention__item__body">' +
+								`<span class="mention__item__full-name">${ fullName }</span>` +
+								`<span class="mention__item__username">${ id }</span>` +
+							'</div>';
+
+						return div;
+					}
+				}
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+// Simplest cache:
+const cache = new Map();
+
+function getFeed( text: string ) {
+	const useCache = ( document.querySelector( '#cache-control' ) as HTMLInputElement ).checked;
+
+	if ( useCache && cache.has( text ) ) {
+		console.log( `Loading from cache for: "${ text }".` );
+
+		return cache.get( text );
+	}
+
+	const fetchOptions = {
+		method: 'get',
+		mode: 'cors'
+	} as const;
+
+	return fetch( `http://localhost:3000?search=${ text }`, fetchOptions )
+		.then( response => {
+			const feedItems = response.json();
+
+			if ( useCache ) {
+				cache.set( text, feedItems );
+			}
+
+			return feedItems;
+		} );
+}

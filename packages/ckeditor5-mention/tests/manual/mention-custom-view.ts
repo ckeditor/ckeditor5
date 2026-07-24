@@ -1,0 +1,114 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { global } from '@ckeditor/ckeditor5-utils';
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { Font } from '@ckeditor/ckeditor5-font';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+
+import { Mention } from '../../src/mention.js';
+
+declare global {
+	interface Window { editor: any }
+}
+
+class CustomMentionAttributeView extends Plugin {
+	public init() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'a',
+				key: 'data-mention',
+				classes: 'mention',
+				attributes: {
+					href: true
+				}
+			} as any,
+			model: {
+				key: 'mention',
+				value: ( viewItem: any ) => {
+					return editor.plugins.get( 'Mention' ).toMentionAttribute( viewItem, {
+						link: viewItem.getAttribute( 'href' )
+					} );
+				}
+			},
+			converterPriority: 'high'
+		} );
+
+		editor.conversion.for( 'downcast' ).attributeToElement( {
+			model: 'mention',
+			view: ( modelAttributeValue, { writer, options } ) => {
+				if ( !modelAttributeValue ) {
+					return;
+				}
+
+				return writer.createAttributeElement( 'a', {
+					class: 'mention',
+					'data-mention': modelAttributeValue.id,
+					'href': modelAttributeValue.link,
+					// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+					...( !options.isClipboardPipeline && { 'data-mention-uid': modelAttributeValue.uid } )
+				}, {
+					// Make mention attribute to be wrapped by other attribute elements.
+					priority: 20,
+					// Prevent merging mentions together in clipboard (when `data-mention-uid` is not available).
+					id: modelAttributeValue.uid
+				} );
+			},
+			converterPriority: 'high'
+		} );
+	}
+}
+
+ClassicEditor
+	.create( {
+		attachTo: global.document.querySelector( '#editor' ) as HTMLElement,
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
+		plugins: [ ArticlePluginSet, Underline, Font, Mention, CustomMentionAttributeView ],
+		toolbar: [
+			'heading',
+			'|', 'bulletedList', 'numberedList', 'blockQuote',
+			'|', 'bold', 'italic', 'underline', 'link',
+			'|', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
+			'|', 'insertTable',
+			'|', 'undo', 'redo'
+		],
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+			tableToolbar: [ 'bold', 'italic' ]
+		},
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: getFeed
+				}
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+function getFeed( feedText: string ) {
+	return [
+		{ id: '@Barney Stinson', text: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
+		{ id: '@Lily Aldrin', text: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
+		{ id: '@Marshall Eriksen', text: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
+		{ id: '@Robin Scherbatsky', text: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+		{ id: '@Ted Mosby', text: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
+	].filter( item => {
+		const searchString = feedText.toLowerCase();
+
+		return item.id.toLowerCase().includes( searchString );
+	} );
+}

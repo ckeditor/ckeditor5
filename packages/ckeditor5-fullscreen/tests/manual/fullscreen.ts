@@ -173,7 +173,7 @@ const commonConfig = {
 	},
 	htmlEmbed: {
 		showPreviews: true,
-		sanitizeHtml: html => ( { html, hasChanged: false } )
+		sanitizeHtml: ( html: string ) => ( { html, hasChanged: false } )
 	},
 	list: {
 		properties: {
@@ -240,10 +240,10 @@ DECOUPLED_EDITOR_BUTTON.addEventListener( 'click', () => {
 	currentData = editorInstance.getData();
 
 	editorInstance.destroy().then( () => {
-		editorInstance.ui.view.toolbar.element.remove();
+		editorInstance.ui.view.toolbar!.element!.remove();
 
 		if ( editorInstance.ui.view.menuBarView ) {
-			editorInstance.ui.view.menuBarView.element.remove();
+			editorInstance.ui.view.menuBarView.element!.remove();
 		}
 
 		DecoupledEditor
@@ -256,7 +256,9 @@ DECOUPLED_EDITOR_BUTTON.addEventListener( 'click', () => {
 					fullscreen: {
 						menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked },
 						toolbar: { items: toolbarItems, shouldNotGroupWhenFull: TOOLBAR_FULLSCREEN_INPUT.checked },
-						...( CUSTOM_CONTAINER_INPUT.checked ? { container: document.getElementById( 'custom-fullscreen-container' ) } : {} )
+						...( CUSTOM_CONTAINER_INPUT.checked ?
+							{ container: document.getElementById( 'custom-fullscreen-container' )! } :
+							{} )
 					}
 				}
 			) )
@@ -285,10 +287,10 @@ CLASSIC_EDITOR_BUTTON.addEventListener( 'click', () => {
 	currentData = editorInstance.getData();
 
 	editorInstance.destroy().then( () => {
-		editorInstance.ui.view.toolbar.element.remove();
+		editorInstance.ui.view.toolbar!.element!.remove();
 
 		if ( editorInstance.ui.view.menuBarView ) {
-			editorInstance.ui.view.menuBarView.element.remove();
+			editorInstance.ui.view.menuBarView.element!.remove();
 		}
 
 		ClassicEditor
@@ -300,7 +302,9 @@ CLASSIC_EDITOR_BUTTON.addEventListener( 'click', () => {
 					fullscreen: {
 						menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked },
 						toolbar: { shouldNotGroupWhenFull: TOOLBAR_FULLSCREEN_INPUT.checked },
-						...( CUSTOM_CONTAINER_INPUT.checked ? { container: document.getElementById( 'custom-fullscreen-container' ) } : {} )
+						...( CUSTOM_CONTAINER_INPUT.checked ?
+							{ container: document.getElementById( 'custom-fullscreen-container' )! } :
+							{} )
 					}
 				}
 			) )

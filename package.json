@@ -92,6 +92,7 @@
   },
   "scripts": {
     "typecheck": "tsc --emitDeclarationOnly --declarationDir ./build/tmp/types",
+    "typecheck:manual": "tsc -p tsconfig.manual.json",
     "nice": "ckeditor5-dev-changelog-create-entry",
     "lint": "eslint --format ./scripts/eslint-formatter.cjs --concurrency=2",
     "test": "node scripts/test.mjs",

@@ -1,0 +1,69 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { toWidget, Widget } from '@ckeditor/ckeditor5-widget';
+
+import { ViewPosition } from '../../../../src/view/position.js';
+import { _setModelData } from '../../../../src/dev-utils/model.js';
+
+declare global {
+	interface Window { editor: any }
+}
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ) as HTMLElement,
+		plugins: [ Essentials, Paragraph, Bold, Widget ],
+		toolbar: [ 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+
+		const model = editor.model;
+
+		model.schema.register( 'widget', {
+			inheritAllFrom: '$block',
+			isObject: true
+		} );
+
+		model.schema.extend( '$text', {
+			allowIn: 'nested'
+		} );
+
+		model.schema.register( 'nested', {
+			allowIn: 'widget',
+			isLimit: true
+		} );
+
+		editor.conversion.for( 'downcast' )
+			.elementToElement( {
+				model: 'widget',
+				view: ( modelItem, { writer } ) => {
+					const b = writer.createAttributeElement( 'b' );
+					const div = writer.createContainerElement( 'div' );
+
+					writer.insert( ViewPosition._createAt( div, 0 ), b );
+
+					return toWidget( div, writer, { label: 'element label' } );
+				}
+			} )
+			.elementToElement( {
+				model: 'nested',
+				view: ( item, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
+			} );
+
+		_setModelData( editor.model,
+			'<paragraph>foo[]</paragraph>' +
+			'<widget><nested>bar</nested></widget>' +
+			'<widget><nested>bom</nested></widget>'
+		);
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

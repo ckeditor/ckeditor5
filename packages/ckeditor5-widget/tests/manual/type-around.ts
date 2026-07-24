@@ -1,0 +1,160 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { TableProperties, TableCellProperties } from '@ckeditor/ckeditor5-table';
+import { ImageResize } from '@ckeditor/ckeditor5-image';
+
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { toWidget, viewToModelPositionOutsideModelElement } from '../../src/utils.js';
+
+declare global {
+	interface Window { editor: any }
+}
+
+class InlineWidget extends Plugin {
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.model.schema.register( 'placeholder', {
+			allowWhere: '$text',
+			isObject: true,
+			isInline: true
+		} );
+
+		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'placeholder',
+			view: ( modelItem, conversionApi ) => {
+				const widgetElement = createPlaceholderView( modelItem, conversionApi );
+
+				return toWidget( widgetElement, conversionApi.writer );
+			}
+		} );
+
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'placeholder',
+			view: createPlaceholderView
+		} );
+
+		editor.conversion.for( 'upcast' ).elementToElement( {
+			view: 'placeholder',
+			model: 'placeholder'
+		} );
+
+		editor.editing.mapper.on(
+			'viewToModelPosition',
+			viewToModelPositionOutsideModelElement( editor.model, viewElement => viewElement.name == 'placeholder' )
+		);
+
+		this._createToolbarButton();
+
+		function createPlaceholderView( modelItem: any, { writer }: any ) {
+			const widgetElement = writer.createContainerElement( 'placeholder' );
+			const viewText = writer.createText( '{inline-widget}' );
+
+			writer.insert( writer.createPositionAt( widgetElement, 0 ), viewText );
+
+			return widgetElement;
+		}
+	}
+
+	public _createToolbarButton() {
+		const editor = this.editor;
+		const t = editor.t;
+
+		editor.ui.componentFactory.add( 'placeholder', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: t( 'Insert placeholder' ),
+				tooltip: true,
+				withText: true
+			} );
+
+			this.listenTo( buttonView, 'execute', () => {
+				const model = editor.model;
+
+				model.change( writer => {
+					const placeholder = writer.createElement( 'placeholder' );
+
+					model.insertContent( placeholder );
+
+					writer.setSelection( placeholder, 'on' );
+				} );
+			} );
+
+			return buttonView;
+		} );
+	}
+}
+
+let isReadOnly = false;
+
+document.querySelector( '#toggleReadOnly' )!.addEventListener( 'click', () => {
+	isReadOnly = !isReadOnly;
+
+	if ( isReadOnly ) {
+		window.editor.enableReadOnlyMode( 'manual-test' );
+	} else {
+		window.editor.disableReadOnlyMode( 'manual-test' );
+	}
+
+	window.editor.editing.view.focus();
+} );
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ) as HTMLElement,
+		plugins: [
+			ArticlePluginSet,
+			HorizontalLine,
+			InlineWidget,
+			MediaEmbed,
+			TableProperties,
+			TableCellProperties,
+			ImageResize
+		],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'|',
+			'outdent',
+			'indent',
+			'|',
+			'blockQuote',
+			'horizontalLine',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
+		],
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells',
+				'tableProperties',
+				'tableCellProperties'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

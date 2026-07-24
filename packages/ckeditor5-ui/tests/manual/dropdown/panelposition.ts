@@ -1,0 +1,49 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { UIModel } from '../../../src/model.js';
+import { Collection, type Locale } from '@ckeditor/ckeditor5-utils';
+import { testUtils } from '../../_utils/utils.js';
+import { createDropdown, addListToDropdown } from '../../../src/dropdown/utils.js';
+
+const ui: any = testUtils.createTestUIView( {
+	dropdownNW: '#dropdown-nw',
+	dropdownNE: '#dropdown-ne',
+	dropdownSE: '#dropdown-se',
+	dropdownSW: '#dropdown-sw'
+} );
+
+function createPositionedDropdown( position: string ) {
+	const collection = new Collection( { idProperty: 'label' } );
+
+	[
+		'long label of a first item of the list',
+		'long label of a second item of the list',
+		'long label of a third item of the list'
+	].forEach( label => {
+		collection.add( {
+			type: 'button',
+			model: new UIModel( { label, withText: true } )
+		} );
+	} );
+
+	const dropdownView = createDropdown( {} as Locale );
+
+	dropdownView.buttonView.set( {
+		label: `Dropdown ${ position }`,
+		isEnabled: true,
+		isOn: false,
+		withText: true
+	} );
+
+	addListToDropdown( dropdownView, collection as any );
+
+	ui[ `dropdown${ position }` ].add( dropdownView );
+}
+
+createPositionedDropdown( 'NW' );
+createPositionedDropdown( 'NE' );
+createPositionedDropdown( 'SW' );
+createPositionedDropdown( 'SE' );

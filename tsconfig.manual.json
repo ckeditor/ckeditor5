@@ -1,0 +1,26 @@
+/*
+ * The configuration used to type-check the manual tests.
+ *
+ * Manual tests are transpiled for the browser by Vite (esbuild), which strips types
+ * without checking them, so this configuration provides the actual type safety.
+ */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Manual tests are only type-checked here; they are never emitted.
+    "noEmit": true,
+    "declaration": false,
+    "isolatedDeclarations": false,
+    "sourceMap": false,
+    // Some manual tests import shared `tests/_utils` helpers still authored in JavaScript.
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": [
+    "packages/*/tests/manual/**/*.ts",
+    // Only the ambient module declarations. Not the whole `typings/` directory, because
+    // `vitest.d.ts` drags in `@types/node`, whose Node globals must not leak into browser tests.
+    "typings/types.d.ts",
+    "packages/*/src/augmentation.ts"
+  ]
+}
