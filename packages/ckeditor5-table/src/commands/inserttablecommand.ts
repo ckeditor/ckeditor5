@@ -9,13 +9,15 @@
 
 import { Command } from '@ckeditor/ckeditor5-core';
 
-import type {
+import {
 	ModelDocumentSelection,
-	ModelSchema,
-	ModelSelection,
-	ModelElement
+	type ModelSchema,
+	type ModelSelection,
+	type ModelElement
 } from '@ckeditor/ckeditor5-engine';
+import { _getCopyOnEnterAttributes } from '@ckeditor/ckeditor5-enter';
 import { type TableUtils } from '../tableutils.js';
+import { getEmptyTableCellBlocks } from '../utils/common.js';
 
 /**
  * The insert table command.
@@ -54,6 +56,10 @@ export class InsertTableCommand extends Command {
 	 * @param options.footerRows The number of footer rows. If not provided it will default to
 	 * {@link module:table/tableconfig~TableConfig#defaultFooters `config.table.defaultFooters`} table config.
 	 * This option is ignored when {@link module:table/tableconfig~TableConfig#enableFooters `config.table.enableFooters`} is `false`.
+	 * @param options.inheritTextFormattingAttributes Whether every empty cell should inherit the `copyOnEnter` text
+	 * formatting attributes (e.g. bold, font color) that were uniformly active in the content right before
+	 * the table, so that whichever cell the user starts typing in first continues that formatting. Defaults
+	 * to `true`.
 	 * @fires execute
 	 */
 	public override execute(
@@ -63,10 +69,13 @@ export class InsertTableCommand extends Command {
 			headingRows?: number;
 			headingColumns?: number;
 			footerRows?: number;
+			inheritTextFormattingAttributes?: boolean;
 		} = {}
 	): void {
 		const editor = this.editor;
 		const model = editor.model;
+		const selection = model.document.selection;
+
 		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
 		const areTableFootersEnabled = !!editor.config.get( 'table.enableFooters' );
 
@@ -91,11 +100,23 @@ export class InsertTableCommand extends Command {
 		}
 
 		model.change( writer => {
+			const selectionAttributesToCopy = Array.from(
+				_getCopyOnEnterAttributes( model.schema, selection.getAttributes() )
+			);
+
 			const table = tableUtils.createTable( writer, options );
 
 			model.insertObject( table, null, null, { findOptimalPosition: 'auto' } );
 
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
+
+			if ( options.inheritTextFormattingAttributes !== false && selectionAttributesToCopy.length ) {
+				for ( const cellBlock of getEmptyTableCellBlocks( table ) ) {
+					for ( const [ key, value ] of selectionAttributesToCopy ) {
+						writer.setAttribute( ModelDocumentSelection._getStoreAttributeKey( key ), value, cellBlock );
+					}
+				}
+			}
 		} );
 	}
 }

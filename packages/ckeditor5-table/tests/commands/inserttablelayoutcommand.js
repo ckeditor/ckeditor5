@@ -7,7 +7,7 @@ import { describe, beforeEach, afterEach, it, expect, vi } from 'vitest';
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
+import { ModelDocumentSelection, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { TableColumnResize } from '../../src/tablecolumnresize.js';
@@ -588,6 +588,120 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '', '' ]
 					], { pretty: true, smart: true, tableWidth: '100%', columnWidths: '50%,50%' } )
 				);
+			} );
+		} );
+
+		describe( 'inheriting text formatting attributes (inheritTextFormattingAttributes)', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing, TableColumnResize ]
+					} );
+
+				model = editor.model;
+				command = new InsertTableLayoutCommand( editor );
+
+				model.schema.extend( '$text', { allowAttributes: [ 'foo', 'bar' ] } );
+				model.schema.setAttributeProperties( 'foo', { copyOnEnter: true } );
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			/**
+			 * Returns every empty block found inside the given table's cells, in reading order.
+			 */
+			function getCellBlocks( table ) {
+				const blocks = [];
+
+				for ( const row of table.getChildren() ) {
+					for ( const cell of row.getChildren() ) {
+						for ( const block of cell.getChildren() ) {
+							blocks.push( block );
+						}
+					}
+				}
+
+				return blocks;
+			}
+
+			function getStoredAttribute( element, key ) {
+				return element.getAttribute( ModelDocumentSelection._getStoreAttributeKey( key ) );
+			}
+
+			it( 'defaults to true - copies attributes onto the selection and onto every empty cell', () => {
+				_setModelData( model, '<paragraph><$text foo="true">Hello[]</$text></paragraph>' );
+
+				command.execute();
+
+				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( true );
+
+				const table = model.document.getRoot().getChild( 1 );
+				const blocks = getCellBlocks( table );
+
+				expect( blocks ).to.have.length( 4 );
+
+				for ( const block of blocks ) {
+					expect( getStoredAttribute( block, 'foo' ) ).to.equal( true );
+				}
+			} );
+
+			it( 'copies attributes onto a cell other than the first one too', () => {
+				_setModelData( model, '<paragraph><$text foo="true">Hello[]</$text></paragraph>' );
+
+				command.execute();
+
+				const table = model.document.getRoot().getChild( 1 );
+				const lastCellBlock = getCellBlocks( table ).at( -1 );
+
+				expect( getStoredAttribute( lastCellBlock, 'foo' ) ).to.equal( true );
+			} );
+
+			it( 'does not copy anything when explicitly disabled', () => {
+				_setModelData( model, '<paragraph><$text foo="true">Hello[]</$text></paragraph>' );
+
+				command.execute( { inheritTextFormattingAttributes: false } );
+
+				expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+
+				const table = model.document.getRoot().getChild( 1 );
+
+				for ( const block of getCellBlocks( table ) ) {
+					expect( getStoredAttribute( block, 'foo' ) ).to.be.undefined;
+				}
+			} );
+
+			it( 'does not copy anything when there is no formatting to inherit', () => {
+				_setModelData( model, '<paragraph>Hello[]</paragraph>' );
+
+				command.execute();
+
+				const table = model.document.getRoot().getChild( 1 );
+
+				for ( const block of getCellBlocks( table ) ) {
+					expect( getStoredAttribute( block, 'foo' ) ).to.be.undefined;
+				}
+			} );
+
+			it( 'does not copy an attribute that is not marked with copyOnEnter', () => {
+				_setModelData( model, '<paragraph><$text bar="true">Hello[]</$text></paragraph>' );
+
+				command.execute();
+
+				const table = model.document.getRoot().getChild( 1 );
+
+				for ( const block of getCellBlocks( table ) ) {
+					expect( getStoredAttribute( block, 'bar' ) ).to.be.undefined;
+				}
+			} );
+
+			it( 'does not throw when inserting into a completely empty document', () => {
+				_setModelData( model, '[]' );
+
+				expect( () => command.execute() ).not.toThrow();
 			} );
 		} );
 	} );

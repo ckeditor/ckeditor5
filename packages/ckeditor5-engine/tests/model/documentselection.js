@@ -1045,6 +1045,28 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
+	describe( '_dropStoreAttributeKeyPrefix', () => {
+		it( 'should return the original attribute key with the store prefix removed', () => {
+			expect( ModelDocumentSelection._dropStoreAttributeKeyPrefix( fooStoreAttrKey ) ).toBe( 'foo' );
+		} );
+
+		it( 'should work for a different key too, not just "foo"', () => {
+			expect( ModelDocumentSelection._dropStoreAttributeKeyPrefix( abcStoreAttrKey ) ).toBe( 'abc' );
+		} );
+
+		it( 'should return the key unchanged if it does not have the store prefix', () => {
+			expect( ModelDocumentSelection._dropStoreAttributeKeyPrefix( 'foo' ) ).toBe( 'foo' );
+		} );
+
+		it( 'should round-trip with _getStoreAttributeKey for an arbitrary key', () => {
+			const key = 'someArbitraryAttributeName';
+
+			expect(
+				ModelDocumentSelection._dropStoreAttributeKeyPrefix( ModelDocumentSelection._getStoreAttributeKey( key ) )
+			).toBe( key );
+		} );
+	} );
+
 	describe( 'attributes', () => {
 		let fullP, emptyP, rangeInFullP, rangeInEmptyP;
 

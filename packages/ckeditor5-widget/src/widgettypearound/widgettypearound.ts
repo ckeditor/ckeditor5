@@ -11,10 +11,7 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { IconReturnArrow } from '@ckeditor/ckeditor5-icons';
 import { Template } from '@ckeditor/ckeditor5-ui';
 
-import {
-	Enter,
-	type ViewDocumentEnterEvent
-} from '@ckeditor/ckeditor5-enter';
+import { Enter, type ViewDocumentEnterEvent } from '@ckeditor/ckeditor5-enter';
 
 import {
 	Delete,
@@ -59,6 +56,7 @@ import {
 	getTypeAroundButtonPosition,
 	getClosestWidgetViewElement,
 	getTypeAroundFakeCaretPosition,
+	getCopyOnEnterTextAttributesBeforeWidgets,
 	TYPE_AROUND_SELECTION_ATTRIBUTE
 } from './utils.js';
 
@@ -171,13 +169,22 @@ export class WidgetTypeAround extends Plugin {
 	 */
 	private _insertParagraph( widgetModelElement: ModelElement, position: 'before' | 'after' ) {
 		const editor = this.editor;
+		const { model } = editor;
+		const { schema } = model;
 		const editingView = editor.editing.view;
 
-		const attributesToCopy = editor.model.schema.getAttributesWithProperty( widgetModelElement, 'copyOnReplace', true );
+		const attributesToCopy = schema.getAttributesWithProperty( widgetModelElement, 'copyOnReplace', true );
+		const selectionAttributes = getCopyOnEnterTextAttributesBeforeWidgets( schema, widgetModelElement );
 
-		editor.execute( 'insertParagraph', {
-			position: editor.model.createPositionAt( widgetModelElement, position ),
-			attributes: attributesToCopy
+		model.change( writer => {
+			const insertedParagraph = editor.execute( 'insertParagraph', {
+				position: editor.model.createPositionAt( widgetModelElement, position ),
+				attributes: attributesToCopy
+			} );
+
+			if ( insertedParagraph ) {
+				writer.setSelectionAttribute( selectionAttributes );
+			}
 		} );
 
 		editingView.focus();

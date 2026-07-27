@@ -181,3 +181,28 @@ export function isEntireCellsLineHeader(
 export function isTableCellTypeEnabled( editor: Editor ): boolean {
 	return editor.model.schema.checkAttribute( 'tableCell', 'tableCellType' );
 }
+
+/**
+ * Yields every empty block (typically a `paragraph`) found inside the given table's cells.
+ *
+ * @internal
+ */
+export function* getEmptyTableCellBlocks( table: ModelElement ): IterableIterator<ModelElement> {
+	for ( const row of table.getChildren() ) {
+		if ( !row.is( 'element', 'tableRow' ) ) {
+			continue;
+		}
+
+		for ( const cell of row.getChildren() ) {
+			if ( !cell.is( 'element', 'tableCell' ) ) {
+				continue;
+			}
+
+			for ( const block of cell.getChildren() ) {
+				if ( block.is( 'element' ) && block.isEmpty ) {
+					yield block as ModelElement;
+				}
+			}
+		}
+	}
+}
