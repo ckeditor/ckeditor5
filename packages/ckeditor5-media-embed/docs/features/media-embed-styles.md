@@ -3,7 +3,7 @@ category: features-media-embed
 menu-title: Media embed styles
 meta-title: Media embed styles | CKEditor 5 Documentation
 meta-description: Apply alignment and other configurable styles to media embeds, with support for custom styles.
-modified_at: 2026-05-21
+modified_at: 2026-07-27
 order: 55
 ---
 
@@ -19,19 +19,21 @@ The {@link module:media-embed/mediaembedstyle~MediaEmbedStyle} plugin is not loa
 
 <code-switcher>
 ```js
-import { ClassicEditor, MediaEmbed, MediaEmbedStyle } from 'ckeditor5';
+import { ClassicEditor, MediaEmbed, MediaEmbedToolbar, MediaEmbedStyle } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ MediaEmbed, MediaEmbedStyle, /* ... */ ],
+		plugins: [ MediaEmbed, MediaEmbedToolbar, MediaEmbedStyle, /* ... */ ],
 		toolbar: [ 'mediaEmbed', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 </code-switcher>
+
+Similarly, {@link module:media-embed/mediaembed~MediaEmbed} doesn't load {@link module:media-embed/mediaembedtoolbar~MediaEmbedToolbar} by default. The toolbar contains style buttons for media embed features. Add `MediaEmbedToolbar` to your `plugins` list, otherwise the entries you put in `config.mediaEmbed.toolbar` never reach the media widget toolbar.
 
 ## Built-in styles
 

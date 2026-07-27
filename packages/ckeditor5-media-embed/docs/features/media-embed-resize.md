@@ -3,6 +3,7 @@ category: features-media-embed
 menu-title: Resizing media embeds
 meta-title: Resizing media embeds | CKEditor 5 Documentation
 meta-description: Resize embedded videos and other media content using drag handles, a toolbar dropdown, or standalone buttons in CKEditor 5.
+modified_at: 2026-07-27
 order: 50
 badges: [ premium ]
 ---
@@ -98,6 +99,7 @@ You can load `MediaEmbedResizeEditing`, `MediaEmbedResizeButtons`, and `MediaEmb
 import {
 	ClassicEditor,
 	MediaEmbed,
+	MediaEmbedToolbar,
 	MediaEmbedResizeEditing,
 	MediaEmbedResizeButtons,
 	MediaEmbedCustomResizeUI
@@ -107,7 +109,7 @@ ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ MediaEmbed, MediaEmbedResizeEditing, MediaEmbedResizeButtons, MediaEmbedCustomResizeUI, /* ... */ ],
+		plugins: [ MediaEmbed, MediaEmbedToolbar, MediaEmbedResizeEditing, MediaEmbedResizeButtons, MediaEmbedCustomResizeUI, /* ... */ ],
 		toolbar: [ 'mediaEmbed', /* ... */ ],
 		mediaEmbed: {
 			toolbar: [ 'resizeMediaEmbed' ]
@@ -117,6 +119,8 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 </code-switcher>
+
+This setup also needs {@link module:media-embed/mediaembedtoolbar~MediaEmbedToolbar}, which is not loaded by {@link module:media-embed/mediaembed~MediaEmbed} either. It renders the `'resizeMediaEmbed'` entry from `config.mediaEmbed.toolbar` in the media widget toolbar.
 
 ## Markup and styling
 
@@ -156,13 +160,13 @@ The {@link module:media-embed/mediaembedresize~MediaEmbedResize} plugin is not l
 
 <code-switcher>
 ```js
-import { ClassicEditor, MediaEmbed, MediaEmbedResize } from 'ckeditor5';
+import { ClassicEditor, MediaEmbed, MediaEmbedToolbar, MediaEmbedResize } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ MediaEmbed, MediaEmbedResize, /* ... */ ],
+		plugins: [ MediaEmbed, MediaEmbedToolbar, MediaEmbedResize, /* ... */ ],
 		toolbar: [ 'mediaEmbed', /* ... */ ],
 		mediaEmbed: {
 			toolbar: [ 'resizeMediaEmbed' ]
@@ -172,6 +176,8 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 </code-switcher>
+
+Similarly, {@link module:media-embed/mediaembed~MediaEmbed} doesn't load {@link module:media-embed/mediaembedtoolbar~MediaEmbedToolbar} by default. Add `MediaEmbedToolbar` to your `plugins` list, otherwise the entries you put in `config.mediaEmbed.toolbar` never reach the media widget toolbar.
 
 ## Common API
 
