@@ -1264,3 +1264,57 @@ This rule requires content styles scoped with `.ck-content` to be placed in `the
 ### Editor stylesheet placement: `ckeditor5-rules/no-editor-styles-in-index-content`
 
 This rule prevents editor UI and editing-view selectors from being placed in `theme/index-content.css`. The content entry point may also contain supporting custom properties, font definitions, and keyframes.
+
+### Selector specificity order: `ckeditor5-rules/no-descending-specificity`
+
+This rule reports selectors with lower specificity placed after overriding selectors with higher specificity that target the same element. Such a selector cannot win the cascade where both selectors apply, so the resulting order is misleading to readers and fragile during refactoring. It reimplements Stylelint's [`no-descending-specificity`](https://stylelint.io/user-guide/rules/no-descending-specificity/) rule for ESLint.
+
+Selectors are compared only within the same context (the same nesting parent and at-rule conditions) and only when they share the same key selector, that is, the last compound selector ignoring pseudo-classes. For example, `a:hover` and `a` are compared with each other, while `a::before` is not compared with `a`.
+
+👎&nbsp; Example of incorrect code for this rule:
+
+```css
+.ck-toolbar a {
+	color: var(--ck-color-link);
+}
+
+a {
+	color: var(--ck-color-text);
+}
+```
+
+👍&nbsp; Example of correct code for this rule:
+
+```css
+a {
+	color: var(--ck-color-text);
+}
+
+.ck-toolbar a {
+	color: var(--ck-color-link);
+}
+```
+
+### Custom property references require `var()`: `ckeditor5-rules/no-missing-var-function`
+
+This rule reports custom property references used as declaration values without the `var()` function. A bare reference is not substituted by the browser, so the declaration silently does not work. It reimplements Stylelint's [`custom-property-no-missing-var-function`](https://stylelint.io/user-guide/rules/custom-property-no-missing-var-function/) rule for ESLint.
+
+Properties whose values legitimately contain dashed identifiers are not checked. This covers transition targets (`transition`, `transition-property`, and `will-change`) and the naming properties of anchor positioning, scroll-driven animations, and view transitions (for example, `anchor-name` or `view-transition-name`).
+
+👎&nbsp; Example of incorrect code for this rule:
+
+```css
+.ck-button {
+	color: --ck-color-text;
+	--ck-button-color: --ck-color-text;
+}
+```
+
+👍&nbsp; Example of correct code for this rule:
+
+```css
+.ck-button {
+	color: var(--ck-color-text);
+	--ck-button-color: var(--ck-color-text);
+}
+```
