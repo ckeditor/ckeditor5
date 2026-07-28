@@ -110,8 +110,8 @@ jobs:
           command: pnpm run clean-up-svg-icons --verify-only
       - run:
           when: always
-          name: Validate manual test directories
-          command: node scripts/ci/check-manual-tests-directory-structure.mjs
+          name: Validate manual test conventions
+          command: node scripts/ci/check-manual-tests-conventions.mjs
       - run:
           when: always
           name: Type checks the manual tests

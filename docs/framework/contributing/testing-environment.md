@@ -3,7 +3,7 @@ category: framework-contributing
 meta-title: Testing environment | CKEditor 5 Framework Documentation
 meta-description: Test CKEditor 5 using the official testing environment. Run unit and manual tests effectively.
 order: 30
-modified_at: 2026-07-06
+modified_at: 2026-07-24
 ---
 
 # Testing environment
@@ -19,7 +19,7 @@ The CKEditor&nbsp;5 testing environment uses [Vitest](https://vitest.dev/) runni
 Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests)) together with its own Vitest configuration and `test` script. Automated tests are executed directly with [pnpm](https://pnpm.io/), without any custom test runner. The custom Vitest matchers are implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package, and the Vite plugins powering the manual test server are implemented in the [`@ckeditor/ckeditor5-dev-manual-server`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-manual-server) package. Both can be reused outside of `ckeditor5`.
 
 <info-box hint>
-	Both automated and manual tests support TypeScript. Simply use the `.ts` extension.
+	Automated tests support TypeScript, and manual tests require it. Simply use the `.ts` extension.
 </info-box>
 
 ## Running automated tests
@@ -125,7 +125,7 @@ Debug flags are controlled with the `CK_DEBUG` environment variable. The base se
 A manual test consists of 2 files:
 
 * A `<name>.manual.html` file &ndash; a complete HTML document (with the DOCTYPE, `<head>`, and `<body>`) that you fully own. You can freely add a Content Security Policy `<meta>` tag, external scripts, `<style>`, or `<link>` tags in the `<head>`. The `.manual.html` suffix is what marks the file as a manual test.
-* A `<name>.js` or `<name>.ts` file with the JavaScript or TypeScript part of the test (for example, the code initializing an editor). Reference it from the document with a `<script type="module">` tag.
+* A `<name>.ts` file with the TypeScript part of the test (for example, the code initializing an editor). Reference it from the document with a `<script type="module">` tag.
 
 Test instructions live inside the document in a `<ck-manual-header>` element &ndash; its children are rendered as a collapsible instructions panel. In the tests list, each test is identified by its file path relative to the `tests/manual/` directory.
 
