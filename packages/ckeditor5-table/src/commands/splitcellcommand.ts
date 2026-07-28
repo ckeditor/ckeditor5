@@ -16,7 +16,8 @@ import { type TableUtils } from '../tableutils.js';
  * The command is registered by {@link module:table/tableediting~TableEditing} as the `'splitTableCellVertically'`
  * and `'splitTableCellHorizontally'`  editor commands.
  *
- * You can split any cell vertically or horizontally by executing this command. For example, to split the selected table cell vertically:
+ * You can split any cell vertically or horizontally by executing this command. When multiple cells are selected, each of them
+ * is split, and the whole operation is a single undo step. For example, to split the selected table cells vertically:
  *
  * ```ts
  * editor.execute( 'splitTableCellVertically' );
@@ -47,7 +48,7 @@ export class SplitCellCommand extends Command {
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 
-		this.isEnabled = selectedCells.length === 1;
+		this.isEnabled = selectedCells.length > 0;
 	}
 
 	/**
@@ -55,13 +56,18 @@ export class SplitCellCommand extends Command {
 	 */
 	public override execute(): void {
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
-		const tableCell = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection )[ 0 ];
+		const tableCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 		const isHorizontal = this.direction === 'horizontally';
 
-		if ( isHorizontal ) {
-			tableUtils.splitCellHorizontally( tableCell, 2 );
-		} else {
-			tableUtils.splitCellVertically( tableCell, 2 );
-		}
+		// A single change block makes all the splits a single undo step.
+		this.editor.model.change( () => {
+			for ( const tableCell of tableCells ) {
+				if ( isHorizontal ) {
+					tableUtils.splitCellHorizontally( tableCell, 2 );
+				} else {
+					tableUtils.splitCellVertically( tableCell, 2 );
+				}
+			}
+		} );
 	}
 }
