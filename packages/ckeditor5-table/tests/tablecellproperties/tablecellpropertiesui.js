@@ -13,8 +13,10 @@ import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ButtonView, ContextualBalloon } from '@ckeditor/ckeditor5-ui';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { WidgetResize } from '@ckeditor/ckeditor5-widget';
 
 import { Table } from '../../src/table.js';
+import { TableColumnResize } from '../../src/tablecolumnresize.js';
 import { TableLayout } from '../../src/tablelayout.js';
 import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableCellWidthEditing } from '../../src/tablecellwidth/tablecellwidthediting.js';
@@ -1045,6 +1047,79 @@ describe( 'table cell properties', () => {
 				const colorPicker = panelView.children.get( 0 ).colorPickerFragmentView.element;
 
 				expect( colorPicker ).to.be.null;
+			} );
+		} );
+
+		describe( 'width field routing to the column width command (resized table)', () => {
+			let localEditor, localElement, ui, balloon;
+
+			beforeEach( async () => {
+				vi.useFakeTimers();
+				localElement = document.createElement( 'div' );
+				document.body.appendChild( localElement );
+
+				localEditor = await ClassicTestEditor.create( localElement, {
+					plugins: [
+						Table, TableColumnResize, TableCellPropertiesEditing,
+						TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo, ClipboardPipeline, WidgetResize
+					]
+				} );
+
+				ui = localEditor.plugins.get( TableCellPropertiesUI );
+				balloon = localEditor.plugins.get( ContextualBalloon );
+
+				vi.spyOn( balloon.view, 'attachTo' ).mockReturnValue( {} );
+				vi.spyOn( balloon.view, 'pin' ).mockReturnValue( {} );
+			} );
+
+			afterEach( async () => {
+				vi.useRealTimers();
+				await localEditor.destroy();
+				localElement.remove();
+			} );
+
+			it( 'should execute the tableColumnWidth command for a single cell in a resized table', () => {
+				_setModelData( localEditor.model, modelTable( [
+					[ '[]00', '01' ]
+				], { columnWidths: '40%,60%', tableWidth: '80%' } ) );
+
+				const batch = localEditor.model.createBatch();
+
+				ui._undoStepBatch = batch;
+				ui._showView();
+
+				const spy = vi.spyOn( localEditor, 'execute' ).mockImplementation( () => {} );
+
+				ui.view.width = '120px';
+
+				expect( spy ).toHaveBeenCalledWith( 'tableColumnWidth', { value: '120px', batch } );
+			} );
+
+			it( 'should fill the width field from the tableColumnWidth command value', () => {
+				_setModelData( localEditor.model, modelTable( [
+					[ '[]00', '01' ]
+				], { columnWidths: '40%,60%', tableWidth: '80%' } ) );
+
+				ui._showView();
+
+				expect( ui.view.width ).to.equal( '40%' );
+			} );
+
+			it( 'should execute the tableColumnWidth command for a multi-cell selection', () => {
+				_setModelData( localEditor.model, modelTable( [
+					[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ]
+				], { columnWidths: '40%,60%', tableWidth: '80%' } ) );
+
+				const batch = localEditor.model.createBatch();
+
+				ui._undoStepBatch = batch;
+				ui._showView();
+
+				const spy = vi.spyOn( localEditor, 'execute' ).mockImplementation( () => {} );
+
+				ui.view.width = '120px';
+
+				expect( spy ).toHaveBeenCalledWith( 'tableColumnWidth', { value: '120px', batch } );
 			} );
 		} );
 	} );

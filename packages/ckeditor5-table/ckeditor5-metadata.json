@@ -217,7 +217,7 @@
 		{
 			"name": "Table column resize",
 			"className": "TableColumnResize",
-			"description": "Adds support for table column resize, which allows to set the width of each column in a table using a resize handle.",
+			"description": "Adds support for table column resize, which allows to set the width of each column in a table using a resize handle or by entering an exact value in the cell width field. Column widths can be expressed in percentages or pixels, following the table width unit.",
 			"docs": "features/tables/tables-resize.html",
 			"path": "src/tablecolumnresize.ts",
 			"requires": [

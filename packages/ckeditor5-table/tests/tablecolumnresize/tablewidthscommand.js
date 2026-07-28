@@ -38,6 +38,23 @@ describe( 'TableWidthsCommand', () => {
 		}
 	} );
 
+	it( 'should remove obsolete tableCellWidth attributes from the whole table when applying column widths', () => {
+		_setModelData( model, modelTable( [
+			[ { tableCellWidth: '50px', contents: '11' }, { tableCellWidth: '60px', contents: '12' } ],
+			[ '21', { tableCellWidth: '70px', contents: '22' } ]
+		], { columnWidths: '40%,60%', tableWidth: '80%' } ) );
+
+		command.execute( { columnWidths: [ '30%', '70%' ], tableWidth: '80%' } );
+
+		const table = model.document.getRoot().getChild( 0 );
+		const anyCellHasWidth = Array.from( table.getChildren() )
+			.filter( child => child.is( 'element', 'tableRow' ) )
+			.flatMap( row => Array.from( row.getChildren() ) )
+			.some( cell => cell.hasAttribute( 'tableCellWidth' ) );
+
+		expect( anyCellHasWidth ).to.be.false;
+	} );
+
 	it( 'should work on the currently selected table if it was not passed to execute()', () => {
 		_setModelData( model, modelTable( [
 			[ '11', '12' ],

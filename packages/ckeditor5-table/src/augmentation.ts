@@ -59,6 +59,7 @@ import type {
 	TableCellPaddingCommand,
 	TableCellVerticalAlignmentCommand,
 	TableCellWidthCommand,
+	TableColumnWidthCommand,
 	TableAlignmentCommand,
 	TableBackgroundColorCommand,
 	TableBorderColorCommand,
@@ -142,6 +143,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		tableCellPadding: TableCellPaddingCommand;
 		tableCellVerticalAlignment: TableCellVerticalAlignmentCommand;
 		tableCellWidth: TableCellWidthCommand;
+		tableColumnWidth: TableColumnWidthCommand;
 		tableCellType: TableCellTypeCommand;
 		tableAlignment: TableAlignmentCommand;
 		tableBackgroundColor: TableBackgroundColorCommand;

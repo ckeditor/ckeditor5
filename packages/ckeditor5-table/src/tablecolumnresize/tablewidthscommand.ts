@@ -9,7 +9,7 @@
 
 import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import { Command } from '@ckeditor/ckeditor5-core';
-import { normalizeColumnWidths } from './utils.js';
+import { normalizeColumnWidths, removeCellWidthsFromTable } from './utils.js';
 
 /**
  * Command used by the {@link module:table/tablecolumnresize~TableColumnResize Table column resize feature} that
@@ -63,6 +63,9 @@ export class TableWidthsCommand extends Command {
 			}
 
 			const widths = normalizeColumnWidths( columnWidths as Array<string> );
+
+			// A column resize makes per-cell widths obsolete (the column width governs the layout), so drop them.
+			removeCellWidthsFromTable( writer, table );
 
 			if ( !tableColumnGroup ) {
 				const colGroupElement = writer.createElement( 'tableColumnGroup' );

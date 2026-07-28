@@ -38,6 +38,7 @@ export { TableUtils, type TableIndexesObject, type UpdateTableHeadingsOptions } 
 export { TableColumnResize } from './tablecolumnresize.js';
 export { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
 export { TableWidthsCommand, type TableWidthsCommandOptions } from './tablecolumnresize/tablewidthscommand.js';
+export { TableColumnWidthCommand } from './tablecolumnresize/commands/tablecolumnwidthcommand.js';
 
 export { InsertColumnCommand } from './commands/insertcolumncommand.js';
 export { InsertRowCommand } from './commands/insertrowcommand.js';

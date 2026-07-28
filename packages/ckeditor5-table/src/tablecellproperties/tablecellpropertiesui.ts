@@ -347,7 +347,8 @@ export class TableCellPropertiesUI extends Plugin {
 		Object
 			.entries( propertyToCommandMap )
 			.flatMap( ( [ property, commandName ] ) => {
-				const command = commands.get( commandName );
+				const effectiveCommandName = property === 'width' ? this._getWidthCommandName() : commandName;
+				const command = commands.get( effectiveCommandName );
 
 				if ( !command ) {
 					return [];
@@ -520,7 +521,9 @@ export class TableCellPropertiesUI extends Plugin {
 			}
 
 			if ( validator( newValue ) ) {
-				this.editor.execute( commandName, {
+				const executedCommandName = commandName === 'tableCellWidth' ? this._getWidthCommandName() : commandName;
+
+				this.editor.execute( executedCommandName, {
 					value: newValue,
 					batch: this._undoStepBatch
 				} );
@@ -530,5 +533,17 @@ export class TableCellPropertiesUI extends Plugin {
 				setErrorTextDebounced();
 			}
 		};
+	}
+
+	/**
+	 * Returns the command that drives the width field. When the table is resized and the selection maps onto a single
+	 * column, the width field is bound to (and executes) the `'tableColumnWidth'` command, so the width applies to the
+	 * column instead of being set as a per-cell width that the column group would shadow. Otherwise it falls back to
+	 * the `'tableCellWidth'` command.
+	 */
+	private _getWidthCommandName(): 'tableCellWidth' | 'tableColumnWidth' {
+		const columnWidthCommand = this.editor.commands.get( 'tableColumnWidth' );
+
+		return columnWidthCommand && columnWidthCommand.isEnabled ? 'tableColumnWidth' : 'tableCellWidth';
 	}
 }
