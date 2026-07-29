@@ -101,7 +101,7 @@ msgstr "Промените величину слике"
 
 msgctxt "The label used for the standalone resize options buttons in the image toolbar."
 msgid "Resize image to %0"
-msgstr "Промените величину слике на% 0"
+msgstr "Промените величину слике на %0"
 
 msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
 msgid "Resize image to the original size"
