@@ -9,6 +9,8 @@ modified_at: 2023-08-16
 
 # Model and schema
 
+In this part of the crash course, you will learn how the editing engine's model works and register the schema rules the `highlight` feature needs.
+
 ## The editor
 
 The editors come in a few flavors. While each looks different visually, they are similar under the hood and consist of two parts:

@@ -13,7 +13,6 @@ describe( 'utils', () => {
 
 	afterEach( () => {
 		vi.useRealTimers();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'wait', () => {

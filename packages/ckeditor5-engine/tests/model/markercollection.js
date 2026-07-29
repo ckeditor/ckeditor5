@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MarkerCollection } from '../../src/model/markercollection.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
@@ -24,10 +24,6 @@ describe( 'MarkerCollection', () => {
 		root = doc.createRoot();
 		range = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) );
 		range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 2 ) );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'iterator', () => {
@@ -316,6 +312,14 @@ describe( 'MarkerCollection', () => {
 			expect( markerA._liveRange ).toBeNull();
 			expect( markerB._liveRange ).toBeNull();
 		} );
+
+		it( 'should be safe to call more than once', () => {
+			markers._set( 'a', range );
+
+			markers.destroy();
+
+			expect( () => markers.destroy() ).not.toThrow();
+		} );
 	} );
 } );
 
@@ -326,10 +330,6 @@ describe( 'Marker', () => {
 		model = new Model();
 		doc = model.document;
 		root = doc.createRoot();
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should provide API that returns up-to-date marker range parameters', () => {

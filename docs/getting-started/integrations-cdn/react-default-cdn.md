@@ -9,7 +9,7 @@ modified_at: 2026-05-25
 
 # Integrating CKEditor&nbsp;5 with React from CDN
 
-CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the CDN distribution of the CKEditor&nbsp;5.
+CKEditor&nbsp;5 has an official React integration that you can use to add a rich text editor to your application. It provides a `<CKEditor>` component that you configure with props for the editor build, its configuration, and event handlers. The component works with multiple editor types, including classic, inline, and decoupled (document). For the multi-root editor, use the dedicated {@link getting-started/integrations-cdn/react-multiroot-cdn multi-root editor hook}. This guide will help you install and configure it to use the CDN distribution of CKEditor&nbsp;5.
 
 {@snippet getting-started/use-builder}
 
@@ -335,14 +335,11 @@ Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the sch
 
 ### Using the editor with collaboration plugins
 
-We provide a few **ready-to-use integrations** featuring collaborative editing in React applications:
+We provide **ready-to-use integration** featuring collaborative editing in a React application:
 
 * [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
-* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-react)
-* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-react)
-* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
 
-It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+It is not mandatory to build an application on top of the above samples, however, it should help you get started.
 
 ### Localization
 

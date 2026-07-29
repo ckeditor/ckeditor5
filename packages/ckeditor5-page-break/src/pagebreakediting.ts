@@ -13,8 +13,6 @@ import type { ViewDowncastWriter, ViewElement } from '@ckeditor/ckeditor5-engine
 
 import { PageBreakCommand } from './pagebreakcommand.js';
 
-import '../theme/pagebreak.css';
-
 /**
  * The page break editing feature.
  */

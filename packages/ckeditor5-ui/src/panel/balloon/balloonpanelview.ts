@@ -27,7 +27,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { isElement } from 'es-toolkit/compat';
-import '../../../theme/components/panel/balloonpanel.css';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 

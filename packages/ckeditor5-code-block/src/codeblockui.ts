@@ -27,8 +27,6 @@ import { getNormalizedAndLocalizedLanguageDefinitions } from './utils.js';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import { type CodeBlockCommand } from './codeblockcommand.js';
 
-import '../theme/codeblock.css';
-
 /**
  * The code block UI plugin.
  *

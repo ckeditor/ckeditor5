@@ -21,10 +21,6 @@ import { stringifyBlocks } from './_utils/utils.js';
 describe( 'Selection', () => {
 	let model, doc, root, selection, liveRange, range, range1, range2, range3;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		model = new Model();
 		doc = model.document;

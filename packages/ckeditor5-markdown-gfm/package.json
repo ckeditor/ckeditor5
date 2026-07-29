@@ -36,6 +36,7 @@
   },
   "sideEffects": [
     "*.css",
+    "src/index.ts",
     "dist/translations/*.umd.js"
   ],
   "dependencies": {
@@ -77,16 +78,16 @@
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "@vitest/browser-playwright": "^4.1.8",
-    "@vitest/coverage-v8": "^4.1.8",
-    "vitest": "^4.1.8"
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs",
-    "coverage": "pnpm run test:headless --coverage",
+    "coverage": "pnpm run test --coverage",
     "test": "vitest run",
-    "test:debug": "vitest",
-    "test:headless": "vitest run --browser.headless"
+    "test:debug": "vitest --browser.headless=false",
+    "test:browser": "vitest run --browser.headless=false"
   },
   "files": [
     "dist",

@@ -11,8 +11,6 @@ import { ButtonView, View, FocusCycler, type ViewCollection } from '@ckeditor/ck
 import { FocusTracker, KeystrokeHandler, type Locale, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import type { EmojiCategory } from '../emojirepository.js';
 
-import '../../theme/emojicategories.css';
-
 /**
  * A class representing the navigation part of the emoji UI.
  * It is responsible allowing the user to select a particular emoji category.

@@ -9,7 +9,7 @@ modified_at: 2026-01-23
 
 # Integrating CKEditor&nbsp;5 with Electron from CDN
 
-[Electron](https://www.electronjs.org/) is an open-source framework that allows developers to create cross-platform desktop applications using web technologies such as HTML, CSS, and JavaScript. It combines the Node.js runtime and the Chromium rendering engine, enabling a single codebase to be used for cross-platform apps that work on Windows, macOS, and Linux.
+You can add CKEditor&nbsp;5 to an [Electron](https://www.electronjs.org/) desktop application by loading the editor from the CKEditor&nbsp;5 CDN, the same way you would on a web page. Because Electron renders its windows with Chromium, the CKEditor&nbsp;5 HTML editor runs in an Electron renderer process just as it would in a browser.
 
 {@snippet getting-started/use-builder}
 

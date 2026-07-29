@@ -161,6 +161,18 @@ export function getElementWidthInPixels( domElement: HTMLElement ): number {
 }
 
 /**
+ * Returns the inner pixel width of a given editing root, or `null` if the root has no
+ * DOM element attached yet (e.g. it hasn't been rendered for the first time).
+ *
+ * @internal
+ */
+export function getEditableWidth( editor: Editor, rootName: string ): number | null {
+	const domRoot = editor.editing.view.getDomRoot( rootName );
+
+	return domRoot ? getElementWidthInPixels( domRoot as HTMLElement ) : null;
+}
+
+/**
  * Returns the column indexes on the left and right edges of a cell. They differ if the cell spans
  * across multiple columns.
  *
@@ -251,6 +263,19 @@ export function sumArray( array: Array<number | string> ): number {
  * @returns An array of column widths guaranteed to sum up to 100%.
  */
 export function normalizeColumnWidths( columnWidths: Array<string> ): Array<string> {
+	// In the pixel mode the "sum must equal 100%" invariant does not apply - pixel widths are absolute.
+	// Keep them as-is (only rounded), so the column group can round-trip pixels. The pixel branch is taken
+	// only when there are no percentage values, so a stray '%' never gets a 'px' suffix slapped onto its
+	// numeric value (which would silently reinterpret e.g. '20%' as '20px').
+	const hasPixels = columnWidths.some( width => typeof width === 'string' && width.endsWith( 'px' ) );
+	const hasPercentages = columnWidths.some( width => typeof width === 'string' && width.endsWith( '%' ) );
+
+	if ( hasPixels && !hasPercentages ) {
+		// Coerce `undefined` to `'auto'` (like the percentage path below) so a widthless column is not later
+		// treated as missing and removed by `updateColumnElements`.
+		return columnWidths.map( width => width === 'auto' || width === undefined ? 'auto' : `${ toPrecision( width ) }px` );
+	}
+
 	const widths: Array<number | 'auto'> = columnWidths.map( width => {
 		if ( width === 'auto' || width === undefined ) {
 			return 'auto';
@@ -420,6 +445,29 @@ export function getTableColumnsWidths( element: ModelElement ): Array<string> {
 }
 
 /**
+ * Tells whether a table is in the pixel width mode, that is, its `tableWidth` attribute is expressed in pixels.
+ * The `tableWidth` unit is the single source of truth for the whole table's width mode.
+ *
+ * @internal
+ * @param table A 'table' model element.
+ */
+export function isTableWidthInPixels( table: ModelElement ): boolean {
+	const tableWidth = table.getAttribute( 'tableWidth' ) as string | undefined;
+
+	return typeof tableWidth === 'string' && tableWidth.trim().endsWith( 'px' );
+}
+
+/**
+ * Tells whether the given column widths are expressed in pixels.
+ *
+ * @internal
+ * @param columnWidths An array of column widths.
+ */
+export function isColumnWidthsInPixels( columnWidths: Array<string> ): boolean {
+	return columnWidths.some( width => typeof width === 'string' && width.endsWith( 'px' ) );
+}
+
+/**
  * Translates the `colSpan` model attribute into additional column widths and returns the resulting array.
  *
  * @internal
@@ -450,4 +498,23 @@ export function translateColSpanAttribute( element: ModelElement, writer: ModelW
 
 		return acc;
 	}, [] );
+}
+
+/**
+ * Removes the `tableCellWidth` attribute from every cell of the given table. Once a column is resized (with the resize
+ * handler or the column-width command), a per-cell width is obsolete - the column width governs the layout - so it is
+ * dropped to keep the model clean.
+ *
+ * @internal
+ */
+export function removeCellWidthsFromTable( writer: ModelWriter, table: ModelElement ): void {
+	for ( const row of table.getChildren() ) {
+		if ( !row.is( 'element', 'tableRow' ) ) {
+			continue;
+		}
+
+		for ( const cell of row.getChildren() ) {
+			writer.removeAttribute( 'tableCellWidth', cell );
+		}
+	}
 }

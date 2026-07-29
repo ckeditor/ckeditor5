@@ -53,9 +53,6 @@
     "es-toolkit": "1.45.1"
   },
   "devDependencies": {
-    "@vitest/browser-playwright": "^4.1.8",
-    "@vitest/coverage-v8": "^4.1.8",
-    "vitest": "^4.1.8",
     "@ckeditor/ckeditor5-alignment": "workspace:*",
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
@@ -78,14 +75,17 @@
     "@ckeditor/ckeditor5-select-all": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-style": "workspace:*",
-    "@ckeditor/ckeditor5-typing": "workspace:*"
+    "@ckeditor/ckeditor5-typing": "workspace:*",
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs",
     "test": "vitest run",
-    "test:headless": "vitest run --browser.headless",
-    "test:debug": "vitest",
-    "coverage": "pnpm run test:headless --coverage"
+    "test:browser": "vitest run --browser.headless=false",
+    "test:debug": "vitest --browser.headless=false",
+    "coverage": "pnpm run test --coverage"
   },
   "files": [
     "dist",

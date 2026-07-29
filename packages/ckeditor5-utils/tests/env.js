@@ -7,7 +7,7 @@ import { env,
 	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent,
 	isMediaForcedColors, isMotionReduced
 } from '../src/env.js';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { global } from '../src/dom/global.js';
 
@@ -16,10 +16,6 @@ function toLowerCase( str ) {
 }
 
 describe( 'Env', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	it( 'is an object', () => {
 		expect( env ).to.be.an( 'object' );
 	} );

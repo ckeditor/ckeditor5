@@ -3,16 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { dirname, resolve } from 'node:path';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
+import { availableParallelism } from 'node:os';
+import { basename, resolve } from 'node:path';
 import { defineConfig, mergeConfig, type ViteUserConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
+import { rawSvgPlugin } from '@ckeditor/ckeditor5-dev-manual-server';
+import { NON_FULL_COVERAGE_PACKAGES } from './scripts/ci/constants.mjs';
+import { prebundleDependencies } from './scripts/vitest/prebundle-dependencies.js';
 
-const REPO_ROOT = dirname( fileURLToPath( import.meta.url ) );
 const CHROME_EXECUTABLE_PATH = process.env.PUPPETEER_EXECUTABLE_PATH;
 
 type TestOptions = NonNullable<ViteUserConfig[ 'test' ]>;
+
+export interface PackageTestOptions extends TestOptions {
+
+	/**
+	 * Disables the 100% coverage thresholds enforced by default in coverage runs.
+	 * Defaults to whether the package is listed in the repository's non-full-coverage policy
+	 * (`NON_FULL_COVERAGE_PACKAGES`), so package configurations do not need to set it.
+	 */
+	allowNonFullCoverage?: boolean;
+}
 
 /**
  * Creates a Vitest configuration for a single package.
@@ -23,22 +35,54 @@ type TestOptions = NonNullable<ViteUserConfig[ 'test' ]>;
  * ```ts
  * import { createVitestConfig } from '../../vitest.config';
  *
- * const config: ViteUserConfig = createVitestConfig( { name: 'special-characters' } );
+ * const config: ViteUserConfig = createVitestConfig( import.meta.dirname );
  *
  * export default config;
  * ```
  *
- * The `name` option must be the short package name (without the `ckeditor5-` prefix),
- * as the test runner wrapper selects packages via `--project <short-name>`.
+ * The `packageDir` argument must be the absolute path to the package directory (always pass
+ * `import.meta.dirname`). It is used as the Vite `root`, so that all relative paths (test include
+ * globs, coverage globs, report directories) resolve against the package directory regardless of
+ * the process working directory. This makes the configuration work identically for the test runner
+ * wrapper (which spawns Vitest with cwd set to the package directory) and for IDE integrations
+ * like WebStorm (which spawn Vitest from the repository root).
+ *
+ * The directory basename also derives the project name (the short package name, without
+ * the `ckeditor5-` prefix, as the test runner wrapper selects packages by this name) and
+ * the default value of the `allowNonFullCoverage` option, which disables the 100% coverage
+ * thresholds for packages listed in the repository's non-full-coverage policy.
  * Any other properties are merged into the `test` configuration as overrides.
+ *
+ * On CI (or on `CK_PREBUNDLE` request) the configuration also pre-bundles the tested
+ * package's CKEditor 5 dependencies.
  */
-export function createVitestConfig( { name, ...testOverrides }: TestOptions ): ViteUserConfig {
+export function createVitestConfig( packageDir: string, options: PackageTestOptions = {} ): ViteUserConfig {
+	const packageName = basename( packageDir );
+
+	const {
+		name = packageName.replace( /^ckeditor5-/, '' ),
+		allowNonFullCoverage = NON_FULL_COVERAGE_PACKAGES.includes( packageName ),
+		...testOverrides
+	} = options;
+
 	return mergeConfig(
 		defineConfig( {
+			root: packageDir,
+
 			test: {
 				name,
-				globals: true,
 
+				// Restore all spies, stubbed globals, and stubbed environment variables before each
+				// test, so no test can leak mocked state into the next one. Tests should not call
+				// `vi.restoreAllMocks()`, `vi.unstubAllGlobals()`, or `vi.unstubAllEnvs()` in cleanup
+				// hooks, with one exception: a manual restore is still needed when a mock applied by
+				// a `beforeEach()` hook must be removed for a single test, or when the teardown itself
+				// (for example `editor.destroy()`) must run against the real, unmocked implementations.
+				restoreMocks: true,
+				unstubGlobals: true,
+				unstubEnvs: true,
+
+				maxWorkers: Math.min( availableParallelism(), 4 ),
 				include: [
 					'tests/**/*.{js,ts}'
 				],
@@ -48,12 +92,23 @@ export function createVitestConfig( { name, ...testOverrides }: TestOptions ): V
 					'**/manual'
 				],
 				setupFiles: [
-					resolve( REPO_ROOT, 'test_setup.js' )
+					resolve( import.meta.dirname, 'scripts', 'vitest', 'test_setup.mjs' ),
+
+					// Package stylesheets are imported by the package entry module (`src/index.ts`),
+					// not by individual source modules. Tests import source modules directly, so the
+					// package theme entry stylesheets must be loaded explicitly. Stylesheets of other
+					// packages still arrive transitively through their `@ckeditor/*` entry imports.
+					...[
+						resolve( packageDir, 'theme', 'index-editor.css' ),
+						resolve( packageDir, 'theme', 'index-content.css' )
+					].filter( entryStylesheet => existsSync( entryStylesheet ) )
 				],
 				testTimeout: 5_000,
 
 				browser: {
 					enabled: true,
+					headless: true,
+					isolate: false,
 					provider: playwright( {
 						launchOptions: CHROME_EXECUTABLE_PATH ?
 							{ executablePath: CHROME_EXECUTABLE_PATH } :
@@ -65,42 +120,52 @@ export function createVitestConfig( { name, ...testOverrides }: TestOptions ): V
 					]
 				},
 
-				// Applies to standalone runs (`pnpm vitest` in a package directory). In workspace
-				// runs, the root-level coverage configuration from `createWorkspaceConfig()` wins.
 				coverage: {
 					provider: 'v8',
 					clean: true,
-					reporter: [ 'text', 'html' ],
+					reporter: [
+						'text',
+						// The per-file HTML report is useful locally but a waste of time in CI.
+						...( process.env.CI ? [] : [ 'html' ] ),
+						// The `projectRoot` option makes the lcov `SF:` paths relative to the
+						// repository root instead of the package directory, so CI can concatenate
+						// per-package reports into a single file consumable by coverage services.
+						[ 'lcovonly', { projectRoot: resolve( packageDir, '..', '..' ) } ]
+					] as NonNullable<TestOptions[ 'coverage' ]>[ 'reporter' ],
 					include: [ 'src/**' ],
+					// `mergeConfig()` concatenates arrays, so `coverage.exclude` entries passed by
+					// a package configuration extend this list instead of replacing it.
 					exclude: [
 						'src/index.ts',
 						'src/augmentation.ts',
+						'src/legacyerrors.ts',
+						'src/lib/**',
 						'src/**/*config.ts'
 					],
-					thresholds: {
+					thresholds: allowNonFullCoverage ? undefined : {
 						100: true
 					}
 				}
 			},
 
-			publicDir: resolve( REPO_ROOT, 'packages/ckeditor5-utils/tests/_assets' ),
+			publicDir: resolve( import.meta.dirname, 'packages', 'ckeditor5-utils', 'tests', '_assets' ),
 
 			optimizeDeps: {
-				include: [ '@vitest/coverage-v8/browser' ]
+				include: [ '@vitest/coverage-v8/browser' ],
+				// The dependency optimizer does not run the regular Vite plugins, so `.svg`
+				// imports inside pre-bundled dependencies need the extension registered
+				// (instead of being externalized as assets) and the plugin passed explicitly.
+				extensions: [ '.svg' ],
+				rolldownOptions: {
+					plugins: [
+						rawSvgPlugin()
+					]
+				}
 			},
 
 			plugins: [
-				{
-					name: 'load-svg',
-					enforce: 'pre',
-					load( id: string ) {
-						if ( id.endsWith( '.svg' ) ) {
-							const content = readFileSync( id, 'utf-8' );
-
-							return `export default ${ JSON.stringify( content ) };`;
-						}
-					}
-				}
+				prebundleDependencies( packageDir ),
+				rawSvgPlugin()
 			]
 		} ),
 		defineConfig( { test: testOverrides } )
@@ -108,26 +173,22 @@ export function createVitestConfig( { name, ...testOverrides }: TestOptions ): V
 }
 
 /**
- * Creates the workspace configuration read by Vitest when run from a repository root.
- * The coverage setup is shared by all repositories using this factory: the `json` and
- * `lcovonly` reporters are required by the test runner wrapper and the CI coverage checks.
- * The wrapper prints the final combined `text-summary` after merging per-package JSON
- * reports, so the workspace coverage configuration intentionally omits `text-summary` to
- * avoid printing the summary twice.
+ * The workspace configuration read by Vitest when it is launched from the repository root
+ * without an explicit configuration file, which is how IDE integrations (for example
+ * WebStorm) run tests. Vitest matches the test file filter against the listed projects
+ * and runs it with the package's own configuration.
+ *
+ * It is intended for filtered, single-package runs only. Do not run all projects at once
+ * through this configuration (a bare `vitest --run` from the repository root) — dependency
+ * optimization across all browser-mode projects takes excessive time. The test runner
+ * wrapper instead spawns a separate Vitest process per package.
  */
-export function createWorkspaceConfig( projects: Array<string> ): ViteUserConfig {
-	return defineConfig( {
-		test: {
-			projects,
-			coverage: {
-				provider: 'v8',
-				reporter: [ 'html', 'json', 'lcovonly' ],
-				reportsDirectory: 'coverage-vitest'
-			}
-		}
-	} );
-}
-
-const workspaceConfig: ViteUserConfig = createWorkspaceConfig( [ 'packages/*/vitest.config.ts' ] );
+const workspaceConfig: ViteUserConfig = defineConfig( {
+	test: {
+		projects: [
+			'packages/*'
+		]
+	}
+} );
 
 export default workspaceConfig;

@@ -29,8 +29,6 @@ describe( 'FindAndReplaceFormView', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		view.element.remove();
 		view.destroy();
 	} );

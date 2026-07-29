@@ -1564,6 +1564,14 @@ describe( 'Model', () => {
 			expect( model.document.destroy ).toHaveBeenCalledTimes( 1 );
 		} );
 
+		it( 'should destroy markers', () => {
+			vi.spyOn( model.markers, 'destroy' );
+
+			model.destroy();
+
+			expect( model.markers.destroy ).toHaveBeenCalledTimes( 1 );
+		} );
+
 		it( 'should stop listening', () => {
 			const emitter = new ( EmitterMixin() )();
 			const spy = vi.fn();

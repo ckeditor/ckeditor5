@@ -30,10 +30,6 @@ import { GeneralHtmlSupport } from '../src/generalhtmlsupport.js';
 describe( 'DataFilter', () => {
 	let editor, model, editorElement, dataFilter, dataSchema, htmlSupport;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

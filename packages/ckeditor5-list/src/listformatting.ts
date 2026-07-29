@@ -27,8 +27,6 @@ import {
 	isFirstBlockOfListItem
 } from './list/utils/model.js';
 
-import '../theme/listformatting.css';
-
 /**
  * The list formatting plugin.
  *

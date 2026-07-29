@@ -11,7 +11,7 @@ meta-description: Learn how the migrate from CKEditor 4 to the latest CKEditor 5
 
 # Migration from CKEditor 4
 
-This section of the documentation explains how to migrate to CKEditor&nbsp;5.
+If you are moving from CKEditor 4 to CKEditor&nbsp;5, this guide is your starting point. CKEditor&nbsp;5 was rebuilt from the ground up - from installation and integration to its data model and APIs. It is a genuinely new editor rather than a new version of the old one. Therefore, there is no automatic migration path. The sections below explain the key differences between versions and what you need to plan for before you start.
 
 <info-box hint>
 	**CKEditor 4 reached its End of Life (EOL) in June 2023**, with no future updates, bug fixes, and security patches. Learn how to migrate to CKEditor&nbsp;5 [here](https://ckeditor.com/docs/ckeditor5/latest/updating/ckeditor4/migration-from-ckeditor-4.html).
@@ -21,9 +21,6 @@ This section of the documentation explains how to migrate to CKEditor&nbsp;5.
 	Contact our Sales team for [more details](https://ckeditor.com/contact/).
 </info-box>
 
-When compared to its predecessor, you should treat CKEditor&nbsp;5 as **a totally new editor**. We have redesigned every single aspect of it &ndash; from installation, to integration, to features, to its data model, and finally to its API.
-
-There is no automatic solution for migrating. This section summarizes the most important aspects you need to consider before you proceed with moving to CKEditor&nbsp;5.
 ## Differences between CKEditor 4 and CKEditor&nbsp;5
 
 What differentiates CKEditor&nbsp;5 from its predecessor the most is its core architecture. CKEditor&nbsp;5 is a highly flexible and extensible editing framework with a powerful API. You can use it to create any WYSIWYG editor implementation, from a lightweight chat to a complex Google Docs-like solution. CKEditor&nbsp;5 is also collaboration-ready and offers features such as real-time collaboration, comments, or track changes.

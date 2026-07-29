@@ -21,10 +21,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 describe( 'WidgetToolbarRepository', () => {
 	let editor, model, balloon, widgetToolbarRepository, editorElement, addToolbarSpy;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
@@ -746,10 +742,9 @@ describe( 'WidgetToolbarRepository', () => {
 } );
 
 describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () => {
-	let clock, editor, model, balloon, balloonToolbar, widgetToolbarRepository, editorElement;
+	let editor, model, balloon, balloonToolbar, widgetToolbarRepository, editorElement;
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 	} );
 
@@ -757,7 +752,6 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 		vi.useFakeTimers();
-		clock = { tick: ms => vi.advanceTimersByTime( ms ) };
 
 		return BalloonEditor
 			.create( editorElement, {
@@ -794,7 +788,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		editor.editing.view.document.isFocused = true;
 		_setModelData( model, '[<fake-widget></fake-widget>]<paragraph>foo</paragraph>' );
 
-		clock.tick( 200 );
+		vi.advanceTimersByTime( 200 );
 
 		expect( balloon.visibleView ).toBe( fakeWidgetToolbarView );
 	} );
@@ -808,7 +802,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		editor.editing.view.document.isFocused = true;
 		_setModelData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
 
-		clock.tick( 200 );
+		vi.advanceTimersByTime( 200 );
 
 		expect( balloon.visibleView ).toBe( balloonToolbar.toolbarView );
 	} );

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ImageLoadObserver } from '../../src/image/imageloadobserver.js';
 import { Observer, EditingView, _setViewData, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
@@ -25,39 +26,39 @@ describe( 'ImageLoadObserver', () => {
 	} );
 
 	it( 'should extend Observer', () => {
-		expect( observer ).instanceof( Observer );
+		expect( observer ).toBeInstanceOf( Observer );
 	} );
 
 	it( 'should fire `loadImage` event for images in the document that are loaded with a delay', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		_setViewData( view, '<img src="/assets/sample.png" />' );
+		_setViewData( view, '<img src="/sample.png" />' );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 
 		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
 
-		sinon.assert.calledOnce( spy );
+		expect( spy ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'should fire `layoutChanged` along with `imageLoaded` event', () => {
-		const layoutChangedSpy = sinon.spy();
-		const imageLoadedSpy = sinon.spy();
+		const layoutChangedSpy = vi.fn();
+		const imageLoadedSpy = vi.fn();
 
 		view.document.on( 'layoutChanged', layoutChangedSpy );
 		view.document.on( 'imageLoaded', imageLoadedSpy );
 
 		observer._fireEvents( {} );
 
-		sinon.assert.calledOnce( layoutChangedSpy );
-		sinon.assert.calledOnce( imageLoadedSpy );
+		expect( layoutChangedSpy ).toHaveBeenCalledOnce();
+		expect( imageLoadedSpy ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'should not fire events when observer is disabled', () => {
-		const layoutChangedSpy = sinon.spy();
-		const imageLoadedSpy = sinon.spy();
+		const layoutChangedSpy = vi.fn();
+		const imageLoadedSpy = vi.fn();
 
 		view.document.on( 'layoutChanged', layoutChangedSpy );
 		view.document.on( 'imageLoaded', imageLoadedSpy );
@@ -66,18 +67,18 @@ describe( 'ImageLoadObserver', () => {
 
 		observer._fireEvents( {} );
 
-		sinon.assert.notCalled( layoutChangedSpy );
-		sinon.assert.notCalled( imageLoadedSpy );
+		expect( layoutChangedSpy ).not.toHaveBeenCalled();
+		expect( imageLoadedSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not fire `loadImage` event for images removed from document', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		_setViewData( view, '<img src="/assets/sample.png" />' );
+		_setViewData( view, '<img src="/sample.png" />' );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 
 		const img = domRoot.querySelector( 'img' );
 
@@ -85,59 +86,104 @@ describe( 'ImageLoadObserver', () => {
 
 		img.dispatchEvent( new Event( 'load' ) );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not fire `loadImage` event for non-image elements', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'imageLoaded', spy );
 
 		_setViewData( view, '<p>foo</p>' );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 
 		const img = domRoot.querySelector( 'p' );
 
 		img.dispatchEvent( new Event( 'load' ) );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
+	} );
+
+	it( 'should not fire `imageLoaded` event when a load event fires on a non-IMG element via observe path', () => {
+		const spy = vi.fn();
+
+		viewDocument.on( 'imageLoaded', spy );
+
+		const video = document.createElement( 'video' );
+		domRoot.appendChild( video );
+
+		video.dispatchEvent( new Event( 'load', { bubbles: true } ) );
+
+		expect( spy ).not.toHaveBeenCalled();
+
+		domRoot.removeChild( video );
+	} );
+
+	it( 'should not fire `imageLoaded` event via observe path when observer is disabled', () => {
+		const spy = vi.fn();
+
+		viewDocument.on( 'imageLoaded', spy );
+
+		_setViewData( view, '<img src="/sample.png" />' );
+
+		observer.disable();
+
+		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
+
+		expect( spy ).not.toHaveBeenCalled();
+	} );
+
+	it( 'should not fire `imageLoaded` event via observe path when element has `data-cke-ignore-events` attribute', () => {
+		const spy = vi.fn();
+
+		viewDocument.on( 'imageLoaded', spy );
+
+		const img = document.createElement( 'img' );
+		img.setAttribute( 'data-cke-ignore-events', 'true' );
+		domRoot.appendChild( img );
+
+		img.dispatchEvent( new Event( 'load', { bubbles: true } ) );
+
+		expect( spy ).not.toHaveBeenCalled();
+
+		domRoot.removeChild( img );
 	} );
 
 	it( 'should not fire `loadImage` event if an image has `data-cke-ignore-events` attribute', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		_setViewData( view, '<img src="/assets/sample.png" data-cke-ignore-events="true" />' );
+		_setViewData( view, '<img src="/sample.png" data-cke-ignore-events="true" />' );
 
 		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not fire `loadImage` event if an image has an ancestor with `data-cke-ignore-events` attribute', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		_setViewData( view, '<div data-cke-ignore-events="true"><p><img src="/assets/sample.png" /></p></div>' );
+		_setViewData( view, '<div data-cke-ignore-events="true"><p><img src="/sample.png" /></p></div>' );
 
 		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should do nothing with an image when changes are in the other parent', () => {
 		_setViewData(
 			view,
-			'<container:p><attribute:b>foo</attribute:b></container:p><container:div><img src="/assets/sample.png" /></container:div>'
+			'<container:p><attribute:b>foo</attribute:b></container:p><container:div><img src="/sample.png" /></container:div>'
 		);
 
 		const viewP = viewRoot.getChild( 0 );
 		const viewDiv = viewRoot.getChild( 1 );
 
-		const mapSpy = sinon.spy( view.domConverter, 'mapViewToDom' );
+		const mapSpy = vi.spyOn( view.domConverter, 'mapViewToDom' );
 
 		// Change only the paragraph.
 		view.change( writer => {
@@ -147,14 +193,14 @@ describe( 'ImageLoadObserver', () => {
 			writer.wrap( writer.createRangeOn( text ), writer.createAttributeElement( 'b' ) );
 		} );
 
-		sinon.assert.calledWith( mapSpy, viewP );
-		sinon.assert.neverCalledWith( mapSpy, viewDiv );
+		expect( mapSpy ).toHaveBeenCalledWith( viewP );
+		expect( mapSpy ).not.toHaveBeenCalledWith( viewDiv );
 	} );
 
 	it( 'should not throw when synced child was removed in the meanwhile', () => {
 		let viewDiv;
 
-		const mapSpy = sinon.spy( view.domConverter, 'mapViewToDom' );
+		const mapSpy = vi.spyOn( view.domConverter, 'mapViewToDom' );
 
 		view.change( writer => {
 			viewDiv = writer.createContainerElement( 'div' );
@@ -163,35 +209,35 @@ describe( 'ImageLoadObserver', () => {
 
 		expect( () => {
 			view._renderer.render();
-			sinon.assert.calledWith( mapSpy, viewDiv );
-		} ).to.not.throw();
+			expect( mapSpy ).toHaveBeenCalledWith( viewDiv );
+		} ).not.toThrow();
 	} );
 
 	it( 'should stop listening to events on given DOM element', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		_setViewData( view, '<img src="/assets/sample.png" />' );
+		_setViewData( view, '<img src="/sample.png" />' );
 
 		observer.stopObserving( domRoot );
 
 		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should stop observing images on destroy', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		_setViewData( view, '<img src="/assets/sample.png" />' );
+		_setViewData( view, '<img src="/sample.png" />' );
 
 		observer.destroy();
 
 		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 } );

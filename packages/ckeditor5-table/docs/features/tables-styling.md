@@ -346,6 +346,10 @@ The {@link module:table/tableproperties~TableProperties} and {@link module:table
 	</tbody>
 </table>
 
+<info-box important>
+	When the {@link features/tables-resize table column resize} feature is enabled and the table has been resized, the cell **Width** field sets the width of the whole column through the `'tableColumnWidth'` command, rather than the width of a single cell.
+</info-box>
+
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>

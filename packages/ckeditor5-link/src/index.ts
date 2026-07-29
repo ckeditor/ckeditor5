@@ -29,7 +29,8 @@ export type { LinkProvidersCancelEvent } from './ui/linkprovideritemsview.js';
 export type {
 	LinkFormValidatorCallback,
 	LinkFormSubmitEvent,
-	LinkFormCancelEvent
+	LinkFormCancelEvent,
+	LinkFormShowDecoratorsEvent
 } from './ui/linkformview.js';
 
 export {
@@ -63,4 +64,6 @@ export type {
 	LinkDecoratorManualDefinition
 } from './linkconfig.js';
 
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

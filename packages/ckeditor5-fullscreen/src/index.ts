@@ -18,4 +18,6 @@ export { FullscreenDecoupledEditorHandler } from './handlers/decouplededitorhand
 
 export type { FullscreenConfig } from './fullscreenconfig.js';
 
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

@@ -17,10 +17,6 @@ describe( 'Bug ckeditor5-typing#11904', () => {
 	let view, domRoot, viewDocument;
 	let deleteSpy;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		domRoot = document.createElement( 'div' );
 		document.body.appendChild( domRoot );

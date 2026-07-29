@@ -8,7 +8,7 @@ meta-description: Learn how to integrate a React component into a CKEditor 5 wid
 
 # Using a React component in a block widget
 
-In this tutorial, you will learn how to implement an editor plugin that uses the power of the [React](https://reactjs.org/) library inside the CKEditor&nbsp;5 widget ecosystem. You will build a "Product preview" feature which renders an actual React component inside the editor to display some useful information about the product.
+In this tutorial, you will learn how to implement an editor plugin that uses the power of the [React](https://react.dev/) library inside the CKEditor&nbsp;5 widget ecosystem. You will build a "Product preview" feature which renders an actual React component inside the editor to display some useful information about the product.
 
 Later on, you will use the "Product preview" feature to build a simple React application that displays an editor next to the list of available products. The application will allow the user to insert the product into the editor content by clicking it on the list.
 

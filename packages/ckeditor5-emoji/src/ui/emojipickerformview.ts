@@ -24,8 +24,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
-import '../../theme/emojipickerform.css';
-
 /**
  * The emoji picker form view.
  */

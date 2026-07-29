@@ -894,50 +894,6 @@ import { toArray } from 'ckeditor5';
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
 
-### Importing modules in debug comments: `ckeditor5-rules/use-require-for-debug-mode-imports`
-
-The debug mode allows importing additional modules for testing purposes. Unfortunately, the debug comment is not removed, so webpack reports the following error.
-
-```
-Module parse failed: 'import' and 'export' may only appear at the top level (15204:20)
-File was processed with these loaders:
- * ./node_modules/@ckeditor/ckeditor5-dev-tests/lib/utils/ck-debug-loader.js
-You may need an additional loader to handle the result of these loaders.
-|  */
-|
-> /* @if CK_DEBUG */  import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-|
-| /**
-```
-
-Modules need to be imported with a `require()` function.
-
-To create a code executed only in the debug mode, follow the description of the `--debug` flag in the {@link framework/contributing/testing-environment#running-manual-tests testing environment} guide.
-
-👎&nbsp; Examples of incorrect code for this rule:
-
-```js
-// @if CK_DEBUG // import defaultExport from 'module-name';
-// @if CK_DEBUG // import * as name from 'module-name';
-// @if CK_DEBUG // import { testFunction } from 'module-name';
-// @if CK_DEBUG // import { default as alias } from 'module-name';
-// @if CK_DEBUG // import { exported as alias } from 'module-name';
-// @if CK_DEBUG // import 'module-name';
-```
-
-👍&nbsp; Examples of correct code for this rule:
-
-```js
-// @if CK_DEBUG // const defaultExport = require( 'module-name' ).default;
-// @if CK_DEBUG // const name = require( 'module-name' );
-// @if CK_DEBUG // const { testFunction } = require( 'module-name' );
-// @if CK_DEBUG // const alias = require( 'module-name' ).default;
-// @if CK_DEBUG // const { exported: alias } = require( 'module-name' );
-// @if CK_DEBUG // require( 'module-name' );
-```
-
-[History of the change.](https://github.com/ckeditor/ckeditor5/issues/12479)
-
 ### Non-public members marked as @internal : `ckeditor5-rules/non-public-members-as-internal`
 
 <info-box warning>
@@ -1172,6 +1128,10 @@ The `isFooPlugin` flag is required and set to `true`, and the `isBarPlugin` flag
 
 This rule ensures that SVG files are imported and exported only in the `@ckeditor/ckeditor5-icons` package. This package should include all icons used in CKEditor&nbsp;5.
 
+### CSS imports only in the main package entry point
+
+This rule ensures that CSS files are imported only in the main package entry point (`src/index.ts`). Each package imports `theme/index-editor.css` followed by `theme/index-content.css`. Individual source modules must not import CSS files.
+
 ### Valid changelog entries
 
 This rule ensures that changelog entry files are populated with proper data and a clear description of the change. For a full guide on how to populate changelog entries, see the {@link framework/contributing/changelog-entries Changelog entries} guide.
@@ -1296,3 +1256,65 @@ This rule aims to enforce convention of all variables targeting styling of eleme
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/18805)
+
+### Content stylesheet placement: `ckeditor5-rules/content-styles-in-index-content`
+
+This rule requires content styles scoped with `.ck-content` to be placed in `theme/index-content.css`. Editor-only content hosts, such as `.ck-editor__editable.ck-content`, stay in editor stylesheets.
+
+### Editor stylesheet placement: `ckeditor5-rules/no-editor-styles-in-index-content`
+
+This rule prevents editor UI and editing-view selectors from being placed in `theme/index-content.css`. The content entry point may also contain supporting custom properties, font definitions, and keyframes.
+
+### Selector specificity order: `ckeditor5-rules/no-descending-specificity`
+
+This rule reports selectors with lower specificity placed after overriding selectors with higher specificity that target the same element. Such a selector cannot win the cascade where both selectors apply, so the resulting order is misleading to readers and fragile during refactoring. It reimplements Stylelint's [`no-descending-specificity`](https://stylelint.io/user-guide/rules/no-descending-specificity/) rule for ESLint.
+
+Selectors are compared only within the same context (the same nesting parent and at-rule conditions) and only when they share the same key selector, that is, the last compound selector ignoring pseudo-classes. For example, `a:hover` and `a` are compared with each other, while `a::before` is not compared with `a`.
+
+👎&nbsp; Example of incorrect code for this rule:
+
+```css
+.ck-toolbar a {
+	color: var(--ck-color-link);
+}
+
+a {
+	color: var(--ck-color-text);
+}
+```
+
+👍&nbsp; Example of correct code for this rule:
+
+```css
+a {
+	color: var(--ck-color-text);
+}
+
+.ck-toolbar a {
+	color: var(--ck-color-link);
+}
+```
+
+### Custom property references require `var()`: `ckeditor5-rules/no-missing-var-function`
+
+This rule reports custom property references used as declaration values without the `var()` function. A bare reference is not substituted by the browser, so the declaration silently does not work. It reimplements Stylelint's [`custom-property-no-missing-var-function`](https://stylelint.io/user-guide/rules/custom-property-no-missing-var-function/) rule for ESLint.
+
+Properties whose values legitimately contain dashed identifiers are not checked. This covers transition targets (`transition`, `transition-property`, and `will-change`) and the naming properties of anchor positioning, scroll-driven animations, and view transitions (for example, `anchor-name` or `view-transition-name`).
+
+👎&nbsp; Example of incorrect code for this rule:
+
+```css
+.ck-button {
+	color: --ck-color-text;
+	--ck-button-color: --ck-color-text;
+}
+```
+
+👍&nbsp; Example of correct code for this rule:
+
+```css
+.ck-button {
+	color: var(--ck-color-text);
+	--ck-button-color: var(--ck-color-text);
+}
+```

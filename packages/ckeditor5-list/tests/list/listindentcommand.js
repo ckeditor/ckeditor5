@@ -15,10 +15,6 @@ import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine'
 describe( 'ListIndentCommand', () => {
 	let editor, model, doc, root, attributeNames;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editor = new Editor();
 		editor.model = new Model();
@@ -255,7 +251,7 @@ describe( 'ListIndentCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* 0',
 						'* 1',
 						'  * 2',
@@ -279,7 +275,7 @@ describe( 'ListIndentCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* 0',
 						'  * []1',
 						'    * 2',
@@ -301,7 +297,7 @@ describe( 'ListIndentCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* 0',
 							'  * 1[]',
 							'    # 2',
@@ -319,7 +315,7 @@ describe( 'ListIndentCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'# 0',
 							'  # 1[]',
 							'    * 2',
@@ -337,7 +333,7 @@ describe( 'ListIndentCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* 0',
 							'* 1',
 							'  # 2',
@@ -356,7 +352,7 @@ describe( 'ListIndentCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* 0',
 							'  * []1',
 							'    # 2',
@@ -378,7 +374,7 @@ describe( 'ListIndentCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* 0',
 							'  * []1',
 							'    # 2',
@@ -404,7 +400,7 @@ describe( 'ListIndentCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* 0',
 							'  * [1',
 							'    * 2',
@@ -426,7 +422,7 @@ describe( 'ListIndentCommand', () => {
 
 							command.execute();
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 								'* 0',
 								'  * [1',
 								'    # 2]',
@@ -444,7 +440,7 @@ describe( 'ListIndentCommand', () => {
 
 							command.execute();
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 								'* 0',
 								'  * [1',
 								'    # 2]',
@@ -463,7 +459,7 @@ describe( 'ListIndentCommand', () => {
 
 							command.execute();
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 								'* 0',
 								'* 1',
 								'  # 2',
@@ -483,7 +479,7 @@ describe( 'ListIndentCommand', () => {
 
 							command.execute();
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 								'* 0',
 								'* 1',
 								'  # 2',
@@ -506,7 +502,7 @@ describe( 'ListIndentCommand', () => {
 
 							command.execute();
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 								'* 0',
 								'* 1',
 								'  # 2',
@@ -561,7 +557,7 @@ describe( 'ListIndentCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* 0',
 						'  * []1',
 						'    2',
@@ -583,7 +579,7 @@ describe( 'ListIndentCommand', () => {
 					command.isEnabled = true;
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).toEqualMarkup(
 						'<paragraph listIndent="0" listItemId="000" listType="bulleted">0</paragraph>' +
 						'<paragraph listIndent="0" listItemId="001" listType="bulleted">1</paragraph>' +
 						'<paragraph listIndent="1" listItemId="a00" listType="bulleted">[]2</paragraph>' +
@@ -606,7 +602,7 @@ describe( 'ListIndentCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* 0',
 						'  * []1',
 						'    * 2',
@@ -632,7 +628,7 @@ describe( 'ListIndentCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* 0',
 						'  * []1',
 						'    2',
@@ -656,7 +652,7 @@ describe( 'ListIndentCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* 0',
 						'  * 1',
 						'    [2',
@@ -677,7 +673,7 @@ describe( 'ListIndentCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* 0',
 						'  * [1',
 						'2',
@@ -726,7 +722,7 @@ describe( 'ListIndentCommand', () => {
 					stubUid();
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* 0',
 						'  # 1',
 						'    * 2',
@@ -747,7 +743,7 @@ describe( 'ListIndentCommand', () => {
 					stubUid();
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# 0',
 						'  * 1',
 						'    # 2',
@@ -768,7 +764,7 @@ describe( 'ListIndentCommand', () => {
 					stubUid();
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* 0',
 						'  # 1',
 						'    * 2',
@@ -787,7 +783,7 @@ describe( 'ListIndentCommand', () => {
 					stubUid();
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* 0',
 						'  # 1',
 						'  # 2[] {id:a00}'
@@ -896,7 +892,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'  * 2',
@@ -920,7 +916,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'[]0',
 					'* 1',
 					'  * 2',
@@ -944,7 +940,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'[]1',
 					'* 2',
@@ -968,7 +964,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'[1',
 					'* 2',
@@ -992,7 +988,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'  [2',
@@ -1014,7 +1010,7 @@ describe( 'ListIndentCommand', () => {
 				stubUid();
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">0</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">2</paragraph>' +
@@ -1033,7 +1029,7 @@ describe( 'ListIndentCommand', () => {
 				stubUid();
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">0</paragraph>' +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]2</paragraph>' +
@@ -1050,7 +1046,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'  []1',
 					'  2'
@@ -1066,7 +1062,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* []1',
 					'* 2'
@@ -1085,7 +1081,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'  * 1',
 					'    * 2',
@@ -1105,7 +1101,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'* 2[]',
@@ -1123,7 +1119,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'# 0',
 					'  * 1',
 					'# 2[]',
@@ -1142,7 +1138,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'  # 2',
@@ -1164,7 +1160,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* []1',
 					'  # 2',
@@ -1189,7 +1185,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'  # 2',
@@ -1311,7 +1307,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'  * []0',
 					'* 1'
 				] ) );
@@ -1325,7 +1321,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'    * []1'
 				] ) );
@@ -1340,7 +1336,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'  * 1',
 					'      * []2'
@@ -1358,7 +1354,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'  * [1',
 					'  * 2',
@@ -1380,7 +1376,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'  * []1',
 					'    * 2',
@@ -1392,7 +1388,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'    * []1',
 					'      * 2',
@@ -1411,7 +1407,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'  * 0[]',
 					'* 1'
 				] ) );
@@ -1487,7 +1483,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'    * []1'
 				] ) );
@@ -1500,7 +1496,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'  * []0'
 				] ) );
 			} );
@@ -1516,7 +1512,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'  * [1',
 					'  * 2',
@@ -1526,7 +1522,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* [1',
 					'* 2',
@@ -1548,7 +1544,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* []1',
 					'  * 2',
@@ -1566,7 +1562,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'[]0'
 				] ) );
 			} );
@@ -1580,7 +1576,7 @@ describe( 'ListIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'foo',
 					'[]0',
 					'* 1'

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { View } from '../src/view.js';
 import { ViewCollection } from '../src/viewcollection.js';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
@@ -12,10 +12,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 let collection;
 
 describe( 'ViewCollection', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( createTestCollection );
 
 	describe( 'constructor()', () => {

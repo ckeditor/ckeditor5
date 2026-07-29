@@ -14,10 +14,6 @@ import { Locale, Rect, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 describe( 'AutocompleteView', () => {
 	let view, filteredView;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		filteredView = new ListView();
 		filteredView.filter = () => {

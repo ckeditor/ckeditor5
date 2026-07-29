@@ -31,7 +31,7 @@ import {
 
 import { clone } from 'es-toolkit/compat';
 
-// @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // import { logDocument } from '../dev-utils/utils.js';
 
 const graveyardName = '$graveyard';
 

@@ -8,7 +8,7 @@ menu-title: .NET
 
 # Integrating CKEditor&nbsp;5 with .NET from ZIP
 
-As a pure JavaScript/TypeScript application, the CKEditor&nbsp;5 HTML editor will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, Microsoft's [.NET](https://dotnet.microsoft.com/).
+You can add CKEditor&nbsp;5 to a .NET application by placing a custom editor build from a ZIP archive among your project's static files and loading it on the page. There is no official .NET integration, but because the CKEditor&nbsp;5 HTML editor is a pure JavaScript/TypeScript library, it runs in any environment that serves such assets, including Microsoft's [.NET](https://dotnet.microsoft.com/).
 
 {@snippet getting-started/use-builder}
 

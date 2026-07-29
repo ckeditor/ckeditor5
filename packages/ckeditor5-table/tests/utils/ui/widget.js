@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { ViewSelection } from '@ckeditor/ckeditor5-engine';
 import { getTableWidgetAncestor } from '../../../src/utils/ui/widget.js';
 
@@ -13,7 +14,7 @@ describe( 'table utils', () => {
 			it( 'should return null if view selection is empty', () => {
 				const selection = new ViewSelection();
 
-				expect( getTableWidgetAncestor( selection ) ).to.be.null;
+				expect( getTableWidgetAncestor( selection ) ).toBeNull();
 			} );
 		} );
 	} );

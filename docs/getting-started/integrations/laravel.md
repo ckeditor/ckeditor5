@@ -8,7 +8,7 @@ menu-title: Laravel
 
 # Integrating CKEditor&nbsp;5 with Laravel from ZIP
 
-As a pure JavaScript/TypeScript application, the CKEditor&nbsp;5 HTML editor will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
+You can add CKEditor&nbsp;5 to a [Laravel](https://laravel.com/) application by placing a custom editor build from a ZIP archive among your project's static files and loading it on the page. There is no official Laravel integration, but because the CKEditor&nbsp;5 HTML editor is a pure JavaScript/TypeScript library, it runs in any environment that serves such assets, including the PHP-based Laravel.
 
 {@snippet getting-started/use-builder}
 

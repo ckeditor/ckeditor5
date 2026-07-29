@@ -17,10 +17,6 @@ describe( 'Delete', () => {
 		let view, domRoot, viewRoot, viewDocument;
 		let deleteSpy;
 
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		beforeEach( () => {
 			domRoot = document.createElement( 'div' );
 			domRoot.contenteditable = true;

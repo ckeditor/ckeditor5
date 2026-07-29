@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ViewElement } from '../../../src/view/element.js';
 import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewDocument } from '../../../src/view/document.js';
@@ -23,10 +23,6 @@ describe( 'DomConverter', () => {
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
 		converter = new ViewDomConverter( viewDocument );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'domToView()', () => {

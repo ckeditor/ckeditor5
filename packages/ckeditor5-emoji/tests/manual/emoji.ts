@@ -1,0 +1,169 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Emoji, EmojiMention, EmojiPicker, EmojiRepository } from '../../src/index.js';
+import { Mention } from '@ckeditor/ckeditor5-mention';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
+import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
+
+const cssValue = [
+	':root {',
+	'	--ck-font-face: Helvetica, Arial, Tahoma, Verdana, \'Noto Color Emoji\';',
+	'}',
+	'body {',
+	'	font-family: Helvetica, Arial, Tahoma, Verdana, \'Noto Color Emoji\';',
+	'}'
+].join( '\n' );
+
+const elements = {
+	template: document.querySelector( '#content' ) as HTMLTemplateElement,
+	emojiBoth: document.querySelector( '#editor-emoji-both' ) as HTMLElement,
+	emojiMention: document.querySelector( '#editor-emoji-mention' ) as HTMLElement,
+	emojiPicker: document.querySelector( '#editor-emoji-picker' ) as HTMLElement,
+	emojiPickerBalloonEditor: document.querySelector( '#editor-emoji-picker-balloon-editor' ) as HTMLElement
+};
+
+// Keeps active editor references.
+const editors: Array<any> = [];
+
+// Initial rendering.
+await reloadEditor();
+
+// Reload editors whenever the radio button is clicked.
+[ ...document.querySelectorAll( 'input[type="radio"]' ) ].forEach( element => {
+	element.addEventListener( 'input', async event => {
+		// Clear the internal cache when messing up with the filtering mechanism.
+		if ( ( event.target as HTMLInputElement ).name === 'custom-font' ) {
+			( EmojiRepository as any )._cache.clear();
+		}
+
+		await reloadEditor();
+	} );
+} );
+
+async function reloadEditor() {
+	// Destroy existing editors.
+	await Promise.all(
+		editors.map( editor => editor.destroy() )
+	);
+
+	// Remove the custom style definitions.
+	document.getElementById( 'custom-emoji-style' )?.remove();
+
+	// Create new styles depending on a radio button.
+	if ( ( document.querySelector( 'input[name="custom-font"]:checked' ) as HTMLInputElement ).value === 'true' ) {
+		const styleElement = document.createElement( 'style' );
+		styleElement.id = 'custom-emoji-style';
+		styleElement.appendChild( document.createTextNode( cssValue ) );
+		document.head.appendChild( styleElement );
+	}
+
+	// Clear references.
+	editors.length = 0;
+
+	// Create new editors.
+	const promises = [
+		ClassicEditor.create( {
+			...getEditorConfig( { extraPlugins: [ Emoji, Mention ] } ),
+			attachTo: elements.emojiBoth
+		} )
+			.catch( err => {
+				console.error( err.stack );
+			} ),
+
+		ClassicEditor
+			.create( {
+				...getEditorConfig( { extraPlugins: [ EmojiMention, Mention ], emojiButtonInToolbar: false } ),
+				attachTo: elements.emojiMention
+			} )
+			.catch( err => {
+				console.error( err.stack );
+			} ),
+
+		ClassicEditor
+			.create( {
+				...getEditorConfig( { extraPlugins: [ EmojiPicker ] } ),
+				attachTo: elements.emojiPicker
+			} )
+			.catch( err => {
+				console.error( err.stack );
+			} ),
+
+		BalloonEditor
+			.create(
+				getEditorConfig( {
+					extraPlugins: [ EmojiPicker, BalloonToolbar, Mention ],
+					root: {
+						element: elements.emojiPickerBalloonEditor
+					}
+				} )
+			)
+			.catch( err => {
+				console.error( err.stack );
+			} )
+	];
+
+	// Store references.
+	editors.push(
+		...await Promise.all( promises )
+	);
+}
+
+function getEditorConfig(
+	{ extraPlugins, emojiButtonInToolbar = true, root = {} }:
+	{ extraPlugins: Array<any>; emojiButtonInToolbar?: boolean; root?: object }
+) {
+	const tempDiv = document.createElement( 'div' );
+	tempDiv.appendChild( elements.template.content.cloneNode( true ) );
+	const initialData = tempDiv.innerHTML;
+
+	const emoji: any = {};
+
+	const dbVersion = ( document.querySelector( 'input[name="unicode"]:checked' ) as HTMLInputElement ).value;
+	const skinTone = ( document.querySelector( 'input[name="skin"]:checked' ) as HTMLInputElement ).value;
+	const customFont = ( document.querySelector( 'input[name="custom-font"]:checked' ) as HTMLInputElement ).value;
+
+	if ( dbVersion !== 'null' ) {
+		emoji.version = parseInt( dbVersion );
+	}
+	if ( skinTone !== 'null' ) {
+		emoji.skinTone = skinTone;
+	}
+	if ( customFont === 'true' ) {
+		emoji.useCustomFont = true;
+	}
+
+	return {
+		plugins: [
+			Mention,
+			Essentials,
+			Paragraph,
+			List,
+			Heading,
+			Bold,
+			...extraPlugins
+		],
+		toolbar: [
+			'heading',
+			'undo',
+			'redo',
+			emojiButtonInToolbar ? 'emoji' : ''
+		].filter( Boolean ),
+		emoji,
+		menuBar: {
+			isVisible: true
+		},
+		root: {
+			initialData,
+			...root
+		}
+	};
+}

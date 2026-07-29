@@ -26,9 +26,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { IconNextArrow, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
-import '../../../theme/components/panel/balloonrotator.css';
-import '../../../theme/components/panel/fakepanel.css';
-
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
@@ -745,6 +742,14 @@ export class RotatorView extends View {
 			label,
 			icon,
 			tooltip: true
+		} );
+
+		// Keep the focus in the editor when switching stacks. Otherwise blurring the editor could hide
+		// focus-sensitive views in the balloon (e.g. the balloon toolbar) and collapse the balloon.
+		view.extendTemplate( {
+			on: {
+				mousedown: view.bindTemplate.to( evt => evt.preventDefault() )
+			}
 		} );
 
 		return view;

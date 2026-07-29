@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { transformBookmarks } from '../../src/filters/bookmark.js';
 
 import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';

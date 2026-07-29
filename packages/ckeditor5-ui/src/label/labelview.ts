@@ -11,8 +11,6 @@ import { View } from '../view.js';
 
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/label/label.css';
-
 /**
  * The label view class.
  */

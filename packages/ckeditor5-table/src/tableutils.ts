@@ -601,13 +601,17 @@ export class TableUtils extends Plugin {
 					// Otherwise we add it to the previous column.
 					const adjacentColumn = removedColumnIndex === 0 ? tableColumns[ 1 ] : tableColumns[ removedColumnIndex - 1 ];
 
-					const removedColumnWidth = parseFloat( tableColumns[ removedColumnIndex ].getAttribute( 'columnWidth' ) as string );
+					const removedColumnWidthAttribute = tableColumns[ removedColumnIndex ].getAttribute( 'columnWidth' ) as string;
+					const removedColumnWidth = parseFloat( removedColumnWidthAttribute );
 					const adjacentColumnWidth = parseFloat( adjacentColumn.getAttribute( 'columnWidth' ) as string );
 
 					writer.remove( tableColumns[ removedColumnIndex ] );
 
-					// Add the removed column width (in %) to the adjacent column.
-					writer.setAttribute( 'columnWidth', removedColumnWidth + adjacentColumnWidth + '%', adjacentColumn );
+					// Add the removed column width to the adjacent column, preserving the width unit ('px' or '%')
+					// so that a pixel-width table's column group is not turned into percentages.
+					const unit = removedColumnWidthAttribute.trim().endsWith( 'px' ) ? 'px' : '%';
+
+					writer.setAttribute( 'columnWidth', `${ removedColumnWidth + adjacentColumnWidth }${ unit }`, adjacentColumn );
 				}
 			}
 

@@ -25,10 +25,6 @@ describe( 'MultiRootEditorUIView', () => {
 		view.editables.bar.name = 'bar';
 	} );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'constructor()', () => {
 		it( 'is virtual', () => {
 			expect( view.template ).toBeUndefined();

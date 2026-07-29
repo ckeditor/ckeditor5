@@ -17,7 +17,7 @@ import {
 } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 import { IconImageAssetManager, IconBrowseFiles } from '@ckeditor/ckeditor5-icons';
 
 import { CKBoxUI } from '../src/ckboxui.js';
@@ -33,6 +33,7 @@ describe( 'CKBoxUI', () => {
 		// rejections that fail the Vitest run.
 		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
 		vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).mockResolvedValue();
+		mockCreateToken( 'ckbox-token' );
 
 		originalCKBox = window.CKBox;
 		window.CKBox = {};
@@ -53,9 +54,6 @@ describe( 'CKBoxUI', () => {
 				CKBoxUI,
 				CKBoxEditing
 			],
-			substitutePlugins: [
-				CloudServicesCoreMock
-			],
 			toolbar: [ 'ckbox' ],
 			ckbox: {
 				tokenUrl: 'foo'
@@ -71,8 +69,6 @@ describe( 'CKBoxUI', () => {
 		editorElement.remove();
 
 		await editor.destroy();
-
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have proper name', () => {
@@ -104,9 +100,6 @@ describe( 'CKBoxUI', () => {
 				CloudServices,
 				CKBoxUI,
 				CKBoxEditing
-			],
-			substitutePlugins: [
-				CloudServicesCoreMock
 			]
 		} );
 
@@ -134,9 +127,6 @@ describe( 'CKBoxUI', () => {
 				CloudServices,
 				CKBoxUI,
 				CKBoxEditing
-			],
-			substitutePlugins: [
-				CloudServicesCoreMock
 			],
 			ckbox: {
 				tokenUrl: 'foo'

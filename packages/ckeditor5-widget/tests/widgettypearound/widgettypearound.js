@@ -18,10 +18,6 @@ import { toWidget } from '../../src/utils.js';
 describe( 'WidgetTypeAround', () => {
 	let element, plugin, editor, editingView, viewDocument, modelRoot, viewRoot, model, modelSelection;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = global.document.createElement( 'div' );
 		global.document.body.appendChild( element );
@@ -210,6 +206,224 @@ describe( 'WidgetTypeAround', () => {
 			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
 
 			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget a="true"></blockWidget>' );
+		} );
+
+		it( 'should not set the selection attribute when the "insertParagraph" command does not insert anything ' +
+			'(e.g. paragraph disallowed at that position)', () => {
+			_setModelData(
+				editor.model,
+				'<paragraph><$text bold="true">foo</$text></paragraph><blockWidget></blockWidget><paragraph>[]</paragraph>'
+			);
+
+			executeSpy.mockImplementation( commandName => {
+				if ( commandName === 'insertParagraph' ) {
+					return null;
+				}
+			} );
+
+			plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+			expect( _getModelData( editor.model ) ).to.equal(
+				'<paragraph><$text bold="true">foo</$text></paragraph><blockWidget></blockWidget><paragraph>[]</paragraph>'
+			);
+		} );
+
+		describe( 'selection attributes recovered from before the widget', () => {
+			it( 'should copy text formatting attributes from the text preceding the widget onto the selection', () => {
+				_setModelData(
+					editor.model,
+					'<paragraph><$text bold="true">foo</$text></paragraph>[<blockWidget></blockWidget>]'
+				);
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph><$text bold="true">foo</$text></paragraph><blockWidget></blockWidget>' +
+					'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>'
+				);
+			} );
+
+			it( 'should look past multiple consecutive widgets to find the preceding text formatting', () => {
+				_setModelData(
+					editor.model,
+					'<paragraph><$text bold="true">foo</$text></paragraph>' +
+					'<blockWidget></blockWidget>[<blockWidget></blockWidget>]'
+				);
+
+				plugin._insertParagraph( modelRoot.getChild( 2 ), 'after' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph><$text bold="true">foo</$text></paragraph>' +
+					'<blockWidget></blockWidget><blockWidget></blockWidget>' +
+					'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>'
+				);
+			} );
+
+			it( 'should also work when the paragraph is inserted before the widget', () => {
+				_setModelData(
+					editor.model,
+					'<paragraph><$text bold="true">foo</$text></paragraph>[<blockWidget></blockWidget>]'
+				);
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'before' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph><$text bold="true">foo</$text></paragraph>' +
+					'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph><blockWidget></blockWidget>'
+				);
+			} );
+
+			it( 'should not copy text attributes that do not have the copyOnEnter property', () => {
+				editor.model.schema.extend( '$text', { allowAttributes: 'nonEnterable' } );
+
+				_setModelData(
+					editor.model,
+					'<paragraph><$text nonEnterable="true">foo</$text></paragraph>[<blockWidget></blockWidget>]'
+				);
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph><$text nonEnterable="true">foo</$text></paragraph><blockWidget></blockWidget>' +
+					'<paragraph>[]</paragraph>'
+				);
+			} );
+
+			it( 'should recover the attribute from just the last piece of text before the widget, ' +
+				'even when earlier text does not carry it', () => {
+				_setModelData(
+					editor.model,
+					'<paragraph>foo<$text bold="true">bar</$text></paragraph>[<blockWidget></blockWidget>]'
+				);
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph>foo<$text bold="true">bar</$text></paragraph><blockWidget></blockWidget>' +
+					'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>'
+				);
+			} );
+
+			it( 'should not recover the attribute when only earlier text carries it but the last piece before the widget does not', () => {
+				_setModelData(
+					editor.model,
+					'<paragraph><$text bold="true">foo</$text>bar</paragraph>[<blockWidget></blockWidget>]'
+				);
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph><$text bold="true">foo</$text>bar</paragraph><blockWidget></blockWidget>' +
+					'<paragraph>[]</paragraph>'
+				);
+			} );
+
+			it( 'should recover attributes directly from a trailing inline object before the widget', () => {
+				editor.model.schema.extend( 'inlineWidget', { allowAttributes: 'bold' } );
+
+				_setModelData(
+					editor.model,
+					'<paragraph>foo<inlineWidget bold="true"></inlineWidget></paragraph>[<blockWidget></blockWidget>]'
+				);
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph>foo<inlineWidget bold="true"></inlineWidget></paragraph><blockWidget></blockWidget>' +
+					'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>'
+				);
+			} );
+
+			it( 'should not recover anything when the paragraph preceding the widget is empty', () => {
+				_setModelData(
+					editor.model,
+					'<paragraph></paragraph>[<blockWidget></blockWidget>]'
+				);
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph></paragraph><blockWidget></blockWidget><paragraph>[]</paragraph>'
+				);
+			} );
+
+			it( 'recovers a formatting attribute the user toggled (e.g. via the toolbar) while the caret sat ' +
+				'in what is now the empty paragraph preceding the widget', () => {
+				_setModelData( editor.model, '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
+
+				editor.model.change( writer => {
+					writer.setSelectionAttribute( 'bold', true );
+				} );
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph selection:bold="true"></paragraph><blockWidget></blockWidget>' +
+					'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>'
+				);
+			} );
+
+			it( 'does not recover a toggled attribute that does not have the copyOnEnter property', () => {
+				editor.model.schema.extend( '$text', { allowAttributes: 'nonEnterable' } );
+
+				_setModelData( editor.model, '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
+
+				editor.model.change( writer => {
+					writer.setSelectionAttribute( 'nonEnterable', true );
+				} );
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph selection:nonEnterable="true"></paragraph><blockWidget></blockWidget>' +
+					'<paragraph>[]</paragraph>'
+				);
+			} );
+
+			it( 'should copy both the widget\'s own copyOnReplace attribute and the text formatting from before it', () => {
+				editor.model.schema.extend( 'paragraph', {
+					allowAttributes: 'a'
+				} );
+
+				editor.model.schema.extend( '$blockObject', {
+					allowAttributes: 'a'
+				} );
+
+				editor.model.schema.setAttributeProperties( 'a', {
+					copyOnReplace: true
+				} );
+
+				_setModelData(
+					editor.model,
+					'<paragraph><$text bold="true">foo</$text></paragraph>[<blockWidget a="true"></blockWidget>]'
+				);
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph><$text bold="true">foo</$text></paragraph><blockWidget a="true"></blockWidget>' +
+					'<paragraph a="true" selection:bold="true"><$text bold="true">[]</$text></paragraph>'
+				);
+			} );
+
+			it( 'should execute "insertParagraph" and set the selection attribute within a single batch (one undo step)', () => {
+				_setModelData(
+					editor.model,
+					'<paragraph><$text bold="true">foo</$text></paragraph>[<blockWidget></blockWidget>]'
+				);
+
+				const batches = new Set();
+
+				editor.model.on( 'applyOperation', ( evt, [ operation ] ) => {
+					if ( operation.isDocumentOperation ) {
+						batches.add( operation.batch );
+					}
+				} );
+
+				plugin._insertParagraph( modelRoot.getChild( 1 ), 'after' );
+
+				expect( batches.size ).to.equal( 1 );
+			} );
 		} );
 	} );
 

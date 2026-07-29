@@ -13,8 +13,6 @@ import { MediaEmbedResizeHandles } from './mediaembedresize/mediaembedresizehand
 import { MediaEmbedResizeButtons } from './mediaembedresize/mediaembedresizebuttons.js';
 import { MediaEmbedCustomResizeUI } from './mediaembedresize/mediaembedcustomresizeui.js';
 
-import '../theme/mediaembedresize.css';
-
 /**
  * The media embed resize plugin.
  *

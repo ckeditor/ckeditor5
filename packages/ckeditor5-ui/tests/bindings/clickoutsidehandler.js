@@ -12,10 +12,6 @@ describe( 'clickOutsideHandler', () => {
 	let activator, actionSpy, contextElement1, contextElement2, contextElementsCallback;
 	let shadowRootContainer, shadowContextElement1, shadowContextElement2;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		activator = vi.fn().mockReturnValue( false );
 		contextElement1 = document.createElement( 'div' );

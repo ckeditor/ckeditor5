@@ -16,10 +16,6 @@ describe( 'InsertTextObserver', () => {
 	let view, viewDocument, insertTextEventSpy;
 	let domRoot;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		domRoot = document.createElement( 'div' );
 

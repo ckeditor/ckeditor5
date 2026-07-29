@@ -17,6 +17,7 @@ import { MoveOperation } from '../../src/model/operation/moveoperation.js';
 import { RenameOperation } from '../../src/model/operation/renameoperation.js';
 import { MergeOperation } from '../../src/model/operation/mergeoperation.js';
 import { SplitOperation } from '../../src/model/operation/splitoperation.js';
+import { DetachOperation } from '../../src/model/operation/detachoperation.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -1361,6 +1362,47 @@ describe( 'Range', () => {
 				// <p>aa{}bb</p>
 				expect( transformed[ 0 ].start.path ).toEqual( [ 0, 2 ] );
 				expect( transformed[ 0 ].end.path ).toEqual( [ 0, 2 ] );
+			} );
+		} );
+
+		describe( 'by DetachOperation', () => {
+			it( 'detach before range', () => {
+				const op = new DetachOperation( new ModelPosition( root, [ 0 ] ), 2 );
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).toBe( 1 );
+				expectRange( transformed[ 0 ], 0, 3 );
+			} );
+
+			it( 'detach after range', () => {
+				const op = new DetachOperation( new ModelPosition( root, [ 6 ] ), 2 );
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).toBe( 1 );
+				expectRange( transformed[ 0 ], 2, 5 );
+			} );
+
+			it( 'detach intersecting the range start', () => {
+				const op = new DetachOperation( new ModelPosition( root, [ 1 ] ), 2 );
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).toBe( 1 );
+				expectRange( transformed[ 0 ], 1, 3 );
+			} );
+
+			it( 'detach intersecting the range end', () => {
+				const op = new DetachOperation( new ModelPosition( root, [ 3 ] ), 5 );
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).toBe( 1 );
+				expectRange( transformed[ 0 ], 2, 3 );
+			} );
+
+			it( 'detach containing the whole range returns an empty array', () => {
+				const op = new DetachOperation( new ModelPosition( root, [ 0 ] ), 10 );
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed ).toEqual( [] );
 			} );
 		} );
 	} );

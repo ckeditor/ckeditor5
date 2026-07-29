@@ -9,6 +9,8 @@ modified_at: 2025-03-14
 
 # Editor UI
 
+In this part of the crash course, you will add a toolbar button to the editor UI so users can apply the `highlight` feature without running commands manually.
+
 ## Interface parts
 
 In the previous chapter of this tutorial, we created a command to highlight selected text. However, having to open a console and run a command is cumbersome and definitely not what editor users want.

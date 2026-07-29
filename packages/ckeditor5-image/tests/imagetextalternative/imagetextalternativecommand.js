@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { ImageTextAlternativeCommand } from '../../src/imagetextalternative/imagetextalternativecommand.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -48,13 +49,13 @@ describe( 'ImageTextAlternativeCommand', () => {
 	it( 'should have false value if no image is selected', () => {
 		_setModelData( model, '[]<p></p>' );
 
-		expect( command.value ).to.be.false;
+		expect( command.value ).toBe( false );
 	} );
 
 	it( 'should be disabled if not on image element', () => {
 		_setModelData( model, '[]<p></p>' );
 
-		expect( command.isEnabled ).to.be.false;
+		expect( command.isEnabled ).toBe( false );
 	} );
 
 	describe( 'the #isEnabled property', () => {
@@ -62,7 +63,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 			it( 'should be true if an image element has no alt attribute', () => {
 				_setModelData( model, '[<imageBlock src="assets/sample.png"></imageBlock>]' );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -70,7 +71,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 			it( 'should be true if an inline image has no alt attribute', () => {
 				_setModelData( model, '<p>[<imageInline src="assets/sample.png"></imageInline>]</p>' );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -78,7 +79,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 			it( 'should be true if an inline image has no alt attribute', () => {
 				_setModelData( model, '<imageBlock src="assets/sample.png"><caption>Foo[]</caption></imageBlock>' );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 	} );
@@ -88,13 +89,13 @@ describe( 'ImageTextAlternativeCommand', () => {
 			it( 'should be false if an image has no alt attribute', () => {
 				_setModelData( model, '[<imageBlock src="assets/sample.png"></imageBlock>]' );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should have a proper value if an image has the alt attribute', () => {
 				_setModelData( model, '[<imageBlock src="assets/sample.png" alt="foo bar baz"></imageBlock>]' );
 
-				expect( command.value ).to.equal( 'foo bar baz' );
+				expect( command.value ).toBe( 'foo bar baz' );
 			} );
 		} );
 
@@ -102,13 +103,13 @@ describe( 'ImageTextAlternativeCommand', () => {
 			it( 'should be false if an inline image has no alt attribute', () => {
 				_setModelData( model, '<p>[<imageInline src="assets/sample.png"></imageInline>]</p>' );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should have a proper value if an inline image the alt attribute', () => {
 				_setModelData( model, '<p>[<imageInline src="assets/sample.png" alt="foo bar baz"></imageInline>]</p>' );
 
-				expect( command.value ).to.equal( 'foo bar baz' );
+				expect( command.value ).toBe( 'foo bar baz' );
 			} );
 		} );
 
@@ -116,13 +117,13 @@ describe( 'ImageTextAlternativeCommand', () => {
 			it( 'should be false if an image has no alt attribute', () => {
 				_setModelData( model, '<imageBlock src="assets/sample.png"><caption>F[oo]</caption></imageBlock>' );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should have a proper value if an image has the alt attribute', () => {
 				_setModelData( model, '<imageBlock src="assets/sample.png" alt="foo bar baz"><caption>[Foo]</caption></imageBlock>' );
 
-				expect( command.value ).to.equal( 'foo bar baz' );
+				expect( command.value ).toBe( 'foo bar baz' );
 			} );
 		} );
 	} );
@@ -134,7 +135,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 				command.execute( { newValue: 'fiz buz' } );
 
-				expect( _getModelData( model ) ).to.equal( '[<imageBlock alt="fiz buz" src="assets/sample.png"></imageBlock>]' );
+				expect( _getModelData( model ) ).toBe( '[<imageBlock alt="fiz buz" src="assets/sample.png"></imageBlock>]' );
 			} );
 
 			it( 'should change the alt attribute if the image already has one', () => {
@@ -142,18 +143,18 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 				command.execute( { newValue: 'fiz buz' } );
 
-				expect( _getModelData( model ) ).to.equal( '[<imageBlock alt="fiz buz" src="assets/sample.png"></imageBlock>]' );
+				expect( _getModelData( model ) ).toBe( '[<imageBlock alt="fiz buz" src="assets/sample.png"></imageBlock>]' );
 			} );
 
 			it( 'should use parent batch', () => {
 				_setModelData( model, '[<imageBlock src="assets/sample.png"></imageBlock>]' );
 
 				model.change( writer => {
-					expect( writer.batch.operations ).to.length( 0 );
+					expect( writer.batch.operations ).toHaveLength( 0 );
 
 					command.execute( { newValue: 'foo bar' } );
 
-					expect( writer.batch.operations ).to.length.above( 0 );
+					expect( writer.batch.operations.length ).toBeGreaterThan( 0 );
 				} );
 			} );
 		} );
@@ -164,7 +165,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 				command.execute( { newValue: 'fiz buz' } );
 
-				expect( _getModelData( model ) ).to.equal( '<p>[<imageInline alt="fiz buz" src="assets/sample.png"></imageInline>]</p>' );
+				expect( _getModelData( model ) ).toBe( '<p>[<imageInline alt="fiz buz" src="assets/sample.png"></imageInline>]</p>' );
 			} );
 
 			it( 'should change the alt attribute if the image already has one', () => {
@@ -172,18 +173,18 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 				command.execute( { newValue: 'fiz buz' } );
 
-				expect( _getModelData( model ) ).to.equal( '<p>[<imageInline alt="fiz buz" src="assets/sample.png"></imageInline>]</p>' );
+				expect( _getModelData( model ) ).toBe( '<p>[<imageInline alt="fiz buz" src="assets/sample.png"></imageInline>]</p>' );
 			} );
 
 			it( 'should use parent batch', () => {
 				_setModelData( model, '<p>[<imageInline src="assets/sample.png"></imageInline>]</p>' );
 
 				model.change( writer => {
-					expect( writer.batch.operations ).to.length( 0 );
+					expect( writer.batch.operations ).toHaveLength( 0 );
 
 					command.execute( { newValue: 'foo bar' } );
 
-					expect( writer.batch.operations ).to.length.above( 0 );
+					expect( writer.batch.operations.length ).toBeGreaterThan( 0 );
 				} );
 			} );
 		} );
@@ -194,7 +195,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 				command.execute( { newValue: 'fiz buz' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<imageBlock alt="fiz buz" src="assets/sample.png"><caption>[]Foo</caption></imageBlock>'
 				);
 			} );
@@ -204,7 +205,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 				command.execute( { newValue: 'fiz buz' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<imageBlock alt="fiz buz" src="assets/sample.png"><caption>[]Foo</caption></imageBlock>'
 				);
 			} );

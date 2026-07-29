@@ -41,7 +41,6 @@ describe( 'MutationObserver', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		mutationObserver.disable();
 
 		domWrapper.parentElement.removeChild( domWrapper );

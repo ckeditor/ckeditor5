@@ -7,6 +7,8 @@
  * @module ckeditor5
  */
 
+// This export must be at the top. The bundled stylesheet follows this order, and the `ckeditor5-ui`
+// package theme entry provides the global styles (reset, variables) that all other styles build on.
 export * from '@ckeditor/ckeditor5-ui';
 
 export * from '@ckeditor/ckeditor5-adapter-ckfinder';

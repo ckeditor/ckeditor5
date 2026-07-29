@@ -30,10 +30,6 @@ import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 describe( 'LegacyListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {

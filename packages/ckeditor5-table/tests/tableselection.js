@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
@@ -357,7 +358,7 @@ describe( 'TableSelection', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '', '13' ],
 				[ '', '[]', '23' ],
 				[ '31', '32', '33' ]
@@ -372,7 +373,7 @@ describe( 'TableSelection', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '', '13' ],
 				[ '', '[]', '23' ],
 				[ '31', '32', '33' ]
@@ -387,7 +388,7 @@ describe( 'TableSelection', () => {
 
 			editor.execute( 'deleteForward' );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]', '12', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -404,7 +405,7 @@ describe( 'TableSelection', () => {
 				model.deleteContent( model.document.selection );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '', '13' ],
 				[ '', '[]', '23' ],
 				[ '31', '32', '33' ]
@@ -428,7 +429,7 @@ describe( 'TableSelection', () => {
 				writer.setSelection( selection );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '[]', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -454,7 +455,7 @@ describe( 'TableSelection', () => {
 				writer.setSelection( selection );
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]', '', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]

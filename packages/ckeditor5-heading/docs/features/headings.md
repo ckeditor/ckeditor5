@@ -6,7 +6,7 @@ meta-description: Structure your content with customizable headings in CKEditor 
 
 # Headings
 
-The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.
+The heading feature helps you structure your document by adding headings to parts of the text, making your content easier to scan for both readers and search engines. It provides configurable heading levels, rendered as `<h2>` to `<h4>` by default.
 
 ## Demo
 

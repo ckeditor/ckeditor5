@@ -5,7 +5,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-// Cleans up and optimizes SVG files using the SVGO utility. The configuration file is located in svgo.config.json.
+// Cleans up and optimizes SVG files using the SVGO utility.
 //
 // Usage:
 // 	pnpm run clean-up-svg-icons [<option>...] [<path>...]
@@ -39,7 +39,8 @@ import upath from 'upath';
 import fs from 'fs-extra';
 import minimist from 'minimist';
 import { globSync } from 'glob';
-import { execSync } from 'node:child_process';
+import { optimize } from 'svgo';
+import svgoViewBoxPlugin from './utils/svgoviewboxplugin.cjs';
 
 // A list of icons that should not NOT be cleaned up. Their internal structure should not be changed
 // because, for instance, CSS animations may depend on it.
@@ -55,6 +56,27 @@ const EXCLUDED_ICONS = [
 
 // A pattern to match all the icons.
 const ALL_ICONS_PATTERN = 'packages/ckeditor5-icons/theme/icons';
+
+const svgoConfig = {
+	plugins: [
+		{
+			name: 'preset-default',
+			params: {
+				overrides: {
+					removeViewBox: false,
+					collapseGroups: true,
+					convertPathData: {
+						noSpaceAfterFlags: false
+					},
+					removeTitle: true,
+					removeComments: true,
+					removeMetadata: true
+				}
+			}
+		},
+		svgoViewBoxPlugin
+	]
+};
 
 const { paths, verifyOnly } = parseArguments( process.argv.slice( 2 ) );
 
@@ -125,36 +147,31 @@ function filterExcludedIcons( pathToIcon ) {
 function processIcon( pathToIcon ) {
 	console.log( chalk.green( `Processing "${ pathToIcon }" icon...` ) );
 
-	const svgoOptions = [
-		'--config=./scripts/svgo.config.cjs',
-		`-i ${ pathToIcon }`
-	];
-
-	if ( verifyOnly ) {
-		svgoOptions.push( '-o -' );
-	}
+	const iconFile = fs.readFileSync( pathToIcon, 'utf-8' );
 
 	let result;
 
 	try {
-		result = execSync( `svgo ${ svgoOptions.join( ' ' ) }`, { encoding: 'utf-8', stdio: 'pipe' } ).trim();
+		result = optimize( iconFile, { ...svgoConfig, path: pathToIcon } );
 	} catch ( err ) {
-		if ( err.message.includes( 'Error: Invalid or missing viewBox.' ) ) {
+		if ( err.message.includes( 'Invalid or missing viewBox.' ) ) {
 			missingViewBoxIcons.push( pathToIcon );
 
 			statusCode = 1;
-		} else {
-			throw new Error( err );
+
+			return;
 		}
+
+		throw err;
 	}
 
 	if ( verifyOnly ) {
-		const iconFile = fs.readFileSync( pathToIcon, 'utf-8' ).trim();
-
-		if ( result !== iconFile ) {
+		if ( result.data.trim() !== iconFile.trim() ) {
 			statusCode = 1;
 
 			console.log( chalk.red( `Icon "${ pathToIcon }" is not optimized.` ) );
 		}
+	} else {
+		fs.writeFileSync( pathToIcon, result.data );
 	}
 }

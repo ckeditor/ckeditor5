@@ -17,6 +17,7 @@ CKEditor&nbsp;5 is a modern JavaScript rich-text editor with MVC architecture, c
 
 - [Quick start](#quick-start)
 	- [CKEditor 5 Builder](#ckeditor-5-builder)
+	- [Build with AI](#build-with-ai)
 	- [TypeScript support](#typescript-support)
 	- [CKEditor 5 advanced installation](#ckeditor-5-advanced-installation)
 		- [CKEditor 5 Framework](#ckeditor-5-framework)
@@ -37,6 +38,10 @@ Refer to the [Quick Start](https://ckeditor.com/docs/ckeditor5/latest/getting-st
 ### CKEditor 5 Builder
 
 The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized setup with the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
+
+### Build with AI
+
+You can also set up CKEditor&nbsp;5 with an AI coding agent such as Claude Code, Cursor, Codex, or Copilot. Install the official CKEditor skill, and your agent will handle the installation, configuration, and licensing for you. See the [Build with AI](https://ckeditor.com/docs/ckeditor5/latest/getting-started/ai-coding-agents.html) guide.
 
 ### TypeScript support
 

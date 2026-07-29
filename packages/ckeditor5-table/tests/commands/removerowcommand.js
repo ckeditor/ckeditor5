@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
@@ -139,7 +141,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '[]20', '21' ]
 			] ) );
@@ -163,7 +165,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '[]30', '31' ]
 				] ) );
@@ -186,7 +188,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '[]30', '31' ]
 				] ) );
@@ -209,7 +211,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '[]10', '11' ]
 				] ) );
@@ -232,7 +234,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '[]20', '21' ],
 					[ '30', '31' ]
 				] ) );
@@ -255,7 +257,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '[]20', '21' ],
 					[ '30', '31' ]
 				], { headingRows: 1 } ) );
@@ -280,13 +282,13 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '[]40', '41' ]
 				], { headingRows: 1 } ) );
 
 				// The editing view should also be properly downcasted.
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 					[ '00', '01' ],
 					[ '40', '41' ]
 				], { headingRows: 1, asWidget: true } ) );
@@ -308,7 +310,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '[]20', '21' ]
 				] ) );
 			} );
@@ -330,7 +332,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '[]30', '31' ]
 				], { footerRows: 1 } ) );
@@ -355,13 +357,13 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '[]40', '41' ]
 				], { footerRows: 1 } ) );
 
 				// The editing view should also be properly downcasted.
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 					[ '00', '01' ],
 					[ '40', '41' ]
 				], { footerRows: 1, asWidget: true } ) );
@@ -383,7 +385,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '[]00', '01' ]
 				] ) );
 			} );
@@ -405,7 +407,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '[]30', '31' ]
 				], { footerRows: 1 } ) );
 			} );
@@ -426,7 +428,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '[]20', '01' ]
 				] ) );
 			} );
@@ -487,7 +489,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '0' ],
 					[ '13' ],
 					[ '14' ]
@@ -512,7 +514,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '[]20', '21' ]
 				] ) );
@@ -533,7 +535,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '[]10', '11' ]
 				] ) );
 			} );
@@ -548,7 +550,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]10', '11' ],
 				[ '20', '21' ]
 			] ) );
@@ -563,7 +565,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '10', '[]11' ],
 				[ '20', '21' ]
 			] ) );
@@ -577,7 +579,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]00', '01' ]
 			] ) );
 		} );
@@ -610,7 +612,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>[]00</paragraph></tableCell>' +
@@ -630,7 +632,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '[]20', '21' ]
 			], { headingRows: 1 } ) );
@@ -645,7 +647,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '[]20', '21' ]
 			], { footerRows: 1 } ) );
@@ -661,7 +663,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 				[ '13', '14' ],
 				[ '31', '32', '[]33', '34' ]
@@ -678,7 +680,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { rowspan: 2, contents: '[]00' }, '01', '12' ],
 				[ '21', '22' ],
 				[ '30', '31', '32' ]
@@ -693,7 +695,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]00', '01' ]
 			] ) );
 		} );

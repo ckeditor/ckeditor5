@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -39,7 +41,7 @@ describe( 'RemoveColumnCommand', () => {
 				[ '10', '11' ]
 			] ) );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if selection contains multiple cells', () => {
@@ -55,7 +57,7 @@ describe( 'RemoveColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if selection is inside table with one column only', () => {
@@ -65,7 +67,7 @@ describe( 'RemoveColumnCommand', () => {
 				[ '20[]' ]
 			] ) );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if all columns are selected', () => {
@@ -81,7 +83,7 @@ describe( 'RemoveColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 2 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if all columns are selected - table with more than 10 columns (array sort bug)', () => {
@@ -96,13 +98,13 @@ describe( 'RemoveColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 12 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection is outside a table', () => {
 			_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -116,7 +118,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '02' ],
 				[ '10', '[]12' ],
 				[ '20', '22' ]
@@ -132,7 +134,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]01' ],
 				[ '11' ],
 				[ '21' ]
@@ -157,7 +159,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '01' ],
 					[ '11' ],
 					[ '[]21' ],
@@ -182,7 +184,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '02' ],
 					[ '10', '12' ],
 					[ '20', '[]22' ],
@@ -207,7 +209,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '[]10' ],
 					[ '20' ],
@@ -232,7 +234,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '02' ],
 					[ '[]12' ],
 					[ '22' ],
@@ -257,7 +259,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '03' ],
 					[ '10', '13' ],
 					[ '20', '[]23' ],
@@ -282,7 +284,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '03' ],
 					[ '10', '13' ],
 					[ '20', '[]23' ],
@@ -308,7 +310,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '[]10' ],
 					[ '20' ],
@@ -332,7 +334,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00', '04' ],
 					[ '10', '[]14' ]
 				], { headingColumns: 1 } ) );
@@ -354,7 +356,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '[]12' ],
 					[ '22' ]
@@ -371,7 +373,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '01' ],
 				[ '[]11' ],
 				[ '21' ]
@@ -389,7 +391,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { colspan: 3, contents: '00' }, '04' ],
 				[ { colspan: 2, contents: '10' }, '13', '14' ],
 				[ { colspan: 2, contents: '20' }, '[]23', '24' ],
@@ -408,7 +410,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { colspan: 2, contents: '[]00' }, '03' ],
 				[ '10', '12', '13' ],
 				[ '21', '22', '23' ]
@@ -424,7 +426,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '10', '[]11' ],
 				[ '20', '21' ]
@@ -439,7 +441,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]00' ]
 			] ) );
 		} );
@@ -452,7 +454,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]00' ]
 			] ) );
 		} );
@@ -465,7 +467,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]01' ],
 				[ '11' ]
 			] ) );
@@ -479,7 +481,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]01' ]
 			] ) );
 		} );
@@ -492,7 +494,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]01' ]
 			] ) );
 		} );
@@ -505,7 +507,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]00' ],
 				[ '10' ]
 			] ) );
@@ -520,7 +522,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]01', '02' ],
 				[ '21', '22' ]
 			] ) );

@@ -22,6 +22,6 @@ export default async function fetchCKEditor5LtsVersion( config ) {
 	} catch ( e ) {
 		console.error( e.message );
 
-		throw new Error( 'Cannot determine an LTS version.' );
+		throw new Error( 'Cannot determine an LTS version.', { cause: e } );
 	}
 }

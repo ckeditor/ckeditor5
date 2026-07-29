@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { _parseView, _stringifyView, _getViewData, _setViewData } from '../../src/dev-utils/view.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
@@ -24,10 +24,6 @@ import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'view test utils', () => {
 	describe( '_getViewData, _setViewData', () => {
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		describe( '_getViewData', () => {
 			it( 'should use stringify method', () => {
 				const element = document.createElement( 'div' );
@@ -493,10 +489,6 @@ describe( 'view test utils', () => {
 
 		beforeEach( () => {
 			viewDocument = new ViewDocument( new StylesProcessor() );
-		} );
-
-		afterEach( () => {
-			vi.restoreAllMocks();
 		} );
 
 		it( 'should return empty DocumentFragment for empty string', () => {

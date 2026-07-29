@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -71,7 +73,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( domNode, 'before' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', modelTable( [ [ 'aa', 'ab' ], [ 'ba', 'bb' ] ] ) + '<paragraph>11</paragraph>', '12' ],
 				[ '20', '21', '22' ]
@@ -106,7 +108,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( domNode, 'before' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					'10',
@@ -174,7 +176,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( firstParagraphDomNode, 'after' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					'<paragraph>Foo</paragraph>' +
@@ -200,7 +202,7 @@ describe( 'table clipboard', () => {
 			// Position the selection after the image by using [].
 			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
-				[ '[]<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>', '11', '12' ]
+				[ '[]<imageBlock src="/sample.png"><caption>Caption</caption></imageBlock>', '11', '12' ]
 			] ) );
 
 			const dataTransferMock = createDataTransfer();
@@ -232,11 +234,11 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( domNode, 'before' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					modelTable( [ [ 'aa', 'ab' ], [ 'ba', 'bb' ] ] ) +
-						'<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>',
+						'<imageBlock src="/sample.png"><caption>Caption</caption></imageBlock>',
 					'11', '12'
 				]
 			] ) );
@@ -256,7 +258,7 @@ describe( 'table clipboard', () => {
 			// Position the image in a cell and place selection after it (using []).
 			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
-				[ '<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>[]', '11', '12' ]
+				[ '<imageBlock src="/sample.png"><caption>Caption</caption></imageBlock>[]', '11', '12' ]
 			] ) );
 
 			const dataTransferMock = createDataTransfer();
@@ -295,10 +297,10 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( firstParagraphDomNode, 'after' )
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
-					'<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>' +
+					'<imageBlock src="/sample.png"><caption>Caption</caption></imageBlock>' +
 						modelTable( [ [ 'aa', 'ab' ], [ 'ba', 'bb' ] ] ),
 					'11', '12'
 				]
@@ -352,7 +354,7 @@ describe( 'table clipboard', () => {
 			} );
 
 			// Expect the table to be inserted at the position where it was dropped,
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph>Some text</paragraph>' +
 				modelTable( [
 					[ 'aa', 'ab' ],

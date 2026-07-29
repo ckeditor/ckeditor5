@@ -77,7 +77,7 @@ const form = document.querySelector( 'form' )!;
 
 form.addEventListener( 'change', () => {
 	const elements = form.elements as FormElements;
-	const wrapper: HTMLElement = document.querySelector( '.manual-test-container' ) || document.body;
+	const wrapper: HTMLElement = document.body;
 
 	wrapper.style.height = elements.isScrollable.value === 'yes' ? '3000px' : '';
 	wrapper.style.width = elements.isScrollable.value === 'yes' ? '3000px' : '';

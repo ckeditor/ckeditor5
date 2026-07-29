@@ -8,7 +8,7 @@ meta-description: Explore CKEditor 5's rich text editing features, including me
 
 # CKEditor&nbsp;5 features overview
 
-CKEditor&nbsp;5 has many features, and the number is constantly growing. You can find the most recent list of features on the left. In addition to working on new features, we also expand and improve the existing ones. Newly added or meaningfully updated feature guides are marked with a <ck:badge variant='status' /> icon. Premium features, which require an additional license to work, have a <ck:badge variant='premium' /> icon.
+This article gives you an overview of the features available in CKEditor&nbsp;5, from basic formatting like bold and italic to advanced capabilities such as tables, images, and real-time collaboration. The set is large and constantly growing, and you can find the most recent list on the left. Newly added or meaningfully updated feature guides are marked with a <ck:badge variant='status' /> icon, and premium features, which require an additional license, have a <ck:badge variant='premium' /> icon.
 
 <div class="l-hide-desktop">
 	<info-box>

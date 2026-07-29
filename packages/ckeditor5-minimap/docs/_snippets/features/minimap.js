@@ -112,7 +112,7 @@ const config = {
 		}
 	},
 	ckbox: {
-		tokeUrl: TOKEN_URL,
+		tokenUrl: TOKEN_URL,
 		allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 		forceDemoLabel: true
 	}

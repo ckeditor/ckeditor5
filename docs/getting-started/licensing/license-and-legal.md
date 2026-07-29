@@ -64,11 +64,11 @@ Some premium features are included in selected pricing plans, while others are a
 
 CKEditor&nbsp;5 commercial plans are available with different distribution models:
 
-**Cloud-hosted distribution**
+#### Cloud-hosted distribution
 
 Cloud-hosting is available in self-service and custom plans. The packages are managed and hosted through a CDN, providing quick setup and maintenance-free deployment.
 
-**Self-hosted distribution**
+#### Self-hosted distribution
 
 Self-hosted distribution is available with custom plans, allowing you to host CKEditor&nbsp;5 on your own infrastructure. This option provides greater flexibility and complete control over your deployment environment.
 

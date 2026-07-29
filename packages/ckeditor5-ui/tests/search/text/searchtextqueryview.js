@@ -12,10 +12,6 @@ import { IconCancel, IconLoupe } from '@ckeditor/ckeditor5-icons';
 describe( 'SearchTextQueryView', () => {
 	let locale, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		locale = new Locale();
 

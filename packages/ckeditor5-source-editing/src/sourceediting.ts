@@ -12,8 +12,6 @@ import { IconSource } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from '@ckeditor/ckeditor5-ui';
 import { CKEditorError, createElement, ElementReplacer, env, formatHtml } from '@ckeditor/ckeditor5-utils';
 
-import '../theme/sourceediting.css';
-
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
 
 /**

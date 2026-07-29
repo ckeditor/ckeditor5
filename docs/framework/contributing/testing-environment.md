@@ -3,70 +3,103 @@ category: framework-contributing
 meta-title: Testing environment | CKEditor 5 Framework Documentation
 meta-description: Test CKEditor 5 using the official testing environment. Run unit and manual tests effectively.
 order: 30
-modified_at: 2022-09-07
+modified_at: 2026-07-24
 ---
 
 # Testing environment
+
+The CKEditor&nbsp;5 testing environment lets you run the project's automated (unit) and manual tests. This article explains how to run them.
 
 Before reading this article we recommend getting familiar with the CKEditor&nbsp;5 {@link framework/contributing/development-environment development environment}.
 
 ## Introduction
 
-The CKEditor&nbsp;5 testing environment uses a popular setup with [Karma](https://karma-runner.github.io), [webpack](https://webpack.github.io/), [babel-loader](https://github.com/babel/babel-loader) and [Istanbul](https://github.com/gotwarlost/istanbul). We created some [npm scripts](https://docs.npmjs.com/cli/v11/using-npm/scripts) which glue all these pieces and special requirements for CKEditor together.
+The CKEditor&nbsp;5 testing environment uses [Vitest](https://vitest.dev/) running automated tests in real browsers (the [browser mode](https://vitest.dev/guide/browser/)), while manual tests are served by a [Vite](https://vite.dev/)-based server. We created some [npm scripts](https://docs.npmjs.com/cli/v11/using-npm/scripts) which glue all these pieces and special requirements for CKEditor together.
 
-Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests)). However, the test runner is available in the root of the [`ckeditor5`](https://github.com/ckeditor/ckeditor5) repository which is the central development environment. The actual code of the test runner is implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be reused outside of `ckeditor5`.
+Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests)) together with its own Vitest configuration and `test` script. Automated tests are executed directly with [pnpm](https://pnpm.io/), without any custom test runner. The custom Vitest matchers are implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package, and the Vite plugins powering the manual test server are implemented in the [`@ckeditor/ckeditor5-dev-manual-server`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-manual-server) package. Both can be reused outside of `ckeditor5`.
 
 <info-box hint>
-	Both automated and manual tests support TypeScript. Simply use the `.ts` extension.
+	Automated tests support TypeScript, and manual tests require it. Simply use the `.ts` extension.
 </info-box>
 
 ## Running automated tests
 
-To run the automated tests, use the `pnpm run test [<args>...]` command.
+Automated tests are executed with the packages' own `test` scripts, run directly via pnpm. There is no dedicated test runner binary.
 
-It accepts the following arguments (you can also run with `--help` to see all available options):
+The root `pnpm run test` script is a thin wrapper that translates a shorthand package selection into [pnpm filters](https://pnpm.io/filtering). It accepts the following options:
 
-* `--watch` (alias `-w`) &ndash; Whether to watch the files and execute tests whenever any file changes.
-* `--source-map` (alias `-s`) &ndash; Whether to generate useful source maps for the code.
-* `--coverage` (alias `-c`) &ndash; Whether to generate code coverage.
-* `--verbose` (alias `-v`) &ndash; Allows switching on webpack logs.
-* `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
-* `--browsers` &ndash; Browsers that will be used to run the tests. Defaults to `Chrome`.
-* `--port` &ndash; Specifies the port for the server to use. Defaults to `9876`.
-* `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
+* `--filter` (alias `-f`) &ndash; Comma-separated short package names selecting the packages to test. Globs are allowed, for example `-f editor-*`.
+* `--coverage` (alias `-c`) &ndash; Runs the `coverage` script of the selected packages instead of `test`.
+* `--attempts` &ndash; The number of attempts for each package's test run. Failed runs are retried per package. It is meant for continuous integration environments and defaults to `1`.
+
+All remaining arguments are passed to Vitest. Positional arguments are treated by Vitest as test file filters (they match a part of the test file path). You can also pass any other [Vitest CLI option](https://vitest.dev/guide/cli.html).
+
+You can run the automated tests for the whole repository, a single package, a directory, or a single file:
+
+<table>
+	<tr>
+		<th width="30%">Scope</th>
+		<th width="70%">Command</th>
+	</tr>
+	<tr>
+		<td>The whole repository</td>
+		<td><code>pnpm run test</code> (it sequentially runs the <code>test</code> script of every package)</td>
+	</tr>
+	<tr>
+		<td>A single package</td>
+		<td><code>pnpm run test -f engine</code><br>or natively: <code>pnpm --filter ckeditor5-engine run test</code></td>
+	</tr>
+	<tr>
+		<td>Multiple packages</td>
+		<td><code>pnpm run test -f editor-*,core</code></td>
+	</tr>
+	<tr>
+		<td>A directory inside a package</td>
+		<td><code>pnpm run test -f engine tests/view</code></td>
+	</tr>
+	<tr>
+		<td>A single file</td>
+		<td><code>pnpm run test -f basic-styles tests/bold.js</code></td>
+	</tr>
+</table>
+
+Apart from the `test` and `coverage` scripts, each package provides the following scripts:
+
+* `test:browser` &ndash; Runs the tests in a visible (non-headless) browser.
+* `test:debug` &ndash; Runs the tests in a visible browser in the watch mode. Useful for debugging with the browser developer tools.
 
 ### Examples
 
-Run all tests with the code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests) package:
+Run all tests of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests) package with the code coverage check:
 
 ```bash
-pnpm run test -c --files=core
+pnpm run test -c -f core
 ```
 
-Run and watch with the code coverage check the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing/tests):
+Run the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view):
 
 ```bash
-pnpm run test -cw --files=engine/view/,typing
+pnpm run test -f engine tests/view
 ```
 
-Run and watch the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package:
+Run and debug the `bold.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package in a visible browser:
 
 ```bash
-pnpm run test -w --files=basic-styles/bold*
+pnpm --filter ckeditor5-basic-styles run test:debug tests/bold.js
 ```
 
-### Custom Chai assertions
+### Custom Vitest matchers
 
-The testing environment allows for some custom `Chai` assertions. There is no need to import them, as they are imported by default inside all tests.
+The testing environment registers some custom [Vitest matchers](https://vitest.dev/guide/extending-matchers.html). There is no need to import them, as they are registered by default inside all tests.
 
-#### `equalMarkup`
+#### `toEqualMarkup`
 
-Tests whether two given strings containing markup language are equal. Unlike `expect().to.equal()` from the Chai assertion library, this assertion formats the markup before showing a diff. It can be used to test HTML strings and strings containing a serialized model.
+Tests whether two given strings containing markup language are equal. Unlike `expect().toEqual()`, this matcher formats the markup before showing a diff. It can be used to test HTML strings and strings containing a serialized model.
 
 This assertion will pass:
 
 ```js
-expect( `<b>foo</b>` ).to.equalMarkup( `<b>foo</b>` )
+expect( `<b>foo</b>` ).toEqualMarkup( `<b>foo</b>` )
 ```
 
 This assertion will throw an error:
@@ -74,88 +107,64 @@ This assertion will throw an error:
 ```js
 expect(
 	'<paragraph>foo bXXX[]r baz</paragraph>'
-).to.equalMarkup(
+).toEqualMarkup(
 	'<paragraph>foo bYYY[]r baz</paragraph>'
 );
 ```
 
-#### `attribute`
-
-Asserts that the target has an attribute with the given key name. See {@link module:engine/model/documentselection~ModelDocumentSelection#hasAttribute hasAttribute}.
-
-```js
-expect( selection ).to.have.attribute( 'linkHref' );
-```
-
-When an optional `value` is provided, `.attribute` also asserts that the attribute's value is equal to the given `value`. See {@link module:engine/model/documentselection~ModelDocumentSelection#getAttribute getAttribute}.
-
-```js
-expect( selection ).to.have.attribute( 'linkHref', 'example.com' );
-```
-
-Negations work as well.
-
-```js
-expect( selection ).to.not.have.attribute( 'linkHref' );
-```
-
 ## Running manual tests
 
-To start the manual tests server, use the `pnpm run manual` task.
+To start the manual tests server, use the `pnpm run manual` task. It starts a [Vite](https://vite.dev/) development server available at [http://localhost:8125](http://localhost:8125).
 
-The `pnpm run manual` task accepts the following options (you can also run with `--help` to see all available options):
+The task accepts the standard [Vite CLI options](https://vite.dev/guide/cli.html), for example `--port`.
 
-* `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
-* `--language="pl"` &ndash; The main language built into all test editors, passed to the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link getting-started/setup/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
-* `--additional-languages="ar,pl,..."` &ndash; Specifies extra languages passed to the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link getting-started/setup/ui-language UI language guide} to learn more.
-* `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
-* `--port` &ndash; Specifies the port for the server to use. Defaults to `8125`.
-* `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
-* `--disable-watch` &ndash; It is enabled by default when there are no `--files` specified. This is due to high RAM memory usage when running watchers on all files. Disabling watch mode causes the files to no longer be rebuilt automatically when changed.
-
-It starts the server available at [http://localhost:8125](http://localhost:8125).
+Debug flags are controlled with the `CK_DEBUG` environment variable. The base set of debug logs (`// @if CK_DEBUG //`) is always enabled. To uncomment additional debug code, pass a comma-separated list of flags, for example `CK_DEBUG=engine pnpm run manual` to enable the `// @if CK_DEBUG_ENGINE //` lines in the code.
 
 ### Creating a manual test
 
-A manual test consists of 3 files:
+A manual test consists of 2 files:
 
-* A `<name>.md` file with the test description.
-* A `<name>.js` or `<name>.ts` file with the JavaScript or TypeScript part of the test (for example, the code initializing an editor).
-* A `<name>.html` file with the HTML part of the test. It does not need to be an entire HTML page (with the DOCTYPE, etc.). It can include just the HTML elements that you want to define.
+* A `<name>.manual.html` file &ndash; a complete HTML document (with the DOCTYPE, `<head>`, and `<body>`) that you fully own. You can freely add a Content Security Policy `<meta>` tag, external scripts, `<style>`, or `<link>` tags in the `<head>`. The `.manual.html` suffix is what marks the file as a manual test.
+* A `<name>.ts` file with the TypeScript part of the test (for example, the code initializing an editor). Reference it from the document with a `<script type="module">` tag.
 
-All 3 files are combined and create a single manual test.
+Test instructions live inside the document in a `<ck-manual-header>` element &ndash; its children are rendered as a collapsible instructions panel. In the tests list, each test is identified by its file path relative to the `tests/manual/` directory.
 
-An example Markdown file:
+<info-box>
+	Only files with the `.manual.html` suffix are treated as manual tests. A plain `.html` file placed in a `tests/manual/` directory is treated as a static fixture (for example, content loaded into an `<iframe>`) and is never registered as a test.
+</info-box>
 
-```md
-## Create a new link
-
-1. Select a fragment of the regular text.
-2. Click the toolbar "Link" button.
-3. Check if the balloon panel attached to the selection appeared.
-4. Fill in the "Link URL" input in the panel.
-5. Click the "Save" button.
-6. Check if the selected text is converted into a link.
-```
-
-An example HTML file:
+An example `<name>.manual.html` file, which also serves as a template for new tests:
 
 ```html
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <style>
-        /*
-          Some additional styles which this test needs.
-          And yes – the test builder will merge this tag with the head defined in the template.
-        */
-    </style>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Create a new link</title>
+	<script type="module" src="./link.ts"></script>
 </head>
+<body>
+	<ck-manual-header>
+		<h2>Create a new link</h2>
+		<ol>
+			<li>Select a fragment of the regular text.</li>
+			<li>Click the toolbar "Link" button.</li>
+			<li>Check if the balloon panel attached to the selection appeared.</li>
+			<li>Fill in the "Link URL" input in the panel.</li>
+			<li>Click the "Save" button.</li>
+			<li>Check if the selected text is converted into a link.</li>
+		</ol>
+	</ck-manual-header>
 
-<div id="editor">...</div>
+	<div id="editor">...</div>
+</body>
+</html>
 ```
 
-An example JavaScript file:
+An example script file (`link.ts`):
 
-```js
+```ts
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 
 ClassicEditor
@@ -183,8 +192,8 @@ ClassicEditor
 <info-box>
 	The <code>manual/</code> test directories should always be located in the root of the <code>tests/</code> directories.
 	<ul>
-		<li><code>packages/ckeditor5-engine/tests/manual/view/focus.js</code> &ndash; correct path.</li>
-		<li><code>packages/ckeditor5-engine/tests/view/manual/focus.js</code> &ndash; incorrect path.</li>
+		<li><code>packages/ckeditor5-engine/tests/manual/view/focus.ts</code> &ndash; correct path.</li>
+		<li><code>packages/ckeditor5-engine/tests/view/manual/focus.ts</code> &ndash; incorrect path.</li>
 	</ul>
 </info-box>
 
@@ -192,11 +201,13 @@ ClassicEditor
 
 To verify that all manual tests can be **opened** without any errors (the crawler does not execute the manual test steps, it just visits the page), you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
 
-To check manual tests, start the server (`pnpm manual --files=XYZ`), and then run the crawler:
+To check manual tests, run:
 
 ```bash
 pnpm run manual:verify
 ```
+
+It builds the manual tests, starts a local preview server, and runs the crawler against it — no separate server is needed.
 
 Read more about the crawler in the {@link framework/contributing/development-environment#verifying-documentation Verifying documentation} guide.
 
@@ -246,70 +257,6 @@ After the run completes, the summary table reports:
 * **Growth** &ndash; The difference between the final measurement and the baseline across repeated cycles. Use this to spot steady memory increases over time rather than one‑off spikes.
 * **Tail Growth** &ndash; The spread within the last few measurements. It helps verify that memory stabilized near the end; large values suggest a still-growing footprint or high noise even after multiple cycles.
 * **Status** &ndash; `OK` when both Growth and Tail Growth stay below the threshold. `Exceeds threshold` or `Error` means the run should be treated as a failure.
-
-## Rules for using the `--files` option
-
-The `--files` (alias `-f`) option is used by both the manual and automated tests. Running tests for the root of the mono-repository is no longer supported. Each set of tests should be assigned to a package, and placed in `tests` directory. It accepts the following types of patterns:
-
-<table>
-	<tr>
-		<th width="25%">Patterns</th>
-		<th width="75%">Result</th>
-	</tr>
-	<tr>
-		<td><code>ckeditor5-core</code></td>
-		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> package by specifying the full package name.</td>
-	</tr>
-    <tr>
-		<td><code>core</code></td>
-		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> package by specifying a short package name.</td>
-	</tr>
-	<tr>
-		<td><code>editor-*</code></td>
-		<td>Run all tests of the <code>editor-*</code> packages. (<code>ckeditor5-editor-classic</code>, <code>ckeditor5-editor-balloon</code> etc.)</td>
-	</tr>
-	<tr>
-		<td><code>!core</code></td>
-		<td>Run all tests <b>except</b> those of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> package.</td>
-	</tr>
-	<tr>
-		<td><code>!(core|engine)</code></td>
-		<td>Run all tests <b>except</b> those of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> <b>and</b> the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests"><code>ckeditor5-engine</code></a> packages. Any number of packages can be excluded.</td>
-	</tr>
-	<tr>
-		<td><code>engine/view/</code></td>
-		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view"><code>ckeditor5-engine</code></a> package located in the <code>./packages/ckeditor5-engine/tests/view/</code> directory.</td>
-	</tr>
-	<tr>
-		<td><code>core/editor/utils/</code></td>
-		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests/editor/utils"><code>ckeditor5-core</code></a> package located in the <code>./packages/ckeditor5-core/tests/editor/utils/</code> directory.</td>
-	</tr>
-	<tr>
-		<td><code>basic-styles/bold</code></td>
-		<td>Run all tests with the filename <code>bold.js</code> in the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests"><code>ckeditor5-basic-styles</code></a> package.</td>
-	</tr>
-	<tr>
-		<td><code>basic-styles/bold*</code></td>
-		<td>
-			Run all tests matching the filename pattern <code>bold*.js</code> in the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests"><code>ckeditor5-basic-styles</code></a> package:
-			<ul>
-				<li><code>./packages/ckeditor5-basic-styles/tests/bold.js</code></li>
-				<li><code>./packages/ckeditor5-basic-styles/tests/bold/boldediting.js</code></li>
-				<li><code>./packages/ckeditor5-basic-styles/tests/bold/boldui.js</code></li>
-			</ul>
-		</td>
-	</tr>
-	<tr>
-		<td><code>ckeditor5,list/list/,style/*grid*</code></td>
-		<td>Sum of all arguments separated by a comma <code>,</code>. This one can use any combination of argument types. Note that since it is a sum, using multiple <code>!foo</code> excluding arguments might not work as expected.</td>
-	</tr>
-</table>
-
-<info-box>
-	You can use multiple arguments separated by a comma <code>,</code> to have the sum of the outputs compiled.
-
-	All of the patterns support the <code>*</code> wildcard.
-</info-box>
 
 ## Test suite and CI
 

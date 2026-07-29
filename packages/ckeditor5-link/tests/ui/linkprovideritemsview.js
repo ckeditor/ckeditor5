@@ -26,10 +26,6 @@ const mockLocale = { t: val => val };
 describe( 'LinkProviderItemsView', () => {
 	let view, linksButtonsArrayMock;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		view = new LinkProviderItemsView( mockLocale );
 		view.render();
@@ -185,10 +181,6 @@ describe( 'LinkProviderItemsView', () => {
 
 		describe( 'activates keyboard navigation', () => {
 			let view;
-
-			afterEach( () => {
-				vi.restoreAllMocks();
-			} );
 
 			beforeEach( () => {
 				view = new LinkProviderItemsView( mockLocale );

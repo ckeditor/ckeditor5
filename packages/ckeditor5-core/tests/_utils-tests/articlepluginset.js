@@ -79,7 +79,7 @@ describe( 'ArticlePluginSet', () => {
 				'<li>OL List item 2</li>' +
 			'</ol>' +
 			'<figure class="image image-style-side">' +
-				'<img alt="bar" src="/assets/sample.png">' +
+				'<img alt="bar" src="/sample.png">' +
 				'<figcaption>Caption</figcaption>' +
 			'</figure>' +
 			'<blockquote>' +
@@ -115,7 +115,7 @@ describe( 'ArticlePluginSet', () => {
 				'<li>OL List item 2</li>' +
 			'</ol>' +
 			'<figure class="image image-style-side">' +
-				'<img alt="bar" src="/assets/sample.png"></img>' +
+				'<img alt="bar" src="/sample.png"></img>' +
 				'<figcaption>Caption</figcaption>' +
 			'</figure>' +
 			'<blockquote>' +

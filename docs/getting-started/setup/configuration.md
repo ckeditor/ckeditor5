@@ -9,7 +9,7 @@ modified_at: 2024-06-25
 
 # Configuring CKEditor&nbsp;5 features
 
-The functionality of CKEditor&nbsp;5 is provided by specialized features, accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain {@link getting-started/setup/editor-types editor types}.
+You configure CKEditor&nbsp;5 features through the configuration object passed to the editor's `create()` method: import each feature's plugin, list it in the `plugins` array, and add its buttons to the `toolbar`. Features are accessible via a configurable toolbar or keyboard shortcuts, and some are only available with certain {@link getting-started/setup/editor-types editor types}.
 
 <info-box>
 	The best tool for experimenting with different features is [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs). You can test various possibilities and setups.

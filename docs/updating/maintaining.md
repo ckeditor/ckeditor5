@@ -7,7 +7,7 @@ meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at a
 
 # Maintaining your editor
 
-CKEditor&nbsp;5 is an active, rapidly developing software project. It is, therefore, important to keep in touch with all the new features and APIs, changes and bug fixes that are periodically released. As in the case of every software project, it is always wise and highly advised to keep your copy of CKEditor&nbsp;5 and all plugins up-to-date to maintain the highest level of security and stability. Updating is an important process that should become your routine. Our team constantly introduces new features, bug fixes and improvements, so keeping the editor up-to-date is a way to make sure that you get the best out of CKEditor&nbsp;5.
+Maintaining your editor means keeping CKEditor&nbsp;5 and all its plugins on the same, up-to-date version so you get the latest fixes, features, and security patches. This guide covers the routine practices for doing so.
 
 ## Daily maintenance
 

@@ -43,7 +43,6 @@ describe( 'ListItemFontColorIntegration', () => {
 	} );
 
 	afterEach( async () => {
-		vi.restoreAllMocks();
 		await editor.destroy();
 	} );
 
@@ -128,7 +127,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<span style="color:red;">foo</span>' +
@@ -164,7 +163,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<span style="color:red;">foo</span>' +
@@ -201,7 +200,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<p>' +
@@ -236,7 +235,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<blockquote>' +
@@ -266,7 +265,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<h2>' +
@@ -290,7 +289,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>foo</li>' +
 				'</ul>'
@@ -333,7 +332,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<figure class="table">' +
@@ -363,7 +362,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
@@ -379,7 +378,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ol>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="numbered">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
@@ -398,7 +397,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'<p class="ck-list-marker-color" style="--ck-content-list-marker-color:orange;">baz</p>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
@@ -420,7 +419,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a01" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
@@ -444,7 +443,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
@@ -465,7 +464,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<blockQuote listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text fontColor="red">foo</$text>' +
@@ -485,7 +484,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<heading1 listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</heading1>'
@@ -512,7 +511,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<table listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -541,7 +540,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
@@ -629,7 +628,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>' +
 						'<p>' +
@@ -677,7 +676,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>' +
 						'<p>' +

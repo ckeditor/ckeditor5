@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -39,7 +40,7 @@ describe( 'TableSelection - integration', () => {
 			);
 
 			const domEventData = new ViewDocumentDomEventData( viewDocument, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'backward',
 				unit: 'character',
@@ -47,7 +48,7 @@ describe( 'TableSelection - integration', () => {
 			} );
 			viewDocument.fire( 'delete', domEventData );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '', '13' ],
 				[ '', '[]', '23' ],
 				[ '31', '32', '33' ]
@@ -61,7 +62,7 @@ describe( 'TableSelection - integration', () => {
 			);
 
 			const domEventData = new ViewDocumentDomEventData( viewDocument, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'forward',
 				unit: 'character',
@@ -69,7 +70,7 @@ describe( 'TableSelection - integration', () => {
 			} );
 			viewDocument.fire( 'delete', domEventData );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]', '', '13' ],
 				[ '', '', '23' ],
 				[ '31', '32', '33' ]
@@ -84,7 +85,7 @@ describe( 'TableSelection - integration', () => {
 			] ) );
 
 			const domEventData = new ViewDocumentDomEventData( viewDocument, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'backward',
 				unit: 'character',
@@ -92,7 +93,7 @@ describe( 'TableSelection - integration', () => {
 			} );
 			viewDocument.fire( 'delete', domEventData );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '1[]', '12', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -117,18 +118,18 @@ describe( 'TableSelection - integration', () => {
 			const eventData = {
 				text: 'x',
 				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) ),
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			};
 
 			eventData.domEvent = {
 				get defaultPrevented() {
-					return eventData.preventDefault.called;
+					return eventData.preventDefault.mock.calls.length > 0;
 				}
 			};
 
 			viewDocument.fire( 'insertText', eventData );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '', '', '13' ],
 				[ '', 'x[]', '23' ],
 				[ '31', '32', '33' ]
@@ -142,12 +143,12 @@ describe( 'TableSelection - integration', () => {
 			const eventData = {
 				text: 'x',
 				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) ),
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			};
 
 			eventData.domEvent = {
 				get defaultPrevented() {
-					return eventData.preventDefault.called;
+					return eventData.preventDefault.mock.calls.length > 0;
 				}
 			};
 
@@ -156,7 +157,7 @@ describe( 'TableSelection - integration', () => {
 			// Do not wait for the browser to change DOM.
 			editor.plugins.get( 'Input' )._typingQueue.flush();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ 'x[]11', '12', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -176,18 +177,16 @@ describe( 'TableSelection - integration', () => {
 			);
 
 			const dataTransferMock = {
-				getData: sinon.stub()
-					.withArgs( 'text/plain' ).returns( 'foo' )
-					.withArgs( 'text/html' ).returns( '<p>foo</p>' )
+				getData: vi.fn( format => format === 'text/plain' ? 'foo' : '<p>foo</p>' )
 			};
 
 			editor.editing.view.document.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
-				stop: sinon.spy(),
+				stop: vi.fn(),
 				content: dataTransferMock.getData( 'text/html' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ 'foo[]', '', '13' ],
 				[ '', '', '23' ],
 				[ '31', '32', '33' ]
@@ -203,7 +202,7 @@ describe( 'TableSelection - integration', () => {
 			editor.execute( 'horizontalLine' );
 
 			expect(
-				_getModelData( model ) ).to.equalMarkup(
+				_getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><horizontalLine></horizontalLine><paragraph>[]</paragraph></tableCell>' +
@@ -242,7 +241,7 @@ describe( 'TableSelection - integration', () => {
 			} );
 
 			expect(
-				_getModelData( model ) ).to.equalMarkup(
+				_getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>11</paragraph></tableCell>' +
@@ -277,14 +276,14 @@ describe( 'TableSelection - integration', () => {
 
 			editor.execute( 'mergeTableCells' );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ],
 				[ '10', '11' ]
 			] ) );
 
 			editor.execute( 'undo' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			] ) );

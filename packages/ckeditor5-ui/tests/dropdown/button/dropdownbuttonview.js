@@ -3,16 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { IconView } from '../../../src/icon/iconview.js';
 import { DropdownButtonView } from '../../../src/dropdown/button/dropdownbuttonview.js';
 
 describe( 'DropdownButtonView', () => {
 	let locale, view;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		locale = { t() {} };

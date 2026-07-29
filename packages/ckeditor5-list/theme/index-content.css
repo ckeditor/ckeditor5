@@ -1,0 +1,214 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-content-list-marker-color: var(--ck-content-font-color);
+	--ck-content-list-marker-font-family: var(--ck-content-font-family);
+	--ck-content-list-marker-font-size: var(--ck-content-font-size);
+
+	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `todolist.css`. */
+	--ck-content-todo-list-checkmark-size: 16px;
+}
+
+.ck-content li {
+	/* Opinionated list content styling: prevents content shift
+	 * when a list becomes multi-block (Enter + Backspace scenario).
+	 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+	 */
+	& > p:first-of-type {
+		margin-top: 0;
+	}
+
+	/* Prevents margins from appearing when a bogus paragraph
+	 * receives line height or text alignment.
+	 * Ensures a consistent experience with the first paragraph.
+	 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+	 */
+	& > p:only-of-type {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+	/*
+	 * `::marker` is not Baseline "widely available" because of a Safari partial-implementation flag, but that gap
+	 * is about unrelated properties (content, text-shadow, line-height, letter-spacing, direction,
+	 * unicode-bidi, text-combine-upright, font-kerning - see https://bugs.webkit.org/show_bug.cgi?id=204163),
+	 * not the font-weight/font-style/font-family/font-size/color properties used below, which were manually
+	 * verified across Chrome, Safari, and Firefox (see https://github.com/ckeditor/ckeditor5/issues/18537).
+	 * `::marker` is also the only way to style a native list marker independently of its list item's content,
+	 * so there is no alternative CSS mechanism to fall back to.
+	 */
+	/* eslint-disable css/use-baseline */
+	&.ck-list-marker-bold::marker {
+		font-weight: bold;
+	}
+
+	&.ck-list-marker-italic::marker {
+		font-style: italic;
+	}
+
+	&.ck-list-marker-color::marker {
+		color: var(--ck-content-list-marker-color);
+	}
+
+	&.ck-list-marker-font-family::marker {
+		font-family: var(--ck-content-list-marker-font-family);
+	}
+
+	&.ck-list-marker-font-size::marker {
+		font-size: var(--ck-content-list-marker-font-size);
+	}
+
+	&.ck-list-marker-font-size-tiny::marker {
+		font-size: var(--ck-content-font-size-tiny);
+	}
+
+	&.ck-list-marker-font-size-small::marker {
+		font-size: var(--ck-content-font-size-small);
+	}
+
+	&.ck-list-marker-font-size-big::marker {
+		font-size: var(--ck-content-font-size-big);
+	}
+
+	&.ck-list-marker-font-size-huge::marker {
+		font-size: var(--ck-content-font-size-huge);
+	}
+	/* eslint-enable css/use-baseline */
+}
+
+.ck-content ol {
+	list-style-type: decimal;
+
+	& ol {
+		list-style-type: lower-latin;
+
+		& ol {
+			list-style-type: lower-roman;
+
+			& ol {
+				list-style-type: upper-latin;
+
+				& ol {
+					list-style-type: upper-roman;
+				}
+			}
+		}
+	}
+}
+
+.ck-content ul {
+	list-style-type: disc;
+
+	& ul {
+		list-style-type: circle;
+
+		& ul {
+			list-style-type: square;
+
+			& ul {
+				list-style-type: square;
+			}
+		}
+	}
+}
+
+.ck-content .todo-list .todo-list__label > input {
+	-webkit-appearance: none;
+	display: inline-block;
+	position: relative;
+	width: var(--ck-content-todo-list-checkmark-size);
+	height: var(--ck-content-todo-list-checkmark-size);
+	vertical-align: middle;
+
+	/* Needed on iOS */
+	border: 0;
+
+	/* LTR styles */
+	left: -25px;
+	margin-right: -15px;
+	right: 0;
+	margin-left: 0;
+
+	/* RTL styles */
+	[dir=rtl]& {
+		left: 0;
+		margin-right: 0;
+		right: -25px;
+		margin-left: -15px;
+	}
+
+	&::before {
+		display: block;
+		position: absolute;
+		box-sizing: border-box;
+		content: '';
+		width: 100%;
+		height: 100%;
+		border: 1px solid hsl(0, 0%, 20%);
+		border-radius: 2px;
+		transition: 250ms ease-in-out box-shadow;
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+
+	&::after {
+		display: block;
+		position: absolute;
+		box-sizing: content-box;
+		pointer-events: none;
+		content: '';
+
+		/* Calculate tick position, size and border-width proportional to the checkmark size. */
+		left: calc( var(--ck-content-todo-list-checkmark-size) / 3 );
+		top: calc( var(--ck-content-todo-list-checkmark-size) / 5.3 );
+		width: calc( var(--ck-content-todo-list-checkmark-size) / 5.3 );
+		height: calc( var(--ck-content-todo-list-checkmark-size) / 2.6 );
+		border-style: solid;
+		border-color: transparent;
+		border-width: 0 calc( var(--ck-content-todo-list-checkmark-size) / 8 ) calc( var(--ck-content-todo-list-checkmark-size) / 8 ) 0;
+		transform: rotate(45deg);
+	}
+
+	&[checked] {
+		&::before {
+			background: hsl(126, 64%, 41%);
+			border-color: hsl(126, 64%, 41%);
+		}
+
+		&::after {
+			border-color: hsl(0, 0%, 100%);
+		}
+	}
+}
+
+/*
+ * To-do list content styles.
+ */
+
+.ck-content .todo-list {
+	list-style: none;
+
+	& li {
+		position: relative;
+		margin-bottom: 5px;
+
+		& .todo-list {
+			margin-top: 5px;
+		}
+	}
+
+	& .todo-list__label {
+		& .todo-list__label__description {
+			vertical-align: middle;
+		}
+
+		&.todo-list__label_without-description input[type=checkbox] {
+			position: absolute;
+		}
+	}
+}

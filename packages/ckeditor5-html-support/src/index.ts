@@ -64,4 +64,6 @@ export {
 	type GHSViewAttributes
 } from './utils.js';
 
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

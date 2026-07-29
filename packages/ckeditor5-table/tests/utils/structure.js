@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { TableEditing } from '../../src/tableediting.js';
@@ -57,21 +58,21 @@ describe( 'table utils', () => {
 			it( 'should return empty array for no overlapping cells', () => {
 				const cellsInfo = getVerticallyOverlappingCells( table, 0 );
 
-				expect( cellsInfo ).to.be.empty;
+				expect( cellsInfo ).toEqual( [] );
 			} );
 
 			it( 'should return overlapping cells info for given overlapRow', () => {
 				const cellsInfo = getVerticallyOverlappingCells( table, 2 );
 
-				expect( cellsInfo[ 0 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) ); // Cell 00
-				expect( cellsInfo[ 1 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) ); // Cell 01
-				expect( cellsInfo[ 2 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 12
+				expect( cellsInfo[ 0 ].cell ).toBe( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) ); // Cell 00
+				expect( cellsInfo[ 1 ].cell ).toBe( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) ); // Cell 01
+				expect( cellsInfo[ 2 ].cell ).toBe( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 12
 			} );
 
 			it( 'should ignore rows below startRow', () => {
 				const cellsInfo = getVerticallyOverlappingCells( table, 2, 1 );
 
-				expect( cellsInfo[ 0 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 12
+				expect( cellsInfo[ 0 ].cell ).toBe( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 12
 			} );
 		} );
 
@@ -104,15 +105,15 @@ describe( 'table utils', () => {
 			it( 'should return empty array for no overlapping cells', () => {
 				const cellsInfo = getHorizontallyOverlappingCells( table, 0 );
 
-				expect( cellsInfo ).to.be.empty;
+				expect( cellsInfo ).toEqual( [] );
 			} );
 
 			it( 'should return overlapping cells info for given overlapColumn', () => {
 				const cellsInfo = getHorizontallyOverlappingCells( table, 2 );
 
-				expect( cellsInfo[ 0 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) ); // Cell 00
-				expect( cellsInfo[ 1 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 10
-				expect( cellsInfo[ 2 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) ); // Cell 21
+				expect( cellsInfo[ 0 ].cell ).toBe( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) ); // Cell 00
+				expect( cellsInfo[ 1 ].cell ).toBe( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 10
+				expect( cellsInfo[ 2 ].cell ).toBe( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) ); // Cell 21
 			} );
 		} );
 
@@ -147,7 +148,7 @@ describe( 'table utils', () => {
 					}, writer );
 				} );
 
-				expect( _stringifyModel( result ) ).to.equal(
+				expect( _stringifyModel( result ) ).toBe(
 					'<table footerRows="1">' +
 						'<tableRow>' +
 							'<tableCell><paragraph>11</paragraph></tableCell>' +

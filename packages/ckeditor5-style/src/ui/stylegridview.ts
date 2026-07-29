@@ -13,8 +13,6 @@ import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5
 import { StyleGridButtonView } from './stylegridbuttonview.js';
 import type { NormalizedStyleDefinition } from '../styleutils.js';
 
-import '../../theme/stylegrid.css';
-
 /**
  * A class representing a grid of styles ({@link module:style/ui/stylegridbuttonview~StyleGridButtonView buttons}).
  * Allows users to select a style.

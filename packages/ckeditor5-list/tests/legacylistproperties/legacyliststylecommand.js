@@ -28,7 +28,6 @@ describe( 'LegacyListStyleCommand', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		return editor.destroy();
 	} );
 

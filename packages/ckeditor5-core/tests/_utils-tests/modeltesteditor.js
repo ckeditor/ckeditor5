@@ -9,10 +9,6 @@ import { EditingController, HtmlDataProcessor, ModelRootElement, _setModelData, 
 import { ModelTestEditor } from '../../tests/_utils/modeltesteditor.js';
 
 describe( 'ModelTestEditor', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'constructor()', () => {
 		it( 'creates an instance of editor', async () => {
 			const editor = new ModelTestEditor( { foo: 1 } );

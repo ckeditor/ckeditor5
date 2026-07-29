@@ -9,7 +9,7 @@ modified_at: 2023-02-22
 
 # Installation
 
-After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the `Table` plugin to your plugin list and toolbar configuration:
 
 <code-switcher>
 ```js

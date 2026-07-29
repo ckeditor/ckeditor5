@@ -8,7 +8,7 @@ order: 30
 
 # Migrating CKEditor&nbsp;5 React integration from npm to CDN
 
-This guide will help you migrate CKEditor&nbsp;5 React integration from an NPM-based installation to a CDN-based one.
+This guide will help you migrate CKEditor&nbsp;5 React integration from an NPM-based installation to a CDN-based one. With the CDN setup, the integration loads the editor's scripts and styles from the CDN at runtime instead of bundling them with your application.
 
 ## Prerequisites
 

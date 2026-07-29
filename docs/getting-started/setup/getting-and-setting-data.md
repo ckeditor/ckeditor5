@@ -7,7 +7,7 @@ order: 10
 
 # Getting and setting data
 
-In CKEditor&nbsp;5 there are several ways to load and save data. In this guide, you can learn about the available options and their advantages and disadvantages.
+You get the editor's content with `editor.getData()` and replace it with `editor.setData()`. You can provide initial content either from the element the editor is created on or through the `root.initialData` configuration, and save changes automatically with the {@link features/autosave autosave} feature.
 
 ## Autosaving
 

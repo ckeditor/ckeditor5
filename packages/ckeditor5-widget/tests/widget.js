@@ -27,10 +27,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 describe( 'Widget', () => {
 	let element, editor, model, view, viewDocument;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

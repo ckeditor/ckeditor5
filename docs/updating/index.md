@@ -8,7 +8,7 @@ meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at a
 
 # CKEditor&nbsp;5 updates and maintenance
 
-CKEditor&nbsp;5 is an active, rapidly developing software project. It is, therefore, important to keep it updated and in best condition for stability and safety reasons.
+This section explains how to keep your CKEditor&nbsp;5 installation up to date. It covers updating between versions, migrating to the new installation methods or the CDN, moving from CKEditor 4, day-to-day maintenance, and our versioning and release policy. Keep all CKEditor&nbsp;5 packages on the same version, and update one version at a time to avoid unexpected issues.
 
 ## Migration to CDN
 

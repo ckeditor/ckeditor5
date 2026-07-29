@@ -1,0 +1,211 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { LinkImage } from '../../src/linkimage.js';
+
+// Just to have nicely styles switchbutton;
+import '@ckeditor/ckeditor5-ui/theme/components/list/list.css';
+declare const CKEditorInspector: any;
+
+declare global {
+	interface Window { editors: any }
+}
+
+window.editors = {};
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ) as HTMLElement,
+		plugins: [ ArticlePluginSet, LinkImage ],
+		toolbar: [ 'link', 'undo', 'redo' ],
+		link: {
+			allowCreatingEmptyLinks: true,
+			decorators: {
+				isExternal: {
+					mode: 'manual',
+					label: 'Open in a new tab',
+					attributes: {
+						target: '_blank',
+						rel: 'noopener noreferrer'
+					},
+					defaultValue: true
+				},
+				isDownloadable: {
+					mode: 'manual',
+					label: 'Downloadable',
+					attributes: {
+						download: 'download'
+					}
+				},
+				isGallery: {
+					mode: 'manual',
+					label: 'Gallery link',
+					classes: 'gallery'
+				},
+				isNofollow: {
+					mode: 'manual',
+					label: 'No Follow',
+					attributes: {
+						rel: 'nofollow'
+					}
+				},
+				isSponsored: {
+					mode: 'manual',
+					label: 'Sponsored',
+					attributes: {
+						rel: 'sponsored'
+					}
+				}
+			}
+		},
+		image: {
+			toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative', '|', 'linkImage' ]
+		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { manual: editor } );
+		window.editors.manualDecorators = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor2' ) as HTMLElement,
+		plugins: [ ArticlePluginSet, LinkImage ],
+		toolbar: [ 'link', 'undo', 'redo' ],
+		link: {
+			decorators: {
+				isTelephone: {
+					mode: 'automatic',
+					callback: url => url!.startsWith( 'tel:' ),
+					attributes: {
+						class: 'phone'
+					}
+				},
+				isInternal: {
+					mode: 'automatic',
+					callback: url => url!.startsWith( '#' ),
+					attributes: {
+						class: 'internal'
+					}
+				}
+			},
+			addTargetToExternalLinks: true
+		},
+		image: {
+			toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative', '|', 'linkImage' ]
+		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { automatic: editor } );
+		window.editors.automaticDecorators = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor3' ) as HTMLElement,
+		plugins: [ ArticlePluginSet, LinkImage, Bold, Italic, Underline ],
+		toolbar: [
+			'link',
+			'|',
+			'bold', 'italic', 'underline',
+			'|',
+			'undo', 'redo'
+		],
+		link: {
+			decorators: {
+				isNofollow: {
+					mode: 'manual',
+					label: 'No Follow',
+					attributes: {
+						rel: 'nofollow'
+					}
+				},
+				isUGC: {
+					mode: 'manual',
+					label: 'User Generated Content',
+					attributes: {
+						rel: 'ugc'
+					}
+				},
+				isSponsored: {
+					mode: 'manual',
+					label: 'Sponsored',
+					attributes: {
+						rel: 'sponsored'
+					}
+				},
+				openInSameTab: {
+					mode: 'manual',
+					label: 'Open in same tab',
+					attributes: {
+						target: '_self'
+					}
+				},
+				openInNewTab: {
+					mode: 'manual',
+					label: 'Open in new tab',
+					attributes: {
+						target: '_blank'
+					}
+				},
+				isImportant: {
+					mode: 'manual',
+					label: 'Important link',
+					classes: 'important'
+				},
+				isHighlighted: {
+					mode: 'manual',
+					label: 'Highlighted',
+					classes: 'highlighted'
+				},
+				isPrimary: {
+					mode: 'manual',
+					label: 'Primary link',
+					classes: 'primary'
+				},
+				redColor: {
+					mode: 'manual',
+					label: 'Red color',
+					styles: {
+						color: 'red'
+					}
+				},
+				blueColor: {
+					mode: 'manual',
+					label: 'Blue color',
+					styles: {
+						color: 'blue'
+					}
+				},
+				italicText: {
+					mode: 'manual',
+					label: 'Italic text',
+					styles: {
+						'font-style': 'italic'
+					}
+				}
+			},
+			addTargetToExternalLinks: true
+		},
+		image: {
+			toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative', '|', 'linkImage' ]
+		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { conflicting: editor } );
+		window.editors.conflictingDecorators = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

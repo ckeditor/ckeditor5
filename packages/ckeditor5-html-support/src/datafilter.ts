@@ -57,8 +57,6 @@ import {
 
 import { isPlainObject } from 'es-toolkit/compat';
 
-import '../theme/datafilter.css';
-
 /**
  * Allows to validate elements and element attributes registered by {@link module:html-support/dataschema~DataSchema}.
  *

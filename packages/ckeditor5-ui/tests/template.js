@@ -20,8 +20,6 @@ const injectedElements = [];
 describe( 'Template', () => {
 	// Clean-up document.body from the rendered elements.
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		for ( const el of injectedElements ) {
 			el.remove();
 		}

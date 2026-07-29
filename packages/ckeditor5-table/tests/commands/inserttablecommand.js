@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
+import { ModelDocumentSelection, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from '../_utils/utils.js';
@@ -78,13 +79,13 @@ describe( 'InsertTableCommand', () => {
 		it( 'should create a single batch', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			model.document.on( 'change', spy );
 
 			command.execute( { rows: 3, columns: 4 } );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		describe( 'collapsed selection', () => {
@@ -93,7 +94,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 					[ '[]', '' ],
 					[ '', '' ]
 				] ) );
@@ -104,7 +105,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '' ],
@@ -118,7 +119,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '', '', '' ],
@@ -133,7 +134,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4, headingRows: 1, headingColumns: 2 } );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '', '', '' ],
@@ -148,7 +149,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
@@ -162,7 +163,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toEqualMarkup(
 					modelTable( [
 						[ '[]', '', '', '' ],
 						[ '', '', '', '' ],
@@ -379,7 +380,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 2, columns: 2, footerRows: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					modelTable( [
 						[ '', '' ],
 						[ '', '' ]
@@ -394,7 +395,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4, footerRows: 1 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '', '', '', '' ],
@@ -421,7 +422,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 2, columns: 3 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					modelTable( [
 						[ '', '', '' ],
 						[ '', '', '' ]
@@ -448,7 +449,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 2, columns: 3 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					modelTable( [
 						[ '', '', '' ],
 						[ '', '', '' ]
@@ -476,7 +477,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 3 } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 					modelTable( [
 						[ '', '', '' ],
 						[ '', '', '' ],
@@ -580,6 +581,120 @@ describe( 'InsertTableCommand', () => {
 						[ '', '' ]
 					], { headingRows: 1, pretty: true, smart: true } )
 				);
+			} );
+		} );
+
+		describe( 'inheriting text formatting attributes (inheritTextFormattingAttributes)', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ]
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				model.schema.extend( '$text', { allowAttributes: [ 'foo', 'bar' ] } );
+				model.schema.setAttributeProperties( 'foo', { copyOnEnter: true } );
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			/**
+			 * Returns every empty block found inside the given table's cells, in reading order.
+			 */
+			function getCellBlocks( table ) {
+				const blocks = [];
+
+				for ( const row of table.getChildren() ) {
+					for ( const cell of row.getChildren() ) {
+						for ( const block of cell.getChildren() ) {
+							blocks.push( block );
+						}
+					}
+				}
+
+				return blocks;
+			}
+
+			function getStoredAttribute( element, key ) {
+				return element.getAttribute( ModelDocumentSelection._getStoreAttributeKey( key ) );
+			}
+
+			it( 'defaults to true - copies attributes onto the selection and onto every empty cell', () => {
+				_setModelData( model, '<paragraph><$text foo="true">Hello[]</$text></paragraph>' );
+
+				command.execute();
+
+				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( true );
+
+				const table = model.document.getRoot().getChild( 1 );
+				const blocks = getCellBlocks( table );
+
+				expect( blocks ).to.have.length( 4 );
+
+				for ( const block of blocks ) {
+					expect( getStoredAttribute( block, 'foo' ) ).to.equal( true );
+				}
+			} );
+
+			it( 'copies attributes onto a cell other than the first one too', () => {
+				_setModelData( model, '<paragraph><$text foo="true">Hello[]</$text></paragraph>' );
+
+				command.execute();
+
+				const table = model.document.getRoot().getChild( 1 );
+				const lastCellBlock = getCellBlocks( table ).at( -1 );
+
+				expect( getStoredAttribute( lastCellBlock, 'foo' ) ).to.equal( true );
+			} );
+
+			it( 'does not copy anything when explicitly disabled', () => {
+				_setModelData( model, '<paragraph><$text foo="true">Hello[]</$text></paragraph>' );
+
+				command.execute( { inheritTextFormattingAttributes: false } );
+
+				expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+
+				const table = model.document.getRoot().getChild( 1 );
+
+				for ( const block of getCellBlocks( table ) ) {
+					expect( getStoredAttribute( block, 'foo' ) ).to.be.undefined;
+				}
+			} );
+
+			it( 'does not copy anything when there is no formatting to inherit', () => {
+				_setModelData( model, '<paragraph>Hello[]</paragraph>' );
+
+				command.execute();
+
+				const table = model.document.getRoot().getChild( 1 );
+
+				for ( const block of getCellBlocks( table ) ) {
+					expect( getStoredAttribute( block, 'foo' ) ).to.be.undefined;
+				}
+			} );
+
+			it( 'does not copy an attribute that is not marked with copyOnEnter', () => {
+				_setModelData( model, '<paragraph><$text bar="true">Hello[]</$text></paragraph>' );
+
+				command.execute();
+
+				const table = model.document.getRoot().getChild( 1 );
+
+				for ( const block of getCellBlocks( table ) ) {
+					expect( getStoredAttribute( block, 'bar' ) ).to.be.undefined;
+				}
+			} );
+
+			it( 'does not throw when inserting into a completely empty document', () => {
+				_setModelData( model, '[]' );
+
+				expect( () => command.execute() ).not.toThrow();
 			} );
 		} );
 	} );

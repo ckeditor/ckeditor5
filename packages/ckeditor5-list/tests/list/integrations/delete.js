@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { ListEditing } from '../../../src/list/listediting.js';
 
@@ -30,10 +30,6 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 	let mergeBackwardCommand, mergeForwardCommand, splitAfterCommand, outdentCommand,
 		commandSpies,
 		mergeBackwardCommandExecuteSpy, mergeForwardCommandExecuteSpy, splitAfterCommandExecuteSpy, outdentCommandExecuteSpy;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -6690,7 +6686,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 			expect( () => skipView.document.fire( skipEventInfo, skipDomEventData ) ).to.not.throw();
 
-			expect( _getModelData( skipModel ) ).to.equalMarkup( modelList( [
+			expect( _getModelData( skipModel ) ).toEqualMarkup( modelList( [
 				'    # aaa',
 				'      []bbb'
 			] ) );
@@ -6704,7 +6700,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 			expect( () => skipView.document.fire( skipEventInfo, skipDomEventData ) ).to.not.throw();
 
-			expect( _getModelData( skipModel ) ).to.equalMarkup( modelList( [
+			expect( _getModelData( skipModel ) ).toEqualMarkup( modelList( [
 				'      # aaa',
 				'        []bbb'
 			] ) );
@@ -6719,7 +6715,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 			expect( () => skipView.document.fire( skipEventInfo, skipDomEventData ) ).to.not.throw();
 
-			expect( _getModelData( skipModel ) ).to.equalMarkup( modelList( [
+			expect( _getModelData( skipModel ) ).toEqualMarkup( modelList( [
 				'    # aaa',
 				'      []bbb',
 				'      # ccc'
@@ -6772,7 +6768,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 			expect( () => view.document.fire( eventInfo, domEventData ) ).to.not.throw();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<blockQuote>' +
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
 				'</blockQuote>' +
@@ -6792,7 +6788,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 		view.document.fire( eventInfo, domEventData );
 
-		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
+		expect( _getModelData( model ) ).toEqualMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
 			expect( domEventData.domEvent.preventDefault.mock.calls.length > 0 ).to.equal(

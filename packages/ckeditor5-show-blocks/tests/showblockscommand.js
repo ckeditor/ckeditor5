@@ -168,4 +168,130 @@ describe( 'ShowBlocksCommand', () => {
 			} );
 		} );
 	} );
+
+	describe( 'inline roots', () => {
+		describe( 'editor with only inline roots', () => {
+			let inlineEditor, domInlineElement, inlineCommand;
+
+			beforeEach( async () => {
+				domInlineElement = global.document.createElement( 'div' );
+				global.document.body.appendChild( domInlineElement );
+
+				inlineEditor = await MultiRootEditor.create( {
+					plugins: [
+						Paragraph,
+						Heading,
+						Essentials
+					],
+					roots: {
+						inline: { modelElement: '$inlineRoot', element: domInlineElement }
+					}
+				} );
+
+				inlineCommand = new ShowBlocksCommand( inlineEditor );
+				inlineEditor.commands.add( 'showBlocks', inlineCommand );
+			} );
+
+			afterEach( async () => {
+				domInlineElement.remove();
+				await inlineEditor.destroy();
+			} );
+
+			it( 'should set "isEnabled" to false when all roots are inline', () => {
+				inlineCommand.refresh();
+
+				expect( inlineCommand.isEnabled ).toBe( false );
+			} );
+
+			it( 'should not apply "ck-show-blocks" class to an inline root', () => {
+				inlineCommand.isEnabled = true;
+				inlineEditor.execute( 'showBlocks' );
+
+				const inlineRoot = inlineEditor.editing.view.document.roots.get( 'inline' );
+
+				expect( inlineRoot.hasClass( 'ck-show-blocks' ) ).toBe( false );
+			} );
+
+			it( 'should not apply block label styles to an inline root', () => {
+				inlineCommand.isEnabled = true;
+				inlineEditor.execute( 'showBlocks' );
+
+				const inlineRoot = inlineEditor.editing.view.document.roots.get( 'inline' );
+
+				expect( inlineRoot.getStyle( '--ck-show-blocks-label-p-ltr' ) ).toBeUndefined();
+			} );
+		} );
+
+		describe( 'editor with mixed block and inline roots', () => {
+			let mixedEditor, domBlockElement, domInlineElement, mixedCommand;
+
+			beforeEach( async () => {
+				domBlockElement = global.document.createElement( 'div' );
+				domInlineElement = global.document.createElement( 'div' );
+				global.document.body.appendChild( domBlockElement );
+				global.document.body.appendChild( domInlineElement );
+
+				mixedEditor = await MultiRootEditor.create( {
+					plugins: [
+						Paragraph,
+						Heading,
+						Essentials
+					],
+					roots: {
+						block: { element: domBlockElement },
+						inline: { modelElement: '$inlineRoot', element: domInlineElement }
+					}
+				} );
+
+				mixedCommand = new ShowBlocksCommand( mixedEditor );
+				mixedEditor.commands.add( 'showBlocks', mixedCommand );
+			} );
+
+			afterEach( async () => {
+				domBlockElement.remove();
+				domInlineElement.remove();
+				await mixedEditor.destroy();
+			} );
+
+			it( 'should set "isEnabled" to true when at least one block root is present', () => {
+				mixedCommand.refresh();
+
+				expect( mixedCommand.isEnabled ).toBe( true );
+			} );
+
+			it( 'should apply "ck-show-blocks" class only to block roots', () => {
+				mixedCommand.isEnabled = true;
+				mixedEditor.execute( 'showBlocks' );
+
+				const blockRoot = mixedEditor.editing.view.document.roots.get( 'block' );
+				const inlineRoot = mixedEditor.editing.view.document.roots.get( 'inline' );
+
+				expect( blockRoot.hasClass( 'ck-show-blocks' ) ).toBe( true );
+				expect( inlineRoot.hasClass( 'ck-show-blocks' ) ).toBe( false );
+			} );
+
+			it( 'should apply block label styles only to block roots', () => {
+				mixedCommand.isEnabled = true;
+				mixedEditor.execute( 'showBlocks' );
+
+				const blockRoot = mixedEditor.editing.view.document.roots.get( 'block' );
+				const inlineRoot = mixedEditor.editing.view.document.roots.get( 'inline' );
+
+				expect( blockRoot.getStyle( '--ck-show-blocks-label-p-ltr' ) ).toContain( '>P</text></svg>' );
+				expect( inlineRoot.getStyle( '--ck-show-blocks-label-p-ltr' ) ).toBeUndefined();
+			} );
+
+			it( 'should remove "ck-show-blocks" class only from block roots on second execute', () => {
+				mixedCommand.isEnabled = true;
+				mixedEditor.execute( 'showBlocks' );
+				mixedEditor.execute( 'showBlocks' );
+
+				const blockRoot = mixedEditor.editing.view.document.roots.get( 'block' );
+				const inlineRoot = mixedEditor.editing.view.document.roots.get( 'inline' );
+
+				expect( blockRoot.hasClass( 'ck-show-blocks' ) ).toBe( false );
+				expect( inlineRoot.hasClass( 'ck-show-blocks' ) ).toBe( false );
+			} );
+		} );
+	} );
 } );

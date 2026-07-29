@@ -17,9 +17,9 @@ import { CKBoxEditing } from '../src/ckboxediting.js';
 import { CKBoxUploadAdapter } from '../src/ckboxuploadadapter.js';
 
 import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
+import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-
-import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 
 import { _getModelData } from '@ckeditor/ckeditor5-engine';
 import { CKBoxUtils } from '../src/ckboxutils.js';
@@ -32,15 +32,12 @@ describe( 'CKBoxUploadAdapter', () => {
 
 	const jwtToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		TokenMock.initialToken = jwtToken;
+		mockCreateToken( 'ckbox-token' );
 
 		// `CKBoxEditing#init()` fires an unawaited upload permission request. Stub the network layer out so
 		// the request does not end up as an unhandled rejection that fails the Vitest run. Tests exercising
@@ -61,9 +58,6 @@ describe( 'CKBoxUploadAdapter', () => {
 					CloudServices,
 					CKBoxEditing,
 					CKBoxUploadAdapter
-				],
-				substitutePlugins: [
-					CloudServicesCoreMock
 				],
 				ckbox: {
 					serviceOrigin: CKBOX_API_URL,
@@ -137,9 +131,6 @@ describe( 'CKBoxUploadAdapter', () => {
 						CloudServices,
 						CKBoxEditing,
 						CKBoxUploadAdapter
-					],
-					substitutePlugins: [
-						CloudServicesCoreMock
 					]
 				} );
 
@@ -167,9 +158,6 @@ describe( 'CKBoxUploadAdapter', () => {
 						CloudServices,
 						CKBoxEditing,
 						CKBoxUploadAdapter
-					],
-					substitutePlugins: [
-						CloudServicesCoreMock
 					],
 					ckbox: {
 						tokenUrl: 'http://example.com'
@@ -204,9 +192,6 @@ describe( 'CKBoxUploadAdapter', () => {
 						CloudServices,
 						CKBoxEditing,
 						CKBoxUploadAdapter
-					],
-					substitutePlugins: [
-						CloudServicesCoreMock
 					],
 					cloudServices: {
 						tokenUrl: 'http://cs.example.com'
@@ -1160,7 +1145,7 @@ describe( 'CKBoxUploadAdapter', () => {
 	describe( 'adding the "ckboxImageId" attribute to the uploaded asset', () => {
 		let nativeReaderMock, loader, adapterMock;
 
-		const imgPath = '/assets/sample.png';
+		const imgPath = '/sample.png';
 		const file = createNativeFileMock();
 		file.name = 'image.jpg';
 
@@ -1225,9 +1210,6 @@ describe( 'CKBoxUploadAdapter', () => {
 						CKBoxEditing,
 						CKBoxUploadAdapter
 					],
-					substitutePlugins: [
-						CloudServicesCoreMock
-					],
 					ckbox: {
 						tokenUrl: 'http://example.com',
 						ignoreDataId: true
@@ -1289,161 +1271,3 @@ describe( 'CKBoxUploadAdapter', () => {
 		].join( '.' );
 	}
 } );
-
-// Minimal fake XHR server used in this file:
-// - `respondWith( method, url, [ status, headers, body ] )` — register an immediate response.
-// - `respondWith( method, url, callback( xhr ) )` — register a callback responder.
-//   The callback receives the request and may call `xhr.respond( ... )`, `xhr.error()`, or `xhr.uploadProgress( ... )`.
-// - `url` may be a string (exact match) or a RegExp.
-// - `requests` — array of issued requests.
-// - `restore()` — revert the `XMLHttpRequest` global.
-//
-// Responses fire from `send()`.
-function createFakeXHRServer() {
-	const responses = [];
-	const requests = [];
-	const OriginalXMLHttpRequest = window.XMLHttpRequest;
-
-	class FakeXMLHttpRequestUpload {
-		constructor() {
-			this.listeners = new Map();
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		removeEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			const index = callbacks.indexOf( callback );
-
-			if ( index !== -1 ) {
-				callbacks.splice( index, 1 );
-			}
-		}
-
-		_dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	class FakeXMLHttpRequest {
-		constructor() {
-			this.listeners = new Map();
-			this.requestHeaders = {};
-			this.upload = new FakeXMLHttpRequestUpload();
-			this.status = 0;
-			this.response = null;
-			this.responseText = '';
-			this.responseType = '';
-			this.aborted = false;
-		}
-
-		open( method, url ) {
-			this.method = method;
-			this.url = url;
-		}
-
-		setRequestHeader( name, value ) {
-			this.requestHeaders[ name ] = value;
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		removeEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			const index = callbacks.indexOf( callback );
-
-			if ( index !== -1 ) {
-				callbacks.splice( index, 1 );
-			}
-		}
-
-		abort() {
-			this.aborted = true;
-			this._dispatchEvent( 'abort' );
-		}
-
-		send( body ) {
-			this.requestBody = body;
-			requests.push( this );
-
-			this._dispatchEvent( 'loadstart' );
-
-			const match = responses.find( entry => {
-				if ( entry.method !== this.method ) {
-					return false;
-				}
-
-				if ( entry.url instanceof RegExp ) {
-					return entry.url.test( this.url );
-				}
-
-				return entry.url === this.url;
-			} );
-
-			if ( !match ) {
-				this.status = 404;
-				this._dispatchEvent( 'load' );
-				this._dispatchEvent( 'loadend' );
-				return;
-			}
-
-			if ( typeof match.response === 'function' ) {
-				match.response( this );
-				return;
-			}
-
-			const [ status, headers, responseBody ] = match.response;
-			this.respond( status, headers, responseBody );
-		}
-
-		respond( status, headers, body ) {
-			this.status = status;
-			this.responseHeaders = headers;
-			this.responseText = body;
-			this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
-
-			this._dispatchEvent( 'load' );
-			this._dispatchEvent( 'loadend' );
-		}
-
-		error() {
-			this._dispatchEvent( 'error' );
-			this._dispatchEvent( 'loadend' );
-		}
-
-		uploadProgress( event ) {
-			this.upload._dispatchEvent( 'progress', {
-				lengthComputable: true,
-				...event
-			} );
-		}
-
-		_dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	window.XMLHttpRequest = FakeXMLHttpRequest;
-
-	return {
-		requests,
-		respondWith( method, url, response ) {
-			responses.push( { method, url, response } );
-		},
-		restore() {
-			window.XMLHttpRequest = OriginalXMLHttpRequest;
-		}
-	};
-}

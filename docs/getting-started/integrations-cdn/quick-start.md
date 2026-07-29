@@ -9,7 +9,7 @@ modified_at: 2026-02-13
 
 # Installing Vanilla JS CKEditor&nbsp;5 from CDN
 
-CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
+This guide shows the fastest way to add CKEditor&nbsp;5 to your web application from the CDN.
 
 {@snippet getting-started/use-builder}
 

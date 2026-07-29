@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -76,7 +77,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -124,7 +125,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -159,7 +160,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'[<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -185,7 +186,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'[<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -209,7 +210,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute( { focusCaptionOnShow: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -235,7 +236,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -247,7 +248,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -274,7 +275,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 			// Hide the caption.
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -299,7 +300,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 			command.execute();
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toEqualMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +

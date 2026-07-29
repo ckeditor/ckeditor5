@@ -14,10 +14,6 @@ describe( 'ListMergeCommand', () => {
 	let editor, model, doc, command, attributeNames;
 	let blocksChangedByCommands = [];
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editor = new Editor();
 		editor.model = new Model();
@@ -508,7 +504,7 @@ describe( 'ListMergeCommand', () => {
 
 							expect( () => command.execute() ).to.not.throw();
 
-							expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 								'foo',
 								'  # []bbb'
 							] ) );
@@ -3110,7 +3106,7 @@ describe( 'ListMergeCommand', () => {
 
 		command.execute( commandOptions );
 
-		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
+		expect( _getModelData( model ) ).toEqualMarkup( modelList( expected ) );
 
 		expect( blocksChangedByCommands.map( block => block.index ) ).to.deep.equal( changedBlocks, 'changed blocks\' indexes' );
 	}

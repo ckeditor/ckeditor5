@@ -71,49 +71,50 @@ export class FindAndReplaceUtils extends Plugin {
 		);
 
 		model.change( writer => {
-			[ ...range ].forEach( ( { type, item } ) => {
-				if ( type === 'elementStart' ) {
-					if ( model.schema.checkChild( item, '$text' ) ) {
-						let foundItems = findCallback( {
-							item,
-							text: this.rangeToText( model.createRangeIn( item as ModelElement ) )
-						} );
+			const processTextContainer = ( item: ModelElement ) => {
+				let foundItems = findCallback( {
+					item,
+					text: this.rangeToText( model.createRangeIn( item ) )
+				} );
 
-						if ( !foundItems ) {
-							return;
-						}
-
-						if ( 'results' in foundItems ) {
-							foundItems = foundItems.results;
-						}
-
-						foundItems.forEach( foundItem => {
-							const resultId = `findResult:${ uid() }`;
-							const marker = writer.addMarker( resultId, {
-								usingOperation: false,
-								affectsData: false,
-								range: writer.createRange(
-									writer.createPositionAt( item, foundItem.start ),
-									writer.createPositionAt( item, foundItem.end )
-								)
-							} );
-
-							const index = findInsertIndex( results, marker );
-
-							if ( !checkIfResultAlreadyOnList( marker ) ) {
-								results.add(
-									{
-										id: resultId,
-										label: foundItem.label,
-										marker
-									},
-									index
-								);
-							}
-						} );
-					}
+				if ( !foundItems ) {
+					return;
 				}
-			} );
+
+				if ( 'results' in foundItems ) {
+					foundItems = foundItems.results;
+				}
+
+				foundItems.forEach( foundItem => {
+					const resultId = `findResult:${ uid() }`;
+					const marker = writer.addMarker( resultId, {
+						usingOperation: false,
+						affectsData: false,
+						range: writer.createRange(
+							writer.createPositionAt( item, foundItem.start ),
+							writer.createPositionAt( item, foundItem.end )
+						)
+					} );
+
+					const index = findInsertIndex( results, marker );
+
+					if ( !checkIfResultAlreadyOnList( marker ) ) {
+						results.add( { id: resultId, label: foundItem.label, marker }, index );
+					}
+				} );
+			};
+
+			const rangeContainer = range.start.parent as ModelElement;
+
+			if ( model.schema.checkChild( rangeContainer, '$text' ) && model.schema.isLimit( rangeContainer ) ) {
+				processTextContainer( rangeContainer );
+			} else {
+				[ ...range ].forEach( ( { type, item } ) => {
+					if ( type === 'elementStart' && model.schema.checkChild( item, '$text' ) ) {
+						processTextContainer( item as ModelElement );
+					}
+				} );
+			}
 		} );
 
 		return results;

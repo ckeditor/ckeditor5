@@ -48,8 +48,8 @@
     "es-toolkit": "1.45.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-alignment": "workspace:*",
     "@ckeditor/ckeditor5-adapter-ckfinder": "workspace:*",
+    "@ckeditor/ckeditor5-alignment": "workspace:*",
     "@ckeditor/ckeditor5-autoformat": "workspace:*",
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
@@ -70,10 +70,17 @@
     "@ckeditor/ckeditor5-paste-from-office": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
-    "@ckeditor/ckeditor5-watchdog": "workspace:*"
+    "@ckeditor/ckeditor5-watchdog": "workspace:*",
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
   },
   "scripts": {
-    "build": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs",
+    "coverage": "pnpm run test --coverage",
+    "test": "vitest run",
+    "test:debug": "vitest --browser.headless=false",
+    "test:browser": "vitest run --browser.headless=false"
   },
   "files": [
     "dist",

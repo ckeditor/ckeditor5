@@ -25,8 +25,6 @@ import type { Editor } from '@ckeditor/ckeditor5-core';
 
 import { isElement, debounce } from 'es-toolkit/compat';
 
-import '../theme/components/tooltip/tooltip.css';
-
 const BALLOON_CLASS = 'ck-tooltip';
 
 const TooltipManagerBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();

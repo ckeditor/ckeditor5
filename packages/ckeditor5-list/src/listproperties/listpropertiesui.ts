@@ -45,8 +45,6 @@ import { type ListReversedCommand } from '../listproperties/listreversedcommand.
 import { getNormalizedConfig, type NormalizedListPropertiesConfig } from './utils/config.js';
 import { type ListPropertiesStyleListType } from '../listconfig.js';
 
-import '../../theme/liststyles.css';
-
 /**
  * The list properties UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
  * buttons that allow users to control such aspects of list as the marker, start index or order.

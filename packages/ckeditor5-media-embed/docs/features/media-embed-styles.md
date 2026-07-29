@@ -3,7 +3,7 @@ category: features-media-embed
 menu-title: Media embed styles
 meta-title: Media embed styles | CKEditor 5 Documentation
 meta-description: Apply alignment and other configurable styles to media embeds, with support for custom styles.
-modified_at: 2026-05-21
+modified_at: 2026-07-27
 order: 55
 ---
 
@@ -19,19 +19,21 @@ The {@link module:media-embed/mediaembedstyle~MediaEmbedStyle} plugin is not loa
 
 <code-switcher>
 ```js
-import { ClassicEditor, MediaEmbed, MediaEmbedStyle } from 'ckeditor5';
+import { ClassicEditor, MediaEmbed, MediaEmbedToolbar, MediaEmbedStyle } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ MediaEmbed, MediaEmbedStyle, /* ... */ ],
+		plugins: [ MediaEmbed, MediaEmbedToolbar, MediaEmbedStyle, /* ... */ ],
 		toolbar: [ 'mediaEmbed', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 </code-switcher>
+
+Similarly, {@link module:media-embed/mediaembed~MediaEmbed} doesn't load {@link module:media-embed/mediaembedtoolbar~MediaEmbedToolbar} by default. The toolbar contains style buttons for media embed features. Add `MediaEmbedToolbar` to your `plugins` list, otherwise the entries you put in `config.mediaEmbed.toolbar` never reach the media widget toolbar.
 
 ## Built-in styles
 
@@ -51,7 +53,7 @@ The plugin provides the following five style options out of the box. Each option
 <info-box>
 	The actual styling of the media embeds is the job of the integrator. CKEditor&nbsp;5 comes with some default styles, but they will only be applied to the media inside the editor. The integrator needs to style them appropriately on the target pages.
 
-	You can find the source of the default styles applied by the editor here: [`ckeditor5-media-embed/theme/mediaembedstyle.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/theme/mediaembedstyle.css).
+	You can find the source of the default styles applied by the editor here: [`ckeditor5-media-embed/theme/index-content.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/theme/index-content.css).
 
 	Read more about {@link getting-started/setup/css styling the content of the editor}.
 </info-box>

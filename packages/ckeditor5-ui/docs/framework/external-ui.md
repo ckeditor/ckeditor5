@@ -7,7 +7,7 @@ order: 20
 
 # Third-party UI
 
-CKEditor&nbsp;5 is a modular editing framework that allows various flexible configurations. This includes the usage of a third–party user interface on top of the base editor classes.
+You can run CKEditor&nbsp;5 with a completely separate, third-party user interface built on top of its base editor classes.
 
 In this guide, a {@link getting-started/setup/editor-types#classic-editor classic-like} editor will be bound to a completely separate, existing UI created in [Bootstrap](http://getbootstrap.com/), providing the basic structure and toolbar items necessary to start editing.
 

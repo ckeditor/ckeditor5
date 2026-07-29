@@ -22,10 +22,6 @@ import { ListItemItalicIntegration } from '../../src/listformatting/listitemital
 describe( 'ListItemItalicIntegration', () => {
 	let editor, model, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [
@@ -132,7 +128,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<i>foo</i>' +
@@ -168,7 +164,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<i>foo</i>' +
@@ -207,7 +203,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<p>' +
@@ -242,7 +238,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<blockquote>' +
@@ -272,7 +268,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<h2>' +
@@ -296,7 +292,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>foo</li>' +
 				'</ul>'
@@ -339,7 +335,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<figure class="table">' +
@@ -378,7 +374,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<i>foo</i>' +
@@ -398,7 +394,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
@@ -414,7 +410,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ol>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="numbered">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
@@ -433,7 +429,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'<p class="ck-list-marker-italic">baz</p>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>' +
@@ -455,7 +451,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a01" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>' +
@@ -479,7 +475,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>' +
@@ -500,7 +496,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<blockQuote listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text italic="true">foo</$text>' +
@@ -520,7 +516,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<heading1 listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</heading1>'
@@ -547,7 +543,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<table listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -575,7 +571,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
@@ -663,7 +659,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>' +
 						'<p>' +
@@ -711,7 +707,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li>' +
 						'<p>' +

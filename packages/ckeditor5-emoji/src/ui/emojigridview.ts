@@ -12,8 +12,6 @@ import { FocusTracker, global, KeystrokeHandler, type Locale } from '@ckeditor/c
 import type { EmojiCategory, EmojiEntry } from '../emojirepository.js';
 import type { EmojiSkinToneId } from '../emojiconfig.js';
 
-import '../../theme/emojigrid.css';
-
 /**
  * A grid of emoji tiles. It allows browsing emojis and selecting them to be inserted into the content.
  */

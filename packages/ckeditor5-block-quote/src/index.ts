@@ -12,4 +12,6 @@ export { BlockQuoteEditing } from './blockquoteediting.js';
 export { BlockQuoteUI } from './blockquoteui.js';
 export { BlockQuoteCommand } from './blockquotecommand.js';
 
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { insertContent } from '../../../src/model/utils/insertcontent.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
@@ -17,10 +17,6 @@ import { Config } from '@ckeditor/ckeditor5-utils';
 
 describe( 'DataController utils', () => {
 	let model, doc, root, config;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	describe( 'insertContent', () => {
 		beforeEach( () => {
@@ -141,6 +137,23 @@ describe( 'DataController utils', () => {
 			insertContent( model, content );
 
 			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).toBe( content );
+		} );
+
+		it( 'should not change the selection if there is no valid range to select after insertion', () => {
+			// A block element that is not an object and does not allow text. After it is inserted into an empty root,
+			// there is no valid selection position anywhere in the document.
+			model.schema.register( 'blockElement', { allowIn: '$root' } );
+
+			const selection = model.createSelection( model.createPositionFromPath( root, [ 0 ] ) );
+			const selectionCopy = model.createSelection( selection );
+
+			const affectedRange = insertContent( model, new ModelElement( 'blockElement' ), selection );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<blockElement></blockElement>' );
+			expect( _stringifyModel( root, affectedRange ) ).toBe( '[<blockElement></blockElement>]' );
+
+			// The selection could not be placed anywhere, so it was left unchanged.
+			expect( selection.isEqual( selectionCopy ) ).toBe( true );
 		} );
 
 		it( 'should use the selection set by deleteContent()', () => {

@@ -14,8 +14,6 @@ import type { InputView, InputViewInputEvent } from '../input/inputview.js';
 
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/labeledinput/labeledinput.css';
-
 /**
  * The labeled input view class.
  */

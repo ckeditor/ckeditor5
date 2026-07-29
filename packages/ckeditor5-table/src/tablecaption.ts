@@ -11,8 +11,6 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { TableCaptionEditing } from './tablecaption/tablecaptionediting.js';
 import { TableCaptionUI } from './tablecaption/tablecaptionui.js';
 
-import '../theme/tablecaption.css';
-
 /**
  * The table caption plugin.
  */

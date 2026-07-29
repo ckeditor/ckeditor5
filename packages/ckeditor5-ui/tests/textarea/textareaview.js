@@ -11,10 +11,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 describe( 'TextareaView', () => {
 	let wrapper, view;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		// The reset wrapper is needed for proper line height calculation.
 		wrapper = document.createElement( 'div' );

@@ -3,14 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { TableCaption } from '../../src/tablecaption.js';
 
 describe( 'TableCaption', () => {
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TableCaption.isOfficialPlugin ).to.be.true;
+		expect( TableCaption.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TableCaption.isPremiumPlugin ).to.be.false;
+		expect( TableCaption.isPremiumPlugin ).toBe( false );
 	} );
 } );

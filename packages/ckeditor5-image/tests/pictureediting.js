@@ -10,8 +10,9 @@ import { ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { LinkImageEditing } from '@ckeditor/ckeditor5-link';
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { global } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 
@@ -26,8 +27,6 @@ import { ImageUploadEditing } from '../src/imageupload/imageuploadediting.js';
 
 describe( 'PictureEditing', () => {
 	let editor, model, modelDocument, view, imageUtils;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -51,23 +50,23 @@ describe( 'PictureEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( PictureEditing.pluginName ).to.equal( 'PictureEditing' );
+		expect( PictureEditing.pluginName ).toBe( 'PictureEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( PictureEditing.isOfficialPlugin ).to.be.true;
+		expect( PictureEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( PictureEditing.isPremiumPlugin ).to.be.false;
+		expect( PictureEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( PictureEditing ) ).to.be.instanceOf( PictureEditing );
+		expect( editor.plugins.get( PictureEditing ) ).toBeInstanceOf( PictureEditing );
 	} );
 
 	it( 'should require ImageEditing and ImageUtils', () => {
-		expect( PictureEditing.requires ).to.have.members( [ ImageEditing, ImageUtils ] );
+		expect( PictureEditing.requires ).toEqual( [ ImageEditing, ImageUtils ] );
 	} );
 
 	describe( 'schema rules', () => {
@@ -77,8 +76,8 @@ describe( 'PictureEditing', () => {
 					plugins: [ PictureEditing, ImageBlockEditing ]
 				} );
 
-				expect( editor.model.schema.isRegistered( 'imageInline' ) ).to.be.false;
-				expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'sources' ) ).to.be.true;
+				expect( editor.model.schema.isRegistered( 'imageInline' ) ).toBe( false );
+				expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'sources' ) ).toBe( true );
 
 				await editor.destroy();
 			} );
@@ -90,8 +89,8 @@ describe( 'PictureEditing', () => {
 					plugins: [ PictureEditing, ImageInlineEditing ]
 				} );
 
-				expect( editor.model.schema.isRegistered( 'imageBlock' ) ).to.be.false;
-				expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'sources' ) ).to.be.true;
+				expect( editor.model.schema.isRegistered( 'imageBlock' ) ).toBe( false );
+				expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'sources' ) ).toBe( true );
 
 				await editor.destroy();
 			} );
@@ -99,8 +98,8 @@ describe( 'PictureEditing', () => {
 
 		describe( 'when both ImageBlockEditing and ImageInlineEditing are loaded', () => {
 			it( 'should allow the "sources" attribute on the imageBlock and imageInline elements', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'sources' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'sources' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'sources' ) ).toBe( true );
+				expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'sources' ) ).toBe( true );
 			} );
 		} );
 	} );
@@ -112,30 +111,30 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<img src="/sample.png">' +
 							'</picture>bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>[]' +
 							'foo' +
-							'<imageInline sources="[object Object],[object Object]" src="/assets/sample.png"></imageInline>' +
+							'<imageInline sources="[object Object],[object Object]" src="/sample.png"></imageInline>' +
 							'bar' +
 						'</paragraph>'
 					);
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png',
+							srcset: '/sample.png',
 							type: 'image/png',
 							media: '(min-width: 800px)',
 							sizes: '2000px'
 						},
 						{
-							srcset: '/assets/sample.png?foo',
+							srcset: '/sample.png?foo',
 							type: 'image/png',
 							media: '(max-width: 800px)',
 							sizes: '400px'
@@ -149,8 +148,8 @@ describe( 'PictureEditing', () => {
 					model.schema.addChildCheck( () => false, 'imageInline' );
 
 					expect( () => {
-						editor.setData( '<p>foo<picture><img src="/assets/sample.png"></picture>bar</p>' );
-					} ).to.not.throw();
+						editor.setData( '<p>foo<picture><img src="/sample.png"></picture>bar</p>' );
+					} ).not.toThrow();
 				} );
 
 				it( 'should not crash when upcasting a picture directly into an inline root that disallows images', () => {
@@ -160,41 +159,41 @@ describe( 'PictureEditing', () => {
 					model.schema.addChildCheck( () => false, 'imageBlock' );
 					model.schema.addChildCheck( () => false, 'imageInline' );
 
-					const viewFragment = editor.data.processor.toView( '<picture><img src="/assets/sample.png"></picture>' );
+					const viewFragment = editor.data.processor.toView( '<picture><img src="/sample.png"></picture>' );
 
 					expect( () => {
 						editor.data.toModel( viewFragment, [ 'restrictedInlineRoot' ] );
-					} ).to.not.throw();
+					} ).not.toThrow();
 				} );
 
 				it( 'should upcast a plain inline image (random order inside <picture>)', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<img src="/assets/sample.png">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<img src="/sample.png">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 							'</picture>bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>[]' +
 							'foo' +
-							'<imageInline sources="[object Object],[object Object]" src="/assets/sample.png"></imageInline>' +
+							'<imageInline sources="[object Object],[object Object]" src="/sample.png"></imageInline>' +
 							'bar' +
 						'</paragraph>'
 					);
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png',
+							srcset: '/sample.png',
 							type: 'image/png',
 							media: '(min-width: 800px)',
 							sizes: '2000px'
 						},
 						{
-							srcset: '/assets/sample.png?foo',
+							srcset: '/sample.png?foo',
 							type: 'image/png',
 							media: '(max-width: 800px)',
 							sizes: '400px'
@@ -206,15 +205,15 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<img src="/assets/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>[]' +
 							'foo' +
-							'<imageInline src="/assets/sample.png"></imageInline>' +
+							'<imageInline src="/sample.png"></imageInline>' +
 							'bar' +
 						'</paragraph>'
 					);
@@ -224,16 +223,16 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<a href="http://ckeditor.com"><picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<img src="/sample.png">' +
 							'</a></picture>bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>[]' +
 							'foo' +
-							'<imageInline linkHref="http://ckeditor.com" sources="[object Object]" src="/assets/sample.png">' +
+							'<imageInline linkHref="http://ckeditor.com" sources="[object Object]" src="/sample.png">' +
 							'</imageInline>' +
 							'bar' +
 						'</paragraph>'
@@ -241,7 +240,7 @@ describe( 'PictureEditing', () => {
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png',
+							srcset: '/sample.png',
 							type: 'image/png',
 							media: '(min-width: 800px)',
 							sizes: '2000px'
@@ -253,23 +252,23 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<img src="/assets/sample.png" style="width:123px">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<img src="/sample.png" style="width:123px">' +
 							'</picture>bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>[]' +
 							'foo' +
-							'<imageInline resizedWidth="123px" sources="[object Object]" src="/assets/sample.png"></imageInline>' +
+							'<imageInline resizedWidth="123px" sources="[object Object]" src="/sample.png"></imageInline>' +
 							'bar' +
 						'</paragraph>'
 					);
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png',
+							srcset: '/sample.png',
 							type: 'image/png',
 							media: '(min-width: 800px)',
 							sizes: '2000px'
@@ -281,24 +280,24 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" foo="bar" baz="qux">' +
+								'<source srcset="/sample.png" foo="bar" baz="qux">' +
 								'<source a="b" c="d" e="f">' +
-								'<img src="/assets/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>[]' +
 							'foo' +
-							'<imageInline sources="[object Object]" src="/assets/sample.png"></imageInline>' +
+							'<imageInline sources="[object Object]" src="/sample.png"></imageInline>' +
 							'bar' +
 						'</paragraph>'
 					);
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png'
+							srcset: '/sample.png'
 						}
 					] );
 				} );
@@ -307,15 +306,15 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo' +
-							'<img src="/assets/sample.png">' +
+							'<img src="/sample.png">' +
 							'bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>[]' +
 							'foo' +
-							'<imageInline src="/assets/sample.png"></imageInline>' +
+							'<imageInline src="/sample.png"></imageInline>' +
 							'bar' +
 						'</paragraph>'
 					);
@@ -327,27 +326,27 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<figure class="image">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 						'</figure>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
-						'[<imageBlock sources="[object Object],[object Object]" src="/assets/sample.png">' +
+					expect( _getModelData( model ) ).toBe(
+						'[<imageBlock sources="[object Object],[object Object]" src="/sample.png">' +
 						'</imageBlock>]'
 					);
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png',
+							srcset: '/sample.png',
 							type: 'image/png',
 							media: '(min-width: 800px)',
 							sizes: '2000px'
 						},
 						{
-							srcset: '/assets/sample.png?foo',
+							srcset: '/sample.png?foo',
 							type: 'image/png',
 							media: '(max-width: 800px)',
 							sizes: '400px'
@@ -359,9 +358,9 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<figure class="image">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 							'<figcaption>' +
 								'Text of the caption' +
@@ -369,21 +368,21 @@ describe( 'PictureEditing', () => {
 						'</figure>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
-						'[<imageBlock sources="[object Object],[object Object]" src="/assets/sample.png">' +
+					expect( _getModelData( model ) ).toBe(
+						'[<imageBlock sources="[object Object],[object Object]" src="/sample.png">' +
 							'<caption>Text of the caption</caption>' +
 						'</imageBlock>]'
 					);
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png',
+							srcset: '/sample.png',
 							type: 'image/png',
 							media: '(min-width: 800px)',
 							sizes: '2000px'
 						},
 						{
-							srcset: '/assets/sample.png?foo',
+							srcset: '/sample.png?foo',
 							type: 'image/png',
 							media: '(max-width: 800px)',
 							sizes: '400px'
@@ -398,28 +397,28 @@ describe( 'PictureEditing', () => {
 								'Text of the caption' +
 							'</figcaption>' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 						'</figure>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
-						'[<imageBlock sources="[object Object],[object Object]" src="/assets/sample.png">' +
+					expect( _getModelData( model ) ).toBe(
+						'[<imageBlock sources="[object Object],[object Object]" src="/sample.png">' +
 							'<caption>Text of the caption</caption>' +
 						'</imageBlock>]'
 					);
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png',
+							srcset: '/sample.png',
 							type: 'image/png',
 							media: '(min-width: 800px)',
 							sizes: '2000px'
 						},
 						{
-							srcset: '/assets/sample.png?foo',
+							srcset: '/sample.png?foo',
 							type: 'image/png',
 							media: '(max-width: 800px)',
 							sizes: '400px'
@@ -432,9 +431,9 @@ describe( 'PictureEditing', () => {
 						'<figure class="image">' +
 							'<a href="https://cksource.com">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 							'<figcaption>' +
@@ -443,21 +442,21 @@ describe( 'PictureEditing', () => {
 						'</figure>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
-						'[<imageBlock linkHref="https://cksource.com" sources="[object Object],[object Object]" src="/assets/sample.png">' +
+					expect( _getModelData( model ) ).toBe(
+						'[<imageBlock linkHref="https://cksource.com" sources="[object Object],[object Object]" src="/sample.png">' +
 							'<caption>Text of the caption</caption>' +
 						'</imageBlock>]'
 					);
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png',
+							srcset: '/sample.png',
 							type: 'image/png',
 							media: '(min-width: 800px)',
 							sizes: '2000px'
 						},
 						{
-							srcset: '/assets/sample.png?foo',
+							srcset: '/sample.png?foo',
 							type: 'image/png',
 							media: '(max-width: 800px)',
 							sizes: '400px'
@@ -469,9 +468,9 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<figure class="image" style="width:123px">' +
 							'<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 							'<figcaption>' +
 								'Text of the caption' +
@@ -479,11 +478,11 @@ describe( 'PictureEditing', () => {
 						'</figure>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'[<imageBlock ' +
 							'resizedWidth="123px" ' +
 							'sources="[object Object],[object Object]" ' +
-							'src="/assets/sample.png"' +
+							'src="/sample.png"' +
 						'>' +
 							'<caption>Text of the caption</caption>' +
 						'</imageBlock>]'
@@ -491,13 +490,13 @@ describe( 'PictureEditing', () => {
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png',
+							srcset: '/sample.png',
 							type: 'image/png',
 							media: '(min-width: 800px)',
 							sizes: '2000px'
 						},
 						{
-							srcset: '/assets/sample.png?foo',
+							srcset: '/sample.png?foo',
 							type: 'image/png',
 							media: '(max-width: 800px)',
 							sizes: '400px'
@@ -510,9 +509,9 @@ describe( 'PictureEditing', () => {
 						'<figure class="image" style="width:123px">' +
 							'<a href="https://cksource.com">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" foo="bar" baz="qux">' +
+									'<source srcset="/sample.png" foo="bar" baz="qux">' +
 									'<source a="b" c="d" e="f">' +
-									'<img src="/assets/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 							'<figcaption>' +
@@ -521,12 +520,12 @@ describe( 'PictureEditing', () => {
 						'</figure>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'[<imageBlock ' +
 							'linkHref="https://cksource.com" ' +
 							'resizedWidth="123px" ' +
 							'sources="[object Object]" ' +
-							'src="/assets/sample.png"' +
+							'src="/sample.png"' +
 						'>' +
 							'<caption>Text of the caption</caption>' +
 						'</imageBlock>]'
@@ -534,7 +533,7 @@ describe( 'PictureEditing', () => {
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png'
+							srcset: '/sample.png'
 						}
 					] );
 				} );
@@ -542,12 +541,12 @@ describe( 'PictureEditing', () => {
 				it( 'should not upcast elements wihtout <picture>', () => {
 					editor.setData(
 						'<figure class="image">' +
-							'<img src="/assets/sample.png">' +
+							'<img src="/sample.png">' +
 						'</figure>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
-						'[<imageBlock src="/assets/sample.png"></imageBlock>]'
+					expect( _getModelData( model ) ).toBe(
+						'[<imageBlock src="/sample.png"></imageBlock>]'
 					);
 				} );
 			} );
@@ -561,14 +560,14 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<img src="/sample.png">' +
 							'</picture>bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>[]foobar</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>[]foobar</paragraph>' );
 				} );
 
 				it( 'should not upcast individual <source> attributes if already consumed by other converters', () => {
@@ -581,28 +580,28 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<img src="/sample.png">' +
 							'</picture>bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>[]' +
 							'foo' +
-							'<imageInline sources="[object Object],[object Object]" src="/assets/sample.png"></imageInline>' +
+							'<imageInline sources="[object Object],[object Object]" src="/sample.png"></imageInline>' +
 							'bar' +
 						'</paragraph>'
 					);
 
 					assertPictureSources( model, imageUtils, [
 						{
-							srcset: '/assets/sample.png',
+							srcset: '/sample.png',
 							type: 'image/png'
 						},
 						{
-							srcset: '/assets/sample.png?foo',
+							srcset: '/sample.png?foo',
 							type: 'image/png'
 						}
 					] );
@@ -618,13 +617,13 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 							'</picture>bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>[]foobar</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>[]foobar</paragraph>' );
 				} );
 
 				it( 'should upcast <picture> (and not throw) if the <img> inside was broken (without src attribute)', () => {
@@ -637,14 +636,14 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
 								'<img alt="alt text">' +
 							'</picture>bar' +
 						'</p>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>[]' +
 							'foo' +
 							'<imageInline alt="alt text" sources="[object Object],[object Object]">' +
@@ -679,26 +678,26 @@ describe( 'PictureEditing', () => {
 			it( 'should upcast a standalone <picture> as an inline image keeping its sources', () => {
 				inlineEditor.setData(
 					'foo<picture>' +
-						'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-						'<img src="/assets/sample.png">' +
+						'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+						'<img src="/sample.png">' +
 					'</picture>baz'
 				);
 
-				expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
-					'foo<imageInline sources="[object Object]" src="/assets/sample.png"></imageInline>baz'
+				expect( _getModelData( inlineModel, { withoutSelection: true } ) ).toBe(
+					'foo<imageInline sources="[object Object]" src="/sample.png"></imageInline>baz'
 				);
 			} );
 
 			it( 'should degrade a block <picture> (in a figure) to an inline image keeping its sources', () => {
 				inlineEditor.setData(
 					'foo<figure class="image"><picture>' +
-						'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-						'<img src="/assets/sample.png">' +
+						'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+						'<img src="/sample.png">' +
 					'</picture></figure>baz'
 				);
 
-				expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
-					'foo<imageInline sources="[object Object]" src="/assets/sample.png"></imageInline>baz'
+				expect( _getModelData( inlineModel, { withoutSelection: true } ) ).toBe(
+					'foo<imageInline sources="[object Object]" src="/sample.png"></imageInline>baz'
 				);
 			} );
 		} );
@@ -724,22 +723,22 @@ describe( 'PictureEditing', () => {
 			} );
 
 			it( 'should upcast a linked inline image keeping its link', () => {
-				inlineEditor.setData( 'foo<a href="https://cksource.com"><img src="/assets/sample.png"></a>baz' );
+				inlineEditor.setData( 'foo<a href="https://cksource.com"><img src="/sample.png"></a>baz' );
 
-				expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
-					'foo<imageInline linkHref="https://cksource.com" src="/assets/sample.png"></imageInline>baz'
+				expect( _getModelData( inlineModel, { withoutSelection: true } ) ).toBe(
+					'foo<imageInline linkHref="https://cksource.com" src="/sample.png"></imageInline>baz'
 				);
 			} );
 
 			it( 'should degrade a linked block image (figure > a > img) to an inline image keeping its link', () => {
 				inlineEditor.setData(
 					'foo<figure class="image">' +
-						'<a href="https://cksource.com"><img src="/assets/sample.png"></a>' +
+						'<a href="https://cksource.com"><img src="/sample.png"></a>' +
 					'</figure>baz'
 				);
 
-				expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
-					'foo<imageInline linkHref="https://cksource.com" src="/assets/sample.png"></imageInline>baz'
+				expect( _getModelData( inlineModel, { withoutSelection: true } ) ).toBe(
+					'foo<imageInline linkHref="https://cksource.com" src="/sample.png"></imageInline>baz'
 				);
 			} );
 
@@ -747,15 +746,15 @@ describe( 'PictureEditing', () => {
 				inlineEditor.setData(
 					'foo<figure class="image">' +
 						'<a href="https://cksource.com"><picture>' +
-							'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-							'<img src="/assets/sample.png">' +
+							'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+							'<img src="/sample.png">' +
 						'</picture></a>' +
 					'</figure>baz'
 				);
 
-				expect( _getModelData( inlineModel, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( inlineModel, { withoutSelection: true } ) ).toBe(
 					'foo<imageInline linkHref="https://cksource.com" ' +
-					'sources="[object Object]" src="/assets/sample.png"></imageInline>baz'
+					'sources="[object Object]" src="/sample.png"></imageInline>baz'
 				);
 			} );
 		} );
@@ -767,14 +766,14 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<p>' +
 								'foo<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+									'<img src="/sample.png">' +
 								'</picture>bar' +
 							'</p>'
 						);
 
-						expect( _getViewData( view ) ).to.equal(
+						expect( _getViewData( view ) ).toBe(
 							'<p>' +
 								'{}foo' +
 								'<span class="ck-widget image-inline" contenteditable="false">' +
@@ -782,16 +781,16 @@ describe( 'PictureEditing', () => {
 										'<source ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px" ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png">' +
 										'</source>' +
 										'<source ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px" ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png">' +
 										'</source>' +
-										'<img src="/assets/sample.png"></img>' +
+										'<img src="/sample.png"></img>' +
 									'</picture>' +
 								'</span>' +
 								'bar' +
@@ -803,13 +802,13 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<p>' +
 								'foo<a href="http://ckeditor.com"><picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<img src="/sample.png">' +
 								'</picture></a>bar' +
 							'</p>'
 						);
 
-						expect( _getViewData( view ) ).to.equal(
+						expect( _getViewData( view ) ).toBe(
 							'<p>' +
 								'{}foo' +
 								'<a href="http://ckeditor.com">' +
@@ -818,10 +817,10 @@ describe( 'PictureEditing', () => {
 											'<source ' +
 												'media="(min-width: 800px)" ' +
 												'sizes="2000px" ' +
-												'srcset="/assets/sample.png" ' +
+												'srcset="/sample.png" ' +
 												'type="image/png">' +
 											'</source>' +
-											'<img src="/assets/sample.png"></img>' +
+											'<img src="/sample.png"></img>' +
 										'</picture>' +
 									'</span>' +
 								'</a>' +
@@ -834,14 +833,14 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<p>' +
 								'foo<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-									'<img src="/assets/sample.png" style="width:321px">' +
+									'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+									'<img src="/sample.png" style="width:321px">' +
 								'</picture>bar' +
 							'</p>'
 						);
 
-						expect( _getViewData( view ) ).to.equal(
+						expect( _getViewData( view ) ).toBe(
 							'<p>' +
 								'{}foo' +
 								'<span class="ck-widget image-inline image_resized" contenteditable="false" style="width:321px">' +
@@ -849,16 +848,16 @@ describe( 'PictureEditing', () => {
 										'<source ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px" ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png">' +
 										'</source>' +
 										'<source ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px" ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png">' +
 										'</source>' +
-										'<img src="/assets/sample.png"></img>' +
+										'<img src="/sample.png"></img>' +
 									'</picture>' +
 								'</span>' +
 								'bar' +
@@ -871,7 +870,7 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<p>' +
 									'foo' +
-									'<img src="/assets/sample.png">' +
+									'<img src="/sample.png">' +
 									'bar' +
 								'</p>'
 							);
@@ -881,20 +880,20 @@ describe( 'PictureEditing', () => {
 									'sources',
 									[
 										{
-											srcset: '/assets/sample.png'
+											srcset: '/sample.png'
 										}
 									],
 									modelDocument.getRoot().getChild( 0 ).getChild( 1 )
 								);
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'<p>' +
 									'{}foo' +
 									'<span class="ck-widget image-inline" contenteditable="false">' +
 										'<picture>' +
-											'<source srcset="/assets/sample.png"></source>' +
-											'<img src="/assets/sample.png"></img>' +
+											'<source srcset="/sample.png"></source>' +
+											'<img src="/sample.png"></img>' +
 										'</picture>' +
 									'</span>' +
 									'bar' +
@@ -907,7 +906,7 @@ describe( 'PictureEditing', () => {
 								'<p>' +
 									'foo' +
 									'<a href="http://ckeditor.com">' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</a>' +
 									'bar' +
 								'</p>'
@@ -918,21 +917,21 @@ describe( 'PictureEditing', () => {
 									'sources',
 									[
 										{
-											srcset: '/assets/sample.png'
+											srcset: '/sample.png'
 										}
 									],
 									modelDocument.getRoot().getChild( 0 ).getChild( 1 )
 								);
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'<p>' +
 									'{}foo' +
 									'<a href="http://ckeditor.com">' +
 										'<span class="ck-widget image-inline" contenteditable="false">' +
 											'<picture>' +
-												'<source srcset="/assets/sample.png"></source>' +
-												'<img src="/assets/sample.png"></img>' +
+												'<source srcset="/sample.png"></source>' +
+												'<img src="/sample.png"></img>' +
 											'</picture>' +
 										'</span>' +
 									'</a>' +
@@ -945,7 +944,7 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<p>' +
 									'foo' +
-									'<img src="/assets/sample.png" style="width:321px">' +
+									'<img src="/sample.png" style="width:321px">' +
 									'bar' +
 								'</p>'
 							);
@@ -955,20 +954,20 @@ describe( 'PictureEditing', () => {
 									'sources',
 									[
 										{
-											srcset: '/assets/sample.png'
+											srcset: '/sample.png'
 										}
 									],
 									modelDocument.getRoot().getChild( 0 ).getChild( 1 )
 								);
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'<p>' +
 									'{}foo' +
 									'<span class="ck-widget image-inline image_resized" contenteditable="false" style="width:321px">' +
 										'<picture>' +
-											'<source srcset="/assets/sample.png"></source>' +
-											'<img src="/assets/sample.png"></img>' +
+											'<source srcset="/sample.png"></source>' +
+											'<img src="/sample.png"></img>' +
 										'</picture>' +
 									'</span>' +
 									'bar' +
@@ -983,16 +982,16 @@ describe( 'PictureEditing', () => {
 								'<p>' +
 									'foo<picture>' +
 										'<source ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png" ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px">' +
 										'<source ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png" ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px">' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>bar' +
 								'</p>'
 							);
@@ -1001,11 +1000,11 @@ describe( 'PictureEditing', () => {
 								writer.removeAttribute( 'sources', modelDocument.getRoot().getChild( 0 ).getChild( 1 ) );
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'<p>' +
 									'{}foo' +
 									'<span class="ck-widget image-inline" contenteditable="false">' +
-										'<img src="/assets/sample.png"></img>' +
+										'<img src="/sample.png"></img>' +
 									'</span>' +
 									'bar' +
 								'</p>'
@@ -1016,8 +1015,8 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<p>' +
 									'foo<a href="http://ckeditor.com"><picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-										'<img src="/assets/sample.png">' +
+										'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+										'<img src="/sample.png">' +
 									'</a></picture>bar' +
 								'</p>'
 							);
@@ -1026,12 +1025,12 @@ describe( 'PictureEditing', () => {
 								writer.removeAttribute( 'sources', modelDocument.getRoot().getChild( 0 ).getChild( 1 ) );
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'<p>' +
 									'{}foo' +
 									'<a href="http://ckeditor.com">' +
 										'<span class="ck-widget image-inline" contenteditable="false">' +
-											'<img src="/assets/sample.png"></img>' +
+											'<img src="/sample.png"></img>' +
 										'</span>' +
 									'</a>' +
 									'bar' +
@@ -1043,8 +1042,8 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<p>' +
 									'foo<picture>' +
-										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-										'<img src="/assets/sample.png" style="width:123px">' +
+										'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+										'<img src="/sample.png" style="width:123px">' +
 									'</picture>bar' +
 								'</p>'
 							);
@@ -1053,11 +1052,11 @@ describe( 'PictureEditing', () => {
 								writer.removeAttribute( 'sources', modelDocument.getRoot().getChild( 0 ).getChild( 1 ) );
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'<p>' +
 									'{}foo' +
 									'<span class="ck-widget image-inline image_resized" contenteditable="false" style="width:123px">' +
-										'<img src="/assets/sample.png"></img>' +
+										'<img src="/sample.png"></img>' +
 									'</span>' +
 									'bar' +
 								'</p>'
@@ -1069,16 +1068,16 @@ describe( 'PictureEditing', () => {
 								'<p>' +
 									'foo<picture>' +
 										'<source ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png" ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px">' +
 										'<source ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png" ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px">' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>bar' +
 								'</p>'
 							);
@@ -1091,11 +1090,11 @@ describe( 'PictureEditing', () => {
 								);
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'<p>' +
 									'{}foo' +
 									'<span class="ck-widget image-inline" contenteditable="false">' +
-										'<img src="/assets/sample.png"></img>' +
+										'<img src="/sample.png"></img>' +
 									'</span>' +
 									'bar' +
 								'</p>'
@@ -1105,11 +1104,11 @@ describe( 'PictureEditing', () => {
 								writer.removeAttribute( 'sources', modelDocument.getRoot().getChild( 0 ).getChild( 1 ) );
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'<p>' +
 									'{}foo' +
 									'<span class="ck-widget image-inline" contenteditable="false">' +
-										'<img src="/assets/sample.png"></img>' +
+										'<img src="/sample.png"></img>' +
 									'</span>' +
 									'bar' +
 								'</p>'
@@ -1123,29 +1122,29 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</figure>'
 						);
 
-						expect( _getViewData( view ) ).to.equal(
+						expect( _getViewData( view ) ).toBe(
 							'[<figure class="ck-widget image" contenteditable="false">' +
 								'<picture>' +
 									'<source ' +
 										'media="(min-width: 800px)" ' +
 										'sizes="2000px" ' +
-										'srcset="/assets/sample.png" ' +
+										'srcset="/sample.png" ' +
 										'type="image/png">' +
 									'</source>' +
 									'<source ' +
 										'media="(max-width: 800px)" ' +
 										'sizes="400px" ' +
-										'srcset="/assets/sample.png?foo" ' +
+										'srcset="/sample.png?foo" ' +
 										'type="image/png">' +
 									'</source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 							'</figure>]'
 						);
@@ -1155,30 +1154,30 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 								'<figcaption>Caption</figcaption>' +
 							'</figure>'
 						);
 
-						expect( _getViewData( view ) ).to.equal(
+						expect( _getViewData( view ) ).toBe(
 							'[<figure class="ck-widget image" contenteditable="false">' +
 								'<picture>' +
 									'<source ' +
 										'media="(min-width: 800px)" ' +
 										'sizes="2000px" ' +
-										'srcset="/assets/sample.png" ' +
+										'srcset="/sample.png" ' +
 										'type="image/png">' +
 									'</source>' +
 									'<source ' +
 										'media="(max-width: 800px)" ' +
 										'sizes="400px" ' +
-										'srcset="/assets/sample.png?foo" ' +
+										'srcset="/sample.png?foo" ' +
 										'type="image/png">' +
 									'</source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 								'<figcaption ' +
 									'aria-label="Caption for the image" ' +
@@ -1200,38 +1199,38 @@ describe( 'PictureEditing', () => {
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
 										'<source ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png" ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px">' +
 										'<source ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png" ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px">' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 								'</a>' +
 							'</figure>'
 						);
 
-						expect( _getViewData( view ) ).to.equal(
+						expect( _getViewData( view ) ).toBe(
 							'[<figure class="ck-widget image" contenteditable="false">' +
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
 										'<source ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px" ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png">' +
 										'</source>' +
 										'<source ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px" ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png">' +
 										'</source>' +
-										'<img src="/assets/sample.png"></img>' +
+										'<img src="/sample.png"></img>' +
 									'</picture>' +
 								'</a>' +
 							'</figure>]'
@@ -1242,9 +1241,9 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</figure>'
 						);
@@ -1253,23 +1252,23 @@ describe( 'PictureEditing', () => {
 							writer.setAttribute( 'linkHref', 'https://ckeditor.com', modelDocument.getRoot().getChild( 0 ) );
 						} );
 
-						expect( _getViewData( view ) ).to.equal(
+						expect( _getViewData( view ) ).toBe(
 							'[<figure class="ck-widget image" contenteditable="false">' +
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
 										'<source ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px" ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png">' +
 										'</source>' +
 										'<source ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px" ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png">' +
 										'</source>' +
-										'<img src="/assets/sample.png"></img>' +
+										'<img src="/sample.png"></img>' +
 									'</picture>' +
 								'</a>' +
 							'</figure>]'
@@ -1282,16 +1281,16 @@ describe( 'PictureEditing', () => {
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
 										'<source ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png" ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px">' +
 										'<source ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png" ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px">' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 								'</a>' +
 							'</figure>'
@@ -1301,22 +1300,22 @@ describe( 'PictureEditing', () => {
 							writer.removeAttribute( 'linkHref', modelDocument.getRoot().getChild( 0 ) );
 						} );
 
-						expect( _getViewData( view ) ).to.equal(
+						expect( _getViewData( view ) ).toBe(
 							'[<figure class="ck-widget image" contenteditable="false">' +
 								'<picture>' +
 									'<source ' +
 										'media="(min-width: 800px)" ' +
 										'sizes="2000px" ' +
-										'srcset="/assets/sample.png" ' +
+										'srcset="/sample.png" ' +
 										'type="image/png">' +
 									'</source>' +
 									'<source ' +
 										'media="(max-width: 800px)" ' +
 										'sizes="400px" ' +
-										'srcset="/assets/sample.png?foo" ' +
+										'srcset="/sample.png?foo" ' +
 										'type="image/png">' +
 									'</source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 							'</figure>]'
 						);
@@ -1326,9 +1325,9 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<figure class="image" style="width:123px">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 								'<figcaption>' +
 									'Text of the caption' +
@@ -1336,22 +1335,22 @@ describe( 'PictureEditing', () => {
 							'</figure>'
 						);
 
-						expect( _getViewData( view ) ).to.equal(
+						expect( _getViewData( view ) ).toBe(
 							'[<figure class="ck-widget image image_resized" contenteditable="false" style="width:123px">' +
 								'<picture>' +
 									'<source ' +
 										'media="(min-width: 800px)" ' +
 										'sizes="2000px" ' +
-										'srcset="/assets/sample.png" ' +
+										'srcset="/sample.png" ' +
 										'type="image/png">' +
 									'</source>' +
 									'<source ' +
 										'media="(max-width: 800px)" ' +
 										'sizes="400px" ' +
-										'srcset="/assets/sample.png?foo" ' +
+										'srcset="/sample.png?foo" ' +
 										'type="image/png">' +
 									'</source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 								'<figcaption ' +
 									'aria-label="Caption for the image" ' +
@@ -1371,7 +1370,7 @@ describe( 'PictureEditing', () => {
 						it( 'should downcast a plain block image', () => {
 							editor.setData(
 								'<figure class="image">' +
-									'<img src="/assets/sample.png">' +
+									'<img src="/sample.png">' +
 								'</figure>'
 							);
 
@@ -1380,18 +1379,18 @@ describe( 'PictureEditing', () => {
 									'sources',
 									[
 										{
-											srcset: '/assets/sample.png'
+											srcset: '/sample.png'
 										}
 									],
 									modelDocument.getRoot().getChild( 0 )
 								);
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'[<figure class="ck-widget image" contenteditable="false">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png"></source>' +
-										'<img src="/assets/sample.png"></img>' +
+										'<source srcset="/sample.png"></source>' +
+										'<img src="/sample.png"></img>' +
 									'</picture>' +
 								'</figure>]'
 							);
@@ -1401,7 +1400,7 @@ describe( 'PictureEditing', () => {
 							editor.setData(
 								'<figure class="image">' +
 									'<a href="https://ckeditor.com">' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</a>' +
 								'</figure>'
 							);
@@ -1411,19 +1410,19 @@ describe( 'PictureEditing', () => {
 									'sources',
 									[
 										{
-											srcset: '/assets/sample.png'
+											srcset: '/sample.png'
 										}
 									],
 									modelDocument.getRoot().getChild( 0 )
 								);
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'[<figure class="ck-widget image" contenteditable="false">' +
 									'<a href="https://ckeditor.com">' +
 										'<picture>' +
-											'<source srcset="/assets/sample.png"></source>' +
-											'<img src="/assets/sample.png"></img>' +
+											'<source srcset="/sample.png"></source>' +
+											'<img src="/sample.png"></img>' +
 										'</picture>' +
 									'</a>' +
 								'</figure>]'
@@ -1433,7 +1432,7 @@ describe( 'PictureEditing', () => {
 						it( 'should downcast a resized block image', () => {
 							editor.setData(
 								'<figure class="image" style="width:123px">' +
-									'<img src="/assets/sample.png">' +
+									'<img src="/sample.png">' +
 								'</figure>'
 							);
 
@@ -1442,18 +1441,18 @@ describe( 'PictureEditing', () => {
 									'sources',
 									[
 										{
-											srcset: '/assets/sample.png'
+											srcset: '/sample.png'
 										}
 									],
 									modelDocument.getRoot().getChild( 0 )
 								);
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'[<figure class="ck-widget image image_resized" contenteditable="false" style="width:123px">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png"></source>' +
-										'<img src="/assets/sample.png"></img>' +
+										'<source srcset="/sample.png"></source>' +
+										'<img src="/sample.png"></img>' +
 									'</picture>' +
 								'</figure>]'
 							);
@@ -1466,16 +1465,16 @@ describe( 'PictureEditing', () => {
 								'<figure class="image">' +
 									'<picture>' +
 										'<source ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png" ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px">' +
 										'<source ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png" ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px">' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 								'</figure>'
 							);
@@ -1484,9 +1483,9 @@ describe( 'PictureEditing', () => {
 								writer.removeAttribute( 'sources', modelDocument.getRoot().getChild( 0 ) );
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'[<figure class="ck-widget image" contenteditable="false">' +
-									'<img src="/assets/sample.png"></img>' +
+									'<img src="/sample.png"></img>' +
 								'</figure>]'
 							);
 						} );
@@ -1496,16 +1495,16 @@ describe( 'PictureEditing', () => {
 								'<figure class="image">' +
 									'<picture>' +
 										'<source ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png" ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px">' +
 										'<source ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png" ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px">' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 									'<figcaption>Caption</figcaption>' +
 								'</figure>'
@@ -1515,9 +1514,9 @@ describe( 'PictureEditing', () => {
 								writer.removeAttribute( 'sources', modelDocument.getRoot().getChild( 0 ) );
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'[<figure class="ck-widget image" contenteditable="false">' +
-									'<img src="/assets/sample.png"></img>' +
+									'<img src="/sample.png"></img>' +
 									'<figcaption ' +
 										'aria-label="Caption for the image" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
@@ -1538,16 +1537,16 @@ describe( 'PictureEditing', () => {
 									'<a href="https://cksource.com">' +
 										'<picture>' +
 											'<source ' +
-												'srcset="/assets/sample.png" ' +
+												'srcset="/sample.png" ' +
 												'type="image/png" ' +
 												'media="(min-width: 800px)" ' +
 												'sizes="2000px">' +
 											'<source ' +
-												'srcset="/assets/sample.png?foo" ' +
+												'srcset="/sample.png?foo" ' +
 												'type="image/png" ' +
 												'media="(max-width: 800px)" ' +
 												'sizes="400px">' +
-											'<img src="/assets/sample.png">' +
+											'<img src="/sample.png">' +
 										'</picture>' +
 									'</a>' +
 									'<figcaption>' +
@@ -1560,10 +1559,10 @@ describe( 'PictureEditing', () => {
 								writer.removeAttribute( 'sources', modelDocument.getRoot().getChild( 0 ) );
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'[<figure class="ck-widget image" contenteditable="false">' +
 									'<a href="https://cksource.com">' +
-										'<img src="/assets/sample.png"></img>' +
+										'<img src="/sample.png"></img>' +
 									'</a>' +
 									'<figcaption ' +
 										'aria-label="Caption for the image" ' +
@@ -1584,16 +1583,16 @@ describe( 'PictureEditing', () => {
 								'<figure class="image" style="width:123px">' +
 									'<picture>' +
 										'<source ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'type="image/png" ' +
 											'media="(min-width: 800px)" ' +
 											'sizes="2000px">' +
 										'<source ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'type="image/png" ' +
 											'media="(max-width: 800px)" ' +
 											'sizes="400px">' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 									'<figcaption>' +
 										'Text of the caption' +
@@ -1605,9 +1604,9 @@ describe( 'PictureEditing', () => {
 								writer.removeAttribute( 'sources', modelDocument.getRoot().getChild( 0 ) );
 							} );
 
-							expect( _getViewData( view ) ).to.equal(
+							expect( _getViewData( view ) ).toBe(
 								'[<figure class="ck-widget image image_resized" contenteditable="false" style="width:123px">' +
-									'<img src="/assets/sample.png"></img>' +
+									'<img src="/sample.png"></img>' +
 									'<figcaption ' +
 										'aria-label="Caption for the image" ' +
 										'class="ck-editor__editable ck-editor__nested-editable" ' +
@@ -1630,33 +1629,33 @@ describe( 'PictureEditing', () => {
 					it( 'should downcast a plain inline image', () => {
 						const data = '<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
+								'<img src="/sample.png">' +
 							'</picture>bar' +
 						'</p>';
 
 						editor.setData( data );
-						expect( editor.getData() ).to.equal( data );
+						expect( editor.getData() ).toBe( data );
 					} );
 
 					it( 'should downcast a linked inline image', () => {
 						const data = '<p>' +
 							'foo<a href="http://ckeditor.com"><picture>' +
-								'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+								'<img src="/sample.png">' +
 							'</picture></a>bar' +
 						'</p>';
 
 						editor.setData( data );
-						expect( editor.getData() ).to.equal( data );
+						expect( editor.getData() ).toBe( data );
 					} );
 
 					it( 'should downcast a linked inline image ("sources" set after linking)', () => {
 						editor.setData(
 							'<p>' +
 								'foo<a href="http://ckeditor.com">' +
-									'<img src="/assets/sample.png">' +
+									'<img src="/sample.png">' +
 								'</a>bar' +
 							'</p>'
 						);
@@ -1666,19 +1665,19 @@ describe( 'PictureEditing', () => {
 								'sources',
 								[
 									{
-										srcset: '/assets/sample.png'
+										srcset: '/sample.png'
 									}
 								],
 								modelDocument.getRoot().getChild( 0 ).getChild( 1 )
 							);
 						} );
 
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toBe(
 							'<p>' +
 								'foo<a href="http://ckeditor.com">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png">' +
-										'<img src="/assets/sample.png">' +
+										'<source srcset="/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 								'</a>bar' +
 							'</p>'
@@ -1694,7 +1693,7 @@ describe( 'PictureEditing', () => {
 							'<p>' +
 								'foo<a href="http://ckeditor.com">' +
 									'<i>' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</i>' +
 								'</a>bar' +
 							'</p>'
@@ -1705,20 +1704,20 @@ describe( 'PictureEditing', () => {
 								'sources',
 								[
 									{
-										srcset: '/assets/sample.png'
+										srcset: '/sample.png'
 									}
 								],
 								modelDocument.getRoot().getChild( 0 ).getChild( 1 )
 							);
 						} );
 
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toBe(
 							'<p>' +
 								'foo<a href="http://ckeditor.com">' +
 										'<i>' +
 											'<picture>' +
-												'<source srcset="/assets/sample.png">' +
-												'<img src="/assets/sample.png">' +
+												'<source srcset="/sample.png">' +
+												'<img src="/sample.png">' +
 											'</picture>' +
 										'</i>' +
 								'</a>bar' +
@@ -1736,7 +1735,7 @@ describe( 'PictureEditing', () => {
 							'<p>' +
 								'foo<a href="http://ckeditor.com">ab' +
 									'<i>c' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'd</i>' +
 								'ef</a>bar' +
 							'</p>'
@@ -1747,20 +1746,20 @@ describe( 'PictureEditing', () => {
 								'sources',
 								[
 									{
-										srcset: '/assets/sample.png'
+										srcset: '/sample.png'
 									}
 								],
 								modelDocument.getRoot().getChild( 0 ).getChild( 3 )
 							);
 						} );
 
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toBe(
 							'<p>' +
 								'foo<a href="http://ckeditor.com">ab' +
 										'<i>c' +
 											'<picture>' +
-												'<source srcset="/assets/sample.png">' +
-												'<img src="/assets/sample.png">' +
+												'<source srcset="/sample.png">' +
+												'<img src="/sample.png">' +
 											'</picture>' +
 										'd</i>' +
 								'ef</a>bar' +
@@ -1773,8 +1772,8 @@ describe( 'PictureEditing', () => {
 							'<p>' +
 								'foo<a href="http://ckeditor.com">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png">' +
-										'<img src="/assets/sample.png">' +
+										'<source srcset="/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 								'</a>bar' +
 							'</p>'
@@ -1787,10 +1786,10 @@ describe( 'PictureEditing', () => {
 							);
 						} );
 
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toBe(
 							'<p>' +
 								'foo<a href="http://ckeditor.com">' +
-									'<img src="/assets/sample.png">' +
+									'<img src="/sample.png">' +
 								'</a>bar' +
 							'</p>'
 						);
@@ -1800,14 +1799,14 @@ describe( 'PictureEditing', () => {
 						const data =
 							'<p>' +
 								'foo<picture>' +
-									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
-									'<img class="image_resized" style="width:321px;" src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
+									'<img class="image_resized" style="width:321px;" src="/sample.png">' +
 								'</picture>bar' +
 							'</p>';
 
 						editor.setData( data );
-						expect( editor.getData() ).to.equal( data );
+						expect( editor.getData() ).toBe( data );
 					} );
 				} );
 
@@ -1816,29 +1815,29 @@ describe( 'PictureEditing', () => {
 						const data =
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</figure>';
 
 						editor.setData( data );
-						expect( editor.getData() ).to.equal( data );
+						expect( editor.getData() ).toBe( data );
 					} );
 
 					it( 'should downcast a plain block image (with caption)', () => {
 						const data =
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 								'<figcaption>Caption</figcaption>' +
 							'</figure>';
 
 						editor.setData( data );
-						expect( editor.getData() ).to.equal( data );
+						expect( editor.getData() ).toBe( data );
 					} );
 
 					it( 'should downcast a linked block image', () => {
@@ -1847,29 +1846,29 @@ describe( 'PictureEditing', () => {
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
 										'<source ' +
-											'srcset="/assets/sample.png" ' +
+											'srcset="/sample.png" ' +
 											'media="(min-width: 800px)" ' +
 											'type="image/png" ' +
 											'sizes="2000px">' +
 										'<source ' +
-											'srcset="/assets/sample.png?foo" ' +
+											'srcset="/sample.png?foo" ' +
 											'media="(max-width: 800px)" ' +
 											'type="image/png" ' +
 											'sizes="400px">' +
-										'<img src="/assets/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 								'</a>' +
 							'</figure>';
 
 						editor.setData( data );
-						expect( editor.getData() ).to.equal( data );
+						expect( editor.getData() ).toBe( data );
 					} );
 
 					it( 'should downcast a linked block image ("sources" added after linking)', () => {
 						editor.setData(
 							'<figure class="image">' +
 								'<a href="https://ckeditor.com">' +
-									'<img src="/assets/sample.png">' +
+									'<img src="/sample.png">' +
 								'</a>' +
 								'<figcaption>Caption</figcaption>' +
 							'</figure>'
@@ -1880,19 +1879,19 @@ describe( 'PictureEditing', () => {
 								'sources',
 								[
 									{
-										srcset: '/assets/sample.png'
+										srcset: '/sample.png'
 									}
 								],
 								modelDocument.getRoot().getChild( 0 )
 							);
 						} );
 
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toBe(
 							'<figure class="image">' +
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png">' +
-										'<img src="/assets/sample.png">' +
+										'<source srcset="/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 								'</a>' +
 								'<figcaption>Caption</figcaption>' +
@@ -1904,8 +1903,8 @@ describe( 'PictureEditing', () => {
 						editor.setData(
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 								'<figcaption>Caption</figcaption>' +
 							'</figure>'
@@ -1915,12 +1914,12 @@ describe( 'PictureEditing', () => {
 							writer.setAttribute( 'linkHref', 'https://ckeditor.com', modelDocument.getRoot().getChild( 0 ) );
 						} );
 
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toBe(
 							'<figure class="image">' +
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png">' +
-										'<img src="/assets/sample.png">' +
+										'<source srcset="/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 								'</a>' +
 								'<figcaption>Caption</figcaption>' +
@@ -1933,8 +1932,8 @@ describe( 'PictureEditing', () => {
 							'<figure class="image">' +
 								'<a href="https://ckeditor.com">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png">' +
-										'<img src="/assets/sample.png">' +
+										'<source srcset="/sample.png">' +
+										'<img src="/sample.png">' +
 									'</picture>' +
 								'</a>' +
 								'<figcaption>Caption</figcaption>' +
@@ -1945,11 +1944,11 @@ describe( 'PictureEditing', () => {
 							writer.removeAttribute( 'linkHref', modelDocument.getRoot().getChild( 0 ) );
 						} );
 
-						expect( editor.getData() ).to.equal(
+						expect( editor.getData() ).toBe(
 							'<figure class="image">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 								'<figcaption>Caption</figcaption>' +
 							'</figure>'
@@ -1960,9 +1959,9 @@ describe( 'PictureEditing', () => {
 						const data =
 							'<figure class="image image_resized" style="width:123px;">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
-									'<source srcset="/assets/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+									'<source srcset="/sample.png?foo" media="(max-width: 800px)" type="image/png" sizes="400px">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 								'<figcaption>' +
 									'Text of the caption' +
@@ -1970,7 +1969,7 @@ describe( 'PictureEditing', () => {
 							'</figure>';
 
 						editor.setData( data );
-						expect( editor.getData() ).to.equal( data );
+						expect( editor.getData() ).toBe( data );
 					} );
 				} );
 			} );
@@ -1984,14 +1983,14 @@ describe( 'PictureEditing', () => {
 					editor.setData(
 						'<p>' +
 							'foo<picture>' +
-								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
-								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
-								'<img src="/assets/sample.png">' +
+								'<source srcset="/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+								'<source srcset="/sample.png?foo" type="image/png" media="(max-width: 800px)" sizes="400px">' +
+								'<img src="/sample.png">' +
 							'</picture>bar' +
 						'</p>'
 					);
 
-					expect( editor.getData() ).to.equal( '<p>foo<img src="/assets/sample.png">bar</p>' );
+					expect( editor.getData() ).toBe( '<p>foo<img src="/sample.png">bar</p>' );
 				} );
 
 				it( 'should downcast changed "sources" attribute on an existing picture element', () => {
@@ -1999,7 +1998,7 @@ describe( 'PictureEditing', () => {
 						'<figure class="image">' +
 							'<picture>' +
 								'<source srcset="">' +
-								'<img src="/assets/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 							'<figcaption>Caption</figcaption>' +
 						'</figure>'
@@ -2010,18 +2009,18 @@ describe( 'PictureEditing', () => {
 							'sources',
 							[
 								{
-									srcset: '/assets/sample2.png'
+									srcset: '/sample2.png'
 								}
 							],
 							modelDocument.getRoot().getChild( 0 )
 						);
 					} );
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<figure class="ck-widget image" contenteditable="false">' +
 							'<picture>' +
-								'<source srcset="/assets/sample2.png"></source>' +
-								'<img src="/assets/sample.png"></img>' +
+								'<source srcset="/sample2.png"></source>' +
+								'<img src="/sample.png"></img>' +
 							'</picture>' +
 							'<figcaption ' +
 								'aria-label="Caption for the image" ' +
@@ -2041,8 +2040,8 @@ describe( 'PictureEditing', () => {
 						'<figure class="image">' +
 							'<a href="https://ckeditor.com">' +
 								'<picture>' +
-									'<source srcset="/assets/sample.png">' +
-									'<img src="/assets/sample.png">' +
+									'<source srcset="/sample.png">' +
+									'<img src="/sample.png">' +
 								'</picture>' +
 							'</a>' +
 							'<figcaption>Caption</figcaption>' +
@@ -2054,19 +2053,19 @@ describe( 'PictureEditing', () => {
 							'sources',
 							[
 								{
-									srcset: '/assets/sample2.png'
+									srcset: '/sample2.png'
 								}
 							],
 							modelDocument.getRoot().getChild( 0 )
 						);
 					} );
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<figure class="ck-widget image" contenteditable="false">' +
 							'<a href="https://ckeditor.com">' +
 								'<picture>' +
-									'<source srcset="/assets/sample2.png"></source>' +
-									'<img src="/assets/sample.png"></img>' +
+									'<source srcset="/sample2.png"></source>' +
+									'<img src="/sample.png"></img>' +
 								'</picture>' +
 							'</a>' +
 							'<figcaption ' +
@@ -2109,7 +2108,7 @@ describe( 'PictureEditing', () => {
 						'<figure class="image">' +
 							'<picture class="test-class">' +
 								'<source srcset="">' +
-								'<img src="/assets/sample.png">' +
+								'<img src="/sample.png">' +
 							'</picture>' +
 							'<figcaption>Caption</figcaption>' +
 						'</figure>'
@@ -2120,18 +2119,18 @@ describe( 'PictureEditing', () => {
 							'sources',
 							[
 								{
-									srcset: '/assets/sample2.png'
+									srcset: '/sample2.png'
 								}
 							],
 							modelDocument.getRoot().getChild( 0 )
 						);
 					} );
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<figure class="ck-widget image" contenteditable="false">' +
 							'<picture class="test-class">' +
-								'<source srcset="/assets/sample2.png"></source>' +
-								'<img src="/assets/sample.png"></img>' +
+								'<source srcset="/sample2.png"></source>' +
+								'<img src="/sample.png"></img>' +
 							'</picture>' +
 							'<figcaption ' +
 								'aria-label="Caption for the image" ' +
@@ -2153,7 +2152,7 @@ describe( 'PictureEditing', () => {
 		let editor, model, fileRepository, nativeReaderMock, adapterMock, loader;
 
 		beforeEach( async () => {
-			testUtils.sinon.stub( global.window, 'FileReader' ).callsFake( () => {
+			vi.spyOn( global.window, 'FileReader' ).mockImplementation( function() {
 				nativeReaderMock = new NativeFileReaderMock();
 
 				return nativeReaderMock;
@@ -2199,7 +2198,7 @@ describe( 'PictureEditing', () => {
 				} );
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>' +
 					'[<imageInline sources="[object Object],[object Object]" src="assets/sample.png"></imageInline>]' +
 					'foo' +
@@ -2236,7 +2235,7 @@ describe( 'PictureEditing', () => {
 				} );
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>' +
 					'[<imageInline src="assets/sample.png"></imageInline>]' +
 					'foo' +
@@ -2265,5 +2264,5 @@ function assertPictureSources( model, imageUtils, expectedSources ) {
 	const image = [ ...model.createRangeIn( model.document.getRoot() ).getItems() ]
 		.find( item => imageUtils.isImage( item ) );
 
-	expect( image.getAttribute( 'sources' ) ).to.deep.equal( expectedSources );
+	expect( image.getAttribute( 'sources' ) ).toEqual( expectedSources );
 }

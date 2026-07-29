@@ -33,7 +33,6 @@ describe( 'ListEditing - EmptyBlock integration', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'inside a plain li element', () => {

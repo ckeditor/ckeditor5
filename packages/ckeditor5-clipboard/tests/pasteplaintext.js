@@ -49,7 +49,6 @@ describe( 'PastePlainText', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {

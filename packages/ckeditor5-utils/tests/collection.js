@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { Collection } from '../src/collection.js';
 import { expectToThrowCKEditorError } from '../tests/_utils/utils.js';
@@ -21,10 +21,6 @@ describe( 'Collection', () => {
 
 	beforeEach( () => {
 		collection = new Collection();
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

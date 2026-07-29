@@ -17,7 +17,7 @@ import {
 	ViewText,
 	ViewUIElement
 } from '@ckeditor/ckeditor5-engine';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
 	toWidget,
 	isWidget,
@@ -34,10 +34,6 @@ import {
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();

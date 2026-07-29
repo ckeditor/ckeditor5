@@ -1,0 +1,93 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-table-scroll-widget-type-around-icon-width: 10px;
+	--ck-table-scroll-widget-type-around-icon-height: 8px;
+}
+
+.ck.ck-editor__editable figure.table.ck-table-overflowing {
+	display: flex;
+	flex-direction: column;
+	overflow-x: scroll;
+	overflow-y: clip;
+	max-width: 100%;
+	margin-right: 0;
+
+	& > figcaption {
+		order: -1;
+		align-self: flex-start;
+		box-sizing: border-box;
+	}
+}
+
+.ck.ck-editor__editable figure.table.ck-table-overflowing.ck-widget {
+	--ck-table-scroll-offset: 0px;
+
+	& > table > :is(tbody, thead, tfoot) > tr > :is(td, th):last-of-type {
+		--ck-table-column-resizer-position-offset: 0;
+		--ck-table-column-resizer-width: 3.5px;
+	}
+
+	&.ck-widget_with-selection-handle > .ck-widget__selection-handle {
+		--ck-widget-handler-icon-size: 10px;
+
+		transform: translate(var(--ck-table-scroll-offset), calc(0px - var(--ck-widget-outline-thickness)));
+		z-index: 3;
+	}
+
+	& > .ck-widget__type-around {
+		--ck-widget-type-around-button-size: 16px;
+
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+
+		& > .ck-widget__type-around__button {
+			&.ck-widget__type-around__button_before,
+			&.ck-widget__type-around__button_after {
+				transform: translate(var(--ck-table-scroll-offset), 0);
+				z-index: 2;
+			}
+
+			&.ck-widget__type-around__button_before {
+				margin-left: var(--ck-widget-type-around-button-size);
+				left: min(10%, 30px);
+				border-radius: 0 0 100px 100px;
+
+				&::after {
+					border-radius: 0 0 100px 100px;
+				}
+			}
+
+			&.ck-widget__type-around__button_after {
+				bottom: calc(-.5 * var(--ck-widget-outline-thickness));
+				right: min(10%, 30px);
+				border-radius: 100px 100px 0 0;
+
+				&::after {
+					border-radius: 100px 100px 0 0;
+				}
+			}
+
+			& svg {
+				width: var(--ck-table-scroll-widget-type-around-icon-width);
+				height: var(--ck-table-scroll-widget-type-around-icon-height);
+			}
+		}
+	}
+
+	&.ck-widget_type-around_show-fake-caret_before {
+		& > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
+			top: 0;
+		}
+	}
+
+	&.ck-widget_type-around_show-fake-caret_after {
+		& > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
+			bottom: 0;
+		}
+	}
+}

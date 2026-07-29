@@ -19,10 +19,6 @@ import { DropdownMenuBehaviors } from '../../../src/dropdown/menu/dropdownmenube
 describe( 'DropdownMenuNestedMenuView', () => {
 	let menuView, element, editor, parentMenuView, locale, body;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

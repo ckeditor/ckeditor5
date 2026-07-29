@@ -41,9 +41,6 @@ import {
 	type CollectionChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/dropdown/toolbardropdown.css';
-import '../../theme/components/dropdown/listdropdown.css';
-
 import { ListItemGroupView } from '../list/listitemgroupview.js';
 import { ListItemButtonView } from '../button/listitembuttonview.js';
 import type { DropdownMenuDefinition } from './menu/utils.js';

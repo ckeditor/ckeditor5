@@ -60,7 +60,6 @@ describe( 'DomEventObserver', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		view.destroy();
 	} );
 

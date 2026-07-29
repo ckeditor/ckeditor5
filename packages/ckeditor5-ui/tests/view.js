@@ -16,10 +16,6 @@ let TestView, view, childA, childB;
 
 describe( 'View', () => {
 	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
-	afterEach( () => {
 		if ( view.element ) {
 			view.element.remove();
 		}

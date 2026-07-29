@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { HorizontalLineEditing } from '../src/horizontallineediting.js';
 import { HorizontalLineCommand } from '../src/horizontallinecommand.js';
@@ -12,10 +12,6 @@ import { isWidget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'HorizontalLineEditing', () => {
 	let editor, model, view, viewDocument;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		return VirtualTestEditor

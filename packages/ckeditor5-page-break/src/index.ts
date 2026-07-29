@@ -12,4 +12,6 @@ export { PageBreakEditing } from './pagebreakediting.js';
 export { PageBreakUI } from './pagebreakui.js';
 export { PageBreakCommand } from './pagebreakcommand.js';
 
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

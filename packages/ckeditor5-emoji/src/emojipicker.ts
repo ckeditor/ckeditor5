@@ -20,8 +20,6 @@ import { EmojiPickerFormView, type EmojiPickerFormViewCancelEvent } from './ui/e
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { EmojiSkinToneId } from './emojiconfig.js';
 
-import '../theme/emojipicker.css';
-
 const VISUAL_SELECTION_MARKER_NAME = 'emoji-picker';
 
 /**

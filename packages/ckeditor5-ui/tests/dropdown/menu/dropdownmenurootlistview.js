@@ -68,8 +68,6 @@ describe( 'DropdownMenuRootListView', () => {
 	} );
 
 	afterEach( async () => {
-		vi.restoreAllMocks();
-
 		await editor.destroy();
 
 		rootListView.destroy();

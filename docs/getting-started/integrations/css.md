@@ -14,7 +14,7 @@ CKEditor&nbsp;5 is compatible with most of the popular CSS frameworks. However, 
 * Modal components of various UI frameworks use high `z-index` values in their styles and render over (cover) the UI of CKEditor&nbsp;5.
 * Framework modals use an aggressive focus management policy that breaks the input fields in the rich-text editor (for example, the link input).
 
-In this guide, you will learn how to address these integration issues and use the CKEditor&nbsp;5 HTML editor with the most popular frontend frameworks.
+The sections below show how to resolve these issues for Bootstrap, Foundation, Materialize, and Semantic UI.
 
 {@snippet getting-started/use-builder}
 

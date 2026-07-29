@@ -16,7 +16,7 @@ import {
 const locale = new Locale();
 
 class FilteredTestListView extends ListView implements FilteredView {
-	public filter( query ) {
+	public filter( query: RegExp | null ) {
 		let visibleItems = 0;
 
 		for ( const item of this.items ) {

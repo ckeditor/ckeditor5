@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
 import { global, Rect } from '@ckeditor/ckeditor5-utils';
 import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
 import { TableColumnResizeEditing } from '../../../src/tablecolumnresize/tablecolumnresizeediting.js';
@@ -10,8 +11,8 @@ import { getTableColumnsWidths } from '../../../src/tablecolumnresize/utils.js';
 
 export const tableColumnResizeMouseSimulator = {
 	down( editor, domTarget, options = {} ) {
-		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
-		const stop = options.stop || sinon.spy().named( 'stop' );
+		const preventDefault = options.preventDefault || vi.fn();
+		const stop = options.stop || vi.fn();
 
 		const clientX = getColumnResizerRect( domTarget ).x;
 
@@ -51,8 +52,8 @@ export const tableColumnResizeMouseSimulator = {
 	},
 
 	over( editor, domTarget, options = {} ) {
-		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
-		const stop = options.stop || sinon.spy().named( 'stop' );
+		const preventDefault = options.preventDefault || vi.fn();
+		const stop = options.stop || vi.fn();
 
 		const clientX = getColumnResizerRect( domTarget ).x;
 
@@ -68,8 +69,8 @@ export const tableColumnResizeMouseSimulator = {
 	},
 
 	out( editor, domTarget, options = {} ) {
-		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
-		const stop = options.stop || sinon.spy().named( 'stop' );
+		const preventDefault = options.preventDefault || vi.fn();
+		const stop = options.stop || vi.fn();
 
 		const clientX = getColumnResizerRect( domTarget ).x;
 

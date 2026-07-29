@@ -16,8 +16,6 @@ import { type ModelPosition } from '../position.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { ModelSelectable } from '../selection.js';
 
-// @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
-
 /**
  * Operation to permanently remove node from detached root.
  * Note this operation is only a local operation and won't be send to the other clients.

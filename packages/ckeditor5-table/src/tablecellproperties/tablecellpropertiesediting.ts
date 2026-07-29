@@ -311,6 +311,7 @@ function enableLegacyHorizontalAlignmentAttribute( conversion: Conversion ) {
 			}
 
 			for ( const child of modelElement.getChildren() ) {
+				/* v8 ignore else -- A table cell only contains block elements, so its children are always elements. */
 				if ( child.is( 'element' ) ) {
 					applyAlignmentToChild( child, alignValue, conversionApi );
 				}
@@ -321,6 +322,7 @@ function enableLegacyHorizontalAlignmentAttribute( conversion: Conversion ) {
 	function applyAlignmentToChild( child: ModelElement, alignValue: string, { schema, writer }: UpcastConversionApi ): void {
 		const definition = schema.getDefinition( child );
 
+		/* v8 ignore else -- A converted child element is always registered in the schema, so it always has a definition. */
 		if ( definition ) {
 			for ( const attrName of definition.allowAttributes ) {
 				if ( child.hasAttribute( attrName ) ) {
@@ -561,6 +563,7 @@ function enableCellTypeProperty( editor: Editor ) {
 				if ( cell?.is( 'element', 'tableCell' ) && cell.root.rootName !== '$graveyard' ) {
 					const table = cell.findAncestor( 'table' ) as ModelElement;
 
+					/* v8 ignore else -- A table cell always lives inside a table, so it always has a table ancestor here. */
 					if ( table ) {
 						tablesToCheck.add( table );
 					}
@@ -577,6 +580,7 @@ function enableCellTypeProperty( editor: Editor ) {
 					) {
 						const table = item.findAncestor( 'table' ) as ModelElement;
 
+						/* v8 ignore else -- An inserted table cell always lives inside a table, so it always has a table ancestor here. */
 						if ( table ) {
 							tablesToCheck.add( table );
 						}

@@ -173,11 +173,11 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {reversed:true}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# 1.[] {reversed:true}' ] ) );
 
 			listReversedCommand.execute( { reversed: false } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {reversed:false}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# 1.[] {reversed:false}' ] ) );
 		} );
 
 		it( 'should set the `listReversed` attribute for non-collapsed selection', () => {
@@ -185,11 +185,11 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# [1.] {reversed:true}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# [1.] {reversed:true}' ] ) );
 
 			listReversedCommand.execute( { reversed: false } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# [1.] {reversed:false}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# [1.] {reversed:false}' ] ) );
 		} );
 
 		it( 'should set the `listReversed` attribute for all the same list items (collapsed selection)', () => {
@@ -201,7 +201,7 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1. {reversed:true}
 				# 2.[]
 				# 3.
@@ -220,7 +220,7 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1.[] {reversed:true}
 				# 2.
 				  # 2.1. {reversed:false}
@@ -239,7 +239,7 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# Foo. {reversed:true}
 				# [<blockWidget></blockWidget>]
 				# Bar.
@@ -259,7 +259,7 @@ describe( 'ListReversedCommand', () => {
 
 				listReversedCommand.execute( { reversed: false } );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 					# 1. {reversed:true}
 					# 2.
 					  # 2.1.[] {reversed:false}
@@ -280,7 +280,7 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: false } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				Foo.
 				# 1.[] {reversed:false}
 				# 2.
@@ -298,7 +298,7 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				Foo.
 				# 1.[] {reversed:true}
 				# 2.
@@ -319,7 +319,7 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1. {reversed:true}
 				# 2a.
 				  [2b.
@@ -340,7 +340,7 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: false } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1. {reversed:false}
 				# 2.
 				  [3].
@@ -380,7 +380,7 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( { reversed: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# 1. {reversed:true}
 				# [2.
 				  # 2.1. {reversed:true}
@@ -398,7 +398,7 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {reversed:false}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# 1.[] {reversed:false}' ] ) );
 		} );
 
 		it( 'should use `false` value if not specified (passed an empty object)', () => {
@@ -406,7 +406,7 @@ describe( 'ListReversedCommand', () => {
 
 			listReversedCommand.execute( {} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '# 1.[] {reversed:false}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '# 1.[] {reversed:false}' ] ) );
 		} );
 	} );
 } );

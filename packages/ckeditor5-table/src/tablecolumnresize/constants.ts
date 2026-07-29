@@ -36,3 +36,20 @@ export const COLUMN_WIDTH_PRECISION = 2;
  * @internal
  */
 export const COLUMN_RESIZE_DISTANCE_THRESHOLD = 3;
+
+/**
+ * The distance (in pixels) around the container's width within which a dragged table edge snaps to exactly
+ * 100% of the container width, in either direction - making it easy to precisely land on that value.
+ *
+ * @internal
+ */
+export const TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS = 5;
+
+/**
+ * How much further (in pixels, on top of the snap threshold above) a table edge has to be dragged past the
+ * container's width before it actually starts growing past 100% again. This is what makes 100% "sticky" -
+ * while still letting the table grow past it with a deliberate, longer drag.
+ *
+ * @internal
+ */
+export const TABLE_WIDTH_GROWTH_RESISTANCE_IN_PIXELS = 10;

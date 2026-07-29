@@ -116,7 +116,7 @@ ClassicEditor
 
 #### Using CSS variables
 
-The highlight feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) defined in the [style sheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/theme/highlight.css). Thanks to that, both the UI and the content styles share the same color definitions that you can customize:
+The highlight feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) defined in the [style sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-highlight/theme/index-content.css). Thanks to that, both the UI and the content styles share the same color definitions that you can customize:
 
 ```css
 :root {

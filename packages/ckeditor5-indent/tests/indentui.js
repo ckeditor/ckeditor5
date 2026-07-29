@@ -14,10 +14,6 @@ import { IndentUI } from '../src/indentui.js';
 describe( 'IndentUI', () => {
 	let editor, rtlEditor, element, button, rtlButton;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

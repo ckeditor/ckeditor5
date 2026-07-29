@@ -9,7 +9,7 @@ modified_at: 2025-09-08
 
 # Integrating CKEditor&nbsp;5 with jQuery from CDN
 
-This guide will walk you through the process of integrating CKEditor&nbsp;5 with jQuery using the CDN approach. jQuery is a fast, small, and feature-rich JavaScript library that simplifies HTML document traversal and manipulation, event handling, and animation. By combining it with CKEditor&nbsp;5, you can leverage jQuery's powerful DOM manipulation capabilities while enjoying the rich editing experience that CKEditor&nbsp;5 provides.
+You can use the CKEditor&nbsp;5 rich-text editor in a [jQuery](https://jquery.com/) project by loading CKEditor&nbsp;5 from the CDN and initializing the editor on a DOM element selected with jQuery.
 
 {@snippet getting-started/use-builder}
 

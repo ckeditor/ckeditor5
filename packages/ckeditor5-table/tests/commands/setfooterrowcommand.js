@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -180,7 +182,7 @@ describe( 'SetFooterRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00' ],
 				[ '10' ],
 				[ '[]20' ],
@@ -198,7 +200,7 @@ describe( 'SetFooterRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00' ],
 				[ '10' ],
 				[ '[]20' ],
@@ -225,7 +227,7 @@ describe( 'SetFooterRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00' ],
 				[ '[]10' ],
 				[ '20' ],
@@ -243,7 +245,7 @@ describe( 'SetFooterRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00' ],
 				[ '10' ],
 				[ '20' ],
@@ -269,7 +271,7 @@ describe( 'SetFooterRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '10' ],
 					[ '20' ],
@@ -303,7 +305,7 @@ describe( 'SetFooterRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '10' ],
 					[ '20' ],
@@ -337,7 +339,7 @@ describe( 'SetFooterRowCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00' ],
 					[ '10' ],
 					[ '20' ],
@@ -358,7 +360,7 @@ describe( 'SetFooterRowCommand', () => {
 
 			command.execute( { forceValue: true } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00' ],
 				[ '[]10' ],
 				[ '20' ],
@@ -376,7 +378,7 @@ describe( 'SetFooterRowCommand', () => {
 
 			command.execute( { forceValue: false } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00' ],
 				[ '[]10' ],
 				[ '20' ],
@@ -393,7 +395,7 @@ describe( 'SetFooterRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '', '[]11' ],
 				[ '21', '22' ]
@@ -411,7 +413,7 @@ describe( 'SetFooterRowCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01' ],
 				[ '11' ],
 				[ { rowspan: 3, contents: '' }, '21[]' ],

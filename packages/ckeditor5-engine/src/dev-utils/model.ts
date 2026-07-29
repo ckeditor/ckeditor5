@@ -492,7 +492,7 @@ function convertToModelFragment( mapper: Mapper ) {
 
 		mapper.bindElements( data.modelCursor.parent, data.viewItem );
 
-		data = Object.assign( data, childrenResult );
+		Object.assign( data, childrenResult );
 
 		evt.stop();
 	};

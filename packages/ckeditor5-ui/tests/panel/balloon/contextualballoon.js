@@ -18,10 +18,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 describe( 'ContextualBalloon', () => {
 	let editor, editorElement, balloon, viewA, viewB, viewC, viewD;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeAll( () => {
 		addTranslations( 'en', {
 			'Choose heading': '%0 of %1',
@@ -1072,6 +1068,16 @@ describe( 'ContextualBalloon', () => {
 			rotatorView.buttonPrevView.fire( 'execute' );
 
 			expect( editableFocusSpy ).toHaveBeenCalledOnce();
+		} );
+
+		it( 'should prevent the default action of the navigation buttons mousedown to not steal the focus', () => {
+			for ( const button of [ rotatorView.buttonPrevView, rotatorView.buttonNextView ] ) {
+				const event = new MouseEvent( 'mousedown', { bubbles: true, cancelable: true } );
+
+				button.element.dispatchEvent( event );
+
+				expect( event.defaultPrevented ).toBe( true );
+			}
 		} );
 
 		it( 'should add hidden view with fake panels to editor body collection', () => {

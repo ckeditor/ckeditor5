@@ -3,17 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { EditorUIView } from '../../src/editorui/editoruiview.js';
 import { ViewCollection } from '../../src/viewcollection.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'EditorUIView', () => {
 	let view, locale;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		locale = new Locale();

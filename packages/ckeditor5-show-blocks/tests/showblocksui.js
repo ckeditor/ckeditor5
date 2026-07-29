@@ -30,7 +30,6 @@ describe( 'ShowBlocksUI', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		element.remove();
 
 		return editor.destroy();

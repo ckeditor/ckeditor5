@@ -68,7 +68,6 @@ describe( 'MediaEmbedStyleUI', () => {
 	} );
 
 	afterEach( async () => {
-		vi.restoreAllMocks();
 		editorElement.remove();
 		await editor.destroy();
 	} );
@@ -299,7 +298,6 @@ describe( 'MediaEmbedStyleUI', () => {
 		} );
 
 		afterEach( async () => {
-			vi.restoreAllMocks();
 			configuredEditorElement.remove();
 			await configuredEditor.destroy();
 		} );
@@ -587,7 +585,6 @@ describe( 'MediaEmbedStyleUI', () => {
 		} );
 
 		afterEach( async () => {
-			vi.restoreAllMocks();
 			configuredEditorElement.remove();
 			await configuredEditor.destroy();
 		} );
@@ -623,10 +620,6 @@ describe( 'MediaEmbedStyleUI', () => {
 
 		beforeEach( () => {
 			warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
-		} );
-
-		afterEach( () => {
-			vi.restoreAllMocks();
 		} );
 
 		// Each entry is a malformed dropdown definition that should be warned + skipped at

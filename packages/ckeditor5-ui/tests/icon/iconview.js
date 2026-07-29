@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { IconView } from '../../src/icon/iconview.js';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -14,10 +14,6 @@ describe( 'IconView', () => {
 	beforeEach( () => {
 		view = new IconView();
 		view.render();
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

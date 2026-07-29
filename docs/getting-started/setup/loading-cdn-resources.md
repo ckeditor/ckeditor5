@@ -14,11 +14,11 @@ However, other environments may require more work. It is especially true if you 
 
 For this reason, we provide the `useCKEditorCloud` and `loadCKEditorCloud` helper functions to make this process easier. These functions will handle adding the necessary script and style sheet tags to your page, ensure that the resources are only loaded once, and provide access to the data exported by them. This way you can load CKEditor&nbsp;5 and its plugins from a CDN without worrying about the technical details.
 
-If you use our {@link getting-started/integrations-cdn/react-default-cdn React} or {@link getting-started/integrations-cdn/vuejs-v3 Vue.js 3+} integrations, see the {@link getting-started/setup/loading-cdn-resources#using-the-useckeditorcloud-function Using the `useCKEditorCloud` function} section. Otherwise, see the {@link getting-started/setup/loading-cdn-resources#using-the-loadckeditorcloud-function Using the `loadCKEditorCloud` function} section.
+If you use our {@link getting-started/integrations-cdn/react-default-cdn React} or {@link getting-started/integrations-cdn/vue-default-cdn Vue.js 3+} integrations, see the {@link getting-started/setup/loading-cdn-resources#using-the-useckeditorcloud-function Using the `useCKEditorCloud` function} section. Otherwise, see the {@link getting-started/setup/loading-cdn-resources#using-the-loadckeditorcloud-function Using the `loadCKEditorCloud` function} section.
 
 ## Using the `useCKEditorCloud` function
 
-Our {@link getting-started/integrations-cdn/react-default-cdn React} and {@link getting-started/integrations-cdn/vuejs-v3 Vue.js 3+} integrations export a helper function named `useCKEditorCloud` to help you load CDN resources. These helpers are only small wrappers around the `loadCKEditorCloud` function but are designed to better integrate with the specific framework, its lifecycle, and reactivity mechanisms.
+Our {@link getting-started/integrations-cdn/react-default-cdn React} and {@link getting-started/integrations-cdn/vue-default-cdn Vue.js 3+} integrations export a helper function named `useCKEditorCloud` to help you load CDN resources. These helpers are only small wrappers around the `loadCKEditorCloud` function but are designed to better integrate with the specific framework, its lifecycle, and reactivity mechanisms.
 
 Here is an example of how you can use `useCKEditorCloud`:
 

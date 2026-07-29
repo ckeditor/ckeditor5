@@ -1,0 +1,40 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+import { ImageInsertViaUrl } from '../../src/imageinsertviaurl.js';
+import { AutoImage } from '../../src/autoimage.js';
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ) as HTMLElement,
+		plugins: [ ArticlePluginSet, AutoImage, LinkImage, ImageInsertViaUrl ],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'insertImage',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
+		],
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

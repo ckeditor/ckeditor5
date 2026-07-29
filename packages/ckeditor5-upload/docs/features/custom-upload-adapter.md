@@ -9,11 +9,11 @@ modified_at: 2025-07-28
 
 # Custom upload adapter
 
-There are several reasons why developers choose to implement custom upload adapters in CKEditor&nbsp;5. These may include server integration requirements (dependent on the existing architecture where the editor is deployed), local security and authentication rules, or business logic.
+A custom upload adapter connects CKEditor&nbsp;5's file uploads to your own server or storage, giving you control over how files are sent and where they are stored. You might build one to meet server integration, security and authentication, or business-logic requirements.
 
 The CKEditor&nbsp;5 Framework offers an open API with a set of classes for upload adapters that handle the entire upload process from when a user adds a file (for example, by dragging an image) to when the server responds, acting as a bridge between the editor and your server.
 
-Check out this dedicated {@link framework/deep-dive/upload-adapter Custom Upload Adapter} guide, which explains how to create custom file upload functionality for the editor. 
+Check out this dedicated {@link framework/deep-dive/upload-adapter Custom Upload Adapter} guide, which explains how to create custom file upload functionality for the editor.
 
 ## What's next
 

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -37,6 +38,23 @@ describe( 'TableWidthsCommand', () => {
 		}
 	} );
 
+	it( 'should remove obsolete tableCellWidth attributes from the whole table when applying column widths', () => {
+		_setModelData( model, modelTable( [
+			[ { tableCellWidth: '50px', contents: '11' }, { tableCellWidth: '60px', contents: '12' } ],
+			[ '21', { tableCellWidth: '70px', contents: '22' } ]
+		], { columnWidths: '40%,60%', tableWidth: '80%' } ) );
+
+		command.execute( { columnWidths: [ '30%', '70%' ], tableWidth: '80%' } );
+
+		const table = model.document.getRoot().getChild( 0 );
+		const anyCellHasWidth = Array.from( table.getChildren() )
+			.filter( child => child.is( 'element', 'tableRow' ) )
+			.flatMap( row => Array.from( row.getChildren() ) )
+			.some( cell => cell.hasAttribute( 'tableCellWidth' ) );
+
+		expect( anyCellHasWidth ).to.be.false;
+	} );
+
 	it( 'should work on the currently selected table if it was not passed to execute()', () => {
 		_setModelData( model, modelTable( [
 			[ '11', '12' ],
@@ -45,7 +63,7 @@ describe( 'TableWidthsCommand', () => {
 
 		command.execute( { columnWidths: [ '40%', '60%' ], tableWidth: '40%' } );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 			'<table tableWidth="40%">' +
 				'<tableRow>' +
 					'<tableCell>' +
@@ -79,7 +97,7 @@ describe( 'TableWidthsCommand', () => {
 
 		command.execute();
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell>' +
@@ -111,7 +129,7 @@ describe( 'TableWidthsCommand', () => {
 
 		command.execute();
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( modelDataBeforeExecute );
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( modelDataBeforeExecute );
 	} );
 
 	it( 'should work when only tableWidth is provided', () => {
@@ -122,7 +140,7 @@ describe( 'TableWidthsCommand', () => {
 		command.execute( { tableWidth: '50%' } );
 
 		const expectedModel = modelTable( data, { tableWidth: '50%' } );
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( expectedModel );
 	} );
 
 	it( 'should work when only columnWidths is provided', () => {
@@ -133,7 +151,7 @@ describe( 'TableWidthsCommand', () => {
 		command.execute( { columnWidths: [ '30%', '70%' ] } );
 
 		const expectedModel = modelTable( data, { columnWidths: '30%,70%' } );
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( expectedModel );
 	} );
 
 	it( 'should work when columnWidths is a string of comma-separated values', () => {
@@ -144,7 +162,7 @@ describe( 'TableWidthsCommand', () => {
 		command.execute( { columnWidths: '30%,70%' } );
 
 		const expectedModel = modelTable( data, { columnWidths: '30%,70%' } );
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( expectedModel );
 	} );
 
 	it( 'should add attributes when they are provided, but were not present before', () => {
@@ -155,7 +173,7 @@ describe( 'TableWidthsCommand', () => {
 		command.execute( { columnWidths: [ '30%', '70%' ], tableWidth: '40%' } );
 
 		const expectedModel = modelTable( data, { columnWidths: '30%,70%', tableWidth: '40%' } );
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( expectedModel );
 	} );
 
 	it( 'should change attributes when they were present before', () => {
@@ -166,6 +184,6 @@ describe( 'TableWidthsCommand', () => {
 		command.execute( { columnWidths: [ '30%', '70%' ], tableWidth: '50%' } );
 
 		const expectedModel = modelTable( data, { columnWidths: '30%,70%', tableWidth: '50%' } );
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( expectedModel );
 	} );
 } );

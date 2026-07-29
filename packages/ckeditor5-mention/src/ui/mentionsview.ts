@@ -12,8 +12,6 @@ import { Rect, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import { type MentionListItemView } from './mentionlistitemview.js';
 
-import '../../theme/mentionui.css';
-
 /**
  * The mention ui view.
  */

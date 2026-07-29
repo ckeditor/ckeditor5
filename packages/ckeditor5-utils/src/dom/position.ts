@@ -12,12 +12,12 @@ import { Rect, type RectSource } from './rect.js';
 import { getPositionedAncestor } from './getpositionedancestor.js';
 import { isFunction } from 'es-toolkit/compat';
 
-// @if CK_DEBUG_POSITION // const {
-// @if CK_DEBUG_POSITION // 	default: RectDrawer,
+// @if CK_DEBUG_POSITION // import {
+// @if CK_DEBUG_POSITION // 	RectDrawer,
 // @if CK_DEBUG_POSITION // 	diagonalStylesBlack,
 // @if CK_DEBUG_POSITION // 	diagonalStylesGreen,
 // @if CK_DEBUG_POSITION // 	diagonalStylesRed
-// @if CK_DEBUG_POSITION // } = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' );
+// @if CK_DEBUG_POSITION // } from '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer.js';
 // @if CK_DEBUG_POSITION // const TARGET_RECT_STYLE = {
 // @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineStyle: 'dashed', outlineColor: 'blue', outlineOffset: '2px'
 // @if CK_DEBUG_POSITION // };

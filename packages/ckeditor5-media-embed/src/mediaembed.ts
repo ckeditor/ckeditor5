@@ -14,8 +14,6 @@ import { MediaEmbedEditing } from './mediaembedediting.js';
 import { AutoMediaEmbed } from './automediaembed.js';
 import { MediaEmbedUI } from './mediaembedui.js';
 
-import '../theme/mediaembed.css';
-
 /**
  * The media embed plugin.
  *

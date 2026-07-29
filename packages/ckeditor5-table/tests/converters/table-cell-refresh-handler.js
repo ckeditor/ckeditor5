@@ -3,19 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Delete } from '@ckeditor/ckeditor5-typing';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _getViewData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { viewTable } from '../_utils/utils.js';
 
 describe( 'Table cell refresh handler', () => {
 	let editor, model, doc, root, view, element;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -63,7 +62,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setSelection( nodeByPath.nextSibling, 0 );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>00</p><p></p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -82,7 +81,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.insert( paragraph, nodeByPath, 'before' );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p></p><p>00</p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -104,7 +103,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setSelection( nodeByPath.nextSibling, 0 );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>00</p><p></p><p></p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -124,7 +123,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setSelection( nodeByPath.nextSibling, 0 );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>00</p><div></div>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -146,7 +145,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setSelection( nodeByPath.nextSibling, 0 );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>00</p><div></div><div></div>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -166,7 +165,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.equal( previousView );
@@ -186,7 +185,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setSelection( nodeByPath.nextSibling, 0 );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>00</p><p></p>' ]
 		], { asWidget: true } ) );
 
@@ -194,7 +193,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -210,7 +209,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setAttribute( 'foo', 'bar', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p foo="bar">00</p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -226,7 +225,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setAttribute( 'selection:bold', true, table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<span class="ck-table-bogus-paragraph">00</span>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.equal( previousView );
@@ -242,7 +241,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -259,7 +258,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -275,7 +274,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.removeAttribute( 'foo', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<span class="ck-table-bogus-paragraph">00</span>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -291,7 +290,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setAttribute( 'foo', 'baz', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p foo="baz">00</p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.equal( previousView );
@@ -307,7 +306,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setAttribute( 'bar', 'bar', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p bar="bar" foo="bar">00</p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.equal( previousView );
@@ -324,7 +323,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.removeAttribute( 'foo', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p bar="bar">00</p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.equal( previousView );
@@ -340,7 +339,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setAttribute( 'foo', 'baz', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p foo="baz">00</p><p>00</p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.equal( previousView );
@@ -356,7 +355,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.rename( table.getNodeByPath( [ 0, 0, 0 ] ), 'block' );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<div>00</div>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -372,7 +371,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.insertElement( 'paragraph', table.getNodeByPath( [ 0, 0, 1 ] ), 'after' );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>a</p><p>b</p><p></p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.equal( previousView );
@@ -388,7 +387,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.setAttribute( 'foo', 'bar', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<div foo="bar">foo</div>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.equal( previousView );
@@ -404,7 +403,7 @@ describe( 'Table cell refresh handler', () => {
 			writer.remove( writer.createRangeOn( table.getNodeByPath( [ 0, 0, 1 ] ) ) );
 		} );
 
-		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<span class="ck-table-bogus-paragraph">00</span>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
@@ -446,7 +445,7 @@ describe( 'Table cell refresh handler', () => {
 
 		editor.setData( viewTable( [ [ '<p>foo[]</p>' ] ] ) );
 
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		view.document.selection.on( 'change', spy );
 
@@ -463,7 +462,7 @@ describe( 'Table cell refresh handler', () => {
 
 		// View selection should be updated only twice - will be set to null and then to widget.
 		// If called thrice the selection post fixer for table cell was also called.
-		sinon.assert.calledTwice( spy );
+		expect( spy ).toHaveBeenCalledTimes( 2 );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5-table/issues/191.

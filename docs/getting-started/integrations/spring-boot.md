@@ -9,7 +9,7 @@ modified_at: 2025-05-06
 
 # Integrating CKEditor&nbsp;5 with Spring Boot from ZIP
 
-As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 rich-text editor in a non-JS framework of your choice, for example, the Java-based [Spring Boot](https://spring.io/projects/spring-boot).
+You can add CKEditor&nbsp;5 to a [Spring Boot](https://spring.io/projects/spring-boot) application by placing a custom editor build from a ZIP archive among your project's static resources and loading it on the page. There is no official Spring Boot integration, but because the CKEditor&nbsp;5 HTML editor is a pure JavaScript/TypeScript library, it runs in any environment that serves such assets, including the Java-based Spring Boot.
 
 {@snippet getting-started/use-builder}
 

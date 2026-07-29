@@ -24,8 +24,6 @@ import {
 	type CollectionChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/list/list.css';
-
 /**
  * The list view class.
  */

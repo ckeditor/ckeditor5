@@ -8,7 +8,7 @@ order: 40
 badges: [ premium ]
 ---
 
-Elevate your images with robust editing tools available through the premium {@link features/ckbox CKBox} and {@link features/uploadcare Uploadcare} integrations. In this guide you will discover how to modify and enhance visuals directly in the editor, giving you greater creative control.
+The image optimizer lets you edit and enhance images directly in the editor through the premium {@link features/ckbox CKBox} and {@link features/uploadcare Uploadcare} integrations.
 
 {@snippet getting-started/unlock-feature}
 

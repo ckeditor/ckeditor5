@@ -32,10 +32,6 @@ const RESIZE_OPTIONS = [
 describe( 'MediaEmbedResizeButtons', () => {
 	let plugin, command, editor, editorElement;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

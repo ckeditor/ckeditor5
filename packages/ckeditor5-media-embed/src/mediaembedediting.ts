@@ -17,8 +17,6 @@ import { MediaEmbedCommand } from './mediaembedcommand.js';
 import { MediaRegistry } from './mediaregistry.js';
 import { toMediaWidget, createMediaFigureElement } from './utils.js';
 
-import '../theme/mediaembedediting.css';
-
 /**
  * The media embed editing feature.
  */

@@ -17,8 +17,6 @@ import {
 } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../../theme/imageinsert.css';
-
 /**
  * The view displayed in the insert image dropdown.
  *

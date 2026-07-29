@@ -10,9 +10,9 @@ badges: [ premium ]
 
 # Cloud Services Overview
 
-The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. These services for managing comments, storing document revisions, handling the users, synchronizing the data, utilizing, configuring and managing features, importing and exporting documents and managing assets. 
+CKEditor Cloud Services is a cloud platform that powers editing, real-time collaboration, and document processing for CKEditor&nbsp;5. It handles real-time collaborative editing, comments, track changes, and revision history. You can use it for exporting files to PDF or Word, importing from Word, and managing assets with CKBox.
 
-The platform primarily focuses on providing a backend for the CKEditor&nbsp;5 features (via dedicated plugins), although some features can also be used directly through {@link features/cloud-services-rest-api RESTful APIs and hooks}.
+The platform primarily focuses on providing a backend for the CKEditor&nbsp;5 features (via dedicated plugins), although some features can also be used directly through the {@link features/cloud-services-rest-api REST API and webhooks}.
 
 ## Real-time collaboration
 

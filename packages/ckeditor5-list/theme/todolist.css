@@ -4,10 +4,10 @@
  */
 
 :root {
+	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `index-content.css`. */
 	--ck-content-todo-list-checkmark-size: 16px;
 }
 
-.ck-content .todo-list .todo-list__label > input,
 .ck-editor__editable.ck-content .todo-list .todo-list__label > span[contenteditable=false] > input {
 	-webkit-appearance: none;
 	display: inline-block;
@@ -75,32 +75,6 @@
 
 		&::after {
 			border-color: hsl(0, 0%, 100%);
-		}
-	}
-}
-
-/*
- * To-do list content styles.
- */
-.ck-content .todo-list {
-	list-style: none;
-
-	& li {
-		position: relative;
-		margin-bottom: 5px;
-
-		& .todo-list {
-			margin-top: 5px;
-		}
-	}
-
-	& .todo-list__label {
-		& .todo-list__label__description {
-			vertical-align: middle;
-		}
-
-		&.todo-list__label_without-description input[type=checkbox] {
-			position: absolute;
 		}
 	}
 }

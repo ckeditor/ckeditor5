@@ -45,7 +45,6 @@ describe( 'InsertBookmarkCommand', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		domElement.remove();
 		return editor.destroy();
 	} );

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Textareaview</title>
+		<script type="module" src="./textareaview.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1><code>TextareaView</code></h1>
+			<p>There's a number of different view configurations showcased in this test.</p>
+			<ol>
+				<li>Make sure the view resizes according to the configured min and max rows.</li>
+				<li>Try removing all content. Or pasting a lot of content into each textarea.</li>
+				<li>
+					Try resizing textarea manually, it should act according to the description.
+					<ul>
+						<li>
+							<strong>Known bug</strong>: Typing in a once manually resized textarea
+							will reset it's size.
+						</li>
+					</ul>
+				</li>
+			</ol>
+		</ck-manual-header>
+
+		<div dir="ltr" class="ck ck-reset_all ck-rounded-corners playground"></div>
+
+		<style>
+			.ck.playground {
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr;
+				grid-template-rows: auto;
+				grid-gap: 20px;
+			}
+
+			.ck.playground > div {
+				border: 1px solid #eee;
+				box-shadow: 2px 2px 3px #0000000d;
+				padding: 10px;
+
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				grid-template-rows: auto 1fr;
+				grid-gap: 10px;
+			}
+
+			.ck.playground > div > h2 {
+				font-size: 16px;
+				font-weight: bold;
+				grid-area: 1 / 1 / 2 / 3;
+			}
+
+			.ck.playground textarea {
+				width: 100%;
+				clear: both;
+				grid-area: 2 / 1 / 3 / 3;
+			}
+
+			.ck.playground button:first-child {
+				grid-area: 3 / 1 / 4 / 2;
+			}
+
+			.ck.playground button:last-child {
+				grid-area: 3 / 2 / 4 / 3;
+			}
+		</style>
+	</body>
+</html>

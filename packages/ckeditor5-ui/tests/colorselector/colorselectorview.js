@@ -65,7 +65,6 @@ describe( 'ColorSelectorView', () => {
 	afterEach( () => {
 		colorSelectorView.destroy();
 		colorSelectorView.element.remove();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

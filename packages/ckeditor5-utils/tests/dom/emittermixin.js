@@ -21,7 +21,6 @@ describe( 'DomEmitterMixin', () => {
 
 	afterEach( () => {
 		domEmitter.stopListening();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'mixes in EmitterMixin', () => {

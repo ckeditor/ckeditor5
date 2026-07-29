@@ -361,10 +361,6 @@ describe( 'utils', () => {
 			stub = vi.spyOn( window, 'open' ).mockReturnValue( undefined );
 		} );
 
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		it( 'should open a new browser tab', () => {
 			const url = 'http://www.ckeditor.com';
 

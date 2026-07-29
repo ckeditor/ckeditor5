@@ -184,5 +184,95 @@ describe( 'ReplaceCommand', () => {
 				'<paragraph><$text italic="true">foo </$text>bom<$text italic="true"> foo</$text></paragraph>'
 			);
 		} );
+
+		describe( 'in inline root editor', () => {
+			let inlineRootEditor, inlineRootModel;
+
+			beforeEach( async () => {
+				inlineRootEditor = await ModelTestEditor.create( {
+					plugins: [ FindAndReplaceEditing ],
+					root: { modelElement: '$inlineRoot' }
+				} );
+
+				inlineRootModel = inlineRootEditor.model;
+			} );
+
+			afterEach( async () => {
+				await inlineRootEditor.destroy();
+			} );
+
+			it( 'should replace a single match', () => {
+				_setModelData( inlineRootModel, 'foo bar baz' );
+
+				const { results } = inlineRootEditor.execute( 'find', 'bar' );
+				inlineRootEditor.execute( 'replace', 'new', results.get( 0 ) );
+
+				expect( _getModelData( inlineRootModel, { withoutSelection: true } ) ).toBe( 'foo new baz' );
+			} );
+
+			it( 'should replace only the given result, leaving other occurrences intact', () => {
+				_setModelData( inlineRootModel, 'bar foo bar baz bar' );
+
+				const { results } = inlineRootEditor.execute( 'find', 'bar' );
+				inlineRootEditor.execute( 'replace', 'new', results.get( 0 ) );
+
+				expect( _getModelData( inlineRootModel, { withoutSelection: true } ) ).toBe( 'new foo bar baz bar' );
+			} );
+
+			it( 'should reduce the results count by one after replace', () => {
+				_setModelData( inlineRootModel, 'foo foo foo' );
+
+				const findAndReplaceEditing = inlineRootEditor.plugins.get( 'FindAndReplaceEditing' );
+				const results = findAndReplaceEditing.find( 'foo' );
+
+				inlineRootEditor.execute( 'replace', 'bar', findAndReplaceEditing.state.highlightedResult );
+
+				expect( results.length ).toBe( 2 );
+			} );
+
+			it( 'should empty results after replacing the last match', () => {
+				_setModelData( inlineRootModel, 'foo' );
+
+				const findAndReplaceEditing = inlineRootEditor.plugins.get( 'FindAndReplaceEditing' );
+				const results = findAndReplaceEditing.find( 'foo' );
+
+				inlineRootEditor.execute( 'replace', 'bar', results.get( 0 ) );
+
+				expect( results.length ).toBe( 0 );
+			} );
+
+			it( 'should highlight a different result after replacing the highlighted one', () => {
+				_setModelData( inlineRootModel, 'foo foo foo' );
+
+				const findAndReplaceEditing = inlineRootEditor.plugins.get( 'FindAndReplaceEditing' );
+				findAndReplaceEditing.find( 'foo' );
+
+				const highlightedBefore = findAndReplaceEditing.state.highlightedResult;
+
+				inlineRootEditor.execute( 'replace', 'bar', highlightedBefore );
+
+				expect( findAndReplaceEditing.state.highlightedResult ).not.toBe( highlightedBefore );
+				expect( findAndReplaceEditing.state.highlightedResult ).not.toBeNull();
+			} );
+
+			it( 'should not accumulate orphan find result markers with successive replaces', () => {
+				_setModelData( inlineRootModel, 'foo foo foo foo' );
+
+				const findAndReplaceEditing = inlineRootEditor.plugins.get( 'FindAndReplaceEditing' );
+				findAndReplaceEditing.find( 'foo' );
+
+				const countFindResultMarkers = () => [ ...inlineRootModel.markers ]
+					.filter( m => m.name.startsWith( 'findResult:' ) ).length;
+
+				inlineRootEditor.execute( 'replace', 'bar', findAndReplaceEditing.state.highlightedResult );
+				expect( countFindResultMarkers() ).toBe( 3 );
+
+				inlineRootEditor.execute( 'replace', 'bar', findAndReplaceEditing.state.highlightedResult );
+				expect( countFindResultMarkers() ).toBe( 2 );
+
+				inlineRootEditor.execute( 'replace', 'bar', findAndReplaceEditing.state.highlightedResult );
+				expect( countFindResultMarkers() ).toBe( 1 );
+			} );
+		} );
 	} );
 } );

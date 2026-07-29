@@ -28,7 +28,6 @@ describe( 'Drag and Drop target', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter, dragDropTarget;
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 	} );
 

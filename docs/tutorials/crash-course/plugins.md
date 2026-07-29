@@ -9,6 +9,8 @@ modified_at: 2023-08-16
 
 # Plugins
 
+In this part of the crash course, you will learn how plugins provide the editor's functionality and create the `highlight` plugin that the rest of the course builds on.
+
 ## Dependencies
 
 In the previous chapter of this tutorial, we learned that the editor is just an empty shell, and what gives the editor almost all of its functionality are the plugins. We also installed two plugins to be able to type in the editor.

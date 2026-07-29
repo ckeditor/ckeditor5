@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { ClipboardObserver } from '../src/clipboardobserver.js';
 
@@ -34,10 +34,6 @@ describe( 'ClipboardObserver', () => {
 		eventSpy = vi.fn();
 		preventDefaultSpy = vi.fn();
 		stopPropagationSpy = vi.fn();
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should define domEventType', () => {

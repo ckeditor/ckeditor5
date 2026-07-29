@@ -867,6 +867,34 @@ describe( 'Mapper', () => {
 		}
 	} );
 
+	describe( 'findPositionIn', () => {
+		it( 'should continue searching in the parent when an element with a custom view-to-model length has less content ' +
+			'than the target model offset', () => {
+			// Note: registering a custom view-to-model length callback disables position caching in `Mapper`.
+			//
+			// `<widget></widget>` is an empty view element which represents 2 model units. When looking for a model offset
+			// "inside" it, `Mapper` runs out of its (non-existent) children before reaching the target model offset,
+			// and must "go up" and continue looking in the parent element.
+			const viewTextFoo = new ViewText( viewDocument, 'foo' );
+			const viewWidget = new ViewElement( viewDocument, 'widget' );
+			const viewTextBar = new ViewText( viewDocument, 'bar' );
+			const viewP = new ViewElement( viewDocument, 'p', null, [ viewTextFoo, viewWidget, viewTextBar ] );
+
+			const modelP = new ModelElement( 'paragraph' );
+
+			const mapper = new Mapper();
+
+			mapper.bindElements( modelP, viewP );
+			mapper.registerViewToModelLength( 'widget', () => 2 );
+
+			// Model offsets in `viewP`: "foo" occupies offsets 0-3, `<widget>` occupies offsets 3-5, "bar" occupies offsets 5-8.
+			const viewPosition = mapper.findPositionIn( viewP, 4 );
+
+			expect( viewPosition.parent ).toBe( viewTextBar );
+			expect( viewPosition.offset ).toBe( 1 );
+		} );
+	} );
+
 	describe( 'Markers mapping', () => {
 		let mapper;
 

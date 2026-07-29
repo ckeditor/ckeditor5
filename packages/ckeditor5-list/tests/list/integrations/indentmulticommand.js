@@ -27,10 +27,6 @@ describe( 'Indent MultiCommand integrations', () => {
 	let indentListcommand, outdentListcommand,
 		commandSpies;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
@@ -1603,7 +1599,7 @@ describe( 'Indent MultiCommand integrations', () => {
 				expect( indentBlockListSpy.mock.calls.length ).to.equal( 0, 'indentBlockList command call count' );
 				expect( indentListSpy.mock.calls.length ).to.equal( 1, 'indentList command call count' );
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'  # A',
 					'  # []B'
 				] ) );
@@ -1668,7 +1664,7 @@ describe( 'Indent MultiCommand integrations', () => {
 
 		editor.commands.get( commandName ).execute();
 
-		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
+		expect( _getModelData( model ) ).toEqualMarkup( modelList( expected ) );
 
 		for ( const name in executedCommands ) {
 			expect( commandSpies[ name ].mock.calls.length ).to.equal( executedCommands[ name ], `${ name } command call count` );

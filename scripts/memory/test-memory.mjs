@@ -33,7 +33,8 @@ const { values } = parseArgs( {
 	options: {
 		html: { type: 'string', default: 'index.html' },
 		editor: { type: 'string', multiple: true, default: ALLOWED_EDITOR_NAMES },
-		build: { type: 'boolean', default: true }
+		build: { type: 'boolean', default: true },
+		concurrency: { type: 'string' }
 	},
 	strict: true,
 	allowNegative: true
@@ -69,6 +70,7 @@ await startMemoryTest( {
 	timeout: TIMEOUT,
 	memoryThreshold: MEMORY_THRESHOLD,
 	editorNames: values.editor,
+	concurrency: values.concurrency ? Number( values.concurrency ) : undefined,
 	editorData: {
 		LICENSE_KEY: 'GPL'
 	}

@@ -23,10 +23,6 @@ import { Command } from '@ckeditor/ckeditor5-core';
 describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 	let editor, model;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'enabling commands', () => {
 		let plugin, firstParagraph, secondParagraph;
 

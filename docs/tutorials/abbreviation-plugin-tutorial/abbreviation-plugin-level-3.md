@@ -9,7 +9,7 @@ modified_at: 2022-07-15
 
 # Improving accessibility and adding a command
 
-You made it to the final part of the abbreviation plugin tutorial. In this part, we will improve accessibility of our plugin. We will also work on a command, which will additionally grab the text from user's selection, and insert it into our form. And more!
+In this final part of the abbreviation plugin tutorial, you will improve the plugin's accessibility and add a command that grabs the text from the user's selection and inserts it into the form.
 
 We pick up where we left off in the {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 second part}, so make sure you finished it, or grab our starter files for this part using the commands below.
 

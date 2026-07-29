@@ -47,7 +47,6 @@ describe( 'RestrictedEditingExceptionAutoCommand', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'is a command', () => {

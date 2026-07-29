@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ViewCollection, ButtonView } from '@ckeditor/ckeditor5-ui';
 import { InsertTableView } from '../../src/ui/inserttableview.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
@@ -26,64 +27,64 @@ describe( 'InsertTableView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'sets view#locale', () => {
-			expect( view.locale ).to.equal( locale );
+			expect( view.locale ).toBe( locale );
 		} );
 
 		it( 'sets view#rows to 0', () => {
-			expect( view.rows ).to.equal( 0 );
+			expect( view.rows ).toBe( 0 );
 		} );
 
 		it( 'sets view#columns to 0', () => {
-			expect( view.columns ).to.equal( 0 );
+			expect( view.columns ).toBe( 0 );
 		} );
 
 		it( 'sets #label to default rows & columns', () => {
-			expect( view.label ).to.equal( '0 × 0' );
+			expect( view.label ).toBe( '0 × 0' );
 		} );
 
 		it( 'creates #element from template', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.children ).to.have.length( 2 );
-			expect( view.element.children[ 0 ].classList.contains( 'ck-insert-table-dropdown__grid' ) ).to.be.true;
-			expect( view.element.children[ 1 ].classList.contains( 'ck-insert-table-dropdown__label' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.children ).toHaveLength( 2 );
+			expect( view.element.children[ 0 ].classList.contains( 'ck-insert-table-dropdown__grid' ) ).toBe( true );
+			expect( view.element.children[ 1 ].classList.contains( 'ck-insert-table-dropdown__label' ) ).toBe( true );
 		} );
 
 		describe( 'view#items collection', () => {
 			it( 'should be created', () => {
-				expect( view.items ).to.be.instanceOf( ViewCollection );
-				expect( view.items ).to.have.length( 100 );
+				expect( view.items ).toBeInstanceOf( ViewCollection );
+				expect( view.items ).toHaveLength( 100 );
 			} );
 
 			it( 'should create items from template', () => {
 				expect( Array.from( view.items ).every(
 					item => item.element.classList.contains( 'ck' )
-				), 'ck class' ).to.be.true;
+				) ).toBe( true );
 
 				expect( Array.from( view.items ).every(
 					item => item.element.classList.contains( 'ck-insert-table-dropdown-grid-box' )
-				), 'grid box class' ).to.be.true;
+				) ).toBe( true );
 
 				expect( Array.from( view.items ).every(
 					item => item.element.getAttribute( 'tabindex' ) === '-1'
-				), 'tabindex' ).to.be.true;
+				) ).toBe( true );
 
 				expect( Array.from( view.items ).every(
 					item => 'row' in item.element.dataset
-				), 'row data attribute' ).to.be.true;
+				) ).toBe( true );
 
 				expect( Array.from( view.items ).every(
 					item => 'column' in item.element.dataset
-				), 'column data attribute' ).to.be.true;
+				) ).toBe( true );
 			} );
 
 			it( 'every item should be the #ButtonView instance', () => {
 				expect( Array.from( view.items ).every(
 					item => item instanceof ButtonView
-				), '#ButtonView instance' ).to.be.true;
+				) ).toBe( true );
 
 				expect( Array.from( view.items ).every(
 					item => item.withText === false
-				), '#ButtonView withText' ).to.be.true;
+				) ).toBe( true );
 
 				expect( Array.from( view.items ).every(
 					( item, index ) => {
@@ -93,34 +94,34 @@ describe( 'InsertTableView', () => {
 
 						return item.label === labelToCompare;
 					}
-				), '#ButtonView correct label' ).to.be.true;
+				) ).toBe( true );
 			} );
 		} );
 
 		it( 'should not throw error for DropdownPanelFocusable interface methods', () => {
-			expect( () => view.focus() ).to.not.throw();
-			expect( () => view.focusLast() ).to.not.throw();
+			expect( () => view.focus() ).not.toThrow();
+			expect( () => view.focusLast() ).not.toThrow();
 		} );
 
 		describe( 'view#items bindings', () => {
 			it( 'updates view#height & view#width on DOM "mouseover" event', () => {
 				const boxView = view.items.get( 0 );
 
-				expect( boxView.isOn ).to.be.false;
+				expect( boxView.isOn ).toBe( false );
 
 				boxView.element.dispatchEvent( new Event( 'mouseover', { bubbles: true } ) );
 
-				expect( boxView.isOn ).to.be.true;
+				expect( boxView.isOn ).toBe( true );
 
-				expect( view.rows ).to.equal( 1 );
-				expect( view.columns ).to.equal( 1 );
+				expect( view.rows ).toBe( 1 );
+				expect( view.columns ).toBe( 1 );
 
 				const boxViewB = view.items.get( 22 );
 
 				boxViewB.element.dispatchEvent( new Event( 'mouseover', { bubbles: true } ) );
 
-				expect( view.rows ).to.equal( 3 );
-				expect( view.columns ).to.equal( 3 );
+				expect( view.rows ).toBe( 3 );
+				expect( view.columns ).toBe( 3 );
 			} );
 		} );
 
@@ -128,28 +129,28 @@ describe( 'InsertTableView', () => {
 			it( 'binds #label to rows & columns', () => {
 				view.rows = 3;
 
-				expect( view.label ).to.equal( '3 × 0' );
+				expect( view.label ).toBe( '3 × 0' );
 
 				view.columns = 7;
 
-				expect( view.label ).to.equal( '3 × 7' );
+				expect( view.label ).toBe( '3 × 7' );
 			} );
 
 			it( 'mousedown event should be prevented', () => {
 				const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-				expect( ret ).to.false;
+				expect( ret ).toBe( false );
 			} );
 
 			describe( 'DOM', () => {
 				it( 'fires execute on "click" event', () => {
-					const spy = sinon.spy();
+					const spy = vi.fn();
 
 					view.on( 'execute', spy );
 
 					dispatchEvent( view.element, 'click' );
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 
@@ -157,13 +158,13 @@ describe( 'InsertTableView', () => {
 				it( 'should not update #columns and #rows when the focus is moved out of view', () => {
 					view.focusTracker.focusedElement = view.items.first.element;
 
-					expect( view.columns ).to.equal( 1 );
-					expect( view.rows ).to.equal( 1 );
+					expect( view.columns ).toBe( 1 );
+					expect( view.rows ).toBe( 1 );
 
 					view.focusTracker.focusedElement = null;
 
-					expect( view.columns ).to.equal( 1 );
-					expect( view.rows ).to.equal( 1 );
+					expect( view.columns ).toBe( 1 );
+					expect( view.rows ).toBe( 1 );
 				} );
 
 				it( 'should update #columns and #rows (focus the first tile) when the focus is moved to the view', () => {
@@ -171,13 +172,13 @@ describe( 'InsertTableView', () => {
 
 					view.focusTracker.focusedElement = view.items.first.element;
 
-					expect( view.columns ).to.equal( 1 );
-					expect( view.rows ).to.equal( 1 );
+					expect( view.columns ).toBe( 1 );
+					expect( view.rows ).toBe( 1 );
 
 					view.focusTracker.focusedElement = view.items.get( 24 ).element;
 
-					expect( view.columns ).to.equal( 5 );
-					expect( view.rows ).to.equal( 3 );
+					expect( view.columns ).toBe( 5 );
+					expect( view.rows ).toBe( 3 );
 				} );
 			} );
 		} );
@@ -188,35 +189,35 @@ describe( 'InsertTableView', () => {
 			it( '"arrow right" should focus the next focusable tile', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowright,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				view.focusTracker.focusedElement = view.items.first.element;
 
-				const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+				const spy = vi.spyOn( view.items.get( 1 ), 'focus' );
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( '"arrow down" should focus the focusable tile in the second row', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowdown,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				view.focusTracker.focusedElement = view.items.first.element;
 
-				const spy = sinon.spy( view.items.get( 10 ), 'focus' );
+				const spy = vi.spyOn( view.items.get( 10 ), 'focus' );
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 	} );
@@ -225,13 +226,13 @@ describe( 'InsertTableView', () => {
 		it( 'should set rows and columns properties to 1', () => {
 			view.focusTracker.focusedElement = view.items.get( 24 ).element;
 
-			expect( view.columns ).to.equal( 5 );
-			expect( view.rows ).to.equal( 3 );
+			expect( view.columns ).toBe( 5 );
+			expect( view.rows ).toBe( 3 );
 
 			view.reset();
 
-			expect( view.columns ).to.equal( 1 );
-			expect( view.rows ).to.equal( 1 );
+			expect( view.columns ).toBe( 1 );
+			expect( view.rows ).toBe( 1 );
 		} );
 	} );
 } );

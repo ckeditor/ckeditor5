@@ -4,7 +4,7 @@
  */
 
 import { Locale } from '../src/locale.js';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
 	add as addTranslations,
 	_clear as clearTranslations
@@ -14,7 +14,6 @@ import { expectToThrowCKEditorError } from './_utils/utils.js';
 describe( 'Locale', () => {
 	afterEach( () => {
 		clearTranslations();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor', () => {

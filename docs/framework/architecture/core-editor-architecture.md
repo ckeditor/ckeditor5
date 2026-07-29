@@ -8,7 +8,7 @@ modified_at: 2021-10-25
 
 # Core editor architecture
 
-The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package is relatively simple. It comes with just a handful of classes. The ones you need to know are presented below.
+The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package provides the core classes that tie every editor together: the editor classes, plugins, commands, and the event system with observables.
 
 ## Editor classes
 

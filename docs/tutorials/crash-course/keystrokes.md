@@ -8,6 +8,8 @@ modified_at: 2025-03-14
 
 # Handling keystrokes
 
+In this part of the crash course, you will add a keyboard shortcut as an accessible alternative to the toolbar button for applying the `highlight` feature.
+
 ## Accessibility
 
 Currently, our `highlight` plugin requires the user to click the button in the editor's toolbar to highlight selected text. This can be a problem for users who rely on the keyboard, so let's add a keyboard shortcut as an alternative way to highlight the text.

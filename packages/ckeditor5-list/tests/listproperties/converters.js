@@ -23,10 +23,6 @@ import { modelList, setupTestHelpers } from '../list/_utils/utils.js';
 describe( 'ListPropertiesEditing - converters', () => {
 	let editor, model, modelDoc, modelRoot, view, test;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'list style', () => {
 		beforeEach( () => setupEditor( {
 			list: {

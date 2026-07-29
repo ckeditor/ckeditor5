@@ -14,8 +14,6 @@ import { type ViewCollection } from '../viewcollection.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/collapsible/collapsible.css';
-
 /**
  * A collapsible UI component. Consists of a labeled button and a container which can be collapsed
  * by clicking the button. The collapsible container can be a host to other UI views.

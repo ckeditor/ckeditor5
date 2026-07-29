@@ -246,7 +246,6 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 	// Gather global tags added to each document that do not require relative paths.
 	const globalTags = [
 		...editorStylePaths.map( href => `<link rel="preload" href="${ href }" as="style">` ),
-		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">',
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckbox/ckbox.js">',
@@ -297,6 +296,7 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		}
 
 		documentContent = documentContent
+			.replace( '<!--UMBERTO: SNIPPET: HEAD-->', () => `<script type="importmap">${ JSON.stringify( { imports } ) }</script>` )
 			.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => documentTags.join( '\n' ) )
 			.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' )
 			.replaceAll( /%BASE_PATH%/g, () => relativeOutputPath );

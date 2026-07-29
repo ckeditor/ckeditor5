@@ -44,7 +44,6 @@ describe( 'BookmarkUI', () => {
 
 	afterEach( () => {
 		element.remove();
-		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );

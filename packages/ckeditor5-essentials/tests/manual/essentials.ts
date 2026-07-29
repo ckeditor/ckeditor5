@@ -1,0 +1,23 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+
+import { Essentials } from '../../src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+// Note: We need to load paragraph because we don't have inline editors yet.
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ) as HTMLElement,
+		plugins: [ Essentials, Paragraph ],
+		toolbar: [ 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

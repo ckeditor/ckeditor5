@@ -9,6 +9,8 @@ modified_at: 2025-03-14
 
 # Editor and configuration
 
+In this part of the crash course, you will set up the project and learn how to create and configure a CKEditor&nbsp;5 editor instance.
+
 ## Test environment
 
 For this tutorial, we have created a minimal setup required to use the editor. To follow along, run the commands below:

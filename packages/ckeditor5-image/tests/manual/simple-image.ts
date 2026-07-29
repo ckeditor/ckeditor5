@@ -19,7 +19,7 @@ import { AutoImage, ImageInsert, ImageResize, type ImageUtils, ImageLoadObserver
 
 declare global {
 	interface Window {
-		editor: Editor;
+		editor: any;
 	}
 }
 
@@ -64,7 +64,7 @@ function SimpleImage( editor: Editor ) {
 			},
 			model: {
 				key: 'resizedWidth',
-				value: viewElement => {
+				value: ( viewElement: any ) => {
 					return `${ parseInt( viewElement.getAttribute( 'width' ) ) }px`;
 				}
 			}
@@ -78,7 +78,7 @@ function SimpleImage( editor: Editor ) {
 			},
 			model: {
 				key: 'resizedHeight',
-				value: viewElement => {
+				value: ( viewElement: any ) => {
 					return `${ parseInt( viewElement.getAttribute( 'height' ) ) }px`;
 				}
 			}

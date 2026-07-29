@@ -5,11 +5,16 @@
 
 import 'vitest';
 
+// Registers the types of the custom matchers added by `scripts/vitest/test_setup.mjs`, since
+// no file included in the TypeScript program imports them. The matchers themselves are
+// implemented in the `scripts/vitest/` directory, outside of the TypeScript program, so their
+// types must be maintained here manually.
 declare module 'vitest' {
-	interface Assertion<T = any> {
-		attribute( key: string ): void;
-		attribute( key: string, value: string ): void;
+	interface Matchers<T = any> {
 
-		equalMarkup( expected: string ): void;
+		/**
+		 * Asserts that two markup strings are equal. Unlike `toEqual()`, it formats the markup before showing a diff.
+		 */
+		toEqualMarkup( expected: string ): T;
 	}
 }

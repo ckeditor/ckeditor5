@@ -1,0 +1,37 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { MediaEmbed } from '../../src/mediaembed.js';
+import { MediaEmbedToolbar } from '../../src/mediaembedtoolbar.js';
+import { MediaEmbedStyle } from '../../src/mediaembedstyle.js';
+
+declare global {
+	interface Window { editor: any }
+}
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ) as HTMLElement,
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
+		plugins: [ ArticlePluginSet, MediaEmbed, MediaEmbedToolbar, MediaEmbedStyle ],
+		toolbar: [
+			'heading', '|', 'mediaEmbed', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
+		],
+		menuBar: { isVisible: true },
+		mediaEmbed: {
+			toolbar: [
+				'mediaEmbed:breakText',
+				'mediaEmbed:wrapText'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

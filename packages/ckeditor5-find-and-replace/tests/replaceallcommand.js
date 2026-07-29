@@ -200,5 +200,99 @@ describe( 'ReplaceAllCommand', () => {
 
 			await multiRootEditor.destroy();
 		} );
+
+		describe( 'in inline root editor', () => {
+			let inlineRootEditor, inlineRootModel;
+
+			beforeEach( async () => {
+				inlineRootEditor = await ModelTestEditor.create( {
+					plugins: [ FindAndReplaceEditing ],
+					root: { modelElement: '$inlineRoot' }
+				} );
+
+				inlineRootModel = inlineRootEditor.model;
+			} );
+
+			afterEach( async () => {
+				await inlineRootEditor.destroy();
+			} );
+
+			it( 'should replace all text occurrences', () => {
+				_setModelData( inlineRootModel, 'foo bar foo bar foo' );
+
+				inlineRootEditor.execute( 'replaceAll', 'new', 'foo' );
+
+				expect( _getModelData( inlineRootModel, { withoutSelection: true } ) ).toBe( 'new bar new bar new' );
+			} );
+
+			it( 'should not change model if nothing was matched', () => {
+				_setModelData( inlineRootModel, 'foo bar baz' );
+
+				inlineRootEditor.execute( 'replaceAll', 'new', 'missing' );
+
+				expect( _getModelData( inlineRootModel, { withoutSelection: true } ) ).toBe( 'foo bar baz' );
+			} );
+
+			it( 'should work with an empty inline root', () => {
+				_setModelData( inlineRootModel, '' );
+
+				inlineRootEditor.execute( 'replaceAll', 'new', 'foo' );
+
+				expect( _getModelData( inlineRootModel, { withoutSelection: true } ) ).toBe( '' );
+			} );
+
+			it( 'should replace all occurrences when passed a results collection', () => {
+				_setModelData( inlineRootModel, 'foo bar foo baz foo' );
+
+				const { results } = inlineRootEditor.execute( 'find', 'foo' );
+
+				inlineRootEditor.execute( 'replaceAll', 'new', results );
+
+				expect( _getModelData( inlineRootModel, { withoutSelection: true } ) ).toBe( 'new bar new baz new' );
+			} );
+
+			it( 'should empty the results collection after replacing all', () => {
+				_setModelData( inlineRootModel, 'foo foo foo' );
+
+				const findAndReplaceEditing = inlineRootEditor.plugins.get( 'FindAndReplaceEditing' );
+				const results = findAndReplaceEditing.find( 'foo' );
+
+				inlineRootEditor.execute( 'replaceAll', 'bar', results );
+
+				expect( results.length ).toBe( 0 );
+			} );
+
+			it( 'should not leave orphan find result markers after replaceAll', () => {
+				_setModelData( inlineRootModel, 'foo foo foo' );
+
+				const findAndReplaceEditing = inlineRootEditor.plugins.get( 'FindAndReplaceEditing' );
+				findAndReplaceEditing.find( 'foo' );
+
+				inlineRootEditor.execute( 'replaceAll', 'bar', 'foo' );
+
+				const findResultMarkers = [ ...inlineRootModel.markers ]
+					.filter( m => m.name.startsWith( 'findResult:' ) );
+
+				expect( findResultMarkers.length ).toBe( 0 );
+			} );
+
+			it( 'should not accumulate orphan markers across consecutive replaceAll calls', () => {
+				_setModelData( inlineRootModel, 'foo bar foo bar' );
+
+				const findAndReplaceEditing = inlineRootEditor.plugins.get( 'FindAndReplaceEditing' );
+
+				findAndReplaceEditing.find( 'foo' );
+				inlineRootEditor.execute( 'replaceAll', 'baz', 'foo' );
+
+				findAndReplaceEditing.find( 'bar' );
+				inlineRootEditor.execute( 'replaceAll', 'qux', 'bar' );
+
+				const findResultMarkers = [ ...inlineRootModel.markers ]
+					.filter( m => m.name.startsWith( 'findResult:' ) );
+
+				expect( findResultMarkers.length ).toBe( 0 );
+				expect( _getModelData( inlineRootModel, { withoutSelection: true } ) ).toBe( 'baz qux baz qux' );
+			} );
+		} );
 	} );
 } );

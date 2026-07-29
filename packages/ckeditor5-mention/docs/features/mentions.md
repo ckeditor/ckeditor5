@@ -521,15 +521,15 @@ function customItemRenderer( item ) {
 
 #### Using CSS variables
 
-The mention feature uses the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [default theme style sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-mention/theme/mention.css). Thanks to that, mention styles can be {@link framework/theme-customization easily customized}:
+The mention feature uses the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [default theme style sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-mention/theme/index-content.css). Thanks to that, mention styles can be {@link framework/theme-customization easily customized}:
 
 ```css
 :root {
 	/* Make the mention background blue. */
-	--ck-color-mention-background: hsla(220, 100%, 54%, 0.4);
+	--ck-content-color-mention-background: hsla(220, 100%, 54%, 0.4);
 
 	/* Make the mention text dark grey. */
-	--ck-color-mention-text: hsl(0, 0%, 15%);
+	--ck-content-color-mention-text: hsl(0, 0%, 15%);
 }
 ```
 

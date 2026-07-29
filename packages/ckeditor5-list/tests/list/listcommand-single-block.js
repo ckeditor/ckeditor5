@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ListCommand } from '../../src/list/listcommand.js';
@@ -16,10 +16,6 @@ import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ListCommand (multiBlock=false)', () => {
 	let editor, command, model, root, changedBlocks;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -207,7 +203,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute( { forceValue: true } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* fo[]o {id:a00}'
 					] ) );
 				} );
@@ -219,7 +215,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute( { forceValue: true } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* fo[]o'
 					] ) );
 				} );
@@ -231,7 +227,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute( { forceValue: false } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
@@ -243,7 +239,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute( { forceValue: false } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
@@ -255,7 +251,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* fo[]o {id:a00}'
 					] ) );
 
@@ -271,7 +267,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* fo[]o'
 					] ) );
 
@@ -288,7 +284,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* fo[o {id:a00}',
 						'* ba]r {id:a01}'
 					] ) );
@@ -311,7 +307,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'a',
 						'* [b {id:a00}',
 						'* c',
@@ -336,7 +332,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* [a',
 						'* b]',
 						'  # c',
@@ -361,7 +357,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* a',
 						'* b[]',
 						'  # c',
@@ -385,7 +381,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 
@@ -404,7 +400,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'f[]oo',
 						'* bar',
 						'* baz'
@@ -425,7 +421,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* foo',
 						'b[]ar',
 						'* baz'
@@ -446,7 +442,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'* foo',
 						'* bar',
 						'b[]az'
@@ -469,7 +465,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'f[]oo',
 							'* bar',
 							'* baz',
@@ -495,7 +491,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'* foo',
 							'b[]ar',
 							'* baz',
@@ -533,7 +529,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'0',
 							'* 1',
 							'  * 2',
@@ -735,7 +731,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute( { forceValue: true } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# fo[]o {id:a00}'
 					] ) );
 				} );
@@ -747,7 +743,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute( { forceValue: true } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# fo[]o'
 					] ) );
 				} );
@@ -759,7 +755,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute( { forceValue: false } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
@@ -771,7 +767,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute( { forceValue: false } );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
@@ -783,7 +779,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# fo[]o {id:a00}'
 					] ) );
 
@@ -799,7 +795,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# fo[]o'
 					] ) );
 
@@ -816,7 +812,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# fo[o {id:a00}',
 						'# ba]r {id:a01}'
 					] ) );
@@ -839,7 +835,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'a',
 						'# [b {id:a00}',
 						'# c',
@@ -864,7 +860,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# [a',
 						'# b]',
 						'  * c',
@@ -889,7 +885,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# a',
 						'# b[]',
 						'  * c',
@@ -913,7 +909,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'fo[]o'
 					] ) );
 
@@ -932,7 +928,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'f[]oo',
 						'# bar',
 						'# baz'
@@ -953,7 +949,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# foo',
 						'b[]ar',
 						'# baz'
@@ -974,7 +970,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 						'# foo',
 						'# bar',
 						'b[]az'
@@ -997,7 +993,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'f[]oo',
 							'# bar',
 							'# baz',
@@ -1023,7 +1019,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'# foo',
 							'b[]ar',
 							'# baz',
@@ -1061,7 +1057,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 							'0',
 							'# 1',
 							'  # 2',

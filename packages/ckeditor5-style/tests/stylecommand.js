@@ -131,7 +131,6 @@ describe( 'StyleCommand', () => {
 	afterEach( async () => {
 		editorElement.remove();
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( '#enabledStyles', () => {

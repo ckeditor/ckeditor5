@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { ModelSchema, ModelSchemaContext } from '../../src/model/schema.js';
 
@@ -23,10 +23,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 
 describe( 'Schema', () => {
 	let schema, root1, r1p1, r1p2, r1bQ, r1bQp, root2;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		schema = new ModelSchema();
