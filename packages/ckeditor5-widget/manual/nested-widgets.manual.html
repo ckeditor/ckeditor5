@@ -3,7 +3,7 @@
 	<meta charset="utf-8" />
 	<title>Nested Widgets</title>
 	<style>
-		body {
+		.container {
 			max-width: 800px;
 			margin: 20px auto;
 		}
@@ -23,12 +23,14 @@
 		<li>When selecting the most top-outer widget, nested widgets should not be selected.</li>
 	</ul>
 </ck-manual-header>
-<div id="editor">
-	<h2>Heading 1</h2>
-	<p>Paragraph</p>
-	<div class="widget">
-		<div class="widget"></div>
-		<div class="widget"></div>
+<div class="container">
+	<div id="editor">
+		<h2>Heading 1</h2>
+		<p>Paragraph</p>
+		<div class="widget">
+			<div class="widget"></div>
+			<div class="widget"></div>
+		</div>
+		<p>Paragraph</p>
 	</div>
-	<p>Paragraph</p>
 </div>

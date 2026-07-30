@@ -3,7 +3,7 @@
 	<meta charset="utf-8" />
 	<title>Indent Block</title>
 	<style>
-		body {
+		.container {
 			max-width: 800px;
 			margin: 20px auto;
 		}
@@ -32,33 +32,35 @@
 		<li>Outdenting paragraph with <code>1.5em</code> should remove indent.</li>
 	</ul>
 </ck-manual-header>
-<div id="editor">
-	<h2>Heading 1</h2>
-	<p style="margin-left: 1.5em">Paragraph indented 1.5em</p>
-	<p style="margin-left: 30px">Paragraph indented 30px</p>
-	<p style="margin: 0 0 0 40px">Paragraph indented with margin: 0 0 0 40px</p>
-	<h2>Heading 2</h2>
-	<h2 class="fancy" style="margin-left: 20px">Custom fancy heading 2 with indent</h2>
-	<h3>Heading 3</h3>
-	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
-	<ul>
-		<li>UL List item 1</li>
-		<li>UL List item 2</li>
-	</ul>
-	<ol>
-		<li>OL List item 1</li>
-		<li>OL List item 2</li>
-	</ol>
-	<figure class="image image-style-side">
-		<img alt="bar" src="/images/sample.jpg" />
-		<figcaption>Caption</figcaption>
-	</figure>
-	<blockquote>
-		<p>Quote</p>
+<div class="container">
+	<div id="editor">
+		<h2>Heading 1</h2>
+		<p style="margin-left: 1.5em">Paragraph indented 1.5em</p>
+		<p style="margin-left: 30px">Paragraph indented 30px</p>
+		<p style="margin: 0 0 0 40px">Paragraph indented with margin: 0 0 0 40px</p>
+		<h2>Heading 2</h2>
+		<h2 class="fancy" style="margin-left: 20px">Custom fancy heading 2 with indent</h2>
+		<h3>Heading 3</h3>
+		<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
 		<ul>
-			<li>Quoted UL List item 1</li>
-			<li>Quoted UL List item 2</li>
+			<li>UL List item 1</li>
+			<li>UL List item 2</li>
 		</ul>
-		<p>Quote</p>
-	</blockquote>
+		<ol>
+			<li>OL List item 1</li>
+			<li>OL List item 2</li>
+		</ol>
+		<figure class="image image-style-side">
+			<img alt="bar" src="/images/sample.jpg" />
+			<figcaption>Caption</figcaption>
+		</figure>
+		<blockquote>
+			<p>Quote</p>
+			<ul>
+				<li>Quoted UL List item 1</li>
+				<li>Quoted UL List item 2</li>
+			</ul>
+			<p>Quote</p>
+		</blockquote>
+	</div>
 </div>

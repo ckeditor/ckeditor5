@@ -3,7 +3,7 @@
 	<meta charset="utf-8" />
 	<title>Slot Conversion</title>
 	<style>
-		body {
+		.container {
 			max-width: 800px;
 			margin: 20px auto;
 		}
@@ -81,31 +81,33 @@
 	</p>
 </ck-manual-header>
 
-<div style="margin-bottom: 10px">
-	<label><input type="radio" name="box-mode" value="single" checked />Single slot</label>
-	<label><input type="radio" name="box-mode" value="multi" />Multi slot</label>
-</div>
+<div class="container">
+	<div style="margin-bottom: 10px">
+		<label><input type="radio" name="box-mode" value="single" checked />Single slot</label>
+		<label><input type="radio" name="box-mode" value="multi" />Multi slot</label>
+	</div>
 
-<div id="editor">
-	<div class="box">
-		<div class="box__wrapper">
-			<div class="box-meta box-meta-header">
-				<div class="box-meta-header-icon"></div>
-				<div class="box-meta-header-title">
-					<h2>I'm a title</h2>
+	<div id="editor">
+		<div class="box">
+			<div class="box__wrapper">
+				<div class="box-meta box-meta-header">
+					<div class="box-meta-header-icon"></div>
+					<div class="box-meta-header-title">
+						<h2>I'm a title</h2>
+					</div>
 				</div>
-			</div>
-			<div class="box-content">
-				<div class="box-content-field"><p>Foo</p></div>
-				<div class="box-content-field">
-					<ul>
-						<li>Bar</li>
-					</ul>
+				<div class="box-content">
+					<div class="box-content-field"><p>Foo</p></div>
+					<div class="box-content-field">
+						<ul>
+							<li>Bar</li>
+						</ul>
+					</div>
+					<div class="box-content-field"><p>Baz</p></div>
 				</div>
-				<div class="box-content-field"><p>Baz</p></div>
-			</div>
-			<div class="box-meta box-meta-author">
-				<a href="www.example.com">@john</a>
+				<div class="box-meta box-meta-author">
+					<a href="www.example.com">@john</a>
+				</div>
 			</div>
 		</div>
 	</div>

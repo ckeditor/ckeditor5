@@ -303,13 +303,6 @@
 		</div>
 
 		<style>
-			/* Keep the content below the 100px sticky header. The manual test chrome adopts a
-			 * `body { padding-top }` stylesheet after document styles, so a higher-specificity
-			 * selector is needed to win the cascade. */
-			html body {
-				padding-top: 100px;
-			}
-
 			#editor {
 				margin: 0 auto;
 				max-width: 800px;
@@ -323,9 +316,6 @@
 			.sticky-footer {
 				display: flex;
 				opacity: 0.9;
-				position: fixed;
-				left: 48px;
-				right: 48px;
 				align-items: center;
 				height: 100px;
 				padding-left: 10px;
@@ -333,11 +323,18 @@
 				z-index: 9999;
 			}
 
+			/* Sticky (not fixed), so it starts below the manual test chrome and pins to the
+			   viewport top only when the page is scrolled. */
 			.sticky-header {
+				position: sticky;
 				top: 0;
+				margin: 0 48px;
 			}
 
 			.sticky-footer {
+				position: fixed;
+				left: 48px;
+				right: 48px;
 				bottom: 0;
 			}
 		</style>

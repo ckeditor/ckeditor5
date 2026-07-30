@@ -3,7 +3,7 @@
 	<meta charset="utf-8" />
 	<title>Element Reconversion</title>
 	<style>
-		body {
+		.container {
 			max-width: 800px;
 			margin: 20px auto;
 		}
@@ -112,24 +112,26 @@
 	<p>Main <code>items</code> element counter should also be increased when you change mode.</p>
 </ck-manual-header>
 
-<div id="items-mode">
-	Mode:
-	<label>
-		threshold
-		<input type="radio" name="mode" value="threshold" checked="checked" />
-	</label>
-	<label>
-		hsl
-		<input type="radio" name="mode" value="hsl" />
-	</label>
-	<label>
-		none
-		<input type="radio" name="mode" value="none" />
-	</label>
-</div>
+<div class="container">
+	<div id="items-mode">
+		Mode:
+		<label>
+			threshold
+			<input type="radio" name="mode" value="threshold" checked="checked" />
+		</label>
+		<label>
+			hsl
+			<input type="radio" name="mode" value="hsl" />
+		</label>
+		<label>
+			none
+			<input type="radio" name="mode" value="none" />
+		</label>
+	</div>
 
-<div id="editor">
-	<div class="items" data-mode="threshold">
-		<div class="item"></div>
+	<div id="editor">
+		<div class="items" data-mode="threshold">
+			<div class="item"></div>
+		</div>
 	</div>
 </div>

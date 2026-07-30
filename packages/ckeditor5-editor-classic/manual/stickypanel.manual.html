@@ -3,7 +3,7 @@
 	<meta charset="utf-8" />
 	<title>Stickypanel</title>
 	<style>
-		body {
+		.container {
 			max-width: 800px;
 			margin: 20px auto;
 			padding: 1000px 50px;
@@ -24,12 +24,13 @@
 			margin-bottom: 150px !important;
 		}
 
+		/* Visualizes `viewportOffset.top`. Sticky (not fixed), so it starts below the manual
+		   test chrome and pins to the viewport top only when the page is scrolled. */
 		.viewport-offset {
-			position: fixed;
+			position: sticky;
 			top: 0;
 			width: 500px;
-			left: 50%;
-			transform: translateX(-50%);
+			margin: 0 auto;
 			background: green;
 			height: 50px;
 			color: #fff;
@@ -62,59 +63,61 @@
 
 <div class="viewport-offset">Viewport offset</div>
 
-<div class="scrollable outer">
-	<div class="scrollable inner">
-		<div id="editor">
-			<h2>Heading 1</h2>
-			<p>Paragraph</p>
-			<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
-			<ul>
-				<li>UL List item 1</li>
-				<li>UL List item 2</li>
-			</ul>
-			<ol>
-				<li>OL List item 1</li>
-				<li>OL List item 2</li>
-			</ol>
-			<figure class="image image-style-side">
-				<img alt="bar" src="/images/sample.jpg" />
-				<figcaption>Caption</figcaption>
-			</figure>
-			<blockquote>
-				<p>Quote</p>
+<div class="container">
+	<div class="scrollable outer">
+		<div class="scrollable inner">
+			<div id="editor">
+				<h2>Heading 1</h2>
+				<p>Paragraph</p>
+				<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
 				<ul>
-					<li>Quoted UL List item 1</li>
-					<li>Quoted UL List item 2</li>
+					<li>UL List item 1</li>
+					<li>UL List item 2</li>
 				</ul>
-				<p>Quote</p>
-			</blockquote>
+				<ol>
+					<li>OL List item 1</li>
+					<li>OL List item 2</li>
+				</ol>
+				<figure class="image image-style-side">
+					<img alt="bar" src="/images/sample.jpg" />
+					<figcaption>Caption</figcaption>
+				</figure>
+				<blockquote>
+					<p>Quote</p>
+					<ul>
+						<li>Quoted UL List item 1</li>
+						<li>Quoted UL List item 2</li>
+					</ul>
+					<p>Quote</p>
+				</blockquote>
+			</div>
 		</div>
 	</div>
-</div>
 
-<h3>Unrelated scrollable container for testing.</h3>
-<div class="scrollable">
-	<h2>Heading 1</h2>
-	<p>Paragraph</p>
-	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
-	<ul>
-		<li>UL List item 1</li>
-		<li>UL List item 2</li>
-	</ul>
-	<ol>
-		<li>OL List item 1</li>
-		<li>OL List item 2</li>
-	</ol>
-	<figure class="image image-style-side">
-		<img alt="bar" src="/images/sample.jpg" />
-		<figcaption>Caption</figcaption>
-	</figure>
-	<blockquote>
-		<p>Quote</p>
+	<h3>Unrelated scrollable container for testing.</h3>
+	<div class="scrollable">
+		<h2>Heading 1</h2>
+		<p>Paragraph</p>
+		<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
 		<ul>
-			<li>Quoted UL List item 1</li>
-			<li>Quoted UL List item 2</li>
+			<li>UL List item 1</li>
+			<li>UL List item 2</li>
 		</ul>
-		<p>Quote</p>
-	</blockquote>
+		<ol>
+			<li>OL List item 1</li>
+			<li>OL List item 2</li>
+		</ol>
+		<figure class="image image-style-side">
+			<img alt="bar" src="/images/sample.jpg" />
+			<figcaption>Caption</figcaption>
+		</figure>
+		<blockquote>
+			<p>Quote</p>
+			<ul>
+				<li>Quoted UL List item 1</li>
+				<li>Quoted UL List item 2</li>
+			</ul>
+			<p>Quote</p>
+		</blockquote>
+	</div>
 </div>
