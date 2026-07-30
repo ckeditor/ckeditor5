@@ -3,7 +3,7 @@ category: framework-contributing
 meta-title: Code style | CKEditor 5 Framework Documentation
 meta-description: Learn about CKEditor 5's code style guidelines to ensure consistency and quality when contributing to the project.
 order: 40
-modified_at: 2022-11-03
+modified_at: 2026-07-30
 ---
 
 # Code style
@@ -349,7 +349,7 @@ CKEditor&nbsp;5 development environment uses [ESLint](https://eslint.org), inclu
 A couple of useful links:
 
 * [Disabling ESLint with inline comments](https://eslint.org/docs/latest/use/configure/).
-* [CKEditor&nbsp;5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/eslint.config.mjs) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
+* [CKEditor&nbsp;5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/eslint.config.mjs) (npm: [`eslint-config-ckeditor5`](https://www.npmjs.com/package/eslint-config-ckeditor5)).
 
 <info-box>
 	Avoid using automatic code formatters on existing code. It is fine to automatically format code that you are editing, but you should not be changing the formatting of the code that is already written to not pollute your PRs. You should also not rely solely on automatic corrections.
@@ -497,7 +497,7 @@ There are some special rules and tips for tests.
 
 ### Test organization
 
-* Always use an outer `describe()` in a test file. Do not allow any globals, especially hooks (`beforeEach()`, `after()`, etc.) outside the outermost `describe()`.
+* Always use an outer `describe()` in a test file. Do not allow any globals, especially hooks (`beforeEach()`, `afterEach()`, etc.) outside the outermost `describe()`.
 * The outermost `describe()` calls should create meaningful groups, so when all tests are run together a failing TC can be identified within the code base. For example:
 
 	```js
@@ -521,31 +521,70 @@ There are some special rules and tips for tests.
 
 ### Test implementation
 
-* Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/latest/fake-timers/) instead **when possible**. Timeouts make tests really slow.
+Tests run on [Vitest](https://vitest.dev/). See the {@link framework/contributing/testing-environment Testing environment} guide to learn how to execute them.
+
+* Import every test API you use explicitly from `vitest`. Test globals are not enabled:
+
+	```js
+	import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+	```
+* Avoid using real timeouts. Use [fake timers](https://vitest.dev/api/vi.html#fake-timers) instead **when possible**. Timeouts make tests really slow.
+
+	Fake timers are not restored automatically, so switch back to the real ones in the cleanup hook:
+
+	```js
+	beforeEach( () => {
+		vi.useFakeTimers();
+	} );
+
+	afterEach( () => {
+		vi.useRealTimers();
+	} );
+
+	it( 'calls the callback after 100 ms', () => {
+		const callbackSpy = vi.fn().mockName( 'callback' );
+
+		scheduleCallback( callbackSpy );
+		vi.advanceTimersByTime( 100 );
+
+		expect( callbackSpy ).toHaveBeenCalledOnce();
+	} );
+	```
 * However, do not over-optimize (especially since performance is not a priority in tests). In most cases, it is completely fine (and hence recommended) to create a separate editor for every `it()`.
 * We aim at having 100% coverage of *all distinctive scenarios*. Covering 100% branches in the code is not the goal here &ndash; it is a by-product of covering real scenarios.
 
 	Think about this: when you fix a bug by adding a parameter to an existing function call, you do not affect code coverage (that line was called anyway). However, you had a bug, meaning that your test suite did not cover it. Therefore, a test must be created for that code change.
-* It should be `expect( x ).to.equal( y )`. **NOT**: ~~`expect( x ).to.be.equal( y )`~~.
-* When using Sinon spies, pay attention to the readability of assertions and failure messages.
-   * Use named spies, for example:
+* Assert with the [Vitest `expect()` matchers](https://vitest.dev/api/expect.html). Use `toBe()` to compare primitives and object references, and `toEqual()` to compare structures by value:
+
+	```js
+	expect( editor.getData() ).toBe( '<p>foo</p>' );
+	expect( command.value ).toEqual( { type: 'bulleted' } );
+	```
+
+	Vitest still exposes the Chai-style chained assertions used before the migration, but do not write new ones. It should be `expect( x ).toBe( y )`. **NOT**: ~~`expect( x ).to.equal( y )`~~.
+* The testing environment also registers a few {@link framework/contributing/testing-environment#custom-vitest-matchers custom matchers}, such as `toEqualMarkup()`. Prefer them over plain string comparisons when asserting markup, as they produce far more readable diffs.
+* When using spies, pay attention to the readability of assertions and failure messages.
+	* [`vi.spyOn()`](https://vitest.dev/api/vi.html#vi-spyon) names the spy after the method it replaces, but a bare [`vi.fn()`](https://vitest.dev/api/vi.html#vi-fn) does not. Name standalone spies with `mockName()`:
 
 		```js
-		const someCallbackSpy = sinon.spy().named( 'someCallback' );
-		const myMethodSpy = sinon.spy( obj, 'myMethod' );
+		const myMethodSpy = vi.spyOn( obj, 'myMethod' );
+		const someCallbackSpy = vi.fn().mockName( 'someCallback' );
 		```
-   * Use [sinon-chai assertions](https://www.chaijs.com/plugins/sinon-chai/)
+	* The name is then used in the failure message:
 
 		```js
-		expect( myMethodSpy ).to.be.calledOnce
-		// expected myMethod to be called once but was called twice
+		expect( myMethodSpy ).toHaveBeenCalledOnce();
+		// expected "myMethod" to be called once, but got 2 times
 		```
+* Do not clean up spies and stubs by hand. The shared Vitest configuration enables [`restoreMocks`](https://vitest.dev/config/restoremocks), [`unstubGlobals`](https://vitest.dev/config/unstubglobals), and [`unstubEnvs`](https://vitest.dev/config/unstubenvs), so every `vi.spyOn()`, `vi.fn()`, `vi.stubGlobal()`, and `vi.stubEnv()` is restored before each test. Therefore:
+	* Do not call `vi.restoreAllMocks()`, `vi.unstubAllGlobals()`, or `vi.unstubAllEnvs()` in cleanup hooks. The only reason to restore something manually is when a mock set up in `beforeEach()` must be dropped for a single test, or when the teardown itself (`editor.destroy()`, for example) has to run against the real implementation.
+	* Create stubs in `beforeEach()` or in the test itself, never in `beforeAll()`. A stub created in `beforeAll()` would be silently removed before the second test of the suite runs.
 
 ## Naming
 
 ### JavaScript code names
 
-Variables, functions, namespaces, parameters and all undocumented cases must be named in [lowerCamelCase](http://en.wikipedia.org/wiki/CamelCase):
+Variables, functions, namespaces, parameters and all undocumented cases must be named in [lowerCamelCase](https://en.wikipedia.org/wiki/CamelCase):
 
 ```js
 let a;
@@ -556,7 +595,7 @@ function foo() {}
 function longNamedFunction( example, longNamedParameter ) {}
 ```
 
-Classes must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase):
+Classes must be named in [UpperCamelCase](https://en.wikipedia.org/wiki/CamelCase):
 
 ```js
 class MyClass() {}
@@ -564,7 +603,7 @@ class MyClass() {}
 const a = new MyClass();
 ```
 
-Mixins must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase), post-fixed with "Mixin":
+Mixins must be named in [UpperCamelCase](https://en.wikipedia.org/wiki/CamelCase), post-fixed with "Mixin":
 
 ```js
 const SomeMixin = {
@@ -573,7 +612,7 @@ const SomeMixin = {
 };
 ```
 
-Global namespacing variables must be named in [ALLCAPS](http://en.wikipedia.org/wiki/All_caps):
+Global namespacing variables must be named in [ALLCAPS](https://en.wikipedia.org/wiki/All_caps):
 
 ```js
 const CKEDITOR_TRANSLATIONS = {};
@@ -672,7 +711,7 @@ Plugins should follow the **feature** or the **feature + sub-feature** conventio
 	* `ListProperties`
 	* `TableClipboard`
 
-Plugins must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase).
+Plugins must be named in [UpperCamelCase](https://en.wikipedia.org/wiki/CamelCase).
 
 ### Shortcuts
 

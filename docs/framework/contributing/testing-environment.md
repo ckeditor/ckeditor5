@@ -3,7 +3,7 @@ category: framework-contributing
 meta-title: Testing environment | CKEditor 5 Framework Documentation
 meta-description: Test CKEditor 5 using the official testing environment. Run unit and manual tests effectively.
 order: 30
-modified_at: 2026-07-24
+modified_at: 2026-07-30
 ---
 
 # Testing environment
@@ -207,7 +207,7 @@ To check manual tests, run:
 pnpm run manual:verify
 ```
 
-It builds the manual tests, starts a local preview server, and runs the crawler against it — no separate server is needed.
+It builds the manual tests, starts a local preview server, and runs the crawler against it &ndash; no separate server is needed.
 
 Read more about the crawler in the {@link framework/contributing/development-environment#verifying-documentation Verifying documentation} guide.
 
@@ -260,10 +260,12 @@ After the run completes, the summary table reports:
 
 ## Test suite and CI
 
-To ensure the highest quality, we maintain a complete test suite with a stable 100% code coverage for each of the packages. As of September 2019, this means over 11000 tests and the number is growing. Since every package is tested separately, we implement lower-level tests for libraries and higher-level tests for end-user features.
+To ensure the highest quality, we maintain a complete test suite with a stable 100% code coverage for each of the packages. As of 2026, this means over 29,000 tests and the number is growing. Since every package is tested separately, we implement lower-level tests for libraries and higher-level tests for end-user features.
 
-Such an extensive test suite requires a proper continuous integration service. We use [Travis CI](https://travis-ci.com/) as a build platform. This service ensures a seamless and fast developer experience and allows us to focus on the job.
+Such an extensive test suite requires a proper continuous integration service. We use [CircleCI](https://circleci.com/) as a build platform. This service ensures a seamless and fast developer experience and allows us to focus on the job.
 
 Besides automated tests, we also maintain a smaller set of manual tests. They help us verify whether something unexpected happens that might have been missed by the automated tests.
 
 When proposing a pull request, make sure to add test(s) that verify it. Every code change should be accompanied by a test which proves that it is needed. Such a strict approach to testing ensures that we have not only 100% of code coverage (which is quite easy to achieve and gives only illusory safety) but also a high level of coverage for cases that we failed to notice initially (and might do that again in the future).
+
+The conventions those tests should follow &ndash; how to organize them, name them, and write assertions, spies, and fake timers &ndash; are described in the {@link framework/contributing/code-style#tests Tests} section of the code style guide.
