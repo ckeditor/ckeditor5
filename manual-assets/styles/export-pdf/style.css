@@ -1,0 +1,99 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/* eslint-disable css/no-important -- Print and export fixture styles must win over editor content styles. */
+
+@import "./fonts.css";
+
+* {
+	box-sizing: border-box;
+}
+
+@media print {
+	body {
+		margin: 0 !important;
+		overflow-x: hidden;
+	}
+}
+
+h2 {
+	font-size: 1.68em;
+	line-height: 1.68em;
+	padding-top: 0.8em;
+	margin-bottom: 0.4em;
+	padding-bottom: .2em;
+	border-bottom: 1px solid hsl( 0, 0%, 90% );
+	font-weight: 400;
+}
+
+h3 {
+	font-size: 1.36em;
+	line-height: 1.5em;
+	padding-top: 0.6em;
+	margin-bottom: 1.5em;
+	font-weight: 400
+}
+
+h4 {
+	font-size: 1.2em;
+	line-height: 1.4em;
+	padding-top: 0.6em;
+	margin-bottom: 0.2em;
+	font-weight: 400
+}
+
+h5 {
+	font-size: 1em;
+	line-height: 1.6em;
+	padding-top: 0.2em;
+	margin-bottom: 0.8em;
+	font-weight: 400
+}
+
+strong, b {
+	font-weight: 600;
+}
+
+.document-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	max-height: calc( 100vh - 100px );
+	background: hsl( 0, 0%, 95% );
+}
+
+.toolbar-container {
+	width: 100%;
+}
+
+.editor-container {
+	width: 100%;
+	border: 1px solid hsl( 0, 0%, 80% );
+	overflow: auto;
+}
+
+.ck.ck-editor__editable_inline.test-editor {
+	/* A4 size */
+	width: 210mm;
+	height: auto;
+	background: hsl( 0, 0%, 100% );
+	border: 1px solid hsl( 0, 0%, 88% );
+	box-shadow: 0 2px 8px hsla( 0, 0%, 0%, .08 );
+	margin: 40px auto;
+	padding: 15mm;
+	overflow: hidden;
+}
+
+.ck.ck-editor__editable_inline.test-editor.a5 {
+	width: 148mm;
+}
+
+.ck.ck-editor__editable_inline.test-editor.a6 {
+	width: 104.9mm;
+}
+
+.ck.ck-editor__editable_inline.test-editor.letter {
+	width: 215.9mm;
+}

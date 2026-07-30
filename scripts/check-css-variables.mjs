@@ -12,15 +12,15 @@
  * stylesheets, so each of them must work without the other one being loaded:
  *
  * 1. Every custom property consumed without a fallback in a graph must be declared in that graph
- *    (or in the same graph of the baseline packages, or be a known runtime-provided variable).
+ *    (or in the same graph of the base packages, or be a known runtime-provided variable).
  * 2. A custom property declared in the top-level `:root` scope of both graphs must have an
  *    identical value in every copy, as the copies shadow each other once both stylesheets are
  *    loaded on a single page.
  *
  * Options:
- *   --baseline <path>  Path to another packages directory whose declarations extend both graphs,
- *                      while its own usages are not validated by this run. Used by repositories
- *                      that build on top of the open-source packages.
+ *   --base-packages <path>  Path to another packages directory whose declarations extend both
+ *                           graphs, while its own usages are not validated by this run. Used by
+ *                           repositories that build on top of the open-source packages.
  */
 
 import { existsSync, globSync, readFileSync } from 'node:fs';
@@ -54,8 +54,8 @@ const KNOWN_UNDECLARED_VARIABLES = new Set( [
 	'--ck-color-base-background'
 ] );
 
-const { baseline } = minimist( process.argv.slice( 2 ), {
-	string: [ 'baseline' ]
+const { 'base-packages': basePackages } = minimist( process.argv.slice( 2 ), {
+	string: [ 'base-packages' ]
 } );
 
 const errors = [];
@@ -92,10 +92,10 @@ function analyzeGraph( entryFile ) {
 
 	collectPackages( upath.join( process.cwd(), PACKAGES_DIRECTORY ), entryFile, analysis );
 
-	if ( baseline ) {
-		// The baseline packages only extend the declarations available to the graph. Their own
-		// usages are discarded, as they are validated by the baseline repository itself.
-		collectPackages( upath.join( process.cwd(), baseline ), entryFile, {
+	if ( basePackages ) {
+		// The base packages only extend the declarations available to the graph. Their own
+		// usages are discarded, as they are validated by their own repository.
+		collectPackages( upath.join( process.cwd(), basePackages ), entryFile, {
 			...analysis,
 			usedWithoutFallback: new Map()
 		} );
