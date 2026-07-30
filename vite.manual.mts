@@ -7,7 +7,6 @@ import { defineConfig } from 'vite';
 import {
 	stringifyValues,
 	manualTestsPlugin,
-	manualStaticAssetsPlugin,
 	refreshPlugin,
 	rawSvgPlugin,
 	ckDebugPlugin
@@ -22,7 +21,7 @@ const manualTestPaths = {
 
 export default defineConfig( {
 	appType: 'mpa',
-	base: './',
+	publicDir: 'manual-assets',
 	clearScreen: false,
 	build: {
 		outDir: 'build/manual',
@@ -47,7 +46,6 @@ export default defineConfig( {
 		ckDebugPlugin(),
 		rawSvgPlugin(),
 		manualTestsPlugin( manualTestPaths ),
-		manualStaticAssetsPlugin( manualTestPaths ),
 		refreshPlugin()
 	]
 } );

@@ -17,7 +17,7 @@
  *   - The requested path is resolved against the provided assets directory.
  *   - Both the base directory and the target path are dereferenced via `realpath()`,
  *     and the request is allowed only if the resulting target stays within the provided assets directory.
- * - Restricts served files to an allowlist of extensions (`.html`, `.js`, `.css`).
+ * - Restricts served files to an allowlist of extensions (`.html`, `.js`, `.css`, `.png`).
  *
  * Cross-Origin Isolation:
  * - Injects `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`
@@ -32,7 +32,8 @@ import { resolve, sep, extname } from 'node:path';
 const CONTENT_TYPES = new Map( [
 	[ '.html', 'text/html; charset=utf-8' ],
 	[ '.js', 'text/javascript; charset=utf-8' ],
-	[ '.css', 'text/css; charset=utf-8' ]
+	[ '.css', 'text/css; charset=utf-8' ],
+	[ '.png', 'image/png' ]
 ] );
 
 export async function startServer( assetsDir ) {

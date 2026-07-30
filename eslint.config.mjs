@@ -259,7 +259,7 @@ export default defineConfig( [
 	},
 	{
 		files: [
-			'packages/*/@(src|tests)/**/*.js',
+			'packages/*/@(src|tests|manual)/**/*.js',
 			'**/docs/**/_snippets/**/*.js'
 		],
 
@@ -284,7 +284,8 @@ export default defineConfig( [
 	},
 	{
 		files: [
-			'packages/*/tests/**/*.ts'
+			'packages/*/tests/**/*.ts',
+			'packages/*/manual/**/*.ts'
 		],
 
 		plugins: {
@@ -316,7 +317,10 @@ export default defineConfig( [
 		}
 	},
 	{
-		files: [ '**/tests/**/*.@(js|cjs|mjs|ts)' ],
+		files: [
+			'**/tests/**/*.@(js|cjs|mjs|ts)',
+			'**/manual/**/*.@(js|cjs|mjs|ts)'
+		],
 
 		plugins: {
 			'ckeditor5-rules': ckeditor5Rules
@@ -329,13 +333,18 @@ export default defineConfig( [
 		},
 
 		rules: {
-			'ckeditor5-rules/allow-imports-only-from-main-package-entry-point': 'error',
+			'ckeditor5-rules/allow-imports-only-from-main-package-entry-point': [ 'error', {
+				allowedImportPatterns: [
+					'**/tests/**/_utils*/**',
+					'**/manual/**/_utils*/**'
+				]
+			} ],
 			'ckeditor5-rules/no-cross-package-imports': 'off',
 			'mocha/no-pending-tests': 'off'
 		}
 	},
 	{
-		files: [ '**/tests/manual/**/*.@(js|cjs|mjs|ts)' ],
+		files: [ '**/manual/**/*.@(js|cjs|mjs|ts)' ],
 
 		languageOptions: {
 			globals: {

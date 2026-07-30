@@ -43,13 +43,14 @@ describe( 'prebundleDependencies', () => {
 		writePackage( packageDir, '@ckeditor/ckeditor5-utils' );
 		writePackage( packageDir, 'third-party', { main: './index.js' } );
 
-		mkdirSync( join( packageDir, 'tests', 'manual' ), { recursive: true } );
+		mkdirSync( join( packageDir, 'manual' ), { recursive: true } );
+		mkdirSync( join( packageDir, 'tests' ), { recursive: true } );
 		writeFileSync( join( packageDir, 'tests', 'plugin.js' ), [
 			'import \'@ckeditor/ckeditor5-test-only\';',
 			'import \'@ckeditor/ckeditor5-utils/tests/_utils/utils.js\';'
 		].join( '\n' ) );
 		writeFileSync(
-			join( packageDir, 'tests', 'manual', 'plugin.js' ),
+			join( packageDir, 'manual', 'plugin.js' ),
 			'import \'@ckeditor/ckeditor5-unused\';'
 		);
 	} );

@@ -954,6 +954,17 @@ import BoldIcon from '@ckeditor/ckeditor5-icons/theme/icons/bold.svg';
 import { Table } from 'ckeditor5';
 ```
 
+Apart from the main entry point, imports from package subpaths listed in the `exports` field of the package are allowed. Additionally, the `allowedImportPatterns` option accepts an array of glob patterns matched against the import path. Imports matching any of these patterns are allowed, too. It defaults to `[ '**/tests/**/_utils*/**' ]`, which allows importing test utilities from other packages.
+
+```js
+'ckeditor5-rules/allow-imports-only-from-main-package-entry-point': [ 'error', {
+	allowedImportPatterns: [
+		'**/tests/**/_utils*/**',
+		'**/manual/**/_utils*/**'
+	]
+} ]
+```
+
 ### Require `as const`: `ckeditor5-rules/require-as-const-returns-in-methods`
 
 <info-box warning>

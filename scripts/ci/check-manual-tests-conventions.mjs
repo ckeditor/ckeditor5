@@ -12,28 +12,28 @@ import upath from 'upath';
 
 // This script validates the manual tests against two rules:
 //
-// 1. A "manual/" directory must be located directly in a "tests/" directory.
+// 1. A "manual/" directory must be located directly in the package root.
 // 2. Manual test scripts must be written in TypeScript.
 
 let hasError = false;
 
-// Rule 1: a "manual/" directory nested deeper than the root of "tests/" prevents those tests from
-// being compiled while running tests using the `--files` argument.
+// Rule 1: manual tests live in the root-level "manual/" directories of packages. Directories
+// named "manual/" under the "tests/" directories are no longer scanned by the manual test server.
 // See: https://github.com/ckeditor/ckeditor5/issues/12251.
 const nestedManualTestPatterns = [
-	'packages/*/tests/*/**/manual/**/*.@(js|ts|html|md)',
-	'tests/*/**/manual/**/*.@(js|ts|html|md)'
+	'packages/*/tests/**/manual/**/*.@(js|ts|html|md)',
+	'tests/**/manual/**/*.@(js|ts|html|md)'
 ];
 
-const manualDirectoriesNotInTestsRoot = nestedManualTestPatterns
+const manualDirectoriesNotInPackageRoot = nestedManualTestPatterns
 	.flatMap( pattern => globSync( pattern, { cwd: CKEDITOR5_ROOT_PATH } ).map( upath.normalize ) );
 
-if ( manualDirectoriesNotInTestsRoot.length ) {
+if ( manualDirectoriesNotInPackageRoot.length ) {
 	hasError = true;
 
-	console.log( chalk.red( 'The "manual/" directory should be stored directly in the "tests/" directory.' ) );
+	console.log( chalk.red( 'The "manual/" directory should be stored directly in the package root.' ) );
 	console.log( chalk.red( 'The following tests do not follow this rule:' ) );
-	console.log( chalk.red( manualDirectoriesNotInTestsRoot.map( str => ` - ${ str }` ).join( '\n' ) ) );
+	console.log( chalk.red( manualDirectoriesNotInPackageRoot.map( str => ` - ${ str }` ).join( '\n' ) ) );
 }
 
 // Rule 2: JavaScript is no longer accepted so that every manual test is covered by the
@@ -43,7 +43,7 @@ if ( manualDirectoriesNotInTestsRoot.length ) {
 const rootsToCheck = IS_ISOLATED_REPOSITORY ? [ CKEDITOR5_ROOT_PATH ] : [ CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH ];
 
 const javaScriptManualTests = rootsToCheck
-	.flatMap( root => globSync( 'packages/*/tests/manual/**/*.@(js|cjs|mjs)', { cwd: root, absolute: true } ) )
+	.flatMap( root => globSync( 'packages/*/manual/**/*.@(js|cjs|mjs)', { cwd: root, absolute: true } ) )
 	.map( upath.normalize );
 
 if ( javaScriptManualTests.length ) {

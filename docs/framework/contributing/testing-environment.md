@@ -127,11 +127,13 @@ A manual test consists of 2 files:
 * A `<name>.manual.html` file &ndash; a complete HTML document (with the DOCTYPE, `<head>`, and `<body>`) that you fully own. You can freely add a Content Security Policy `<meta>` tag, external scripts, `<style>`, or `<link>` tags in the `<head>`. The `.manual.html` suffix is what marks the file as a manual test.
 * A `<name>.ts` file with the TypeScript part of the test (for example, the code initializing an editor). Reference it from the document with a `<script type="module">` tag.
 
-Test instructions live inside the document in a `<ck-manual-header>` element &ndash; its children are rendered as a collapsible instructions panel. In the tests list, each test is identified by its file path relative to the `tests/manual/` directory.
+Test instructions live inside the document in a `<ck-manual-header>` element &ndash; its children are rendered as a collapsible instructions panel. In the tests list, each test is identified by its file path relative to the `manual/` directory.
 
 <info-box>
-	Only files with the `.manual.html` suffix are treated as manual tests. A plain `.html` file placed in a `tests/manual/` directory is treated as a static fixture (for example, content loaded into an `<iframe>`) and is never registered as a test.
+	Only files with the `.manual.html` suffix are treated as manual tests. A plain `.html` file placed in a `manual/` directory is treated as a static fixture (for example, content loaded into an `<iframe>`) and is never registered as a test.
 </info-box>
+
+Static assets shared by manual tests (sample images, video, audio, or downloadable files) live in the `manual-assets/` directory in the repository root. It is served as the [public directory](https://vite.dev/guide/assets.html#the-public-directory), so its contents are available from the server root and should be referenced by absolute paths, for example `<img src="/images/sample.jpg">`.
 
 An example `<name>.manual.html` file, which also serves as a template for new tests:
 
@@ -190,10 +192,10 @@ ClassicEditor
 </info-box>
 
 <info-box>
-	The <code>manual/</code> test directories should always be located in the root of the <code>tests/</code> directories.
+	The <code>manual/</code> test directories should always be located in the root of the packages, next to the <code>src/</code> and <code>tests/</code> directories.
 	<ul>
-		<li><code>packages/ckeditor5-engine/tests/manual/view/focus.ts</code> &ndash; correct path.</li>
-		<li><code>packages/ckeditor5-engine/tests/view/manual/focus.ts</code> &ndash; incorrect path.</li>
+		<li><code>packages/ckeditor5-engine/manual/view/focus.ts</code> &ndash; correct path.</li>
+		<li><code>packages/ckeditor5-engine/tests/manual/view/focus.ts</code> &ndash; incorrect path.</li>
 	</ul>
 </info-box>
 
