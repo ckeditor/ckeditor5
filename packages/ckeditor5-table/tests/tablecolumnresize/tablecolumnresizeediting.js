@@ -4119,6 +4119,29 @@ describe( 'TableColumnResizeEditing', () => {
 			expect( finalViewColumnWidthsPx[ 0 ] ).toBeGreaterThan( initialViewColumnWidthsPx[ 0 ] );
 		} );
 
+		it( 'keeps the table width and uninvolved columns unchanged when resizing an inner column (px)', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '100px,100px,100px', tableWidth: '300px' } ) );
+
+			// Drag an inner column border (between columns 0 and 1) several times - it must only rebalance those two
+			// columns. The table width and the untouched third column must not creep up on each drag (#11195).
+			for ( let i = 0; i < 4; i++ ) {
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), 0, { x: 10, y: 0 } );
+			}
+
+			const table = model.document.getRoot().getChild( 0 );
+			const widths = getTableColumnsWidths( table );
+
+			expect( table.getAttribute( 'tableWidth' ) ).toBe( '300px' );
+			expect( widths[ 2 ] ).toBe( '100px' );
+			expect( parseFloat( widths[ 0 ] ) + parseFloat( widths[ 1 ] ) ).toBeCloseTo( 200, 0 );
+
+			// The figure view must not be left inflated either - the resize seeds it from the exact model width.
+			expect( editor.editing.mapper.toViewElement( table ).getStyle( 'width' ) ).toBe( '300px' );
+		} );
+
 		it( 'grows the table in pixels after resizing the last column', () => {
 			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
