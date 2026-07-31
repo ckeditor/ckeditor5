@@ -213,14 +213,19 @@ describe( 'LegacyCheckTodoListCommand', () => {
 
 		it( 'should be up to date just before execution', () => {
 			_setModelData( model,
-				'<listItem listIndent="0" listType="0">f[]oo</listItem>' +
-				'<listItem listIndent="0" listType="0">bar</listItem>'
+				'<listItem listIndent="0" listType="todo">f[]oo</listItem>' +
+				'<listItem listIndent="0" listType="todo">bar</listItem>'
 			);
 
 			model.change( writer => {
 				writer.setSelection( model.document.getRoot().getChild( 1 ), 'end' );
 				command.execute();
 			} );
+
+			expect( _getModelData( model ) ).toBe(
+				'<listItem listIndent="0" listType="todo">foo</listItem>' +
+				'<listItem listIndent="0" listType="todo" todoListChecked="true">bar[]</listItem>'
+			);
 		} );
 
 		it( 'should set attribute if `forceValue` parameter is set to `true`', () => {

@@ -72,10 +72,12 @@ describe( 'WidgetResize', () => {
 		it( 'don\'t break when called with unexpected element', () => {
 			const unrelatedElement = document.createElement( 'div' );
 
-			editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
-				domTarget: unrelatedElement,
-				preventDefault: vi.fn()
-			} );
+			expect( () => {
+				editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
+					domTarget: unrelatedElement,
+					preventDefault: vi.fn()
+				} );
+			} ).not.toThrow();
 		} );
 
 		it( 'passes new width to the options.onCommit()', () => {
@@ -113,8 +115,9 @@ describe( 'WidgetResize', () => {
 
 			editor.plugins.get( WidgetResize )._getResizerByHandle = vi.fn().mockReturnValue( null );
 
-			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, initialPointerPosition );
-			// No exception should be thrown.
+			expect( () => {
+				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, initialPointerPosition );
+			} ).not.toThrow();
 		} );
 
 		it( 'stops the event after starting resizing', () => {
@@ -193,7 +196,6 @@ describe( 'WidgetResize', () => {
 		expect( spy.mock.calls.length > 0 ).toBe( true );
 
 		vi.useRealTimers();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should redraw the resizer after window resize', () => {
@@ -211,7 +213,6 @@ describe( 'WidgetResize', () => {
 		expect( spy.mock.calls.length > 0 ).toBe( true );
 
 		vi.useRealTimers();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'selectability', () => {
@@ -321,61 +322,61 @@ describe( 'WidgetResize', () => {
 				expect( commitStub.mock.calls.length ).toBe( 2 );
 			} );
 
-			it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
+			it( 'shrinks correctly with left-bottom handler', expectResize( {
 				usedHandle: 'bottom-left',
 				movePointerBy: { x: 20, y: -10 },
 				expectedWidth: '80px'
 			} ) );
 
-			it( 'shrinks correctly with right-bottom handler', generateResizeTest( {
+			it( 'shrinks correctly with right-bottom handler', expectResize( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: -20, y: -10 },
 				expectedWidth: '80px'
 			} ) );
 
-			it( 'shrinks correctly with left-top handler', generateResizeTest( {
+			it( 'shrinks correctly with left-top handler', expectResize( {
 				usedHandle: 'top-left',
 				movePointerBy: { x: 20, y: 10 },
 				expectedWidth: '80px'
 			} ) );
 
-			it( 'shrinks correctly with right-top handler', generateResizeTest( {
+			it( 'shrinks correctly with right-top handler', expectResize( {
 				usedHandle: 'top-right',
 				movePointerBy: { x: -20, y: 10 },
 				expectedWidth: '80px'
 			} ) );
 
-			it( 'enlarges correctly with left-bottom handler', generateResizeTest( {
+			it( 'enlarges correctly with left-bottom handler', expectResize( {
 				usedHandle: 'bottom-left',
 				movePointerBy: { x: -10, y: 10 },
 				expectedWidth: '120px'
 			} ) );
 
-			it( 'enlarges correctly with right-bottom handler', generateResizeTest( {
+			it( 'enlarges correctly with right-bottom handler', expectResize( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: 10, y: 10 },
 				expectedWidth: '120px'
 			} ) );
 
-			it( 'enlarges correctly with right-bottom handler, y axis only', generateResizeTest( {
+			it( 'enlarges correctly with right-bottom handler, y axis only', expectResize( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: 0, y: 20 },
 				expectedWidth: '140px'
 			} ) );
 
-			it( 'enlarges correctly with right-bottom handler, x axis only', generateResizeTest( {
+			it( 'enlarges correctly with right-bottom handler, x axis only', expectResize( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: 40, y: 0 },
 				expectedWidth: '140px'
 			} ) );
 
-			it( 'enlarges correctly with left-top handler', generateResizeTest( {
+			it( 'enlarges correctly with left-top handler', expectResize( {
 				usedHandle: 'top-left',
 				movePointerBy: { x: -20, y: -10 },
 				expectedWidth: '120px'
 			} ) );
 
-			it( 'enlarges correctly with right-top handler', generateResizeTest( {
+			it( 'enlarges correctly with right-top handler', expectResize( {
 				usedHandle: 'top-right',
 				movePointerBy: { x: 20, y: 10 },
 				expectedWidth: '120px'
@@ -389,37 +390,37 @@ describe( 'WidgetResize', () => {
 				} );
 			} );
 
-			it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
+			it( 'shrinks correctly with left-bottom handler', expectResize( {
 				usedHandle: 'bottom-left',
 				movePointerBy: { x: 10, y: -10 },
 				expectedWidth: '80px'
 			} ) );
 
-			it( 'shrinks correctly with right-bottom handler', generateResizeTest( {
+			it( 'shrinks correctly with right-bottom handler', expectResize( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: -10, y: -10 },
 				expectedWidth: '80px'
 			} ) );
 
-			it( 'enlarges correctly with right-bottom handler, x axis only', generateResizeTest( {
+			it( 'enlarges correctly with right-bottom handler, x axis only', expectResize( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: 10, y: 0 },
 				expectedWidth: '120px'
 			} ) );
 
-			it( 'enlarges correctly with right-bottom handler, y axis only', generateResizeTest( {
+			it( 'enlarges correctly with right-bottom handler, y axis only', expectResize( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: 0, y: 10 },
 				expectedWidth: '120px'
 			} ) );
 
-			it( 'enlarges correctly with left-bottom handler, x axis only', generateResizeTest( {
+			it( 'enlarges correctly with left-bottom handler, x axis only', expectResize( {
 				usedHandle: 'bottom-left',
 				movePointerBy: { x: -10, y: 0 },
 				expectedWidth: '120px'
 			} ) );
 
-			it( 'enlarges correctly with left-bottom handler, y axis only', generateResizeTest( {
+			it( 'enlarges correctly with left-bottom handler, y axis only', expectResize( {
 				usedHandle: 'bottom-left',
 				movePointerBy: { x: 0, y: 10 },
 				expectedWidth: '120px'
@@ -427,25 +428,25 @@ describe( 'WidgetResize', () => {
 
 			// --- top handlers ---
 
-			it( 'enlarges correctly with left-top handler', generateResizeTest( {
+			it( 'enlarges correctly with left-top handler', expectResize( {
 				usedHandle: 'top-left',
 				movePointerBy: { x: -10, y: -10 },
 				expectedWidth: '120px'
 			} ) );
 
-			it( 'enlarges correctly with left-top handler, y axis only', generateResizeTest( {
+			it( 'enlarges correctly with left-top handler, y axis only', expectResize( {
 				usedHandle: 'top-left',
 				movePointerBy: { x: 0, y: -10 },
 				expectedWidth: '120px'
 			} ) );
 
-			it( 'enlarges correctly with right-top handler', generateResizeTest( {
+			it( 'enlarges correctly with right-top handler', expectResize( {
 				usedHandle: 'top-right',
 				movePointerBy: { x: 10, y: -10 },
 				expectedWidth: '120px'
 			} ) );
 
-			it( 'enlarges correctly with right-top handler, y axis only', generateResizeTest( {
+			it( 'enlarges correctly with right-top handler, y axis only', expectResize( {
 				usedHandle: 'top-right',
 				movePointerBy: { x: 0, y: -10 },
 				expectedWidth: '120px'
@@ -477,7 +478,7 @@ describe( 'WidgetResize', () => {
 				expect( commitStub.mock.calls.length ).toBe( 2 );
 			} );
 
-			it( 'shrinks correctly with bottom-left handler', generateResizeTest( {
+			it( 'shrinks correctly with bottom-left handler', expectResize( {
 				usedHandle: 'bottom-left',
 				movePointerBy: { x: 10, y: -10 },
 				expectedWidth: '22.5%'
@@ -492,13 +493,13 @@ describe( 'WidgetResize', () => {
 				} );
 			} );
 
-			it( 'shrinks correctly with bottom-left handler', generateResizeTest( {
+			it( 'shrinks correctly with bottom-left handler', expectResize( {
 				usedHandle: 'bottom-left',
 				movePointerBy: { x: 10, y: -10 },
 				expectedWidth: '20%'
 			} ) );
 
-			it( 'enlarges correctly with bottom-right handler', generateResizeTest( {
+			it( 'enlarges correctly with bottom-right handler', expectResize( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: 0, y: 5 },
 				expectedWidth: '27.5%'
@@ -509,7 +510,7 @@ describe( 'WidgetResize', () => {
 					writer.setStyle( 'width', '100pt', widget );
 				} );
 
-				generateResizeTest( {
+				expectResize( {
 					usedHandle: 'bottom-right',
 					movePointerBy: { x: 0, y: 5 },
 					expectedWidth: '36.67%'
@@ -595,7 +596,9 @@ describe( 'WidgetResize', () => {
 
 			domParts.resizeWrapper.remove();
 
-			resizer.redraw();
+			expect( () => {
+				resizer.redraw();
+			} ).not.toThrow();
 		} );
 	} );
 
@@ -622,8 +625,9 @@ describe( 'WidgetResize', () => {
 		it( 'works without WidgetToolbarRepository plugin', async () => {
 			_setModelData( localEditor.model, '[<widget></widget>]' );
 
-			localEditor.plugins.get( WidgetResize ).attachTo( gerResizerOptions( localEditor ) );
-			// Nothing should be thrown.
+			expect( () => {
+				localEditor.plugins.get( WidgetResize ).attachTo( gerResizerOptions( localEditor ) );
+			} ).not.toThrow();
 		} );
 
 		it( 'sets the selected resizer if associated widget is already selected', async () => {
@@ -793,7 +797,7 @@ describe( 'WidgetResize', () => {
 	 * @param {Object} options.movePointerBy How much should the pointer move during the drag compared to the initial position.
 	 * @param {String} options.expectedWidth
 	 */
-	function generateResizeTest( options ) {
+	function expectResize( options ) {
 		return () => {
 			options = options || {};
 

@@ -666,7 +666,7 @@ describe( 'Editor - license check', () => {
 				}
 			} );
 
-			it( 'should not throw if license key is invalid', () => {
+			it( 'should not throw if license key is invalid', async () => {
 				const licenseKey = 'invalid';
 
 				const editor = new TestEditor( {
@@ -674,10 +674,7 @@ describe( 'Editor - license check', () => {
 					plugins: [ FreePlugin, LicensedPlugin ]
 				} );
 
-				return editor.initPlugins()
-					.catch( () => {
-						throw new Error( 'Expected not to throw.' );
-					} );
+				await expect( editor.initPlugins() ).resolves.toBeDefined();
 			} );
 
 			it( 'should not block if license key is GPL', () => {

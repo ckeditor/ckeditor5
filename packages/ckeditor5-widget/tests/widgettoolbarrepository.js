@@ -339,7 +339,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
-			expect( balloon.hasView( fakeWidgetToolbarView ) );
+			expect( balloon.hasView( fakeWidgetToolbarView ) ).toBe( true );
 			expect( balloon.visibleView ).not.toBe( fakeWidgetToolbarView );
 
 			model.change( writer => {
@@ -404,7 +404,7 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( balloon.visibleView ).toBe( fakeWidgetToolbarView );
 		} );
 
-		it( 'it should be possible to create a widget toolbar for content inside the widget', () => {
+		it( 'should be possible to create a widget toolbar for content inside the widget', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
 				getRelatedElement: getSelectedFakeWidgetContent

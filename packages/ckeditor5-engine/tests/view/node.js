@@ -394,7 +394,6 @@ describe( 'Node', () => {
 			char._remove();
 			expect( _removeChildrenSpy ).toHaveBeenCalledOnce();
 			expect( _removeChildrenSpy ).toHaveBeenCalledWith( index );
-			vi.restoreAllMocks();
 		} );
 	} );
 
@@ -414,8 +413,6 @@ describe( 'Node', () => {
 				path: [ 0 ],
 				type: 'Text'
 			} );
-
-			vi.restoreAllMocks();
 		} );
 
 		it( 'should provide root name if node is attached', () => {

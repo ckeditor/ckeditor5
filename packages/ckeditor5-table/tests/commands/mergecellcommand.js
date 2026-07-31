@@ -43,7 +43,7 @@ describe( 'MergeCellCommand', () => {
 					[ '00[]', '01' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if last cell of a row', () => {
@@ -51,7 +51,7 @@ describe( 'MergeCellCommand', () => {
 					[ '00', '01[]' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true if in a cell that has sibling on the right with the same rowspan', () => {
@@ -59,7 +59,7 @@ describe( 'MergeCellCommand', () => {
 					[ { rowspan: 2, contents: '00[]' }, { rowspan: 2, contents: '01' } ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if in a cell that has sibling but with different rowspan', () => {
@@ -69,7 +69,7 @@ describe( 'MergeCellCommand', () => {
 					[ '20', '22' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when next cell is rowspanned', () => {
@@ -79,7 +79,7 @@ describe( 'MergeCellCommand', () => {
 					[ '20', '22' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true when current cell is colspanned', () => {
@@ -87,13 +87,13 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 2, contents: '00[]' }, '02' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if not in a cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			describe( 'when the heading section is in the table', () => {
@@ -102,7 +102,7 @@ describe( 'MergeCellCommand', () => {
 						[ '00[]', '01' ]
 					], { headingColumns: 1 } ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true if merged cell would not cross heading section (mergeable cell with colspan)', () => {
@@ -110,7 +110,7 @@ describe( 'MergeCellCommand', () => {
 						[ '00[]', { colspan: 2, contents: '01' }, '02', '03' ]
 					], { headingColumns: 3 } ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false if merged cell would cross heading section (current cell with colspan)', () => {
@@ -118,7 +118,7 @@ describe( 'MergeCellCommand', () => {
 						[ { colspan: 2, contents: '00[]' }, '01', '02', '03' ]
 					], { headingColumns: 2 } ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true if merged cell would not cross heading section (current cell with colspan)', () => {
@@ -126,7 +126,7 @@ describe( 'MergeCellCommand', () => {
 						[ { colspan: 2, contents: '00[]' }, '01', '02', '03' ]
 					], { headingColumns: 3 } ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be true if merged cell would not cross the section boundary (regular section)', () => {
@@ -134,7 +134,7 @@ describe( 'MergeCellCommand', () => {
 						[ '00', '01', '02[]', '03' ]
 					], { headingColumns: 1 } ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 			} );
 		} );
@@ -145,7 +145,7 @@ describe( 'MergeCellCommand', () => {
 					[ '00[]', '01' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 1 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 0, 1 ] ) );
 			} );
 
 			it( 'should be set to mergeable sibling if in cell that has sibling on the right (selection in block content)', () => {
@@ -153,7 +153,7 @@ describe( 'MergeCellCommand', () => {
 					[ '00', '<paragraph>[]01</paragraph>', '02' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 2 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 0, 2 ] ) );
 			} );
 
 			it( 'should be undefined if last cell of a row', () => {
@@ -161,7 +161,7 @@ describe( 'MergeCellCommand', () => {
 					[ '00', '01[]' ]
 				] ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be set to mergeable sibling if in a cell that has sibling on the right with the same rowspan', () => {
@@ -169,7 +169,7 @@ describe( 'MergeCellCommand', () => {
 					[ { rowspan: 2, contents: '00[]' }, { rowspan: 2, contents: '01' } ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 1 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 0, 1 ] ) );
 			} );
 
 			it( 'should be undefined if in a cell that has sibling but with different rowspan', () => {
@@ -179,13 +179,13 @@ describe( 'MergeCellCommand', () => {
 					[ '20', '22' ]
 				] ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 		} );
 
@@ -291,7 +291,7 @@ describe( 'MergeCellCommand', () => {
 					[ '00', '01[]' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if first cell of a row', () => {
@@ -299,7 +299,7 @@ describe( 'MergeCellCommand', () => {
 					[ '00[]', '01' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true if in a cell that has sibling on the left with the same rowspan', () => {
@@ -307,7 +307,7 @@ describe( 'MergeCellCommand', () => {
 					[ { rowspan: 2, contents: '00' }, { rowspan: 2, contents: '01[]' } ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if in a cell that has sibling but with different rowspan', () => {
@@ -317,7 +317,7 @@ describe( 'MergeCellCommand', () => {
 					[ '20', '22' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when next cell is rowspanned', () => {
@@ -327,7 +327,7 @@ describe( 'MergeCellCommand', () => {
 					[ '20', '22' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true when mergeable cell is colspanned', () => {
@@ -335,13 +335,13 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 2, contents: '00' }, '02[]' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if not in a cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			describe( 'when the heading section is in the table', () => {
@@ -350,7 +350,7 @@ describe( 'MergeCellCommand', () => {
 						[ '00', '01[]' ]
 					], { headingColumns: 1 } ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false if merged cell would cross heading section (mergeable cell with colspan)', () => {
@@ -358,7 +358,7 @@ describe( 'MergeCellCommand', () => {
 						[ { colspan: 2, contents: '00' }, '02[]', '03' ]
 					], { headingColumns: 2 } ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true if merged cell would not cross the section boundary (in regular section)', () => {
@@ -366,7 +366,7 @@ describe( 'MergeCellCommand', () => {
 						[ '00', '01', '02[]', '03' ]
 					], { headingColumns: 1 } ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be true if merged cell would not cross the section boundary (in heading section)', () => {
@@ -374,7 +374,7 @@ describe( 'MergeCellCommand', () => {
 						[ '00', '01[]', '02', '03' ]
 					], { headingColumns: 2 } ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 			} );
 		} );
@@ -385,7 +385,7 @@ describe( 'MergeCellCommand', () => {
 					[ '00', '01[]' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 0, 0 ] ) );
 			} );
 
 			it( 'should be set to mergeable sibling if in cell that has sibling on the left (selection in block content)', () => {
@@ -393,7 +393,7 @@ describe( 'MergeCellCommand', () => {
 					[ '00', '<paragraph>01[]</paragraph>', '02' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 0, 0 ] ) );
 			} );
 
 			it( 'should be undefined if first cell of a row', () => {
@@ -401,7 +401,7 @@ describe( 'MergeCellCommand', () => {
 					[ '00[]', '01' ]
 				] ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be set to mergeable sibling if in a cell that has sibling on the left with the same rowspan', () => {
@@ -409,7 +409,7 @@ describe( 'MergeCellCommand', () => {
 					[ { rowspan: 2, contents: '00' }, { rowspan: 2, contents: '01[]' } ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 0, 0 ] ) );
 			} );
 
 			it( 'should be undefined if in a cell that has sibling but with different rowspan', () => {
@@ -419,13 +419,13 @@ describe( 'MergeCellCommand', () => {
 					[ '20', '22' ]
 				] ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 		} );
 
@@ -532,7 +532,7 @@ describe( 'MergeCellCommand', () => {
 					[ '10', '11' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if in last row', () => {
@@ -541,7 +541,7 @@ describe( 'MergeCellCommand', () => {
 					[ '10[]', '11' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true if in a cell that has mergeable cell with the same colspan', () => {
@@ -550,7 +550,7 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 2, contents: '01' }, '12' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if in a cell that potential mergeable cell has different colspan', () => {
@@ -559,13 +559,13 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 3, contents: '01' } ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if not in a cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if mergeable cell is in other table section then current cell', () => {
@@ -574,7 +574,7 @@ describe( 'MergeCellCommand', () => {
 					[ '10', '11' ]
 				], { headingRows: 1 } ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			describe( 'when the footer section is in the table', () => {
@@ -584,7 +584,7 @@ describe( 'MergeCellCommand', () => {
 						[ '10', '11' ]
 					], { footerRows: 1 } ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when current cell spans into footer section', () => {
@@ -594,7 +594,7 @@ describe( 'MergeCellCommand', () => {
 						[ '20', '21' ]
 					], { footerRows: 1 } ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true when merging within footer section', () => {
@@ -604,7 +604,7 @@ describe( 'MergeCellCommand', () => {
 						[ '20', '21' ]
 					], { footerRows: 2 } ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false if merging header section with footer section', () => {
@@ -614,7 +614,7 @@ describe( 'MergeCellCommand', () => {
 						[ '20', '21' ]
 					], { headingRows: 1, footerRows: 1 } ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 			} );
 		} );
@@ -626,7 +626,7 @@ describe( 'MergeCellCommand', () => {
 					[ '10', '11' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 1, 1 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 1, 1 ] ) );
 			} );
 
 			it( 'should be set to mergeable cell (selection in block content)', () => {
@@ -636,7 +636,7 @@ describe( 'MergeCellCommand', () => {
 					[ '20' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 2, 0 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 2, 0 ] ) );
 			} );
 
 			it( 'should be undefined if in last row', () => {
@@ -645,7 +645,7 @@ describe( 'MergeCellCommand', () => {
 					[ '10[]', '11' ]
 				] ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be undefined if in last row - ignore non-row elements', () => {
@@ -669,7 +669,7 @@ describe( 'MergeCellCommand', () => {
 					'</table>'
 				);
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be set to mergeable cell with the same rowspan', () => {
@@ -678,7 +678,7 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 2, contents: '01' }, '12' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 1, 0 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 1, 0 ] ) );
 			} );
 
 			it( 'should be undefined if in a cell that potential mergeable cell has different rowspan', () => {
@@ -687,7 +687,7 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 3, contents: '01' } ]
 				] ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be undefined if mergable cell is in other table section', () => {
@@ -697,7 +697,7 @@ describe( 'MergeCellCommand', () => {
 					[ '21', '22' ]
 				], { headingRows: 2 } ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be undefined when current cell spans into footer section', () => {
@@ -707,7 +707,7 @@ describe( 'MergeCellCommand', () => {
 					[ '20', '21' ]
 				], { footerRows: 1 } ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be undefined if mergeable cell is in footer section when current cell is colspanned', () => {
@@ -716,13 +716,13 @@ describe( 'MergeCellCommand', () => {
 					[ '10', '11' ]
 				], { footerRows: 1 } ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 		} );
 
@@ -803,7 +803,7 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 			} );
 
-			it( 'should remove empty row if merging table cells ', () => {
+			it( 'should remove empty row if merging table cells', () => {
 				_setModelData( model, modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01[]', { rowspan: 3, contents: '02' } ],
 					[ '11' ],
@@ -818,7 +818,7 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 			} );
 
-			it( 'should not reduce rowspan on cells above removed empty row when merging table cells ', () => {
+			it( 'should not reduce rowspan on cells above removed empty row when merging table cells', () => {
 				_setModelData( model, modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '02' ],
 					[ '11', '12' ],
@@ -837,7 +837,7 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 			} );
 
-			it( 'should adjust heading rows if empty row was removed ', () => {
+			it( 'should adjust heading rows if empty row was removed', () => {
 				// +----+----+
 				// | 00 | 01 |
 				// +    +----+
@@ -859,7 +859,7 @@ describe( 'MergeCellCommand', () => {
 				], { headingRows: 1 } ) );
 			} );
 
-			it( 'should adjust footer rows if empty row was removed ', () => {
+			it( 'should adjust footer rows if empty row was removed', () => {
 				// +----+----+
 				// | 00 | 01 |
 				// +----+----+ <-- footer rows start
@@ -903,7 +903,7 @@ describe( 'MergeCellCommand', () => {
 
 				command.execute();
 
-				expect( createdBatches.size ).to.equal( 1 );
+				expect( createdBatches.size ).toEqual( 1 );
 			} );
 		} );
 	} );
@@ -920,7 +920,7 @@ describe( 'MergeCellCommand', () => {
 					[ '10', '11[]' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if in first row', () => {
@@ -929,7 +929,7 @@ describe( 'MergeCellCommand', () => {
 					[ '10', '11' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true if in a cell that has mergeable cell with the same colspan', () => {
@@ -938,7 +938,7 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 2, contents: '01[]' }, '12' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if in a cell that potential mergeable cell has different colspan', () => {
@@ -947,13 +947,13 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 3, contents: '01[]' } ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if not in a cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if mergeable cell is in other table section then current cell', () => {
@@ -962,7 +962,7 @@ describe( 'MergeCellCommand', () => {
 					[ '10[]', '11' ]
 				], { headingRows: 1 } ) );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			describe( 'when the footer section is in the table', () => {
@@ -972,7 +972,7 @@ describe( 'MergeCellCommand', () => {
 						[ '10[]', '11' ]
 					], { footerRows: 1 } ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true when merging within footer section', () => {
@@ -982,7 +982,7 @@ describe( 'MergeCellCommand', () => {
 						[ '20[]', '21' ]
 					], { footerRows: 2 } ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 			} );
 		} );
@@ -994,7 +994,7 @@ describe( 'MergeCellCommand', () => {
 					[ '10', '11[]' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 1 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 0, 1 ] ) );
 			} );
 
 			it( 'should be set to mergeable cell (selection in block content)', () => {
@@ -1004,7 +1004,7 @@ describe( 'MergeCellCommand', () => {
 					[ '20' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 0, 0 ] ) );
 			} );
 
 			it( 'should be undefined if in first row', () => {
@@ -1013,7 +1013,7 @@ describe( 'MergeCellCommand', () => {
 					[ '10', '11' ]
 				] ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be set to mergeable cell with the same rowspan', () => {
@@ -1022,7 +1022,7 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 2, contents: '01[]' }, '12' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 0, 0 ] ) );
 			} );
 
 			it( 'should be set to mergeable cell in rows with spanned cells', () => {
@@ -1033,7 +1033,7 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 2, contents: '40' }, '42' ]
 				] ) );
 
-				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 1, 2 ] ) );
+				expect( command.value ).toEqual( root.getNodeByPath( [ 0, 1, 2 ] ) );
 			} );
 
 			it( 'should be undefined if in a cell that potential mergeable cell has different rowspan', () => {
@@ -1042,13 +1042,13 @@ describe( 'MergeCellCommand', () => {
 					[ { colspan: 3, contents: '01[]' } ]
 				] ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 
 			it( 'should be undefined if mergable cell is in other table section (footer)', () => {
@@ -1058,7 +1058,7 @@ describe( 'MergeCellCommand', () => {
 					[ '21', '22' ]
 				], { footerRows: 2 } ) );
 
-				expect( command.value ).to.be.undefined;
+				expect( command.value ).toBeUndefined();
 			} );
 		} );
 
@@ -1161,7 +1161,7 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 			} );
 
-			it( 'should remove empty row if merging table cells ', () => {
+			it( 'should remove empty row if merging table cells', () => {
 				_setModelData( model, modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', { rowspan: 3, contents: '02' } ],
 					[ '11[]' ],
@@ -1176,7 +1176,7 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 			} );
 
-			it( 'should not reduce rowspan on cells above removed empty row when merging table cells ', () => {
+			it( 'should not reduce rowspan on cells above removed empty row when merging table cells', () => {
 				_setModelData( model, modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '02' ],
 					[ '11', '12' ],
@@ -1195,7 +1195,7 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 			} );
 
-			it( 'should adjust heading rows if empty row was removed ', () => {
+			it( 'should adjust heading rows if empty row was removed', () => {
 				// +----+----+
 				// | 00 | 01 |
 				// +    +----+
@@ -1217,7 +1217,7 @@ describe( 'MergeCellCommand', () => {
 				], { headingRows: 1 } ) );
 			} );
 
-			it( 'should adjust footer rows if empty row was removed ', () => {
+			it( 'should adjust footer rows if empty row was removed', () => {
 				// +----+----+
 				// | 00 | 01 |
 				// +----+----+
@@ -1261,7 +1261,7 @@ describe( 'MergeCellCommand', () => {
 
 				command.execute();
 
-				expect( createdBatches.size ).to.equal( 1 );
+				expect( createdBatches.size ).toEqual( 1 );
 			} );
 		} );
 	} );

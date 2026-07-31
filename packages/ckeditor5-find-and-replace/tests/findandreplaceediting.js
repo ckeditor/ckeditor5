@@ -173,7 +173,7 @@ describe( 'FindAndReplaceEditing', () => {
 			} );
 
 			editor.execute( 'bold' );
-			findAndReplaceEditing.find(
+			expect( getSearchResultHTML() ).toBe(
 				'<p><span class="ck-find-result"><span class="ck-find-result_selected"><strong>test</strong></span></span></p>'
 			);
 		} );

@@ -92,10 +92,12 @@ describe( 'CloudServices', () => {
 				} );
 		} );
 
-		it( 'should not throw an error when no config is provided', () => {
-			return Context
-				.create( { plugins: [ CloudServices ] } )
-				.then( context => context.destroy() );
+		it( 'should not throw an error when no config is provided', async () => {
+			const context = await Context.create( { plugins: [ CloudServices ] } );
+
+			expect( context.plugins.get( CloudServices ) ).toBeInstanceOf( CloudServices );
+
+			return context.destroy();
 		} );
 
 		it( 'should not expose any default uploadUrl', () => {
@@ -170,18 +172,14 @@ describe( 'CloudServices', () => {
 
 			const tokenUrlStub = vi.fn().mockRejectedValue( new Error( 'Token URL crashed' ) );
 
-			try {
-				await Context.create( {
-					plugins: [ CloudServices ],
-					cloudServices: {
-						tokenUrl: tokenUrlStub
-					}
-				} );
+			const contextCreatePromise = Context.create( {
+				plugins: [ CloudServices ],
+				cloudServices: {
+					tokenUrl: tokenUrlStub
+				}
+			} );
 
-				throw new Error( 'Context.create should reject' );
-			} catch ( error ) {
-				expect( error.message ).toBe( 'Token URL crashed' );
-			}
+			await expect( contextCreatePromise ).rejects.toThrow( /^Token URL crashed$/ );
 
 			expect( tokenUrlStub ).toHaveBeenCalledOnce();
 
@@ -190,8 +188,6 @@ describe( 'CloudServices', () => {
 
 			// Editor was destroyed at this moment, so no more requests should be made.
 			expect( tokenUrlStub ).toHaveBeenCalledOnce();
-
-			vi.restoreAllMocks();
 		} );
 	} );
 
@@ -293,11 +289,7 @@ describe( 'CloudServices', () => {
 		it( 'should not crash when tokenUrl was not provided', async () => {
 			const context = await Context.create( { plugins: [ CloudServices ] } );
 
-			try {
-				await context.destroy();
-			} catch {
-				throw new Error( 'Error should not be thrown.' );
-			}
+			await expect( context.destroy() ).resolves.toBeDefined();
 		} );
 	} );
 

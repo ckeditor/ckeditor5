@@ -22,7 +22,7 @@ describe( 'table selection', () => {
 		} );
 
 		it( 'should define domEventTypes', () => {
-			expect( observer.domEventType ).to.deep.equal( [
+			expect( observer.domEventType ).toEqual( [
 				'mousemove',
 				'mouseleave'
 			] );
@@ -40,7 +40,7 @@ describe( 'table selection', () => {
 					expect( spy ).toHaveBeenCalledOnce();
 
 					const data = spy.mock.calls[ 0 ][ 1 ];
-					expect( data.domTarget ).to.equal( document.body );
+					expect( data.domTarget ).toEqual( document.body );
 				} );
 			}
 		} );

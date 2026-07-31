@@ -508,10 +508,12 @@ describe( 'FindAndReplace', () => {
 
 			findAndReplaceUI.fire( 'dropdown:closed' );
 
-			findAndReplaceUI.fire( 'replace', {
-				searchText: 'bar',
-				replaceText: 'new'
-			} );
+			expect( () => {
+				findAndReplaceUI.fire( 'replace', {
+					searchText: 'bar',
+					replaceText: 'new'
+				} );
+			} ).not.toThrow();
 		} );
 
 		describe( 'undo', () => {

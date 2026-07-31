@@ -587,7 +587,7 @@ describe( 'UpcastWriter', () => {
 
 			writer.removeCustomProperty( 'prop1', el );
 
-			expect( el.getCustomProperty( 'prop1' ) ).to.undefined;
+			expect( el.getCustomProperty( 'prop1' ) ).toBeUndefined();
 			expect( Array.from( el.getCustomProperties() ).length ).toBe( 0 );
 		} );
 
@@ -601,7 +601,7 @@ describe( 'UpcastWriter', () => {
 
 			writer.removeCustomProperty( 'prop1', fragment );
 
-			expect( fragment.getCustomProperty( 'prop1' ) ).to.undefined;
+			expect( fragment.getCustomProperty( 'prop1' ) ).toBeUndefined();
 			expect( Array.from( fragment.getCustomProperties() ).length ).toBe( 0 );
 		} );
 
@@ -610,7 +610,7 @@ describe( 'UpcastWriter', () => {
 
 			writer.removeCustomProperty( 'prop1', el );
 
-			expect( el.getCustomProperty( 'prop1' ) ).to.undefined;
+			expect( el.getCustomProperty( 'prop1' ) ).toBeUndefined();
 			expect( Array.from( el.getCustomProperties() ).length ).toBe( 0 );
 		} );
 	} );

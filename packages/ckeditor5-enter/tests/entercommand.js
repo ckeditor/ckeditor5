@@ -236,7 +236,7 @@ describe( 'EnterCommand', () => {
 		} );
 
 		function test( title, input, output ) {
-			it( title, () => {
+			it( `enterBlock(): ${ title }`, () => {
 				_setModelData( model, input );
 
 				model.change( writer => {

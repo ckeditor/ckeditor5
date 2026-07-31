@@ -11,13 +11,13 @@ describe( 'utils', () => {
 		it( 'should be true for string', () => {
 			const string = 'foo';
 
-			expect( isIterable( string ) ).to.be.true;
+			expect( isIterable( string ) ).toBe( true );
 		} );
 
 		it( 'should be true for arrays', () => {
 			const array = [ 1, 2, 3 ];
 
-			expect( isIterable( array ) ).to.be.true;
+			expect( isIterable( array ) ).toBe( true );
 		} );
 
 		it( 'should be true for iterable classes', () => {
@@ -33,17 +33,17 @@ describe( 'utils', () => {
 
 			const instance = new IterableClass();
 
-			expect( isIterable( instance ) ).to.be.true;
+			expect( isIterable( instance ) ).toBe( true );
 		} );
 
 		it( 'should be false for not iterable objects', () => {
 			const notIterable = { foo: 'bar' };
 
-			expect( isIterable( notIterable ) ).to.be.false;
+			expect( isIterable( notIterable ) ).toBe( false );
 		} );
 
 		it( 'should be false for undefined', () => {
-			expect( isIterable() ).to.be.false;
+			expect( isIterable() ).toBe( false );
 		} );
 	} );
 } );

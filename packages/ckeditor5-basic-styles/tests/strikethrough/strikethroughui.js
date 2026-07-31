@@ -44,11 +44,11 @@ describe( 'StrikethroughUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( StrikethroughUI.isOfficialPlugin ).to.be.true;
+		expect( StrikethroughUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( StrikethroughUI.isPremiumPlugin ).to.be.false;
+		expect( StrikethroughUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'menu bar button', () => {
@@ -59,28 +59,28 @@ describe( 'StrikethroughUI', () => {
 		testButton();
 
 		it( 'should create button with `menuitemcheckbox` role', () => {
-			expect( strikeView.role ).to.equal( 'menuitemcheckbox' );
+			expect( strikeView.role ).toEqual( 'menuitemcheckbox' );
 		} );
 
 		it( 'should bind `isOn` to `aria-checked` attribute', () => {
 			strikeView.render();
 
 			strikeView.isOn = true;
-			expect( strikeView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+			expect( strikeView.element.getAttribute( 'aria-checked' ) ).toEqual( 'true' );
 
 			strikeView.isOn = false;
-			expect( strikeView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+			expect( strikeView.element.getAttribute( 'aria-checked' ) ).toEqual( 'false' );
 		} );
 	} );
 
 	function testButton() {
 		it( 'should register strikethrough feature component', () => {
 			expect( strikeView ).to.be.instanceOf( ButtonView );
-			expect( strikeView.isOn ).to.be.false;
-			expect( strikeView.label ).to.equal( 'Strikethrough' );
-			expect( strikeView.icon ).to.match( /<svg / );
-			expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
-			expect( strikeView.isToggleable ).to.be.true;
+			expect( strikeView.isOn ).toBe( false );
+			expect( strikeView.label ).toEqual( 'Strikethrough' );
+			expect( strikeView.icon ).toMatch( /<svg / );
+			expect( strikeView.keystroke ).toEqual( 'CTRL+SHIFT+X' );
+			expect( strikeView.isToggleable ).toBe( true );
 		} );
 
 		it( 'should execute strikethrough command on model execute event', () => {
@@ -95,14 +95,14 @@ describe( 'StrikethroughUI', () => {
 		it( 'should bind model to strikethrough command', () => {
 			const command = editor.commands.get( 'strikethrough' );
 
-			expect( strikeView.isEnabled ).to.be.true;
+			expect( strikeView.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( strikeView.isEnabled ).to.be.false;
+			expect( strikeView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should set keystroke in the model', () => {
-			expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
+			expect( strikeView.keystroke ).toEqual( 'CTRL+SHIFT+X' );
 		} );
 
 		it( 'should set editor keystroke', () => {
@@ -118,7 +118,7 @@ describe( 'StrikethroughUI', () => {
 
 			const wasHandled = editor.keystrokes.press( keyEventData );
 
-			expect( wasHandled ).to.be.true;
+			expect( wasHandled ).toBe( true );
 			expect( spy ).toHaveBeenCalledOnce();
 			expect( keyEventData.preventDefault ).toHaveBeenCalledOnce();
 		} );
@@ -128,11 +128,11 @@ describe( 'StrikethroughUI', () => {
 
 			command.value = true;
 
-			expect( strikeView.isOn ).to.be.true;
+			expect( strikeView.isOn ).toBe( true );
 
 			command.value = false;
 
-			expect( strikeView.isOn ).to.be.false;
+			expect( strikeView.isOn ).toBe( false );
 		} );
 	}
 } );

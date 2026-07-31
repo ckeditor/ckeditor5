@@ -57,7 +57,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( forwardCommand.isEnabled ).to.be.true;
+					expect( forwardCommand.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be true when there is a marker after the selection position if editor is read-only', () => {
@@ -75,7 +75,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( forwardCommand.isEnabled ).to.be.true;
+					expect( forwardCommand.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false when there is no marker after the selection position', () => {
@@ -92,7 +92,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( forwardCommand.isEnabled ).to.be.false;
+					expect( forwardCommand.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when the selection position is at a marker start and there are no more markers', () => {
@@ -109,7 +109,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( forwardCommand.isEnabled ).to.be.false;
+					expect( forwardCommand.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when the selection position is in a marker and there are no more markers', () => {
@@ -126,7 +126,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( forwardCommand.isEnabled ).to.be.false;
+					expect( forwardCommand.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when the selection position is at a marker end and there are no more markers', () => {
@@ -143,7 +143,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( forwardCommand.isEnabled ).to.be.false;
+					expect( forwardCommand.isEnabled ).toBe( false );
 				} );
 			} );
 
@@ -162,7 +162,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( forwardCommand.isEnabled ).to.be.true;
+					expect( forwardCommand.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be true when there is a marker after the first selection position if editor is read-only', () => {
@@ -180,7 +180,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( forwardCommand.isEnabled ).to.be.true;
+					expect( forwardCommand.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be true when the selection overlaps the marker but the start position is before it', () => {
@@ -197,7 +197,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( forwardCommand.isEnabled ).to.be.true;
+					expect( forwardCommand.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false when the selection overlaps the marker but the start position is after it', () => {
@@ -214,7 +214,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( forwardCommand.isEnabled ).to.be.false;
+					expect( forwardCommand.isEnabled ).toBe( false );
 				} );
 			} );
 		} );
@@ -245,10 +245,10 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 
 					forwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 
 				it( 'should move to the next marker when at the end of adjacent one', () => {
@@ -276,7 +276,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[bar]</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo</paragraph><paragraph>[bar]</paragraph>' );
 				} );
 
 				it( 'should move to the closest marker when created in a reverse order', () => {
@@ -303,10 +303,10 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 
 					forwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 			} );
 
@@ -335,10 +335,10 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 
 					forwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 
 				it( 'should move to the next marker when the selection start overlaps the marker', () => {
@@ -365,7 +365,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 			} );
 		} );
@@ -388,7 +388,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( backwardCommand.isEnabled ).to.be.true;
+					expect( backwardCommand.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be true when there is a marker before the selection position if editor is read-only', () => {
@@ -406,7 +406,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( backwardCommand.isEnabled ).to.be.true;
+					expect( backwardCommand.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false when there is no marker before the selection position', () => {
@@ -423,7 +423,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( backwardCommand.isEnabled ).to.be.false;
+					expect( backwardCommand.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when the selection position is at a marker end and there are no more markers', () => {
@@ -440,7 +440,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( backwardCommand.isEnabled ).to.be.false;
+					expect( backwardCommand.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when the selection position is in a marker and there are no more markers', () => {
@@ -457,7 +457,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( backwardCommand.isEnabled ).to.be.false;
+					expect( backwardCommand.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when the selection position is at a marker start and there are no more markers', () => {
@@ -474,7 +474,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( backwardCommand.isEnabled ).to.be.false;
+					expect( backwardCommand.isEnabled ).toBe( false );
 				} );
 			} );
 
@@ -493,7 +493,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( backwardCommand.isEnabled ).to.be.true;
+					expect( backwardCommand.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be true when there is a marker before the first selection position if editor is read-only', () => {
@@ -511,7 +511,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( backwardCommand.isEnabled ).to.be.true;
+					expect( backwardCommand.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false when the selection overlaps the marker but the start position is after it', () => {
@@ -528,7 +528,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( backwardCommand.isEnabled ).to.be.false;
+					expect( backwardCommand.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when the selection overlaps the marker but the after position is after it', () => {
@@ -545,7 +545,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 						} );
 					} );
 
-					expect( backwardCommand.isEnabled ).to.be.false;
+					expect( backwardCommand.isEnabled ).toBe( false );
 				} );
 			} );
 		} );
@@ -576,7 +576,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should move to the previous marker when at the beginning of adjacent one', () => {
@@ -604,7 +604,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>[foo]</paragraph><paragraph>bar</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>[foo]</paragraph><paragraph>bar</paragraph>' );
 				} );
 
 				it( 'should move to the closest previous marker', () => {
@@ -631,10 +631,10 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz] qux</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bar [baz] qux</paragraph>' );
 
 					backwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz qux</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz qux</paragraph>' );
 				} );
 
 				it( 'should move to the closest previous marker when created in a reverse order', () => {
@@ -661,10 +661,10 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz] qux</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bar [baz] qux</paragraph>' );
 
 					backwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz qux</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz qux</paragraph>' );
 				} );
 			} );
 
@@ -693,7 +693,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 			} );
 		} );

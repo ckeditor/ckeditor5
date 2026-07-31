@@ -519,11 +519,8 @@ describe( 'table properties', () => {
 								expect( view.alignment ).toBe( values[ i ] );
 
 								for ( let j = 0; j < values.length; j++ ) {
-									if ( i === j ) {
-										expect( toolbar.items.get( j ).isOn ).toBe( true );
-									} else {
-										expect( toolbar.items.get( j ).isOn ).toBe( false );
-									}
+									// Only the button matching the executed alignment should be on.
+									expect( toolbar.items.get( j ).isOn ).toBe( i === j );
 								}
 							}
 						} );

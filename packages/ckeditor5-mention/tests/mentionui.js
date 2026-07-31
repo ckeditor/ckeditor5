@@ -88,7 +88,7 @@ describe( 'MentionUI', () => {
 				} ).then( tempEditor => {
 					return tempEditor.destroy();
 				} )
-			).resolves.not.toThrow();
+			).resolves.toBeUndefined();
 		} );
 	} );
 
@@ -218,7 +218,7 @@ describe( 'MentionUI', () => {
 					expect( toViewRangeSpy ).toHaveBeenCalledOnce();
 					const range = toViewRangeSpy.mock.calls[ 0 ][ 0 ];
 
-					expect( mentionMarker.getRange().isEqual( range ), 'Should position to mention marker.' );
+					expect( mentionMarker.getRange().isEqual( range ), 'Should position to mention marker.' ).toBe( true );
 
 					const caretSouthEast = positions[ 0 ];
 					const caretSouthWest = positions[ 1 ];
@@ -1240,15 +1240,18 @@ describe( 'MentionUI', () => {
 		} );
 
 		describe( 'callback function using data from editor', () => {
+			function assertFeedContext() {
+				expect( this ).toEqual( editor );
+
+				return Promise.resolve( [ 'foo', 'bar' ] );
+			}
+
 			beforeEach( () => {
 				return createClassicTestEditor( {
 					feeds: [
 						{
 							marker: '#',
-							feed() {
-								expect( this ).toEqual( editor );
-								return Promise.resolve( [ 'foo', 'bar' ] );
-							}
+							feed: assertFeedContext
 						}
 					]
 				} );

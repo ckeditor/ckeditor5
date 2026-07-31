@@ -602,7 +602,7 @@ describe( 'table clipboard', () => {
 						[ 'ba', 'bb' ]
 					] );
 
-					expect( batches.size ).to.equal( 1 );
+					expect( batches.size ).toEqual( 1 );
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 						[ '00', '01', '02' ],
@@ -619,7 +619,7 @@ describe( 'table clipboard', () => {
 						[ 'ba', 'bb', 'bc', 'bd', 'be' ]
 					] );
 
-					expect( batches.size ).to.equal( 1 );
+					expect( batches.size ).toEqual( 1 );
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 						[ '00', '01', '02', '', '', '' ],
@@ -639,7 +639,7 @@ describe( 'table clipboard', () => {
 						[ 'ea', 'eb' ]
 					] );
 
-					expect( batches.size ).to.equal( 1 );
+					expect( batches.size ).toEqual( 1 );
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 						[ '00', '01', '02' ],
@@ -662,7 +662,7 @@ describe( 'table clipboard', () => {
 						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
 					] );
 
-					expect( batches.size ).to.equal( 1 );
+					expect( batches.size ).toEqual( 1 );
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 						[ '00', '01', '02', '', '', '' ],
@@ -3813,7 +3813,7 @@ describe( 'table clipboard', () => {
 				const selectionPaths = selectionRanges.map( ( { start } ) => start.path );
 				const sortedPaths = selectionRangesSorted.map( ( { start } ) => start.path );
 
-				expect( selectionPaths ).to.deep.equal( sortedPaths );
+				expect( selectionPaths ).toEqual( sortedPaths );
 			}
 		} );
 
@@ -4168,7 +4168,7 @@ describe( 'table clipboard', () => {
 				const selectionPaths = selectionRanges.map( ( { start } ) => start.path );
 				const sortedPaths = selectionRangesSorted.map( ( { start } ) => start.path );
 
-				expect( selectionPaths ).to.deep.equal( sortedPaths );
+				expect( selectionPaths ).toEqual( sortedPaths );
 			}
 		} );
 	} );
@@ -4287,10 +4287,10 @@ describe( 'table clipboard', () => {
 
 			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-			expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.equal( '#f00' );
-			expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'dashed' );
-			expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '3px' );
-			expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( '#ba7' );
+			expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).toEqual( '#f00' );
+			expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).toEqual( 'dashed' );
+			expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).toEqual( '3px' );
+			expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).toEqual( '#ba7' );
 		} );
 
 		it( 'handles table cell width property', async () => {
@@ -4314,7 +4314,7 @@ describe( 'table clipboard', () => {
 
 			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-			expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '1337px' );
+			expect( tableCell.getAttribute( 'tableCellWidth' ) ).toEqual( '1337px' );
 		} );
 
 		it( 'discards table properties', async () => {
@@ -4623,10 +4623,9 @@ describe( 'table clipboard', () => {
 			// 	'First<comment-end name="pre:uniq"></comment-end></td><td>&nbsp;</td></tr></tbody></table></figure>'
 			// );
 
-			expect( data.dataTransfer.getData( 'text/html' ) ).to.equal(
-				'<figure class="table"><table><tbody><tr><td><p data-comment-start-before="pre:uniq">' +
-				'First<comment-end name="pre:uniq"></comment-end></p></td><td>&nbsp;</td></tr></tbody></table></figure>'
-			);
+			expect( data.dataTransfer.getData( 'text/html' ) )
+				.toEqual( '<figure class="table"><table><tbody><tr><td><p data-comment-start-before="pre:uniq">' +
+				'First<comment-end name="pre:uniq"></comment-end></p></td><td>&nbsp;</td></tr></tbody></table></figure>' );
 		} );
 
 		it( 'should paste table that is entirely wrapped in marker', () => {
@@ -4912,15 +4911,15 @@ describe( 'table clipboard', () => {
 		function checkMarker( name, range ) {
 			const marker = editor.model.markers.get( name );
 
-			expect( marker ).to.not.be.null;
+			expect( marker ).not.toBeNull();
 
 			if ( range instanceof ModelRange ) {
-				expect( marker.getRange().isEqual( range ) ).to.be.true;
+				expect( marker.getRange().isEqual( range ) ).toBe( true );
 			} else {
 				const markerRange = marker.getRange();
 
-				expect( markerRange.start.path ).to.deep.equal( range.start );
-				expect( markerRange.end.path ).to.deep.equal( range.end );
+				expect( markerRange.start.path ).toEqual( range.start );
+				expect( markerRange.end.path ).toEqual( range.end );
 			}
 		}
 
@@ -4949,7 +4948,7 @@ describe( 'table clipboard', () => {
 
 			const content = modelRoot.getChild( 0 );
 
-			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).toBeNull();
 		} );
 
 		it( 'should return null for a text node provided', async () => {
@@ -4957,7 +4956,7 @@ describe( 'table clipboard', () => {
 
 			const content = modelRoot.getNodeByPath( [ 0, 0 ] );
 
-			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).toBeNull();
 		} );
 
 		it( 'should return null for mixed content provided (table + paragraph)', () => {
@@ -4968,7 +4967,7 @@ describe( 'table clipboard', () => {
 
 			const content = documentFragmentFromChildren( modelRoot );
 
-			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).toBeNull();
 		} );
 
 		it( 'should return null for mixed content provided (paragraph + table)', () => {
@@ -4979,7 +4978,7 @@ describe( 'table clipboard', () => {
 
 			const content = documentFragmentFromChildren( modelRoot );
 
-			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).toBeNull();
 		} );
 
 		it( 'should return table element for mixed content provided (table + empty paragraph)', () => {
@@ -4991,8 +4990,8 @@ describe( 'table clipboard', () => {
 			const content = documentFragmentFromChildren( modelRoot );
 			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
-			expect( result ).to.be.not.null;
-			expect( result.is( 'element', 'table' ) ).to.be.true;
+			expect( result ).not.toBeNull();
+			expect( result.is( 'element', 'table' ) ).toBe( true );
 		} );
 
 		it( 'should return table element for mixed content provided (empty paragraph + table)', () => {
@@ -5004,8 +5003,8 @@ describe( 'table clipboard', () => {
 			const content = documentFragmentFromChildren( modelRoot );
 			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
-			expect( result ).to.be.not.null;
-			expect( result.is( 'element', 'table' ) ).to.be.true;
+			expect( result ).not.toBeNull();
+			expect( result.is( 'element', 'table' ) ).toBe( true );
 		} );
 
 		it( 'should return table element for mixed content provided (p + p + table + p)', () => {
@@ -5019,8 +5018,8 @@ describe( 'table clipboard', () => {
 			const content = documentFragmentFromChildren( modelRoot );
 			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
-			expect( result ).to.be.not.null;
-			expect( result.is( 'element', 'table' ) ).to.be.true;
+			expect( result ).not.toBeNull();
+			expect( result.is( 'element', 'table' ) ).toBe( true );
 		} );
 
 		it( 'should return table element for if table is the only element provided in document fragment', () => {
@@ -5031,8 +5030,8 @@ describe( 'table clipboard', () => {
 			const content = documentFragmentFromChildren( modelRoot );
 			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
-			expect( result ).to.be.not.null;
-			expect( result.is( 'element', 'table' ) ).to.be.true;
+			expect( result ).not.toBeNull();
+			expect( result.is( 'element', 'table' ) ).toBe( true );
 		} );
 
 		it( 'should return table element for if table is the only element provided directly', () => {
@@ -5043,8 +5042,8 @@ describe( 'table clipboard', () => {
 			const content = modelRoot.getChild( 0 );
 			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
-			expect( result ).to.be.not.null;
-			expect( result.is( 'element', 'table' ) ).to.be.true;
+			expect( result ).not.toBeNull();
+			expect( result.is( 'element', 'table' ) ).toBe( true );
 		} );
 
 		function documentFragmentFromChildren( element ) {

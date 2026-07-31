@@ -343,7 +343,7 @@ describe( 'RemoveFormatCommand', () => {
 
 	function generateTypicalUseCases( useCases, options ) {
 		for ( const [ key, testConfig ] of Object.entries( useCases ) ) {
-			it( key, () => {
+			it( 'handles ' + key, () => {
 				_setModelData( model, testConfig.input, testConfig.setDataOptions );
 
 				if ( testConfig.beforeAssert ) {

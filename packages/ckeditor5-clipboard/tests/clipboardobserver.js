@@ -27,6 +27,7 @@ describe( 'ClipboardObserver', () => {
 		doc.selection._setTo( el, 0 );
 		range = writer.createRange( writer.createPositionAt( root, 1 ) );
 		// Just making sure that the following tests will check anything.
+		// eslint-disable-next-line vitest/no-standalone-expect
 		expect( range.isEqual( doc.selection.getFirstRange() ) ).toBe( false );
 
 		observer = view.addObserver( ClipboardObserver );

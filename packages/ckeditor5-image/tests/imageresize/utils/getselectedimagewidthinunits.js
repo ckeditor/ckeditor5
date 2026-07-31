@@ -35,7 +35,7 @@ describe( 'getSelectedImageWidthInUnits', () => {
 	it( 'should return selected image width in pixels', () => {
 		_setModelData( model, '[<imageBlock resizedWidth="50px"></imageBlock>]' );
 
-		expect( getSelectedImageWidthInUnits( editor, 'px' ) ).to.deep.equal( {
+		expect( getSelectedImageWidthInUnits( editor, 'px' ) ).toEqual( {
 			value: 50,
 			unit: 'px'
 		} );
@@ -44,13 +44,13 @@ describe( 'getSelectedImageWidthInUnits', () => {
 	it( 'should return null if image is not selected', () => {
 		_setModelData( model, '<imageBlock resizedWidth="0px"></imageBlock><paragraph>[abc]</paragraph>' );
 
-		expect( getSelectedImageWidthInUnits( editor, 'px' ) ).to.equal( null );
+		expect( getSelectedImageWidthInUnits( editor, 'px' ) ).toEqual( null );
 	} );
 
 	it( 'should return null if resizeWidth is malformed', () => {
 		_setModelData( model, '[<imageBlock resizedWidth="sdasdpx"></imageBlock>]' );
 
-		expect( getSelectedImageWidthInUnits( editor, 'px' ) ).to.equal( null );
+		expect( getSelectedImageWidthInUnits( editor, 'px' ) ).toEqual( null );
 	} );
 
 	it( 'should return casted percentage value to pixels', () => {
@@ -58,8 +58,8 @@ describe( 'getSelectedImageWidthInUnits', () => {
 
 		const { unit, value } = getSelectedImageWidthInUnits( editor, 'px' );
 
-		expect( unit ).to.be.equal( 'px' );
-		expect( value ).to.be.equal( 310 );
+		expect( unit ).toEqual( 'px' );
+		expect( value ).toEqual( 310 );
 	} );
 
 	it( 'should return casted pixels value to percentage', () => {
@@ -67,8 +67,8 @@ describe( 'getSelectedImageWidthInUnits', () => {
 
 		const { unit, value } = getSelectedImageWidthInUnits( editor, '%' );
 
-		expect( unit ).to.be.equal( '%' );
-		expect( value ).to.be.equal( 50 );
+		expect( unit ).toEqual( '%' );
+		expect( value ).toEqual( 50 );
 	} );
 
 	async function createEditor( config ) {

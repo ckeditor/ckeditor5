@@ -14,6 +14,18 @@ vi.mock( 'listr2', () => ( {
 	} )
 } ) );
 
+// Finds a Listr task definition by its title and returns its `task` callback.
+// A plain `throw` keeps `beforeEach()` hooks free of `expect()` calls (`vitest/no-standalone-expect`).
+function findTask( definitions, title ) {
+	const definition = definitions.find( item => item.title === title );
+
+	if ( !definition || !( definition.task instanceof Function ) ) {
+		throw new Error( `Expected to find a task definition with the "${ title }" title.` );
+	}
+
+	return definition.task;
+}
+
 describe( 'scripts/release/preparepackages', () => {
 	let listrTasks;
 
@@ -29,33 +41,19 @@ describe( 'scripts/release/preparepackages', () => {
 		let task;
 
 		beforeEach( () => {
-			task = listrTasks.find( ( { title } ) => title === 'Verify release directory.' ).task;
-
-			expect( task ).toBeInstanceOf( Function );
+			task = findTask( listrTasks, 'Verify release directory.' );
 		} );
 
 		it( 'does not reject if the directory is not empty', async () => {
 			vi.mocked( fs.readdir ).mockResolvedValue( [ 'directoryFoo', 'file.txt' ] );
 
-			try {
-				const result = await task();
-
-				expect( result ).toEqual( undefined );
-			} catch ( err ) {
-				throw new Error( `Expected not to throw, instead threw: ${ err }`, { cause: err } );
-			}
+			await expect( task() ).resolves.toBeUndefined();
 		} );
 
 		it( 'does reject if the directory is empty', async () => {
 			vi.mocked( fs.readdir ).mockResolvedValue( [] );
 
-			try {
-				await task();
-
-				throw new Error( 'Test case did not throw as expected.' );
-			} catch ( err ) {
-				expect( err ).toEqual( 'Release directory is empty, aborting.' );
-			}
+			await expect( task() ).rejects.toEqual( 'Release directory is empty, aborting.' );
 		} );
 	} );
 } );

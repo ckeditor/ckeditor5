@@ -325,7 +325,8 @@ describe( 'DecoupledEditorUI', () => {
 			const newEditor = await VirtualDecoupledTestEditor.create( '' );
 
 			await newEditor.destroy();
-			await newEditor.destroy();
+
+			await expect( newEditor.destroy() ).resolves.toBeUndefined();
 		} );
 	} );
 

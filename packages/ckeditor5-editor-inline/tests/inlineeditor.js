@@ -134,28 +134,28 @@ describe( 'InlineEditor', () => {
 				expect( editor.config.get( 'roots.main.initialData' ) ).toBe( '<p>Bar</p>' );
 			} );
 
-			it( 'it should throw if legacy config.initialData is set and initial data is passed in constructor', () => {
+			it( 'should throw if legacy config.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new InlineEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
 				} ).toThrow( CKEditorError, 'editor-create-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
+			it( 'should throw if config.root.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new InlineEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
 				} ).toThrow( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
+			it( 'should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new InlineEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
 				} ).toThrow( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if config.root and config.roots.main is set', () => {
+			it( 'should throw if config.root and config.roots.main is set', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -168,7 +168,7 @@ describe( 'InlineEditor', () => {
 				} ).toThrow( CKEditorError, 'editor-create-roots-with-main' );
 			} );
 
-			it( 'it should throw if legacy config.initialData and config.root.initialData is set', () => {
+			it( 'should throw if legacy config.initialData and config.root.initialData is set', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -181,7 +181,7 @@ describe( 'InlineEditor', () => {
 				} ).toThrow( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
+			it( 'should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -194,7 +194,7 @@ describe( 'InlineEditor', () => {
 				} ).toThrow( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if source element and config.root.element are both set', () => {
+			it( 'should throw if source element and config.root.element are both set', () => {
 				const sourceElement = document.createElement( 'div' );
 				sourceElement.innerHTML = '<p>Foo</p>';
 
@@ -915,16 +915,13 @@ describe( 'InlineEditor', () => {
 				}
 			}
 
-			try {
-				await InlineEditor.create( {
-					plugins: [ Paragraph, NonLimitRootPlugin ],
-					root: { modelElement: 'nonLimit' }
-				} );
-				expect.fail( 'Promise should have been rejected' );
-			} catch ( err ) {
-				expect( err ).toBeInstanceOf( CKEditorError );
-				expect( err.message ).toMatch( /editor-root-element-is-not-limit/ );
-			}
+			const createPromise = InlineEditor.create( {
+				plugins: [ Paragraph, NonLimitRootPlugin ],
+				root: { modelElement: 'nonLimit' }
+			} );
+
+			await expect( createPromise ).rejects.toThrow( CKEditorError );
+			await expect( createPromise ).rejects.toThrow( /editor-root-element-is-not-limit/ );
 		} );
 
 		describe( 'configurable editor label (aria-label)', () => {
@@ -1161,11 +1158,11 @@ describe( 'InlineEditor', () => {
 		it( 'should not throw an error if editor was initialized with the data', async () => {
 			await editor.destroy();
 
-			return InlineEditor
-				.create( '<p>Foo.</p>', {
-					plugins: [ Paragraph, Bold ]
-				} )
-				.then( newEditor => newEditor.destroy() );
+			const newEditor = await InlineEditor.create( '<p>Foo.</p>', {
+				plugins: [ Paragraph, Bold ]
+			} );
+
+			await expect( newEditor.destroy() ).resolves.toBeUndefined();
 		} );
 	} );
 

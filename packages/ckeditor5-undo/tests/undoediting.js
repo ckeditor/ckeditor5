@@ -28,15 +28,15 @@ describe( 'UndoEditing', () => {
 	} );
 
 	it( 'should have a name', () => {
-		expect( UndoEditing.pluginName ).to.equal( 'UndoEditing' );
+		expect( UndoEditing.pluginName ).toEqual( 'UndoEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( UndoEditing.isOfficialPlugin ).to.be.true;
+		expect( UndoEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( UndoEditing.isPremiumPlugin ).to.be.false;
+		expect( UndoEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should add keystroke accessibility info', () => {
@@ -52,8 +52,8 @@ describe( 'UndoEditing', () => {
 	} );
 
 	it( 'should register undo command and redo command', () => {
-		expect( editor.commands.get( 'undo' ) ).to.equal( undo._undoCommand );
-		expect( editor.commands.get( 'redo' ) ).to.equal( undo._redoCommand );
+		expect( editor.commands.get( 'undo' ) ).toEqual( undo._undoCommand );
+		expect( editor.commands.get( 'redo' ) ).toEqual( undo._redoCommand );
 	} );
 
 	it( 'should add a batch to undo command and clear redo stack, if it\'s type is "default"', () => {
@@ -175,7 +175,7 @@ describe( 'UndoEditing', () => {
 			stopPropagation: vi.fn()
 		} );
 
-		expect( wasHandled ).to.be.true;
+		expect( wasHandled ).toBe( true );
 		expect( spy ).toHaveBeenCalledWith( 'undo' );
 	} );
 
@@ -190,7 +190,7 @@ describe( 'UndoEditing', () => {
 			stopPropagation: vi.fn()
 		} );
 
-		expect( wasHandled ).to.be.true;
+		expect( wasHandled ).toBe( true );
 		expect( spy ).toHaveBeenCalledWith( 'redo' );
 	} );
 
@@ -207,7 +207,7 @@ describe( 'UndoEditing', () => {
 
 		const wasHandled = editor.keystrokes.press( keyEventData );
 
-		expect( wasHandled ).to.be.true;
+		expect( wasHandled ).toBe( true );
 		expect( spy ).toHaveBeenCalledWith( 'redo' );
 		expect( keyEventData.preventDefault ).toHaveBeenCalledTimes( 1 );
 	} );

@@ -113,6 +113,7 @@ export function testFocusCycling( {
 			let currentView = focusables.get( getView().focusCycler.current! )!;
 			let currentElement = document.activeElement as HTMLElement;
 			const visitedElements: Array<HTMLElement> = [];
+			const dispatchedEvents: Array<KeyboardEvent> = [];
 
 			while ( !visitedElements.includes( currentElement ) ) {
 				visitedElements.push( currentElement );
@@ -128,17 +129,22 @@ export function testFocusCycling( {
 				await wait( 10 );
 
 				if ( event ) {
-					expect( event.preventDefault ).toHaveBeenCalledOnce();
-					expect( event.stopPropagation ).toHaveBeenCalledOnce();
+					dispatchedEvents.push( event );
 				}
 
 				currentElement = document.activeElement as HTMLElement;
 				currentView = visibleFocusables.find( view => view.element!.contains( currentElement ) )!;
 			}
 
+			for ( const event of dispatchedEvents ) {
+				expect( event.preventDefault ).toHaveBeenCalledOnce();
+				expect( event.stopPropagation ).toHaveBeenCalledOnce();
+			}
+
 			if ( expectedFocusedElements ) {
 				const expectedElements = expectedFocusedElements[ action ]!( getView() );
 
+				// eslint-disable-next-line vitest/no-conditional-expect -- runs only when the caller defines the expected order
 				expect( visitedElements, 'Elements visited by focus' ).to.have.ordered.members( expectedElements );
 			}
 

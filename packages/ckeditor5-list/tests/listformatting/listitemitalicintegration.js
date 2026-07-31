@@ -118,15 +118,13 @@ describe( 'ListItemItalicIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<i>foo</i>' +
 						'</span>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -147,8 +145,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<i>foo</i>' +
@@ -161,8 +158,7 @@ describe( 'ListItemItalicIntegration', () => {
 							'</li>' +
 						'</ul>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -190,8 +186,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<p>' +
 							'<i>foo</i>' +
@@ -200,8 +195,7 @@ describe( 'ListItemItalicIntegration', () => {
 							'<i>bar</i>' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -226,8 +220,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</blockQuote>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<blockquote>' +
 							'<p>' +
@@ -235,8 +228,7 @@ describe( 'ListItemItalicIntegration', () => {
 							'</p>' +
 						'</blockquote>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -258,15 +250,13 @@ describe( 'ListItemItalicIntegration', () => {
 				'</heading1>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<h2>' +
 							'<i>foo</i>' +
 						'</h2>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -286,11 +276,9 @@ describe( 'ListItemItalicIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -313,8 +301,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</table>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-italic">' +
 						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
@@ -332,8 +319,7 @@ describe( 'ListItemItalicIntegration', () => {
 							'</table>' +
 						'</figure>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -364,15 +350,13 @@ describe( 'ListItemItalicIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-italic" style="--ck-content-list-marker-dummy-italic:0">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<i>foo</i>' +
 						'</span>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -558,7 +542,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 		it( 'should upcast and consume class', () => {
 			const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-italic' } ) ).to.be.false;
+				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-italic' } ) ).toBe( false );
 			} );
 
 			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:li', upcastCheck, { priority: 'lowest' } ) );
@@ -577,7 +561,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( upcastCheck.mock.calls.length === 1 ).to.be.true;
+			expect( upcastCheck.mock.calls.length === 1 ).toBe( true );
 		} );
 	} );
 
@@ -598,11 +582,10 @@ describe( 'ListItemItalicIntegration', () => {
 
 			const content = spy.mock.calls[ 0 ][ 0 ];
 
-			expect( _stringifyModel( content ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="numbered">' +
+			expect( _stringifyModel( content ) )
+				.toEqual( '<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="numbered">' +
 					'foo' +
-				'</paragraph>'
-			);
+				'</paragraph>' );
 		} );
 
 		function createDataTransfer( data ) {
@@ -649,15 +632,13 @@ describe( 'ListItemItalicIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li>' +
 						'<p>' +
 							'<i>foo</i>' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -697,15 +678,13 @@ describe( 'ListItemItalicIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li>' +
 						'<p>' +
 							'foo' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +

@@ -99,6 +99,8 @@ describe( 'Position', () => {
 			const pos = new ModelPosition( li1, [ 0, 2 ] );
 
 			expect( pos ).toHaveProperty( 'root', root );
+			// TODO: https://github.com/ckeditor/ckeditor5-commercial/issues/11225
+			// eslint-disable-next-line vitest/valid-expect -- The intended comparison needs to be restored.
 			expect( pos.isEqual( ModelPosition._createAt( li1, 0, 2 ) ) );
 		} );
 
@@ -108,7 +110,7 @@ describe( 'Position', () => {
 			const pos = new ModelPosition( elA, [ 0 ] );
 
 			expect( pos ).toHaveProperty( 'root', rootEl );
-			expect( pos.isEqual( ModelPosition._createAt( elA, 0 ) ) );
+			expect( pos.isEqual( ModelPosition._createAt( elA, 0 ) ) ).toBe( true );
 		} );
 
 		it( 'should throw error if given path is incorrect', () => {

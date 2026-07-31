@@ -114,96 +114,90 @@ describe( 'FileUploader', () => {
 			( { requests } = createFakeXHRServer() );
 		} );
 
-		it( 'should sent request with correct data (url, method, type, headers)', () => {
-			return new Promise( ( resolve, reject ) => {
-				fileUploader
-					.send()
-					.then( () => {
-						const request = requests[ 0 ];
-						expect( request.url ).toBe( API_ADDRESS );
-						expect( request.method ).toBe( 'POST' );
-						expect( request.responseType ).toBe( 'json' );
-						expect( request.requestHeaders ).toEqual( { Authorization: tokenInitValue } );
+		it( 'should sent request with correct data (url, method, type, headers)', async () => {
+			const promise = fileUploader.send();
 
-						resolve();
-					} )
-					.catch( err => {
-						reject( err );
-					} );
+			requests[ 0 ].respond( 200, { 'Content-Type': 'application/json' },
+				JSON.stringify( { 'default': 'https://test.dev' } )
+			);
 
-				requests[ 0 ].respond( 200, { 'Content-Type': 'application/json' },
-					JSON.stringify( { 'default': 'https://test.dev' } )
-				);
-			} );
+			await promise;
+
+			const request = requests[ 0 ];
+
+			expect( request.url ).toBe( API_ADDRESS );
+			expect( request.method ).toBe( 'POST' );
+			expect( request.responseType ).toBe( 'json' );
+			expect( request.requestHeaders ).toEqual( { Authorization: tokenInitValue } );
 		} );
 
-		it( 'should fire `error` event with error message when response is failed', () => {
-			return new Promise( resolve => {
+		it( 'should fire `error` event with error message when response is failed', async () => {
+			const errorPromise = new Promise( resolve => {
 				fileUploader
-					.onError( error => {
-						expect( error ).toBe( 'Message' );
-
-						resolve();
-					} )
+					.onError( resolve )
 					.send()
 					.catch( () => {} );
-
-				requests[ 0 ].respond( 400, { 'Content-Type': 'application/json' },
-					JSON.stringify( {
-						error: 'Error',
-						message: 'Message'
-					} )
-				);
 			} );
+
+			requests[ 0 ].respond( 400, { 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					error: 'Error',
+					message: 'Message'
+				} )
+			);
+
+			const error = await errorPromise;
+
+			expect( error ).toBe( 'Message' );
 		} );
 
-		it( 'should fire `error` event with error when response is failed', () => {
-			return new Promise( resolve => {
+		it( 'should fire `error` event with error when response is failed', async () => {
+			const errorPromise = new Promise( resolve => {
 				fileUploader
-					.onError( error => {
-						expect( error ).toBe( 'Error' );
-
-						resolve();
-					} )
+					.onError( resolve )
 					.send()
 					.catch( () => {} );
-
-				requests[ 0 ].respond( 400, { 'Content-Type': 'application/json' },
-					JSON.stringify( {
-						error: 'Error'
-					} )
-				);
 			} );
+
+			requests[ 0 ].respond( 400, { 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					error: 'Error'
+				} )
+			);
+
+			const error = await errorPromise;
+
+			expect( error ).toBe( 'Error' );
 		} );
 
-		it( 'should fire `error` event when response is aborted', () => {
-			return new Promise( resolve => {
+		it( 'should fire `error` event when response is aborted', async () => {
+			const errorPromise = new Promise( resolve => {
 				fileUploader
-					.onError( error => {
-						expect( error ).toBe( 'Abort' );
-
-						resolve();
-					} )
+					.onError( resolve )
 					.send()
 					.catch( () => {} );
-
-				requests[ 0 ].abort();
 			} );
+
+			requests[ 0 ].abort();
+
+			const error = await errorPromise;
+
+			expect( error ).toBe( 'Abort' );
 		} );
 
-		it( 'should fire `error` event when network error occurs', () => {
-			return new Promise( resolve => {
+		it( 'should fire `error` event when network error occurs', async () => {
+			const errorPromise = new Promise( resolve => {
 				fileUploader
-					.onError( error => {
-						expect( error ).toBe( 'Network Error' );
-
-						resolve();
-					} )
+					.onError( resolve )
 					.send()
 					.catch( () => {} );
-
-				requests[ 0 ].error();
 			} );
+
+			requests[ 0 ].error();
+
+			const error = await errorPromise;
+
+			expect( error ).toBe( 'Network Error' );
 		} );
 
 		it( 'should fire `progress` event', () => {

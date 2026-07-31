@@ -746,8 +746,8 @@ describe( 'UpcastHelpers', () => {
 						expect( data.modelCursor ).toBeInstanceOf( ModelPosition );
 						expect( data.viewItem ).toBe( viewElement );
 						expect( data.modelRange ).to.be.instanceOf( ModelRange );
-						expect( data.modelRange.start.path ).to.be.deep.equal( [ 0 ] );
-						expect( data.modelRange.end.path ).to.be.deep.equal( [ 1 ] );
+						expect( data.modelRange.start.path ).toEqual( [ 0 ] );
+						expect( data.modelRange.end.path ).toEqual( [ 1 ] );
 
 						return match[ 1 ];
 					}
@@ -1228,10 +1228,12 @@ describe( 'UpcastHelpers', () => {
 				[]
 			);
 
-			for ( const callArgs of conversionConsumeSpy.mock.calls ) {
-				if ( callArgs[ 1 ] ) {
-					expect( callArgs[ 1 ] ).not.toHaveProperty( 'attributes' );
-				}
+			const consumeOptions = conversionConsumeSpy.mock.calls
+				.map( callArgs => callArgs[ 1 ] )
+				.filter( options => !!options );
+
+			for ( const options of consumeOptions ) {
+				expect( options ).not.toHaveProperty( 'attributes' );
 			}
 		} );
 	} );
@@ -1431,7 +1433,7 @@ describe( 'upcast-converters', () => {
 			dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 			dispatcher.on( 'element:foo', ( evt, data ) => {
 				// Be sure that current cursor is not the same as custom.
-				expect( data.modelCursor ).to.not.equal( position );
+				expect( data.modelCursor ).not.toBe( position );
 				// Set custom cursor as a result of docFrag last child conversion.
 				// This cursor should be forwarded by a documentFragment converter.
 				data.modelCursor = position;
@@ -1485,7 +1487,7 @@ describe( 'upcast-converters', () => {
 
 			convertSelection( null, { newSelection: viewSelection } );
 
-			expect( _getModelData( model ) ).to.equals( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
 			expect( _getModelData( model ) ).toBe( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
 		} );
 
@@ -1515,8 +1517,7 @@ describe( 'upcast-converters', () => {
 
 			convertSelection( null, { newSelection: viewSelection } );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
 
 			const ranges = Array.from( model.document.selection.getRanges() );
 			expect( ranges.length ).toBe( 2 );
@@ -1543,7 +1544,7 @@ describe( 'upcast-converters', () => {
 			convertSelection( null, { newSelection: viewSelection } );
 
 			expect( _getModelData( model ) ).toBe( '<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
-			expect( model.document.selection.isBackward ).to.true;
+			expect( model.document.selection.isBackward ).toBe( true );
 		} );
 
 		it( 'should not enqueue changes if selection has not changed', () => {

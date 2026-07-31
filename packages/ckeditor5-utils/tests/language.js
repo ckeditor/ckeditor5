@@ -44,7 +44,7 @@ describe( 'language', () => {
 			{ code: 'urd', textDirection: 'rtl' }
 		].forEach( ( { code, textDirection } ) => {
 			it( `determines the "${ code }" language direction`, () => {
-				expect( getLanguageDirection( code ) ).to.equal( textDirection );
+				expect( getLanguageDirection( code ) ).toEqual( textDirection );
 			} );
 		} );
 	} );

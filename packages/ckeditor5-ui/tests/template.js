@@ -2438,7 +2438,7 @@ describe( 'Template', () => {
 
 		describe( 'attributes', () => {
 			it( 'extends existing - simple', () => {
-				extensionTest(
+				expectExtension(
 					{
 						tag: 'p',
 						attributes: {
@@ -2455,7 +2455,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - complex #1', () => {
-				extensionTest(
+				expectExtension(
 					{
 						tag: 'p',
 						attributes: {
@@ -2472,7 +2472,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - complex #2', () => {
-				extensionTest(
+				expectExtension(
 					{
 						tag: 'p',
 						attributes: {
@@ -2491,7 +2491,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - complex #3', () => {
-				extensionTest(
+				expectExtension(
 					{
 						tag: 'p',
 						attributes: {
@@ -2508,7 +2508,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - bindings #1', () => {
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						attributes: {
@@ -2529,7 +2529,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - bindings #2', () => {
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						attributes: {
@@ -2551,7 +2551,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'creates new - no attributes', () => {
-				extensionTest(
+				expectExtension(
 					{
 						tag: 'p'
 					},
@@ -2565,7 +2565,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'creates new - simple', () => {
-				extensionTest(
+				expectExtension(
 					{
 						tag: 'p',
 						attributes: {
@@ -2582,7 +2582,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'creates new - array', () => {
-				extensionTest(
+				expectExtension(
 					{
 						tag: 'p',
 						attributes: {
@@ -2599,7 +2599,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'creates new - bindings #1', () => {
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						attributes: {
@@ -2620,7 +2620,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'creates new - bindings #2', () => {
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						attributes: {
@@ -2643,7 +2643,7 @@ describe( 'Template', () => {
 
 		describe( 'text', () => {
 			it( 'extends existing - simple', () => {
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						children: [
@@ -2662,7 +2662,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - complex #1', () => {
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						children: [
@@ -2681,7 +2681,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - complex #2', () => {
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						children: [
@@ -2700,7 +2700,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - bindings #1', () => {
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						children: [
@@ -2722,7 +2722,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - bindings #2', () => {
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						children: [
@@ -2744,7 +2744,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - bindings #3', () => {
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						children: [
@@ -2772,7 +2772,7 @@ describe( 'Template', () => {
 		describe( 'children', () => {
 			it( 'should throw when the number of children does not correspond', () => {
 				expectToThrowCKEditorError( () => {
-					extensionTest(
+					expectExtension(
 						{
 							tag: 'p',
 							children: [
@@ -2792,7 +2792,7 @@ describe( 'Template', () => {
 
 			it( 'should throw when no children in target but extending one', () => {
 				expectToThrowCKEditorError( () => {
-					extensionTest(
+					expectExtension(
 						{
 							tag: 'p'
 						},
@@ -2810,7 +2810,7 @@ describe( 'Template', () => {
 
 			it( 'should throw when the number of children does not correspond on some deeper level', () => {
 				expectToThrowCKEditorError( () => {
-					extensionTest(
+					expectExtension(
 						{
 							tag: 'p',
 							children: [
@@ -2852,7 +2852,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - simple', () => {
-				extensionTest(
+				expectExtension(
 					{
 						tag: 'p',
 						children: [
@@ -2879,7 +2879,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'extends existing - complex', () => {
-				extensionTest(
+				expectExtension(
 					{
 						tag: 'p',
 						children: [
@@ -3008,7 +3008,7 @@ describe( 'Template', () => {
 				observable.on( 'B', spy3 );
 				observable.on( 'D', spy4 );
 
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						children: [
@@ -3058,7 +3058,7 @@ describe( 'Template', () => {
 				observable.on( 'A', spy1 );
 				observable.on( 'B', spy2 );
 
-				const el = extensionTest(
+				const el = expectExtension(
 					{
 						tag: 'p',
 						children: [
@@ -3107,7 +3107,7 @@ function setElement( template ) {
 	injectedElements.push( el );
 }
 
-function extensionTest( baseDefinition, extendedDefinition, expectedHtml ) {
+function expectExtension( baseDefinition, extendedDefinition, expectedHtml ) {
 	const template = new Template( baseDefinition );
 
 	Template.extend( template, extendedDefinition );

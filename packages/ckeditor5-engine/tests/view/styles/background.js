@@ -136,7 +136,7 @@ describe( 'Background styles normalization', () => {
 			styles.setTo( 'background: 10% 20%;' );
 
 			const normalized = styles.getNormalized( 'background' );
-			expect( normalized ).to.have.property( 'position' ).that.deep.equals( [ '10% 20%' ] );
+			expect( normalized ).toHaveProperty( 'position', [ '10% 20%' ] );
 		} );
 
 		it( 'should preserve background size and background position separated by slash', () => {

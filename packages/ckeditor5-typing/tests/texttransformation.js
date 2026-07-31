@@ -438,14 +438,14 @@ describe( 'Text transformation feature', () => {
 			} );
 		} );
 
-		it( 'should not fail for unknown rule name', () => {
-			return createEditorInstance( {
+		it( 'should not fail for unknown rule name', async () => {
+			await expect( createEditorInstance( {
 				typing: {
 					transformations: {
 						include: [ 'symbols', 'typo' ]
 					}
 				}
-			} );
+			} ) ).resolves.toBeUndefined();
 		} );
 
 		it( 'should not fail for re-declared include rules config', () => {

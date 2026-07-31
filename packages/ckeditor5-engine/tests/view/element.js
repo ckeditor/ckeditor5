@@ -69,7 +69,7 @@ describe( 'Element', () => {
 			expect( parent.getChild( 0 ) ).toHaveProperty( 'name', 'p' );
 		} );
 
-		it( 'should move class attribute to class set ', () => {
+		it( 'should move class attribute to class set', () => {
 			const el = new ViewElement( document, 'p', { id: 'test', class: 'one two three' } );
 
 			expect( el._attrs.get( 'class' ) ).toBeInstanceOf( ViewTokenList );
@@ -474,7 +474,7 @@ describe( 'Element', () => {
 				expect( el1.parent ).toBe( parent );
 				expect( el2.parent ).toBeNull();
 				expect( el3.parent ).toBeNull();
-				expect( el4.parent ).equal( parent );
+				expect( el4.parent ).toEqual( parent );
 			} );
 
 			it( 'should remove one child when second parameter is not specified', () => {
@@ -598,7 +598,7 @@ describe( 'Element', () => {
 				el._setAttribute( 'foo', 'bar' );
 
 				expect( el.getAttribute( 'foo' ) ).toBe( 'bar' );
-				expect( el.getAttribute( 'bom' ) ).to.not.be.ok;
+				expect( el.getAttribute( 'bom' ) ).toBeFalsy();
 			} );
 
 			it( 'should return class attribute', () => {

@@ -392,7 +392,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:inline"><p>foo</p></div>' );
 
-				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( viewAfter ).not.toBe( viewBefore );
 				expect( paraAfter ).toBe( paraBefore );
 				expect( textAfter ).toBe( textBefore );
 			} );
@@ -414,9 +414,9 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:inline"><p>foo</p></div>' );
 
-				expect( viewAfter ).to.not.equal( viewBefore );
-				expect( paraAfter ).to.not.equal( paraBefore );
-				expect( textAfter ).to.not.equal( textBefore );
+				expect( viewAfter ).not.toBe( viewBefore );
+				expect( paraAfter ).not.toBe( paraBefore );
+				expect( textAfter ).not.toBe( textBefore );
 			} );
 
 			it( 'should properly re-bind mapper mappings and retain markers', () => {
@@ -513,7 +513,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p></p></div>' );
 
-				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( viewAfter ).not.toBe( viewBefore );
 			} );
 		} );
 
@@ -586,7 +586,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>bar</p><p>foo</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -623,7 +623,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>foo</p><p>baz</p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
 				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
 				expect( paraBarAfter, 'para bar' ).toBe( paraBarBefore );
@@ -655,7 +655,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>foo</p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -689,7 +689,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div data-other="foo"><p>foo</p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -724,7 +724,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div data-other="foo"><p>foo</p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -755,7 +755,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>fooabc</p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -786,7 +786,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p></p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( spy ).toHaveBeenCalled();
 			} );
@@ -817,7 +817,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<p></p><div><p></p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( spy ).toHaveBeenCalled();
 			} );
@@ -843,7 +843,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>foo</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -890,7 +890,7 @@ describe( 'DowncastHelpers', () => {
 					'<div class="second"><p>bar</p></div>'
 				);
 
-				expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
+				expect( viewAfter0, 'simpleBlock' ).not.toBe( viewBefore0 );
 				expect( paraAfter0, 'para' ).toBe( paraBefore0 );
 				expect( textAfter0, 'text' ).toBe( textBefore0 );
 
@@ -914,7 +914,7 @@ describe( 'DowncastHelpers', () => {
 					'<div class="second"><p>bar</p><p>123</p></div>'
 				);
 
-				expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
+				expect( viewAfter0, 'simpleBlock' ).not.toBe( viewBefore0 );
 				expect( paraAfter0, 'para' ).toBe( paraBefore0 );
 				expect( textAfter0, 'text' ).toBe( textBefore0 );
 
@@ -926,7 +926,7 @@ describe( 'DowncastHelpers', () => {
 				expect( paraAfterAfter0, 'para' ).toBe( paraAfter0 );
 				expect( textAfterAfter0, 'text' ).toBe( textAfter0 );
 
-				expect( viewAfterAfter1, 'simpleBlock' ).to.not.equal( viewAfter1 );
+				expect( viewAfterAfter1, 'simpleBlock' ).not.toBe( viewAfter1 );
 				expect( paraAfterAfter1, 'para' ).toBe( paraAfter1 );
 				expect( textAfterAfter1, 'text' ).toBe( textAfter1 );
 			} );
@@ -945,9 +945,9 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:inline"><p>foo</p></div>' );
 
-				expect( viewAfter ).to.not.equal( viewBefore );
-				expect( paraAfter ).to.not.equal( paraBefore );
-				expect( textAfter ).to.not.equal( textBefore );
+				expect( viewAfter ).not.toBe( viewBefore );
+				expect( paraAfter ).not.toBe( paraBefore );
+				expect( textAfter ).not.toBe( textBefore );
 			} );
 
 			it( 'should fire conversion events in proper order', () => {
@@ -1230,7 +1230,7 @@ describe( 'DowncastHelpers', () => {
 				const [ viewAfter ] = getNodes();
 
 				expectResult( '<div style="display:block"></div>' );
-				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( viewAfter ).not.toBe( viewBefore );
 			} );
 
 			it( 'should convert on attribute change', () => {
@@ -1250,7 +1250,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:inline"></div>' );
 
-				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( viewAfter ).not.toBe( viewBefore );
 			} );
 
 			it( 'should convert on attribute remove', () => {
@@ -1416,7 +1416,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:block"><p>foo</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 			} );
@@ -1438,7 +1438,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:inline"><p>foo</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 			} );
@@ -1508,9 +1508,9 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:inline"><p>foo</p></div>' );
 
-				expect( viewAfter ).to.not.equal( viewBefore );
-				expect( paraAfter ).to.not.equal( paraBefore );
-				expect( textAfter ).to.not.equal( textBefore );
+				expect( viewAfter ).not.toBe( viewBefore );
+				expect( paraAfter ).not.toBe( paraBefore );
+				expect( textAfter ).not.toBe( textBefore );
 			} );
 		} );
 
@@ -1584,7 +1584,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>bar</p><p>foo</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -1621,7 +1621,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>foo</p><p>baz</p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
 				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
 				expect( paraBarAfter, 'para bar' ).toBe( paraBarBefore );
@@ -1653,7 +1653,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>foo</p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -1687,7 +1687,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div data-other="foo"><p>foo</p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -1722,7 +1722,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div data-other="foo"><p>foo</p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -1753,7 +1753,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>fooabc</p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -1784,7 +1784,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p></p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( spy ).toHaveBeenCalled();
 			} );
@@ -1815,7 +1815,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<p></p><div><p></p><p>bar</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( spy ).toHaveBeenCalled();
 			} );
@@ -1841,7 +1841,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>foo</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( viewAfter, 'simpleBlock' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -1892,7 +1892,7 @@ describe( 'DowncastHelpers', () => {
 					'<div class="second"><p>bar</p></div>'
 				);
 
-				expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
+				expect( viewAfter0, 'simpleBlock' ).not.toBe( viewBefore0 );
 				expect( paraAfter0, 'para' ).toBe( paraBefore0 );
 				expect( textAfter0, 'text' ).toBe( textBefore0 );
 
@@ -1916,7 +1916,7 @@ describe( 'DowncastHelpers', () => {
 					'<div class="second"><p>bar</p><p>123</p></div>'
 				);
 
-				expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
+				expect( viewAfter0, 'simpleBlock' ).not.toBe( viewBefore0 );
 				expect( paraAfter0, 'para' ).toBe( paraBefore0 );
 				expect( textAfter0, 'text' ).toBe( textBefore0 );
 
@@ -1928,7 +1928,7 @@ describe( 'DowncastHelpers', () => {
 				expect( paraAfterAfter0, 'para' ).toBe( paraAfter0 );
 				expect( textAfterAfter0, 'text' ).toBe( textAfter0 );
 
-				expect( viewAfterAfter1, 'simpleBlock' ).to.not.equal( viewAfter1 );
+				expect( viewAfterAfter1, 'simpleBlock' ).not.toBe( viewAfter1 );
 				expect( paraAfterAfter1, 'para' ).toBe( paraAfter1 );
 				expect( textAfterAfter1, 'text' ).toBe( textAfter1 );
 			} );
@@ -1947,9 +1947,9 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:inline"><p>foo</p></div>' );
 
-				expect( viewAfter ).to.not.equal( viewBefore );
-				expect( paraAfter ).to.not.equal( paraBefore );
-				expect( textAfter ).to.not.equal( textBefore );
+				expect( viewAfter ).not.toBe( viewBefore );
+				expect( paraAfter ).not.toBe( paraBefore );
+				expect( textAfter ).not.toBe( textBefore );
 			} );
 		} );
 
@@ -2023,8 +2023,8 @@ describe( 'DowncastHelpers', () => {
 				const [ outerDivAfter, innerDivAfter ] = getNodes();
 
 				expectResult( '<div class="complex-outer"><div style="display:block"></div></div>' );
-				expect( outerDivAfter, 'outer div' ).to.not.equal( outerDivBefore );
-				expect( innerDivAfter, 'inner div' ).to.not.equal( innerDivBefore );
+				expect( outerDivAfter, 'outer div' ).not.toBe( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).not.toBe( innerDivBefore );
 				expect( spy ).toHaveBeenCalled();
 			} );
 
@@ -2107,8 +2107,8 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div class="complex-outer"><div class="is-classy"><p>bar</p><p>foo</p></div></div>' );
 
-				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
-				expect( viewAfter, 'inner' ).to.not.equal( viewBefore );
+				expect( outerAfter, 'outer' ).not.toBe( outerBefore );
+				expect( viewAfter, 'inner' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -2145,8 +2145,8 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div class="complex-outer"><div class="is-classy"><p>foo</p><p>baz</p><p>bar</p></div></div>' );
 
-				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
-				expect( viewAfter, 'inner' ).to.not.equal( viewBefore );
+				expect( outerAfter, 'outer' ).not.toBe( outerBefore );
+				expect( viewAfter, 'inner' ).not.toBe( viewBefore );
 				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
 				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
 				expect( paraBarAfter, 'para bar' ).toBe( paraBarBefore );
@@ -2178,8 +2178,8 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div class="complex-outer"><div class="is-classy"><p>foo</p><p>bar</p></div></div>' );
 
-				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
-				expect( viewAfter, 'inner' ).to.not.equal( viewBefore );
+				expect( outerAfter, 'outer' ).not.toBe( outerBefore );
+				expect( viewAfter, 'inner' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -2205,8 +2205,8 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div class="complex-outer"><div class="is-classy"><p>foo</p></div></div>' );
 
-				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
-				expect( viewAfter, 'inner' ).to.not.equal( viewBefore );
+				expect( outerAfter, 'outer' ).not.toBe( outerBefore );
+				expect( viewAfter, 'inner' ).not.toBe( viewBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -2352,9 +2352,9 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
-				expect( firstAfter, 'inner first' ).to.not.equal( firstBefore );
-				expect( secondAfter, 'inner second' ).to.not.equal( secondBefore );
+				expect( outerAfter, 'outer' ).not.toBe( outerBefore );
+				expect( firstAfter, 'inner first' ).not.toBe( firstBefore );
+				expect( secondAfter, 'inner second' ).not.toBe( secondBefore );
 				expect( paraAfter, 'para' ).toBe( paraBefore );
 				expect( textAfter, 'text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -2402,9 +2402,9 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
-				expect( firstAfter, 'inner first' ).to.not.equal( firstBefore );
-				expect( secondAfter, 'inner second' ).to.not.equal( secondBefore );
+				expect( outerAfter, 'outer' ).not.toBe( outerBefore );
+				expect( firstAfter, 'inner first' ).not.toBe( firstBefore );
+				expect( secondAfter, 'inner second' ).not.toBe( secondBefore );
 				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
 				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
 				expect( paraBarAfter, 'para bar' ).toBe( paraBarBefore );
@@ -2454,9 +2454,9 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
-				expect( firstAfter, 'inner first' ).to.not.equal( firstBefore );
-				expect( secondAfter, 'inner second' ).to.not.equal( secondBefore );
+				expect( outerAfter, 'outer' ).not.toBe( outerBefore );
+				expect( firstAfter, 'inner first' ).not.toBe( firstBefore );
+				expect( secondAfter, 'inner second' ).not.toBe( secondBefore );
 				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
 				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
 				expect( paraBarAfter, 'para bar' ).toBe( paraBarBefore );
@@ -2504,9 +2504,9 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
-				expect( firstAfter, 'inner first' ).to.not.equal( firstBefore );
-				expect( secondAfter, 'inner second' ).to.not.equal( secondBefore );
+				expect( outerAfter, 'outer' ).not.toBe( outerBefore );
+				expect( firstAfter, 'inner first' ).not.toBe( firstBefore );
+				expect( secondAfter, 'inner second' ).not.toBe( secondBefore );
 				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
 				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
 				expect( paraBazAfter, 'para baz' ).toBe( paraBazBefore );
@@ -2637,8 +2637,8 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
 				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
-				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
-				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).not.toBe( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).not.toBe( nestedInnerDivBefore );
 				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
 				expect( spy ).toHaveBeenCalled();
 			} );
@@ -2689,8 +2689,8 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
 				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
-				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
-				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).not.toBe( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).not.toBe( nestedInnerDivBefore );
 				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
 				expect( spy ).toHaveBeenCalled();
 			} );
@@ -2741,8 +2741,8 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
 				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
-				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
-				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).not.toBe( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).not.toBe( nestedInnerDivBefore );
 				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
 				expect( spy ).toHaveBeenCalled();
 			} );
@@ -2792,10 +2792,10 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerDivAfter, 'outer div' ).to.not.equal( outerDivBefore );
-				expect( innerDivAfter, 'inner div' ).to.not.equal( innerDivBefore );
-				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
-				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( outerDivAfter, 'outer div' ).not.toBe( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).not.toBe( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).not.toBe( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).not.toBe( nestedInnerDivBefore );
 				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
 				expect( textAfter, '$text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -2886,8 +2886,8 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
 				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
-				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
-				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).not.toBe( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).not.toBe( nestedInnerDivBefore );
 				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
 				expect( textAfter, '$text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -2944,8 +2944,8 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
 				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
-				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
-				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).not.toBe( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).not.toBe( nestedInnerDivBefore );
 				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
 				expect( textAfter, '$text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -2999,10 +2999,10 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
 				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
-				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
-				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
-				expect( headingAfter, 'p' ).to.not.equal( paragraphBefore );
-				expect( textAfter, '$text' ).to.not.equal( textBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).not.toBe( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).not.toBe( nestedInnerDivBefore );
+				expect( headingAfter, 'p' ).not.toBe( paragraphBefore );
+				expect( textAfter, '$text' ).not.toBe( textBefore );
 				expect( paragraph2After, 'p' ).toBe( paragraph2Before );
 				expect( text2After, '$text' ).toBe( text2Before );
 				expect( spy ).toHaveBeenCalled();
@@ -3055,8 +3055,8 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
 				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
-				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
-				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).not.toBe( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).not.toBe( nestedInnerDivBefore );
 				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
 				expect( textAfter, '$text' ).toBe( textBefore );
 				expect( spy ).toHaveBeenCalled();
@@ -3509,7 +3509,7 @@ describe( 'DowncastHelpers', () => {
 			expect( viewToString( viewRoot ) ).toBe( '<div><p>நிலைக்கு</p></div>' );
 		} );
 
-		it( 'should be possible to override ', () => {
+		it( 'should be possible to override', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
 
 			downcastHelpers.attributeToElement( {
@@ -4178,11 +4178,9 @@ describe( 'DowncastHelpers', () => {
 					} );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal(
-					'<div><p>fo' +
+				expect( viewToString( viewRoot ) ).toEqual( '<div><p>fo' +
 					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
-					'<span class="marker:2-end"></span>ar</p></div>'
-				);
+					'<span class="marker:2-end"></span>ar</p></div>' );
 			} );
 
 			it( 'should keep adjacent marker boundaries in model order when the second marker is added later', () => {
@@ -4209,11 +4207,9 @@ describe( 'DowncastHelpers', () => {
 					} );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal(
-					'<div><p>fo' +
+				expect( viewToString( viewRoot ) ).toEqual( '<div><p>fo' +
 					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
-					'<span class="marker:2-end"></span>ar</p></div>'
-				);
+					'<span class="marker:2-end"></span>ar</p></div>' );
 			} );
 
 			it( 'adjacent markers do not overlap regardless of creation order', () => {
@@ -4396,11 +4392,9 @@ describe( 'DowncastHelpers', () => {
 					);
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal(
-					'<div><p>f<strong>o' +
+				expect( viewToString( viewRoot ) ).toEqual( '<div><p>f<strong>o' +
 					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
-					'<span class="marker:2-end"></span>a</strong>r</p></div>'
-				);
+					'<span class="marker:2-end"></span>a</strong>r</p></div>' );
 			} );
 
 			it( 'should not change adjacent marker positions when bold is removed from text spanning the boundary', () => {
@@ -4433,11 +4427,9 @@ describe( 'DowncastHelpers', () => {
 					} );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal(
-					'<div><p>f<strong>o' +
+				expect( viewToString( viewRoot ) ).toEqual( '<div><p>f<strong>o' +
 					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
-					'<span class="marker:2-end"></span>a</strong>r</p></div>'
-				);
+					'<span class="marker:2-end"></span>a</strong>r</p></div>' );
 
 				// Remove bold from the same range.
 				model.change( writer => {
@@ -4447,11 +4439,9 @@ describe( 'DowncastHelpers', () => {
 					);
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal(
-					'<div><p>fo' +
+				expect( viewToString( viewRoot ) ).toEqual( '<div><p>fo' +
 					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
-					'<span class="marker:2-end"></span>ar</p></div>'
-				);
+					'<span class="marker:2-end"></span>ar</p></div>' );
 			} );
 
 			it( 'should keep adjacent marker boundary order when one marker is inside bold and the other is not', () => {
@@ -4489,12 +4479,10 @@ describe( 'DowncastHelpers', () => {
 					} );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal(
-					'<div><p><strong>f' +
+				expect( viewToString( viewRoot ) ).toEqual( '<div><p><strong>f' +
 					'<span class="marker:1-start"></span>oo</strong>' +
 					'<span class="marker:1-end"></span><span class="marker:2-start"></span>' +
-					'ba<span class="marker:2-end"></span>r</p></div>'
-				);
+					'ba<span class="marker:2-end"></span>r</p></div>' );
 			} );
 
 			it( 'should keep adjacent marker boundary order when the second marker is inside bold and the first is not', () => {
@@ -4532,12 +4520,10 @@ describe( 'DowncastHelpers', () => {
 					} );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal(
-					'<div><p>f' +
+				expect( viewToString( viewRoot ) ).toEqual( '<div><p>f' +
 					'<span class="marker:1-start"></span>oo' +
 					'<span class="marker:1-end"></span><span class="marker:2-start"></span>' +
-					'<strong>ba<span class="marker:2-end"></span>r</strong></p></div>'
-				);
+					'<strong>ba<span class="marker:2-end"></span>r</strong></p></div>' );
 			} );
 
 			it( 'should preserve adjacent marker positions when container element is renamed', () => {
@@ -4564,22 +4550,18 @@ describe( 'DowncastHelpers', () => {
 					} );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal(
-					'<div><p>fo' +
+				expect( viewToString( viewRoot ) ).toEqual( '<div><p>fo' +
 					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
-					'<span class="marker:2-end"></span>ar</p></div>'
-				);
+					'<span class="marker:2-end"></span>ar</p></div>' );
 
 				// Rename paragraph to heading1 — triggers reconversion of the container element.
 				model.change( writer => {
 					writer.rename( modelElement, 'heading1' );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal(
-					'<div><h1>fo' +
+				expect( viewToString( viewRoot ) ).toEqual( '<div><h1>fo' +
 					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
-					'<span class="marker:2-end"></span>ar</h1></div>'
-				);
+					'<span class="marker:2-end"></span>ar</h1></div>' );
 			} );
 
 			it( 'should not convert if consumable was consumed', () => {
@@ -4737,9 +4719,8 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:2', { range: collapsedAt3( writer ), usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>foo<span class="marker:1-start"></span><span class="marker:2-start"></span>bar</p></div>'
-					);
+					expect( viewToString( viewRoot ) )
+						.toEqual( '<div><p>foo<span class="marker:1-start"></span><span class="marker:2-start"></span>bar</p></div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -4751,9 +4732,8 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range: collapsedAt3( writer ), usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>foo<span class="marker:2-start"></span><span class="marker:1-start"></span>bar</p></div>'
-					);
+					expect( viewToString( viewRoot ) )
+						.toEqual( '<div><p>foo<span class="marker:2-start"></span><span class="marker:1-start"></span>bar</p></div>' );
 				} );
 
 				it( 'collapsed marker at the start of a non-collapsed marker lands after its start element', () => {
@@ -5090,12 +5070,10 @@ describe( 'DowncastHelpers', () => {
 						writer.removeMarker( 'marker:1' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div>' +
 							'<span class="injected"></span>' +
 							'<p></p>' +
-						'</div>'
-					);
+						'</div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:1', {
@@ -5146,12 +5124,10 @@ describe( 'DowncastHelpers', () => {
 						writer.removeMarker( 'marker:1' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'foobar' +
 							'<span class="orphan"></span>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:1', {
@@ -5198,13 +5174,11 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:2', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:2"></marker-start>' +
 							'foobar' +
 							'<marker-end name="marker:2"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:1', { range, usingOperation: false } );
@@ -5223,13 +5197,11 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>' +
 							'foobar' +
 							'<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:2', { range, usingOperation: false } );
@@ -5264,14 +5236,12 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:2"></marker-start>' +
 							'foo' +
 							'<marker-end name="marker:2"></marker-end>' +
 							'bar' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
@@ -5290,13 +5260,11 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>' +
 							'foobar' +
 							'<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
@@ -5331,14 +5299,12 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'foo' +
 							'<marker-start name="marker:2"></marker-start>' +
 							'bar' +
 							'<marker-end name="marker:2"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
@@ -5358,13 +5324,11 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>' +
 							'foobar' +
 							'<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
@@ -5403,23 +5367,19 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:3', { range: range3, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'foo<marker-start name="marker:3"></marker-start>b<marker-end name="marker:3"></marker-end>ar' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:2', { range: range2, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'fo<marker-start name="marker:2"></marker-start>o' +
 							'<marker-start name="marker:3"></marker-start>b<marker-end name="marker:3"></marker-end>a' +
 							'<marker-end name="marker:2"></marker-end>r' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:1', { range: range1, usingOperation: false } );
@@ -5439,24 +5399,20 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range: range1, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>foobar<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:2', { range: range2, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>fo' +
 							'<marker-start name="marker:2"></marker-start>oba' +
 							'<marker-end name="marker:2"></marker-end>r' +
 							'<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:3', { range: range3, usingOperation: false } );
@@ -5480,27 +5436,23 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>' +
 							'<marker-start name="marker:2"></marker-start>' +
 							'foobar' +
 							'<marker-end name="marker:2"></marker-end>' +
 							'<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:2' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>' +
 							'foobar' +
 							'<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 				} );
 
 				it( 'should preserve boundaries when removing the outer marker from shared end ranges', () => {
@@ -5523,29 +5475,25 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>' +
 							'foo' +
 							'<marker-start name="marker:2"></marker-start>' +
 							'bar' +
 							'<marker-end name="marker:2"></marker-end>' +
 							'<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'foo' +
 							'<marker-start name="marker:2"></marker-start>' +
 							'bar' +
 							'<marker-end name="marker:2"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 				} );
 
 				it( 'should preserve boundaries when removing the middle marker from three nested markers', () => {
@@ -5580,26 +5528,22 @@ describe( 'DowncastHelpers', () => {
 						} );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>fo' +
 							'<marker-start name="marker:2"></marker-start>o' +
 							'<marker-start name="marker:3"></marker-start>b<marker-end name="marker:3"></marker-end>a' +
 							'<marker-end name="marker:2"></marker-end>r<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:2' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>fo' +
 							'o<marker-start name="marker:3"></marker-start>b<marker-end name="marker:3"></marker-end>a' +
 							'r<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 				} );
 
 				it( 'should preserve boundaries when removing the middle marker then the outer marker from three stacked markers', () => {
@@ -5623,8 +5567,7 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>' +
 							'<marker-start name="marker:2"></marker-start>' +
 							'<marker-start name="marker:3"></marker-start>' +
@@ -5632,34 +5575,29 @@ describe( 'DowncastHelpers', () => {
 							'<marker-end name="marker:3"></marker-end>' +
 							'<marker-end name="marker:2"></marker-end>' +
 							'<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:2' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:1"></marker-start>' +
 							'<marker-start name="marker:3"></marker-start>' +
 							'foobar' +
 							'<marker-end name="marker:3"></marker-end>' +
 							'<marker-end name="marker:1"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'<marker-start name="marker:3"></marker-start>' +
 							'foobar' +
 							'<marker-end name="marker:3"></marker-end>' +
-						'</p></div>'
-					);
+						'</p></div>' );
 				} );
 
 				it( 'should produce a deterministic view when three stacked markers are removed and re-added in correct order', () => {
@@ -5735,13 +5673,11 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:aaa', { range: collapsedAt3( writer ), usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'foo' +
 							'<marker-start name="marker:zzz"></marker-start><marker-start name="marker:aaa"></marker-start>' +
 							'bar' +
-						'</p></div>'
-					);
+						'</p></div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:zzz' );
@@ -5756,13 +5692,11 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:zzz', { range: collapsedAt3( writer ), usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div><p>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div><p>' +
 							'foo' +
 							'<marker-start name="marker:aaa"></marker-start><marker-start name="marker:zzz"></marker-start>' +
 							'bar' +
-						'</p></div>'
-					);
+						'</p></div>' );
 				} );
 			} );
 		} );
@@ -6471,16 +6405,14 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div>' +
 						'<p>' +
 						'<span class="highlight-class" title="title">foo</span>' +
 						'</p>' +
 						'<p>' +
 						'<span class="highlight-class" title="title">bar</span>' +
 						'</p>' +
-						'</div>'
-					);
+						'</div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker' );
@@ -6501,16 +6433,14 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div>' +
 						'<p>' +
 						'<span class="override-class">foo</span>' +
 						'</p>' +
 						'<p>' +
 						'<span class="override-class">bar</span>' +
 						'</p>' +
-						'</div>'
-					);
+						'</div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker' );
@@ -6583,22 +6513,19 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'markerFoo', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div>' +
 						'<p>' +
 						'<span class="foo">foo</span>' +
 						'</p>' +
 						'<p>bar</p>' +
-						'</div>'
-					);
+						'</div>' );
 
 					model.change( writer => {
 						const range = writer.createRange( writer.createPositionAt( p1, 1 ), writer.createPositionAt( p2, 2 ) );
 						writer.addMarker( 'markerBar', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div>' +
 						'<p>' +
 						'<span class="foo">f</span>' +
 						'<span class="bar">' +
@@ -6609,16 +6536,14 @@ describe( 'DowncastHelpers', () => {
 						'<span class="bar">ba</span>' +
 						'r' +
 						'</p>' +
-						'</div>'
-					);
+						'</div>' );
 
 					model.change( writer => {
 						const range = writer.createRange( writer.createPositionAt( p1, 2 ), writer.createPositionAt( p2, 3 ) );
 						writer.addMarker( 'markerXyz', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div>' +
 						'<p>' +
 						'<span class="foo">f</span>' +
 						'<span class="bar">' +
@@ -6634,15 +6559,13 @@ describe( 'DowncastHelpers', () => {
 						'</span>' +
 						'<span class="xyz">r</span>' +
 						'</p>' +
-						'</div>'
-					);
+						'</div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'markerBar' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div>' +
 						'<p>' +
 						'<span class="foo">' +
 						'fo' +
@@ -6652,15 +6575,13 @@ describe( 'DowncastHelpers', () => {
 						'<p>' +
 						'<span class="xyz">bar</span>' +
 						'</p>' +
-						'</div>'
-					);
+						'</div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'markerFoo' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div>' +
 						'<p>' +
 						'fo' +
 						'<span class="xyz">o</span>' +
@@ -6668,8 +6589,7 @@ describe( 'DowncastHelpers', () => {
 						'<p>' +
 						'<span class="xyz">bar</span>' +
 						'</p>' +
-						'</div>'
-					);
+						'</div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'markerXyz' );
@@ -6749,13 +6669,11 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div>' +
 						'<div class="highlight-class">' +
 						'foo' +
 						'</div>' +
-						'</div>'
-					);
+						'</div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker' );
@@ -6775,13 +6693,11 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal(
-						'<div>' +
+					expect( viewToString( viewRoot ) ).toEqual( '<div>' +
 						'<div class="override-class">' +
 						'foo' +
 						'</div>' +
-						'</div>'
-					);
+						'</div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker' );
@@ -7391,9 +7307,8 @@ describe( 'downcast selection converters', () => {
 				} );
 
 				// Stringify view and check if it is same as expected.
-				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal(
-					'<div>f<span class="marker">o<strong>o{}b</strong>a</span>r</div>'
-				);
+				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
+					.toEqual( '<div>f<span class="marker">o<strong>o{}b</strong>a</span>r</div>' );
 			} );
 
 			it( 'in attribute and marker - no attribute', () => {

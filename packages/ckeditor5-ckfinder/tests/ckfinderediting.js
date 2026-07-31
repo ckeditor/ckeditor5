@@ -64,39 +64,31 @@ describe( 'CKFinderEditing', () => {
 	} );
 
 	it( 'should throw if there is no image plugin loaded', async () => {
-		try {
-			const editor = await ClassicTestEditor.create( editorElement, {
+		await expect(
+			ClassicTestEditor.create( editorElement, {
 				plugins: [ CKFinderUploadAdapter, Link, CKFinder ]
-			} );
-
-			await editor.destroy();
-		} catch ( e ) {
-			expect( e.message ).toMatch( /^ckfinder-missing-image-plugin/ );
-		}
+			} )
+		).rejects.toThrow( /^ckfinder-missing-image-plugin/ );
 	} );
 
 	it( 'should work if only ImageBlockEditing is loaded', async () => {
-		try {
-			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ CKFinderUploadAdapter, ImageBlock, Link, CKFinder ]
-			} );
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ CKFinderUploadAdapter, ImageBlock, Link, CKFinder ]
+		} );
 
-			await editor.destroy();
-		} catch {
-			expect.fail( 'Error should not be thrown.' );
-		}
+		expect( editor.plugins.get( CKFinderEditing ) ).toBeInstanceOf( CKFinderEditing );
+
+		await editor.destroy();
 	} );
 
 	it( 'should work if only ImageInlineEditing is loaded', async () => {
-		try {
-			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ CKFinderUploadAdapter, ImageInline, Link, CKFinder ]
-			} );
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ CKFinderUploadAdapter, ImageInline, Link, CKFinder ]
+		} );
 
-			await editor.destroy();
-		} catch {
-			expect.fail( 'Error should not be thrown.' );
-		}
+		expect( editor.plugins.get( CKFinderEditing ) ).toBeInstanceOf( CKFinderEditing );
+
+		await editor.destroy();
 	} );
 
 	it( 'should register command', () => {

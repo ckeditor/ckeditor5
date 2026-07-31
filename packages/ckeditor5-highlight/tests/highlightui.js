@@ -199,7 +199,9 @@ describe( 'HighlightUI', () => {
 				document.body.appendChild( dropdown.element );
 
 				// Make sure that toolbar view is not created before first dropdown open.
-				expect( dropdown.toolbarView ).toBeUndefined();
+				if ( dropdown.toolbarView !== undefined ) {
+					throw new Error( 'The toolbar view should be created lazily.' );
+				}
 
 				// Trigger toolbar view creation (lazy init).
 				dropdown.isOpen = true;
@@ -213,28 +215,28 @@ describe( 'HighlightUI', () => {
 				dropdown.element.remove();
 			} );
 
-			function validateButton( which ) {
+			function expectButton( which ) {
 				expect( button.icon ).toBe( buttons[ which ].icon );
 				expect( button.actionView.iconView.fillColor ).toBe( options[ which ].color );
 			}
 
 			it( 'should have properties of first defined highlighter', () => {
-				validateButton( 0 );
+				expectButton( 0 );
 			} );
 
 			it( 'should change button on selection', () => {
 				command.value = 'redPen';
 
-				validateButton( 4 );
+				expectButton( 4 );
 
 				command.value = undefined;
 
-				validateButton( 0 );
+				expectButton( 0 );
 			} );
 
 			it( 'should change button on execute option', () => {
 				command.value = 'yellowMarker';
-				validateButton( 0 );
+				expectButton( 0 );
 
 				buttons[ 5 ].fire( 'execute' );
 				command.value = 'greenPen';
@@ -242,7 +244,7 @@ describe( 'HighlightUI', () => {
 				// Simulate selection moved to not highlighted text.
 				command.value = undefined;
 
-				validateButton( 5 );
+				expectButton( 5 );
 			} );
 
 			it( 'should execute the command only once', () => {

@@ -1081,7 +1081,7 @@ describe( 'TooltipManager', () => {
 
 	describe( '#defaultPositions', () => {
 		it( 'should be defined', () => {
-
+			expect( TooltipManager.defaultBalloonPositions ).toBeDefined();
 		} );
 	} );
 } );

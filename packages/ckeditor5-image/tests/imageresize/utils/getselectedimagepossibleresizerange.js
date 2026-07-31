@@ -34,19 +34,19 @@ describe( 'getSelectedImagePossibleResizeRange', () => {
 
 	it( 'should return null if image is not selected', () => {
 		_setModelData( model, '<imageBlock resizedWidth="50px"></imageBlock>[<paragraph>ABC</paragraph>]' );
-		expect( getSelectedImagePossibleResizeRange( editor, '%' ) ).to.be.null;
+		expect( getSelectedImagePossibleResizeRange( editor, '%' ) ).toBeNull();
 	} );
 
 	it( 'should return proper resize range', () => {
 		_setModelData( model, '[<imageBlock resizedWidth="50px"></imageBlock>]' );
 
-		expect( getSelectedImagePossibleResizeRange( editor, '%' ) ).to.be.deep.equal( {
+		expect( getSelectedImagePossibleResizeRange( editor, '%' ) ).toEqual( {
 			unit: '%',
 			lower: 10,
 			upper: 100
 		} );
 
-		expect( getSelectedImagePossibleResizeRange( editor, 'px' ) ).to.be.deep.equal( {
+		expect( getSelectedImagePossibleResizeRange( editor, 'px' ) ).toEqual( {
 			unit: 'px',
 			lower: 50,
 			upper: 500
@@ -67,13 +67,13 @@ describe( 'getSelectedImagePossibleResizeRange', () => {
 			};
 		};
 
-		expect( getSelectedImagePossibleResizeRange( editor, '%' ) ).to.be.deep.equal( {
+		expect( getSelectedImagePossibleResizeRange( editor, '%' ) ).toEqual( {
 			unit: '%',
 			lower: 0.2,
 			upper: 100
 		} );
 
-		expect( getSelectedImagePossibleResizeRange( editor, 'px' ) ).to.be.deep.equal( {
+		expect( getSelectedImagePossibleResizeRange( editor, 'px' ) ).toEqual( {
 			unit: 'px',
 			lower: 1,
 			upper: 500

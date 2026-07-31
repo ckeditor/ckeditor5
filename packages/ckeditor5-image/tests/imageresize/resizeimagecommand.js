@@ -156,13 +156,12 @@ describe( 'ResizeImageCommand', () => {
 				command.execute( { width: '100%' } );
 				await timeout( 100 );
 
-				expect( _getModelData( model ) ).to.equal(
-					'[<imageBlock height="96" resizedWidth="100%" src="/sample.png" width="96"></imageBlock>]'
-				);
+				expect( _getModelData( model ) )
+					.toEqual( '[<imageBlock height="96" resizedWidth="100%" src="/sample.png" width="96"></imageBlock>]' );
 
 				editor.execute( 'undo' );
 
-				expect( _getModelData( model ) ).to.equal( initialData );
+				expect( _getModelData( model ) ).toEqual( initialData );
 			} );
 
 			it( 'should set width and height when resizedWidth is removed (and be undoable in single step)', async () => {
@@ -173,11 +172,11 @@ describe( 'ResizeImageCommand', () => {
 				command.execute( { width: null } );
 				await timeout( 100 );
 
-				expect( _getModelData( model ) ).to.equal( '[<imageBlock height="96" src="/sample.png" width="96"></imageBlock>]' );
+				expect( _getModelData( model ) ).toEqual( '[<imageBlock height="96" src="/sample.png" width="96"></imageBlock>]' );
 
 				editor.execute( 'undo' );
 
-				expect( _getModelData( model ) ).to.equal( initialData );
+				expect( _getModelData( model ) ).toEqual( initialData );
 			} );
 		} );
 	} );

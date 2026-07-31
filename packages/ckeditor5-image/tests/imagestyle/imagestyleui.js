@@ -249,7 +249,8 @@ describe( 'ImageStyleUI', () => {
 				view.render();
 				global.document.body.appendChild( view.element );
 
-				// Make sure that toolbar view is not created before first dropdown open.
+				// Make sure that toolbar view is not created before first dropdown open (a sanity check of the setup).
+				// eslint-disable-next-line vitest/no-standalone-expect
 				expect( view.toolbarView ).toBeUndefined();
 
 				// Trigger toolbar view creation (lazy init).
@@ -476,7 +477,7 @@ describe( 'ImageStyleUI', () => {
 				}
 			} );
 
-			it( 'it should open the dropDown view when the button is being clicked', () => {
+			it( 'should open the dropDown view when the button is being clicked', () => {
 				const commandSpy = vi.spyOn( editor, 'execute' );
 
 				for ( const { view, buttonView } of dropdowns ) {
@@ -487,7 +488,7 @@ describe( 'ImageStyleUI', () => {
 				}
 			} );
 
-			it( 'it should close the open dropDown view when the button is being clicked', () => {
+			it( 'should close the open dropDown view when the button is being clicked', () => {
 				const commandSpy = vi.spyOn( editor, 'execute' );
 
 				for ( const { view, buttonView } of dropdowns ) {
@@ -516,7 +517,7 @@ describe( 'ImageStyleUI', () => {
 				}
 			} );
 
-			it( 'it should execute the command with proper value when the button is being clicked', () => {
+			it( 'should execute the command with proper value when the button is being clicked', () => {
 				const commandSpy = vi.spyOn( editor, 'execute' );
 				const focusSpy = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 

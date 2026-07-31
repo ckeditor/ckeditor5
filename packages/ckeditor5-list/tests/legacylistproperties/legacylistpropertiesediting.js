@@ -1193,7 +1193,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should not add the `listStyle` attribute while switching the list type', () => {
@@ -1201,7 +1201,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should remove the `listStyle` attribute while switching the list type that uses the list style feature', () => {
@@ -1209,7 +1209,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should  not inherit the list style attribute when inserting a todo list item', () => {
@@ -2871,7 +2871,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should not add the `listReversed` attribute while switching the list type', () => {
@@ -2879,7 +2879,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should remove the `listReversed` attribute while switching the list type that uses the list style feature', () => {
@@ -2887,7 +2887,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should not inherit the `listReversed` attribute when inserting a todo list item', () => {
@@ -4579,7 +4579,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should not add the `listStart` attribute while switching the list type', () => {
@@ -4587,7 +4587,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should remove the `listStart` attribute while switching the list type that uses the list style feature', () => {
@@ -4595,7 +4595,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should not inherit the `listStart` attribute when inserting a todo list item', () => {
@@ -5703,7 +5703,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 			} );
 		} );

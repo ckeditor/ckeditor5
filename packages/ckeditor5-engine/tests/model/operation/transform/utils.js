@@ -374,7 +374,7 @@ export function syncClients() {
 
 export function expectClients( expectedModelString ) {
 	for ( const client of clients ) {
-		expect( client.getModelString(), client.name + ' content' ).to.equal( expectedModelString );
+		expect( client.getModelString(), client.name + ' content' ).toEqual( expectedModelString );
 	}
 
 	let syncedVersion = null;
@@ -385,7 +385,7 @@ export function expectClients( expectedModelString ) {
 			continue;
 		}
 
-		expect( client.syncedVersion, client.name + ' version' ).to.equal( syncedVersion );
+		expect( client.syncedVersion, client.name + ' version' ).toEqual( syncedVersion );
 	}
 }
 

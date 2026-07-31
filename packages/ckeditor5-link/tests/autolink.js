@@ -36,6 +36,8 @@ describe( 'AutoLink', () => {
 			plugins: [ Paragraph, Input, LinkEditing, AutoLink ]
 		} );
 
+		expect( editor.plugins.has( AutoLink ) ).toBe( true );
+
 		await editor.destroy();
 	} );
 

@@ -40,7 +40,7 @@ describe( 'ObservableMixin', () => {
 		const observable = new ObservableClass( 5 );
 
 		expect( observable ).to.be.instanceOf( TestClass );
-		expect( observable.value ).to.equal( 5 );
+		expect( observable.value ).toEqual( 5 );
 
 		for ( const key of [ 'set', 'bind', 'unbind' ] ) {
 			expect( observable ).to.have.property( key );
@@ -61,7 +61,7 @@ describe( 'ObservableMixin', () => {
 		const observable = new ObservableClass( 5 );
 
 		expect( observable ).to.be.instanceOf( TestClass );
-		expect( observable.value ).to.equal( 5 );
+		expect( observable.value ).toEqual( 5 );
 
 		for ( const key of [ 'set', 'bind', 'unbind' ] ) {
 			expect( observable ).to.have.property( key );
@@ -99,7 +99,7 @@ describe( 'Observable', () => {
 	it( 'should get correctly after set', () => {
 		car.color = 'blue';
 
-		expect( car.color ).to.equal( 'blue' );
+		expect( car.color ).toEqual( 'blue' );
 	} );
 
 	describe( 'set()', () => {
@@ -284,7 +284,7 @@ describe( 'Observable', () => {
 
 			expect( spy ).toHaveBeenCalledTimes( 1 );
 			expect( car ).to.contain.keys( 'seats' );
-			expect( car.seats ).to.be.undefined;
+			expect( car.seats ).toBeUndefined();
 
 			car.set( 'seats', 5 );
 
@@ -337,7 +337,7 @@ describe( 'Observable', () => {
 			it( 'should not chain', () => {
 				expect(
 					car.bind( 'color' ).to( new BaseObservable( { color: 'red' } ) )
-				).to.be.undefined;
+				).toBeUndefined();
 			} );
 
 			it( 'should throw when arguments are of invalid type - empty', () => {
@@ -850,7 +850,7 @@ describe( 'Observable', () => {
 			it( 'should not chain', () => {
 				expect(
 					car.bind( 'color' ).toMany( [ new BaseObservable( { color: 'red' } ) ], 'color', () => {} )
-				).to.be.undefined;
+				).toBeUndefined();
 			} );
 
 			it( 'should throw when binding multiple properties', () => {
@@ -880,19 +880,19 @@ describe( 'Observable', () => {
 					return !areEnabled.every( isTyrePressureOK => isTyrePressureOK );
 				} );
 
-				expect( car.showTyrePressureWarning ).to.be.false;
+				expect( car.showTyrePressureWarning ).toBe( false );
 
 				wheels[ 0 ].isTyrePressureOK = false;
 
-				expect( car.showTyrePressureWarning ).to.be.true;
+				expect( car.showTyrePressureWarning ).toBe( true );
 
 				wheels[ 0 ].isTyrePressureOK = true;
 
-				expect( car.showTyrePressureWarning ).to.be.false;
+				expect( car.showTyrePressureWarning ).toBe( false );
 
 				wheels[ 1 ].isTyrePressureOK = false;
 
-				expect( car.showTyrePressureWarning ).to.be.true;
+				expect( car.showTyrePressureWarning ).toBe( true );
 			} );
 		} );
 	} );
@@ -901,7 +901,7 @@ describe( 'Observable', () => {
 		it( 'should not fail when unbinding a fresh observable', () => {
 			const observable = new BaseObservable();
 
-			observable.unbind();
+			expect( () => observable.unbind() ).to.not.throw();
 		} );
 
 		it( 'should not fail when unbinding property that is not bound', () => {
@@ -1002,7 +1002,7 @@ describe( 'Observable', () => {
 			foo.method( 1, 2 );
 
 			expect( spy ).toHaveBeenCalledTimes( 1 );
-			expect( spy.mock.calls[ 0 ][ 1 ] ).to.deep.equal( [ 1, 2 ] );
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( [ 1, 2 ] );
 		} );
 
 		it( 'executes the original method in a listener with the default priority', () => {
@@ -1023,7 +1023,7 @@ describe( 'Observable', () => {
 
 			foo.method();
 
-			expect( calls ).to.deep.equal( [ 'high', 'original', 'low' ] );
+			expect( calls ).toEqual( [ 'high', 'original', 'low' ] );
 		} );
 
 		it( 'supports overriding return values', () => {
@@ -1038,18 +1038,18 @@ describe( 'Observable', () => {
 			foo.decorate( 'method' );
 
 			foo.on( 'method', evt => {
-				expect( evt.return ).to.equal( 1 );
+				expect( evt.return ).toEqual( 1 );
 
 				evt.return = 2;
 			} );
 
-			expect( foo.method() ).to.equal( 2 );
+			expect( foo.method() ).toEqual( 2 );
 		} );
 
 		it( 'supports overriding arguments', () => {
 			class Foo extends BaseObservable {
 				method( a ) {
-					expect( a ).to.equal( 2 );
+					expect( a ).toEqual( 2 );
 				}
 			}
 
@@ -1079,7 +1079,8 @@ describe( 'Observable', () => {
 				evt.stop();
 			}, { priority: 'high' } );
 
-			foo.method();
+			// The original method would throw if it was executed.
+			expect( () => foo.method() ).to.not.throw();
 		} );
 
 		it( 'throws when trying to decorate non existing method', () => {
@@ -1113,10 +1114,10 @@ describe( 'Observable', () => {
 			foo.methodBar( '123' );
 
 			expect( spyFoo ).toHaveBeenCalledTimes( 1 );
-			expect( spyFoo.mock.calls[ 0 ][ 1 ] ).to.deep.equal( [ 'abc' ] );
+			expect( spyFoo.mock.calls[ 0 ][ 1 ] ).toEqual( [ 'abc' ] );
 
 			expect( spyBar ).toHaveBeenCalledTimes( 1 );
-			expect( spyBar.mock.calls[ 0 ][ 1 ] ).to.deep.equal( [ '123' ] );
+			expect( spyBar.mock.calls[ 0 ][ 1 ] ).toEqual( [ '123' ] );
 		} );
 
 		it( 'should reverts decorated methods to the original method on stopListening for all events', () => {
@@ -1130,11 +1131,11 @@ describe( 'Observable', () => {
 
 			foo.decorate( 'method' );
 
-			expect( foo.method ).to.not.equal( originalMethod );
+			expect( foo.method ).not.toBe( originalMethod );
 
 			foo.stopListening();
 
-			expect( foo.method ).to.equal( originalMethod );
+			expect( foo.method ).toEqual( originalMethod );
 		} );
 
 		it( 'should not revert decorated methods to the original method on stopListening for specific emitter', () => {
@@ -1148,11 +1149,11 @@ describe( 'Observable', () => {
 
 			foo.decorate( 'method' );
 
-			expect( foo.method ).to.not.equal( originalMethod );
+			expect( foo.method ).not.toBe( originalMethod );
 
 			foo.stopListening( new ( ObservableMixin() )() );
 
-			expect( foo.method ).to.not.equal( originalMethod );
+			expect( foo.method ).not.toBe( originalMethod );
 		} );
 	} );
 } );

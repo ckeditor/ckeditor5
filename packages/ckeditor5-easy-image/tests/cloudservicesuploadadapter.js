@@ -97,22 +97,18 @@ describe( 'CloudServicesUploadAdapter', () => {
 		} );
 
 		describe( 'upload()', () => {
-			it( 'should mock upload', () => {
-				return new Promise( ( resolve, reject ) => {
-					const loader = fileRepository.createLoader( createNativeFileMock() );
+			it( 'should mock upload', async () => {
+				const loader = fileRepository.createLoader( createNativeFileMock() );
+				const uploadPromise = loader.upload();
 
-					loader.upload()
-						.then( response => {
-							expect( response.default ).toBe( 'http://image.mock.url/' );
-							resolve();
-						} )
-						.catch( err => reject( err ) );
-
-					// Wait for the promise from the mock.getUploader().
-					setTimeout( () => {
-						upload._uploadGateway.resolveLastUpload();
-					} );
+				// Wait for the promise from the mock.getUploader().
+				setTimeout( () => {
+					upload._uploadGateway.resolveLastUpload();
 				} );
+
+				const response = await uploadPromise;
+
+				expect( response.default ).toBe( 'http://image.mock.url/' );
 			} );
 
 			it( 'should update the progress', () => {

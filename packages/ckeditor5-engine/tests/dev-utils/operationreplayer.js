@@ -130,7 +130,9 @@ describe( 'OperationReplayer', () => {
 
 			const operationReplayer = new OperationReplayer( model, '---', '' );
 
-			return operationReplayer.play();
+			return operationReplayer.play().then( () => {
+				expect( operationReplayer.getOperationsToReplay().length ).toBe( 0 );
+			} );
 		} );
 
 		it( 'should correctly handle errors coming from the engine', () => {

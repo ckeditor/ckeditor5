@@ -199,7 +199,7 @@ describe( 'CodeBlock - utils', () => {
 		);
 
 		function test( input, output ) {
-			it( input, () => {
+			it( `gets the text node at the line start for "${ input }"`, () => {
 				_setModelData( model, input );
 
 				const textNode = getTextNodeAtLineStart( model.document.selection.getFirstPosition(), model );
@@ -210,11 +210,10 @@ describe( 'CodeBlock - utils', () => {
 					} );
 				}
 
-				if ( output ) {
-					expect( _getModelData( model ) ).toBe( output );
-				} else {
-					expect( textNode ).toBeNull();
-				}
+				// When no output is expected, the test checks that no text node was found instead.
+				const actualResult = output ? _getModelData( model ) : textNode;
+
+				expect( actualResult ).toBe( output || null );
 			} );
 		}
 	} );

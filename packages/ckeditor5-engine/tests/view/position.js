@@ -234,8 +234,8 @@ describe( 'ViewPosition', () => {
 			const position1 = new ViewPosition( e1, 0 );
 			const position2 = new ViewPosition( e2, 1 );
 
-			expect( position1.isBefore( position2 ) );
-			expect( position2.isBefore( position1 ) );
+			expect( position1.isBefore( position2 ) ).toBe( false );
+			expect( position2.isBefore( position1 ) ).toBe( false );
 		} );
 
 		it( 'should return true if position is before in same node', () => {
@@ -292,8 +292,8 @@ describe( 'ViewPosition', () => {
 			const position1 = new ViewPosition( e1, 0 );
 			const position2 = new ViewPosition( e2, 1 );
 
-			expect( position1.isAfter( position2 ) );
-			expect( position2.isAfter( position1 ) );
+			expect( position1.isAfter( position2 ) ).toBe( false );
+			expect( position2.isAfter( position1 ) ).toBe( false );
 		} );
 
 		it( 'should return true if position is after in same node', () => {

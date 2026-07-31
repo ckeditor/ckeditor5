@@ -1160,7 +1160,9 @@ describe( 'Widget', () => {
 				}
 			);
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			expect( () => {
+				viewDocument.fire( 'mousedown', domEventDataMock );
+			} ).not.toThrow();
 		} );
 	} );
 
@@ -3031,7 +3033,7 @@ describe( 'Widget', () => {
 		} );
 
 		function test( name, data, actions, expected, expectedView, contentLanguageDirection = 'ltr', stubCalls = null, modelOptions ) {
-			it( name, () => {
+			it( `${ name }`, () => {
 				vi.spyOn( editor.locale, 'contentLanguageDirection', 'get' ).mockReturnValue( contentLanguageDirection );
 
 				const preventDefaultSpy = vi.fn();
@@ -3067,20 +3069,23 @@ describe( 'Widget', () => {
 
 				expect( _getModelData( model ) ).toBe( expected );
 
-				if ( expectedView ) {
-					expect( _getViewData( view ) ).toBe( expectedView );
-				}
+				// The view and stub assertions are optional. To avoid conditional expects, both sides
+				// are normalized to `null` when a given expectation is not provided.
+				const actualViewData = expectedView ? _getViewData( view ) : null;
 
-				if ( stubCalls ) {
-					expect( preventDefaultSpy.mock.calls.length, 'preventDefault' ).toBe( stubCalls.preventDefault );
-				}
+				expect( actualViewData ).toBe( expectedView || null );
+
+				const actualPreventDefaultCalls = stubCalls ? preventDefaultSpy.mock.calls.length : null;
+				const expectedPreventDefaultCalls = stubCalls ? stubCalls.preventDefault : null;
+
+				expect( actualPreventDefaultCalls, 'preventDefault' ).toBe( expectedPreventDefaultCalls );
 			} );
 		}
 	} );
 
 	describe( 'delete integration', () => {
 		function test( name, input, direction, expected ) {
-			it( name, () => {
+			it( `${ name }`, () => {
 				_setModelData( model, input );
 				const scrollStub = vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 

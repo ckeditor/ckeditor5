@@ -870,7 +870,8 @@ describe( 'ClassicEditorUI', () => {
 			const newEditor = await VirtualClassicTestEditor.create( '' );
 
 			await newEditor.destroy();
-			await newEditor.destroy(); // Should not throw.
+
+			await expect( newEditor.destroy() ).resolves.toBeUndefined();
 		} );
 	} );
 

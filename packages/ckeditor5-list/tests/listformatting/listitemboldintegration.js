@@ -48,15 +48,15 @@ describe( 'ListItemBoldIntegration', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListItemBoldIntegration.pluginName ).to.equal( 'ListItemBoldIntegration' );
+		expect( ListItemBoldIntegration.pluginName ).toEqual( 'ListItemBoldIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListItemBoldIntegration.isOfficialPlugin ).to.be.true;
+		expect( ListItemBoldIntegration.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListItemBoldIntegration.isPremiumPlugin ).to.be.false;
+		expect( ListItemBoldIntegration.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
@@ -64,7 +64,7 @@ describe( 'ListItemBoldIntegration', () => {
 	} );
 
 	it( 'should require ListEditing plugin', () => {
-		expect( ListItemBoldIntegration.requires ).to.deep.equal( [
+		expect( ListItemBoldIntegration.requires ).toEqual( [
 			ListEditing
 		] );
 	} );
@@ -78,7 +78,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			const modelElement = new ModelElement( 'myElement', { listItemId: 'a' } );
 
-			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemBold' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemBold' ) ).toBe( true );
 		} );
 
 		it( 'listItemBold attribute should have isFormatting set to true', () => {
@@ -98,15 +98,15 @@ describe( 'ListItemBoldIntegration', () => {
 			const heading = new ModelElement( 'heading1' );
 			const table = new ModelElement( 'table' );
 
-			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemBold' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemBold' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemBold' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemBold' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemBold' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemBold' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemBold' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemBold' ) ).toBe( true );
 
-			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemBold' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemBold' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemBold' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemBold' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemBold' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemBold' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemBold' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemBold' ) ).toBe( false );
 		} );
 	} );
 
@@ -118,15 +118,13 @@ describe( 'ListItemBoldIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<strong>foo</strong>' +
 						'</span>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -147,8 +145,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<strong>foo</strong>' +
@@ -161,8 +158,7 @@ describe( 'ListItemBoldIntegration', () => {
 							'</li>' +
 						'</ul>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -190,8 +186,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<p>' +
 							'<strong>foo</strong>' +
@@ -200,8 +195,7 @@ describe( 'ListItemBoldIntegration', () => {
 							'<strong>bar</strong>' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -226,8 +220,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</blockQuote>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<blockquote>' +
 							'<p>' +
@@ -235,8 +228,7 @@ describe( 'ListItemBoldIntegration', () => {
 							'</p>' +
 						'</blockquote>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -258,15 +250,13 @@ describe( 'ListItemBoldIntegration', () => {
 				'</heading1>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<h2>' +
 							'<strong>foo</strong>' +
 						'</h2>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -286,11 +276,9 @@ describe( 'ListItemBoldIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -313,8 +301,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</table>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-bold">' +
 						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
@@ -332,8 +319,7 @@ describe( 'ListItemBoldIntegration', () => {
 							'</table>' +
 						'</figure>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -364,15 +350,13 @@ describe( 'ListItemBoldIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-bold" style="--ck-content-list-marker-dummy-bold:0">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<strong>foo</strong>' +
 						'</span>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -574,7 +558,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 		it( 'should upcast and consume class', () => {
 			const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-bold' } ) ).to.be.false;
+				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-bold' } ) ).toBe( false );
 			} );
 
 			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:li', upcastCheck, { priority: 'lowest' } ) );
@@ -614,11 +598,10 @@ describe( 'ListItemBoldIntegration', () => {
 
 			const content = spy.mock.calls[ 0 ][ 0 ];
 
-			expect( _stringifyModel( content ) ).to.equal(
-				'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listType="numbered">' +
+			expect( _stringifyModel( content ) )
+				.toEqual( '<paragraph listIndent="0" listItemBold="true" listItemId="a00" listType="numbered">' +
 					'foo' +
-				'</paragraph>'
-			);
+				'</paragraph>' );
 		} );
 
 		function createDataTransfer( data ) {
@@ -665,15 +648,13 @@ describe( 'ListItemBoldIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li>' +
 						'<p>' +
 							'<strong>foo</strong>' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -713,15 +694,13 @@ describe( 'ListItemBoldIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li>' +
 						'<p>' +
 							'foo' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +

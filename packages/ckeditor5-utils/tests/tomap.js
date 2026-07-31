@@ -12,17 +12,17 @@ describe( 'utils', () => {
 		it( 'should create map from object', () => {
 			const map = toMap( { foo: 1, bar: 2 } );
 
-			expect( count( map ) ).to.equal( 2 );
-			expect( map.get( 'foo' ) ).to.equal( 1 );
-			expect( map.get( 'bar' ) ).to.equal( 2 );
+			expect( count( map ) ).toEqual( 2 );
+			expect( map.get( 'foo' ) ).toEqual( 1 );
+			expect( map.get( 'bar' ) ).toEqual( 2 );
 		} );
 
 		it( 'should create map from iterator', () => {
 			const map = toMap( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
 
-			expect( count( map ) ).to.equal( 2 );
-			expect( map.get( 'foo' ) ).to.equal( 1 );
-			expect( map.get( 'bar' ) ).to.equal( 2 );
+			expect( count( map ) ).toEqual( 2 );
+			expect( map.get( 'foo' ) ).toEqual( 1 );
+			expect( map.get( 'bar' ) ).toEqual( 2 );
 		} );
 
 		it( 'should create map from another map', () => {
@@ -30,9 +30,9 @@ describe( 'utils', () => {
 
 			const map = toMap( data );
 
-			expect( count( map ) ).to.equal( 2 );
-			expect( map.get( 'foo' ) ).to.equal( 1 );
-			expect( map.get( 'bar' ) ).to.equal( 2 );
+			expect( count( map ) ).toEqual( 2 );
+			expect( map.get( 'foo' ) ).toEqual( 1 );
+			expect( map.get( 'bar' ) ).toEqual( 2 );
 		} );
 	} );
 } );

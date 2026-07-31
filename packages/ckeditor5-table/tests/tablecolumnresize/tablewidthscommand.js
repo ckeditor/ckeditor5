@@ -52,7 +52,7 @@ describe( 'TableWidthsCommand', () => {
 			.flatMap( row => Array.from( row.getChildren() ) )
 			.some( cell => cell.hasAttribute( 'tableCellWidth' ) );
 
-		expect( anyCellHasWidth ).to.be.false;
+		expect( anyCellHasWidth ).toBe( false );
 	} );
 
 	it( 'should work on the currently selected table if it was not passed to execute()', () => {

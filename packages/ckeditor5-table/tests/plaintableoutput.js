@@ -35,19 +35,19 @@ describe( 'PlainTableOutput', () => {
 	} );
 
 	it( 'requires Table', () => {
-		expect( PlainTableOutput.requires ).to.deep.equal( [ Table ] );
+		expect( PlainTableOutput.requires ).toEqual( [ Table ] );
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( PlainTableOutput.pluginName ).to.equal( 'PlainTableOutput' );
+		expect( PlainTableOutput.pluginName ).toEqual( 'PlainTableOutput' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( PlainTableOutput.isOfficialPlugin ).to.be.true;
+		expect( PlainTableOutput.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( PlainTableOutput.isPremiumPlugin ).to.be.false;
+		expect( PlainTableOutput.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'conversion in data pipeline', () => {
@@ -57,13 +57,11 @@ describe( 'PlainTableOutput', () => {
 					[ 'foo' ]
 				] ) );
 
-				expect( editor.getData() ).to.equal(
-					'<table class="table">' +
+				expect( editor.getData() ).toEqual( '<table class="table">' +
 						'<tbody>' +
 							'<tr><td>foo</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should create heading rows', () => {
@@ -73,8 +71,7 @@ describe( 'PlainTableOutput', () => {
 					[ '5', '6' ]
 				], { headingRows: 2 } ) );
 
-				expect( editor.getData() ).to.equal(
-					'<table class="table">' +
+				expect( editor.getData() ).toEqual( '<table class="table">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
@@ -82,8 +79,7 @@ describe( 'PlainTableOutput', () => {
 						'<tbody>' +
 							'<tr><td>5</td><td>6</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should create heading columns', () => {
@@ -93,15 +89,13 @@ describe( 'PlainTableOutput', () => {
 					[ '5', '6' ]
 				], { headingColumns: 1 } ) );
 
-				expect( editor.getData() ).to.equal(
-					'<table class="table">' +
+				expect( editor.getData() ).toEqual( '<table class="table">' +
 						'<tbody>' +
 							'<tr><th>1</th><td>2</td></tr>' +
 							'<tr><th>3</th><td>4</td></tr>' +
 							'<tr><th>5</th><td>6</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should create heading rows and columns', () => {
@@ -111,8 +105,7 @@ describe( 'PlainTableOutput', () => {
 					[ '5', '6' ]
 				], { headingRows: 1, headingColumns: 1 } ) );
 
-				expect( editor.getData() ).to.equal(
-					'<table class="table">' +
+				expect( editor.getData() ).toEqual( '<table class="table">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 						'</thead>' +
@@ -120,8 +113,7 @@ describe( 'PlainTableOutput', () => {
 							'<tr><th>3</th><td>4</td></tr>' +
 							'<tr><th>5</th><td>6</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should create footer rows', () => {
@@ -131,8 +123,7 @@ describe( 'PlainTableOutput', () => {
 					[ '5', '6' ]
 				], { footerRows: 2 } ) );
 
-				expect( editor.getData() ).to.equal(
-					'<table class="table">' +
+				expect( editor.getData() ).toEqual( '<table class="table">' +
 						'<tbody>' +
 							'<tr><td>1</td><td>2</td></tr>' +
 						'</tbody>' +
@@ -140,8 +131,7 @@ describe( 'PlainTableOutput', () => {
 							'<tr><td>3</td><td>4</td></tr>' +
 							'<tr><td>5</td><td>6</td></tr>' +
 						'</tfoot>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should create footer rows and heading rows', () => {
@@ -152,8 +142,7 @@ describe( 'PlainTableOutput', () => {
 					[ '7', '8' ]
 				], { headingRows: 1, footerRows: 2 } ) );
 
-				expect( editor.getData() ).to.equal(
-					'<table class="table">' +
+				expect( editor.getData() ).toEqual( '<table class="table">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 						'</thead>' +
@@ -164,8 +153,7 @@ describe( 'PlainTableOutput', () => {
 							'<tr><td>5</td><td>6</td></tr>' +
 							'<tr><td>7</td><td>8</td></tr>' +
 						'</tfoot>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should work when heading rows number is bigger than number of rows', () => {
@@ -174,14 +162,12 @@ describe( 'PlainTableOutput', () => {
 					[ '3', '4' ]
 				], { headingRows: 3 } ) );
 
-				expect( editor.getData() ).to.equal(
-					'<table class="table">' +
+				expect( editor.getData() ).toEqual( '<table class="table">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
 						'</thead>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should work when footer rows number is bigger than number of rows', () => {
@@ -190,14 +176,12 @@ describe( 'PlainTableOutput', () => {
 					[ '3', '4' ]
 				], { footerRows: 3 } ) );
 
-				expect( editor.getData() ).to.equal(
-					'<table class="table">' +
+				expect( editor.getData() ).toEqual( '<table class="table">' +
 						'<tfoot>' +
 							'<tr><td>1</td><td>2</td></tr>' +
 							'<tr><td>3</td><td>4</td></tr>' +
 						'</tfoot>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should create caption element', () => {
@@ -211,14 +195,12 @@ describe( 'PlainTableOutput', () => {
 					'</table>'
 				);
 
-				expect( editor.getData() ).to.equal(
-					'<table class="table">' +
+				expect( editor.getData() ).toEqual( '<table class="table">' +
 						'<caption>Foo</caption>' +
 						'<tbody>' +
 							'<tr><td>1</td><td>2</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should not create caption element without TableCaption plugin', async () => {
@@ -235,13 +217,11 @@ describe( 'PlainTableOutput', () => {
 					'</table>'
 				);
 
-				expect( testEditor.getData() ).to.equal(
-					'<table class="table">' +
+				expect( testEditor.getData() ).toEqual( '<table class="table">' +
 						'<tbody>' +
 							'<tr><td>1</td><td>2</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 
 				await testEditor.destroy();
 			} );
@@ -510,12 +490,10 @@ describe( 'PlainTableOutput', () => {
 					'</figure>'
 				);
 
-				expect( testEditor.getData() ).to.equal(
-					'<figure class="image">' +
+				expect( testEditor.getData() ).toEqual( '<figure class="image">' +
 						'<img src="/sample.png">' +
 						'<figcaption>Caption</figcaption>' +
-					'</figure>'
-				);
+					'</figure>' );
 
 				await testEditor.destroy();
 			} );
@@ -542,12 +520,10 @@ describe( 'PlainTableOutput', () => {
 					'</figure>'
 				);
 
-				expect( testEditor.getData() ).to.equal(
-					'<figure class="image">' +
+				expect( testEditor.getData() ).toEqual( '<figure class="image">' +
 						'<img src="/sample.png">' +
 						'<foobar>Caption</foobar>' +
-					'</figure>'
-				);
+					'</figure>' );
 
 				await testEditor.destroy();
 			} );
@@ -593,7 +569,7 @@ describe( 'PlainTableOutput', () => {
 		it( 'should consume the `table` class', () => {
 			editor.conversion.for( 'upcast' ).add( dispatcher => {
 				dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-					expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table' ] } ) ).to.be.false;
+					expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table' ] } ) ).toBe( false );
 				} );
 			}, { priority: 'low' } );
 

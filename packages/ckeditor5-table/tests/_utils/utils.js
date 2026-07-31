@@ -224,7 +224,7 @@ export function assertTRBLAttribute( element, key, top, right = top, bottom = to
 		styleObject.left = left;
 	}
 
-	expect( element.getAttribute( key ) ).to.deep.equal( styleObject );
+	expect( element.getAttribute( key ) ).toEqual( styleObject );
 }
 
 /**
@@ -351,7 +351,7 @@ function assertNodeIsSelected( model, path ) {
 	const node = modelRoot.getNodeByPath( path );
 	const selectionRanges = Array.from( model.document.selection.getRanges() );
 
-	expect( selectionRanges.some( range => range.containsItem( node ) ), `Expected node [${ path }] to be selected` ).to.be.true;
+	expect( selectionRanges.some( range => range.containsItem( node ) ), `Expected node [${ path }] to be selected` ).toBe( true );
 }
 
 function assertNodeIsNotSelected( model, path ) {
@@ -359,7 +359,7 @@ function assertNodeIsNotSelected( model, path ) {
 	const node = modelRoot.getNodeByPath( path );
 	const selectionRanges = Array.from( model.document.selection.getRanges() );
 
-	expect( selectionRanges.every( range => !range.containsItem( node ) ), `Expected node [${ path }] to be not selected` ).to.be.true;
+	expect( selectionRanges.every( range => !range.containsItem( node ) ), `Expected node [${ path }] to be not selected` ).toBe( true );
 }
 
 // Formats table cell attributes

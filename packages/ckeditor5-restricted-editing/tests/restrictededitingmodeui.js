@@ -34,15 +34,15 @@ describe( 'RestrictedEditingModeUI', () => {
 
 	describe( 'plugin', () => {
 		it( 'should be named', () => {
-			expect( RestrictedEditingModeUI.pluginName ).to.equal( 'RestrictedEditingModeUI' );
+			expect( RestrictedEditingModeUI.pluginName ).toEqual( 'RestrictedEditingModeUI' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( RestrictedEditingModeUI.isOfficialPlugin ).to.be.true;
+			expect( RestrictedEditingModeUI.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( RestrictedEditingModeUI.isPremiumPlugin ).to.be.false;
+			expect( RestrictedEditingModeUI.isPremiumPlugin ).toBe( false );
 		} );
 
 		it( 'should be loaded', () => {
@@ -70,7 +70,7 @@ describe( 'RestrictedEditingModeUI', () => {
 		it( 'has role="menu" attribute set in items list', () => {
 			dropdown.isOpen = true;
 
-			expect( dropdown.panelView.children.first.role ).to.be.equal( 'menu' );
+			expect( dropdown.panelView.children.first.role ).toEqual( 'menu' );
 		} );
 
 		describe( 'exceptions navigation buttons', () => {
@@ -89,24 +89,24 @@ describe( 'RestrictedEditingModeUI', () => {
 				const list = dropdown.listView;
 				const button = list.items.first.children.first;
 
-				expect( button.isOn ).to.be.false;
-				expect( button.withText ).to.be.true;
-				expect( button.withKeystroke ).to.be.true;
-				expect( button.label ).to.equal( 'Previous editable region' );
-				expect( button.keystroke ).to.equal( 'Shift+Tab' );
-				expect( button.role ).to.equal( 'menuitem' );
+				expect( button.isOn ).toBe( false );
+				expect( button.withText ).toBe( true );
+				expect( button.withKeystroke ).toBe( true );
+				expect( button.label ).toEqual( 'Previous editable region' );
+				expect( button.keystroke ).toEqual( 'Shift+Tab' );
+				expect( button.role ).toEqual( 'menuitem' );
 			} );
 
 			it( 'should have one that goes forward', () => {
 				const list = dropdown.listView;
 				const button = list.items.last.children.first;
 
-				expect( button.isOn ).to.be.false;
-				expect( button.withText ).to.be.true;
-				expect( button.withKeystroke ).to.be.true;
-				expect( button.label ).to.equal( 'Next editable region' );
-				expect( button.keystroke ).to.equal( 'Tab' );
-				expect( button.role ).to.equal( 'menuitem' );
+				expect( button.isOn ).toBe( false );
+				expect( button.withText ).toBe( true );
+				expect( button.withKeystroke ).toBe( true );
+				expect( button.label ).toEqual( 'Next editable region' );
+				expect( button.keystroke ).toEqual( 'Tab' );
+				expect( button.role ).toEqual( 'menuitem' );
 			} );
 
 			it( 'should focus the view after executing the command', () => {
@@ -124,13 +124,13 @@ describe( 'RestrictedEditingModeUI', () => {
 				goToPreviousCommand.isEnabled = false;
 				goToNextCommand.isEnabled = false;
 
-				expect( listView.items.map( item => item.children.first.isEnabled ) ).to.deep.equal( [ false, false ] );
+				expect( listView.items.map( item => item.children.first.isEnabled ) ).toEqual( [ false, false ] );
 
 				goToPreviousCommand.isEnabled = true;
-				expect( listView.items.map( item => item.children.first.isEnabled ) ).to.deep.equal( [ true, false ] );
+				expect( listView.items.map( item => item.children.first.isEnabled ) ).toEqual( [ true, false ] );
 
 				goToNextCommand.isEnabled = true;
-				expect( listView.items.map( item => item.children.first.isEnabled ) ).to.deep.equal( [ true, true ] );
+				expect( listView.items.map( item => item.children.first.isEnabled ) ).toEqual( [ true, true ] );
 			} );
 
 			it( 'should execute their corresponding commands', () => {
@@ -144,10 +144,10 @@ describe( 'RestrictedEditingModeUI', () => {
 				const spy = vi.spyOn( editor, 'execute' );
 
 				goToPreviousButton.fire( 'execute' );
-				expect( spy.mock.calls[ 0 ][ 0 ] ).to.equal( 'goToPreviousRestrictedEditingException' );
+				expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( 'goToPreviousRestrictedEditingException' );
 
 				goToNextButton.fire( 'execute' );
-				expect( spy.mock.calls[ 1 ][ 0 ] ).to.equal( 'goToNextRestrictedEditingException' );
+				expect( spy.mock.calls[ 1 ][ 0 ] ).toEqual( 'goToNextRestrictedEditingException' );
 			} );
 		} );
 	} );
@@ -208,36 +208,36 @@ describe( 'RestrictedEditingModeUI', () => {
 				goToPreviousCommand.isEnabled = true;
 				goToNextCommand.isEnabled = true;
 
-				expect( backwardButton.isEnabled ).to.be.true;
-				expect( forwardButton.isEnabled ).to.be.true;
+				expect( backwardButton.isEnabled ).toBe( true );
+				expect( forwardButton.isEnabled ).toBe( true );
 
 				goToPreviousCommand.isEnabled = false;
 				goToNextCommand.isEnabled = true;
 
-				expect( backwardButton.isEnabled ).to.be.false;
-				expect( forwardButton.isEnabled ).to.be.true;
+				expect( backwardButton.isEnabled ).toBe( false );
+				expect( forwardButton.isEnabled ).toBe( true );
 
 				goToPreviousCommand.isEnabled = false;
 				goToNextCommand.isEnabled = false;
 
-				expect( backwardButton.isEnabled ).to.be.false;
-				expect( forwardButton.isEnabled ).to.be.false;
+				expect( backwardButton.isEnabled ).toBe( false );
+				expect( forwardButton.isEnabled ).toBe( false );
 			} );
 
 			it( 'should have one that goes backward', () => {
-				expect( backwardButton.isOn ).to.be.false;
-				expect( backwardButton.withText ).to.be.true;
-				expect( backwardButton.withKeystroke ).to.be.true;
-				expect( backwardButton.label ).to.equal( 'Previous editable region' );
-				expect( backwardButton.keystroke ).to.equal( 'Shift+Tab' );
+				expect( backwardButton.isOn ).toBe( false );
+				expect( backwardButton.withText ).toBe( true );
+				expect( backwardButton.withKeystroke ).toBe( true );
+				expect( backwardButton.label ).toEqual( 'Previous editable region' );
+				expect( backwardButton.keystroke ).toEqual( 'Shift+Tab' );
 			} );
 
 			it( 'should have one that goes forward', () => {
-				expect( forwardButton.isOn ).to.be.false;
-				expect( forwardButton.withText ).to.be.true;
-				expect( forwardButton.withKeystroke ).to.be.true;
-				expect( forwardButton.label ).to.equal( 'Next editable region' );
-				expect( forwardButton.keystroke ).to.equal( 'Tab' );
+				expect( forwardButton.isOn ).toBe( false );
+				expect( forwardButton.withText ).toBe( true );
+				expect( forwardButton.withKeystroke ).toBe( true );
+				expect( forwardButton.label ).toEqual( 'Next editable region' );
+				expect( forwardButton.keystroke ).toEqual( 'Tab' );
 			} );
 
 			it( 'should focus the view after executing the command', () => {
@@ -257,10 +257,10 @@ describe( 'RestrictedEditingModeUI', () => {
 				const spy = vi.spyOn( editor, 'execute' );
 
 				backwardButton.fire( 'execute' );
-				expect( spy.mock.calls[ 0 ][ 0 ] ).to.equal( 'goToPreviousRestrictedEditingException' );
+				expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( 'goToPreviousRestrictedEditingException' );
 
 				forwardButton.fire( 'execute' );
-				expect( spy.mock.calls[ 1 ][ 0 ] ).to.equal( 'goToNextRestrictedEditingException' );
+				expect( spy.mock.calls[ 1 ][ 0 ] ).toEqual( 'goToNextRestrictedEditingException' );
 			} );
 		} );
 	} );

@@ -128,7 +128,9 @@ describe( 'EasyImage', () => {
 						editor.model.document.on( 'change', () => {
 							// Check whether the image is uploaded and the image's src is replaced correctly.
 							if ( editor.getData() === '<figure class="image"><img src="http://image.mock.url/"></figure>' ) {
-								editor.destroy().then( resolve );
+								const data = editor.getData();
+
+								editor.destroy().then( () => resolve( data ) );
 							}
 						} );
 
@@ -137,6 +139,8 @@ describe( 'EasyImage', () => {
 						setTimeout( () => {
 							upload._uploadGateway.resolveLastUpload();
 						} );
+					} ).then( data => {
+						expect( data ).toBe( '<figure class="image"><img src="http://image.mock.url/"></figure>' );
 					} );
 				} );
 		} );

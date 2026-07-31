@@ -35,11 +35,11 @@ describe( 'BoldUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( BoldUI.isOfficialPlugin ).to.be.true;
+		expect( BoldUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( BoldUI.isPremiumPlugin ).to.be.false;
+		expect( BoldUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'toolbar button', () => {
@@ -58,28 +58,28 @@ describe( 'BoldUI', () => {
 		testButton();
 
 		it( 'should create button with `menuitemcheckbox` role', () => {
-			expect( boldView.role ).to.equal( 'menuitemcheckbox' );
+			expect( boldView.role ).toEqual( 'menuitemcheckbox' );
 		} );
 
 		it( 'should bind `isOn` to `aria-checked` attribute', () => {
 			boldView.render();
 
 			boldView.isOn = true;
-			expect( boldView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+			expect( boldView.element.getAttribute( 'aria-checked' ) ).toEqual( 'true' );
 
 			boldView.isOn = false;
-			expect( boldView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+			expect( boldView.element.getAttribute( 'aria-checked' ) ).toEqual( 'false' );
 		} );
 	} );
 
 	function testButton() {
 		it( 'should register bold feature component', () => {
 			expect( boldView ).to.be.instanceOf( ButtonView );
-			expect( boldView.isOn ).to.be.false;
-			expect( boldView.label ).to.equal( 'Bold' );
-			expect( boldView.icon ).to.match( /<svg / );
-			expect( boldView.keystroke ).to.equal( 'CTRL+B' );
-			expect( boldView.isToggleable ).to.be.true;
+			expect( boldView.isOn ).toBe( false );
+			expect( boldView.label ).toEqual( 'Bold' );
+			expect( boldView.icon ).toMatch( /<svg / );
+			expect( boldView.keystroke ).toEqual( 'CTRL+B' );
+			expect( boldView.isToggleable ).toBe( true );
 		} );
 
 		it( 'should execute bold command on model execute event', () => {
@@ -94,14 +94,14 @@ describe( 'BoldUI', () => {
 		it( 'should bind `isEnabled` to bold command', () => {
 			const command = editor.commands.get( 'bold' );
 
-			expect( boldView.isEnabled ).to.be.true;
+			expect( boldView.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( boldView.isEnabled ).to.be.false;
+			expect( boldView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should set keystroke in the model', () => {
-			expect( boldView.keystroke ).to.equal( 'CTRL+B' );
+			expect( boldView.keystroke ).toEqual( 'CTRL+B' );
 		} );
 
 		it( 'should bind `isOn` to `command`.`value`', () => {
@@ -109,11 +109,11 @@ describe( 'BoldUI', () => {
 
 			command.value = true;
 
-			expect( boldView.isOn ).to.be.true;
+			expect( boldView.isOn ).toBe( true );
 
 			command.value = false;
 
-			expect( boldView.isOn ).to.be.false;
+			expect( boldView.isOn ).toBe( false );
 		} );
 	}
 } );

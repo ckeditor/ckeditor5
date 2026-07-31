@@ -33,11 +33,11 @@ describe( 'SpecialCharactersArrows', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( SpecialCharactersArrows.isOfficialPlugin ).to.be.true;
+		expect( SpecialCharactersArrows.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( SpecialCharactersArrows.isPremiumPlugin ).to.be.false;
+		expect( SpecialCharactersArrows.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'adds new items', () => {
@@ -45,11 +45,11 @@ describe( 'SpecialCharactersArrows', () => {
 	} );
 
 	it( 'properly names the category', () => {
-		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Arrows' );
+		expect( addItemsFirstCallArgs[ 0 ] ).toEqual( 'Arrows' );
 	} );
 
 	it( 'defines a label displayed in the toolbar', () => {
-		expect( addItemsFirstCallArgs[ 2 ] ).to.deep.equal( {
+		expect( addItemsFirstCallArgs[ 2 ] ).toEqual( {
 			label: 'Arrows'
 		} );
 	} );

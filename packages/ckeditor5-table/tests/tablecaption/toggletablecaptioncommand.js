@@ -38,12 +38,12 @@ describe( 'ToggleTableCaptionCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should be false if wrong node', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if in a table', () => {
 			_setModelData( model, modelTable( [ [ '[]' ] ] ) );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if on a table', () => {
@@ -56,7 +56,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 					'</tableRow>' +
 				'</table>]'
 			);
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if it is in a table that does not allow captions', () => {
@@ -64,7 +64,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			_setModelData( model, modelTable( [ [ '[]' ] ] ) );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 

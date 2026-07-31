@@ -109,7 +109,7 @@ describe( 'Dialog', () => {
 			} );
 
 			describe( '`hide` event listeners', () => {
-				it( 'executing `_hide()` method ', () => {
+				it( 'executing `_hide()` method', () => {
 					dialogPlugin.show( {} );
 
 					const spy = vi.spyOn( dialogPlugin, '_hide' );
@@ -382,25 +382,25 @@ describe( 'Dialog', () => {
 			it( 'should resolve the DOM root using the selection anchor root when #getRootName is not provided', () => {
 				dialogPlugin._show( {} );
 
-				expect( dialogPlugin.view._getDomRootElement() ).to.equal( editor.editing.view.getDomRoot( 'main' ) );
+				expect( dialogPlugin.view._getDomRootElement() ).toBe( editor.editing.view.getDomRoot( 'main' ) );
 			} );
 
 			it( 'should fall back to the selection anchor root when #getRootName returns null', () => {
 				dialogPlugin._show( { getRootName: () => null } );
 
-				expect( dialogPlugin.view._getDomRootElement() ).to.equal( editor.editing.view.getDomRoot( 'main' ) );
+				expect( dialogPlugin.view._getDomRootElement() ).toBe( editor.editing.view.getDomRoot( 'main' ) );
 			} );
 
 			it( 'should return null when the resolved root name is empty', () => {
 				dialogPlugin._show( { getRootName: () => '' } );
 
-				expect( dialogPlugin.view._getDomRootElement() ).to.be.null;
+				expect( dialogPlugin.view._getDomRootElement() ).toBeNull();
 			} );
 
 			it( 'should return null when the resolved root name does not exist among the editing DOM roots', () => {
 				dialogPlugin._show( { getRootName: () => 'non-existent-root' } );
 
-				expect( dialogPlugin.view._getDomRootElement() ).to.be.null;
+				expect( dialogPlugin.view._getDomRootElement() ).toBeNull();
 			} );
 
 			it( 'should return null when there is no DOM root for the resolved root name', () => {

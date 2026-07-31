@@ -36,24 +36,24 @@ describe( 'table cell properties', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be false if selection does not have table cell', () => {
 						_setModelData( model, '<paragraph>foo[]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection has table cell', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be false if selection does not have table cell', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection has table cell', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
@@ -64,7 +64,7 @@ describe( 'table cell properties', () => {
 							[ '10', { contents: '11', isSelected: true } ]
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 			} );
@@ -74,13 +74,13 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined if selected table cell has no tableCellHorizontalAlignment property', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table cell has tableCellHorizontalAlignment property', () => {
 						_setModelData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'center', contents: '[]foo' } ] ] ) );
 
-						expect( command.value ).to.equal( 'center' );
+						expect( command.value ).toEqual( 'center' );
 					} );
 				} );
 
@@ -88,13 +88,13 @@ describe( 'table cell properties', () => {
 					it( 'should be false if selection does not have table cell', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be true is selection has table cell', () => {
 						_setModelData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'center', contents: 'f[o]o' } ] ] ) );
 
-						expect( command.value ).to.equal( 'center' );
+						expect( command.value ).toEqual( 'center' );
 					} );
 				} );
 
@@ -111,7 +111,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be undefined if only some table cells have the "tableCellHorizontalAlignment" property', () => {
@@ -126,7 +126,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( `should be undefined if one of selected table cells
@@ -142,7 +142,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if all table cells have the same "tableCellHorizontalAlignment" property value', () => {
@@ -157,7 +157,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.equal( 'center' );
+						expect( command.value ).toEqual( 'center' );
 					} );
 				} );
 			} );
@@ -280,7 +280,7 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined if selected table cell has the default value', () => {
 						_setModelData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'left', contents: '[]foo' } ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 				} );
 
@@ -288,7 +288,7 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined is selection contains the default value', () => {
 						_setModelData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'left', contents: 'f[o]o' } ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 				} );
 
@@ -308,7 +308,7 @@ describe( 'table cell properties', () => {
 								]
 							] ) );
 
-							expect( command.value ).to.be.undefined;
+							expect( command.value ).toBeUndefined();
 						} );
 				} );
 			} );

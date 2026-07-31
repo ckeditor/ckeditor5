@@ -56,8 +56,6 @@ describe( 'MediaRegistry', () => {
 			expect( consoleWarnStub ).toHaveBeenCalledOnce();
 			expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^media-embed-no-provider-name/ );
 			expect( consoleWarnStub.mock.calls[ 0 ][ 1 ] ).toEqual( { provider: { url: [ /dailymotion\.com/ ] } } );
-
-			vi.restoreAllMocks();
 		} );
 	} );
 

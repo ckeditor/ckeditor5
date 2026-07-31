@@ -82,6 +82,8 @@ describe( 'LinkImage integration', () => {
 					]
 				} );
 
+			expect( editor.plugins.has( LinkImage ) ).toBe( true );
+
 			await editor.destroy();
 			editorElement.remove();
 		} );

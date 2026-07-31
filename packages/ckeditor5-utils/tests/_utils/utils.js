@@ -67,7 +67,7 @@ export function assertBinding( observable, stateBefore, data, stateAfter ) {
 	let key, boundObservable, attrs;
 
 	for ( key in stateBefore ) {
-		expect( observable[ key ] ).to.equal( stateBefore[ key ] );
+		expect( observable[ key ] ).toEqual( stateBefore[ key ] );
 	}
 
 	// Change attributes of bound observables.
@@ -82,7 +82,7 @@ export function assertBinding( observable, stateBefore, data, stateAfter ) {
 	}
 
 	for ( key in stateAfter ) {
-		expect( observable[ key ] ).to.equal( stateAfter[ key ] );
+		expect( observable[ key ] ).toEqual( stateAfter[ key ] );
 	}
 }
 
@@ -107,7 +107,7 @@ export function expectToThrowCKEditorError( fn, message, editorThatShouldBeFinda
 		assertCKEditorError( err, message, editorThatShouldBeFindableFromContext, data );
 	}
 
-	expect( err ).to.not.equal( null, 'Function did not throw any error' );
+	expect( err, 'Function did not throw any error' ).not.toBe( null );
 }
 
 /**
@@ -129,7 +129,7 @@ export async function expectToRejectWithCKEditorError( promise, message, editorT
 
 	assertCKEditorError( err, message, editorThatShouldBeFindableFromContext, data );
 
-	expect( err ).to.not.equal( null, 'Function did not throw any error' );
+	expect( err, 'Function did not throw any error' ).not.toBe( null );
 }
 
 /**
@@ -149,17 +149,19 @@ export function assertCKEditorError( err, message, editorThatShouldBeFindableFro
 
 	expect( message ).to.be.a( 'regexp', 'Error message should be a string or a regexp.' );
 	expect( err ).to.be.instanceOf( CKEditorError );
-	expect( err.message ).to.match( message, 'Error message does not match the provided one.' );
+	expect( err.message, 'Error message does not match the provided one.' ).toMatch( message );
 
 	// TODO: The `editorThatShouldBeFindableFromContext` is optional but should be required in the future.
 	if ( editorThatShouldBeFindableFromContext === null ) {
-		expect( err.context ).to.equal( null, 'Error context was expected to be `null`' );
+		expect( err.context, 'Error context was expected to be `null`' ).toEqual( null );
 	} else if ( editorThatShouldBeFindableFromContext !== undefined ) {
-		expect( areConnectedThroughProperties( editorThatShouldBeFindableFromContext, err.context ) )
-			.to.equal( true, 'Editor cannot be found from the error context' );
+		expect(
+			areConnectedThroughProperties( editorThatShouldBeFindableFromContext, err.context ),
+			'Editor cannot be found from the error context'
+		).toEqual( true );
 	}
 
 	if ( data ) {
-		expect( err.data ).to.deep.equal( data );
+		expect( err.data ).toEqual( data );
 	}
 }

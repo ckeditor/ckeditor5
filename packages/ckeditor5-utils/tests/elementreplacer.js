@@ -25,14 +25,14 @@ describe( 'ElementReplacer', () => {
 		it( 'hides the given element', () => {
 			replacer.replace( el1 );
 
-			expect( el1.style.display ).to.equal( 'none' );
+			expect( el1.style.display ).toEqual( 'none' );
 		} );
 
 		it( 'replaces one element with another', () => {
 			replacer.replace( el1, elNew1 );
 
-			expect( el1.style.display ).to.equal( 'none' );
-			expect( elNew1.previousSibling ).to.equal( el1 );
+			expect( el1.style.display ).toEqual( 'none' );
+			expect( elNew1.previousSibling ).toBe( el1 );
 		} );
 	} );
 
@@ -43,9 +43,9 @@ describe( 'ElementReplacer', () => {
 
 			replacer.restore();
 
-			expect( el1.style.display ).to.equal( '' );
-			expect( el2.style.display ).to.equal( '' );
-			expect( elNew1.parentNode ).to.be.null;
+			expect( el1.style.display ).toEqual( '' );
+			expect( el2.style.display ).toEqual( '' );
+			expect( elNew1.parentNode ).toBeNull();
 		} );
 	} );
 } );

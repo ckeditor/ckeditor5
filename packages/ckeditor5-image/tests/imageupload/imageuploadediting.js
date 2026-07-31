@@ -962,7 +962,7 @@ describe( 'ImageUploadEditing', () => {
 		expect( _getModelData( model ) ).toBe( '<paragraph>[]foo bar</paragraph>' );
 	} );
 
-	it( 'image should be permanently removed if it is removed by user during upload', () => new Promise( resolve => {
+	it( 'image should be permanently removed if it is removed by user during upload', async () => {
 		const file = createNativeFileMock();
 		const notification = editor.plugins.get( Notification );
 		_setModelData( model, '<paragraph>{}foo bar</paragraph>' );
@@ -974,28 +974,40 @@ describe( 'ImageUploadEditing', () => {
 
 		editor.execute( 'uploadImage', { file } );
 
-		let stubCallCount = 0;
-		const stub = vi.fn( () => {
-			stubCallCount++;
-			if ( stubCallCount === 2 ) {
-				expect( _getModelData( model ) ).toBe( '<paragraph>[]foo bar</paragraph>' );
+		let modelDataAfterRemove;
+		let modelDataAfterUndo;
 
-				editor.execute( 'undo' );
+		const secondChangePromise = new Promise( resolve => {
+			let changeCallCount = 0;
 
-				// Expect that the image has not been brought back.
-				expect( _getModelData( model ) ).toBe( '<paragraph>[]foo bar</paragraph>' );
+			model.document.on( 'change', () => {
+				changeCallCount++;
 
-				resolve();
-			}
+				if ( changeCallCount === 2 ) {
+					modelDataAfterRemove = _getModelData( model );
+
+					editor.execute( 'undo' );
+
+					modelDataAfterUndo = _getModelData( model );
+
+					resolve();
+				}
+			} );
 		} );
-		model.document.on( 'change', stub );
 
 		const image = doc.getRoot().getChild( 0 ).getChild( 0 );
 
 		model.change( writer => {
 			writer.remove( image );
 		} );
-	} ) );
+
+		await secondChangePromise;
+
+		expect( modelDataAfterRemove ).toBe( '<paragraph>[]foo bar</paragraph>' );
+
+		// Expect that the image has not been brought back.
+		expect( modelDataAfterUndo ).toBe( '<paragraph>[]foo bar</paragraph>' );
+	} );
 
 	it( 'should create responsive image if the server returns multiple images', () => new Promise( ( resolve, reject ) => {
 		const done = err => err ? reject( err ) : resolve();
@@ -1511,7 +1523,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 	} ) );
 
-	it( 'should not show notification when file loader failed with no error', () => new Promise( resolve => {
+	it( 'should not show notification when file loader failed with no error', async () => {
 		const notification = editor.plugins.get( Notification );
 
 		let notificationsCount = 0;
@@ -1538,16 +1550,15 @@ describe( 'ImageUploadEditing', () => {
 			content: dataTransfer.getData( 'text/html' )
 		} );
 
-		adapterMocks[ 0 ].loader.file.then( () => {
-			expect.fail( 'Promise should be rejected.' );
-		} ).catch( () => {
-			// Deffer so the promise could be resolved.
-			setTimeout( () => {
-				expect( notificationsCount ).toBe( 0 );
-				resolve();
-			} );
-		} );
-	} ) );
+		const fileRejected = await adapterMocks[ 0 ].loader.file.then( () => false, () => true );
+
+		expect( fileRejected, 'Promise should be rejected.' ).toBe( true );
+
+		// Deffer so the promise could be resolved.
+		await new Promise( resolve => setTimeout( resolve ) );
+
+		expect( notificationsCount ).toBe( 0 );
+	} );
 
 	describe( 'accessibility', () => {
 		let announcerSpy;
@@ -1630,7 +1641,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/7957.
-		it( 'should upload image using canvas conversion', () => new Promise( resolve => {
+		it( 'should upload image using canvas conversion', async () => {
 			const spy = vi.fn();
 			const notification = editor.plugins.get( Notification );
 
@@ -1653,17 +1664,14 @@ describe( 'ImageUploadEditing', () => {
 				content: dataTransfer.getData( 'text/html' )
 			} );
 
-			adapterMocks[ 0 ].loader.file.then( () => {
-				setTimeout( () => {
-					expect( spy ).not.toHaveBeenCalled();
-					resolve();
-				} );
-			} ).catch( () => {
-				setTimeout( () => {
-					expect.fail( 'Promise should be resolved.' );
-				} );
-			} );
-		} ) );
+			// If the promise is rejected, the awaited rejection fails the test.
+			await adapterMocks[ 0 ].loader.file;
+
+			// Deffer so the promise could be resolved.
+			await new Promise( resolve => setTimeout( resolve ) );
+
+			expect( spy ).not.toHaveBeenCalled();
+		} );
 
 		it( 'should not upload and remove image if canvas conversion failed', () => new Promise( ( resolve, reject ) => {
 			const done = err => err ? reject( err ) : resolve();
@@ -1695,7 +1703,7 @@ describe( 'ImageUploadEditing', () => {
 			);
 		} ) );
 
-		it( 'should not show notification when image could not be loaded', () => new Promise( resolve => {
+		it( 'should not show notification when image could not be loaded', async () => {
 			const spy = vi.fn();
 			const notification = editor.plugins.get( Notification );
 
@@ -1718,15 +1726,15 @@ describe( 'ImageUploadEditing', () => {
 				content: dataTransfer.getData( 'text/html' )
 			} );
 
-			adapterMocks[ 0 ].loader.file.then( () => {
-				expect.fail( 'Promise should be rejected.' );
-			} ).catch( () => {
-				setTimeout( () => {
-					expect( spy ).not.toHaveBeenCalled();
-					resolve();
-				} );
-			} );
-		} ) );
+			const fileRejected = await adapterMocks[ 0 ].loader.file.then( () => false, () => true );
+
+			expect( fileRejected, 'Promise should be rejected.' ).toBe( true );
+
+			// Deffer so the promise could be resolved.
+			await new Promise( resolve => setTimeout( resolve ) );
+
+			expect( spy ).not.toHaveBeenCalled();
+		} );
 
 		it( 'should not remove image when it is already in graveyard', () => new Promise( ( resolve, reject ) => {
 			const done = err => err ? reject( err ) : resolve();
@@ -1974,14 +1982,17 @@ describe( 'ImageUploadEditing', () => {
 				} );
 			} );
 		} else {
-			adapterMocks[ 0 ].loader.file.then( () => {
-				expect.fail( 'The `loader.file` should be rejected.' );
-			} ).catch( () => {
-				// Deffer so the promise could be resolved.
-				setTimeout( () => {
-					expectModel( doneFn, _getModelData( model ), finalModelData );
-				} );
-			} );
+			adapterMocks[ 0 ].loader.file.then(
+				() => {
+					doneFn( new Error( 'The `loader.file` should be rejected.' ) );
+				},
+				() => {
+					// Deffer so the promise could be resolved.
+					setTimeout( () => {
+						expectModel( doneFn, _getModelData( model ), finalModelData );
+					} );
+				}
+			);
 		}
 	}
 } );

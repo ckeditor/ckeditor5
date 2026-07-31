@@ -360,15 +360,11 @@ describe( 'ColorPickerView', () => {
 
 			expect( () => view.focus() ).not.toThrow();
 
-			vi.restoreAllMocks();
-
 			vi.spyOn( env, 'isGecko', 'get' ).mockReturnValue( false );
 			vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
 			vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( false );
 
 			expect( () => view.focus() ).not.toThrow();
-
-			vi.restoreAllMocks();
 
 			vi.spyOn( env, 'isGecko', 'get' ).mockReturnValue( false );
 			vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( false );
@@ -387,11 +383,12 @@ describe( 'ColorPickerView', () => {
 			const inputField = view.hexInputRow.children.get( 1 );
 			const slider = view.slidersView.first;
 
-			buggyBrowsers.forEach( browser => {
-				vi.restoreAllMocks();
+			const inputSpy = vi.spyOn( inputField, 'focus' );
+			const sliderSpy = vi.spyOn( slider.element, 'focus' );
 
-				const inputSpy = vi.spyOn( inputField, 'focus' );
-				const sliderSpy = vi.spyOn( slider.element, 'focus' );
+			buggyBrowsers.forEach( browser => {
+				inputSpy.mockClear();
+				sliderSpy.mockClear();
 
 				mockBrowser( browser );
 
@@ -609,7 +606,7 @@ describe( 'ColorPickerView', () => {
 	} );
 
 	function testColorUpdateFromInput( options ) {
-		it( options.name, () => {
+		it( `${ options.name }`, () => {
 			const fieldView = view.hexInputRow.children.get( 1 ).fieldView;
 			view.color = '#000000';
 

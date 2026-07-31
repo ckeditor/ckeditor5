@@ -117,13 +117,13 @@ describe( 'MarkdownGfmDataProcessor', () => {
 			);
 		} );
 
-		// it( 'should process empty link', () => {
-		// 	testDataProcessor(
-		// 		'[Empty]()',
-		//
-		// 		'<p><a href="">Empty</a></p>'
-		// 	);
-		// } );
+		it.skip( 'should process empty link', () => {
+			testDataProcessor(
+				'[Empty]()',
+
+				'<p><a href="">Empty</a></p>'
+			);
+		} );
 
 		it( 'should process reference links', () => {
 			testDataProcessor(

@@ -188,7 +188,7 @@ describe( 'ButtonView', () => {
 				expect( view.element.dataset.ckeTooltipPosition ).toBe( 's' );
 			} );
 
-			it( 'it reacts to #tooltipPosition attribute', () => {
+			it( 'reacts to #tooltipPosition attribute', () => {
 				view.tooltip = 'foo';
 				view.icon = '<svg></svg>';
 
@@ -274,7 +274,7 @@ describe( 'ButtonView', () => {
 		} );
 
 		describe( 'role', () => {
-			it( 'is not initially set ', () => {
+			it( 'is not initially set', () => {
 				expect( view.element.attributes.role ).toBeUndefined();
 			} );
 
@@ -286,7 +286,7 @@ describe( 'ButtonView', () => {
 		} );
 
 		describe( 'text', () => {
-			it( 'is not initially set ', () => {
+			it( 'is not initially set', () => {
 				expect( view.element.textContent ).toBe( '' );
 			} );
 
@@ -298,7 +298,7 @@ describe( 'ButtonView', () => {
 		} );
 
 		describe( 'tabindex', () => {
-			it( 'is initially set ', () => {
+			it( 'is initially set', () => {
 				expect( view.element.attributes.tabindex.value ).toBe( '-1' );
 			} );
 

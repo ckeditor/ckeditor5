@@ -10,18 +10,18 @@ import { FontBackgroundColorUI } from '../src/fontbackgroundcolor/fontbackground
 
 describe( 'FontBackgroundColor', () => {
 	it( 'requires FontBackgroundColorEditing and FontBackgroundColorUI', () => {
-		expect( FontBackgroundColor.requires ).to.deep.equal( [ FontBackgroundColorEditing, FontBackgroundColorUI ] );
+		expect( FontBackgroundColor.requires ).toEqual( [ FontBackgroundColorEditing, FontBackgroundColorUI ] );
 	} );
 
 	it( 'defines plugin name', () => {
-		expect( FontBackgroundColor.pluginName ).to.equal( 'FontBackgroundColor' );
+		expect( FontBackgroundColor.pluginName ).toEqual( 'FontBackgroundColor' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FontBackgroundColor.isOfficialPlugin ).to.be.true;
+		expect( FontBackgroundColor.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( FontBackgroundColor.isPremiumPlugin ).to.be.false;
+		expect( FontBackgroundColor.isPremiumPlugin ).toBe( false );
 	} );
 } );

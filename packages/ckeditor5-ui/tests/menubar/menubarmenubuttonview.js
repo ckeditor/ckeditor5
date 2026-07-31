@@ -49,7 +49,7 @@ describe( 'MenuBarMenuButtonView', () => {
 		} );
 
 		describe( 'DOM element and template', () => {
-			it( 'should have a specific CSS class ', () => {
+			it( 'should have a specific CSS class', () => {
 				expect( buttonView.template.attributes.class ).toContain( 'ck-menu-bar__menu__button' );
 			} );
 

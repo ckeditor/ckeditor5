@@ -12,18 +12,18 @@ import { FontBackgroundColor } from './../src/fontbackgroundcolor.js';
 
 describe( 'Font', () => {
 	it( 'requires FontFamily, FontSize, FontColor, FontBackgroundColor', () => {
-		expect( Font.requires ).to.deep.equal( [ FontFamily, FontSize, FontColor, FontBackgroundColor ] );
+		expect( Font.requires ).toEqual( [ FontFamily, FontSize, FontColor, FontBackgroundColor ] );
 	} );
 
 	it( 'defines plugin name', () => {
-		expect( Font.pluginName ).to.equal( 'Font' );
+		expect( Font.pluginName ).toEqual( 'Font' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Font.isOfficialPlugin ).to.be.true;
+		expect( Font.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Font.isPremiumPlugin ).to.be.false;
+		expect( Font.isPremiumPlugin ).toBe( false );
 	} );
 } );

@@ -54,7 +54,7 @@ describe( 'AttributeCommand', () => {
 				writer.setSelectionAttribute( attrKey, true );
 			} );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'is false when collapsed selection does not have the attribute', () => {
@@ -66,31 +66,31 @@ describe( 'AttributeCommand', () => {
 				writer.removeSelectionAttribute( attrKey );
 			} );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'is true when the first item that allows attribute has the attribute set #1', () => {
 			_setModelData( model, '<p><$text bold="true">fo[o</$text></p><h1>b]ar</h1>' );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'is true when the first item that allows attribute has the attribute set #2', () => {
 			_setModelData( model, '<h1>fo[o</h1><p><$text bold="true">f</$text>o]o</p>' );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'is false when the first item that allows attribute does not have the attribute set #1', () => {
 			_setModelData( model, '<p>b[a<$text bold="true">r</$text></p><h1>fo]o</h1>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'is false when the first item that allows attribute does not have the attribute set #2', () => {
 			_setModelData( model, '<h1>fo[o</h1><p>b<$text bold="true">r</$text>r]</p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'is true when the first item that allows attribute has the attribute set - object with nested editable', () => {
@@ -106,13 +106,12 @@ describe( 'AttributeCommand', () => {
 
 			_setModelData( model, '<p>[<img><caption>Some caption inside the image.</caption></img>]</p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 			command.execute();
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<p>[<img><caption><$text bold="true">Some caption inside the image.</$text></caption></img>]</p>'
-			);
+			expect( _getModelData( model ) )
+				.toEqual( '<p>[<img><caption><$text bold="true">Some caption inside the image.</$text></caption></img>]</p>' );
 		} );
 	} );
 
@@ -127,24 +126,24 @@ describe( 'AttributeCommand', () => {
 		describe( 'when selection is collapsed', () => {
 			it( 'should return true if characters with the attribute can be placed at caret position', () => {
 				_setModelData( model, '<p>f[]oo</p>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
 				_setModelData( model, '<x>fo[]o</x>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
 		describe( 'when selection is not collapsed', () => {
 			it( 'should return true if there is at least one node in selection that can have the attribute', () => {
 				_setModelData( model, '<p>[foo]</p>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
 				_setModelData( model, '<x>[foo]</x>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 	} );
@@ -157,40 +156,40 @@ describe( 'AttributeCommand', () => {
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<p>fo[ob]ar</p>' );
+			expect( _getModelData( model ) ).toEqual( '<p>fo[ob]ar</p>' );
 		} );
 
 		it( 'should add attribute on selected nodes if the command value was false', () => {
 			_setModelData( model, '<p>a[bc<$text bold="true">fo]obar</$text>xyz</p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			command.execute();
 
-			expect( command.value ).to.be.true;
-			expect( _getModelData( model ) ).to.equal( '<p>a[<$text bold="true">bcfo]obar</$text>xyz</p>' );
+			expect( command.value ).toBe( true );
+			expect( _getModelData( model ) ).toEqual( '<p>a[<$text bold="true">bcfo]obar</$text>xyz</p>' );
 		} );
 
 		it( 'should remove attribute from selected nodes if the command value was true', () => {
 			_setModelData( model, '<p>abc[<$text bold="true">foo]bar</$text>xyz</p>' );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 
 			command.execute();
 
-			expect( _getModelData( model ) ).to.equal( '<p>abc[foo]<$text bold="true">bar</$text>xyz</p>' );
-			expect( command.value ).to.be.false;
+			expect( _getModelData( model ) ).toEqual( '<p>abc[foo]<$text bold="true">bar</$text>xyz</p>' );
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should add attribute on selected nodes if execute parameter was set to true', () => {
 			_setModelData( model, '<p>abc<$text bold="true">foob[ar</$text>x]yz</p>' );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 
 			command.execute( { forceValue: true } );
 
-			expect( command.value ).to.be.true;
-			expect( _getModelData( model ) ).to.equal( '<p>abc<$text bold="true">foob[arx</$text>]yz</p>' );
+			expect( command.value ).toBe( true );
+			expect( _getModelData( model ) ).toEqual( '<p>abc<$text bold="true">foob[arx</$text>]yz</p>' );
 		} );
 
 		it( 'should remove attribute on selected nodes if execute parameter was set to false', () => {
@@ -198,24 +197,24 @@ describe( 'AttributeCommand', () => {
 
 			command.execute( { forceValue: false } );
 
-			expect( command.value ).to.be.false;
-			expect( _getModelData( model ) ).to.equal( '<p>a[bcfo]<$text bold="true">obar</$text>xyz</p>' );
+			expect( command.value ).toBe( false );
+			expect( _getModelData( model ) ).toEqual( '<p>a[bcfo]<$text bold="true">obar</$text>xyz</p>' );
 		} );
 
 		it( 'should change selection attribute if selection is collapsed in non-empty parent', () => {
 			_setModelData( model, '<p>a[]bc<$text bold="true">foobar</$text>xyz</p><p></p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			command.execute();
 
-			expect( command.value ).to.be.true;
-			expect( doc.selection.hasAttribute( 'bold' ) ).to.be.true;
+			expect( command.value ).toBe( true );
+			expect( doc.selection.hasAttribute( 'bold' ) ).toBe( true );
 
 			command.execute();
 
-			expect( command.value ).to.be.false;
-			expect( doc.selection.hasAttribute( 'bold' ) ).to.be.false;
+			expect( command.value ).toBe( false );
+			expect( doc.selection.hasAttribute( 'bold' ) ).toBe( false );
 		} );
 
 		it( 'should not store attribute change on selection if selection is collapsed in non-empty parent', () => {
@@ -237,18 +236,18 @@ describe( 'AttributeCommand', () => {
 				) );
 			} );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should change selection attribute and store it if selection is collapsed in empty parent', () => {
 			_setModelData( model, '<p>abc<$text bold="true">foobar</$text>xyz</p><p>[]</p>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			command.execute();
 
-			expect( command.value ).to.be.true;
-			expect( doc.selection.hasAttribute( 'bold' ) ).to.be.true;
+			expect( command.value ).toBe( true );
+			expect( doc.selection.hasAttribute( 'bold' ) ).toBe( true );
 
 			// Attribute should be stored.
 			// Simulate clicking somewhere else in the editor.
@@ -256,7 +255,7 @@ describe( 'AttributeCommand', () => {
 				writer.setSelection( root.getNodeByPath( [ 0 ] ), 2 );
 			} );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 
 			// Go back to where attribute was stored.
 			model.change( writer => {
@@ -264,36 +263,36 @@ describe( 'AttributeCommand', () => {
 			} );
 
 			// Attribute should be restored.
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 
 			command.execute();
 
-			expect( command.value ).to.be.false;
-			expect( doc.selection.hasAttribute( 'bold' ) ).to.be.false;
+			expect( command.value ).toBe( false );
+			expect( doc.selection.hasAttribute( 'bold' ) ).toBe( false );
 		} );
 
 		it( 'should not apply attribute change where it would invalid schema', () => {
 			model.schema.register( 'imageBlock', { inheritAllFrom: '$block' } );
 			_setModelData( model, '<p>ab[c<img></img><$text bold="true">foobar</$text>xy<img></img>]z</p>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 
 			command.execute();
 
 			expect( _getModelData( model ) )
-				.to.equal( '<p>ab[<$text bold="true">c</$text><img></img><$text bold="true">foobarxy</$text><img></img>]z</p>' );
+				.toEqual( '<p>ab[<$text bold="true">c</$text><img></img><$text bold="true">foobarxy</$text><img></img>]z</p>' );
 		} );
 
 		it( 'should use parent batch for storing undo steps', () => {
 			_setModelData( model, '<p>a[bc<$text bold="true">fo]obar</$text>xyz</p>' );
 
 			model.change( writer => {
-				expect( writer.batch.operations.length ).to.equal( 0 );
+				expect( writer.batch.operations.length ).toEqual( 0 );
 				command.execute();
-				expect( writer.batch.operations.length ).to.equal( 1 );
+				expect( writer.batch.operations.length ).toEqual( 1 );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<p>a[<$text bold="true">bcfo]obar</$text>xyz</p>' );
+			expect( _getModelData( model ) ).toEqual( '<p>a[<$text bold="true">bcfo]obar</$text>xyz</p>' );
 		} );
 
 		describe( 'should cause firing model change event', () => {
@@ -346,12 +345,10 @@ describe( 'AttributeCommand', () => {
 				writer.setSelection( root.getNodeByPath( [ 1 ] ), 0 );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<p><$text bold="true">foo</$text></p>' +
+			expect( _getModelData( model ) ).toEqual( '<p><$text bold="true">foo</$text></p>' +
 				'<p selection:bold="true"><$text bold="true">[]</$text></p>' +
-				'<p><$text bold="true">foo</$text></p>'
-			);
-			expect( command.value ).to.be.true;
+				'<p><$text bold="true">foo</$text></p>' );
+			expect( command.value ).toBe( true );
 		} );
 	} );
 } );

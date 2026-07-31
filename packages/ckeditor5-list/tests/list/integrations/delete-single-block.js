@@ -2689,20 +2689,18 @@ describe( 'ListEditing (multiBlock=false) integrations: backspace & delete', () 
 		expect( _getModelData( model ) ).toEqualMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
-			expect( domEventData.domEvent.preventDefault.mock.calls.length > 0 ).to.equal(
-				eventStopped.preventDefault,
-				'preventDefault() call'
-			);
-			expect( !!eventInfo.stop.called ).to.equal( eventStopped.stop, 'eventInfo.stop() call' );
+			expect( domEventData.domEvent.preventDefault.mock.calls.length > 0, 'preventDefault() call' )
+				.toEqual( eventStopped.preventDefault );
+			expect( !!eventInfo.stop.called, 'eventInfo.stop() call' ).toEqual( eventStopped.stop );
 		} else {
-			expect( domEventData.domEvent.preventDefault.mock.calls.length ).to.equal( eventStopped ? 1 : 0, 'preventDefault() call' );
-			expect( eventInfo.stop.called ).to.equal( eventStopped ? true : undefined, 'eventInfo.stop() call' );
+			expect( domEventData.domEvent.preventDefault.mock.calls.length, 'preventDefault() call' ).toEqual( eventStopped ? 1 : 0 );
+			expect( eventInfo.stop.called, 'eventInfo.stop() call' ).toEqual( eventStopped ? true : undefined );
 		}
 
 		for ( const name in executedCommands ) {
-			expect( commandSpies[ name ].mock.calls.length ).to.equal( executedCommands[ name ], `${ name } command call count` );
+			expect( commandSpies[ name ].mock.calls.length, `${ name } command call count` ).toEqual( executedCommands[ name ] );
 		}
 
-		expect( blocksChangedByCommands.map( block => block.index ) ).to.deep.equal( changedBlocks, 'changed blocks\' indexes' );
+		expect( blocksChangedByCommands.map( block => block.index ), 'changed blocks\' indexes' ).toEqual( changedBlocks );
 	}
 } );

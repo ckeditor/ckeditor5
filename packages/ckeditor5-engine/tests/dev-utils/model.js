@@ -446,18 +446,18 @@ describe( 'model test utils', () => {
 	} );
 
 	describe( 'parse', () => {
-		test( 'creates empty ModelDocumentFragment from empty string', {
+		it( 'creates empty ModelDocumentFragment from empty string', testParse( {
 			data: '',
 			check( fragment ) {
 				expect( fragment ).toBeInstanceOf( ModelDocumentFragment );
 			}
-		} );
+		} ) );
 
-		test( 'creates empty ModelDocumentFragment with selection', {
+		it( 'creates empty ModelDocumentFragment with selection', testParse( {
 			data: '[]'
-		} );
+		} ) );
 
-		test( 'returns Element if range is around single element', {
+		it( 'returns Element if range is around single element', testParse( {
 			data: '[<a></a>]',
 			check( el, selection ) {
 				const fragment = el.parent;
@@ -468,29 +468,29 @@ describe( 'model test utils', () => {
 				const range = new ModelRange( ModelPosition._createAt( fragment, 0 ), ModelPosition._createAt( fragment, 1 ) );
 				expect( selection.getFirstRange().isEqual( range ) ).toBe( true );
 			}
-		} );
+		} ) );
 
-		test( 'returns ModelDocumentFragment when multiple elements on root', {
+		it( 'returns ModelDocumentFragment when multiple elements on root', testParse( {
 			data: '<a></a><b></b>',
 			check( fragment ) {
 				expect( fragment ).toBeInstanceOf( ModelDocumentFragment );
 				expect( fragment.childCount ).toBe( 2 );
 			}
-		} );
+		} ) );
 
-		test( 'creates elements', {
+		it( 'creates elements', testParse( {
 			data: '<a></a><b><c></c></b>'
-		} );
+		} ) );
 
-		test( 'creates text nodes', {
+		it( 'creates text nodes', testParse( {
 			data: 'foo<a>bar</a>bom'
-		} );
+		} ) );
 
-		test( 'creates text nodes with unicode text', {
+		it( 'creates text nodes with unicode text', testParse( {
 			data: 'நிலைக்கு'
-		} );
+		} ) );
 
-		test( 'sets elements attributes', {
+		it( 'sets elements attributes', testParse( {
 			data: '<a bar="true" car="x y" foo="1"></a><b x="y"></b>',
 			output: '<a bar="true" car="x y" foo="1"></a><b x="y"></b>',
 			check( root ) {
@@ -499,9 +499,9 @@ describe( 'model test utils', () => {
 				expect( root.getChild( 0 ).getAttribute( 'foo' ) ).toBe( 1 );
 				expect( root.getChild( 1 ).getAttribute( 'x' ) ).toBe( 'y' );
 			}
-		} );
+		} ) );
 
-		test( 'sets text attributes', {
+		it( 'sets text attributes', testParse( {
 			data: '<$text bar="true" car="x y" foo="1">foo</$text><$text x="y">bar</$text>bom',
 			check( root ) {
 				expect( root.childCount ).toBe( 3 );
@@ -512,9 +512,9 @@ describe( 'model test utils', () => {
 				expect( root.getChild( 1 ).getAttribute( 'x' ) ).toBe( 'y' );
 				expect( count( root.getChild( 2 ).getAttributes() ) ).toBe( 0 );
 			}
-		} );
+		} ) );
 
-		test( 'creates element with complex attributes', {
+		it( 'creates element with complex attributes', testParse( {
 			data: '<a foo=\'{"x":1,"y":2}\'></a>',
 			output: '<a foo="{"x":1,"y":2}"></a>',
 			check( a ) {
@@ -522,21 +522,21 @@ describe( 'model test utils', () => {
 				expect( a.getAttribute( 'foo' ) ).toHaveProperty( 'x', 1 );
 				expect( a.getAttribute( 'foo' ) ).toHaveProperty( 'y', 2 );
 			}
-		} );
+		} ) );
 
-		test( 'returns single parsed element', {
+		it( 'returns single parsed element', testParse( {
 			data: '<paragraph></paragraph>',
 			check( p ) {
 				expect( p instanceof ModelElement ).toBe( true );
 			}
-		} );
+		} ) );
 
-		test( 'returns ModelDocumentFragment for multiple parsed elements', {
+		it( 'returns ModelDocumentFragment for multiple parsed elements', testParse( {
 			data: '<paragraph></paragraph><paragraph></paragraph>',
 			check( fragment ) {
 				expect( fragment instanceof ModelDocumentFragment ).toBe( true );
 			}
-		} );
+		} ) );
 
 		it( 'should correctly parse whitespaces around custom inline object elements', () => {
 			model.schema.register( 'inlineObj', {
@@ -583,26 +583,26 @@ describe( 'model test utils', () => {
 		} );
 
 		describe( 'selection', () => {
-			test( 'sets collapsed selection in an element', {
+			it( 'sets collapsed selection in an element', testParse( {
 				data: '<a>[]</a>',
 				check( root, selection ) {
 					expect( selection.getFirstPosition().parent ).toHaveProperty( 'name', 'a' );
 				}
-			} );
+			} ) );
 
-			test( 'sets collapsed selection between elements', {
+			it( 'sets collapsed selection between elements', testParse( {
 				data: '<a></a>[]<b></b>'
-			} );
+			} ) );
 
-			test( 'sets collapsed selection before a text', {
+			it( 'sets collapsed selection before a text', testParse( {
 				data: '<a></a>[]foo'
-			} );
+			} ) );
 
-			test( 'sets collapsed selection after a text', {
+			it( 'sets collapsed selection after a text', testParse( {
 				data: 'foo[]'
-			} );
+			} ) );
 
-			test( 'sets collapsed selection within a text', {
+			it( 'sets collapsed selection within a text', testParse( {
 				data: 'foo[]bar',
 				check( text, selection ) {
 					expect( text.offsetSize ).toBe( 6 );
@@ -610,7 +610,7 @@ describe( 'model test utils', () => {
 					expect( selection.getFirstRange().start.path ).toEqual( [ 3 ] );
 					expect( selection.getFirstRange().end.path ).toEqual( [ 3 ] );
 				}
-			} );
+			} ) );
 
 			it( 'sets selection attributes', () => {
 				const result = _parseModel( 'foo[]bar', model.schema, {
@@ -623,17 +623,17 @@ describe( 'model test utils', () => {
 				expect( _stringifyModel( result.model, result.selection ) ).toBe( 'foo<$text bold="true" italic="true">[]</$text>bar' );
 			} );
 
-			test( 'sets collapsed selection between text and text with attributes', {
+			it( 'sets collapsed selection between text and text with attributes', testParse( {
 				data: 'foo[]<$text bold="true">bar</$text>',
 				check( root, selection ) {
 					expect( root.maxOffset ).toBe( 6 );
 					expect( selection.getAttribute( 'bold' ) ).toBeUndefined();
 				}
-			} );
+			} ) );
 
-			test( 'sets selection containing an element', {
+			it( 'sets selection containing an element', testParse( {
 				data: 'x[<a></a>]'
-			} );
+			} ) );
 
 			it( 'sets selection with attribute containing an element', () => {
 				const result = _parseModel( 'x[<a></a>]', model.schema, {
@@ -655,9 +655,9 @@ describe( 'model test utils', () => {
 				expect( result.selection.isBackward ).toBe( true );
 			} );
 
-			test( 'sets selection within a text', {
+			it( 'sets selection within a text', testParse( {
 				data: 'x[y]z'
-			} );
+			} ) );
 
 			it( 'sets selection within a text with different attributes', () => {
 				const result = _parseModel( '<$text bold="true">fo[o</$text>ba]r', model.schema, {
@@ -681,8 +681,8 @@ describe( 'model test utils', () => {
 			} );
 		} );
 
-		function test( title, options ) {
-			it( title, () => {
+		function testParse( options ) {
+			return () => {
 				const output = options.output || options.data;
 
 				const data = _parseModel( options.data, model.schema );
@@ -700,7 +700,7 @@ describe( 'model test utils', () => {
 				if ( options.check ) {
 					options.check( converted, selection );
 				}
-			} );
+			};
 		}
 	} );
 } );

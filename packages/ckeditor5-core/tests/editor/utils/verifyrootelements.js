@@ -28,7 +28,7 @@ describe( 'verifyRootElements()', () => {
 
 		editor.model.document.createRoot( '$root', 'main' );
 
-		verifyRootElements( editor );
+		expect( () => verifyRootElements( editor ) ).not.toThrow();
 
 		editor.fire( 'ready' );
 		return editor.destroy();
@@ -56,7 +56,7 @@ describe( 'verifyRootElements()', () => {
 		const root = editor.model.document.createRoot( 'nonLimit', 'main' );
 		root._isAttached = false;
 
-		verifyRootElements( editor );
+		expect( () => verifyRootElements( editor ) ).not.toThrow();
 
 		editor.fire( 'ready' );
 		return editor.destroy();
@@ -69,7 +69,7 @@ describe( 'verifyRootElements()', () => {
 		editor.model.document.createRoot( '$root', 'secondRoot' );
 		editor.model.document.createRoot( '$root', 'thirdRoot' );
 
-		verifyRootElements( editor );
+		expect( () => verifyRootElements( editor ) ).not.toThrow();
 
 		editor.fire( 'ready' );
 		return editor.destroy();

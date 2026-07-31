@@ -1548,6 +1548,7 @@ describe( 'Rect', () => {
 
 					// Safari fails because of "afterEach()" hook tries to restore values from removed element.
 					// We need to restore these values manually.
+					// eslint-disable-next-line vitest/no-restricted-vi-methods -- must restore before removing the iframe
 					vi.restoreAllMocks();
 					iframe.remove();
 					resolve();
@@ -1558,7 +1559,7 @@ describe( 'Rect', () => {
 		} );
 	} );
 
-	describe( 'getDomRangeRects() ', () => {
+	describe( 'getDomRangeRects()', () => {
 		it( 'should return rects for a Range (non–collapsed)', () => {
 			const range = document.createRange();
 

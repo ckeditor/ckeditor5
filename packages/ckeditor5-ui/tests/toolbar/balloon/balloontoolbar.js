@@ -230,7 +230,7 @@ describe( 'BalloonToolbar', () => {
 			expect( balloonToolbar.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
-		it( 'it should track the focus of the #editableElement', () => {
+		it( 'should track the focus of the #editableElement', () => {
 			expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
 
 			editor.ui.getEditableElement().dispatchEvent( new Event( 'focus' ) );
@@ -245,7 +245,7 @@ describe( 'BalloonToolbar', () => {
 			expect( balloonToolbar.focusTracker.externalViews ).toContain( balloonToolbar.toolbarView );
 		} );
 
-		it( 'it should track the focus of the toolbarView#element', () => {
+		it( 'should track the focus of the toolbarView#element', () => {
 			expect( balloonToolbar.focusTracker.isFocused ).toBe( false );
 
 			balloonToolbar.toolbarView.element.dispatchEvent( new Event( 'focus' ) );

@@ -1481,6 +1481,7 @@ describe( 'BookmarkUI', () => {
 	describe( 'keyboard support', () => {
 		beforeEach( () => {
 			// Make sure that forms are lazy initiated.
+			// eslint-disable-next-line vitest/no-standalone-expect
 			expect( bookmarkUIFeature.formView ).toBeNull();
 
 			bookmarkUIFeature._createViews();
@@ -1548,6 +1549,7 @@ describe( 'BookmarkUI', () => {
 	describe( 'mouse support', () => {
 		beforeEach( () => {
 			// Make sure that forms are lazy initiated.
+			// eslint-disable-next-line vitest/no-standalone-expect
 			expect( bookmarkUIFeature.formView ).toBeNull();
 
 			bookmarkUIFeature._createViews();

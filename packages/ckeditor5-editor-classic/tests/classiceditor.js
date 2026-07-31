@@ -188,28 +188,28 @@ describe( 'ClassicEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'it should throw if legacy config.initialData is set and initial data is passed in constructor', () => {
+			it( 'should throw if legacy config.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
 				} ).toThrow( CKEditorError, 'editor-create-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
+			it( 'should throw if config.root.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
 				} ).toThrow( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
+			it( 'should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
 				} ).toThrow( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if config.root and config.roots.main is set', () => {
+			it( 'should throw if config.root and config.roots.main is set', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( editorElement, {
@@ -219,7 +219,7 @@ describe( 'ClassicEditor', () => {
 				} ).toThrow( CKEditorError, 'editor-create-roots-with-main' );
 			} );
 
-			it( 'it should throw if legacy config.initialData and config.root.initialData is set', () => {
+			it( 'should throw if legacy config.initialData and config.root.initialData is set', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( editorElement, {
@@ -229,7 +229,7 @@ describe( 'ClassicEditor', () => {
 				} ).toThrow( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
+			it( 'should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( editorElement, {
@@ -239,7 +239,7 @@ describe( 'ClassicEditor', () => {
 				} ).toThrow( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if source element and config.attachTo are both set', () => {
+			it( 'should throw if source element and config.attachTo are both set', () => {
 				const attachToElement = document.createElement( 'div' );
 
 				expect( () => {
@@ -861,14 +861,14 @@ describe( 'ClassicEditor', () => {
 		it( 'should raise exception when editor is being attached to not attached DOM element', async () => {
 			const editorElement = document.createElement( 'div' );
 
-			try {
-				await ClassicEditor.create( { attachTo: editorElement } );
-				expect.fail( 'Promise should have been rejected' );
-			} catch ( err ) {
-				expect( err ).toBeInstanceOf( CKEditorError );
-				expect( err.context ).toBeNull(); // avoid watchdog restart
-				expect( err.message ).toContain( 'editor-source-element-not-attached' );
-			}
+			const createPromise = ClassicEditor.create( { attachTo: editorElement } );
+
+			await expect( createPromise ).rejects.toThrow( CKEditorError );
+
+			const err = await createPromise.catch( err => err );
+
+			expect( err.context ).toBeNull(); // avoid watchdog restart
+			expect( err.message ).toContain( 'editor-source-element-not-attached' );
 		} );
 
 		it( 'should reject if a root element is not a limit element', async () => {
@@ -878,16 +878,13 @@ describe( 'ClassicEditor', () => {
 				}
 			}
 
-			try {
-				await ClassicEditor.create( {
-					plugins: [ Paragraph, NonLimitRootPlugin ],
-					root: { modelElement: 'nonLimit' }
-				} );
-				expect.fail( 'Promise should have been rejected' );
-			} catch ( err ) {
-				expect( err ).toBeInstanceOf( CKEditorError );
-				expect( err.message ).toMatch( /editor-root-element-is-not-limit/ );
-			}
+			const createPromise = ClassicEditor.create( {
+				plugins: [ Paragraph, NonLimitRootPlugin ],
+				root: { modelElement: 'nonLimit' }
+			} );
+
+			await expect( createPromise ).rejects.toThrow( CKEditorError );
+			await expect( createPromise ).rejects.toThrow( /editor-root-element-is-not-limit/ );
 		} );
 
 		describe( 'ui', () => {

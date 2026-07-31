@@ -65,7 +65,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []foo'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be false when collapsed selection is not at start of the first list item', () => {
@@ -73,7 +73,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* f[]oo'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true when non-collapsed selection starts at the start of the first list item', () => {
@@ -81,7 +81,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* [fo]o'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be false when non-collapsed selection does not start at the start of the first list item', () => {
@@ -89,7 +89,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* f[oo]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when collapsed selection is at the start of the second list item', () => {
@@ -98,7 +98,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the second list item', () => {
@@ -107,7 +107,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* [bar]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection is at start of the nested list', () => {
@@ -116,7 +116,7 @@ describe( 'IndentBlockListCommand', () => {
 							'  * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the nested list', () => {
@@ -125,7 +125,7 @@ describe( 'IndentBlockListCommand', () => {
 							'  * [bar]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true when selection starts at the start of the first list item and spans across multiple items', () => {
@@ -135,7 +135,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* ba]z'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true when selection starts at the start of the first list item and spans across multiple lists', () => {
@@ -146,7 +146,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* baz]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be false when selection is outside of list', () => {
@@ -156,7 +156,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* baz'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true when selection starts in list with positive indent and finishes in list with ' +
@@ -167,7 +167,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* ba]r {blockIndentList:-50px}'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true when selection starts in list with negative indent and finishes in list with ' +
@@ -178,13 +178,13 @@ describe( 'IndentBlockListCommand', () => {
 							'* ba]r {blockIndentList:50px}'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be false in empty editor', () => {
 						_setModelData( model, '' );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true when blockIndentList attribute is set using different unit', () => {
@@ -192,7 +192,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []foo {blockIndentList:5em}'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
@@ -204,7 +204,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []baz'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be false when selection is at start of second item in bulleted list after numbered list', () => {
@@ -214,7 +214,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []baz'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 				} );
 
@@ -225,7 +225,7 @@ describe( 'IndentBlockListCommand', () => {
 							'  * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when skip-level list item is the first element in the document', () => {
@@ -233,7 +233,7 @@ describe( 'IndentBlockListCommand', () => {
 							'  * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false for a sublist item (has parent list item)', () => {
@@ -242,7 +242,7 @@ describe( 'IndentBlockListCommand', () => {
 							'    * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false for a skip-level list item preceded by a list item of another type', () => {
@@ -251,7 +251,7 @@ describe( 'IndentBlockListCommand', () => {
 							'    * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false for a top-level item placed after a skip-level nested list', () => {
@@ -261,7 +261,7 @@ describe( 'IndentBlockListCommand', () => {
 							'# []bbb'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 				} );
 			} );
@@ -275,7 +275,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* []foo {blockIndentList:40px}'
 						] ) );
 					} );
@@ -287,7 +287,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [fo]o {blockIndentList:40px}'
 						] ) );
 					} );
@@ -301,7 +301,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:40px}',
 							'* ba]r {blockIndentList:40px}',
 							'* baz {blockIndentList:40px}'
@@ -317,7 +317,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:40px}',
 							'* bar {blockIndentList:40px}',
 							'* ba]z {blockIndentList:40px}'
@@ -334,7 +334,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:40px}',
 							'* bar {blockIndentList:40px}',
 							'',
@@ -351,7 +351,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* []foo {blockIndentList:90px}'
 						] ) );
 					} );
@@ -363,7 +363,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [fo]o {blockIndentList:90px}'
 						] ) );
 					} );
@@ -377,7 +377,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:90px}',
 							'* bar {blockIndentList:90px}',
 							'* ba]z {blockIndentList:90px}'
@@ -393,7 +393,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:90px}',
 							'* ba]r {blockIndentList:90px}',
 							'* baz {blockIndentList:90px}'
@@ -410,7 +410,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:90px}',
 							'* bar {blockIndentList:90px}',
 							'',
@@ -427,7 +427,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* []foo'
 						] ) );
 					} );
@@ -439,7 +439,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [fo]o'
 						] ) );
 					} );
@@ -454,7 +454,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo',
 							'* bar',
 							'* ba]z'
@@ -471,7 +471,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo',
 							'* ba]r',
 							'* baz'
@@ -489,7 +489,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo',
 							'* bar',
 							'',
@@ -506,7 +506,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* []foo {blockIndentList:40px}'
 						] ) );
 					} );
@@ -523,7 +523,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:90px}',
 							'',
 							'* ba]r'
@@ -540,7 +540,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo',
 							'',
 							'* ba]r {blockIndentList:90px}'
@@ -558,7 +558,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute( { firstListOnly: true } );
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:40px}',
 							'',
 							'* bar]'
@@ -585,7 +585,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []foo'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be false when collapsed selection is not at start of the first list item', () => {
@@ -593,7 +593,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* f[]oo'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true when non-collapsed selection starts at the start of the first list item', () => {
@@ -601,7 +601,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* [fo]o'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be false when non-collapsed selection does not start at the start of the first list item', () => {
@@ -609,7 +609,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* f[oo]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when collapsed selection is at the start of the second list item', () => {
@@ -618,7 +618,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the second list item', () => {
@@ -627,7 +627,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* [bar]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection is at start of the nested list', () => {
@@ -636,7 +636,7 @@ describe( 'IndentBlockListCommand', () => {
 							'  * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the nested list', () => {
@@ -645,7 +645,7 @@ describe( 'IndentBlockListCommand', () => {
 							'  * [bar]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true when selection starts at the start of the first list item and spans across multiple items', () => {
@@ -655,7 +655,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* ba]z'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true when selection starts at the start of the first list item and spans across multiple lists', () => {
@@ -666,7 +666,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* baz]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be false when selection is outside of list', () => {
@@ -676,7 +676,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* baz'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true when selection starts in list with one class and finishes in list with ' +
@@ -687,7 +687,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* ba]r {blockIndentList:indent-2}'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true when selection starts in list with third class and finishes in list with ' +
@@ -698,7 +698,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* ba]r {blockIndentList:indent-4}'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be false when selection starts in list with fourth class and finishes in list with ' +
@@ -709,13 +709,13 @@ describe( 'IndentBlockListCommand', () => {
 							'* ba]r {blockIndentList:indent-3}'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false in empty editor', () => {
 						_setModelData( model, '' );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 				} );
 
@@ -727,7 +727,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []baz'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be false when selection is at start of second item in bulleted list after numbered list', () => {
@@ -737,7 +737,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []baz'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 				} );
 
@@ -748,7 +748,7 @@ describe( 'IndentBlockListCommand', () => {
 							'  * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when skip-level list item is the first element in the document', () => {
@@ -756,7 +756,7 @@ describe( 'IndentBlockListCommand', () => {
 							'  * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false for a sublist item (has parent list item)', () => {
@@ -765,7 +765,7 @@ describe( 'IndentBlockListCommand', () => {
 							'    * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false for a skip-level list item preceded by a list item of another type', () => {
@@ -774,7 +774,7 @@ describe( 'IndentBlockListCommand', () => {
 							'    * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false for a top-level item placed after a same-type skip-level nested list', () => {
@@ -783,7 +783,7 @@ describe( 'IndentBlockListCommand', () => {
 							'# []bbb'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 				} );
 			} );
@@ -797,7 +797,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* []foo {blockIndentList:indent-1}'
 						] ) );
 					} );
@@ -809,7 +809,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [fo]o {blockIndentList:indent-1}'
 						] ) );
 					} );
@@ -823,7 +823,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* bar {blockIndentList:indent-1}',
 							'* ba]z {blockIndentList:indent-1}'
@@ -839,7 +839,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* ba]r {blockIndentList:indent-1}',
 							'* baz {blockIndentList:indent-1}'
@@ -856,7 +856,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* bar {blockIndentList:indent-1}',
 							'',
@@ -873,7 +873,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* []foo {blockIndentList:indent-2}'
 						] ) );
 					} );
@@ -885,7 +885,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [fo]o {blockIndentList:indent-2}'
 						] ) );
 					} );
@@ -899,7 +899,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-2}',
 							'* bar {blockIndentList:indent-2}',
 							'* ba]z {blockIndentList:indent-2}'
@@ -915,7 +915,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-2}',
 							'* ba]r {blockIndentList:indent-2}',
 							'* baz {blockIndentList:indent-2}'
@@ -932,7 +932,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-2}',
 							'* bar {blockIndentList:indent-2}',
 							'',
@@ -951,7 +951,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-4}',
 							'',
 							'* ba]r {blockIndentList:indent-4}'
@@ -969,7 +969,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute( { firstListOnly: true } );
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'',
 							'* bar]'
@@ -997,7 +997,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* f[]oo'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection does not start at the start of the first list item', () => {
@@ -1005,7 +1005,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* f[oo]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when collapsed selection is at the start of the second list item', () => {
@@ -1014,7 +1014,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the second list item', () => {
@@ -1023,7 +1023,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* [bar]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection is at start of the nested list', () => {
@@ -1032,7 +1032,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the nested list', () => {
@@ -1041,7 +1041,7 @@ describe( 'IndentBlockListCommand', () => {
 							'  * [bar]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when selection is outside of list', () => {
@@ -1051,7 +1051,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* baz'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true when collapsed selection is at start of the list using different unit', () => {
@@ -1059,7 +1059,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []foo {blockIndentList:5em}'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
@@ -1069,7 +1069,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []foo'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the first list item', () => {
@@ -1077,7 +1077,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* [fo]o'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when selection starts at the start of the first list item and spans across multiple items', () => {
@@ -1087,7 +1087,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* ba]z'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when selection starts at the start of the first list item and spans across multiple lists', () => {
@@ -1098,7 +1098,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* baz]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 				} );
 
@@ -1113,7 +1113,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', '50px', item );
 						} );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true when non-collapsed selection starts at the start of the first list item', () => {
@@ -1126,7 +1126,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', '50px', item );
 						} );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true when selection starts at the start of the first list item and spans across multiple items', () => {
@@ -1141,7 +1141,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', '50px', item );
 						} );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true when selection starts at the start of the first list item and spans across multiple lists', () => {
@@ -1157,7 +1157,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', '50px', item );
 						} );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
@@ -1172,7 +1172,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', '-50px', item );
 						} );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the first list item', () => {
@@ -1185,7 +1185,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', '-50px', item );
 						} );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when selection starts at the start of the first list item and spans across multiple items', () => {
@@ -1200,7 +1200,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', '-50px', item );
 						} );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when selection starts at the start of the first list item and spans across multiple lists', () => {
@@ -1216,7 +1216,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', '-50px', item );
 						} );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 				} );
 			} );
@@ -1230,7 +1230,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* []foo {blockIndentList:10px}'
 						] ) );
 					} );
@@ -1242,7 +1242,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [fo]o {blockIndentList:10px}'
 						] ) );
 					} );
@@ -1256,13 +1256,13 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:10px}',
 							'* bar {blockIndentList:10px}',
 							'* ba]z {blockIndentList:10px}'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should outdent list when selection starts at the start of first list item and ends ' +
@@ -1275,7 +1275,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:10px}',
 							'* ba]r {blockIndentList:10px}',
 							'* baz {blockIndentList:10px}'
@@ -1293,7 +1293,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:10px}',
 							'* bar {blockIndentList:10px}',
 							'',
@@ -1310,7 +1310,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* []foo'
 						] ) );
 					} );
@@ -1327,7 +1327,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:10px}',
 							'',
 							'* ba]r'
@@ -1345,7 +1345,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute( { firstListOnly: true } );
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:10px}',
 							'',
 							'* bar] {blockIndentList:50px}'
@@ -1372,7 +1372,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* f[]oo'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection does not start at the start of the first list item', () => {
@@ -1380,7 +1380,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* f[oo]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when collapsed selection is at the start of the second list item', () => {
@@ -1389,7 +1389,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the second list item', () => {
@@ -1398,7 +1398,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* [bar]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection is at start of the nested list', () => {
@@ -1407,7 +1407,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the nested list', () => {
@@ -1416,7 +1416,7 @@ describe( 'IndentBlockListCommand', () => {
 							'  * [bar]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when selection is outside of list', () => {
@@ -1426,7 +1426,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* baz'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 				} );
 
@@ -1436,7 +1436,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* []foo'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when non-collapsed selection starts at the start of the first list item', () => {
@@ -1444,7 +1444,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* [fo]o'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when selection starts at the start of the first list item and spans across multiple items', () => {
@@ -1454,7 +1454,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* ba]z'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be false when selection starts at the start of the first list item and spans across multiple lists', () => {
@@ -1465,7 +1465,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* baz]'
 						] ) );
 
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 				} );
 
@@ -1480,7 +1480,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', 'indent-1', item );
 						} );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true when non-collapsed selection starts at the start of the first list item', () => {
@@ -1493,7 +1493,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', 'indent-1', item );
 						} );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true when selection starts at the start of the first list item and spans across multiple items', () => {
@@ -1508,7 +1508,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', 'indent-1', item );
 						} );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true when selection starts at the start of the first list item and spans across multiple lists', () => {
@@ -1524,7 +1524,7 @@ describe( 'IndentBlockListCommand', () => {
 							writer.setAttribute( 'blockIndentList', 'indent-1', item );
 						} );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 			} );
@@ -1538,7 +1538,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* []foo {blockIndentList:indent-1}'
 						] ) );
 					} );
@@ -1550,7 +1550,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [fo]o {blockIndentList:indent-1}'
 						] ) );
 					} );
@@ -1564,13 +1564,13 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* bar {blockIndentList:indent-1}',
 							'* ba]z {blockIndentList:indent-1}'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should outdent list when selection starts at the start of first list item and ends ' +
@@ -1583,7 +1583,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* ba]r {blockIndentList:indent-1}',
 							'* baz {blockIndentList:indent-1}'
@@ -1601,7 +1601,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute();
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'* bar {blockIndentList:indent-1}',
 							'',
@@ -1620,7 +1620,7 @@ describe( 'IndentBlockListCommand', () => {
 
 						command.execute( { firstListOnly: true } );
 
-						expect( _getModelData( model ) ).to.equal( modelList( [
+						expect( _getModelData( model ) ).toEqual( modelList( [
 							'* [foo {blockIndentList:indent-1}',
 							'',
 							'* bar] {blockIndentList:indent-2}'

@@ -279,7 +279,7 @@ describe( 'CodeBlockCommand', () => {
 		} );
 
 		describe( 'options.usePreviousLanguageChoice=true', () => {
-			it( 'it should remember the selected language', () => {
+			it( 'should remember the selected language', () => {
 				_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 				command.execute( { language: 'php' } );
@@ -287,7 +287,7 @@ describe( 'CodeBlockCommand', () => {
 				expect( command._lastLanguage ).toBe( 'php' );
 			} );
 
-			it( 'it should apply the previous language if specified', () => {
+			it( 'should apply the previous language if specified', () => {
 				_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 				command._lastLanguage = 'css';
@@ -297,7 +297,7 @@ describe( 'CodeBlockCommand', () => {
 				expect( _getModelData( model ) ).toBe( '<codeBlock language="css">fo[]o</codeBlock>' );
 			} );
 
-			it( 'it should not apply the previous language if specified but usePreviousLanguageChoice=false', () => {
+			it( 'should not apply the previous language if specified but usePreviousLanguageChoice=false', () => {
 				_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 				command._lastLanguage = 'css';
@@ -307,7 +307,7 @@ describe( 'CodeBlockCommand', () => {
 				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
 			} );
 
-			it( 'it should apply the default language when the last language is not set yet', () => {
+			it( 'should apply the default language when the last language is not set yet', () => {
 				_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 				command.execute( { usePreviousLanguageChoice: true } );
@@ -315,7 +315,7 @@ describe( 'CodeBlockCommand', () => {
 				expect( _getModelData( model ) ).toBe( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
 			} );
 
-			it( 'it should prioritize using language passed as an option over previous language', () => {
+			it( 'should prioritize using language passed as an option over previous language', () => {
 				_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 				command._lastLanguage = 'css';

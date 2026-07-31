@@ -848,6 +848,7 @@ describe( 'Clipboard Markers Utils', () => {
 			// Remove the deterministic `_getUniqueMarkerName()` stub applied in `createEditor()`.
 			// The automatic `restoreMocks` cleanup runs before the `beforeEach()` hooks, so the
 			// stub is re-applied for every test and must be removed here to test the real method.
+			// eslint-disable-next-line vitest/no-restricted-vi-methods
 			vi.restoreAllMocks();
 
 			const firstResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread:123123' );
@@ -861,6 +862,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 		it( 'replaces only ID part of two segmented marker name', () => {
 			// See the comment in the previous test.
+			// eslint-disable-next-line vitest/no-restricted-vi-methods
 			vi.restoreAllMocks();
 
 			const firstResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread' );

@@ -44,7 +44,7 @@ describe( 'SplitCellCommand', () => {
 					[ '00[]' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if in an entire cell is selected', () => {
@@ -59,7 +59,7 @@ describe( 'SplitCellCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] )
 				);
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if multiple cells are selected', () => {
@@ -74,13 +74,13 @@ describe( 'SplitCellCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 				);
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if not in cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
@@ -289,7 +289,7 @@ describe( 'SplitCellCommand', () => {
 				const batches = new Set( operations.map( operation => operation.batch ) );
 
 				expect( operations.length ).to.be.greaterThan( 1 );
-				expect( batches.size ).to.equal( 1 );
+				expect( batches.size ).toEqual( 1 );
 			} );
 
 			it( 'should keep the originally selected cells selected', () => {
@@ -326,7 +326,7 @@ describe( 'SplitCellCommand', () => {
 					[ '00[]' ]
 				] ) );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if multiple cells are selected', () => {
@@ -341,13 +341,13 @@ describe( 'SplitCellCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 				);
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if not in cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 

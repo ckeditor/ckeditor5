@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { _getViewData } from '@ckeditor/ckeditor5-engine';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { range } from 'es-toolkit/compat';
@@ -851,138 +852,139 @@ describe( 'MediaEmbedElementSupport', () => {
 			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 
-		// it( 'should allow modifying styles, classes and attributes ', () => {
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(figure|custom-oembed|div|p)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow modifying styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|custom-oembed|div|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<figure class="media foo" data-figure="data-figure-value">' +
-		// 			'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" class="foobar"' +
-		// 			' style="color:green;" data-oembed="data-oembed-value"></custom-oembed>' +
-		// 		'</figure>'
-		// 	);
+			editor.setData(
+				'<figure class="media foo" data-figure="data-figure-value">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" class="foobar"' +
+					' style="color:green;" data-oembed="data-oembed-value"></custom-oembed>' +
+				'</figure>'
+			);
 
-		// 	const mediaElement = model.document.getRoot().getChild( 0 );
+			const mediaElement = model.document.getRoot().getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlAttributes', 'styles', {
-		// 			'background-color': 'blue',
-		// 			color: 'red'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'styles', {
-		// 			'font-size': '12px',
-		// 			'text-align': 'center'
-		// 		} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, mediaElement, 'htmlCustomOembedAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'red'
+				} );
+				setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'styles', {
+					'font-size': '12px',
+					'text-align': 'center'
+				} );
 
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlAttributes', 'attributes', {
-		// 			'data-oembed': 'foo'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'attributes', {
-		// 			'data-figure': 'bar'
-		// 		} );
+				setModelHtmlAttribute( writer, mediaElement, 'htmlCustomOembedAttributes', 'attributes', {
+					'data-oembed': 'foo'
+				} );
+				setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'attributes', {
+					'data-figure': 'bar'
+				} );
 
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
-		// 	} );
+				setModelHtmlAttribute( writer, mediaElement, 'htmlCustomOembedAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 			'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
-		// 		attributes: {
-		// 			1: {
-		// 				attributes: {
-		// 					'data-oembed': 'foo'
-		// 				},
-		// 				classes: [ 'bar', 'baz' ],
-		// 				styles: {
-		// 					'background-color': 'blue',
-		// 					color: 'red'
-		// 				}
-		// 			},
-		// 			2: {
-		// 				attributes: {
-		// 					'data-figure': 'bar'
-		// 				},
-		// 				classes: [ 'foobar' ],
-		// 				styles: {
-		// 					'font-size': '12px',
-		// 					'text-align': 'center'
-		// 				}
-		// 			}
-		// 		}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+					'<media htmlCustomOembedAttributes="(1)" htmlFigureAttributes="(2)"' +
+					' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-oembed': 'foo'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'red'
+						}
+					},
+					2: {
+						attributes: {
+							'data-figure': 'bar'
+						},
+						classes: [ 'foobar' ],
+						styles: {
+							'font-size': '12px',
+							'text-align': 'center'
+						}
+					}
+				}
+			} );
 
-		// 	// TODO: this should pass, but oembed attributes are not applied in the editing view.
-		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 	// 	'<figure class="ck-widget ck-widget_selected media foobar" contenteditable="false"' +
-		// 	// 			' style="font-size:12px;text-align:center;" data-figure="bar">' +
-		// 	// 		'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
-		// 	// 			' data-oembed="foo" class="bar baz" style="background-color:blue;color:red;">' +
-		// 	// 		'</div>' +
-		// 	// 		'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-		// 	// 	'</figure>'
-		// 	// );
+			// TODO: This should pass, but oembed attributes are not applied in the editing view.
+			// See https://github.com/ckeditor/ckeditor5/issues/11532.
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<figure class="ck-widget ck-widget_selected media foobar" contenteditable="false"' +
+					' style="font-size:12px;text-align:center;" data-figure="bar">' +
+					'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
+					' data-oembed="foo" class="bar baz" style="background-color:blue;color:red;">' +
+					'</div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<figure class="media foobar" style="font-size:12px;text-align:center;" data-figure="bar">' +
-		// 			'<custom-oembed class="bar baz" style="background-color:blue;color:red;"' +
-		// 			' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
-		// 			' data-oembed="foo"></custom-oembed>' +
-		// 		'</figure>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<figure class="media foobar" style="font-size:12px;text-align:center;" data-figure="bar">' +
+					'<custom-oembed class="bar baz" style="background-color:blue;color:red;"' +
+					' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
+					' data-oembed="foo"></custom-oembed>' +
+				'</figure>'
+			);
+		} );
 
-		// it( 'should allow removing all styles, classes and attributes ', () => {
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(figure|custom-oembed|div|p)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it( 'should allow removing all styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|custom-oembed|div|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<figure class="media foo" data-figure="data-figure-value">' +
-		// 			'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" class="foobar"' +
-		// 			' style="color:green;" data-oembed="data-oembed-value"></custom-oembed>' +
-		// 		'</figure>'
-		// 	);
+			editor.setData(
+				'<figure class="media foo" data-figure="data-figure-value">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" class="foobar"' +
+					' style="color:green;" data-oembed="data-oembed-value"></custom-oembed>' +
+				'</figure>'
+			);
 
-		// 	const mediaElement = model.document.getRoot().getChild( 0 );
+			const mediaElement = model.document.getRoot().getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlAttributes', 'attributes', null );
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'attributes', null );
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlAttributes', 'classes', null );
-		// 		setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'classes', null );
-		// 	} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, mediaElement, 'htmlCustomOembedAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, mediaElement, 'htmlCustomOembedAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, mediaElement, 'htmlCustomOembedAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, mediaElement, 'htmlFigureAttributes', 'classes', null );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 			'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
-		// 		attributes: {}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+					'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				attributes: {}
+			} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 		'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
-		// 			'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">' +
-		// 			'</div>' +
-		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-		// 		'</figure>'
-		// 	);
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
+					'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">' +
+					'</div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<figure class="media">' +
-		// 			'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
-		// 		'</figure>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<figure class="media">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
+				'</figure>'
+			);
+		} );
 	} );
 
 	// Even though the support of media embed feature by GHS alone seems lacking (e.g. extra paragraphs in the model, output)
@@ -1360,154 +1362,167 @@ describe( 'MediaEmbedElementSupport', () => {
 			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 
-		// it( 'should allow modifying styles, classes and attributes ', () => {
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(figure|oembed|div|p)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow modifying styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|oembed|div|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<figure class="foo" data-figure="data-figure-value">' +
-		// 			'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" class="foobar"' +
-		// 			' style="color:green;" data-oembed="data-oembed-value"></oembed>' +
-		// 		'</figure>'
-		// 	);
+			editor.setData(
+				'<figure class="foo" data-figure="data-figure-value">' +
+					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" class="foobar"' +
+					' style="color:green;" data-oembed="data-oembed-value"></oembed>' +
+				'</figure>'
+			);
 
-		// 	const figureElement = model.document.getRoot().getChild( 0 );
-		// 	const oEmbedElement = model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
+			const figureElement = model.document.getRoot().getChild( 0 );
+			const oEmbedElement = model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, oEmbedElement, 'htmlAttributes', 'styles', {
-		// 			'background-color': 'blue',
-		// 			color: 'red'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, figureElement, 'htmlAttributes', 'styles', {
-		// 			'font-size': '12px',
-		// 			'text-align': 'center'
-		// 		} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, oEmbedElement, 'htmlOembedAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'red'
+				} );
+				setModelHtmlAttribute( writer, figureElement, 'htmlFigureAttributes', 'styles', {
+					'font-size': '12px',
+					'text-align': 'center'
+				} );
 
-		// 		setModelHtmlAttribute( writer, oEmbedElement, 'htmlAttributes', 'attributes', {
-		// 			'data-oembed': 'foo'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, figureElement, 'htmlAttributes', 'attributes', {
-		// 			'data-figure': 'bar'
-		// 		} );
+				setModelHtmlAttribute( writer, oEmbedElement, 'htmlOembedAttributes', 'attributes', {
+					'data-oembed': 'foo'
+				} );
+				setModelHtmlAttribute( writer, figureElement, 'htmlFigureAttributes', 'attributes', {
+					'data-figure': 'bar'
+				} );
 
-		// 		setModelHtmlAttribute( writer, oEmbedElement, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
-		// 		setModelHtmlAttribute( writer, figureElement, 'htmlAttributes', 'classes', [ 'foobar' ] );
-		// 	} );
+				setModelHtmlAttribute( writer, oEmbedElement, 'htmlOembedAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, figureElement, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 		'<htmlFigure htmlAttributes="(1)">' +
-		// 			'<paragraph>' +
-		// 				'<htmlOembed htmlAttributes="(2)" htmlContent=""></htmlOembed>' +
-		// 			'</paragraph>' +
-		// 		'</htmlFigure>',
-		// 		attributes: {
-		// 			1: {
-		// 				attributes: {
-		// 					'data-figure': 'bar'
-		// 				},
-		// 				classes: [ 'foobar' ],
-		// 				styles: {
-		// 					'font-size': '12px',
-		// 					'text-align': 'center'
-		// 				}
-		// 			},
-		// 			2: {
-		// 				attributes: {
-		// 					'data-oembed': 'foo'
-		// 				},
-		// 				classes: [ 'bar', 'baz' ],
-		// 				styles: {
-		// 					'background-color': 'blue',
-		// 					color: 'red'
-		// 				}
-		// 			},
-		// 			3: ''
-		// 		}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+				'<htmlFigure htmlFigureAttributes="(1)">' +
+					'<paragraph>' +
+						'<htmlOembed htmlContent="" htmlOembedAttributes="(2)"></htmlOembed>' +
+					'</paragraph>' +
+				'</htmlFigure>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-figure': 'bar'
+						},
+						classes: [ 'foobar' ],
+						styles: {
+							'font-size': '12px',
+							'text-align': 'center'
+						}
+					},
+					2: {
+						attributes: {
+							'data-oembed': 'foo'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'red'
+						}
+					}
+				}
+			} );
 
-		// 	// TODO: this should pass, but oembed attributes are not applied in the editing view.
-		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 	// 	'<figure class="ck-widget ck-widget_selected foobar" contenteditable="false"' +
-		// 	// 			' style="font-size:12px;text-align:center;" data-figure="bar">' +
-		// 	// 		'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
-		// 	// 			' data-oembed="foo" class="bar baz" style="background-color:blue;color:red;">' +
-		// 	// 		'</div>' +
-		// 	// 		'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-		// 	// 	'</figure>'
-		// 	// );
+			// TODO: This should pass, but oembed attributes are not applied in the editing view.
+			// See https://github.com/ckeditor/ckeditor5/issues/11532.
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<figure class="ck-widget ck-widget_selected foobar" contenteditable="false"' +
+					' style="font-size:12px;text-align:center;" data-figure="bar">' +
+					'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
+					' data-oembed="foo" class="bar baz" style="background-color:blue;color:red;">' +
+					'</div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<figure class="foobar" style="font-size:12px;text-align:center;" data-figure="bar">' +
-		// 			'<p><oembed class="bar baz" style="background-color:blue;color:red;"' +
-		// 			' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
-		// 			' data-oembed="foo"></oembed></p>' +
-		// 		'</figure>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<figure class="foobar" style="font-size:12px;text-align:center;" data-figure="bar">' +
+					'<p><oembed class="bar baz" style="background-color:blue;color:red;"' +
+					' url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
+					' data-oembed="foo"></oembed></p>' +
+				'</figure>'
+			);
+		} );
 
-		// it( 'should allow removing all styles, classes and attributes ', () => {
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(figure|oembed)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow removing all styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|oembed)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<figure class="media foo" data-figure="data-figure-value">' +
-		// 			'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" class="foobar"' +
-		// 			' style="color:green;" data-oembed="data-oembed-value"></oembed>' +
-		// 		'</figure>'
-		// 	);
+			editor.setData(
+				'<figure class="media foo" data-figure="data-figure-value">' +
+					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" class="foobar"' +
+					' style="color:green;" data-oembed="data-oembed-value"></oembed>' +
+				'</figure>'
+			);
 
-		// 	const figureElement = model.document.getRoot().getChild( 0 );
-		// 	const oEmbedElement = model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
+			const figureElement = model.document.getRoot().getChild( 0 );
+			const oEmbedElement = model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, oEmbedElement, 'htmlAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, figureElement, 'htmlAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, oEmbedElement, 'htmlAttributes', 'attributes', null );
-		// 		setModelHtmlAttribute( writer, figureElement, 'htmlAttributes', 'attributes', null );
-		// 		setModelHtmlAttribute( writer, oEmbedElement, 'htmlAttributes', 'classes', null );
-		// 		setModelHtmlAttribute( writer, figureElement, 'htmlAttributes', 'classes', null );
-		// 	} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, oEmbedElement, 'htmlOembedAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, figureElement, 'htmlFigureAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, oEmbedElement, 'htmlOembedAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, figureElement, 'htmlFigureAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, oEmbedElement, 'htmlOembedAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, figureElement, 'htmlFigureAttributes', 'classes', null );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 			'<htmlFigure>' +
-		// 				'<paragraph>' +
-		// 					'<htmlOembed htmlContent=""></htmlOembed>' +
-		// 				'</paragraph>' +
-		// 			'</htmlFigure>',
-		// 		attributes: {
-		// 			1: ''
-		// 		}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+					'<htmlFigure>' +
+						'<paragraph>' +
+							'<htmlOembed htmlContent=""></htmlOembed>' +
+						'</paragraph>' +
+					'</htmlFigure>',
+				attributes: {}
+			} );
 
-		// 	// TODO: This test passes, but I think it's wrong.
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 		'<figure>' +
-		// 			'<p>' +
-		// 				'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
-		// 					'<oembed class="html-object-embed__content"></oembed>' +
-		// 				'</span>' +
-		// 			'</p>' +
-		// 		'</figure>'
-		// 	);
+			// TODO: This test passes, but I think it's wrong.
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<figure>' +
+					'<p>' +
+						'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
+							'<oembed class="html-object-embed__content"></oembed>' +
+						'</span>' +
+					'</p>' +
+				'</figure>'
+			);
 
-		// 	// TODO: This test fails, but shouldn't.
-		// 	expect( editor.getData() ).toBe(
-		// 		'<figure class="media">' +
-		// 			'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
-		// 		'</figure>'
-		// 	);
-		// } );
+			// TODO: This test fails, but shouldn't.
+			expect( editor.getData() ).toBe(
+				'<figure class="media">' +
+					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
+				'</figure>'
+			);
+		} );
 	} );
 } );
+
+function setModelHtmlAttribute( writer, element, attributeName, subject, value ) {
+	const newValue = { ...element.getAttribute( attributeName ) };
+
+	if ( value === null ) {
+		delete newValue[ subject ];
+	} else {
+		newValue[ subject ] = value;
+	}
+
+	if ( Object.keys( newValue ).length ) {
+		writer.setAttribute( attributeName, newValue, element );
+	} else {
+		writer.removeAttribute( attributeName, element );
+	}
+}

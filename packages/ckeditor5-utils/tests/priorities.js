@@ -8,18 +8,18 @@ import { priorities } from '../src/priorities.js';
 
 describe( 'get', () => {
 	it( 'should return correct value for string priority', () => {
-		for ( const name in priorities ) {
-			if ( Object.prototype.hasOwnProperty.call( priorities, name ) && name != 'get' ) {
-				expect( priorities.get( name ) ).to.equal( priorities[ name ] );
-			}
+		const priorityNames = Object.keys( priorities ).filter( name => name != 'get' );
+
+		for ( const name of priorityNames ) {
+			expect( priorities.get( name ) ).toEqual( priorities[ name ] );
 		}
 	} );
 
 	it( 'should return value equal to normal for unrecognized string priority', () => {
-		expect( priorities.get( 'foobar' ) ).to.equal( priorities.normal );
+		expect( priorities.get( 'foobar' ) ).toEqual( priorities.normal );
 	} );
 
 	it( 'should return passed number', () => {
-		expect( priorities.get( 2 ) ).to.equal( 2 );
+		expect( priorities.get( 2 ) ).toEqual( 2 );
 	} );
 } );

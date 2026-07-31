@@ -5,6 +5,7 @@
 
 import { readdirSync } from 'node:fs';
 import globals from 'globals';
+import vitest from '@vitest/eslint-plugin';
 import { defineConfig } from 'eslint/config';
 import ckeditor5Rules from 'eslint-plugin-ckeditor5-rules';
 import ckeditor5Config from 'eslint-config-ckeditor5';
@@ -339,8 +340,45 @@ export default defineConfig( [
 					'**/manual/**/_utils*/**'
 				]
 			} ],
-			'ckeditor5-rules/no-cross-package-imports': 'off',
-			'mocha/no-pending-tests': 'off'
+			'ckeditor5-rules/no-cross-package-imports': 'off'
+		}
+	},
+	{
+		files: [
+			'**/tests/**/*.@(js|cjs|mjs|ts)',
+			'**/scripts-tests/**/*.@(js|cjs|mjs|ts)'
+		],
+
+		plugins: {
+			vitest
+		},
+
+		rules: {
+			...vitest.configs.recommended.rules,
+
+			// Many suites assert through shared helpers instead of inline `expect()` calls.
+			'vitest/expect-expect': [ 'error', {
+				assertFunctionNames: [ 'expect*', 'assert*', 'check*', 'test*', 'runTest' ]
+			} ],
+
+			// Skipped tests are allowed. Some cover known, tracked limitations.
+			'vitest/no-disabled-tests': 'off',
+
+			// Combining `toHaveBeenCalledOnce()` with `toHaveBeenCalledWith()` is fine.
+			'vitest/prefer-called-exactly-once-with': 'off',
+
+			// The Vitest `expect` is chai-based and accepts a custom assertion message
+			// as the second argument.
+			'vitest/valid-expect': [ 'error', { maxArgs: 2 } ],
+
+			// The shared Vitest configuration sets `restoreMocks: true` and `unstubGlobals: true`,
+			// so manual cleanup is redundant and a suite-level variant would break other tests.
+			'vitest/no-restricted-vi-methods': [ 'error', {
+				restoreAllMocks: 'The shared Vitest config restores mocks automatically (`restoreMocks: true`).',
+				unstubAllGlobals: 'The shared Vitest config unstubs globals automatically (`unstubGlobals: true`).'
+			} ],
+
+			'vitest/consistent-test-it': [ 'error', { fn: 'it' } ]
 		}
 	},
 	{

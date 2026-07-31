@@ -1534,8 +1534,8 @@ describe( 'Indent MultiCommand integrations', () => {
 
 				editor.commands.get( 'indent' ).execute();
 
-				expect( indentBlockListSpy.mock.calls.length ).to.equal( 1, 'indentBlockList command call count' );
-				expect( indentListSpy.mock.calls.length ).to.equal( 0, 'indentList command call count' );
+				expect( indentBlockListSpy.mock.calls.length, 'indentBlockList command call count' ).toEqual( 1 );
+				expect( indentListSpy.mock.calls.length, 'indentList command call count' ).toEqual( 0 );
 			} );
 
 			it( 'should execute indentBlockList when a non-collapsed selection starts at the start of first list item at indent 0', () => {
@@ -1546,8 +1546,8 @@ describe( 'Indent MultiCommand integrations', () => {
 
 				editor.commands.get( 'indent' ).execute();
 
-				expect( indentBlockListSpy.mock.calls.length ).to.equal( 1, 'indentBlockList command call count' );
-				expect( indentListSpy.mock.calls.length ).to.equal( 0, 'indentList command call count' );
+				expect( indentBlockListSpy.mock.calls.length, 'indentBlockList command call count' ).toEqual( 1 );
+				expect( indentListSpy.mock.calls.length, 'indentList command call count' ).toEqual( 0 );
 			} );
 
 			it( 'should execute indentList when cursor is not at start of first list item', () => {
@@ -1558,8 +1558,8 @@ describe( 'Indent MultiCommand integrations', () => {
 
 				editor.commands.get( 'indent' ).execute();
 
-				expect( indentBlockListSpy.mock.calls.length ).to.equal( 0, 'indentBlockList command call count' );
-				expect( indentListSpy.mock.calls.length ).to.equal( 1, 'indentList command call count' );
+				expect( indentBlockListSpy.mock.calls.length, 'indentBlockList command call count' ).toEqual( 0 );
+				expect( indentListSpy.mock.calls.length, 'indentList command call count' ).toEqual( 1 );
 			} );
 
 			it( 'should execute indentList when at start of first skip-level list item (indent > 0)', () => {
@@ -1569,8 +1569,8 @@ describe( 'Indent MultiCommand integrations', () => {
 
 				editor.commands.get( 'indent' ).execute();
 
-				expect( indentBlockListSpy.mock.calls.length ).to.equal( 0, 'indentBlockList command call count' );
-				expect( indentListSpy.mock.calls.length ).to.equal( 1, 'indentList command call count' );
+				expect( indentBlockListSpy.mock.calls.length, 'indentBlockList command call count' ).toEqual( 0 );
+				expect( indentListSpy.mock.calls.length, 'indentList command call count' ).toEqual( 1 );
 			} );
 
 			it( 'should execute indentList when at start of second list item', () => {
@@ -1581,8 +1581,8 @@ describe( 'Indent MultiCommand integrations', () => {
 
 				editor.commands.get( 'indent' ).execute();
 
-				expect( indentBlockListSpy.mock.calls.length ).to.equal( 0, 'indentBlockList command call count' );
-				expect( indentListSpy.mock.calls.length ).to.equal( 1, 'indentList command call count' );
+				expect( indentBlockListSpy.mock.calls.length, 'indentBlockList command call count' ).toEqual( 0 );
+				expect( indentListSpy.mock.calls.length, 'indentList command call count' ).toEqual( 1 );
 			} );
 
 			it( 'should execute indentList (not indentBlockList) when at start of a top-level item ' +
@@ -1596,8 +1596,8 @@ describe( 'Indent MultiCommand integrations', () => {
 
 				editor.commands.get( 'indent' ).execute();
 
-				expect( indentBlockListSpy.mock.calls.length ).to.equal( 0, 'indentBlockList command call count' );
-				expect( indentListSpy.mock.calls.length ).to.equal( 1, 'indentList command call count' );
+				expect( indentBlockListSpy.mock.calls.length, 'indentBlockList command call count' ).toEqual( 0 );
+				expect( indentListSpy.mock.calls.length, 'indentList command call count' ).toEqual( 1 );
 
 				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'  # A',
@@ -1621,8 +1621,8 @@ describe( 'Indent MultiCommand integrations', () => {
 
 				editor.commands.get( 'outdent' ).execute();
 
-				expect( outdentBlockListSpy.mock.calls.length ).to.equal( 1, 'outdentBlockList command call count' );
-				expect( outdentListSpy.mock.calls.length ).to.equal( 0, 'outdentList command call count' );
+				expect( outdentBlockListSpy.mock.calls.length, 'outdentBlockList command call count' ).toEqual( 1 );
+				expect( outdentListSpy.mock.calls.length, 'outdentList command call count' ).toEqual( 0 );
 			} );
 
 			it( 'should execute outdentList when at start of first skip-level list item (indent > 0)', () => {
@@ -1632,8 +1632,8 @@ describe( 'Indent MultiCommand integrations', () => {
 
 				editor.commands.get( 'outdent' ).execute();
 
-				expect( outdentBlockListSpy.mock.calls.length ).to.equal( 0, 'outdentBlockList command call count' );
-				expect( outdentListSpy.mock.calls.length ).to.equal( 1, 'outdentList command call count' );
+				expect( outdentBlockListSpy.mock.calls.length, 'outdentBlockList command call count' ).toEqual( 0 );
+				expect( outdentListSpy.mock.calls.length, 'outdentList command call count' ).toEqual( 1 );
 			} );
 
 			it( 'should execute outdentList when at start of first list item at indent 0 without block indent', () => {
@@ -1643,8 +1643,8 @@ describe( 'Indent MultiCommand integrations', () => {
 
 				editor.commands.get( 'outdent' ).execute();
 
-				expect( outdentBlockListSpy.mock.calls.length ).to.equal( 0, 'outdentBlockList command call count' );
-				expect( outdentListSpy.mock.calls.length ).to.equal( 1, 'outdentList command call count' );
+				expect( outdentBlockListSpy.mock.calls.length, 'outdentBlockList command call count' ).toEqual( 0 );
+				expect( outdentListSpy.mock.calls.length, 'outdentList command call count' ).toEqual( 1 );
 			} );
 		} );
 	} );
@@ -1667,9 +1667,9 @@ describe( 'Indent MultiCommand integrations', () => {
 		expect( _getModelData( model ) ).toEqualMarkup( modelList( expected ) );
 
 		for ( const name in executedCommands ) {
-			expect( commandSpies[ name ].mock.calls.length ).to.equal( executedCommands[ name ], `${ name } command call count` );
+			expect( commandSpies[ name ].mock.calls.length, `${ name } command call count` ).toEqual( executedCommands[ name ] );
 		}
 
-		expect( blocksChangedByCommands.map( block => block.index ) ).to.deep.equal( changedBlocks, 'changed blocks\' indexes' );
+		expect( blocksChangedByCommands.map( block => block.index ), 'changed blocks\' indexes' ).toEqual( changedBlocks );
 	}
 } );

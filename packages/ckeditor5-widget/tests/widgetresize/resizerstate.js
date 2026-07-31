@@ -77,7 +77,7 @@ describe( 'ResizerState', () => {
 		} );
 	} );
 
-	describe( 'width percents calculations ', () => {
+	describe( 'width percents calculations', () => {
 		const domContentWrapper = document.createElement( 'span' );
 
 		beforeAll( () => {

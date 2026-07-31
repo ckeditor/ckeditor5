@@ -36,24 +36,24 @@ describe( 'table cell properties', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be false if selection does not have table cell', () => {
 						_setModelData( model, '<paragraph>foo[]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection has table cell', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be false if selection does not have table cell', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection has table cell', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
@@ -64,7 +64,7 @@ describe( 'table cell properties', () => {
 							[ '10', { contents: '11', isSelected: true } ]
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 			} );
@@ -74,13 +74,13 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined if selected table cell has no tableCellBorderStyle property', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table cell has tableCellBorderStyle property (single string)', () => {
 						_setModelData( model, modelTable( [ [ { tableCellBorderStyle: 'ridge', contents: '[]foo' } ] ] ) );
 
-						expect( command.value ).to.equal( 'ridge' );
+						expect( command.value ).toEqual( 'ridge' );
 					} );
 
 					it( 'should be set if selected table cell has tableCellBorderStyle property object with same values', () => {
@@ -92,7 +92,7 @@ describe( 'table cell properties', () => {
 								left: 'ridge'
 							}
 						}, '[]foo' );
-						expect( command.value ).to.equal( 'ridge' );
+						expect( command.value ).toEqual( 'ridge' );
 					} );
 
 					it( 'should be undefined if selected table cell has tableCellBorderStyle property object with different values', () => {
@@ -105,7 +105,7 @@ describe( 'table cell properties', () => {
 							}
 						}, '[]foo' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 				} );
 
@@ -113,13 +113,13 @@ describe( 'table cell properties', () => {
 					it( 'should be false if selection does not have table cell', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be true is selection has table cell', () => {
 						_setModelData( model, modelTable( [ [ { tableCellBorderStyle: 'ridge', contents: 'f[o]o' } ] ] ) );
 
-						expect( command.value ).to.equal( 'ridge' );
+						expect( command.value ).toEqual( 'ridge' );
 					} );
 				} );
 
@@ -136,7 +136,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be undefined if only some table cells have the "borderStyle" property', () => {
@@ -151,7 +151,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be undefined if one of selected table cells has a different "borderStyle" property value', () => {
@@ -166,7 +166,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if all table cells have the same "borderStyle" property value', () => {
@@ -181,7 +181,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.equal( 'solid' );
+						expect( command.value ).toEqual( 'solid' );
 					} );
 				} );
 			} );
@@ -309,7 +309,7 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined if selected table cell has the default tableCellBorderStyle property (single string)', () => {
 						_setModelData( model, modelTable( [ [ { tableCellBorderStyle: 'solid', contents: '[]foo' } ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( `should be undefined if selected table cell
@@ -322,7 +322,7 @@ describe( 'table cell properties', () => {
 								left: 'solid'
 							}
 						}, '[]foo' );
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 				} );
 
@@ -330,7 +330,7 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined is selection contains the default value', () => {
 						_setModelData( model, modelTable( [ [ { tableCellBorderStyle: 'solid', contents: 'f[o]o' } ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 				} );
 
@@ -349,7 +349,7 @@ describe( 'table cell properties', () => {
 								]
 							] ) );
 
-							expect( command.value ).to.be.undefined;
+							expect( command.value ).toBeUndefined();
 						}
 					);
 				} );

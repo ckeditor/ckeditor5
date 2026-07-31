@@ -202,6 +202,10 @@ describe( 'Resizer', () => {
 
 			resizerInstance.redraw();
 
+			// The rect of the handle host was fetched and applied to the resizer wrapper.
+			expect( resizerInstance._viewResizerWrapper.getStyle( 'width' ) ).toMatch( /^\d+(\.\d+)?px$/ );
+			expect( resizerInstance._viewResizerWrapper.getStyle( 'height' ) ).toMatch( /^\d+(\.\d+)?px$/ );
+
 			// Cleanup.
 			renderedElement.remove();
 		} );
@@ -234,7 +238,6 @@ describe( 'Resizer', () => {
 
 			// Cleanup.
 			renderedElement.remove();
-			vi.restoreAllMocks();
 		} );
 	} );
 

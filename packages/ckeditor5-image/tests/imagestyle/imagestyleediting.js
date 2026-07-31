@@ -47,7 +47,7 @@ describe( 'ImageStyleEditing', () => {
 			expect( ImageStyleEditing.isPremiumPlugin ).toBe( false );
 		} );
 
-		it( 'requires ImageUtils ', () => {
+		it( 'requires ImageUtils', () => {
 			expect( ImageStyleEditing.requires ).toEqual( [ ImageUtils ] );
 		} );
 

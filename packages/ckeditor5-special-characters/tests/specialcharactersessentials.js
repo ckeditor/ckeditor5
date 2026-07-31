@@ -14,7 +14,7 @@ import { SpecialCharactersLatin } from '../src/specialcharacterslatin.js';
 
 describe( 'SpecialCharactersEssentials', () => {
 	it( 'includes other required plugins', () => {
-		expect( SpecialCharactersEssentials.requires ).to.deep.equal( [
+		expect( SpecialCharactersEssentials.requires ).toEqual( [
 			SpecialCharactersCurrency,
 			SpecialCharactersText,
 			SpecialCharactersMathematical,
@@ -24,14 +24,14 @@ describe( 'SpecialCharactersEssentials', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( SpecialCharactersEssentials.pluginName ).to.equal( 'SpecialCharactersEssentials' );
+		expect( SpecialCharactersEssentials.pluginName ).toEqual( 'SpecialCharactersEssentials' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( SpecialCharactersEssentials.isOfficialPlugin ).to.be.true;
+		expect( SpecialCharactersEssentials.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( SpecialCharactersEssentials.isPremiumPlugin ).to.be.false;
+		expect( SpecialCharactersEssentials.isPremiumPlugin ).toBe( false );
 	} );
 } );
