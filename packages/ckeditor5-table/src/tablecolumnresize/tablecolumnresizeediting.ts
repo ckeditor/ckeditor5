@@ -1094,14 +1094,16 @@ export class TableColumnResizeEditing extends Plugin {
 			viewWriter.addClass( 'ck-table-resized', viewTable );
 			viewWriter.addClass( 'ck-table-column-resizer__active', resizingData.elements.viewResizer );
 
-			// The figure might be capped to 100% when scrolling is active, in that scenario use the (larger) table width.
+			// Seed from the exact model width, not a re-measurement: the rendered figure is ~1px wider than its
+			// declared width, which would otherwise inflate the table on every inner-column drag.
+			if ( resizingData.flags.isPixelMode ) {
+				return `${ toPrecision( parseFloat( resizingData.elements.modelTable.getAttribute( 'tableWidth' ) as string ) ) }px`;
+			}
+
+			// A percentage width is a share of the parent; the figure may be capped under `TableScroll`, so use the larger.
 			const figureWidth = Math.max( resizingData.widths.tableWidth, resizingData.widths.viewFigureWidth );
 
-			// A pixel-mode table keeps its absolute width; otherwise the width is a percentage of the parent. Pixel
-			// tables stay in pixels even under `TableScroll` (it caps the figure and scrolls, keeping the real width).
-			return resizingData.flags.isPixelMode ?
-				`${ toPrecision( figureWidth ) }px` :
-				`${ toPrecision( figureWidth / resizingData.widths.viewFigureParentWidth * 100 ) }%`;
+			return `${ toPrecision( figureWidth / resizingData.widths.viewFigureParentWidth * 100 ) }%`;
 		}
 	}
 
