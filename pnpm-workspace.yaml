@@ -25,13 +25,15 @@ overrides:
   'yauzl@^2': '^3.2.1'
   'ws@^8': '^8.20.1'
 
-minimumReleaseAge: 4320 # 3 days
+minimumReleaseAge: 10080 # 7 days
 minimumReleaseAgeExclude:
   - '@ckeditor/*'
   - '@cksource/*'
   - '*ckeditor5*'
   - 'umberto'
 
+trustPolicy: no-downgrade
+blockExoticSubdeps: true
 shellEmulator: true
 shamefullyHoist: true
 preferFrozenLockfile: true
