@@ -51,6 +51,7 @@ import {
 	getChangedResizedTables,
 	getColumnMinWidthAsPercentage,
 	getElementWidthInPixels,
+	getContainerContentWidth,
 	getTableWidthInPixels,
 	normalizeColumnWidths,
 	toPrecision,
@@ -61,7 +62,7 @@ import {
 	getTableColumnsWidths,
 	isTableWidthInPixels,
 	isColumnWidthsInPixels,
-	getEditableWidth
+	getEditableContentWidth
 } from './utils.js';
 import { getSelectionAffectedTable } from '../utils/common.js';
 
@@ -1168,7 +1169,7 @@ export class TableColumnResizeEditing extends Plugin {
 		const dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
 		const tableScrollPlugin = plugins.has( 'TableScrollEditing' ) ? plugins.get( 'TableScrollEditing' ) : null;
 		const isTableScrollActive = !!tableScrollPlugin && isTableScrollAllowed;
-		const containerWidth = getEditableWidth( this.editor, modelTable.root.rootName! )!;
+		const containerWidth = getEditableContentWidth( this.editor, modelTable.root.rootName! )!;
 
 		let dxUpperBound: number;
 
@@ -1413,15 +1414,14 @@ export class TableColumnResizeEditing extends Plugin {
 		const viewLeftColumn = viewColgroup.getChild( leftColumnIndex ) as ViewElement;
 		const viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex + 1 ) as ViewElement;
 
-		const viewFigureParentWidth = getElementWidthInPixels(
-			editor.editing.view.domConverter.mapViewToDom( viewFigure.parent! ) as HTMLElement
-		);
+		const domFigureParent = editor.editing.view.domConverter.mapViewToDom( viewFigure.parent! ) as HTMLElement;
+		const viewFigureParentWidth = getContainerContentWidth( domFigureParent );
 
 		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure )! );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
 		const leftColumnWidth = columnWidths[ leftColumnIndex ];
 		const rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex + 1 ];
-		const isTableWidthWithinContainerAtDragStart = tableWidth <= getEditableWidth( editor, modelTable.root.rootName! )!;
+		const isTableWidthWithinContainerAtDragStart = tableWidth <= getEditableContentWidth( editor, modelTable.root.rootName! )!;
 
 		// Whether the `TableScrollEditing` plugin considers this specific table eligible to overflow its
 		// container (see `TableScrollEditing#_isTableScrollable`). Computed once, at the start of the drag,

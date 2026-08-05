@@ -161,15 +161,46 @@ export function getElementWidthInPixels( domElement: HTMLElement ): number {
 }
 
 /**
+ * Returns the width (in pixels) of a given DOM element's content that's actually available to its children -
+ * with the element's own vertical scrollbar subtracted where that's still needed.
+ *
+ * @internal
+ * @param domElement A DOM element.
+ * @returns The width available to the element's children, in pixels.
+ */
+export function getContainerContentWidth( domElement: HTMLElement ): number {
+	const styles = global.window.getComputedStyle( domElement );
+	const width = getElementWidthInPixels( domElement );
+
+	if ( styles.boxSizing !== 'border-box' ) {
+		return width;
+	}
+
+	const scrollbarWidth = Math.max(
+		domElement.offsetWidth -
+			domElement.clientWidth -
+			parseFloat( styles.borderLeftWidth ) -
+			parseFloat( styles.borderRightWidth ),
+		0
+	);
+
+	return width - scrollbarWidth;
+}
+
+/**
  * Returns the inner pixel width of a given editing root, or `null` if the root has no
  * DOM element attached yet (e.g. it hasn't been rendered for the first time).
  *
  * @internal
  */
-export function getEditableWidth( editor: Editor, rootName: string ): number | null {
-	const domRoot = editor.editing.view.getDomRoot( rootName );
+export function getEditableContentWidth( editor: Editor, rootName: string ): number | null {
+	const domRoot = editor.editing.view.getDomRoot( rootName ) as HTMLElement | undefined;
 
-	return domRoot ? getElementWidthInPixels( domRoot as HTMLElement ) : null;
+	if ( !domRoot ) {
+		return null;
+	}
+
+	return getContainerContentWidth( domRoot );
 }
 
 /**

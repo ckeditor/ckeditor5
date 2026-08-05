@@ -100,6 +100,103 @@ describe( 'TableColumnResizeEditing', () => {
 		expect( TableColumnResizeEditing.licenseFeatureCode ).toBe( 'TCR' );
 	} );
 
+	describe( 'resizing with the editable\'s own scrollbar (#20117)', () => {
+		function stubScrollbar( domElement, scrollbarWidthInPx ) {
+			Object.defineProperty( domElement, 'clientWidth', {
+				configurable: true,
+				value: domElement.offsetWidth - scrollbarWidthInPx
+			} );
+		}
+
+		function setUpScrollableEditable( boxSizing ) {
+			const domRoot = view.getDomRoot();
+
+			domRoot.style.boxSizing = boxSizing;
+			domRoot.style.border = '0';
+			domRoot.style.padding = '0';
+			domRoot.style.width = '300px';
+
+			return domRoot;
+		}
+
+		it( 'should not skew a 100% table\'s width when the `border-box` editable has a scrollbar', () => {
+			const domRoot = setUpScrollableEditable( 'border-box' );
+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ]
+			], { columnWidths: '20%,30%,50%', tableWidth: '100%' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+			const viewFigure = editor.editing.mapper.toViewElement( table );
+			const domTable = getDomTable( view );
+			const tableWidthBeforeDrag = getDomTableRects( domTable ).width;
+
+			// Simulate a classic (space-consuming) 17px vertical scrollbar on the editable.
+			stubScrollbar( domRoot, 17 );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( domTable, 0, 0 ) );
+			tableColumnResizeMouseSimulator.move(
+				editor, getDomResizer( domTable, 0, 0 ), { x: COLUMN_RESIZE_DISTANCE_THRESHOLD, y: 0 }
+			);
+
+			const availableWidth = domRoot.offsetWidth - 17;
+			const expectedFigureWidthPercent = tableWidthBeforeDrag / availableWidth * 100;
+
+			expect( parseFloat( viewFigure.getStyle( 'width' ) ) ).toBeCloseTo( expectedFigureWidthPercent, 0 );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		it( 'should not double-subtract the scrollbar for a `content-box` editable', () => {
+			const domRoot = setUpScrollableEditable( 'content-box' );
+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ]
+			], { columnWidths: '20%,30%,50%', tableWidth: '100%' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+			const viewFigure = editor.editing.mapper.toViewElement( table );
+			const domTable = getDomTable( view );
+			const tableWidthBeforeDrag = getDomTableRects( domTable ).width;
+
+			stubScrollbar( domRoot, 17 );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( domTable, 0, 0 ) );
+			tableColumnResizeMouseSimulator.move(
+				editor, getDomResizer( domTable, 0, 0 ), { x: COLUMN_RESIZE_DISTANCE_THRESHOLD, y: 0 }
+			);
+
+			const expectedFigureWidthPercent = tableWidthBeforeDrag / domRoot.offsetWidth * 100;
+
+			expect( parseFloat( viewFigure.getStyle( 'width' ) ) ).toBeCloseTo( expectedFigureWidthPercent, 0 );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		it( 'should behave exactly as before when there is no scrollbar (`clientWidth` === `offsetWidth`)', () => {
+			const domRoot = setUpScrollableEditable( 'border-box' );
+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ]
+			], { columnWidths: '20%,30%,50%', tableWidth: '100%' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+			const viewFigure = editor.editing.mapper.toViewElement( table );
+			const domTable = getDomTable( view );
+
+			stubScrollbar( domRoot, 0 );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( domTable, 0, 0 ) );
+			tableColumnResizeMouseSimulator.move(
+				editor, getDomResizer( domTable, 0, 0 ), { x: COLUMN_RESIZE_DISTANCE_THRESHOLD, y: 0 }
+			);
+
+			expect( parseFloat( viewFigure.getStyle( 'width' ) ) ).toBeCloseTo( 100, 0 );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+	} );
+
 	describe( 'getColumnIndexesForCells()', () => {
 		function getCell( row, column ) {
 			return model.document.getRoot().getChild( 0 ).getChild( row ).getChild( column );

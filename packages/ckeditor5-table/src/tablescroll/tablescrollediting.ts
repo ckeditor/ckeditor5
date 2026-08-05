@@ -22,7 +22,7 @@ import { TableEditing } from '../tableediting.js';
 import type { TableType } from '../tableconfig.js';
 
 import { watchTableModelElements, watchRootsWidthResize } from './watchers.js';
-import { getEditableWidth } from '../tablecolumnresize/utils.js';
+import { getEditableContentWidth } from '../tablecolumnresize/utils.js';
 
 /**
  * The table scrolling editing plugin.
@@ -112,7 +112,7 @@ export class TableScrollEditing extends Plugin {
 	 */
 	public _updateTableScrollOverflowState( table: ModelElement, tableWidthOverride?: string | null ): void {
 		const { editor } = this;
-		const containerWidth = getEditableWidth( editor, table.root.rootName! );
+		const containerWidth = getEditableContentWidth( editor, table.root.rootName! );
 
 		if ( containerWidth === null ) {
 			return;
