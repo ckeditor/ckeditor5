@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -14,10 +14,6 @@ import { stubUid } from './_utils/uid.js';
 
 describe( 'AdjacentListsSupport', () => {
 	let editorElement, editor, model, view;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -78,7 +74,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">One</paragraph>' +
 				'<listSeparator></listSeparator>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">Two</paragraph>'
@@ -95,7 +91,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ol>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="numbered">One</paragraph>' +
 				'<listSeparator></listSeparator>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="numbered">Two</paragraph>'
@@ -112,7 +108,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="numbered">One</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">Two</paragraph>'
 			);
@@ -141,7 +137,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</custom-block>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 				'<customContainer>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">One</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">Two</paragraph>' +
@@ -161,7 +157,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ul>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ul>' +
 					'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
 				'</ul>' +
@@ -182,7 +178,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ol>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ol>' +
 					'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
 				'</ol>' +
@@ -203,7 +199,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ul>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup(
 				'<ol>' +
 					'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
 				'</ol>' +
@@ -226,7 +222,7 @@ describe( 'AdjacentListsSupport', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( data );
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup( data );
 		} );
 
 		it( 'doesn\'t insert anything between two "ol" lists in output data', () => {
@@ -240,7 +236,7 @@ describe( 'AdjacentListsSupport', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( data );
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup( data );
 		} );
 
 		it( 'doesn\'t insert anything between two different lists in output data', () => {
@@ -254,17 +250,13 @@ describe( 'AdjacentListsSupport', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( data );
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup( data );
 		} );
 	} );
 } );
 
 describe( 'AdjacentListsSupport - integrations', () => {
 	let editorElement, editor, model;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -304,7 +296,7 @@ describe( 'AdjacentListsSupport - integrations', () => {
 			'</ul>'
 		);
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
 			'<paragraph listIndent="0" listItemId="a00" listStyle="default" listType="bulleted">One</paragraph>' +
 			'<listSeparator></listSeparator>' +
 			'<paragraph listIndent="0" listItemId="a01" listStyle="default" listType="bulleted">Two</paragraph>'

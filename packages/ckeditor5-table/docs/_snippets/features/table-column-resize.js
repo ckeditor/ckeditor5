@@ -6,6 +6,7 @@
 import {
 	TableColumnResize,
 	TableProperties,
+	TableCellProperties,
 	TableCaption,
 	Superscript
 } from 'ckeditor5';
@@ -21,11 +22,12 @@ TableEditor
 		extraPlugins: [
 			TableColumnResize,
 			TableProperties,
+			TableCellProperties,
 			TableCaption,
 			Superscript
 		],
 		table: {
-			contentToolbar: [ 'toggleTableCaption', 'tableRow', 'mergeTableCells', 'tableProperties' ]
+			contentToolbar: [ 'toggleTableCaption', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
 		},
 		image: {
 			toolbar: [

@@ -16,7 +16,7 @@ import { type ModelItem } from './item.js';
 
 import { isIterable } from '@ckeditor/ckeditor5-utils';
 
-// @if CK_DEBUG_ENGINE // const { stringifyMap, convertMapToStringifiedObject, convertMapToTags } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // import { convertMapToStringifiedObject, convertMapToTags } from '../dev-utils/utils.js';
 
 /**
  * Model element. Type of {@link module:engine/model/node~ModelNode node} that has a

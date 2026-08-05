@@ -41,7 +41,6 @@ describe( 'EmojiCommand', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		command.destroy();
 
 		return editor.destroy();

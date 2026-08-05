@@ -27,10 +27,6 @@ import { StylesProcessor } from '../../src/view/stylesmap.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'EditingController', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'constructor()', () => {
 		let model, editing;
 

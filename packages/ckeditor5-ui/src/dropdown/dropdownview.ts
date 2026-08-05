@@ -25,8 +25,6 @@ import {
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/dropdown/dropdown.css';
-
 /**
  * The dropdown view class. It manages the dropdown button and dropdown panel.
  *

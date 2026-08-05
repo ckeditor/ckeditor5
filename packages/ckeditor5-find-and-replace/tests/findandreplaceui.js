@@ -17,10 +17,6 @@ import { FindAndReplaceFormView } from '../src/ui/findandreplaceformview.js';
 describe( 'FindAndReplaceUI', () => {
 	let editorElement, editor, dropdown, findCommand, form, plugin;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	it( 'should be named', () => {
 		expect( FindAndReplaceUI.pluginName ).toBe( 'FindAndReplaceUI' );
 	} );

@@ -3,17 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { EmitterMixin, _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin.js';
 import { EventInfo } from '../src/eventinfo.js';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
 import { CKEditorError } from '../src/ckeditorerror.js';
 
 describe( 'EmitterMixin', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	let emitter, listener;
 
 	beforeEach( () => {

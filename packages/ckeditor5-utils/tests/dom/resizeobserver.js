@@ -30,7 +30,6 @@ describe( 'ResizeObserver()', () => {
 		// Make it look like the module was loaded from scratch.
 		ResizeObserver._observerInstance = null;
 		ResizeObserver._elementCallbacks = null;
-		vi.restoreAllMocks();
 
 		elementA.remove();
 		elementB.remove();

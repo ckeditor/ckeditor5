@@ -48,8 +48,6 @@ import { getEditorUsageData, type EditorUsageData } from './utils/editorusagedat
 import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
 import type { EditorConfig } from './editorconfig.js';
 
-import '../../theme/core.css';
-
 declare global {
 	var CKEDITOR_GLOBAL_LICENSE_KEY: string | undefined;
 	var CKEDITOR_WARNING_SUPPRESSIONS: Record<string, boolean>;

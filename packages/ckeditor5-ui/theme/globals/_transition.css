@@ -8,5 +8,5 @@
  */
 .ck-transitions-disabled,
 .ck-transitions-disabled * {
-	transition: none !important;
+	transition: none !important; /* eslint-disable-line css/no-important */
 }

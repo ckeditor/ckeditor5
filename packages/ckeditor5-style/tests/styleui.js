@@ -31,7 +31,6 @@ describe( 'StyleUI', () => {
 		element.remove();
 
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should be named', () => {

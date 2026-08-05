@@ -8,6 +8,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import { assertTableCellStyle, modelTable, setTableCellWithObjectAttributes, viewTable } from '../../_utils/utils.js';
 import { TableCellPropertiesEditing } from '../../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableCellPaddingCommand } from '../../../src/tablecellproperties/commands/tablecellpaddingcommand.js';
@@ -188,10 +190,10 @@ describe( 'table cell properties', () => {
 				it( 'should use provided batch', () => {
 					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 					const batch = model.createBatch();
-					const spy = sinon.spy( model, 'enqueueChange' );
+					const spy = vi.spyOn( model, 'enqueueChange' );
 
 					command.execute( { value: '0.5em', batch } );
-					sinon.assert.calledWith( spy, batch );
+					expect( spy.mock.calls.some( call => call[ 0 ] === batch ) ).to.be.true;
 				} );
 
 				it( 'should add default unit for numeric values (number passed)', () => {
@@ -313,7 +315,7 @@ describe( 'table cell properties', () => {
 					it( 'should set the "padding" attribute value of selected table cells', () => {
 						command.execute( { value: '25px' } );
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ { contents: '00', style: 'padding:25px;' }, '01' ],
 							[ '10', { contents: '11', style: 'padding:25px;' } ]
 						] ) );
@@ -327,7 +329,7 @@ describe( 'table cell properties', () => {
 
 						command.execute();
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );
@@ -429,7 +431,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '10px' } );
 
-						expect( editor.getData() ).to.equalMarkup( viewTable( [
+						expect( editor.getData() ).toEqualMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );

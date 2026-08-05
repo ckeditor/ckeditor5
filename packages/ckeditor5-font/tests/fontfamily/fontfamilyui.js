@@ -16,10 +16,6 @@ import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 describe( 'FontFamilyUI', () => {
 	let editor, command, element;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeAll( () => {
 		addTranslations( 'en', {
 			'Font Family': 'Font Family',

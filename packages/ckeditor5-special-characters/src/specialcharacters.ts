@@ -21,7 +21,6 @@ import {
 import { CharacterInfoView } from './ui/characterinfoview.js';
 import { SpecialCharactersView } from './ui/specialcharactersview.js';
 
-import '../theme/specialcharacters.css';
 import { SpecialCharactersCategoriesView } from './ui/specialcharacterscategoriesview.js';
 
 const ALL_SPECIAL_CHARACTERS_GROUP = 'All';

@@ -13,10 +13,6 @@ import { TextPartLanguageCommand } from '../src/textpartlanguagecommand.js';
 describe( 'TextPartLanguageCommand', () => {
 	let editor, command, model, doc, root;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		return ModelTestEditor
 			.create()

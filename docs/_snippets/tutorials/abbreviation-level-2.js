@@ -109,9 +109,7 @@ class AbbreviationUI extends Plugin {
 	_getBalloonPositionData() {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
-		let target = null;
-
-		target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+		const target = () => view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
 
 		return {
 			target

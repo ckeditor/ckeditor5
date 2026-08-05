@@ -16,7 +16,7 @@ import { CKBoxImageEditCommand } from '../../src/ckboximageedit/ckboximageeditco
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 import { CKBoxUtils } from '../../src/ckboxutils.js';
 
 describe( 'CKBoxImageEditEditing', () => {
@@ -30,6 +30,7 @@ describe( 'CKBoxImageEditEditing', () => {
 		// rejections that fail the Vitest run.
 		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
 		vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).mockResolvedValue();
+		mockCreateToken( 'ckbox-token' );
 
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );
@@ -48,9 +49,6 @@ describe( 'CKBoxImageEditEditing', () => {
 				CKBoxImageEditEditing,
 				CloudServices
 			],
-			substitutePlugins: [
-				CloudServicesCoreMock
-			],
 			ckbox: {
 				tokenUrl: 'http://cs.example.com'
 			}
@@ -60,7 +58,6 @@ describe( 'CKBoxImageEditEditing', () => {
 	afterEach( async () => {
 		domElement.remove();
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should be correctly named', () => {

@@ -3,17 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
 	normalizeColorOptions,
 	getLocalizedColorOptions
 } from '../../src/colorgrid/utils.js';
 
 describe( 'utils', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'normalizeColorOptions()', () => {
 		it( 'should return normalized config object from string', () => {
 			const normalizedOption = normalizeColorOptions( [ 'black' ] );

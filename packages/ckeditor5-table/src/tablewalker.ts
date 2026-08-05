@@ -8,7 +8,7 @@
  */
 import type { ModelElement, ModelPosition } from '@ckeditor/ckeditor5-engine';
 
-// @if CK_DEBUG // const CKEditorError = require( '@ckeditor/ckeditor5-utils/src/ckeditorerror' ).default;
+// @if CK_DEBUG // import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 interface CellData {
 	cell: ModelElement;

@@ -18,8 +18,6 @@ import type { EditorUIReadyEvent } from '../../editorui/editorui.js';
 import type { AddRootEvent } from '@ckeditor/ckeditor5-editor-multi-root';
 import type { ViewDowncastWriter, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 
-import '../../../theme/components/editorui/accessibilityhelp.css';
-
 /**
  * A plugin that brings the accessibility help dialog to the editor available under the <kbd>Alt</kbd>+<kbd>0</kbd>
  * keystroke and via the "Accessibility help" toolbar button. The dialog displays a list of keystrokes that can be used

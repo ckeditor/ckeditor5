@@ -14,10 +14,6 @@ import { RestrictedEditingModeUI } from './../src/restrictededitingmodeui.js';
 describe( 'RestrictedEditingModeUI', () => {
 	let editor, element, goToPreviousCommand, goToNextCommand;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

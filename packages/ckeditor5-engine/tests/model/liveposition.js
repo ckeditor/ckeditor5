@@ -11,6 +11,7 @@ import { ModelText } from '../../src/model/text.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLivePosition } from '../../src/model/liveposition.js';
 import { ModelRange } from '../../src/model/range.js';
+import { DetachOperation } from '../../src/model/operation/detachoperation.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'LivePosition', () =>
@@ -65,12 +66,21 @@ describe( 'LivePosition', () =>
 		} );
 	} );
 
-	it( 'should throw if given root is not a ModelRootElement', () => {
+	it( 'should throw if given root is not a ModelRootElement and no model is provided', () => {
 		const docFrag = new ModelDocumentFragment();
 
 		expectToThrowCKEditorError( () => {
 			new ModelLivePosition( docFrag, [ 1 ] ); // eslint-disable-line no-new
-		}, /model-liveposition-root-not-rootelement/, docFrag );
+		}, /model-liveposition-no-model-reference/, docFrag );
+	} );
+
+	it( 'should not throw if given root is not a ModelRootElement but a model is provided', () => {
+		const docFrag = new ModelDocumentFragment();
+
+		expect( () => {
+			const live = new ModelLivePosition( docFrag, [ 0 ], 'toNone', model );
+			live.detach();
+		} ).not.toThrow();
 	} );
 
 	it( 'should listen to the model applyOperation event', () => {
@@ -100,6 +110,109 @@ describe( 'LivePosition', () =>
 			const position = ModelLivePosition.fromPosition( new ModelPosition( root, [ 0 ] ) );
 			expect( position ).toBeInstanceOf( ModelLivePosition );
 			position.detach();
+		} );
+	} );
+
+	describe( '_fromPositionInDocumentFragment()', () => {
+		let docFrag, el1, el2;
+
+		beforeEach( () => {
+			el1 = new ModelElement( 'paragraph', [], new ModelText( 'abc' ) );
+			el2 = new ModelElement( 'paragraph', [], new ModelText( 'xyz' ) );
+			docFrag = new ModelDocumentFragment( [ el1, el2 ] );
+		} );
+
+		it( 'should return a LivePosition', () => {
+			const live = ModelLivePosition._fromPositionInDocumentFragment( new ModelPosition( docFrag, [ 1 ] ), model );
+
+			expect( live ).toBeInstanceOf( ModelLivePosition );
+			expect( live.root ).toBe( docFrag );
+			expect( live.path ).toEqual( [ 1 ] );
+
+			live.detach();
+		} );
+
+		it( 'should take the stickiness from the given position by default', () => {
+			const position = new ModelPosition( docFrag, [ 1 ], 'toPrevious' );
+			const live = ModelLivePosition._fromPositionInDocumentFragment( position, model );
+
+			expect( live.stickiness ).toBe( 'toPrevious' );
+
+			live.detach();
+		} );
+
+		it( 'should allow overriding the stickiness', () => {
+			const live = ModelLivePosition._fromPositionInDocumentFragment(
+				new ModelPosition( docFrag, [ 1 ], 'toPrevious' ), model, 'toNext'
+			);
+
+			expect( live.stickiness ).toBe( 'toNext' );
+
+			live.detach();
+		} );
+
+		it( 'should listen to the provided model applyOperation event', () => {
+			const spy = vi.spyOn( ModelLivePosition.prototype, 'listenTo' );
+
+			const live = ModelLivePosition._fromPositionInDocumentFragment( new ModelPosition( docFrag, [ 1 ] ), model );
+
+			expect( spy ).toHaveBeenCalledWith( model, 'applyOperation', expect.any( Function ), expect.any( Object ) );
+
+			live.detach();
+			vi.restoreAllMocks();
+		} );
+
+		it( 'should get transformed when content is detached from before the position', () => {
+			const live = ModelLivePosition._fromPositionInDocumentFragment( new ModelPosition( docFrag, [ 1 ] ), model );
+			const spy = vi.fn();
+			live.on( 'change', spy );
+
+			model.applyOperation( new DetachOperation( ModelPosition._createBefore( el1 ), 1 ) );
+
+			expect( live.path ).toEqual( [ 0 ] );
+			expect( spy ).toHaveBeenCalledOnce();
+
+			live.detach();
+		} );
+
+		it( 'should get transformed even though the operation is not a document operation', () => {
+			const live = ModelLivePosition._fromPositionInDocumentFragment( new ModelPosition( docFrag, [ 1, 1 ] ), model );
+
+			const op = new DetachOperation( new ModelPosition( docFrag, [ 1, 0 ] ), 1 );
+
+			expect( op.isDocumentOperation ).toBe( false );
+
+			model.applyOperation( op );
+
+			expect( live.path ).toEqual( [ 1, 0 ] );
+
+			live.detach();
+		} );
+
+		it( 'should not get transformed by an operation applied in a different root', () => {
+			const live = ModelLivePosition._fromPositionInDocumentFragment( new ModelPosition( docFrag, [ 1 ] ), model );
+			const spy = vi.fn();
+			live.on( 'change', spy );
+
+			model.change( writer => {
+				writer.insertText( 'foo', new ModelPosition( root, [ 0 ] ) );
+			} );
+
+			expect( live.path ).toEqual( [ 1 ] );
+			expect( spy ).not.toHaveBeenCalled();
+
+			live.detach();
+		} );
+
+		it( 'should stop listening when detached', () => {
+			const stopListeningSpy = vi.spyOn( ModelLivePosition.prototype, 'stopListening' );
+
+			const live = ModelLivePosition._fromPositionInDocumentFragment( new ModelPosition( docFrag, [ 1 ] ), model );
+			live.detach();
+
+			expect( stopListeningSpy ).toHaveBeenCalled();
+
+			vi.restoreAllMocks();
 		} );
 	} );
 

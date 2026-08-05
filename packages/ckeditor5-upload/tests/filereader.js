@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { FileReader } from '../src/filereader.js';
 import { NativeFileReaderMock, createNativeFileMock } from './_utils/mocks.js';
 
@@ -19,10 +19,6 @@ describe( 'FileReader', () => {
 
 		fileMock = createNativeFileMock();
 		reader = new FileReader();
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should initialize loaded property', () => {

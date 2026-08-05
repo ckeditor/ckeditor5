@@ -39,8 +39,6 @@ describe( 'FileRepository', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		return editor.destroy();
 	} );
 

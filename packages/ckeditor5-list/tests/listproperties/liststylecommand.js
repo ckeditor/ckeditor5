@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -15,10 +15,6 @@ import { modelList } from '../list/_utils/utils.js';
 
 describe( 'ListStyleCommand', () => {
 	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		editor = new Editor();
@@ -152,7 +148,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '* 1.[] {style:circle}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '* 1.[] {style:circle}' ] ) );
 		} );
 
 		it( 'should set the `listStyle` attribute for non-collapsed selection', () => {
@@ -160,7 +156,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '* [1.] {style:circle}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '* [1.] {style:circle}' ] ) );
 		} );
 
 		it( 'should set the `listStyle` attribute for all the same list items (collapsed selection)', () => {
@@ -172,7 +168,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				* 1. {style:circle}
 				* 2.[]
 				* 3.
@@ -191,7 +187,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				* 1.[] {style:circle}
 				* 2.
 				  * 2.1. {style:disc}
@@ -210,7 +206,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				* Foo. {style:circle}
 				* [<blockWidget></blockWidget>]
 				* Bar.
@@ -229,7 +225,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'disc' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				* 1. {style:square}
 				* 2.
 				  * 2.1.[] {style:disc}
@@ -249,7 +245,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				Foo.
 				* 1.[] {style:circle}
 				* 2.
@@ -267,7 +263,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				Foo.
 				* 1.[] {style:circle}
 				* 2.
@@ -288,7 +284,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				* 1. {style:circle}
 				* 2a.
 				  [2b.
@@ -309,7 +305,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				* 1. {style:circle}
 				* [2.
 				* 3].
@@ -349,7 +345,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'disc' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				* 1. {style:disc}
 				* [2.
 				  * 2.1. {style:disc}
@@ -367,7 +363,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '* 1.[] {style:default}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '* 1.[] {style:default}' ] ) );
 		} );
 
 		it( 'should use default type if not specified (passed an empty object)', () => {
@@ -375,7 +371,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( {} );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '* 1.[] {style:default}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '* 1.[] {style:default}' ] ) );
 		} );
 
 		it( 'should use default type if not specified (passed null as value)', () => {
@@ -383,7 +379,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: null } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( [ '* 1.[] {style:default}' ] ) );
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( [ '* 1.[] {style:default}' ] ) );
 		} );
 
 		it( 'should create a list if no listItem found in the selection (circle, non-collapsed selection)', () => {
@@ -404,7 +400,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				* [Foo. {style:circle} {id:a00}
 				* Bar.] {id:a01}
 			` ) );
@@ -431,7 +427,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				* Fo[]o. {id:a00} {style:circle}
 				Bar.
 			` ) );
@@ -458,7 +454,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'decimal' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# [Foo. {id:a00} {style:decimal}
 				# Bar.] {id:a01}
 			` ) );
@@ -485,7 +481,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'upper-roman' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				# Fo[]o. {id:a00} {style:upper-roman}
 				Bar.
 			` ) );
@@ -501,7 +497,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'default' } );
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				Foo.[]
 			` ) );
 		} );
@@ -513,7 +509,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.execute();
 
-			expect( _getModelData( model ) ).to.equalMarkup( modelList( `
+			expect( _getModelData( model ) ).toEqualMarkup( modelList( `
 				Foo.[]
 			` ) );
 		} );

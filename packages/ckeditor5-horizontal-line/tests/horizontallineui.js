@@ -15,10 +15,6 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 describe( 'HorizontalLineUI', () => {
 	let editor, editorElement, button;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

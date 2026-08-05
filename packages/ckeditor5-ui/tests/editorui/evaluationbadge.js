@@ -20,10 +20,6 @@ import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/genera
 describe( 'EvaluationBadge', () => {
 	let editor, element, developmentLicenseKey;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		vi.spyOn( console, 'info' ).mockImplementation( () => {} );
 		vi.spyOn( console, 'warn' ).mockImplementation( () => {} );

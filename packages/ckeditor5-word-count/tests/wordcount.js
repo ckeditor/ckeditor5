@@ -22,10 +22,6 @@ import { ImageCaptionEditing, ImageBlockEditing } from '@ckeditor/ckeditor5-imag
 const DELAY = 300;
 
 describe( 'WordCount', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	let wordCountPlugin, editor, model;
 
 	beforeEach( () => {

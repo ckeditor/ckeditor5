@@ -41,9 +41,7 @@ The above converter will handle the conversion of every `<paragraph>` model elem
 	This is just an example. In fact, paragraph support is already provided by the {@link api/paragraph paragraph plugin} so you do not really need to write your own `<paragraph>` element to `<p>` element conversion.
 </info-box>
 
-<info-box>
-	You just learned about the {@link framework/deep-dive/conversion/helpers/downcast#element-to-element-conversion-helper `elementToElement()` **downcast** conversion helper method}! More helpers are documented in the following chapters.
-</info-box>
+You just learned about the {@link framework/deep-dive/conversion/helpers/downcast#element-to-element-conversion-helper `elementToElement()` **downcast** conversion helper method}! More helpers are documented in the following chapters.
 
 ## Downcast pipelines
 
@@ -198,6 +196,73 @@ The above converter will convert all `<myElement>` model elements to `<div class
 <info-box>
 	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor&nbsp;5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
+
+## Downcasting overlapping markers
+
+Multiple markers can share or overlap the same position in the model - for example, a delete marker and an insert marker can meet at the same boundary when text is replaced. The downcast dispatcher converts markers one at a time, so the conversion result would be non-deterministic if markers were processed in their {@link module:engine/model/markercollection~MarkerCollection insertion order}. To prevent this, the engine always sorts markers into a stable **reverse DOM order** before downcasting, using {@link module:engine/conversion/comparemarkers~compareMarkersForDowncast `compareMarkersForDowncast`}.
+
+### Why reverse DOM order matters?
+
+Consider replacing the word "old" with "new" - this creates two adjacent markers (a delete range and an insert range) that share a boundary point. With `markerToElement`, each boundary becomes a self-closing tag, so the processing order controls where those tags land:
+
+```html
+Sorted (reverse DOM order):  <DEL-START/>old<DEL-END/><INS-START/>new<INS-END/>
+Insertion order (legacy):    <DEL-START/>old<INS-START/><DEL-END/>new<INS-END/>
+```
+
+The sorted output is correct and stable. The insertion-order output is wrong: `<DEL-END/>` ends up inside the insert range.
+
+### Sort rules
+
+The sort is applied to every pair of markers using the following cases (positions shown as `0123456789`, sorted result listed top-to-bottom):
+
+1. Non-overlapping ranges - sorted by position, last range first:
+
+	```plain
+	a: [--]               →   c, b, a
+	b:     [--]
+	c:        [--]
+	```
+
+2. Adjacent ranges (end === start) - treated as non-overlapping:
+
+	```plain
+	first:  [---]         →   third, second, first
+	second:    [---]
+	third:        [---]
+	```
+
+3. Nested ranges (same start, different ends) - inner first, outer last:
+
+	```plain
+	shorter: [-]          →   shorter, longer
+	longer:  [---]
+	```
+
+4. Partially overlapping ranges - sorted by start position, later start first:
+
+	```plain
+	earlier: [---]        →   later, earlier
+	later:     [---]
+	```
+
+5. Identical ranges - fall back to reverse name comparison:
+
+	```plain
+	alpha:   [---]        →   charlie, bravo, alpha
+	bravo:   [---]
+	charlie: [---]
+	```
+
+Name comparison is **only a tie-breaker for identical ranges** (case 5 above). For all other cases - including non-overlapping ranges, adjacent ranges, and collapsed markers at the same position - the sort is based on range positions, and name order plays no role.
+
+<info-box important>
+	This is especially important for features that use collapsed markers with random UID-based names (such as comments or HTML comments). The boundary walker in `markerToElement` intentionally does **not** sort collapsed markers at the same position by name, because `compareMarkersForDowncast` treats two collapsed markers at the same position as non-overlapping and preserves insertion order. Sorting by name in that case would make the output non-deterministic between runs.
+</info-box>
+
+Plugin developers **must not** rely on name-based ordering for anything other than co-located markers with identical, non-collapsed ranges.
+
+This deterministic sort shipped in CKEditor&nbsp;5 v48.1.0 and affects any feature that relies on markers, including comments, suggestions, mentions, find and replace, and restricted editing - see the {@link updating/update-to-48 v48 update guide} for release notes.
 
 ## Further reading
 

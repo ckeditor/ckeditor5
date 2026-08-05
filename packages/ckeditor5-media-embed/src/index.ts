@@ -51,4 +51,6 @@ export {
 export type { MediaEmbedProvider } from './mediaembedconfig.js';
 export { MediaRegistry } from './mediaregistry.js';
 
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

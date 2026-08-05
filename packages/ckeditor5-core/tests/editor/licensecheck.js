@@ -31,8 +31,6 @@ describe( 'Editor - license check', () => {
 	afterEach( () => {
 		delete TestEditor.builtinPlugins;
 		delete TestEditor.defaultConfig;
-
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'license key verification', () => {
@@ -335,7 +333,6 @@ describe( 'Editor - license check', () => {
 
 			afterEach( () => {
 				vi.useRealTimers();
-				vi.restoreAllMocks();
 			} );
 
 			it( 'should block editor after 10 minutes on evaluation license', () => {
@@ -534,7 +531,6 @@ describe( 'Editor - license check', () => {
 
 			afterEach( () => {
 				vi.useRealTimers();
-				vi.restoreAllMocks();
 			} );
 
 			it( 'should log information to the console about using the development license', () => {

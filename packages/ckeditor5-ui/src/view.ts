@@ -24,8 +24,6 @@ import {
 	type DomEmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
-import '../theme/index.css';
-
 const ViewBase: DomEmitterMixinConstructor<ObservableMixinConstructor> =
 	/* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() );
 

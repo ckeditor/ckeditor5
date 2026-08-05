@@ -203,7 +203,6 @@ export function insertContent(
 			}
 		}
 
-		/* istanbul ignore else -- @preserve */
 		if ( newRange ) {
 			if ( selection instanceof ModelDocumentSelection ) {
 				writer.setSelection( newRange );
@@ -211,8 +210,7 @@ export function insertContent(
 				selection.setTo( newRange );
 			}
 		} else {
-			// We are not testing else because it's a safe check for unpredictable edge cases:
-			// an insertion without proper range to select.
+			// A safe check for unpredictable edge cases: an insertion without a proper range to select.
 			//
 			// @if CK_DEBUG // console.warn( 'Cannot determine a proper selection range after insertion.' );
 		}
@@ -410,7 +408,7 @@ class Insertion {
 		if ( positionAfterNode.isAfter( positionAfterLastNode ) ) {
 			this._lastNode = node;
 
-			/* istanbul ignore if -- @preserve */
+			/* v8 ignore if -- @preserve */
 			if ( this.position.parent != node || !this.position.isAtEnd ) {
 				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 				// At this point the insertion position should be at the end of the last auto paragraph.
@@ -538,7 +536,7 @@ class Insertion {
 	 * @param node The node to insert.
 	 */
 	private _appendToFragment( node: ModelNode ): ModelNode {
-		/* istanbul ignore if -- @preserve */
+		/* v8 ignore if -- @preserve */
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// Note that it would often be a silent issue if we insert node in a place where it's not allowed.
@@ -704,7 +702,7 @@ class Insertion {
 		const mergePosRight = ModelLivePosition._createAfter( node );
 		mergePosRight.stickiness = 'toNext';
 
-		/* istanbul ignore if -- @preserve */
+		/* v8 ignore if -- @preserve */
 		if ( !this.position.isEqual( mergePosRight ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// At this point the insertion position should be after the node we'll merge. If it isn't,

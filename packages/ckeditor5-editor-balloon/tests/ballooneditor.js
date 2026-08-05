@@ -32,7 +32,6 @@ describe( 'BalloonEditor', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		editorElement.remove();
 	} );
 

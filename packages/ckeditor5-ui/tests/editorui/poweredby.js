@@ -20,10 +20,6 @@ import { View } from '../../src/view.js';
 describe( 'PoweredBy', () => {
 	let editor, element;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );

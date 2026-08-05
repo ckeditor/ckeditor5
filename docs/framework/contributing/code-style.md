@@ -3,7 +3,7 @@ category: framework-contributing
 meta-title: Code style | CKEditor 5 Framework Documentation
 meta-description: Learn about CKEditor 5's code style guidelines to ensure consistency and quality when contributing to the project.
 order: 40
-modified_at: 2022-11-03
+modified_at: 2026-07-30
 ---
 
 # Code style
@@ -349,7 +349,7 @@ CKEditor&nbsp;5 development environment uses [ESLint](https://eslint.org), inclu
 A couple of useful links:
 
 * [Disabling ESLint with inline comments](https://eslint.org/docs/latest/use/configure/).
-* [CKEditor&nbsp;5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/eslint.config.mjs) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
+* [CKEditor&nbsp;5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/eslint.config.mjs) (npm: [`eslint-config-ckeditor5`](https://www.npmjs.com/package/eslint-config-ckeditor5)).
 
 <info-box>
 	Avoid using automatic code formatters on existing code. It is fine to automatically format code that you are editing, but you should not be changing the formatting of the code that is already written to not pollute your PRs. You should also not rely solely on automatic corrections.
@@ -497,7 +497,7 @@ There are some special rules and tips for tests.
 
 ### Test organization
 
-* Always use an outer `describe()` in a test file. Do not allow any globals, especially hooks (`beforeEach()`, `after()`, etc.) outside the outermost `describe()`.
+* Always use an outer `describe()` in a test file. Do not allow any globals, especially hooks (`beforeEach()`, `afterEach()`, etc.) outside the outermost `describe()`.
 * The outermost `describe()` calls should create meaningful groups, so when all tests are run together a failing TC can be identified within the code base. For example:
 
 	```js
@@ -521,31 +521,70 @@ There are some special rules and tips for tests.
 
 ### Test implementation
 
-* Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/latest/fake-timers/) instead **when possible**. Timeouts make tests really slow.
+Tests run on [Vitest](https://vitest.dev/). See the {@link framework/contributing/testing-environment Testing environment} guide to learn how to execute them.
+
+* Import every test API you use explicitly from `vitest`. Test globals are not enabled:
+
+	```js
+	import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+	```
+* Avoid using real timeouts. Use [fake timers](https://vitest.dev/api/vi.html#fake-timers) instead **when possible**. Timeouts make tests really slow.
+
+	Fake timers are not restored automatically, so switch back to the real ones in the cleanup hook:
+
+	```js
+	beforeEach( () => {
+		vi.useFakeTimers();
+	} );
+
+	afterEach( () => {
+		vi.useRealTimers();
+	} );
+
+	it( 'calls the callback after 100 ms', () => {
+		const callbackSpy = vi.fn().mockName( 'callback' );
+
+		scheduleCallback( callbackSpy );
+		vi.advanceTimersByTime( 100 );
+
+		expect( callbackSpy ).toHaveBeenCalledOnce();
+	} );
+	```
 * However, do not over-optimize (especially since performance is not a priority in tests). In most cases, it is completely fine (and hence recommended) to create a separate editor for every `it()`.
 * We aim at having 100% coverage of *all distinctive scenarios*. Covering 100% branches in the code is not the goal here &ndash; it is a by-product of covering real scenarios.
 
 	Think about this: when you fix a bug by adding a parameter to an existing function call, you do not affect code coverage (that line was called anyway). However, you had a bug, meaning that your test suite did not cover it. Therefore, a test must be created for that code change.
-* It should be `expect( x ).to.equal( y )`. **NOT**: ~~`expect( x ).to.be.equal( y )`~~.
-* When using Sinon spies, pay attention to the readability of assertions and failure messages.
-   * Use named spies, for example:
+* Assert with the [Vitest `expect()` matchers](https://vitest.dev/api/expect.html). Use `toBe()` to compare primitives and object references, and `toEqual()` to compare structures by value:
+
+	```js
+	expect( editor.getData() ).toBe( '<p>foo</p>' );
+	expect( command.value ).toEqual( { type: 'bulleted' } );
+	```
+
+	Vitest still exposes the Chai-style chained assertions used before the migration, but do not write new ones. It should be `expect( x ).toBe( y )`. **NOT**: ~~`expect( x ).to.equal( y )`~~.
+* The testing environment also registers a few {@link framework/contributing/testing-environment#custom-vitest-matchers custom matchers}, such as `toEqualMarkup()`. Prefer them over plain string comparisons when asserting markup, as they produce far more readable diffs.
+* When using spies, pay attention to the readability of assertions and failure messages.
+	* [`vi.spyOn()`](https://vitest.dev/api/vi.html#vi-spyon) names the spy after the method it replaces, but a bare [`vi.fn()`](https://vitest.dev/api/vi.html#vi-fn) does not. Name standalone spies with `mockName()`:
 
 		```js
-		const someCallbackSpy = sinon.spy().named( 'someCallback' );
-		const myMethodSpy = sinon.spy( obj, 'myMethod' );
+		const myMethodSpy = vi.spyOn( obj, 'myMethod' );
+		const someCallbackSpy = vi.fn().mockName( 'someCallback' );
 		```
-   * Use [sinon-chai assertions](https://www.chaijs.com/plugins/sinon-chai/)
+	* The name is then used in the failure message:
 
 		```js
-		expect( myMethodSpy ).to.be.calledOnce
-		// expected myMethod to be called once but was called twice
+		expect( myMethodSpy ).toHaveBeenCalledOnce();
+		// expected "myMethod" to be called once, but got 2 times
 		```
+* Do not clean up spies and stubs by hand. The shared Vitest configuration enables [`restoreMocks`](https://vitest.dev/config/restoremocks), [`unstubGlobals`](https://vitest.dev/config/unstubglobals), and [`unstubEnvs`](https://vitest.dev/config/unstubenvs), so every `vi.spyOn()`, `vi.fn()`, `vi.stubGlobal()`, and `vi.stubEnv()` is restored before each test. Therefore:
+	* Do not call `vi.restoreAllMocks()`, `vi.unstubAllGlobals()`, or `vi.unstubAllEnvs()` in cleanup hooks. The only reason to restore something manually is when a mock set up in `beforeEach()` must be dropped for a single test, or when the teardown itself (`editor.destroy()`, for example) has to run against the real implementation.
+	* Create stubs in `beforeEach()` or in the test itself, never in `beforeAll()`. A stub created in `beforeAll()` would be silently removed before the second test of the suite runs.
 
 ## Naming
 
 ### JavaScript code names
 
-Variables, functions, namespaces, parameters and all undocumented cases must be named in [lowerCamelCase](http://en.wikipedia.org/wiki/CamelCase):
+Variables, functions, namespaces, parameters and all undocumented cases must be named in [lowerCamelCase](https://en.wikipedia.org/wiki/CamelCase):
 
 ```js
 let a;
@@ -556,7 +595,7 @@ function foo() {}
 function longNamedFunction( example, longNamedParameter ) {}
 ```
 
-Classes must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase):
+Classes must be named in [UpperCamelCase](https://en.wikipedia.org/wiki/CamelCase):
 
 ```js
 class MyClass() {}
@@ -564,7 +603,7 @@ class MyClass() {}
 const a = new MyClass();
 ```
 
-Mixins must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase), post-fixed with "Mixin":
+Mixins must be named in [UpperCamelCase](https://en.wikipedia.org/wiki/CamelCase), post-fixed with "Mixin":
 
 ```js
 const SomeMixin = {
@@ -573,7 +612,7 @@ const SomeMixin = {
 };
 ```
 
-Global namespacing variables must be named in [ALLCAPS](http://en.wikipedia.org/wiki/All_caps):
+Global namespacing variables must be named in [ALLCAPS](https://en.wikipedia.org/wiki/All_caps):
 
 ```js
 const CKEDITOR_TRANSLATIONS = {};
@@ -672,7 +711,7 @@ Plugins should follow the **feature** or the **feature + sub-feature** conventio
 	* `ListProperties`
 	* `TableClipboard`
 
-Plugins must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase).
+Plugins must be named in [UpperCamelCase](https://en.wikipedia.org/wiki/CamelCase).
 
 ### Shortcuts
 
@@ -893,50 +932,6 @@ import { toArray } from 'ckeditor5';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
-
-### Importing modules in debug comments: `ckeditor5-rules/use-require-for-debug-mode-imports`
-
-The debug mode allows importing additional modules for testing purposes. Unfortunately, the debug comment is not removed, so webpack reports the following error.
-
-```
-Module parse failed: 'import' and 'export' may only appear at the top level (15204:20)
-File was processed with these loaders:
- * ./node_modules/@ckeditor/ckeditor5-dev-tests/lib/utils/ck-debug-loader.js
-You may need an additional loader to handle the result of these loaders.
-|  */
-|
-> /* @if CK_DEBUG */  import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-|
-| /**
-```
-
-Modules need to be imported with a `require()` function.
-
-To create a code executed only in the debug mode, follow the description of the `--debug` flag in the {@link framework/contributing/testing-environment#running-manual-tests testing environment} guide.
-
-👎&nbsp; Examples of incorrect code for this rule:
-
-```js
-// @if CK_DEBUG // import defaultExport from 'module-name';
-// @if CK_DEBUG // import * as name from 'module-name';
-// @if CK_DEBUG // import { testFunction } from 'module-name';
-// @if CK_DEBUG // import { default as alias } from 'module-name';
-// @if CK_DEBUG // import { exported as alias } from 'module-name';
-// @if CK_DEBUG // import 'module-name';
-```
-
-👍&nbsp; Examples of correct code for this rule:
-
-```js
-// @if CK_DEBUG // const defaultExport = require( 'module-name' ).default;
-// @if CK_DEBUG // const name = require( 'module-name' );
-// @if CK_DEBUG // const { testFunction } = require( 'module-name' );
-// @if CK_DEBUG // const alias = require( 'module-name' ).default;
-// @if CK_DEBUG // const { exported: alias } = require( 'module-name' );
-// @if CK_DEBUG // require( 'module-name' );
-```
-
-[History of the change.](https://github.com/ckeditor/ckeditor5/issues/12479)
 
 ### Non-public members marked as @internal : `ckeditor5-rules/non-public-members-as-internal`
 
@@ -1172,6 +1167,10 @@ The `isFooPlugin` flag is required and set to `true`, and the `isBarPlugin` flag
 
 This rule ensures that SVG files are imported and exported only in the `@ckeditor/ckeditor5-icons` package. This package should include all icons used in CKEditor&nbsp;5.
 
+### CSS imports only in the main package entry point
+
+This rule ensures that CSS files are imported only in the main package entry point (`src/index.ts`). Each package imports `theme/index-editor.css` followed by `theme/index-content.css`. Individual source modules must not import CSS files.
+
 ### Valid changelog entries
 
 This rule ensures that changelog entry files are populated with proper data and a clear description of the change. For a full guide on how to populate changelog entries, see the {@link framework/contributing/changelog-entries Changelog entries} guide.
@@ -1296,3 +1295,65 @@ This rule aims to enforce convention of all variables targeting styling of eleme
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/18805)
+
+### Content stylesheet placement: `ckeditor5-rules/content-styles-in-index-content`
+
+This rule requires content styles scoped with `.ck-content` to be placed in `theme/index-content.css`. Editor-only content hosts, such as `.ck-editor__editable.ck-content`, stay in editor stylesheets.
+
+### Editor stylesheet placement: `ckeditor5-rules/no-editor-styles-in-index-content`
+
+This rule prevents editor UI and editing-view selectors from being placed in `theme/index-content.css`. The content entry point may also contain supporting custom properties, font definitions, and keyframes.
+
+### Selector specificity order: `ckeditor5-rules/no-descending-specificity`
+
+This rule reports selectors with lower specificity placed after overriding selectors with higher specificity that target the same element. Such a selector cannot win the cascade where both selectors apply, so the resulting order is misleading to readers and fragile during refactoring. It reimplements Stylelint's [`no-descending-specificity`](https://stylelint.io/user-guide/rules/no-descending-specificity/) rule for ESLint.
+
+Selectors are compared only within the same context (the same nesting parent and at-rule conditions) and only when they share the same key selector, that is, the last compound selector ignoring pseudo-classes. For example, `a:hover` and `a` are compared with each other, while `a::before` is not compared with `a`.
+
+👎&nbsp; Example of incorrect code for this rule:
+
+```css
+.ck-toolbar a {
+	color: var(--ck-color-link);
+}
+
+a {
+	color: var(--ck-color-text);
+}
+```
+
+👍&nbsp; Example of correct code for this rule:
+
+```css
+a {
+	color: var(--ck-color-text);
+}
+
+.ck-toolbar a {
+	color: var(--ck-color-link);
+}
+```
+
+### Custom property references require `var()`: `ckeditor5-rules/no-missing-var-function`
+
+This rule reports custom property references used as declaration values without the `var()` function. A bare reference is not substituted by the browser, so the declaration silently does not work. It reimplements Stylelint's [`custom-property-no-missing-var-function`](https://stylelint.io/user-guide/rules/custom-property-no-missing-var-function/) rule for ESLint.
+
+Properties whose values legitimately contain dashed identifiers are not checked. This covers transition targets (`transition`, `transition-property`, and `will-change`) and the naming properties of anchor positioning, scroll-driven animations, and view transitions (for example, `anchor-name` or `view-transition-name`).
+
+👎&nbsp; Example of incorrect code for this rule:
+
+```css
+.ck-button {
+	color: --ck-color-text;
+	--ck-button-color: --ck-color-text;
+}
+```
+
+👍&nbsp; Example of correct code for this rule:
+
+```css
+.ck-button {
+	color: var(--ck-color-text);
+	--ck-button-color: var(--ck-color-text);
+}
+```

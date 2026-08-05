@@ -12,10 +12,6 @@ import { HorizontalLineEditing } from '../src/horizontallineediting.js';
 describe( 'HorizontalLineCommand', () => {
 	let editor, model, editorElement, command;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

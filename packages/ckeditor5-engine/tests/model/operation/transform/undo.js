@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach, afterEach } from 'vitest';
+
 import { Client, expectClients, syncClients, clearBuffer } from './utils.js';
 
 import { ModelDocumentFragment } from '../../../../src/model/documentfragment.js';

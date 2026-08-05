@@ -12,8 +12,6 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { HeadingEditing } from './headingediting.js';
 import { HeadingUI } from './headingui.js';
 
-import '../theme/heading.css';
-
 /**
  * The headings feature.
  *

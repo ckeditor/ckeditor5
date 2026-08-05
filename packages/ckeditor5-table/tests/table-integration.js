@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -19,12 +21,9 @@ import {
 
 import { TableEditing } from '../src/tableediting.js';
 import { modelTable, viewTable } from './_utils/utils.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'Table feature – integration', () => {
-	testUtils.createSinonSandbox();
-
 	describe( 'with clipboard', () => {
 		let editor, clipboard;
 
@@ -50,7 +49,7 @@ describe( 'Table feature – integration', () => {
 				content: _parseView( '<td>bar</td>' )
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).toEqualMarkup( modelTable( [
 				[ 'foobar[]' ]
 			] ) );
 		} );
@@ -62,7 +61,7 @@ describe( 'Table feature – integration', () => {
 				content: _parseView( '<td>bar</td>' )
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equalMarkup( '<paragraph>foobar[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).toEqualMarkup( '<paragraph>foobar[]</paragraph>' );
 		} );
 
 		it( 'pastes list into the td', () => {
@@ -72,7 +71,7 @@ describe( 'Table feature – integration', () => {
 				content: _parseView( '<li>bar</li>' )
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).toEqualMarkup( modelTable( [
 				[ '<paragraph listIndent="0" listItemId="a00" listType="bulleted">bar[]</paragraph>' ]
 			] ) );
 		} );
@@ -84,7 +83,7 @@ describe( 'Table feature – integration', () => {
 				content: _parseView( '<blockquote>bar</blockquote>' )
 			} );
 
-			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).toEqualMarkup( modelTable( [
 				[ '<blockQuote><paragraph>bar[]</paragraph></blockQuote>' ]
 			] ) );
 		} );
@@ -185,7 +184,7 @@ describe( 'Table feature – integration', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).toEqualMarkup( modelTable( [
 				[ '<blockQuote><paragraph>Foo[]Bar</paragraph></blockQuote>' ]
 			] ) );
 		} );

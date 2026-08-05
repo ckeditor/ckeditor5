@@ -21,10 +21,6 @@ import {
 describe( 'SearchTextView', () => {
 	let view, filteredView;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		filteredView = new ListView();
 		filteredView.filter = () => {

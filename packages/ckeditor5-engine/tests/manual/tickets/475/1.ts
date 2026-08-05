@@ -1,0 +1,80 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ModelRange } from '../../../../src/model/range.js';
+import { ModelLivePosition } from '../../../../src/model/liveposition.js';
+
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+
+class Link extends Plugin {
+	public init(): void {
+		const editor = this.editor;
+
+		// Allow bold attribute on all inline nodes.
+		editor.model.schema.extend( '$text', { allowAttributes: 'link' } );
+
+		editor.conversion.for( 'downcast' ).attributeToElement( {
+			model: 'link',
+			view: ( modelAttributeValue, { writer } ) => {
+				return writer.createAttributeElement( 'a', { href: modelAttributeValue } );
+			}
+		} );
+
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: 'a',
+			model: {
+				key: 'link',
+				value: ( viewElement: any ) => viewElement.getAttribute( 'href' )
+			}
+		} );
+	}
+}
+
+class AutoLinker extends Plugin {
+	public init(): void {
+		this.editor.model.document.on( 'change', () => {
+			const changes = this.editor.model.document.differ.getChanges();
+
+			for ( const entry of changes ) {
+				if ( entry.type != 'insert' || entry.name != '$text' || !entry.position.parent ) {
+					continue;
+				}
+
+				const parent = entry.position.parent;
+				const text = Array.from( parent.getChildren() ).map( ( item: any ) => item.data ).join( '' );
+
+				const regexp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g;
+				let match;
+
+				while ( ( match = regexp.exec( text ) ) !== null ) {
+					const index = match.index;
+					const url = match[ 0 ];
+					const length = url.length;
+
+					if ( entry.position.offset + entry.length == index + length ) {
+						const livePos = ModelLivePosition._createAt( parent, index );
+						this.editor.model.enqueueChange( writer => {
+							const urlRange = ModelRange._createFromPositionAndShift( livePos, length );
+							writer.setAttribute( 'link', url, urlRange );
+						} );
+						return;
+					}
+				}
+			}
+		} );
+	}
+}
+
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor' ) as HTMLElement,
+	plugins: [ Enter, Typing, Paragraph, Undo, Link, AutoLinker ],
+	toolbar: [ 'undo', 'redo' ]
+} );

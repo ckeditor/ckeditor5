@@ -9,7 +9,7 @@
 
 import { ModelRange } from './range.js';
 
-import type { ModelApplyOperationEvent } from './model.js';
+import type { Model, ModelApplyOperationEvent } from './model.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelElement } from './element.js';
 import { type ModelItem } from './item.js';
@@ -17,7 +17,8 @@ import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
 import { type Operation } from './operation/operation.js';
 import { type ModelPosition } from './position.js';
-import { EmitterMixin, type EmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin, type EmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
+import type { DetachOperation } from './operation/detachoperation.js';
 
 const ModelLiveRangeBase: EmitterMixinConstructor<typeof ModelRange> = /* #__PURE__ */ EmitterMixin( ModelRange );
 
@@ -36,10 +37,22 @@ export class ModelLiveRange extends ModelLiveRangeBase {
 	 *
 	 * @see module:engine/model/range~ModelRange
 	 */
-	constructor( start: ModelPosition, end?: ModelPosition | null ) {
+	constructor( start: ModelPosition, end?: ModelPosition | null, model?: Model ) {
 		super( start, end );
 
-		bindWithDocument.call( this );
+		const root = this.root;
+		const boundModel = model || ( root.is( 'rootElement' ) ? root.document!.model : null );
+
+		if ( !boundModel ) {
+			/**
+			 * LiveRange's root has to be an instance of ModelRootElement or have a reference to a model instance.
+			 *
+			 * @error model-liverange-no-model-reference
+			 */
+			throw new CKEditorError( 'model-liverange-no-model-reference', root );
+		}
+
+		bindWithModel.call( this, boundModel );
 	}
 
 	/**
@@ -63,6 +76,19 @@ export class ModelLiveRange extends ModelLiveRangeBase {
 	 */
 	public static fromRange( range: ModelRange ): ModelLiveRange {
 		return new ModelLiveRange( range.start, range.end );
+	}
+
+	/**
+	 * Creates a `ModelLiveRange` for a range rooted in
+	 * a {@link module:engine/model/documentfragment~ModelDocumentFragment document fragment}.
+	 *
+	 * Document fragment does not belong to a document, so the live range is bound to the provided `model` and keeps
+	 * itself in sync with every operation applied to that fragment (e.g. while editing clipboard content).
+	 *
+	 * @internal
+	 */
+	public static _fromRangeInDocumentFragment( range: ModelRange, model: Model ): ModelLiveRange {
+		return new this( range.start, range.end, model );
 	}
 
 	/**
@@ -112,6 +138,19 @@ export type ModelLiveRangeChangeRangeEvent = {
 };
 
 /**
+ * Fired when `ModelLiveRange` instance was entirely removed from the document fragment.
+ *
+ * @eventName ~ModelLiveRange#change:drop
+ * @param range Collapsed range with start and end position equal to the source position of the detach operation.
+ * @param data Object with additional information about the change.
+ * @param data.deletionPosition Source position for detach changes.
+ */
+export type ModelLiveRangeChangeDropEvent = {
+	name: 'change' | 'change:drop';
+	args: [ range: ModelRange, data: { deletionPosition: ModelPosition } ];
+};
+
+/**
  * Fired when `ModelLiveRange` instance boundaries have not changed after
  * a change in {@link module:engine/model/document~ModelDocument document}
  * but the change took place inside the range, effectively changing its content.
@@ -139,17 +178,21 @@ export type ModelLiveRangeChangeEvent = {
 };
 
 /**
- * Binds this `ModelLiveRange` to the {@link module:engine/model/document~ModelDocument document}
- * that owns this range's {@link module:engine/model/range~ModelRange#root root}.
+ * Binds this `ModelLiveRange` to the given model, so the range updates itself on every operation applied to it.
  */
-function bindWithDocument( this: ModelLiveRange ) {
+function bindWithModel( this: ModelLiveRange, model: Model ) {
+	// A range rooted in a document fragment is updated only by operations applied to that fragment. Those are
+	// not document operations (the fragment is not a document), so - unlike a range rooted in a document root - the
+	// `isDocumentOperation` check should be skipped.
+	const isDetached = !this.root.is( 'rootElement' );
+
 	this.listenTo<ModelApplyOperationEvent>(
-		this.root.document!.model,
+		model,
 		'applyOperation',
 		( event, args ) => {
 			const operation = args[ 0 ];
 
-			if ( !operation.isDocumentOperation ) {
+			if ( !isDetached && !operation.isDocumentOperation ) {
 				return;
 			}
 
@@ -165,6 +208,19 @@ function bindWithDocument( this: ModelLiveRange ) {
 function transform( this: ModelLiveRange, operation: Operation ) {
 	// Transform the range by the operation. Join the result ranges if needed.
 	const ranges = this.getTransformedByOperation( operation );
+
+	// Handle detach operation where the range is entirely dropped (e.g. in ModelDocumentFragment).
+	if ( ranges.length === 0 ) {
+		const deletionPosition = ( operation as DetachOperation ).sourcePosition;
+
+		( this as any ).start = deletionPosition;
+		( this as any ).end = deletionPosition;
+
+		this.fire<ModelLiveRangeChangeDropEvent>( 'change:drop', this.toRange(), { deletionPosition } );
+
+		return;
+	}
+
 	const result = ModelRange._createFromRanges( ranges );
 
 	const boundariesChanged = !result.isEqual( this );

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-table",
-  "version": "48.3.1",
+  "version": "48.4.0",
   "description": "Table feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -38,6 +38,7 @@
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
+    "@ckeditor/ckeditor5-enter": "workspace:*",
     "@ckeditor/ckeditor5-icons": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
@@ -48,6 +49,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "workspace:*",
     "@ckeditor/ckeditor5-autoformat": "workspace:*",
+    "@ckeditor/ckeditor5-autosave": "workspace:*",
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
@@ -65,11 +67,17 @@
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
-    "@ckeditor/ckeditor5-autosave": "workspace:*",
-    "json-diff-ts": "^4.10.4"
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "json-diff-ts": "^4.10.4",
+    "vitest": "catalog:"
   },
   "scripts": {
-    "build": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs",
+    "test": "vitest run",
+    "test:browser": "vitest run --browser.headless=false",
+    "test:debug": "vitest --browser.headless=false",
+    "coverage": "pnpm run test --coverage"
   },
   "files": [
     "dist",

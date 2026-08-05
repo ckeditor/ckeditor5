@@ -20,8 +20,6 @@ import { type ViewCollection } from '../../viewcollection.js';
 import { type InputBase } from '../../input/inputbase.js';
 import { type InputTextView } from '../../inputtext/inputtextview.js';
 
-import '../../../theme/components/search/search.css';
-
 /**
  * A search component that allows filtering of an arbitrary view based on a search query
  * specified by the user in a text field.

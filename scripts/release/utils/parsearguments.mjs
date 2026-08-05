@@ -85,6 +85,12 @@ export default function parseArguments( cliArguments ) {
 		options.npmTag = 'alpha';
 	}
 
+	// TODO: Remove when this code lands on #master (see issue https://github.com/ckeditor/ckeditor5-internal/issues/4639).
+	if ( options.nightlyNext ) {
+		options.branch = 'master-v49';
+		options.npmTag = 'nightly-next';
+	}
+
 	if ( options.internal ) {
 		options.npmTag = 'internal';
 	}

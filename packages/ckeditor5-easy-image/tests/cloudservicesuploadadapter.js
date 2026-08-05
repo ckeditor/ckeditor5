@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { CloudServicesUploadAdapter } from '../src/cloudservicesuploadadapter.js';
 import { FileRepository } from '@ckeditor/ckeditor5-upload';
@@ -12,24 +12,18 @@ import { CloudServices, CloudServicesCore } from '@ckeditor/ckeditor5-cloud-serv
 import { UploadGatewayMock } from './_utils/uploadgatewaymock.js';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-
-// EasyImage requires the `CloudServicesCore` plugin as a dependency.
-// In order to mock the `Token` and `UploadGateway` classes, we create a new class that extend the `CloudServicesCore` plugin
-// and override their factory methods.
-class CloudServicesCoreMock extends CloudServicesCore {
-	createToken( tokenUrlOrRefreshToken ) {
-		return new TokenMock( tokenUrlOrRefreshToken );
-	}
-
-	createUploadGateway( token, apiAddress ) {
-		return new UploadGatewayMock( token, apiAddress );
-	}
-}
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
 
 describe( 'CloudServicesUploadAdapter', () => {
 	let div;
 
 	beforeEach( () => {
+		// EasyImage requires the `CloudServicesCore` plugin as a dependency.
+		// In order to mock the `Token` and `UploadGateway` classes, we stub the factory methods of the `CloudServicesCore` plugin.
+		mockCreateToken();
+		vi.spyOn( CloudServicesCore.prototype, 'createUploadGateway' )
+			.mockImplementation( ( token, apiAddress ) => new UploadGatewayMock( token, apiAddress ) );
+
 		div = window.document.createElement( 'div' );
 		window.document.body.appendChild( div );
 	} );
@@ -54,7 +48,6 @@ describe( 'CloudServicesUploadAdapter', () => {
 			return ClassicTestEditor
 				.create( div, {
 					plugins: [ CloudServices, CloudServicesUploadAdapter ],
-					substitutePlugins: [ CloudServicesCoreMock ],
 					cloudServices: {
 						tokenUrl: 'abc',
 						uploadUrl: 'http://upload.mock.url/'
@@ -72,8 +65,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ CloudServices, CloudServicesUploadAdapter ],
-					substitutePlugins: [ CloudServicesCoreMock ]
+					plugins: [ CloudServices, CloudServicesUploadAdapter ]
 				} )
 				.then( editor => {
 					expect( UploadGatewayMock.lastToken ).toBeUndefined();
@@ -89,7 +81,6 @@ describe( 'CloudServicesUploadAdapter', () => {
 		beforeEach( () => {
 			return ClassicTestEditor.create( div, {
 				plugins: [ CloudServices, CloudServicesUploadAdapter ],
-				substitutePlugins: [ CloudServicesCoreMock ],
 				cloudServices: {
 					tokenUrl: 'abc',
 					uploadUrl: 'http://upload.mock.url/'

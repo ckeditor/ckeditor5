@@ -391,10 +391,6 @@ describe( 'MediaEmbedStyleEditing', () => {
 				warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 			} );
 
-			afterEach( () => {
-				vi.restoreAllMocks();
-			} );
-
 			it( 'are filtered out of normalizedStyles and trigger a warning', async () => {
 				const editorWithBadConfig = await createConfiguredEditor( [
 					'alignCenter',

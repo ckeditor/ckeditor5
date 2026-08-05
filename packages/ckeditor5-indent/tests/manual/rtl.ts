@@ -1,0 +1,52 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+
+import { Indent } from '../../src/indent.js';
+import { IndentBlock } from '../../src/indentblock.js';
+
+declare global {
+	interface Window { editor: any }
+}
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ) as HTMLElement,
+		language: 'ar',
+		plugins: [ ArticlePluginSet, Indent, IndentBlock ],
+		toolbar: [
+			'heading',
+			'|',
+			'outdent',
+			'indent',
+			'|',
+			'bulletedList',
+			'numberedList',
+			'|',
+			'blockQuote',
+			'insertTable',
+			'undo',
+			'redo'
+		],
+		image: {
+			toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

@@ -344,7 +344,7 @@ for ( const item of items ) {
 
 #### Extracting additional suggestion data
 
-Track changes feature stores and exposes more data than is saved on the Cloud Services servers. This dynamic data is evaluated by the feature on-the-fly, hence it is not stored. You can use the editor API to get access to that data. 
+Track changes feature stores and exposes more data than is saved on the Cloud Services servers. This dynamic data is evaluated by the feature on-the-fly, hence it is not stored. You can use the editor API to get access to that data.
 
 All active suggestions have a related annotation (UI "balloon" element, located in the sidebar or displayed above the suggestion). You can, for example, retrieve a suggestion label that is displayed inside a suggestion balloon annotation.
 
@@ -456,7 +456,7 @@ const aiReviewGateway = editor.plugins.get( 'AIReviewGateway' );
 const result = await aiReviewGateway.runReview( 'correctness' );
 
 if ( result.status === 'completed' ) {
-	aiReviewGateway.applyReview( result, 'suggest' );
+	aiReviewGateway.applyReview( result, { applyMethod: 'suggest' } );
 }
 ```
 

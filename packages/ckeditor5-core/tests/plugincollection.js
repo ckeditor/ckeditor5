@@ -72,7 +72,6 @@ describe( 'PluginCollection', () => {
 	afterEach( async () => {
 		editor.state = 'ready';
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'init()', () => {

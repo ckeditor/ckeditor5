@@ -19,7 +19,7 @@ const locale = new Locale();
 
 function createSearchableList() {
 	class FilteredTestListView extends ListView implements FilteredView {
-		public filter( query ) {
+		public filter( query: RegExp | null ) {
 			let totalItemsCount = 0;
 			let visibleItemsCount = 0;
 
@@ -45,7 +45,7 @@ function createSearchableList() {
 						updateListItemVisibility( item as ListItemView );
 					}
 
-					groupView.isVisible = !!groupView.items.filter( listItemView => listItemView.isVisible ).length;
+					groupView.isVisible = !!groupView.items.filter( listItemView => ( listItemView as ListItemView ).isVisible ).length;
 				}
 			}
 
@@ -100,7 +100,7 @@ function createSearchableList() {
 
 function createSearchableToolbar() {
 	class FilteredTestToolbarView extends ToolbarView implements FilteredView {
-		public filter( query ) {
+		public filter( query: RegExp | null ) {
 			let visibleItemsCount = 0;
 
 			for ( const item of this.items ) {
@@ -149,7 +149,7 @@ function createSearchableToolbar() {
 
 function createSearchWithCustomInput() {
 	class FilteredTestToolbarView extends ToolbarView implements FilteredView {
-		public filter( query ) {
+		public filter( query: RegExp | null ) {
 			let visibleItemsCount = 0;
 
 			for ( const item of this.items ) {
@@ -191,7 +191,7 @@ function createSearchWithCustomInput() {
 	addToPlayground( 'Custom input (textarea)', searchView );
 }
 
-function addToPlayground( name, view ) {
+function addToPlayground( name: string, view: SearchTextView<any> ) {
 	view.render();
 
 	const container = document.createElement( 'div' );

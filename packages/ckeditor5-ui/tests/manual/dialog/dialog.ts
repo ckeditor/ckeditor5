@@ -250,7 +250,7 @@ class MinimalisticDialogs extends Plugin {
 	}
 }
 
-function initEditor( editorName, editorClass, direction = 'ltr', customCallback? ) {
+function initEditor( editorName: string, editorClass: any, direction = 'ltr', customCallback?: ( editor: any ) => void ) {
 	const element = document.querySelector( '#' + editorName ) as HTMLElement;
 
 	editorClass.create( {
@@ -305,14 +305,14 @@ function initEditor( editorName, editorClass, direction = 'ltr', customCallback?
 		},
 		language: direction === 'rtl' ? 'ar' : 'en'
 	} )
-		.then( editor => {
+		.then( ( editor: any ) => {
 			Object.assign( window, { [ editorName ]: editor } );
 
 			window.CKEditorInspector.attach( { [ editorName ]: editor } );
 
 			customCallback?.( editor );
 		} )
-		.catch( err => {
+		.catch( ( err: any ) => {
 			console.error( err.stack );
 		} );
 }
@@ -327,7 +327,7 @@ initEditor( 'editor-bottom-toolbar', DecoupledEditor, 'ltr', editor => {
 	toolbarContainer!.appendChild( editor.ui.view.toolbar.element );
 } );
 
-function SpecialCharactersEmoji( editor ) {
+function SpecialCharactersEmoji( editor: any ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
 		{ character: '😂', title: 'Face with Tears of Joy' },
 		{ character: '❤️', title: 'Red Heart' },
@@ -495,7 +495,7 @@ class MultiRootEditorIntegration extends Plugin {
 			domElement.parentElement!.remove();
 		} );
 
-		function moveRootToIndex( root, index ) {
+		function moveRootToIndex( root: any, index: number ) {
 			const domElement = editor.ui.getEditableElement( root.rootName );
 			const container = domElement!.parentElement;
 

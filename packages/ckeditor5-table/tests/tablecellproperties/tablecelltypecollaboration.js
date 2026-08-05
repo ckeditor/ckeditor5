@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-// eslint-disable-next-line ckeditor5-rules/allow-imports-only-from-main-package-entry-point
+import { describe, it, beforeEach, afterEach } from 'vitest';
 import { Client, clearBuffer, expectClients, syncClients } from '@ckeditor/ckeditor5-engine/tests/model/operation/transform/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 

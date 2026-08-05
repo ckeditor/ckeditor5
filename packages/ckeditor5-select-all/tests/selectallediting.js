@@ -26,8 +26,6 @@ describe( 'SelectAllEditing', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		return editor.destroy();
 	} );
 

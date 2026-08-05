@@ -13,6 +13,7 @@ import { ModelTreeWalker, type ModelTreeWalkerOptions, type ModelTreeWalkerValue
 import { type ModelDocument } from './document.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelElement } from './element.js';
+import { type DetachOperation } from './operation/detachoperation.js';
 import { type InsertOperation } from './operation/insertoperation.js';
 import { type ModelItem } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
@@ -614,12 +615,25 @@ export class ModelPosition extends ModelTypeCheckable {
 			case 'merge':
 				result = this._getTransformedByMergeOperation( operation as MergeOperation );
 				break;
+			case 'detach':
+				result = this._getTransformedByDetachOperation( operation as DetachOperation );
+				break;
 			default:
 				result = ModelPosition._createAt( this );
 				break;
 		}
 
 		return result;
+	}
+
+	/**
+	 * Returns a copy of this position transformed by a detach operation.
+	 *
+	 * @internal
+	 */
+	public _getTransformedByDetachOperation( operation: DetachOperation ): ModelPosition {
+		return this._getTransformedByDeletion( operation.sourcePosition, operation.howMany ) ||
+			ModelPosition._createAt( operation.sourcePosition );
 	}
 
 	/**

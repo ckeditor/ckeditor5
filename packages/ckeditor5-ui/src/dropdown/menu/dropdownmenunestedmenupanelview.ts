@@ -12,8 +12,6 @@ import type { FocusableView } from '../../focuscycler.js';
 
 import { BalloonPanelView } from '../../panel/balloon/balloonpanelview.js';
 
-import '../../../theme/components/dropdown/menu/dropdownmenupanel.css';
-
 /**
  * Represents the view for the dropdown menu panel.
  */

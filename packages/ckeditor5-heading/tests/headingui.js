@@ -15,10 +15,6 @@ import { _setModelData } from '@ckeditor/ckeditor5-engine';
 describe( 'HeadingUI', () => {
 	let editor, editorElement;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeAll( () => {
 		addTranslations( 'en', {
 			'Choose heading': 'Choose heading',

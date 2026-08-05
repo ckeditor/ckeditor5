@@ -12,10 +12,6 @@ import { KeystrokeHandler, keyCodes, FocusTracker, wait } from '@ckeditor/ckedit
 describe( 'FocusCycler', () => {
 	let focusables, focusTracker, cycler, viewIndex;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		focusables = new ViewCollection( [
 			nonFocusable(),

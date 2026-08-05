@@ -14,10 +14,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 describe( 'UndoUI', () => {
 	let editor, editorElement, button;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

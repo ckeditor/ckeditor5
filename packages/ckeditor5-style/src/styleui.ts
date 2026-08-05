@@ -15,8 +15,6 @@ import { StylePanelView } from './ui/stylepanelview.js';
 import { StyleUtils } from './styleutils.js';
 import { type StyleCommand } from './stylecommand.js';
 
-import '../theme/style.css';
-
 /**
  * The UI plugin of the style feature .
  *

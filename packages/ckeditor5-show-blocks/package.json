@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-show-blocks",
-  "version": "48.3.1",
+  "version": "48.4.0",
   "description": "Show blocks feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -76,16 +76,16 @@
     "@ckeditor/ckeditor5-special-characters": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
-    "@vitest/browser-playwright": "^4.1.8",
-    "@vitest/coverage-v8": "^4.1.8",
-    "vitest": "^4.1.8"
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs",
-    "coverage": "pnpm run test:headless --coverage",
+    "coverage": "pnpm run test --coverage",
     "test": "vitest run",
-    "test:debug": "vitest",
-    "test:headless": "vitest run --browser.headless"
+    "test:debug": "vitest --browser.headless=false",
+    "test:browser": "vitest run --browser.headless=false"
   },
   "files": [
     "dist",

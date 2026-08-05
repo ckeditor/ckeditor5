@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ModelElement, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
@@ -26,6 +27,8 @@ import {
 	getColumnGroupElement,
 	getTableColumnElements,
 	getTableColumnsWidths,
+	isTableWidthInPixels,
+	isColumnWidthsInPixels,
 	translateColSpanAttribute
 } from '../../src/tablecolumnresize/utils.js';
 
@@ -547,6 +550,55 @@ describe( 'TableColumnResize utils', () => {
 			expect( normalizeColumnWidths( [ '12.33%', '17.4%', '21.49%', '33.52%', '26.6%', '10.43%' ] ) )
 				.to.deep.equal( [ '10.13%', '14.29%', '17.65%', '27.53%', '21.84%', '8.56%' ] );
 		} );
+
+		it( 'should not touch pixel column widths (they are not bound by the sum-to-100% invariant)', () => {
+			expect( normalizeColumnWidths( [ '100px', '200px' ] ) ).to.deep.equal( [ '100px', '200px' ] );
+			expect( normalizeColumnWidths( [ '100px', '200px', '300px' ] ) ).to.deep.equal( [ '100px', '200px', '300px' ] );
+
+			// An 'auto' entry is kept as-is in the pixel mode (not turned into a pixel value).
+			expect( normalizeColumnWidths( [ '100px', 'auto' ] ) ).to.deep.equal( [ '100px', 'auto' ] );
+
+			// An `undefined` entry is coerced to 'auto', so a width-less column is not later treated as missing
+			// and removed by `updateColumnElements`.
+			expect( normalizeColumnWidths( [ '100px', undefined ] ) ).to.deep.equal( [ '100px', 'auto' ] );
+		} );
+	} );
+
+	describe( 'isTableWidthInPixels()', () => {
+		function getTable( attributes ) {
+			_setModelData( editor.model, modelTable( [ [ '00', '01' ] ], attributes ) );
+
+			return editor.model.document.getRoot().getChild( 0 );
+		}
+
+		it( 'should return true when the tableWidth is expressed in pixels', () => {
+			expect( isTableWidthInPixels( getTable( { columnWidths: '100px,200px', tableWidth: '300px' } ) ) ).to.be.true;
+		} );
+
+		it( 'should return false when the tableWidth is expressed as a percentage', () => {
+			expect( isTableWidthInPixels( getTable( { columnWidths: '40%,60%', tableWidth: '80%' } ) ) ).to.be.false;
+		} );
+
+		it( 'should return false when the table has no tableWidth', () => {
+			expect( isTableWidthInPixels( getTable( { columnWidths: '40%,60%' } ) ) ).to.be.false;
+		} );
+
+		it( 'should default to percentage mode (return false) when there is no tableWidth even with pixel columns', () => {
+			// With no tableWidth the resize mode defaults to percentage regardless of the columns' own units.
+			expect( isTableWidthInPixels( getTable( { columnWidths: '100px,200px' } ) ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isColumnWidthsInPixels()', () => {
+		it( 'should return true when at least one column width is expressed in pixels', () => {
+			expect( isColumnWidthsInPixels( [ '100px', '200px' ] ) ).to.be.true;
+			expect( isColumnWidthsInPixels( [ '50%', '100px' ] ) ).to.be.true;
+		} );
+
+		it( 'should return false when no column width is expressed in pixels', () => {
+			expect( isColumnWidthsInPixels( [ '25%', '75%' ] ) ).to.be.false;
+			expect( isColumnWidthsInPixels( [ 'auto', 'auto' ] ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'getElementWidthInPixels()', () => {
@@ -629,14 +681,21 @@ describe( 'TableColumnResize utils', () => {
 			);
 
 			const table = editor.model.document.getRoot().getChild( 0 );
-			const getComputedStyleStub = sinon.stub( window, 'getComputedStyle' ).callThrough();
+			const originalGetComputedStyle = window.getComputedStyle.bind( window );
+			const getComputedStyleStub = vi.spyOn( window, 'getComputedStyle' ).mockImplementation( ( ...args ) => {
+				const element = args[ 0 ];
 
-			// Emulate safari's bug.
-			getComputedStyleStub.withArgs( sinon.match.has( 'localName', 'colgroup' ) ).returns( { width: '0px' } );
+				// Emulate safari's bug.
+				if ( element && element.localName === 'colgroup' ) {
+					return { width: '0px' };
+				}
+
+				return originalGetComputedStyle( ...args );
+			} );
 
 			const result = getTableWidthInPixels( table, editor );
 
-			getComputedStyleStub.restore();
+			getComputedStyleStub.mockRestore();
 
 			expect( result ).to.not.equal( 0 );
 		} );

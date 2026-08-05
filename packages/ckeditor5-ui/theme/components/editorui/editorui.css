@@ -71,6 +71,10 @@
 	}
 
 	/* https://github.com/ckeditor/ckeditor5/issues/6517 */
+	/* `::selection` is not Baseline "widely available" because Safari on iOS (and iOS WebView, which
+	mirrors it) doesn't implement it. This is a purely cosmetic override: if unsupported, the selection
+	keeps its normal (non-blurred) color, which is harmless. */
+	/* eslint-disable-next-line css/use-baseline */
 	&.ck-blurred ::selection {
 		background: var(--ck-color-editable-blur-selection);
 	}

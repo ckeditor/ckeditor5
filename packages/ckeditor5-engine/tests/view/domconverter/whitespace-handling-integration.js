@@ -290,111 +290,111 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 
 		describe( 'around inline objects', () => {
 			it( 'white space with text before empty inline object is not ignored', () => {
-				editor.setData( '<p>foo <img src="/assets/sample.png"></p>' );
+				editor.setData( '<p>foo <img src="/sample.png"></p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph>foo <imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+					.toBe( '<paragraph>foo <imageInline src="/sample.png"></imageInline></paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p>foo <img src="/assets/sample.png"></p>' );
+				expect( editor.getData() ).toBe( '<p>foo <img src="/sample.png"></p>' );
 			} );
 
 			it( 'white space with text after empty inline object is not ignored', () => {
-				editor.setData( '<p><img src="/assets/sample.png" /> foo</p>' );
+				editor.setData( '<p><img src="/sample.png" /> foo</p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph><imageInline src="/assets/sample.png"></imageInline> foo</paragraph>' );
+					.toBe( '<paragraph><imageInline src="/sample.png"></imageInline> foo</paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p><img src="/assets/sample.png"> foo</p>' );
+				expect( editor.getData() ).toBe( '<p><img src="/sample.png"> foo</p>' );
 			} );
 
 			it( 'white spaces with text around empty inline object are not ignored', () => {
-				editor.setData( '<p>foo <img src="/assets/sample.png"> bar</p>' );
+				editor.setData( '<p>foo <img src="/sample.png"> bar</p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph>foo <imageInline src="/assets/sample.png"></imageInline> bar</paragraph>' );
+					.toBe( '<paragraph>foo <imageInline src="/sample.png"></imageInline> bar</paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p>foo <img src="/assets/sample.png"> bar</p>' );
+				expect( editor.getData() ).toBe( '<p>foo <img src="/sample.png"> bar</p>' );
 			} );
 
 			it( 'white space before empty inline object is ignored', () => {
-				editor.setData( '<p> <img src="/assets/sample.png"></p>' );
+				editor.setData( '<p> <img src="/sample.png"></p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+					.toBe( '<paragraph><imageInline src="/sample.png"></imageInline></paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p><img src="/assets/sample.png"></p>' );
+				expect( editor.getData() ).toBe( '<p><img src="/sample.png"></p>' );
 			} );
 
 			it( 'white space after empty inline object is ignored', () => {
-				editor.setData( '<p><img src="/assets/sample.png" /> </p>' );
+				editor.setData( '<p><img src="/sample.png" /> </p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+					.toBe( '<paragraph><imageInline src="/sample.png"></imageInline></paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p><img src="/assets/sample.png"></p>' );
+				expect( editor.getData() ).toBe( '<p><img src="/sample.png"></p>' );
 			} );
 
 			it( 'white spaces around empty inline object are ignored', () => {
-				editor.setData( '<p> <img src="/assets/sample.png"> </p>' );
+				editor.setData( '<p> <img src="/sample.png"> </p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+					.toBe( '<paragraph><imageInline src="/sample.png"></imageInline></paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p><img src="/assets/sample.png"></p>' );
+				expect( editor.getData() ).toBe( '<p><img src="/sample.png"></p>' );
 			} );
 
 			it( 'nbsp before empty inline object is not ignored', () => {
-				editor.setData( '<p>&nbsp;<img src="/assets/sample.png"></p>' );
+				editor.setData( '<p>&nbsp;<img src="/sample.png"></p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph> <imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+					.toBe( '<paragraph> <imageInline src="/sample.png"></imageInline></paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p>&nbsp;<img src="/assets/sample.png"></p>' );
+				expect( editor.getData() ).toBe( '<p>&nbsp;<img src="/sample.png"></p>' );
 			} );
 
 			it( 'nbsp after empty inline object is not ignored', () => {
-				editor.setData( '<p><img src="/assets/sample.png" />&nbsp;</p>' );
+				editor.setData( '<p><img src="/sample.png" />&nbsp;</p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph><imageInline src="/assets/sample.png"></imageInline> </paragraph>' );
+					.toBe( '<paragraph><imageInline src="/sample.png"></imageInline> </paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p><img src="/assets/sample.png">&nbsp;</p>' );
+				expect( editor.getData() ).toBe( '<p><img src="/sample.png">&nbsp;</p>' );
 			} );
 
 			it( 'nbsp around empty inline object are not ignored', () => {
-				editor.setData( '<p>&nbsp;<img src="/assets/sample.png">&nbsp;</p>' );
+				editor.setData( '<p>&nbsp;<img src="/sample.png">&nbsp;</p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph> <imageInline src="/assets/sample.png"></imageInline> </paragraph>' );
+					.toBe( '<paragraph> <imageInline src="/sample.png"></imageInline> </paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p>&nbsp;<img src="/assets/sample.png">&nbsp;</p>' );
+				expect( editor.getData() ).toBe( '<p>&nbsp;<img src="/sample.png">&nbsp;</p>' );
 			} );
 
 			it( 'text+nbsp before empty inline object is not ignored', () => {
-				editor.setData( '<p>foo&nbsp;<img src="/assets/sample.png"></p>' );
+				editor.setData( '<p>foo&nbsp;<img src="/sample.png"></p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph>foo <imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+					.toBe( '<paragraph>foo <imageInline src="/sample.png"></imageInline></paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p>foo <img src="/assets/sample.png"></p>' );
+				expect( editor.getData() ).toBe( '<p>foo <img src="/sample.png"></p>' );
 			} );
 
 			it( 'nbsp+text after empty inline object is not ignored', () => {
-				editor.setData( '<p><img src="/assets/sample.png" />&nbsp;foo</p>' );
+				editor.setData( '<p><img src="/sample.png" />&nbsp;foo</p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph><imageInline src="/assets/sample.png"></imageInline> foo</paragraph>' );
+					.toBe( '<paragraph><imageInline src="/sample.png"></imageInline> foo</paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p><img src="/assets/sample.png"> foo</p>' );
+				expect( editor.getData() ).toBe( '<p><img src="/sample.png"> foo</p>' );
 			} );
 
 			it( 'text+nbsp or nbsp+text around empty inline object are not ignored', () => {
-				editor.setData( '<p>foo&nbsp;<img src="/assets/sample.png">&nbsp;bar</p>' );
+				editor.setData( '<p>foo&nbsp;<img src="/sample.png">&nbsp;bar</p>' );
 
 				expect( _getModelData( editor.model, { withoutSelection: true } ) )
-					.toBe( '<paragraph>foo <imageInline src="/assets/sample.png"></imageInline> bar</paragraph>' );
+					.toBe( '<paragraph>foo <imageInline src="/sample.png"></imageInline> bar</paragraph>' );
 
-				expect( editor.getData() ).toBe( '<p>foo <img src="/assets/sample.png"> bar</p>' );
+				expect( editor.getData() ).toBe( '<p>foo <img src="/sample.png"> bar</p>' );
 			} );
 
 			it( 'white space around inline object elements should not be trimmed', () => {

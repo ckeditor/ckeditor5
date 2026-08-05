@@ -11,8 +11,6 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { IconShowBlocks } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
-import '../theme/showblocks.css';
-
 /**
  * The UI plugin of the show blocks feature.
  *

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
+
 import {
 	getNormalizedDefaultCellProperties,
 	getNormalizedDefaultProperties,
@@ -15,7 +17,7 @@ describe( 'table utils', () => {
 			it( 'should return an object with default properties', () => {
 				const editorConfig = {};
 
-				expect( getNormalizedDefaultProperties( editorConfig ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig ) ).toEqual( {
 					borderStyle: 'none',
 					borderWidth: '',
 					borderColor: '',
@@ -32,7 +34,7 @@ describe( 'table utils', () => {
 					height: '300px'
 				};
 
-				expect( getNormalizedDefaultProperties( editorConfig ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig ) ).toEqual( {
 					backgroundColor: '',
 					borderColor: '',
 					borderStyle: 'dashed',
@@ -45,7 +47,7 @@ describe( 'table utils', () => {
 			it( 'should add the alignment property', () => {
 				const editorConfig = {};
 
-				expect( getNormalizedDefaultProperties( editorConfig, { includeAlignmentProperty: true } ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig, { includeAlignmentProperty: true } ) ).toEqual( {
 					alignment: 'center',
 					borderStyle: 'none',
 					borderWidth: '',
@@ -61,7 +63,7 @@ describe( 'table utils', () => {
 					alignment: 'left'
 				};
 
-				expect( getNormalizedDefaultProperties( editorConfig, { includeAlignmentProperty: true } ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig, { includeAlignmentProperty: true } ) ).toEqual( {
 					alignment: 'left',
 					borderStyle: 'none',
 					borderWidth: '',
@@ -75,7 +77,7 @@ describe( 'table utils', () => {
 			it( 'should add the horizontalAlignment property (left-to-right)', () => {
 				const editorConfig = {};
 
-				expect( getNormalizedDefaultProperties( editorConfig, { includeHorizontalAlignmentProperty: true } ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig, { includeHorizontalAlignmentProperty: true } ) ).toEqual( {
 					horizontalAlignment: 'left',
 					borderStyle: 'none',
 					borderWidth: '',
@@ -90,7 +92,7 @@ describe( 'table utils', () => {
 				const editorConfig = {};
 				const options = { includeHorizontalAlignmentProperty: true, isRightToLeftContent: true };
 
-				expect( getNormalizedDefaultProperties( editorConfig, options ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig, options ) ).toEqual( {
 					horizontalAlignment: 'right',
 					borderStyle: 'none',
 					borderWidth: '',
@@ -106,7 +108,7 @@ describe( 'table utils', () => {
 					horizontalAlignment: 'center'
 				};
 
-				expect( getNormalizedDefaultProperties( editorConfig, { includeHorizontalAlignmentProperty: true } ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig, { includeHorizontalAlignmentProperty: true } ) ).toEqual( {
 					horizontalAlignment: 'center',
 					borderStyle: 'none',
 					borderWidth: '',
@@ -120,7 +122,7 @@ describe( 'table utils', () => {
 			it( 'should add the verticalAlignment property', () => {
 				const editorConfig = {};
 
-				expect( getNormalizedDefaultProperties( editorConfig, { includeVerticalAlignmentProperty: true } ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig, { includeVerticalAlignmentProperty: true } ) ).toEqual( {
 					verticalAlignment: 'middle',
 					borderStyle: 'none',
 					borderWidth: '',
@@ -136,7 +138,7 @@ describe( 'table utils', () => {
 					verticalAlignment: 'top'
 				};
 
-				expect( getNormalizedDefaultProperties( editorConfig, { includeVerticalAlignmentProperty: true } ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig, { includeVerticalAlignmentProperty: true } ) ).toEqual( {
 					verticalAlignment: 'top',
 					borderStyle: 'none',
 					borderWidth: '',
@@ -150,7 +152,7 @@ describe( 'table utils', () => {
 			it( 'should add the alignment padding', () => {
 				const editorConfig = {};
 
-				expect( getNormalizedDefaultProperties( editorConfig, { includePaddingProperty: true } ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig, { includePaddingProperty: true } ) ).toEqual( {
 					padding: '',
 					borderStyle: 'none',
 					borderWidth: '',
@@ -166,7 +168,7 @@ describe( 'table utils', () => {
 					padding: '10px'
 				};
 
-				expect( getNormalizedDefaultProperties( editorConfig, { includePaddingProperty: true } ) ).to.deep.equal( {
+				expect( getNormalizedDefaultProperties( editorConfig, { includePaddingProperty: true } ) ).toEqual( {
 					padding: '10px',
 					borderStyle: 'none',
 					borderWidth: '',
@@ -180,7 +182,7 @@ describe( 'table utils', () => {
 
 		describe( 'getNormalizedDefaultTableProperties()', () => {
 			it( 'should return proper default properties for table', () => {
-				expect( getNormalizedDefaultTableProperties() ).to.deep.equal( {
+				expect( getNormalizedDefaultTableProperties() ).toEqual( {
 					backgroundColor: '',
 					borderStyle: 'double',
 					borderColor: 'hsl(0, 0%, 70%)',
@@ -193,7 +195,7 @@ describe( 'table utils', () => {
 
 		describe( 'getNormalizedDefaultCellProperties()', () => {
 			it( 'should return proper default properties for cell', () => {
-				expect( getNormalizedDefaultCellProperties() ).to.deep.equal( {
+				expect( getNormalizedDefaultCellProperties() ).toEqual( {
 					backgroundColor: '',
 					borderStyle: 'solid',
 					borderColor: 'hsl(0, 0%, 75%)',

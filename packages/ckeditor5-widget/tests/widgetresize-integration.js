@@ -13,10 +13,6 @@ import { waitForAllImagesLoaded } from '@ckeditor/ckeditor5-image/tests/imageres
 describe( 'WidgetResize - integration', () => {
 	let editor, model, view, viewDocument, editorElement;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

@@ -21,7 +21,7 @@ This package allows for adjusting the image appearance by:
 <info-box>
 	The actual styling of the images is the job of the integrator. CKEditor&nbsp;5 WYSIWYG editor comes with some default styles, but they will only be applied to the images inside the editor. The integrator needs to style them appropriately on the target pages.
 
-	You can find the source of the default styles applied by the editor here: [`ckeditor5-image/theme/imagestyle.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/theme/imagestyle.css).
+	You can find the source of the default styles applied by the editor here: [`ckeditor5-image/theme/index-content.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/theme/index-content.css).
 
 	Read more about {@link getting-started/setup/css styling the content of the editor}.
 </info-box>

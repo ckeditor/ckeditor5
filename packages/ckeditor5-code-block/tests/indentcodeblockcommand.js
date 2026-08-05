@@ -31,8 +31,6 @@ describe( 'IndentCodeBlockCommand', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		return editor.destroy();
 	} );
 

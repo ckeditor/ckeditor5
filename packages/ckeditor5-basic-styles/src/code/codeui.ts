@@ -12,8 +12,6 @@ import { IconCode } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { getButtonCreator } from '../utils.js';
 
-import '../../theme/code.css';
-
 const CODE = 'code';
 
 /**

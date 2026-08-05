@@ -44,8 +44,6 @@ import { tableStructureRefreshHandler } from './converters/table-structure-refre
 import { tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
 import { isTableCellTypeEnabled } from './utils/common.js';
 
-import '../theme/tableediting.css';
-
 /**
  * The table editing feature.
  */

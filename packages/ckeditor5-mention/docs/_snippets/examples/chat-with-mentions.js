@@ -4,12 +4,15 @@
  */
 
 import { Underline, Strikethrough, Mention } from 'ckeditor5';
-import { CS_CONFIG, ClassicEditor, getViewportTopOffsetConfig } from '@snippets/index.js';
+import { CS_CONFIG, ClassicEditor, getViewportTopOffsetConfig, TOKEN_URL } from '@snippets/index.js';
 
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '.chat__editor' ),
 		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL
+		},
 		extraPlugins: [ Mention, MentionLinks, Underline, Strikethrough ],
 		toolbar: {
 			items: [

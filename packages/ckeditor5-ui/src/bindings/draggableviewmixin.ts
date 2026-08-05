@@ -114,8 +114,8 @@ export function DraggableViewMixin<Base extends Constructor<View>>( view: Base )
 
 			this._attachDragListeners();
 
-			let x = 0;
-			let y = 0;
+			let x;
+			let y;
 
 			// If dragging is performed with a mouse, there is only one set of coordinates available.
 			// But when using a touch device, there may be many of them, so use the coordinates from the first touch.
@@ -143,8 +143,8 @@ export function DraggableViewMixin<Base extends Constructor<View>>( view: Base )
 				return;
 			}
 
-			let newX = 0;
-			let newY = 0;
+			let newX;
+			let newY;
 
 			// If dragging is performed with a mouse, there is only one set of coordinates available.
 			// But when using a touch device, there may be many of them, so use the coordinates from the first touch.

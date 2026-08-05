@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { _setModelData, _parseModel } from '@ckeditor/ckeditor5-engine';
 
 import { TableWalker } from '../src/tablewalker.js';
@@ -56,7 +56,7 @@ describe( 'TableWalker', () => {
 			};
 		} );
 
-		expect( formattedResult ).to.deep.equal( expected );
+		expect( formattedResult ).toEqual( expected );
 	}
 
 	it( 'should iterate over a table', () => {
@@ -175,23 +175,23 @@ describe( 'TableWalker', () => {
 		// when the structure of the table is not yet corrected.
 		const tableWalker = Array.from( new TableWalker( parsed.model ) );
 
-		expect( tableWalker.length ).to.equal( 4 );
+		expect( tableWalker.length ).toEqual( 4 );
 
-		expect( tableWalker[ 0 ].row ).to.equal( 0 );
-		expect( tableWalker[ 0 ].column ).to.equal( 0 );
-		expect( tableWalker[ 0 ].rowIndex ).to.equal( 0 );
+		expect( tableWalker[ 0 ].row ).toEqual( 0 );
+		expect( tableWalker[ 0 ].column ).toEqual( 0 );
+		expect( tableWalker[ 0 ].rowIndex ).toEqual( 0 );
 
-		expect( tableWalker[ 1 ].row ).to.equal( 0 );
-		expect( tableWalker[ 1 ].column ).to.equal( 1 );
-		expect( tableWalker[ 1 ].rowIndex ).to.equal( 0 );
+		expect( tableWalker[ 1 ].row ).toEqual( 0 );
+		expect( tableWalker[ 1 ].column ).toEqual( 1 );
+		expect( tableWalker[ 1 ].rowIndex ).toEqual( 0 );
 
-		expect( tableWalker[ 2 ].row ).to.equal( 1 );
-		expect( tableWalker[ 2 ].column ).to.equal( 0 );
-		expect( tableWalker[ 2 ].rowIndex ).to.equal( 2 );
+		expect( tableWalker[ 2 ].row ).toEqual( 1 );
+		expect( tableWalker[ 2 ].column ).toEqual( 0 );
+		expect( tableWalker[ 2 ].rowIndex ).toEqual( 2 );
 
-		expect( tableWalker[ 3 ].row ).to.equal( 1 );
-		expect( tableWalker[ 3 ].column ).to.equal( 1 );
-		expect( tableWalker[ 3 ].rowIndex ).to.equal( 2 );
+		expect( tableWalker[ 3 ].row ).toEqual( 1 );
+		expect( tableWalker[ 3 ].column ).toEqual( 1 );
+		expect( tableWalker[ 3 ].rowIndex ).toEqual( 2 );
 	} );
 
 	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables. ', () => {
@@ -207,8 +207,8 @@ describe( 'TableWalker', () => {
 			);
 		}
 
-		expect( getAllItems ).to.not.throw( RangeError, 'Maximum call stack size exceeded' );
-	} ).timeout( 5000 );
+		expect( getAllItems ).not.toThrow( 'Maximum call stack size exceeded' );
+	}, 5000 );
 
 	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables with rowspan. ', () => {
 		const data = [
@@ -228,8 +228,8 @@ describe( 'TableWalker', () => {
 			);
 		}
 
-		expect( getAllItems ).to.not.throw( RangeError, 'Maximum call stack size exceeded' );
-	} ).timeout( 5000 );
+		expect( getAllItems ).not.toThrow( 'Maximum call stack size exceeded' );
+	}, 5000 );
 
 	describe( 'option.startRow', () => {
 		it( 'should start iterating from given row but with cell spans properly calculated', () => {
@@ -721,9 +721,9 @@ describe( 'TableWalker', () => {
 
 		const { value } = walker.next();
 
-		expect( () => value.isSpanned ).to.throw( CKEditorError, 'tableslot-getter-removed' );
-		expect( () => value.colspan ).to.throw( CKEditorError, 'tableslot-getter-removed' );
-		expect( () => value.rowspan ).to.throw( CKEditorError, 'tableslot-getter-removed' );
-		expect( () => value.cellIndex ).to.throw( CKEditorError, 'tableslot-getter-removed' );
+		expect( () => value.isSpanned ).toThrow( 'tableslot-getter-removed' );
+		expect( () => value.colspan ).toThrow( 'tableslot-getter-removed' );
+		expect( () => value.rowspan ).toThrow( 'tableslot-getter-removed' );
+		expect( () => value.cellIndex ).toThrow( 'tableslot-getter-removed' );
 	} );
 } );

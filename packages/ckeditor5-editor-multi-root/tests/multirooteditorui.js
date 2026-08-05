@@ -28,7 +28,6 @@ describe( 'MultiRootEditorUI', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

@@ -10,10 +10,6 @@ import { Rect } from '../../src/dom/rect.js';
 
 let element, target, limiter;
 
-afterEach( () => {
-	vi.restoreAllMocks();
-} );
-
 //	+--------+-----+
 //	|    E   |  T  |
 //	|        |-----+
@@ -686,7 +682,9 @@ describe( 'getOptimalPosition()', () => {
 	} );
 
 	describe( 'with scrollable ancestors', () => {
-		let parentWithOverflow, limiter, target, element, parentAncestorWithOverflow;
+		let parentWithOverflow, limiter, target, element;
+		// eslint-disable-next-line no-unassigned-vars -- Only assigned in some scenarios; guarded before use.
+		let parentAncestorWithOverflow;
 
 		beforeEach( () => {
 			limiter = getElement( {

@@ -494,7 +494,7 @@ export abstract class ViewTypeCheckable {
 	 */
 	public is<N extends string>( type: 'uiElement' | 'view:uiElement', name: N ): this is ViewUIElement & { name: N };
 
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	public is(): boolean {
 		// There are a lot of overloads above.
 		// Overriding method in derived classes remove them and only `is( type: string ): boolean` is visible which we don't want.

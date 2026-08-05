@@ -13,8 +13,6 @@ import { ImageResizeEditing } from './imageresize/imageresizeediting.js';
 import { ImageResizeHandles } from './imageresize/imageresizehandles.js';
 import { ImageCustomResizeUI } from './imageresize/imagecustomresizeui.js';
 
-import '../theme/imageresize.css';
-
 /**
  * The image resize plugin.
  *

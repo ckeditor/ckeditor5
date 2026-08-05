@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
+
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { HtmlEmbedEditing } from '@ckeditor/ckeditor5-html-embed';
@@ -47,15 +49,15 @@ describe( 'ImageResizeHandles', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( ImageResizeHandles.pluginName ).to.equal( 'ImageResizeHandles' );
+		expect( ImageResizeHandles.pluginName ).toBe( 'ImageResizeHandles' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageResizeHandles.isOfficialPlugin ).to.be.true;
+		expect( ImageResizeHandles.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageResizeHandles.isPremiumPlugin ).to.be.false;
+		expect( ImageResizeHandles.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'for block image', () => {
@@ -64,13 +66,13 @@ describe( 'ImageResizeHandles', () => {
 				plugins: [ Image, ImageResizeEditing, ImageResizeHandles ]
 			} );
 
-			const attachToSpy = sinon.spy( localEditor.plugins.get( 'WidgetResize' ), 'attachTo' );
+			const attachToSpy = vi.spyOn( localEditor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 			await setModelAndWaitForImages( localEditor, `[<imageBlock imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 
-			expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.a.property( 'unit', '%' );
+			expect( attachToSpy.mock.calls[ 0 ][ 0 ] ).toHaveProperty( 'unit', '%' );
 
-			attachToSpy.restore();
+			attachToSpy.mockRestore();
 
 			await localEditor.destroy();
 		} );
@@ -81,7 +83,7 @@ describe( 'ImageResizeHandles', () => {
 			} );
 
 			it( 'uses the command on commit', async () => {
-				const spy = sinon.spy( editor.commands.get( 'resizeImage' ), 'execute' );
+				const spy = vi.spyOn( editor.commands.get( 'resizeImage' ), 'execute' );
 
 				await setModelAndWaitForImages( editor,
 					`<paragraph>foo</paragraph>[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
@@ -92,8 +94,8 @@ describe( 'ImageResizeHandles', () => {
 
 				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
-				expect( spy.calledOnce ).to.be.true;
-				expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '90px' } );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( { width: '90px' } );
 			} );
 
 			it( 'disables the resizer if the command is disabled', async () => {
@@ -112,11 +114,11 @@ describe( 'ImageResizeHandles', () => {
 				}, { priority: 'highest' } );
 
 				editor.commands.get( 'resizeImage' ).refresh();
-				expect( resizer.isEnabled ).to.be.false;
+				expect( resizer.isEnabled ).toBe( false );
 
 				isEnabled = true;
 				editor.commands.get( 'resizeImage' ).refresh();
-				expect( resizer.isEnabled ).to.be.true;
+				expect( resizer.isEnabled ).toBe( true );
 			} );
 
 			it( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', async () => {
@@ -133,13 +135,13 @@ describe( 'ImageResizeHandles', () => {
 				const resizer = getSelectedImageResizer( editor );
 				const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 
-				expect( resizer.isEnabled ).to.be.false;
-				expect( resizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.true;
+				expect( resizer.isEnabled ).toBe( false );
+				expect( resizerWrapper.classList.contains( 'ck-hidden' ) ).toBe( true );
 			} );
 
 			it( 'removes the image_resized class if the command was overriden and canceled', async () => {
 				// Stub "execute" to override the command like, for instance, Track Changes would.
-				const stub = sinon.stub( editor.commands.get( 'resizeImage' ), 'execute' );
+				const stub = vi.spyOn( editor.commands.get( 'resizeImage' ), 'execute' ).mockImplementation( () => {} );
 
 				await setModelAndWaitForImages( editor,
 					`<paragraph>foo</paragraph>[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
@@ -151,11 +153,11 @@ describe( 'ImageResizeHandles', () => {
 
 				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
-				expect( stub.calledOnce ).to.be.true;
-				expect( stub.args[ 0 ][ 0 ] ).to.deep.equal( { width: '90px' } );
+				expect( stub ).toHaveBeenCalledOnce();
+				expect( stub.mock.calls[ 0 ][ 0 ] ).toEqual( { width: '90px' } );
 
-				expect( widget.hasClass( 'image_resized' ), 'CSS class' ).to.be.false;
-				expect( widget.hasStyle( 'width' ), 'width style' ).to.be.false;
+				expect( widget.hasClass( 'image_resized' ), 'CSS class' ).toBe( false );
+				expect( widget.hasStyle( 'width' ), 'width style' ).toBe( false );
 			} );
 		} );
 
@@ -180,7 +182,7 @@ describe( 'ImageResizeHandles', () => {
 
 				resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPointerPosition );
 
-				expect( resizeWrapperView.getStyle( 'width' ) ).to.equal( '100px' );
+				expect( resizeWrapperView.getStyle( 'width' ) ).toBe( '100px' );
 
 				resizerMouseSimulator.up( editor );
 			} );
@@ -192,13 +194,13 @@ describe( 'ImageResizeHandles', () => {
 
 				resizerMouseSimulator.down( editor, domParts.resizeHandle );
 
-				expect( getDomWidth( domParts.widget ), 'DOM width check' ).to.be.closeTo( expectedWidth, 2 );
+				expect( getDomWidth( domParts.widget ), 'DOM width check' ).toBeCloseTo( expectedWidth, 0 );
 
 				resizerMouseSimulator.up( editor );
 
 				const modelItem = editor.model.document.getRoot().getChild( 1 );
 
-				expect( modelItem.getAttribute( 'resizedWidth' ), 'model width attribute' ).to.be.undefined;
+				expect( modelItem.getAttribute( 'resizedWidth' ), 'model width attribute' ).toBeUndefined();
 			} );
 		} );
 
@@ -225,7 +227,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( domParts.widget.style.width ).to.equal( '120px' );
+				expect( domParts.widget.style.width ).toBe( '120px' );
 
 				editor.commands.get( 'undo' ).execute();
 
@@ -238,8 +240,8 @@ describe( 'ImageResizeHandles', () => {
 				const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 				const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
 
-				expect( shadowBoundingRect.width ).to.equal( 100 );
-				expect( shadowBoundingRect.height ).to.equal( 50 );
+				expect( shadowBoundingRect.width ).toBe( 100 );
+				expect( shadowBoundingRect.height ).toBe( 50 );
 			} );
 
 			it( 'doesn\'t show resizers when undoing to multiple images', async () => {
@@ -262,7 +264,7 @@ describe( 'ImageResizeHandles', () => {
 
 					const domResizeWrapper = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeWrapper;
 
-					expect( domResizeWrapper.getBoundingClientRect().height ).to.equal( 0 );
+					expect( domResizeWrapper.getBoundingClientRect().height ).toBe( 0 );
 				}
 			} );
 		} );
@@ -289,7 +291,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( model.getAttribute( 'resizedWidth' ) ).to.equal( '60px' );
+				expect( model.getAttribute( 'resizedWidth' ) ).toBe( '60px' );
 			} );
 		} );
 
@@ -307,7 +309,7 @@ describe( 'ImageResizeHandles', () => {
 			domParts.widget.querySelector( 'img' ).src = alternativeImageFixture;
 			await waitForAllImagesLoaded( editor );
 
-			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
+			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).toBe( 1 );
 		} );
 
 		it( 'only creates a resizer after the image is loaded', async () => {
@@ -317,19 +319,19 @@ describe( 'ImageResizeHandles', () => {
 			widget = viewDocument.getRoot().getChild( 0 );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 
-			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 0 );
+			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).toBe( 0 );
 
 			await waitForAllImagesLoaded( editor );
-			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
+			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).toBe( 1 );
 		} );
 
 		describe( 'srcset integration', () => {
 			// The image is 96x96 pixels.
-			const imageBaseUrl = '/assets/sample.png';
+			const imageBaseUrl = '/sample.png';
 			let model;
 			let images = [];
 
-			before( async () => {
+			beforeAll( async () => {
 				images = await Promise.all( [
 					preloadImage( imageBaseUrl ),
 					preloadImage( imageBaseUrl + '?a' ),
@@ -338,7 +340,7 @@ describe( 'ImageResizeHandles', () => {
 				] );
 			} );
 
-			after( () => {
+			afterAll( () => {
 				for ( const image of images ) {
 					image.remove();
 				}
@@ -373,7 +375,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( model.getAttribute( 'resizedWidth' ) ).to.equal( '76px' );
+				expect( model.getAttribute( 'resizedWidth' ) ).toBe( '76px' );
 			} );
 
 			it( 'retains width after removing srcset', async () => {
@@ -391,9 +393,9 @@ describe( 'ImageResizeHandles', () => {
 				} );
 
 				const expectedHtml = '<figure class="image image_resized" style="width:80px;">' +
-					'<img src="/assets/sample.png" width="96">' +
+					'<img src="/sample.png" width="96">' +
 				'</figure>';
-				expect( editor.getData() ).to.equal( expectedHtml );
+				expect( editor.getData() ).toBe( expectedHtml );
 			} );
 
 			async function preloadImage( imageUrl ) {
@@ -440,7 +442,7 @@ describe( 'ImageResizeHandles', () => {
 			} );
 
 			it( 'default toolbar visibility', async () => {
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 
 			it( 'visibility during the resize', async () => {
@@ -448,7 +450,7 @@ describe( 'ImageResizeHandles', () => {
 
 				resizerMouseSimulator.down( editor, domResizeHandle );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+				expect( widgetToolbarRepository.isEnabled ).toBe( false );
 
 				resizerMouseSimulator.up( editor, domResizeHandle );
 			} );
@@ -459,7 +461,7 @@ describe( 'ImageResizeHandles', () => {
 				resizerMouseSimulator.down( editor, domResizeHandle );
 				resizerMouseSimulator.up( editor, domResizeHandle );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 
 			it( 'visibility after the resize was canceled', async () => {
@@ -469,7 +471,7 @@ describe( 'ImageResizeHandles', () => {
 				resizerMouseSimulator.down( editor, domResizeHandle );
 
 				resizer.cancel();
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 
 			it( 'restores toolbar when clicking the handle without drag', () => {
@@ -479,7 +481,7 @@ describe( 'ImageResizeHandles', () => {
 				resizerMouseSimulator.down( editor, domResizeHandle );
 				resizerMouseSimulator.up( editor, domResizeHandle );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -489,16 +491,16 @@ describe( 'ImageResizeHandles', () => {
 					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing ]
 				} );
 
-				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+				const attachToSpy = vi.spyOn( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 				_setModelData( editor.model,
 					`[<imageBlock linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageBlock>]` );
 
 				await waitForAllImagesLoaded( editor );
 
-				expect( attachToSpy ).calledOnce;
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
-				attachToSpy.restore();
+				attachToSpy.mockRestore();
 			} );
 		} );
 
@@ -508,7 +510,7 @@ describe( 'ImageResizeHandles', () => {
 					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, PictureEditing, Paragraph ]
 				} );
 
-				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+				const attachToSpy = vi.spyOn( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 				_setModelData( editor.model,
 					`[<imageBlock linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageBlock>]`
@@ -522,9 +524,9 @@ describe( 'ImageResizeHandles', () => {
 
 				await waitForAllImagesLoaded( editor );
 
-				expect( attachToSpy ).calledOnce;
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
-				attachToSpy.restore();
+				attachToSpy.mockRestore();
 
 				await editor.destroy();
 			} );
@@ -537,15 +539,15 @@ describe( 'ImageResizeHandles', () => {
 				plugins: [ Image, ImageResizeEditing, ImageResizeHandles, Paragraph ]
 			} );
 
-			const attachToSpy = sinon.spy( localEditor.plugins.get( 'WidgetResize' ), 'attachTo' );
+			const attachToSpy = vi.spyOn( localEditor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 			await setModelAndWaitForImages( localEditor,
 				`<paragraph>[<imageInline imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></imageInline>]</paragraph>`
 			);
 
-			expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.a.property( 'unit', '%' );
+			expect( attachToSpy.mock.calls[ 0 ][ 0 ] ).toHaveProperty( 'unit', '%' );
 
-			attachToSpy.restore();
+			attachToSpy.mockRestore();
 
 			await localEditor.destroy();
 		} );
@@ -556,7 +558,7 @@ describe( 'ImageResizeHandles', () => {
 			} );
 
 			it( 'uses the command on commit', async () => {
-				const spy = sinon.spy( editor.commands.get( 'resizeImage' ), 'execute' );
+				const spy = vi.spyOn( editor.commands.get( 'resizeImage' ), 'execute' );
 
 				await setModelAndWaitForImages( editor,
 					'<paragraph>foo</paragraph>' +
@@ -569,8 +571,8 @@ describe( 'ImageResizeHandles', () => {
 
 				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
-				expect( spy.calledOnce ).to.be.true;
-				expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '90px' } );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( { width: '90px' } );
 			} );
 
 			it( 'disables the resizer if the command is disabled', async () => {
@@ -591,11 +593,11 @@ describe( 'ImageResizeHandles', () => {
 				}, { priority: 'highest' } );
 
 				editor.commands.get( 'resizeImage' ).refresh();
-				expect( resizer.isEnabled ).to.be.false;
+				expect( resizer.isEnabled ).toBe( false );
 
 				isEnabled = true;
 				editor.commands.get( 'resizeImage' ).refresh();
-				expect( resizer.isEnabled ).to.be.true;
+				expect( resizer.isEnabled ).toBe( true );
 			} );
 
 			it( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', async () => {
@@ -612,8 +614,8 @@ describe( 'ImageResizeHandles', () => {
 				const resizer = getSelectedImageResizer( editor );
 				const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 
-				expect( resizer.isEnabled ).to.be.false;
-				expect( resizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.true;
+				expect( resizer.isEnabled ).toBe( false );
+				expect( resizerWrapper.classList.contains( 'ck-hidden' ) ).toBe( true );
 			} );
 		} );
 
@@ -640,7 +642,7 @@ describe( 'ImageResizeHandles', () => {
 
 				resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPointerPosition );
 
-				expect( resizeWrapperView.getStyle( 'width' ) ).to.equal( '100px' );
+				expect( resizeWrapperView.getStyle( 'width' ) ).toBe( '100px' );
 
 				resizerMouseSimulator.up( editor );
 			} );
@@ -652,13 +654,13 @@ describe( 'ImageResizeHandles', () => {
 
 				resizerMouseSimulator.down( editor, domParts.resizeHandle );
 
-				expect( getDomWidth( domParts.widget ), 'DOM width check' ).to.be.closeTo( expectedWidth, 2 );
+				expect( getDomWidth( domParts.widget ), 'DOM width check' ).toBeCloseTo( expectedWidth, 0 );
 
 				resizerMouseSimulator.up( editor );
 
 				const modelItem = editor.model.document.getRoot().getChild( 1 ).getChild( 0 );
 
-				expect( modelItem.getAttribute( 'resizedWidth' ), 'model width attribute' ).to.be.undefined;
+				expect( modelItem.getAttribute( 'resizedWidth' ), 'model width attribute' ).toBeUndefined();
 			} );
 		} );
 
@@ -681,13 +683,13 @@ describe( 'ImageResizeHandles', () => {
 				const initialPointerPosition = getHandleCenterPoint( domParts.widget, resizerPosition );
 				const viewImage = widget.getChild( 0 );
 
-				expect( viewImage.getStyle( 'height' ) ).to.equal( '50px' );
+				expect( viewImage.getStyle( 'height' ) ).toBe( '50px' );
 
 				resizerMouseSimulator.down( editor, domParts.resizeHandle );
 
 				resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPointerPosition );
 
-				expect( viewImage.getStyle( 'height' ) ).to.be.undefined;
+				expect( viewImage.getStyle( 'height' ) ).toBeUndefined();
 
 				resizerMouseSimulator.up( editor );
 			} );
@@ -718,7 +720,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( domParts.widget.style.width ).to.equal( '120px' );
+				expect( domParts.widget.style.width ).toBe( '120px' );
 
 				editor.commands.get( 'undo' ).execute();
 
@@ -731,8 +733,8 @@ describe( 'ImageResizeHandles', () => {
 				const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 				const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
 
-				expect( shadowBoundingRect.width ).to.equal( 100 );
-				expect( shadowBoundingRect.height ).to.equal( 50 );
+				expect( shadowBoundingRect.width ).toBe( 100 );
+				expect( shadowBoundingRect.height ).toBe( 50 );
 			} );
 
 			it( 'doesn\'t show resizers when undoing to multiple images', async () => {
@@ -759,7 +761,7 @@ describe( 'ImageResizeHandles', () => {
 
 					const domResizeWrapper = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeWrapper;
 
-					expect( domResizeWrapper.getBoundingClientRect().height ).to.equal( 0 );
+					expect( domResizeWrapper.getBoundingClientRect().height ).toBe( 0 );
 				}
 			} );
 		} );
@@ -778,7 +780,7 @@ describe( 'ImageResizeHandles', () => {
 			domParts.widget.querySelector( 'img' ).src = alternativeImageFixture;
 			await waitForAllImagesLoaded( editor );
 
-			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
+			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).toBe( 1 );
 		} );
 
 		it( 'only creates a resizer after the image is loaded', async () => {
@@ -788,10 +790,10 @@ describe( 'ImageResizeHandles', () => {
 			widget = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 
-			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 0 );
+			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).toBe( 0 );
 
 			await waitForAllImagesLoaded( editor );
-			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
+			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).toBe( 1 );
 		} );
 
 		it( 'should be able to get the proper resizeHost size when the image it is wrapped with an inline element', async () => {
@@ -807,24 +809,25 @@ describe( 'ImageResizeHandles', () => {
 				'</paragraph>' );
 
 			widget = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
-			const spy = sinon.spy( editor.commands.get( 'resizeImage' ), 'execute' );
+			const spy = vi.spyOn( editor.commands.get( 'resizeImage' ), 'execute' );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
 			const finalPointerPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' ).moveBy( 10, -10 );
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
-			sinon.assert.calledWithExactly( spy.firstCall, { width: '90px' } );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( { width: '90px' } );
 
 			await editor.destroy();
 		} );
 
 		describe( 'srcset integration', () => {
 			// The image is 96x96 pixels.
-			const imageBaseUrl = '/assets/sample.png';
+			const imageBaseUrl = '/sample.png';
 			let model;
 			let images = [];
 
-			before( async () => {
+			beforeAll( async () => {
 				images = await Promise.all( [
 					preloadImage( imageBaseUrl ),
 					preloadImage( imageBaseUrl + '?a' ),
@@ -833,7 +836,7 @@ describe( 'ImageResizeHandles', () => {
 				] );
 			} );
 
-			after( () => {
+			afterAll( () => {
 				for ( const image of images ) {
 					image.remove();
 				}
@@ -867,7 +870,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( model.getAttribute( 'resizedWidth' ) ).to.equal( '76px' );
+				expect( model.getAttribute( 'resizedWidth' ) ).toBe( '76px' );
 			} );
 
 			it( 'retains width after removing srcset', async () => {
@@ -884,8 +887,8 @@ describe( 'ImageResizeHandles', () => {
 					writer.removeAttribute( 'srcset', model );
 				} );
 
-				const expectedHtml = '<p><img class="image_resized" style="width:76px;" src="/assets/sample.png" width="96"></p>';
-				expect( editor.getData() ).to.equal( expectedHtml );
+				const expectedHtml = '<p><img class="image_resized" style="width:76px;" src="/sample.png" width="96"></p>';
+				expect( editor.getData() ).toBe( expectedHtml );
 			} );
 
 			async function preloadImage( imageUrl ) {
@@ -933,7 +936,7 @@ describe( 'ImageResizeHandles', () => {
 			} );
 
 			it( 'default toolbar visibility', async () => {
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 
 			it( 'visibility during the resize', async () => {
@@ -941,7 +944,7 @@ describe( 'ImageResizeHandles', () => {
 
 				resizerMouseSimulator.down( editor, domResizeHandle );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+				expect( widgetToolbarRepository.isEnabled ).toBe( false );
 
 				resizerMouseSimulator.up( editor, domResizeHandle );
 			} );
@@ -952,7 +955,7 @@ describe( 'ImageResizeHandles', () => {
 				resizerMouseSimulator.down( editor, domResizeHandle );
 				resizerMouseSimulator.up( editor, domResizeHandle );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 
 			it( 'visibility after the resize was canceled', async () => {
@@ -962,7 +965,7 @@ describe( 'ImageResizeHandles', () => {
 				resizerMouseSimulator.down( editor, domResizeHandle );
 
 				resizer.cancel();
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 
 			it( 'restores toolbar when clicking the handle without drag', () => {
@@ -972,7 +975,7 @@ describe( 'ImageResizeHandles', () => {
 				resizerMouseSimulator.down( editor, domResizeHandle );
 				resizerMouseSimulator.up( editor, domResizeHandle );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -988,7 +991,7 @@ describe( 'ImageResizeHandles', () => {
 			} );
 
 			it( 'should attach the resizer to the image inside the link', async () => {
-				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+				const attachToSpy = vi.spyOn( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 				await setModelAndWaitForImages( editor,
 					'<paragraph>' +
@@ -996,9 +999,9 @@ describe( 'ImageResizeHandles', () => {
 					'</paragraph>'
 				);
 
-				expect( attachToSpy ).calledOnce;
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
-				attachToSpy.restore();
+				attachToSpy.mockRestore();
 			} );
 
 			it( 'should set non-inline element as the resize host for an image wrapped with a link', async () => {
@@ -1010,7 +1013,7 @@ describe( 'ImageResizeHandles', () => {
 
 				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
 
-				expect( window.getComputedStyle( resizer._getResizeHost() ).display ).not.to.equal( 'inline' );
+				expect( window.getComputedStyle( resizer._getResizeHost() ).display ).not.toBe( 'inline' );
 			} );
 		} );
 
@@ -1020,7 +1023,7 @@ describe( 'ImageResizeHandles', () => {
 					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, PictureEditing, Paragraph ]
 				} );
 
-				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+				const attachToSpy = vi.spyOn( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 				_setModelData( editor.model,
 					'<paragraph>' +
@@ -1036,9 +1039,9 @@ describe( 'ImageResizeHandles', () => {
 
 				await waitForAllImagesLoaded( editor );
 
-				expect( attachToSpy ).calledOnce;
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
-				attachToSpy.restore();
+				attachToSpy.mockRestore();
 
 				await editor.destroy();
 			} );
@@ -1058,7 +1061,7 @@ describe( 'ImageResizeHandles', () => {
 
 				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
 
-				expect( window.getComputedStyle( resizer._getResizeHost() ).display ).not.to.equal( 'inline' );
+				expect( window.getComputedStyle( resizer._getResizeHost() ).display ).not.toBe( 'inline' );
 
 				await editor.destroy();
 			} );
@@ -1075,7 +1078,7 @@ describe( 'ImageResizeHandles', () => {
 				}
 			} );
 
-			const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+			const attachToSpy = vi.spyOn( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 			_setModelData( editor.model, '[<rawHtml></rawHtml>]' );
 
@@ -1085,9 +1088,9 @@ describe( 'ImageResizeHandles', () => {
 
 			await waitForAllImagesLoaded( editor );
 
-			expect( attachToSpy ).not.called;
+			expect( attachToSpy ).not.toHaveBeenCalled();
 
-			attachToSpy.restore();
+			attachToSpy.mockRestore();
 		} );
 	} );
 

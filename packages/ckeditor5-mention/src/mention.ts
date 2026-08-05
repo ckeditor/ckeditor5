@@ -13,8 +13,6 @@ import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import { MentionEditing, _toMentionAttribute } from './mentionediting.js';
 import { MentionUI } from './mentionui.js';
 
-import '../theme/mention.css';
-
 /**
  * The mention plugin.
  *

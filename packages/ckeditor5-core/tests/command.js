@@ -20,7 +20,6 @@ describe( 'Command', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		command.destroy();
 
 		return editor.destroy();

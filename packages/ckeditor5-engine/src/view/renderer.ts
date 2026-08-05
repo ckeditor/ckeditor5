@@ -34,9 +34,7 @@ import { type ViewDomConverter } from './domconverter.js';
 import { type ViewElement } from './element.js';
 import { type ViewNode } from './node.js';
 
-// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '../dev-utils/utils.js' );
-
-import '../../theme/renderer.css';
+// @if CK_DEBUG_TYPING // import { _buildLogMessage } from '../dev-utils/utils.js';
 
 type DomText = globalThis.Text;
 type DomNode = globalThis.Node;

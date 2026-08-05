@@ -65,7 +65,6 @@ describe( 'EmojiPickerView', () => {
 		}
 
 		emojiPickerView.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

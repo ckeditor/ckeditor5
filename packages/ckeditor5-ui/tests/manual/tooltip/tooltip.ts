@@ -1,0 +1,73 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ListProperties } from '@ckeditor/ckeditor5-list';
+import { FontColor } from '@ckeditor/ckeditor5-font';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
+declare const CKEditorInspector: any;
+
+declare global {
+	interface Window { editors: any }
+}
+
+initEditor( '#editor' );
+initEditor( '#editor-scrollable-parent' );
+
+function initEditor( elementId: string ) {
+	ClassicEditor
+		.create( {
+			attachTo: document.querySelector( elementId ) as HTMLElement,
+			plugins: [ ArticlePluginSet, ListProperties, FontColor, FindAndReplace ],
+			toolbar: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'|',
+				'fontColor',
+				'|',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'blockQuote',
+				'insertTable',
+				'mediaEmbed',
+				'|',
+				'findAndReplace',
+				'|',
+				'undo',
+				'redo'
+			],
+			image: {
+				toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
+			},
+			table: {
+				contentToolbar: [
+					'tableColumn',
+					'tableRow',
+					'mergeTableCells'
+				]
+			}
+		} )
+		.then( editor => {
+			if ( !window.editors ) {
+				window.editors = {};
+			}
+
+			window.editors[ elementId ] = editor;
+
+			CKEditorInspector.attach( { [ elementId ]: editor } );
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+}

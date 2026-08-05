@@ -6,11 +6,9 @@
 import type { ViteUserConfig } from 'vitest/config';
 import { createVitestConfig } from '../../vitest.config';
 
-const config: ViteUserConfig = createVitestConfig( {
-	name: 'core',
+const config: ViteUserConfig = createVitestConfig( import.meta.dirname, {
 	coverage: {
 		exclude: [
-			'src/legacyerrors.ts',
 			'src/typings.ts'
 		]
 	}

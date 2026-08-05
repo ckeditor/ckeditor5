@@ -11,8 +11,6 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ImageCaptionEditing } from './imagecaption/imagecaptionediting.js';
 import { ImageCaptionUI } from './imagecaption/imagecaptionui.js';
 
-import '../theme/imagecaption.css';
-
 /**
  * The image caption plugin.
  *

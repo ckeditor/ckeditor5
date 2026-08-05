@@ -3,14 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { testUtils } from '../_utils/utils.js';
 
 describe( 'utils', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'checkAssertions()', () => {
 		it( 'does not throw an error if at least one assertion passed', () => {
 			const assertionRed = vi.fn().mockImplementation( () => {

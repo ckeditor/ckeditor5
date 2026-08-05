@@ -34,7 +34,6 @@ describe( 'Dialog', () => {
 		await editor.destroy();
 		editorElement.remove();
 		Dialog._visibleDialogPlugin = undefined;
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should have a name', () => {

@@ -57,7 +57,6 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		domRoot.parentElement.removeChild( domRoot );
 
 		view.destroy();

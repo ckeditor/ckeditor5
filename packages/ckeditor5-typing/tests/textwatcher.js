@@ -38,8 +38,6 @@ describe( 'TextWatcher', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
-
 		if ( editor ) {
 			return editor.destroy();
 		}

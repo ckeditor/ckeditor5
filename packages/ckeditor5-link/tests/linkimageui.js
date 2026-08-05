@@ -18,10 +18,6 @@ describe( 'LinkImageUI', () => {
 	let editor, viewDocument, editorElement;
 	let plugin, linkButton;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

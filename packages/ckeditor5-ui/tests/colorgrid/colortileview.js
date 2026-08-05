@@ -18,7 +18,6 @@ describe( 'ColorTileView', () => {
 
 	afterEach( () => {
 		colorTile.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'inherits from ButtonView', () => {

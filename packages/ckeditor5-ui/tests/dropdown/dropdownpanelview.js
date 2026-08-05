@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ViewCollection } from '../../src/viewcollection.js';
 import { DropdownPanelView } from '../../src/dropdown/dropdownpanelview.js';
 import { View } from '../../src/view.js';
@@ -17,10 +17,6 @@ describe( 'DropdownPanelView', () => {
 
 		view = new DropdownPanelView( locale );
 		view.render();
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

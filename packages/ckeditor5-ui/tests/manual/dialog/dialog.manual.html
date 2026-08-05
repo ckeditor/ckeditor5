@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Dialog</title>
+		<script type="module" src="./dialog.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>A few quick notes about dialogs:</h3>
+			<ul>
+				<li>
+					Only one dialog can be open at the same time. Opening a second one closes the
+					previous one.
+				</li>
+				<li>
+					There are actually two types of dialog windows: “ordinary” dialogs and modals.
+					The difference is, while modal is open, user can’t interact with the editor -
+					and dialog allows it. By default modals have a grey overlay, so you’ll notice
+					it.
+				</li>
+				<li>
+					Dialogs are draggable. The drag handle is dialog’s header. But dialog can be
+					configured to not have a header - it’s not draggable then.
+				</li>
+				<li>
+					Dialogs have configured default position. Besides the Screen center one, they
+					are relative to the editor, meaning that the dialog will dynamically adjust its
+					position during e.g. page scrolling. This binding is always broken once the user
+					drags the dialog - it will be stuck in this place until reopening.
+				</li>
+				<li>
+					Dialogs are hidden when entering the source mode. In the manual test the dialog
+					buttons are still active, but that’s because we didn’t bother with configuring
+					their state. Nothing happens when you press them.
+				</li>
+				<li>
+					Removing all the roots in the multiroot editor should not throw errors or break
+					the dialog.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<div class="fake-top-bar">This element visualizes editor.config.ui.viewportTopOffset</div>
+		<h2 id="demo-list">List of demos</h2>
+		<ul class="links">
+			<li><a href="#default">Default editor</a></li>
+			<li><a href="#narrow">Narrow editor</a></li>
+			<li><a href="#inline">Inline editor</a></li>
+			<li><a href="#rtl">RTL editor</a></li>
+			<li><a href="#bottom-toolbar">Bottom toolbar editor</a></li>
+			<li><a href="#multiroot">Multiroot editor</a></li>
+		</ul>
+
+		<div class="spanner"></div>
+		<h2 id="default" class="demo-heading">
+			Default editor <a href="#demo-list">(back to top)</a>
+		</h2>
+		<div id="editor-default">
+			<h2>Heading 1</h2>
+			<p>Paragraph</p>
+			<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+			<ul>
+				<li>UL List item 1</li>
+				<li>UL List item 2</li>
+			</ul>
+			<ol>
+				<li>OL List item 1</li>
+				<li>OL List item 2</li>
+			</ol>
+			<figure class="image image-style-side">
+				<img
+					style="aspect-ratio: 800/376"
+					src="sample.jpg"
+					alt="bar"
+					width="800"
+					height="376"
+				/>
+			</figure>
+			<blockquote>
+				<p>Quote</p>
+				<ul>
+					<li>Quoted UL List item 1</li>
+					<li>Quoted UL List item 2</li>
+				</ul>
+				<p>Quote</p>
+			</blockquote>
+		</div>
+		<div class="spanner"></div>
+		<h2 id="narrow" class="demo-heading">
+			Narrow editor <a href="#demo-list">(back to top)</a>
+		</h2>
+		<div id="editor-narrow">
+			<h2>Heading 1</h2>
+			<p>Paragraph</p>
+			<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+			<ul>
+				<li>UL List item 1</li>
+				<li>UL List item 2</li>
+			</ul>
+			<ol>
+				<li>OL List item 1</li>
+				<li>OL List item 2</li>
+			</ol>
+			<figure class="image image-style-side">
+				<img
+					style="aspect-ratio: 800/376"
+					src="sample.jpg"
+					alt="bar"
+					width="800"
+					height="376"
+				/>
+			</figure>
+			<blockquote>
+				<p>Quote</p>
+				<ul>
+					<li>Quoted UL List item 1</li>
+					<li>Quoted UL List item 2</li>
+				</ul>
+				<p>Quote</p>
+			</blockquote>
+		</div>
+		<div class="spanner"></div>
+		<h2 id="inline" class="demo-heading">
+			Inline editor <a href="#demo-list">(back to top)</a>
+		</h2>
+		<div id="editor-tiny">
+			<h2>Heading 1</h2>
+			<p>Paragraph</p>
+		</div>
+		<div class="spanner"></div>
+		<h2 id="rtl" class="demo-heading">RTL editor <a href="#demo-list">(back to top)</a></h2>
+		<div id="editor-rtl">
+			<h2>Heading 1</h2>
+			<p>Paragraph</p>
+			<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+			<ul>
+				<li>UL List item 1</li>
+				<li>UL List item 2</li>
+			</ul>
+			<ol>
+				<li>OL List item 1</li>
+				<li>OL List item 2</li>
+			</ol>
+			<figure class="image image-style-side">
+				<img
+					style="aspect-ratio: 800/376"
+					src="sample.jpg"
+					alt="bar"
+					width="800"
+					height="376"
+				/>
+			</figure>
+			<blockquote>
+				<p>Quote</p>
+				<ul>
+					<li>Quoted UL List item 1</li>
+					<li>Quoted UL List item 2</li>
+				</ul>
+				<p>Quote</p>
+			</blockquote>
+		</div>
+		<div class="spanner"></div>
+		<h2 id="bottom-toolbar" class="demo-heading">
+			Bottom toolbar editor <a href="#demo-list">(back to top)</a>
+		</h2>
+		<div id="editor-bottom-toolbar">
+			<h2>Heading 1</h2>
+			<p>Paragraph</p>
+			<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+			<ul>
+				<li>UL List item 1</li>
+				<li>UL List item 2</li>
+			</ul>
+			<ol>
+				<li>OL List item 1</li>
+				<li>OL List item 2</li>
+			</ol>
+			<figure class="image image-style-side">
+				<img
+					style="aspect-ratio: 800/376"
+					src="sample.jpg"
+					alt="bar"
+					width="800"
+					height="376"
+				/>
+			</figure>
+			<blockquote>
+				<p>Quote</p>
+				<ul>
+					<li>Quoted UL List item 1</li>
+					<li>Quoted UL List item 2</li>
+				</ul>
+				<p>Quote</p>
+			</blockquote>
+		</div>
+		<div id="editor-toolbar-container"></div>
+		<div class="spanner"></div>
+
+		<h2 id="multiroot" class="demo-heading">
+			Multiroot editor <a href="#demo-list">(back to top)</a>
+		</h2>
+		<div id="toolbar"></div>
+		<div class="editable-container">
+			<div class="editor">
+				<div id="editor-intro">
+					<h2>Intro news!</h2>
+					<p><strong>Exciting</strong> intro text to an article.</p>
+				</div>
+			</div>
+			<div class="editor">
+				<div id="editor-content">
+					<h2>Exciting news!</h2>
+					<p>Lorem ipsum dolor sit amet.</p>
+					<h3>Less exciting news!</h3>
+					<p>Lorem ipsum dolor sit amet.</p>
+				</div>
+			</div>
+			<div class="editor">
+				<div id="editor-outro">
+					<p>Closing text.</p>
+				</div>
+			</div>
+		</div>
+		<div class="spanner"></div>
+
+		<style>
+			.links a {
+				font-size: 1.5em;
+			}
+
+			.demo-heading {
+				padding-top: 100px;
+			}
+
+			.ck.ck-editor {
+				width: 800px;
+			}
+
+			.spanner {
+				border: 1px dashed #eee;
+				padding: 10px;
+				height: 1200px;
+				margin: 10px 0;
+			}
+
+			.fake-top-bar {
+				top: 0;
+				left: 0;
+				color: #fff;
+				right: 0;
+				position: fixed;
+				height: 50px;
+				z-index: 9999;
+				text-align: center;
+				line-height: 50px;
+				background: hsl(228.28deg 83.35% 26.68% / 78%);
+				pointer-events: none;
+			}
+
+			#editor-narrow + .ck.ck-editor {
+				width: 400px;
+			}
+
+			#editor-tiny {
+				width: 300px;
+			}
+
+			.editor {
+				border: #ccced1 1px solid;
+				margin-top: 1em;
+			}
+		</style>
+	</body>
+</html>

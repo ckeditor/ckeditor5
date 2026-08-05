@@ -13,8 +13,6 @@ import { type SearchResultsView } from '../search/searchresultsview.js';
 import { type InputBase } from '../input/inputbase.js';
 import type { FilteredViewExecuteEvent } from '../search/filteredview.js';
 
-import '../../theme/components/autocomplete/autocomplete.css';
-
 /**
  * The autocomplete component's view class. It extends the {@link module:ui/search/text/searchtextview~SearchTextView} class
  * with a floating {@link #resultsView} that shows up when the user starts typing and hides when they blur

@@ -6,17 +6,16 @@
 import type { ViteUserConfig } from 'vitest/config';
 import { createVitestConfig } from '../../vitest.config';
 
-const config: ViteUserConfig = createVitestConfig( {
-	name: 'ui',
+const config: ViteUserConfig = createVitestConfig( import.meta.dirname, {
 	exclude: [
 		'**/_utils',
 		'**/fixtures',
-		'**/manual',
-		'tests/_utils-tests/testfocuscycling.ts'
+		'**/manual'
 	],
 	coverage: {
+		// Type-only modules (interfaces and event typings). They are never loaded at runtime,
+		// so no test can produce coverage for them.
 		exclude: [
-			'src/legacyerrors.ts',
 			'src/button/button.ts',
 			'src/button/buttonlabel.ts',
 			'src/dropdown/button/dropdownbutton.ts',

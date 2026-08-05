@@ -19,10 +19,6 @@ describe( 'CustomElementSupport', () => {
 
 	const excludeAttributes = [ 'htmlContent', 'htmlElementName' ];
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );

@@ -34,8 +34,6 @@ describe( 'Autoformat undo integration', () => {
 		if ( editor ) {
 			await editor.destroy();
 		}
-
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'inline', () => {

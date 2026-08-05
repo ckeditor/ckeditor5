@@ -20,7 +20,6 @@ import { createLabeledInputText } from '../labeledfield/utils.js';
 
 // Custom export due to https://github.com/ckeditor/ckeditor5/issues/15698.
 import { HexBase } from 'vanilla-colorful/lib/entrypoints/hex';
-import '../../theme/components/colorpicker/colorpicker.css';
 
 declare global {
 	interface HTMLElementTagNameMap {

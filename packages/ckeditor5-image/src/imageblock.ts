@@ -14,8 +14,6 @@ import { ImageTextAlternative } from './imagetextalternative.js';
 import { ImageBlockEditing } from './image/imageblockediting.js';
 import { ImageInsertUI } from './imageinsert/imageinsertui.js';
 
-import '../theme/image.css';
-
 /**
  * The image block plugin.
  *

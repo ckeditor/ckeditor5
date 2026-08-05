@@ -492,6 +492,19 @@ export class ModelDocumentSelection extends ModelDocumentSelectionBase {
 	public static _isStoreAttributeKey( key: string ): boolean {
 		return key.startsWith( storePrefix );
 	}
+
+	/**
+	 * Drop selection attribute key prefix.
+	 *
+	 * @internal
+	 */
+	public static _dropStoreAttributeKeyPrefix( key: string ): string {
+		if ( key.startsWith( storePrefix ) ) {
+			return key.substring( storePrefix.length );
+		}
+
+		return key;
+	}
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.

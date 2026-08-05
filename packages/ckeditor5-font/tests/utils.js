@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
 	FONT_COLOR,
 	FONT_BACKGROUND_COLOR,
@@ -14,10 +14,6 @@ import { createDropdown, ColorSelectorView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'utils', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	it( 'plugin names has proper values', () => {
 		expect( FONT_COLOR ).to.equal( 'fontColor' );
 		expect( FONT_BACKGROUND_COLOR ).to.equal( 'fontBackgroundColor' );

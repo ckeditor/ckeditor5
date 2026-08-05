@@ -200,10 +200,6 @@ describe( 'CodeBlockEditing', () => {
 			vi.spyOn( editor, 'execute' );
 		} );
 
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		it( 'should execute indentCodeBlock command on tab key', () => {
 			_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 

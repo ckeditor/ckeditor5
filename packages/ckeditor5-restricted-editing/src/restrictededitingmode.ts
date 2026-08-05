@@ -12,8 +12,6 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { RestrictedEditingModeEditing } from './restrictededitingmodeediting.js';
 import { RestrictedEditingModeUI } from './restrictededitingmodeui.js';
 
-import '../theme/restrictedediting.css';
-
 /**
  * The restricted editing mode plugin.
  *

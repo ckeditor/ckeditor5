@@ -18,10 +18,6 @@ import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 describe( 'MediaEmbedToolbar', () => {
 	let editor, element, widgetToolbarRepository, balloon, toolbar, model;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
@@ -309,7 +305,6 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 	let editor, balloonToolbar, element, widgetToolbarRepository, balloon, toolbar, model;
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		vi.useRealTimers();
 	} );
 

@@ -84,7 +84,7 @@ export function injectViewList(
 	const viewWriter = conversionApi.writer;
 
 	// The position where the view list will be inserted.
-	let insertPosition = mapper.toViewPosition( model.createPositionBefore( modelItem ) );
+	let insertPosition;
 
 	// 1. Find the previous list item that has the same or smaller indent. Basically we are looking for the first model item
 	// that is a "parent" or "sibling" of the injected model item.

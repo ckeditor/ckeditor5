@@ -42,7 +42,6 @@ describe( 'InputObserver', () => {
 	} );
 
 	afterEach( () => {
-		vi.restoreAllMocks();
 		view.destroy();
 		domEditable.remove();
 	} );
@@ -202,6 +201,27 @@ describe( 'InputObserver', () => {
 				expect( viewRange.start.offset ).toBe( 2 );
 				expect( viewRange.end.parent ).toBe( viewRoot.getChild( 0 ).getChild( 0 ) );
 				expect( viewRange.end.offset ).toBe( 2 );
+			} );
+
+			it( 'should drop a DOM range that does not map to the editing view at all', () => {
+				const domElement = global.document.createElement( 'div' );
+
+				domElement.innerHTML = 'abc';
+				global.document.body.appendChild( domElement );
+
+				const domRange = global.document.createRange();
+
+				// <div>[ab]c</div> (an element next to the editable, not represented in the editing view)
+				domRange.setStart( domElement.firstChild, 0 );
+				domRange.setEnd( domElement.firstChild, 2 );
+
+				fireMockNativeBeforeInput( {
+					getTargetRanges: () => [ domRange ]
+				} );
+
+				expect( evtData.targetRanges ).toHaveLength( 0 );
+
+				domElement.remove();
 			} );
 
 			it( 'should provide a range encompassing the selected object when selection is fake', () => {

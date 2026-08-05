@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import simpleParagraphs from './simple-paragraphs/input.html';
-import simpleParagraphsNormalized from './simple-paragraphs/normalized.html';
-import simpleParagraphsModel from './simple-paragraphs/model.html';
+import simpleParagraphs from './simple-paragraphs/input.html?raw';
+import simpleParagraphsNormalized from './simple-paragraphs/normalized.html?raw';
+import simpleParagraphsModel from './simple-paragraphs/model.html?raw';
 
 export const fixtures = {
 	input: {

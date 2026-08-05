@@ -10,20 +10,14 @@ import { createVitestConfig } from '../../vitest.config';
 
 const __dirname = dirname( fileURLToPath( import.meta.url ) );
 
-const config: ViteUserConfig = createVitestConfig( {
-	name: 'engine',
+const config: ViteUserConfig = createVitestConfig( import.meta.dirname, {
 	setupFiles: [
 		resolve( __dirname, 'tests/common.js' )
 	],
 	exclude: [
 		'tests/common.js',
 		'tests/model/operation/transform/utils.js'
-	],
-	coverage: {
-		exclude: [
-			'src/legacyerrors.ts'
-		]
-	}
+	]
 } );
 
 export default config;

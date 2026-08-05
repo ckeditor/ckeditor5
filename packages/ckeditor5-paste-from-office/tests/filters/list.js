@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
+
 import { HtmlDataProcessor, _stringifyView, ViewDocument, ViewUpcastWriter, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 
 import {

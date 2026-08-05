@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import {
 	createLabeledInputText,
@@ -20,10 +20,6 @@ import { TextareaView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'LabeledFieldView utils', () => {
 	let locale;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		locale = { t: val => val };

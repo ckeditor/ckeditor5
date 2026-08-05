@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { InsertOperation, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { ShiftEnter } from '../src/shiftenter.js';
@@ -42,10 +42,6 @@ describe( 'ShiftEnterCommand', () => {
 					allowIn: [ 'inlineLimit', '$root' ]
 				} );
 			} );
-	} );
-
-	afterEach( () => {
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'ShiftEnterCommand', () => {

@@ -20,7 +20,6 @@ describe( 'ColorPickerView', () => {
 	afterEach( () => {
 		view.destroy();
 		vi.useRealTimers();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

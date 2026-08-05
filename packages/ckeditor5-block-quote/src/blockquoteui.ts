@@ -11,8 +11,6 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { IconQuote } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
-import '../theme/blockquote.css';
-
 /**
  * The block quote UI plugin.
  *

@@ -78,8 +78,6 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	afterEach( async () => {
-		vi.restoreAllMocks();
-
 		editorElement.remove();
 
 		if ( editor ) {

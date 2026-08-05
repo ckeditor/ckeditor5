@@ -19,7 +19,6 @@ describe( 'LinkPreviewButtonView', () => {
 	afterEach( () => {
 		view.element.remove();
 		view.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should extend ButtonView', () => {

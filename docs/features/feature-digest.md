@@ -578,7 +578,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 			Column resizing <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			The TableColumnResize plugin lets you resize tables and individual table columns. It gives you complete control over column width.
+			The TableColumnResize plugin lets you resize tables and individual table columns. It gives you complete control over column width, whether you drag the column edge or enter an exact value, in percentages or pixels.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/tables-resize}'>

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -1353,7 +1354,7 @@ describe( 'table properties', () => {
 						} );
 
 						expect(
-							editor.getData() ).to.equalMarkup(
+							editor.getData() ).toEqualMarkup(
 							'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>'
 						);
 					} );
@@ -1545,7 +1546,7 @@ describe( 'table properties', () => {
 
 				model.change( writer => writer.setAttribute( 'tableBackgroundColor', '#ba7', table ) );
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData() ).toEqualMarkup(
 					'<figure class="table">' +
 						'<table style="background-color:#ba7;">' +
 							'<tbody>' +
@@ -1757,10 +1758,10 @@ describe( 'table properties', () => {
 					} );
 					const model = editor.model;
 
-					editor.setData( '<figure class="image" style="width:50%"><img src="/assets/sample.png" alt="alt text"></figure>' );
+					editor.setData( '<figure class="image" style="width:50%"><img src="/sample.png" alt="alt text"></figure>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" resizedWidth="50%" src="/assets/sample.png"></imageBlock>'
+						'<imageBlock alt="alt text" resizedWidth="50%" src="/sample.png"></imageBlock>'
 					);
 
 					await editor.destroy();
@@ -1978,10 +1979,10 @@ describe( 'table properties', () => {
 					} );
 					const model = editor.model;
 
-					editor.setData( '<figure class="image" style="height:50%"><img src="/assets/sample.png" alt="alt text"></figure>' );
+					editor.setData( '<figure class="image" style="height:50%"><img src="/sample.png" alt="alt text"></figure>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" resizedHeight="50%" src="/assets/sample.png"></imageBlock>'
+						'<imageBlock alt="alt text" resizedHeight="50%" src="/sample.png"></imageBlock>'
 					);
 
 					await editor.destroy();
@@ -2184,10 +2185,10 @@ describe( 'table properties', () => {
 						expect( conversionApi.consumable.test( data.viewItem, { styles: 'float' } ) ).to.be.true;
 					}, { priority: 'lowest' } ) );
 
-					editor.setData( '<figure class="image" style="float:right"><img src="/assets/sample.png" alt="alt text"></figure>' );
+					editor.setData( '<figure class="image" style="float:right"><img src="/sample.png" alt="alt text"></figure>' );
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>'
+						'<imageBlock alt="alt text" src="/sample.png"></imageBlock>'
 					);
 
 					await editor.destroy();
@@ -2214,12 +2215,12 @@ describe( 'table properties', () => {
 
 					editor.setData(
 						'<figure class="image" style="margin-left:auto;margin-right:auto;">' +
-							'<img src="/assets/sample.png" alt="alt text">' +
+							'<img src="/sample.png" alt="alt text">' +
 						'</figure>'
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>'
+						'<imageBlock alt="alt text" src="/sample.png"></imageBlock>'
 					);
 
 					await editor.destroy();
@@ -3543,6 +3544,126 @@ describe( 'table properties', () => {
 				editor.setData( '<div align="right"><table>xyz</table></div>' );
 			} );
 
+			it( 'should not consume the div if the table inside was already consumed by another converter', () => {
+				editor.data.upcastDispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
+					const viewTable = data.viewItem.getChild( 0 );
+
+					conversionApi.consumable.consume( viewTable, { name: true } );
+				}, { priority: 'highest' } );
+
+				const converter = vi.fn( ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { name: true } ) ).to.be.false;
+				} );
+
+				editor.data.upcastDispatcher.on( 'element:div', converter, { priority: 'low' } );
+				editor.setData(
+					'<div align="right">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+
+				expect( converter ).to.be.calledOnce;
+				expect( editor.getData() ).to.be.equal( '' );
+			} );
+
+			it( 'should pass down the model range and cursor when the table view element converts ' +
+				'into some non-table content', () => {
+				editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+					if ( !conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+						return;
+					}
+
+					const paragraph = conversionApi.writer.createElement( 'paragraph' );
+
+					conversionApi.writer.insert( paragraph, data.modelCursor );
+
+					data.modelRange = conversionApi.writer.createRangeOn( paragraph );
+					data.modelCursor = data.modelRange.end;
+				}, { priority: 'highest' } );
+
+				editor.setData(
+					'<div align="right">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+
+				expect( _getModelData( editor.model ) ).to.equal(
+					'<paragraph>[]</paragraph>' +
+					'<paragraph></paragraph>'
+				);
+			} );
+
+			describe( 'when div contains more than a single table', () => {
+				it( 'should not throw and should not upcast alignment when div wraps two tables', () => {
+					expect( () => {
+						editor.setData(
+							'<div align="left">' +
+								'<table>' +
+									'<colgroup><col style="width:100px;"></colgroup>' +
+									'<tbody><tr><td>a</td></tr></tbody>' +
+								'</table>' +
+								'<table>' +
+									'<colgroup><col style="width:100px;"></colgroup>' +
+									'<tbody><tr><td>a</td></tr></tbody>' +
+								'</table>' +
+							'</div>'
+						);
+					} ).to.not.throw();
+
+					const firstTable = model.document.getRoot().getNodeByPath( [ 0 ] );
+					const secondTable = model.document.getRoot().getNodeByPath( [ 1 ] );
+
+					expect( firstTable.is( 'element', 'table' ) ).to.be.true;
+					expect( secondTable.is( 'element', 'table' ) ).to.be.true;
+					expect( firstTable.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( secondTable.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast alignment when div wraps a table and other block content', () => {
+					editor.setData(
+						'<div align="left">' +
+							'<table>' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>' +
+							'<p>bar</p>' +
+						'</div>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.is( 'element', 'table' ) ).to.be.true;
+					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should still upcast alignment when the table is the only significant child ' +
+					'and is surrounded by whitespace-only text nodes', () => {
+					editor.setData(
+						'<div align="left">\n\t' +
+							'<table>' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>' +
+							'\n\t' +
+						'</div>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockLeft' );
+				} );
+			} );
+
 			describe( 'in limited container allowing only inline content', () => {
 				beforeEach( () => {
 					model.schema.register( 'limitContainer', {
@@ -3573,6 +3694,21 @@ describe( 'table properties', () => {
 
 					expect( _getModelData( editor.model ) ).to.equal( '<limitContainer>[]123foo456</limitContainer>' );
 				} );
+
+				it( 'should strip an empty table in section if parent does not allow it and there is nothing ' +
+					'left to convert (table conversion produced no content)', () => {
+					editor.setData(
+						'<section>' +
+							'123' +
+							'<div align="right">' +
+								'<table></table>' +
+							'</div>' +
+							'456' +
+						'</section>'
+					);
+
+					expect( _getModelData( editor.model ) ).to.equal( '<limitContainer>[]123456</limitContainer>' );
+				} );
 			} );
 		} );
 
@@ -3596,9 +3732,11 @@ describe( 'table properties', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should wrap table in div with align="right" attribute for `blockRight` table alignment', done => {
+			it( 'should wrap table in div with align="right" attribute for `blockRight` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3613,7 +3751,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<div align="right">' +
@@ -3622,8 +3760,6 @@ describe( 'table properties', () => {
 							'</table>' +
 						'</div>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3632,9 +3768,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should wrap table in div with align="right" attribute for `right` table alignment', done => {
+			it( 'should wrap table in div with align="right" attribute for `right` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3649,7 +3787,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<div align="right">' +
@@ -3659,8 +3797,6 @@ describe( 'table properties', () => {
 							'</table>' +
 						'</div>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3669,9 +3805,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should wrap table in div with align="center" attribute for `center` table alignment', done => {
+			it( 'should wrap table in div with align="center" attribute for `center` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3686,7 +3824,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<div align="center">' +
@@ -3696,8 +3834,6 @@ describe( 'table properties', () => {
 							'</table>' +
 						'</div>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3706,9 +3842,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should not wrap table in div for `blockLeft` table alignment', done => {
+			it( 'should not wrap table in div for `blockLeft` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3723,15 +3861,13 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<table class="table table-style-block-align-left" style="margin-left:0;margin-right:auto;">' +
 							'<tbody><tr><td>foo</td></tr></tbody>' +
 						'</table>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3740,9 +3876,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should not wrap table in div for `left` table alignment', done => {
+			it( 'should not wrap table in div for `left` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3757,7 +3895,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<table class="table table-style-align-left" ' +
@@ -3765,8 +3903,6 @@ describe( 'table properties', () => {
 							'<tbody><tr><td>foo</td></tr></tbody>' +
 						'</table>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3775,9 +3911,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should wrap only table in div with align="right" attribute for `blockRight` table alignment', done => {
+			it( 'should wrap only table in div with align="right" attribute for `blockRight` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3793,7 +3931,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<p>bar</p>' +
@@ -3803,8 +3941,6 @@ describe( 'table properties', () => {
 							'</table>' +
 						'</div>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3813,9 +3949,11 @@ describe( 'table properties', () => {
 				} );
 			} );
 
-			it( 'should wrap nested tables in div with align="right" attribute for `blockRight` table alignment', done => {
+			it( 'should wrap nested tables in div with align="right" attribute for `blockRight` table alignment', () => {
+				expect.hasAssertions();
+
 				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				_setModelData(
 					model,
@@ -3836,7 +3974,7 @@ describe( 'table properties', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( data.method ).to.equal( 'copy' );
-					expect( preventDefaultSpy.called ).to.be.true;
+					expect( preventDefaultSpy ).toHaveBeenCalled();
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<div align="right">' +
@@ -3851,8 +3989,6 @@ describe( 'table properties', () => {
 							'</table>' +
 						'</div>'
 					);
-
-					done();
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3892,7 +4028,7 @@ describe( 'table properties', () => {
 		}
 
 		function expectModel( data ) {
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( data );
 		}
 	} );
 } );

@@ -18,9 +18,7 @@ import {
 	getScrollable
 } from './utils.js';
 
-// @if CK_DEBUG_MINIMAP // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
-
-import '../theme/minimap.css';
+// @if CK_DEBUG_MINIMAP // import { RectDrawer } from '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer.js';
 
 /**
  * The content minimap feature.

@@ -12,8 +12,6 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { StandardEditingModeEditing } from './standardeditingmodeediting.js';
 import { StandardEditingModeUI } from './standardeditingmodeui.js';
 
-import '../theme/restrictedediting.css';
-
 /**
  * The standard editing mode plugin.
  *

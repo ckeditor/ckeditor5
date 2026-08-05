@@ -15,8 +15,6 @@ import { type ViewCollection } from '../viewcollection.js';
 
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/labeledfield/labeledfieldview.css';
-
 /**
  * The labeled field view class. It can be used to enhance any view with the following features:
  *

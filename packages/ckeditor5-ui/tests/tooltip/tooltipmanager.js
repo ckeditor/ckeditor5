@@ -20,10 +20,6 @@ describe( 'TooltipManager', () => {
 
 	const utils = getUtils();
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		// TooltipManager is a singleton shared across editor instances. If any other test didn't
 		// kill its editor, this will affect assertions in tests here.

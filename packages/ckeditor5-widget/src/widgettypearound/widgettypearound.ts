@@ -11,10 +11,7 @@ import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { IconReturnArrow } from '@ckeditor/ckeditor5-icons';
 import { Template } from '@ckeditor/ckeditor5-ui';
 
-import {
-	Enter,
-	type ViewDocumentEnterEvent
-} from '@ckeditor/ckeditor5-enter';
+import { Enter, type ViewDocumentEnterEvent } from '@ckeditor/ckeditor5-enter';
 
 import {
 	Delete,
@@ -59,15 +56,14 @@ import {
 	getTypeAroundButtonPosition,
 	getClosestWidgetViewElement,
 	getTypeAroundFakeCaretPosition,
+	getCopyOnEnterTextAttributesBeforeWidgets,
 	TYPE_AROUND_SELECTION_ATTRIBUTE
 } from './utils.js';
 
 import { isWidget } from '../utils.js';
 import { type Widget } from '../widget.js';
 
-// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
-
-import '../../theme/widgettypearound.css';
+// @if CK_DEBUG_TYPING // import { _buildLogMessage } from '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js';
 
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ] as const;
 
@@ -173,13 +169,22 @@ export class WidgetTypeAround extends Plugin {
 	 */
 	private _insertParagraph( widgetModelElement: ModelElement, position: 'before' | 'after' ) {
 		const editor = this.editor;
+		const { model } = editor;
+		const { schema } = model;
 		const editingView = editor.editing.view;
 
-		const attributesToCopy = editor.model.schema.getAttributesWithProperty( widgetModelElement, 'copyOnReplace', true );
+		const attributesToCopy = schema.getAttributesWithProperty( widgetModelElement, 'copyOnReplace', true );
+		const selectionAttributes = getCopyOnEnterTextAttributesBeforeWidgets( schema, widgetModelElement );
 
-		editor.execute( 'insertParagraph', {
-			position: editor.model.createPositionAt( widgetModelElement, position ),
-			attributes: attributesToCopy
+		model.change( writer => {
+			const insertedParagraph = editor.execute( 'insertParagraph', {
+				position: editor.model.createPositionAt( widgetModelElement, position ),
+				attributes: attributesToCopy
+			} );
+
+			if ( insertedParagraph ) {
+				writer.setSelectionAttribute( selectionAttributes );
+			}
 		} );
 
 		editingView.focus();

@@ -53,8 +53,6 @@ import { getClosestTypeAroundDomButton, getTypeAroundFakeCaretPosition } from '.
 import { verticalWidgetNavigationHandler } from './verticalnavigation.js';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils.js';
 
-import '../theme/widget.css';
-
 /**
  * The widget plugin. It enables base support for widgets.
  *
@@ -829,7 +827,7 @@ function findClosestEditableOrWidgetAncestor( element: ViewElement ): ViewElemen
  */
 function getElementFromMouseEvent( view: EditingView, domEventData: ViewDocumentDomEventData<MouseEvent> ): ViewElement | null {
 	const domRange = getRangeFromMouseEvent( domEventData.domEvent );
-	let viewRange: ViewRange | null = null;
+	let viewRange: ViewRange | null;
 
 	if ( domRange ) {
 		viewRange = view.domConverter.domRangeToView( domRange );

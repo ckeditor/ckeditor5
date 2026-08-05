@@ -13,8 +13,6 @@ import type { ViewDowncastWriter, ViewElement } from '@ckeditor/ckeditor5-engine
 
 import { HorizontalLineCommand } from './horizontallinecommand.js';
 
-import '../theme/horizontalline.css';
-
 /**
  * The horizontal line editing feature.
  */

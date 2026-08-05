@@ -9,7 +9,7 @@
 
 import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
 
-import type { ModelApplyOperationEvent } from './model.js';
+import type { Model, ModelApplyOperationEvent } from './model.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelItem } from './item.js';
 import { type Operation } from './operation/operation.js';
@@ -43,19 +43,21 @@ export class ModelLivePosition extends ModelLivePositionBase {
 	 *
 	 * @see module:engine/model/position~ModelPosition
 	 */
-	constructor( root: ModelRootElement, path: Array<number>, stickiness: ModelPositionStickiness = 'toNone' ) {
+	constructor( root: ModelRootElement, path: Array<number>, stickiness: ModelPositionStickiness = 'toNone', model?: Model ) {
 		super( root, path, stickiness );
 
-		if ( !this.root.is( 'rootElement' ) ) {
+		const boundModel = model || ( this.root.is( 'rootElement' ) ? this.root.document!.model : null );
+
+		if ( !boundModel ) {
 			/**
-			 * LivePosition's root has to be an instance of ModelRootElement.
+			 * LivePosition's root has to be an instance of ModelRootElement or have a reference to a model instance.
 			 *
-			 * @error model-liveposition-root-not-rootelement
+			 * @error model-liveposition-no-model-reference
 			 */
-			throw new CKEditorError( 'model-liveposition-root-not-rootelement', root );
+			throw new CKEditorError( 'model-liveposition-no-model-reference', root );
 		}
 
-		bindWithDocument.call( this );
+		bindWithModel.call( this, boundModel );
 	}
 
 	/**
@@ -79,6 +81,23 @@ export class ModelLivePosition extends ModelLivePositionBase {
 	 */
 	public static fromPosition( position: ModelPosition, stickiness?: ModelPositionStickiness ): ModelLivePosition {
 		return new this( position.root as ModelRootElement, position.path.slice(), stickiness ? stickiness : position.stickiness );
+	}
+
+	/**
+	 * Creates a `ModelLivePosition` for a position rooted in
+	 * a {@link module:engine/model/documentfragment~ModelDocumentFragment document fragment}.
+	 *
+	 * Document fragment does not belong to a document, so the live position is bound to the provided `model` and keeps
+	 * itself in sync with every operation applied to that fragment (e.g. while editing clipboard content).
+	 *
+	 * @internal
+	 */
+	public static _fromPositionInDocumentFragment(
+		position: ModelPosition,
+		model: Model,
+		stickiness?: ModelPositionStickiness
+	): ModelLivePosition {
+		return new this( position.root as ModelRootElement, position.path.slice(), stickiness ? stickiness : position.stickiness, model );
 	}
 
 	/**
@@ -119,17 +138,21 @@ ModelLivePosition.prototype.is = function( type: string ): boolean {
 } as any;
 
 /**
- * Binds this `ModelLivePosition` to the {@link module:engine/model/document~ModelDocument document} that owns
- * this position's {@link module:engine/model/position~ModelPosition#root root}.
+ * Binds this `ModelLivePosition` to the given model, so the position updates itself on every operation applied to it.
  */
-function bindWithDocument( this: ModelLivePosition ) {
+function bindWithModel( this: ModelLivePosition, model: Model ) {
+	// A position rooted in a document fragment is updated only by operations applied to that fragment. Those are
+	// not document operations (the fragment is not a document), so - unlike a position rooted in a document root - the
+	// `isDocumentOperation` check should be skipped.
+	const isDetached = !this.root.is( 'rootElement' );
+
 	this.listenTo<ModelApplyOperationEvent>(
-		this.root.document!.model,
+		model,
 		'applyOperation',
 		( event, args ) => {
 			const operation = args[ 0 ];
 
-			if ( !operation.isDocumentOperation ) {
+			if ( !isDetached && !operation.isDocumentOperation ) {
 				return;
 			}
 

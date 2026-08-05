@@ -16,10 +16,6 @@ import { ClipboardMarkersUtils } from '../src/clipboardmarkersutils.js';
 describe( 'Clipboard Markers Utils', () => {
 	let editor, model, modelRoot, element, viewDocument, clipboardMarkersUtils, getUniqueMarkerNameStub;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
@@ -849,6 +845,9 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( '_getUniqueMarkerName', () => {
 		it( 'replaces only ID part of three segmented marker name', () => {
+			// Remove the deterministic `_getUniqueMarkerName()` stub applied in `createEditor()`.
+			// The automatic `restoreMocks` cleanup runs before the `beforeEach()` hooks, so the
+			// stub is re-applied for every test and must be removed here to test the real method.
 			vi.restoreAllMocks();
 
 			const firstResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread:123123' );
@@ -861,6 +860,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'replaces only ID part of two segmented marker name', () => {
+			// See the comment in the previous test.
 			vi.restoreAllMocks();
 
 			const firstResult = clipboardMarkersUtils._getUniqueMarkerName( 'comment:thread' );

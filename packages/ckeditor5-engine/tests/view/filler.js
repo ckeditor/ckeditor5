@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
 	INLINE_FILLER_LENGTH,
 	INLINE_FILLER,
@@ -151,10 +151,6 @@ describe( 'filler', () => {
 	} );
 
 	describe( 'MARKED_NBSP_FILLER', () => {
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		it( 'should return node with correct HTML', () => {
 			const node = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
 

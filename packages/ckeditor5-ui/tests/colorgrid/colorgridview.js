@@ -46,7 +46,6 @@ describe( 'ColorGridView', () => {
 
 	afterEach( () => {
 		view.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

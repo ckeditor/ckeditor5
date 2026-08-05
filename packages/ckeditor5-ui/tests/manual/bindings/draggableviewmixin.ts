@@ -39,7 +39,7 @@ class DraggableTestView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 }
 
 class DraggableByHandleView extends DraggableTestView {
-	public render(): void {
+	public override render(): void {
 		super.render();
 
 		const dragHandle = document.createElement( 'div' );
@@ -57,7 +57,7 @@ class DraggableByHandleView extends DraggableTestView {
 }
 
 class DraggableAsWholeView extends DraggableTestView {
-	public render(): void {
+	public override render(): void {
 		super.render();
 
 		this.element!.textContent = 'Drag me!';
@@ -83,7 +83,7 @@ draggableAsWholeView.left = 420;
 draggableByHandleView.render();
 draggableAsWholeView.render();
 
-const wrapper = document.querySelector( '.manual-test-container' ) || document.body;
+const wrapper = document.body;
 
 wrapper.appendChild( draggableByHandleView.element! );
 wrapper.appendChild( draggableAsWholeView.element! );

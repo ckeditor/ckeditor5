@@ -21,10 +21,6 @@ import { MentionUI } from '../src/mentionui.js';
 describe( 'Mention feature - integration', () => {
 	let div, editor, model, doc;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		div = document.createElement( 'div' );
 		document.body.appendChild( div );

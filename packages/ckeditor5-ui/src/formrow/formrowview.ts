@@ -12,8 +12,6 @@ import { type ViewCollection } from '../viewcollection.js';
 import { type LabelView } from '../label/labelview.js';
 import { toArray, type ArrayOrItem, type Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/formrow/formrow.css';
-
 /**
  * The class representing a single row in a form,
  */

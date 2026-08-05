@@ -17,8 +17,6 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 import { type ModelDocument } from '../document.js';
 
-// @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
-
 /**
  * Operation to move a range of {@link module:engine/model/item~ModelItem model items}
  * to given {@link module:engine/model/position~ModelPosition target position}.

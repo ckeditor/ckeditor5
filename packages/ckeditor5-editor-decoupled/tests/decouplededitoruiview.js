@@ -21,10 +21,6 @@ describe( 'DecoupledEditorUIView', () => {
 		view.editable.name = editingViewRoot.rootName;
 	} );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'constructor()', () => {
 		it( 'is virtual', () => {
 			expect( view.template ).toBeUndefined();

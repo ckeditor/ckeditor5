@@ -18,10 +18,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 describe( 'DeleteCommand', () => {
 	let editor, model, doc;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {

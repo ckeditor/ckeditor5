@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { CKEditorError, DOCUMENTATION_URL, logError, logWarning } from '../src/ckeditorerror.js';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
@@ -164,10 +164,6 @@ describe( 'CKEditorError', () => {
 			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 		} );
 
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
-
 		it( 'should log warning with data and link to the documentation', () => {
 			logWarning( 'foo', { name: 'foo' } );
 
@@ -193,10 +189,6 @@ describe( 'CKEditorError', () => {
 	describe( 'logError()', () => {
 		beforeEach( () => {
 			vi.spyOn( console, 'error' ).mockImplementation( () => {} );
-		} );
-
-		afterEach( () => {
-			vi.restoreAllMocks();
 		} );
 
 		it( 'should log error with data and link to the documentation', () => {

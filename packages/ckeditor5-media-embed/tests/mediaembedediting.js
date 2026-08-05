@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { MediaEmbedEditing } from '../src/mediaembedediting.js';
 import { _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
@@ -12,10 +12,6 @@ import { escapeRegExp } from 'es-toolkit/compat';
 
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	const testProviders = {
 		A: {

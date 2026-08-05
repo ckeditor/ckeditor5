@@ -1,0 +1,221 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { AutoImage, ImageResize, ImageUpload, Image, ImageCaption, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
+import { HtmlComment } from '@ckeditor/ckeditor5-html-support';
+import { LinkImage, Link } from '@ckeditor/ckeditor5-link';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { TableCaption, Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+
+import { List } from '../../src/list.js';
+import { ListProperties } from '../../src/listproperties.js';
+declare const CKEditorInspector: any;
+
+const config = {
+	plugins: [
+		Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
+		MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
+		AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
+		CloudServices, SourceEditing, List, ListProperties
+	],
+	toolbar: [
+		'sourceEditing', '|',
+		'numberedList', 'bulletedList',
+		'outdent', 'indent', '|',
+		'heading', '|',
+		'bold', 'italic', 'link', '|',
+		'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock', '|',
+		'htmlEmbed', '|',
+		'alignment', '|',
+		'pageBreak', 'horizontalLine', '|',
+		'undo', 'redo'
+	],
+	cloudServices: CS_CONFIG,
+	table: {
+		contentToolbar: [
+			'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption'
+		]
+	},
+	image: {
+		styles: [
+			'alignCenter',
+			'alignLeft',
+			'alignRight'
+		] as any,
+		resizeOptions: [
+			{
+				name: 'resizeImage:original',
+				label: 'Original size',
+				value: null
+			},
+			{
+				name: 'resizeImage:50',
+				label: '50%',
+				value: '50'
+			},
+			{
+				name: 'resizeImage:75',
+				label: '75%',
+				value: '75'
+			}
+		],
+		toolbar: [
+			'imageTextAlternative', 'toggleImageCaption', '|',
+			'imageStyle:inline', 'imageStyle:breakText', 'imageStyle:wrapText', '|',
+			'resizeImage'
+		]
+	},
+	root: {
+		placeholder: 'Type the content here!'
+	},
+	htmlEmbed: {
+		showPreviews: true,
+		sanitizeHtml: ( html: string ) => ( { html, hasChange: false } as any )
+	},
+	menuBar: {
+		isVisible: true
+	}
+};
+
+function createEditor( idSuffix: string, properties: any ) {
+	ClassicEditor
+		.create( {
+			...config,
+			attachTo: document.querySelector( '#editor-' + idSuffix ) as HTMLElement,
+			list: {
+				properties
+			}
+		} )
+		.then( editor => {
+			( window as any )[ 'editor_' + idSuffix ] = editor;
+
+			CKEditorInspector.attach( { [ idSuffix ]: editor } );
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+}
+
+createEditor( 'all', {
+	styles: true,
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'style-start', {
+	styles: true,
+	startIndex: true,
+	reversed: false
+} );
+
+createEditor( 'style-reversed', {
+	styles: true,
+	startIndex: false,
+	reversed: true
+} );
+
+createEditor( 'start-reversed', {
+	styles: false,
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'start', {
+	styles: false,
+	startIndex: true,
+	reversed: false
+} );
+
+createEditor( 'reversed', {
+	styles: false,
+	startIndex: false,
+	reversed: true
+} );
+
+createEditor( 'style', {
+	styles: true,
+	startIndex: false,
+	reversed: false
+} );
+
+createEditor( 'style-bulleted-only', {
+	styles: {
+		listTypes: 'bulleted'
+	},
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'style-bulleted-only-styles', {
+	styles: {
+		listTypes: 'bulleted'
+	},
+	startIndex: false,
+	reversed: false
+} );
+
+createEditor( 'style-numbered-only', {
+	styles: {
+		listTypes: 'numbered'
+	},
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'style-numbered-only-styles', {
+	styles: {
+		listTypes: 'numbered'
+	},
+	startIndex: false,
+	reversed: false
+} );
+
+createEditor( 'style-attribute', {
+	styles: { useAttribute: true },
+	startIndex: false,
+	reversed: false
+} );
+
+createEditor( 'style-ui-options', {
+	styles: {
+		listStyleTypes: {
+			numbered: [
+				'decimal',
+				'decimal-leading-zero',
+				'arabic-indic'
+			],
+			bulleted: [
+				'disc',
+				'circle',
+				'square'
+			]
+		}
+	},
+	startIndex: false,
+	reversed: false
+} );
+
+createEditor( 'none', {
+	styles: false,
+	startIndex: false,
+	reversed: false
+} );

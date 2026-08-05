@@ -25,16 +25,12 @@ import {
 import { modelList } from '../_utils/utils.js';
 import { stubUid } from '../_utils/uid.js';
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 import { Model, _stringifyModel, _parseModel } from '@ckeditor/ckeditor5-engine';
 
 describe( 'List - utils - model', () => {
 	let model, schema, attributeNames;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -1135,7 +1131,7 @@ describe( 'List - utils - model', () => {
 			stubUid();
 			model.change( writer => splitListItemBefore( fragment.getChild( 0 ), writer ) );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* a{id:a00}',
 				'  b',
 				'  c'
@@ -1154,7 +1150,7 @@ describe( 'List - utils - model', () => {
 			stubUid();
 			model.change( writer => splitListItemBefore( fragment.getChild( 1 ), writer ) );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* a',
 				'* b{id:a00}',
 				'  c'
@@ -1175,7 +1171,7 @@ describe( 'List - utils - model', () => {
 			stubUid();
 			model.change( writer => splitListItemBefore( fragment.getChild( 2 ), writer ) );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* x',
 				'* a',
 				'* b{id:a00}',
@@ -1197,7 +1193,7 @@ describe( 'List - utils - model', () => {
 			stubUid();
 			model.change( writer => splitListItemBefore( fragment.getChild( 1 ), writer ) );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* a',
 				'* b{id:a00}',
 				'  * c',
@@ -1219,7 +1215,7 @@ describe( 'List - utils - model', () => {
 			stubUid();
 			model.change( writer => splitListItemBefore( fragment.getChild( 2 ), writer ) );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* a',
 				'  * b',
 				'  * c{id:a00}',
@@ -1244,7 +1240,7 @@ describe( 'List - utils - model', () => {
 				changedBlocks = mergeListItemBefore( fragment.getChild( 1 ), fragment.getChild( 0 ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* 0',
 				'  1',
 				'* 2'
@@ -1270,7 +1266,7 @@ describe( 'List - utils - model', () => {
 				changedBlocks = mergeListItemBefore( fragment.getChild( 1 ), fragment.getChild( 0 ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* 0',
 				'  1',
 				'  2',
@@ -1297,7 +1293,7 @@ describe( 'List - utils - model', () => {
 				changedBlocks = mergeListItemBefore( fragment.getChild( 1 ), fragment.getChild( 0 ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* <paragraph alignment="right">0</paragraph>',
 				'  1',
 				'* 2'
@@ -1329,7 +1325,7 @@ describe( 'List - utils - model', () => {
 
 				model.change( writer => indentBlocks( blocks, writer, { attributeNames } ) );
 
-				expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -1384,7 +1380,7 @@ describe( 'List - utils - model', () => {
 
 				model.change( writer => indentBlocks( blocks, writer, { expand: true, attributeNames } ) );
 
-				expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'  * 1',
 					'    2',
@@ -1418,7 +1414,7 @@ describe( 'List - utils - model', () => {
 					changedBlocks = indentBlocks( blocks, writer, { indentBy: -1, attributeNames } );
 				} );
 
-				expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'  * 2',
@@ -1451,7 +1447,7 @@ describe( 'List - utils - model', () => {
 					changedBlocks = indentBlocks( blocks, writer, { indentBy: -1, attributeNames } );
 				} );
 
-				expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'2',
@@ -1484,7 +1480,7 @@ describe( 'List - utils - model', () => {
 					changedBlocks = indentBlocks( blocks, writer, { indentBy: -1, attributeNames } );
 				} );
 
-				expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 					'* <paragraph alignment="right">0</paragraph>',
 					'* <paragraph alignment="right">1</paragraph>',
 					'* <paragraph alignment="right">2</paragraph>',
@@ -1517,7 +1513,7 @@ describe( 'List - utils - model', () => {
 					changedBlocks = indentBlocks( blocks, writer, { expand: true, indentBy: -1, attributeNames } );
 				} );
 
-				expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'  2',
@@ -1557,7 +1553,7 @@ describe( 'List - utils - model', () => {
 				changedBlocks = outdentBlocksWithMerge( blocks, writer, { attributeNames } );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* 0',
 				'  1',
 				'  2',
@@ -1591,7 +1587,7 @@ describe( 'List - utils - model', () => {
 				changedBlocks = outdentBlocksWithMerge( blocks, writer, { attributeNames } );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* 0',
 				'* 1',
 				'  2',
@@ -1625,7 +1621,7 @@ describe( 'List - utils - model', () => {
 				changedBlocks = outdentBlocksWithMerge( blocks, writer, { attributeNames } );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* 0',
 				'* 1',
 				'  * 2',
@@ -1665,7 +1661,7 @@ describe( 'List - utils - model', () => {
 				changedBlocks = removeListAttributes( blocks, writer, attributeNames );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* 0',
 				'* 1',
 				'2',
@@ -1700,7 +1696,7 @@ describe( 'List - utils - model', () => {
 				changedBlocks = removeListAttributes( blocks, writer, attributeNames );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'* 0',
 				'* 1',
 				'<paragraph alignmnent="right">2</paragraph>',
@@ -1795,7 +1791,7 @@ describe( 'List - utils - model', () => {
 				changedBlocks = outdentFollowingItems( fragment.getChild( 3 ), writer );
 			} );
 
-			expect( _stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+			expect( _stringifyModel( fragment ) ).toEqualMarkup( modelList( [
 				'0',
 				'* 1',
 				'  * 2',

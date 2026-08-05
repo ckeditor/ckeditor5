@@ -20,8 +20,6 @@ import { Collection, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { EmojiSkinToneId } from '../emojiconfig.js';
 import type { EmojiSkinTone } from '../emojirepository.js';
 
-import '../../theme/emojitone.css';
-
 /**
  * A view responsible for selecting a skin tone for an emoji.
  */

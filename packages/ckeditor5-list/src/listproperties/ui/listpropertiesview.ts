@@ -30,8 +30,6 @@ import {
 
 import type { NormalizedListPropertiesConfig } from '../utils/config.js';
 
-import '../../../theme/listproperties.css';
-
 /**
  * The list properties view to be displayed in the list dropdown.
  *

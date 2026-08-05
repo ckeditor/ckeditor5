@@ -1,0 +1,93 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
+import { ImageInsert } from '../../src/imageinsert.js';
+import { AutoImage } from '../../src/autoimage.js';
+declare const CKEditorInspector: any;
+
+async function createEditor( elementId: string, imageType: any ) {
+	const editor = await ClassicEditor.create( {
+		attachTo: document.querySelector( '#' + elementId ) as HTMLElement,
+		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, LinkImage, CKFinderUploadAdapter, CKFinder ],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'insertImage',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
+		],
+		menuBar: { isVisible: true },
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'toggleImageCaption', 'imageTextAlternative' ],
+			insert: {
+				integrations: getSelectedIntegrations(),
+				type: imageType
+			}
+		},
+		ckfinder: {
+			// eslint-disable-next-line @stylistic/max-len
+			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+		},
+		updateSourceElementOnDestroy: true
+	} );
+
+	( window as any )[ elementId ] = editor;
+
+	CKEditorInspector.attach( { [ imageType ]: editor } );
+}
+
+setupEditors( {
+	editor1: 'auto',
+	editor2: 'block',
+	editor3: 'inline'
+} ).catch( err => {
+	console.error( err );
+} );
+
+async function setupEditors( opt: Record<string, string> ) {
+	await startEditors();
+
+	for ( const element of document.querySelectorAll( 'input[name=imageInsertIntegration]' ) ) {
+		element.addEventListener( 'change', () => {
+			restartEditors().catch( err => console.error( err ) );
+		} );
+	}
+
+	async function restartEditors() {
+		await stopEditors();
+		await startEditors();
+	}
+
+	async function startEditors() {
+		for ( const [ elementId, imageType ] of Object.entries( opt ) ) {
+			await createEditor( elementId, imageType );
+		}
+	}
+
+	async function stopEditors( ) {
+		for ( const editorId of Object.keys( opt ) ) {
+			await ( window as any )[ editorId ].destroy();
+		}
+	}
+}
+
+function getSelectedIntegrations() {
+	return Array.from( document.querySelectorAll( 'input[name=imageInsertIntegration]' ) )
+		.filter( element => ( element as HTMLInputElement ).checked )
+		.map( element => ( element as HTMLInputElement ).value );
+}

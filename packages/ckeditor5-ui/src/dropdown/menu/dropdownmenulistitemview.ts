@@ -13,8 +13,6 @@ import { type DropdownMenuNestedMenuView } from './dropdownmenunestedmenuview.js
 import { ListItemView } from '../../list/listitemview.js';
 import { DropdownMenuListItemButtonView } from './dropdownmenulistitembuttonview.js';
 
-import '../../../theme/components/dropdown/menu/dropdownmenulistitem.css';
-
 /**
  * Represents a view for a single item in a dropdown menu list.
  */

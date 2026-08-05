@@ -10,3 +10,6 @@
 export { InlineEditor } from './inlineeditor.js';
 export { InlineEditorUI } from './inlineeditorui.js';
 export { InlineEditorUIView } from './inlineeditoruiview.js';
+
+import '../theme/index-editor.css';
+import '../theme/index-content.css';

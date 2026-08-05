@@ -24,8 +24,6 @@ import {
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
 import type { ViewRootElementDefinition } from '@ckeditor/ckeditor5-core';
 
-import '../theme/inlineeditor.css';
-
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**

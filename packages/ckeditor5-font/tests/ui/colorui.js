@@ -37,10 +37,6 @@ describe( 'FontColorUIBase', () => {
 		columns: 3
 	};
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeAll( () => {
 		addTranslations( 'pl', {
 			'Test Color': 'Testowy plugin',

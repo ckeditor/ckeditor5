@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -14,8 +14,6 @@ import { ImageCaptionEditing } from '../../src/imagecaption/imagecaptionediting.
 
 describe( 'ImageTypeCommand', () => {
 	let editor, blockCommand, inlineCommand, model, root;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -43,19 +41,19 @@ describe( 'ImageTypeCommand', () => {
 					_setModelData( model, '[]' );
 
 					blockCommand.refresh();
-					expect( blockCommand.isEnabled ).to.be.false;
+					expect( blockCommand.isEnabled ).toBe( false );
 				} );
 			} );
 
 			it( 'should be false when the selection is in empty block', () => {
 				_setModelData( model, '<paragraph>[]</paragraph>' );
 
-				expect( blockCommand.isEnabled ).to.be.false;
+				expect( blockCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when the selection directly in a paragraph', () => {
 				_setModelData( model, '<paragraph>foo[]</paragraph>' );
-				expect( blockCommand.isEnabled ).to.be.false;
+				expect( blockCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when the selection directly in a block', () => {
@@ -64,22 +62,22 @@ describe( 'ImageTypeCommand', () => {
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 				_setModelData( model, '<block>foo[]</block>' );
-				expect( blockCommand.isEnabled ).to.be.false;
+				expect( blockCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when the selection is on a block image', () => {
 				_setModelData( model, '[<imageBlock></imageBlock>]' );
-				expect( blockCommand.isEnabled ).to.be.false;
+				expect( blockCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true when the selection is an inline image', () => {
 				_setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
-				expect( blockCommand.isEnabled ).to.be.true;
+				expect( blockCommand.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false when the selection is inside other image', () => {
 				_setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
-				expect( blockCommand.isEnabled ).to.be.false;
+				expect( blockCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when the selection is on other object', () => {
@@ -87,7 +85,7 @@ describe( 'ImageTypeCommand', () => {
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 				_setModelData( model, '[<object></object>]' );
 
-				expect( blockCommand.isEnabled ).to.be.false;
+				expect( blockCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when the inline image is in $inlineRoot (imageBlock not allowed there)', async () => {
@@ -104,7 +102,7 @@ describe( 'ImageTypeCommand', () => {
 						'foo[<imageInline src="assets/sample.png"></imageInline>]bar'
 					);
 
-					expect( inlineBlockCommand.isEnabled ).to.be.false;
+					expect( inlineBlockCommand.isEnabled ).toBe( false );
 				} finally {
 					await inlineEditor.destroy();
 				}
@@ -130,7 +128,7 @@ describe( 'ImageTypeCommand', () => {
 					'</inlineOnlyContainer>'
 				);
 
-				expect( blockCommand.isEnabled ).to.be.false;
+				expect( blockCommand.isEnabled ).toBe( false );
 			} );
 		} );
 
@@ -140,19 +138,19 @@ describe( 'ImageTypeCommand', () => {
 					_setModelData( model, '[]' );
 
 					inlineCommand.refresh();
-					expect( inlineCommand.isEnabled ).to.be.false;
+					expect( inlineCommand.isEnabled ).toBe( false );
 				} );
 			} );
 
 			it( 'should be false when the selection is in empty block', () => {
 				_setModelData( model, '<paragraph>[]</paragraph>' );
 
-				expect( inlineCommand.isEnabled ).to.be.false;
+				expect( inlineCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when the selection directly in a paragraph', () => {
 				_setModelData( model, '<paragraph>foo[]</paragraph>' );
-				expect( inlineCommand.isEnabled ).to.be.false;
+				expect( inlineCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when the selection directly in a block', () => {
@@ -161,19 +159,19 @@ describe( 'ImageTypeCommand', () => {
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 				_setModelData( model, '<block>foo[]</block>' );
-				expect( inlineCommand.isEnabled ).to.be.false;
+				expect( inlineCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true when the selection is on a block image', () => {
 				_setModelData( model, '[<imageBlock></imageBlock>]' );
-				expect( inlineCommand.isEnabled ).to.be.true;
+				expect( inlineCommand.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true for a block image in $root (the inline image can be auto-paragraphed)', () => {
 				// Regression guard: `imageInline` is not allowed directly in `$root`, so the command must rely on
 				// the auto-paragraph path being available - otherwise this common case would be wrongly disabled.
 				_setModelData( model, '[<imageBlock src="assets/sample.png"></imageBlock>]' );
-				expect( inlineCommand.isEnabled ).to.be.true;
+				expect( inlineCommand.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false when neither inline images nor paragraphs are allowed at the image position', () => {
@@ -188,12 +186,12 @@ describe( 'ImageTypeCommand', () => {
 
 				_setModelData( model, '<blockImageOnly>[<imageBlock src="assets/sample.png"></imageBlock>]</blockImageOnly>' );
 
-				expect( inlineCommand.isEnabled ).to.be.false;
+				expect( inlineCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when the selection is on an inline image', () => {
 				_setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
-				expect( inlineCommand.isEnabled ).to.be.false;
+				expect( inlineCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false when the selection is on other object', () => {
@@ -201,13 +199,13 @@ describe( 'ImageTypeCommand', () => {
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 				_setModelData( model, '[<object></object>]' );
 
-				expect( inlineCommand.isEnabled ).to.be.false;
+				expect( inlineCommand.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true when the selection is in a block image caption', () => {
 				_setModelData( model, '<imageBlock><caption>[]Foo</caption></imageBlock>' );
 
-				expect( inlineCommand.isEnabled ).to.be.true;
+				expect( inlineCommand.isEnabled ).toBe( true );
 			} );
 		} );
 	} );
@@ -222,11 +220,11 @@ describe( 'ImageTypeCommand', () => {
 				const oldElement = model.document.getRoot().getChild( 0 ).getChild( 0 );
 				const returned = blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
+				expect( _getModelData( model ) ).toBe( `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
 
 				const newElement = model.document.getRoot().getChild( 0 );
 
-				expect( returned ).to.deep.equal( { oldElement, newElement } );
+				expect( returned ).toEqual( { oldElement, newElement } );
 			} );
 
 			it( 'should convert inline image to block image', () => {
@@ -234,7 +232,7 @@ describe( 'ImageTypeCommand', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
+				expect( _getModelData( model ) ).toBe( `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
 			} );
 
 			it( 'should convert inline image with alt attribute to block image', () => {
@@ -246,7 +244,7 @@ describe( 'ImageTypeCommand', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`[<imageBlock alt="alt text" src="${ imgSrc }"></imageBlock>]`
 				);
 			} );
@@ -260,7 +258,7 @@ describe( 'ImageTypeCommand', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`[<imageBlock src="${ imgSrc }" srcset="small.png 148w, big.png 1024w"></imageBlock>]`
 				);
 			} );
@@ -270,8 +268,8 @@ describe( 'ImageTypeCommand', () => {
 
 				const returned = blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
-				expect( returned ).to.be.null;
+				expect( _getModelData( model ) ).toBe( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+				expect( returned ).toBeNull();
 			} );
 
 			it( 'should convert if "src" attribute is not set (but "uploadId" is) because this is what happens during image upload', () => {
@@ -289,8 +287,8 @@ describe( 'ImageTypeCommand', () => {
 				const returned = blockCommand.execute();
 				const newElement = model.document.getRoot().getChild( 0 );
 
-				expect( _getModelData( model ) ).to.equal( '[<imageBlock uploadId="1234"></imageBlock>]' );
-				expect( returned ).to.deep.equal( { oldElement, newElement } );
+				expect( _getModelData( model ) ).toBe( '[<imageBlock uploadId="1234"></imageBlock>]' );
+				expect( returned ).toEqual( { oldElement, newElement } );
 			} );
 
 			it( 'should not convert an inline image to a block image if it is not allowed by the schema', () => {
@@ -304,11 +302,11 @@ describe( 'ImageTypeCommand', () => {
 
 				// The command refresh detects that `imageBlock` has nowhere to land and disables itself,
 				// so `editor.execute` short-circuits without changing the model.
-				expect( blockCommand.isEnabled ).to.be.false;
+				expect( blockCommand.isEnabled ).toBe( false );
 
 				editor.execute( 'imageTypeBlock' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
 				);
 			} );
@@ -322,14 +320,14 @@ describe( 'ImageTypeCommand', () => {
 
 				const imageUtils = editor.plugins.get( 'ImageUtils' );
 
-				sinon.stub( imageUtils, 'insertImage' ).returns( null );
+				vi.spyOn( imageUtils, 'insertImage' ).mockReturnValue( null );
 
-				expect( blockCommand.isEnabled ).to.be.true;
+				expect( blockCommand.isEnabled ).toBe( true );
 
 				const returned = blockCommand.execute();
 
-				expect( returned ).to.be.null;
-				expect( _getModelData( model ) ).to.equal(
+				expect( returned ).toBeNull();
+				expect( _getModelData( model ) ).toBe(
 					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
 				);
 			} );
@@ -337,30 +335,30 @@ describe( 'ImageTypeCommand', () => {
 			it( 'should set width and height attributes when converting inline image to block image', async () => {
 				_setModelData( model,
 					'<paragraph>' +
-						'[<imageInline src="/assets/sample.png"></imageInline>]' +
+						'[<imageInline src="/sample.png"></imageInline>]' +
 					'</paragraph>'
 				);
 
 				blockCommand.execute();
 				await timeout( 100 );
 
-				expect( _getModelData( model ) ).to.equal(
-					'[<imageBlock height="96" src="/assets/sample.png" width="96"></imageBlock>]'
+				expect( _getModelData( model ) ).toBe(
+					'[<imageBlock height="96" src="/sample.png" width="96"></imageBlock>]'
 				);
 			} );
 
 			it( 'should not set width and height when command `setImageSizes` parameter is false', async () => {
 				_setModelData( model,
 					'<paragraph>' +
-						'[<imageInline src="/assets/sample.png"></imageInline>]' +
+						'[<imageInline src="/sample.png"></imageInline>]' +
 					'</paragraph>'
 				);
 
 				blockCommand.execute( { setImageSizes: false } );
 				await timeout( 100 );
 
-				expect( _getModelData( model ) ).to.equal(
-					'[<imageBlock src="/assets/sample.png"></imageBlock>]'
+				expect( _getModelData( model ) ).toBe(
+					'[<imageBlock src="/sample.png"></imageBlock>]'
 				);
 			} );
 
@@ -377,7 +375,7 @@ describe( 'ImageTypeCommand', () => {
 
 					blockCommand.execute();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>' +
 						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
@@ -385,7 +383,7 @@ describe( 'ImageTypeCommand', () => {
 
 					const expectedRange = model.createRangeOn( root.getChild( 1 ) );
 
-					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).toBe( true );
 				} );
 
 				it( 'ending on the image while converting inline image to block image', () => {
@@ -403,7 +401,7 @@ describe( 'ImageTypeCommand', () => {
 
 					blockCommand.execute();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>' +
 						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
@@ -414,7 +412,7 @@ describe( 'ImageTypeCommand', () => {
 						model.createPositionFromPath( root, [ 2 ] )
 					);
 
-					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).toBe( true );
 				} );
 
 				it( 'starting on the image while converting inline image to block image', () => {
@@ -432,7 +430,7 @@ describe( 'ImageTypeCommand', () => {
 
 					blockCommand.execute();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>' +
 						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
@@ -443,7 +441,7 @@ describe( 'ImageTypeCommand', () => {
 						model.createPositionFromPath( root, [ 2, 2 ] )
 					);
 
-					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).toBe( true );
 				} );
 
 				it( 'overlapping the image while converting inline image to block image', () => {
@@ -461,7 +459,7 @@ describe( 'ImageTypeCommand', () => {
 
 					blockCommand.execute();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>' +
 						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
@@ -472,7 +470,7 @@ describe( 'ImageTypeCommand', () => {
 						model.createPositionFromPath( root, [ 2, 2 ] )
 					);
 
-					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).toBe( true );
 				} );
 			} );
 
@@ -491,13 +489,13 @@ describe( 'ImageTypeCommand', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foo</paragraph>' +
 					`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 					'<paragraph>bar</paragraph>'
 				);
 
-				expect( model.markers.get( 'foo' ).getRange().root.rootName ).to.equal( '$graveyard' );
+				expect( model.markers.get( 'foo' ).getRange().root.rootName ).toBe( '$graveyard' );
 			} );
 		} );
 
@@ -512,13 +510,13 @@ describe( 'ImageTypeCommand', () => {
 				const oldElement = model.document.getRoot().getChild( 0 );
 				const returned = inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
 				);
 
 				const newElement = model.document.getRoot().getChild( 0 ).getChild( 0 );
 
-				expect( returned ).to.deep.equal( { oldElement, newElement } );
+				expect( returned ).toEqual( { oldElement, newElement } );
 			} );
 
 			it( 'should convert block image to inline image', () => {
@@ -526,7 +524,7 @@ describe( 'ImageTypeCommand', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
 				);
 			} );
@@ -538,7 +536,7 @@ describe( 'ImageTypeCommand', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						`[<imageInline alt="alt text" src="${ imgSrc }"></imageInline>]` +
 					'</paragraph>'
@@ -552,7 +550,7 @@ describe( 'ImageTypeCommand', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						`[<imageInline src="${ imgSrc }" srcset="small.png 148w, big.png 1024w"></imageInline>]` +
 					'</paragraph>'
@@ -564,7 +562,7 @@ describe( 'ImageTypeCommand', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 					`[<imageInline src="${ imgSrc }"></imageInline>]` +
 					'</paragraph>'
@@ -589,34 +587,34 @@ describe( 'ImageTypeCommand', () => {
 
 				// The command refresh detects that `imageInline` has nowhere to land and disables itself,
 				// so `editor.execute` short-circuits without changing the model.
-				expect( inlineCommand.isEnabled ).to.be.false;
+				expect( inlineCommand.isEnabled ).toBe( false );
 
 				editor.execute( 'imageTypeInline' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`<block>[<imageBlock src="${ imgSrc }"></imageBlock>]</block>`
 				);
 			} );
 
 			it( 'should set width and height attributes when converting block image to inline image', async () => {
-				_setModelData( model, '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock src="/sample.png"></imageBlock>]' );
 
 				inlineCommand.execute();
 				await timeout( 100 );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]</paragraph>'
+				expect( _getModelData( model ) ).toBe(
+					'<paragraph>[<imageInline height="96" src="/sample.png" width="96"></imageInline>]</paragraph>'
 				);
 			} );
 
 			it( 'should not set width and height when command `setImageSizes` parameter is false', async () => {
-				_setModelData( model, '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock src="/sample.png"></imageBlock>]' );
 
 				inlineCommand.execute( { setImageSizes: false } );
 				await timeout( 100 );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>[<imageInline src="/assets/sample.png"></imageInline>]</paragraph>'
+				expect( _getModelData( model ) ).toBe(
+					'<paragraph>[<imageInline src="/sample.png"></imageInline>]</paragraph>'
 				);
 			} );
 
@@ -637,7 +635,7 @@ describe( 'ImageTypeCommand', () => {
 
 					inlineCommand.execute();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>' +
 						`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` +
 						'<paragraph>bar</paragraph>'
@@ -645,7 +643,7 @@ describe( 'ImageTypeCommand', () => {
 
 					const expectedRange = model.createRangeOn( root.getNodeByPath( [ 1, 0 ] ) );
 
-					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).toBe( true );
 				} );
 
 				it( 'ending on the image while converting block image to inline image', () => {
@@ -667,7 +665,7 @@ describe( 'ImageTypeCommand', () => {
 
 					inlineCommand.execute();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>' +
 						`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` +
 						'<paragraph>bar</paragraph>'
@@ -678,7 +676,7 @@ describe( 'ImageTypeCommand', () => {
 						model.createPositionFromPath( root, [ 1, 1 ] )
 					);
 
-					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).toBe( true );
 				} );
 
 				it( 'starting on the image while converting block image to inline image', () => {
@@ -700,7 +698,7 @@ describe( 'ImageTypeCommand', () => {
 
 					inlineCommand.execute();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>' +
 						`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` +
 						'<paragraph>bar</paragraph>'
@@ -711,7 +709,7 @@ describe( 'ImageTypeCommand', () => {
 						model.createPositionFromPath( root, [ 2, 2 ] )
 					);
 
-					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).toBe( true );
 				} );
 
 				it( 'overlapping the image while converting block image to inline image', () => {
@@ -733,7 +731,7 @@ describe( 'ImageTypeCommand', () => {
 
 					inlineCommand.execute();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>' +
 						`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` +
 						'<paragraph>bar</paragraph>'
@@ -744,7 +742,7 @@ describe( 'ImageTypeCommand', () => {
 						model.createPositionFromPath( root, [ 2, 2 ] )
 					);
 
-					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).toBe( true );
 				} );
 			} );
 
@@ -767,13 +765,13 @@ describe( 'ImageTypeCommand', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foo</paragraph>' +
 					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` +
 					'<paragraph>bar</paragraph>'
 				);
 
-				expect( model.markers.get( 'foo' ).getRange().root.rootName ).to.equal( '$graveyard' );
+				expect( model.markers.get( 'foo' ).getRange().root.rootName ).toBe( '$graveyard' );
 			} );
 		} );
 
@@ -785,13 +783,13 @@ describe( 'ImageTypeCommand', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
 				);
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`[<imageBlock src="${ imgSrc }"></imageBlock>]`
 				);
 
@@ -807,13 +805,13 @@ describe( 'ImageTypeCommand', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
 				);
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`[<imageBlock src="${ imgSrc }"></imageBlock>]`
 				);
 
@@ -824,7 +822,7 @@ describe( 'ImageTypeCommand', () => {
 		} );
 
 		describe( 'inheriting attributes', () => {
-			const imgSrc = '/assets/sample.png';
+			const imgSrc = '/sample.png';
 
 			beforeEach( () => {
 				const attributes = [ 'smart', 'pretty' ];
@@ -853,7 +851,7 @@ describe( 'ImageTypeCommand', () => {
 
 				blockCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal( `[<imageBlock pretty="true" smart="true" src="${ imgSrc }"></imageBlock>]` );
+				expect( _getModelData( model ) ).toBe( `[<imageBlock pretty="true" smart="true" src="${ imgSrc }"></imageBlock>]` );
 			} );
 
 			it( 'should copy a block image attributes to an inline image\'s parent block', () => {
@@ -861,7 +859,7 @@ describe( 'ImageTypeCommand', () => {
 
 				inlineCommand.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph pretty="true" smart="true">' +
 						`[<imageInline src="${ imgSrc }"></imageInline>]` +
 					'</paragraph>' );

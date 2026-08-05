@@ -96,7 +96,6 @@ describe( 'StylePanelView', () => {
 
 	afterEach( async () => {
 		panel.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {

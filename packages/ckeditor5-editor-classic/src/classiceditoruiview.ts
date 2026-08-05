@@ -12,8 +12,6 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
 import type { ViewRootElementDefinition } from '@ckeditor/ckeditor5-core';
 
-import '../theme/classiceditor.css';
-
 /**
  * Classic editor UI view. Uses an inline editable and a sticky toolbar, all
  * enclosed in a boxed UI view.

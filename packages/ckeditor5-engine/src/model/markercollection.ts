@@ -231,7 +231,7 @@ export class MarkerCollection extends MarkerCollectionBase implements Iterable<M
 			this._destroyMarker( marker );
 		}
 
-		this._markers = null as any;
+		this._markers.clear();
 
 		this.stopListening();
 	}

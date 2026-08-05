@@ -3,15 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { createEditabilityChecker } from '../../src/ckboximageedit/utils.js';
 import { ModelElement } from '@ckeditor/ckeditor5-engine';
 
 describe( 'image edit utils', () => {
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'createEditabilityChecker()', () => {
 		it( 'should return false for non-image elements', () => {
 			const checker = createEditabilityChecker( undefined );

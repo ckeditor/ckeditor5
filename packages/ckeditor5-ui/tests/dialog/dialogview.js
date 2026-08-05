@@ -14,10 +14,6 @@ describe( 'DialogView', () => {
 	let getDomRootElementStub, getViewportOffsetStub;
 	const locale = new Locale();
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		fakeDomRootElement = document.createElement( 'div' );
 

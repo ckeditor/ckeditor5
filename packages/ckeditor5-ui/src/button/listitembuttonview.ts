@@ -17,8 +17,6 @@ import { ButtonLabelView } from './buttonlabelview.js';
 import { IconView } from '../icon/iconview.js';
 import { View } from '../view.js';
 
-import '../../theme/components/button/listitembutton.css';
-
 /**
  * Button that is used as dropdown list item entry.
  */

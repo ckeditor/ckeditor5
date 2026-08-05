@@ -45,7 +45,6 @@ import { TableWidthCommand } from './commands/tablewidthcommand.js';
 import { TableHeightCommand } from './commands/tableheightcommand.js';
 import { TableAlignmentCommand } from './commands/tablealignmentcommand.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
-import { getViewTableFromWrapper } from '../utils/structure.js';
 
 /**
  * The table properties editing feature.
@@ -403,11 +402,26 @@ function upcastTableAlignedDiv( defaultValue: string ) {
 				return;
 			}
 
-			// Find a table element inside the div element.
-			const viewTable = getViewTableFromWrapper( data.viewItem );
+			// Ignore whitespace-only text nodes when checking the div's content.
+			const significantChildren = Array.from( data.viewItem.getChildren() ).filter( child => {
+				if ( child.is( '$text' ) || child.is( '$textProxy' ) ) {
+					return child.data.trim() !== '';
+				}
 
-			// Do not convert if table element is absent or was already converted.
-			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
+				return true;
+			} );
+
+			// Only convert if the table is the ONLY (significant) child of the div.
+			// Otherwise this isn't a plain "table wrapped in an aligning div" and should be left
+			// to other converters to handle the div and its content normally.
+			if ( significantChildren.length !== 1 || !significantChildren[ 0 ].is( 'element', 'table' ) ) {
+				return;
+			}
+
+			const [ viewTable ] = significantChildren;
+
+			// Do not convert if table element was already converted.
+			if ( !conversionApi.consumable.test( viewTable, { name: true } ) ) {
 				return;
 			}
 
@@ -443,7 +457,6 @@ function upcastTableAlignedDiv( defaultValue: string ) {
 				conversionApi.writer.setAttribute( 'tableAlignment', align, modelTable );
 			}
 
-			conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelTable, 'end' ) );
 			conversionApi.updateConversionResult( modelTable, data );
 		} );
 	};

@@ -9,5 +9,5 @@
 .ck-hidden {
 	/* Override selector specificity. Otherwise, all elements with some display
 	style defined will override this one, which is not a desired result. */
-	display: none !important;
+	display: none !important; /* eslint-disable-line css/no-important */
 }

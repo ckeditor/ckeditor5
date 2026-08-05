@@ -14,10 +14,6 @@ import { Input } from '../src/input.js';
 describe( 'InsertTextCommand', () => {
 	let editor, model, doc, buffer, inputCommand;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {

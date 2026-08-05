@@ -9,16 +9,12 @@ import { ModelText } from '../../src/model/text.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
 import { _setModelData } from '../../src/dev-utils/model.js';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { stringifyBlocks } from '../model/_utils/utils.js';
 
 describe( '#11585', () => {
 	let model, doc, root, liveRange;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		model = new Model();

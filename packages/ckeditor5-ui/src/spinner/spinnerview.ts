@@ -9,8 +9,6 @@
 
 import { View } from '../view.js';
 
-import '../../theme/components/spinner/spinner.css';
-
 /**
  * The spinner view class.
  */

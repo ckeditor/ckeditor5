@@ -10,8 +10,6 @@
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import { View } from '@ckeditor/ckeditor5-ui';
 
-import '../../theme/characterinfo.css';
-
 /**
  * The view displaying detailed information about a special character glyph, e.g. upon
  * hovering it with a mouse.

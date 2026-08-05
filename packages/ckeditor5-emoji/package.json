@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-emoji",
-  "version": "48.3.1",
+  "version": "48.4.0",
   "description": "Emoji feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -36,6 +36,7 @@
   },
   "sideEffects": [
     "*.css",
+    "src/index.ts",
     "dist/translations/*.umd.js"
   ],
   "dependencies": {
@@ -51,23 +52,23 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-code-block": "workspace:*",
-    "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-balloon": "workspace:*",
+    "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-list": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@vitest/browser-playwright": "^4.1.8",
-    "@vitest/coverage-v8": "^4.1.8",
-    "vitest": "^4.1.8"
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs",
-    "coverage": "pnpm run test:headless --coverage",
+    "coverage": "pnpm run test --coverage",
     "test": "vitest run",
-    "test:debug": "vitest",
-    "test:headless": "vitest run --browser.headless"
+    "test:debug": "vitest --browser.headless=false",
+    "test:browser": "vitest run --browser.headless=false"
   },
   "files": [
     "dist",

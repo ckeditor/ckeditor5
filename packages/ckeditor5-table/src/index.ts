@@ -32,10 +32,13 @@ export { TableClipboard } from './tableclipboard.js';
 export { TableMouse } from './tablemouse.js';
 export { TableKeyboard } from './tablekeyboard.js';
 export { TableSelection } from './tableselection.js';
+export { TableScroll } from './tablescroll.js';
+export { TableScrollEditing } from './tablescroll/tablescrollediting.js';
 export { TableUtils, type TableIndexesObject, type UpdateTableHeadingsOptions } from './tableutils.js';
 export { TableColumnResize } from './tablecolumnresize.js';
 export { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
 export { TableWidthsCommand, type TableWidthsCommandOptions } from './tablecolumnresize/tablewidthscommand.js';
+export { TableColumnWidthCommand } from './tablecolumnresize/commands/tablecolumnwidthcommand.js';
 
 export { InsertColumnCommand } from './commands/insertcolumncommand.js';
 export { InsertRowCommand } from './commands/insertrowcommand.js';
@@ -82,6 +85,7 @@ export type { ViewDocumentTableMouseMoveEvent, ViewDocumentTableMouseLeaveEvent 
 
 export type {
 	TableConfig,
+	TableScrollConfig,
 	TableAlignmentConfig,
 	TablePropertiesConfig,
 	TablePropertiesOptions,
@@ -213,4 +217,6 @@ export {
 	getTableWidgetAncestor as _getTableWidgetAncestor
 } from './utils/ui/widget.js';
 
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

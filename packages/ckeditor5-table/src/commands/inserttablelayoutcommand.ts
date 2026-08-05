@@ -9,15 +9,17 @@
 
 import { Command } from '@ckeditor/ckeditor5-core';
 
-import type {
+import {
 	ModelDocumentSelection,
-	ModelSchema,
-	ModelSelection,
-	ModelElement
+	type ModelSchema,
+	type ModelSelection,
+	type ModelElement
 } from '@ckeditor/ckeditor5-engine';
+import { _getCopyOnEnterAttributes } from '@ckeditor/ckeditor5-enter';
 
 import { type TableUtils } from '../tableutils.js';
 import { type TableWidthsCommand } from '../tablecolumnresize/tablewidthscommand.js';
+import { getEmptyTableCellBlocks } from '../utils/common.js';
 
 /**
  * The insert table layout command.
@@ -50,19 +52,29 @@ export class InsertTableLayoutCommand extends Command {
 	 *
 	 * @param options.rows The number of rows to create in the inserted table. Default value is 2.
 	 * @param options.columns The number of columns to create in the inserted table. Default value is 2.
+	 * @param options.inheritTextFormattingAttributes Whether every empty cell should inherit the `copyOnEnter` text
+	 * formatting attributes (e.g. bold, font color) that were uniformly active in the content right before
+	 * the table, so that whichever cell the user starts typing in first continues that formatting. Defaults
+	 * to `true`.
 	 * @fires execute
 	 */
 	public override execute(
 		options: {
 			rows?: number;
 			columns?: number;
+			inheritTextFormattingAttributes?: boolean;
 		} = {}
 	): void {
 		const editor = this.editor;
 		const model = editor.model;
+		const selection = model.document.selection;
 		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
 
 		model.change( writer => {
+			const selectionAttributesToCopy = Array.from(
+				_getCopyOnEnterAttributes( model.schema, selection.getAttributes() )
+			);
+
 			const normalizedOptions = { rows: options.rows || 2, columns: options.columns || 2 };
 			const table = tableUtils.createTable( writer, normalizedOptions );
 
@@ -78,6 +90,14 @@ export class InsertTableLayoutCommand extends Command {
 			tableWidthsCommand.execute( { tableWidth: '100%', columnWidths, table } );
 
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
+
+			if ( options.inheritTextFormattingAttributes !== false && selectionAttributesToCopy.length ) {
+				for ( const cellBlock of getEmptyTableCellBlocks( table ) ) {
+					for ( const [ key, value ] of selectionAttributesToCopy ) {
+						writer.setAttribute( ModelDocumentSelection._getStoreAttributeKey( key ), value, cellBlock );
+					}
+				}
+			}
 		} );
 	}
 }

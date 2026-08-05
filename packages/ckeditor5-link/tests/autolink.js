@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -41,10 +41,6 @@ describe( 'AutoLink', () => {
 
 	describe( 'autolink on paste behavior', () => {
 		let model, viewDocument;
-
-		afterEach( () => {
-			vi.restoreAllMocks();
-		} );
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { vi } from 'vitest';
+import { expect, vi } from 'vitest';
 import { Model, ModelDocumentFragment,
 	_getModelData,
 	_parseModel,

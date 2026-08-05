@@ -12,8 +12,6 @@ import { ButtonView } from './buttonview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/button/switchbutton.css';
-
 /**
  * The switch button view class.
  *

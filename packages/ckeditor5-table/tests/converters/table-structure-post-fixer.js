@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -34,7 +35,7 @@ describe( 'Table structure post-fixer', () => {
 			[ 'baz' ]
 		], { headingRows: 1, footerRows: 1 } ) );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 			[ 'foo' ],
 			[ 'bar' ],
 			[ 'baz' ]
@@ -48,7 +49,7 @@ describe( 'Table structure post-fixer', () => {
 			[ 'baz' ]
 		], { headingRows: 1, footerRows: 2 } ) );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 			[ 'foo' ],
 			[ 'bar' ],
 			[ 'baz' ]
@@ -67,7 +68,7 @@ describe( 'Table structure post-fixer', () => {
 			writer.setAttribute( 'footerRows', 2, table );
 		} );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 			[ 'foo' ],
 			[ 'bar' ],
 			[ 'baz' ]
@@ -87,7 +88,7 @@ describe( 'Table structure post-fixer', () => {
 		} );
 
 		// footerRows is removed because it is 0 and 0 is the default value.
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 			[ 'foo' ],
 			[ 'bar' ],
 			[ 'baz' ]
@@ -106,7 +107,7 @@ describe( 'Table structure post-fixer', () => {
 			writer.setAttribute( 'headingRows', 3, table );
 		} );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 			[ 'foo' ],
 			[ 'bar' ],
 			[ 'baz' ]
@@ -125,7 +126,7 @@ describe( 'Table structure post-fixer', () => {
 			writer.remove( table.getChild( 1 ) ); // Remove the middle row
 		} );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 			[ 'foo' ],
 			[ 'baz' ]
 		], { headingRows: 1, footerRows: 1 } ) );

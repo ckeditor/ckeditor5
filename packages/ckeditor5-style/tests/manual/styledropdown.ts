@@ -1,0 +1,431 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Code, Strikethrough, Subscript, Superscript, Underline, Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
+import { ImageResize, ImageUpload, Image, ImageCaption, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { IndentBlock, Indent } from '@ckeditor/ckeditor5-indent';
+import { LinkImage, Link } from '@ckeditor/ckeditor5-link';
+import { Mention } from '@ckeditor/ckeditor5-mention';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { TableCellProperties, TableProperties, TableCaption, Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing';
+import { TextPartLanguage } from '@ckeditor/ckeditor5-language';
+import { WordCount } from '@ckeditor/ckeditor5-word-count';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { List, ListProperties } from '@ckeditor/ckeditor5-list';
+
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import { Style } from '../../src/style.js';
+
+declare global {
+	interface Window { editor: any }
+}
+declare global {
+	interface Window { editorInline: any }
+}
+
+const config = {
+	plugins: [
+		Alignment,
+		Essentials,
+		Autoformat,
+		BlockQuote,
+		Bold,
+		Heading,
+		Image,
+		ImageCaption,
+		ImageStyle,
+		ImageToolbar,
+		Indent,
+		Italic,
+		Link,
+		MediaEmbed,
+		Paragraph,
+		Table,
+		TableToolbar,
+		CloudServices,
+		Code,
+		CodeBlock,
+		EasyImage,
+		FontBackgroundColor,
+		FontColor,
+		FontFamily,
+		FontSize,
+		GeneralHtmlSupport,
+		Highlight,
+		HorizontalLine,
+		HtmlEmbed,
+		ImageResize,
+		ImageUpload,
+		IndentBlock,
+		LinkImage,
+		List,
+		ListProperties,
+		Mention,
+		PageBreak,
+		PasteFromOffice,
+		RemoveFormat,
+		SourceEditing,
+		Strikethrough,
+		Subscript,
+		Superscript,
+		TableCaption,
+		TableCellProperties,
+		TableProperties,
+		TextPartLanguage,
+		TextTransformation,
+		Underline,
+		WordCount,
+
+		Style
+	],
+	cloudServices: CS_CONFIG,
+	toolbar: {
+		items: [
+			'sourceEditing',
+			'|',
+			'style',
+			'|',
+			'heading',
+			'|',
+			'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',
+			'|',
+			'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+			'-',
+			'bulletedList', 'numberedList',
+			'|',
+			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
+			'|',
+			'htmlEmbed',
+			'|',
+			'alignment', 'outdent', 'indent',
+			'|',
+			'pageBreak', 'horizontalLine',
+			'|',
+			'textPartLanguage'
+		],
+		shouldNotGroupWhenFull: true
+	},
+	table: {
+		contentToolbar: [
+			'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+		]
+	},
+	image: {
+		styles: [
+			'alignCenter',
+			'alignLeft',
+			'alignRight'
+		] as any,
+		resizeOptions: [
+			{
+				name: 'resizeImage:original',
+				label: 'Original size',
+				value: null
+			},
+			{
+				name: 'resizeImage:50',
+				label: '50%',
+				value: '50'
+			},
+			{
+				name: 'resizeImage:75',
+				label: '75%',
+				value: '75'
+			}
+		],
+		toolbar: [
+			'imageTextAlternative', 'toggleImageCaption', '|',
+			'imageStyle:inline', 'imageStyle:breakText', 'imageStyle:wrapText', '|',
+			'resizeImage'
+		]
+	},
+	root: {
+		placeholder: 'Type the content here!'
+	},
+	mention: {
+		feeds: [
+			{
+				marker: '@',
+				feed: [
+					'@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
+					'@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
+					'@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
+					'@sugar', '@sweet', '@topping', '@wafer'
+				],
+				minimumCharacters: 1
+			}
+		]
+	},
+	link: {
+		decorators: {
+			isExternal: {
+				mode: 'manual' as const,
+				label: 'Open in a new tab',
+				attributes: {
+					target: '_blank',
+					rel: 'noopener noreferrer'
+				}
+			},
+			isDownloadable: {
+				mode: 'manual' as const,
+				label: 'Downloadable',
+				attributes: {
+					download: 'download'
+				}
+			},
+			isGallery: {
+				mode: 'manual' as const,
+				label: 'Gallery link',
+				classes: 'gallery'
+			}
+		}
+	},
+	htmlEmbed: {
+		showPreviews: true,
+		sanitizeHtml: ( ( html: string ) => ( { html, hasChange: false } ) ) as any
+	},
+	list: {
+		properties: {
+			styles: true,
+			startIndex: true,
+			reversed: true
+		}
+	}
+};
+
+ClassicEditor
+	.create( {
+		...config,
+		attachTo: document.querySelector( '#editor-full' ) as HTMLElement,
+		style: {
+			definitions: [
+				{
+					name: 'Callout',
+					element: 'div',
+					classes: [ 'callout' ]
+				},
+				{
+					name: 'Link',
+					element: 'a',
+					classes: [ 'styled-link' ]
+				},
+				{
+					name: 'Fancy list',
+					element: 'ol',
+					classes: [ 'fancy-list' ]
+				},
+				{
+					name: 'Italic list',
+					element: 'ul',
+					classes: [ 'italic-list' ]
+				},
+				{
+					name: 'Background list item',
+					element: 'li',
+					classes: [ 'background-list-item' ]
+				},
+				{
+					name: 'Figure outline',
+					element: 'figure',
+					classes: [ 'figure-style' ]
+				},
+				{
+					name: 'Red heading',
+					element: 'h2',
+					classes: [ 'red-heading' ]
+				},
+				{
+					name: 'Large heading',
+					element: 'h2',
+					classes: [ 'large-heading' ]
+				},
+				{
+					name: 'Large paragraph',
+					element: 'p',
+					classes: [ 'large-heading' ]
+				},
+				{
+					name: 'Rounded container',
+					element: 'p',
+					classes: [ 'rounded-container' ]
+				},
+				{
+					name: 'Large preview',
+					element: 'p',
+					classes: [ 'large-preview' ]
+				},
+				{
+					name: 'Bold table',
+					element: 'table',
+					classes: [ 'bold-table' ]
+				},
+				{
+					name: 'Fancy table',
+					element: 'table',
+					classes: [ 'fancy-table' ]
+				},
+				{
+					name: 'Table row',
+					element: 'tr',
+					classes: [ 'colorful-row' ]
+				},
+				{
+					name: 'Color-full cell',
+					element: 'td',
+					classes: [ 'colorful-cell' ]
+				},
+				{
+					name: 'Color-full heading cell',
+					element: 'th',
+					classes: [ 'colorful-cell' ]
+				},
+				{
+					name: 'Table head',
+					element: 'thead',
+					classes: [ 'table-head' ]
+				},
+				{
+					name: 'Table body',
+					element: 'tbody',
+					classes: [ 'table-body' ]
+				},
+				{
+					name: 'Caption',
+					element: 'caption',
+					classes: [ 'fancy-caption' ]
+				},
+				{
+					name: 'Vibrant code',
+					element: 'pre',
+					classes: [ 'vibrant-code' ]
+				},
+				{
+					name: 'Side quote',
+					element: 'blockquote',
+					classes: [ 'side-quote' ]
+				},
+				{
+					name: 'Code (dark)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-dark' ]
+				},
+				{
+					name: 'Code (bright)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-bright' ]
+				},
+
+				{
+					name: 'Marker',
+					element: 'span',
+					classes: [ 'marker' ]
+				},
+				{
+					name: 'Typewriter',
+					element: 'span',
+					classes: [ 'typewriter' ]
+				},
+				{
+					name: 'Deleted text',
+					element: 'span',
+					classes: [ 'deleted' ]
+				},
+				{
+					name: 'Cited work',
+					element: 'span',
+					classes: [ 'cited', 'another-class' ]
+				},
+				{
+					name: 'Small text',
+					element: 'span',
+					classes: [ 'small' ]
+				},
+				{
+					name: 'Very long name of the style',
+					element: 'span',
+					classes: [ 'foo' ]
+				},
+
+				{
+					name: 'span.Foo',
+					element: 'span',
+					classes: [ 'Foo' ]
+				},
+				{
+					name: 'span.Bar',
+					element: 'span',
+					classes: [ 'Bar' ]
+				},
+				{
+					name: 'strong.Baz',
+					element: 'strong',
+					classes: [ 'Baz' ]
+				},
+				{
+					name: 'code.Qux',
+					element: 'code',
+					classes: [ 'Qux' ]
+				}
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( {
+		...config,
+		attachTo: document.querySelector( '#editor-just-inline' ) as HTMLElement,
+		style: {
+			definitions: [
+				{
+					name: 'Marker',
+					element: 'span',
+					classes: [ 'marker' ]
+				},
+				{
+					name: 'Typewriter',
+					element: 'span',
+					classes: [ 'typewriter' ]
+				},
+				{
+					name: 'Deleted text',
+					element: 'span',
+					classes: [ 'deleted' ]
+				}
+			]
+		}
+	} )
+	.then( editor => {
+		window.editorInline = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

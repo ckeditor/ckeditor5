@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, beforeEach } from 'vitest';
+
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter';

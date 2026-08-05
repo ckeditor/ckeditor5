@@ -31,7 +31,6 @@ describe( 'ItalicUI', () => {
 
 	afterEach( () => {
 		editorElement.remove();
-		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );

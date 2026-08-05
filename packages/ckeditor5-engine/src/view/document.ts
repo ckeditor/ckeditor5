@@ -16,7 +16,7 @@ import type { StylesProcessor } from './stylesmap.js';
 import { type ViewRootEditableElement } from './rooteditableelement.js';
 import { type ViewDowncastWriter } from './downcastwriter.js';
 
-// @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // import { logDocument } from '../dev-utils/utils.js';
 
 const ViewDocumentBase: BubblingEmitterMixinConstructor<ObservableMixinConstructor> =
 	/* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__ */ ObservableMixin() );

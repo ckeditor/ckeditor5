@@ -2622,7 +2622,7 @@ function createChangeReducerCallback( model: NormalizedModelElementConfig ) {
 				return true;
 			}
 		} else {
-			/* istanbul ignore else: This is always true because otherwise it would not register a reducer callback. -- @preserve */
+			/* v8 ignore else: This is always true because otherwise it would not register a reducer callback. -- @preserve */
 			if ( model.children ) {
 				return true;
 			}
@@ -2748,7 +2748,7 @@ function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Ar
 	return ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
-		let children: Array<ModelNode> | null = null;
+		let children: Array<ModelNode> | null;
 
 		if ( modeOrFilter === 'children' ) {
 			children = Array.from( element.getChildren() );

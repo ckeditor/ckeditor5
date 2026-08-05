@@ -46,8 +46,6 @@ import {
 	viewToModelPosition
 } from './legacyconverters.js';
 
-import '../../theme/list.css';
-
 /**
  * The engine of the list feature. It handles creating, editing and removing lists and list items.
  *

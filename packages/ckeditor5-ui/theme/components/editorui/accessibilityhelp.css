@@ -17,6 +17,12 @@
 	max-width: var(--ck-accessibility-help-dialog-max-width);
 	max-height: var(--ck-accessibility-help-dialog-max-height);
 	overflow: auto;
+	/*
+	 * `-webkit-user-select` is included to match the ancestor `.ck-dialog-overlay`'s own
+	 * `-webkit-user-select: none` pairing - omitting it here would silently keep selection disabled
+	 * on Safari despite the override below.
+	 */
+	-webkit-user-select: text;
 	user-select: text;
 
 	border: 1px solid transparent;

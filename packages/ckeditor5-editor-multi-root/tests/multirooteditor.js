@@ -30,10 +30,6 @@ describe( 'MultiRootEditor', () => {
 		vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 	} );
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'constructor()', () => {
 		beforeEach( () => {
 			editor = new MultiRootEditor( { foo: '', bar: '' } );

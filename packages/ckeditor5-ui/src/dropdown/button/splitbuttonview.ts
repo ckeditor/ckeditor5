@@ -20,8 +20,6 @@ import { type Button } from '../../button/button.js';
 import { type DropdownButton } from './dropdownbutton.js';
 import type { FocusableView } from '../../focuscycler.js';
 
-import '../../../theme/components/dropdown/splitbutton.css';
-
 /**
  * The split button view class.
  *

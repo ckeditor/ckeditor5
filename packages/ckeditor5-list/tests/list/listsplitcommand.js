@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { ListSplitCommand } from '../../src/list/listsplitcommand.js';
 import { stubUid } from './_utils/uid.js';
@@ -15,10 +15,6 @@ import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine'
 describe( 'ListSplitCommand', () => {
 	let editor, command, model, doc, root;
 	let changedBlocks;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( () => {
 		editor = new Editor();
@@ -139,7 +135,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'* [] {id:a00}'
 				] ) );
@@ -158,7 +154,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'* [] {id:a00}'
@@ -179,7 +175,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'* [] {id:a00}',
@@ -201,7 +197,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -224,7 +220,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -251,7 +247,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -362,7 +358,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* []',
 					'* a {id:a00}'
 				] ) );
@@ -381,7 +377,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  []',
 					'* c {id:a00}'
@@ -402,7 +398,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  []',
 					'* c {id:a00}',
@@ -424,7 +420,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * a[]',
@@ -447,7 +443,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -473,7 +469,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).toEqualMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',

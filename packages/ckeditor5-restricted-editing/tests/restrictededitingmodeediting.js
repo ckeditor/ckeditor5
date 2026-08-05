@@ -27,10 +27,6 @@ import { Command } from '@ckeditor/ckeditor5-core';
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	describe( 'plugin', () => {
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( { plugins: [ RestrictedEditingModeEditing, ClipboardPipeline, SelectAllEditing ] } );

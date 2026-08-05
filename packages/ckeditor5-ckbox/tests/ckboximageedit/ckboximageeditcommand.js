@@ -28,7 +28,8 @@ vi.mock( 'es-toolkit/compat', async importOriginal => {
 		isEqual: isEqualFn
 	};
 } );
-import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
+import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
+import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakexhrserver.js';
 import { CKBoxEditing } from '../../src/ckboxediting.js';
 import { CKBoxImageEditEditing } from '../../src/ckboximageedit/ckboximageeditediting.js';
 
@@ -55,6 +56,7 @@ describe( 'CKBoxImageEditCommand', () => {
 		// HTTP requests replace `window.XMLHttpRequest` with a fake server, so they are not affected.
 		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
 		vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).mockResolvedValue();
+		mockCreateToken( 'ckbox-token' );
 
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );
@@ -81,10 +83,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				serviceOrigin: CKBOX_API_URL,
 				tokenUrl: 'foo',
 				allowExternalImagesEditing: () => true
-			},
-			substitutePlugins: [
-				CloudServicesCoreMock
-			]
+			}
 		} );
 
 		command = editor.commands.get( 'ckboxImageEdit' );
@@ -137,7 +136,6 @@ describe( 'CKBoxImageEditCommand', () => {
 
 		await editor.destroy();
 
-		vi.restoreAllMocks();
 		// Restore the real isEqual implementation (mock is preserved by `vi.mock`).
 		vi.mocked( isEqualMock ).mockImplementation( isEqualMock.__originalIsEqual );
 		vi.mocked( isEqualMock ).mockClear();
@@ -155,7 +153,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 	describe( 'execute', () => {
 		it( 'should open CKBox image editor', async () => {
-			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 			command.execute();
 
 			await tick();
@@ -168,7 +166,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			let mountImageEditor;
 
 			beforeEach( () => {
-				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 
 				mountImageEditor = window.CKBox.mountImageEditor;
 			} );
@@ -225,7 +223,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {
-				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 				command.execute();
 
 				const wrapper = command._wrapper;
@@ -235,7 +233,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should create and mount a wrapper only once', () => {
-				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 				command.execute();
 
 				const wrapper1 = command._wrapper;
@@ -269,7 +267,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should open the CKBox Image Editor dialog instance only once', async () => {
-				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 
 				command.execute();
 				command.execute();
@@ -284,7 +282,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -389,7 +387,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -415,7 +413,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -439,7 +437,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -467,7 +465,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				vi.useFakeTimers();
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -498,7 +496,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				_setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/sample.png"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -534,7 +532,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				_setModelData( model,
 					`[<imageBlock alt="alt text" height="50" ckboxImageId="${ ckboxImageId }"\
-					src="/assets/sample.png" width="50"></imageBlock>]`
+					src="/sample.png" width="50"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -545,7 +543,8 @@ describe( 'CKBoxImageEditCommand', () => {
 					ckboxImageId,
 					controller: new AbortController()
 				} );
-				fakeXHRServer = createFakeXHRServer();
+				// Defer the responses so the code under test can finish attaching its listeners after `send()`.
+				fakeXHRServer = createFakeXHRServer( { respondDelay: 10 } );
 			} );
 
 			afterEach( () => {
@@ -890,7 +889,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				} );
 
 				_setModelData( model, '[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/sample.png" width="50">' +
 							'<caption>' +
 								'caption' +
 							'</caption>' +
@@ -918,7 +917,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should not replace image with saved one before it is processed', () => {
 				const modelData =
 					'[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/sample.png" ' +
 						'tempServerAssetId="image-id1" width="50">' +
 					'</imageBlock>]';
 
@@ -931,7 +930,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should replace inline image with saved one after it is processed', () => {
 				_setModelData( model, '<paragraph>[<imageInline ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/sample.png" width="50">' +
 					'</imageInline>]</paragraph>' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -952,7 +951,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should replace image with saved one after it is processed', () => {
 				_setModelData( model, '[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/sample.png" width="50">' +
 					'</imageBlock>]' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -973,7 +972,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should not be alt attribute if there is no one in the original image', () => {
 				_setModelData( model, '[<imageBlock ' +
-						'ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'ckboxImageId="example-id" height="50" src="/sample.png" width="50">' +
 					'</imageBlock>]' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -995,7 +994,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const placeholder = blurHashToDataUrl( dataWithBlurHashMock.data.metadata.blurHash );
 
 				_setModelData( model, '[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/sample.png" width="50">' +
 					'</imageBlock>]' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -1019,7 +1018,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				'while waiting for the processed image', async () => {
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual(
 					'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-ckbox-resource-id="example-id">' +
-						'<img alt="alt text" height="50" loading="lazy" src="/assets/sample.png" style="aspect-ratio:50/50" width="50">' +
+						'<img alt="alt text" height="50" loading="lazy" src="/sample.png" style="aspect-ratio:50/50" width="50">' +
 						'</img>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</figure>'
@@ -1030,7 +1029,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual(
 					'<figure class="ck-widget ck-widget_selected image image-processing" ' +
 						'contenteditable="false" data-ckbox-resource-id="example-id">' +
-						'<img alt="alt text" height="100" loading="lazy" src="/assets/sample.png" ' +
+						'<img alt="alt text" height="100" loading="lazy" src="/sample.png" ' +
 							'style="height:100px;width:100px" width="100">' +
 						'</img>' +
 						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
@@ -1050,137 +1049,4 @@ function createToken( tokenClaims ) {
 		// Signature.
 		'signature'
 	].join( '.' );
-}
-
-// Minimal fake XHR server used in this file:
-// - `respondWith( method, url, [ status, headers, body ] )` — register a deferred response.
-// - `respondWith( method, url, xhr => { ... } )` — register a callback response.
-//   The callback receives the request and may call `xhr.error()`.
-// - `requests` — array of issued requests (tracked from `open()`).
-// - `restore()` — revert the `XMLHttpRequest` global.
-//
-// Responses fire on the next macrotask (via `setTimeout( 0 )`) so the requesting
-// code can finish attaching its listeners first. The latest matching `respondWith`
-// entry wins, so callers can override earlier ones mid-test.
-function createFakeXHRServer() {
-	const responses = [];
-	const requests = [];
-	const OriginalXMLHttpRequest = window.XMLHttpRequest;
-
-	class FakeXMLHttpRequest {
-		constructor() {
-			this.listeners = new Map();
-			this.requestHeaders = {};
-			this.upload = {
-				addEventListener: () => {},
-				removeEventListener: () => {}
-			};
-			this.status = 0;
-			this.response = null;
-			this.responseText = '';
-			this.responseType = '';
-			this.aborted = false;
-			this._sent = false;
-		}
-
-		open( method, url ) {
-			this.method = method;
-			this.url = url;
-
-			if ( !requests.includes( this ) ) {
-				requests.push( this );
-			}
-		}
-
-		setRequestHeader( name, value ) {
-			this.requestHeaders[ name ] = value;
-		}
-
-		addEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			callbacks.push( callback );
-			this.listeners.set( event, callbacks );
-		}
-
-		removeEventListener( event, callback ) {
-			const callbacks = this.listeners.get( event ) || [];
-			const index = callbacks.indexOf( callback );
-
-			if ( index !== -1 ) {
-				callbacks.splice( index, 1 );
-			}
-		}
-
-		abort() {
-			this.aborted = true;
-			this._dispatchEvent( 'abort' );
-		}
-
-		send() {
-			this._sent = true;
-			this._dispatchEvent( 'loadstart' );
-
-			// Defer the response so the requesting code can finish attaching its listeners first.
-			window.setTimeout( () => {
-				if ( this.aborted ) {
-					return;
-				}
-
-				// Find the latest matching response (so callers can override earlier ones).
-				let match;
-				for ( let i = responses.length - 1; i >= 0; i-- ) {
-					const entry = responses[ i ];
-					if ( entry.method === this.method && entry.url === this.url ) {
-						match = entry;
-						break;
-					}
-				}
-
-				if ( !match ) {
-					this.status = 404;
-					this._dispatchEvent( 'load' );
-					this._dispatchEvent( 'loadend' );
-					return;
-				}
-
-				if ( typeof match.response === 'function' ) {
-					match.response( this );
-					return;
-				}
-
-				const [ status, headers, body ] = match.response;
-
-				this.status = status;
-				this.responseHeaders = headers;
-				this.responseText = body;
-				this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
-
-				this._dispatchEvent( 'load' );
-				this._dispatchEvent( 'loadend' );
-			}, 10 );
-		}
-
-		error() {
-			this._dispatchEvent( 'error' );
-			this._dispatchEvent( 'loadend' );
-		}
-
-		_dispatchEvent( event, data ) {
-			for ( const callback of this.listeners.get( event ) || [] ) {
-				callback( data );
-			}
-		}
-	}
-
-	window.XMLHttpRequest = FakeXMLHttpRequest;
-
-	return {
-		requests,
-		respondWith( method, url, response ) {
-			responses.push( { method, url, response } );
-		},
-		restore() {
-			window.XMLHttpRequest = OriginalXMLHttpRequest;
-		}
-	};
 }

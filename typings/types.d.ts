@@ -8,6 +8,17 @@ declare module '*.svg' {
 	export default content;
 }
 
+declare module '*?raw' {
+	const content: string;
+	export default content;
+}
+
+declare module '@ckeditor/ckeditor5-inspector';
+
+declare module '@wiris/mathtype-ckeditor5/dist/index.js';
+
+declare module 'sanitize-html';
+
 declare module '*.css' {
 	const content: string;
 	export default content;

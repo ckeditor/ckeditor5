@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { ListEditing } from '../../../src/list/listediting.js';
 
@@ -29,10 +29,6 @@ describe( 'ListEditing (multiBlock=false) integrations: backspace & delete', () 
 	let splitAfterCommand, outdentCommand,
 		commandSpies,
 		splitAfterCommandExecuteSpy, outdentCommandExecuteSpy;
-
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -2690,7 +2686,7 @@ describe( 'ListEditing (multiBlock=false) integrations: backspace & delete', () 
 
 		view.document.fire( eventInfo, domEventData );
 
-		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
+		expect( _getModelData( model ) ).toEqualMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
 			expect( domEventData.domEvent.preventDefault.mock.calls.length > 0 ).to.equal(

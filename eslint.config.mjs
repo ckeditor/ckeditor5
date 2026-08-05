@@ -124,6 +124,9 @@ export default defineConfig( [
 		files: [ '**/*.css' ],
 
 		rules: {
+			// TODO: remove this entry once the upstream config enforces this.
+			'css/no-important': 'error',
+
 			// TODO (RTL): off pending a migration of physical properties/values to logical. Step 1
 			// (required first): fix the ~10 logical-*value* cases in source - text-align/float/resize
 			// `right`/`left`/`vertical` - which have no allow option, so they block enabling. Then, as a
@@ -164,53 +167,51 @@ export default defineConfig( [
 					'nesting',
 					// https://developer.mozilla.org/en-US/docs/Web/CSS/:has
 					// Baseline 2023, all modern browsers
-					'has',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/::selection
-					'selection',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/::marker
-					'marker',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/:dir
-					'dir'
+					'has'
 				],
 
 				allowProperties: [
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/user-select
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/user-select
+					// Not Baseline because Safari has never shipped an unprefixed version - every usage in
+					// this codebase already pairs it with `-webkit-user-select`, so this is a syntax
+					// limitation, not a cross-browser behavior gap.
 					'user-select',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/resize
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/resize
+					// Not Baseline solely because Firefox for Android and Safari on iOS recognize it but apply
+					// no effect (mobile browsers show no resize handle regardless of this property) - a no-op
+					// gap on the browsers where it doesn't apply, not a real cross-browser risk.
 					'resize',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap
+					// Baseline "newly available" - already supported across major browsers since March
+					// 2024 and on track to reach "widely available" around September 2026.
 					'text-wrap',
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/transition-behavior
 					'transition-behavior',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/mask
-					'mask',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/zoom (legacy non-standard)
-					'zoom',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior
+					// https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior-y
+					// Not Baseline solely because of a partial-implementation caveat noting no effect on
+					// non-scrollable containers - uniform across browsers and irrelevant to every usage here,
+					// which is always on a genuinely scrollable element. Core behavior (preventing scroll
+					// chaining) has been supported by Chrome, Firefox, Safari, and Edge since 2017-2022.
 					'overscroll-behavior',
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior-y
 					'overscroll-behavior-y'
 				],
 
 				allowAtRules: [
 					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/@starting-style
 					'starting-style'
-				],
-
-				allowFunctions: [
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/anchor
-					'anchor'
-				],
-
-				allowPropertyValues: {
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/break-after
-					'break-after': [ 'column' ],
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/break-before
-					'break-before': [ 'avoid' ],
-					// TODO: fix https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration
-					'text-decoration': [ 'currentColor' ]
-				}
+				]
 			} ]
+		}
+	},
+	{
+		// Less strict checks for non-production code.
+		files: [ '**/manual/**/*.css' ],
+
+		rules: {
+			'css/no-important': 'off',
+			'css/prefer-logical-properties': 'off',
+			'css/use-baseline': 'off'
 		}
 	},
 	{
@@ -224,6 +225,7 @@ export default defineConfig( [
 			'ckeditor5-rules/validate-module-tag': 'error',
 			'ckeditor5-rules/no-default-export': 'error',
 			'ckeditor5-rules/allow-svg-imports-only-in-icons-package': 'error',
+			'ckeditor5-rules/allow-css-imports-only-in-main-package-entry-point': 'error',
 			'ckeditor5-rules/no-literal-dollar-root': [ 'error', {
 				allowedPackages: [ 'ckeditor5-engine', 'ckeditor5-core' ],
 				allowedCalls: [ 'is' ]

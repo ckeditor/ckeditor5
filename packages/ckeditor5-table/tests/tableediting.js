@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -298,11 +299,11 @@ describe( 'TableEditing', () => {
 			} );
 
 			it( 'should convert table with image', () => {
-				editor.setData( '<table><tbody><tr><td><img src="/assets/sample.png"></td></tr></tbody></table>' );
+				editor.setData( '<table><tbody><tr><td><img src="/sample.png"></td></tr></tbody></table>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
-						'<table><tableRow><tableCell><imageBlock src="/assets/sample.png"></imageBlock></tableCell></tableRow></table>'
+						'<table><tableRow><tableCell><imageBlock src="/sample.png"></imageBlock></tableCell></tableRow></table>'
 					);
 			} );
 
@@ -354,8 +355,8 @@ describe( 'TableEditing', () => {
 
 		beforeEach( () => {
 			evtDataStub = {
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy(),
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn(),
 				isSoft: false
 			};
 
@@ -366,7 +367,7 @@ describe( 'TableEditing', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					sinon.stub( editor, 'execute' );
+					vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 					viewDocument = editor.editing.view.document;
 					model = editor.model;
@@ -378,8 +379,8 @@ describe( 'TableEditing', () => {
 
 			viewDocument.fire( 'enter', evtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
-			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]foo</paragraph>' );
+			expect( editor.execute ).not.toHaveBeenCalled();
+			expect( _getModelData( model ) ).toEqualMarkup( '<paragraph>[]foo</paragraph>' );
 		} );
 
 		it( 'should do nothing if table cell has already a block content', () => {
@@ -389,8 +390,8 @@ describe( 'TableEditing', () => {
 
 			viewDocument.fire( 'enter', evtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( editor.execute ).not.toHaveBeenCalled();
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '<paragraph>[]11</paragraph>' ]
 			] ) );
 		} );
@@ -402,7 +403,7 @@ describe( 'TableEditing', () => {
 
 			viewDocument.fire( 'enter', evtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			expect( editor.execute ).not.toHaveBeenCalled();
 			_setModelData( model, modelTable( [
 				[ '<paragraph>[1</paragraph><paragraph>1]</paragraph>' ]
 			] ) );
@@ -416,8 +417,8 @@ describe( 'TableEditing', () => {
 			evtDataStub.isSoft = true;
 			viewDocument.fire( 'enter', evtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
-			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( editor.execute ).not.toHaveBeenCalled();
+			expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
 				[ '[]11' ]
 			] ) );
 		} );

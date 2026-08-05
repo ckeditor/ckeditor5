@@ -10,8 +10,6 @@
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import { FileDialogListItemButtonView } from '../button/filedialogbuttonview.js';
 
-import '../../theme/components/menubar/menubarmenulistitembutton.css';
-
 /**
  * A menu bar list file dialog button view. Buttons like this one execute user actions.
  *

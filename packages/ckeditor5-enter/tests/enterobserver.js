@@ -29,7 +29,6 @@ describe( 'EnterObserver', () => {
 
 	afterEach( () => {
 		view.destroy();
-		vi.restoreAllMocks();
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-enter/issues/10.

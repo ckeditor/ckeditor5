@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Batch } from '../../src/model/batch.js';
 import { Operation } from '../../src/model/operation/operation.js';
 import { Model } from '../../src/model/model.js';
@@ -42,10 +42,6 @@ describe( 'Batch', () => {
 
 			beforeEach( () => {
 				stub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
-			} );
-
-			afterEach( () => {
-				vi.restoreAllMocks();
 			} );
 
 			it( 'when set to "default" should set default properties and log warning on console', () => {

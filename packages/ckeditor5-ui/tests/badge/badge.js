@@ -47,10 +47,6 @@ class EvaluationBadgeView extends View {
 describe( 'Badge', () => {
 	let editor, element, badge;
 
-	afterEach( () => {
-		vi.restoreAllMocks();
-	} );
-
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
