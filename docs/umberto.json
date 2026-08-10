@@ -219,7 +219,8 @@
 		"features/video-upload.html": "features/media-embed/media-embed.html",
 		"features/video.html": "features/media-embed/media-embed.html",
 		"framework/contributing/git-commit-message-convention.html": "framework/contributing/changelog-entries.html",
-		"framework/development-tools.html": "framework/develpment-tools/inspector.html",
+		"framework/development-tools.html": "framework/development-tools/inspector.html",
+		"framework/develpment-tools/inspector.html": "framework/development-tools/inspector.html",
 		"framework/guides/architecture/core-editor-architecture.html": "framework/architecture/core-editor-architecture.html",
 		"framework/guides/architecture/editing-engine.html": "framework/architecture/editing-engine.html",
 		"framework/guides/architecture/intro.html": "framework/architecture/intro.html",
@@ -253,7 +254,7 @@
 		"framework/guides/deep-dive/ui/theme-customization.html": "framework/deep-dive/ui/theme-customization.html",
 		"framework/guides/deep-dive/ui/widget-internals.html": "framework/deep-dive/ui/widget-internals.html",
 		"framework/guides/deep-dive/upload-adapter.html": "framework/deep-dive/upload-adapter.html",
-		"framework/guides/development-tools.html": "framework/develpment-tools/inspector.html",
+		"framework/guides/development-tools.html": "framework/development-tools/inspector.html",
 		"framework/guides/overview.html": "framework/index.html",
 		"framework/guides/plugins/abbreviation-plugin/abbreviation-plugin-level-1.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-1.html",
 		"framework/guides/plugins/abbreviation-plugin/abbreviation-plugin-level-2.html": "framework/tutorials/abbreviation-plugin/abbreviation-plugin-level-2.html",
@@ -836,7 +837,7 @@
 				{
 					"name": "Development tools",
 					"id": "development-tools",
-					"slug": "develpment-tools",
+					"slug": "development-tools",
 					"folded": true,
 					"order": 200,
 					"categories": [

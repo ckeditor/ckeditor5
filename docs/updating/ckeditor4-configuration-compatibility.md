@@ -1,13 +1,10 @@
 ---
-# Scope:
-# Compare CKEditor 4 configuration options with their CKEditor&nbsp;5 equivalents.
-
 category: ckeditor4-migration
 menu-title: Configuration options compatibility
 meta-title: Migration from CKEditor 4 - Configuration options compatibility | CKEditor 5 Documentation
 meta-description: Learn about the CKEditor 4 configuration options and their equivalent in CKEditor 5.
 order: 50
-modified_at: 2023-03-21
+modified_at: 2026-08-05
 ---
 
 # CKEditor 4 configuration options compatibility
@@ -19,14 +16,14 @@ The following table presents CKEditor 4 configuration options and, if available,
 </info-box>
 
 <style>
-/* See: https://github.com/ckeditor/ckeditor5/issues/1718. */
 .doc.b-table {
 	table-layout: fixed;
 }
 
-.doc.b-table tr th:nth-child( 1 ),
-.doc.b-table tr td:nth-child( 1 ) {
-	width: 280px;
+.doc.b-table th .b-inline-code,
+.doc.b-table td .b-inline-code {
+	white-space: normal;
+	overflow-wrap: anywhere;
 }
 </style>
 
@@ -50,7 +47,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-applicationTitle"><code>applicationTitle</code></a></td>
-			<td>N/A</td>
+			<td>N/A. CKEditor&nbsp;5 does not label the surrounding application region, but you can name the editing area itself. See <a href="#title"><code>config.title</code></a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoEmbed_widget"><code>autoEmbed_widget</code></a></td>
@@ -77,7 +74,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autocomplete_commitKeystrokes"><code>autocomplete_commitKeystrokes</code></a></td>
-			<td>N/A</td>
+			<td>The {@link features/mentions Mentions} feature provides autocompletion in CKEditor&nbsp;5. Use the {@link module:mention/mentionconfig~MentionConfig#commitKeys <code>config.mention.commitKeys</code>} option to choose the keys that accept the highlighted item.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_commitKeystrokes"><code>autolink_commitKeystrokes</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_emailRegex"><code>autolink_emailRegex</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_urlRegex"><code>autolink_urlRegex</code></a></td>
@@ -105,6 +102,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 			</td>
 			<td>
 				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so this setting is no longer needed. Wrap the editor with a <code>&lt;div class=&quot;...&quot;&gt;</code> to achieve a similar result. When using {@link examples/builds/balloon-editor balloon}, {@link examples/builds/balloon-block-editor balloon block}, {@link examples/builds/inline-editor inline}, or {@link examples/builds/document-editor decoupled} editor, you may add a class to the element on which the editor is initialized.</p>
+				<p>You can also declare the CSS classes in the configuration. Pass an element definition to the {@link module:core/editor/editorconfig~RootConfig#element <code>config.root.element</code>} option and list them in its <code>classes</code> field. This works in all editor types, including classic, where the definition describes the editable element that the editor creates inside its UI box. Refer to the {@link getting-started/setup/root-types#applying-classes-and-styles Root types} guide for an example.</p>
 				<p>Additionally, all editor types use <code>.ck-content</code> on their main root editable elements. This class can thus also be used to write style sheet rules for the editor content.</p>
 			</td>
 		</tr>
@@ -114,6 +112,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 			</td>
 			<td>
 				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so this setting is no longer needed. Wrap the editor with a <code>&lt;div id=&quot;...&quot;&gt;</code> to achieve a similar result. When using {@link examples/builds/balloon-editor balloon}, {@link examples/builds/balloon-block-editor balloon block}, {@link examples/builds/inline-editor inline}, or {@link examples/builds/document-editor decoupled} editor, you may add a class to the element on which the editor is initialized.</p>
+				<p>You can also set an <code>id</code> in the configuration. Pass an element definition to the {@link module:core/editor/editorconfig~RootConfig#element <code>config.root.element</code>} option and declare it in the <code>attributes</code> field. This works in all editor types, including classic.</p>
 				<p>Additionally, all editor types use <code>.ck-content</code> on their main root editable elements. This class can thus also be used to write style sheet rules for the editor content.</p>
 			</td>
 		</tr>
@@ -123,7 +122,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-clipboard_defaultContentType"><code>clipboard_defaultContentType</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-clipboard_handleImages"><code>clipboard_handleImages</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-clipboard_notificationDuration"><code>clipboard_notificationDuration</code></a></td>
-			<td>N/A</td>
+			<td>N/A for the content type and notification options. To turn pasted and dropped images into base64 strings, as <code>clipboard_handleImages</code> did, use the {@link features/base64-upload-adapter Base64 upload adapter}. Refer to the {@link features/image-upload Image upload} guide for the other available strategies.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-cloudServices_tokenUrl"><code>cloudServices_tokenUrl</code></a></td>
@@ -181,11 +180,8 @@ The following table presents CKEditor 4 configuration options and, if available,
 			<td>CKEditor&nbsp;5 uses the <code>&lt;i&gt;</code> element, see <a href="https://ckeditor.github.io/editor-recommendations/features/italic.html" target="_blank" rel="noopener">Editor Recommendations - Italic</a>.</td>
 		</tr>
 		<tr>
-			<td>
-			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_strike"><code>coreStyles_strike</code></a></td>
-			<td>CKEditor&nbsp;5 uses the <code>&lt;s&gt;</code> element, see <a href="https://ckeditor.github.io/editor-recommendations/features/strikethrough.html" target="_blank" rel="noopener">Editor Recommendations - Strikethrough</a>.
-			</p>
-			</td>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_strike"><code>coreStyles_strike</code></a></td>
+			<td>CKEditor&nbsp;5 uses the <code>&lt;s&gt;</code> element, see <a href="https://ckeditor.github.io/editor-recommendations/features/strikethrough.html" target="_blank" rel="noopener">Editor Recommendations - Strikethrough</a>.</td>
 		</tr>
 		<tr>
 			<td>
@@ -265,11 +261,11 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-disableNativeTableHandles"><code>disableNativeTableHandles</code></a></td>
-			<td>N/A</td>
+			<td>No longer needed. CKEditor&nbsp;5 does not expose native browser table handles. Column resizing is opt-in instead, so it stays unavailable unless you load {@link features/tables-resize <code>TableColumnResize</code>}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-disableObjectResizing"><code>disableObjectResizing</code></a></td>
-			<td>N/A</td>
+			<td>No configuration needed. Resizing is opt-in in CKEditor&nbsp;5, so it stays unavailable unless you load the plugin that provides it, such as {@link features/images-resizing <code>ImageResize</code>} for images or {@link features/tables-resize <code>TableColumnResize</code>} for table columns.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-disableReadonlyStyling"><code>disableReadonlyStyling</code></a></td>
@@ -313,7 +309,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-enableTabKeyTools"><code>enableTabKeyTools</code></a></td>
-			<td>N/A</td>
+			<td>No configuration needed. CKEditor&nbsp;5 moves the selection between table cells with <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> out of the box, and pressing <kbd>Tab</kbd> in the last cell adds a new row, just like in CKEditor 4. Refer to the {@link features/accessibility#keystrokes-that-can-be-used-in-a-table-cell Accessibility support} guide for the full list of table keystrokes.</td>
 		</tr>
 		<tr>
 			<td>
@@ -322,6 +318,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 			<td>
 				<p>N/A. CKEditor&nbsp;5 always creates a new paragraph (<code>&lt;p&gt;</code> element) as specified by <a href="http://ckeditor.github.io/editor-recommendations/usability/enter-key.html" target="_blank" rel="noopener">Editor Recommendations - Enter key</a>.</p>
 				<p>You can use <kbd>Shift</kbd>+<kbd>Enter</kbd> for creating soft line breaks.</p>
+				<p>If you used this option to build a single-line field, such as a document title or a label, set {@link module:core/editor/editorconfig~RootConfig#modelElement <code>config.root.modelElement</code>} to <code>'$inlineRoot'</code>. Such a root accepts inline content only, so pressing <kbd>Enter</kbd> does not create a new block at all. This is not a general replacement for <code>enterMode</code>, which chose the block element to create rather than preventing blocks. Refer to the {@link getting-started/setup/root-types#inline-root Root types} guide for details.</p>
 			</td>
 		</tr>
 		<tr>
@@ -346,7 +343,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_defaultFileName"><code>fileTools_defaultFileName</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_requestHeaders"><code>fileTools_requestHeaders</code></a></td>
-			<td>N/A</td>
+			<td>N/A for the default file name. Request headers are configured per upload adapter in CKEditor&nbsp;5. When using the {@link features/simple-upload-adapter Simple upload adapter}, set them with the {@link module:upload/uploadconfig~SimpleUploadConfig#headers <code>config.simpleUpload.headers</code>} option.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserBrowseUrl"><code>filebrowserBrowseUrl</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserFlashBrowseUrl"><code>filebrowserFlashBrowseUrl</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserFlashUploadUrl"><code>filebrowserFlashUploadUrl</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageBrowseLinkUrl"><code>filebrowserImageBrowseLinkUrl</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageBrowseUrl"><code>filebrowserImageBrowseUrl</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageUploadUrl"><code>filebrowserImageUploadUrl</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserUploadMethod"><code>filebrowserUploadMethod</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserUploadUrl"><code>filebrowserUploadUrl</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowFeatures"><code>filebrowserWindowFeatures</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowHeight"><code>filebrowserWindowHeight</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowWidth"><code>filebrowserWindowWidth</code></a></td>
@@ -374,19 +371,19 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-forceEnterMode"><code>forceEnterMode</code></a></td>
-			<td>N/A. Se also <a href="#enterMode"><code>config.enterMode</code></a>.</td>
+			<td>N/A. See also <a href="#enterMode"><code>config.enterMode</code></a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-forcePasteAsPlainText"><code>forcePasteAsPlainText</code></a></td>
-			<td>N/A. No longer needed as CKEditor&nbsp;5 removes all unwanted markup that cannot be edited with the enabled editor plugins.</td>
+			<td>N/A. By default, CKEditor&nbsp;5 removes markup that cannot be edited with the enabled editor plugins. To preserve additional markup, use the {@link features/general-html-support General HTML Support} feature.</td>
 		</tr>
 		<tr>
-			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-forceSimpleAmpersand"><code>forceSimpleAmpersand</a></td>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-forceSimpleAmpersand"><code>forceSimpleAmpersand</code></a></td>
 			<td>N/A</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_address"><code>format_address</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_div"><code>format_div</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_p"><code>format_p</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_pre"><code>format_pre</code></a></td>
-			<td>N/A</td>
+			<td>The {@link features/headings Headings} feature defines the available block formats through the {@link module:heading/headingconfig~HeadingConfig#options <code>config.heading.options</code>} option, which covers paragraphs and headings. Preformatted text comes from the {@link features/code-blocks Code blocks} feature instead. There are no equivalents for the <code>&lt;address&gt;</code> and <code>&lt;div&gt;</code> formats, so use {@link features/general-html-support General HTML Support} to keep them in legacy content.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h1"><code>format_h1</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h2"><code>format_h2</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h3"><code>format_h3</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h4"><code>format_h4</code></a> <br>  <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h5"><code>format_h5</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h6"><code>format_h6</code></a></td>
@@ -401,7 +398,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 			<td>Available through the {@link module:html-support/fullpage~FullPage} API.</td>
 		</tr>
 		<tr>
-			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-grayt_autoStartup"><code>grayt_autoStartup</a></td>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-grayt_autoStartup"><code>grayt_autoStartup</code></a></td>
 			<td>An official integration of the spell and grammar checking functionality for CKEditor&nbsp;5 is provided by a partner solution, {@link features/spelling-and-grammar-checking WProofreader}.</td>
 		</tr>
 		<tr>
@@ -415,6 +412,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 				<pre class="c-code-block__pre doc"><code class="js doc">editor.editing.view.change( writer => {
     writer.setStyle( 'height', '400px', editor.editing.view.document.getRoot() );
 } );</code></pre></div>
+				<p>You can also set the height in the configuration. Pass an element definition to the {@link module:core/editor/editorconfig~RootConfig#element <code>config.root.element</code>} option and declare <code>height</code>, <code>min-height</code>, or <code>max-height</code> in its <code>styles</code> field. Refer to the {@link getting-started/setup/root-types#applying-classes-and-styles Root types} guide for an example.</p>
 				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor&nbsp;5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
@@ -424,7 +422,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-ignoreEmptyParagraph"><code>ignoreEmptyParagraph</code></a></td>
-			<td>N/A</td>
+			<td>This is the default behavior in CKEditor&nbsp;5: <code>editor.getData()</code> returns an empty string when the content holds nothing but an empty paragraph. To get the markup of the empty paragraph instead, call <code>editor.getData( { trim: 'none' } )</code>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_alignClasses"><code>image2_alignClasses</code></a></td>
@@ -468,11 +466,11 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkJavaScriptLinksAllowed"><code>linkJavaScriptLinksAllowed</code></a></td>
-			<td>N/A</td>
+			<td>N/A. CKEditor&nbsp;5 does not filter link addresses in the data, so an <code>href</code> that you load or type is preserved and returned by <code>editor.getData()</code>, including a <code>javascript:</code> one. What the editor does is replace unsafe addresses with <code>#</code> in the editing view and in the link preview button. The protocols treated as safe are listed in the {@link module:link/linkconfig~LinkConfig#allowedProtocols <code>config.link.allowedProtocols</code>} option and cover <code>http</code>, <code>https</code>, <code>ftp</code>, <code>ftps</code>, and <code>mailto</code> by default. Keep sanitizing link addresses in your own pipeline if the output has to be safe.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkPhoneMsg"><code>linkPhoneMsg</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkPhoneRegExp"><code>linkPhoneRegExp</code></a></td>
-			<td>N/A</td>
+			<td>N/A. CKEditor&nbsp;5 does not validate phone numbers. Note that <code>tel</code> is not among the protocols treated as safe by default, so phone links are shown as <code>#</code> in the editing view unless you add it to the {@link module:link/linkconfig~LinkConfig#allowedProtocols <code>config.link.allowedProtocols</code>} option. The address itself is kept in the data either way.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkShowAdvancedTab"><code>linkShowAdvancedTab</code></a></td>
@@ -541,7 +539,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-protectedSource"><code>protectedSource</code></a></td>
-			<td>N/A</td>
+			<td>N/A. CKEditor&nbsp;5 does not protect content by matching regular expressions. To keep markup that no feature handles, allow it with the {@link features/general-html-support General HTML Support} feature instead. For <code>&lt;script&gt;</code> tags in legacy content, see the {@link features/general-html-support#enabling-script-tags-for-legacy-use-cases Enabling script tags for legacy use cases} section.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-readOnly"><code>readOnly</code></a></td>
@@ -579,6 +577,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 				<p>N/A.</p>
 				<p>The {@link module:editor-decoupled/decouplededitor~DecoupledEditor decoupled editor} allows configuring where to insert the toolbar and the editable element.</p>
 				<p>In addition to that, CKEditor&nbsp;5 Framework architecture allows for writing a custom editor that contains many editable elements (document roots). See the {@link examples/builds/multi-root-editor multi-root editor example}.</p>
+			</td>
 		</tr>
 		<tr>
 			<td>
@@ -612,7 +611,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-sourceAreaTabSize"><code>sourceAreaTabSize</code></a></td>
-			<td>N/A</td>
+			<td>There is no configuration option, but the {@link features/source-editing Source editing} area can be styled with CSS. Set the <code>tab-size</code> property on the <code>.ck-source-editing-area</code> selector.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-specialChars"><code>specialChars</code></a></td>
@@ -620,19 +619,19 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-startupFocus"><code>startupFocus</code></a></td>
-			<td>N/A</td>
+			<td>There is no configuration option. Call the {@link module:core/editor/editor~Editor#focus <code>editor.focus()</code>} method once the editor is ready, for example in the <code>then()</code> callback of {@link module:core/editor/editor~Editor.create <code>Editor.create()</code>}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-startupMode"><code>startupMode</code></a></td>
-			<td>N/A</td>
+			<td>CKEditor&nbsp;5 offers the {@link features/source-editing Source editing} feature, which lets users switch to the HTML source of the document. There is no option to open the editor in that mode, so to start in source editing, execute the <code>sourceEditing</code> command after the editor is ready.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-startupOutlineBlocks"><code>startupOutlineBlocks</code></a></td>
-			<td>N/A</td>
+			<td>CKEditor&nbsp;5 offers the {@link features/show-blocks Show blocks} feature, which outlines block elements in the editing area. It is toggled with the <code>showBlocks</code> command, so to turn it on when the editor starts, execute that command after the editor is ready.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-startupShowBorders"><code>startupShowBorders</code></a></td>
-			<td>N/A</td>
+			<td>CKEditor&nbsp;5 renders dashed helper borders for tables and cells whose borders are removed, either with <code>border: none</code> or with a zero border width. Tables that CKEditor 4 stored with <code>border="0"</code> are therefore covered as well. The helper borders appear only in the editing view and do not change the output data. The behavior is enabled by default and controlled by the {@link module:table/tableconfig~TableConfig#showHiddenBorders <code>config.table.showHiddenBorders</code>} option. Refer to the {@link features/tables-styling#helper-lines-when-border-style-is-set-to-none Table and cell styling} feature guide for details.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-stylesSet"><code>stylesSet</code></a></td>
@@ -640,27 +639,27 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-stylesheetParser_skipSelectors"><code>stylesheetParser_skipSelectors</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-stylesheetParser_validSelectors"><code>stylesheetParser_validSelectors</code></a></td>
-			<td>N/A</td>
+			<td>N/A. CKEditor&nbsp;5 does not build the list of styles by parsing a style sheet. Declare the available styles explicitly instead, as described in the {@link features/style Styles} feature guide.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-tabIndex"><code>tabIndex</code></a></td>
-			<td>N/A</td>
+			<td>Pass an element definition to the {@link module:core/editor/editorconfig~RootConfig#element <code>config.root.element</code>} option and declare <code>tabindex</code> in its <code>attributes</code> field.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-tabletools_scopedHeaders"><code>tabletools_scopedHeaders</code></a></td>
-			<td>N/A</td>
+			<td>CKEditor&nbsp;5 assigns the <code>scope</code> attribute to header cells automatically based on their position, and users can override it in the cell properties balloon. To disable this behavior, set the {@link module:table/tableconfig~TableCellPropertiesConfig#scopedHeaders <code>config.table.tableCellProperties.scopedHeaders</code>} option to <code>false</code>. Refer to the {@link features/tables#table-cell-scope Tables} feature guide for details.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-tabSpaces"><code>tabSpaces</code></a></td>
-			<td>N/A</td>
+			<td>N/A. CKEditor&nbsp;5 does not insert spaces on <kbd>Tab</kbd>. The key moves the selection or the focus instead, which matches the default CKEditor 4 behavior of <code>tabSpaces = 0</code>. Refer to the {@link features/accessibility#user-interface-and-content-navigation-keystrokes Accessibility support} guide for the keystrokes involved.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-templates"><code>templates</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-templates_files"><code>templates_files</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-templates_replaceContent"><code>templates_replaceContent</code></a></td>
 			<td>Refer to the {@link features/template Templates} guide to learn about support for templates in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
-			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-title"><code>title</code></a></td>
-			<td>N/A</td>
+			<td><span id="title"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-title"><code>title</code></a></span></td>
+			<td>Use the {@link module:core/editor/editorconfig~RootConfig#label <code>config.root.label</code>} option, which sets the <code>aria-label</code> attribute of the editing area and helps assistive technologies tell apart multiple editor instances on a page. In multi-root editors, set it per root with <code>config.roots.&lt;rootName&gt;.label</code>.</td>
 		</tr>
 		<tr>
 			<td>
@@ -672,7 +671,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 			</td>
 		</tr>
 		<tr>
-			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarCanCollapse"><code>toolbarCanCollapse</code></a></td>
+			<td><span id="toolbarCanCollapse"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarCanCollapse"><code>toolbarCanCollapse</code></a></span></td>
 			<td>N/A. The user cannot collapse the toolbar manually. For distraction-free editing with the toolbar appearing when you need it, use {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon}, or {@link examples/builds/balloon-block-editor balloon block} editor.</td>
 		</tr>
 		<tr>
@@ -685,7 +684,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarStartupExpanded"><code>toolbarStartupExpanded</code></a></td>
-			<td>N/A</td>
+			<td>N/A. The toolbar cannot be collapsed in CKEditor&nbsp;5, so it has no collapsed startup state either. See <a href="#toolbarCanCollapse"><code>config.toolbarCanCollapse</code></a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-uiColor"><code>uiColor</code></a></td>
@@ -722,6 +721,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 				<pre class="c-code-block__pre doc"><code class="js doc">editor.editing.view.change( writer => {
     writer.setStyle( 'width', '400px', editor.editing.view.document.getRoot() );
 } );</code></pre></div>
+				<p>You can also set the width in the configuration. Pass an element definition to the {@link module:core/editor/editorconfig~RootConfig#element <code>config.root.element</code>} option and declare <code>width</code> in its <code>styles</code> field.</p>
 				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor&nbsp;5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
