@@ -113,6 +113,8 @@ This limitation is a direct consequence of the core editor architecture and cann
 
 Editor features rely on high-level editor API which cannot be used when the source editing is active. Due to that, when you switch to the source editing mode, all toolbar buttons become disabled and all dialog windows are closed.
 
+The editable element is also hidden and replaced with a `<textarea>` in the DOM. If you set the height of the editor with CSS, you need an extra rule to keep the same height in the source editing mode. Refer to {@link framework/how-tos#how-to-set-the-height-of-ckeditor-5 this CKEditor&nbsp;5 How-to question} for details.
+
 ### Revision history
 
 Saving the modified document source is internally executed through replacing the old data with the new one. As a consequence, it will be represented in revision history as a total replace change (insertion + deletion).

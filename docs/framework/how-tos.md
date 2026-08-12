@@ -12,7 +12,7 @@ modified_at: 2023-07-17
 
 ### How to set the height of CKEditor 5?
 
-The height of the editing area can be easily controlled with CSS.
+The height of the editing area can be controlled with CSS.
 
 ```css
 /* This selector targets the editable element (excluding comments). */
@@ -21,6 +21,28 @@ The height of the editing area can be easily controlled with CSS.
 	overflow-y: auto;
 }
 ```
+
+The rule above only affects the WYSIWYG editing area. When the user switches to the {@link features/source-editing Source code editing} mode, the editable element is hidden and replaced with a `<textarea>` inside a `.ck-source-editing-area` wrapper. The selector no longer matches, so the editor grows with the source of the document instead of keeping its height. To use the same height in both modes, style the source editing area as well:
+
+```css
+/* This selector targets the source editing area. */
+.ck-editor__main .ck-source-editing-area {
+	height: 300px;
+}
+
+/* The textarea does not scroll on its own, so turn scrolling on explicitly. */
+.ck-editor__main .ck-source-editing-area textarea {
+	overflow-y: auto;
+}
+```
+
+Set the height on the `.ck-source-editing-area` wrapper rather than on the `<textarea>` it contains. The wrapper grows together with the source of the document, so limiting the height of the `<textarea>` alone leaves a large empty space below it.
+
+Keep the `.ck-editor__main` part in both selectors. It makes the rules specific enough to override the default editor styles, no matter in which order the stylesheets are loaded. It also keeps the height out of the {@link features/fullscreen fullscreen mode}, which moves the editing area out of `.ck-editor__main` and sizes it on its own. A fixed height there would cut off the side panels, such as comments or AI Chat.
+
+<info-box>
+	This does not apply to the premium {@link features/source-editing-enhanced Enhanced source code editing} feature, which opens the source of the document in a dialog with its own height.
+</info-box>
 
 ### How to add an attribute to the editor editable in DOM?
 
