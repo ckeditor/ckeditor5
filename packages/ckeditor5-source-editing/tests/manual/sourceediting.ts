@@ -8,7 +8,7 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 
-import { SourceEditing } from '../../src/sourceediting.js';
+import { SourceEditing } from '../../src/index.js';
 
 ClassicEditor
 	.create( {
