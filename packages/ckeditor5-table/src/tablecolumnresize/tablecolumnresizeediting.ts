@@ -1388,7 +1388,7 @@ export class TableColumnResizeEditing extends Plugin {
 		const columnPosition = ( domEventData.domEvent as Event & { clientX: number } ).clientX;
 
 		const viewResizer = domEventData.target;
-		const viewLeftCell = viewResizer.findAncestor( 'td' )! || viewResizer.findAncestor( 'th' )!;
+		const viewLeftCell = viewResizer.findAncestor( element => element.is( 'element', 'td' ) || element.is( 'element', 'th' ) )!;
 		const modelLeftCell = editor.editing.mapper.toModelElement( viewLeftCell )!;
 		const modelTable = modelLeftCell.findAncestor( 'table' )!;
 

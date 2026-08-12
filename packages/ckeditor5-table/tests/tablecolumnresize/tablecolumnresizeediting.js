@@ -2744,6 +2744,268 @@ describe( 'TableColumnResizeEditing', () => {
 						'</table>'
 					);
 				} );
+
+				describe( 'with heading rows/columns', () => {
+					it( 'resizes an inner column of the nested table when dragging a header row resizer', () => {
+						// Test-specific.
+						const columnToResizeIndex = 1;
+						const mouseMovementVector = { x: 10, y: 0 };
+						const headerRowIndex = 0;
+
+						_setModelData( editor.model,
+							'<table tableWidth="100%" tableType="layout">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'[<table headingRows="1" tableWidth="100%">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>foo</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>bar</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>baz</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+											'<tableColumnGroup>' +
+												'<tableColumn columnWidth="25%"></tableColumn>' +
+												'<tableColumn columnWidth="25%"></tableColumn>' +
+												'<tableColumn columnWidth="50%"></tableColumn>' +
+											'</tableColumnGroup>' +
+										'</table>]' +
+									'</tableCell>' +
+								'</tableRow>' +
+								'<tableColumnGroup>' +
+									'<tableColumn columnWidth="100%"></tableColumn>' +
+								'</tableColumnGroup>' +
+							'</table>'
+						);
+
+						const outerModelTable = model.document.getRoot().getChild( 0 );
+						const modelNestedTable = model.document.selection.getSelectedElement();
+						const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
+						const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
+
+						setInitialWidthsInPx( editor, viewNestedTable, null, 300 );
+
+						// Sanity check - make sure the resizer dragged below really lives inside a `<th>`
+						// element, i.e. that this test actually reproduces the reported scenario.
+						assertResizerIsInsideHeaderCell( domNestedTable, columnToResizeIndex, headerRowIndex );
+
+						const outerTableStateBefore = getLayoutTableState( outerModelTable );
+
+						// Test-agnostic.
+						const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+
+						tableColumnResizeMouseSimulator.resize(
+							editor, domNestedTable, columnToResizeIndex, mouseMovementVector, headerRowIndex
+						);
+
+						const finalModelColumnWidthsPc = getModelColumnWidthsPc( modelNestedTable );
+
+						assertModelWidthsSum( finalModelColumnWidthsPc );
+
+						const finalViewColumnWidthsPc = getViewColumnWidthsPc( viewNestedTable );
+
+						assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+						const finalViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+						const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+							initialViewColumnWidthsPx,
+							mouseMovementVector,
+							contentDirection,
+							columnToResizeIndex
+						);
+
+						assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+
+						// Resizing an inner column redistributes the widths within the nested table only -
+						// neither the nested nor the outer table changes its width.
+						expect( modelNestedTable.getAttribute( 'tableWidth' ) ).toBe( '100%' );
+						expect( getLayoutTableState( outerModelTable ) ).toEqual( outerTableStateBefore );
+					} );
+
+					it( 'resizes the nested table itself when dragging the last column\'s header row resizer', () => {
+						// Test-specific.
+						const columnToResizeIndex = 1;
+						const mouseMovementVector = { x: -10, y: 0 };
+						const headerRowIndex = 0;
+
+						_setModelData( editor.model,
+							'<table tableWidth="100%" tableType="layout">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'[<table headingRows="1">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>foo</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>bar</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+											'<tableColumnGroup>' +
+												'<tableColumn columnWidth="50%"></tableColumn>' +
+												'<tableColumn columnWidth="50%"></tableColumn>' +
+											'</tableColumnGroup>' +
+										'</table>]' +
+									'</tableCell>' +
+								'</tableRow>' +
+								'<tableColumnGroup>' +
+									'<tableColumn columnWidth="100%"></tableColumn>' +
+								'</tableColumnGroup>' +
+							'</table>'
+						);
+
+						const outerModelTable = model.document.getRoot().getChild( 0 );
+						const modelNestedTable = model.document.selection.getSelectedElement();
+						const domOuterTable = getDomTable( view );
+						const domNestedTable = domOuterTable.querySelectorAll( 'table' )[ 1 ];
+						const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
+
+						setInitialWidthsInPx( editor, viewNestedTable, 201, 400 );
+
+						// Sanity check - make sure the resizer dragged below really lives inside a `<th>`
+						// element, i.e. that this test actually reproduces the reported scenario.
+						assertResizerIsInsideHeaderCell( domNestedTable, columnToResizeIndex, headerRowIndex );
+
+						const outerTableStateBefore = getLayoutTableState( outerModelTable );
+
+						// Test-agnostic.
+						const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+						const initialNestedTableWidthPx = domNestedTable.getBoundingClientRect().width;
+						const initialOuterTableWidthPx = domOuterTable.getBoundingClientRect().width;
+
+						tableColumnResizeMouseSimulator.resize(
+							editor, domNestedTable, columnToResizeIndex, mouseMovementVector, headerRowIndex
+						);
+
+						const finalModelColumnWidthsPc = getModelColumnWidthsPc( modelNestedTable );
+
+						assertModelWidthsSum( finalModelColumnWidthsPc );
+
+						const finalViewColumnWidthsPc = getViewColumnWidthsPc( viewNestedTable );
+
+						assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+						const finalViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+						const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+							initialViewColumnWidthsPx,
+							mouseMovementVector,
+							contentDirection,
+							columnToResizeIndex
+						);
+
+						assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+
+						// It is the *nested* table that gets its width changed - it had no `tableWidth`
+						// attribute before the drag and it shrinks after it.
+						expect( modelNestedTable.getAttribute( 'tableWidth' ) ).toMatch( /^\d+(\.\d+)?%$/ );
+						expect( parseFloat( modelNestedTable.getAttribute( 'tableWidth' ) ) ).toBeLessThan( 100 );
+						expect( domNestedTable.getBoundingClientRect().width ).toBeLessThan( initialNestedTableWidthPx - 1 );
+
+						// ...while the outer (layout) table keeps both its width and its column widths.
+						// Before the fix this is the assertion that failed - the layout table wrapper was
+						// the one being resized instead of the nested table.
+						expect( getLayoutTableState( outerModelTable ) ).toEqual( outerTableStateBefore );
+						expect( Math.abs( domOuterTable.getBoundingClientRect().width - initialOuterTableWidthPx ) )
+							.toBeLessThanOrEqual( PIXEL_PRECISION );
+					} );
+
+					it( 'resizes a column of the nested table when dragging a header column resizer', () => {
+						// Test-specific. With one heading column the resizer of the first column lives inside
+						// a `<th>` element, just like the header row one does.
+						const columnToResizeIndex = 0;
+						const mouseMovementVector = { x: 10, y: 0 };
+						const rowIndex = 0;
+
+						_setModelData( editor.model,
+							'<table tableWidth="100%" tableType="layout">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'[<table headingColumns="1" tableWidth="100%">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>foo</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>bar</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+											'<tableColumnGroup>' +
+												'<tableColumn columnWidth="50%"></tableColumn>' +
+												'<tableColumn columnWidth="50%"></tableColumn>' +
+											'</tableColumnGroup>' +
+										'</table>]' +
+									'</tableCell>' +
+								'</tableRow>' +
+								'<tableColumnGroup>' +
+									'<tableColumn columnWidth="100%"></tableColumn>' +
+								'</tableColumnGroup>' +
+							'</table>'
+						);
+
+						const outerModelTable = model.document.getRoot().getChild( 0 );
+						const modelNestedTable = model.document.selection.getSelectedElement();
+						const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
+						const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
+
+						setInitialWidthsInPx( editor, viewNestedTable, null, 300 );
+
+						// Sanity check - make sure the resizer dragged below really lives inside a `<th>`
+						// element, i.e. that this test actually reproduces the reported scenario.
+						assertResizerIsInsideHeaderCell( domNestedTable, columnToResizeIndex, rowIndex );
+
+						const outerTableStateBefore = getLayoutTableState( outerModelTable );
+
+						// Test-agnostic.
+						const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+
+						tableColumnResizeMouseSimulator.resize(
+							editor, domNestedTable, columnToResizeIndex, mouseMovementVector, rowIndex
+						);
+
+						const finalModelColumnWidthsPc = getModelColumnWidthsPc( modelNestedTable );
+
+						assertModelWidthsSum( finalModelColumnWidthsPc );
+
+						const finalViewColumnWidthsPc = getViewColumnWidthsPc( viewNestedTable );
+
+						assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+						const finalViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+						const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+							initialViewColumnWidthsPx,
+							mouseMovementVector,
+							contentDirection,
+							columnToResizeIndex
+						);
+
+						assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+
+						expect( modelNestedTable.getAttribute( 'tableWidth' ) ).toBe( '100%' );
+						expect( getLayoutTableState( outerModelTable ) ).toEqual( outerTableStateBefore );
+					} );
+
+					// Asserts that the resizer of the given column in the given row is placed inside a `<th>`
+					// element (and not a `<td>` one), so the test really covers the `<th>` lookup.
+					function assertResizerIsInsideHeaderCell( domTable, columnIndex, rowIndex ) {
+						const domResizer = getDomResizer( domTable, columnIndex, rowIndex );
+
+						expect( domResizer.closest( 'th, td' ).tagName.toLowerCase() ).toBe( 'th' );
+					}
+
+					// Returns everything the resizing feature could have changed in the outer layout table,
+					// so that a snapshot taken before the drag can be compared with the one taken after it.
+					function getLayoutTableState( outerModelTable ) {
+						return {
+							tableType: outerModelTable.getAttribute( 'tableType' ),
+							tableWidth: outerModelTable.getAttribute( 'tableWidth' ),
+							columnWidths: getModelColumnWidthsPc( outerModelTable )
+						};
+					}
+				} );
 			} );
 		} );
 
