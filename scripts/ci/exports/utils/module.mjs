@@ -365,28 +365,42 @@ export class Module {
 					return;
 				}
 
+				// Attribution failures below throw immediately instead of going through `errorCollector`,
+				// because continuing on an incomplete reference graph would produce misleading downstream errors.
 				if ( node.typeName.type === 'Identifier' || node.typeName.type === 'TSQualifiedName' ) {
 					const parentPath = path.findParent( path => path.isDeclaration() || path.isVariableDeclarator() );
+					let declarationName;
 
-					if ( !parentPath ) {
-						console.warn( '!! no parent function or class property', node.loc.start.line, node.loc.start.column ); // TODO
-						// throw new Error( 'Unhandled TSTypeReference' );
-						return;
+					if ( parentPath ) {
+						if ( parentPath.node.id && parentPath.node.id.type !== 'Identifier' ) {
+							throw createTypeReferenceOwnerError( {
+								fileName: this.fileName,
+								node,
+								reason: `The owning declaration uses an unsupported ${ parentPath.node.id.type } identifier.`
+							} );
+						}
+
+						declarationName = parentPath.node.id ? parentPath.node.id.name : '<default>';
+					} else {
+						declarationName = getAssignedDeclarationName( path );
 					}
 
-					if ( parentPath.node.id && parentPath.node.id.type !== 'Identifier' ) {
-						console.warn( '!! not an identifier', node.loc.start.line, node.loc.start.column ); // TODO
-						return;
+					const declaration = this.declarations.find( ( { localName } ) => localName === declarationName );
+
+					if ( !declaration ) {
+						const reason = declarationName ?
+							`The inferred owner was "${ declarationName }", but no matching module-level declaration was found.` :
+							'The type reference is not inside a supported declaration or property assignment.';
+
+						throw createTypeReferenceOwnerError( { fileName: this.fileName, node, reason } );
 					}
 
-					const declarationName = parentPath.node.id ? parentPath.node.id.name : '<default>';
-
-					this.declarations
-						.find( ( { localName } ) => localName === declarationName )
-						.addReference( node.typeName, typeParameters );
-				}
-				else {
-					console.warn( '!!! reference is not an identifier', node.loc.start.line, node.loc.start.column );
+					declaration.addReference( node.typeName, typeParameters );
+				} else {
+					throw new Error(
+						`Unsupported ${ node.typeName.type } type reference at ` +
+						`${ this.fileName }:${ node.loc.start.line }:${ node.loc.start.column }.`
+					);
 				}
 			}
 		} );
@@ -761,6 +775,37 @@ export class Module {
 
 function normalizeModuleAlias( name ) {
 	return name.replace( /^ckeditor5(?:-collaboration)?\/src\/(.*)\.js$/, '@ckeditor/ckeditor5-$1' );
+}
+
+function getAssignedDeclarationName( typeReferencePath ) {
+	const assignmentPath = typeReferencePath.findParent( path => path.isAssignmentExpression() );
+
+	if ( !assignmentPath || assignmentPath.node.left.type !== 'MemberExpression' ) {
+		return null;
+	}
+
+	let object = assignmentPath.node.left.object;
+
+	while ( object.type === 'MemberExpression' ) {
+		object = object.object;
+	}
+
+	return object.type === 'Identifier' ? object.name : null;
+}
+
+function createTypeReferenceOwnerError( { fileName, node, reason } ) {
+	return new Error(
+		`Could not associate type reference "${ getTypeReferenceName( node.typeName ) }" with a declaration at ` +
+		`${ fileName }:${ node.loc.start.line }:${ node.loc.start.column }. ${ reason }`
+	);
+}
+
+function getTypeReferenceName( node ) {
+	if ( node.type === 'Identifier' ) {
+		return node.name;
+	}
+
+	return `${ getTypeReferenceName( node.left ) }.${ getTypeReferenceName( node.right ) }`;
 }
 
 function isMixinBaseHelperCandidate( declarator ) {

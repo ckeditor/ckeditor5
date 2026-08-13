@@ -183,6 +183,23 @@ describe( 'scripts/ci/exports/utils/module', () => {
 			expect( declaration.references ).not.toContain( 'T' );
 		} );
 
+		it( 'should collect references from a function assigned to a class prototype', () => {
+			const module = loadFixture( 'references.ts' );
+
+			const declaration = module.declarations.find( ( { localName } ) => localName === 'ParsingPrototype' );
+
+			expect( declaration.references ).toContain( 'ParsingType' );
+			expect( declaration.references ).toContain( 'ParsingInterface' );
+		} );
+
+		it( 'should explain why a type reference cannot be associated with a declaration', () => {
+			expect( () => loadFixture( 'unowned-reference.ts' ) ).toThrow(
+				'Could not associate type reference "ParsingType" with a declaration at ' +
+				upath.join( FIXTURES_SRC_PATH, 'unowned-reference.ts' ) +
+				':14:26. The type reference is not inside a supported declaration or property assignment.'
+			);
+		} );
+
 		it( 'should detect a mixin base helper', () => {
 			const module = loadFixture( 'mixin.ts' );
 
