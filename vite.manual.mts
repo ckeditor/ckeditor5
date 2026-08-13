@@ -21,6 +21,7 @@ const manualTestPaths = {
 
 export default defineConfig( {
 	appType: 'mpa',
+	base: './',
 	publicDir: 'manual-assets',
 	clearScreen: false,
 	build: {
