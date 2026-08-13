@@ -13,7 +13,7 @@ import {
 import { MediaEditor } from './build-media-source.js';
 
 const IFRAME_SRC = '//ckeditor.iframe.ly/api/iframe';
-const API_KEY = 'febab8169e71e501ae2e707f55105647';
+const API_KEY = '';
 
 MediaEditor
 	.create( {
