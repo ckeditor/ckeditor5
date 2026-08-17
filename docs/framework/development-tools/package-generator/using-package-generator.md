@@ -23,7 +23,7 @@ JavaScript and TypeScript packages share the same development flow. Right after 
 * A local sample app in `sample/`, powered by Vite.
 * Unit tests in `tests/`, powered by Vitest.
 * Theme files in `theme/` for icons and CSS.
-* Translation helpers in `lang/` and `scripts/`.
+* Translation contexts in `lang/contexts.json` and a synchronization script that generates `lang/translations/*.ts`.
 * Build scripts that create an npm package build and browser-ready files in `dist/`.
 
 The TypeScript template also adds `src/augmentation.ts`, `tsconfig.json`, `tsconfig.build.json`, `typings/`, and generated declaration files.
@@ -95,7 +95,10 @@ When you start editing the generated package, the usual places to work in are:
 * `sample/index.[js|ts]` for the local editor setup used during development.
 * `tests/` for unit tests.
 * `theme/` for icons and CSS.
+* `lang/contexts.json` for translation context descriptions and `lang/translations/*.ts` for generated translation dictionaries.
 * `ckeditor5-metadata.json` for plugin metadata used by CKEditor&nbsp;5 tooling.
+
+After adding or removing calls to `t()` in `src/`, update `lang/contexts.json` and run `npm run translations:synchronize`. The command creates or updates one TypeScript translation source per language in `lang/translations/`. Edit only dictionary values in those generated files; the synchronization command maintains their keys, comments, order, and module structure.
 
 <info-box tip>
 	Keep `.js` extensions in relative imports, even in TypeScript files. The generated template uses that pattern on purpose so the emitted ESM files stay valid.

@@ -12,13 +12,6 @@ import {
 	ckDebugPlugin
 } from '@ckeditor/ckeditor5-dev-manual-server';
 
-const manualTestPaths = {
-	paths: [
-		'packages/*',
-	],
-	include: []
-};
-
 export default defineConfig( {
 	appType: 'mpa',
 	base: './',
@@ -46,7 +39,13 @@ export default defineConfig( {
 	plugins: [
 		ckDebugPlugin(),
 		rawSvgPlugin(),
-		manualTestsPlugin( manualTestPaths ),
+		manualTestsPlugin( {
+			paths: [
+				'packages/*',
+			],
+			include: [],
+			language: process.env.CK_LANGUAGE || 'en'
+		} ),
 		refreshPlugin()
 	]
 } );

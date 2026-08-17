@@ -1,0 +1,29 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import type { Translations } from '@ckeditor/ckeditor5-utils';
+
+const translations: Translations = {
+	'sk': {
+		dictionary: {
+			// A label of the button that allows inserting a new code block into the editor content.
+			'Insert code block': 'Vložte blok kódu',
+			// A language of the code block in the editor content when no specific programming language is associated with it.
+			'Plain text': 'Čistý text',
+			// Assistive technologies label for leaving the code block with a specified programming language. Example: 'Leaving JavaScript code snippet'
+			'Leaving %0 code snippet': 'Opúšťanie %0 útržku kódu',
+			// Assistive technologies label for entering the code block with a specified programming language. Example: 'Entering JavaScript code snippet'
+			'Entering %0 code snippet': 'Zadávanie %0 útržku kódu',
+			// Assistive technologies label for entering the code block with unspecified programming language.
+			'Entering code snippet': 'Zadávanie útržku kódu',
+			// Assistive technologies label for leaving the code block with unspecified programming language.
+			'Leaving code snippet': 'Opúšťanie útržku kódu',
+			// The accessible label of the menu bar button that inserts a code block into editor content.
+			'Code block': 'Blok kódu'
+		}
+	}
+};
+
+export default translations;

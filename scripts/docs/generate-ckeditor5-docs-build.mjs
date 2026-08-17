@@ -15,7 +15,7 @@ export default async function generateCKEditor5DocsBuild( outputPath ) {
 		output: outputPath,
 		name: '',
 		sourceMap: true,
-		translations: 'packages/**/*.po',
+		translations: 'packages/**/lang/translations/*.ts',
 		logLevel: 'silent'
 	} );
 

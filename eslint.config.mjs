@@ -41,6 +41,7 @@ export default defineConfig( [
 			'packages/*/build/**',
 			'packages/*/coverage/**',
 			'packages/*/dist/**',
+			'packages/*/lang/translations/*.ts',
 			'packages/*/src/lib/**',
 			'release/**',
 
