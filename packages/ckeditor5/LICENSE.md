@@ -27,7 +27,6 @@ The following libraries are included in CKEditor&nbsp;5 under the [ISC license](
 The following libraries are included in CKEditor&nbsp;5 under the [MIT license](https://opensource.org/licenses/MIT):
 
 * @types/color-convert - Copyright (c) Microsoft Corporation.
-* @types/hast - Copyright (c) Microsoft Corporation.
 * blurhash - Copyright (c) 2018 Wolt Enterprises.
 * color-convert - Copyright (c) 2011-2016 Heather Arthur <fayearthur@gmail.com> and Copyright (c) 2016-2021 Josh Junon <josh@junon.me>.
 * color-parse - Copyright (c) 2015 Dmitry Ivanov.
@@ -35,7 +34,6 @@ The following libraries are included in CKEditor&nbsp;5 under the [MIT license](
 * es-toolkit - Copyright (c) 2024 Viva Republica, Inc and Copyright OpenJS Foundation and other contributors.
 * fuzzysort - Copyright (c) 2018 Stephen Kamenar.
 * hast-util-to-html - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
-* hast-util-to-mdast - Copyright (c) Titus Wormer <tituswormer@gmail.com> and Copyright (c) Seth Vincent <sethvincent@gmail.com>.
 * hastscript - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
 * is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
 * Regular expression for URL validation - Copyright (c) 2010-2018 Diego Perini.

@@ -43,10 +43,8 @@
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
-    "@types/hast": "3.0.4",
     "hast-util-from-dom": "5.0.1",
     "hast-util-to-html": "9.0.5",
-    "hast-util-to-mdast": "10.1.2",
     "hastscript": "9.0.1",
     "rehype-dom-parse": "5.0.2",
     "rehype-dom-stringify": "4.0.2",
@@ -78,8 +76,10 @@
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
+    "@types/hast": "3.0.4",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "hast-util-to-mdast": "10.1.2",
     "vitest": "catalog:"
   },
   "scripts": {
@@ -93,8 +93,5 @@
     "dist",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
-  ],
-  "depcheckIgnore": [
-    "hast"
   ]
 }

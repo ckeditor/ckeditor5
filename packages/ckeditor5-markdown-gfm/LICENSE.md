@@ -24,9 +24,7 @@ The following libraries are included in CKEditor&nbsp;5 under the [ISC license](
 
 The following libraries are included in CKEditor&nbsp;5 under the [MIT license](https://opensource.org/licenses/MIT):
 
-* @types/hast - Copyright (c) Microsoft Corporation.
 * hast-util-to-html - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
-* hast-util-to-mdast - Copyright (c) Titus Wormer <tituswormer@gmail.com> and Copyright (c) Seth Vincent <sethvincent@gmail.com>.
 * hastscript - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
 * rehype-remark - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
 * remark-breaks - Copyright (c) 2017 Titus Wormer <tituswormer@gmail.com>.
