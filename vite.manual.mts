@@ -7,6 +7,7 @@ import { defineConfig } from 'vite';
 import {
 	stringifyValues,
 	manualTestsPlugin,
+	preserveCssImportOrderPlugin,
 	refreshPlugin,
 	rawSvgPlugin,
 	ckDebugPlugin
@@ -39,6 +40,7 @@ export default defineConfig( {
 	plugins: [
 		ckDebugPlugin(),
 		rawSvgPlugin(),
+		preserveCssImportOrderPlugin(),
 		manualTestsPlugin( {
 			paths: [
 				'packages/*',
