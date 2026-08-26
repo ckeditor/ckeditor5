@@ -11,6 +11,7 @@ import { TableSelection } from '../src/tableselection.js';
 import { TableClipboard } from '../src/tableclipboard.js';
 import { TableScroll } from '../src/tablescroll.js';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { TableProperties } from '../src/tableproperties.js';
 
 declare global {
 	interface Window { editor: any }
@@ -22,6 +23,7 @@ const editorConfig = {
 		ArticlePluginSet,
 		Table,
 		TableToolbar,
+		TableProperties,
 		TableSelection,
 		TableClipboard,
 		TableScroll,
