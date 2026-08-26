@@ -86,11 +86,11 @@ describe( 'Delete feature', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Delete.isOfficialPlugin ).to.be.true;
+		expect( Delete.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Delete.isPremiumPlugin ).to.be.false;
+		expect( Delete.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'creates two commands', () => {
@@ -99,7 +99,7 @@ describe( 'Delete feature', () => {
 	} );
 
 	it( 'should register forwardDelete command as an alias for deleteForward command', () => {
-		expect( editor.commands.get( 'forwardDelete' ) ).to.equal( editor.commands.get( 'deleteForward' ) );
+		expect( editor.commands.get( 'forwardDelete' ) ).toEqual( editor.commands.get( 'deleteForward' ) );
 	} );
 
 	it( 'listens to the editing view document delete event', () => {
@@ -130,13 +130,13 @@ describe( 'Delete feature', () => {
 	it( 'handles the backspace key in a nested editable', () => {
 		_setModelData( model, '<widget><nested>fo[]</nested></widget>' );
 
-		expect( clickBackspace( editor ).preventedKeyDown ).to.be.false;
+		expect( clickBackspace( editor ).preventedKeyDown ).toBe( false );
 
-		expect( _getModelData( model ) ).to.equal( '<widget><nested>f[]</nested></widget>' );
+		expect( _getModelData( model ) ).toEqual( '<widget><nested>f[]</nested></widget>' );
 
-		expect( clickBackspace( editor ).preventedKeyDown ).to.be.false;
+		expect( clickBackspace( editor ).preventedKeyDown ).toBe( false );
 
-		expect( _getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
+		expect( _getModelData( model ) ).toEqual( '<widget><nested>[]</nested></widget>' );
 	} );
 
 	it( 'passes options.selection parameter to delete command if selection to remove was specified and unit is "selection"', () => {
@@ -164,8 +164,8 @@ describe( 'Delete feature', () => {
 			editor.model.createRangeIn( editor.model.document.getRoot().getChild( 0 ) )
 		);
 
-		expect( commandName ).to.equal( 'delete' );
-		expect( options.selection.isEqual( expectedSelection ) ).to.be.true;
+		expect( commandName ).toEqual( 'delete' );
+		expect( options.selection.isEqual( expectedSelection ) ).toBe( true );
 	} );
 
 	it( 'should fix options.selection parameter of delete command when it ends in block object (deleteContentBackward)', () => {
@@ -203,8 +203,8 @@ describe( 'Delete feature', () => {
 			)
 		);
 
-		expect( commandName ).to.equal( 'delete' );
-		expect( options.selection.isEqual( expectedSelection ) ).to.be.true;
+		expect( commandName ).toEqual( 'delete' );
+		expect( options.selection.isEqual( expectedSelection ) ).toBe( true );
 	} );
 
 	it( 'should fix options.selection parameter of delete command when it ends in block object (deleteContentForward)', () => {
@@ -242,8 +242,8 @@ describe( 'Delete feature', () => {
 			)
 		);
 
-		expect( commandName ).to.equal( 'deleteForward' );
-		expect( options.selection.isEqual( expectedSelection ) ).to.be.true;
+		expect( commandName ).toEqual( 'deleteForward' );
+		expect( options.selection.isEqual( expectedSelection ) ).toBe( true );
 	} );
 
 	it( 'scrolls the editing document to the selection after executing the command', () => {
@@ -292,25 +292,25 @@ describe( 'Delete feature', () => {
 		it( 'handles the backspace key in an empty nested editable', () => {
 			_setModelData( model, '<widget><nested>[]</nested></widget>' );
 
-			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+			expect( clickBackspace( editor ).preventedKeyDown ).toBe( true );
 
-			expect( _getModelData( model ) ).to.equal( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
+			expect( _getModelData( model ) ).toEqual( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
 		} );
 
 		it( 'handles the backspace key + meta key in a nested editable', () => {
 			_setModelData( model, '<widget><nested>[]</nested></widget>' );
 
-			expect( clickBackspace( editor, true ).preventedKeyDown ).to.be.true;
+			expect( clickBackspace( editor, true ).preventedKeyDown ).toBe( true );
 
-			expect( _getModelData( model ) ).to.equal( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
+			expect( _getModelData( model ) ).toEqual( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
 		} );
 
 		it( 'handles backspace on list items (root editable)', () => {
 			_setModelData( model, '<paragraph listIndent="0" listItemId="e5f06169" listType="todo">[]</paragraph>' );
 
-			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+			expect( clickBackspace( editor ).preventedKeyDown ).toBe( true );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'handles backspace on list items (nested root-like editable)', () => {
@@ -323,23 +323,21 @@ describe( 'Delete feature', () => {
 				'</widget>'
 			);
 
-			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+			expect( clickBackspace( editor ).preventedKeyDown ).toBe( true );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<widget>' +
+			expect( _getModelData( model ) ).toEqual( '<widget>' +
 					'<nested-description>' +
 						'<paragraph>[]</paragraph>' +
 					'</nested-description>' +
-				'</widget>'
-			);
+				'</widget>' );
 		} );
 
 		it( 'handles backspace on empty headings (root editable)', () => {
 			_setModelData( model, '<heading1>[]</heading1>' );
 
-			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+			expect( clickBackspace( editor ).preventedKeyDown ).toBe( true );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'handles backspace on empty headings (nested root-like editable)', () => {
@@ -352,15 +350,13 @@ describe( 'Delete feature', () => {
 				'</widget>'
 			);
 
-			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+			expect( clickBackspace( editor ).preventedKeyDown ).toBe( true );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<widget>' +
+			expect( _getModelData( model ) ).toEqual( '<widget>' +
 					'<nested-description>' +
 						'<paragraph>[]</paragraph>' +
 					'</nested-description>' +
-				'</widget>'
-			);
+				'</widget>' );
 		} );
 
 		it( 'should handle case where there is no valid selection range available', () => {
@@ -376,9 +372,9 @@ describe( 'Delete feature', () => {
 
 			_setModelData( model, '<emptyLimitContainer>[]</emptyLimitContainer>' );
 
-			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+			expect( clickBackspace( editor ).preventedKeyDown ).toBe( true );
 
-			expect( _getModelData( model ) ).to.equal( '<emptyLimitContainer>[]</emptyLimitContainer>' );
+			expect( _getModelData( model ) ).toEqual( '<emptyLimitContainer>[]</emptyLimitContainer>' );
 		} );
 	} );
 } );
@@ -432,10 +428,10 @@ describe( 'Delete using the beforeinput event', () => {
 			} ) );
 
 			expect( executeSpy ).toHaveBeenCalledOnce();
-			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).to.equal( 'delete' );
-			expect( executeSpy.mock.calls[ 0 ][ 1 ].sequence ).to.equal( 3 );
-			expect( executeSpy.mock.calls[ 0 ][ 1 ].unit ).to.equal( 'codePoint' );
-			expect( executeSpy.mock.calls[ 0 ][ 1 ].selection ).to.be.undefined;
+			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( 'delete' );
+			expect( executeSpy.mock.calls[ 0 ][ 1 ].sequence ).toEqual( 3 );
+			expect( executeSpy.mock.calls[ 0 ][ 1 ].unit ).toEqual( 'codePoint' );
+			expect( executeSpy.mock.calls[ 0 ][ 1 ].selection ).toBeUndefined();
 		} );
 
 		it( 'should use the #selectionToRemove for the "codePoint" unit on Android', () => {
@@ -464,10 +460,10 @@ describe( 'Delete using the beforeinput event', () => {
 			} ) );
 
 			expect( executeSpy ).toHaveBeenCalledOnce();
-			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).to.equal( 'deleteForward' );
-			expect( executeSpy.mock.calls[ 0 ][ 1 ].sequence ).to.equal( 5 );
-			expect( executeSpy.mock.calls[ 0 ][ 1 ].unit ).to.equal( 'character' );
-			expect( executeSpy.mock.calls[ 0 ][ 1 ].selection ).to.be.undefined;
+			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( 'deleteForward' );
+			expect( executeSpy.mock.calls[ 0 ][ 1 ].sequence ).toEqual( 5 );
+			expect( executeSpy.mock.calls[ 0 ][ 1 ].unit ).toEqual( 'character' );
+			expect( executeSpy.mock.calls[ 0 ][ 1 ].selection ).toBeUndefined();
 		} );
 
 		it( 'should always use the #unit despite #selectionToRemove available next to "character" (Android)', () => {
@@ -481,10 +477,10 @@ describe( 'Delete using the beforeinput event', () => {
 			} ) );
 
 			expect( executeSpy ).toHaveBeenCalledOnce();
-			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).to.equal( 'deleteForward' );
-			expect( executeSpy.mock.calls[ 0 ][ 1 ].sequence ).to.equal( 5 );
-			expect( executeSpy.mock.calls[ 0 ][ 1 ].unit ).to.equal( 'character' );
-			expect( executeSpy.mock.calls[ 0 ][ 1 ].selection ).to.be.undefined;
+			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( 'deleteForward' );
+			expect( executeSpy.mock.calls[ 0 ][ 1 ].sequence ).toEqual( 5 );
+			expect( executeSpy.mock.calls[ 0 ][ 1 ].unit ).toEqual( 'character' );
+			expect( executeSpy.mock.calls[ 0 ][ 1 ].selection ).toBeUndefined();
 		} );
 	} );
 
@@ -553,9 +549,9 @@ describe( 'Delete using the beforeinput event', () => {
 			const secondCallModelRange = executeSpy.mock.calls[ 1 ][ 1 ].selection.getFirstRange();
 			const thirdCallModelRange = executeSpy.mock.calls[ 1 ][ 1 ].selection.getFirstRange();
 
-			expect( firstCallModelRange.isEqual( expectedFirstCallDeleteRange ) ).to.be.true;
-			expect( secondCallModelRange.isEqual( expectedSecondCallDeleteRange ) ).to.be.true;
-			expect( thirdCallModelRange.isEqual( expectedThirdCallDeleteRange ) ).to.be.true;
+			expect( firstCallModelRange.isEqual( expectedFirstCallDeleteRange ) ).toBe( true );
+			expect( secondCallModelRange.isEqual( expectedSecondCallDeleteRange ) ).toBe( true );
+			expect( thirdCallModelRange.isEqual( expectedThirdCallDeleteRange ) ).toBe( true );
 		} );
 
 		it( 'should respect the #direction passed from the DeleteObserver observer', () => {
@@ -572,8 +568,8 @@ describe( 'Delete using the beforeinput event', () => {
 			} ) );
 
 			expect( executeSpy ).toHaveBeenCalledTimes( 2 );
-			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).to.equal( 'deleteForward' );
-			expect( executeSpy.mock.calls[ 1 ][ 0 ] ).to.equal( 'delete' );
+			expect( executeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( 'deleteForward' );
+			expect( executeSpy.mock.calls[ 1 ][ 0 ] ).toEqual( 'delete' );
 		} );
 
 		it( 'should respect the #sequence passed from the DeleteObserver observer', () => {
@@ -639,7 +635,7 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 		expect( spy ).toHaveBeenCalledOnce();
 		expect( spy ).toHaveBeenCalledWith( 'undo' );
 
-		expect( event.stop.called ).to.be.true;
+		expect( event.stop.called ).toBe( true );
 		expect( domEvt.preventDefault ).toHaveBeenCalledOnce();
 
 		viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );

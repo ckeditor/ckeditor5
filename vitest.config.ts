@@ -88,8 +88,7 @@ export function createVitestConfig( packageDir: string, options: PackageTestOpti
 				],
 				exclude: [
 					'**/_utils',
-					'**/fixtures',
-					'**/manual'
+					'**/fixtures'
 				],
 				setupFiles: [
 					resolve( import.meta.dirname, 'scripts', 'vitest', 'test_setup.mjs' ),

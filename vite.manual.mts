@@ -7,22 +7,16 @@ import { defineConfig } from 'vite';
 import {
 	stringifyValues,
 	manualTestsPlugin,
-	manualStaticAssetsPlugin,
+	preserveCssImportOrderPlugin,
 	refreshPlugin,
 	rawSvgPlugin,
 	ckDebugPlugin
 } from '@ckeditor/ckeditor5-dev-manual-server';
 
-const manualTestPaths = {
-	paths: [
-		'packages/*',
-	],
-	include: []
-};
-
 export default defineConfig( {
 	appType: 'mpa',
 	base: './',
+	publicDir: 'manual-assets',
 	clearScreen: false,
 	build: {
 		outDir: 'build/manual',
@@ -46,8 +40,14 @@ export default defineConfig( {
 	plugins: [
 		ckDebugPlugin(),
 		rawSvgPlugin(),
-		manualTestsPlugin( manualTestPaths ),
-		manualStaticAssetsPlugin( manualTestPaths ),
+		preserveCssImportOrderPlugin(),
+		manualTestsPlugin( {
+			paths: [
+				'packages/*',
+			],
+			include: [],
+			language: process.env.CK_LANGUAGE || 'en'
+		} ),
 		refreshPlugin()
 	]
 } );

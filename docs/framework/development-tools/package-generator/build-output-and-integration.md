@@ -27,7 +27,7 @@ The generated package has a small, predictable structure:
 | `sample/`                                           | The local sample app loaded by `npm run start`.        |
 | `tests/`                                            | Unit tests run by Vitest.                              |
 | `theme/`                                            | Icons and CSS used by your plugin.                     |
-| `lang/`                                             | Translation context and generated `*.po` files.        |
+| `lang/contexts.json`                                | Translation context descriptions for synchronization.  |
 | `scripts/`                                          | Helper scripts, including translation synchronization. |
 | `dist/`                                             | Files created by `npm run build`.                      |
 | `ckeditor5-metadata.json`                           | Plugin metadata used by CKEditor&nbsp;5 tools.         |
@@ -67,6 +67,10 @@ dist/
 ├─ index.d.ts                # TypeScript only
 ├─ callout.d.ts              # TypeScript only
 ├─ augmentation.d.ts         # TypeScript only, if present
+├─ translations/
+│  ├─ <language>.d.ts
+│  ├─ <language>.js
+│  └─ <language>.umd.js
 └─ browser/
 	├─ index.es.js
 	├─ index.umd.js
@@ -80,11 +84,14 @@ Each file has a different job:
 | `dist/index.js`             | The npm package entry. It is ESM and keeps `ckeditor5` as an external dependency.                                                                   |
 | `dist/index.css`            | The CSS file for npm consumers. Import it separately in the consuming app.                                                                          |
 | `dist/*.d.ts`               | TypeScript declarations generated from `src/`. They are published together with the npm build.                                                      |
+| `dist/translations/*.js`    | ESM and UMD translation assets generated from `lang/translations/*.ts`.                                                                            |
 | `dist/browser/index.es.js`  | The browser ESM build for `type="module"` and import-map setups. It still expects `ckeditor5` to be provided separately.                            |
 | `dist/browser/index.umd.js` | The browser UMD build for plain `<script>` setups. It expects `CKEDITOR` to exist and exposes your package on the global name chosen for the build. |
 | `dist/browser/index.css`    | The CSS file for ZIP and CDN-style browser integrations.                                                                                            |
 
 `package.json` is already configured so that publishing the package ships `dist/` and `ckeditor5-metadata.json`.
+
+Import the ESM translation asset for npm and import-map integrations, or load the matching `.umd.js` file in script-tag integrations. Follow the {@link getting-started/setup/ui-language Setting the UI language} guide and load the same language from `ckeditor5` so that the editor also receives the language's plural-form function.
 
 What you do not get from the generator:
 

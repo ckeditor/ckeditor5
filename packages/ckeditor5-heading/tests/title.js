@@ -140,28 +140,22 @@ describe( 'Title', () => {
 				'<paragraph>Bar</paragraph>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<paragraph>Bar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>' );
 		} );
 
 		it( 'should create a content element when only title has been set', () => {
 			_setModelData( model, '<title><title-content>Foo</title-content></title>' );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<paragraph></paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]Foo</title-content></title>' +
+				'<paragraph></paragraph>' );
 		} );
 
 		it( 'should create a title and content elements when are missing', () => {
 			_setModelData( model, '' );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]</title-content></title>' +
-				'<paragraph></paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]</title-content></title>' +
+				'<paragraph></paragraph>' );
 		} );
 
 		it( 'should change heading element to title when is set as a first root child', () => {
@@ -170,10 +164,8 @@ describe( 'Title', () => {
 				'<heading1>Bar</heading1>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<heading1>Bar</heading1>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]Foo</title-content></title>' +
+				'<heading1>Bar</heading1>' );
 		} );
 
 		it( 'should change paragraph element to title when is set as a first root child', () => {
@@ -182,10 +174,8 @@ describe( 'Title', () => {
 				'<paragraph>Bar</paragraph>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<paragraph>Bar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>' );
 		} );
 
 		it( 'should change paragraph element to title and then change additional title elements to paragraphs', () => {
@@ -194,10 +184,8 @@ describe( 'Title', () => {
 				'<title><title-content>Bar</title-content></title>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<paragraph>Bar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>' );
 		} );
 
 		it( 'should change title element to a paragraph when is not a first root child #1', () => {
@@ -206,10 +194,8 @@ describe( 'Title', () => {
 				'<title><title-content>Bar</title-content></title>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<paragraph>Bar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>' );
 		} );
 
 		it( 'should change title element to a paragraph when is not a first root child #2', () => {
@@ -219,11 +205,9 @@ describe( 'Title', () => {
 				'<title><title-content>Biz</title-content></title>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>' +
-				'<paragraph>Biz</paragraph>'
-			);
+				'<paragraph>Biz</paragraph>' );
 		} );
 
 		it( 'should move title at the beginning of the root when first root child is not allowed to be a title #1', () => {
@@ -232,10 +216,8 @@ describe( 'Title', () => {
 				'<title><title-content>Bar</title-content></title>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]Bar</title-content></title>' +
-				'<blockQuote><paragraph>Foo</paragraph></blockQuote>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]Bar</title-content></title>' +
+				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 		} );
 
 		it( 'should move title at the beginning of the root when first root child is not allowed to be a title #2', () => {
@@ -245,11 +227,9 @@ describe( 'Title', () => {
 				'<title><title-content>Biz</title-content></title>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]Biz</title-content></title>' +
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]Biz</title-content></title>' +
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
-				'<blockQuote><paragraph>Bar</paragraph></blockQuote>'
-			);
+				'<blockQuote><paragraph>Bar</paragraph></blockQuote>' );
 		} );
 
 		it( 'should move title at the beginning of the root when first root child is not allowed to be a title #3', () => {
@@ -259,20 +239,16 @@ describe( 'Title', () => {
 				'<title><title-content>Biz</title-content></title>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]Biz</title-content></title>' +
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]Biz</title-content></title>' +
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
-				'<paragraph>Bar</paragraph>'
-			);
+				'<paragraph>Bar</paragraph>' );
 		} );
 
 		it( 'should create a missing title element before an element that cannot to be a title element', () => {
 			_setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]</title-content></title>' +
-				'<blockQuote><paragraph>Foo</paragraph></blockQuote>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]</title-content></title>' +
+				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 		} );
 
 		it( 'should clear element from attributes when changing to title element', () => {
@@ -284,10 +260,8 @@ describe( 'Title', () => {
 				'<paragraph foo="true">B<$text foo="true">a</$text>r</paragraph>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content alignment="justify">[]Foo</title-content></title>' +
-				'<paragraph foo="true">B<$text foo="true">a</$text>r</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content alignment="justify">[]Foo</title-content></title>' +
+				'<paragraph foo="true">B<$text foo="true">a</$text>r</paragraph>' );
 		} );
 	} );
 
@@ -311,10 +285,8 @@ describe( 'Title', () => {
 				preventDefault() {}
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>Title</title-content></title>' +
-				'<paragraph>Body[]</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>Title</title-content></title>' +
+				'<paragraph>Body[]</paragraph>' );
 		} );
 
 		it( 'should not remove the extra paragraph when pasting to the editor with directly created body element', () => {
@@ -339,11 +311,9 @@ describe( 'Title', () => {
 				preventDefault() {}
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>Title</title-content></title>' +
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>Title</title-content></title>' +
 				'<paragraph>Body[]</paragraph>' +
-				'<paragraph></paragraph>'
-			);
+				'<paragraph></paragraph>' );
 		} );
 
 		it( 'should remove the extra paragraph when pressing enter in the title', () => {
@@ -351,10 +321,8 @@ describe( 'Title', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>fo</title-content></title>' +
-				'<paragraph>[]o</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>fo</title-content></title>' +
+				'<paragraph>[]o</paragraph>' );
 		} );
 
 		it( 'should not remove the extra paragraph when pressing enter in the title when body is created directly', () => {
@@ -365,11 +333,9 @@ describe( 'Title', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>fo</title-content></title>' +
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>fo</title-content></title>' +
 				'<paragraph>[]o</paragraph>' +
-				'<paragraph></paragraph>'
-			);
+				'<paragraph></paragraph>' );
 		} );
 
 		it( 'should keep the body placeholder paragraph once it has typed content', () => {
@@ -379,16 +345,16 @@ describe( 'Title', () => {
 			const root = model.document.getRoot();
 			const placeholderParagraph = root.getChild( 1 );
 
-			expect( placeholderParagraph.name ).to.equal( 'paragraph' );
-			expect( placeholderParagraph.childCount ).to.equal( 0 );
+			expect( placeholderParagraph.name ).toEqual( 'paragraph' );
+			expect( placeholderParagraph.childCount ).toEqual( 0 );
 
 			model.change( writer => {
 				writer.insertText( 'x', writer.createPositionAt( placeholderParagraph, 0 ) );
 			} );
 
 			// The placeholder is still there with the typed content.
-			expect( root.getChild( 1 ) ).to.equal( placeholderParagraph );
-			expect( placeholderParagraph.childCount ).to.equal( 1 );
+			expect( root.getChild( 1 ) ).toEqual( placeholderParagraph );
+			expect( placeholderParagraph.childCount ).toEqual( 1 );
 		} );
 	} );
 
@@ -399,7 +365,7 @@ describe( 'Title', () => {
 				'<paragraph>Bar</paragraph>'
 			);
 
-			expect( editor.plugins.get( 'Title' ).getTitle() ).to.equal( 'Foo' );
+			expect( editor.plugins.get( 'Title' ).getTitle() ).toEqual( 'Foo' );
 		} );
 
 		it( 'should return content of an empty title element', () => {
@@ -408,7 +374,7 @@ describe( 'Title', () => {
 				'<paragraph>Bar</paragraph>'
 			);
 
-			expect( editor.plugins.get( 'Title' ).getTitle() ).to.equal( '' );
+			expect( editor.plugins.get( 'Title' ).getTitle() ).toEqual( '' );
 		} );
 
 		it( 'should return marker - starts and ends inside a title', () => {
@@ -425,9 +391,7 @@ describe( 'Title', () => {
 				} );
 			} );
 
-			expect( editor.plugins.get( 'Title' ).getTitle() ).to.equal(
-				'F<comment></comment>oo B<comment></comment>ar'
-			);
+			expect( editor.plugins.get( 'Title' ).getTitle() ).toEqual( 'F<comment></comment>oo B<comment></comment>ar' );
 		} );
 
 		it( 'should return marker - starts inside a title ends inside a body', () => {
@@ -448,9 +412,7 @@ describe( 'Title', () => {
 				} );
 			} );
 
-			expect( editor.plugins.get( 'Title' ).getTitle() ).to.equal(
-				'F<comment></comment>oo Bar<comment></comment>'
-			);
+			expect( editor.plugins.get( 'Title' ).getTitle() ).toEqual( 'F<comment></comment>oo Bar<comment></comment>' );
 		} );
 
 		it( 'should pass options to downcast converters', () => {
@@ -475,7 +437,7 @@ describe( 'Title', () => {
 
 			editor.plugins.get( 'Title' ).getTitle( options );
 
-			expect( usedOptions ).to.equal( options );
+			expect( usedOptions ).toEqual( options );
 		} );
 	} );
 
@@ -487,13 +449,13 @@ describe( 'Title', () => {
 				'<paragraph>Biz</paragraph>'
 			);
 
-			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal( '<p>Bar</p><p>Biz</p>' );
+			expect( editor.plugins.get( 'Title' ).getBody() ).toEqual( '<p>Bar</p><p>Biz</p>' );
 		} );
 
 		it( 'should return empty paragraph when body is empty', () => {
 			_setModelData( model, '<title><title-content>Foo</title-content></title>' );
 
-			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.plugins.get( 'Title' ).getBody() ).toEqual( '<p>&nbsp;</p>' );
 		} );
 
 		it( 'should return marker - starts and ends inside a body', () => {
@@ -513,9 +475,7 @@ describe( 'Title', () => {
 				} );
 			} );
 
-			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal(
-				'<p>F<comment></comment>oo B<comment></comment>ar</p>'
-			);
+			expect( editor.plugins.get( 'Title' ).getBody() ).toEqual( '<p>F<comment></comment>oo B<comment></comment>ar</p>' );
 		} );
 
 		it( 'should return marker - starts inside a title ends inside a body', () => {
@@ -536,9 +496,7 @@ describe( 'Title', () => {
 				} );
 			} );
 
-			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal(
-				'<comment></comment><p>Ba<comment></comment>r</p>'
-			);
+			expect( editor.plugins.get( 'Title' ).getBody() ).toEqual( '<comment></comment><p>Ba<comment></comment>r</p>' );
 		} );
 
 		it( 'should return marker - starts at the beginning of the body ends inside the body', () => {
@@ -558,9 +516,7 @@ describe( 'Title', () => {
 				} );
 			} );
 
-			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal(
-				'<p><comment></comment>Ba<comment></comment>r</p>'
-			);
+			expect( editor.plugins.get( 'Title' ).getBody() ).toEqual( '<p><comment></comment>Ba<comment></comment>r</p>' );
 		} );
 
 		it( 'should do nothing when marker is fully out of the body range', () => {
@@ -580,7 +536,7 @@ describe( 'Title', () => {
 				} );
 			} );
 
-			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal( '<p>Bar</p>' );
+			expect( editor.plugins.get( 'Title' ).getBody() ).toEqual( '<p>Bar</p>' );
 		} );
 
 		it( 'should pass options to downcast converters', () => {
@@ -608,7 +564,7 @@ describe( 'Title', () => {
 
 			editor.plugins.get( 'Title' ).getBody( options );
 
-			expect( usedOptions ).to.equal( options );
+			expect( usedOptions ).toEqual( options );
 		} );
 	} );
 
@@ -628,11 +584,11 @@ describe( 'Title', () => {
 			const title = viewRoot.getChild( 0 );
 			const body = viewRoot.getChild( 1 );
 
-			expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'Type your title' );
-			expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'Type or paste your content here.' );
+			expect( title.getAttribute( 'data-placeholder' ) ).toEqual( 'Type your title' );
+			expect( body.getAttribute( 'data-placeholder' ) ).toEqual( 'Type or paste your content here.' );
 
-			expect( title.hasClass( 'ck-placeholder' ) ).to.equal( false );
-			expect( body.hasClass( 'ck-placeholder' ) ).to.equal( false );
+			expect( title.hasClass( 'ck-placeholder' ) ).toEqual( false );
+			expect( body.hasClass( 'ck-placeholder' ) ).toEqual( false );
 		} );
 
 		it( 'should show placeholder in empty title and body', () => {
@@ -644,11 +600,11 @@ describe( 'Title', () => {
 			const title = viewRoot.getChild( 0 );
 			const body = viewRoot.getChild( 1 );
 
-			expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'Type your title' );
-			expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'Type or paste your content here.' );
+			expect( title.getAttribute( 'data-placeholder' ) ).toEqual( 'Type your title' );
+			expect( body.getAttribute( 'data-placeholder' ) ).toEqual( 'Type or paste your content here.' );
 
-			expect( title.hasClass( 'ck-placeholder' ) ).to.equal( true );
-			expect( body.hasClass( 'ck-placeholder' ) ).to.equal( true );
+			expect( title.hasClass( 'ck-placeholder' ) ).toEqual( true );
+			expect( body.hasClass( 'ck-placeholder' ) ).toEqual( true );
 		} );
 
 		it( 'should hide placeholder from body with more than one child elements', () => {
@@ -660,8 +616,8 @@ describe( 'Title', () => {
 
 			const body = viewRoot.getChild( 1 );
 
-			expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'Type or paste your content here.' );
-			expect( body.hasClass( 'ck-placeholder' ) ).to.equal( false );
+			expect( body.getAttribute( 'data-placeholder' ) ).toEqual( 'Type or paste your content here.' );
+			expect( body.hasClass( 'ck-placeholder' ) ).toEqual( false );
 		} );
 
 		it( 'should hide placeholder from body with element other than paragraph', () => {
@@ -672,8 +628,8 @@ describe( 'Title', () => {
 
 			const body = viewRoot.getChild( 1 );
 
-			expect( body.hasAttribute( 'data-placeholder' ) ).to.equal( true );
-			expect( body.hasClass( 'ck-placeholder' ) ).to.equal( false );
+			expect( body.hasAttribute( 'data-placeholder' ) ).toEqual( true );
+			expect( body.hasClass( 'ck-placeholder' ) ).toEqual( false );
 		} );
 
 		it( 'should hide placeholder when title element become not empty', () => {
@@ -682,13 +638,13 @@ describe( 'Title', () => {
 				'<paragraph>[]</paragraph>'
 			);
 
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.equal( true );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toEqual( true );
 
 			model.change( writer => {
 				writer.appendText( 'Bar', null, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 			} );
 
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.equal( false );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).toEqual( false );
 		} );
 
 		it( 'should hide placeholder when body element become not empty', () => {
@@ -697,13 +653,13 @@ describe( 'Title', () => {
 				'<paragraph></paragraph>'
 			);
 
-			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).to.equal( true );
+			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).toEqual( true );
 
 			model.change( writer => {
 				writer.appendText( 'Bar', null, model.document.getRoot().getChild( 1 ) );
 			} );
 
-			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).to.equal( false );
+			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).toEqual( false );
 		} );
 
 		it( 'should properly map the body placeholder in DOM when undoing', () => {
@@ -720,15 +676,15 @@ describe( 'Title', () => {
 
 			bodyDomElement = domConverter.mapViewToDom( viewRoot.getChild( 1 ) );
 
-			expect( bodyDomElement.dataset.placeholder ).to.equal( 'Type or paste your content here.' );
-			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).to.equal( true );
+			expect( bodyDomElement.dataset.placeholder ).toEqual( 'Type or paste your content here.' );
+			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).toEqual( true );
 
 			editor.execute( 'undo' );
 
 			bodyDomElement = domConverter.mapViewToDom( viewRoot.getChild( 1 ) );
 
-			expect( bodyDomElement.dataset.placeholder ).to.equal( 'Type or paste your content here.' );
-			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).to.equal( false );
+			expect( bodyDomElement.dataset.placeholder ).toEqual( 'Type or paste your content here.' );
+			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).toEqual( false );
 		} );
 
 		describe( 'custom placeholder defined using configuration', () => {
@@ -767,11 +723,11 @@ describe( 'Title', () => {
 				const title = viewRoot.getChild( 0 );
 				const body = viewRoot.getChild( 1 );
 
-				expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'foo' );
-				expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
+				expect( title.getAttribute( 'data-placeholder' ) ).toEqual( 'foo' );
+				expect( body.getAttribute( 'data-placeholder' ) ).toEqual( 'bar' );
 
-				expect( title.hasClass( 'ck-placeholder' ) ).to.equal( true );
-				expect( body.hasClass( 'ck-placeholder' ) ).to.equal( true );
+				expect( title.hasClass( 'ck-placeholder' ) ).toEqual( true );
+				expect( body.hasClass( 'ck-placeholder' ) ).toEqual( true );
 			} );
 		} );
 
@@ -809,11 +765,11 @@ describe( 'Title', () => {
 				const title = viewRoot.getChild( 0 );
 				const body = viewRoot.getChild( 1 );
 
-				expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'foo' );
-				expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'bom' );
+				expect( title.getAttribute( 'data-placeholder' ) ).toEqual( 'foo' );
+				expect( body.getAttribute( 'data-placeholder' ) ).toEqual( 'bom' );
 
-				expect( title.hasClass( 'ck-placeholder' ) ).to.equal( true );
-				expect( body.hasClass( 'ck-placeholder' ) ).to.equal( true );
+				expect( title.hasClass( 'ck-placeholder' ) ).toEqual( true );
+				expect( body.hasClass( 'ck-placeholder' ) ).toEqual( true );
 			} );
 		} );
 	} );
@@ -831,10 +787,8 @@ describe( 'Title', () => {
 
 			expect( eventData.preventDefault ).toHaveBeenCalledTimes( 1 );
 			expect( eventData.stopPropagation ).toHaveBeenCalledTimes( 1 );
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>foo</title-content></title>' +
-				'<paragraph>[]bar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>foo</title-content></title>' +
+				'<paragraph>[]bar</paragraph>' );
 		} );
 
 		it( 'should handle tab key when the selection is at the end of the title', () => {
@@ -849,10 +803,8 @@ describe( 'Title', () => {
 
 			expect( eventData.preventDefault ).toHaveBeenCalledTimes( 1 );
 			expect( eventData.stopPropagation ).toHaveBeenCalledTimes( 1 );
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>foo</title-content></title>' +
-				'<paragraph>[]bar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>foo</title-content></title>' +
+				'<paragraph>[]bar</paragraph>' );
 		} );
 
 		it( 'should not handle tab key when the selection is in the title and body', () => {
@@ -867,10 +819,8 @@ describe( 'Title', () => {
 
 			expect( eventData.preventDefault ).not.toHaveBeenCalled();
 			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>fo[o</title-content></title>' +
-				'<paragraph>b]ar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>fo[o</title-content></title>' +
+				'<paragraph>b]ar</paragraph>' );
 		} );
 
 		it( 'should not handle tab key when the selection is in the body', () => {
@@ -885,10 +835,8 @@ describe( 'Title', () => {
 
 			expect( eventData.preventDefault ).not.toHaveBeenCalled();
 			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>foo</title-content></title>' +
-				'<paragraph>[]bar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>foo</title-content></title>' +
+				'<paragraph>[]bar</paragraph>' );
 		} );
 	} );
 
@@ -905,10 +853,8 @@ describe( 'Title', () => {
 
 			expect( eventData.preventDefault ).toHaveBeenCalledTimes( 1 );
 			expect( eventData.stopPropagation ).toHaveBeenCalledTimes( 1 );
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]foo</title-content></title>' +
-				'<paragraph>bar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]foo</title-content></title>' +
+				'<paragraph>bar</paragraph>' );
 		} );
 
 		it( 'should not handle shift + tab keys when the selection is not at the beginning of the body', () => {
@@ -923,10 +869,8 @@ describe( 'Title', () => {
 
 			expect( eventData.preventDefault ).not.toHaveBeenCalled();
 			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>foo</title-content></title>' +
-				'<paragraph>b[]ar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>foo</title-content></title>' +
+				'<paragraph>b[]ar</paragraph>' );
 		} );
 
 		it( 'should not handle shift + tab keys when the selection is not collapsed', () => {
@@ -941,10 +885,8 @@ describe( 'Title', () => {
 
 			expect( eventData.preventDefault ).not.toHaveBeenCalled();
 			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>foo</title-content></title>' +
-				'<paragraph>[b]ar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>foo</title-content></title>' +
+				'<paragraph>[b]ar</paragraph>' );
 		} );
 
 		it( 'should not handle shift + tab keys when the selection is in the title', () => {
@@ -959,10 +901,8 @@ describe( 'Title', () => {
 
 			expect( eventData.preventDefault ).not.toHaveBeenCalled();
 			expect( eventData.stopPropagation ).not.toHaveBeenCalled();
-			expect( _getModelData( model ) ).to.equal(
-				'<title><title-content>[]foo</title-content></title>' +
-				'<paragraph>bar</paragraph>'
-			);
+			expect( _getModelData( model ) ).toEqual( '<title><title-content>[]foo</title-content></title>' +
+				'<paragraph>bar</paragraph>' );
 		} );
 	} );
 
@@ -994,11 +934,11 @@ describe( 'Title', () => {
 
 		it( 'should not allow title as a child of $inlineRoot', () => {
 			// Sanity check behind the `_fixTitleElement` and `_fixBodyElement` schema guards.
-			expect( inlineModel.schema.checkChild( inlineRoot, 'title' ) ).to.equal( false );
+			expect( inlineModel.schema.checkChild( inlineRoot, 'title' ) ).toEqual( false );
 		} );
 
 		it( 'should not allow paragraph as a child of $inlineRoot', () => {
-			expect( inlineModel.schema.checkChild( inlineRoot, 'paragraph' ) ).to.equal( false );
+			expect( inlineModel.schema.checkChild( inlineRoot, 'paragraph' ) ).toEqual( false );
 		} );
 
 		it( 'should not insert a title element into $inlineRoot on load (model post-fixer no-op)', () => {
@@ -1007,7 +947,7 @@ describe( 'Title', () => {
 			const hasTitle = Array.from( inlineRoot.getChildren() )
 				.some( child => child.is( 'element' ) && child.name === 'title' );
 
-			expect( hasTitle ).to.equal( false );
+			expect( hasTitle ).toEqual( false );
 		} );
 
 		it( 'should not insert a paragraph body placeholder into $inlineRoot', () => {
@@ -1016,20 +956,20 @@ describe( 'Title', () => {
 			const hasParagraph = Array.from( inlineRoot.getChildren() )
 				.some( child => child.is( 'element' ) && child.name === 'paragraph' );
 
-			expect( hasParagraph ).to.equal( false );
+			expect( hasParagraph ).toEqual( false );
 		} );
 
 		it( 'should return an empty string from getTitle() for $inlineRoot', () => {
 			inlineEditor.setData( 'Foo' );
 
-			expect( titlePlugin.getTitle() ).to.equal( '' );
+			expect( titlePlugin.getTitle() ).toEqual( '' );
 		} );
 
 		it( 'should fall back to the full root data from getBody() for $inlineRoot', () => {
 			inlineEditor.setData( 'Foo' );
 
 			// No title structure exists, so the whole root IS the body.
-			expect( titlePlugin.getBody() ).to.equal( 'Foo' );
+			expect( titlePlugin.getBody() ).toEqual( 'Foo' );
 		} );
 
 		it( 'should not upcast <h1> to title when the target root is $inlineRoot', () => {
@@ -1038,7 +978,7 @@ describe( 'Title', () => {
 			const hasTitle = Array.from( inlineRoot.getChildren() )
 				.some( child => child.is( 'element' ) && child.name === 'title' );
 
-			expect( hasTitle ).to.equal( false );
+			expect( hasTitle ).toEqual( false );
 		} );
 
 		it( 'should no-op on Shift+Tab when the root is $inlineRoot', () => {
@@ -1065,7 +1005,7 @@ describe( 'Title', () => {
 				} );
 			} ).not.to.throw();
 
-			expect( inlineEditor.getData() ).to.equal( 'Foo bar' );
+			expect( inlineEditor.getData() ).toEqual( 'Foo bar' );
 		} );
 	} );
 
@@ -1094,7 +1034,7 @@ describe( 'Title', () => {
 				plugins: [ Paragraph, Title, Heading ]
 			} );
 
-			expect( countWarnings( warnStub, WARNING_ID ) ).to.equal( 0 );
+			expect( countWarnings( warnStub, WARNING_ID ) ).toEqual( 0 );
 		} );
 
 		it( 'should warn exactly once when no root supports the title element', async () => {
@@ -1103,7 +1043,7 @@ describe( 'Title', () => {
 				root: { modelElement: '$inlineRoot' }
 			} );
 
-			expect( countWarnings( warnStub, WARNING_ID ) ).to.equal( 1 );
+			expect( countWarnings( warnStub, WARNING_ID ) ).toEqual( 1 );
 		} );
 	} );
 } );

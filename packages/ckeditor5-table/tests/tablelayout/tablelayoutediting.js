@@ -1228,6 +1228,38 @@ describe( 'TableLayoutEditing', () => {
 					'</table>'
 				);
 			} );
+
+			it( 'class="content-table" on the wrapping <figure> should be consumed but not the `foobar` class', () => {
+				ghsEditor.setData(
+					'<figure class="table content-table foobar">' +
+						'<table>' +
+							'<tr><td>1</td></tr>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).toEqual(
+					'<table htmlFigureAttributes="{"classes":["foobar"]}" tableType="content">' +
+						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'class="layout-table" on the wrapping <figure> should be consumed (table is a content table)', () => {
+				ghsEditor.setData(
+					'<figure class="table layout-table foobar">' +
+						'<table>' +
+							'<tr><td>1</td></tr>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).toEqual(
+					'<table htmlFigureAttributes="{"classes":["foobar"]}" tableType="content">' +
+						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'</table>'
+				);
+			} );
 		} );
 
 		describe( 'border attribute handling', () => {

@@ -91,7 +91,7 @@ describe( 'TextPartLanguageEditing', () => {
 			expect( editor.getData() ).toEqual( '<p><span lang="fr" dir="ltr">foo</span>bar</p>' );
 		} );
 
-		it( 'should respect nested element language ', () => {
+		it( 'should respect nested element language', () => {
 			editor.setData( '<p><span dir="rtl" lang="he">hebrew<span dir="ltr" lang="fr">french</span>hebrew</span></p>' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )

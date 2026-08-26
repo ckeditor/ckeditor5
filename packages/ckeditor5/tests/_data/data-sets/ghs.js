@@ -66,7 +66,7 @@ const initialData =
 	<blockquote style="color:blue;"><p>Blockquote Feature</p></blockquote>
 
 	<figure style="border: 1px solid blue;" class="image">
-		<img src="/ckeditor5/tests/manual/sample.jpg" width="826" height="388"/>
+		<img src="/images/sample.jpg" width="826" height="388"/>
 		<figcaption style="background:yellow;">Caption</figcaption>
 	</figure>
 

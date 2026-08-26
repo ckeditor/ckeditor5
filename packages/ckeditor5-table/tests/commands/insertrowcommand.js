@@ -42,12 +42,12 @@ describe( 'InsertRowCommand', () => {
 		describe( 'isEnabled', () => {
 			it( 'should be false if wrong node', () => {
 				_setModelData( model, '<paragraph>foo[]</paragraph>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true if in table', () => {
 				_setModelData( model, modelTable( [ [ '[]' ] ] ) );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -329,7 +329,7 @@ describe( 'InsertRowCommand', () => {
 					'<foo>bar[]</foo>' +
 				'</table>'
 			);
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -341,12 +341,12 @@ describe( 'InsertRowCommand', () => {
 		describe( 'isEnabled', () => {
 			it( 'should be false if wrong node', () => {
 				_setModelData( model, '<paragraph>foo[]</paragraph>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true if in table', () => {
 				_setModelData( model, modelTable( [ [ '[]' ] ] ) );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -512,7 +512,7 @@ describe( 'InsertRowCommand', () => {
 					'<foo>bar[]</foo>' +
 				'</table>'
 			);
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 } );

@@ -348,7 +348,7 @@ describe( 'ImageStyleCommand', () => {
 					_setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
 					command.execute( { value: anyImage.name } );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toEqual(
 						`<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="${ imgSrc }"></imageInline>]</paragraph>`
 					);
 				} );
@@ -384,9 +384,7 @@ describe( 'ImageStyleCommand', () => {
 				_setModelData( model, `<imageBlock src="${ imgSrc }"><caption>[]Foo</caption></imageBlock>` );
 				command.execute( { value: onlyInline.name } );
 
-				expect( _getModelData( model ) ).to.equal(
-					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
-				);
+				expect( _getModelData( model ) ).toEqual( `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
 			} );
 		} );
 
@@ -456,10 +454,8 @@ describe( 'ImageStyleCommand', () => {
 					command.execute( { value: anyImage.name } );
 					await timeout( 100 );
 
-					expect( _getModelData( model ) ).to.equal(
-						`<paragraph>[<imageInline height="96" imageStyle="${ anyImage.name }" ` +
-							'src="/sample.png" width="96"></imageInline>]</paragraph>'
-					);
+					expect( _getModelData( model ) ).toEqual( `<paragraph>[<imageInline height="96" imageStyle="${ anyImage.name }" ` +
+							'src="/sample.png" width="96"></imageInline>]</paragraph>' );
 
 					editor.execute( 'undo' );
 
@@ -491,7 +487,7 @@ describe( 'ImageStyleCommand', () => {
 					command.execute( { value: anyImage.name, setImageSizes: false } );
 					await timeout( 100 );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toEqual(
 						`<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="/sample.png"></imageInline>]</paragraph>`
 					);
 				} );
@@ -537,9 +533,8 @@ describe( 'ImageStyleCommand', () => {
 
 					command.execute( { value: anyImage.name } );
 
-					expect( _getModelData( model ) ).to.equal(
-						`[<imageBlock imageStyle="${ anyImage.name }"><caption></caption></imageBlock>]`
-					);
+					expect( _getModelData( model ) )
+						.toEqual( `[<imageBlock imageStyle="${ anyImage.name }"><caption></caption></imageBlock>]` );
 
 					command.execute( { value: defaultBlock.name } );
 
@@ -563,9 +558,8 @@ describe( 'ImageStyleCommand', () => {
 					command.execute( { value: anyImage.name } );
 					await timeout( 100 );
 
-					expect( _getModelData( model ) ).to.equal(
-						`[<imageBlock height="96" imageStyle="${ anyImage.name }" src="/sample.png" width="96"></imageBlock>]`
-					);
+					expect( _getModelData( model ) )
+						.toEqual( `[<imageBlock height="96" imageStyle="${ anyImage.name }" src="/sample.png" width="96"></imageBlock>]` );
 
 					editor.execute( 'undo' );
 
@@ -597,9 +591,8 @@ describe( 'ImageStyleCommand', () => {
 					command.execute( { value: anyImage.name, setImageSizes: false } );
 					await timeout( 100 );
 
-					expect( _getModelData( model ) ).to.equal(
-						`[<imageBlock imageStyle="${ anyImage.name }" src="/sample.png"></imageBlock>]`
-					);
+					expect( _getModelData( model ) )
+						.toEqual( `[<imageBlock imageStyle="${ anyImage.name }" src="/sample.png"></imageBlock>]` );
 				} );
 			} );
 

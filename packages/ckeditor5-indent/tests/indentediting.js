@@ -27,15 +27,15 @@ describe( 'IndentEditing', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( IndentEditing.pluginName ).to.equal( 'IndentEditing' );
+		expect( IndentEditing.pluginName ).toEqual( 'IndentEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( IndentEditing.isOfficialPlugin ).to.be.true;
+		expect( IndentEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( IndentEditing.isPremiumPlugin ).to.be.false;
+		expect( IndentEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {

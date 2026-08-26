@@ -36,11 +36,11 @@ describe( 'ItalicUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ItalicUI.isOfficialPlugin ).to.be.true;
+		expect( ItalicUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ItalicUI.isPremiumPlugin ).to.be.false;
+		expect( ItalicUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'toolbar button', () => {
@@ -59,28 +59,28 @@ describe( 'ItalicUI', () => {
 		testButton();
 
 		it( 'should create button with `menuitemcheckbox` role', () => {
-			expect( italicView.role ).to.equal( 'menuitemcheckbox' );
+			expect( italicView.role ).toEqual( 'menuitemcheckbox' );
 		} );
 
 		it( 'should bind `isOn` to `aria-checked` attribute', () => {
 			italicView.render();
 
 			italicView.isOn = true;
-			expect( italicView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+			expect( italicView.element.getAttribute( 'aria-checked' ) ).toEqual( 'true' );
 
 			italicView.isOn = false;
-			expect( italicView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+			expect( italicView.element.getAttribute( 'aria-checked' ) ).toEqual( 'false' );
 		} );
 	} );
 
 	function testButton() {
 		it( 'should register italic feature component', () => {
 			expect( italicView ).to.be.instanceOf( ButtonView );
-			expect( italicView.isOn ).to.be.false;
-			expect( italicView.label ).to.equal( 'Italic' );
-			expect( italicView.icon ).to.match( /<svg / );
-			expect( italicView.keystroke ).to.equal( 'CTRL+I' );
-			expect( italicView.isToggleable ).to.be.true;
+			expect( italicView.isOn ).toBe( false );
+			expect( italicView.label ).toEqual( 'Italic' );
+			expect( italicView.icon ).toMatch( /<svg / );
+			expect( italicView.keystroke ).toEqual( 'CTRL+I' );
+			expect( italicView.isToggleable ).toBe( true );
 		} );
 
 		it( 'should execute italic command on model execute event', () => {
@@ -95,14 +95,14 @@ describe( 'ItalicUI', () => {
 		it( 'should bind model to italic command', () => {
 			const command = editor.commands.get( 'italic' );
 
-			expect( italicView.isEnabled ).to.be.true;
+			expect( italicView.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( italicView.isEnabled ).to.be.false;
+			expect( italicView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should set keystroke in the model', () => {
-			expect( italicView.keystroke ).to.equal( 'CTRL+I' );
+			expect( italicView.keystroke ).toEqual( 'CTRL+I' );
 		} );
 
 		it( 'should set editor keystroke', () => {
@@ -116,7 +116,7 @@ describe( 'ItalicUI', () => {
 				stopPropagation: vi.fn()
 			} );
 
-			expect( wasHandled ).to.be.true;
+			expect( wasHandled ).toBe( true );
 			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
@@ -125,11 +125,11 @@ describe( 'ItalicUI', () => {
 
 			command.value = true;
 
-			expect( italicView.isOn ).to.be.true;
+			expect( italicView.isOn ).toBe( true );
 
 			command.value = false;
 
-			expect( italicView.isOn ).to.be.false;
+			expect( italicView.isOn ).toBe( false );
 		} );
 	}
 } );

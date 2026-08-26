@@ -155,7 +155,7 @@ describe( 'attachToForm()', () => {
 
 	it( 'should not replace submit() method when one of the elements in a form is named "submit"', () => {
 		// Restore stub since we want to mask submit function with input with name="submit".
-		vi.restoreAllMocks();
+		submitStub.mockRestore();
 
 		const input = document.createElement( 'input' );
 		input.setAttribute( 'name', 'submit' );

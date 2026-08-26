@@ -10,18 +10,18 @@ import { FontFamilyUI } from '../src/fontfamily/fontfamilyui.js';
 
 describe( 'FontFamily', () => {
 	it( 'requires FontFamilyEditing and FontFamilyUI', () => {
-		expect( FontFamily.requires ).to.deep.equal( [ FontFamilyEditing, FontFamilyUI ] );
+		expect( FontFamily.requires ).toEqual( [ FontFamilyEditing, FontFamilyUI ] );
 	} );
 
 	it( 'defines plugin name', () => {
-		expect( FontFamily.pluginName ).to.equal( 'FontFamily' );
+		expect( FontFamily.pluginName ).toEqual( 'FontFamily' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FontFamily.isOfficialPlugin ).to.be.true;
+		expect( FontFamily.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( FontFamily.isPremiumPlugin ).to.be.false;
+		expect( FontFamily.isPremiumPlugin ).toBe( false );
 	} );
 } );

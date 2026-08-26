@@ -69,6 +69,6 @@ export function stubGeometry(
  * A helper that asserts HTML element's scroll* properties.
  */
 export function assertScrollPosition( element: HTMLElement, expected: { scrollTop: number; scrollLeft: number } ): void {
-	expect( element.scrollTop ).to.equal( expected.scrollTop, 'scrollTop' );
-	expect( element.scrollLeft ).to.equal( expected.scrollLeft, 'scrollLeft' );
+	expect( element.scrollTop, 'scrollTop' ).toEqual( expected.scrollTop );
+	expect( element.scrollLeft, 'scrollLeft' ).toEqual( expected.scrollLeft );
 }

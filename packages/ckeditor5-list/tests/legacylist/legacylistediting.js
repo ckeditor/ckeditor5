@@ -80,8 +80,8 @@ describe( 'LegacyListEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.isRegistered( 'listItem' ) );
-		expect( model.schema.isBlock( 'listItem' ) );
+		expect( model.schema.isRegistered( 'listItem' ) ).toBe( true );
+		expect( model.schema.isBlock( 'listItem' ) ).toBe( true );
 
 		expect( model.schema.checkChild( [ '$root' ], 'listItem' ) ).toBe( true );
 		expect( model.schema.checkChild( [ '$root', 'listItem' ], '$text' ) ).toBe( true );
@@ -525,7 +525,7 @@ describe( 'LegacyListEditing', () => {
 	describe( 'flat lists', () => {
 		describe( 'setting data', () => {
 			function testList( testName, string, expectedString = null ) {
-				it( testName, () => {
+				it( 'sets data for ' + testName, () => {
 					editor.setData( string );
 					expect( editor.getData() ).toBe( expectedString || string );
 				} );
@@ -768,7 +768,7 @@ describe( 'LegacyListEditing', () => {
 
 			describe( 'view to model', () => {
 				function testList( testName, viewPath, modelPath ) {
-					it( testName, () => {
+					it( 'maps view position ' + testName, () => {
 						const viewPos = getViewPosition( viewRoot, viewPath, view );
 						const modelPos = mapper.toModelPosition( viewPos );
 
@@ -793,7 +793,7 @@ describe( 'LegacyListEditing', () => {
 
 			describe( 'model to view', () => {
 				function testList( testName, modelPath, viewPath ) {
-					it( testName, () => {
+					it( 'maps model position ' + testName, () => {
 						const modelPos = model.createPositionFromPath( modelRoot, modelPath );
 						const viewPos = mapper.toViewPosition( modelPos );
 
@@ -2181,7 +2181,7 @@ describe( 'LegacyListEditing', () => {
 
 			describe( 'view to model', () => {
 				function testList( testName, viewPath, modelPath ) {
-					it( testName, () => {
+					it( 'maps view position ' + testName, () => {
 						const viewPos = getViewPosition( viewRoot, viewPath, view );
 						const modelPos = mapper.toModelPosition( viewPos );
 
@@ -2219,7 +2219,7 @@ describe( 'LegacyListEditing', () => {
 
 			describe( 'model to view', () => {
 				function testList( testName, modelPath, viewPath ) {
-					it( testName, () => {
+					it( 'maps model position ' + testName, () => {
 						const modelPos = model.createPositionFromPath( modelRoot, modelPath );
 						const viewPos = mapper.toViewPosition( modelPos );
 
@@ -4922,7 +4922,7 @@ describe( 'LegacyListEditing', () => {
 	}
 
 	function _test( testName, input, output, actionCallback, testUndo ) {
-		it( testName, () => {
+		it( 'converts ' + testName, () => {
 			const callbackSelection = prepareTest( model, input );
 
 			actionCallback( callbackSelection );

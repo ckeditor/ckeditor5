@@ -15,15 +15,23 @@ allowBuilds:
 # This section must be synchronized with `ckeditor/ckeditor5-commercial`.
 overrides:
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
-  'diff@^7': '^8.0.3'
+  'body-parser@^1': '^1.20.6'
+  'brace-expansion@^1': '^1.1.18'
+  'brace-expansion@^2': '^2.1.4'
+  'brace-expansion@^5': '^5.0.9'
+  'dompurify@^3': '^3.4.12'
+  'fast-uri@^3': '^3.1.5'
   'http-proxy-agent@^5': '^6.1.1'
+  'ip-address@^10': '^10.3.1'
+  'js-yaml@^4': '^4.3.0'
   'markdown-it-toc': 'npm:@maboloshi/markdown-it-toc@1.1.1'
-  'path-to-regexp@^0': '^0.1.13'
-  'serialize-javascript@^6': '^7.0.5'
+  'postcss@^8': '^8.5.23'
+  'socket.io-parser@^4': '^4.2.7'
+  'svgo@^3': '^3.3.4'
+  'tar@^7': '^7.5.21'
+  'undici@^6': '^6.28.0'
   'uuid@^8': '^14.0.0'
-  'uuid@^11': '^14.0.0'
   'yauzl@^2': '^3.2.1'
-  'ws@^8': '^8.20.1'
 
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:

@@ -145,7 +145,7 @@ describe( 'Table cell paragraph post-fixer', () => {
 		);
 	} );
 
-	it( 'should wrap in a paragraph $text nodes placed directly in tableCell (on table cell modification) ', () => {
+	it( 'should wrap in a paragraph $text nodes placed directly in tableCell (on table cell modification)', () => {
 		_setModelData( model,
 			'<table>' +
 				'<tableRow>' +

@@ -10,18 +10,18 @@ import { HeadingUI } from '../src/headingui.js';
 
 describe( 'Heading', () => {
 	it( 'should require HeadingEditing and HeadingUI', () => {
-		expect( Heading.requires ).to.deep.equal( [ HeadingEditing, HeadingUI ] );
+		expect( Heading.requires ).toEqual( [ HeadingEditing, HeadingUI ] );
 	} );
 
 	it( 'should be named', () => {
-		expect( Heading.pluginName ).to.equal( 'Heading' );
+		expect( Heading.pluginName ).toEqual( 'Heading' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Heading.isOfficialPlugin ).to.be.true;
+		expect( Heading.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Heading.isPremiumPlugin ).to.be.false;
+		expect( Heading.isPremiumPlugin ).toBe( false );
 	} );
 } );

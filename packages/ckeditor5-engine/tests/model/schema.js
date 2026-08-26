@@ -139,11 +139,11 @@ describe( 'Schema', () => {
 		} );
 
 		describe( 'getAttributeProperties()', () => {
-			it( 'it returns a proper value if the attribute has no properties', () => {
+			it( 'returns a proper value if the attribute has no properties', () => {
 				expect( schema.getAttributeProperties( 'noPropertiesAttribute' ) ).toEqual( {} );
 			} );
 
-			it( 'it returns a proper value for unknown attribute', () => {
+			it( 'returns a proper value for unknown attribute', () => {
 				expect( schema.getAttributeProperties( 'unregistered-attribute' ) ).toEqual( {} );
 			} );
 		} );
@@ -1077,7 +1077,7 @@ describe( 'Schema', () => {
 			const position = ModelPosition._createBefore( listItem );
 
 			expectToThrowCKEditorError( () => {
-				expect( schema.checkMerge( position ) );
+				schema.checkMerge( position );
 			}, 'schema-check-merge-no-element-before', schema );
 		} );
 
@@ -1095,7 +1095,7 @@ describe( 'Schema', () => {
 			const position = ModelPosition._createBefore( listItem );
 
 			expectToThrowCKEditorError( () => {
-				expect( schema.checkMerge( position ) );
+				schema.checkMerge( position );
 			}, 'schema-check-merge-no-element-before', schema );
 		} );
 
@@ -1112,7 +1112,7 @@ describe( 'Schema', () => {
 			const position = ModelPosition._createAfter( listItem );
 
 			expectToThrowCKEditorError( () => {
-				expect( schema.checkMerge( position ) );
+				schema.checkMerge( position );
 			}, 'schema-check-merge-no-element-after', schema );
 		} );
 
@@ -1130,7 +1130,7 @@ describe( 'Schema', () => {
 			const position = ModelPosition._createBefore( listItem );
 
 			expectToThrowCKEditorError( () => {
-				expect( schema.checkMerge( position ) );
+				schema.checkMerge( position );
 			}, 'schema-check-merge-no-element-before', schema );
 		} );
 
@@ -1949,7 +1949,7 @@ describe( 'Schema', () => {
 		} );
 
 		function test( testName, data, direction, expected ) {
-			it( testName, () => {
+			it( `${ testName }`, () => {
 				let range;
 
 				model.enqueueChange( { isUndoable: false }, () => {
@@ -1957,14 +1957,16 @@ describe( 'Schema', () => {
 					range = schema.getNearestSelectionRange( selection.anchor, direction );
 				} );
 
-				if ( expected === null ) {
-					expect( range ).toBeNull();
-				} else {
+				if ( range ) {
 					model.change( writer => {
 						writer.setSelection( range );
 					} );
-					expect( _getModelData( model ) ).toBe( expected );
 				}
+
+				// If no range was found, compare the `null` result directly with the expected value.
+				const result = range ? _getModelData( model ) : range;
+
+				expect( result ).toBe( expected );
 			} );
 		}
 	} );
@@ -2727,17 +2729,16 @@ describe( 'Schema', () => {
 			//
 			// We ignore those situations for now as they are very unlikely to happen and would
 			// significantly raised the complexity of definition compilation.
-			//
-			// it( 'passes d>a where d inherits content of c which inherits content of b', () => {
-			// 	schema.register( 'b' );
-			// 	schema.register( 'a', { allowIn: 'b' } );
-			// 	schema.register( 'd', { allowContentOf: 'c' } );
-			// 	schema.register( 'c', { allowContentOf: 'b' } );
-			//
-			// 	const d = new Element( 'd' );
-			//
-			// 	expect( schema.checkChild( d, 'a' ) ).toBe(true);
-			// } );
+			it.skip( 'passes d>a where d inherits content of c which inherits content of b (reversed registration order)', () => {
+				schema.register( 'b' );
+				schema.register( 'a', { allowIn: 'b' } );
+				schema.register( 'd', { allowContentOf: 'c' } );
+				schema.register( 'c', { allowContentOf: 'b' } );
+
+				const d = new ModelElement( 'd' );
+
+				expect( schema.checkChild( d, 'a' ) ).toBe( true );
+			} );
 		} );
 
 		describe( 'allowChildren', () => {

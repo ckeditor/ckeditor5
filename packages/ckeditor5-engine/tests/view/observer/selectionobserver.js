@@ -124,19 +124,27 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not fire selectionChange while editable is not focused', () => {
-		viewDocument.on( 'selectionChange', () => {
-			throw new Error( 'selectionChange fired while editable is not focused' );
-		} );
+		const spy = vi.fn();
+
+		viewDocument.on( 'selectionChange', spy );
 
 		viewDocument.isFocused = false;
 		changeDomSelection();
 
-		return new Promise( resolve => setTimeout( resolve, 100 ) );
+		return new Promise( resolve => setTimeout( () => {
+			expect( spy ).not.toHaveBeenCalled();
+			resolve();
+		}, 100 ) );
 	} );
 
 	it( 'should fire selectionChange after editor is focused and there were pending selection changes', () => {
+		const spy = vi.fn();
+
 		return new Promise( resolve => {
-			viewDocument.on( 'selectionChange', () => resolve() );
+			viewDocument.on( 'selectionChange', () => {
+				spy();
+				resolve();
+			} );
 
 			viewDocument.isFocused = false;
 			changeDomSelection();
@@ -144,6 +152,8 @@ describe( 'SelectionObserver', () => {
 			setTimeout( () => {
 				viewDocument.isFocused = true;
 			}, 100 );
+		} ).then( () => {
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -164,14 +174,17 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not fire selectionChange while user is composing', () => {
-		viewDocument.on( 'selectionChange', () => {
-			throw new Error( 'selectionChange fired while composing' );
-		} );
+		const spy = vi.fn();
+
+		viewDocument.on( 'selectionChange', spy );
 
 		viewDocument.isComposing = true;
 		changeDomSelection();
 
-		return new Promise( resolve => setTimeout( resolve, 100 ) );
+		return new Promise( resolve => setTimeout( () => {
+			expect( spy ).not.toHaveBeenCalled();
+			resolve();
+		}, 100 ) );
 	} );
 
 	it( 'should fire selectionChange while user is composing on Android', () => {
@@ -226,17 +239,20 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should add only one #selectionChange listener to one document', () => {
+		const spy = vi.fn();
+
 		// Add second roots to ensure that listener is added once.
 		createViewRoot( viewDocument, 'div', 'additional' );
 		view.attachDomRoot( domDocument.getElementById( 'additional' ), 'additional' );
 
-		return new Promise( resolve => {
-			viewDocument.on( 'selectionChange', () => {
-				resolve();
-			} );
+		viewDocument.on( 'selectionChange', spy );
 
-			changeDomSelection();
-		} );
+		changeDomSelection();
+
+		return new Promise( resolve => setTimeout( () => {
+			expect( spy ).toHaveBeenCalledOnce();
+			resolve();
+		}, 100 ) );
 	} );
 
 	it( 'should fire selectionChange synchronously on composition start event (at lowest priority)', () => {
@@ -284,22 +300,25 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not fire selectionChange for ignored target', () => {
-		viewDocument.on( 'selectionChange', () => {
-			throw new Error( 'selectionChange fired in ignored elements' );
-		} );
+		const spy = vi.fn();
+
+		viewDocument.on( 'selectionChange', spy );
 
 		view.getObserver( MutationObserver ).disable();
 		domMain.childNodes[ 1 ].setAttribute( 'data-cke-ignore-events', 'true' );
 
 		changeDomSelection();
 
-		return new Promise( resolve => setTimeout( resolve, 100 ) );
+		return new Promise( resolve => setTimeout( () => {
+			expect( spy ).not.toHaveBeenCalled();
+			resolve();
+		}, 100 ) );
 	} );
 
 	it( 'should not fire selectionChange on render', () => {
-		viewDocument.on( 'selectionChange', () => {
-			throw new Error( 'selectionChange on render' );
-		} );
+		const spy = vi.fn();
+
+		viewDocument.on( 'selectionChange', spy );
 
 		const viewBar = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
@@ -307,19 +326,25 @@ describe( 'SelectionObserver', () => {
 			writer.setSelection( ViewRange._createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
 		} );
 
-		return new Promise( resolve => setTimeout( resolve, 70 ) );
+		return new Promise( resolve => setTimeout( () => {
+			expect( spy ).not.toHaveBeenCalled();
+			resolve();
+		}, 70 ) );
 	} );
 
 	it( 'should not fire if observer is disabled', () => {
+		const spy = vi.fn();
+
 		view.getObserver( SelectionObserver ).disable();
 
-		viewDocument.on( 'selectionChange', () => {
-			throw new Error( 'selectionChange on render' );
-		} );
+		viewDocument.on( 'selectionChange', spy );
 
 		changeDomSelection();
 
-		return new Promise( resolve => setTimeout( resolve, 70 ) );
+		return new Promise( resolve => setTimeout( () => {
+			expect( spy ).not.toHaveBeenCalled();
+			resolve();
+		}, 70 ) );
 	} );
 
 	it( 'should not fire if the DOM selection was set outside editable', () => {
@@ -556,11 +581,15 @@ describe( 'SelectionObserver', () => {
 
 				// Some browsers like Safari won't allow to put selection inside empty ui element.
 				// In that situation selection should stay in correct place.
-				if ( sel.anchorNode !== domUI ) {
-					expect( sel.anchorNode ).toBe( domText );
-					expect( sel.anchorOffset ).toBe( 3 );
-					expect( sel.isCollapsed ).toBe( true );
+				const isSelectionInUiElement = sel.anchorNode === domUI;
+				const expectedAnchorNode = isSelectionInUiElement ? domUI : domText;
+				const expectedAnchorOffset = isSelectionInUiElement ? 0 : 3;
 
+				expect( sel.anchorNode ).toBe( expectedAnchorNode );
+				expect( sel.anchorOffset ).toBe( expectedAnchorOffset );
+				expect( sel.isCollapsed ).toBe( true );
+
+				if ( !isSelectionInUiElement ) {
 					resolve();
 				}
 			}, { priority: 'lowest' } );
@@ -710,21 +739,24 @@ describe( 'SelectionObserver', () => {
 		} );
 
 		it( 'should not fire selectionChange event upon the "mouseup" event if it was not selecting', () => {
+			const spy = vi.fn();
+
 			// Disable DOM selectionchange event to make sure that mouseup triggered view event.
 			selectionObserver.listenTo( domDocument, 'selectionchange', evt => {
 				evt.stop();
 			}, { priority: 'highest' } );
 
-			viewDocument.on( 'selectionChange', () => {
-				throw new Error( 'selectionChange fired' );
-			} );
+			viewDocument.on( 'selectionChange', spy );
 
 			viewDocument.isSelecting = false;
 
 			changeDomSelection();
 			domDocument.dispatchEvent( new Event( 'mouseup' ) );
 
-			return new Promise( resolve => setTimeout( resolve, 100 ) );
+			return new Promise( resolve => setTimeout( () => {
+				expect( spy ).not.toHaveBeenCalled();
+				resolve();
+			}, 100 ) );
 		} );
 
 		it( 'should set #isSelecting to false upon the "mouseup" event only once (editor with multiple roots)', () => {

@@ -27,15 +27,15 @@ describe( 'scripts/check-css-variables', () => {
 		process.argv = originalArgv;
 	} );
 
-	// Registers the theme stylesheets of the primary (and optionally baseline) packages in the
+	// Registers the theme stylesheets of the primary (and optionally base) packages in the
 	// mocked file system. Stylesheet paths are relative to the `theme` directory of a package.
-	function setup( { packages = {}, baselinePackages = {} } = {} ) {
+	function setup( { packages = {}, basePackages = {} } = {} ) {
 		const files = new Map();
 		const packageDirs = { '/repo/packages': [], '/repo/external/packages': [] };
 
 		for ( const [ packagesDir, packageSet ] of [
 			[ '/repo/packages', packages ],
-			[ '/repo/external/packages', baselinePackages ]
+			[ '/repo/external/packages', basePackages ]
 		] ) {
 			for ( const [ packageName, themeFiles ] of Object.entries( packageSet ) ) {
 				packageDirs[ packagesDir ].push( `${ packagesDir }/${ packageName }` );
@@ -162,8 +162,8 @@ describe( 'scripts/check-css-variables', () => {
 		expect( process.exit ).not.toHaveBeenCalled();
 	} );
 
-	it( 'resolves declarations through the same graph of the baseline packages', async () => {
-		process.argv = [ ...process.argv, '--baseline', 'external/packages' ];
+	it( 'resolves declarations through the same graph of the base packages', async () => {
+		process.argv = [ ...process.argv, '--base-packages', 'external/packages' ];
 
 		setup( {
 			packages: {
@@ -172,7 +172,7 @@ describe( 'scripts/check-css-variables', () => {
 					'index-content.css': ''
 				}
 			},
-			baselinePackages: {
+			basePackages: {
 				'ckeditor5-base': {
 					'index-editor.css': ':root {\n\t--ck-color-base: red;\n}\n',
 					'index-content.css': ''
@@ -185,8 +185,8 @@ describe( 'scripts/check-css-variables', () => {
 		expect( process.exit ).not.toHaveBeenCalled();
 	} );
 
-	it( 'rejects declarations available only in the other graph of the baseline packages', async () => {
-		process.argv = [ ...process.argv, '--baseline', 'external/packages' ];
+	it( 'rejects declarations available only in the other graph of the base packages', async () => {
+		process.argv = [ ...process.argv, '--base-packages', 'external/packages' ];
 
 		setup( {
 			packages: {
@@ -195,7 +195,7 @@ describe( 'scripts/check-css-variables', () => {
 					'index-content.css': ''
 				}
 			},
-			baselinePackages: {
+			basePackages: {
 				'ckeditor5-base': {
 					'index-editor.css': '',
 					'index-content.css': ':root {\n\t--ck-content-color: red;\n}\n'
@@ -211,8 +211,8 @@ describe( 'scripts/check-css-variables', () => {
 		) );
 	} );
 
-	it( 'does not validate the usages of the baseline packages', async () => {
-		process.argv = [ ...process.argv, '--baseline', 'external/packages' ];
+	it( 'does not validate the usages of the base packages', async () => {
+		process.argv = [ ...process.argv, '--base-packages', 'external/packages' ];
 
 		setup( {
 			packages: {
@@ -221,7 +221,7 @@ describe( 'scripts/check-css-variables', () => {
 					'index-content.css': ''
 				}
 			},
-			baselinePackages: {
+			basePackages: {
 				'ckeditor5-base': {
 					'index-editor.css': '.ck.ck-base {\n\tcolor: var(--ck-color-undeclared);\n}\n',
 					'index-content.css': ''

@@ -186,11 +186,11 @@ describe( 'BlockQuoteCommand', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/826
-		// it( 'is false when selection starts in an element which cannot be wrapped with blockQuote', () => {
-		// 	_setModelData( model, '<widget>x[x</widget><paragraph>y]y</paragraph>' );
+		it.skip( 'is false when selection starts in an element which cannot be wrapped with blockQuote', () => {
+			_setModelData( model, '<widget>x[x</widget><paragraph>y]y</paragraph>' );
 
-		// 	expect( command ).to.have.property( 'isEnabled', false );
-		// } );
+			expect( command ).toHaveProperty( 'isEnabled', false );
+		} );
 	} );
 
 	describe( 'execute()', () => {

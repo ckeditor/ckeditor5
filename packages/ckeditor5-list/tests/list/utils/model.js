@@ -46,12 +46,12 @@ describe( 'List - utils - model', () => {
 		it( 'should generate UIDs', () => {
 			stubUid( 0 );
 
-			expect( ListItemUid.next() ).to.equal( '000' );
-			expect( ListItemUid.next() ).to.equal( '001' );
-			expect( ListItemUid.next() ).to.equal( '002' );
-			expect( ListItemUid.next() ).to.equal( '003' );
-			expect( ListItemUid.next() ).to.equal( '004' );
-			expect( ListItemUid.next() ).to.equal( '005' );
+			expect( ListItemUid.next() ).toEqual( '000' );
+			expect( ListItemUid.next() ).toEqual( '001' );
+			expect( ListItemUid.next() ).toEqual( '002' );
+			expect( ListItemUid.next() ).toEqual( '003' );
+			expect( ListItemUid.next() ).toEqual( '004' );
+			expect( ListItemUid.next() ).toEqual( '005' );
 		} );
 	} );
 
@@ -68,8 +68,8 @@ describe( 'List - utils - model', () => {
 			const listItem = fragment.getChild( 1 );
 			const foundElements = getAllListItemBlocks( listItem );
 
-			expect( foundElements.length ).to.equal( 1 );
-			expect( foundElements[ 0 ] ).to.be.equal( listItem );
+			expect( foundElements.length ).toEqual( 1 );
+			expect( foundElements[ 0 ] ).toEqual( listItem );
 		} );
 
 		it( 'should return a items if started looking from the first list item block', () => {
@@ -86,10 +86,10 @@ describe( 'List - utils - model', () => {
 			const listItem = fragment.getChild( 1 );
 			const foundElements = getAllListItemBlocks( listItem );
 
-			expect( foundElements.length ).to.equal( 3 );
-			expect( foundElements[ 0 ] ).to.be.equal( listItem );
-			expect( foundElements[ 1 ] ).to.be.equal( fragment.getChild( 2 ) );
-			expect( foundElements[ 2 ] ).to.be.equal( fragment.getChild( 3 ) );
+			expect( foundElements.length ).toEqual( 3 );
+			expect( foundElements[ 0 ] ).toEqual( listItem );
+			expect( foundElements[ 1 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( foundElements[ 2 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should return a items if started looking from the last list item block', () => {
@@ -106,10 +106,10 @@ describe( 'List - utils - model', () => {
 			const listItem = fragment.getChild( 3 );
 			const foundElements = getAllListItemBlocks( listItem );
 
-			expect( foundElements.length ).to.equal( 3 );
-			expect( foundElements[ 0 ] ).to.be.equal( fragment.getChild( 1 ) );
-			expect( foundElements[ 1 ] ).to.be.equal( fragment.getChild( 2 ) );
-			expect( foundElements[ 2 ] ).to.be.equal( listItem );
+			expect( foundElements.length ).toEqual( 3 );
+			expect( foundElements[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( foundElements[ 1 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( foundElements[ 2 ] ).toEqual( listItem );
 		} );
 
 		it( 'should return a items if started looking from the middle list item block', () => {
@@ -126,10 +126,10 @@ describe( 'List - utils - model', () => {
 			const listItem = fragment.getChild( 2 );
 			const foundElements = getAllListItemBlocks( listItem );
 
-			expect( foundElements.length ).to.equal( 3 );
-			expect( foundElements[ 0 ] ).to.be.equal( fragment.getChild( 1 ) );
-			expect( foundElements[ 1 ] ).to.be.equal( listItem );
-			expect( foundElements[ 2 ] ).to.be.equal( fragment.getChild( 3 ) );
+			expect( foundElements.length ).toEqual( 3 );
+			expect( foundElements[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( foundElements[ 1 ] ).toEqual( listItem );
+			expect( foundElements[ 2 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should ignore nested list blocks', () => {
@@ -149,10 +149,10 @@ describe( 'List - utils - model', () => {
 			const listItem = fragment.getChild( 4 );
 			const foundElements = getAllListItemBlocks( listItem );
 
-			expect( foundElements.length ).to.equal( 3 );
-			expect( foundElements[ 0 ] ).to.be.equal( fragment.getChild( 2 ) );
-			expect( foundElements[ 1 ] ).to.be.equal( listItem );
-			expect( foundElements[ 2 ] ).to.be.equal( fragment.getChild( 6 ) );
+			expect( foundElements.length ).toEqual( 3 );
+			expect( foundElements[ 0 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( foundElements[ 1 ] ).toEqual( listItem );
+			expect( foundElements[ 2 ] ).toEqual( fragment.getChild( 6 ) );
 		} );
 	} );
 
@@ -170,9 +170,9 @@ describe( 'List - utils - model', () => {
 			const backwardElements = getListItemBlocks( listItem, { direction: 'backward' } );
 			const forwardElements = getListItemBlocks( listItem, { direction: 'forward' } );
 
-			expect( backwardElements.length ).to.equal( 0 );
-			expect( forwardElements.length ).to.equal( 1 );
-			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
+			expect( backwardElements.length ).toEqual( 0 );
+			expect( forwardElements.length ).toEqual( 1 );
+			expect( forwardElements[ 0 ] ).toEqual( listItem );
 		} );
 
 		it( 'should return a items if started looking from the first list item block', () => {
@@ -190,11 +190,11 @@ describe( 'List - utils - model', () => {
 			const backwardElements = getListItemBlocks( listItem, { direction: 'backward' } );
 			const forwardElements = getListItemBlocks( listItem, { direction: 'forward' } );
 
-			expect( backwardElements.length ).to.equal( 0 );
-			expect( forwardElements.length ).to.equal( 3 );
-			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
-			expect( forwardElements[ 1 ] ).to.be.equal( fragment.getChild( 2 ) );
-			expect( forwardElements[ 2 ] ).to.be.equal( fragment.getChild( 3 ) );
+			expect( backwardElements.length ).toEqual( 0 );
+			expect( forwardElements.length ).toEqual( 3 );
+			expect( forwardElements[ 0 ] ).toEqual( listItem );
+			expect( forwardElements[ 1 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( forwardElements[ 2 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should return a items if started looking from the last list item block', () => {
@@ -212,12 +212,12 @@ describe( 'List - utils - model', () => {
 			const backwardElements = getListItemBlocks( listItem, { direction: 'backward' } );
 			const forwardElements = getListItemBlocks( listItem, { direction: 'forward' } );
 
-			expect( backwardElements.length ).to.equal( 2 );
-			expect( backwardElements[ 0 ] ).to.be.equal( fragment.getChild( 1 ) );
-			expect( backwardElements[ 1 ] ).to.be.equal( fragment.getChild( 2 ) );
+			expect( backwardElements.length ).toEqual( 2 );
+			expect( backwardElements[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( backwardElements[ 1 ] ).toEqual( fragment.getChild( 2 ) );
 
-			expect( forwardElements.length ).to.equal( 1 );
-			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
+			expect( forwardElements.length ).toEqual( 1 );
+			expect( forwardElements[ 0 ] ).toEqual( listItem );
 		} );
 
 		it( 'should return a items if started looking from the middle list item block', () => {
@@ -235,12 +235,12 @@ describe( 'List - utils - model', () => {
 			const backwardElements = getListItemBlocks( listItem, { direction: 'backward' } );
 			const forwardElements = getListItemBlocks( listItem, { direction: 'forward' } );
 
-			expect( backwardElements.length ).to.equal( 1 );
-			expect( backwardElements[ 0 ] ).to.be.equal( fragment.getChild( 1 ) );
+			expect( backwardElements.length ).toEqual( 1 );
+			expect( backwardElements[ 0 ] ).toEqual( fragment.getChild( 1 ) );
 
-			expect( forwardElements.length ).to.equal( 2 );
-			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
-			expect( forwardElements[ 1 ] ).to.be.equal( fragment.getChild( 3 ) );
+			expect( forwardElements.length ).toEqual( 2 );
+			expect( forwardElements[ 0 ] ).toEqual( listItem );
+			expect( forwardElements[ 1 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should ignore nested list blocks', () => {
@@ -261,12 +261,12 @@ describe( 'List - utils - model', () => {
 			const backwardElements = getListItemBlocks( listItem, { direction: 'backward' } );
 			const forwardElements = getListItemBlocks( listItem, { direction: 'forward' } );
 
-			expect( backwardElements.length ).to.equal( 1 );
-			expect( backwardElements[ 0 ] ).to.be.equal( fragment.getChild( 2 ) );
+			expect( backwardElements.length ).toEqual( 1 );
+			expect( backwardElements[ 0 ] ).toEqual( fragment.getChild( 2 ) );
 
-			expect( forwardElements.length ).to.equal( 2 );
-			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
-			expect( forwardElements[ 1 ] ).to.be.equal( fragment.getChild( 6 ) );
+			expect( forwardElements.length ).toEqual( 2 );
+			expect( forwardElements[ 0 ] ).toEqual( listItem );
+			expect( forwardElements[ 1 ] ).toEqual( fragment.getChild( 6 ) );
 		} );
 
 		it( 'should break if exited nested list', () => {
@@ -284,11 +284,11 @@ describe( 'List - utils - model', () => {
 			const backwardElements = getListItemBlocks( listItem, { direction: 'backward' } );
 			const forwardElements = getListItemBlocks( listItem, { direction: 'forward' } );
 
-			expect( backwardElements.length ).to.equal( 0 );
+			expect( backwardElements.length ).toEqual( 0 );
 
-			expect( forwardElements.length ).to.equal( 2 );
-			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
-			expect( forwardElements[ 1 ] ).to.be.equal( fragment.getChild( 3 ) );
+			expect( forwardElements.length ).toEqual( 2 );
+			expect( forwardElements[ 0 ] ).toEqual( listItem );
+			expect( forwardElements[ 1 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should search backward by default', () => {
@@ -305,8 +305,8 @@ describe( 'List - utils - model', () => {
 			const listItem = fragment.getChild( 3 );
 			const backwardElements = getListItemBlocks( listItem );
 
-			expect( backwardElements.length ).to.equal( 1 );
-			expect( backwardElements[ 0 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( backwardElements.length ).toEqual( 1 );
+			expect( backwardElements[ 0 ] ).toEqual( fragment.getChild( 2 ) );
 		} );
 	} );
 
@@ -321,7 +321,7 @@ describe( 'List - utils - model', () => {
 			const listItem = fragment.getChild( 0 );
 			const blocks = getNestedListBlocks( listItem );
 
-			expect( blocks.length ).to.equal( 0 );
+			expect( blocks.length ).toEqual( 0 );
 		} );
 
 		it( 'should return blocks that have a greater indent than the given item', () => {
@@ -337,10 +337,10 @@ describe( 'List - utils - model', () => {
 			const listItem = fragment.getChild( 0 );
 			const blocks = getNestedListBlocks( listItem );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should return blocks that have a greater indent than the given item (nested one)', () => {
@@ -356,9 +356,9 @@ describe( 'List - utils - model', () => {
 			const listItem = fragment.getChild( 1 );
 			const blocks = getNestedListBlocks( listItem );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toEqual( 2 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should not include items from other subtrees', () => {
@@ -374,9 +374,9 @@ describe( 'List - utils - model', () => {
 			const listItem = fragment.getChild( 0 );
 			const blocks = getNestedListBlocks( listItem );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks.length ).toEqual( 2 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 2 ) );
 		} );
 	} );
 
@@ -393,7 +393,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
 
-			expect( getListItems( listItem ) ).to.deep.equal( [
+			expect( getListItems( listItem ) ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 ),
 				fragment.getChild( 3 )
@@ -412,7 +412,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 3 );
 
-			expect( getListItems( listItem ) ).to.deep.equal( [
+			expect( getListItems( listItem ) ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 ),
 				fragment.getChild( 3 )
@@ -431,7 +431,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
 
-			expect( getListItems( listItem ) ).to.deep.equal( [
+			expect( getListItems( listItem ) ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 ),
 				fragment.getChild( 3 )
@@ -450,7 +450,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
 
-			expect( getListItems( listItem ) ).to.deep.equal( [
+			expect( getListItems( listItem ) ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 ),
 				fragment.getChild( 3 )
@@ -469,7 +469,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
 
-			expect( getListItems( listItem ) ).to.deep.equal( [
+			expect( getListItems( listItem ) ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 ),
 				fragment.getChild( 3 )
@@ -488,7 +488,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
 
-			expect( getListItems( listItem ) ).to.deep.equal( [
+			expect( getListItems( listItem ) ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 3 )
 			] );
@@ -507,7 +507,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
 
-			expect( getListItems( listItem ) ).to.deep.equal( [
+			expect( getListItems( listItem ) ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 ),
 				fragment.getChild( 3 ),
@@ -531,7 +531,7 @@ describe( 'List - utils - model', () => {
 				const fragment = _parseModel( input, schema );
 				const listItem = fragment.getChild( 4 );
 
-				expect( getListItems( listItem, { higherIndent: true } ) ).to.deep.equal( [
+				expect( getListItems( listItem, { higherIndent: true } ) ).toEqual( [
 					fragment.getChild( 2 ),
 					fragment.getChild( 3 ),
 					fragment.getChild( 4 ),
@@ -552,7 +552,7 @@ describe( 'List - utils - model', () => {
 				const fragment = _parseModel( input, schema );
 				const listItem = fragment.getChild( 2 );
 
-				expect( getListItems( listItem, { sameAttributes: [] } ) ).to.deep.equal( [
+				expect( getListItems( listItem, { sameAttributes: [] } ) ).toEqual( [
 					fragment.getChild( 0 ),
 					fragment.getChild( 1 ),
 					fragment.getChild( 2 ),
@@ -573,7 +573,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
 
-			expect( isFirstBlockOfListItem( listItem ) ).to.be.true;
+			expect( isFirstBlockOfListItem( listItem ) ).toBe( true );
 		} );
 
 		it( 'should return true for the second list item', () => {
@@ -585,7 +585,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
 
-			expect( isFirstBlockOfListItem( listItem ) ).to.be.true;
+			expect( isFirstBlockOfListItem( listItem ) ).toBe( true );
 		} );
 
 		it( 'should return false for the second block of list item', () => {
@@ -597,7 +597,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
 
-			expect( isFirstBlockOfListItem( listItem ) ).to.be.false;
+			expect( isFirstBlockOfListItem( listItem ) ).toBe( false );
 		} );
 
 		it( 'should return true if the previous block has lower indent', () => {
@@ -609,7 +609,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
 
-			expect( isFirstBlockOfListItem( listItem ) ).to.be.true;
+			expect( isFirstBlockOfListItem( listItem ) ).toBe( true );
 		} );
 
 		it( 'should return false if the previous block has higher indent but it is a part of bigger list item', () => {
@@ -622,7 +622,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
 
-			expect( isFirstBlockOfListItem( listItem ) ).to.be.false;
+			expect( isFirstBlockOfListItem( listItem ) ).toBe( false );
 		} );
 	} );
 
@@ -636,7 +636,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
 
-			expect( isLastBlockOfListItem( listItem ) ).to.be.true;
+			expect( isLastBlockOfListItem( listItem ) ).toBe( true );
 		} );
 
 		it( 'should return true for the first list item', () => {
@@ -648,7 +648,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
 
-			expect( isLastBlockOfListItem( listItem ) ).to.be.true;
+			expect( isLastBlockOfListItem( listItem ) ).toBe( true );
 		} );
 
 		it( 'should return false for the first block of list item', () => {
@@ -660,7 +660,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
 
-			expect( isLastBlockOfListItem( listItem ) ).to.be.false;
+			expect( isLastBlockOfListItem( listItem ) ).toBe( false );
 		} );
 
 		it( 'should return true if the next block has lower indent', () => {
@@ -673,7 +673,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
 
-			expect( isLastBlockOfListItem( listItem ) ).to.be.true;
+			expect( isLastBlockOfListItem( listItem ) ).toBe( true );
 		} );
 
 		it( 'should return false if the next block has higher indent but it is a part of bigger list item', () => {
@@ -686,7 +686,7 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
 
-			expect( isLastBlockOfListItem( listItem ) ).to.be.false;
+			expect( isLastBlockOfListItem( listItem ) ).toBe( false );
 		} );
 	} );
 
@@ -706,8 +706,8 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 1 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks.length ).toEqual( 1 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 0 ) );
 		} );
 
 		it( 'should include all blocks for single list item', () => {
@@ -724,10 +724,10 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 2 ) );
 		} );
 
 		it( 'should include all blocks for only first list item block', () => {
@@ -746,10 +746,10 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should include all blocks for only last list item block', () => {
@@ -768,10 +768,10 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should include all blocks for only middle list item block', () => {
@@ -790,10 +790,10 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should include all blocks in nested list item', () => {
@@ -812,10 +812,10 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should include all blocks including nested items (start from first item)', () => {
@@ -832,10 +832,10 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 2 ) );
 		} );
 
 		it( 'should include all blocks including nested items (start from last item)', () => {
@@ -852,10 +852,10 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 2 ) );
 		} );
 
 		it( 'should expand first and last items', () => {
@@ -876,11 +876,11 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 4 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks.length ).toEqual( 4 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 3 ) );
+			expect( blocks[ 3 ] ).toEqual( fragment.getChild( 4 ) );
 		} );
 
 		it( 'should not include nested items from other item', () => {
@@ -899,9 +899,9 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toEqual( 2 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should include all blocks even if not at the same indent level from the edge block', () => {
@@ -925,13 +925,13 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteItems( blocks );
 
-			expect( blocks.length ).to.equal( 6 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
-			expect( blocks[ 4 ] ).to.equal( fragment.getChild( 5 ) );
-			expect( blocks[ 5 ] ).to.equal( fragment.getChild( 6 ) );
+			expect( blocks.length ).toEqual( 6 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 3 ) );
+			expect( blocks[ 3 ] ).toEqual( fragment.getChild( 4 ) );
+			expect( blocks[ 4 ] ).toEqual( fragment.getChild( 5 ) );
+			expect( blocks[ 5 ] ).toEqual( fragment.getChild( 6 ) );
 		} );
 	} );
 
@@ -941,7 +941,7 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteList( blocks, [ 'listType' ] );
 
-			expect( blocks.length ).to.equal( 0 );
+			expect( blocks.length ).toEqual( 0 );
 		} );
 
 		it( 'should include all list items (single item given)', () => {
@@ -959,11 +959,11 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteList( blocks, [ 'listType' ] );
 
-			expect( blocks.length ).to.equal( 4 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toEqual( 4 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 3 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should include all list item (two items given)', () => {
@@ -982,11 +982,11 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteList( blocks, [ 'listType' ] );
 
-			expect( blocks.length ).to.equal( 4 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks.length ).toEqual( 4 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 3 ] ).toEqual( fragment.getChild( 3 ) );
 		} );
 
 		it( 'should include all list item (part of list item given)', () => {
@@ -1005,12 +1005,12 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteList( blocks, [ 'listType' ] );
 
-			expect( blocks.length ).to.equal( 5 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 4 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks.length ).toEqual( 5 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 1 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 3 ] ).toEqual( fragment.getChild( 3 ) );
+			expect( blocks[ 4 ] ).toEqual( fragment.getChild( 4 ) );
 		} );
 
 		it( 'should include all list item of nested list', () => {
@@ -1031,10 +1031,10 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteList( blocks, [ 'listType' ] );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 3 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 4 ) );
 		} );
 
 		it( 'should include all list item from many lists', () => {
@@ -1060,13 +1060,13 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteList( blocks, [ 'listType' ] );
 
-			expect( blocks.length ).to.equal( 6 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 4 ) );
-			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 6 ) );
-			expect( blocks[ 4 ] ).to.equal( fragment.getChild( 7 ) );
-			expect( blocks[ 5 ] ).to.equal( fragment.getChild( 8 ) );
+			expect( blocks.length ).toEqual( 6 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 3 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 4 ) );
+			expect( blocks[ 3 ] ).toEqual( fragment.getChild( 6 ) );
+			expect( blocks[ 4 ] ).toEqual( fragment.getChild( 7 ) );
+			expect( blocks[ 5 ] ).toEqual( fragment.getChild( 8 ) );
 		} );
 
 		it( 'should not include any item from other list', () => {
@@ -1087,10 +1087,10 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteList( blocks, [ 'listType' ] );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 3 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 4 ) );
 		} );
 
 		it( 'should not include any item that is not a list', () => {
@@ -1111,10 +1111,10 @@ describe( 'List - utils - model', () => {
 
 			blocks = expandListBlocksToCompleteList( blocks, [ 'listType' ] );
 
-			expect( blocks.length ).to.equal( 3 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
-			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks.length ).toEqual( 3 );
+			expect( blocks[ 0 ] ).toEqual( fragment.getChild( 2 ) );
+			expect( blocks[ 1 ] ).toEqual( fragment.getChild( 3 ) );
+			expect( blocks[ 2 ] ).toEqual( fragment.getChild( 4 ) );
 		} );
 	} );
 
@@ -1246,7 +1246,7 @@ describe( 'List - utils - model', () => {
 				'* 2'
 			] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
+			expect( changedBlocks ).toEqual( [
 				fragment.getChild( 1 )
 			] );
 		} );
@@ -1273,7 +1273,7 @@ describe( 'List - utils - model', () => {
 				'* 3'
 			] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
+			expect( changedBlocks ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 )
 			] );
@@ -1299,7 +1299,7 @@ describe( 'List - utils - model', () => {
 				'* 2'
 			] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
+			expect( changedBlocks ).toEqual( [
 				fragment.getChild( 1 )
 			] );
 		} );
@@ -1353,7 +1353,7 @@ describe( 'List - utils - model', () => {
 
 				model.change( writer => indentBlocks( blocks, writer, { attributeNames } ) );
 
-				expect( _stringifyModel( fragment ) ).to.equal( modelList( [
+				expect( _stringifyModel( fragment ) ).toEqual( modelList( [
 					'* a',
 					'    * b',
 					'      * c',
@@ -1422,7 +1422,7 @@ describe( 'List - utils - model', () => {
 					'* 4'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( blocks );
+				expect( changedBlocks ).toEqual( blocks );
 			} );
 
 			it( 'should remove list attributes if outdented below 0', () => {
@@ -1455,7 +1455,7 @@ describe( 'List - utils - model', () => {
 					'4'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( blocks );
+				expect( changedBlocks ).toEqual( blocks );
 			} );
 
 			it( 'should not remove attributes other than lists if outdented below 0', () => {
@@ -1488,7 +1488,7 @@ describe( 'List - utils - model', () => {
 					'* <paragraph alignment="right">4</paragraph>'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( blocks );
+				expect( changedBlocks ).toEqual( blocks );
 			} );
 
 			it( 'should apply indentation on all blocks of given items (expand = true)', () => {
@@ -1522,7 +1522,7 @@ describe( 'List - utils - model', () => {
 					'  * 5'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					fragment.getChild( 1 ),
 					fragment.getChild( 2 ),
 					fragment.getChild( 3 ),
@@ -1561,7 +1561,7 @@ describe( 'List - utils - model', () => {
 				'* 4'
 			] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
+			expect( changedBlocks ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 )
 			] );
@@ -1595,7 +1595,7 @@ describe( 'List - utils - model', () => {
 				'* 4'
 			] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
+			expect( changedBlocks ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 )
 			] );
@@ -1629,7 +1629,7 @@ describe( 'List - utils - model', () => {
 				'* 4'
 			] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
+			expect( changedBlocks ).toEqual( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 ),
 				fragment.getChild( 3 )
@@ -1670,7 +1670,7 @@ describe( 'List - utils - model', () => {
 				'* 5'
 			] ) );
 
-			expect( changedBlocks ).to.deep.equal( blocks );
+			expect( changedBlocks ).toEqual( blocks );
 		} );
 
 		it( 'should not remove non-list attributes', () => {
@@ -1705,13 +1705,13 @@ describe( 'List - utils - model', () => {
 				'* 5'
 			] ) );
 
-			expect( changedBlocks ).to.deep.equal( blocks );
+			expect( changedBlocks ).toEqual( blocks );
 		} );
 	} );
 
 	describe( 'isSingleListItem()', () => {
 		it( 'should return false if no blocks are given', () => {
-			expect( isSingleListItem( [] ) ).to.be.false;
+			expect( isSingleListItem( [] ) ).toBe( false );
 		} );
 
 		it( 'should return false if first block is not a list item', () => {
@@ -1725,7 +1725,7 @@ describe( 'List - utils - model', () => {
 				fragment.getChild( 1 )
 			];
 
-			expect( isSingleListItem( blocks ) ).to.be.false;
+			expect( isSingleListItem( blocks ) ).toBe( false );
 		} );
 
 		it( 'should return false if any block has a different ID', () => {
@@ -1742,7 +1742,7 @@ describe( 'List - utils - model', () => {
 				fragment.getChild( 2 )
 			];
 
-			expect( isSingleListItem( blocks ) ).to.be.false;
+			expect( isSingleListItem( blocks ) ).toBe( false );
 		} );
 
 		it( 'should return true if all block has the same ID', () => {
@@ -1758,7 +1758,7 @@ describe( 'List - utils - model', () => {
 				fragment.getChild( 1 )
 			];
 
-			expect( isSingleListItem( blocks ) ).to.be.true;
+			expect( isSingleListItem( blocks ) ).toBe( true );
 		} );
 	} );
 
@@ -1809,7 +1809,7 @@ describe( 'List - utils - model', () => {
 				'    * 14'
 			] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
+			expect( changedBlocks ).toEqual( [
 				fragment.getChild( 4 ),
 				fragment.getChild( 5 ),
 				fragment.getChild( 6 ),
@@ -1831,8 +1831,8 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).toBe( true );
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).toBe( false );
 		} );
 
 		it( 'should return true for a list item preceded by a non-list block', () => {
@@ -1843,7 +1843,7 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).toBe( true );
 		} );
 
 		it( 'should return true for a list item preceded by a list item of a different type at the same indent', () => {
@@ -1854,7 +1854,7 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).toBe( true );
 		} );
 
 		it( 'should return false for a nested list item preceded by a same-indent same-type sibling', () => {
@@ -1866,7 +1866,7 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).toBe( false );
 		} );
 
 		it( 'should return true for the first item after a list of a different type', () => {
@@ -1880,13 +1880,13 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 
 			// First numbered item.
-			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).toBe( true );
 			// Second numbered item.
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).toBe( false );
 			// First bulleted item.
-			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).toBe( true );
 			// Second bulleted item.
-			expect( isFirstListItemInList( fragment.getChild( 3 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 3 ) ) ).toBe( false );
 		} );
 
 		it( 'should return false for same-type item after nested item of different type', () => {
@@ -1898,7 +1898,7 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).toBe( false );
 		} );
 
 		it( 'should return true for a skip-level list item that is first in the document', () => {
@@ -1909,7 +1909,7 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).toBe( true );
 		} );
 
 		it( 'should return false for a top-level item placed after a same-type skip-level nested list', () => {
@@ -1921,8 +1921,8 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).toBe( true );
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).toBe( false );
 		} );
 
 		it( 'should return false for an item placed after a higher-indent block of a different type', () => {
@@ -1935,7 +1935,7 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).toBe( false );
 		} );
 
 		it( 'should return false along a chain of higher-indent skip-level items', () => {
@@ -1947,9 +1947,9 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
-			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).toBe( true );
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).toBe( false );
+			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).toBe( false );
 		} );
 
 		it( 'should return false for a top-level item placed after a different-type skip-level nested list and before list item', () => {
@@ -1961,9 +1961,9 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
-			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).toBe( true );
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).toBe( false );
+			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).toBe( true );
 		} );
 
 		it( 'should return true for a top-level item placed after a different-type skip-level nested list and before list item', () => {
@@ -1975,9 +1975,9 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.true;
-			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).toBe( true );
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).toBe( true );
+			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).toBe( false );
 		} );
 
 		it( 'should return true for an item starting a new list after a different-type list with a nested list', () => {
@@ -1989,7 +1989,7 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).toBe( true );
 		} );
 
 		it( 'should return true for an item starting a new list after a different-type list with a skip-level nested list', () => {
@@ -2001,7 +2001,7 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).toBe( true );
 		} );
 
 		it( 'should return false for a continuation block of a multi-block list item', () => {
@@ -2012,8 +2012,8 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).toBe( true );
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).toBe( false );
 		} );
 
 		it( 'should return false for an item placed after a multi-block continuation of a preceding item', () => {
@@ -2026,7 +2026,7 @@ describe( 'List - utils - model', () => {
 
 			const fragment = _parseModel( input, schema );
 
-			expect( isFirstListItemInList( fragment.getChild( 3 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 3 ) ) ).toBe( false );
 		} );
 	} );
 } );

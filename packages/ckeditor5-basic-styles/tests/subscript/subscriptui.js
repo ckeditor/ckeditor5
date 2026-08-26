@@ -35,11 +35,11 @@ describe( 'SubscriptUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( SubscriptUI.isOfficialPlugin ).to.be.true;
+		expect( SubscriptUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( SubscriptUI.isPremiumPlugin ).to.be.false;
+		expect( SubscriptUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'toolbar button', () => {
@@ -58,27 +58,27 @@ describe( 'SubscriptUI', () => {
 		testButton();
 
 		it( 'should create button with `menuitemcheckbox` role', () => {
-			expect( subView.role ).to.equal( 'menuitemcheckbox' );
+			expect( subView.role ).toEqual( 'menuitemcheckbox' );
 		} );
 
 		it( 'should bind `isOn` to `aria-checked` attribute', () => {
 			subView.render();
 
 			subView.isOn = true;
-			expect( subView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+			expect( subView.element.getAttribute( 'aria-checked' ) ).toEqual( 'true' );
 
 			subView.isOn = false;
-			expect( subView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+			expect( subView.element.getAttribute( 'aria-checked' ) ).toEqual( 'false' );
 		} );
 	} );
 
 	function testButton() {
 		it( 'should register subscript feature component', () => {
 			expect( subView ).to.be.instanceOf( ButtonView );
-			expect( subView.isOn ).to.be.false;
-			expect( subView.label ).to.equal( 'Subscript' );
-			expect( subView.icon ).to.match( /<svg / );
-			expect( subView.isToggleable ).to.be.true;
+			expect( subView.isOn ).toBe( false );
+			expect( subView.label ).toEqual( 'Subscript' );
+			expect( subView.icon ).toMatch( /<svg / );
+			expect( subView.isToggleable ).toBe( true );
 		} );
 
 		it( 'should execute subscript command on model execute event', () => {
@@ -93,10 +93,10 @@ describe( 'SubscriptUI', () => {
 		it( 'should bind model to subscript command', () => {
 			const command = editor.commands.get( 'subscript' );
 
-			expect( subView.isEnabled ).to.be.true;
+			expect( subView.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( subView.isEnabled ).to.be.false;
+			expect( subView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should bind `isOn` to `command`.`value`', () => {
@@ -104,11 +104,11 @@ describe( 'SubscriptUI', () => {
 
 			command.value = true;
 
-			expect( subView.isOn ).to.be.true;
+			expect( subView.isOn ).toBe( true );
 
 			command.value = false;
 
-			expect( subView.isOn ).to.be.false;
+			expect( subView.isOn ).toBe( false );
 		} );
 	}
 } );

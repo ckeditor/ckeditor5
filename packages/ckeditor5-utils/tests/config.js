@@ -50,8 +50,9 @@ describe( 'Config', () => {
 		} );
 
 		it( 'should work with no parameters', () => {
-			// No error should be thrown.
-			config = new Config();
+			expect( () => {
+				config = new Config();
+			} ).not.toThrow();
 		} );
 
 		it( 'should set default parameters', () => {

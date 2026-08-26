@@ -2642,8 +2642,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>'
 			);
 
-			expect( skipEditor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( skipEditor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li>A' +
 						'<ul>' +
 							'<li style="list-style-type:none;">' +
@@ -2653,8 +2652,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'</li>' +
 						'</ul>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		it( 'should create intermediate wrappers for multiple skipped levels', () => {
@@ -2663,8 +2661,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="3" listItemId="b" listType="bulleted">B</paragraph>'
 			);
 
-			expect( skipEditor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( skipEditor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li>A' +
 						'<ul>' +
 							'<li style="list-style-type:none;">' +
@@ -2678,8 +2675,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'</li>' +
 						'</ul>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		it( 'should create intermediate wrappers when the first item has a skip level', () => {
@@ -2688,8 +2684,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="0" listItemId="b" listType="bulleted">B</paragraph>'
 			);
 
-			expect( skipEditor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( skipEditor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li style="list-style-type:none;">' +
 						'<ul>' +
 							'<li style="list-style-type:none;">' +
@@ -2700,8 +2695,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 						'</ul>' +
 					'</li>' +
 					'<li>B</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		it( 'should merge intermediate wrappers for sibling items at the same skip level', () => {
@@ -2710,16 +2704,14 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>'
 			);
 
-			expect( skipEditor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( skipEditor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li style="list-style-type:none;">' +
 						'<ul>' +
 							'<li>A</li>' +
 							'<li>B</li>' +
 						'</ul>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		it( 'should inherit the list type from the ancestor for intermediate levels without a sibling', () => {
@@ -2728,8 +2720,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>'
 			);
 
-			expect( skipEditor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ol>' +
+			expect( skipEditor.getData( { skipListItemIds: true } ) ).toEqual( '<ol>' +
 					'<li>A' +
 						'<ol>' +
 							'<li style="list-style-type:none;">' +
@@ -2739,8 +2730,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'</li>' +
 						'</ol>' +
 					'</li>' +
-				'</ol>'
-			);
+				'</ol>' );
 		} );
 
 		it( 'should place intermediate and real items as siblings at the same indent', () => {
@@ -2750,8 +2740,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 
-			expect( skipEditor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( skipEditor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li>A' +
 						'<ul>' +
 							'<li style="list-style-type:none;">' +
@@ -2762,8 +2751,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'<li>C</li>' +
 						'</ul>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		it( 'should handle multi-block list item with skip level', () => {
@@ -2773,8 +2761,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B2</paragraph>'
 			);
 
-			expect( skipEditor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( skipEditor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li>A' +
 						'<ul>' +
 							'<li style="list-style-type:none;">' +
@@ -2787,8 +2774,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'</li>' +
 						'</ul>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		it( 'should create intermediate wrappers for a numbered list', () => {
@@ -2798,8 +2784,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="1" listItemId="c" listType="numbered">C</paragraph>'
 			);
 
-			expect( skipEditor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ol>' +
+			expect( skipEditor.getData( { skipListItemIds: true } ) ).toEqual( '<ol>' +
 					'<li>A' +
 						'<ol>' +
 							'<li style="list-style-type:none;">' +
@@ -2810,8 +2795,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'<li>C</li>' +
 						'</ol>' +
 					'</li>' +
-				'</ol>'
-			);
+				'</ol>' );
 		} );
 
 		it( 'should handle a container at a skip level', () => {
@@ -2822,8 +2806,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'</blockQuote>'
 			);
 
-			expect( skipEditor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( skipEditor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li>A' +
 						'<ul>' +
 							'<li style="list-style-type:none;">' +
@@ -2833,8 +2816,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'</li>' +
 						'</ul>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		describe( 'upcast', () => {

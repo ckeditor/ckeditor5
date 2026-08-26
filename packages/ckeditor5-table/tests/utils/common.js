@@ -154,7 +154,7 @@ describe( 'table utils', () => {
 					result = Array.from( getEmptyTableCellBlocks( table ) );
 				} );
 
-				expect( result ).to.deep.equal( [ emptyParagraph ] );
+				expect( result ).toEqual( [ emptyParagraph ] );
 			} );
 
 			it( 'skips a row child that is not a tableCell', () => {
@@ -172,7 +172,7 @@ describe( 'table utils', () => {
 					result = Array.from( getEmptyTableCellBlocks( table ) );
 				} );
 
-				expect( result ).to.deep.equal( [ emptyParagraph ] );
+				expect( result ).toEqual( [ emptyParagraph ] );
 			} );
 
 			it( 'skips a cell block that is not empty', () => {
@@ -181,7 +181,7 @@ describe( 'table utils', () => {
 				const table = modelRoot.getChild( 0 );
 				const emptyParagraph = table.getNodeByPath( [ 0, 0, 0 ] );
 
-				expect( Array.from( getEmptyTableCellBlocks( table ) ) ).to.deep.equal( [ emptyParagraph ] );
+				expect( Array.from( getEmptyTableCellBlocks( table ) ) ).toEqual( [ emptyParagraph ] );
 			} );
 
 			it( 'yields every empty cell block when the table is otherwise unremarkable', () => {

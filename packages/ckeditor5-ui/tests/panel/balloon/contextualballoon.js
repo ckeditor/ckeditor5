@@ -322,8 +322,8 @@ describe( 'ContextualBalloon', () => {
 
 			expect( content.length ).toBe( 1 );
 			expect( content.get( 0 ) ).toEqual( viewA );
-			expect( balloon.hasView( viewB ) );
-			expect( balloon.hasView( viewC ) );
+			expect( balloon.hasView( viewB ) ).toBe( true );
+			expect( balloon.hasView( viewC ) ).toBe( true );
 		} );
 
 		it( 'should add multiple views to he stack and display last one', () => {
@@ -890,7 +890,7 @@ describe( 'ContextualBalloon', () => {
 			expect( () => {
 				balloon.destroy();
 				balloon.destroy();
-			} );
+			} ).not.toThrow();
 		} );
 
 		it( 'should not touch the DOM', () => {

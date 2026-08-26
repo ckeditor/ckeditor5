@@ -36,29 +36,29 @@ describe( 'table properties', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be false if selection does not have table', () => {
 						_setModelData( model, '<paragraph>foo[]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection has table', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be false if selection does not have table', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true if selection is inside table', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true if selection is over table', () => {
 						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 			} );
@@ -68,13 +68,13 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selected table has no width property', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table has width property', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '100px' } ) );
 
-						expect( command.value ).to.equal( '100px' );
+						expect( command.value ).toEqual( '100px' );
 					} );
 				} );
 
@@ -82,19 +82,19 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selection does not have table', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set is selection is inside table', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableWidth: '100px' } ) );
 
-						expect( command.value ).to.equal( '100px' );
+						expect( command.value ).toEqual( '100px' );
 					} );
 
 					it( 'should be set is selection is over table', () => {
 						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ], { tableWidth: '100px' } ) + ']' );
 
-						expect( command.value ).to.equal( '100px' );
+						expect( command.value ).toEqual( '100px' );
 					} );
 				} );
 			} );
@@ -266,13 +266,13 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '300px' } ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table has width property other than the default value', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '100px' } ) );
 
-						expect( command.value ).to.equal( '100px' );
+						expect( command.value ).toEqual( '100px' );
 					} );
 				} );
 
@@ -280,13 +280,13 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableWidth: '300px' } ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table has width property other than the default value', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableWidth: '100px' } ) );
 
-						expect( command.value ).to.equal( '100px' );
+						expect( command.value ).toEqual( '100px' );
 					} );
 				} );
 			} );

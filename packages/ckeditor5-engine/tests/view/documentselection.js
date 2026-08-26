@@ -744,9 +744,9 @@ describe( 'ViewDocumentSelection', () => {
 
 				expect( documentSelection.rangeCount ).toBe( 2 );
 				expect( documentSelection._ranges[ 0 ].isEqual( range2 ) ).toBe( true );
-				expect( documentSelection._ranges[ 0 ] ).is.not.equal( range2 );
+				expect( documentSelection._ranges[ 0 ] ).not.toBe( range2 );
 				expect( documentSelection._ranges[ 1 ].isEqual( range3 ) ).toBe( true );
-				expect( documentSelection._ranges[ 1 ] ).is.not.equal( range3 );
+				expect( documentSelection._ranges[ 1 ] ).not.toBe( range3 );
 
 				expect( documentSelection.anchor.isEqual( range3.end ) ).toBe( true );
 			} );

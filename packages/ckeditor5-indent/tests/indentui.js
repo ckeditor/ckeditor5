@@ -36,15 +36,15 @@ describe( 'IndentUI', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( IndentUI.pluginName ).to.equal( 'IndentUI' );
+		expect( IndentUI.pluginName ).toEqual( 'IndentUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( IndentUI.isOfficialPlugin ).to.be.true;
+		expect( IndentUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( IndentUI.isPremiumPlugin ).to.be.false;
+		expect( IndentUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
@@ -64,7 +64,7 @@ describe( 'IndentUI', () => {
 			}, ButtonView );
 
 			it( 'should have tooltip', () => {
-				expect( button.tooltip ).to.be.true;
+				expect( button.tooltip ).toBe( true );
 			} );
 		} );
 
@@ -80,7 +80,7 @@ describe( 'IndentUI', () => {
 			}, ButtonView );
 
 			it( 'should have tooltip', () => {
-				expect( button.tooltip ).to.be.true;
+				expect( button.tooltip ).toBe( true );
 			} );
 		} );
 	} );
@@ -117,8 +117,8 @@ describe( 'IndentUI', () => {
 		} );
 
 		it( 'should create UI component with correct attribute values', () => {
-			expect( button.isOn ).to.be.false;
-			expect( button.label ).to.equal( label );
+			expect( button.isOn ).toBe( false );
+			expect( button.label ).toEqual( label );
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
@@ -136,25 +136,25 @@ describe( 'IndentUI', () => {
 		it( `should bind #isEnabled to ${ featureName } command`, () => {
 			const command = editor.commands.get( featureName );
 
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 
 			const initState = command.isEnabled;
-			expect( button.isEnabled ).to.equal( initState );
+			expect( button.isEnabled ).toEqual( initState );
 
 			command.isEnabled = !initState;
-			expect( button.isEnabled ).to.equal( !initState );
+			expect( button.isEnabled ).toEqual( !initState );
 		} );
 
 		describe( 'icons and UI language', () => {
 			describe( 'left–to–right UI', () => {
 				it( 'should display the correct icon', () => {
-					expect( button.icon ).to.equal( ltrIcon );
+					expect( button.icon ).toEqual( ltrIcon );
 				} );
 			} );
 
 			describe( 'right–to–left UI', () => {
 				it( 'should display the correct icon', () => {
-					expect( rtlButton.icon ).to.equal( rtlIcon );
+					expect( rtlButton.icon ).toEqual( rtlIcon );
 				} );
 			} );
 		} );

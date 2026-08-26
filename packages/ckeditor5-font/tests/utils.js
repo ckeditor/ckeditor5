@@ -15,8 +15,8 @@ import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'utils', () => {
 	it( 'plugin names has proper values', () => {
-		expect( FONT_COLOR ).to.equal( 'fontColor' );
-		expect( FONT_BACKGROUND_COLOR ).to.equal( 'fontBackgroundColor' );
+		expect( FONT_COLOR ).toEqual( 'fontColor' );
+		expect( FONT_BACKGROUND_COLOR ).toEqual( 'fontBackgroundColor' );
 	} );
 
 	describe( 'addColorSelectorToDropdown()', () => {
@@ -48,8 +48,8 @@ describe( 'utils', () => {
 			} );
 
 			expect( dropdown.colorSelectorView ).to.be.instanceOf( ColorSelectorView );
-			expect( dropdown.panelView.children.length ).to.equal( 1 );
-			expect( dropdown.colorSelectorView.element ).to.equal( dropdown.panelView.children.first.element );
+			expect( dropdown.panelView.children.length ).toEqual( 1 );
+			expect( dropdown.colorSelectorView.element ).toBe( dropdown.panelView.children.first.element );
 		} );
 	} );
 

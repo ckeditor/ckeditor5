@@ -90,8 +90,6 @@ describe( 'LivePosition', () =>
 		live.detach();
 
 		expect( listenToSpy ).toHaveBeenCalledWith( model, 'applyOperation', expect.any( Function ), expect.any( Object ) );
-
-		vi.restoreAllMocks();
 	} );
 
 	it( 'should stop listening when detached', () => {
@@ -101,8 +99,6 @@ describe( 'LivePosition', () =>
 		live.detach();
 
 		expect( stopListeningSpy ).toHaveBeenCalled();
-
-		vi.restoreAllMocks();
 	} );
 
 	describe( 'fromPosition()', () => {
@@ -159,7 +155,6 @@ describe( 'LivePosition', () =>
 			expect( spy ).toHaveBeenCalledWith( model, 'applyOperation', expect.any( Function ), expect.any( Object ) );
 
 			live.detach();
-			vi.restoreAllMocks();
 		} );
 
 		it( 'should get transformed when content is detached from before the position', () => {
@@ -211,8 +206,6 @@ describe( 'LivePosition', () =>
 			live.detach();
 
 			expect( stopListeningSpy ).toHaveBeenCalled();
-
-			vi.restoreAllMocks();
 		} );
 	} );
 

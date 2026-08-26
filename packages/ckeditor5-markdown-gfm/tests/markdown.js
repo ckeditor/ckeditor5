@@ -10,15 +10,15 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 
 describe( 'Markdown', () => {
 	it( 'has proper name', () => {
-		expect( Markdown.pluginName ).to.equal( 'Markdown' );
+		expect( Markdown.pluginName ).toEqual( 'Markdown' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Markdown.isOfficialPlugin ).to.be.true;
+		expect( Markdown.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Markdown.isPremiumPlugin ).to.be.false;
+		expect( Markdown.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should set editor.data.processor', () => {

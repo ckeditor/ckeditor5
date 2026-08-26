@@ -1066,7 +1066,7 @@ describe( 'Drag and Drop target', () => {
 			expect( spy ).toHaveBeenCalled();
 		} );
 
-		it( 'should remove drop target marker ', () => {
+		it( 'should remove drop target marker', () => {
 			_setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
 			const modelPosition = model.createPositionAt( root.getChild( 0 ), 2 );

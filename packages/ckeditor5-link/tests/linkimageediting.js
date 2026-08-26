@@ -1028,23 +1028,15 @@ describe( 'LinkImageEditing', () => {
 							.toBe( `<imageBlock linkHref="${ link.url }" src="/sample.png"></imageBlock>` );
 
 						// Downcast check.
-						if ( link.external ) {
-							expect( editor.getData() ).toBe(
-								'<figure class="image">' +
-									`<a href="${ link.url }" target="_blank" rel="noopener noreferrer">` +
-										'<img src="/sample.png">' +
-									'</a>' +
-								'</figure>'
-							);
-						} else {
-							expect( editor.getData() ).toBe(
-								'<figure class="image">' +
-									`<a href="${ link.url }">` +
-										'<img src="/sample.png">' +
-									'</a>' +
-								'</figure>'
-							);
-						}
+						const targetAttributes = link.external ? ' target="_blank" rel="noopener noreferrer"' : '';
+
+						expect( editor.getData() ).toBe(
+							'<figure class="image">' +
+								`<a href="${ link.url }"${ targetAttributes }>` +
+									'<img src="/sample.png">' +
+								'</a>' +
+							'</figure>'
+						);
 					} );
 				} );
 			} );

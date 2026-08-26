@@ -47,11 +47,11 @@ describe( 'MediaEmbedStyle utils', () => {
 		} );
 
 		it( 'has className on every non-default entry', () => {
-			for ( const definition of Object.values( DEFAULT_OPTIONS ) ) {
-				if ( !definition.isDefault ) {
-					expect( typeof definition.className, `${ definition.name }.className` ).toBe( 'string' );
-					expect( definition.className ).not.toBe( '' );
-				}
+			const nonDefaultOptions = Object.values( DEFAULT_OPTIONS ).filter( definition => !definition.isDefault );
+
+			for ( const definition of nonDefaultOptions ) {
+				expect( typeof definition.className, `${ definition.name }.className` ).toBe( 'string' );
+				expect( definition.className ).not.toBe( '' );
 			}
 		} );
 	} );

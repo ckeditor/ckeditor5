@@ -100,6 +100,103 @@ describe( 'TableColumnResizeEditing', () => {
 		expect( TableColumnResizeEditing.licenseFeatureCode ).toBe( 'TCR' );
 	} );
 
+	describe( 'resizing with the editable\'s own scrollbar (#20117)', () => {
+		function stubScrollbar( domElement, scrollbarWidthInPx ) {
+			Object.defineProperty( domElement, 'clientWidth', {
+				configurable: true,
+				value: domElement.offsetWidth - scrollbarWidthInPx
+			} );
+		}
+
+		function setUpScrollableEditable( boxSizing ) {
+			const domRoot = view.getDomRoot();
+
+			domRoot.style.boxSizing = boxSizing;
+			domRoot.style.border = '0';
+			domRoot.style.padding = '0';
+			domRoot.style.width = '300px';
+
+			return domRoot;
+		}
+
+		it( 'should not skew a 100% table\'s width when the `border-box` editable has a scrollbar', () => {
+			const domRoot = setUpScrollableEditable( 'border-box' );
+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ]
+			], { columnWidths: '20%,30%,50%', tableWidth: '100%' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+			const viewFigure = editor.editing.mapper.toViewElement( table );
+			const domTable = getDomTable( view );
+			const tableWidthBeforeDrag = getDomTableRects( domTable ).width;
+
+			// Simulate a classic (space-consuming) 17px vertical scrollbar on the editable.
+			stubScrollbar( domRoot, 17 );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( domTable, 0, 0 ) );
+			tableColumnResizeMouseSimulator.move(
+				editor, getDomResizer( domTable, 0, 0 ), { x: COLUMN_RESIZE_DISTANCE_THRESHOLD, y: 0 }
+			);
+
+			const availableWidth = domRoot.offsetWidth - 17;
+			const expectedFigureWidthPercent = tableWidthBeforeDrag / availableWidth * 100;
+
+			expect( parseFloat( viewFigure.getStyle( 'width' ) ) ).toBeCloseTo( expectedFigureWidthPercent, 0 );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		it( 'should not double-subtract the scrollbar for a `content-box` editable', () => {
+			const domRoot = setUpScrollableEditable( 'content-box' );
+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ]
+			], { columnWidths: '20%,30%,50%', tableWidth: '100%' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+			const viewFigure = editor.editing.mapper.toViewElement( table );
+			const domTable = getDomTable( view );
+			const tableWidthBeforeDrag = getDomTableRects( domTable ).width;
+
+			stubScrollbar( domRoot, 17 );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( domTable, 0, 0 ) );
+			tableColumnResizeMouseSimulator.move(
+				editor, getDomResizer( domTable, 0, 0 ), { x: COLUMN_RESIZE_DISTANCE_THRESHOLD, y: 0 }
+			);
+
+			const expectedFigureWidthPercent = tableWidthBeforeDrag / domRoot.offsetWidth * 100;
+
+			expect( parseFloat( viewFigure.getStyle( 'width' ) ) ).toBeCloseTo( expectedFigureWidthPercent, 0 );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+
+		it( 'should behave exactly as before when there is no scrollbar (`clientWidth` === `offsetWidth`)', () => {
+			const domRoot = setUpScrollableEditable( 'border-box' );
+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ]
+			], { columnWidths: '20%,30%,50%', tableWidth: '100%' } ) );
+
+			const table = model.document.getRoot().getChild( 0 );
+			const viewFigure = editor.editing.mapper.toViewElement( table );
+			const domTable = getDomTable( view );
+
+			stubScrollbar( domRoot, 0 );
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( domTable, 0, 0 ) );
+			tableColumnResizeMouseSimulator.move(
+				editor, getDomResizer( domTable, 0, 0 ), { x: COLUMN_RESIZE_DISTANCE_THRESHOLD, y: 0 }
+			);
+
+			expect( parseFloat( viewFigure.getStyle( 'width' ) ) ).toBeCloseTo( 100, 0 );
+
+			tableColumnResizeMouseSimulator.up( editor );
+		} );
+	} );
+
 	describe( 'getColumnIndexesForCells()', () => {
 		function getCell( row, column ) {
 			return model.document.getRoot().getChild( 0 ).getChild( row ).getChild( column );
@@ -190,7 +287,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			editor.execute( 'tableWidth', { value: '300px' } );
 
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).to.equal( '300px' );
+			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).toEqual( '300px' );
 			expect( getColumnWidths() ).toEqual( [ '120px', '180px' ] );
 		} );
 
@@ -199,7 +296,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			editor.execute( 'tableWidth', { value: '90%' } );
 
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).to.equal( '90%' );
+			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).toEqual( '90%' );
 			expect( getColumnWidths() ).toEqual( [ '33.33%', '66.67%' ] );
 		} );
 
@@ -217,7 +314,7 @@ describe( 'TableColumnResizeEditing', () => {
 			// Executing with no options removes the table width (and covers the default path when no options are passed).
 			editor.execute( 'tableWidth' );
 
-			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'tableWidth' ) ).to.be.false;
+			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'tableWidth' ) ).toBe( false );
 			expect( getColumnWidths() ).toEqual( [ '33.33%', '66.67%' ] );
 		} );
 
@@ -228,8 +325,8 @@ describe( 'TableColumnResizeEditing', () => {
 
 			const table = model.document.getRoot().getChild( 0 );
 
-			expect( table.getAttribute( 'tableWidth' ) ).to.equal( '300px' );
-			expect( resizePlugin.getColumnGroupElement( table ) ).to.be.undefined;
+			expect( table.getAttribute( 'tableWidth' ) ).toEqual( '300px' );
+			expect( resizePlugin.getColumnGroupElement( table ) ).toBeUndefined();
 		} );
 
 		it( 'should undo the width change and the column reconciliation as a single step', () => {
@@ -239,12 +336,12 @@ describe( 'TableColumnResizeEditing', () => {
 			// so a single undo reverts both instead of leaving a pixel table with percentage columns.
 			editor.execute( 'tableWidth', { value: '300px' } );
 
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).to.equal( '300px' );
+			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).toEqual( '300px' );
 			expect( getColumnWidths() ).toEqual( [ '120px', '180px' ] );
 
 			editor.execute( 'undo' );
 
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).to.equal( '80%' );
+			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).toEqual( '80%' );
 			expect( getColumnWidths() ).toEqual( [ '40%', '60%' ] );
 		} );
 
@@ -256,12 +353,12 @@ describe( 'TableColumnResizeEditing', () => {
 
 			editor.execute( 'tableWidth', { value: '300px', batch } );
 
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).to.equal( '300px' );
+			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).toEqual( '300px' );
 			expect( getColumnWidths() ).toEqual( [ '120px', '180px' ] );
 
 			editor.execute( 'undo' );
 
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).to.equal( '80%' );
+			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'tableWidth' ) ).toEqual( '80%' );
 			expect( getColumnWidths() ).toEqual( [ '40%', '60%' ] );
 		} );
 	} );
@@ -407,7 +504,7 @@ describe( 'TableColumnResizeEditing', () => {
 					.find( item => item.is( 'element', 'table' ) && item !== outerTable );
 
 				// The nested pixel columns are not kept as pixels (the outer 500px width does not leak in).
-				expect( getTableColumnsWidths( nestedTable ).every( width => width.endsWith( '%' ) ) ).to.be.true;
+				expect( getTableColumnsWidths( nestedTable ).every( width => width.endsWith( '%' ) ) ).toBe( true );
 			} );
 
 			it( 'the table width style set on <table> element to tableWidth attribute correctly', () => {
@@ -2374,7 +2471,7 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( Math.abs( Math.ceil( widthChange - mouseMovementVector.x * 2 ) ) ).toBeLessThanOrEqual( 1 );
 			} );
 
-			describe( 'nested table ', () => {
+			describe( 'nested table', () => {
 				it( 'correctly shrinks when the last column is dragged to the left', () => {
 					// Test-specific.
 					const columnToResizeIndex = 1;
@@ -2646,6 +2743,268 @@ describe( 'TableColumnResizeEditing', () => {
 							'</tableColumnGroup>' +
 						'</table>'
 					);
+				} );
+
+				describe( 'with heading rows/columns', () => {
+					it( 'resizes an inner column of the nested table when dragging a header row resizer', () => {
+						// Test-specific.
+						const columnToResizeIndex = 1;
+						const mouseMovementVector = { x: 10, y: 0 };
+						const headerRowIndex = 0;
+
+						_setModelData( editor.model,
+							'<table tableWidth="100%" tableType="layout">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'[<table headingRows="1" tableWidth="100%">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>foo</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>bar</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>baz</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+											'<tableColumnGroup>' +
+												'<tableColumn columnWidth="25%"></tableColumn>' +
+												'<tableColumn columnWidth="25%"></tableColumn>' +
+												'<tableColumn columnWidth="50%"></tableColumn>' +
+											'</tableColumnGroup>' +
+										'</table>]' +
+									'</tableCell>' +
+								'</tableRow>' +
+								'<tableColumnGroup>' +
+									'<tableColumn columnWidth="100%"></tableColumn>' +
+								'</tableColumnGroup>' +
+							'</table>'
+						);
+
+						const outerModelTable = model.document.getRoot().getChild( 0 );
+						const modelNestedTable = model.document.selection.getSelectedElement();
+						const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
+						const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
+
+						setInitialWidthsInPx( editor, viewNestedTable, null, 300 );
+
+						// Sanity check - make sure the resizer dragged below really lives inside a `<th>`
+						// element, i.e. that this test actually reproduces the reported scenario.
+						assertResizerIsInsideHeaderCell( domNestedTable, columnToResizeIndex, headerRowIndex );
+
+						const outerTableStateBefore = getLayoutTableState( outerModelTable );
+
+						// Test-agnostic.
+						const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+
+						tableColumnResizeMouseSimulator.resize(
+							editor, domNestedTable, columnToResizeIndex, mouseMovementVector, headerRowIndex
+						);
+
+						const finalModelColumnWidthsPc = getModelColumnWidthsPc( modelNestedTable );
+
+						assertModelWidthsSum( finalModelColumnWidthsPc );
+
+						const finalViewColumnWidthsPc = getViewColumnWidthsPc( viewNestedTable );
+
+						assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+						const finalViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+						const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+							initialViewColumnWidthsPx,
+							mouseMovementVector,
+							contentDirection,
+							columnToResizeIndex
+						);
+
+						assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+
+						// Resizing an inner column redistributes the widths within the nested table only -
+						// neither the nested nor the outer table changes its width.
+						expect( modelNestedTable.getAttribute( 'tableWidth' ) ).toBe( '100%' );
+						expect( getLayoutTableState( outerModelTable ) ).toEqual( outerTableStateBefore );
+					} );
+
+					it( 'resizes the nested table itself when dragging the last column\'s header row resizer', () => {
+						// Test-specific.
+						const columnToResizeIndex = 1;
+						const mouseMovementVector = { x: -10, y: 0 };
+						const headerRowIndex = 0;
+
+						_setModelData( editor.model,
+							'<table tableWidth="100%" tableType="layout">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'[<table headingRows="1">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>foo</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>bar</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+											'<tableColumnGroup>' +
+												'<tableColumn columnWidth="50%"></tableColumn>' +
+												'<tableColumn columnWidth="50%"></tableColumn>' +
+											'</tableColumnGroup>' +
+										'</table>]' +
+									'</tableCell>' +
+								'</tableRow>' +
+								'<tableColumnGroup>' +
+									'<tableColumn columnWidth="100%"></tableColumn>' +
+								'</tableColumnGroup>' +
+							'</table>'
+						);
+
+						const outerModelTable = model.document.getRoot().getChild( 0 );
+						const modelNestedTable = model.document.selection.getSelectedElement();
+						const domOuterTable = getDomTable( view );
+						const domNestedTable = domOuterTable.querySelectorAll( 'table' )[ 1 ];
+						const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
+
+						setInitialWidthsInPx( editor, viewNestedTable, 201, 400 );
+
+						// Sanity check - make sure the resizer dragged below really lives inside a `<th>`
+						// element, i.e. that this test actually reproduces the reported scenario.
+						assertResizerIsInsideHeaderCell( domNestedTable, columnToResizeIndex, headerRowIndex );
+
+						const outerTableStateBefore = getLayoutTableState( outerModelTable );
+
+						// Test-agnostic.
+						const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+						const initialNestedTableWidthPx = domNestedTable.getBoundingClientRect().width;
+						const initialOuterTableWidthPx = domOuterTable.getBoundingClientRect().width;
+
+						tableColumnResizeMouseSimulator.resize(
+							editor, domNestedTable, columnToResizeIndex, mouseMovementVector, headerRowIndex
+						);
+
+						const finalModelColumnWidthsPc = getModelColumnWidthsPc( modelNestedTable );
+
+						assertModelWidthsSum( finalModelColumnWidthsPc );
+
+						const finalViewColumnWidthsPc = getViewColumnWidthsPc( viewNestedTable );
+
+						assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+						const finalViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+						const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+							initialViewColumnWidthsPx,
+							mouseMovementVector,
+							contentDirection,
+							columnToResizeIndex
+						);
+
+						assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+
+						// It is the *nested* table that gets its width changed - it had no `tableWidth`
+						// attribute before the drag and it shrinks after it.
+						expect( modelNestedTable.getAttribute( 'tableWidth' ) ).toMatch( /^\d+(\.\d+)?%$/ );
+						expect( parseFloat( modelNestedTable.getAttribute( 'tableWidth' ) ) ).toBeLessThan( 100 );
+						expect( domNestedTable.getBoundingClientRect().width ).toBeLessThan( initialNestedTableWidthPx - 1 );
+
+						// ...while the outer (layout) table keeps both its width and its column widths.
+						// Before the fix this is the assertion that failed - the layout table wrapper was
+						// the one being resized instead of the nested table.
+						expect( getLayoutTableState( outerModelTable ) ).toEqual( outerTableStateBefore );
+						expect( Math.abs( domOuterTable.getBoundingClientRect().width - initialOuterTableWidthPx ) )
+							.toBeLessThanOrEqual( PIXEL_PRECISION );
+					} );
+
+					it( 'resizes a column of the nested table when dragging a header column resizer', () => {
+						// Test-specific. With one heading column the resizer of the first column lives inside
+						// a `<th>` element, just like the header row one does.
+						const columnToResizeIndex = 0;
+						const mouseMovementVector = { x: 10, y: 0 };
+						const rowIndex = 0;
+
+						_setModelData( editor.model,
+							'<table tableWidth="100%" tableType="layout">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'[<table headingColumns="1" tableWidth="100%">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>foo</paragraph>' +
+												'</tableCell>' +
+												'<tableCell>' +
+													'<paragraph>bar</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+											'<tableColumnGroup>' +
+												'<tableColumn columnWidth="50%"></tableColumn>' +
+												'<tableColumn columnWidth="50%"></tableColumn>' +
+											'</tableColumnGroup>' +
+										'</table>]' +
+									'</tableCell>' +
+								'</tableRow>' +
+								'<tableColumnGroup>' +
+									'<tableColumn columnWidth="100%"></tableColumn>' +
+								'</tableColumnGroup>' +
+							'</table>'
+						);
+
+						const outerModelTable = model.document.getRoot().getChild( 0 );
+						const modelNestedTable = model.document.selection.getSelectedElement();
+						const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
+						const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
+
+						setInitialWidthsInPx( editor, viewNestedTable, null, 300 );
+
+						// Sanity check - make sure the resizer dragged below really lives inside a `<th>`
+						// element, i.e. that this test actually reproduces the reported scenario.
+						assertResizerIsInsideHeaderCell( domNestedTable, columnToResizeIndex, rowIndex );
+
+						const outerTableStateBefore = getLayoutTableState( outerModelTable );
+
+						// Test-agnostic.
+						const initialViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+
+						tableColumnResizeMouseSimulator.resize(
+							editor, domNestedTable, columnToResizeIndex, mouseMovementVector, rowIndex
+						);
+
+						const finalModelColumnWidthsPc = getModelColumnWidthsPc( modelNestedTable );
+
+						assertModelWidthsSum( finalModelColumnWidthsPc );
+
+						const finalViewColumnWidthsPc = getViewColumnWidthsPc( viewNestedTable );
+
+						assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+						const finalViewColumnWidthsPx = getViewColumnWidthsPx( domNestedTable );
+						const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+							initialViewColumnWidthsPx,
+							mouseMovementVector,
+							contentDirection,
+							columnToResizeIndex
+						);
+
+						assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+
+						expect( modelNestedTable.getAttribute( 'tableWidth' ) ).toBe( '100%' );
+						expect( getLayoutTableState( outerModelTable ) ).toEqual( outerTableStateBefore );
+					} );
+
+					// Asserts that the resizer of the given column in the given row is placed inside a `<th>`
+					// element (and not a `<td>` one), so the test really covers the `<th>` lookup.
+					function assertResizerIsInsideHeaderCell( domTable, columnIndex, rowIndex ) {
+						const domResizer = getDomResizer( domTable, columnIndex, rowIndex );
+
+						expect( domResizer.closest( 'th, td' ).tagName.toLowerCase() ).toBe( 'th' );
+					}
+
+					// Returns everything the resizing feature could have changed in the outer layout table,
+					// so that a snapshot taken before the drag can be compared with the one taken after it.
+					function getLayoutTableState( outerModelTable ) {
+						return {
+							tableType: outerModelTable.getAttribute( 'tableType' ),
+							tableWidth: outerModelTable.getAttribute( 'tableWidth' ),
+							columnWidths: getModelColumnWidthsPc( outerModelTable )
+						};
+					}
 				} );
 			} );
 		} );
@@ -3086,16 +3445,12 @@ describe( 'TableColumnResizeEditing', () => {
 
 						editor.commands.get( 'insertTableColumnLeft' ).execute();
 
-						const wholeContentRange = model.createRangeIn( model.document.getRoot() );
+						const table = model.document.getRoot().getChild( 0 );
 
-						for ( const item of wholeContentRange ) {
-							if ( item.item.is( 'element', 'table' ) ) {
-								// Expect `columnWidths` to have 4 values.
-								expect( getTableColumnsWidths( item.item ).length ).toBe( 4 );
-								// Expect a new column (it is the narrowest one) to be inserted at the first position.
-								expect( parseFloat( getTableColumnsWidths( item.item )[ 0 ] ) < 10 ).toBe( true );
-							}
-						}
+						// Expect `columnWidths` to have 4 values.
+						expect( getTableColumnsWidths( table ).length ).toBe( 4 );
+						// Expect a new column (it is the narrowest one) to be inserted at the first position.
+						expect( parseFloat( getTableColumnsWidths( table )[ 0 ] ) < 10 ).toBe( true );
 					} );
 
 					it( 'when new column was inserted in the middle', () => {
@@ -3106,16 +3461,12 @@ describe( 'TableColumnResizeEditing', () => {
 
 						editor.commands.get( 'insertTableColumnRight' ).execute();
 
-						const wholeContentRange = model.createRangeIn( model.document.getRoot() );
+						const table = model.document.getRoot().getChild( 0 );
 
-						for ( const item of wholeContentRange ) {
-							if ( item.item.is( 'element', 'table' ) ) {
-								// Expect `columnWidths` to have 4 values.
-								expect( getTableColumnsWidths( item.item ).length ).toBe( 4 );
-								// Expect a new column (it is the narrowest one) to be inserted at the second position.
-								expect( parseFloat( getTableColumnsWidths( item.item )[ 1 ] ) < 10 ).toBe( true );
-							}
-						}
+						// Expect `columnWidths` to have 4 values.
+						expect( getTableColumnsWidths( table ).length ).toBe( 4 );
+						// Expect a new column (it is the narrowest one) to be inserted at the second position.
+						expect( parseFloat( getTableColumnsWidths( table )[ 1 ] ) < 10 ).toBe( true );
 					} );
 
 					it( 'when new column was inserted at the end', () => {
@@ -3126,16 +3477,12 @@ describe( 'TableColumnResizeEditing', () => {
 
 						editor.commands.get( 'insertTableColumnRight' ).execute();
 
-						const wholeContentRange = model.createRangeIn( model.document.getRoot() );
+						const table = model.document.getRoot().getChild( 0 );
 
-						for ( const item of wholeContentRange ) {
-							if ( item.item.is( 'element', 'table' ) ) {
-								// Expect `columnWidths` to have 4 values.
-								expect( getTableColumnsWidths( item.item ).length ).toBe( 4 );
-								// Expect a new column (it is the narrowest one) to be inserted at the last position.
-								expect( parseFloat( getTableColumnsWidths( item.item )[ 3 ] ) < 10 ).toBe( true );
-							}
-						}
+						// Expect `columnWidths` to have 4 values.
+						expect( getTableColumnsWidths( table ).length ).toBe( 4 );
+						// Expect a new column (it is the narrowest one) to be inserted at the last position.
+						expect( parseFloat( getTableColumnsWidths( table )[ 3 ] ) < 10 ).toBe( true );
 					} );
 
 					it( 'when first column was removed', () => {
@@ -3146,17 +3493,12 @@ describe( 'TableColumnResizeEditing', () => {
 
 						editor.execute( 'removeTableColumn' );
 
-						const wholeContentRange = model.createRangeIn( model.document.getRoot() );
+						// Expect `columnWidths` to have 2 values and the next column to take over the width of removed one.
+						const columnWidths = getTableColumnsWidths( model.document.getRoot().getChild( 0 ) );
 
-						for ( const item of wholeContentRange ) {
-							// Expect `columnWidths` to have 2 values and the next column to take over the width of removed one.
-							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnsWidths( item.item );
-								expect( columnWidths.length ).toBe( 2 );
-								expect( columnWidths[ 0 ] ).toBe( '45%' );
-								expect( columnWidths[ 1 ] ).toBe( '55%' );
-							}
-						}
+						expect( columnWidths.length ).toBe( 2 );
+						expect( columnWidths[ 0 ] ).toBe( '45%' );
+						expect( columnWidths[ 1 ] ).toBe( '55%' );
 					} );
 
 					it( 'when middle column was removed', () => {
@@ -3167,17 +3509,12 @@ describe( 'TableColumnResizeEditing', () => {
 
 						editor.execute( 'removeTableColumn' );
 
-						const wholeContentRange = model.createRangeIn( model.document.getRoot() );
+						// Expect `columnWidths` to have 2 values and the previous column to take over the width of removed one.
+						const columnWidths = getTableColumnsWidths( model.document.getRoot().getChild( 0 ) );
 
-						for ( const item of wholeContentRange ) {
-							// Expect `columnWidths` to have 2 values and the previous column to take over the width of removed one.
-							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnsWidths( item.item );
-								expect( columnWidths.length ).toBe( 2 );
-								expect( columnWidths[ 0 ] ).toBe( '45%' );
-								expect( columnWidths[ 1 ] ).toBe( '55%' );
-							}
-						}
+						expect( columnWidths.length ).toBe( 2 );
+						expect( columnWidths[ 0 ] ).toBe( '45%' );
+						expect( columnWidths[ 1 ] ).toBe( '55%' );
 					} );
 
 					it( 'when last column was removed', () => {
@@ -3188,17 +3525,12 @@ describe( 'TableColumnResizeEditing', () => {
 
 						editor.execute( 'removeTableColumn' );
 
-						const wholeContentRange = model.createRangeIn( model.document.getRoot() );
+						// Expect `columnWidths` to have 2 values and the previous column to take over the width of removed one.
+						const columnWidths = getTableColumnsWidths( model.document.getRoot().getChild( 0 ) );
 
-						for ( const item of wholeContentRange ) {
-							// Expect `columnWidths` to have 2 values and the previous column to take over the width of removed one.
-							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnsWidths( item.item );
-								expect( columnWidths.length ).toBe( 2 );
-								expect( columnWidths[ 0 ] ).toBe( '20%' );
-								expect( columnWidths[ 1 ] ).toBe( '80%' );
-							}
-						}
+						expect( columnWidths.length ).toBe( 2 );
+						expect( columnWidths[ 0 ] ).toBe( '20%' );
+						expect( columnWidths[ 1 ] ).toBe( '80%' );
 					} );
 
 					it( 'when two columns were merged', () => {
@@ -3216,16 +3548,11 @@ describe( 'TableColumnResizeEditing', () => {
 
 						editor.execute( 'mergeTableCells' );
 
-						const wholeContentRange = model.createRangeIn( model.document.getRoot() );
+						// Expect `columnWidths` to have 2 values and the first column to take over the width of merged one.
+						const columnWidths = getTableColumnsWidths( model.document.getRoot().getChild( 0 ) );
 
-						for ( const item of wholeContentRange ) {
-							// Expect `columnWidths` to have 2 values and the first column to take over the width of merged one.
-							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnsWidths( item.item );
-								expect( columnWidths.length ).toBe( 2 );
-								expect( columnWidths[ 0 ] ).toBe( '45%' );
-							}
-						}
+						expect( columnWidths.length ).toBe( 2 );
+						expect( columnWidths[ 0 ] ).toBe( '45%' );
 					} );
 
 					it( 'when the whole table was merged', () => {
@@ -3245,16 +3572,11 @@ describe( 'TableColumnResizeEditing', () => {
 
 						editor.execute( 'mergeTableCells' );
 
-						const wholeContentRange = model.createRangeIn( model.document.getRoot() );
+						// Expect `columnWidths` to have 1 value covering the whole merged table.
+						const columnWidths = getTableColumnsWidths( model.document.getRoot().getChild( 0 ) );
 
-						for ( const item of wholeContentRange ) {
-							// Expect `columnWidths` to have 2 values and the first column to take over the width of merged one.
-							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnsWidths( item.item );
-								expect( columnWidths.length ).toBe( 1 );
-								expect( columnWidths[ 0 ] ).toBe( '100%' );
-							}
-						}
+						expect( columnWidths.length ).toBe( 1 );
+						expect( columnWidths[ 0 ] ).toBe( '100%' );
 					} );
 				} );
 
@@ -3272,18 +3594,13 @@ describe( 'TableColumnResizeEditing', () => {
 
 						editor.execute( 'mergeTableCells' );
 
-						const wholeContentRange = model.createRangeIn( model.document.getRoot() );
+						// Expect `columnWidths` to have 3 unchanged values.
+						const columnWidths = getTableColumnsWidths( model.document.getRoot().getChild( 0 ) );
 
-						for ( const item of wholeContentRange ) {
-							// Expect `columnWidths` to have 3 unchanged values.
-							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnsWidths( item.item );
-								expect( columnWidths.length ).toBe( 3 );
-								expect( columnWidths[ 0 ] ).toBe( '20%' );
-								expect( columnWidths[ 1 ] ).toBe( '25%' );
-								expect( columnWidths[ 2 ] ).toBe( '55%' );
-							}
-						}
+						expect( columnWidths.length ).toBe( 3 );
+						expect( columnWidths[ 0 ] ).toBe( '20%' );
+						expect( columnWidths[ 1 ] ).toBe( '25%' );
+						expect( columnWidths[ 2 ] ).toBe( '55%' );
 					} );
 				} );
 
@@ -3876,6 +4193,8 @@ describe( 'TableColumnResizeEditing', () => {
 				[ '10', '11', '12' ]
 			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
+			// A sanity check of the setup. Each test below relies on these initial column widths.
+			// eslint-disable-next-line vitest/no-standalone-expect
 			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).toEqual( [ '20%', '25%', '55%' ] );
 
 			initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );

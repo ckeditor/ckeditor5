@@ -81,8 +81,8 @@ export function generateTests( config ) {
 		return;
 	}
 
-	describe( config.type, () => {
-		describe( config.input, () => {
+	describe( `${ config.type }`, () => {
+		describe( `${ config.input }`, () => {
 			const editorConfig = typeof config.editorConfig == 'function' ?
 				config.editorConfig :
 				() => Promise.resolve( config.editorConfig || {} );
@@ -153,18 +153,19 @@ function groupFixturesByBrowsers( browsers, fixturesGroup, skipBrowsers, fixture
 // @param {Array.<String>} skip Array of fixtures names which tests should be skipped.
 // @param {Array.<String>} only Array of fixtures the test run should be limited to.
 function generateNormalizationTests( title, fixtures, editorConfig, skip, only ) {
-	describe( title, () => {
+	describe( `${ title }`, () => {
 		let editor;
+		let scrollToTheSelectionSpy;
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( await editorConfig() );
 
 			// Stub `editor.editing.view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-			vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
+			scrollToTheSelectionSpy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		} );
 
 		afterEach( async () => {
-			vi.restoreAllMocks();
+			scrollToTheSelectionSpy.mockRestore();
 
 			await editor.destroy();
 		} );
@@ -215,9 +216,10 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip, only )
 // @param {Object} editorConfig Editor config with which test editor will be created.
 // @param {Array.<String>} only Array of fixtures the test run should be limited to.
 function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
-	describe( title, () => {
+	describe( `${ title }`, () => {
 		let element, editor;
 		let data = {};
+		let insertContentSpy;
 
 		beforeAll( async () => {
 			element = document.createElement( 'div' );
@@ -235,7 +237,7 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 
 			data = {};
 
-			vi.spyOn( editorModel, 'insertContent' ).mockImplementation( ( content, selection ) => {
+			insertContentSpy = vi.spyOn( editorModel, 'insertContent' ).mockImplementation( ( content, selection ) => {
 				// Save model string representation now as it may change after `insertContent()` function call
 				// so accessing it later may not work as it may have emptied/changed structure.
 				data.actual = _stringifyModel( content );
@@ -244,7 +246,7 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 		} );
 
 		afterEach( () => {
-			vi.restoreAllMocks();
+			insertContentSpy.mockRestore();
 		} );
 
 		afterAll( () => {

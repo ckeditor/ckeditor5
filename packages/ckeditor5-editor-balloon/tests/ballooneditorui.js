@@ -272,7 +272,8 @@ describe( 'BalloonEditorUI', () => {
 			const newEditor = await VirtualBalloonTestEditor.create( '' );
 
 			await newEditor.destroy();
-			await newEditor.destroy();
+
+			await expect( newEditor.destroy() ).resolves.toBeUndefined();
 		} );
 	} );
 

@@ -31,11 +31,11 @@ describe( 'UndoUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( UndoUI.isOfficialPlugin ).to.be.true;
+		expect( UndoUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( UndoUI.isPremiumPlugin ).to.be.false;
+		expect( UndoUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'toolbar', () => {
@@ -47,7 +47,7 @@ describe( 'UndoUI', () => {
 			testButton( 'undo', 'Undo', 'CTRL+Z', ButtonView );
 
 			it( 'should have tooltip', () => {
-				expect( button.tooltip ).to.be.true;
+				expect( button.tooltip ).toBe( true );
 			} );
 		} );
 
@@ -59,7 +59,7 @@ describe( 'UndoUI', () => {
 			testButton( 'redo', 'Redo', 'CTRL+Y', ButtonView );
 
 			it( 'should have tooltip', () => {
-				expect( button.tooltip ).to.be.true;
+				expect( button.tooltip ).toBe( true );
 			} );
 		} );
 	} );
@@ -87,13 +87,13 @@ describe( 'UndoUI', () => {
 			it( 'should display the right icon for undo', () => {
 				const undoButton = editor.ui.componentFactory.create( 'undo' );
 
-				expect( undoButton.icon ).to.equal( IconUndo );
+				expect( undoButton.icon ).toEqual( IconUndo );
 			} );
 
 			it( 'should display the right icon for redo', () => {
 				const redoButton = editor.ui.componentFactory.create( 'redo' );
 
-				expect( redoButton.icon ).to.equal( IconRedo );
+				expect( redoButton.icon ).toEqual( IconRedo );
 			} );
 		} );
 
@@ -110,7 +110,7 @@ describe( 'UndoUI', () => {
 					.then( newEditor => {
 						const undoButton = newEditor.ui.componentFactory.create( 'undo' );
 
-						expect( undoButton.icon ).to.equal( IconRedo );
+						expect( undoButton.icon ).toEqual( IconRedo );
 
 						return newEditor.destroy();
 					} )
@@ -131,7 +131,7 @@ describe( 'UndoUI', () => {
 					.then( newEditor => {
 						const redoButton = newEditor.ui.componentFactory.create( 'redo' );
 
-						expect( redoButton.icon ).to.equal( IconUndo );
+						expect( redoButton.icon ).toEqual( IconUndo );
 
 						return newEditor.destroy();
 					} )
@@ -148,9 +148,9 @@ describe( 'UndoUI', () => {
 		} );
 
 		it( 'should create UI component with correct attribute values', () => {
-			expect( button.isOn ).to.be.false;
-			expect( button.label ).to.equal( label );
-			expect( button.icon ).to.match( /<svg / ); } );
+			expect( button.isOn ).toBe( false );
+			expect( button.label ).toEqual( label );
+			expect( button.icon ).toMatch( /<svg / ); } );
 
 		it( `should execute ${ featureName } command on model execute event`, () => {
 			const executeSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
@@ -164,17 +164,17 @@ describe( 'UndoUI', () => {
 		it( `should bind model to ${ featureName } command`, () => {
 			const command = editor.commands.get( featureName );
 
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 
 			const initState = command.isEnabled;
-			expect( button.isEnabled ).to.equal( initState );
+			expect( button.isEnabled ).toEqual( initState );
 
 			command.isEnabled = !initState;
-			expect( button.isEnabled ).to.equal( !initState );
+			expect( button.isEnabled ).toEqual( !initState );
 		} );
 
 		it( 'should set keystroke in the model', () => {
-			expect( button.keystroke ).to.equal( featureKeystroke );
+			expect( button.keystroke ).toEqual( featureKeystroke );
 		} );
 	}
 } );

@@ -36,29 +36,29 @@ describe( 'table properties', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be false if selection does not have table', () => {
 						_setModelData( model, '<paragraph>foo[]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection has table', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be false if selection does not have table', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection is in table', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true is selection is over table', () => {
 						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 			} );
@@ -68,13 +68,13 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selected table has no borderWidth property', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table has borderWidth property (single string)', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableBorderWidth: '2em' } ) );
 
-						expect( command.value ).to.equal( '2em' );
+						expect( command.value ).toEqual( '2em' );
 					} );
 
 					it( 'should be set if selected table has borderWidth property object with same values', () => {
@@ -86,7 +86,7 @@ describe( 'table properties', () => {
 								left: '2em'
 							}
 						}, '[]foo' );
-						expect( command.value ).to.equal( '2em' );
+						expect( command.value ).toEqual( '2em' );
 					} );
 
 					it( 'should be undefined if selected table has borderWidth property object with different values', () => {
@@ -99,7 +99,7 @@ describe( 'table properties', () => {
 							}
 						}, '[]foo' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 				} );
 
@@ -107,19 +107,19 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selection does not have table', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selection is in table', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderWidth: '2em' } ) );
 
-						expect( command.value ).to.equal( '2em' );
+						expect( command.value ).toEqual( '2em' );
 					} );
 
 					it( 'should be set if selection is over table', () => {
 						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ], { tableBorderWidth: '2em' } ) + ']' );
 
-						expect( command.value ).to.equal( '2em' );
+						expect( command.value ).toEqual( '2em' );
 					} );
 				} );
 			} );
@@ -291,13 +291,13 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableBorderWidth: '3px' } ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table has borderWidth property other than the default value', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableBorderWidth: '1px' } ) );
 
-						expect( command.value ).to.equal( '1px' );
+						expect( command.value ).toEqual( '1px' );
 					} );
 				} );
 
@@ -305,13 +305,13 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderWidth: '3px' } ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table has borderWidth property other than the default value', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderWidth: '1px' } ) );
 
-						expect( command.value ).to.equal( '1px' );
+						expect( command.value ).toEqual( '1px' );
 					} );
 				} );
 			} );

@@ -15,7 +15,8 @@ import type {
 	UpcastElementEvent,
 	ViewElement,
 	ModelSchemaContext,
-	ModelWriter
+	ModelWriter,
+	ViewConsumable
 } from '@ckeditor/ckeditor5-engine';
 
 import { InsertTableLayoutCommand } from './../commands/inserttablelayoutcommand.js';
@@ -288,16 +289,25 @@ function upcastLayoutTable( editor: Editor, preferredExternalTableType: TableTyp
 			const { viewItem, modelRange } = data;
 
 			if ( modelRange ) {
-				conversionApi.writer.setAttribute(
-					'tableType',
-					resolveTableType( viewItem, preferredExternalTableType ),
-					modelRange
-				);
-				conversionApi.consumable.consume( viewItem, { classes: [ 'layout-table' ] } );
-				conversionApi.consumable.consume( viewItem, { classes: [ 'content-table' ] } );
+				const resolvedType = resolveTableType( viewItem, preferredExternalTableType );
+
+				conversionApi.writer.setAttribute( 'tableType', resolvedType, modelRange );
+				consumeViewTableClasses( conversionApi.consumable, viewItem );
+
+				if ( resolvedType === 'content' && viewItem.parent?.is( 'element', 'figure' ) ) {
+					consumeViewTableClasses( conversionApi.consumable, viewItem.parent );
+				}
 			}
 		}, { priority: 'low' } );
 	};
+}
+
+/**
+ * Consume all possible classes that determine type of table on provided view item.
+ */
+function consumeViewTableClasses( consumable: ViewConsumable, viewItem: ViewElement ) {
+	consumable.consume( viewItem, { classes: [ 'layout-table' ] } );
+	consumable.consume( viewItem, { classes: [ 'content-table' ] } );
 }
 
 /**

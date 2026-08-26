@@ -194,7 +194,7 @@ describe( 'TableWalker', () => {
 		expect( tableWalker[ 3 ].rowIndex ).toEqual( 2 );
 	} );
 
-	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables. ', () => {
+	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables.', () => {
 		const data = Array( 3000 ).fill( [ '1', 'Example content', '3' ] );
 		const table = _parseModel(
 			modelTable( data ),
@@ -210,7 +210,7 @@ describe( 'TableWalker', () => {
 		expect( getAllItems ).not.toThrow( 'Maximum call stack size exceeded' );
 	}, 5000 );
 
-	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables with rowspan. ', () => {
+	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables with rowspan.', () => {
 		const data = [
 			...Array( 2000 ).fill( [ '1', 'Example content', '3' ] ),
 			[ '1', { contents: 'Cell with rowspan', rowspan: 1000 }, '3' ],

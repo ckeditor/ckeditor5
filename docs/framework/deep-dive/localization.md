@@ -14,7 +14,7 @@ All CKEditor&nbsp;5 WYSIWYG editor features support message localization. It mea
 CKEditor&nbsp;5 translation system is open to third-party plugins. Any custom features that you introduce can be localized. The system also provides a way to add missing or overwrite existing translations and supports translating plural forms.
 
 <info-box warning>
-	Make sure to use up-to-date CKEditor&nbsp;5 development tool packages. Versions of the tools older than v19.0.1 do not provide support for features described in this guide.
+	Make sure to use up-to-date CKEditor&nbsp;5 development tool packages. Versions of the tools older than v60.0.0 do not provide support for features described in this guide.
 </info-box>
 
 ### Open translation API
@@ -39,9 +39,8 @@ Before we start, let us explain the meaning of terms that are crucial for the tr
 	When the message supports plural versions, this is the default singular version.
 - *A message plural* &ndash; An optional plural (English) version of the message.
 	The presence of this property indicates that the message should support both singular and plural forms.
-- *A PO file (`.po`)* &ndash; A file containing translations for the language in the [PO format](https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html).
-	All localizable packages of CKEditor&nbsp;5 contain such files in the `lang/translations/` directory.
-- *A POT file (`.pot`)* &ndash; A file containing source messages (English sentences) that will be translated.
+- *A translation source (`.ts`)* &ndash; A generated TypeScript module containing the dictionary for one language.
+	All localizable CKEditor&nbsp;5 packages contain such files in the `lang/translations/` directory.
 - *A translation asset* &ndash; A JavaScript file or a part of the file with generated translations for one language.
 
 ## Writing a localizable UI
@@ -152,7 +151,7 @@ Adding translations to the editor can be done in three ways to satisfy various n
 	This can be done before initiating the CKEditor&nbsp;5 editor instance but it requires importing the CKEditor&nbsp;5 utility function.
 - By [extending the global `window.CKEDITOR_TRANSLATIONS` object](#using-the-windowckeditor_translations-object).
 	This can be done before initiating the CKEditor&nbsp;5 editor instance.
-- By [creating `.po` files with translations](#creating-po-files) in the `lang/translations/` directory of the published package like other CKEditor&nbsp;5 packages do.
+- By [creating TypeScript translation sources](#creating-translation-files) in the `lang/translations/` directory of the published package like other CKEditor&nbsp;5 packages do.
 	This option will be useful for third-party plugin creators as it allows bundling translations only for needed languages during the build step.
 
 ### Using the `add()` function
@@ -221,25 +220,31 @@ Object.assign( window.CKEDITOR_TRANSLATIONS[ 'pl' ].dictionary, {
 
 If you add a new language, remember to set the `getPluralForm()` function which should return a number (or a Boolean for languages with simple plural rules like English) that indicates which form should be used for the given value.
 
-### Creating `.po` files
+### Creating translation files
 
-The third option of adding plugins should fit mostly owners of plugins that contain many localizable messages. Using this option you need to create a `.po` file per each language code in the `lang/translations/` directory containing translations that follow the [PO file format](https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html).
+The third option is intended primarily for plugins that contain many localizable messages. Create one generated TypeScript file per language code in the `lang/translations/` directory. The default export must match the {@link module:utils/locale~Translations `Translations`} type.
 
-```
-# lang/translations/es.po
+```ts
+// lang/translations/es.ts
+import type { Translations } from '@ckeditor/ckeditor5-utils';
 
-msgid ""
-msgstr ""
-"Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+const translations: Translations = {
+	es: {
+		dictionary: {
+			// The label of the text alignment toolbar button.
+			'Align left': 'Alinear a la izquierda'
+		}
+	}
+};
 
-msgid "Align left"
-msgstr "Alinear a la izquierda"
+export default translations;
 ```
 
 <info-box>
-	If you develop your own plugin outside the CKEditor&nbsp;5 ecosystem, the easiest way to process the `.po` files and generate *translation assets* for your package is to use the {@link framework/development-tools/package-generator/using-package-generator package generator}. Its build setup handles the `lang/` directory, including translation synchronization.
+	If you develop your own plugin outside the CKEditor&nbsp;5 ecosystem, use the {@link framework/development-tools/package-generator/using-package-generator package generator} to create translation sources and assets. Its build setup handles the `lang/` directory, including translation synchronization.
 </info-box>
+
+Package translation sources contain dictionaries only. Load the matching translation from the `ckeditor5` package together with a package translation so the editor receives the language's plural-form function.
 
 To build and configure a localized editor, follow the steps from the {@link getting-started/setup/ui-language Setting the UI language guide}.
 

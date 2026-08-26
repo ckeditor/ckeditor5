@@ -515,7 +515,7 @@ describe( 'TableMouse', () => {
 			expect( preventDefault ).toHaveBeenCalled();
 		} );
 
-		it( 'should ignore `selectionChange` event when selecting cells ', () => {
+		it( 'should ignore `selectionChange` event when selecting cells', () => {
 			const preventDefault = vi.fn();
 			const selectionChangeCallback = vi.fn();
 

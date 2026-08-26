@@ -270,7 +270,7 @@ describe( 'FindCommand', () => {
 					expect( results.length ).toBe( 1 );
 				} );
 
-				it( 'set to true matches a text ending with a space ', () => {
+				it( 'set to true matches a text ending with a space', () => {
 					editor.setData( '<p>foo bar baz</p>' );
 
 					const { results } = command.execute( 'bar ', { wholeWords: true } );
@@ -278,7 +278,7 @@ describe( 'FindCommand', () => {
 					expect( results.length ).toBe( 1 );
 				} );
 
-				it( 'set to true matches a text starting with a space ', () => {
+				it( 'set to true matches a text starting with a space', () => {
 					editor.setData( '<p>foo bar baz</p>' );
 
 					const { results } = command.execute( ' bar', { wholeWords: true } );
@@ -286,7 +286,7 @@ describe( 'FindCommand', () => {
 					expect( results.length ).toBe( 1 );
 				} );
 
-				it( 'set to true matches a text starting and ending with a space ', () => {
+				it( 'set to true matches a text starting and ending with a space', () => {
 					editor.setData( '<p>foo bar baz</p>' );
 
 					const { results } = command.execute( ' bar ', { wholeWords: true } );

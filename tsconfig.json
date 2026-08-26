@@ -34,7 +34,9 @@
   },
   "include": [
     "./packages/*/src/**/*.ts",
+    "./packages/*/lang/translations/*.ts",
     "../../packages/*/src/**/*.ts",
+    "../../packages/*/lang/translations/*.ts",
     "./typings/"
   ]
 }

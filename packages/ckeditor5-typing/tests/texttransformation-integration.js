@@ -47,15 +47,15 @@ describe( 'Text transformation feature - integration', () => {
 
 			editor.execute( 'insertText', { text: ')' } );
 
-			expect( editor.getData(), 'inserted text' ).to.equal( '<p>foo©</p>' );
+			expect( editor.getData(), 'inserted text' ).toEqual( '<p>foo©</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData(), 'after undo' ).to.equal( '<p>foo(c)</p>' );
+			expect( editor.getData(), 'after undo' ).toEqual( '<p>foo(c)</p>' );
 
 			editor.execute( 'redo' );
 
-			expect( editor.getData(), 'after redo' ).to.equal( '<p>foo©</p>' );
+			expect( editor.getData(), 'after redo' ).toEqual( '<p>foo©</p>' );
 		} );
 
 		it( 'should allow to undo-redo steps', () => {
@@ -68,19 +68,19 @@ describe( 'Text transformation feature - integration', () => {
 
 			editor.execute( 'insertText', { text: ')' } );
 
-			expect( editor.getData() ).to.equal( '<p>foo bar baz©</p>' );
+			expect( editor.getData() ).toEqual( '<p>foo bar baz©</p>' );
 
 			editor.execute( 'undo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz(c)</p>' );
+			expect( editor.getData() ).toEqual( '<p>foo bar baz(c)</p>' );
 
 			editor.execute( 'undo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz(c</p>' );
+			expect( editor.getData() ).toEqual( '<p>foo bar baz(c</p>' );
 
 			editor.execute( 'redo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz(c)</p>' );
+			expect( editor.getData() ).toEqual( '<p>foo bar baz(c)</p>' );
 
 			editor.execute( 'redo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz©</p>' );
+			expect( editor.getData() ).toEqual( '<p>foo bar baz©</p>' );
 		} );
 	} );
 } );

@@ -28,19 +28,19 @@ describe( 'FontSize', () => {
 	} );
 
 	it( 'requires FontSizeEditing & FontSizeUI', () => {
-		expect( FontSize.requires ).to.deep.equal( [ FontSizeEditing, FontSizeUI ] );
+		expect( FontSize.requires ).toEqual( [ FontSizeEditing, FontSizeUI ] );
 	} );
 
 	it( 'defines plugin name', () => {
-		expect( FontSize.pluginName ).to.equal( 'FontSize' );
+		expect( FontSize.pluginName ).toEqual( 'FontSize' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FontSize.isOfficialPlugin ).to.be.true;
+		expect( FontSize.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( FontSize.isPremiumPlugin ).to.be.false;
+		expect( FontSize.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'normalizeSizeOptions()', () => {
@@ -50,7 +50,7 @@ describe( 'FontSize', () => {
 
 			const result = fontSize.normalizeSizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ] );
 
-			expect( result ).to.deep.equal( [
+			expect( result ).toEqual( [
 				{ title: 'Tiny', model: 'tiny', view: { name: 'span', classes: 'text-tiny', priority: 7 } },
 				{ title: 'Small', model: 'small', view: { name: 'span', classes: 'text-small', priority: 7 } },
 				{ title: 'Default', model: undefined },

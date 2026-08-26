@@ -98,23 +98,24 @@ describe( 'MarkdownGfmDataProcessor', () => {
 		// Below two tests are not working because marked library renders nested emphasis differently than
 		// it is done on GitHub.
 
-		// it( 'should process nested emphasis #1', () => {
-		// 	testDataProcessor(
-		// 		'*test **test** test*',
-		//
-		// 		// GitHub is rendering as:
-		// 		// <p><em>test *</em>test** test*</p>
-		//
-		// 		'<p><em>test *</em>test** test*</p>'
-		// 	);
-		// } );
-		// it( 'should process nested emphasis #2', () => {
-		// 	testDataProcessor(
-		// 		'_test __test__ test_',
-		//
-		// 		// GitHub is rendering as:
-		// 		'<p><em>test __test_</em> test_</p>'
-		// 	);
-		// } );
+		it.skip( 'should process nested emphasis #1', () => {
+			testDataProcessor(
+				'*test **test** test*',
+
+				// GitHub is rendering as:
+				// <p><em>test *</em>test** test*</p>
+
+				'<p><em>test *</em>test** test*</p>'
+			);
+		} );
+
+		it.skip( 'should process nested emphasis #2', () => {
+			testDataProcessor(
+				'_test __test__ test_',
+
+				// GitHub is rendering as:
+				'<p><em>test __test_</em> test_</p>'
+			);
+		} );
 	} );
 } );

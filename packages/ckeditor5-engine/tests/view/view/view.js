@@ -78,7 +78,7 @@ describe( 'view', () => {
 	} );
 
 	it( 'should add default observers', () => {
-		expect( count( view._observers ) ).to.equal( DEFAULT_OBSERVERS_COUNT );
+		expect( count( view._observers ) ).toEqual( DEFAULT_OBSERVERS_COUNT );
 		expect( view.getObserver( MutationObserver ) ).to.be.instanceof( MutationObserver );
 		expect( view.getObserver( SelectionObserver ) ).to.be.instanceof( SelectionObserver );
 		expect( view.getObserver( FocusObserver ) ).to.be.instanceof( FocusObserver );
@@ -95,16 +95,16 @@ describe( 'view', () => {
 			const domDiv = document.createElement( 'div' );
 			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
-			expect( count( view.domRoots ) ).to.equal( 0 );
+			expect( count( view.domRoots ) ).toEqual( 0 );
 
 			view.attachDomRoot( domDiv );
 
-			expect( count( view.domRoots ) ).to.equal( 1 );
+			expect( count( view.domRoots ) ).toEqual( 1 );
 
-			expect( view.getDomRoot() ).to.equal( domDiv );
-			expect( view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domDiv );
+			expect( view.getDomRoot() ).toBe( domDiv );
+			expect( view.domConverter.mapViewToDom( viewRoot ) ).toBe( domDiv );
 
-			expect( view._renderer.markedChildren.has( viewRoot ) ).to.be.true;
+			expect( view._renderer.markedChildren.has( viewRoot ) ).toBe( true );
 			domDiv.remove();
 		} );
 
@@ -112,14 +112,14 @@ describe( 'view', () => {
 			const domH1 = document.createElement( 'h1' );
 			const viewH1 = createViewRoot( viewDocument, 'h1', 'header' );
 
-			expect( count( view.domRoots ) ).to.equal( 0 );
+			expect( count( view.domRoots ) ).toEqual( 0 );
 
 			view.attachDomRoot( domH1, 'header' );
 
-			expect( count( view.domRoots ) ).to.equal( 1 );
-			expect( view.getDomRoot( 'header' ) ).to.equal( domH1 );
-			expect( view.domConverter.mapViewToDom( viewH1 ) ).to.equal( domH1 );
-			expect( view._renderer.markedChildren.has( viewH1 ) ).to.be.true;
+			expect( count( view.domRoots ) ).toEqual( 1 );
+			expect( view.getDomRoot( 'header' ) ).toBe( domH1 );
+			expect( view.domConverter.mapViewToDom( viewH1 ) ).toBe( domH1 );
+			expect( view._renderer.markedChildren.has( viewH1 ) ).toBe( true );
 		} );
 
 		it( 'should handle the "contenteditable" attribute management on #isReadOnly change', () => {
@@ -129,10 +129,10 @@ describe( 'view', () => {
 			view.attachDomRoot( domDiv );
 
 			viewRoot.isReadOnly = false;
-			expect( viewRoot.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
+			expect( viewRoot.getAttribute( 'contenteditable' ) ).toEqual( 'true' );
 
 			viewRoot.isReadOnly = true;
-			expect( viewRoot.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
+			expect( viewRoot.getAttribute( 'contenteditable' ) ).toEqual( 'false' );
 		} );
 
 		it( 'should handle the ".ck-read-only" class management on #isReadOnly change', () => {
@@ -142,10 +142,10 @@ describe( 'view', () => {
 			view.attachDomRoot( domDiv );
 
 			viewRoot.isReadOnly = false;
-			expect( viewRoot.hasClass( 'ck-read-only' ) ).to.be.false;
+			expect( viewRoot.hasClass( 'ck-read-only' ) ).toBe( false );
 
 			viewRoot.isReadOnly = true;
-			expect( viewRoot.hasClass( 'ck-read-only' ) ).to.be.true;
+			expect( viewRoot.hasClass( 'ck-read-only' ) ).toBe( true );
 		} );
 
 		it( 'should call observe on each observer', () => {
@@ -181,8 +181,8 @@ describe( 'view', () => {
 
 			view.attachDomRoot( domDiv );
 
-			expect( viewRoot.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( viewRoot.getAttribute( 'baz' ) ).to.equal( 'qux' );
+			expect( viewRoot.getAttribute( 'foo' ) ).toEqual( 'bar' );
+			expect( viewRoot.getAttribute( 'baz' ) ).toEqual( 'qux' );
 		} );
 
 		it( 'should not transfer a DOM attribute to the root element if already exists before attaching', () => {
@@ -198,8 +198,8 @@ describe( 'view', () => {
 
 			view.attachDomRoot( domDiv );
 
-			expect( viewRoot.getAttribute( 'foo' ) ).to.equal( 'pre-existing' );
-			expect( viewRoot.getAttribute( 'baz' ) ).to.equal( 'qux' );
+			expect( viewRoot.getAttribute( 'foo' ) ).toEqual( 'pre-existing' );
+			expect( viewRoot.getAttribute( 'baz' ) ).toEqual( 'qux' );
 		} );
 	} );
 
@@ -209,12 +209,12 @@ describe( 'view', () => {
 			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
 			view.attachDomRoot( domDiv );
-			expect( count( view.domRoots ) ).to.equal( 1 );
-			expect( view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domDiv );
+			expect( count( view.domRoots ) ).toEqual( 1 );
+			expect( view.domConverter.mapViewToDom( viewRoot ) ).toBe( domDiv );
 
 			view.detachDomRoot( 'main' );
-			expect( count( view.domRoots ) ).to.equal( 0 );
-			expect( view.domConverter.mapViewToDom( viewRoot ) ).to.be.undefined;
+			expect( count( view.domRoots ) ).toEqual( 0 );
+			expect( view.domConverter.mapViewToDom( viewRoot ) ).toBeUndefined();
 
 			domDiv.remove();
 		} );
@@ -243,7 +243,7 @@ describe( 'view', () => {
 				attributes[ attribute.name ] = attribute.value;
 			}
 
-			expect( attributes ).to.deep.equal( {
+			expect( attributes ).toEqual( {
 				foo: 'bar',
 				'data-baz': 'qux',
 				class: 'foo-class'
@@ -265,13 +265,13 @@ describe( 'view', () => {
 
 			view.attachDomRoot( domDiv );
 
-			expect( viewRoot.getAttribute( 'foo' ) ).to.equal( 'pre-existing' );
-			expect( viewRoot.getAttribute( 'baz' ) ).to.equal( 'qux' );
+			expect( viewRoot.getAttribute( 'foo' ) ).toEqual( 'pre-existing' );
+			expect( viewRoot.getAttribute( 'baz' ) ).toEqual( 'qux' );
 
 			view.detachDomRoot( 'main' );
 
-			expect( domDiv.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( domDiv.getAttribute( 'baz' ) ).to.equal( 'qux' );
+			expect( domDiv.getAttribute( 'foo' ) ).toEqual( 'bar' );
+			expect( domDiv.getAttribute( 'baz' ) ).toEqual( 'qux' );
 		} );
 
 		it( 'should remove the "contenteditable" attribute from the DOM root', () => {
@@ -282,11 +282,11 @@ describe( 'view', () => {
 			view.forceRender();
 
 			viewRoot.isReadOnly = false;
-			expect( domDiv.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
+			expect( domDiv.getAttribute( 'contenteditable' ) ).toEqual( 'true' );
 
 			view.detachDomRoot( 'main' );
 
-			expect( domDiv.hasAttribute( 'contenteditable' ) ).to.be.false;
+			expect( domDiv.hasAttribute( 'contenteditable' ) ).toBe( false );
 
 			domDiv.remove();
 		} );
@@ -299,11 +299,11 @@ describe( 'view', () => {
 			view.forceRender();
 
 			viewRoot.isReadOnly = true;
-			expect( domDiv.classList.contains( 'ck-read-only' ) ).to.be.true;
+			expect( domDiv.classList.contains( 'ck-read-only' ) ).toBe( true );
 
 			view.detachDomRoot( 'main' );
 
-			expect( domDiv.classList.contains( 'ck-read-only' ) ).to.be.false;
+			expect( domDiv.classList.contains( 'ck-read-only' ) ).toBe( false );
 
 			domDiv.remove();
 		} );
@@ -355,19 +355,19 @@ describe( 'view', () => {
 
 			expect( observerMock1 ).to.be.instanceof( ObserverMock );
 			expect( observerMock2 ).to.be.instanceof( ObserverMock );
-			expect( observerMock1 ).to.equals( observerMock2 );
+			expect( observerMock1 ).toEqual( observerMock2 );
 		} );
 
 		it( 'should instantiate one observer only once', () => {
 			view.addObserver( ObserverMockGlobalCount );
 			view.addObserver( ObserverMockGlobalCount );
 
-			expect( view._observers.size ).to.equal( DEFAULT_OBSERVERS_COUNT + 1 );
-			expect( instantiated ).to.equal( 1 );
-			expect( enabled ).to.equal( 1 );
+			expect( view._observers.size ).toEqual( DEFAULT_OBSERVERS_COUNT + 1 );
+			expect( instantiated ).toEqual( 1 );
+			expect( enabled ).toEqual( 1 );
 
 			view.addObserver( ObserverMock );
-			expect( view._observers.size ).to.equal( DEFAULT_OBSERVERS_COUNT + 2 );
+			expect( view._observers.size ).toEqual( DEFAULT_OBSERVERS_COUNT + 2 );
 		} );
 
 		it( 'should instantiate child class of already registered observer', () => {
@@ -381,7 +381,7 @@ describe( 'view', () => {
 			view.addObserver( ObserverMock );
 			view.addObserver( ChildObserverMock );
 
-			expect( view._observers.size ).to.equal( DEFAULT_OBSERVERS_COUNT + 2 );
+			expect( view._observers.size ).toEqual( DEFAULT_OBSERVERS_COUNT + 2 );
 		} );
 
 		it( 'should be disabled and re-enabled on render', () => {
@@ -412,13 +412,13 @@ describe( 'view', () => {
 			const getObserverMock = view.getObserver( ObserverMock );
 
 			expect( getObserverMock ).to.be.instanceof( ObserverMock );
-			expect( getObserverMock ).to.equal( addedObserverMock );
+			expect( getObserverMock ).toEqual( addedObserverMock );
 		} );
 
 		it( 'should return undefined if observer is not added', () => {
 			const getObserverMock = view.getObserver( ObserverMock );
 
-			expect( getObserverMock ).to.be.undefined;
+			expect( getObserverMock ).toBeUndefined();
 		} );
 	} );
 
@@ -720,13 +720,13 @@ describe( 'view', () => {
 
 			expect( converterFocusSpy ).toHaveBeenCalled();
 			expect( renderSpy ).toHaveBeenCalledOnce();
-			expect( document.activeElement ).to.equal( domEditable );
+			expect( document.activeElement ).toBe( domEditable );
 			const domSelection = document.getSelection();
-			expect( domSelection.rangeCount ).to.equal( 1 );
+			expect( domSelection.rangeCount ).toEqual( 1 );
 			const domRange = domSelection.getRangeAt( 0 );
-			expect( domRange.startContainer ).to.equal( domEditable );
-			expect( domRange.startOffset ).to.equal( 0 );
-			expect( domRange.collapsed ).to.be.true;
+			expect( domRange.startContainer ).toBe( domEditable );
+			expect( domRange.startOffset ).toEqual( 0 );
+			expect( domRange.collapsed ).toBe( true );
 		} );
 
 		it( 'should not focus if document is already focused', () => {
@@ -748,39 +748,39 @@ describe( 'view', () => {
 				writer.setSelection( null );
 			} );
 
-			view.focus();
+			expect( () => view.focus() ).not.toThrow();
 		} );
 	} );
 
 	describe( 'Renderer property bindings to the document', () => {
 		it( 'Renderer#isFocused should be bound to Document#isFocused', () => {
-			expect( viewDocument.isFocused ).to.equal( false );
-			expect( view._renderer.isFocused ).to.equal( false );
+			expect( viewDocument.isFocused ).toEqual( false );
+			expect( view._renderer.isFocused ).toEqual( false );
 
 			viewDocument.isFocused = true;
 
-			expect( viewDocument.isFocused ).to.equal( true );
-			expect( view._renderer.isFocused ).to.equal( true );
+			expect( viewDocument.isFocused ).toEqual( true );
+			expect( view._renderer.isFocused ).toEqual( true );
 		} );
 
 		it( 'Renderer#isSelecting should be bound to Document#isSelecting', () => {
-			expect( viewDocument.isSelecting ).to.equal( false );
-			expect( view._renderer.isSelecting ).to.equal( false );
+			expect( viewDocument.isSelecting ).toEqual( false );
+			expect( view._renderer.isSelecting ).toEqual( false );
 
 			viewDocument.isSelecting = true;
 
-			expect( viewDocument.isSelecting ).to.equal( true );
-			expect( view._renderer.isSelecting ).to.equal( true );
+			expect( viewDocument.isSelecting ).toEqual( true );
+			expect( view._renderer.isSelecting ).toEqual( true );
 		} );
 
 		it( 'Renderer#isComposing should be bound to Document#isComposing', () => {
-			expect( viewDocument.isComposing ).to.equal( false );
-			expect( view._renderer.isComposing ).to.equal( false );
+			expect( viewDocument.isComposing ).toEqual( false );
+			expect( view._renderer.isComposing ).toEqual( false );
 
 			viewDocument.isComposing = true;
 
-			expect( viewDocument.isComposing ).to.equal( true );
-			expect( view._renderer.isComposing ).to.equal( true );
+			expect( viewDocument.isComposing ).toEqual( true );
+			expect( view._renderer.isComposing ).toEqual( true );
 		} );
 	} );
 
@@ -844,7 +844,7 @@ describe( 'view', () => {
 
 			// Wait for async selectionchange event on DOM document.
 			setTimeout( () => {
-				expect( view.hasDomSelection ).to.be.true;
+				expect( view.hasDomSelection ).toBe( true );
 
 				resolve();
 			}, 1000 );
@@ -864,8 +864,8 @@ describe( 'view', () => {
 
 				// Wait for async selectionchange event on DOM document.
 				setTimeout( () => {
-					expect( view.hasDomSelection ).to.be.true;
-					expect( view.document.isFocused ).to.be.false;
+					expect( view.hasDomSelection ).toBe( true );
+					expect( view.document.isFocused ).toBe( false );
 
 					resolve();
 				}, 100 );
@@ -877,7 +877,7 @@ describe( 'view', () => {
 
 			// Wait for async selectionchange event on DOM document.
 			setTimeout( () => {
-				expect( view.hasDomSelection ).to.be.false;
+				expect( view.hasDomSelection ).toBe( false );
 
 				resolve();
 			}, 100 );
@@ -939,8 +939,8 @@ describe( 'view', () => {
 			view.attachDomRoot( domDiv );
 			view.forceRender();
 
-			expect( domDiv.childNodes.length ).to.equal( 1 );
-			expect( view.domConverter.isBlockFiller( domDiv.childNodes[ 0 ] ) ).to.be.true;
+			expect( domDiv.childNodes.length ).toEqual( 1 );
+			expect( view.domConverter.isBlockFiller( domDiv.childNodes[ 0 ] ) ).toBe( true );
 
 			view.destroy();
 			domDiv.remove();
@@ -957,8 +957,8 @@ describe( 'view', () => {
 			viewDocument.getRoot()._appendChild( new ViewElement( viewDocument, 'p' ) );
 			view.forceRender();
 
-			expect( domDiv.childNodes.length ).to.equal( 1 );
-			expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
+			expect( domDiv.childNodes.length ).toEqual( 1 );
+			expect( domDiv.childNodes[ 0 ].tagName ).toEqual( 'P' );
 
 			view.destroy();
 		} );
@@ -976,14 +976,14 @@ describe( 'view', () => {
 			viewRoot._appendChild( viewP );
 			view.forceRender();
 
-			expect( domRoot.childNodes.length ).to.equal( 1 );
-			expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).to.equal( 'foo' );
+			expect( domRoot.childNodes.length ).toEqual( 1 );
+			expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).toEqual( 'foo' );
 
 			viewP._setAttribute( 'class', 'bar' );
 			view.forceRender();
 
-			expect( domRoot.childNodes.length ).to.equal( 1 );
-			expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).to.equal( 'bar' );
+			expect( domRoot.childNodes.length ).toEqual( 1 );
+			expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).toEqual( 'bar' );
 
 			view.destroy();
 			domRoot.remove();
@@ -1026,25 +1026,25 @@ describe( 'view', () => {
 
 				setupTest();
 
-				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
-				expect( document.getSelection().focusOffset ).to.equal( 3 );
+				expect( document.getSelection().focusNode ).toBe( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).toEqual( 3 );
 
 				domDiv.dispatchEvent( new FocusEvent( 'blur' ) );
 
-				expect( document.getSelection().rangeCount ).to.equal( 0 );
+				expect( document.getSelection().rangeCount ).toEqual( 0 );
 			} );
 
 			it( 'should not clear DOM selection on editor blur on non-iOS browser', () => {
 				setupTest();
 
-				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
-				expect( document.getSelection().focusOffset ).to.equal( 3 );
+				expect( document.getSelection().focusNode ).toBe( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).toEqual( 3 );
 
 				domDiv.dispatchEvent( new FocusEvent( 'blur' ) );
 
-				expect( document.getSelection().rangeCount ).to.equal( 1 );
-				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
-				expect( document.getSelection().focusOffset ).to.equal( 3 );
+				expect( document.getSelection().rangeCount ).toEqual( 1 );
+				expect( document.getSelection().focusNode ).toBe( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).toEqual( 3 );
 			} );
 
 			it( 'should clear DOM selection on editor blur on iOS (focus to some other element outside editor)', () => {
@@ -1052,12 +1052,12 @@ describe( 'view', () => {
 
 				setupTest();
 
-				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
-				expect( document.getSelection().focusOffset ).to.equal( 3 );
+				expect( document.getSelection().focusNode ).toBe( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).toEqual( 3 );
 
 				domDiv.dispatchEvent( new FocusEvent( 'blur', { relatedTarget: domOtherDiv } ) );
 
-				expect( document.getSelection().rangeCount ).to.equal( 0 );
+				expect( document.getSelection().rangeCount ).toEqual( 0 );
 			} );
 
 			it( 'should not clear DOM selection on editor blur on iOS (focus to the editor editable)', () => {
@@ -1065,14 +1065,14 @@ describe( 'view', () => {
 
 				setupTest();
 
-				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
-				expect( document.getSelection().focusOffset ).to.equal( 3 );
+				expect( document.getSelection().focusNode ).toBe( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).toEqual( 3 );
 
 				domDiv.dispatchEvent( new FocusEvent( 'blur', { relatedTarget: domDiv } ) );
 
-				expect( document.getSelection().rangeCount ).to.equal( 1 );
-				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
-				expect( document.getSelection().focusOffset ).to.equal( 3 );
+				expect( document.getSelection().rangeCount ).toEqual( 1 );
+				expect( document.getSelection().focusNode ).toBe( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).toEqual( 3 );
 			} );
 		} );
 
@@ -1091,23 +1091,23 @@ describe( 'view', () => {
 			viewP._appendChild( viewText );
 			view.forceRender();
 
-			expect( domDiv.childNodes.length ).to.equal( 1 );
-			expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
-			expect( domDiv.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
-			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+			expect( domDiv.childNodes.length ).toEqual( 1 );
+			expect( domDiv.childNodes[ 0 ].tagName ).toEqual( 'P' );
+			expect( domDiv.childNodes[ 0 ].childNodes.length ).toEqual( 1 );
+			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).toEqual( 'foo' );
 
 			domDiv.childNodes[ 0 ].childNodes[ 0 ].data = 'bar';
 			domDiv.appendChild( document.createElement( 'h1' ) );
 
-			expect( domDiv.childNodes.length ).to.equal( 2 );
-			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'bar' );
+			expect( domDiv.childNodes.length ).toEqual( 2 );
+			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).toEqual( 'bar' );
 
 			view.getObserver( MutationObserver ).flush();
 
-			expect( domDiv.childNodes.length ).to.equal( 1 );
-			expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
-			expect( domDiv.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
-			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+			expect( domDiv.childNodes.length ).toEqual( 1 );
+			expect( domDiv.childNodes[ 0 ].tagName ).toEqual( 'P' );
+			expect( domDiv.childNodes[ 0 ].childNodes.length ).toEqual( 1 );
+			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).toEqual( 'foo' );
 
 			view.destroy();
 		} );
@@ -1136,7 +1136,7 @@ describe( 'view', () => {
 				writer.insert( ViewPosition._createAt( viewRoot, 0 ), p );
 			} );
 
-			expect( renderingCalled ).to.be.true;
+			expect( renderingCalled ).toBe( true );
 			domDiv.remove();
 		} );
 
@@ -1309,9 +1309,9 @@ describe( 'view', () => {
 				} );
 			} );
 
-			expect( result1 ).to.equal( 42 );
-			expect( result2 ).to.equal( true );
-			expect( result3 ).to.undefined;
+			expect( result1 ).toEqual( 42 );
+			expect( result2 ).toEqual( true );
+			expect( result3 ).toBeUndefined();
 		} );
 
 		it.skip( 'should rethrow native errors as they are in the dubug=true mode', () => {

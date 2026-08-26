@@ -30,11 +30,11 @@ describe( 'StandardEditingModeUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( StandardEditingModeUI.isOfficialPlugin ).to.be.true;
+		expect( StandardEditingModeUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( StandardEditingModeUI.isPremiumPlugin ).to.be.false;
+		expect( StandardEditingModeUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'the "restrictedEditingException" toolbar button', () => {
@@ -45,11 +45,11 @@ describe( 'StandardEditingModeUI', () => {
 		testButton( 'restrictedEditingException', [ 'Enable inline editing', 'Disable inline editing' ], ButtonView );
 
 		it( 'should have #tooltip', () => {
-			expect( button.tooltip ).to.be.true;
+			expect( button.tooltip ).toBe( true );
 		} );
 
 		it( 'should have #isToggleable', () => {
-			expect( button.isToggleable ).to.be.true;
+			expect( button.isToggleable ).toBe( true );
 		} );
 	} );
 
@@ -61,11 +61,11 @@ describe( 'StandardEditingModeUI', () => {
 		testButton( 'restrictedEditingException', [ 'Enable inline editing', 'Disable inline editing' ], ButtonView );
 
 		it( 'should have #tooltip', () => {
-			expect( button.tooltip ).to.be.true;
+			expect( button.tooltip ).toBe( true );
 		} );
 
 		it( 'should have #isToggleable', () => {
-			expect( button.isToggleable ).to.be.true;
+			expect( button.isToggleable ).toBe( true );
 		} );
 	} );
 
@@ -77,11 +77,11 @@ describe( 'StandardEditingModeUI', () => {
 		testButton( 'restrictedEditingExceptionBlock', [ 'Enable block editing', 'Disable block editing' ], ButtonView );
 
 		it( 'should have #tooltip', () => {
-			expect( button.tooltip ).to.be.true;
+			expect( button.tooltip ).toBe( true );
 		} );
 
 		it( 'should have #isToggleable', () => {
-			expect( button.isToggleable ).to.be.true;
+			expect( button.isToggleable ).toBe( true );
 		} );
 	} );
 
@@ -93,11 +93,11 @@ describe( 'StandardEditingModeUI', () => {
 		testButton( 'restrictedEditingExceptionAuto', [ 'Enable editing', 'Disable editing' ], ButtonView );
 
 		it( 'should have #tooltip', () => {
-			expect( button.tooltip ).to.be.true;
+			expect( button.tooltip ).toBe( true );
 		} );
 
 		it( 'should have #isToggleable', () => {
-			expect( button.isToggleable ).to.be.true;
+			expect( button.isToggleable ).toBe( true );
 		} );
 	} );
 
@@ -145,19 +145,19 @@ describe( 'StandardEditingModeUI', () => {
 		} );
 
 		it( 'should create UI component with correct attribute values', () => {
-			expect( component.buttonView.label ).to.equal( 'Enable editing' );
-			expect( component.buttonView.icon ).to.equal( IconContentUnlock );
+			expect( component.buttonView.label ).toEqual( 'Enable editing' );
+			expect( component.buttonView.icon ).toEqual( IconContentUnlock );
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
 			component.render();
 
-			expect( component.element.classList.contains( 'ck-restricted-editing-dropdown' ) ).to.be.true;
+			expect( component.element.classList.contains( 'ck-restricted-editing-dropdown' ) ).toBe( true );
 		} );
 
 		it( '#toolbarView has the basic properties', () => {
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( component.toolbarView ).to.be.undefined;
+			expect( component.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			component.isOpen = true;
@@ -170,7 +170,7 @@ describe( 'StandardEditingModeUI', () => {
 
 		it( 'should hold defined buttons', () => {
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( component.toolbarView ).to.be.undefined;
+			expect( component.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			component.isOpen = true;
@@ -179,13 +179,13 @@ describe( 'StandardEditingModeUI', () => {
 
 			expect( items ).to.have.length( 2 );
 
-			expect( items.includes( 'Enable inline editing' ) ).to.be.true;
-			expect( items.includes( 'Enable block editing' ) ).to.be.true;
+			expect( items.includes( 'Enable inline editing' ) ).toBe( true );
+			expect( items.includes( 'Enable block editing' ) ).toBe( true );
 		} );
 
 		it( 'should be disabled if all commands are not enabled', () => {
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( component.toolbarView ).to.be.undefined;
+			expect( component.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			component.isOpen = true;
@@ -195,19 +195,19 @@ describe( 'StandardEditingModeUI', () => {
 
 			inlineCommand.isEnabled = true;
 			blockCommand.isEnabled = true;
-			expect( component.isEnabled ).to.be.true;
+			expect( component.isEnabled ).toBe( true );
 
 			inlineCommand.isEnabled = true;
 			blockCommand.isEnabled = false;
-			expect( component.isEnabled ).to.be.true;
+			expect( component.isEnabled ).toBe( true );
 
 			inlineCommand.isEnabled = false;
 			blockCommand.isEnabled = true;
-			expect( component.isEnabled ).to.be.true;
+			expect( component.isEnabled ).toBe( true );
 
 			inlineCommand.isEnabled = false;
 			blockCommand.isEnabled = false;
-			expect( component.isEnabled ).to.be.false;
+			expect( component.isEnabled ).toBe( false );
 		} );
 
 		it( 'should focus the first active button when dropdown is opened', () => {
@@ -215,7 +215,7 @@ describe( 'StandardEditingModeUI', () => {
 			document.body.appendChild( component.element );
 
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( component.toolbarView ).to.be.undefined;
+			expect( component.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			component.isOpen = true;
@@ -235,7 +235,7 @@ describe( 'StandardEditingModeUI', () => {
 
 		it( 'should return focus to editable after executing a command', () => {
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( component.toolbarView ).to.be.undefined;
+			expect( component.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			component.isOpen = true;
@@ -258,9 +258,9 @@ describe( 'StandardEditingModeUI', () => {
 		} );
 
 		it( 'should create UI component with correct attribute values', () => {
-			expect( button.isOn ).to.be.false;
-			expect( button.label ).to.equal( labels[ 0 ] );
-			expect( button.icon ).to.equal( IconContentUnlock );
+			expect( button.isOn ).toBe( false );
+			expect( button.label ).toEqual( labels[ 0 ] );
+			expect( button.icon ).toEqual( IconContentUnlock );
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
@@ -278,37 +278,37 @@ describe( 'StandardEditingModeUI', () => {
 		it( `should bind #isEnabled to ${ featureName } command`, () => {
 			const command = editor.commands.get( featureName );
 
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 
 			const initState = command.isEnabled;
-			expect( button.isEnabled ).to.equal( initState );
+			expect( button.isEnabled ).toEqual( initState );
 
 			command.isEnabled = !initState;
-			expect( button.isEnabled ).to.equal( !initState );
+			expect( button.isEnabled ).toEqual( !initState );
 		} );
 
 		it( `should bind #isOn to ${ featureName } command`, () => {
 			const command = editor.commands.get( featureName );
 
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 
 			command.value = true;
-			expect( button.isOn ).to.be.true;
+			expect( button.isOn ).toBe( true );
 
 			command.value = false;
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 		} );
 
 		it( `should bind #label to ${ featureName } command`, () => {
 			const command = editor.commands.get( featureName );
 
-			expect( button.label ).to.equal( labels[ 0 ] );
+			expect( button.label ).toEqual( labels[ 0 ] );
 
 			command.value = true;
-			expect( button.label ).to.equal( labels[ 1 ] );
+			expect( button.label ).toEqual( labels[ 1 ] );
 
 			command.value = false;
-			expect( button.label ).to.equal( labels[ 0 ] );
+			expect( button.label ).toEqual( labels[ 0 ] );
 		} );
 	}
 } );

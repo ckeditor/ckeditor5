@@ -104,7 +104,7 @@ describe( 'upcastTable()', () => {
 			}, { priority: 'highest' } );
 
 			dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ).toBe( true );
 			}, { priority: 'low' } );
 		} );
 
@@ -115,7 +115,7 @@ describe( 'upcastTable()', () => {
 
 	it( 'should consume the figure element before the table conversion starts', () => {
 		editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-			expect( conversionApi.consumable.test( data.viewItem.parent, { name: true, classes: 'table' } ) ).to.be.false;
+			expect( conversionApi.consumable.test( data.viewItem.parent, { name: true, classes: 'table' } ) ).toBe( false );
 		}, { priority: 'low' } );
 
 		editor.setData( '<figure class="table"><table>xyz</table></figure>' );
@@ -1335,11 +1335,9 @@ describe( 'upcastTable()', () => {
 				viewTable( [ [ '11', '12' ] ], { footerRows: 1 } )
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
-				modelTable( [
-					[ '11', '12' ]
-				], { footerRows: 1 } )
-			);
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual( modelTable( [
+				[ '11', '12' ]
+			], { footerRows: 1 } ) );
 		} );
 
 		it( 'should properly upcast table with single tfoot child (multiple rows)', () => {
@@ -1347,12 +1345,10 @@ describe( 'upcastTable()', () => {
 				viewTable( [ [ '11', '12' ], [ '21', '22' ] ], { footerRows: 2 } )
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
-				modelTable( [
-					[ '11', '12' ],
-					[ '21', '22' ]
-				], { footerRows: 2 } )
-			);
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual( modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			], { footerRows: 2 } ) );
 		} );
 
 		it( 'should properly upcast table with multiple tfoot children', () => {
@@ -1371,14 +1367,12 @@ describe( 'upcastTable()', () => {
 				'</table>'
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
-				modelTable( [
-					[ '21', '22' ],
-					[ '31', '32' ],
-					[ '41', '42' ],
-					[ '11', '12' ]
-				], { footerRows: 4 } )
-			);
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual( modelTable( [
+				[ '21', '22' ],
+				[ '31', '32' ],
+				[ '41', '42' ],
+				[ '11', '12' ]
+			], { footerRows: 4 } ) );
 		} );
 
 		it( 'should keep move `tfoot` to the bottom if placed between `tbody` (there are no other tfoot\'s)', () => {
@@ -1396,13 +1390,11 @@ describe( 'upcastTable()', () => {
 				'</table>'
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
-				modelTable( [
-					[ '11', '12' ],
-					[ '31', '32' ],
-					[ '21', '22' ]
-				], { footerRows: 1 } )
-			);
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual( modelTable( [
+				[ '11', '12' ],
+				[ '31', '32' ],
+				[ '21', '22' ]
+			], { footerRows: 1 } ) );
 		} );
 
 		it( 'should move only the first `tfoot` to the bottom if multiple `tfoot` are present between `tbody`', () => {
@@ -1423,14 +1415,12 @@ describe( 'upcastTable()', () => {
 				'</table>'
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
-				modelTable( [
-					[ '11', '12' ],
-					[ '41', '42' ],
-					[ '31', '32' ],
-					[ '21', '22' ]
-				], { footerRows: 1 } )
-			);
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual( modelTable( [
+				[ '11', '12' ],
+				[ '41', '42' ],
+				[ '31', '32' ],
+				[ '21', '22' ]
+			], { footerRows: 1 } ) );
 		} );
 
 		it( 'should properly upcast `tfoot` with all cells heading', () => {
@@ -1442,12 +1432,10 @@ describe( 'upcastTable()', () => {
 				{ footerRows: 2 }
 			) );
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
-				modelTable( [
-					[ '11', '12' ],
-					[ '21', '22' ]
-				], { footerRows: 2 } )
-			);
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual( modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			], { footerRows: 2 } ) );
 		} );
 
 		it( 'should properly upcast `tfoot` and `thead` in the same table', () => {
@@ -1461,12 +1449,10 @@ describe( 'upcastTable()', () => {
 				)
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
-				modelTable( [
-					[ '11', '12' ],
-					[ '21', '22' ]
-				], { headingRows: 1, footerRows: 1 } )
-			);
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual( modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			], { headingRows: 1, footerRows: 1 } ) );
 		} );
 
 		it( 'should properly upcast `tfoot`, `tbody` and `thead` in the same table', () => {
@@ -1481,13 +1467,11 @@ describe( 'upcastTable()', () => {
 				)
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
-				modelTable( [
-					[ '11', '12' ],
-					[ '21', '22' ],
-					[ '31', '32' ]
-				], { headingRows: 1, footerRows: 1 } )
-			);
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual( modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { headingRows: 1, footerRows: 1 } ) );
 		} );
 
 		it( 'should properly upcast `tfoot` (filled with `th`) and `thead` in the same table', () => {
@@ -1501,12 +1485,10 @@ describe( 'upcastTable()', () => {
 				)
 			);
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
-				modelTable( [
-					[ '11', '12' ],
-					[ '21', '22' ]
-				], { headingRows: 1, footerRows: 1 } )
-			);
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toEqual( modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			], { headingRows: 1, footerRows: 1 } ) );
 		} );
 	} );
 } );

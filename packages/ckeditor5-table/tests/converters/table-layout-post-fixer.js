@@ -196,13 +196,13 @@ describe( 'Table layout post-fixer', () => {
 				} );
 			} ).to.not.throw();
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph></paragraph>' );
 		} );
 	} );
 
 	describe( 'on collaboration', () => {
 		it( 'should add missing cells to columns (remove column vs insert row)', () => {
-			_testExternal(
+			testExternalChanges(
 				modelTable( [
 					[ '00[]', '01' ],
 					[ '10', '11' ]
@@ -224,7 +224,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should add missing cells to columns (insert row vs remove column)', () => {
-			_testExternal(
+			testExternalChanges(
 				modelTable( [
 					[ '00[]', '01' ],
 					[ '10', '11' ]
@@ -245,7 +245,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should add empty cell to an added row (insert row vs insert column)', () => {
-			_testExternal(
+			testExternalChanges(
 				modelTable( [
 					[ '00[]', '01' ],
 					[ '10', '11' ]
@@ -266,7 +266,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should add empty cell to an added row (insert column vs insert row)', () => {
-			_testExternal(
+			testExternalChanges(
 				modelTable( [
 					[ '00[]', '01' ],
 					[ '10', '11' ]
@@ -288,7 +288,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should add empty cell when inserting column over a colspanned cell (insert column vs insert column)', () => {
-			_testExternal(
+			testExternalChanges(
 				modelTable( [
 					[ { colspan: 3, contents: '00' } ],
 					[ '10', '11', '12' ]
@@ -314,7 +314,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should add empty cell when inserting column over a colspanned cell (insert column vs insert column) - inverted', () => {
-			_testExternal(
+			testExternalChanges(
 				modelTable( [
 					[ { colspan: 3, contents: '00' } ],
 					[ '10', '11', '12' ]
@@ -340,7 +340,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should insert table cell on undo (change table headers on row with rowspanned cell vs remove row)', () => {
-			_testExternal(
+			testExternalChanges(
 				modelTable( [
 					[ '11', { rowspan: 2, contents: '12' }, '13' ],
 					[ '21', '23' ],
@@ -365,7 +365,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should insert empty table cell (remove row vs change table headers on row with rowspanned cell)', () => {
-			_testExternal(
+			testExternalChanges(
 				modelTable( [
 					[ '11', { rowspan: 2, contents: '12' }, '13' ],
 					[ '21', '23' ],
@@ -389,7 +389,7 @@ describe( 'Table layout post-fixer', () => {
 				], { headingRows: 1 } ) );
 		} );
 
-		function _testExternal( initialData, localCallback, externalCallback, modelAfter, modelAfterUndo ) {
+		function testExternalChanges( initialData, localCallback, externalCallback, modelAfter, modelAfterUndo ) {
 			_setModelData( model, initialData );
 
 			model.change( localCallback );

@@ -321,15 +321,13 @@ describe( 'Context', () => {
 				}
 			}
 
-			try {
-				await Context.create( {
-					plugins: [ ErrorPlugin ],
-					substitutePlugins: [ 'NoErrorPlugin' ]
-				} );
-			} catch ( error ) {
-				expect( error ).toBeInstanceOf( CKEditorError );
-				expect( error.message ).toMatch( /^context-initplugins-constructor-only/ );
-			}
+			const createPromise = Context.create( {
+				plugins: [ ErrorPlugin ],
+				substitutePlugins: [ 'NoErrorPlugin' ]
+			} );
+
+			await expect( createPromise ).rejects.toThrow( CKEditorError );
+			await expect( createPromise ).rejects.toThrow( /^context-initplugins-constructor-only/ );
 		} );
 
 		it( 'should throw an error if a plugin for substituting does not extend the ContextPlugin class', async () => {
@@ -353,15 +351,13 @@ describe( 'Context', () => {
 				}
 			}
 
-			try {
-				await Context.create( {
-					plugins: [ ErrorPlugin ],
-					substitutePlugins: [ NoErrorPlugin ]
-				} );
-			} catch ( error ) {
-				expect( error ).toBeInstanceOf( CKEditorError );
-				expect( error.message ).toMatch( /^context-initplugins-invalid-plugin/ );
-			}
+			const createPromise = Context.create( {
+				plugins: [ ErrorPlugin ],
+				substitutePlugins: [ NoErrorPlugin ]
+			} );
+
+			await expect( createPromise ).rejects.toThrow( CKEditorError );
+			await expect( createPromise ).rejects.toThrow( /^context-initplugins-invalid-plugin/ );
 		} );
 	} );
 
@@ -397,14 +393,16 @@ describe( 'Context', () => {
 
 			await VirtualTestEditor.create( { context } );
 			await context.destroy();
-			await context.destroy();
+
+			await expect( context.destroy() ).resolves.toBeDefined();
 		} );
 
 		it( 'should not crash when destroyed for the second time - editor own managed context', async () => {
 			const editor = await VirtualTestEditor.create();
 
 			await editor.destroy();
-			await editor.destroy();
+
+			await expect( editor.destroy() ).resolves.toBeUndefined();
 		} );
 	} );
 

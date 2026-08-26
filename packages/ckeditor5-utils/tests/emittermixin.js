@@ -29,7 +29,7 @@ describe( 'EmitterMixin', () => {
 		const emitter = new EmitterClass( 5 );
 
 		expect( emitter ).to.be.instanceOf( TestClass );
-		expect( emitter.value ).to.equal( 5 );
+		expect( emitter.value ).toEqual( 5 );
 	} );
 
 	describe( 'fire', () => {
@@ -104,7 +104,9 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should do nothing for a non listened event', () => {
-			emitter.fire( 'test' );
+			expect( () => {
+				emitter.fire( 'test' );
+			} ).to.not.throw();
 		} );
 
 		it( 'should accept the same callback many times', () => {
@@ -196,13 +198,13 @@ describe( 'EmitterMixin', () => {
 
 		describe( 'return value', () => {
 			it( 'is undefined by default', () => {
-				expect( emitter.fire( 'foo' ) ).to.be.undefined;
+				expect( emitter.fire( 'foo' ) ).toBeUndefined();
 			} );
 
 			it( 'is undefined if none of the listeners modified EventInfo#return', () => {
 				emitter.on( 'foo', () => {} );
 
-				expect( emitter.fire( 'foo' ) ).to.be.undefined;
+				expect( emitter.fire( 'foo' ) ).toBeUndefined();
 			} );
 
 			it( 'equals EventInfo#return\'s value', () => {
@@ -210,7 +212,7 @@ describe( 'EmitterMixin', () => {
 					evt.return = 1;
 				} );
 
-				expect( emitter.fire( 'foo' ) ).to.equal( 1 );
+				expect( emitter.fire( 'foo' ) ).toEqual( 1 );
 			} );
 
 			it( 'equals EventInfo#return\'s value even if the event was stopped', () => {
@@ -221,7 +223,7 @@ describe( 'EmitterMixin', () => {
 					evt.stop();
 				} );
 
-				expect( emitter.fire( 'foo' ) ).to.equal( 1 );
+				expect( emitter.fire( 'foo' ) ).toEqual( 1 );
 			} );
 
 			it( 'equals EventInfo#return\'s value when it was set in a namespaced event', () => {
@@ -229,7 +231,7 @@ describe( 'EmitterMixin', () => {
 					evt.return = 1;
 				} );
 
-				expect( emitter.fire( 'foo:bar' ) ).to.equal( 1 );
+				expect( emitter.fire( 'foo:bar' ) ).toEqual( 1 );
 			} );
 
 			// Rationale – delegation keeps the listeners of the two objects separate.
@@ -245,7 +247,7 @@ describe( 'EmitterMixin', () => {
 					evt.return = 1;
 				} );
 
-				expect( emitterB.fire( 'foo' ) ).to.be.undefined;
+				expect( emitterB.fire( 'foo' ) ).toBeUndefined();
 			} );
 
 			it( 'equals the value set by the last callback', () => {
@@ -256,7 +258,7 @@ describe( 'EmitterMixin', () => {
 					evt.return = 2;
 				}, { priority: 'high' } );
 
-				expect( emitter.fire( 'foo' ) ).to.equal( 1 );
+				expect( emitter.fire( 'foo' ) ).toEqual( 1 );
 			} );
 		} );
 	} );
@@ -435,11 +437,13 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should not fail with unknown events', () => {
-			emitter.off( 'foo', () => {} );
-			emitter.off( 'foo:bar', () => {} );
+			expect( () => {
+				emitter.off( 'foo', () => {} );
+				emitter.off( 'foo:bar', () => {} );
 
-			emitter.off( 'foo' );
-			emitter.off( 'foo:bar' );
+				emitter.off( 'foo' );
+				emitter.off( 'foo:bar' );
+			} ).to.not.throw();
 		} );
 
 		it( 'should remove all entries for the same callback', () => {
@@ -752,20 +756,24 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should not fail with unknown events', () => {
-			listener.stopListening( emitter, 'foo', () => {} );
-			listener.stopListening( emitter, 'foo:bar', () => {} );
-			listener.stopListening( emitter, 'foo' );
-			listener.stopListening( emitter, 'foo:bar' );
+			expect( () => {
+				listener.stopListening( emitter, 'foo', () => {} );
+				listener.stopListening( emitter, 'foo:bar', () => {} );
+				listener.stopListening( emitter, 'foo' );
+				listener.stopListening( emitter, 'foo:bar' );
+			} ).to.not.throw();
 		} );
 
 		it( 'should not fail with unknown emitter', () => {
 			listener.listenTo( emitter, 'foo:bar', () => {} );
 
-			listener.stopListening( {}, 'foo', () => {} );
-			listener.stopListening( {}, 'foo:bar', () => {} );
-			listener.stopListening( {}, 'foo' );
-			listener.stopListening( {}, 'foo:bar' );
-			listener.stopListening( {} );
+			expect( () => {
+				listener.stopListening( {}, 'foo', () => {} );
+				listener.stopListening( {}, 'foo:bar', () => {} );
+				listener.stopListening( {}, 'foo' );
+				listener.stopListening( {}, 'foo:bar' );
+				listener.stopListening( {} );
+			} ).to.not.throw();
 		} );
 
 		it( 'should not fail with unknown callbacks', () => {
@@ -1374,10 +1382,10 @@ describe( 'EmitterMixin', () => {
 	function assertDelegated( evtArgs, { expectedName, expectedSource, expectedPath, expectedData } ) {
 		const evtInfo = evtArgs[ 0 ];
 
-		expect( evtInfo.name ).to.equal( expectedName );
-		expect( evtInfo.source ).to.equal( expectedSource );
-		expect( evtInfo.path ).to.deep.equal( expectedPath );
-		expect( evtArgs.slice( 1 ) ).to.deep.equal( expectedData );
+		expect( evtInfo.name ).toEqual( expectedName );
+		expect( evtInfo.source ).toEqual( expectedSource );
+		expect( evtInfo.path ).toEqual( expectedPath );
+		expect( evtArgs.slice( 1 ) ).toEqual( expectedData );
 	}
 } );
 
@@ -1389,17 +1397,17 @@ describe( 'emitter id', () => {
 	} );
 
 	it( 'should be undefined before it is set', () => {
-		expect( _getEmitterId( emitter ) ).to.be.undefined;
+		expect( _getEmitterId( emitter ) ).toBeUndefined();
 	} );
 
 	it( 'should be settable but only once', () => {
 		_setEmitterId( emitter, 'abc' );
 
-		expect( _getEmitterId( emitter ) ).to.equal( 'abc' );
+		expect( _getEmitterId( emitter ) ).toEqual( 'abc' );
 
 		_setEmitterId( emitter, 'xyz' );
 
-		expect( _getEmitterId( emitter ) ).to.equal( 'abc' );
+		expect( _getEmitterId( emitter ) ).toEqual( 'abc' );
 	} );
 } );
 
@@ -1412,14 +1420,14 @@ describe( '_getEmitterListenedTo', () => {
 	} );
 
 	it( 'should return null if listener do not listen to emitter with given id', () => {
-		expect( _getEmitterListenedTo( listener, 'abc' ) ).to.be.null;
+		expect( _getEmitterListenedTo( listener, 'abc' ) ).toBeNull();
 	} );
 
 	it( 'should return emitter with given id', () => {
 		listener.listenTo( emitter, 'eventName', () => {} );
 		const emitterId = _getEmitterId( emitter );
 
-		expect( _getEmitterListenedTo( listener, emitterId ) ).to.equal( emitter );
+		expect( _getEmitterListenedTo( listener, emitterId ) ).toEqual( emitter );
 	} );
 } );
 

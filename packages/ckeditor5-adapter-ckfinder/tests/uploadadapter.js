@@ -116,84 +116,61 @@ describe( 'CKFinderUploadAdapter', () => {
 				} );
 			} );
 
-			it( 'should throw an error on generic request error', () => {
-				const promise = adapter.upload()
-					.then( () => {
-						throw new Error( 'Promise should throw.' );
-					} )
-					.catch( msg => {
-						expect( msg ).toBe( 'Cannot upload file: image.jpeg.' );
-					} );
+			it( 'should throw an error on generic request error', async () => {
+				const promise = adapter.upload();
 
 				loader.file.then( () => {
 					const request = fakeXHR.requests[ 0 ];
 					request.error();
 				} );
 
-				return promise;
+				await expect( promise ).rejects.toBe( 'Cannot upload file: image.jpeg.' );
 			} );
 
-			it( 'should throw an error on error from server', () => {
+			it( 'should throw an error on error from server', async () => {
 				const responseError = {
 					error: {
 						message: 'Foo bar baz.'
 					}
 				};
 
-				const promise = adapter.upload()
-					.then( () => {
-						throw new Error( 'Promise should throw.' );
-					} )
-					.catch( msg => {
-						expect( msg ).toBe( 'Foo bar baz.' );
-					} );
+				const promise = adapter.upload();
 
 				loader.file.then( () => {
 					const request = fakeXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 				} );
 
-				return promise;
+				await expect( promise ).rejects.toBe( 'Foo bar baz.' );
 			} );
 
-			it( 'should throw a generic error on error from server without message', () => {
+			it( 'should throw a generic error on error from server without message', async () => {
 				const responseError = {
 					error: {}
 				};
 
-				const promise = adapter.upload()
-					.then( () => {
-						throw new Error( 'Promise should throw.' );
-					} )
-					.catch( msg => {
-						expect( msg ).toBe( 'Cannot upload file: image.jpeg.' );
-					} );
+				const promise = adapter.upload();
 
 				loader.file.then( () => {
 					const request = fakeXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 				} );
 
-				return promise;
+				await expect( promise ).rejects.toBe( 'Cannot upload file: image.jpeg.' );
 			} );
 
-			it( 'should throw an error on abort', () => {
+			it( 'should throw an error on abort', async () => {
 				let request;
 
-				const promise = adapter.upload()
-					.then( () => {
-						throw new Error( 'Promise should throw.' );
-					} )
-					.catch( () => {
-						expect( request.aborted ).toBe( true );
-					} );
+				const promise = adapter.upload();
 
 				loader.file.then( () => {
 					request = fakeXHR.requests[ 0 ];
 					adapter.abort();
 				} );
 
-				return promise;
+				await expect( promise ).rejects.toBeUndefined();
+				expect( request.aborted ).toBe( true );
 			} );
 
 			it( 'abort should not throw before upload', () => {

@@ -18,7 +18,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the text from the <a> element and place it right after', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a name="foo">' +
 				'<span>text</span>' +
 			'</a>',
@@ -29,7 +29,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should not move the text from the <a> element if it has `href`', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a name="foo" href="bar">' +
 				'<span>text</span>' +
 			'</a>',
@@ -41,7 +41,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the text from the <a> element and place it right after, when followed by another text', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a name="foo">' +
 				'<span>text</span>' +
 			'</a>' +
@@ -54,7 +54,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the formatted text from the <a> element and place it right after', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a name="foo">' +
 				'text' +
 				'<strong>bold</strong>' +
@@ -67,7 +67,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the text from each <a> element and place it right after', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a name="foo">' +
 				'<span>first</span>' +
 			'</a>' +
@@ -83,7 +83,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the text from the <a> element and place it right after in content of block elements', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<h2>header 2</h2>' +
 			'<a name="foo">' +
 				'<span>first</span>' +
@@ -98,7 +98,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the text from the <a> element and place it right after, between paragraphs wrapped with block quote', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<blockquote>' +
 				'<p>paragraph 1</p>' +
 				'<a name="foo">' +
@@ -117,7 +117,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the <img> from the <a> element and place it right after', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a name="foo">' +
 				'<img src="bar">' +
 			'</a>',
@@ -128,7 +128,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the <img> and text from the <a> element and place it right after', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a name="foo">' +
 				'text before <img src="bar"> text after' +
 			'</a>',
@@ -141,7 +141,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the text from the <a> element and place it right after, when in a first table cell', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<table>' +
 				'<tbody>' +
 					'<tr>' +
@@ -168,7 +168,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the text from the <a> element and place it right after, when in a second table cell', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<table>' +
 				'<tbody>' +
 					'<tr>' +
@@ -201,7 +201,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the text from the <a> element and place it right after, when `id` is used instead of `name`', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a id="foo">' +
 				'<span>text</span>' +
 			'</a>',
@@ -212,7 +212,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should move the text from the <a> element and place it right after, when both: `id` and `name` are present', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a id="foo" name="bar">' +
 				'<span>text</span>' +
 			'</a>',
@@ -223,7 +223,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should extract text and remove the <a> element completely if its name starts with an underscore (hidden bookmark)', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a name="_GoBack">' +
 				'<span>text</span>' +
 			'</a>',
@@ -233,7 +233,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should completely remove an empty <a> element if its name starts with an underscore', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<p>paragraph</p>' +
 			'<a name="_Toc12345"></a>',
 
@@ -242,7 +242,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should remove the <a> element but keep content when both id and name are present and name starts with an underscore', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a id="some-id" name="_hiddenBookmark">' +
 				'<span>text</span>' +
 			'</a>',
@@ -252,7 +252,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 	} );
 
 	it( 'should NOT remove the <a> element if only its id starts with an underscore (since Word/GDocs use name)', () => {
-		performTest(
+		testBookmarkTransformation(
 			'<a id="_GoBack">' +
 				'<span>text</span>' +
 			'</a>',
@@ -262,7 +262,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 		);
 	} );
 
-	function performTest( inputData, expectedData ) {
+	function testBookmarkTransformation( inputData, expectedData ) {
 		const documentFragment = htmlDataProcessor.toView( inputData );
 
 		transformBookmarks( documentFragment, writer );

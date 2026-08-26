@@ -65,7 +65,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>00</p><p></p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should rename <span> to <p> when adding <paragraph> element to the same table cell (prepend)', () => {
@@ -84,7 +84,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p></p><p>00</p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should rename <span> to <p> when adding more <paragraph> elements to the same table cell', () => {
@@ -106,7 +106,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>00</p><p></p><p></p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should rename <span> to <p> on adding other block element to the same table cell', () => {
@@ -126,7 +126,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>00</p><div></div>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should rename <span> to <p> on adding multiple other block elements to the same table cell', () => {
@@ -148,7 +148,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>00</p><div></div><div></div>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should not rename <span> to <p> when adding and removing <paragraph>', () => {
@@ -168,7 +168,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.equal( previousView );
+		expect( getViewForParagraph( table ) ).toEqual( previousView );
 	} );
 
 	it( 'should properly rename the same element on consecutive changes', () => {
@@ -196,7 +196,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should rename <span> to <p> when setting attribute on <paragraph>', () => {
@@ -212,7 +212,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p foo="bar">00</p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should not rename <span> to <p> when setting a selection attribute on <paragraph>', () => {
@@ -228,7 +228,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<span class="ck-table-bogus-paragraph">00</span>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.equal( previousView );
+		expect( getViewForParagraph( table ) ).toEqual( previousView );
 	} );
 
 	it( 'should rename <p> to <span> when removing one of two paragraphs inside table cell', () => {
@@ -244,7 +244,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should rename <p> to <span> when removing all but one paragraph inside table cell', () => {
@@ -261,7 +261,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should rename <p> to <span> when removing attribute from <paragraph>', () => {
@@ -277,7 +277,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<span class="ck-table-bogus-paragraph">00</span>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should keep <p> in the view when <paragraph> attribute value is changed', () => {
@@ -293,7 +293,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p foo="baz">00</p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.equal( previousView );
+		expect( getViewForParagraph( table ) ).toEqual( previousView );
 	} );
 
 	it( 'should keep <p> in the view when adding another attribute to a <paragraph> with other attributes', () => {
@@ -309,7 +309,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p bar="bar" foo="bar">00</p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.equal( previousView );
+		expect( getViewForParagraph( table ) ).toEqual( previousView );
 	} );
 
 	it( 'should keep <p> in the view when adding another attribute to a <paragraph> and removing attribute that is already set', () => {
@@ -326,7 +326,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p bar="bar">00</p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.equal( previousView );
+		expect( getViewForParagraph( table ) ).toEqual( previousView );
 	} );
 
 	it( 'should keep <p> in the view when <paragraph> attribute value is changed (table cell with multiple blocks)', () => {
@@ -342,7 +342,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p foo="baz">00</p><p>00</p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.equal( previousView );
+		expect( getViewForParagraph( table ) ).toEqual( previousView );
 	} );
 
 	it( 'should do nothing on rename <paragraph> to other block', () => {
@@ -358,7 +358,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<div>00</div>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should do nothing on adding <paragraph> to existing paragraphs', () => {
@@ -374,7 +374,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<p>a</p><p>b</p><p></p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.equal( previousView );
+		expect( getViewForParagraph( table ) ).toEqual( previousView );
 	} );
 
 	it( 'should do nothing when setting attribute on block item other then <paragraph>', () => {
@@ -390,7 +390,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<div foo="bar">foo</div>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.equal( previousView );
+		expect( getViewForParagraph( table ) ).toEqual( previousView );
 	} );
 
 	it( 'should rename <p> in to <span> when removing <paragraph> (table cell with 2 paragraphs)', () => {
@@ -406,7 +406,7 @@ describe( 'Table cell refresh handler', () => {
 		expect( _getViewData( view, { withoutSelection: true } ) ).toEqualMarkup( viewTable( [
 			[ '<span class="ck-table-bogus-paragraph">00</span>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).not.toBe( previousView );
 	} );
 
 	it( 'should update view selection after deleting content', () => {
@@ -480,6 +480,6 @@ describe( 'Table cell refresh handler', () => {
 		} );
 
 		// Trying to map view selection to DOM range shouldn't throw after post-fixer will fix inserted <p> to <span>.
-		expect( editor.getData() ).to.equal( '' );
+		expect( editor.getData() ).toEqual( '' );
 	} );
 } );

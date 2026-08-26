@@ -312,9 +312,7 @@ describe( 'Styles utils', () => {
 		it( 'should trim truncate analyzed content to 1500 characters', () => {
 			const attribute = 'abc(10, 1)'.repeat( 160 );
 
-			expect( getShorthandStylesValues( '   ' + attribute ) ).to.be.deep.equal(
-				[ ...Array( 150 ) ].fill( 'abc(10, 1)' )
-			);
+			expect( getShorthandStylesValues( '   ' + attribute ) ).toEqual( [ ...Array( 150 ) ].fill( 'abc(10, 1)' ) );
 		} );
 
 		it( 'should split string to separate values when value contain grouping parens', () => {

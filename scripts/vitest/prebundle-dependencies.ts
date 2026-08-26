@@ -78,7 +78,7 @@ export function collectPrebundledDependencies(
 	packageJson: PackageJsonFile
 ): { include: Array<string>; exclude: Array<string> } {
 	const sourceImports = scanImports( join( packageDir, 'src' ) );
-	const testImports = scanImports( join( packageDir, 'tests' ), [ '**/manual/**' ] );
+	const testImports = scanImports( join( packageDir, 'tests' ) );
 	const queue = [ ...sourceImports, ...testImports ];
 	const visited = new Set( [ packageJson.name ] );
 	const entries = new Set<string>();

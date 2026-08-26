@@ -59,15 +59,15 @@ describe( 'ListFormatting', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListFormatting.pluginName ).to.equal( 'ListFormatting' );
+		expect( ListFormatting.pluginName ).toEqual( 'ListFormatting' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListFormatting.isOfficialPlugin ).to.be.true;
+		expect( ListFormatting.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListFormatting.isPremiumPlugin ).to.be.false;
+		expect( ListFormatting.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
@@ -75,7 +75,7 @@ describe( 'ListFormatting', () => {
 	} );
 
 	it( 'should require integration plugins', () => {
-		expect( ListFormatting.requires ).to.deep.equal( [
+		expect( ListFormatting.requires ).toEqual( [
 			ListItemBoldIntegration,
 			ListItemItalicIntegration,
 			ListItemFontSizeIntegration,
@@ -658,7 +658,7 @@ describe( 'ListFormatting', () => {
 		} );
 
 		describe( 'list structure modifications', () => {
-			it( 'it should add attribute to li after splitting list item with consistent formatting', () => {
+			it( 'should add attribute to li after splitting list item with consistent formatting', () => {
 				_setModelData( model,
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foo[]bar</$text>' +
@@ -685,7 +685,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).toBeUndefined();
 
 				editor.execute( 'enter' );
 
@@ -710,7 +710,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).toBeUndefined();
 
 				editor.execute( 'delete' );
 
@@ -732,7 +732,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).toEqual( 'foo' );
 
 				editor.execute( 'delete' );
 
@@ -756,8 +756,8 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
-				expect( model.document.getRoot().getChild( 1 ).getAttribute( 'listItemFormat' ) ).to.equal( 'bar' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).toEqual( 'foo' );
+				expect( model.document.getRoot().getChild( 1 ).getAttribute( 'listItemFormat' ) ).toEqual( 'bar' );
 
 				editor.execute( 'mergeListItemBackward' );
 
@@ -781,8 +781,8 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
-				expect( model.document.getRoot().getChild( 1 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).toEqual( 'foo' );
+				expect( model.document.getRoot().getChild( 1 ).getAttribute( 'listItemFormat' ) ).toBeUndefined();
 
 				editor.execute( 'mergeListItemBackward' );
 
@@ -849,8 +849,8 @@ describe( 'ListFormatting', () => {
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">[]</paragraph>'
 				);
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).to.be.undefined;
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).toBeUndefined();
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).toBeUndefined();
 
 				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 				setSelectionAttribute( model, 'inlineFormat2', 'bar' );
@@ -869,8 +869,8 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).to.equal( 'bar' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).toEqual( 'foo' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).toEqual( 'bar' );
 
 				setAttribute( model, 'inlineFormat', 'baz', docSelection.getFirstRange() );
 
@@ -888,8 +888,8 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).to.equal( 'bar' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).toEqual( 'foo' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).toEqual( 'bar' );
 
 				removeAttribute( model, 'inlineFormat', docSelection.getFirstRange() );
 
@@ -907,8 +907,8 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).to.equal( 'bar' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).toEqual( 'foo' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).toEqual( 'bar' );
 
 				setAttribute( model, 'inlineFormat2', 'baz', docSelection.getFirstRange() );
 
@@ -924,7 +924,7 @@ describe( 'ListFormatting', () => {
 
 	describe( 'enableListItemMarkerFormatting', () => {
 		it( 'should be enabled by default', () => {
-			expect( editor.config.get( 'list.enableListItemMarkerFormatting' ) ).to.be.true;
+			expect( editor.config.get( 'list.enableListItemMarkerFormatting' ) ).toBe( true );
 		} );
 
 		describe( 'when enableListItemMarkerFormatting is false (postfixer should not run)', () => {

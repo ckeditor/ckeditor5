@@ -70,14 +70,14 @@ describe( 'ListMergeCommand', () => {
 						'a[]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 
 					_setModelData( model, modelList( [
 						'* a',
 						'[]b'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true when there is a preceding list item', () => {
@@ -86,7 +86,7 @@ describe( 'ListMergeCommand', () => {
 						'* []'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false when there is no preceding list item', () => {
@@ -94,7 +94,7 @@ describe( 'ListMergeCommand', () => {
 						'* []'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when there is a preceding block in the same list item', () => {
@@ -103,7 +103,7 @@ describe( 'ListMergeCommand', () => {
 						'  []'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 			} );
 
@@ -113,7 +113,7 @@ describe( 'ListMergeCommand', () => {
 						'[<blockWidget></blockWidget>]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true when there is a preceding list item', () => {
@@ -122,7 +122,7 @@ describe( 'ListMergeCommand', () => {
 						'* [<blockWidget></blockWidget>]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false when there is no preceding list item', () => {
@@ -130,7 +130,7 @@ describe( 'ListMergeCommand', () => {
 						'* [<blockWidget></blockWidget>]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when there is a preceding block in the same list item', () => {
@@ -139,7 +139,7 @@ describe( 'ListMergeCommand', () => {
 						'  [<blockWidget></blockWidget>]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 			} );
 
@@ -149,7 +149,7 @@ describe( 'ListMergeCommand', () => {
 						'<paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when there is a preceding list item but the selection stays in a single item', () => {
@@ -158,7 +158,7 @@ describe( 'ListMergeCommand', () => {
 						'* <paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when there is no preceding list item', () => {
@@ -166,7 +166,7 @@ describe( 'ListMergeCommand', () => {
 						'* <paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when there is a preceding block in the same list item', () => {
@@ -175,7 +175,7 @@ describe( 'ListMergeCommand', () => {
 						'  <paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 			} );
 
@@ -185,7 +185,7 @@ describe( 'ListMergeCommand', () => {
 						'* [a]b'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false if the selection focuses in a non-list item', () => {
@@ -194,7 +194,7 @@ describe( 'ListMergeCommand', () => {
 						'b]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true if the selection focuses in a list item', () => {
@@ -203,14 +203,14 @@ describe( 'ListMergeCommand', () => {
 						'* b]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 
 					_setModelData( model, modelList( [
 						'[a',
 						'* b]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 			} );
 		} );
@@ -223,7 +223,7 @@ describe( 'ListMergeCommand', () => {
 				] ) );
 
 				model.change( writer => {
-					expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
+					expect( writer.batch.operations.length, 'before' ).toEqual( 0 );
 
 					command.execute();
 
@@ -755,7 +755,7 @@ describe( 'ListMergeCommand', () => {
 							} );
 						} );
 
-						it( 'should merge with previous list item and keep complex blocks intact ', () => {
+						it( 'should merge with previous list item and keep complex blocks intact', () => {
 							runTest( {
 								input: [
 									'* ',
@@ -1223,14 +1223,14 @@ describe( 'ListMergeCommand', () => {
 						'a[]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 
 					_setModelData( model, modelList( [
 						'[]a',
 						'* b'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true when there is a following list item', () => {
@@ -1239,7 +1239,7 @@ describe( 'ListMergeCommand', () => {
 						'* a'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false when there is no following list item', () => {
@@ -1247,7 +1247,7 @@ describe( 'ListMergeCommand', () => {
 						'* []'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when there is a following block in the same list item', () => {
@@ -1256,7 +1256,7 @@ describe( 'ListMergeCommand', () => {
 						'  a'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 			} );
 
@@ -1266,7 +1266,7 @@ describe( 'ListMergeCommand', () => {
 						'[<blockWidget></blockWidget>]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true when there is a following list item', () => {
@@ -1275,7 +1275,7 @@ describe( 'ListMergeCommand', () => {
 						'* a'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be false when there is no following list item', () => {
@@ -1283,7 +1283,7 @@ describe( 'ListMergeCommand', () => {
 						'* [<blockWidget></blockWidget>]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be false when there is a following block in the same list item', () => {
@@ -1292,7 +1292,7 @@ describe( 'ListMergeCommand', () => {
 						'  a'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 			} );
 
@@ -1303,7 +1303,7 @@ describe( 'ListMergeCommand', () => {
 						'b]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true if the selection focuses in a list item', () => {
@@ -1312,7 +1312,7 @@ describe( 'ListMergeCommand', () => {
 						'* b]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 
 					_setModelData( model, modelList( [
 						'[a',
@@ -1320,7 +1320,7 @@ describe( 'ListMergeCommand', () => {
 					] ) );
 
 					// Because deleteContent must happen.
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 			} );
 		} );
@@ -1333,7 +1333,7 @@ describe( 'ListMergeCommand', () => {
 				] ) );
 
 				model.change( writer => {
-					expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
+					expect( writer.batch.operations.length, 'before' ).toEqual( 0 );
 
 					command.execute();
 
@@ -3108,6 +3108,6 @@ describe( 'ListMergeCommand', () => {
 
 		expect( _getModelData( model ) ).toEqualMarkup( modelList( expected ) );
 
-		expect( blocksChangedByCommands.map( block => block.index ) ).to.deep.equal( changedBlocks, 'changed blocks\' indexes' );
+		expect( blocksChangedByCommands.map( block => block.index ), 'changed blocks\' indexes' ).toEqual( changedBlocks );
 	}
 } );

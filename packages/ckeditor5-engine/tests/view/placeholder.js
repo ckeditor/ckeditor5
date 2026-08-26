@@ -167,7 +167,7 @@ describe( 'placeholder', () => {
 			} );
 			_setViewData( view, '<p>paragraph</p>' );
 
-			view.forceRender();
+			expect( () => view.forceRender() ).not.toThrow();
 		} );
 
 		it( 'should allow to add placeholder to elements from different documents', () => {

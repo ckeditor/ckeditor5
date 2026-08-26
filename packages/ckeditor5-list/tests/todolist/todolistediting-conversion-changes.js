@@ -3235,7 +3235,9 @@ describe( 'TodoListEditing - conversion - changes', () => {
 				'<paragraph listItemId="a" listIndent="0" listType="todo">1</paragraph>' +
 				'<paragraph listItemId="a" listIndent="0" listType="todo">2</paragraph>'
 			);
+		} );
 
+		it( 'should convert a multi-block to-do list item', () => {
 			expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 				'<p>0</p>' +
 				'<ul class="todo-list">' +

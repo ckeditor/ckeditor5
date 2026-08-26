@@ -691,12 +691,9 @@ describe( 'LinkEditing', () => {
 						expect( _getModelData( model, { withoutSelection: true } ) )
 							.toBe( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
 
-						if ( link.external ) {
-							expect( editor.getData() )
-								.toBe( `<p><a target="_blank" rel="noopener noreferrer" href="${ link.url }">foo</a>bar</p>` );
-						} else {
-							expect( editor.getData() ).toBe( `<p><a href="${ link.url }">foo</a>bar</p>` );
-						}
+						const targetAttributes = link.external ? 'target="_blank" rel="noopener noreferrer" ' : '';
+
+						expect( editor.getData() ).toBe( `<p><a ${ targetAttributes }href="${ link.url }">foo</a>bar</p>` );
 					} );
 				} );
 			} );

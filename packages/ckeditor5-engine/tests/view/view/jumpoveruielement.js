@@ -463,7 +463,9 @@ describe( 'View', () => {
 			document.body.appendChild( newDiv );
 			domSelection.collapse( newDiv, 0 );
 
-			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) } );
+			expect( () => {
+				viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) } );
+			} ).not.toThrow();
 
 			newDiv.remove();
 		} );

@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { range } from 'es-toolkit/compat';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine';
 import { Image, ImageCaption, ImageBlockEditing, ImageInlineEditing } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -441,137 +442,137 @@ describe( 'ImageElementSupport', () => {
 			} );
 		} );
 
-		// it( 'should allow modifying styles, classes and attributes', () => {
-		// 	// This should also work when we set `attributes: true` but currently there are some
-		// 	// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
-		// 	// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
-		// 	// @see https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(figure|img)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow modifying styles, classes and attributes', () => {
+			// This should also work when we set `attributes: true` but currently there are some
+			// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
+			// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
+			// @see https://github.com/ckeditor/ckeditor5/issues/11532
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
-		// 			'<img src="/sample.png" class="bar" style="color:blue;" data-image="image">' +
-		// 		'</figure>'
-		// 	);
+			editor.setData(
+				'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
+					'<img src="/sample.png" class="bar" style="color:blue;" data-image="image">' +
+				'</figure>'
+			);
 
-		// 	const imageBlock = model.document.getRoot().getChild( 0 );
+			const imageBlock = model.document.getRoot().getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', {
-		// 			'background-color': 'blue',
-		// 			color: 'red'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', {
-		// 			'font-size': '12px',
-		// 			'text-align': 'center'
-		// 		} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'red'
+				} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', {
+					'font-size': '12px',
+					'text-align': 'center'
+				} );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', {
-		// 			'data-image': 'xyz'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', {
-		// 			'data-figure': 'zzz'
-		// 		} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', {
+					'data-image': 'xyz'
+				} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', {
+					'data-figure': 'zzz'
+				} );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
-		// 	} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data: '<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/sample.png"></imageBlock>',
-		// 		attributes: {
-		// 			1: {
-		// 				attributes: {
-		// 					'data-image': 'xyz'
-		// 				},
-		// 				classes: [ 'bar', 'baz' ],
-		// 				styles: {
-		// 					'background-color': 'blue',
-		// 					color: 'red'
-		// 				}
-		// 			},
-		// 			2: {
-		// 				attributes: {
-		// 					'data-figure': 'zzz'
-		// 				},
-		// 				classes: [ 'foobar' ],
-		// 				styles: {
-		// 					'font-size': '12px',
-		// 					'text-align': 'center'
-		// 				}
-		// 			}
-		// 		}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data: '<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/sample.png"></imageBlock>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-image': 'xyz'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'red'
+						}
+					},
+					2: {
+						attributes: {
+							'data-figure': 'zzz'
+						},
+						classes: [ 'foobar' ],
+						styles: {
+							'font-size': '12px',
+							'text-align': 'center'
+						}
+					}
+				}
+			} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 		'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
-		// 				' style="font-size:12px;text-align:center">' +
-		// 			'<img class="bar baz" data-image="xyz" src="/sample.png" style="background-color:blue;color:red"></img>' +
-		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-		// 		'</figure>'
-		// 	);
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
+						' style="font-size:12px;text-align:center">' +
+					'<img class="bar baz" data-image="xyz" src="/sample.png" style="background-color:blue;color:red"></img>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
-		// 			'<img class="bar baz" style="background-color:blue;color:red;" src="/sample.png" data-image="xyz">' +
-		// 		'</figure>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
+					'<img class="bar baz" style="background-color:blue;color:red;" src="/sample.png" data-image="xyz">' +
+				'</figure>'
+			);
+		} );
 
-		// it( 'should allow removing all styles, classes and attributes', () => {
-		// 	// This should also work when we set `attributes: true` but currently there are some
-		// 	// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
-		// 	// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
-		// 	// @see https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(figure|img)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow removing all styles, classes and attributes', () => {
+			// This should also work when we set `attributes: true` but currently there are some
+			// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
+			// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
+			// @see https://github.com/ckeditor/ckeditor5/issues/11532
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
-		// 			'<img src="/sample.png" class="bar" style="color:blue;" data-image="image">' +
-		// 		'</figure>'
-		// 	);
+			editor.setData(
+				'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
+					'<img src="/sample.png" class="bar" style="color:blue;" data-image="image">' +
+				'</figure>'
+			);
 
-		// 	const imageBlock = model.document.getRoot().getChild( 0 );
+			const imageBlock = model.document.getRoot().getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', null );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', null );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', null );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', null );
-		// 	} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', null );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data: '<imageBlock src="/sample.png"></imageBlock>',
-		// 		attributes: {}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data: '<imageBlock src="/sample.png"></imageBlock>',
+				attributes: {}
+			} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 		'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-		// 			'<img src="/sample.png"></img>' +
-		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-		// 		'</figure>'
-		// 	);
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+					'<img src="/sample.png"></img>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<figure class="image">' +
-		// 			'<img src="/sample.png">' +
-		// 		'</figure>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<figure class="image">' +
+					'<img src="/sample.png">' +
+				'</figure>'
+			);
+		} );
 	} );
 
 	describe( 'BlockImage with link', () => {
@@ -1009,171 +1010,171 @@ describe( 'ImageElementSupport', () => {
 			expect( editor.getData() ).toBe( expectedHtml );
 		} );
 
-		// it( 'should allow modifying styles, classes and attributes', () => {
-		// 	// This should also work when we set `attributes: true` but currently there are some
-		// 	// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
-		// 	// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
-		// 	// @see https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(figure|img|a)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow modifying styles, classes and attributes', () => {
+			// This should also work when we set `attributes: true` but currently there are some
+			// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
+			// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
+			// @see https://github.com/ckeditor/ckeditor5/issues/11532
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|a)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
-		// 			'<a href="www.example.com" class="baz" data-link="link">' +
-		// 				'<img src="/sample.png" class="bar" style="color:blue;" data-image="image">' +
-		// 			'</a>' +
-		// 		'</figure>'
-		// 	);
+			editor.setData(
+				'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
+					'<a href="www.example.com" class="baz" data-link="link">' +
+						'<img src="/sample.png" class="bar" style="color:blue;" data-image="image">' +
+					'</a>' +
+				'</figure>'
+			);
 
-		// 	const imageBlock = model.document.getRoot().getChild( 0 );
+			const imageBlock = model.document.getRoot().getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', {
-		// 			'background-color': 'blue',
-		// 			color: 'red'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', {
-		// 			'font-size': '12px',
-		// 			'text-align': 'center'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'styles', {
-		// 			color: 'green'
-		// 		} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'red'
+				} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', {
+					'font-size': '12px',
+					'text-align': 'center'
+				} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'styles', {
+					color: 'green'
+				} );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', {
-		// 			'data-image': 'xyz'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', {
-		// 			'data-figure': 'zzz'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'attributes', {
-		// 			'data-link': 'xxx'
-		// 		} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', {
+					'data-image': 'xyz'
+				} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', {
+					'data-figure': 'zzz'
+				} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'attributes', {
+					'data-link': 'xxx'
+				} );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'classes', [ 'baz', 'foo', 'bar' ] );
-		// 	} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'classes', [ 'baz', 'foo', 'bar' ] );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 			'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
-		// 				'linkHref="www.example.com" src="/sample.png">' +
-		// 			'</imageBlock>',
-		// 		attributes: {
-		// 			1: {
-		// 				attributes: {
-		// 					'data-image': 'xyz'
-		// 				},
-		// 				classes: [ 'bar', 'baz' ],
-		// 				styles: {
-		// 					'background-color': 'blue',
-		// 					color: 'red'
-		// 				}
-		// 			},
-		// 			2: {
-		// 				attributes: {
-		// 					'data-figure': 'zzz'
-		// 				},
-		// 				classes: [ 'foobar' ],
-		// 				styles: {
-		// 					'font-size': '12px',
-		// 					'text-align': 'center'
-		// 				}
-		// 			},
-		// 			3: {
-		// 				attributes: {
-		// 					'data-link': 'xxx'
-		// 				},
-		// 				classes: [ 'baz', 'foo', 'bar' ],
-		// 				styles: {
-		// 					color: 'green'
-		// 				}
-		// 			}
-		// 		}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
+						'linkHref="www.example.com" src="/sample.png">' +
+					'</imageBlock>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-image': 'xyz'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'red'
+						}
+					},
+					2: {
+						attributes: {
+							'data-figure': 'zzz'
+						},
+						classes: [ 'foobar' ],
+						styles: {
+							'font-size': '12px',
+							'text-align': 'center'
+						}
+					},
+					3: {
+						attributes: {
+							'data-link': 'xxx'
+						},
+						classes: [ 'baz', 'foo', 'bar' ],
+						styles: {
+							color: 'green'
+						}
+					}
+				}
+			} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 		'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
-		// 				' style="font-size:12px;text-align:center">' +
-		// 			'<a class="bar baz foo" data-link="xxx" href="www.example.com" style="color:green">' +
-		// 				'<img class="bar baz" data-image="xyz" src="/sample.png" style="background-color:blue;color:red"></img>' +
-		// 			'</a>' +
-		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-		// 		'</figure>'
-		// 	);
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
+						' style="font-size:12px;text-align:center">' +
+					'<a class="bar baz foo" data-link="xxx" href="www.example.com" style="color:green">' +
+						'<img class="bar baz" data-image="xyz" src="/sample.png" style="background-color:blue;color:red"></img>' +
+					'</a>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
-		// 			'<a class="baz foo bar" style="color:green;" href="www.example.com" data-link="xxx">' +
-		// 				'<img class="bar baz" style="background-color:blue;color:red;" src="/sample.png" data-image="xyz">' +
-		// 			'</a>' +
-		// 		'</figure>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
+					'<a class="baz foo bar" style="color:green;" href="www.example.com" data-link="xxx">' +
+						'<img class="bar baz" style="background-color:blue;color:red;" src="/sample.png" data-image="xyz">' +
+					'</a>' +
+				'</figure>'
+			);
+		} );
 
-		// it( 'should allow removing all styles, classes and attributes', () => {
-		// 	// This should also work when we set `attributes: true` but currently there are some
-		// 	// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
-		// 	// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
-		// 	// @see https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(figure|img|a)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow removing all styles, classes and attributes', () => {
+			// This should also work when we set `attributes: true` but currently there are some
+			// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
+			// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
+			// @see https://github.com/ckeditor/ckeditor5/issues/11532
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|a)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
-		// 			'<a href="www.example.com" class="baz" data-link="link">' +
-		// 				'<img src="/sample.png" class="bar" style="color:blue;" data-image="image">' +
-		// 			'</a>' +
-		// 		'</figure>'
-		// 	);
+			editor.setData(
+				'<figure class="image foo" style="background-color:red;" data-figure="figure">' +
+					'<a href="www.example.com" class="baz" data-link="link">' +
+						'<img src="/sample.png" class="bar" style="color:blue;" data-image="image">' +
+					'</a>' +
+				'</figure>'
+			);
 
-		// 	const imageBlock = model.document.getRoot().getChild( 0 );
+			const imageBlock = model.document.getRoot().getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'styles', null );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'styles', null );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'attributes', null );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'classes', null );
-		// 	} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlLinkAttributes', 'classes', null );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data: '<imageBlock linkHref="www.example.com" src="/sample.png"></imageBlock>',
-		// 		attributes: {}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data: '<imageBlock linkHref="www.example.com" src="/sample.png"></imageBlock>',
+				attributes: {}
+			} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 		'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-		// 			'<a href="www.example.com">' +
-		// 				'<img src="/sample.png"></img>' +
-		// 			'</a>' +
-		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-		// 		'</figure>'
-		// 	);
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+					'<a href="www.example.com">' +
+						'<img src="/sample.png"></img>' +
+					'</a>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<figure class="image">' +
-		// 			'<a href="www.example.com">' +
-		// 				'<img src="/sample.png">' +
-		// 			'</a>' +
-		// 		'</figure>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<figure class="image">' +
+					'<a href="www.example.com">' +
+						'<img src="/sample.png">' +
+					'</a>' +
+				'</figure>'
+			);
+		} );
 	} );
 
 	describe( 'BlockImage with caption', () => {
@@ -1543,174 +1544,174 @@ describe( 'ImageElementSupport', () => {
 			expect( marker.getEnd().path ).toEqual( [ 1 ] );
 		} );
 
-		// it( 'should allow modifying styles, classes and attributes', () => {
-		// 	// This should also work when we set `attributes: true` but currently there are some
-		// 	// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
-		// 	// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
-		// 	// @see https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(figure|img|figcaption)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow modifying styles, classes and attributes', () => {
+			// This should also work when we set `attributes: true` but currently there are some
+			// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
+			// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
+			// @see https://github.com/ckeditor/ckeditor5/issues/11532
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<figure class="image foo" style="background:red;" data-figure="figure">' +
-		// 			'<img src="/sample.png" class="bar" style="color:green;" data-image="image">' +
-		// 			'<figcaption class="baz" style="border:solid 1px;" data-figcaption="figcaption">A caption</figcaption>' +
-		// 		'</figure>'
-		// 	);
+			editor.setData(
+				'<figure class="image foo" style="background:red;" data-figure="figure">' +
+					'<img src="/sample.png" class="bar" style="color:green;" data-image="image">' +
+					'<figcaption class="baz" style="border:solid 1px;" data-figcaption="figcaption">A caption</figcaption>' +
+				'</figure>'
+			);
 
-		// 	const imageBlock = model.document.getRoot().getChild( 0 );
-		// 	const caption = imageBlock.getChild( 0 );
+			const imageBlock = model.document.getRoot().getChild( 0 );
+			const caption = imageBlock.getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', {
-		// 			'background-color': 'blue',
-		// 			color: 'red'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', {
-		// 			'font-size': '12px',
-		// 			'text-align': 'center'
-		// 		} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'red'
+				} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', {
+					'font-size': '12px',
+					'text-align': 'center'
+				} );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', {
-		// 			'data-image': 'xyz'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', {
-		// 			'data-figure': 'zzz'
-		// 		} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', {
+					'data-image': 'xyz'
+				} );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', {
+					'data-figure': 'zzz'
+				} );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', [ 'foobar' ] );
 
-		// 		setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'styles', {
-		// 			color: 'green'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'attributes', {
-		// 			'data-figcaption': 'xxx'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'classes', [ 'baz', 'foo', 'bar' ] );
-		// 	} );
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'styles', {
+					color: 'green'
+				} );
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'attributes', {
+					'data-figcaption': 'xxx'
+				} );
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'classes', [ 'baz', 'foo', 'bar' ] );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 			'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/sample.png">' +
-		// 				'<caption htmlAttributes="(3)">A caption</caption>' +
-		// 			'</imageBlock>',
-		// 		attributes: {
-		// 			1: {
-		// 				attributes: {
-		// 					'data-image': 'xyz'
-		// 				},
-		// 				classes: [ 'bar', 'baz' ],
-		// 				styles: {
-		// 					'background-color': 'blue',
-		// 					color: 'red'
-		// 				}
-		// 			},
-		// 			2: {
-		// 				attributes: {
-		// 					'data-figure': 'zzz'
-		// 				},
-		// 				classes: [ 'foobar' ],
-		// 				styles: {
-		// 					'font-size': '12px',
-		// 					'text-align': 'center'
-		// 				}
-		// 			},
-		// 			3: {
-		// 				attributes: {
-		// 					'data-figcaption': 'xxx'
-		// 				},
-		// 				classes: [ 'baz', 'foo', 'bar' ],
-		// 				styles: {
-		// 					color: 'green'
-		// 				}
-		// 			}
-		// 		}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/sample.png">' +
+						'<caption htmlAttributes="(3)">A caption</caption>' +
+					'</imageBlock>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-image': 'xyz'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'red'
+						}
+					},
+					2: {
+						attributes: {
+							'data-figure': 'zzz'
+						},
+						classes: [ 'foobar' ],
+						styles: {
+							'font-size': '12px',
+							'text-align': 'center'
+						}
+					},
+					3: {
+						attributes: {
+							'data-figcaption': 'xxx'
+						},
+						classes: [ 'baz', 'foo', 'bar' ],
+						styles: {
+							color: 'green'
+						}
+					}
+				}
+			} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 		'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
-		// 				' style="font-size:12px;text-align:center">' +
-		// 			'<img class="bar baz" data-image="xyz" src="/sample.png" style="background-color:blue;color:red"></img>' +
-		// 			'<figcaption class="bar baz ck-editor__editable ck-editor__nested-editable foo" contenteditable="true" ' +
-		// 						'data-figcaption="xxx" data-placeholder="Enter image caption" style="color:green">A caption</figcaption>' +
-		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-		// 		'</figure>'
-		// 	);
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
+						' style="font-size:12px;text-align:center">' +
+					'<img class="bar baz" data-image="xyz" src="/sample.png" style="background-color:blue;color:red"></img>' +
+					'<figcaption class="bar baz ck-editor__editable ck-editor__nested-editable foo" contenteditable="true" ' +
+								'data-figcaption="xxx" data-placeholder="Enter image caption" style="color:green">A caption</figcaption>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
-		// 			'<img class="bar baz" style="background-color:blue;color:red;" src="/sample.png" data-image="xyz">' +
-		// 			'<figcaption class="baz foo bar" style="color:green;" data-figcaption="xxx">A caption</figcaption>' +
-		// 		'</figure>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<figure class="image foobar" style="font-size:12px;text-align:center;" data-figure="zzz">' +
+					'<img class="bar baz" style="background-color:blue;color:red;" src="/sample.png" data-image="xyz">' +
+					'<figcaption class="baz foo bar" style="color:green;" data-figcaption="xxx">A caption</figcaption>' +
+				'</figure>'
+			);
+		} );
 
-		// it( 'should allow removing all styles, classes and attributes', () => {
-		// 	// This should also work when we set `attributes: true` but currently there are some
-		// 	// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
-		// 	// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
-		// 	// @see https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(figure|img|figcaption)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow removing all styles, classes and attributes', () => {
+			// This should also work when we set `attributes: true` but currently there are some
+			// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
+			// being consumed. For now we make GHS to handle only data-xxx attributes to bypass it.
+			// @see https://github.com/ckeditor/ckeditor5/issues/11532
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<figure class="image foo" style="background:red;" data-figure="figure">' +
-		// 			'<img src="/sample.png" class="bar" style="color:green;" data-image="image">' +
-		// 			'<figcaption class="baz" style="border:solid 1px;" data-figcaption="figcaption">A caption</figcaption>' +
-		// 		'</figure>'
-		// 	);
+			editor.setData(
+				'<figure class="image foo" style="background:red;" data-figure="figure">' +
+					'<img src="/sample.png" class="bar" style="color:green;" data-image="image">' +
+					'<figcaption class="baz" style="border:solid 1px;" data-figcaption="figcaption">A caption</figcaption>' +
+				'</figure>'
+			);
 
-		// 	const imageBlock = model.document.getRoot().getChild( 0 );
-		// 	const caption = imageBlock.getChild( 0 );
+			const imageBlock = model.document.getRoot().getChild( 0 );
+			const caption = imageBlock.getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', null );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'styles', null );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'attributes', null );
 
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', null );
-		// 		setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, imageBlock, 'htmlFigureAttributes', 'classes', null );
 
-		// 		setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'attributes', null );
-		// 		setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'classes', null );
-		// 	} );
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, caption, 'htmlAttributes', 'classes', null );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 			'<imageBlock src="/sample.png">' +
-		// 				'<caption>A caption</caption>' +
-		// 			'</imageBlock>',
-		// 		attributes: {}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+					'<imageBlock src="/sample.png">' +
+						'<caption>A caption</caption>' +
+					'</imageBlock>',
+				attributes: {}
+			} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 		'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-		// 			'<img src="/sample.png"></img>' +
-		// 			'<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
-		// 						'data-placeholder="Enter image caption">A caption</figcaption>' +
-		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-		// 		'</figure>'
-		// 	);
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+					'<img src="/sample.png"></img>' +
+					'<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+								'data-placeholder="Enter image caption">A caption</figcaption>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</figure>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<figure class="image">' +
-		// 			'<img src="/sample.png">' +
-		// 			'<figcaption>A caption</figcaption>' +
-		// 		'</figure>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<figure class="image">' +
+					'<img src="/sample.png">' +
+					'<figcaption>A caption</figcaption>' +
+				'</figure>'
+			);
+		} );
 	} );
 
 	describe( 'InlineImage', () => {
@@ -1992,124 +1993,124 @@ describe( 'ImageElementSupport', () => {
 			expect( marker.getEnd().path ).toEqual( [ 0, 1 ] );
 		} );
 
-		// it( 'should allow modifying styles, classes and attributes', () => {
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(img|p)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow modifying styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<p data-paragraph="paragraph">' +
-		// 			'<img src="/sample.png" class="foo" style="color:red;" data-image="image">' +
-		// 		'</p>'
-		// 	);
+			editor.setData(
+				'<p data-paragraph="paragraph">' +
+					'<img src="/sample.png" class="foo" style="color:red;" data-image="image">' +
+				'</p>'
+			);
 
-		// 	const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
+			const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', {
-		// 			'background-color': 'blue',
-		// 			color: 'green'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', {
-		// 			'data-image': 'xxx'
-		// 		} );
-		// 	} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'green'
+				} );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', {
+					'data-image': 'xxx'
+				} );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 			'<paragraph htmlPAttributes="(1)">' +
-		// 				'<imageInline htmlImgAttributes="(2)" src="/sample.png"></imageInline>' +
-		// 			'</paragraph>',
-		// 		attributes: {
-		// 			1: {
-		// 				attributes: {
-		// 					'data-paragraph': 'paragraph'
-		// 				}
-		// 			},
-		// 			2: {
-		// 				attributes: {
-		// 					'data-image': 'xxx'
-		// 				},
-		// 				classes: [ 'bar', 'baz' ],
-		// 				styles: {
-		// 					'background-color': 'blue',
-		// 					color: 'green'
-		// 				}
-		// 			}
-		// 		}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+					'<paragraph htmlPAttributes="(1)">' +
+						'<imageInline htmlImgAttributes="(2)" src="/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-paragraph': 'paragraph'
+						}
+					},
+					2: {
+						attributes: {
+							'data-image': 'xxx'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'green'
+						}
+					}
+				}
+			} );
 
-		// 	// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view.
-		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 	// 	'<p data-paragraph="paragraph">' +
-		// 	// 		'<span class="ck-widget image-inline" contenteditable="false">' +
-		// 	// 			'<img src="/sample.png" class="bar baz" style="background-color:blue;color:red;" data-image="xxx"></img>' +
-		// 	// 		'</span>' +
-		// 	// 	'</p>'
-		// 	// );
+			// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view.
+			// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
+			// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+			// 	'<p data-paragraph="paragraph">' +
+			// 		'<span class="ck-widget image-inline" contenteditable="false">' +
+			// 			'<img src="/sample.png" class="bar baz" style="background-color:blue;color:red;" data-image="xxx"></img>' +
+			// 		'</span>' +
+			// 	'</p>'
+			// );
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<p data-paragraph="paragraph">' +
-		// 			'<img class="bar baz" style="background-color:blue;color:green;" src="/sample.png" data-image="xxx">' +
-		// 		'</p>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<p data-paragraph="paragraph">' +
+					'<img class="bar baz" style="background-color:blue;color:green;" src="/sample.png" data-image="xxx">' +
+				'</p>'
+			);
+		} );
 
-		// it( 'should allow removing all styles, classes and attributes', () => {
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(img|p)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow removing all styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<p data-paragraph="paragraph">' +
-		// 			'<img src="/sample.png" class="foo" style="color:red;" data-image="image">' +
-		// 		'</p>'
-		// 	);
+			editor.setData(
+				'<p data-paragraph="paragraph">' +
+					'<img src="/sample.png" class="foo" style="color:red;" data-image="image">' +
+				'</p>'
+			);
 
-		// 	const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
+			const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', null );
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', null );
-		// 	} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', null );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 			'<paragraph htmlPAttributes="(1)">' +
-		// 				'<imageInline src="/sample.png"></imageInline>' +
-		// 			'</paragraph>',
-		// 		attributes: {
-		// 			1: {
-		// 				attributes: {
-		// 					'data-paragraph': 'paragraph'
-		// 				}
-		// 			}
-		// 		}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+					'<paragraph htmlPAttributes="(1)">' +
+						'<imageInline src="/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-paragraph': 'paragraph'
+						}
+					}
+				}
+			} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 		'<p data-paragraph="paragraph">' +
-		// 			'<span class="ck-widget image-inline" contenteditable="false">' +
-		// 				'<img src="/sample.png"></img>' +
-		// 			'</span>' +
-		// 		'</p>'
-		// 	);
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<p data-paragraph="paragraph">' +
+					'<span class="ck-widget image-inline" contenteditable="false">' +
+						'<img src="/sample.png"></img>' +
+					'</span>' +
+				'</p>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<p data-paragraph="paragraph">' +
-		// 			'<img src="/sample.png">' +
-		// 		'</p>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<p data-paragraph="paragraph">' +
+					'<img src="/sample.png">' +
+				'</p>'
+			);
+		} );
 	} );
 
 	describe( 'Inline image with link', () => {
@@ -2367,159 +2368,159 @@ describe( 'ImageElementSupport', () => {
 			expect( marker.getEnd().path ).toEqual( [ 0, 1 ] );
 		} );
 
-		// it( 'should allow modifying styles, classes and attributes', () => {
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(img|a|p)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow modifying styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|a|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<p data-paragraph="paragraph">' +
-		// 			'<a href="www.example.com" class="bar" style="background:blue;" data-link="link">' +
-		// 				'<img src="/sample.png" class="foo" style="color:red;" data-image="image">' +
-		// 			'</a>' +
-		// 		'</p>'
-		// 	);
+			editor.setData(
+				'<p data-paragraph="paragraph">' +
+					'<a href="www.example.com" class="bar" style="background:blue;" data-link="link">' +
+						'<img src="/sample.png" class="foo" style="color:red;" data-image="image">' +
+					'</a>' +
+				'</p>'
+			);
 
-		// 	const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
+			const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', {
-		// 			'background-color': 'blue',
-		// 			color: 'green'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', {
-		// 			'data-image': 'xxx'
-		// 		} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', {
+					'background-color': 'blue',
+					color: 'green'
+				} );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', [ 'bar', 'baz' ] );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', {
+					'data-image': 'xxx'
+				} );
 
-		// 		setModelHtmlAttribute( writer, image, 'htmlA', 'styles', {
-		// 			background: 'red',
-		// 			color: 'pink'
-		// 		} );
-		// 		setModelHtmlAttribute( writer, image, 'htmlA', 'classes', [ 'foo' ] );
-		// 		setModelHtmlAttribute( writer, image, 'htmlA', 'attributes', {
-		// 			'data-link': 'zzz'
-		// 		} );
-		// 	} );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'styles', {
+					background: 'red',
+					color: 'pink'
+				} );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'classes', [ 'foo' ] );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'attributes', {
+					'data-link': 'zzz'
+				} );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 			'<paragraph htmlPAttributes="(1)">' +
-		// 				'<imageInline htmlA="(2)" htmlAttributes="(3)" linkHref="www.example.com" src="/sample.png"></imageInline>' +
-		// 			'</paragraph>',
-		// 		attributes: {
-		// 			1: {
-		// 				attributes: {
-		// 					'data-paragraph': 'paragraph'
-		// 				}
-		// 			},
-		// 			2: {
-		// 				attributes: {
-		// 					'data-link': 'zzz'
-		// 				},
-		// 				classes: [ 'foo' ],
-		// 				styles: {
-		// 					background: 'red',
-		// 					color: 'pink'
-		// 				}
-		// 			},
-		// 			3: {
-		// 				attributes: {
-		// 					'data-image': 'xxx'
-		// 				},
-		// 				classes: [ 'bar', 'baz' ],
-		// 				styles: {
-		// 					'background-color': 'blue',
-		// 					color: 'green'
-		// 				}
-		// 			}
-		// 		}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+					'<paragraph htmlPAttributes="(1)">' +
+						'<imageInline htmlA="(2)" htmlAttributes="(3)" linkHref="www.example.com" src="/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-paragraph': 'paragraph'
+						}
+					},
+					2: {
+						attributes: {
+							'data-link': 'zzz'
+						},
+						classes: [ 'foo' ],
+						styles: {
+							background: 'red',
+							color: 'pink'
+						}
+					},
+					3: {
+						attributes: {
+							'data-image': 'xxx'
+						},
+						classes: [ 'bar', 'baz' ],
+						styles: {
+							'background-color': 'blue',
+							color: 'green'
+						}
+					}
+				}
+			} );
 
-		// 	// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view.
-		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 	// 	'<p data-paragraph="paragraph">' +
-		// 	// 		'<span class="foo" data-link="zzz" href="www.example.com" style="background:red;color:pink">' +
-		// 	// 			'<span class="ck-widget image-inline" contenteditable="false">' +
-		// 	// 				'<img src="/sample.png" class="bar baz" style="background-color:blue;color:red;" data-image="xxx">' +
-		// 	// 				'</img>' +
-		// 	// 			'</span>' +
-		// 	// 		'</a>' +
-		// 	// 	'</p>'
-		// 	// );
+			// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view.
+			// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
+			// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+			// 	'<p data-paragraph="paragraph">' +
+			// 		'<span class="foo" data-link="zzz" href="www.example.com" style="background:red;color:pink">' +
+			// 			'<span class="ck-widget image-inline" contenteditable="false">' +
+			// 				'<img src="/sample.png" class="bar baz" style="background-color:blue;color:red;" data-image="xxx">' +
+			// 				'</img>' +
+			// 			'</span>' +
+			// 		'</a>' +
+			// 	'</p>'
+			// );
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<p data-paragraph="paragraph">' +
-		// 			'<a class="foo" style="background:red;color:pink;" href="www.example.com" data-link="zzz">' +
-		// 				'<img class="bar baz" style="background-color:blue;color:green;" src="/sample.png" data-image="xxx">' +
-		// 			'</a>' +
-		// 		'</p>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<p data-paragraph="paragraph">' +
+					'<a class="foo" style="background:red;color:pink;" href="www.example.com" data-link="zzz">' +
+						'<img class="bar baz" style="background-color:blue;color:green;" src="/sample.png" data-image="xxx">' +
+					'</a>' +
+				'</p>'
+			);
+		} );
 
-		// it( 'should allow removing all styles, classes and attributes', () => {
-		// 	dataFilter.loadAllowedConfig( [ {
-		// 		name: /^(img|p)$/,
-		// 		attributes: /^data-.*$/,
-		// 		classes: true,
-		// 		styles: true
-		// 	} ] );
+		it.skip( 'should allow removing all styles, classes and attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				attributes: /^data-.*$/,
+				classes: true,
+				styles: true
+			} ] );
 
-		// 	editor.setData(
-		// 		'<p data-paragraph="paragraph">' +
-		// 			'<a href="www.example.com" class="bar" style="background:blue;" data-link="link">' +
-		// 				'<img src="/sample.png" class="foo" style="color:red;" data-image="image">' +
-		// 			'</a>' +
-		// 		'</p>'
-		// 	);
+			editor.setData(
+				'<p data-paragraph="paragraph">' +
+					'<a href="www.example.com" class="bar" style="background:blue;" data-link="link">' +
+						'<img src="/sample.png" class="foo" style="color:red;" data-image="image">' +
+					'</a>' +
+				'</p>'
+			);
 
-		// 	const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
+			const image = model.document.getRoot().getChild( 0 ).getChild( 0 );
 
-		// 	model.change( writer => {
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', null );
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', null );
-		// 		setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', null );
-		// 		setModelHtmlAttribute( writer, image, 'htmlA', 'styles', null );
-		// 		setModelHtmlAttribute( writer, image, 'htmlA', 'classes', null );
-		// 		setModelHtmlAttribute( writer, image, 'htmlA', 'attributes', null );
-		// 	} );
+			model.change( writer => {
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'styles', null );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'classes', null );
+				setModelHtmlAttribute( writer, image, 'htmlAttributes', 'attributes', null );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'styles', null );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'classes', null );
+				setModelHtmlAttribute( writer, image, 'htmlA', 'attributes', null );
+			} );
 
-		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
-		// 		data:
-		// 			'<paragraph htmlPAttributes="(1)">' +
-		// 				'<imageInline linkHref="www.example.com" src="/sample.png"></imageInline>' +
-		// 			'</paragraph>',
-		// 		attributes: {
-		// 			1: {
-		// 				attributes: {
-		// 					'data-paragraph': 'paragraph'
-		// 				}
-		// 			}
-		// 		}
-		// 	} );
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).toEqual( {
+				data:
+					'<paragraph htmlPAttributes="(1)">' +
+						'<imageInline linkHref="www.example.com" src="/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-paragraph': 'paragraph'
+						}
+					}
+				}
+			} );
 
-		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
-		// 		'<p data-paragraph="paragraph">' +
-		// 			'<a href="www.example.com">' +
-		// 				'<span class="ck-widget image-inline" contenteditable="false">' +
-		// 					'<img src="/sample.png"></img>' +
-		// 				'</span>' +
-		// 			'</a>' +
-		// 		'</p>'
-		// 	);
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
+				'<p data-paragraph="paragraph">' +
+					'<a href="www.example.com">' +
+						'<span class="ck-widget image-inline" contenteditable="false">' +
+							'<img src="/sample.png"></img>' +
+						'</span>' +
+					'</a>' +
+				'</p>'
+			);
 
-		// 	expect( editor.getData() ).toBe(
-		// 		'<p data-paragraph="paragraph">' +
-		// 			'<a href="www.example.com">' +
-		// 				'<img src="/sample.png">' +
-		// 			'</a>' +
-		// 		'</p>'
-		// 	);
-		// } );
+			expect( editor.getData() ).toBe(
+				'<p data-paragraph="paragraph">' +
+					'<a href="www.example.com">' +
+						'<img src="/sample.png">' +
+					'</a>' +
+				'</p>'
+			);
+		} );
 	} );
 
 	describe( 'Partial load of image plugins', () => {
@@ -2632,3 +2633,19 @@ describe( 'ImageElementSupport', () => {
 		} );
 	} );
 } );
+
+function setModelHtmlAttribute( writer, element, attributeName, subject, value ) {
+	const newValue = { ...element.getAttribute( attributeName ) };
+
+	if ( value === null ) {
+		delete newValue[ subject ];
+	} else {
+		newValue[ subject ] = value;
+	}
+
+	if ( Object.keys( newValue ).length ) {
+		writer.setAttribute( attributeName, newValue, element );
+	} else {
+		writer.removeAttribute( attributeName, element );
+	}
+}

@@ -1015,7 +1015,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 	} );
 
-	describe( 'data pipeline m -> v conversion ', () => {
+	describe( 'data pipeline m -> v conversion', () => {
 		it( 'should convert empty codeBlock to empty pre tag', () => {
 			_setModelData( model, '<codeBlock language="plaintext"></codeBlock>' );
 
@@ -1191,7 +1191,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 	} );
 
-	describe( 'data pipeline v -> m conversion ', () => {
+	describe( 'data pipeline v -> m conversion', () => {
 		it( 'should not convert empty pre tag to code block', () => {
 			editor.setData( '<pre></pre>' );
 

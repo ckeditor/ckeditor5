@@ -53,42 +53,42 @@ describe( 'ColorInputView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should set view#options', () => {
-			expect( view.options ).to.deep.equal( {
+			expect( view.options ).toEqual( {
 				colorDefinitions: DEFAULT_COLORS,
 				columns: 5
 			} );
 		} );
 
 		it( 'should set view#locale', () => {
-			expect( view.locale ).to.equal( locale );
+			expect( view.locale ).toEqual( locale );
 		} );
 
 		it( 'should set #isReadOnly', () => {
-			expect( view.isReadOnly ).to.be.false;
+			expect( view.isReadOnly ).toBe( false );
 		} );
 
 		it( 'should set #isFocused', () => {
-			expect( view.isFocused ).to.be.false;
+			expect( view.isFocused ).toBe( false );
 		} );
 
 		it( 'should set #isEmpty', () => {
-			expect( view.isEmpty ).to.be.true;
+			expect( view.isEmpty ).toBe( true );
 		} );
 
 		it( 'should have #isEmpty bound to the text input', () => {
 			inputView.isEmpty = true;
-			expect( view.isEmpty ).to.be.true;
+			expect( view.isEmpty ).toBe( true );
 
 			inputView.isEmpty = false;
-			expect( view.isEmpty ).to.be.false;
+			expect( view.isEmpty ).toBe( false );
 		} );
 
 		it( 'should have #isFocused bound to the text input', () => {
 			inputView.isFocused = true;
-			expect( view.isFocused ).to.be.true;
+			expect( view.isFocused ).toBe( true );
 
 			inputView.isFocused = false;
-			expect( view.isFocused ).to.be.false;
+			expect( view.isFocused ).toBe( false );
 		} );
 
 		it( 'should have #focusTracker', () => {
@@ -110,24 +110,24 @@ describe( 'ColorInputView', () => {
 		describe( 'dropdown', () => {
 			it( 'should be created', () => {
 				expect( view.dropdownView ).to.be.instanceOf( DropdownView );
-				expect( view.dropdownView.buttonView.element.classList.contains( 'ck-input-color__button' ) ).to.be.true;
-				expect( view.dropdownView.buttonView.tooltip ).to.be.true;
-				expect( view.dropdownView.buttonView.label ).to.equal( 'Color picker' );
+				expect( view.dropdownView.buttonView.element.classList.contains( 'ck-input-color__button' ) ).toBe( true );
+				expect( view.dropdownView.buttonView.tooltip ).toBe( true );
+				expect( view.dropdownView.buttonView.label ).toEqual( 'Color picker' );
 			} );
 
 			it( 'should bind #isEnabled to the view\'s #isReadOnly', () => {
 				view.isReadOnly = false;
-				expect( view.dropdownView.isEnabled ).to.be.true;
+				expect( view.dropdownView.isEnabled ).toBe( true );
 
 				view.isReadOnly = true;
-				expect( view.dropdownView.isEnabled ).to.be.false;
+				expect( view.dropdownView.isEnabled ).toBe( false );
 			} );
 
 			it( 'should have the color preview', () => {
 				const preview = view.dropdownView.buttonView.children.first;
 
-				expect( preview.element.classList.contains( 'ck' ) ).to.be.true;
-				expect( preview.element.classList.contains( 'ck-input-color__button__preview' ) ).to.be.true;
+				expect( preview.element.classList.contains( 'ck' ) ).toBe( true );
+				expect( preview.element.classList.contains( 'ck-input-color__button__preview' ) ).toBe( true );
 			} );
 
 			it( 'should display no-color preview when color is not set', () => {
@@ -136,11 +136,11 @@ describe( 'ColorInputView', () => {
 
 				view.value = 'hsl(0, 0, 50%)';
 
-				expect( noColorPreview.classList.contains( 'ck-hidden' ) ).to.be.true;
+				expect( noColorPreview.classList.contains( 'ck-hidden' ) ).toBe( true );
 
 				view.value = '';
 
-				expect( noColorPreview.classList.contains( 'ck-hidden' ) ).to.be.false;
+				expect( noColorPreview.classList.contains( 'ck-hidden' ) ).toBe( false );
 			} );
 
 			it( 'should show color grids when dropdown is open', () => {
@@ -165,7 +165,7 @@ describe( 'ColorInputView', () => {
 					source: 'colorPickerSaveButton'
 				} );
 
-				expect( dropdown.isOpen ).to.be.equal( false );
+				expect( dropdown.isOpen ).toEqual( false );
 			} );
 
 			it( 'should not not fire input event on submiting', () => {
@@ -187,8 +187,8 @@ describe( 'ColorInputView', () => {
 
 				colorSelectorView.fire( 'colorPicker:cancel' );
 
-				expect( dropdown.isOpen ).to.be.equal( false );
-				expect( inputView.value ).to.be.equal( '' );
+				expect( dropdown.isOpen ).toEqual( false );
+				expect( inputView.value ).toEqual( '' );
 			} );
 
 			it( 'should close dropdown and revert changes when "cancel button" is pressed', () => {
@@ -204,14 +204,14 @@ describe( 'ColorInputView', () => {
 
 				colorSelectorView.fire( 'colorPicker:cancel' );
 
-				expect( view.value ).to.be.equal( '#ffaaff' );
+				expect( view.value ).toEqual( '#ffaaff' );
 			} );
 
 			it( 'should have the remove color button', () => {
 				const removeColorButton = view.dropdownView.panelView.children.first.colorGridsFragmentView.removeColorButtonView;
 
 				expect( removeColorButton ).to.be.instanceOf( ButtonView );
-				expect( removeColorButton.label ).to.equal( 'Remove color' );
+				expect( removeColorButton.label ).toEqual( 'Remove color' );
 			} );
 
 			it( 'should remove color', () => {
@@ -223,7 +223,7 @@ describe( 'ColorInputView', () => {
 
 				colorSelectorView.colorGridsFragmentView.removeColorButtonView.fire( 'execute' );
 
-				expect( view.value ).to.be.equal( '' );
+				expect( view.value ).toEqual( '' );
 			} );
 
 			describe( 'position', () => {
@@ -241,7 +241,7 @@ describe( 'ColorInputView', () => {
 					} );
 					view.render();
 
-					expect( view.dropdownView.panelPosition ).to.equal( 'sw' );
+					expect( view.dropdownView.panelPosition ).toEqual( 'sw' );
 				} );
 
 				it( 'should be SouthEast in RTL', () => {
@@ -252,7 +252,7 @@ describe( 'ColorInputView', () => {
 					} );
 					view.render();
 
-					expect( view.dropdownView.panelPosition ).to.equal( 'se' );
+					expect( view.dropdownView.panelPosition ).toEqual( 'se' );
 				} );
 			} );
 		} );
@@ -263,23 +263,23 @@ describe( 'ColorInputView', () => {
 			} );
 
 			it( 'should set ColorInputView#value upon ColorTileView#execute', () => {
-				expect( view.value ).to.equal( '' );
+				expect( view.value ).toEqual( '' );
 
 				view.dropdownView.isOpen = true;
 
 				colorGridView.items.last.fire( 'execute' );
 
-				expect( view.value ).to.equal( 'rgb(0,0,255)' );
+				expect( view.value ).toEqual( 'rgb(0,0,255)' );
 			} );
 
 			it( 'should set InputTextView#value to the selected color\'s label upon ColorTileView#execute', () => {
-				expect( inputView.value ).to.equal( '' );
+				expect( inputView.value ).toEqual( '' );
 
 				view.dropdownView.isOpen = true;
 
 				colorGridView.items.last.fire( 'execute' );
 
-				expect( inputView.value ).to.equal( 'Blue' );
+				expect( inputView.value ).toEqual( 'Blue' );
 			} );
 
 			it( 'should close the dropdown upon ColorTileView#execute', () => {
@@ -287,7 +287,7 @@ describe( 'ColorInputView', () => {
 
 				colorGridView.items.last.fire( 'execute' );
 
-				expect( view.dropdownView.isOpen ).to.be.false;
+				expect( view.dropdownView.isOpen ).toBe( false );
 			} );
 
 			it( 'should fire the ColorInputView#input event upon ColorTileView#execute', () => {
@@ -304,15 +304,15 @@ describe( 'ColorInputView', () => {
 				view.value = 'rgb(0,255,0)';
 				view.dropdownView.isOpen = true;
 
-				expect( colorGridView.selectedColor ).to.equal( 'rgb(0,255,0)' );
+				expect( colorGridView.selectedColor ).toEqual( 'rgb(0,255,0)' );
 			} );
 		} );
 
 		describe( 'remove color button', () => {
 			it( 'should be created from the template', () => {
-				expect( removeColorButton.element.classList.contains( 'ck-color-selector__remove-color' ) ).to.be.true;
-				expect( removeColorButton.withText ).to.be.true;
-				expect( removeColorButton.label ).to.equal( 'Remove color' );
+				expect( removeColorButton.element.classList.contains( 'ck-color-selector__remove-color' ) ).toBe( true );
+				expect( removeColorButton.withText ).toBe( true );
+				expect( removeColorButton.label ).toEqual( 'Remove color' );
 			} );
 
 			it( 'should set the empty #value upon #execute', () => {
@@ -322,7 +322,7 @@ describe( 'ColorInputView', () => {
 
 				removeColorButton.fire( 'execute' );
 
-				expect( view.value ).to.equal( '' );
+				expect( view.value ).toEqual( '' );
 			} );
 
 			it( 'should close the #dropdownView upon #execute', () => {
@@ -330,7 +330,7 @@ describe( 'ColorInputView', () => {
 
 				removeColorButton.fire( 'execute' );
 
-				expect( view.dropdownView.isOpen ).to.be.false;
+				expect( view.dropdownView.isOpen ).toBe( false );
 			} );
 		} );
 
@@ -341,10 +341,10 @@ describe( 'ColorInputView', () => {
 
 			it( 'should have #value bound to the color input', () => {
 				view.value = 'foo';
-				expect( inputView.value ).to.equal( 'foo' );
+				expect( inputView.value ).toEqual( 'foo' );
 
 				view.value = 'bar';
-				expect( inputView.value ).to.equal( 'bar' );
+				expect( inputView.value ).toEqual( 'bar' );
 			} );
 
 			it(
@@ -352,48 +352,48 @@ describe( 'ColorInputView', () => {
 				should use its label as the text input value`,
 				() => {
 					view.value = 'rgb(0,    255, 0)';
-					expect( inputView.value ).to.equal( 'Green' );
+					expect( inputView.value ).toEqual( 'Green' );
 
 					view.value = '   rgb( 255 0  0)    ';
-					expect( inputView.value ).to.equal( 'Red' );
+					expect( inputView.value ).toEqual( 'Red' );
 
 					view.value = ' 		  rgb(0,  0,  255 )';
-					expect( inputView.value ).to.equal( 'Blue' );
+					expect( inputView.value ).toEqual( 'Blue' );
 
 					// Blindly stripping spaces may not work.
 					// rgb(25 50 0) != rgb(255 0 0)
 					view.value = ' 		  rgb(25 50  0)';
-					expect( inputView.value ).to.equal( ' 		  rgb(25 50  0)' );
+					expect( inputView.value ).toEqual( ' 		  rgb(25 50  0)' );
 				}
 			);
 
 			it( `when the color input value is set to one of defined colors,
 			should use its label as the text input value`, () => {
 				view.value = 'rgb(0,255,0)';
-				expect( inputView.value ).to.equal( 'Green' );
+				expect( inputView.value ).toEqual( 'Green' );
 
 				view.value = 'rgb(255,0,0)';
-				expect( inputView.value ).to.equal( 'Red' );
+				expect( inputView.value ).toEqual( 'Red' );
 			} );
 
 			it( 'should have #isReadOnly bound to the color input', () => {
 				view.isReadOnly = true;
-				expect( inputView.isReadOnly ).to.equal( true );
+				expect( inputView.isReadOnly ).toEqual( true );
 
 				view.isReadOnly = false;
-				expect( inputView.isReadOnly ).to.equal( false );
+				expect( inputView.isReadOnly ).toEqual( false );
 			} );
 
 			it( 'should set #value on #input event', () => {
 				inputView.element.value = 'foo';
 				inputView.fire( 'input' );
 
-				expect( view.value ).to.equal( 'foo' );
+				expect( view.value ).toEqual( 'foo' );
 
 				inputView.element.value = 'bar';
 				inputView.fire( 'input' );
 
-				expect( view.value ).to.equal( 'bar' );
+				expect( view.value ).toEqual( 'bar' );
 			} );
 
 			it(
@@ -403,17 +403,17 @@ describe( 'ColorInputView', () => {
 					inputView.element.value = 'Red';
 					inputView.fire( 'input' );
 
-					expect( view.value ).to.equal( 'rgb(255,0,0)' );
+					expect( view.value ).toEqual( 'rgb(255,0,0)' );
 
 					inputView.element.value = 'Green';
 					inputView.fire( 'input' );
 
-					expect( view.value ).to.equal( 'rgb(0,255,0)' );
+					expect( view.value ).toEqual( 'rgb(0,255,0)' );
 
 					inputView.element.value = 'blue';
 					inputView.fire( 'input' );
 
-					expect( view.value ).to.equal( 'blue' );
+					expect( view.value ).toEqual( 'blue' );
 				}
 			);
 
@@ -425,11 +425,11 @@ describe( 'ColorInputView', () => {
 					inputView.element.value = 'Red';
 					inputView.fire( 'input' );
 
-					expect( view.value ).to.equal( 'rgb(255,0,0)' );
+					expect( view.value ).toEqual( 'rgb(255,0,0)' );
 
 					view.value = 'rgb(0,0,255)';
 
-					expect( view.value ).to.equal( 'rgb(0,0,255)' );
+					expect( view.value ).toEqual( 'rgb(0,0,255)' );
 				}
 			);
 
@@ -440,8 +440,8 @@ describe( 'ColorInputView', () => {
 					inputView.element.value = 'rgb(255,0,0)';
 					inputView.fire( 'input' );
 
-					expect( view.value ).to.equal( 'rgb(255,0,0)' );
-					expect( inputView.element.value ).to.equal( 'rgb(255,0,0)' );
+					expect( view.value ).toEqual( 'rgb(255,0,0)' );
+					expect( inputView.element.value ).toEqual( 'rgb(255,0,0)' );
 				}
 			);
 
@@ -453,11 +453,11 @@ describe( 'ColorInputView', () => {
 
 					inputView.fire( 'input' );
 
-					expect( inputView.element.value ).to.equal( 'rgb(255,0,0)' );
+					expect( inputView.element.value ).toEqual( 'rgb(255,0,0)' );
 
 					inputView.element.dispatchEvent( new Event( 'blur' ) );
 
-					expect( inputView.element.value ).to.equal( 'Red' );
+					expect( inputView.element.value ).toEqual( 'Red' );
 				}
 			);
 
@@ -471,10 +471,10 @@ describe( 'ColorInputView', () => {
 		} );
 
 		it( 'should set the template', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-input-color' ) ).to.be.true;
-			expect( view.element.firstChild ).to.equal( view.dropdownView.element );
-			expect( view.element.lastChild ).to.equal( inputView.element );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-input-color' ) ).toBe( true );
+			expect( view.element.firstChild ).toBe( view.dropdownView.element );
+			expect( view.element.lastChild ).toBe( inputView.element );
 		} );
 
 		describe( 'options', () => {
@@ -483,7 +483,7 @@ describe( 'ColorInputView', () => {
 					return { color, hasBorder, label };
 				} );
 
-				expect( colorTiles ).to.deep.equal( [
+				expect( colorTiles ).toEqual( [
 					{
 						color: 'rgb(255,0,0)',
 						label: 'Red',
@@ -503,7 +503,7 @@ describe( 'ColorInputView', () => {
 			} );
 
 			it( 'should pass the number of columns to the color grid', () => {
-				expect( colorGridView.element.getAttribute( 'style' ) ).to.match( /repeat\(5/g );
+				expect( colorGridView.element.getAttribute( 'style' ) ).toMatch( /repeat\(5/g );
 			} );
 		} );
 
@@ -534,7 +534,7 @@ describe( 'ColorInputView', () => {
 
 					it( 'should replace "Remove color" with "Restore default"', () => {
 						expect( removeColorButton ).to.be.instanceOf( ButtonView );
-						expect( removeColorButton.label ).to.equal( 'Restore default' );
+						expect( removeColorButton.label ).toEqual( 'Restore default' );
 					} );
 
 					it( 'should set the empty #value upon #execute', () => {
@@ -544,7 +544,7 @@ describe( 'ColorInputView', () => {
 
 						removeColorButton.fire( 'execute' );
 
-						expect( view.value ).to.equal( 'rgb(255,0,0)' );
+						expect( view.value ).toEqual( 'rgb(255,0,0)' );
 					} );
 				} );
 			} );

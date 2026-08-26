@@ -50,21 +50,20 @@ describe( 'TableKeyboard', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( TableKeyboard.pluginName ).to.equal( 'TableKeyboard' );
+		expect( TableKeyboard.pluginName ).toEqual( 'TableKeyboard' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TableKeyboard.isOfficialPlugin ).to.be.true;
+		expect( TableKeyboard.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TableKeyboard.isPremiumPlugin ).to.be.false;
+		expect( TableKeyboard.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should add keystroke accessibility info', () => {
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).label ).to.equal(
-			'Keystrokes that can be used in a table cell'
-		);
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).label )
+			.toEqual( 'Keystrokes that can be used in a table cell' );
 
 		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'table' ).keystrokes ).to.deep.include( {
 			label: 'Move the selection to the next cell',
@@ -1381,17 +1380,17 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the right when the direction is "right"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell below when the direction is "down"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should select a whole table when the direction is "up"', () => {
@@ -1426,17 +1425,17 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the left when the direction is "left"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell above when the direction is "up"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should select a whole table when the direction is "down"', () => {
@@ -1471,33 +1470,33 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the right when the direction is "right"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell above when the direction is "up"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell below when the direction is "down"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell above when the direction is "left"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 				} );
 
@@ -1512,33 +1511,33 @@ describe( 'TableKeyboard', () => {
 					it( 'should expand the selection to the cell on the left when the direction is "left"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'left', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell above when the direction is "up"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'up', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 2 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 0, 2 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell below when the direction is "down"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'down', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell below when the direction is "right"', () => {
 						tableKeyboard._navigateFromCellInDirection( tableCell, 'right', true );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( tableCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 				} );
 			} );
@@ -1641,9 +1640,9 @@ describe( 'TableKeyboard', () => {
 							[ '[]20', '21', '22' ]
 						] ) );
 
-						expect( tableSelection.getAnchorCell() ).to.be.null;
-						expect( tableSelection.getFocusCell() ).to.be.null;
-						expect( selection.rangeCount ).to.equal( 1 );
+						expect( tableSelection.getAnchorCell() ).toBeNull();
+						expect( tableSelection.getFocusCell() ).toBeNull();
+						expect( selection.rangeCount ).toEqual( 1 );
 					} );
 
 					it( 'should expand the selection to the cell on the left', () => {
@@ -1652,9 +1651,9 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell on the right', () => {
@@ -1663,9 +1662,9 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell above the selection', () => {
@@ -1674,9 +1673,9 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 
 					it( 'should expand the selection to the cell below the selection', () => {
@@ -1685,9 +1684,9 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
-						expect( selection.rangeCount ).to.equal( 2 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+						expect( selection.rangeCount ).toEqual( 2 );
 					} );
 				} );
 			} );
@@ -1781,9 +1780,9 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
-						expect( selection.rangeCount ).to.equal( 4 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
+						expect( selection.rangeCount ).toEqual( 4 );
 					} );
 
 					it( 'should expand the selection to the cell on the right from the focus cell', () => {
@@ -1792,9 +1791,9 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
-						expect( selection.rangeCount ).to.equal( 4 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+						expect( selection.rangeCount ).toEqual( 4 );
 					} );
 
 					it( 'should shrink the selection to the anchor cell', () => {
@@ -1803,9 +1802,9 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( anchorCell );
-						expect( selection.rangeCount ).to.equal( 1 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( anchorCell );
+						expect( selection.rangeCount ).toEqual( 1 );
 					} );
 
 					it( 'should expand the selection to the cell below the focus cell', () => {
@@ -1814,9 +1813,9 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 3, 1 ] ) );
-						expect( selection.rangeCount ).to.equal( 3 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 3, 1 ] ) );
+						expect( selection.rangeCount ).toEqual( 3 );
 					} );
 				} );
 			} );
@@ -1910,9 +1909,9 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-						expect( selection.rangeCount ).to.equal( 4 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+						expect( selection.rangeCount ).toEqual( 4 );
 					} );
 
 					it( 'should expand the selection to the cell on the right from the focus cell', () => {
@@ -1921,9 +1920,9 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
-						expect( selection.rangeCount ).to.equal( 4 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+						expect( selection.rangeCount ).toEqual( 4 );
 					} );
 
 					it( 'should shrink the selection to the anchor cell', () => {
@@ -1932,9 +1931,9 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( anchorCell );
-						expect( selection.rangeCount ).to.equal( 1 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( anchorCell );
+						expect( selection.rangeCount ).toEqual( 1 );
 					} );
 
 					it( 'should expand the selection to the cell below the focus cell', () => {
@@ -1943,14 +1942,14 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
-						expect( selection.rangeCount ).to.equal( 3 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+						expect( selection.rangeCount ).toEqual( 3 );
 					} );
 				} );
 			} );
 
-			describe( 'on multiple table cell selected horizontally (the anchor cell is to the left of the focus cell ', () => {
+			describe( 'on multiple table cell selected horizontally (the anchor cell is to the left of the focus cell)', () => {
 				let anchorCell, focusCell;
 
 				beforeEach( () => {
@@ -2039,9 +2038,9 @@ describe( 'TableKeyboard', () => {
 						expect( upArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( upArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 2 ] ) );
-						expect( selection.rangeCount ).to.equal( 4 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 0, 2 ] ) );
+						expect( selection.rangeCount ).toEqual( 4 );
 					} );
 
 					it( 'should expand the selection to the cell below the focus cell', () => {
@@ -2050,9 +2049,9 @@ describe( 'TableKeyboard', () => {
 						expect( downArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( downArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
-						expect( selection.rangeCount ).to.equal( 4 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+						expect( selection.rangeCount ).toEqual( 4 );
 					} );
 
 					it( 'should shrink the selection to the anchor cell', () => {
@@ -2061,9 +2060,9 @@ describe( 'TableKeyboard', () => {
 						expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( anchorCell );
-						expect( selection.rangeCount ).to.equal( 1 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( anchorCell );
+						expect( selection.rangeCount ).toEqual( 1 );
 					} );
 
 					it( 'should expand the selection to the cell on the right to the focus cell', () => {
@@ -2072,9 +2071,9 @@ describe( 'TableKeyboard', () => {
 						expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 						expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-						expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
-						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 3 ] ) );
-						expect( selection.rangeCount ).to.equal( 3 );
+						expect( tableSelection.getAnchorCell() ).toEqual( anchorCell );
+						expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 3 ] ) );
+						expect( selection.rangeCount ).toEqual( 3 );
 					} );
 				} );
 			} );
@@ -2251,9 +2250,9 @@ describe( 'TableKeyboard', () => {
 							expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
-							expect( selection.rangeCount ).to.equal( 2 );
+							expect( tableSelection.getAnchorCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).toEqual( 2 );
 						} );
 
 						it( 'should select multiple cells on right arrow key press if all content of a cell is selected backward', () => {
@@ -2268,9 +2267,9 @@ describe( 'TableKeyboard', () => {
 							expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
-							expect( selection.rangeCount ).to.equal( 2 );
+							expect( tableSelection.getAnchorCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).toEqual( 2 );
 						} );
 
 						it( 'should select multiple cells on left arrow key press if all content of a cell is selected', () => {
@@ -2285,9 +2284,9 @@ describe( 'TableKeyboard', () => {
 							expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-							expect( selection.rangeCount ).to.equal( 2 );
+							expect( tableSelection.getAnchorCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).toEqual( 2 );
 						} );
 
 						it( 'should select multiple cells on left arrow key press if all content of a cell is selected backward', () => {
@@ -2302,9 +2301,9 @@ describe( 'TableKeyboard', () => {
 							expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-							expect( selection.rangeCount ).to.equal( 2 );
+							expect( tableSelection.getAnchorCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).toEqual( 2 );
 						} );
 					} );
 				} );
@@ -2972,9 +2971,9 @@ describe( 'TableKeyboard', () => {
 							expect( leftArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( leftArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-							expect( selection.rangeCount ).to.equal( 2 );
+							expect( tableSelection.getAnchorCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).toEqual( 2 );
 						} );
 
 						it( 'should not prevent default browser behavior for expanding selection (right arrow)', () => {
@@ -3002,9 +3001,9 @@ describe( 'TableKeyboard', () => {
 							expect( rightArrowDomEvtDataStub.preventDefault ).toHaveBeenCalledTimes( 1 );
 							expect( rightArrowDomEvtDataStub.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
-							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
-							expect( selection.rangeCount ).to.equal( 2 );
+							expect( tableSelection.getAnchorCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).toEqual( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).toEqual( 2 );
 						} );
 
 						it( 'should expand collapsed selection to the end of the cell content', () => {

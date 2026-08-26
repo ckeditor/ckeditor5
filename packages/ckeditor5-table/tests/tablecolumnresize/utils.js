@@ -71,7 +71,7 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 0 );
+				expect( affectedTables.size ).toEqual( 0 );
 			} );
 		} );
 
@@ -89,7 +89,7 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 0 );
+				expect( affectedTables.size ).toEqual( 0 );
 			} );
 		} );
 
@@ -109,8 +109,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -132,8 +132,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -148,8 +148,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -165,8 +165,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -179,8 +179,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -193,8 +193,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -206,8 +206,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -219,8 +219,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -237,8 +237,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -255,8 +255,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -273,8 +273,8 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 1 );
-				expect( affectedTables.has( firstTable ) ).to.be.true;
+				expect( affectedTables.size ).toEqual( 1 );
+				expect( affectedTables.has( firstTable ) ).toBe( true );
 			} );
 		} );
 
@@ -308,10 +308,10 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 3 );
-				expect( affectedTables.has( firstTable ), 'first table is affected' ).to.be.true;
-				expect( affectedTables.has( secondTable ), 'second table is affected' ).to.be.true;
-				expect( affectedTables.has( thirdTable ), 'third table is affected' ).to.be.true;
+				expect( affectedTables.size ).toEqual( 3 );
+				expect( affectedTables.has( firstTable ), 'first table is affected' ).toBe( true );
+				expect( affectedTables.has( secondTable ), 'second table is affected' ).toBe( true );
+				expect( affectedTables.has( thirdTable ), 'third table is affected' ).toBe( true );
 			} );
 		} );
 
@@ -321,7 +321,7 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 0 );
+				expect( affectedTables.size ).toEqual( 0 );
 			} );
 		} );
 
@@ -334,7 +334,7 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 0 );
+				expect( affectedTables.size ).toEqual( 0 );
 			} );
 		} );
 
@@ -359,7 +359,7 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 0 );
+				expect( affectedTables.size ).toEqual( 0 );
 			} );
 		} );
 
@@ -387,7 +387,7 @@ describe( 'TableColumnResize utils', () => {
 
 				const affectedTables = getChangedResizedTables( model );
 
-				expect( affectedTables.size ).to.equal( 0 );
+				expect( affectedTables.size ).toEqual( 0 );
 			} );
 		} );
 	} );
@@ -396,7 +396,7 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should return the correct value', () => {
 			_setModelData( model, modelTable( [ [ '00' ] ], { 'tableWidth': '401px' } ) );
 
-			expect( getColumnMinWidthAsPercentage( model.document.getRoot().getChild( 0 ), editor ) ).to.equal( 10 );
+			expect( getColumnMinWidthAsPercentage( model.document.getRoot().getChild( 0 ), editor ) ).toEqual( 10 );
 		} );
 	} );
 
@@ -413,13 +413,13 @@ describe( 'TableColumnResize utils', () => {
 
 			expect(
 				getColumnEdgesIndexes( cell00, tableUtils )
-			).to.deep.equal( { leftEdge: 0, rightEdge: 0 } );
+			).toEqual( { leftEdge: 0, rightEdge: 0 } );
 
 			const cell01 = [ ...row0.getChildren() ][ 1 ];
 
 			expect(
 				getColumnEdgesIndexes( cell01, tableUtils )
-			).to.deep.equal( { leftEdge: 1, rightEdge: 1 } );
+			).toEqual( { leftEdge: 1, rightEdge: 1 } );
 		} );
 
 		it( 'should properly calculate column edge indexes when colspan = 2', () => {
@@ -434,7 +434,7 @@ describe( 'TableColumnResize utils', () => {
 
 			expect(
 				getColumnEdgesIndexes( cell01, tableUtils )
-			).to.deep.equal( { leftEdge: 1, rightEdge: 2 } );
+			).toEqual( { leftEdge: 1, rightEdge: 2 } );
 		} );
 
 		it( 'should properly calculate column edge indexes when colspan = 3', () => {
@@ -449,7 +449,7 @@ describe( 'TableColumnResize utils', () => {
 
 			expect(
 				getColumnEdgesIndexes( cell01, tableUtils )
-			).to.deep.equal( { leftEdge: 1, rightEdge: 3 } );
+			).toEqual( { leftEdge: 1, rightEdge: 3 } );
 		} );
 
 		it( 'should properly calculate column edge indexes when colspan = 4', () => {
@@ -464,53 +464,53 @@ describe( 'TableColumnResize utils', () => {
 
 			expect(
 				getColumnEdgesIndexes( cell02, tableUtils )
-			).to.deep.equal( { leftEdge: 2, rightEdge: 5 } );
+			).toEqual( { leftEdge: 2, rightEdge: 5 } );
 		} );
 	} );
 
 	describe( 'toPrecision()', () => {
 		it( 'should properly round numbers to defined precision', () => {
-			expect( toPrecision( 1 ) ).to.equal( 1 );
-			expect( toPrecision( 10000 ) ).to.equal( 10000 );
-			expect( toPrecision( 1.1 ) ).to.equal( 1.1 );
-			expect( toPrecision( 1.12 ) ).to.equal( 1.12 );
-			expect( toPrecision( 1.123 ) ).to.equal( 1.12 );
-			expect( toPrecision( 1.125 ) ).to.equal( 1.13 );
-			expect( toPrecision( 0.99 ) ).to.equal( 0.99 );
-			expect( toPrecision( 0.999 ) ).to.equal( 1 );
+			expect( toPrecision( 1 ) ).toEqual( 1 );
+			expect( toPrecision( 10000 ) ).toEqual( 10000 );
+			expect( toPrecision( 1.1 ) ).toEqual( 1.1 );
+			expect( toPrecision( 1.12 ) ).toEqual( 1.12 );
+			expect( toPrecision( 1.123 ) ).toEqual( 1.12 );
+			expect( toPrecision( 1.125 ) ).toEqual( 1.13 );
+			expect( toPrecision( 0.99 ) ).toEqual( 0.99 );
+			expect( toPrecision( 0.999 ) ).toEqual( 1 );
 		} );
 	} );
 
 	describe( 'clamp()', () => {
 		it( 'should properly clamp numbers', () => {
-			expect( clamp( 1, 0, 3 ) ).to.equal( 1 );
-			expect( clamp( 1, 1, 3 ) ).to.equal( 1 );
-			expect( clamp( 1, 2, 3 ) ).to.equal( 2 );
-			expect( clamp( 4, 2, 3 ) ).to.equal( 3 );
-			expect( clamp( 4, 2, 4 ) ).to.equal( 4 );
-			expect( clamp( 4, -2, -1 ) ).to.equal( -1 );
-			expect( clamp( -1, -2, 2 ) ).to.equal( -1 );
-			expect( clamp( -1, 0, 2 ) ).to.equal( 0 );
-			expect( clamp( -1.23, -1.11, -1.01 ) ).to.equal( -1.11 );
+			expect( clamp( 1, 0, 3 ) ).toEqual( 1 );
+			expect( clamp( 1, 1, 3 ) ).toEqual( 1 );
+			expect( clamp( 1, 2, 3 ) ).toEqual( 2 );
+			expect( clamp( 4, 2, 3 ) ).toEqual( 3 );
+			expect( clamp( 4, 2, 4 ) ).toEqual( 4 );
+			expect( clamp( 4, -2, -1 ) ).toEqual( -1 );
+			expect( clamp( -1, -2, 2 ) ).toEqual( -1 );
+			expect( clamp( -1, 0, 2 ) ).toEqual( 0 );
+			expect( clamp( -1.23, -1.11, -1.01 ) ).toEqual( -1.11 );
 		} );
 	} );
 
 	describe( 'createFilledArray()', () => {
 		it( 'should properly create filled array', () => {
-			expect( createFilledArray( 0, 'foo' ) ).to.deep.equal( [] );
-			expect( createFilledArray( 3, 'foo' ) ).to.deep.equal( [ 'foo', 'foo', 'foo' ] );
-			expect( createFilledArray( 3 ) ).to.deep.equal( [ undefined, undefined, undefined ] );
+			expect( createFilledArray( 0, 'foo' ) ).toEqual( [] );
+			expect( createFilledArray( 3, 'foo' ) ).toEqual( [ 'foo', 'foo', 'foo' ] );
+			expect( createFilledArray( 3 ) ).toEqual( [ undefined, undefined, undefined ] );
 		} );
 	} );
 
 	describe( 'sumArray()', () => {
 		it( 'should properly sum all numeric values from array', () => {
-			expect( sumArray( [] ) ).to.equal( 0 );
-			expect( sumArray( [ 'foo', 'bar' ] ) ).to.equal( 0 );
-			expect( sumArray( [ 1, 2, 3 ] ) ).to.equal( 6 );
-			expect( sumArray( [ 1, 'foo', 2, 'bar', 3 ] ) ).to.equal( 6 );
-			expect( sumArray( [ 1.1, 'foo', 2.2, 'bar', 3.3 ] ) ).to.equal( 6.6 );
-			expect( sumArray( [ '1.1px', 'foo', '2.2px', 'bar', '3.3px' ] ) ).to.equal( 6.6 );
+			expect( sumArray( [] ) ).toEqual( 0 );
+			expect( sumArray( [ 'foo', 'bar' ] ) ).toEqual( 0 );
+			expect( sumArray( [ 1, 2, 3 ] ) ).toEqual( 6 );
+			expect( sumArray( [ 1, 'foo', 2, 'bar', 3 ] ) ).toEqual( 6 );
+			expect( sumArray( [ 1.1, 'foo', 2.2, 'bar', 3.3 ] ) ).toEqual( 6.6 );
+			expect( sumArray( [ '1.1px', 'foo', '2.2px', 'bar', '3.3px' ] ) ).toEqual( 6.6 );
 		} );
 	} );
 
@@ -521,46 +521,46 @@ describe( 'TableColumnResize utils', () => {
 				[ '10%', '20%', '30%', '40%' ],
 				[ '10.32%', '20.12%', '30.87%', '38.69%' ],
 				[ '100%' ]
-			].forEach( width => expect( normalizeColumnWidths( width ) ).to.deep.equal( width ) );
+			].forEach( width => expect( normalizeColumnWidths( width ) ).toEqual( width ) );
 		} );
 
 		it( 'should handle column widths of different formats', () => {
-			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).toEqual( [ '25%', '25%', '25%', '25%' ] );
 		} );
 
 		it( 'should extend uninitialized columns equally if the free space per column is wider than the minimum column width', () => {
-			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', 'auto' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
-			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
-			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '40%' ] ) ).to.deep.equal( [ '20%', '20%', '20%', '40%' ] );
-			expect( normalizeColumnWidths( [ 'auto', '45%', '45%', 'auto' ] ) ).to.deep.equal( [ '5%', '45%', '45%', '5%' ] );
-			expect( normalizeColumnWidths( [ 'auto' ] ) ).to.deep.equal( [ '100%' ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', 'auto' ] ) ).toEqual( [ '25%', '25%', '25%', '25%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).toEqual( [ '25%', '25%', '25%', '25%' ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '40%' ] ) ).toEqual( [ '20%', '20%', '20%', '40%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '45%', '45%', 'auto' ] ) ).toEqual( [ '5%', '45%', '45%', '5%' ] );
+			expect( normalizeColumnWidths( [ 'auto' ] ) ).toEqual( [ '100%' ] );
 		} );
 
 		it( 'should set the minimum column width for uninitialized columns if there is not enough free space per column', () => {
-			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '90%' ] ) ).to.deep.equal( [ '4.76%', '4.76%', '4.76%', '85.72%' ] );
-			expect( normalizeColumnWidths( [ 'auto', '50%', 'auto', '50%' ] ) ).to.deep.equal( [ '4.55%', '45.45%', '4.55%', '45.45%' ] );
-			expect( normalizeColumnWidths( [ 'auto', '50%', '50%', '50%' ] ) ).to.deep.equal( [ '3.23%', '32.26%', '32.26%', '32.25%' ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '90%' ] ) ).toEqual( [ '4.76%', '4.76%', '4.76%', '85.72%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '50%', 'auto', '50%' ] ) ).toEqual( [ '4.55%', '45.45%', '4.55%', '45.45%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '50%', '50%', '50%' ] ) ).toEqual( [ '3.23%', '32.26%', '32.26%', '32.25%' ] );
 		} );
 
 		it( 'should proportionally align all the column widths if their sum is not exactly 100%', () => {
-			expect( normalizeColumnWidths( [ '10%', '20%', '30%', '50%' ] ) ).to.deep.equal( [ '9.09%', '18.18%', '27.27%', '45.46%' ] );
-			expect( normalizeColumnWidths( [ '10%', '10%', '10%', '10%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
-			expect( normalizeColumnWidths( [ '100%', '100%', '100%', '100%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
-			expect( normalizeColumnWidths( [ '1%', '2%', '3%', '4%' ] ) ).to.deep.equal( [ '10%', '20%', '30%', '40%' ] );
+			expect( normalizeColumnWidths( [ '10%', '20%', '30%', '50%' ] ) ).toEqual( [ '9.09%', '18.18%', '27.27%', '45.46%' ] );
+			expect( normalizeColumnWidths( [ '10%', '10%', '10%', '10%' ] ) ).toEqual( [ '25%', '25%', '25%', '25%' ] );
+			expect( normalizeColumnWidths( [ '100%', '100%', '100%', '100%' ] ) ).toEqual( [ '25%', '25%', '25%', '25%' ] );
+			expect( normalizeColumnWidths( [ '1%', '2%', '3%', '4%' ] ) ).toEqual( [ '10%', '20%', '30%', '40%' ] );
 			expect( normalizeColumnWidths( [ '12.33%', '17.4%', '21.49%', '33.52%', '26.6%', '10.43%' ] ) )
-				.to.deep.equal( [ '10.13%', '14.29%', '17.65%', '27.53%', '21.84%', '8.56%' ] );
+				.toEqual( [ '10.13%', '14.29%', '17.65%', '27.53%', '21.84%', '8.56%' ] );
 		} );
 
 		it( 'should not touch pixel column widths (they are not bound by the sum-to-100% invariant)', () => {
-			expect( normalizeColumnWidths( [ '100px', '200px' ] ) ).to.deep.equal( [ '100px', '200px' ] );
-			expect( normalizeColumnWidths( [ '100px', '200px', '300px' ] ) ).to.deep.equal( [ '100px', '200px', '300px' ] );
+			expect( normalizeColumnWidths( [ '100px', '200px' ] ) ).toEqual( [ '100px', '200px' ] );
+			expect( normalizeColumnWidths( [ '100px', '200px', '300px' ] ) ).toEqual( [ '100px', '200px', '300px' ] );
 
 			// An 'auto' entry is kept as-is in the pixel mode (not turned into a pixel value).
-			expect( normalizeColumnWidths( [ '100px', 'auto' ] ) ).to.deep.equal( [ '100px', 'auto' ] );
+			expect( normalizeColumnWidths( [ '100px', 'auto' ] ) ).toEqual( [ '100px', 'auto' ] );
 
 			// An `undefined` entry is coerced to 'auto', so a width-less column is not later treated as missing
 			// and removed by `updateColumnElements`.
-			expect( normalizeColumnWidths( [ '100px', undefined ] ) ).to.deep.equal( [ '100px', 'auto' ] );
+			expect( normalizeColumnWidths( [ '100px', undefined ] ) ).toEqual( [ '100px', 'auto' ] );
 		} );
 	} );
 
@@ -572,32 +572,32 @@ describe( 'TableColumnResize utils', () => {
 		}
 
 		it( 'should return true when the tableWidth is expressed in pixels', () => {
-			expect( isTableWidthInPixels( getTable( { columnWidths: '100px,200px', tableWidth: '300px' } ) ) ).to.be.true;
+			expect( isTableWidthInPixels( getTable( { columnWidths: '100px,200px', tableWidth: '300px' } ) ) ).toBe( true );
 		} );
 
 		it( 'should return false when the tableWidth is expressed as a percentage', () => {
-			expect( isTableWidthInPixels( getTable( { columnWidths: '40%,60%', tableWidth: '80%' } ) ) ).to.be.false;
+			expect( isTableWidthInPixels( getTable( { columnWidths: '40%,60%', tableWidth: '80%' } ) ) ).toBe( false );
 		} );
 
 		it( 'should return false when the table has no tableWidth', () => {
-			expect( isTableWidthInPixels( getTable( { columnWidths: '40%,60%' } ) ) ).to.be.false;
+			expect( isTableWidthInPixels( getTable( { columnWidths: '40%,60%' } ) ) ).toBe( false );
 		} );
 
 		it( 'should default to percentage mode (return false) when there is no tableWidth even with pixel columns', () => {
 			// With no tableWidth the resize mode defaults to percentage regardless of the columns' own units.
-			expect( isTableWidthInPixels( getTable( { columnWidths: '100px,200px' } ) ) ).to.be.false;
+			expect( isTableWidthInPixels( getTable( { columnWidths: '100px,200px' } ) ) ).toBe( false );
 		} );
 	} );
 
 	describe( 'isColumnWidthsInPixels()', () => {
 		it( 'should return true when at least one column width is expressed in pixels', () => {
-			expect( isColumnWidthsInPixels( [ '100px', '200px' ] ) ).to.be.true;
-			expect( isColumnWidthsInPixels( [ '50%', '100px' ] ) ).to.be.true;
+			expect( isColumnWidthsInPixels( [ '100px', '200px' ] ) ).toBe( true );
+			expect( isColumnWidthsInPixels( [ '50%', '100px' ] ) ).toBe( true );
 		} );
 
 		it( 'should return false when no column width is expressed in pixels', () => {
-			expect( isColumnWidthsInPixels( [ '25%', '75%' ] ) ).to.be.false;
-			expect( isColumnWidthsInPixels( [ 'auto', 'auto' ] ) ).to.be.false;
+			expect( isColumnWidthsInPixels( [ '25%', '75%' ] ) ).toBe( false );
+			expect( isColumnWidthsInPixels( [ 'auto', 'auto' ] ) ).toBe( false );
 		} );
 	} );
 
@@ -618,13 +618,13 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should return the correct width for content-box algorithm', () => {
-			expect( getElementWidthInPixels( element ) ).to.equal( 100 );
+			expect( getElementWidthInPixels( element ) ).toEqual( 100 );
 		} );
 
 		it( 'should return the correct width for border-box algorithm', () => {
 			element.style.boxSizing = 'border-box';
 
-			expect( getElementWidthInPixels( element ) ).to.equal( 50 );
+			expect( getElementWidthInPixels( element ) ).toEqual( 50 );
 		} );
 	} );
 
@@ -648,13 +648,13 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should return the correct width for content-box algorithm', () => {
-			expect( getDomCellOuterWidth( cellElement ) ).to.equal( 140 );
+			expect( getDomCellOuterWidth( cellElement ) ).toEqual( 140 );
 		} );
 
 		it( 'should return the correct width for border-box algorithm', () => {
 			cellElement.style.boxSizing = 'border-box';
 
-			expect( getDomCellOuterWidth( cellElement ) ).to.equal( 100 );
+			expect( getDomCellOuterWidth( cellElement ) ).toEqual( 100 );
 		} );
 	} );
 
@@ -697,7 +697,7 @@ describe( 'TableColumnResize utils', () => {
 
 			getComputedStyleStub.mockRestore();
 
-			expect( result ).to.not.equal( 0 );
+			expect( result ).not.toBe( 0 );
 		} );
 	} );
 
@@ -705,13 +705,13 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should return tableColumnGroup when it exists', () => {
 			_setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
-			expect( getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.not.be.undefined;
+			expect( getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).not.toBeUndefined();
 		} );
 
 		it( 'should not return anything if tableColumnGroup does not exists', () => {
 			_setModelData( model, modelTable( [ [ '01', '02' ] ] ) );
 
-			expect( getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.be.undefined;
+			expect( getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).toBeUndefined();
 		} );
 
 		it( 'should return the same tableColumnGroup element if it was passed as an argument', () => {
@@ -719,7 +719,7 @@ describe( 'TableColumnResize utils', () => {
 
 			const tableColumnGroup = model.document.getRoot().getChild( 0 ).getChild( 1 );
 
-			expect( getColumnGroupElement( tableColumnGroup ) ).to.equal( tableColumnGroup );
+			expect( getColumnGroupElement( tableColumnGroup ) ).toEqual( tableColumnGroup );
 		} );
 	} );
 
@@ -733,7 +733,7 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should return an empty array when there is no tableColumnGroup element', () => {
 			_setModelData( model, modelTable( [ [ '01', '02' ] ] ) );
 
-			expect( getTableColumnElements( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [] );
+			expect( getTableColumnElements( model.document.getRoot().getChild( 0 ) ) ).toEqual( [] );
 		} );
 	} );
 
@@ -741,7 +741,7 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should return tableColumnGroup count when there are columns', () => {
 			_setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
-			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '50%', '50%' ] );
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).toEqual( [ '50%', '50%' ] );
 		} );
 	} );
 
@@ -750,7 +750,7 @@ describe( 'TableColumnResize utils', () => {
 			_setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
 			model.change( writer => {
-				expect( translateColSpanAttribute( model.document.getRoot().getChild( 0 ), writer ) ).to.deep.equal( [ '50%', '50%' ] );
+				expect( translateColSpanAttribute( model.document.getRoot().getChild( 0 ), writer ) ).toEqual( [ '50%', '50%' ] );
 			} );
 		} );
 
@@ -782,7 +782,7 @@ describe( 'TableColumnResize utils', () => {
 			// This function only copies the width from the colSpanned column to the other columns.
 			model.change( writer => {
 				expect( translateColSpanAttribute( model.document.getRoot().getChild( 0 ), writer ) )
-					.to.deep.equal( [ '40%', '40%', '40%', '60%' ] );
+					.toEqual( [ '40%', '40%', '40%', '60%' ] );
 			} );
 		} );
 	} );

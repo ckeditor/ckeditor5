@@ -51,15 +51,15 @@ describe( 'TableUtils', () => {
 
 	describe( '#pluginName', () => {
 		it( 'should provide plugin name', () => {
-			expect( TableUtils.pluginName ).to.equal( 'TableUtils' );
+			expect( TableUtils.pluginName ).toEqual( 'TableUtils' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( TableUtils.isOfficialPlugin ).to.be.true;
+			expect( TableUtils.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( TableUtils.isPremiumPlugin ).to.be.false;
+			expect( TableUtils.isPremiumPlugin ).toBe( false );
 		} );
 	} );
 
@@ -70,9 +70,9 @@ describe( 'TableUtils', () => {
 				[ '12' ]
 			] ) );
 
-			expect( tableUtils.getCellLocation( root.getNodeByPath( [ 0, 0, 0 ] ) ) ).to.deep.equal( { row: 0, column: 0 } );
-			expect( tableUtils.getCellLocation( root.getNodeByPath( [ 0, 0, 1 ] ) ) ).to.deep.equal( { row: 0, column: 2 } );
-			expect( tableUtils.getCellLocation( root.getNodeByPath( [ 0, 1, 0 ] ) ) ).to.deep.equal( { row: 1, column: 2 } );
+			expect( tableUtils.getCellLocation( root.getNodeByPath( [ 0, 0, 0 ] ) ) ).toEqual( { row: 0, column: 0 } );
+			expect( tableUtils.getCellLocation( root.getNodeByPath( [ 0, 0, 1 ] ) ) ).toEqual( { row: 0, column: 2 } );
+			expect( tableUtils.getCellLocation( root.getNodeByPath( [ 0, 1, 0 ] ) ) ).toEqual( { row: 1, column: 2 } );
 		} );
 	} );
 
@@ -1247,7 +1247,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should not insert or modify rest of cells when splitting larger table rowspan with 7 cells ', () => {
+		it( 'should not insert or modify rest of cells when splitting larger table rowspan with 7 cells', () => {
 			_setModelData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, { colspan: 2, contents: '01' }, { colspan: 2, contents: '02' } ],
 				[ '10', '11', '12', '13' ],
@@ -1411,7 +1411,7 @@ describe( 'TableUtils', () => {
 				[ '00', { colspan: 3, contents: '01' }, '04' ]
 			] ) );
 
-			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 5 );
+			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).toEqual( 5 );
 		} );
 
 		it( 'should ignore elements other than tableCell (e.g. $marker elements) when counting', () => {
@@ -1427,7 +1427,7 @@ describe( 'TableUtils', () => {
 				writer.insert( markerFakeEndElement, writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 3 ) );
 			} );
 
-			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
+			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).toEqual( 3 );
 		} );
 	} );
 
@@ -1438,7 +1438,7 @@ describe( 'TableUtils', () => {
 				[ '10', '11' ]
 			] ) );
 
-			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 2 );
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).toEqual( 2 );
 		} );
 
 		it( 'should return proper number of columns for a table with header', () => {
@@ -1447,7 +1447,7 @@ describe( 'TableUtils', () => {
 				[ '10', '11' ]
 			], { headingRows: 1 } ) );
 
-			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 2 );
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).toEqual( 2 );
 		} );
 
 		it( 'should return proper number of columns for rowspan table', () => {
@@ -1457,7 +1457,7 @@ describe( 'TableUtils', () => {
 				[ '21' ]
 			] ) );
 
-			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).toEqual( 3 );
 		} );
 
 		it( 'should return proper number of rows for a table with a non-row element', () => {
@@ -1475,7 +1475,7 @@ describe( 'TableUtils', () => {
 				'</table>'
 			);
 
-			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 2 );
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).toEqual( 2 );
 		} );
 	} );
 
@@ -1949,7 +1949,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2, batch } );
 
-				expect( createdBatches.size ).to.equal( 1 );
+				expect( createdBatches.size ).toEqual( 1 );
 			} );
 
 			it( 'should throw the error when provided options point to a non-existent rows', () => {
@@ -2494,7 +2494,7 @@ describe( 'TableUtils - selection methods', () => {
 				writer.setSelection( writer.createRange( writer.createPositionAt( firstCell, 0 ) ) );
 			} );
 
-			expect( tableUtils.getSelectedTableCells( selection ) ).to.be.empty;
+			expect( tableUtils.getSelectedTableCells( selection ) ).toHaveLength( 0 );
 		} );
 
 		it( 'should return an empty array when a non-collapsed selection is anchored in a cell', () => {
@@ -2504,19 +2504,19 @@ describe( 'TableUtils - selection methods', () => {
 				writer.setSelection( writer.createRangeIn( firstCell ) );
 			} );
 
-			expect( tableUtils.getSelectedTableCells( selection ) ).to.be.empty;
+			expect( tableUtils.getSelectedTableCells( selection ) ).toHaveLength( 0 );
 		} );
 
 		it( 'should return an empty array when a non-cell node is selected', () => {
 			const paragraph = modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] );
 
-			expect( paragraph.is( 'element', 'paragraph' ) ).to.be.true;
+			expect( paragraph.is( 'element', 'paragraph' ) ).toBe( true );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRangeOn( paragraph ) );
 			} );
 
-			expect( tableUtils.getSelectedTableCells( selection ) ).to.be.empty;
+			expect( tableUtils.getSelectedTableCells( selection ) ).toHaveLength( 0 );
 		} );
 
 		it( 'should return an empty array when an entire table is selected', () => {
@@ -2526,7 +2526,7 @@ describe( 'TableUtils - selection methods', () => {
 				writer.setSelection( writer.createRangeOn( table ) );
 			} );
 
-			expect( tableUtils.getSelectedTableCells( selection ) ).to.be.empty;
+			expect( tableUtils.getSelectedTableCells( selection ) ).toHaveLength( 0 );
 		} );
 
 		it( 'should return two table cells', () => {
@@ -2591,7 +2591,7 @@ describe( 'TableUtils - selection methods', () => {
 				);
 			} );
 
-			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).toEqual( [
 				leftCell, rightCell
 			] );
 		} );
@@ -2607,7 +2607,7 @@ describe( 'TableUtils - selection methods', () => {
 				);
 			} );
 
-			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).toEqual( [
 				leftCell, rightCell
 			] );
 		} );
@@ -2621,7 +2621,7 @@ describe( 'TableUtils - selection methods', () => {
 				writer.setSelection( [ writer.createRangeOn( rightCell ), writer.createRangeOn( leftCell ) ] );
 			} );
 
-			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).toEqual( [
 				leftCell, rightCell
 			] );
 		} );
@@ -2639,7 +2639,7 @@ describe( 'TableUtils - selection methods', () => {
 				] );
 			} );
 
-			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).toEqual( [
 				leftCell, midCell, rightCell
 			] );
 		} );
@@ -2719,7 +2719,7 @@ describe( 'TableUtils - selection methods', () => {
 				writer.setSelection( writer.createRangeOn( cell ) );
 			} );
 
-			expect( tableUtils.getTableCellsContainingSelection( selection ) ).to.be.empty;
+			expect( tableUtils.getTableCellsContainingSelection( selection ) ).toHaveLength( 0 );
 		} );
 
 		it( 'should return an empty array when an entire table is selected', () => {
@@ -2729,7 +2729,7 @@ describe( 'TableUtils - selection methods', () => {
 				writer.setSelection( writer.createRangeOn( table ) );
 			} );
 
-			expect( tableUtils.getTableCellsContainingSelection( selection ) ).to.be.empty;
+			expect( tableUtils.getTableCellsContainingSelection( selection ) ).toHaveLength( 0 );
 		} );
 
 		it( 'should return an empty array when unrelated elements host selection ranges', () => {
@@ -2741,7 +2741,7 @@ describe( 'TableUtils - selection methods', () => {
 				writer.setSelection( writer.createRange( writer.createPositionAt( paragraph, 1 ) ) );
 			} );
 
-			expect( tableUtils.getTableCellsContainingSelection( selection ) ).to.be.empty;
+			expect( tableUtils.getTableCellsContainingSelection( selection ) ).toHaveLength( 0 );
 		} );
 	} );
 
@@ -2787,7 +2787,7 @@ describe( 'TableUtils - selection methods', () => {
 				writer.setSelection( writer.createRangeOn( table ) );
 			} );
 
-			expect( tableUtils.getSelectionAffectedTableCells( selection ) ).to.be.empty;
+			expect( tableUtils.getSelectionAffectedTableCells( selection ) ).toHaveLength( 0 );
 
 			_setModelData( model, '<paragraph>foo</paragraph>' );
 
@@ -2797,7 +2797,7 @@ describe( 'TableUtils - selection methods', () => {
 				writer.setSelection( writer.createRange( writer.createPositionAt( paragraph, 1 ) ) );
 			} );
 
-			expect( tableUtils.getSelectionAffectedTableCells( selection ) ).to.be.empty;
+			expect( tableUtils.getSelectionAffectedTableCells( selection ) ).toHaveLength( 0 );
 		} );
 	} );
 
@@ -2825,7 +2825,7 @@ describe( 'TableUtils - selection methods', () => {
 				};
 			} );
 
-			expect( result ).to.deep.equal( [
+			expect( result ).toEqual( [
 				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00' },
 				{ row: 0, column: 1, rowIndex: 0, index: 1, data: '01' },
 				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '10' },

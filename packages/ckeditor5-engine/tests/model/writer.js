@@ -1546,8 +1546,8 @@ describe( 'Writer', () => {
 				const secondLastOperation = history.getOperation( history.version - 2 );
 
 				expect( secondLastOperation.type ).toBe( 'marker' );
-				expect( secondLastOperation.oldRange.isEqual( markerRange ) );
-				expect( secondLastOperation.newRange.isEqual( markerRange ) );
+				expect( secondLastOperation.oldRange.isEqual( markerRange ) ).toBe( true );
+				expect( secondLastOperation.newRange.isEqual( markerRange ) ).toBe( true );
 
 				expect( lastOperation.type ).toBe( 'merge' );
 				expect( model.document.version ).toBe( documentVersion + 2 );
@@ -1637,8 +1637,8 @@ describe( 'Writer', () => {
 			const secondLastOperation = history.getOperation( history.version - 2 );
 
 			expect( secondLastOperation.type ).toBe( 'marker' );
-			expect( secondLastOperation.oldRange.isEqual( markerRange ) );
-			expect( secondLastOperation.newRange.isEqual( markerRange ) );
+			expect( secondLastOperation.oldRange.isEqual( markerRange ) ).toBe( true );
+			expect( secondLastOperation.newRange.isEqual( markerRange ) ).toBe( true );
 
 			expect( lastOperation.type ).toBe( 'move' );
 			expect( model.document.version ).toBe( documentVersion + 2 );
@@ -1779,8 +1779,8 @@ describe( 'Writer', () => {
 				const secondLastOperation = history.getOperation( history.version - 2 );
 
 				expect( secondLastOperation.type ).toBe( 'marker' );
-				expect( secondLastOperation.oldRange.isEqual( markerRange ) );
-				expect( secondLastOperation.newRange.isEqual( markerRange ) );
+				expect( secondLastOperation.oldRange.isEqual( markerRange ) ).toBe( true );
+				expect( secondLastOperation.newRange.isEqual( markerRange ) ).toBe( true );
 
 				expect( lastOperation.type ).toBe( 'remove' );
 
@@ -2403,7 +2403,7 @@ describe( 'Writer', () => {
 			expect( op2.oldRange.isEqual( range ) ).toBe( true );
 			expect( op2.newRange ).toBeNull();
 
-			expect( marker.getRange().isEqual( range2 ) );
+			expect( marker.getRange().isEqual( range2 ) ).toBe( true );
 
 			expect( marker.managedUsingOperations ).toBe( false );
 		} );
@@ -2685,7 +2685,7 @@ describe( 'Writer', () => {
 			} );
 
 			expect( root.isAttached() ).toBe( false );
-			expect( root.isEmpty );
+			expect( root.isEmpty ).toBe( true );
 			expect( Array.from( root.getAttributes() ).length ).toBe( 0 );
 			expect( p.parent.rootName ).toBe( '$graveyard' );
 			expect( model.markers.get( 'newMarker' ) ).toBeNull();

@@ -573,21 +573,20 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 							view: name
 						} );
 
-						if ( singletons.includes( name ) ) {
-							editor.setData( `<p>foo <${ name }> bar</p>` );
+						const isSingleton = singletons.includes( name );
 
-							expect( _getModelData( editor.model, { withoutSelection: true } ) )
-								.toBe( `<paragraph>foo <${ name }></${ name }> bar</paragraph>` );
+						const data = isSingleton ?
+							`<p>foo <${ name }> bar</p>` :
+							`<p>foo <${ name }>foo</${ name }> bar</p>`;
 
-							expect( editor.getData() ).toBe( `<p>foo <${ name }> bar</p>` );
-						} else {
-							editor.setData( `<p>foo <${ name }>foo</${ name }> bar</p>` );
+						const expectedModelData = isSingleton ?
+							`<paragraph>foo <${ name }></${ name }> bar</paragraph>` :
+							`<paragraph>foo <${ name }>foo</${ name }> bar</paragraph>`;
 
-							expect( _getModelData( editor.model, { withoutSelection: true } ) )
-								.toBe( `<paragraph>foo <${ name }>foo</${ name }> bar</paragraph>` );
+						editor.setData( data );
 
-							expect( editor.getData() ).toBe( `<p>foo <${ name }>foo</${ name }> bar</p>` );
-						}
+						expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe( expectedModelData );
+						expect( editor.getData() ).toBe( data );
 					} );
 				}
 			} );
@@ -1134,14 +1133,14 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1429
-		// it( 'space between <br>s', () => {
-		// 	editor.setData( '<p>foo<br>&nbsp;<br>bar</p>' );
+		it.skip( 'space between <br>s', () => {
+			editor.setData( '<p>foo<br>&nbsp;<br>bar</p>' );
 
-		// 	expect( _getModelData( editor.model, { withoutSelection: true } ) )
-		// 		.toBe( '<paragraph>foo<softBreak></softBreak> <softBreak></softBreak>bar</paragraph>' );
+			expect( _getModelData( editor.model, { withoutSelection: true } ) )
+				.toBe( '<paragraph>foo<softBreak></softBreak> <softBreak></softBreak>bar</paragraph>' );
 
-		// 	expect( editor.getData() ).toBe( '<p>foo<br>&nbsp;<br>bar</p>' );
-		// } );
+			expect( editor.getData() ).toBe( '<p>foo<br>&nbsp;<br>bar</p>' );
+		} );
 
 		it( 'space between <br>s (normalization)', () => {
 			editor.setData( '<p>foo<br> <br>bar</p>' );

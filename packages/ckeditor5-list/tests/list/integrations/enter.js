@@ -101,7 +101,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'[]'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 0 )
 				] );
 
@@ -110,7 +110,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-				expect( eventInfo.stop.called ).to.be.true;
+				expect( eventInfo.stop.called ).toBe( true );
 			} );
 
 			it( 'should outdent if the slection in the last empty list item (convert the item into paragraph)', () => {
@@ -126,7 +126,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'[]'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 1 )
 				] );
 
@@ -135,7 +135,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-				expect( eventInfo.stop.called ).to.be.true;
+				expect( eventInfo.stop.called ).toBe( true );
 			} );
 
 			it( 'should create another list item when the selection in a non-empty only list item', () => {
@@ -150,7 +150,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* [] {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 1 )
 				] );
 
@@ -159,7 +159,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should outdent if the selection in an empty, last sub-list item', () => {
@@ -179,7 +179,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'  # []'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 3 )
 				] );
 
@@ -188,7 +188,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-				expect( eventInfo.stop.called ).to.be.true;
+				expect( eventInfo.stop.called ).toBe( true );
 			} );
 
 			describe( 'with shift', () => {
@@ -207,14 +207,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* <softBreak></softBreak>[]'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [ ] );
+					expect( changedBlocks ).toEqual( [ ] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should create a soft break in an empty item at the end of a list', () => {
@@ -230,14 +230,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* <softBreak></softBreak>[]'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [ ] );
+					expect( changedBlocks ).toEqual( [ ] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should create a soft break in an indented empty item at the end of a list', () => {
@@ -253,14 +253,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'  * <softBreak></softBreak>[]'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [ ] );
+					expect( changedBlocks ).toEqual( [ ] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 			} );
 		} );
@@ -281,7 +281,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* []'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 2 )
 				] );
 
@@ -290,7 +290,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-				expect( eventInfo.stop.called ).to.be.true;
+				expect( eventInfo.stop.called ).toBe( true );
 			} );
 
 			it( 'should outdent if the selection is anchored in an empty, only sub-item block', () => {
@@ -310,7 +310,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'  #'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 2 )
 				] );
 
@@ -319,7 +319,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-				expect( eventInfo.stop.called ).to.be.true;
+				expect( eventInfo.stop.called ).toBe( true );
 			} );
 
 			it( 'should create another block when the selection at the start of a non-empty first block', () => {
@@ -338,14 +338,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'  c'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should create another block when the selection at the end of a non-empty first block', () => {
@@ -364,14 +364,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'  c'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should create another block when the selection at the start of a non-empty last block', () => {
@@ -390,14 +390,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'  []c'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should create another block when the selection at the end of a non-empty last block', () => {
@@ -416,14 +416,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'  []'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should create another block when the selection in an empty middle block', () => {
@@ -442,14 +442,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'  c'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should create another list item when the selection in an empty last block (two blocks in total)', () => {
@@ -465,7 +465,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* [] {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 1 )
 				] );
 
@@ -474,7 +474,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-				expect( eventInfo.stop.called ).to.be.true;
+				expect( eventInfo.stop.called ).toBe( true );
 			} );
 
 			it( 'should create another list item when the selection in an empty last block (three blocks in total)', () => {
@@ -492,7 +492,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* [] {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 2 )
 				] );
 
@@ -501,7 +501,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-				expect( eventInfo.stop.called ).to.be.true;
+				expect( eventInfo.stop.called ).toBe( true );
 			} );
 
 			it( 'should create another list item when the selection in an empty last block (followed by a list item)', () => {
@@ -521,7 +521,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* '
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 2 )
 				] );
 
@@ -530,7 +530,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-				expect( eventInfo.stop.called ).to.be.true;
+				expect( eventInfo.stop.called ).toBe( true );
 			} );
 
 			it( 'should create another list item when the selection in an empty first block (followed by another block)', () => {
@@ -546,7 +546,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* b {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 1 )
 				] );
 
@@ -555,7 +555,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).toHaveBeenCalledOnce();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-				expect( eventInfo.stop.called ).to.be.true;
+				expect( eventInfo.stop.called ).toBe( true );
 			} );
 
 			it( 'should create another list item when the selection in an empty first block (followed by multiple blocks)', () => {
@@ -573,7 +573,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'  b'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 1 ),
 					modelRoot.getChild( 2 )
 				] );
@@ -583,7 +583,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).toHaveBeenCalledOnce();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-				expect( eventInfo.stop.called ).to.be.true;
+				expect( eventInfo.stop.called ).toBe( true );
 			} );
 
 			it( 'should create another list item when the selection in an empty first block (followed by multiple blocks and an item)',
@@ -604,7 +604,7 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* c'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [
+					expect( changedBlocks ).toEqual( [
 						modelRoot.getChild( 1 ),
 						modelRoot.getChild( 2 )
 					] );
@@ -614,7 +614,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					expect( splitAfterCommandExecuteSpy ).toHaveBeenCalledOnce();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
-					expect( eventInfo.stop.called ).to.be.true;
+					expect( eventInfo.stop.called ).toBe( true );
 				} );
 
 			describe( 'with shift', () => {
@@ -635,14 +635,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'  <softBreak></softBreak>[]'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [ ] );
+					expect( changedBlocks ).toEqual( [ ] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should create a soft break in a block of a list item at the end of a list', () => {
@@ -660,14 +660,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'  <softBreak></softBreak>[]'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [ ] );
+					expect( changedBlocks ).toEqual( [ ] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 			} );
 		} );
@@ -687,7 +687,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* [] {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 1 )
 				] );
 
@@ -696,7 +696,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should create another list item if the selection contains some content at the start of the list item', () => {
@@ -711,7 +711,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* []b {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 1 )
 				] );
 
@@ -720,7 +720,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the content and turn off the list if slection contains all content at the zero indent level', () => {
@@ -735,14 +735,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'[]'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the content and move the selection when it contains some content at the zero indent level', () => {
@@ -758,14 +758,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* []'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the content when the selection contains all content at a deeper indent level', () => {
@@ -784,14 +784,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'    * []'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			describe( 'with shift', () => {
@@ -810,14 +810,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* <softBreak></softBreak>[]'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [ ] );
+					expect( changedBlocks ).toEqual( [ ] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should delete selected text and set selection in new paragraph', () => {
@@ -833,14 +833,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* []'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [ ] );
+					expect( changedBlocks ).toEqual( [ ] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 			} );
 
@@ -857,14 +857,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'[]'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (one level, entire blocks)', () => {
@@ -881,14 +881,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* []'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (one level, subset of blocks)', () => {
@@ -906,14 +906,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'  # []d'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (two levels, entire blocks)', () => {
@@ -931,14 +931,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'  * gh {id:003}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (two levels, subset of blocks)', () => {
@@ -957,14 +957,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'  * gh {id:003}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (three levels, entire blocks)', () => {
@@ -983,14 +983,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* []'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content and remove list across different indentation levels ' +
@@ -1008,14 +1008,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'[]'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (three levels, subset of blocks)', () => {
@@ -1035,14 +1035,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* ij {id:004}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (one level, start at first, entire blocks)', () => {
@@ -1060,14 +1060,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'  # []'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (one level, start at first, part of blocks)', () => {
@@ -1086,14 +1086,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'    * []h {id:003}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (level up then down, subset of blocks)', () => {
@@ -1112,14 +1112,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'  # []h {id:003}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (level up then down, entire of blocks)', () => {
@@ -1139,14 +1139,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* ij {id:004}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the content across different indentation levels (level up then down, preceded by an item)', () => {
@@ -1168,14 +1168,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* kl {id:005}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 			} );
 		} );
@@ -1194,7 +1194,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* []d {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 1 )
 				] );
 
@@ -1203,7 +1203,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the selected content (entire blocks)', () => {
@@ -1220,14 +1220,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* []'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the selected content (entire block, middle one)', () => {
@@ -1245,14 +1245,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'  ef'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the selected content (entire blocks, starting from the second)', () => {
@@ -1277,7 +1277,7 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* [] {id:a00}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [
+				expect( changedBlocks ).toEqual( [
 					modelRoot.getChild( 1 )
 				] );
 
@@ -1286,7 +1286,7 @@ describe( 'ListEditing integrations: enter key', () => {
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the selected content (partial blocks, starting from the second)', () => {
@@ -1304,14 +1304,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'  []f'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the selected content (entire blocks, three blocks in total)', () => {
@@ -1329,14 +1329,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* gh {id:003}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the selected content (entire blocks, across list items)', () => {
@@ -1355,14 +1355,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* []'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the selected content (entire blocks + a partial block, across list items)', () => {
@@ -1380,14 +1380,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* []h {id:003}'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			it( 'should clean the selected content (partial blocks, across list items)', () => {
@@ -1407,14 +1407,14 @@ describe( 'ListEditing integrations: enter key', () => {
 					'* []h'
 				] ) );
 
-				expect( changedBlocks ).to.deep.equal( [] );
+				expect( changedBlocks ).toEqual( [] );
 
 				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-				expect( eventInfo.stop.called ).to.be.undefined;
+				expect( eventInfo.stop.called ).toBeUndefined();
 			} );
 
 			describe( 'with shift', () => {
@@ -1437,14 +1437,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'* [] {id:003}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [ ] );
+					expect( changedBlocks ).toEqual( [ ] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 			} );
 
@@ -1467,14 +1467,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'    * []j {id:004}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the selected content (partial blocks + entire block)', () => {
@@ -1495,14 +1495,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'    * [] {id:004}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 
 				it( 'should clean the selected content (across two middle levels)', () => {
@@ -1523,14 +1523,14 @@ describe( 'ListEditing integrations: enter key', () => {
 						'    * ij {id:004}'
 					] ) );
 
-					expect( changedBlocks ).to.deep.equal( [] );
+					expect( changedBlocks ).toEqual( [] );
 
 					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
 					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
 					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
-					expect( eventInfo.stop.called ).to.be.undefined;
+					expect( eventInfo.stop.called ).toBeUndefined();
 				} );
 			} );
 		} );

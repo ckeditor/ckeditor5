@@ -56,15 +56,15 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( TodoListEditing.pluginName ).to.equal( 'TodoListEditing' );
+		expect( TodoListEditing.pluginName ).toEqual( 'TodoListEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TodoListEditing.isOfficialPlugin ).to.be.true;
+		expect( TodoListEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TodoListEditing.isPremiumPlugin ).to.be.false;
+		expect( TodoListEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should load ListEditing', () => {
@@ -97,11 +97,11 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 		const table = new ModelElement( 'table', { listItemId: 'foo', listType: 'todo' }, [ ] );
 		const listItem = new ModelElement( 'listItem', { listItemId: 'foo', listType: 'todo' }, [ ] );
 
-		expect( model.schema.checkAttribute( [ '$root', paragraph ], 'todoListChecked' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', heading ], 'todoListChecked' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'todoListChecked' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', table ], 'todoListChecked' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', listItem ], 'todoListChecked' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', paragraph ], 'todoListChecked' ) ).toBe( false );
+		expect( model.schema.checkAttribute( [ '$root', heading ], 'todoListChecked' ) ).toBe( false );
+		expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'todoListChecked' ) ).toBe( false );
+		expect( model.schema.checkAttribute( [ '$root', table ], 'todoListChecked' ) ).toBe( false );
+		expect( model.schema.checkAttribute( [ '$root', listItem ], 'todoListChecked' ) ).toBe( true );
 	} );
 
 	describe( 'upcast', () => {

@@ -1127,14 +1127,14 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '_handleAISidebarTransitions', () => {
-		let aiElement, nestedElement;
+		let aiElement, nestedElement, pluginsGetSpy;
 
 		beforeEach( () => {
 			aiElement = global.document.createElement( 'div' );
 			nestedElement = global.document.createElement( 'div' );
 			aiElement.appendChild( nestedElement );
 
-			vi.spyOn( editor.plugins, 'get' ).mockImplementation( pluginName => pluginName === 'AITabs' ? {
+			pluginsGetSpy = vi.spyOn( editor.plugins, 'get' ).mockImplementation( pluginName => pluginName === 'AITabs' ? {
 				view: {
 					element: aiElement
 				}
@@ -1145,7 +1145,7 @@ describe( 'AbstractHandler', () => {
 			// The automatic `restoreMocks` cleanup runs only before the next test, so restore manually
 			// first: the outer `afterEach()` calls `abstractHandler.disable()`, which must use the real
 			// `editor.plugins.get()` instead of the mock returning `undefined` for non-AITabs plugins.
-			vi.restoreAllMocks();
+			pluginsGetSpy.mockRestore();
 
 			aiElement.remove();
 		} );

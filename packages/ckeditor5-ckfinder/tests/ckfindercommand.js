@@ -44,14 +44,14 @@ describe( 'CKFinderCommand', () => {
 				_setModelData( model, '[]' );
 
 				command.refresh();
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
 		it( 'should be true when the selection is in empty block', () => {
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true where only image is allowed', () => {
@@ -67,7 +67,7 @@ describe( 'CKFinderCommand', () => {
 
 			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true where only link is allowed', () => {
@@ -87,7 +87,7 @@ describe( 'CKFinderCommand', () => {
 
 			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false where link & image are not allowed', () => {
@@ -103,7 +103,7 @@ describe( 'CKFinderCommand', () => {
 
 			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true when insertImage or link command is enabled', () => {
@@ -115,19 +115,19 @@ describe( 'CKFinderCommand', () => {
 			linkCommand.isEnabled = false;
 
 			command.refresh();
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 
 			linkCommand.isEnabled = false;
 			insertImage.isEnabled = true;
 
 			command.refresh();
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 
 			linkCommand.isEnabled = true;
 			insertImage.isEnabled = false;
 
 			command.refresh();
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 	} );
 
@@ -189,8 +189,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( url ) ] );
 
-			expect( _getModelData( model ) )
-				.to.equal( `[<imageBlock src="${ url }"></imageBlock>]<paragraph>foo</paragraph>` );
+			expect( _getModelData( model ) ).toEqual( `[<imageBlock src="${ url }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should insert link if chosen file is not an image', () => {
@@ -200,8 +199,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( url, false ) ] );
 
-			expect( _getModelData( model ) )
-				.to.equal( `<paragraph>f[<$text linkHref="${ url }">o</$text>]o</paragraph>` );
+			expect( _getModelData( model ) ).toEqual( `<paragraph>f[<$text linkHref="${ url }">o</$text>]o</paragraph>` );
 		} );
 
 		it( 'should pass CKFinder configuration options', () => {
@@ -304,10 +302,8 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( url1 ), mockFinderFile( url2 ), mockFinderFile( url3 ) ] );
 
-			expect( _getModelData( model ) ).to.equal(
-				`<imageBlock src="${ url1 }"></imageBlock>` +
-				`<imageBlock src="${ url2 }"></imageBlock>[<imageBlock src="${ url3 }"></imageBlock>]<paragraph>foo</paragraph>`
-			);
+			expect( _getModelData( model ) ).toEqual( `<imageBlock src="${ url1 }"></imageBlock>` +
+				`<imageBlock src="${ url2 }"></imageBlock>[<imageBlock src="${ url3 }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should insert images and links to a files from chosen files', () => {
@@ -319,11 +315,9 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( url1 ), mockFinderFile( url2, false ), mockFinderFile( url3 ) ] );
 
-			expect( _getModelData( model ) ).to.equal(
-				`<imageBlock src="${ url1 }"></imageBlock>` +
+			expect( _getModelData( model ) ).toEqual( `<imageBlock src="${ url1 }"></imageBlock>` +
 				`[<imageBlock src="${ url3 }"></imageBlock>]` +
-				`<paragraph>f<$text linkHref="${ url2 }">o</$text>o</paragraph>`
-			);
+				`<paragraph>f<$text linkHref="${ url2 }">o</$text>o</paragraph>` );
 		} );
 
 		it( 'should use CKFinder Proxy for privately hosted files', () => {
@@ -335,9 +329,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( false ) ] );
 
-			expect( _getModelData( model ) ).to.equal(
-				`[<imageBlock src="${ proxyUrl }"></imageBlock>]<paragraph>foo</paragraph>`
-			);
+			expect( _getModelData( model ) ).toEqual( `[<imageBlock src="${ proxyUrl }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should insert resized image as image widget', () => {
@@ -347,8 +339,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: url } );
 
-			expect( _getModelData( model ) )
-				.to.equal( `[<imageBlock src="${ url }"></imageBlock>]<paragraph>foo</paragraph>` );
+			expect( _getModelData( model ) ).toEqual( `[<imageBlock src="${ url }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should show warning notification if no resized image URL was returned', () => {
@@ -356,8 +347,8 @@ describe( 'CKFinderCommand', () => {
 				const notification = editor.plugins.get( Notification );
 
 				notification.on( 'show:warning', ( evt, data ) => {
-					expect( data.message ).to.equal( 'Could not obtain resized image URL.' );
-					expect( data.title ).to.equal( 'Selecting resized image failed' );
+					expect( data.message ).toEqual( 'Could not obtain resized image URL.' );
+					expect( data.title ).toEqual( 'Selecting resized image failed' );
 					evt.stop();
 
 					resolve();
@@ -367,8 +358,7 @@ describe( 'CKFinderCommand', () => {
 
 				mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: undefined } );
 
-				expect( _getModelData( model ) )
-					.to.equal( '<paragraph>f[o]o</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>f[o]o</paragraph>' );
 			} );
 		} );
 
@@ -393,8 +383,8 @@ describe( 'CKFinderCommand', () => {
 				const notification = editor.plugins.get( Notification );
 
 				notification.on( 'show:warning', ( evt, data ) => {
-					expect( data.message ).to.equal( 'Could not insert image at the current position.' );
-					expect( data.title ).to.equal( 'Inserting image failed' );
+					expect( data.message ).toEqual( 'Could not insert image at the current position.' );
+					expect( data.title ).toEqual( 'Inserting image failed' );
 					evt.stop();
 
 					resolve();
@@ -404,8 +394,7 @@ describe( 'CKFinderCommand', () => {
 
 				mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: 'sample.png' } );
 
-				expect( _getModelData( model ) )
-					.to.equal( '<paragraph>f[o]o</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>f[o]o</paragraph>' );
 			} );
 		} );
 
@@ -424,7 +413,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( 'sample.png' ) ] );
 
-			expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
+			expect( _getModelData( model ) ).toEqual( '<other>[]</other>' );
 		} );
 
 		it( 'does not alter the original config', () => {
@@ -432,7 +421,7 @@ describe( 'CKFinderCommand', () => {
 
 			command.execute();
 
-			expect( editor.config.get( 'ckfinder.options' ) ).to.deep.equal( { foo: 'bar' } );
+			expect( editor.config.get( 'ckfinder.options' ) ).toEqual( { foo: 'bar' } );
 		} );
 
 		function mockFinderFile( url = 'sample.png', isImage = true ) {
@@ -459,7 +448,7 @@ describe( 'CKFinderCommand', () => {
 
 	describe( '_affectsData', () => {
 		it( 'does not affect data', () => {
-			expect( command._affectsData ).to.be.false;
+			expect( command._affectsData ).toBe( false );
 		} );
 	} );
 } );

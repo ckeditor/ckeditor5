@@ -40,23 +40,23 @@ describe( 'SimpleUploadAdapter', () => {
 	} );
 
 	it( 'should require the FileRepository plugin', () => {
-		expect( SimpleUploadAdapter.requires ).to.deep.equal( [ FileRepository ] );
+		expect( SimpleUploadAdapter.requires ).toEqual( [ FileRepository ] );
 	} );
 
 	it( 'should be named', () => {
-		expect( SimpleUploadAdapter.pluginName ).to.equal( 'SimpleUploadAdapter' );
+		expect( SimpleUploadAdapter.pluginName ).toEqual( 'SimpleUploadAdapter' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( SimpleUploadAdapter.isOfficialPlugin ).to.be.true;
+		expect( SimpleUploadAdapter.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-		expect( SimpleUploadAdapter.isPremiumPlugin ).to.be.true;
+		expect( SimpleUploadAdapter.isPremiumPlugin ).toBe( true );
 	} );
 
 	it( 'should have `licenseFeatureCode` static flag set to `SUA`', () => {
-		expect( SimpleUploadAdapter.licenseFeatureCode ).to.equal( 'SUA' );
+		expect( SimpleUploadAdapter.licenseFeatureCode ).toEqual( 'SUA' );
 	} );
 
 	describe( 'init()', () => {
@@ -89,7 +89,7 @@ describe( 'SimpleUploadAdapter', () => {
 		} );
 
 		it( 'the crateAdapter() method should be registered and have upload() and abort methods()', () => {
-			expect( adapter ).to.not.be.undefined;
+			expect( adapter ).not.toBeUndefined();
 			expect( adapter.upload ).to.be.a( 'function' );
 			expect( adapter.abort ).to.be.a( 'function' );
 		} );
@@ -126,8 +126,8 @@ describe( 'SimpleUploadAdapter', () => {
 					}
 				} )
 				.then( editor => {
-					expect( consoleWarnStub.mock.calls.length ).to.equal( 1 );
-					expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).to.match( /^simple-upload-adapter-missing-uploadurl/ );
+					expect( consoleWarnStub.mock.calls.length ).toEqual( 1 );
+					expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^simple-upload-adapter-missing-uploadurl/ );
 
 					const fileRepository = editor.plugins.get( FileRepository );
 
@@ -160,12 +160,12 @@ describe( 'SimpleUploadAdapter', () => {
 							const request = fakeXHR.requests[ 0 ];
 							request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
-							expect( request.url ).to.equal( 'http://example.com' );
+							expect( request.url ).toEqual( 'http://example.com' );
 
 							return uploadPromise;
 						} )
 						.then( uploadResponse => {
-							expect( uploadResponse ).to.deep.equal( {
+							expect( uploadResponse ).toEqual( {
 								url: 'http://example.com/images/image.jpeg',
 								urls: {
 									default: 'http://example.com/images/image.jpeg'
@@ -211,7 +211,7 @@ describe( 'SimpleUploadAdapter', () => {
 									return uploadPromise;
 								} )
 								.then( uploadResponse => {
-									expect( uploadResponse ).to.deep.equal( {
+									expect( uploadResponse ).toEqual( {
 										url: 'http://example.com/images/image.jpeg',
 										urls: {
 											default: 'http://example.com/images/image.jpeg'
@@ -261,7 +261,7 @@ describe( 'SimpleUploadAdapter', () => {
 									return uploadPromise;
 								} )
 								.then( uploadResponse => {
-									expect( uploadResponse ).to.deep.equal( {
+									expect( uploadResponse ).toEqual( {
 										url: 'http://example.com/images/image.jpeg',
 										urls: {
 											default: 'http://example.com/images/image.jpeg'
@@ -301,12 +301,12 @@ describe( 'SimpleUploadAdapter', () => {
 									const requestHeaders = request.requestHeaders;
 
 									expect( requestHeaders ).to.be.a( 'object' );
-									expect( requestHeaders ).to.be.empty;
+									expect( requestHeaders ).toEqual( {} );
 
 									return uploadPromise;
 								} )
 								.then( uploadResponse => {
-									expect( uploadResponse ).to.deep.equal( {
+									expect( uploadResponse ).toEqual( {
 										url: 'http://example.com/images/image.jpeg',
 										urls: {
 											default: 'http://example.com/images/image.jpeg'
@@ -349,7 +349,7 @@ describe( 'SimpleUploadAdapter', () => {
 									return uploadPromise;
 								} )
 								.then( uploadResponse => {
-									expect( uploadResponse ).to.deep.equal( {
+									expect( uploadResponse ).toEqual( {
 										url: 'http://example.com/images/image.jpeg',
 										urls: {
 											default: 'http://example.com/images/image.jpeg'
@@ -391,7 +391,7 @@ describe( 'SimpleUploadAdapter', () => {
 									return uploadPromise;
 								} )
 								.then( uploadResponse => {
-									expect( uploadResponse ).to.deep.equal( {
+									expect( uploadResponse ).toEqual( {
 										url: 'http://example.com/images/image.jpeg',
 										urls: {
 											default: 'http://example.com/images/image.jpeg'
@@ -425,7 +425,7 @@ describe( 'SimpleUploadAdapter', () => {
 						return uploadPromise;
 					} )
 					.then( uploadResponse => {
-						expect( uploadResponse ).to.deep.equal( validResponse );
+						expect( uploadResponse ).toEqual( validResponse );
 					} );
 			} );
 
@@ -450,88 +450,65 @@ describe( 'SimpleUploadAdapter', () => {
 						return uploadPromise;
 					} )
 					.then( uploadResponse => {
-						expect( uploadResponse ).to.deep.equal( validResponse );
+						expect( uploadResponse ).toEqual( validResponse );
 					} );
 			} );
 
-			it( 'should throw on a generic request error', () => {
-				const promise = adapter.upload()
-					.then( () => {
-						throw new Error( 'Promise should throw.' );
-					} )
-					.catch( msg => {
-						expect( msg ).to.equal( 'Couldn\'t upload file: image.jpeg.' );
-					} );
+			it( 'should throw on a generic request error', async () => {
+				const promise = adapter.upload();
 
 				loader.file.then( () => {
 					const request = fakeXHR.requests[ 0 ];
 					request.error();
 				} );
 
-				return promise;
+				await expect( promise ).rejects.toBe( 'Couldn\'t upload file: image.jpeg.' );
 			} );
 
-			it( 'should throw on an error from server', () => {
+			it( 'should throw on an error from server', async () => {
 				const responseError = {
 					error: {
 						message: 'Foo bar baz.'
 					}
 				};
 
-				const promise = adapter.upload()
-					.then( () => {
-						throw new Error( 'Promise should throw.' );
-					} )
-					.catch( msg => {
-						expect( msg ).to.equal( 'Foo bar baz.' );
-					} );
+				const promise = adapter.upload();
 
 				loader.file.then( () => {
 					const request = fakeXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 				} );
 
-				return promise;
+				await expect( promise ).rejects.toBe( 'Foo bar baz.' );
 			} );
 
-			it( 'should throw a generic error on an error from server without a message', () => {
+			it( 'should throw a generic error on an error from server without a message', async () => {
 				const responseError = {
 					error: {}
 				};
 
-				const promise = adapter.upload()
-					.then( () => {
-						throw new Error( 'Promise should throw.' );
-					} )
-					.catch( msg => {
-						expect( msg ).to.equal( 'Couldn\'t upload file: image.jpeg.' );
-					} );
+				const promise = adapter.upload();
 
 				loader.file.then( () => {
 					const request = fakeXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 				} );
 
-				return promise;
+				await expect( promise ).rejects.toBe( 'Couldn\'t upload file: image.jpeg.' );
 			} );
 
-			it( 'should throw an error on abort()', () => {
+			it( 'should throw an error on abort()', async () => {
 				let request;
 
-				const promise = adapter.upload()
-					.then( () => {
-						throw new Error( 'Promise should throw.' );
-					} )
-					.catch( () => {
-						expect( request.aborted ).to.be.true;
-					} );
+				const promise = adapter.upload();
 
 				loader.file.then( () => {
 					request = fakeXHR.requests[ 0 ];
 					adapter.abort();
 				} );
 
-				return promise;
+				await expect( promise ).rejects.toBeUndefined();
+				expect( request.aborted ).toBe( true );
 			} );
 
 			it( 'abort() should not throw before upload', () => {
@@ -547,8 +524,8 @@ describe( 'SimpleUploadAdapter', () => {
 					const request = fakeXHR.requests[ 0 ];
 					request.uploadProgress( { loaded: 4, total: 10 } );
 
-					expect( loader.uploadTotal ).to.equal( 10 );
-					expect( loader.uploaded ).to.equal( 4 );
+					expect( loader.uploadTotal ).toEqual( 10 );
+					expect( loader.uploaded ).toEqual( 4 );
 				} );
 			} );
 		} );

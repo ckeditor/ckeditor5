@@ -17,10 +17,10 @@ describe( 'Typing feature', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Typing.isOfficialPlugin ).to.be.true;
+		expect( Typing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Typing.isPremiumPlugin ).to.be.false;
+		expect( Typing.isPremiumPlugin ).toBe( false );
 	} );
 } );

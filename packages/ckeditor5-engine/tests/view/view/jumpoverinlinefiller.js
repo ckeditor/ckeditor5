@@ -49,15 +49,11 @@ describe( 'View', () => {
 
 			// There's a problem now. We expect that the selection was moved to "foo<b>^FILLER</b>", but Safari
 			// will render it on "foo^<b>...". Both options are correct.
+			const isAnchorInText = domSelection.anchorNode.data == 'foo';
+			const expectedAnchorOffset = isAnchorInText ? 3 : 0;
 
-			if ( domSelection.anchorNode.data == 'foo' ) {
-				expect( domSelection.anchorNode.data ).toBe( 'foo' );
-				expect( domSelection.anchorOffset ).toBe( 3 );
-			} else {
-				expect( isInlineFiller( domSelection.anchorNode ) ).toBe( true );
-				expect( domSelection.anchorOffset ).toBe( 0 );
-			}
-
+			expect( isAnchorInText || isInlineFiller( domSelection.anchorNode ) ).toBe( true );
+			expect( domSelection.anchorOffset ).toBe( expectedAnchorOffset );
 			expect( domSelection.isCollapsed ).toBe( true );
 		} );
 
@@ -89,18 +85,18 @@ describe( 'View', () => {
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5-engine/issues/664
-		// it( 'should do nothing if node does not start with the filler', () => {
-		// 	_setViewData( view, '<container:p>foo<attribute:b>{}x</attribute:b>bar</container:p>' );
-		// 	viewDocument.render();
+		it.skip( 'should do nothing if node does not start with the filler', () => {
+			_setViewData( view, '<container:p>foo<attribute:b>{}x</attribute:b>bar</container:p>' );
+			view.forceRender();
 
-		// 	viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: viewDocument.domRoots.get( 'main' ) } );
+			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: view.domRoots.get( 'main' ) } );
 
-		// 	const domSelection = document.getSelection();
+			const domSelection = document.getSelection();
 
-		// 	expect( domSelection.anchorNode.data ).to.equal( 'x' );
-		// 	expect( domSelection.anchorOffset ).to.equal( INLINE_FILLER_LENGTH );
-		// 	expect( domSelection.isCollapsed ).to.be.true;
-		// } );
+			expect( domSelection.anchorNode.data ).toBe( 'x' );
+			expect( domSelection.anchorOffset ).toBe( INLINE_FILLER_LENGTH );
+			expect( domSelection.isCollapsed ).toBe( true );
+		} );
 
 		it( 'should do nothing if caret is not directly before the filler', () => {
 			view.change( () => {

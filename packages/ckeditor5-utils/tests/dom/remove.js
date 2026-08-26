@@ -19,8 +19,8 @@ describe( 'remove', () => {
 
 		remove( p1 );
 
-		expect( p1.parentNode ).to.be.null;
-		expect( div.childNodes.length ).to.equal( 2 );
+		expect( p1.parentNode ).toBeNull();
+		expect( div.childNodes.length ).toEqual( 2 );
 	} );
 
 	it( 'should do nothing if element has no parent', () => {
@@ -28,6 +28,6 @@ describe( 'remove', () => {
 
 		remove( div );
 
-		expect( div.parentNode ).to.be.null;
+		expect( div.parentNode ).toBeNull();
 	} );
 } );

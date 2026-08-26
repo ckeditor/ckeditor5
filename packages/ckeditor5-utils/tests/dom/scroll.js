@@ -168,21 +168,21 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 	}
 
 	function testWithAncestorOffset() {
-		it( 'should not touch the #scrollTop #scrollLeft of the ancestor if target is visible', () => {
+		it( 'should not touch the #scrollTop #scrollLeft of the ancestor if target is visible (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollLeft: 100, scrollTop: 100 } );
 		} );
 
-		it( 'should not touch the #scrollTop #scrollLeft of the document.body', () => {
+		it( 'should not touch the #scrollTop #scrollLeft of the document.body (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( document.body, { scrollLeft: 1000, scrollTop: 1000 } );
 		} );
 
-		it( 'should not change the scroll of the ancestors of the given limiter', () => {
+		it( 'should not change the scroll of the ancestors of the given limiter (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target, 20, firstAncestor );
@@ -191,35 +191,35 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			assertScrollPosition( secondAncestor, { scrollTop: 100, scrollLeft: 100 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollTop: -10, scrollLeft: 100 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (below)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (below) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 200, right: 75, bottom: 300, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollTop: 310, scrollLeft: 100 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (left of)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (left of) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: 0, bottom: 100, left: -100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -10 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (right of)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (right of) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 210 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of all the ancestors', () => {
+		it( 'should set #scrollTop and #scrollLeft of all the ancestors (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
@@ -233,21 +233,21 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 	}
 
 	function testWithOffsetAndAlignToTop() {
-		it( 'should not touch the #scrollTop #scrollLeft of the ancestor if target is visible', () => {
+		it( 'should not touch the #scrollTop #scrollLeft of the ancestor if target is visible (with alignToTop)', () => {
 			stubGeometry( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
 			assertScrollPosition( firstAncestor, { scrollLeft: 100, scrollTop: 100 } );
 		} );
 
-		it( 'should not touch the #scrollTop #scrollLeft of the document.body', () => {
+		it( 'should not touch the #scrollTop #scrollLeft of the document.body (with alignToTop)', () => {
 			stubGeometry( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
 			assertScrollPosition( document.body, { scrollLeft: 1000, scrollTop: 1000 } );
 		} );
 
-		it( 'should not change the scroll of the ancestors of the given limiter', () => {
+		it( 'should not change the scroll of the ancestors of the given limiter (with alignToTop)', () => {
 			stubGeometry( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target, 20, firstAncestor, true );
@@ -256,35 +256,35 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			assertScrollPosition( secondAncestor, { scrollTop: 100, scrollLeft: 100 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above) (with alignToTop)', () => {
 			stubGeometry( target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
 			assertScrollPosition( firstAncestor, { scrollTop: -10, scrollLeft: 100 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (below)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (below) (with alignToTop)', () => {
 			stubGeometry( target, { top: 200, right: 75, bottom: 300, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
 			assertScrollPosition( firstAncestor, { scrollTop: 290, scrollLeft: 100 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (left of)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (left of) (with alignToTop)', () => {
 			stubGeometry( target, { top: 0, right: 0, bottom: 100, left: -100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -10 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (right of)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (right of) (with alignToTop)', () => {
 			stubGeometry( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 210 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of all the ancestors', () => {
+		it( 'should set #scrollTop and #scrollLeft of all the ancestors (with alignToTop)', () => {
 			stubGeometry( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
@@ -305,14 +305,14 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			assertScrollPosition( firstAncestor, { scrollLeft: 100, scrollTop: 115 } );
 		} );
 
-		it( 'should not touch the #scrollTop #scrollLeft of the document.body', () => {
+		it( 'should not touch the #scrollTop #scrollLeft of the document.body (with alignToTop and forceScroll)', () => {
 			stubGeometry( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
 			assertScrollPosition( document.body, { scrollLeft: 1000, scrollTop: 1000 } );
 		} );
 
-		it( 'should not change the scroll of the ancestors of the given limiter', () => {
+		it( 'should not change the scroll of the ancestors of the given limiter (with alignToTop and forceScroll)', () => {
 			stubGeometry( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target, 20, firstAncestor, true, true );
@@ -321,35 +321,35 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			assertScrollPosition( secondAncestor, { scrollTop: 100, scrollLeft: 100 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above) (with alignToTop and forceScroll)', () => {
 			stubGeometry( target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
 			assertScrollPosition( firstAncestor, { scrollTop: -10, scrollLeft: 100 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (below)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (below) (with alignToTop and forceScroll)', () => {
 			stubGeometry( target, { top: 200, right: 75, bottom: 300, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
 			assertScrollPosition( firstAncestor, { scrollTop: 290, scrollLeft: 100 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (left of)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (left of) (with alignToTop and forceScroll)', () => {
 			stubGeometry( target, { top: 0, right: 0, bottom: 100, left: -100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: -10 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (right of)', () => {
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (right of) (with alignToTop and forceScroll)', () => {
 			stubGeometry( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: 210 } );
 		} );
 
-		it( 'should set #scrollTop and #scrollLeft of all the ancestors', () => {
+		it( 'should set #scrollTop and #scrollLeft of all the ancestors (with alignToTop and forceScroll)', () => {
 			stubGeometry( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
@@ -679,7 +679,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 	}
 
 	function testWithViewportOffset() {
-		it( 'does not scroll the viewport when the target is fully visible', () => {
+		it( 'does not scroll the viewport when the target is fully visible (with viewportOffset)', () => {
 			stubGeometry( target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
@@ -687,7 +687,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectNotCalled( window.scrollTo );
 		} );
 
-		it( 'scrolls the viewport to show the target (above)', () => {
+		it( 'scrolls the viewport to show the target (above) (with viewportOffset)', () => {
 			stubGeometry( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
@@ -695,7 +695,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, -130 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially above)', () => {
+		it( 'scrolls the viewport to show the target (partially above) (with viewportOffset)', () => {
 			stubGeometry( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
@@ -703,7 +703,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 20 );
 		} );
 
-		it( 'scrolls the viewport to show the target (below)', () => {
+		it( 'scrolls the viewport to show the target (below) (with viewportOffset)', () => {
 			stubGeometry( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
@@ -711,7 +711,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 350 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially below)', () => {
+		it( 'scrolls the viewport to show the target (partially below) (with viewportOffset)', () => {
 			stubGeometry( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
@@ -719,7 +719,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 200 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the left)', () => {
+		it( 'scrolls the viewport to show the target (to the left) (with viewportOffset)', () => {
 			stubGeometry( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
@@ -727,7 +727,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, -130, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the left)', () => {
+		it( 'scrolls the viewport to show the target (partially to the left) (with viewportOffset)', () => {
 			stubGeometry( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
@@ -735,7 +735,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 20, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the right)', () => {
+		it( 'scrolls the viewport to show the target (to the right) (with viewportOffset)', () => {
 			stubGeometry( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
@@ -743,7 +743,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 350, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the right)', () => {
+		it( 'scrolls the viewport to show the target (partially to the right) (with viewportOffset)', () => {
 			stubGeometry( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
@@ -761,7 +761,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 	}
 
 	function testWithAncestorOffset() {
-		it( 'does not scroll the viewport when the target is fully visible', () => {
+		it( 'does not scroll the viewport when the target is fully visible (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
@@ -769,7 +769,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectNotCalled( window.scrollTo );
 		} );
 
-		it( 'scrolls the viewport to show the target (above)', () => {
+		it( 'scrolls the viewport to show the target (above) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
@@ -777,7 +777,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, -100 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially above)', () => {
+		it( 'scrolls the viewport to show the target (partially above) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
@@ -785,7 +785,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 50 );
 		} );
 
-		it( 'scrolls the viewport to show the target (below)', () => {
+		it( 'scrolls the viewport to show the target (below) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
@@ -793,7 +793,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 320 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially below)', () => {
+		it( 'scrolls the viewport to show the target (partially below) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
@@ -801,7 +801,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 170 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the left)', () => {
+		it( 'scrolls the viewport to show the target (to the left) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
@@ -809,7 +809,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, -100, 100 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the left)', () => {
+		it( 'scrolls the viewport to show the target (partially to the left) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
@@ -817,7 +817,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 50, 100 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the right)', () => {
+		it( 'scrolls the viewport to show the target (to the right) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
@@ -825,7 +825,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 320, 100 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the right)', () => {
+		it( 'scrolls the viewport to show the target (partially to the right) (with ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
@@ -835,7 +835,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 	}
 
 	function testWithViewportAndAncestorOffsets() {
-		it( 'does not scroll the viewport when the target is fully visible', () => {
+		it( 'does not scroll the viewport when the target is fully visible (with viewportOffset and ancestorOffset)', () => {
 			stubGeometry( target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
@@ -843,7 +843,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectNotCalled( window.scrollTo );
 		} );
 
-		it( 'scrolls the viewport to show the target (above)', () => {
+		it( 'scrolls the viewport to show the target (above) (with viewportOffset and ancestorOffset)', () => {
 			stubGeometry( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
@@ -851,7 +851,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, -130 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially above)', () => {
+		it( 'scrolls the viewport to show the target (partially above) (with viewportOffset and ancestorOffset)', () => {
 			stubGeometry( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
@@ -859,7 +859,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 20 );
 		} );
 
-		it( 'scrolls the viewport to show the target (below)', () => {
+		it( 'scrolls the viewport to show the target (below) (with viewportOffset and ancestorOffset)', () => {
 			stubGeometry( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
@@ -867,7 +867,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 350 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially below)', () => {
+		it( 'scrolls the viewport to show the target (partially below) (with viewportOffset and ancestorOffset)', () => {
 			stubGeometry( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
@@ -875,7 +875,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 200 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the left)', () => {
+		it( 'scrolls the viewport to show the target (to the left) (with viewportOffset and ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
@@ -883,7 +883,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, -130, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the left)', () => {
+		it( 'scrolls the viewport to show the target (partially to the left) (with viewportOffset and ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
@@ -891,7 +891,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 20, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the right)', () => {
+		it( 'scrolls the viewport to show the target (to the right) (with viewportOffset and ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
@@ -899,7 +899,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 350, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the right)', () => {
+		it( 'scrolls the viewport to show the target (partially to the right) (with viewportOffset and ancestorOffset)', () => {
 			stubGeometry( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
@@ -909,7 +909,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 	}
 
 	function testWithAlignToTopAndNoOffsets() {
-		it( 'does not scroll the viewport when the target is fully visible', () => {
+		it( 'does not scroll the viewport when the target is fully visible (with alignToTop)', () => {
 			stubGeometry( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
@@ -917,7 +917,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectNotCalled( window.scrollTo );
 		} );
 
-		it( 'scrolls the viewport to show the target (above)', () => {
+		it( 'scrolls the viewport to show the target (above) (with alignToTop)', () => {
 			stubGeometry( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
@@ -925,7 +925,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, -100 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially above)', () => {
+		it( 'scrolls the viewport to show the target (partially above) (with alignToTop)', () => {
 			stubGeometry( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
@@ -933,7 +933,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 50 );
 		} );
 
-		it( 'scrolls the viewport to show the target (below)', () => {
+		it( 'scrolls the viewport to show the target (below) (with alignToTop)', () => {
 			stubGeometry( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
@@ -941,7 +941,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 700 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially below)', () => {
+		it( 'scrolls the viewport to show the target (partially below) (with alignToTop)', () => {
 			stubGeometry( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
@@ -949,7 +949,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 550 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the left)', () => {
+		it( 'scrolls the viewport to show the target (to the left) (with alignToTop)', () => {
 			stubGeometry( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
@@ -957,7 +957,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, -100, 100 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the left)', () => {
+		it( 'scrolls the viewport to show the target (partially to the left) (with alignToTop)', () => {
 			stubGeometry( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
@@ -965,7 +965,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 50, 100 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the right)', () => {
+		it( 'scrolls the viewport to show the target (to the right) (with alignToTop)', () => {
 			stubGeometry( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
@@ -973,7 +973,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 320, 100 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the right)', () => {
+		it( 'scrolls the viewport to show the target (partially to the right) (with alignToTop)', () => {
 			stubGeometry( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
@@ -983,7 +983,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 	}
 
 	function testWithAlignToTopAndOffsets() {
-		it( 'does not scroll the viewport when the target is fully visible', () => {
+		it( 'does not scroll the viewport when the target is fully visible (with alignToTop and offsets)', () => {
 			stubGeometry( target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
@@ -991,7 +991,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectNotCalled( window.scrollTo );
 		} );
 
-		it( 'scrolls the viewport to show the target (above)', () => {
+		it( 'scrolls the viewport to show the target (above) (with alignToTop and offsets)', () => {
 			stubGeometry( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
@@ -999,7 +999,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, -130 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially above)', () => {
+		it( 'scrolls the viewport to show the target (partially above) (with alignToTop and offsets)', () => {
 			stubGeometry( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
@@ -1007,7 +1007,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 20 );
 		} );
 
-		it( 'scrolls the viewport to show the target (below)', () => {
+		it( 'scrolls the viewport to show the target (below) (with alignToTop and offsets)', () => {
 			stubGeometry( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
@@ -1015,7 +1015,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 670 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially below)', () => {
+		it( 'scrolls the viewport to show the target (partially below) (with alignToTop and offsets)', () => {
 			stubGeometry( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
@@ -1023,7 +1023,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 520 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the left)', () => {
+		it( 'scrolls the viewport to show the target (to the left) (with alignToTop and offsets)', () => {
 			stubGeometry( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
@@ -1031,7 +1031,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, -130, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the left)', () => {
+		it( 'scrolls the viewport to show the target (partially to the left) (with alignToTop and offsets)', () => {
 			stubGeometry( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
@@ -1039,7 +1039,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 20, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the right)', () => {
+		it( 'scrolls the viewport to show the target (to the right) (with alignToTop and offsets)', () => {
 			stubGeometry( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
@@ -1047,7 +1047,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 350, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the right)', () => {
+		it( 'scrolls the viewport to show the target (partially to the right) (with alignToTop and offsets)', () => {
 			stubGeometry( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
@@ -1065,7 +1065,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 120 );
 		} );
 
-		it( 'scrolls the viewport to show the target (above)', () => {
+		it( 'scrolls the viewport to show the target (above) (with alignToTop, offsets, and forceScroll)', () => {
 			stubGeometry( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
@@ -1073,7 +1073,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, -130 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially above)', () => {
+		it( 'scrolls the viewport to show the target (partially above) (with alignToTop, offsets, and forceScroll)', () => {
 			stubGeometry( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
@@ -1081,7 +1081,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 20 );
 		} );
 
-		it( 'scrolls the viewport to show the target (below)', () => {
+		it( 'scrolls the viewport to show the target (below) (with alignToTop, offsets, and forceScroll)', () => {
 			stubGeometry( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
@@ -1089,7 +1089,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 670 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially below)', () => {
+		it( 'scrolls the viewport to show the target (partially below) (with alignToTop, offsets, and forceScroll)', () => {
 			stubGeometry( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
@@ -1097,7 +1097,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 100, 520 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the left)', () => {
+		it( 'scrolls the viewport to show the target (to the left) (with alignToTop, offsets, and forceScroll)', () => {
 			stubGeometry( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
@@ -1105,7 +1105,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, -130, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the left)', () => {
+		it( 'scrolls the viewport to show the target (partially to the left) (with alignToTop, offsets, and forceScroll)', () => {
 			stubGeometry( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
@@ -1113,7 +1113,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 20, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (to the right)', () => {
+		it( 'scrolls the viewport to show the target (to the right) (with alignToTop, offsets, and forceScroll)', () => {
 			stubGeometry( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
@@ -1121,7 +1121,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			expectCalledWithExactly( window.scrollTo, 350, 70 );
 		} );
 
-		it( 'scrolls the viewport to show the target (partially to the right)', () => {
+		it( 'scrolls the viewport to show the target (partially to the right) (with alignToTop, offsets, and forceScroll)', () => {
 			stubGeometry( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );

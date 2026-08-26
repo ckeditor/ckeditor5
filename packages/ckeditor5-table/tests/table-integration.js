@@ -107,30 +107,30 @@ describe( 'Table feature – integration', () => {
 		} );
 
 		it( 'fixing empty roots should be transparent to undo', () => {
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
-			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
+			expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
+			expect( editor.commands.get( 'undo' ).isEnabled ).toBe( false );
 
 			editor.data.set( viewTable( [ [ 'foo' ] ] ) );
 
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.getData( { trim: 'none' } ) ).toEqual( viewTable( [ [ 'foo' ] ] ) );
 
 			editor.model.change( writer => {
 				writer.remove( root.getChild( 0 ) );
 			} );
 
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.getData( { trim: 'none' } ) ).toEqual( viewTable( [ [ 'foo' ] ] ) );
 
 			editor.execute( 'redo' );
 
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.getData( { trim: 'none' } ) ).toEqual( viewTable( [ [ 'foo' ] ] ) );
 		} );
 
 		it( 'fixing empty roots should be transparent to undo - multiple roots', () => {
@@ -147,18 +147,18 @@ describe( 'Table feature – integration', () => {
 				writer.remove( otherRoot.getChild( 0 ) );
 			} );
 
-			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).to.equal( '<p>&nbsp;</p>' );
-			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).toEqual( '<p>&nbsp;</p>' );
+			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).toEqual( '<p>&nbsp;</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).to.equal( '<p>&nbsp;</p>' );
-			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).toEqual( '<p>&nbsp;</p>' );
+			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).toEqual( viewTable( [ [ 'foo' ] ] ) );
 
 			editor.execute( 'undo' );
 
-			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
-			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).toEqual( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).toEqual( viewTable( [ [ 'foo' ] ] ) );
 		} );
 	} );
 
@@ -198,7 +198,7 @@ describe( 'Table feature – integration', () => {
 				'</table>'
 			) );
 
-			expect( editor.model.hasContent( editor.model.document.selection.getFirstRange() ) ).to.be.false;
+			expect( editor.model.hasContent( editor.model.document.selection.getFirstRange() ) ).toBe( false );
 		} );
 	} );
 } );
@@ -225,7 +225,7 @@ describe( 'Table feature – integration with markers', () => {
 		editor.setData( '<table><tbody><tr><td></td></tr></tbody></table>' );
 
 		expect( _getModelData( editor.model, { withoutSelection: true } ) )
-			.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
+			.toEqual( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/10116
@@ -248,41 +248,36 @@ describe( 'Table feature – integration with markers', () => {
 		it( 'should adjust the model position mapping - table cell containing marker only', async () => {
 			editor.setData( '<table><tr><td><foo></foo></td></tr></table>' );
 
-			expect( editor.getData() ).to.equal(
-				'<figure class="table"><table><tbody><tr><td><foo></foo>&nbsp;</td></tr></tbody></table></figure>'
-			);
+			expect( editor.getData() )
+				.toEqual( '<figure class="table"><table><tbody><tr><td><foo></foo>&nbsp;</td></tr></tbody></table></figure>' );
 		} );
 
 		it( 'should adjust the model position mapping - table cell containing marker preceded by an empty paragraph', async () => {
 			editor.setData( '<table><tr><td><p></p><foo></foo></td></tr></table>' );
 
-			expect( editor.getData() ).to.equal(
-				'<figure class="table"><table><tbody><tr><td>&nbsp;<foo></foo></td></tr></tbody></table></figure>'
-			);
+			expect( editor.getData() )
+				.toEqual( '<figure class="table"><table><tbody><tr><td>&nbsp;<foo></foo></td></tr></tbody></table></figure>' );
 		} );
 
 		it( 'should adjust the model position mapping - table cell containing marker followed by an empty paragraph', async () => {
 			editor.setData( '<table><tr><td><foo></foo><p></p></td></tr></table>' );
 
-			expect( editor.getData() ).to.equal(
-				'<figure class="table"><table><tbody><tr><td><foo></foo>&nbsp;</td></tr></tbody></table></figure>'
-			);
+			expect( editor.getData() )
+				.toEqual( '<figure class="table"><table><tbody><tr><td><foo></foo>&nbsp;</td></tr></tbody></table></figure>' );
 		} );
 
 		it( 'should adjust the model position mapping - table cell containing marker preceded by a non-empty paragraph', async () => {
 			editor.setData( '<table><tr><td><p>foobar</p><foo></foo></td></tr></table>' );
 
-			expect( editor.getData() ).to.equal(
-				'<figure class="table"><table><tbody><tr><td>foobar<foo></foo></td></tr></tbody></table></figure>'
-			);
+			expect( editor.getData() )
+				.toEqual( '<figure class="table"><table><tbody><tr><td>foobar<foo></foo></td></tr></tbody></table></figure>' );
 		} );
 
 		it( 'should adjust the model position mapping - table cell containing marker followed by a non-empty paragraph', async () => {
 			editor.setData( '<table><tr><td><foo></foo><p>foobar</p></td></tr></table>' );
 
-			expect( editor.getData() ).to.equal(
-				'<figure class="table"><table><tbody><tr><td><foo></foo>foobar</td></tr></tbody></table></figure>'
-			);
+			expect( editor.getData() )
+				.toEqual( '<figure class="table"><table><tbody><tr><td><foo></foo>foobar</td></tr></tbody></table></figure>' );
 		} );
 	} );
 
@@ -307,8 +302,8 @@ describe( 'Table feature – integration with markers', () => {
 		function checkMarker( range ) {
 			const marker = editor.model.markers.get( 'foo:bar' );
 
-			expect( marker ).to.not.be.null;
-			expect( marker.getRange().isEqual( range ) ).to.be.true;
+			expect( marker ).not.toBeNull();
+			expect( marker.getRange().isEqual( range ) ).toBe( true );
 		}
 
 		describe( 'single empty paragraph', () => {
@@ -330,16 +325,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><p data-foo-start-before="bar"><foo-end name="bar"></foo-end>&nbsp;</p>' +
-					'</td></tr></tbody></table></figure>'
-				);
+					'</td></tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 
 			it( 'marker beginning in a paragraph and ending after it', async () => {
@@ -352,16 +345,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><p data-foo-end-after="bar"><foo-start name="bar"></foo-start>&nbsp;</p></td>' +
-					'</tr></tbody></table></figure>'
-				);
+					'</tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 
 			it( 'marker on the paragraph', async () => {
@@ -371,16 +362,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><p data-foo-end-after="bar" data-foo-start-before="bar">&nbsp;</p></td>' +
-					'</tr></tbody></table></figure>'
-				);
+					'</tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 
 			it( 'marker inside a paragraph', async () => {
@@ -390,16 +379,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><foo-start name="bar"></foo-start><foo-end name="bar"></foo-end>&nbsp;</td>' +
-					'</tr></tbody></table></figure>'
-				);
+					'</tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 		} );
 
@@ -422,16 +409,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><p data-foo-start-before="bar">text<foo-end name="bar"></foo-end></p>' +
-					'</td></tr></tbody></table></figure>'
-				);
+					'</td></tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 
 			it( 'marker beginning in a paragraph and ending after it', async () => {
@@ -444,16 +429,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><p data-foo-end-after="bar"><foo-start name="bar"></foo-start>text</p></td>' +
-					'</tr></tbody></table></figure>'
-				);
+					'</tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 
 			it( 'marker on the paragraph', async () => {
@@ -463,16 +446,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><p data-foo-end-after="bar" data-foo-start-before="bar">text</p></td>' +
-					'</tr></tbody></table></figure>'
-				);
+					'</tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 
 			it( 'marker inside a paragraph', async () => {
@@ -482,11 +463,9 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><foo-start name="bar"></foo-start>text<foo-end name="bar"></foo-end></td>' +
-					'</tr></tbody></table></figure>'
-				);
+					'</tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
@@ -502,11 +481,9 @@ describe( 'Table feature – integration with markers', () => {
 				);
 
 				checkMarker( currentRange );
-				expect( editor.getData() ).to.equal(
-					'<figure class="table"><table><tbody><tr><td>' +
+				expect( editor.getData() ).toEqual( '<figure class="table"><table><tbody><tr><td>' +
 						'<p data-foo-start-before="bar">text<foo-end name="bar"></foo-end></p>' +
-					'</td></tr></tbody></table></figure>'
-				);
+					'</td></tr></tbody></table></figure>' );
 			} );
 		} );
 
@@ -531,16 +508,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><p data-foo-start-before="bar">a</p><p>b<foo-end name="bar"></foo-end></p></td>' +
-					'</tr></tbody></table></figure>'
-				);
+					'</tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 
 			it( 'marker beginning in a paragraph and ending after another paragraph', async () => {
@@ -553,16 +528,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><p><foo-start name="bar"></foo-start>a</p><p data-foo-end-after="bar">b</p></td>' +
-					'</tr></tbody></table></figure>'
-				);
+					'</tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 
 			it( 'marker on multiple paragraphs', async () => {
@@ -572,16 +545,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><p data-foo-start-before="bar">a</p><p data-foo-end-after="bar">b</p></td>' +
-					'</tr></tbody></table></figure>'
-				);
+					'</tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 
 			it( 'marker inside starting in a paragraph and ending in an other paragraph', async () => {
@@ -594,16 +565,14 @@ describe( 'Table feature – integration with markers', () => {
 
 				const data = editor.getData();
 
-				expect( data ).to.equal(
-					'<figure class="table"><table><tbody><tr>' +
+				expect( data ).toEqual( '<figure class="table"><table><tbody><tr>' +
 						'<td><p>a<foo-start name="bar"></foo-start></p><p><foo-end name="bar"></foo-end>b</p></td>' +
-					'</tr></tbody></table></figure>'
-				);
+					'</tr></tbody></table></figure>' );
 
 				editor.setData( data );
 
 				checkMarker( range );
-				expect( editor.getData() ).to.equal( data );
+				expect( editor.getData() ).toEqual( data );
 			} );
 		} );
 	} );

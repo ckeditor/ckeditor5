@@ -39,17 +39,17 @@ describe( 'InsertTableCommand', () => {
 		describe( 'when selection is collapsed', () => {
 			it( 'should be true if in a root', () => {
 				_setModelData( model, '[]' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if in paragraph', () => {
 				_setModelData( model, '<paragraph>foo[]</paragraph>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if in table', () => {
 				_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -58,19 +58,19 @@ describe( 'InsertTableCommand', () => {
 				model.schema.register( 'media', { isObject: true, isBlock: true, allowWhere: '$block' } );
 
 				_setModelData( model, '[<media url="http://ckeditor.com"></media>]' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if in a paragraph', () => {
 				_setModelData( model, '<paragraph>[Foo]</paragraph>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if a non-object element is selected', () => {
 				model.schema.register( 'element', { allowIn: '$root', isSelectable: true } );
 
 				_setModelData( model, '[<element></element>]' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 	} );
@@ -182,9 +182,8 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 1, columns: 2 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ] ) + '<paragraph>bar</paragraph>'
-				);
+				expect( _getModelData( model ) )
+					.toEqual( '<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ] ) + '<paragraph>bar</paragraph>' );
 			} );
 
 			it( 'should replace an existing table with another table', () => {
@@ -194,9 +193,8 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 1, columns: 2 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ] ) + '<paragraph>bar</paragraph>'
-				);
+				expect( _getModelData( model ) )
+					.toEqual( '<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ] ) + '<paragraph>bar</paragraph>' );
 			} );
 		} );
 
@@ -217,12 +215,10 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 2, columns: 3 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '', '' ],
-						[ '', '', '' ]
-					], { headingRows: 1 } )
-				);
+				expect( _getModelData( model ) ).toEqual( modelTable( [
+					[ '[]', '', '' ],
+					[ '', '', '' ]
+				], { headingRows: 1 } ) );
 
 				await editor.destroy();
 			} );
@@ -243,12 +239,10 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 2, columns: 3 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '', '' ],
-						[ '', '', '' ]
-					], { headingColumns: 1 } )
-				);
+				expect( _getModelData( model ) ).toEqual( modelTable( [
+					[ '[]', '', '' ],
+					[ '', '', '' ]
+				], { headingColumns: 1 } ) );
 
 				await editor.destroy();
 			} );
@@ -269,13 +263,11 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 3 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '', '' ],
-						[ '', '', '' ],
-						[ '', '', '' ]
-					], { headingRows: 1, headingColumns: 1 } )
-				);
+				expect( _getModelData( model ) ).toEqual( modelTable( [
+					[ '[]', '', '' ],
+					[ '', '', '' ],
+					[ '', '', '' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
 
 				await editor.destroy();
 			} );
@@ -296,14 +288,12 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 4, columns: 3 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '', '' ],
-						[ '', '', '' ],
-						[ '', '', '' ],
-						[ '', '', '' ]
-					], { headingRows: 3, headingColumns: 2 } )
-				);
+				expect( _getModelData( model ) ).toEqual( modelTable( [
+					[ '[]', '', '' ],
+					[ '', '', '' ],
+					[ '', '', '' ],
+					[ '', '', '' ]
+				], { headingRows: 3, headingColumns: 2 } ) );
 
 				await editor.destroy();
 			} );
@@ -324,12 +314,10 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 2, columns: 2 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '' ],
-						[ '', '' ]
-					], { headingRows: 2, headingColumns: 2 } )
-				);
+				expect( _getModelData( model ) ).toEqual( modelTable( [
+					[ '[]', '' ],
+					[ '', '' ]
+				], { headingRows: 2, headingColumns: 2 } ) );
 
 				await editor.destroy();
 			} );
@@ -350,14 +338,12 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 4, columns: 3, headingRows: 0, headingColumns: 0 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '', '' ],
-						[ '', '', '' ],
-						[ '', '', '' ],
-						[ '', '', '' ]
-					] )
-				);
+				expect( _getModelData( model ) ).toEqual( modelTable( [
+					[ '[]', '', '' ],
+					[ '', '', '' ],
+					[ '', '', '' ],
+					[ '', '', '' ]
+				] ) );
 
 				await editor.destroy();
 			} );
@@ -531,12 +517,10 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 2, columns: 2 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '' ],
-						[ '', '' ]
-					], { headingRows: 1, pretty: true, smart: true } )
-				);
+				expect( _getModelData( model ) ).toEqual( modelTable( [
+					[ '[]', '' ],
+					[ '', '' ]
+				], { headingRows: 1, pretty: true, smart: true } ) );
 			} );
 
 			it( 'should copy attributes from first selected element', () => {
@@ -544,14 +528,12 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 2, columns: 2 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '' ],
-						[ '', '' ]
-					], { headingRows: 1, pretty: true } ) +
+				expect( _getModelData( model ) ).toEqual( modelTable( [
+					[ '[]', '' ],
+					[ '', '' ]
+				], { headingRows: 1, pretty: true } ) +
 					'<paragraph pretty="true">foo</paragraph>' +
-					'<paragraph smart="true">bar</paragraph>'
-				);
+					'<paragraph smart="true">bar</paragraph>' );
 			} );
 
 			it( 'should only copy $block attributes marked with copyOnReplace', () => {
@@ -559,12 +541,10 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 2, columns: 2 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '' ],
-						[ '', '' ]
-					], { headingRows: 1, pretty: true, smart: true } )
-				);
+				expect( _getModelData( model ) ).toEqual( modelTable( [
+					[ '[]', '' ],
+					[ '', '' ]
+				], { headingRows: 1, pretty: true, smart: true } ) );
 			} );
 
 			it( 'should copy attributes from object when it is selected during insertion', () => {
@@ -575,12 +555,10 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 2, columns: 2 } );
 
-				expect( _getModelData( model ) ).to.equal(
-					modelTable( [
-						[ '[]', '' ],
-						[ '', '' ]
-					], { headingRows: 1, pretty: true, smart: true } )
-				);
+				expect( _getModelData( model ) ).toEqual( modelTable( [
+					[ '[]', '' ],
+					[ '', '' ]
+				], { headingRows: 1, pretty: true, smart: true } ) );
 			} );
 		} );
 
@@ -630,7 +608,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( true );
+				expect( model.document.selection.getAttribute( 'foo' ) ).toEqual( true );
 
 				const table = model.document.getRoot().getChild( 1 );
 				const blocks = getCellBlocks( table );
@@ -638,7 +616,7 @@ describe( 'InsertTableCommand', () => {
 				expect( blocks ).to.have.length( 4 );
 
 				for ( const block of blocks ) {
-					expect( getStoredAttribute( block, 'foo' ) ).to.equal( true );
+					expect( getStoredAttribute( block, 'foo' ) ).toEqual( true );
 				}
 			} );
 
@@ -650,7 +628,7 @@ describe( 'InsertTableCommand', () => {
 				const table = model.document.getRoot().getChild( 1 );
 				const lastCellBlock = getCellBlocks( table ).at( -1 );
 
-				expect( getStoredAttribute( lastCellBlock, 'foo' ) ).to.equal( true );
+				expect( getStoredAttribute( lastCellBlock, 'foo' ) ).toEqual( true );
 			} );
 
 			it( 'does not copy anything when explicitly disabled', () => {
@@ -658,12 +636,12 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { inheritTextFormattingAttributes: false } );
 
-				expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+				expect( model.document.selection.getAttribute( 'foo' ) ).toBeUndefined();
 
 				const table = model.document.getRoot().getChild( 1 );
 
 				for ( const block of getCellBlocks( table ) ) {
-					expect( getStoredAttribute( block, 'foo' ) ).to.be.undefined;
+					expect( getStoredAttribute( block, 'foo' ) ).toBeUndefined();
 				}
 			} );
 
@@ -675,7 +653,7 @@ describe( 'InsertTableCommand', () => {
 				const table = model.document.getRoot().getChild( 1 );
 
 				for ( const block of getCellBlocks( table ) ) {
-					expect( getStoredAttribute( block, 'foo' ) ).to.be.undefined;
+					expect( getStoredAttribute( block, 'foo' ) ).toBeUndefined();
 				}
 			} );
 
@@ -687,7 +665,7 @@ describe( 'InsertTableCommand', () => {
 				const table = model.document.getRoot().getChild( 1 );
 
 				for ( const block of getCellBlocks( table ) ) {
-					expect( getStoredAttribute( block, 'bar' ) ).to.be.undefined;
+					expect( getStoredAttribute( block, 'bar' ) ).toBeUndefined();
 				}
 			} );
 

@@ -215,7 +215,9 @@ describe( 'BubblingEmitterMixin', () => {
 		} );
 
 		it( 'should do nothing for a non listened event', () => {
-			fireBubblingEvent( 'test' );
+			expect( () => {
+				fireBubblingEvent( 'test' );
+			} ).not.toThrow();
 		} );
 
 		it( 'should accept the same callback many times', () => {
