@@ -15,6 +15,7 @@ allowBuilds:
 # This section must be synchronized with `ckeditor/ckeditor5-commercial`.
 overrides:
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
+  '@puppeteer/browsers@^2': '^3.0.6'
   'body-parser@^1': '^1.20.6'
   'brace-expansion@^1': '^1.1.18'
   'brace-expansion@^2': '^2.1.4'
