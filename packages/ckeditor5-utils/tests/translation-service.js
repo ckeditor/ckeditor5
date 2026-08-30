@@ -227,7 +227,11 @@ describe( 'translation-service', () => {
 
 		it( 'should return undifined if undifined', () => {
 			expect( _unifyTranslations( undefined ) ).toBeUndefined();
-		} );
+		});
+
+		it( 'should return an array if array', () => {
+			expect(_unifyTranslations([])).toEqual([]);
+		});
 	} );
 
 	describe( '_clear()', () => {

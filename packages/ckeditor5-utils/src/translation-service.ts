@@ -233,7 +233,7 @@ export function _clear(): void {
 export function _unifyTranslations(
 	translations?: ArrayOrItem<Translations>
 ): Translations | undefined {
-	return Array.isArray( translations ) ?
+	return Array.isArray(translations) && translations.length != 0 ?
 		translations.reduce( ( acc, translation ) => merge( acc, translation ) ) :
 		translations;
 }
