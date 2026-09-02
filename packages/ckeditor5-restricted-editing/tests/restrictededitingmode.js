@@ -28,7 +28,7 @@ describe( 'RestrictedEditingMode', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( RestrictedEditingMode.pluginName ).to.equal( 'RestrictedEditingMode' );
+		expect( RestrictedEditingMode.pluginName ).toEqual( 'RestrictedEditingMode' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {

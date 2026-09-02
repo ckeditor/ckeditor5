@@ -81,7 +81,7 @@ describe( 'DeleteCommand', () => {
 			} );
 
 			// After all enqueued changes are done, the command execution is reflected.
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>fo[]bar</paragraph>' );
 		} );
 
 		it( 'locks buffer when executing', () => {
@@ -104,7 +104,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo[]bar</paragraph>' );
 		} );
 
 		it( 'deletes previous character when selection is collapsed', () => {
@@ -112,7 +112,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>fo[]bar</paragraph>' );
 		} );
 
 		it( 'deletes previous multi-character emoji when selection is collapsed', () => {
@@ -120,7 +120,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo[]bar</paragraph>' );
 		} );
 
 		it( 'deletes only one of previous multi-character emojis', () => {
@@ -128,7 +128,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}[]bar</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}[]bar</paragraph>' );
 		} );
 
 		it( 'deletes selection contents', () => {
@@ -136,7 +136,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>fo[]ar</paragraph>' );
 		} );
 
 		it( 'deletes contents of selection passed in options', () => {
@@ -146,7 +146,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete', { selection } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'merges elements', () => {
@@ -154,7 +154,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo[]bar</paragraph>' );
 		} );
 
 		it( 'does not try to delete when selection is at the boundary', () => {
@@ -165,8 +165,8 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
-			expect( spy.mock.calls.length ).to.equal( 0 );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]foo</paragraph>' );
+			expect( spy.mock.calls.length ).toEqual( 0 );
 		} );
 
 		it( 'passes options to modifySelection', () => {
@@ -179,7 +179,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete', { unit: 'word' } );
 
-			expect( spy.mock.calls.length ).to.equal( 1 );
+			expect( spy.mock.calls.length ).toEqual( 1 );
 
 			const modifyOpts = spy.mock.calls[ 0 ][ 1 ][ 1 ];
 			expect( modifyOpts ).to.have.property( 'direction', 'forward' );
@@ -195,7 +195,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( spy.mock.calls.length ).to.equal( 1 );
+			expect( spy.mock.calls.length ).toEqual( 1 );
 
 			const deleteOpts = spy.mock.calls[ 0 ][ 1 ][ 1 ];
 			expect( deleteOpts ).to.have.property( 'doNotResetEntireContent', true );
@@ -209,7 +209,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( spy.mock.calls.length ).to.equal( 1 );
+			expect( spy.mock.calls.length ).toEqual( 1 );
 
 			const deleteOpts = spy.mock.calls[ 0 ][ 1 ][ 1 ];
 			expect( deleteOpts ).to.have.property( 'doNotResetEntireContent', false );
@@ -225,14 +225,14 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( spy.mock.calls.length ).to.equal( 1 );
+			expect( spy.mock.calls.length ).toEqual( 1 );
 
 			let deleteOpts = spy.mock.calls[ 0 ][ 1 ][ 1 ];
 			expect( deleteOpts ).to.have.property( 'direction', 'backward' );
 
 			editor.execute( 'deleteForward' );
 
-			expect( spy.mock.calls.length ).to.equal( 2 );
+			expect( spy.mock.calls.length ).toEqual( 2 );
 
 			deleteOpts = spy.mock.calls[ 1 ][ 1 ][ 1 ];
 			expect( deleteOpts ).to.have.property( 'direction', 'forward' );
@@ -243,7 +243,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'leaves an empty paragraph after removing the whole content inside limit element', () => {
@@ -264,13 +264,11 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<heading1>Foo</heading1>' +
+			expect( _getModelData( model ) ).toEqual( '<heading1>Foo</heading1>' +
 				'<section>' +
 					'<paragraph>[]</paragraph>' +
 				'</section>' +
-				'<paragraph>Bar.</paragraph>'
-			);
+				'<paragraph>Bar.</paragraph>' );
 		} );
 
 		it( 'leaves an empty paragraph after removing another paragraph from block element', () => {
@@ -288,7 +286,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<section><paragraph>[]</paragraph></section>' );
+			expect( _getModelData( model ) ).toEqual( '<section><paragraph>[]</paragraph></section>' );
 		} );
 
 		it( 'leaves an empty paragraph after removing the whole content when root element was not added as Schema limit', () => {
@@ -296,13 +294,13 @@ describe( 'DeleteCommand', () => {
 				isLimit: false
 			} );
 
-			expect( model.schema.isLimit( '$root' ) ).to.be.false;
+			expect( model.schema.isLimit( '$root' ) ).toBe( false );
 
 			_setModelData( model, '<heading1>[]</heading1>' );
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'replaces an empty element with paragraph', () => {
@@ -310,7 +308,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'does not replace an element when Backspace or Delete key is held', () => {
@@ -320,7 +318,7 @@ describe( 'DeleteCommand', () => {
 				editor.execute( 'delete', { sequence } );
 			}
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( _getModelData( model ) ).toEqual( '<heading1>[]</heading1>' );
 		} );
 
 		it( 'does not replace with paragraph in another paragraph already occurs in limit element', () => {
@@ -330,7 +328,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( element ).is.equal( doc.getRoot().getNodeByPath( [ 0 ] ) );
+			expect( element ).toEqual( doc.getRoot().getNodeByPath( [ 0 ] ) );
 		} );
 
 		it( 'does not replace an element if a paragraph is not allowed in current position', () => {
@@ -344,7 +342,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( _getModelData( model ) ).toEqual( '<heading1>[]</heading1>' );
 		} );
 
 		describe( 'with the empty first block', () => {
@@ -373,7 +371,7 @@ describe( 'DeleteCommand', () => {
 
 				editor.execute( 'delete' );
 
-				expect( element ).is.equal( doc.getRoot().getNodeByPath( [ 0 ] ) );
+				expect( element ).toEqual( doc.getRoot().getNodeByPath( [ 0 ] ) );
 				expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
 			} );
 

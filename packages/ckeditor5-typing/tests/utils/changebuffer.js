@@ -54,7 +54,7 @@ describe( 'ChangeBuffer', () => {
 	} );
 
 	describe( 'batch', () => {
-		it( 'it is set initially', () => {
+		it( 'is set initially', () => {
 			expect( buffer ).toHaveProperty( 'batch' );
 			expect( buffer.batch ).toBeInstanceOf( Batch );
 		} );

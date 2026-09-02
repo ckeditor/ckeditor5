@@ -32,7 +32,7 @@ export function initializeCKEditor5NpmBuild( overrides = {} ) {
 		 * We don't want to repeat this in other steps.
 		 */
 		clean: true,
-		translations: upath.join( CKEDITOR5_ROOT_PATH, 'packages', '**', '*.po' ),
+		translations: upath.join( CKEDITOR5_ROOT_PATH, 'packages', '**', 'lang', 'translations', '*.ts' ),
 		...overrides
 	} );
 }
@@ -85,7 +85,7 @@ export async function generateCKEditor5PackageBuild( packagePath, overrides = {}
 		],
 		clean: true,
 		sourceMap: true,
-		translations: '**/*.po',
+		translations: '**/lang/translations/*.ts',
 		...overrides
 	} );
 }

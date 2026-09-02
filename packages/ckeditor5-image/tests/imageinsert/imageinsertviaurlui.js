@@ -44,7 +44,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 			plugins: [ ImageInsertViaUrl, Image ]
 		} );
 
-		editor.ui.componentFactory.create( 'insertImage' );
+		expect( () => editor.ui.componentFactory.create( 'insertImage' ) ).not.toThrow();
 	} );
 
 	describe( 'UI components', () => {
@@ -207,7 +207,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 		} );
 
 		function testSubmit( suiteName, action ) {
-			describe( suiteName, () => {
+			describe( `${ suiteName }`, () => {
 				it( 'should execute replaceImageSource command and close dialog', () => {
 					const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
 					const stubExecute = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );

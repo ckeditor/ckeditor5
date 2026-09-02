@@ -41,11 +41,11 @@ describe( 'CKFinderUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CKFinderUI.isOfficialPlugin ).to.be.true;
+		expect( CKFinderUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CKFinderUI.isPremiumPlugin ).to.be.false;
+		expect( CKFinderUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'toolbar button', () => {
@@ -56,7 +56,7 @@ describe( 'CKFinderUI', () => {
 		testButton( 'Insert image or file' );
 
 		it( 'should enable tooltips for the #buttonView', () => {
-			expect( button.tooltip ).to.be.true;
+			expect( button.tooltip ).toBe( true );
 		} );
 
 		it( 'should add the "ckfinder" component to the factory', () => {
@@ -84,9 +84,9 @@ describe( 'CKFinderUI', () => {
 			const dropdownButton = dropdown.buttonView.actionView;
 
 			expect( dropdownButton ).to.be.instanceOf( ButtonView );
-			expect( dropdownButton.withText ).to.be.false;
-			expect( dropdownButton.icon ).to.equal( IconImageAssetManager );
-			expect( dropdownButton.label ).to.equal( 'Insert image with file manager' );
+			expect( dropdownButton.withText ).toBe( false );
+			expect( dropdownButton.icon ).toEqual( IconImageAssetManager );
+			expect( dropdownButton.label ).toEqual( 'Insert image with file manager' );
 		} );
 
 		it( 'should create CKFinder button in dropdown panel', () => {
@@ -100,9 +100,9 @@ describe( 'CKFinderUI', () => {
 			const buttonView = formView.children.get( 0 );
 
 			expect( buttonView ).to.be.instanceOf( ButtonView );
-			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( IconImageAssetManager );
-			expect( buttonView.label ).to.equal( 'Insert with file manager' );
+			expect( buttonView.withText ).toBe( true );
+			expect( buttonView.icon ).toEqual( IconImageAssetManager );
+			expect( buttonView.label ).toEqual( 'Insert with file manager' );
 		} );
 
 		it( 'should create CKFinder button in menu bar', () => {
@@ -112,9 +112,9 @@ describe( 'CKFinderUI', () => {
 			const buttonView = submenu.panelView.children.first.items.first.children.first;
 
 			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
-			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( IconImageAssetManager );
-			expect( buttonView.label ).to.equal( 'With file manager' );
+			expect( buttonView.withText ).toBe( true );
+			expect( buttonView.icon ).toEqual( IconImageAssetManager );
+			expect( buttonView.label ).toEqual( 'With file manager' );
 		} );
 
 		it( 'should create CKFinder button in menu bar - only integration', () => {
@@ -122,9 +122,9 @@ describe( 'CKFinderUI', () => {
 			const buttonView = submenu.panelView.children.first.items.first.children.first;
 
 			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
-			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( IconImageAssetManager );
-			expect( buttonView.label ).to.equal( 'Image' );
+			expect( buttonView.withText ).toBe( true );
+			expect( buttonView.icon ).toEqual( IconImageAssetManager );
+			expect( buttonView.label ).toEqual( 'Image' );
 		} );
 
 		it( 'should bind to #isImageSelected', () => {
@@ -141,12 +141,12 @@ describe( 'CKFinderUI', () => {
 			const buttonView = formView.children.get( 0 );
 
 			insertImageUI.isImageSelected = false;
-			expect( dropdownButton.label ).to.equal( 'Insert image with file manager' );
-			expect( buttonView.label ).to.equal( 'Insert with file manager' );
+			expect( dropdownButton.label ).toEqual( 'Insert image with file manager' );
+			expect( buttonView.label ).toEqual( 'Insert with file manager' );
 
 			insertImageUI.isImageSelected = true;
-			expect( dropdownButton.label ).to.equal( 'Replace image with file manager' );
-			expect( buttonView.label ).to.equal( 'Replace with file manager' );
+			expect( dropdownButton.label ).toEqual( 'Replace image with file manager' );
+			expect( buttonView.label ).toEqual( 'Replace with file manager' );
 		} );
 
 		it( 'should close dropdown on execute', () => {
@@ -163,7 +163,7 @@ describe( 'CKFinderUI', () => {
 
 			buttonView.fire( 'execute' );
 
-			expect( dropdown.isOpen ).to.be.false;
+			expect( dropdown.isOpen ).toBe( false );
 		} );
 	} );
 
@@ -172,18 +172,18 @@ describe( 'CKFinderUI', () => {
 			const command = editor.commands.get( 'ckfinder' );
 
 			command.isEnabled = true;
-			expect( button.isEnabled ).to.be.true;
+			expect( button.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( button.isEnabled ).to.be.false;
+			expect( button.isEnabled ).toBe( false );
 		} );
 
 		it( 'should set a #label of the #buttonView', () => {
-			expect( button.label ).to.equal( label );
+			expect( button.label ).toEqual( label );
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( IconBrowseFiles );
+			expect( button.icon ).toEqual( IconBrowseFiles );
 		} );
 
 		it( 'should execute bold command on model execute event', () => {

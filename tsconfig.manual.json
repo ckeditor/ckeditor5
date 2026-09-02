@@ -17,7 +17,7 @@
     "checkJs": false
   },
   "include": [
-    "packages/*/tests/manual/**/*.ts",
+    "packages/*/manual/**/*.ts",
     // Only the ambient module declarations. Not the whole `typings/` directory, because
     // `vitest.d.ts` drags in `@types/node`, whose Node globals must not leak into browser tests.
     "typings/types.d.ts",

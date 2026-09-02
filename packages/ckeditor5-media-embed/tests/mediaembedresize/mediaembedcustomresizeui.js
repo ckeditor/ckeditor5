@@ -247,9 +247,7 @@ describe( 'MediaEmbedCustomResizeUI', () => {
 			let hideSpy, focusSpy;
 
 			beforeEach( () => {
-				expect( balloon.visibleView ).toBeNull();
 				button.fire( 'execute' );
-				expect( balloon.visibleView ).not.toBeNull();
 
 				hideSpy = vi.spyOn( plugin, '_hideForm' );
 				focusSpy = vi.spyOn( editor.editing.view, 'focus' );

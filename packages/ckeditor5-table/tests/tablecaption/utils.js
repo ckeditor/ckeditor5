@@ -63,17 +63,17 @@ describe( 'table caption utils', () => {
 		it( 'should return true when given a table as a parameter', () => {
 			const element = modelRoot.getNodeByPath( [ 0 ] );
 
-			expect( isTable( element ) ).to.be.true;
+			expect( isTable( element ) ).toBe( true );
 		} );
 
 		it( 'should return false when given parameter is not a table', () => {
 			const element = modelRoot.getNodeByPath( [ 0, 0 ] );
 
-			expect( isTable( element ) ).to.be.false;
+			expect( isTable( element ) ).toBe( false );
 		} );
 
 		it( 'should return false when given parameter is not an element', () => {
-			expect( isTable() ).to.be.false;
+			expect( isTable() ).toBe( false );
 		} );
 	} );
 
@@ -90,14 +90,14 @@ describe( 'table caption utils', () => {
 			);
 			const element = modelRoot.getNodeByPath( [ 0 ] );
 
-			expect( getCaptionFromTableModelElement( element ) ).to.be.null;
+			expect( getCaptionFromTableModelElement( element ) ).toBeNull();
 		} );
 
 		it( 'should return caption when given table has it', () => {
 			const element = modelRoot.getNodeByPath( [ 0 ] );
 
 			const captionElement = getCaptionFromTableModelElement( element );
-			expect( captionElement.is( 'element', 'caption' ) ).to.be.true;
+			expect( captionElement.is( 'element', 'caption' ) ).toBe( true );
 		} );
 	} );
 
@@ -113,7 +113,7 @@ describe( 'table caption utils', () => {
 				'</table>'
 			);
 
-			expect( getCaptionFromModelSelection( model.document.selection ) ).to.be.null;
+			expect( getCaptionFromModelSelection( model.document.selection ) ).toBeNull();
 		} );
 
 		it( 'should return null when given table has no caption - selection on a table', () => {
@@ -127,13 +127,13 @@ describe( 'table caption utils', () => {
 				'</table>]'
 			);
 
-			expect( getCaptionFromModelSelection( model.document.selection ) ).to.be.null;
+			expect( getCaptionFromModelSelection( model.document.selection ) ).toBeNull();
 		} );
 
 		it( 'should return caption when given table has it', () => {
 			const captionElement = getCaptionFromModelSelection( model.document.selection );
 
-			expect( captionElement.is( 'element', 'caption' ) ).to.be.true;
+			expect( captionElement.is( 'element', 'caption' ) ).toBe( true );
 		} );
 
 		it( 'should return null when no table has been found', () => {
@@ -141,7 +141,7 @@ describe( 'table caption utils', () => {
 				'<paragraph>[]</paragraph>'
 			);
 
-			expect( getCaptionFromModelSelection( model.document.selection ) ).to.be.null;
+			expect( getCaptionFromModelSelection( model.document.selection ) ).toBeNull();
 		} );
 	} );
 
@@ -150,34 +150,34 @@ describe( 'table caption utils', () => {
 			it( 'should return null for element that is not a figcaption', () => {
 				const element = new ViewElement( document, 'div' );
 
-				expect( matchTableCaptionViewElement( element ) ).to.be.null;
+				expect( matchTableCaptionViewElement( element ) ).toBeNull();
 			} );
 
 			it( 'should return null if figcaption has no parent', () => {
 				const element = new ViewElement( document, 'figcaption' );
 
-				expect( matchTableCaptionViewElement( element ) ).to.be.null;
+				expect( matchTableCaptionViewElement( element ) ).toBeNull();
 			} );
 
 			it( 'should return null if figcaption\'s parent is not a figure', () => {
 				const element = new ViewElement( document, 'figcaption' );
 				new ViewElement( document, 'div', null, element ); // eslint-disable-line no-new
 
-				expect( matchTableCaptionViewElement( element ) ).to.be.null;
+				expect( matchTableCaptionViewElement( element ) ).toBeNull();
 			} );
 
 			it( 'should return null if parent has no image class', () => {
 				const element = new ViewElement( document, 'figcaption' );
 				new ViewElement( document, 'figure', null, element ); // eslint-disable-line no-new
 
-				expect( matchTableCaptionViewElement( element ) ).to.be.null;
+				expect( matchTableCaptionViewElement( element ) ).toBeNull();
 			} );
 
 			it( 'should return object if element is a valid caption', () => {
 				const element = new ViewElement( document, 'figcaption' );
 				new ViewElement( document, 'figure', { class: 'table' }, element ); // eslint-disable-line no-new
 
-				expect( matchTableCaptionViewElement( element ) ).to.deep.equal( { name: true } );
+				expect( matchTableCaptionViewElement( element ) ).toEqual( { name: true } );
 			} );
 		} );
 
@@ -185,27 +185,27 @@ describe( 'table caption utils', () => {
 			it( 'should return null for element that is not a caption', () => {
 				const element = new ViewElement( document, 'div' );
 
-				expect( matchTableCaptionViewElement( element ) ).to.be.null;
+				expect( matchTableCaptionViewElement( element ) ).toBeNull();
 			} );
 
 			it( 'should return null if caption has no parent', () => {
 				const element = new ViewElement( document, 'caption' );
 
-				expect( matchTableCaptionViewElement( element ) ).to.be.null;
+				expect( matchTableCaptionViewElement( element ) ).toBeNull();
 			} );
 
 			it( 'should return null if caption\'s parent is not a table', () => {
 				const element = new ViewElement( document, 'caption' );
 				new ViewElement( document, 'div', null, element ); // eslint-disable-line no-new
 
-				expect( matchTableCaptionViewElement( element ) ).to.be.null;
+				expect( matchTableCaptionViewElement( element ) ).toBeNull();
 			} );
 
 			it( 'should return object if element is a valid caption', () => {
 				const element = new ViewElement( document, 'caption' );
 				new ViewElement( document, 'table', null, element ); // eslint-disable-line no-new
 
-				expect( matchTableCaptionViewElement( element ) ).to.deep.equal( { name: true } );
+				expect( matchTableCaptionViewElement( element ) ).toEqual( { name: true } );
 			} );
 		} );
 	} );

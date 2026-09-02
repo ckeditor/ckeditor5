@@ -334,7 +334,7 @@ describe( 'BalloonPanelView', () => {
 				expect( view.position ).toBe( 'arrow_ne' );
 			} );
 
-			it( 'should put balloon on the `north east` side of the target element when target is on the bottom of the limiter ', () => {
+			it( 'should put balloon on the `north east` side of the target element when target is on the bottom of the limiter', () => {
 				mockBoundingBox( target, {
 					top: 450,
 					left: 0,

@@ -673,8 +673,7 @@ describe( 'MultiRootEditorUI', () => {
 			// Simulate unmounting the editable child component before the editor component.
 			editingView.detachDomRoot( 'foo' );
 
-			// This should not throw
-			await newEditor.destroy();
+			await expect( newEditor.destroy() ).resolves.toBeUndefined();
 		} );
 
 		// Issue: https://github.com/ckeditor/ckeditor5/issues/16561
@@ -682,7 +681,7 @@ describe( 'MultiRootEditorUI', () => {
 			const newEditor = await MultiRootEditor.create( { foo: '', bar: '' } );
 
 			await newEditor.destroy();
-			await newEditor.destroy(); // This should not throw
+			await expect( newEditor.destroy() ).resolves.toBeUndefined();
 		} );
 	} );
 } );

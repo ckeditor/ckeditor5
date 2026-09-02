@@ -122,12 +122,12 @@ describe( 'RedoCommand', () => {
 				 - {o
 				 - o} (key: value)
 				 */
-				expect( getText( root ) ).to.equal( 'fbaroo' );
-				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
+				expect( getText( root ) ).toEqual( 'fbaroo' );
+				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).toEqual( 'value' );
 
-				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( false );
 			} );
 
 			it( 'should redo series of batches undone by undo command', () => {
@@ -146,11 +146,11 @@ describe( 'RedoCommand', () => {
 				 - a
 				 - r{}
 				 */
-				expect( getText( root ) ).to.equal( 'foobar' );
-				expect( Array.from( root.getChildren() ).find( node => node.hasAttribute( 'key' ) ) ).to.be.undefined;
+				expect( getText( root ) ).toEqual( 'foobar' );
+				expect( Array.from( root.getChildren() ).find( node => node.hasAttribute( 'key' ) ) ).toBeUndefined();
 
-				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( false );
 
 				redo.execute();
 				// Should be like after applying `batch1`:
@@ -163,12 +163,12 @@ describe( 'RedoCommand', () => {
 				 - a
 				 - r
 				 */
-				expect( getText( root ) ).to.equal( 'foobar' );
-				expect( itemAt( root, 2 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
+				expect( getText( root ) ).toEqual( 'foobar' );
+				expect( itemAt( root, 2 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( itemAt( root, 3 ).getAttribute( 'key' ) ).toEqual( 'value' );
 
-				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 2, 4 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.true;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 2, 4 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( true );
 
 				redo.execute();
 				// Should be like after applying `batch2`:
@@ -181,12 +181,12 @@ describe( 'RedoCommand', () => {
 				 - {o
 				 - o} (key: value)
 				 */
-				expect( getText( root ) ).to.equal( 'fbaroo' );
-				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
+				expect( getText( root ) ).toEqual( 'fbaroo' );
+				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).toEqual( 'value' );
 
-				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( false );
 			} );
 
 			it( 'should redo batch selectively undone by undo command', () => {
@@ -203,12 +203,12 @@ describe( 'RedoCommand', () => {
 				 - o
 				 - o{} (key: value)
 				 */
-				expect( getText( root ) ).to.equal( 'fbaroo' );
-				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
+				expect( getText( root ) ).toEqual( 'fbaroo' );
+				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).toEqual( 'value' );
 
-				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( false );
 			} );
 
 			it( 'should redo batch selectively undone by undo command #2', () => {
@@ -227,12 +227,12 @@ describe( 'RedoCommand', () => {
 				 - o
 				 - o (key: value)
 				 */
-				expect( getText( root ) ).to.equal( 'fbaroo' );
-				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
+				expect( getText( root ) ).toEqual( 'fbaroo' );
+				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).toEqual( 'value' );
 
-				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 1, 2 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.true;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 1, 2 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( true );
 			} );
 
 			it( 'should transform redo batch by changes written in history that happened after undo but before redo #2', () => {
@@ -256,20 +256,20 @@ describe( 'RedoCommand', () => {
 				// Redo setting attribute on "ob". Now it is "xxfoOB".
 				redo.execute();
 
-				expect( getText( root ) ).to.equal( 'xxfoob' );
-				expect( itemAt( root, 4 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.true;
+				expect( getText( root ) ).toEqual( 'xxfoob' );
+				expect( itemAt( root, 4 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( true );
 
 				// Redo moving "oo". Now it is "xxfBoO". Selection is expected to be on just moved "oO".
 				redo.execute();
 
-				expect( getText( root ) ).to.equal( 'xxfboo' );
-				expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.false;
+				expect( getText( root ) ).toEqual( 'xxfboo' );
+				expect( itemAt( root, 3 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( false );
 			} );
 
 			it( 'should pass redoing batch to enqueueChange method', () => {
@@ -285,8 +285,8 @@ describe( 'RedoCommand', () => {
 
 				const redoingBatch = enqueueChangeSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( redoingBatch instanceof Batch ).to.be.true;
-				expect( undoSpy.mock.calls[ 0 ][ 1 ] ).to.equal( redoingBatch );
+				expect( redoingBatch instanceof Batch ).toBe( true );
+				expect( undoSpy.mock.calls[ 0 ][ 1 ] ).toEqual( redoingBatch );
 			} );
 		} );
 
@@ -324,7 +324,7 @@ describe( 'RedoCommand', () => {
 			const data = dataSetSpy.mock.calls[ 0 ][ 1 ];
 
 			expect( data[ 1 ] ).to.be.an( 'object' );
-			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: false } );
+			expect( data[ 1 ].batchType ).toEqual( { isUndoable: false } );
 		} );
 
 		it( 'should not override the batch type in editor.data.set() when the batch type is set', () => {
@@ -337,7 +337,7 @@ describe( 'RedoCommand', () => {
 			const data = dataSetSpy.mock.calls[ 0 ][ 1 ];
 
 			expect( data[ 1 ] ).to.be.an( 'object' );
-			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: true } );
+			expect( data[ 1 ].batchType ).toEqual( { isUndoable: true } );
 		} );
 
 		it( 'should fire `revert` event when executed', () => {
@@ -362,10 +362,10 @@ describe( 'RedoCommand', () => {
 
 				redo.on( 'revert', ( evt, undoneBatch, redoingBatch ) => {
 					// Check if `undoneBatch` is a batch previously created by undo command.
-					expect( undoneBatch ).to.be.equal( undoBatch );
+					expect( undoneBatch ).toEqual( undoBatch );
 
 					// Check if `redoingBatch` is the last batch that made changes in the editor.
-					expect( redoingBatch ).to.be.equal( editor.model.document.history.lastOperation.batch );
+					expect( redoingBatch ).toEqual( editor.model.document.history.lastOperation.batch );
 
 					resolve();
 				} );

@@ -288,7 +288,7 @@ describe( 'StickyPanelView', () => {
 		it( 'should unstick the panel if limiter element is not set', () => {
 			view.limiterElement = null;
 
-			assureStickiness( {
+			expectStickiness( {
 				isSticky: false,
 				_isStickyToTheBottomOfLimiter: false,
 				_stickyTopOffset: null,
@@ -305,7 +305,7 @@ describe( 'StickyPanelView', () => {
 			view.isActive = false;
 
 			expect( unstickSpy ).toHaveBeenCalledOnce();
-			assureStickiness( {
+			expectStickiness( {
 				isSticky: false,
 				_isStickyToTheBottomOfLimiter: false,
 				_stickyTopOffset: null,
@@ -451,7 +451,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( stickToTopSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: true,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: 0,
@@ -482,7 +482,7 @@ describe( 'StickyPanelView', () => {
 					expect( view._isStickyToTheBottomOfLimiter ).toBe( true );
 
 					expect( stickToBottomSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: true,
 						_isStickyToTheBottomOfLimiter: true,
 						_stickyTopOffset: null,
@@ -514,7 +514,7 @@ describe( 'StickyPanelView', () => {
 					expect( stickToBottomSpy ).not.toHaveBeenCalled();
 					expect( stickToTopSpy ).not.toHaveBeenCalled();
 					expect( unstickSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -542,7 +542,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( spy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -570,7 +570,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( spy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -600,7 +600,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( unstickSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -616,7 +616,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( unstickSpy ).toHaveBeenCalledTimes( 2 );
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -651,7 +651,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( stickToTopSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: true,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: 25,
@@ -682,7 +682,7 @@ describe( 'StickyPanelView', () => {
 					expect( view._isStickyToTheBottomOfLimiter ).toBe( true );
 
 					expect( stickToBottomSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: true,
 						_isStickyToTheBottomOfLimiter: true,
 						_stickyTopOffset: null,
@@ -714,7 +714,7 @@ describe( 'StickyPanelView', () => {
 					expect( stickToBottomSpy ).not.toHaveBeenCalled();
 					expect( stickToTopSpy ).not.toHaveBeenCalled();
 					expect( unstickSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -742,7 +742,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( spy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -770,7 +770,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( spy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -806,7 +806,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( stickToTopSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: true,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: 30,
@@ -837,7 +837,7 @@ describe( 'StickyPanelView', () => {
 					expect( view._isStickyToTheBottomOfLimiter ).toBe( true );
 
 					expect( stickToBottomSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: true,
 						_isStickyToTheBottomOfLimiter: true,
 						_stickyTopOffset: null,
@@ -869,7 +869,7 @@ describe( 'StickyPanelView', () => {
 					expect( stickToBottomSpy ).not.toHaveBeenCalled();
 					expect( stickToTopSpy ).not.toHaveBeenCalled();
 					expect( unstickSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -897,7 +897,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( spy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -925,7 +925,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( spy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -980,7 +980,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( stickToTopSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: true,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: 40,
@@ -1020,7 +1020,7 @@ describe( 'StickyPanelView', () => {
 					expect( view._isStickyToTheBottomOfLimiter ).toBe( true );
 
 					expect( stickToBottomSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: true,
 						_isStickyToTheBottomOfLimiter: true,
 						_stickyTopOffset: null,
@@ -1061,7 +1061,7 @@ describe( 'StickyPanelView', () => {
 					expect( stickToBottomSpy ).not.toHaveBeenCalled();
 					expect( stickToTopSpy ).not.toHaveBeenCalled();
 					expect( unstickSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -1098,7 +1098,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( spy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -1135,7 +1135,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( spy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -1206,7 +1206,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( unstickSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -1252,7 +1252,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( stickToTopSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: true,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: 50,
@@ -1298,7 +1298,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( unstickSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -1344,7 +1344,7 @@ describe( 'StickyPanelView', () => {
 					view.checkIfShouldBeSticky();
 
 					expect( unstickSpy ).toHaveBeenCalledOnce();
-					assureStickiness( {
+					expectStickiness( {
 						isSticky: false,
 						_isStickyToTheBottomOfLimiter: false,
 						_stickyTopOffset: null,
@@ -1433,7 +1433,7 @@ describe( 'StickyPanelView', () => {
 		} );
 	} );
 
-	function assureStickiness( options ) {
+	function expectStickiness( options ) {
 		expect( view.isSticky, 'isSticky is incorrect' ).toBe( options.isSticky );
 		expect( view._isStickyToTheBottomOfLimiter, '_isStickyToTheBottomOfLimiter is incorrect' )
 			.toBe( options._isStickyToTheBottomOfLimiter );

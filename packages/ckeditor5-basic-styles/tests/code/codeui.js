@@ -34,11 +34,11 @@ describe( 'CodeUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CodeUI.isOfficialPlugin ).to.be.true;
+		expect( CodeUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CodeUI.isPremiumPlugin ).to.be.false;
+		expect( CodeUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'toolbar button', () => {
@@ -57,27 +57,27 @@ describe( 'CodeUI', () => {
 		testButton();
 
 		it( 'should create button with `menuitemcheckbox` role', () => {
-			expect( codeView.role ).to.equal( 'menuitemcheckbox' );
+			expect( codeView.role ).toEqual( 'menuitemcheckbox' );
 		} );
 
 		it( 'should bind `isOn` to `aria-checked` attribute', () => {
 			codeView.render();
 
 			codeView.isOn = true;
-			expect( codeView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+			expect( codeView.element.getAttribute( 'aria-checked' ) ).toEqual( 'true' );
 
 			codeView.isOn = false;
-			expect( codeView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+			expect( codeView.element.getAttribute( 'aria-checked' ) ).toEqual( 'false' );
 		} );
 	} );
 
 	function testButton() {
 		it( 'should register code feature component', () => {
 			expect( codeView ).to.be.instanceOf( ButtonView );
-			expect( codeView.isOn ).to.be.false;
-			expect( codeView.label ).to.equal( 'Code' );
-			expect( codeView.icon ).to.match( /<svg / );
-			expect( codeView.isToggleable ).to.be.true;
+			expect( codeView.isOn ).toBe( false );
+			expect( codeView.label ).toEqual( 'Code' );
+			expect( codeView.icon ).toMatch( /<svg / );
+			expect( codeView.isToggleable ).toBe( true );
 		} );
 
 		it( 'should execute code command on model execute event', () => {
@@ -91,10 +91,10 @@ describe( 'CodeUI', () => {
 
 		it( 'should bind `isEnabled` to code command', () => {
 			const command = editor.commands.get( 'code' );
-			expect( codeView.isEnabled ).to.be.true;
+			expect( codeView.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( codeView.isEnabled ).to.be.false;
+			expect( codeView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should bind `isOn` to `command`.`value`', () => {
@@ -102,11 +102,11 @@ describe( 'CodeUI', () => {
 
 			command.value = true;
 
-			expect( codeView.isOn ).to.be.true;
+			expect( codeView.isOn ).toBe( true );
 
 			command.value = false;
 
-			expect( codeView.isOn ).to.be.false;
+			expect( codeView.isOn ).toBe( false );
 		} );
 	}
 } );

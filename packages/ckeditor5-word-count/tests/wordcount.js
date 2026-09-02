@@ -134,10 +134,6 @@ describe( 'WordCount', () => {
 
 	describe( 'functionality', () => {
 		describe( 'counting words', () => {
-			beforeEach( () => {
-				expect( wordCountPlugin.words ).toBe( 0 );
-			} );
-
 			it( 'should count a number as a word', () => {
 				_setModelData( model, '<paragraph>1 12 3,5 3/4 1.2 0</paragraph>' );
 				wordCountPlugin._refreshStats();
@@ -251,7 +247,7 @@ describe( 'WordCount', () => {
 				expect( wordCountPlugin.words ).toBe( 1 );
 			} );
 
-			( env.features.isRegExpUnicodePropertySupported ? it : it.skip )( 'should count international words', () => {
+			it.runIf( env.features.isRegExpUnicodePropertySupported )( 'should count international words', () => {
 				_setModelData( model, '<paragraph>שמש 太陽 ดวงอาทิตย์ شمس ਸੂਰਜ słońce</paragraph>' );
 				wordCountPlugin._refreshStats();
 
@@ -412,7 +408,9 @@ describe( 'WordCount', () => {
 					plugins: [ WordCount, Paragraph ]
 				} )
 					.then( editor => {
-						return editor.destroy();
+						return editor.destroy().then( () => {
+							expect( editor.state ).toBe( 'destroyed' );
+						} );
 					} );
 			} );
 		} );

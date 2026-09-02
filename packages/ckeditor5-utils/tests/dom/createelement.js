@@ -40,7 +40,7 @@ describe( 'createElement', () => {
 		expect( p.childNodes[ 0 ].data ).toBe( 'foo' );
 	} );
 
-	it( 'should create ', () => {
+	it( 'should create element with mixed children (text and element)', () => {
 		const p = createElement( document, 'p', null, [ 'foo', createElement( document, 'img' ) ] );
 
 		expect( p.tagName.toLowerCase() ).toBe( 'p' );

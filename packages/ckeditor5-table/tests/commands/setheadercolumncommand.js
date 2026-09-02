@@ -37,12 +37,12 @@ describe( 'SetHeaderColumnCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should be false if selection is not in a table', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if selection is in table', () => {
 			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if multiple columns are selected', () => {
@@ -57,7 +57,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if multiple header columns are selected', () => {
@@ -72,7 +72,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		describe( 'with `TableLayout` plugin', () => {
@@ -96,7 +96,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			it( 'should be true if selection is in table', () => {
 				_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if selection is in table with `tableType="layout"`', () => {
@@ -104,7 +104,7 @@ describe( 'SetHeaderColumnCommand', () => {
 					'<table tableType="layout">' +
 						'<tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow>' +
 					'</table>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 	} );
@@ -116,7 +116,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				[ '11', '12[]' ]
 			], { headingColumns: 1 } ) );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should be true if selection is in a heading column', () => {
@@ -125,7 +125,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				[ '11', '12' ]
 			], { headingColumns: 1 } ) );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'should be true if multiple header columns are selected', () => {
@@ -140,7 +140,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'should be true if multiple header columns are selected in reversed order', () => {
@@ -155,7 +155,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] )
 			);
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'should be false if selection is in a heading row', () => {
@@ -164,7 +164,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				[ '11', '12' ]
 			], { headingRows: 1, headingColumns: 1 } ) );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should be false if only part of selected columns are headers', () => {
@@ -179,7 +179,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 2 ] )
 			);
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 	} );
 

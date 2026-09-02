@@ -36,24 +36,24 @@ describe( 'table cell properties', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be false if selection does not have table cell', () => {
 						_setModelData( model, '<paragraph>foo[]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection has table cell', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be false if selection does not have table cell', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection has table cell', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
@@ -64,7 +64,7 @@ describe( 'table cell properties', () => {
 							[ '10', { contents: '11', isSelected: true } ]
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 			} );
@@ -74,13 +74,13 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined if selected table cell has no tableCellVerticalAlignment property', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table cell has tableCellVerticalAlignment property', () => {
 						_setModelData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
 
-						expect( command.value ).to.equal( 'bottom' );
+						expect( command.value ).toEqual( 'bottom' );
 					} );
 				} );
 
@@ -88,13 +88,13 @@ describe( 'table cell properties', () => {
 					it( 'should be false if selection does not have table cell', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be true is selection has table cell', () => {
 						_setModelData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: 'f[o]o' } ] ] ) );
 
-						expect( command.value ).to.equal( 'bottom' );
+						expect( command.value ).toEqual( 'bottom' );
 					} );
 				} );
 
@@ -111,7 +111,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be undefined if only some table cells have the "tableCellVerticalAlignment" property', () => {
@@ -126,7 +126,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( `should be undefined if one of selected table cells has
@@ -142,7 +142,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if all table cells have the same "tableCellVerticalAlignment" property value', () => {
@@ -157,7 +157,7 @@ describe( 'table cell properties', () => {
 							]
 						] ) );
 
-						expect( command.value ).to.equal( 'bottom' );
+						expect( command.value ).toEqual( 'bottom' );
 					} );
 				} );
 			} );
@@ -279,7 +279,7 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined if selected table cell has the default tableCellVerticalAlignment property', () => {
 						_setModelData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 				} );
 
@@ -287,7 +287,7 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined is selection contains the default value', () => {
 						_setModelData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: 'f[o]o' } ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 				} );
 
@@ -307,7 +307,7 @@ describe( 'table cell properties', () => {
 								]
 							] ) );
 
-							expect( command.value ).to.be.undefined;
+							expect( command.value ).toBeUndefined();
 						}
 					);
 				} );

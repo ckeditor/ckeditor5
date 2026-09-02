@@ -85,15 +85,15 @@ describe( 'IndentBlockListIntegration', () => {
 	} );
 
 	it( 'should have proper name', () => {
-		expect( IndentBlockListIntegration.pluginName ).to.equal( 'IndentBlockListIntegration' );
+		expect( IndentBlockListIntegration.pluginName ).toEqual( 'IndentBlockListIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( IndentBlockListIntegration.isOfficialPlugin ).to.be.true;
+		expect( IndentBlockListIntegration.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( IndentBlockListIntegration.isPremiumPlugin ).to.be.false;
+		expect( IndentBlockListIntegration.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should register commands', () => {
@@ -112,8 +112,8 @@ describe( 'IndentBlockListIntegration', () => {
 
 			const modelElement = new ModelElement( 'myElement', { listItemId: 'a' } );
 
-			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'blockIndentList' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'blockIndentListItem' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'blockIndentList' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'blockIndentListItem' ) ).toBe( true );
 		} );
 
 		it( 'blockIndentList and blockIndentListItem attributes should have isFormatting set to true', () => {
@@ -137,25 +137,25 @@ describe( 'IndentBlockListIntegration', () => {
 			const heading = new ModelElement( 'heading1' );
 			const table = new ModelElement( 'table' );
 
-			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'blockIndentList' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'blockIndentList' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'blockIndentList' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'blockIndentList' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'blockIndentList' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'blockIndentList' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'blockIndentList' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'blockIndentList' ) ).toBe( true );
 
-			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'blockIndentList' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'blockIndentList' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', heading ], 'blockIndentList' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', table ], 'blockIndentList' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'blockIndentList' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'blockIndentList' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'blockIndentList' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', table ], 'blockIndentList' ) ).toBe( false );
 
-			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'blockIndentListItem' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'blockIndentListItem' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'blockIndentListItem' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'blockIndentListItem' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'blockIndentListItem' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'blockIndentListItem' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'blockIndentListItem' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'blockIndentListItem' ) ).toBe( true );
 
-			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'blockIndentListItem' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'blockIndentListItem' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', heading ], 'blockIndentListItem' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', table ], 'blockIndentListItem' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'blockIndentListItem' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'blockIndentListItem' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'blockIndentListItem' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', table ], 'blockIndentListItem' ) ).toBe( false );
 		} );
 	} );
 
@@ -169,21 +169,17 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul style="margin-left:10px">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul style="margin-left:10px">' +
 							'<li>' +
 								'<span class="ck-list-bogus-paragraph">foo</span>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul style="margin-left:10px;">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul style="margin-left:10px;">' +
 							'<li>' +
 								'foo' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentList attribute as margin-left also in nested <ul>', () => {
@@ -196,8 +192,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul style="margin-left:10px">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul style="margin-left:10px">' +
 							'<li>' +
 								'<span class="ck-list-bogus-paragraph">' +
 									'foo' +
@@ -210,11 +205,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul style="margin-left:10px;">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul style="margin-left:10px;">' +
 							'<li>' +
 								'foo' +
 								'<ul style="margin-left:20px;">' +
@@ -223,8 +216,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentList attribute as margin-left when used in multi-block', () => {
@@ -237,8 +229,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul style="margin-left:10px">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul style="margin-left:10px">' +
 							'<li>' +
 								'<p>' +
 									'foo' +
@@ -247,11 +238,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'bar' +
 								'</p>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul style="margin-left:10px;">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul style="margin-left:10px;">' +
 							'<li>' +
 								'<p>' +
 									'foo' +
@@ -260,8 +249,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'bar' +
 								'</p>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentList attribute in blockquote as margin-left in <ul>', () => {
@@ -273,8 +261,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</blockQuote>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul style="margin-left:10px">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul style="margin-left:10px">' +
 							'<li>' +
 								'<blockquote>' +
 									'<p>' +
@@ -282,11 +269,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</p>' +
 								'</blockquote>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul style="margin-left:10px;">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul style="margin-left:10px;">' +
 							'<li>' +
 								'<blockquote>' +
 									'<p>' +
@@ -294,8 +279,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</p>' +
 								'</blockquote>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentList attribute in heading as margin-left in <ul>', () => {
@@ -305,25 +289,21 @@ describe( 'IndentBlockListIntegration', () => {
 						'</heading1>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul style="margin-left:10px">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul style="margin-left:10px">' +
 							'<li>' +
 								'<h2>' +
 									'foo' +
 								'</h2>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul style="margin-left:10px;">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul style="margin-left:10px;">' +
 							'<li>' +
 								'<h2>' +
 									'foo' +
 								'</h2>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentList attribute in table as margin-left in <ul>', () => {
@@ -339,8 +319,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</table>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul style="margin-left:10px">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul style="margin-left:10px">' +
 							'<li>' +
 								'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 									'<div class="ck ck-widget__selection-handle"></div>' +
@@ -358,11 +337,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</table>' +
 								'</figure>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul style="margin-left:10px;">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul style="margin-left:10px;">' +
 							'<li>' +
 								'<figure class="table">' +
 									'<table>' +
@@ -376,8 +353,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</table>' +
 								'</figure>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should remove margin-left in <ul> when blockIndentList attribute is removed', () => {
@@ -392,13 +368,11 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.removeAttribute( 'blockIndentList', firstChild );
 					} );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li>' +
 								'foo' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should not downcast empty blockIndentList value as style', () => {
@@ -413,13 +387,11 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.setAttribute( 'blockIndentList', '', firstChild );
 					} );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li>' +
 								'foo' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 			} );
 
@@ -433,11 +405,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast margin-left in <ol> to blockIndentList attribute', () => {
@@ -449,11 +420,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="numbered">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="numbered">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast margin-left in <ul> to blockIndentList attribute also in nested list', () => {
@@ -470,14 +440,13 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="10px" listIndent="0" listItemId="a01" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="10px" listIndent="0" listItemId="a01" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="20px" listIndent="1" listItemId="a00" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast margin-left set on first-level <ul> to blockIndentList attribute ' +
@@ -495,14 +464,13 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="10px" listIndent="0" listItemId="a01" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="10px" listIndent="0" listItemId="a01" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph listIndent="1" listItemId="a00" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast margin-left in <ul> to blockIndentList attribute in multi-block', () => {
@@ -519,14 +487,13 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast margin-left in <ul> to blockIndentList attribute for blockquote', () => {
@@ -540,13 +507,12 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<blockQuote blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<blockQuote blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'<paragraph>' +
 								'foo' +
 							'</paragraph>' +
-						'</blockQuote>'
-					);
+						'</blockQuote>' );
 				} );
 
 				it( 'should upcast margin-left in <ul> to blockIndentList attribute for heading', () => {
@@ -560,11 +526,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<heading1 blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<heading1 blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</heading1>'
-					);
+						'</heading1>' );
 				} );
 
 				it( 'should upcast margin-left in <ul> to blockIndentList attribute for table', () => {
@@ -586,8 +551,8 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<table blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>' +
@@ -595,13 +560,12 @@ describe( 'IndentBlockListIntegration', () => {
 									'</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
-						'</table>'
-					);
+						'</table>' );
 				} );
 
 				it( 'should upcast and consume margin-left in <ul>', () => {
 					const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).toBe( false );
 					} );
 
 					editor.conversion.for( 'upcast' ).add(
@@ -616,11 +580,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 
 					expect( upcastCheck.mock.calls ).to.have.length( 1 );
 				} );
@@ -636,9 +599,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'<ul style="margin-left:10px"></ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph></paragraph>'
-					);
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph></paragraph>' );
 
 					expect( upcastCheck.mock.calls ).to.have.length( 1 );
 				} );
@@ -652,11 +613,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="-10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="-10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 			} );
 
@@ -678,14 +638,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.setAttribute( 'blockIndentList', '20px', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="20px" listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="20px" listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="20px" listIndent="0" listItemId="b" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should remove blockIndentList attribute of following list item if previous one does not have it', () => {
@@ -705,14 +664,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.removeAttribute( 'blockIndentList', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should not change blockIndentList attribute of following list item if it has different indent level', () => {
@@ -732,14 +690,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.setAttribute( 'blockIndentList', '20px', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="20px" listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="20px" listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="10px" listIndent="1" listItemId="b" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should update blockIndentList attribute of outdented list item if it is different from previous one', () => {
@@ -754,14 +711,13 @@ describe( 'IndentBlockListIntegration', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="10px" listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="10px" listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="10px" listIndent="0" listItemId="b" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should remove blockIndentList attribute of outdented list item if previous one does not have it', () => {
@@ -776,14 +732,13 @@ describe( 'IndentBlockListIntegration', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should not change blockIndentList attribute of following list item if it is a different list type', () => {
@@ -803,14 +758,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.setAttribute( 'blockIndentList', '20px', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="20px" listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="20px" listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="10px" listIndent="0" listItemId="b" listType="numbered">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 			} );
 		} );
@@ -824,21 +778,17 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px">' +
 								'<span class="ck-list-bogus-paragraph">foo</span>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px;">' +
 								'foo' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentListItem attribute as margin-left in <li> also in nested list', () => {
@@ -851,8 +801,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px">' +
 								'<span class="ck-list-bogus-paragraph">' +
 									'foo' +
@@ -865,11 +814,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px;">' +
 								'foo' +
 								'<ul>' +
@@ -878,8 +825,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentListItem attribute as margin-left when used in multi-block', () => {
@@ -892,8 +838,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px">' +
 								'<p>' +
 									'foo' +
@@ -902,11 +847,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'bar' +
 								'</p>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px;">' +
 								'<p>' +
 									'foo' +
@@ -915,8 +858,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'bar' +
 								'</p>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentListItem attribute in blockquote as margin-left in <li>', () => {
@@ -928,8 +870,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</blockQuote>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px">' +
 								'<blockquote>' +
 									'<p>' +
@@ -937,11 +878,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</p>' +
 								'</blockquote>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px;">' +
 								'<blockquote>' +
 									'<p>' +
@@ -949,8 +888,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</p>' +
 								'</blockquote>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentListItem attribute in heading as margin-left in <li>', () => {
@@ -960,25 +898,21 @@ describe( 'IndentBlockListIntegration', () => {
 						'</heading1>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px">' +
 								'<h2>' +
 									'foo' +
 								'</h2>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px;">' +
 								'<h2>' +
 									'foo' +
 								'</h2>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentListItem attribute in table as margin-left in <li>', () => {
@@ -994,8 +928,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</table>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px">' +
 								'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 									'<div class="ck ck-widget__selection-handle"></div>' +
@@ -1013,11 +946,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</table>' +
 								'</figure>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li style="margin-left:10px;">' +
 								'<figure class="table">' +
 									'<table>' +
@@ -1031,8 +962,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</table>' +
 								'</figure>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 			} );
 
@@ -1046,11 +976,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast margin-left in <li> in <ol> to blockIndentListItem attribute', () => {
@@ -1062,11 +991,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="numbered">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="numbered">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast margin-left in <li> to blockIndentListItem attribute also in nested list', () => {
@@ -1083,14 +1011,13 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a01" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a01" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentListItem="20px" listIndent="1" listItemId="a00" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast margin-left in <li> to blockIndentListItem attribute in multi-block', () => {
@@ -1107,14 +1034,13 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast margin-left in <li> to blockIndentListItem attribute for blockquote', () => {
@@ -1128,13 +1054,12 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<blockQuote blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<blockQuote blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'<paragraph>' +
 								'foo' +
 							'</paragraph>' +
-						'</blockQuote>'
-					);
+						'</blockQuote>' );
 				} );
 
 				it( 'should upcast margin-left in <li> to blockIndentListItem attribute for heading', () => {
@@ -1148,11 +1073,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<heading1 blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<heading1 blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</heading1>'
-					);
+						'</heading1>' );
 				} );
 
 				it( 'should upcast margin-left in <li> to blockIndentListItem attribute for table', () => {
@@ -1174,8 +1098,8 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<table blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>' +
@@ -1183,13 +1107,12 @@ describe( 'IndentBlockListIntegration', () => {
 									'</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
-						'</table>'
-					);
+						'</table>' );
 				} );
 
 				it( 'should upcast and consume margin-left in <li>', () => {
 					const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).toBe( false );
 					} );
 
 					editor.conversion.for( 'upcast' ).add(
@@ -1204,11 +1127,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 
 					expect( upcastCheck.mock.calls ).to.have.length( 1 );
 				} );
@@ -1222,11 +1144,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="-10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="-10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 			} );
 
@@ -1249,14 +1170,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.setAttribute( 'blockIndentListItem', '20px', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="20px" listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="20px" listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentListItem="20px" listIndent="0" listItemId="a" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should remove blockIndentListItem attribute of following list item if previous one ' +
@@ -1277,14 +1197,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.removeAttribute( 'blockIndentListItem', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 			} );
 		} );
@@ -1326,21 +1245,17 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'<span class="ck-list-bogus-paragraph">foo</span>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'foo' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentList attribute as class also in nested <ul>', () => {
@@ -1353,8 +1268,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'<span class="ck-list-bogus-paragraph">' +
 									'foo' +
@@ -1367,11 +1281,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'foo' +
 								'<ul class="indent-2">' +
@@ -1380,8 +1292,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentList attribute as class when used in multi-block', () => {
@@ -1394,8 +1305,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'<p>' +
 									'foo' +
@@ -1404,11 +1314,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'bar' +
 								'</p>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'<p>' +
 									'foo' +
@@ -1417,8 +1325,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'bar' +
 								'</p>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentList attribute in blockquote as class in <ul>', () => {
@@ -1430,8 +1337,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</blockQuote>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'<blockquote>' +
 									'<p>' +
@@ -1439,11 +1345,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</p>' +
 								'</blockquote>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'<blockquote>' +
 									'<p>' +
@@ -1451,8 +1355,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</p>' +
 								'</blockquote>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentList attribute in heading as class in <ul>', () => {
@@ -1462,25 +1365,21 @@ describe( 'IndentBlockListIntegration', () => {
 						'</heading1>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'<h2>' +
 									'foo' +
 								'</h2>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'<h2>' +
 									'foo' +
 								'</h2>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentList attribute in table as class in <ul>', () => {
@@ -1496,8 +1395,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</table>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 									'<div class="ck ck-widget__selection-handle"></div>' +
@@ -1515,11 +1413,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</table>' +
 								'</figure>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul class="indent-1">' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul class="indent-1">' +
 							'<li>' +
 								'<figure class="table">' +
 									'<table>' +
@@ -1533,8 +1429,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</table>' +
 								'</figure>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 			} );
 
@@ -1548,11 +1443,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast class in <ol> to blockIndentList attribute', () => {
@@ -1564,11 +1458,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="numbered">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="numbered">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast class in <ul> to blockIndentList attribute also in nested list', () => {
@@ -1585,14 +1478,13 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a01" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a01" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="indent-2" listIndent="1" listItemId="a00" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast class in first-level <ul> to blockIndentList attribute ' +
@@ -1610,14 +1502,13 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a01" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a01" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph listIndent="1" listItemId="a00" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast class in <ul> to blockIndentList attribute in multi-block', () => {
@@ -1634,14 +1525,13 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast class in <ul> to blockIndentList attribute for blockquote', () => {
@@ -1655,13 +1545,12 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<blockQuote blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<blockQuote blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'<paragraph>' +
 								'foo' +
 							'</paragraph>' +
-						'</blockQuote>'
-					);
+						'</blockQuote>' );
 				} );
 
 				it( 'should upcast class in <ul> to blockIndentList attribute for heading', () => {
@@ -1675,11 +1564,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<heading1 blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<heading1 blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</heading1>'
-					);
+						'</heading1>' );
 				} );
 
 				it( 'should upcast class in <ul> to blockIndentList attribute for table', () => {
@@ -1701,8 +1589,8 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<table blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>' +
@@ -1710,13 +1598,12 @@ describe( 'IndentBlockListIntegration', () => {
 									'</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
-						'</table>'
-					);
+						'</table>' );
 				} );
 
 				it( 'should upcast and consume class in <ul>', () => {
 					const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { classes: 'indent-1' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { classes: 'indent-1' } ) ).toBe( false );
 					} );
 
 					editor.conversion.for( 'upcast' ).add(
@@ -1731,11 +1618,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 
 					expect( upcastCheck.mock.calls ).to.have.length( 1 );
 				} );
@@ -1749,11 +1635,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 			} );
 
@@ -1775,14 +1660,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.setAttribute( 'blockIndentList', 'indent-2', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="indent-2" listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="indent-2" listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="indent-2" listIndent="0" listItemId="b" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should remove blockIndentList attribute of following list item if previous one does not have it', () => {
@@ -1802,14 +1686,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.removeAttribute( 'blockIndentList', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should not change blockIndentList attribute of following list item if it has different indent level', () => {
@@ -1829,14 +1712,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.setAttribute( 'blockIndentList', 'indent-2', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="indent-2" listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="indent-2" listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="indent-1" listIndent="1" listItemId="b" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should update blockIndentList attribute of outdented list item if it is different from previous one', () => {
@@ -1851,14 +1733,13 @@ describe( 'IndentBlockListIntegration', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="indent-1" listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="indent-1" listIndent="0" listItemId="b" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should remove blockIndentList attribute of outdented list item if previous one does not have it', () => {
@@ -1873,14 +1754,13 @@ describe( 'IndentBlockListIntegration', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should not change blockIndentList attribute of following list item if it is a different list type', () => {
@@ -1900,14 +1780,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.setAttribute( 'blockIndentList', 'indent-2', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentList="indent-2" listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentList="indent-2" listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentList="indent-1" listIndent="0" listItemId="b" listType="numbered">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 			} );
 		} );
@@ -1921,21 +1800,17 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'<span class="ck-list-bogus-paragraph">foo</span>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'foo' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentListItem attribute as class in <li> also in nested list', () => {
@@ -1948,8 +1823,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'<span class="ck-list-bogus-paragraph">' +
 									'foo' +
@@ -1962,11 +1836,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'foo' +
 								'<ul>' +
@@ -1975,8 +1847,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentListItem attribute as class when used in multi-block', () => {
@@ -1989,8 +1860,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</paragraph>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'<p>' +
 									'foo' +
@@ -1999,11 +1869,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'bar' +
 								'</p>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'<p>' +
 									'foo' +
@@ -2012,8 +1880,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'bar' +
 								'</p>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentListItem attribute in blockquote as class in <li>', () => {
@@ -2025,8 +1892,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</blockQuote>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'<blockquote>' +
 									'<p>' +
@@ -2034,11 +1900,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</p>' +
 								'</blockquote>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'<blockquote>' +
 									'<p>' +
@@ -2046,8 +1910,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</p>' +
 								'</blockquote>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentListItem attribute in heading as class in <li>', () => {
@@ -2057,25 +1920,21 @@ describe( 'IndentBlockListIntegration', () => {
 						'</heading1>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'<h2>' +
 									'foo' +
 								'</h2>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'<h2>' +
 									'foo' +
 								'</h2>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should downcast blockIndentListItem attribute in table as class in <li>', () => {
@@ -2091,8 +1950,7 @@ describe( 'IndentBlockListIntegration', () => {
 						'</table>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-						'<ul>' +
+					expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 									'<div class="ck ck-widget__selection-handle"></div>' +
@@ -2110,11 +1968,9 @@ describe( 'IndentBlockListIntegration', () => {
 									'</table>' +
 								'</figure>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li class="indent-1">' +
 								'<figure class="table">' +
 									'<table>' +
@@ -2128,8 +1984,7 @@ describe( 'IndentBlockListIntegration', () => {
 									'</table>' +
 								'</figure>' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should remove class from <li> when blockIndentListItem attribute is removed', () => {
@@ -2144,13 +1999,11 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.removeAttribute( 'blockIndentListItem', firstChild );
 					} );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li>' +
 								'foo' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 
 				it( 'should not downcast empty blockIndentListItem value as class', () => {
@@ -2165,13 +2018,11 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.setAttribute( 'blockIndentListItem', '', firstChild );
 					} );
 
-					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-						'<ul>' +
+					expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 							'<li>' +
 								'foo' +
 							'</li>' +
-						'</ul>'
-					);
+						'</ul>' );
 				} );
 			} );
 
@@ -2185,11 +2036,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast class in <li> in <ol> to blockIndentListItem attribute', () => {
@@ -2201,11 +2051,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="numbered">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="numbered">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast class in <li> to blockIndentListItem attribute also in nested list', () => {
@@ -2222,14 +2071,13 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a01" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a01" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentListItem="indent-2" listIndent="1" listItemId="a00" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast class in <li> to blockIndentListItem attribute in multi-block', () => {
@@ -2246,14 +2094,13 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should upcast class in <li> to blockIndentListItem attribute for blockquote', () => {
@@ -2267,13 +2114,12 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<blockQuote blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<blockQuote blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'<paragraph>' +
 								'foo' +
 							'</paragraph>' +
-						'</blockQuote>'
-					);
+						'</blockQuote>' );
 				} );
 
 				it( 'should upcast class in <li> to blockIndentListItem attribute for heading', () => {
@@ -2287,11 +2133,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<heading1 blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<heading1 blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</heading1>'
-					);
+						'</heading1>' );
 				} );
 
 				it( 'should upcast class in <li> to blockIndentListItem attribute for table', () => {
@@ -2313,8 +2158,8 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<table blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>' +
@@ -2322,13 +2167,12 @@ describe( 'IndentBlockListIntegration', () => {
 									'</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
-						'</table>'
-					);
+						'</table>' );
 				} );
 
 				it( 'should upcast and consume class in <li>', () => {
 					const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { classes: 'indent-1' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { classes: 'indent-1' } ) ).toBe( false );
 					} );
 
 					editor.conversion.for( 'upcast' ).add(
@@ -2343,11 +2187,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="indent-1" listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 
 					expect( upcastCheck.mock.calls ).to.have.length( 1 );
 				} );
@@ -2361,11 +2204,10 @@ describe( 'IndentBlockListIntegration', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
 							'foo' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 			} );
 
@@ -2388,14 +2230,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.setAttribute( 'blockIndentListItem', 'indent-2', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph blockIndentListItem="indent-2" listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph blockIndentListItem="indent-2" listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph blockIndentListItem="indent-2" listIndent="0" listItemId="a" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 
 				it( 'should remove blockIndentListItem attribute of following list item if previous one ' +
@@ -2416,14 +2257,13 @@ describe( 'IndentBlockListIntegration', () => {
 						writer.removeAttribute( 'blockIndentListItem', firstChild );
 					} );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
 							'foo' +
 						'</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">' +
 							'bar' +
-						'</paragraph>'
-					);
+						'</paragraph>' );
 				} );
 			} );
 		} );
@@ -2441,9 +2281,8 @@ describe( 'IndentBlockListIntegration', () => {
 			editor.execute( 'indent' );
 
 			expect( spy.mock.calls ).to.have.length( 1 );
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph blockIndentList="40px" listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
-			);
+			expect( _getModelData( model, { withoutSelection: true } ) )
+				.toEqual( '<paragraph blockIndentList="40px" listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' );
 		} );
 
 		it( 'should execute `outdentBlockList` when `outdent` command is executed in a list with blockIndentList', () => {
@@ -2457,9 +2296,8 @@ describe( 'IndentBlockListIntegration', () => {
 			editor.execute( 'outdent' );
 
 			expect( spy.mock.calls ).to.have.length( 1 );
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
-			);
+			expect( _getModelData( model, { withoutSelection: true } ) )
+				.toEqual( '<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' );
 		} );
 
 		describe( 'when IndentBlock is loaded before Indent', () => {
@@ -2522,9 +2360,8 @@ describe( 'IndentBlockListIntegration', () => {
 				stopPropagation: vi.fn()
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph blockIndentList="40px" listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
-			);
+			expect( _getModelData( model, { withoutSelection: true } ) )
+				.toEqual( '<paragraph blockIndentList="40px" listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' );
 		} );
 
 		it( 'should outdent list with Shift + Tab keys', () => {
@@ -2539,9 +2376,8 @@ describe( 'IndentBlockListIntegration', () => {
 				stopPropagation: vi.fn()
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
-			);
+			expect( _getModelData( model, { withoutSelection: true } ) )
+				.toEqual( '<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' );
 		} );
 
 		it( 'should skip outdentBlockList when the command is disabled', () => {
@@ -2569,9 +2405,7 @@ describe( 'IndentBlockListIntegration', () => {
 			} );
 
 			expect( outdentBlockListSpy.mock.calls ).to.have.length( 0 );
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>foo</paragraph>'
-			);
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>foo</paragraph>' );
 		} );
 	} );
 
@@ -2618,7 +2452,7 @@ describe( 'IndentBlockListIntegration', () => {
 
 		it( 'should not upcast margin-left in <ul> to blockIndentList attribute', () => {
 			const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).toBe( true );
 			} );
 
 			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:ul', upcastCheck, { priority: 'lowest' } ) );
@@ -2631,16 +2465,14 @@ describe( 'IndentBlockListIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>foo</paragraph>'
-			);
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>foo</paragraph>' );
 
 			expect( upcastCheck.mock.calls ).to.have.length( 1 );
 		} );
 
 		it( 'should not upcast margin-left in <li> to blockIndentListItem attribute', () => {
 			const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).toBe( true );
 			} );
 
 			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:li', upcastCheck, { priority: 'lowest' } ) );
@@ -2653,9 +2485,7 @@ describe( 'IndentBlockListIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>foo</paragraph>'
-			);
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>foo</paragraph>' );
 
 			expect( upcastCheck.mock.calls ).to.have.length( 1 );
 		} );
@@ -2693,21 +2523,17 @@ describe( 'IndentBlockListIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul style="margin-right:10px">' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul style="margin-right:10px">' +
 					'<li>' +
 						'<span class="ck-list-bogus-paragraph">foo</span>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul style="margin-right:10px;">' +
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul style="margin-right:10px;">' +
 					'<li>' +
 						'foo' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		it( 'should upcast margin-right in <ul> to blockIndentList attribute (RTL)', () => {
@@ -2719,11 +2545,10 @@ describe( 'IndentBlockListIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+			expect( _getModelData( model, { withoutSelection: true } ) )
+				.toEqual( '<paragraph blockIndentList="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 					'foo' +
-				'</paragraph>'
-			);
+				'</paragraph>' );
 		} );
 
 		it( 'should downcast blockIndentListItem attribute as margin-right in <li> (RTL)', () => {
@@ -2733,21 +2558,17 @@ describe( 'IndentBlockListIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li style="margin-right:10px">' +
 						'<span class="ck-list-bogus-paragraph">foo</span>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li style="margin-right:10px;">' +
 						'foo' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		it( 'should upcast margin-right in <li> to blockIndentListItem attribute (RTL)', () => {
@@ -2759,11 +2580,10 @@ describe( 'IndentBlockListIntegration', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
+			expect( _getModelData( model, { withoutSelection: true } ) )
+				.toEqual( '<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 					'foo' +
-				'</paragraph>'
-			);
+				'</paragraph>' );
 		} );
 	} );
 
@@ -2780,7 +2600,7 @@ describe( 'IndentBlockListIntegration', () => {
 
 			editor.execute( 'indentList' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 				'<paragraph blockIndentList="40px" blockIndentListItem="40px" listIndent="0" listItemId="a" listType="bulleted">' +
 					'foo' +
 				'</paragraph>' +
@@ -2798,7 +2618,7 @@ describe( 'IndentBlockListIntegration', () => {
 
 			indentListCommand.fire( 'afterExecute', [ paragraph ] );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]foo</paragraph>' );
 		} );
 
 		it( 'should remove only blockIndentList in indentList afterExecute callback', () => {
@@ -2811,9 +2631,8 @@ describe( 'IndentBlockListIntegration', () => {
 
 			indentListCommand.fire( 'afterExecute', [ listItem ] );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
-			);
+			expect( _getModelData( model, { withoutSelection: true } ) )
+				.toEqual( '<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' );
 		} );
 
 		it( 'should remove only blockIndentListItem in indentList afterExecute callback', () => {
@@ -2826,9 +2645,8 @@ describe( 'IndentBlockListIntegration', () => {
 
 			indentListCommand.fire( 'afterExecute', [ listItem ] );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
-			);
+			expect( _getModelData( model, { withoutSelection: true } ) )
+				.toEqual( '<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' );
 		} );
 	} );
 } );

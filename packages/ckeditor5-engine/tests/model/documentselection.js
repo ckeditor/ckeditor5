@@ -112,7 +112,7 @@ describe( 'DocumentSelection', () => {
 			expect( selection.isCollapsed ).toBe( true );
 		} );
 
-		it( 'should be false for the default range (object selection) ', () => {
+		it( 'should be false for the default range (object selection)', () => {
 			root._insertChild( 0, new ModelElement( 'widget' ) );
 
 			expect( selection.isCollapsed ).toBe( false );
@@ -852,8 +852,8 @@ describe( 'DocumentSelection', () => {
 		it( 'should return default range if no ranges were added', () => {
 			const firstRange = selection.getFirstRange();
 
-			expect( firstRange.start.isEqual( new ModelPosition( root, [ 0, 0 ] ) ) );
-			expect( firstRange.end.isEqual( new ModelPosition( root, [ 0, 0 ] ) ) );
+			expect( firstRange.start.isEqual( new ModelPosition( root, [ 0, 0 ] ) ) ).toBe( true );
+			expect( firstRange.end.isEqual( new ModelPosition( root, [ 0, 0 ] ) ) ).toBe( true );
 		} );
 	} );
 
@@ -861,8 +861,8 @@ describe( 'DocumentSelection', () => {
 		it( 'should return default range if no ranges were added', () => {
 			const lastRange = selection.getLastRange();
 
-			expect( lastRange.start.isEqual( new ModelPosition( root, [ 0, 0 ] ) ) );
-			expect( lastRange.end.isEqual( new ModelPosition( root, [ 0, 0 ] ) ) );
+			expect( lastRange.start.isEqual( new ModelPosition( root, [ 0, 0 ] ) ) ).toBe( true );
+			expect( lastRange.end.isEqual( new ModelPosition( root, [ 0, 0 ] ) ) ).toBe( true );
 		} );
 	} );
 
@@ -1085,6 +1085,7 @@ describe( 'DocumentSelection', () => {
 
 			// I've lost 30 mins debugging why my tests fail and that was due to the above code reusing
 			// a root which wasn't empty (so the ranges didn't actually make much sense).
+			// eslint-disable-next-line vitest/no-standalone-expect -- Sanity check of the setup, must run in `beforeEach()`.
 			expect( root.childCount ).toBe( 2 );
 		} );
 
@@ -1146,6 +1147,7 @@ describe( 'DocumentSelection', () => {
 				] );
 
 				// Just to make sure how model looks.
+				// eslint-disable-next-line vitest/no-standalone-expect -- Sanity check of the setup, must run in `beforeEach()`.
 				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<p p="true"></p>' +
 

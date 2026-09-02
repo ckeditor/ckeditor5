@@ -5,56 +5,41 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { checkVersionMatch } from '@ckeditor/ckeditor5-dev-dependency-checker';
-import {
-	CKEDITOR5_ROOT_PATH,
-	CKEDITOR5_COMMERCIAL_PATH,
-	CKEDITOR5_PACKAGES_PATH,
-	CKEDITOR5_COMMERCIAL_PACKAGES_PATH
-} from '../constants.mjs';
-import isCKEditor5PackageFactory from '../release/utils/isckeditor5packagefactory.mjs';
-import getCKEditor5PackageNames from '../release/utils/getckeditor5packagenames.mjs';
-
-const shouldFix = process.argv[ 2 ] === '--fix';
+import { spawnSync } from 'node:child_process';
+import { createRequire } from 'node:module';
+import upath from 'upath';
+import { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH, IS_ISOLATED_REPOSITORY } from '../constants.mjs';
 
 /**
- * All dependencies should be pinned to the exact version. However, there are some exceptions,
- * where we want to use the caret or tilde operator. This object contains such exceptions.
+ * Runs `syncpack` (see `.syncpackrc.mjs`) to verify that `dependencies` and `devDependencies`
+ * across the repository use consistent, exact versions.
+ *
+ * `syncpack` resolves its `source` patterns against the current working directory and cannot
+ * match files above it. In the commercial development environment the check covers both the
+ * public and the commercial `package.json` files, so this wrapper runs it from the commercial
+ * root directory.
  */
-const versionExceptions = {
-	/**
-	 * CodeMirror packages are modular and depend on each other. We must use the same versions
-	 * as they have in their dependencies to avoid issues with versions mismatch.
-	 *
-	 * See: https://github.com/ckeditor/ckeditor5-commercial/issues/6939.
-	 */
-	'@codemirror/autocomplete': '^',
-	'@codemirror/lang-html': '^',
-	'@codemirror/language': '^',
-	'@codemirror/state': '^',
-	'@codemirror/view': '^',
-	'@codemirror/theme-one-dark': '^'
-};
+const shouldFix = process.argv[ 2 ] === '--fix';
 
-const pkgJsonPatterns = [
-	'package.json',
-	CKEDITOR5_PACKAGES_PATH + '/*/package.json',
-	CKEDITOR5_COMMERCIAL_PACKAGES_PATH + '/*/package.json',
-	CKEDITOR5_COMMERCIAL_PATH + '/package.json'
-];
+// The `syncpack` JavaScript entry point is executed through the current Node.js binary,
+// because the extensionless `node_modules/.bin` launcher does not work on Windows.
+const require = createRequire( import.meta.url );
+const syncpackPackagePath = require.resolve( 'syncpack/package.json' );
+const syncpackBin = upath.join( upath.dirname( syncpackPackagePath ), require( 'syncpack/package.json' ).bin.syncpack );
 
-const options = {
-	cwd: CKEDITOR5_ROOT_PATH,
-	fix: shouldFix,
-	devDependenciesFilter: await isCKEditor5PackageFactory(),
-	pkgJsonPatterns,
-	versionExceptions,
-	workspacePackages: await getCKEditor5PackageNames()
-};
+const { status } = spawnSync(
+	process.execPath,
+	[
+		syncpackBin,
+		shouldFix ? 'fix' : 'lint',
+		'--config', upath.join( CKEDITOR5_ROOT_PATH, '.syncpackrc.mjs' ),
+		'--dependency-types', 'prod,dev'
+	],
+	{
+		cwd: IS_ISOLATED_REPOSITORY ? CKEDITOR5_ROOT_PATH : CKEDITOR5_COMMERCIAL_PATH,
+		stdio: 'inherit'
+	}
+);
 
-checkVersionMatch( options )
-	.catch( err => {
-		console.error( err );
-
-		process.exit( 1 );
-	} );
+// `status` is `null` when `syncpack` failed to start or was killed by a signal.
+process.exit( status ?? 1 );

@@ -46,7 +46,7 @@ describe( 'formatHtml()', () => {
 			'    </table>\n' +
 			'</figure>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	it( 'should format ordered and bulleted lists', () => {
@@ -98,7 +98,7 @@ describe( 'formatHtml()', () => {
 			'    </li>\n' +
 			'</ul>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	it( 'should format mixed nested block elements with inline elements #1', () => {
@@ -132,7 +132,7 @@ describe( 'formatHtml()', () => {
 			'    </p>\n' +
 			'</div>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	it( 'should format mixed nested block elements with inline elements #2', () => {
@@ -158,7 +158,7 @@ describe( 'formatHtml()', () => {
 			'    </address>\n' +
 			'</aside>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	it( 'should format mixed nested block elements with inline elements #3', () => {
@@ -190,7 +190,7 @@ describe( 'formatHtml()', () => {
 			'    </form>\n' +
 			'</main>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	it( 'should not format pre blocks', () => {
@@ -204,7 +204,7 @@ describe( 'formatHtml()', () => {
 			'    <pre><code>abc</code></pre>\n' +
 			'</blockquote>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	it( 'should not inject extra white spaces at the beginning of preformatted lines in <pre>', () => {
@@ -224,7 +224,7 @@ describe( 'formatHtml()', () => {
 			'baz</code></pre>\n' +
 			'</blockquote>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	it( 'should not inject extra white spaces at the beginning of preformatted lines in <pre> (deep structure)', () => {
@@ -248,7 +248,7 @@ describe( 'formatHtml()', () => {
 			'    </blockquote>\n' +
 			'</blockquote>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5/issues/18360.
@@ -287,7 +287,7 @@ describe( 'formatHtml()', () => {
 			'    d\n' +
 			'</p>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	it( 'should preserve empty lines inside code block', () => {
@@ -331,7 +331,7 @@ describe( 'formatHtml()', () => {
 			'    d\n' +
 			'</p>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	it( 'should keep all attributes unchanged', () => {
@@ -345,7 +345,7 @@ describe( 'formatHtml()', () => {
 			'    Paragraph\n' +
 			'</p>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 
 	// More about this case in https://github.com/ckeditor/ckeditor5/issues/10698.
@@ -365,6 +365,6 @@ describe( 'formatHtml()', () => {
 			'    </br></body></iframe>\n' +
 			'</p>';
 
-		expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		expect( formatHtml( source ) ).toEqual( sourceFormatted );
 	} );
 } );

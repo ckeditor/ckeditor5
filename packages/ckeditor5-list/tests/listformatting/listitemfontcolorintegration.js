@@ -117,15 +117,13 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<span style="color:red">foo</span>' +
 						'</span>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -146,8 +144,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<span style="color:red">foo</span>' +
@@ -160,8 +157,7 @@ describe( 'ListItemFontColorIntegration', () => {
 							'</li>' +
 						'</ul>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -187,8 +183,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<p>' +
 							'<span style="color:red">foo</span>' +
@@ -197,8 +192,7 @@ describe( 'ListItemFontColorIntegration', () => {
 							'<span style="color:red">bar</span>' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -223,8 +217,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</blockQuote>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<blockquote>' +
 							'<p>' +
@@ -232,8 +225,7 @@ describe( 'ListItemFontColorIntegration', () => {
 							'</p>' +
 						'</blockquote>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -255,15 +247,13 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</heading1>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<h2>' +
 							'<span style="color:red">foo</span>' +
 						'</h2>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -283,11 +273,9 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -310,8 +298,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</table>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
@@ -329,8 +316,7 @@ describe( 'ListItemFontColorIntegration', () => {
 							'</table>' +
 						'</figure>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -526,8 +512,8 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should upcast and consume class', () => {
 			const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-color' } ) ).to.be.false;
-				expect( conversionApi.consumable.test( data.viewItem, { styles: '--ck-content-list-marker-color' } ) ).to.be.false;
+				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-color' } ) ).toBe( false );
+				expect( conversionApi.consumable.test( data.viewItem, { styles: '--ck-content-list-marker-color' } ) ).toBe( false );
 			} );
 
 			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:li', upcastCheck, { priority: 'lowest' } ) );
@@ -546,7 +532,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( upcastCheck.mock.calls.length === 1 ).to.be.true;
+			expect( upcastCheck.mock.calls.length === 1 ).toBe( true );
 		} );
 	} );
 
@@ -567,11 +553,10 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			const content = spy.mock.calls[ 0 ][ 0 ];
 
-			expect( _stringifyModel( content ) ).to.equal(
-				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="numbered">' +
+			expect( _stringifyModel( content ) )
+				.toEqual( '<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="numbered">' +
 					'foo' +
-				'</paragraph>'
-			);
+				'</paragraph>' );
 		} );
 
 		function createDataTransfer( data ) {
@@ -618,15 +603,13 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li>' +
 						'<p>' +
 							'<span style="color:red">foo</span>' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -666,15 +649,13 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li>' +
 						'<p>' +
 							'foo' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +

@@ -343,7 +343,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} );
 		} );
 
-		it( 'should fetch all categories if API limits their results', () => {
+		it( 'should fetch all categories if API limits their results', async () => {
 			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
@@ -365,19 +365,18 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			return adapter.upload()
-				.catch( () => {
-					expect( fakeXHRServer.requests ).toHaveLength( 3 );
-					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toBeInstanceOf( Object );
-					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
-					expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
-					expect( fakeXHRServer.requests[ 1 ].requestHeaders ).toBeInstanceOf( Object );
-					expect( fakeXHRServer.requests[ 1 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
-					expect( fakeXHRServer.requests[ 1 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
-					expect( fakeXHRServer.requests[ 2 ].requestHeaders ).toBeInstanceOf( Object );
-					expect( fakeXHRServer.requests[ 2 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
-					expect( fakeXHRServer.requests[ 2 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
-				} );
+			await expect( adapter.upload() ).rejects.toBe( 'Cannot determine a category for the uploaded file.' );
+
+			expect( fakeXHRServer.requests ).toHaveLength( 3 );
+			expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toBeInstanceOf( Object );
+			expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
+			expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
+			expect( fakeXHRServer.requests[ 1 ].requestHeaders ).toBeInstanceOf( Object );
+			expect( fakeXHRServer.requests[ 1 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
+			expect( fakeXHRServer.requests[ 1 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
+			expect( fakeXHRServer.requests[ 2 ].requestHeaders ).toBeInstanceOf( Object );
+			expect( fakeXHRServer.requests[ 2 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
+			expect( fakeXHRServer.requests[ 2 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
 		} );
 
 		it( 'should abort if the provided configuration is not in sync with server', () => {
@@ -879,7 +878,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} );
 		} );
 
-		it( 'should throw an error on abort (while fetching categories)', () => {
+		it( 'should throw an error on abort (while fetching categories)', async () => {
 			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
@@ -892,22 +891,17 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			const promise = adapter.upload()
-				.then( () => {
-					throw new Error( 'Promise should throw.' );
-				} )
-				.catch( () => {
-					expect( adapter.controller.signal.aborted ).toBe( true );
-				} );
+			const promise = adapter.upload();
 
 			loader.file.then( () => {
 				adapter.abort();
 			} );
 
-			return promise;
+			await expect( promise ).rejects.toThrow();
+			expect( adapter.controller.signal.aborted ).toBe( true );
 		} );
 
-		it( 'should throw an error on abort (while uploading)', () => {
+		it( 'should throw an error on abort (while uploading)', async () => {
 			vi.spyOn( ckboxUtils, 'getCategoryIdForFile' ).mockResolvedValue( 'id-category-2' );
 
 			fakeXHRServer.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
@@ -916,16 +910,11 @@ describe( 'CKBoxUploadAdapter', () => {
 				xhr.error();
 			} );
 
-			return adapter.upload()
-				.then( () => {
-					throw new Error( 'Promise should throw.' );
-				} )
-				.catch( () => {
-					expect( adapter.controller.signal.aborted ).toBe( true );
-				} );
+			await expect( adapter.upload() ).rejects.toBe( 'Cannot upload file: image.jpg.' );
+			expect( adapter.controller.signal.aborted ).toBe( true );
 		} );
 
-		it( 'should throw an error on generic request error (while uploading)', () => {
+		it( 'should throw an error on generic request error (while uploading)', async () => {
 			vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 			vi.spyOn( ckboxUtils, 'getCategoryIdForFile' ).mockResolvedValue( 'id-category-2' );
 
@@ -933,13 +922,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				xhr.error();
 			} );
 
-			return adapter.upload()
-				.then( () => {
-					throw new Error( 'Promise should throw.' );
-				} )
-				.catch( msg => {
-					expect( msg ).toBe( 'Cannot upload file: image.jpg.' );
-				} );
+			await expect( adapter.upload() ).rejects.toBe( 'Cannot upload file: image.jpg.' );
 		} );
 
 		it( 'abort should not throw before upload', () => {
@@ -989,45 +972,43 @@ describe( 'CKBoxUploadAdapter', () => {
 					tokenClaims: { aud: 'environment' }
 				} ];
 
-				for ( const { testName, workspaceId, tokenClaims } of testData ) {
-					it( testName, async () => {
-						TokenMock.initialToken = createToken( tokenClaims );
-						( await ckboxUtils._token ).refreshToken();
+				it.each( testData )( '$testName', async ( { workspaceId, tokenClaims } ) => {
+					TokenMock.initialToken = createToken( tokenClaims );
+					( await ckboxUtils._token ).refreshToken();
 
-						fakeXHRServer.respondWith( 'GET', /\/categories/, [
-							200,
-							{ 'Content-Type': 'application/json' },
-							JSON.stringify( {
-								items: [
-									{ name: 'Albums', id: 'id-category-1', extensions: [ 'jpg' ] }
-								], offset: 0, limit: 50, totalCount: 1
-							} )
-						] );
+					fakeXHRServer.respondWith( 'GET', /\/categories/, [
+						200,
+						{ 'Content-Type': 'application/json' },
+						JSON.stringify( {
+							items: [
+								{ name: 'Albums', id: 'id-category-1', extensions: [ 'jpg' ] }
+							], offset: 0, limit: 50, totalCount: 1
+						} )
+					] );
 
-						fakeXHRServer.respondWith( 'POST', /\/assets/, [
-							201,
-							{ 'Content-Type': 'application/json' },
-							JSON.stringify( {
-								id: 'image-1',
-								imageUrls: {
-									100: 'https://ckbox.cloud/workspace1/assets/image-1/images/100.webp',
-									default: 'https://ckbox.cloud/workspace1/assets/image-1/images/100.jpeg'
-								}
-							} )
-						] );
+					fakeXHRServer.respondWith( 'POST', /\/assets/, [
+						201,
+						{ 'Content-Type': 'application/json' },
+						JSON.stringify( {
+							id: 'image-1',
+							imageUrls: {
+								100: 'https://ckbox.cloud/workspace1/assets/image-1/images/100.webp',
+								default: 'https://ckbox.cloud/workspace1/assets/image-1/images/100.jpeg'
+							}
+						} )
+					] );
 
-						return adapter.upload()
-							.then( () => {
-								const categoriesRequest = fakeXHRServer.requests[ 0 ];
-								const uploadRequest = fakeXHRServer.requests[ 1 ];
+					return adapter.upload()
+						.then( () => {
+							const categoriesRequest = fakeXHRServer.requests[ 0 ];
+							const uploadRequest = fakeXHRServer.requests[ 1 ];
 
-								expect( categoriesRequest.url ).toBe(
-									CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=' + workspaceId );
-								expect( uploadRequest.url ).toBe(
-									CKBOX_API_URL + '/assets?workspaceId=' + workspaceId );
-							} );
-					} );
-				}
+							expect( categoriesRequest.url ).toBe(
+								CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=' + workspaceId );
+							expect( uploadRequest.url ).toBe(
+								CKBOX_API_URL + '/assets?workspaceId=' + workspaceId );
+						} );
+				} );
 			} );
 
 			describe( 'defaultUploadWorkspaceId is defined', () => {

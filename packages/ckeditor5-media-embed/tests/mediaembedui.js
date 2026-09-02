@@ -140,7 +140,7 @@ describe( 'MediaEmbedUI', () => {
 		} );
 
 		function testSubmit( suiteName, action ) {
-			describe( suiteName, () => {
+			describe( 'submission through ' + suiteName, () => {
 				it( 'checks if the form is valid', () => {
 					const spy = vi.spyOn( form, 'isValid' );
 

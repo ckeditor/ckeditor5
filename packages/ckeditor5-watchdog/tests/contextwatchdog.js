@@ -52,7 +52,7 @@ describe( 'ContextWatchdog', () => {
 		}
 
 		expect( err ).to.be.instanceOf( Error );
-		expect( err.message ).to.match( /Cannot add items to destroyed watchdog\./ );
+		expect( err.message ).toMatch( /Cannot add items to destroyed watchdog\./ );
 	} );
 
 	describe( 'for scenario with no items', () => {
@@ -71,15 +71,15 @@ describe( 'ContextWatchdog', () => {
 
 			const initializationPromise = watchdog.create();
 
-			expect( watchdog.state ).to.equal( 'initializing' );
+			expect( watchdog.state ).toEqual( 'initializing' );
 
 			await initializationPromise;
 
-			expect( watchdog.state ).to.equal( 'ready' );
+			expect( watchdog.state ).toEqual( 'ready' );
 
 			await watchdog.destroy();
 
-			expect( watchdog.state ).to.equal( 'destroyed' );
+			expect( watchdog.state ).toEqual( 'destroyed' );
 		} );
 
 		it( 'should set custom creator and destructor if provided', async () => {
@@ -136,7 +136,7 @@ describe( 'ContextWatchdog', () => {
 
 			await waitCycle();
 
-			expect( watchdog.state ).to.equal( 'crashedPermanently' );
+			expect( watchdog.state ).toEqual( 'crashedPermanently' );
 
 			await watchdog.destroy();
 		} );
@@ -159,7 +159,7 @@ describe( 'ContextWatchdog', () => {
 
 				expect( errorSpy ).toHaveBeenCalledOnce();
 
-				expect( watchdog.context ).to.not.equal( oldContext );
+				expect( watchdog.context ).not.toBe( oldContext );
 			} );
 		} );
 	} );
@@ -185,6 +185,8 @@ describe( 'ContextWatchdog', () => {
 			} );
 
 			await watchdog.destroy();
+
+			expect( watchdog.state ).toEqual( 'destroyed' );
 		} );
 
 		it( 'should throw when multiple items with the same id are added', async () => {
@@ -214,7 +216,7 @@ describe( 'ContextWatchdog', () => {
 			await watchdog.destroy();
 
 			expect( err ).to.be.instanceOf( Error );
-			expect( err.message ).to.match( /Item with the given id is already added: 'editor1'./ );
+			expect( err.message ).toMatch( /Item with the given id is already added: 'editor1'./ );
 		} );
 
 		it( 'should throw when not added item is removed', async () => {
@@ -233,7 +235,7 @@ describe( 'ContextWatchdog', () => {
 			await watchdog.destroy();
 
 			expect( err ).to.be.instanceOf( Error );
-			expect( err.message ).to.match( /Item with the given id was not registered: foo\./ );
+			expect( err.message ).toMatch( /Item with the given id was not registered: foo\./ );
 		} );
 
 		it( 'should throw when the item is added before the context is created', async () => {
@@ -247,9 +249,8 @@ describe( 'ContextWatchdog', () => {
 			}
 
 			expect( err ).to.be.instanceOf( Error );
-			expect( err.message ).to.match(
-				/Context was not created yet\. You should call the `ContextWatchdog#create\(\)` method first\./
-			);
+			expect( err.message )
+				.toMatch( /Context was not created yet\. You should call the `ContextWatchdog#create\(\)` method first\./ );
 		} );
 
 		it( 'should allow setting editor custom destructors', async () => {
@@ -295,7 +296,7 @@ describe( 'ContextWatchdog', () => {
 			await watchdog.destroy();
 
 			expect( err ).to.be.instanceOf( Error );
-			expect( err.message ).to.match( /Not supported item type: 'foo'\./ );
+			expect( err.message ).toMatch( /Not supported item type: 'foo'\./ );
 		} );
 
 		it( 'should allow adding and removing items without waiting for promises', async () => {
@@ -320,6 +321,8 @@ describe( 'ContextWatchdog', () => {
 			watchdog.remove( [ 'editor1', 'editor2' ] );
 
 			await watchdog.destroy();
+
+			expect( watchdog.state ).toEqual( 'destroyed' );
 		} );
 
 		it( 'should not change the input items', async () => {
@@ -336,6 +339,8 @@ describe( 'ContextWatchdog', () => {
 			} ] ) );
 
 			await watchdog._restart();
+
+			expect( watchdog.state ).toEqual( 'ready' );
 
 			await watchdog.destroy();
 		} );
@@ -494,8 +499,8 @@ describe( 'ContextWatchdog', () => {
 
 				expect( restartSpy ).toHaveBeenCalledOnce();
 
-				expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'ready' );
-				expect( watchdog.context ).to.not.equal( oldContext );
+				expect( watchdog.getItemState( 'editor1' ) ).toEqual( 'ready' );
+				expect( watchdog.context ).not.toBe( oldContext );
 
 				await watchdog.destroy();
 			} );
@@ -526,9 +531,9 @@ describe( 'ContextWatchdog', () => {
 
 				expect( restartSpy ).not.toHaveBeenCalled();
 
-				expect( watchdog.context ).to.equal( oldContext );
+				expect( watchdog.context ).toEqual( oldContext );
 
-				expect( watchdog.getItem( 'editor1' ) ).to.not.equal( oldEditor );
+				expect( watchdog.getItem( 'editor1' ) ).not.toBe( oldEditor );
 
 				await watchdog.destroy();
 			} );
@@ -577,14 +582,14 @@ describe( 'ContextWatchdog', () => {
 				expect( mainWatchdogRestartSpy ).not.toHaveBeenCalled();
 				expect( editorWatchdog2RestartSpy ).not.toHaveBeenCalled();
 
-				expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'ready' );
-				expect( watchdog.getItemState( 'editor2' ) ).to.equal( 'ready' );
-				expect( watchdog.state ).to.equal( 'ready' );
+				expect( watchdog.getItemState( 'editor1' ) ).toEqual( 'ready' );
+				expect( watchdog.getItemState( 'editor2' ) ).toEqual( 'ready' );
+				expect( watchdog.state ).toEqual( 'ready' );
 
-				expect( oldEditor1 ).to.not.equal( editorWatchdog1.editor );
-				expect( oldEditor2 ).to.equal( editorWatchdog2.editor );
+				expect( oldEditor1 ).not.toBe( editorWatchdog1.editor );
+				expect( oldEditor2 ).toEqual( editorWatchdog2.editor );
 
-				expect( watchdog.context ).to.equal( oldContext );
+				expect( watchdog.context ).toEqual( oldContext );
 
 				await watchdog.destroy();
 			} );
@@ -649,8 +654,8 @@ describe( 'ContextWatchdog', () => {
 
 				await waitCycle();
 
-				expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'crashedPermanently' );
-				expect( watchdog.state ).to.equal( 'ready' );
+				expect( watchdog.getItemState( 'editor1' ) ).toEqual( 'crashedPermanently' );
+				expect( watchdog.state ).toEqual( 'ready' );
 
 				await watchdog.destroy();
 			} );
@@ -669,7 +674,7 @@ describe( 'ContextWatchdog', () => {
 				} ] );
 
 				const itemErrorSpy = vi.fn( () => {
-					expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'crashed' );
+					expect( watchdog.getItemState( 'editor1' ) ).toEqual( 'crashed' );
 				} );
 
 				watchdog.on( 'itemError', itemErrorSpy );
@@ -701,7 +706,7 @@ describe( 'ContextWatchdog', () => {
 				} ] );
 
 				const itemRestartSpy = vi.fn( () => {
-					expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'ready' );
+					expect( watchdog.getItemState( 'editor1' ) ).toEqual( 'ready' );
 				} );
 
 				watchdog.on( 'itemRestart', itemRestartSpy );
@@ -752,7 +757,7 @@ describe( 'ContextWatchdog - config-based editor creator', () => {
 			}
 		} );
 
-		expect( watchdog.getItem( 'editor1' ).getData() ).to.equal( '<p>foo</p>' );
+		expect( watchdog.getItem( 'editor1' ).getData() ).toEqual( '<p>foo</p>' );
 
 		await watchdog.destroy();
 	} );
@@ -781,7 +786,7 @@ describe( 'ContextWatchdog - config-based editor creator', () => {
 
 		expect( restartSpy ).toHaveBeenCalledOnce();
 
-		expect( watchdog.getItem( 'editor1' ).getData() ).to.equal( '<p>foo</p>' );
+		expect( watchdog.getItem( 'editor1' ).getData() ).toEqual( '<p>foo</p>' );
 
 		await watchdog.destroy();
 	} );
@@ -810,7 +815,7 @@ describe( 'ContextWatchdog - config-based editor creator', () => {
 
 		expect( restartSpy ).toHaveBeenCalledOnce();
 
-		expect( watchdog.getItem( 'editor1' ).getData() ).to.equal( '<p>foo</p>' );
+		expect( watchdog.getItem( 'editor1' ).getData() ).toEqual( '<p>foo</p>' );
 
 		await watchdog.destroy();
 	} );

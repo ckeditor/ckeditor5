@@ -63,15 +63,15 @@ describe( 'Input', () => {
 		} );
 
 		it( 'should define #pluginName', () => {
-			expect( Input.pluginName ).to.equal( 'Input' );
+			expect( Input.pluginName ).toEqual( 'Input' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( Input.isOfficialPlugin ).to.be.true;
+			expect( Input.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( Input.isPremiumPlugin ).to.be.false;
+			expect( Input.isPremiumPlugin ).toBe( false );
 		} );
 
 		describe( 'basic typing', () => {
@@ -96,7 +96,7 @@ describe( 'Input', () => {
 
 				const insertTextCommand = editor.commands.get( 'insertText' );
 
-				expect( editor.commands.get( 'input' ) ).to.equal( insertTextCommand );
+				expect( editor.commands.get( 'input' ) ).toEqual( insertTextCommand );
 
 				await editor.destroy();
 			} );
@@ -192,15 +192,15 @@ describe( 'Input', () => {
 
 				const executeOptions = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( executeOptions.text ).to.equal( 'abc' );
-				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
-				expect( executeOptions.selection.isCollapsed ).to.be.false;
+				expect( executeOptions.text ).toEqual( 'abc' );
+				expect( executeOptions.selection.rangeCount ).toEqual( 1 );
+				expect( executeOptions.selection.isCollapsed ).toBe( false );
 				expect( executeOptions.selection.getFirstRange().start.isEqual(
 					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 0 )
-				) ).to.be.true;
+				) ).toBe( true );
 				expect( executeOptions.selection.getFirstRange().end.isEqual(
 					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 1 ), 0 )
-				) ).to.be.true;
+				) ).toBe( true );
 			} );
 
 			it( 'should preventDefault() the original event if target ranges span across different blocks (ends in code block)', () => {
@@ -209,12 +209,10 @@ describe( 'Input', () => {
 					'<codeBlock language="javascript">]bar</codeBlock>'
 				);
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-					'<p>foo</p>' +
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual( '<p>foo</p>' +
 					'<pre data-language="JavaScript" spellcheck="false">' +
 						'<code class="language-javascript">bar</code>' +
-					'</pre>'
-				);
+					'</pre>' );
 
 				// Emulate browser generated target range: <p>[foo</p><pre>]<code>bar</code></pre>
 				const eventData = {
@@ -240,15 +238,15 @@ describe( 'Input', () => {
 
 				const executeOptions = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( executeOptions.text ).to.equal( 'abc' );
-				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
-				expect( executeOptions.selection.isCollapsed ).to.be.false;
+				expect( executeOptions.text ).toEqual( 'abc' );
+				expect( executeOptions.selection.rangeCount ).toEqual( 1 );
+				expect( executeOptions.selection.isCollapsed ).toBe( false );
 				expect( executeOptions.selection.getFirstRange().start.isEqual(
 					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 0 )
-				) ).to.be.true;
+				) ).toBe( true );
 				expect( executeOptions.selection.getFirstRange().end.isEqual(
 					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 3 )
-				) ).to.be.true;
+				) ).toBe( true );
 			} );
 
 			it( 'should preventDefault() the original event if target ranges span across different blocks (ends in block quote)', () => {
@@ -259,12 +257,10 @@ describe( 'Input', () => {
 					'</blockQuote>'
 				);
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-					'<p>foo</p>' +
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual( '<p>foo</p>' +
 					'<blockquote>' +
 						'<p>bar</p>' +
-					'</blockquote>'
-				);
+					'</blockquote>' );
 
 				// Emulate browser generated target range: <p>[foo</p><blockquote><p>]bar</p></blockquote>
 				const eventData = {
@@ -290,15 +286,15 @@ describe( 'Input', () => {
 
 				const executeOptions = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( executeOptions.text ).to.equal( 'abc' );
-				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
-				expect( executeOptions.selection.isCollapsed ).to.be.false;
+				expect( executeOptions.text ).toEqual( 'abc' );
+				expect( executeOptions.selection.rangeCount ).toEqual( 1 );
+				expect( executeOptions.selection.isCollapsed ).toBe( false );
 				expect( executeOptions.selection.getFirstRange().start.isEqual(
 					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 0 )
-				) ).to.be.true;
+				) ).toBe( true );
 				expect( executeOptions.selection.getFirstRange().end.isEqual(
 					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 1 ).getChild( 0 ), 0 )
-				) ).to.be.true;
+				) ).toBe( true );
 			} );
 
 			it( 'should preventDefault() the original event if target ranges span empty paragraph and ends in code block', () => {
@@ -307,12 +303,10 @@ describe( 'Input', () => {
 					'<codeBlock language="javascript">]bar</codeBlock>'
 				);
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-					'<p></p>' +
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual( '<p></p>' +
 					'<pre data-language="JavaScript" spellcheck="false">' +
 						'<code class="language-javascript">bar</code>' +
-					'</pre>'
-				);
+					'</pre>' );
 
 				// Emulate browser generated target range: <p>[</p><pre>]<code>bar</code></pre>
 				const preventDefaultSpy = vi.fn();
@@ -344,12 +338,12 @@ describe( 'Input', () => {
 
 				const executeOptions = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( executeOptions.text ).to.equal( 'abc' );
-				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
-				expect( executeOptions.selection.isCollapsed ).to.be.true;
+				expect( executeOptions.text ).toEqual( 'abc' );
+				expect( executeOptions.selection.rangeCount ).toEqual( 1 );
+				expect( executeOptions.selection.isCollapsed ).toBe( true );
 				expect( executeOptions.selection.getFirstPosition().isEqual(
 					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 0 )
-				) ).to.be.true;
+				) ).toBe( true );
 			} );
 
 			it( 'should not preventDefault() the original beforeinput event if target range is collapsed', () => {
@@ -388,8 +382,8 @@ describe( 'Input', () => {
 
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( firstCallArgs.text ).to.equal( 'bar' );
-				expect( firstCallArgs.resultRange ).to.be.undefined;
+				expect( firstCallArgs.text ).toEqual( 'bar' );
+				expect( firstCallArgs.resultRange ).toBeUndefined();
 				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
 				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
@@ -413,9 +407,9 @@ describe( 'Input', () => {
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
-				expect( firstCallArgs.text ).to.equal( 'bar' );
-				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
-				expect( firstCallArgs.resultRange ).to.be.undefined;
+				expect( firstCallArgs.text ).toEqual( 'bar' );
+				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).toBe( true );
+				expect( firstCallArgs.resultRange ).toBeUndefined();
 				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
 				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
@@ -440,9 +434,9 @@ describe( 'Input', () => {
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
-				expect( firstCallArgs.text ).to.equal( 'bar' );
-				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
-				expect( firstCallArgs.resultRange ).to.be.undefined;
+				expect( firstCallArgs.text ).toEqual( 'bar' );
+				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).toBe( true );
+				expect( firstCallArgs.resultRange ).toBeUndefined();
 				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
 				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
@@ -479,8 +473,8 @@ describe( 'Input', () => {
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				// It should use the current model selection (which is in the live paragraph).
-				expect( firstCallArgs.text ).to.equal( 'bar' );
-				expect( firstCallArgs.selection.isEqual( editor.model.document.selection ) ).to.be.true;
+				expect( firstCallArgs.text ).toEqual( 'bar' );
+				expect( firstCallArgs.selection.isEqual( editor.model.document.selection ) ).toBe( true );
 			} );
 
 			it( 'should delete selected content on composition start', () => {
@@ -514,7 +508,7 @@ describe( 'Input', () => {
 
 				viewDocument.fire( 'compositionstart' );
 
-				expect( modelSelection.getFirstRange().isEqual( expectedRange ) ).to.be.true;
+				expect( modelSelection.getFirstRange().isEqual( expectedRange ) ).toBe( true );
 
 				viewDocument.fire( 'compositionend', new ViewDocumentDomEventData( view, {
 					preventDefault() {}
@@ -525,8 +519,8 @@ describe( 'Input', () => {
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
-				expect( firstCallArgs.text ).to.equal( 'bar' );
-				expect( firstCallArgs.selection.getFirstRange().isEqual( expectedRange ) ).to.be.true;
+				expect( firstCallArgs.text ).toEqual( 'bar' );
+				expect( firstCallArgs.selection.getFirstRange().isEqual( expectedRange ) ).toBe( true );
 			} );
 
 			it( 'should not call model.deleteContent() on composition start for collapsed model selection', () => {
@@ -656,7 +650,7 @@ describe( 'Input', () => {
 					editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 					// Verify initial model state.
-					expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+					expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 					const composition = compositionHelper( editor, 1 );
 
@@ -670,10 +664,10 @@ describe( 'Input', () => {
 					expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
 					expect( typingQueueFlushSpy ).toHaveBeenCalledTimes( 2 );
 
-					expect( typingQueueFlushSpy.mock.calls[ 0 ][ 0 ] ).to.equal( 'next beforeinput' );
-					expect( typingQueueFlushSpy.mock.calls[ 1 ][ 0 ] ).to.equal( 'mutations' );
+					expect( typingQueueFlushSpy.mock.calls[ 0 ][ 0 ] ).toEqual( 'next beforeinput' );
+					expect( typingQueueFlushSpy.mock.calls[ 1 ][ 0 ] ).toEqual( 'mutations' );
 
-					expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+					expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 				} );
 
 				it( 'should queue command data without a selection (no selection ranges are tracked)', () => {
@@ -703,7 +697,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -714,7 +708,7 @@ describe( 'Input', () => {
 				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Make sure that model is not modified by DOM changes.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
@@ -726,7 +720,7 @@ describe( 'Input', () => {
 				// DOM text node is already the proper one so no changes are required.
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should render the DOM on composition end only once when needed', () => {
@@ -736,7 +730,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -748,7 +742,7 @@ describe( 'Input', () => {
 				composition.update( '  abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Make sure that model is not modified by DOM changes.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
@@ -760,8 +754,8 @@ describe( 'Input', () => {
 				// DOM text node requires NBSP vs space fixing.
 				expect( rendererUpdateTextNodeSpy ).toHaveBeenCalledOnce();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
-				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo  abc[]</paragraph>' );
+				expect( editor.getData() ).toEqual( '<p>foo &nbsp;abc</p>' );
 			} );
 		} );
 	} );
@@ -823,9 +817,9 @@ describe( 'Input', () => {
 
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( firstCallArgs.text ).to.equal( 'bar' );
-				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;
-				expect( firstCallArgs.resultRange ).to.be.undefined;
+				expect( firstCallArgs.text ).toEqual( 'bar' );
+				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).toBe( true );
+				expect( firstCallArgs.resultRange ).toBeUndefined();
 
 				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
 				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
@@ -858,12 +852,12 @@ describe( 'Input', () => {
 
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( firstCallArgs.text ).to.equal( 'bar' );
+				expect( firstCallArgs.text ).toEqual( 'bar' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( editor.model.createRange(
 					editor.model.createPositionAt( modelParagraph, 3 ),
 					editor.model.createPositionAt( modelParagraph, 4 )
-				) ) ) ).to.be.true;
-				expect( firstCallArgs.resultRange ).to.be.undefined;
+				) ) ) ).toBe( true );
+				expect( firstCallArgs.resultRange ).toBeUndefined();
 
 				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
 				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
@@ -889,12 +883,12 @@ describe( 'Input', () => {
 
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( firstCallArgs.text ).to.equal( '' );
+				expect( firstCallArgs.text ).toEqual( '' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( editor.model.createRange(
 					editor.model.createPositionAt( modelParagraph, 2 ),
 					editor.model.createPositionAt( modelParagraph, 3 )
-				) ) ) ).to.be.true;
-				expect( firstCallArgs.resultRange ).to.be.undefined;
+				) ) ) ).toBe( true );
+				expect( firstCallArgs.resultRange ).toBeUndefined();
 
 				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
 				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
@@ -920,9 +914,9 @@ describe( 'Input', () => {
 
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( firstCallArgs.text ).to.equal( 'barfoo' );
-				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).to.be.true;
-				expect( firstCallArgs.resultRange ).to.be.undefined;
+				expect( firstCallArgs.text ).toEqual( 'barfoo' );
+				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).toBe( true );
+				expect( firstCallArgs.resultRange ).toBeUndefined();
 
 				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
 				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
@@ -947,9 +941,9 @@ describe( 'Input', () => {
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
-				expect( firstCallArgs.text ).to.equal( 'ba' );
-				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).to.be.true;
-				expect( firstCallArgs.resultRange ).to.be.undefined;
+				expect( firstCallArgs.text ).toEqual( 'ba' );
+				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).toBe( true );
+				expect( firstCallArgs.resultRange ).toBeUndefined();
 
 				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
 				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
@@ -971,9 +965,9 @@ describe( 'Input', () => {
 				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
-				expect( firstCallArgs.text ).to.equal( 'bar' );
-				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;
-				expect( firstCallArgs.resultRange ).to.be.undefined;
+				expect( firstCallArgs.text ).toEqual( 'bar' );
+				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).toBe( true );
+				expect( firstCallArgs.resultRange ).toBeUndefined();
 
 				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
 				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
@@ -1086,7 +1080,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1098,7 +1092,7 @@ describe( 'Input', () => {
 				composition.update( 'a', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooa[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooa[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1108,7 +1102,7 @@ describe( 'Input', () => {
 				composition.update( 'b', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooab[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooab[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1118,7 +1112,7 @@ describe( 'Input', () => {
 				composition.update( 'c', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1132,7 +1126,7 @@ describe( 'Input', () => {
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 				rendererUpdateTextNodeSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should render the DOM on composition end only when needed', () => {
@@ -1142,7 +1136,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1153,7 +1147,7 @@ describe( 'Input', () => {
 				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1167,7 +1161,7 @@ describe( 'Input', () => {
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 				rendererUpdateTextNodeSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should render the DOM on composition end only once when needed', () => {
@@ -1177,7 +1171,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1189,7 +1183,7 @@ describe( 'Input', () => {
 				composition.update( '  abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Make sure that model is not modified by DOM changes.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo  abc[]</paragraph>' );
 
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 				rendererUpdateTextNodeSpy.mockClear();
@@ -1206,8 +1200,8 @@ describe( 'Input', () => {
 				expect( rendererUpdateTextNodeSpy ).toHaveBeenCalledOnce();
 				rendererUpdateTextNodeSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
-				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo  abc[]</paragraph>' );
+				expect( editor.getData() ).toEqual( '<p>foo &nbsp;abc</p>' );
 			} );
 
 			it( 'should verify if composed elements are correct after composition', () => {
@@ -1217,7 +1211,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1228,7 +1222,7 @@ describe( 'Input', () => {
 				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1242,9 +1236,9 @@ describe( 'Input', () => {
 				// Commit composition.
 				composition.end( 'abc' );
 
-				expect( reportedMutations.length ).to.equal( 1 );
-				expect( reportedMutations[ 0 ].type ).to.equal( 'children' );
-				expect( reportedMutations[ 0 ].node ).to.equal( viewParagraph );
+				expect( reportedMutations.length ).toEqual( 1 );
+				expect( reportedMutations[ 0 ].type ).toEqual( 'children' );
+				expect( reportedMutations[ 0 ].node ).toEqual( viewParagraph );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
@@ -1252,7 +1246,7 @@ describe( 'Input', () => {
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 				rendererUpdateTextNodeSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should not fire mutations for removed elements (after composition end)', () => {
@@ -1262,7 +1256,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1273,7 +1267,7 @@ describe( 'Input', () => {
 				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1292,7 +1286,7 @@ describe( 'Input', () => {
 				// Commit composition.
 				composition.end( 'abc' );
 
-				expect( reportedMutations.length ).to.equal( 0 );
+				expect( reportedMutations.length ).toEqual( 0 );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
@@ -1300,7 +1294,7 @@ describe( 'Input', () => {
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 				rendererUpdateTextNodeSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>[]</paragraph>' );
 			} );
 
 			it( 'should apply changes to model after composed DOM node mutated', () => {
@@ -1310,7 +1304,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1323,7 +1317,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
@@ -1331,7 +1325,7 @@ describe( 'Input', () => {
 				composition.modifyDom( 'abc', viewRange );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1345,7 +1339,7 @@ describe( 'Input', () => {
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 				rendererUpdateTextNodeSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should apply changes to model after composed DOM node mutated inside an attribute element', () => {
@@ -1358,7 +1352,7 @@ describe( 'Input', () => {
 				} );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1371,7 +1365,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
@@ -1379,7 +1373,7 @@ describe( 'Input', () => {
 				composition.modifyDom( 'abc', viewRange );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1393,7 +1387,7 @@ describe( 'Input', () => {
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 				rendererUpdateTextNodeSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 			} );
 
 			it( 'should apply changes to model after composed DOM node mutated inside an attribute element (mutations on bold)', () => {
@@ -1406,7 +1400,7 @@ describe( 'Input', () => {
 				} );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1419,7 +1413,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
@@ -1433,7 +1427,7 @@ describe( 'Input', () => {
 				composition.modifyDom( 'abc', viewRange );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1447,7 +1441,7 @@ describe( 'Input', () => {
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 				rendererUpdateTextNodeSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 			} );
 
 			it( 'should apply changes to model after a timeout before DOM mutations', async () => {
@@ -1458,7 +1452,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1471,14 +1465,14 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				await vi.advanceTimersByTimeAsync( 100 );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1495,7 +1489,7 @@ describe( 'Input', () => {
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 				rendererUpdateTextNodeSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should apply changes to the model in the position adjusted by other model changes', () => {
@@ -1505,7 +1499,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1518,7 +1512,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
@@ -1530,7 +1524,7 @@ describe( 'Input', () => {
 				composition.modifyDom( 'abc', viewRange );
 
 				// Changes are immediately applied to the model.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
@@ -1544,7 +1538,7 @@ describe( 'Input', () => {
 				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 				rendererUpdateTextNodeSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should commit composition into replaced element', () => {
@@ -1554,7 +1548,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1567,7 +1561,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
@@ -1582,7 +1576,7 @@ describe( 'Input', () => {
 				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				insertTextCommandSpy.mockClear();
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>abc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>abc[]</paragraph>' );
 			} );
 
 			it( 'should destroy composition queue on editor destroy', async () => {
@@ -1592,7 +1586,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1605,17 +1599,17 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				const queue = editor.plugins.get( 'Input' )._typingQueue;
 
-				expect( queue.length ).to.equal( 1 );
+				expect( queue.length ).toEqual( 1 );
 
 				await editor.destroy();
 
-				expect( queue.length ).to.equal( 0 );
+				expect( queue.length ).toEqual( 0 );
 			} );
 
 			it( 'should not flush the typing queue on mutations unrelated to the composed element', () => {
@@ -1629,7 +1623,7 @@ describe( 'Input', () => {
 					writer.setSelection( root.getChild( 0 ), 'end' );
 				} );
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1637,17 +1631,17 @@ describe( 'Input', () => {
 				composition.start();
 				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph><paragraph>bar</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph><paragraph>bar</paragraph>' );
 
 				const queue = editor.plugins.get( 'Input' )._typingQueue;
 
 				// The affected elements set still holds the first (composed) paragraph.
-				expect( queue.hasAffectedElements() ).to.be.true;
-				expect( queue.isElementAffected( root.getChild( 0 ) ) ).to.be.true;
-				expect( queue.isElementAffected( root.getChild( 1 ) ) ).to.be.false;
+				expect( queue.hasAffectedElements() ).toBe( true );
+				expect( queue.isElementAffected( root.getChild( 0 ) ) ).toBe( true );
+				expect( queue.isElementAffected( root.getChild( 1 ) ) ).toBe( false );
 
 				// The queue itself is empty after the immediate composing flush.
-				expect( queue.length ).to.equal( 0 );
+				expect( queue.length ).toEqual( 0 );
 
 				typingQueueFlushSpy.mockClear();
 
@@ -1662,8 +1656,8 @@ describe( 'Input', () => {
 				expect( typingQueueFlushSpy ).not.toHaveBeenCalled();
 
 				// The affected element set is untouched and the model is unchanged.
-				expect( queue.isElementAffected( root.getChild( 0 ) ) ).to.be.true;
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph><paragraph>bar</paragraph>' );
+				expect( queue.isElementAffected( root.getChild( 0 ) ) ).toBe( true );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>fooabc[]</paragraph><paragraph>bar</paragraph>' );
 
 				composition.end( 'abc' );
 			} );
@@ -1673,7 +1667,7 @@ describe( 'Input', () => {
 
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1682,7 +1676,7 @@ describe( 'Input', () => {
 				// Start composition without any beforeinput, so nothing is queued and nothing is affected.
 				composition.start();
 
-				expect( queue.hasAffectedElements() ).to.be.false;
+				expect( queue.hasAffectedElements() ).toBe( false );
 
 				const reportedMutations = [];
 
@@ -1693,9 +1687,9 @@ describe( 'Input', () => {
 				// End the composition. With no affected elements, no composition mutations are collected/fired.
 				composition.end( '' );
 
-				expect( reportedMutations.length ).to.equal( 0 );
-				expect( queue.hasAffectedElements() ).to.be.false;
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( reportedMutations.length ).toEqual( 0 );
+				expect( queue.hasAffectedElements() ).toBe( false );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo[]</paragraph>' );
 			} );
 		} );
 	} );
@@ -1708,11 +1702,11 @@ describe( 'Input', () => {
 		return {
 			start() {
 				viewDocument.fire( 'compositionstart' );
-				expect( viewDocument.isComposing ).to.be.true;
+				expect( viewDocument.isComposing ).toBe( true );
 			},
 
 			update( data, range ) {
-				expect( viewDocument.isComposing ).to.be.true;
+				expect( viewDocument.isComposing ).toBe( true );
 
 				const preventDefaultSpy = this.fireBeforeInputEvent( data, range );
 
@@ -1759,7 +1753,7 @@ describe( 'Input', () => {
 				}
 
 				// Make sure it is always no bigger than 1 entry to avoid problems with position mapping.
-				expect( inputPlugin._typingQueue.length ).to.equal( expectedTypingQueueSize );
+				expect( inputPlugin._typingQueue.length ).toEqual( expectedTypingQueueSize );
 
 				window.getSelection().setBaseAndExtent(
 					domRange.startContainer, domRange.startOffset + data.length,
@@ -1769,7 +1763,7 @@ describe( 'Input', () => {
 			},
 
 			end( data ) {
-				expect( viewDocument.isComposing ).to.be.true;
+				expect( viewDocument.isComposing ).toBe( true );
 
 				viewDocument.fire(
 					'compositionend',
@@ -1780,7 +1774,7 @@ describe( 'Input', () => {
 					} )
 				);
 
-				expect( viewDocument.isComposing ).to.be.false;
+				expect( viewDocument.isComposing ).toBe( false );
 			}
 		};
 	}

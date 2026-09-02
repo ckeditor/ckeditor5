@@ -37,7 +37,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 
 		it( 'should be named', () => {
-			expect( RestrictedEditingModeEditing.pluginName ).to.equal( 'RestrictedEditingModeEditing' );
+			expect( RestrictedEditingModeEditing.pluginName ).toEqual( 'RestrictedEditingModeEditing' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
@@ -49,7 +49,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 
 		it( 'should have `licenseFeatureCode` static flag set to `RED`', () => {
-			expect( RestrictedEditingModeEditing.licenseFeatureCode ).to.equal( 'RED' );
+			expect( RestrictedEditingModeEditing.licenseFeatureCode ).toEqual( 'RED' );
 		} );
 
 		it( 'should be loaded', () => {
@@ -113,61 +113,61 @@ describe( 'RestrictedEditingModeEditing', () => {
 		it( 'command not allowed in exception marker should always be disabled', () => {
 			const command = editor.commands.get( 'regularCommand' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 
 			moveIntoExceptionMarker();
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 
 			moveOutOfExceptionMarker();
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'command allowed in exception marker should be enabled in it', () => {
 			const command = editor.commands.get( 'allowedCommand' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 
 			moveIntoExceptionMarker();
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 
 			moveOutOfExceptionMarker();
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'command not affecting data should always be enabled', () => {
 			const command = editor.commands.get( 'commandNotAffectingData' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 
 			moveIntoExceptionMarker();
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 
 			moveOutOfExceptionMarker();
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'command explicitly enabled should always be enabled', () => {
 			const command = editor.commands.get( 'regularCommand' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 
 			plugin.enableCommand( 'regularCommand' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 
 			moveIntoExceptionMarker();
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 
 			moveOutOfExceptionMarker();
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		function moveIntoExceptionMarker() {
@@ -199,7 +199,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			it( 'should convert <span class="restricted-editing-exception"> to marker', () => {
 				editor.setData( '<p>foo <span class="restricted-editing-exception">bar</span> baz</p>' );
 
-				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).toBe( true );
 
 				assertMarkerRangePaths( [ 0, 4 ], [ 0, 7 ], 'inline:1' );
 			} );
@@ -210,8 +210,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 					'<p>ABCDEF<span class="restricted-editing-exception">GHIJK</span>LMNOPQRST</p>'
 				);
 
-				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).to.be.true;
-				expect( model.markers.has( 'restrictedEditingException:inline:2' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).toBe( true );
+				expect( model.markers.has( 'restrictedEditingException:inline:2' ) ).toBe( true );
 
 				// Data for the first marker is the same as in previous tests so no need to test it again.
 				assertMarkerRangePaths( [ 1, 6 ], [ 1, 11 ], 'inline:2' );
@@ -224,18 +224,18 @@ describe( 'RestrictedEditingModeEditing', () => {
 					'</figure>'
 				);
 
-				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).toBe( true );
 
 				const marker = model.markers.get( 'restrictedEditingException:inline:1' );
 
-				expect( marker.getStart().path ).to.deep.equal( [ 0, 0, 0, 0, 0 ] );
-				expect( marker.getEnd().path ).to.deep.equal( [ 0, 0, 0, 0, 3 ] );
+				expect( marker.getStart().path ).toEqual( [ 0, 0, 0, 0, 0 ] );
+				expect( marker.getEnd().path ).toEqual( [ 0, 0, 0, 0, 3 ] );
 			} );
 
 			it( 'should not convert other <span> elements', () => {
 				editor.setData( '<p>foo <span class="foo bar">bar</span> baz</p>' );
 
-				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).to.be.false;
+				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).toBe( false );
 			} );
 
 			it( 'should remove previous `restrictedEditingException` markers before setting new ones', () => {
@@ -245,8 +245,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 					'</figure>'
 				);
 
-				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).to.be.true;
-				expect( model.markers.has( 'restrictedEditingException:inline:2' ) ).to.be.false;
+				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).toBe( true );
+				expect( model.markers.has( 'restrictedEditingException:inline:2' ) ).toBe( false );
 
 				editor.setData(
 					'<figure class="table">' +
@@ -254,8 +254,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 					'</figure>'
 				);
 
-				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).to.be.false;
-				expect( model.markers.has( 'restrictedEditingException:inline:2' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:inline:1' ) ).toBe( false );
+				expect( model.markers.has( 'restrictedEditingException:inline:2' ) ).toBe( true );
 			} );
 		} );
 
@@ -274,8 +274,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				const expectedView = '<p>foo <span class="restricted-editing-exception">bar</span> baz</p>';
-				expect( editor.getData() ).to.equal( expectedView );
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+				expect( editor.getData() ).toEqual( expectedView );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual( expectedView );
 			} );
 
 			it( 'should convert collapsed model marker to <span>', () => {
@@ -291,8 +291,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 				} );
 
-				expect( editor.getData() ).to.equal( '<p>foo <span class="restricted-editing-exception"></span>bar baz</p>' );
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( editor.getData() ).toEqual( '<p>foo <span class="restricted-editing-exception"></span>bar baz</p>' );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual(
 					'<p>foo <span class="restricted-editing-exception restricted-editing-exception_collapsed"></span>bar baz</p>'
 				);
 			} );
@@ -311,14 +311,10 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 				} );
 
-				expect( editor.getData() ).to.equal(
-					'<p><span class="restricted-editing-exception"><b>foo bar baz</b></span></p>'
-				);
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-					'<p>' +
+				expect( editor.getData() ).toEqual( '<p><span class="restricted-editing-exception"><b>foo bar baz</b></span></p>' );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual( '<p>' +
 						'<span class="restricted-editing-exception restricted-editing-exception_selected"><b>foo bar baz</b></span>' +
-					'</p>'
-				);
+					'</p>' );
 			} );
 
 			it( 'converted <span> should be the outermost attribute element (inside table)', () => {
@@ -339,22 +335,18 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 				} );
 
-				expect( editor.getData() ).to.equal(
-					'<figure class="table"><table><tbody><tr><td>' +
+				expect( editor.getData() ).toEqual( '<figure class="table"><table><tbody><tr><td>' +
 					'<span class="restricted-editing-exception"><b>foo bar baz</b></span>' +
-					'</td></tr></tbody></table></figure>'
-				);
+					'</td></tr></tbody></table></figure>' );
 				expect(
 					_getViewData( editor.editing.view, { withoutSelection: true } )
-				).to.equal(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+				).toEqual( '<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
 					'tabindex="-1">' +
 					'<span class="ck-table-bogus-paragraph"><span class="restricted-editing-exception"><b>foo bar baz</b></span></span>' +
 					'</td></tr></tbody></table>' +
-					'</figure>'
-				);
+					'</figure>' );
 			} );
 
 			it( 'inline image should not split span between text nodes', () => {
@@ -370,18 +362,15 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 				} );
 
-				expect( editor.getData() ).to.equal(
-					'<p><span class="restricted-editing-exception">foo <img src="assets/sample.png">baz</span></p>'
-				);
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-					'<p>' +
+				expect( editor.getData() )
+					.toEqual( '<p><span class="restricted-editing-exception">foo <img src="assets/sample.png">baz</span></p>' );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual( '<p>' +
 						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
 							'foo' +
 								' <span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>' +
 							'baz' +
 						'</span>' +
-					'</p>'
-				);
+					'</p>' );
 			} );
 
 			it( 'inline image should not split span between text nodes (inline image at start)', () => {
@@ -397,18 +386,15 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 				} );
 
-				expect( editor.getData() ).to.equal(
-					'<p><span class="restricted-editing-exception"><img src="assets/sample.png">foo baz</span></p>'
-				);
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-					'<p>' +
+				expect( editor.getData() )
+					.toEqual( '<p><span class="restricted-editing-exception"><img src="assets/sample.png">foo baz</span></p>' );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual( '<p>' +
 						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
 							'<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>' +
 							'foo ' +
 							'baz' +
 						'</span>' +
-					'</p>'
-				);
+					'</p>' );
 			} );
 
 			it( 'inline image should not split span between text nodes (inline image at the end)', () => {
@@ -424,18 +410,15 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 				} );
 
-				expect( editor.getData() ).to.equal(
-					'<p><span class="restricted-editing-exception">foo baz<img src="assets/sample.png"></span></p>'
-				);
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-					'<p>' +
+				expect( editor.getData() )
+					.toEqual( '<p><span class="restricted-editing-exception">foo baz<img src="assets/sample.png"></span></p>' );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual( '<p>' +
 						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
 							'foo ' +
 							'baz' +
 							'<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>' +
 						'</span>' +
-					'</p>'
-				);
+					'</p>' );
 			} );
 
 			it( 'should be possible to override marker conversion', () => {
@@ -488,10 +471,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 				} );
 
-				expect( editor.getData() ).to.equal(
-					'<p><span class="restricted-editing-custom-exception">foo bar baz</span></p>'
-				);
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( editor.getData() ).toEqual( '<p><span class="restricted-editing-custom-exception">foo bar baz</span></p>' );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual(
 					'<p><span class="restricted-editing-custom-exception restricted-editing-exception_selected">foo bar baz</span></p>'
 				);
 			} );
@@ -516,9 +497,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				const marker = model.markers.get( 'restrictedEditingException:inline:1' );
 
-				expect( marker.getStart().parent ).to.equal( marker.getEnd().parent );
-				expect( marker.getStart().path ).to.deep.equal( [ 0, 0, 0, 0, 0 ] );
-				expect( marker.getEnd().path ).to.deep.equal( [ 0, 0, 0, 0, 11 ] );
+				expect( marker.getStart().parent ).toEqual( marker.getEnd().parent );
+				expect( marker.getStart().path ).toEqual( [ 0, 0, 0, 0, 0 ] );
+				expect( marker.getEnd().path ).toEqual( [ 0, 0, 0, 0, 11 ] );
 			} );
 
 			it( 'should fix non-flat marker range (end is higher in tree)', () => {
@@ -539,9 +520,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				const marker = model.markers.get( 'restrictedEditingException:inline:1' );
 
-				expect( marker.getStart().parent ).to.equal( marker.getEnd().parent );
-				expect( marker.getStart().path ).to.deep.equal( [ 0, 0, 0, 0, 0 ] );
-				expect( marker.getEnd().path ).to.deep.equal( [ 0, 0, 0, 0, 11 ] );
+				expect( marker.getStart().parent ).toEqual( marker.getEnd().parent );
+				expect( marker.getStart().path ).toEqual( [ 0, 0, 0, 0, 0 ] );
+				expect( marker.getEnd().path ).toEqual( [ 0, 0, 0, 0, 11 ] );
 			} );
 		} );
 	} );
@@ -587,12 +568,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.insertContent( writer.createText( 'R', model.document.selection.getAttributes() ) );
 			} );
 
-			expect( editor.getData() ).to.equal(
-				'<p>foo <span class="restricted-editing-exception">bar</span> baz</p>' +
+			expect( editor.getData() ).toEqual( '<p>foo <span class="restricted-editing-exception">bar</span> baz</p>' +
 				'<p>xxx <span class="restricted-editing-exception">yRyy</span> zzz</p>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>foo <span class="restricted-editing-exception">bar</span> baz</p>' +
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.toEqual( '<p>foo <span class="restricted-editing-exception">bar</span> baz</p>' +
 				'<p>xxx <span class="restricted-editing-exception restricted-editing-exception_selected">yRyy</span> zzz</p>' );
 		} );
 
@@ -601,7 +581,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			editor.execute( 'insertText', { text: 'X' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo []bar baz</paragraph>' );
 		} );
 
 		it( 'should not block user typing inside exception marker', () => {
@@ -621,7 +601,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 			editor.execute( 'insertText', { text: 'X' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo bX[]ar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo bX[]ar baz</paragraph>' );
 		} );
 
 		it( 'should extend marker when typing on the marker boundary (end)', () => {
@@ -638,14 +618,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			editor.execute( 'insertText', { text: 'X' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo barX[] baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo barX[] baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 			const expectedRange = model.createRange(
 				model.createPositionAt( firstParagraph, 4 ),
 				model.createPositionAt( firstParagraph, 8 )
 			);
 
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+			expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 		} );
 
 		it( 'should extend marker when inserting inline image on the marker boundary (end)', () => {
@@ -667,16 +647,15 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			command.execute( { source: imgSrc } );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>foo bar[<imageInline src="assets/sample.png"></imageInline>] baz</paragraph>'
-			);
+			expect( _getModelData( model ) )
+				.toEqual( '<paragraph>foo bar[<imageInline src="assets/sample.png"></imageInline>] baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 			const expectedRange = model.createRange(
 				model.createPositionAt( firstParagraph, 4 ),
 				model.createPositionAt( firstParagraph, 8 )
 			);
 
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+			expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 		} );
 
 		it( 'should extend marker when inserting inline image on the marker boundary (start)', () => {
@@ -698,16 +677,15 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			command.execute( { source: imgSrc } );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>foo [<imageInline src="assets/sample.png"></imageInline>]bar baz</paragraph>'
-			);
+			expect( _getModelData( model ) )
+				.toEqual( '<paragraph>foo [<imageInline src="assets/sample.png"></imageInline>]bar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 			const expectedRange = model.createRange(
 				model.createPositionAt( firstParagraph, 4 ),
 				model.createPositionAt( firstParagraph, 8 )
 			);
 
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+			expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 		} );
 
 		it( 'should extend marker when typing on the marker boundary (start)', () => {
@@ -724,7 +702,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			editor.execute( 'insertText', { text: 'X' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo X[]bar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo X[]bar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 
 			const expectedRange = model.createRange(
@@ -732,7 +710,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.createPositionAt( firstParagraph, 8 )
 			);
 
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+			expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 		} );
 
 		it( 'should extend marker when typing on the marker boundary (collapsed marker)', () => {
@@ -753,7 +731,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			editor.execute( 'insertText', { text: 'X' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo X[]bar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo X[]bar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 
 			const expectedRange = model.createRange(
@@ -761,7 +739,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.createPositionAt( firstParagraph, 5 )
 			);
 
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+			expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 		} );
 
 		it( 'should retain marker on non-typing change at the marker boundary (start)', () => {
@@ -782,7 +760,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo XX[]r baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo XX[]r baz</paragraph>' );
 
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 			const expectedRange = model.createRange(
@@ -790,7 +768,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.createPositionAt( firstParagraph, 7 )
 			);
 
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+			expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 		} );
 
 		it( 'should retain marker on non-typing change at marker boundary (end)', () => {
@@ -811,7 +789,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXX[] baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo bXX[] baz</paragraph>' );
 
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 			const expectedRange = model.createRange(
@@ -819,7 +797,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.createPositionAt( firstParagraph, 7 )
 			);
 
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+			expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 		} );
 
 		it( 'should not move collapsed marker to $graveyard', () => {
@@ -839,7 +817,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			editor.execute( 'delete' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo []ar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo []ar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 
 			const expectedRange = model.createRange(
@@ -847,7 +825,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.createPositionAt( firstParagraph, 4 )
 			);
 
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+			expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/9650
@@ -872,7 +850,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} ).not.to.throw();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]foo bar baz</paragraph>' );
 		} );
 
 		it( 'should not move collapsed marker to $graveyard if it was removed by dragging', () => {
@@ -894,7 +872,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			model.deleteContent( model.createSelection( range ) );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo ar b[]az</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo ar b[]az</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:inline:1' ).getRange();
 
 			const expectedRange = model.createRange(
@@ -902,7 +880,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.createPositionAt( firstParagraph, 4 )
 			);
 
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+			expect( markerRange.isEqual( expectedRange ) ).toBe( true );
 		} );
 	} );
 
@@ -928,7 +906,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			model.deleteContent( model.document.selection );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]o bar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>fo[]o bar baz</paragraph>' );
 		} );
 
 		it( 'should trim deleted content to a exception marker (focus in marker)', () => {
@@ -945,7 +923,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.deleteContent( selection );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]foo bar baz</paragraph>' );
 		} );
 
 		it( 'should trim deleted content to a exception marker (anchor in marker)', () => {
@@ -962,7 +940,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.deleteContent( selection );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo b baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>[]foo b baz</paragraph>' );
 		} );
 
 		it( 'should trim deleted content to a exception marker and alter the selection argument (delete command integration)', () => {
@@ -976,7 +954,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 			editor.execute( 'delete', { unit: 'word' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[] bar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo[] bar baz</paragraph>' );
 		} );
 
 		it( 'should work with document selection', () => {
@@ -989,7 +967,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.deleteContent( model.document.selection );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>fo baz</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<paragraph>fo baz</paragraph>' );
 		} );
 	} );
 
@@ -1025,7 +1003,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]ar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo b[]ar baz</paragraph>' );
 		} );
 
 		it( 'should prevent changing text before exception marker (native spell-check simulation)', () => {
@@ -1044,7 +1022,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]ar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo b[]ar baz</paragraph>' );
 		} );
 
 		it( 'should prevent changing text before (change crossing different markers)', () => {
@@ -1064,7 +1042,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]o bar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>fo[]o bar baz</paragraph>' );
 		} );
 
 		it( 'should allow changing text inside single marker', () => {
@@ -1083,7 +1061,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foxxxxxxx[]baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foxxxxxxx[]baz</paragraph>' );
 		} );
 	} );
 
@@ -1119,7 +1097,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]ar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo b[]ar baz</paragraph>' );
 		} );
 
 		it( 'should prevent changing text before exception marker (native spell-check simulation)', () => {
@@ -1138,7 +1116,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]ar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foo b[]ar baz</paragraph>' );
 		} );
 
 		it( 'should prevent changing text before (change crossing different markers)', () => {
@@ -1158,7 +1136,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]o bar baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>fo[]o bar baz</paragraph>' );
 		} );
 
 		it( 'should allow changing text inside single marker', () => {
@@ -1177,7 +1155,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foxxxxxxx[]baz</paragraph>' );
+			expect( _getModelData( model ) ).toEqual( '<paragraph>foxxxxxxx[]baz</paragraph>' );
 		} );
 	} );
 
@@ -1212,7 +1190,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( spy ).not.toHaveBeenCalled();
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
 			it( 'should cut selected content inside exception marker (selection inside marker)', () => {
@@ -1227,7 +1205,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					method: 'cut'
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]r baz</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo b[]r baz</paragraph>' );
 			} );
 
 			it( 'should cut selected content inside exception marker (selection touching marker start)', () => {
@@ -1242,7 +1220,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					method: 'cut'
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo []r baz</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo []r baz</paragraph>' );
 			} );
 
 			it( 'should cut selected content inside exception marker (selection touching marker end)', () => {
@@ -1257,7 +1235,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					method: 'cut'
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[] baz</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo b[] baz</paragraph>' );
 			} );
 		} );
 
@@ -1275,7 +1253,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( spy ).toHaveBeenCalledOnce();
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
 			it( 'should not be blocked inside exception marker', () => {
@@ -1307,7 +1285,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( spy ).toHaveBeenCalledOnce();
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[]ar baz</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo b[]ar baz</paragraph>' );
 			} );
 		} );
 
@@ -1331,7 +1309,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( spy ).not.toHaveBeenCalled();
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
 			it( 'should be blocked outside exception markers (non-collapsed selection)', () => {
@@ -1348,7 +1326,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( spy ).not.toHaveBeenCalled();
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[foo bar baz]</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[foo bar baz]</paragraph>' );
 			} );
 
 			it( 'should be blocked outside exception markers (non-collapsed selection, starts inside exception marker)', () => {
@@ -1367,7 +1345,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( spy ).not.toHaveBeenCalled();
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo b[ar baz]</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>foo b[ar baz]</paragraph>' );
 			} );
 
 			it( 'should be blocked outside exception markers (non-collapsed selection, ends inside exception marker)', () => {
@@ -1386,7 +1364,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( spy ).not.toHaveBeenCalled();
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[foo ba]r baz</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[foo ba]r baz</paragraph>' );
 			} );
 
 			describe( 'collapsed selection', () => {
@@ -1402,7 +1380,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						dataTransfer
 					} );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXXX[]ar baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bXXX[]ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ], 'inline:1' );
 				} );
 
@@ -1421,12 +1399,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect( _getModelData( model ) ).to.equal(
-						'<paragraph>foo b<$text bold="true" italic="true" linkHref="foo">XXX</$text>' +
+					expect( _getModelData( model ) )
+						.toEqual( '<paragraph>foo b<$text bold="true" italic="true" linkHref="foo">XXX</$text>' +
 						// The link attribute is removed from selection after pasting.
 						// See https://github.com/ckeditor/ckeditor5/issues/6053.
-						'<$text bold="true" italic="true">[]</$text>ar baz</paragraph>'
-					);
+						'<$text bold="true" italic="true">[]</$text>ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ], 'inline:1' );
 				} );
 
@@ -1442,7 +1419,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						dataTransfer
 					} );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXXX[]ar baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bXXX[]ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ], 'inline:1' );
 				} );
 
@@ -1458,10 +1435,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect(
-						_getModelData( model ) ).to.equal(
-						'<paragraph>foo b<$text bold="true" italic="true">XXX[]</$text>ar baz</paragraph>'
-					);
+					expect( _getModelData( model ) )
+						.toEqual( '<paragraph>foo b<$text bold="true" italic="true">XXX[]</$text>ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ], 'inline:1' );
 				} );
 
@@ -1477,7 +1452,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXXX[]ar baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bXXX[]ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ], 'inline:1' );
 				} );
 			} );
@@ -1495,7 +1470,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXXX[]r baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bXXX[]r baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ], 'inline:1' );
 				} );
 
@@ -1511,7 +1486,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo b<$text bold="true">XXX[]</$text>r baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo b<$text bold="true">XXX[]</$text>r baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ], 'inline:1' );
 				} );
 
@@ -1527,7 +1502,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bXXX[]r baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo bXXX[]r baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ], 'inline:1' );
 				} );
 
@@ -1543,10 +1518,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 						content: dataTransfer.getData( 'text/html' )
 					} );
 
-					expect(
-						_getModelData( model ) ).to.equal(
-						'<paragraph>foo b<$text bold="true" italic="true">XXX[]</$text>r baz</paragraph>'
-					);
+					expect( _getModelData( model ) )
+						.toEqual( '<paragraph>foo b<$text bold="true" italic="true">XXX[]</$text>r baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ], 'inline:1' );
 				} );
 			} );
@@ -1582,9 +1555,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			expect( _getViewData( view ) ).to.equal(
-				'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">b{a}r</span> baz</p>'
-			);
+			expect( _getViewData( view ) )
+				.toEqual( '<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">b{a}r</span> baz</p>' );
 		} );
 
 		it( 'should remove classes when selection is moved away from an exception', () => {
@@ -1601,15 +1573,12 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			expect( _getViewData( view ) ).to.equal(
-				'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">b{a}r</span> baz</p>'
-			);
+			expect( _getViewData( view ) )
+				.toEqual( '<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">b{a}r</span> baz</p>' );
 
 			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 0 ) );
 
-			expect( _getViewData( view ) ).to.equal(
-				'<p>{}foo <span class="restricted-editing-exception">bar</span> baz</p>'
-			);
+			expect( _getViewData( view ) ).toEqual( '<p>{}foo <span class="restricted-editing-exception">bar</span> baz</p>' );
 		} );
 
 		it( 'should work correctly when selection is moved inside an exception', () => {
@@ -1626,15 +1595,12 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			expect( _getViewData( view ) ).to.equal(
-				'<p>{}foo <span class="restricted-editing-exception">bar</span> baz</p>'
-			);
+			expect( _getViewData( view ) ).toEqual( '<p>{}foo <span class="restricted-editing-exception">bar</span> baz</p>' );
 
 			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 6 ) );
 
-			expect( _getViewData( view ) ).to.equal(
-				'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">ba{}r</span> baz</p>'
-			);
+			expect( _getViewData( view ) )
+				.toEqual( '<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">ba{}r</span> baz</p>' );
 		} );
 
 		describe( 'editing downcast conversion integration', () => {
@@ -1656,7 +1622,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					writer.insertText( 'FOO', { linkHref: 'url' }, model.document.selection.getFirstPosition() );
 				} );
 
-				expect( _getViewData( view ) ).to.equal(
+				expect( _getViewData( view ) ).toEqual(
 					'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">bFOO{a}r</span> baz</p>'
 				);
 			} );
@@ -1682,7 +1648,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					) );
 				} );
 
-				expect( _getViewData( view ) ).to.equal(
+				expect( _getViewData( view ) ).toEqual(
 					'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">b{}r</span> baz</p>'
 				);
 			} );
@@ -1708,13 +1674,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 					);
 				} );
 
-				expect( _getViewData( view ) ).to.equal(
-					'<p>foo ' +
+				expect( _getViewData( view ) ).toEqual( '<p>foo ' +
 						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
 							'<strong>b{a</strong>' +
 						'}r</span>' +
-					' baz</p>'
-				);
+					' baz</p>' );
 			} );
 
 			it( 'works for the #selection event', () => {
@@ -1738,7 +1702,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					);
 				} );
 
-				expect( _getViewData( view ) ).to.equal(
+				expect( _getViewData( view ) ).toEqual(
 					'<p>foo {<span class="restricted-editing-exception restricted-editing-exception_selected">ba}r</span> baz</p>'
 				);
 			} );
@@ -1768,18 +1732,16 @@ describe( 'RestrictedEditingModeEditing', () => {
 					writer.addMarker( 'fooMarker', { range, usingOperation: true } );
 				} );
 
-				expect( _getViewData( view ) ).to.equal(
-					'<p>' +
+				expect( _getViewData( view ) ).toEqual( '<p>' +
 						'<span>foo </span>' +
 						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
 							'<span>b</span>{a}r' +
 						'</span>' +
-					' baz</p>'
-				);
+					' baz</p>' );
 
 				model.change( writer => writer.removeMarker( 'fooMarker' ) );
 
-				expect( _getViewData( view ) ).to.equal(
+				expect( _getViewData( view ) ).toEqual(
 					'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">b{a}r</span> baz</p>'
 				);
 			} );
@@ -1933,7 +1895,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			const position = model.document.selection.getFirstRange().start;
 
-			expect( position.parent ).to.deep.equal( paragraph2 );
+			expect( position.parent ).toEqual( paragraph2 );
 		} );
 
 		it( 'should escape from the table', () => {
@@ -1970,7 +1932,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			const position = model.document.selection.getFirstRange().start;
 
-			expect( position.parent ).to.deep.equal( paragraph2 );
+			expect( position.parent ).toEqual( paragraph2 );
 		} );
 
 		it( 'should let the focus go outside the editor on shift+tab when in the first exception', () => {
@@ -2036,7 +1998,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
 					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should select text only within an exception when selection is at the begining of an exception', () => {
@@ -2051,7 +2013,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
 					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should select text only within an exception when selection is at the end of an exception', () => {
@@ -2066,7 +2028,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
 					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should not change the selection if the caret is not inside an exception', () => {
@@ -2079,7 +2041,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					expect( evtData.preventDefault ).not.toHaveBeenCalled();
 					expect( evtData.stopPropagation ).not.toHaveBeenCalled();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo ba[]r baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo ba[]r baz</paragraph>' );
 				} );
 
 				it( 'should not extend the selection outside an exception when press Ctrl+A second time', () => {
@@ -2095,7 +2057,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					expect( evtData.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( evtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 			} );
 
@@ -2112,7 +2074,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
 					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>[foo bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>[foo bar] baz</paragraph>' );
 				} );
 
 				it( 'should select text within an exception when end of selection range is equal exception end', () => {
@@ -2127,7 +2089,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
 					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should select text within an exception when start of selection range is equal exception start', () => {
@@ -2142,7 +2104,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					expect( evtData.preventDefault ).toHaveBeenCalledOnce();
 					expect( evtData.stopPropagation ).toHaveBeenCalledOnce();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should not select text within an exception when a part of the selection range is outside an exception', () => {
@@ -2157,7 +2119,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					expect( evtData.preventDefault ).not.toHaveBeenCalled();
 					expect( evtData.stopPropagation ).not.toHaveBeenCalled();
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fo[o ba]r baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>fo[o ba]r baz</paragraph>' );
 				} );
 
 				it( 'should not extend the selection outside an exception when press Ctrl+A second time', () => {
@@ -2173,7 +2135,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					expect( evtData.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( evtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).toEqual( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 			} );
 		} );
@@ -2205,7 +2167,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 	function assertMarkerRangePaths( startPath, endPath, markerId = 1 ) {
 		const marker = model.markers.get( `restrictedEditingException:${ markerId }` );
 
-		expect( marker.getStart().path ).to.deep.equal( startPath );
-		expect( marker.getEnd().path ).to.deep.equal( endPath );
+		expect( marker.getStart().path ).toEqual( startPath );
+		expect( marker.getEnd().path ).toEqual( endPath );
 	}
 } );

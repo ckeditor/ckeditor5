@@ -257,7 +257,7 @@ describe( 'FontColorUIBase', () => {
 				} );
 
 				expect( testColorPlugin._undoStepBatch.operations.length,
-					'should have 1 change in batch' ).to.equal( 1 );
+					'should have 1 change in batch' ).toEqual( 1 );
 
 				dropdown.colorSelectorView.fire( 'execute', {
 					value: 'hsl( 110, 60%, 12% )',
@@ -268,7 +268,7 @@ describe( 'FontColorUIBase', () => {
 				dropdown.colorSelectorView.colorGridsFragmentView.colorPickerButtonView.fire( 'execute' );
 
 				expect( testColorPlugin._undoStepBatch.operations.length,
-					'should have 0 changes in batch' ).to.equal( 0 );
+					'should have 0 changes in batch' ).toEqual( 0 );
 			} );
 
 			it( 'should avoid call the command multiple times', () => {
@@ -388,7 +388,7 @@ describe( 'FontColorUIBase', () => {
 
 				dropdown.isOpen = true;
 
-				expect( documentColorsModel.length ).to.equal( 1 );
+				expect( documentColorsModel.length ).toEqual( 1 );
 				expect( documentColorsModel.get( 0 ) ).to.deep.include( {
 					color: 'rgb(10,20,30)',
 					label: 'rgb(10,20,30)',
@@ -406,7 +406,7 @@ describe( 'FontColorUIBase', () => {
 
 				dropdown.isOpen = true;
 
-				expect( documentColorsModel.length ).to.equal( 2 );
+				expect( documentColorsModel.length ).toEqual( 2 );
 
 				expect( documentColorsModel.get( 0 ) ).to.deep.include( {
 					color: 'gold',
@@ -449,7 +449,7 @@ describe( 'FontColorUIBase', () => {
 				const colorSelectorView = dropdown.colorSelectorView.colorGridsFragmentView;
 
 				// expect( colorSelectorView.removeButtonLabel ).to.equal( 'Usuń kolor' );
-				expect( colorSelectorView.items.first.label ).to.equal( 'Usuń kolor' );
+				expect( colorSelectorView.items.first.label ).toEqual( 'Usuń kolor' );
 			} );
 
 			describe( 'works for', () => {
@@ -482,7 +482,7 @@ describe( 'FontColorUIBase', () => {
 						const colorGrid = dropdown.colorSelectorView.colorGridsFragmentView.items.get( 1 );
 						const tile = colorGrid.items.find( colorTile => test.color === colorTile.color );
 
-						expect( tile.label ).to.equal( test.label );
+						expect( tile.label ).toEqual( test.label );
 					} );
 				} );
 			} );
@@ -538,16 +538,16 @@ describe( 'FontColorUIBase', () => {
 		} );
 
 		it( 'colorSelectorView has set proper default attributes', () => {
-			expect( colorSelectorView.colorGridsFragmentView.documentColorsCount ).to.equal( 3 );
+			expect( colorSelectorView.colorGridsFragmentView.documentColorsCount ).toEqual( 3 );
 		} );
 
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
-				expect( subMenu.buttonView.isEnabled ).to.be.false;
+				expect( subMenu.buttonView.isEnabled ).toBe( false );
 
 				command.isEnabled = true;
-				expect( subMenu.buttonView.isEnabled ).to.be.true;
+				expect( subMenu.buttonView.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -574,7 +574,7 @@ describe( 'FontColorUIBase', () => {
 
 			subMenu.isOpen = true;
 
-			expect( subMenu.panelView.children.first.colorGridsFragmentView._documentColorsLabel ).to.equal( '' );
+			expect( subMenu.panelView.children.first.colorGridsFragmentView._documentColorsLabel ).toEqual( '' );
 
 			editorElement.remove();
 			await customizedEditor.destroy();
@@ -637,7 +637,7 @@ describe( 'FontColorUIBase', () => {
 				subMenu.isOpen = false;
 				subMenu.isOpen = true;
 
-				expect( documentColorsModel.length ).to.equal( 1 );
+				expect( documentColorsModel.length ).toEqual( 1 );
 				expect( documentColorsModel.get( 0 ) ).to.deep.include( {
 					color: 'rgb(10,20,30)',
 					label: 'rgb(10,20,30)',
@@ -654,7 +654,7 @@ describe( 'FontColorUIBase', () => {
 				subMenu.isOpen = false;
 				subMenu.isOpen = true;
 
-				expect( documentColorsModel.length ).to.equal( 2 );
+				expect( documentColorsModel.length ).toEqual( 2 );
 
 				expect( documentColorsModel.get( 0 ) ).to.deep.include( {
 					color: 'gold',
@@ -694,7 +694,7 @@ describe( 'FontColorUIBase', () => {
 			} );
 
 			it( 'works for the colorSelectorView#items in the panel', () => {
-				expect( colorSelectorView.colorGridsFragmentView.items.first.label ).to.equal( 'Usuń kolor' );
+				expect( colorSelectorView.colorGridsFragmentView.items.first.label ).toEqual( 'Usuń kolor' );
 			} );
 
 			describe( 'works for', () => {
@@ -726,7 +726,7 @@ describe( 'FontColorUIBase', () => {
 						const colorGrid = colorSelectorView.colorGridsFragmentView.items.get( 1 );
 						const tile = colorGrid.items.find( colorTile => test.color === colorTile.color );
 
-						expect( tile.label ).to.equal( test.label );
+						expect( tile.label ).toEqual( test.label );
 					} );
 				} );
 			} );
@@ -773,7 +773,7 @@ describe( 'FontColorUIBase', () => {
 			editorElement.remove();
 			await customizedEditor.destroy();
 
-			expect( dropdown.colorSelectorView.colorPickerView ).to.be.undefined;
+			expect( dropdown.colorSelectorView.colorPickerView ).toBeUndefined();
 		} );
 	} );
 

@@ -11,25 +11,25 @@ describe( 'parseBase64EncodedObject', () => {
 		const obj = { foo: 1 };
 		const encoded = btoa( JSON.stringify( obj ) );
 
-		expect( parseBase64EncodedObject( encoded ) ).to.deep.equal( obj );
+		expect( parseBase64EncodedObject( encoded ) ).toEqual( obj );
 	} );
 
 	it( 'should return null if it is not an object', () => {
 		const str = 'foo';
 		const encoded = btoa( JSON.stringify( str ) );
 
-		expect( parseBase64EncodedObject( encoded ) ).to.be.null;
+		expect( parseBase64EncodedObject( encoded ) ).toBeNull();
 	} );
 
 	it( 'should return null of it is not parsable', () => {
 		const encoded = btoa( '{"foo":1' );
 
-		expect( parseBase64EncodedObject( encoded ) ).to.be.null;
+		expect( parseBase64EncodedObject( encoded ) ).toBeNull();
 	} );
 
 	it( 'should use base64Safe variant of encoding', () => {
 		const encoded = 'eyJmb28iOiJhYmNkZW/n+Glqa2xtbm8ifQ==';
 
-		expect( parseBase64EncodedObject( encoded ) ).to.deep.equal( { foo: 'abcdeoçøijklmno' } );
+		expect( parseBase64EncodedObject( encoded ) ).toEqual( { foo: 'abcdeoçøijklmno' } );
 	} );
 } );

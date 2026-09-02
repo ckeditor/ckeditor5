@@ -149,8 +149,6 @@ class TrackChangesEditing extends Plugin {
 	}
 }
 
-// The error handling testing with mocha & chai is quite broken and hard to test.
-//
 describe( 'EditorWatchdog', () => {
 	let element;
 
@@ -649,22 +647,19 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.create( element );
 
-			let caughtError = false;
 			const editor = watchdog.editor;
 
-			try {
-				await watchdog.destroy();
-			} catch ( err ) {
-				caughtError = true;
-				expect( err ).toBeInstanceOf( Error );
-				expect( err.message ).toBe( 'foo' );
+			const err = await watchdog.destroy().then(
+				() => {
+					throw new Error( '`watchdog.destroy()` should throw an error.' );
+				},
+				err => err
+			);
 
-				await editor.destroy();
-			}
+			expect( err ).toBeInstanceOf( Error );
+			expect( err.message ).toBe( 'foo' );
 
-			if ( !caughtError ) {
-				throw new Error( '`watchdog.create()` should throw an error.' );
-			}
+			await editor.destroy();
 		} );
 
 		it( 'Watchdog should not hide intercepted errors', () => {
@@ -698,6 +693,8 @@ describe( 'EditorWatchdog', () => {
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
+						expect( watchdog.state ).toBe( 'ready' );
+
 						watchdog.destroy().then( res );
 					} );
 				} );
@@ -788,6 +785,8 @@ describe( 'EditorWatchdog', () => {
 
 			await new Promise( res => {
 				watchdog.on( 'restart', () => {
+					expect( watchdog.state ).toBe( 'ready' );
+
 					watchdog.destroy().then( res );
 				} );
 			} );
@@ -813,6 +812,8 @@ describe( 'EditorWatchdog', () => {
 
 			await new Promise( res => {
 				watchdog.on( 'restart', () => {
+					expect( watchdog.state ).toBe( 'ready' );
+
 					watchdog.destroy().then( res );
 				} );
 			} );

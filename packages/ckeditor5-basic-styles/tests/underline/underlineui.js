@@ -36,11 +36,11 @@ describe( 'Underline', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( UnderlineUI.isOfficialPlugin ).to.be.true;
+		expect( UnderlineUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( UnderlineUI.isPremiumPlugin ).to.be.false;
+		expect( UnderlineUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'toolbar button', () => {
@@ -62,11 +62,11 @@ describe( 'Underline', () => {
 	function testButton() {
 		it( 'should register underline feature component', () => {
 			expect( underlineView ).to.be.instanceOf( ButtonView );
-			expect( underlineView.isOn ).to.be.false;
-			expect( underlineView.label ).to.equal( 'Underline' );
-			expect( underlineView.icon ).to.match( /<svg / );
-			expect( underlineView.keystroke ).to.equal( 'CTRL+U' );
-			expect( underlineView.isToggleable ).to.be.true;
+			expect( underlineView.isOn ).toBe( false );
+			expect( underlineView.label ).toEqual( 'Underline' );
+			expect( underlineView.icon ).toMatch( /<svg / );
+			expect( underlineView.keystroke ).toEqual( 'CTRL+U' );
+			expect( underlineView.isToggleable ).toBe( true );
 		} );
 
 		it( 'should execute underline command on model execute event', () => {
@@ -81,14 +81,14 @@ describe( 'Underline', () => {
 		it( 'should bind model to underline command', () => {
 			const command = editor.commands.get( 'underline' );
 
-			expect( underlineView.isEnabled ).to.be.true;
+			expect( underlineView.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( underlineView.isEnabled ).to.be.false;
+			expect( underlineView.isEnabled ).toBe( false );
 		} );
 
 		it( 'should set keystroke in the model', () => {
-			expect( underlineView.keystroke ).to.equal( 'CTRL+U' );
+			expect( underlineView.keystroke ).toEqual( 'CTRL+U' );
 		} );
 
 		it( 'should set editor keystroke', () => {
@@ -102,7 +102,7 @@ describe( 'Underline', () => {
 				stopPropagation: vi.fn()
 			} );
 
-			expect( wasHandled ).to.be.true;
+			expect( wasHandled ).toBe( true );
 			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
@@ -111,11 +111,11 @@ describe( 'Underline', () => {
 
 			command.value = true;
 
-			expect( underlineView.isOn ).to.be.true;
+			expect( underlineView.isOn ).toBe( true );
 
 			command.value = false;
 
-			expect( underlineView.isOn ).to.be.false;
+			expect( underlineView.isOn ).toBe( false );
 		} );
 	}
 } );

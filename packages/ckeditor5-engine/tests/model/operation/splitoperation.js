@@ -236,7 +236,7 @@ describe( 'SplitOperation', () => {
 		expect( clone ).toBeInstanceOf( SplitOperation );
 		expect( clone.splitPosition.isEqual( position ) ).toBe( true );
 		expect( clone.howMany ).toBe( howMany );
-		expect( clone.insertionPosition.isEqual( op.insertionPosition ) );
+		expect( clone.insertionPosition.isEqual( op.insertionPosition ) ).toBe( true );
 		expect( clone.graveyardPosition ).toBeNull();
 		expect( clone.baseVersion ).toBe( baseVersion );
 	} );
@@ -257,7 +257,7 @@ describe( 'SplitOperation', () => {
 		expect( clone ).toBeInstanceOf( SplitOperation );
 		expect( clone.splitPosition.isEqual( position ) ).toBe( true );
 		expect( clone.howMany ).toBe( howMany );
-		expect( clone.insertionPosition.isEqual( op.insertionPosition ) );
+		expect( clone.insertionPosition.isEqual( op.insertionPosition ) ).toBe( true );
 		expect( clone.graveyardPosition.isEqual( gyPos ) ).toBe( true );
 		expect( clone.baseVersion ).toBe( baseVersion );
 	} );

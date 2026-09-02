@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, beforeEach, afterEach } from 'vitest';
 
 import { Client, syncClients, expectClients, clearBuffer } from './utils.js';
 
@@ -907,7 +907,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expect(
+				expectClients(
 					'<paragraph><$text bold="true">Fo</$text></paragraph>' +
 					'<paragraph><$text bold="true">o</$text></paragraph>'
 				);

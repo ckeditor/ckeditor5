@@ -42,8 +42,8 @@ describe( 'utils', () => {
 
 			spliceArray( target, source, 0 );
 
-			expect( target.length ).to.equal( expectedLength );
-			expect( target[ 0 ] ).to.equal( source[ 0 ] );
+			expect( target.length ).toEqual( expectedLength );
+			expect( target[ 0 ] ).toEqual( source[ 0 ] );
 		} );
 
 		it( 'should insert elements in the middle of the target array which contains a large number of elements (250 000)', () => {
@@ -52,7 +52,7 @@ describe( 'utils', () => {
 
 			spliceArray( target, source, 5 );
 
-			expect( target[ 5 ] ).to.equal( source[ 0 ] );
+			expect( target[ 5 ] ).toEqual( source[ 0 ] );
 		} );
 	} );
 } );

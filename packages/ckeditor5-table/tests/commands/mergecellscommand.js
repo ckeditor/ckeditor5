@@ -38,7 +38,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '00[]', '01' ]
 			] ) );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if only one table cell is selected', () => {
@@ -48,7 +48,7 @@ describe( 'MergeCellsCommand', () => {
 
 			selectNodes( [ [ 0, 0, 0 ] ] );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if at least two adjacent table cells are selected', () => {
@@ -58,7 +58,7 @@ describe( 'MergeCellsCommand', () => {
 
 			selectNodes( [ [ 0, 0, 0 ], [ 0, 0, 1 ] ] );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if many table cells are selected', () => {
@@ -76,7 +76,7 @@ describe( 'MergeCellsCommand', () => {
 				[ 0, 3, 1 ], [ 0, 3, 2 ]
 			] );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if at least one table cell is not selected from an area', () => {
@@ -94,7 +94,7 @@ describe( 'MergeCellsCommand', () => {
 				[ 0, 3, 1 ], [ 0, 3, 2 ]
 			] );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if table cells are not in adjacent rows', () => {
@@ -108,7 +108,7 @@ describe( 'MergeCellsCommand', () => {
 				[ 0, 0, 1 ]
 			] );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if table cells are not in adjacent columns', () => {
@@ -118,7 +118,7 @@ describe( 'MergeCellsCommand', () => {
 
 			selectNodes( [ [ 0, 0, 0 ], [ 0, 0, 2 ] ] );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if any table cell with colspan attribute extends over selection area', () => {
@@ -132,7 +132,7 @@ describe( 'MergeCellsCommand', () => {
 				[ 0, 1, 0 ], [ 0, 1, 1 ]
 			] );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if none table cell with colspan attribute extends over selection area', () => {
@@ -147,7 +147,7 @@ describe( 'MergeCellsCommand', () => {
 				[ 0, 1, 2 ]
 			] );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if first table cell is inside selection area', () => {
@@ -161,7 +161,7 @@ describe( 'MergeCellsCommand', () => {
 				[ 0, 1, 0 ]
 			] );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if any table cell with rowspan attribute extends over selection area', () => {
@@ -172,7 +172,7 @@ describe( 'MergeCellsCommand', () => {
 
 			selectNodes( [ [ 0, 0, 0 ], [ 0, 0, 1 ] ] );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if none table cell with rowspan attribute extends over selection area', () => {
@@ -186,13 +186,13 @@ describe( 'MergeCellsCommand', () => {
 				[ 0, 1, 0 ]
 			] );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if not in a cell', () => {
 			_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection has cells from header and body sections', () => {
@@ -206,7 +206,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 1, 0 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection has cells from footer and body sections', () => {
@@ -220,7 +220,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 1, 0 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection has cells from header and footer sections', () => {
@@ -234,7 +234,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 1, 0 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection has cells from header, footer, and body sections', () => {
@@ -249,7 +249,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 2, 0 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if more than 10 rows selected and some are in heading section', () => {
@@ -278,7 +278,7 @@ describe( 'MergeCellsCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 12, 0 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if more than 10 rows selected and some are in footer section', () => {
@@ -307,7 +307,7 @@ describe( 'MergeCellsCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 12, 0 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if selection has cells only from column headers - rows in body section', () => {
@@ -321,7 +321,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if selection has cells only from column footers - rows in footer section', () => {
@@ -335,7 +335,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if selection has cells from column headers and other cells - rows in body section', () => {
@@ -349,7 +349,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 1, 2 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection has cells only from column footers and other cells - rows in footer section', () => {
@@ -363,7 +363,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 1, 2 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection has cells from column footers, row footers and body sections', () => {
@@ -377,7 +377,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 1, 2 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if selection has cells only from column headers - rows in header section', () => {
@@ -391,7 +391,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 0, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if selection has cells only from column headers and other cells - rows in header section', () => {
@@ -405,7 +405,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 0, 2 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection has cells from column headers, row headers and body sections', () => {
@@ -419,7 +419,7 @@ describe( 'MergeCellsCommand', () => {
 				root.getNodeByPath( [ 0, 1, 2 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -765,7 +765,7 @@ describe( 'MergeCellsCommand', () => {
 
 				command.execute();
 
-				expect( createdBatches.size ).to.equal( 1 );
+				expect( createdBatches.size ).toEqual( 1 );
 			} );
 
 			it( 'should decrease rowspan if cell overlaps removed row', () => {

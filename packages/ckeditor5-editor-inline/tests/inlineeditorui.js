@@ -438,7 +438,7 @@ describe( 'InlineEditorUI', () => {
 		it( 'should not crash if the editable element is not present', async () => {
 			editor.editing.view.detachDomRoot( editor.ui.view.editable.name );
 
-			await editor.destroy();
+			await expect( editor.destroy() ).resolves.toBeUndefined();
 			editor = null;
 		} );
 
@@ -446,7 +446,7 @@ describe( 'InlineEditorUI', () => {
 			const editor = await VirtualInlineTestEditor.create( '' );
 
 			await editor.destroy();
-			await editor.destroy();
+			await expect( editor.destroy() ).resolves.toBeUndefined();
 		} );
 	} );
 

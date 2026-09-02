@@ -140,18 +140,21 @@ describe( 'ActionsRecorder', () => {
 		} );
 
 		it( 'should record nested operations with parent frames', () => {
-			editor.execute( 'paragraph' );
+			_setModelData( editor.model, '<paragraph>[]foo</paragraph>' );
+			plugin.flushEntries();
+
+			editor.execute( 'heading', { value: 'heading1' } );
 
 			const records = plugin.getEntries();
 
 			// At least one record should have been created from the command execution
 			expect( records.length ).toBeGreaterThan( 0 );
 
-			// Check if any operations were recorded during command execution
+			// Check that operations were recorded during command execution with a parent entry set.
 			const operationRecords = records.filter( record => record.action === 'model.applyOperation' );
-			if ( operationRecords.length > 0 ) {
-				expect( operationRecords.some( record => record.parentFrame ) ).toBe( true );
-			}
+
+			expect( operationRecords.length ).toBeGreaterThan( 0 );
+			expect( operationRecords.some( record => record.parentEntry ) ).toBe( true );
 		} );
 
 		it( 'should record view document events', () => {

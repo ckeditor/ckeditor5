@@ -10,18 +10,18 @@ import { FontColorUI } from '../src/fontcolor/fontcolorui.js';
 
 describe( 'FontColor', () => {
 	it( 'requires FontColorEditing and FontColorUI', () => {
-		expect( FontColor.requires ).to.deep.equal( [ FontColorEditing, FontColorUI ] );
+		expect( FontColor.requires ).toEqual( [ FontColorEditing, FontColorUI ] );
 	} );
 
 	it( 'defines plugin name', () => {
-		expect( FontColor.pluginName ).to.equal( 'FontColor' );
+		expect( FontColor.pluginName ).toEqual( 'FontColor' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FontColor.isOfficialPlugin ).to.be.true;
+		expect( FontColor.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( FontColor.isPremiumPlugin ).to.be.false;
+		expect( FontColor.isPremiumPlugin ).toBe( false );
 	} );
 } );

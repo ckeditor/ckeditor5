@@ -1306,7 +1306,7 @@ describe( 'DataController utils', () => {
 	} );
 
 	function test( title, input, output, options ) {
-		it( title, () => {
+		it( `${ title }`, () => {
 			input = input.normalize();
 			output = output.normalize();
 

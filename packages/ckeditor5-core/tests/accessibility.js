@@ -421,7 +421,7 @@ describe( 'Accessibility', () => {
 			] ] ) );
 		} );
 
-		it( 'should add keystrokes to the default group and category ', () => {
+		it( 'should add keystrokes to the default group and category', () => {
 			accessibility.addKeystrokeInfos( {
 				keystrokes: [
 					{

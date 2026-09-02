@@ -751,7 +751,7 @@ describe( 'BookmarkEditing', () => {
 				);
 			} );
 
-			describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
+			describe( 'when `enableNonEmptyAnchorConversion` is set to `false`', () => {
 				let element, editor, model;
 
 				beforeEach( async () => {
@@ -910,7 +910,7 @@ describe( 'BookmarkEditing', () => {
 			} );
 
 			describe( 'wrapped bookmarks', () => {
-				describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
+				describe( 'when `enableNonEmptyAnchorConversion` is set to `false`', () => {
 					let element, editor, model;
 
 					beforeEach( async () => {
@@ -1391,7 +1391,7 @@ describe( 'BookmarkEditing', () => {
 			} ) );
 		} );
 
-		describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
+		describe( 'when `enableNonEmptyAnchorConversion` is set to `false`', () => {
 			let element, editor, view, viewDocument, clipboardPlugin;
 
 			beforeEach( async () => {
@@ -1543,7 +1543,7 @@ describe( 'BookmarkEditing', () => {
 			} );
 
 			describe( 'wrapped bookmarks', () => {
-				describe( 'when `enableNonEmptyAnchorConversion` is set to `false` ', () => {
+				describe( 'when `enableNonEmptyAnchorConversion` is set to `false`', () => {
 					let element, editor, view, viewDocument, clipboardPlugin;
 
 					beforeEach( async () => {

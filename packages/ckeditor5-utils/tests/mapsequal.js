@@ -22,7 +22,7 @@ describe( 'utils', () => {
 			mapB.set( 'abc', 'xyz' );
 			mapB.set( 'foo', 'bar' );
 
-			expect( mapsEqual( mapA, mapB ) ).to.be.true;
+			expect( mapsEqual( mapA, mapB ) ).toBe( true );
 		} );
 
 		it( 'should return false if maps size is not the same', () => {
@@ -31,7 +31,7 @@ describe( 'utils', () => {
 
 			mapB.set( 'abc', 'xyz' );
 
-			expect( mapsEqual( mapA, mapB ) ).to.be.false;
+			expect( mapsEqual( mapA, mapB ) ).toBe( false );
 		} );
 
 		it( 'should return false if maps entries are not exactly the same', () => {
@@ -41,7 +41,7 @@ describe( 'utils', () => {
 			mapB.set( 'foo', 'bar' );
 			mapB.set( 'xyz', 'abc' );
 
-			expect( mapsEqual( mapA, mapB ) ).to.be.false;
+			expect( mapsEqual( mapA, mapB ) ).toBe( false );
 		} );
 	} );
 } );

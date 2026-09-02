@@ -25,3 +25,9 @@ export class ParsingInternalChild extends ParsingFeature {}
 export class ParsingGeneric<T> {
 	public items: Array<T> = [];
 }
+
+export class ParsingPrototype {}
+
+ParsingPrototype.prototype.parse = function( this: ParsingPrototype, value: ParsingType ): ParsingInterface {
+	return value as ParsingInterface;
+};

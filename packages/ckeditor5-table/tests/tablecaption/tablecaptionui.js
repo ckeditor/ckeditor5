@@ -34,18 +34,18 @@ describe( 'TableCaptionUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TableCaptionUI.isOfficialPlugin ).to.be.true;
+		expect( TableCaptionUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TableCaptionUI.isPremiumPlugin ).to.be.false;
+		expect( TableCaptionUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should register toggleTableCaption feature component', () => {
 		expect( tableCaption ).to.be.instanceOf( ButtonView );
-		expect( tableCaption.icon ).to.match( /<svg / );
-		expect( tableCaption.tooltip ).to.be.true;
-		expect( tableCaption.isToggleable ).to.be.true;
+		expect( tableCaption.icon ).toMatch( /<svg / );
+		expect( tableCaption.tooltip ).toBe( true );
+		expect( tableCaption.isToggleable ).toBe( true );
 	} );
 
 	it( 'should execute toggleTableCaption command on model execute event', () => {
@@ -106,7 +106,7 @@ describe( 'TableCaptionUI', () => {
 
 		const figcaptionElement = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 2 );
 
-		expect( figcaptionElement.hasClass( 'table__caption_highlighted' ) ).to.be.true;
+		expect( figcaptionElement.hasClass( 'table__caption_highlighted' ) ).toBe( true );
 	} );
 
 	it( 'should not scroll or highlight anything if figcaption element is missing', () => {
@@ -120,23 +120,23 @@ describe( 'TableCaptionUI', () => {
 		tableCaption.fire( 'execute' );
 
 		expect( executeSpy ).not.toHaveBeenCalled();
-		expect( figcaptionElement ).to.be.undefined;
+		expect( figcaptionElement ).toBeUndefined();
 	} );
 
 	it( 'should bind model to toggleTableCaption command', () => {
 		const command = editor.commands.get( 'toggleTableCaption' );
 
 		command.value = true;
-		expect( tableCaption.isOn ).to.be.true;
+		expect( tableCaption.isOn ).toBe( true );
 	} );
 
 	it( 'should have #label bound to the toggleTableCaption command', () => {
 		const command = editor.commands.get( 'toggleTableCaption' );
 
 		command.value = true;
-		expect( tableCaption.label ).to.equal( 'Toggle caption off' );
+		expect( tableCaption.label ).toEqual( 'Toggle caption off' );
 
 		command.value = false;
-		expect( tableCaption.label ).to.equal( 'Toggle caption on' );
+		expect( tableCaption.label ).toEqual( 'Toggle caption on' );
 	} );
 } );

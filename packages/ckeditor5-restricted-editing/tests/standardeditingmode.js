@@ -27,15 +27,15 @@ describe( 'StandardEditingMode', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( StandardEditingMode.pluginName ).to.equal( 'StandardEditingMode' );
+		expect( StandardEditingMode.pluginName ).toEqual( 'StandardEditingMode' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( StandardEditingMode.isOfficialPlugin ).to.be.true;
+		expect( StandardEditingMode.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( StandardEditingMode.isPremiumPlugin ).to.be.false;
+		expect( StandardEditingMode.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should load the StandardEditingModeEditing plugin', () => {

@@ -134,12 +134,12 @@ describe( 'downcast converters', () => {
 				const viewTableCell0After = viewTableRow0After.getChild( 0 );
 				const viewTableCell1After = viewTableRow1After.getChild( 1 );
 
-				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
-				expect( viewTableAfter ).to.not.equal( viewTableBefore );
-				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
-				expect( viewTableCell0After ).to.not.equal( viewTableCell0Before );
-				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
-				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
+				expect( viewFigureAfter ).not.toBe( viewFigureBefore );
+				expect( viewTableAfter ).not.toBe( viewTableBefore );
+				expect( viewTableRow0After ).toEqual( viewTableRow0Before );
+				expect( viewTableCell0After ).not.toBe( viewTableCell0Before );
+				expect( viewTableRow1After ).toEqual( viewTableRow1Before );
+				expect( viewTableCell1After ).toEqual( viewTableCell1Before );
 			} );
 
 			it( 'should reconvert if `footerRows` attribute changes', () => {
@@ -212,14 +212,14 @@ describe( 'downcast converters', () => {
 				const viewTableCell0After = viewTableRow0After.getChild( 0 );
 				const viewTableCell1After = viewTableRow1After.getChild( 0 );
 
-				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
-				expect( viewTableAfter ).to.not.equal( viewTableBefore );
-				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
-				expect( viewTableCell0After ).to.equal( viewTableCell0Before );
+				expect( viewFigureAfter ).not.toBe( viewFigureBefore );
+				expect( viewTableAfter ).not.toBe( viewTableBefore );
+				expect( viewTableRow0After ).toEqual( viewTableRow0Before );
+				expect( viewTableCell0After ).toEqual( viewTableCell0Before );
 
 				// Only last row is updated but elements are reused.
-				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
-				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
+				expect( viewTableRow1After ).toEqual( viewTableRow1Before );
+				expect( viewTableCell1After ).toEqual( viewTableCell1Before );
 			} );
 
 			it( 'should reconvert if remove `footerRows` attribute', () => {
@@ -292,14 +292,14 @@ describe( 'downcast converters', () => {
 				const viewTableCell0After = viewTableRow0After.getChild( 0 );
 				const viewTableCell1After = viewTableRow1After.getChild( 0 );
 
-				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
-				expect( viewTableAfter ).to.not.equal( viewTableBefore );
-				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
-				expect( viewTableCell0After ).to.equal( viewTableCell0Before );
+				expect( viewFigureAfter ).not.toBe( viewFigureBefore );
+				expect( viewTableAfter ).not.toBe( viewTableBefore );
+				expect( viewTableRow0After ).toEqual( viewTableRow0Before );
+				expect( viewTableCell0After ).toEqual( viewTableCell0Before );
 
 				// Only last row is updated but elements are reused.
-				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
-				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
+				expect( viewTableRow1After ).toEqual( viewTableRow1Before );
+				expect( viewTableCell1After ).toEqual( viewTableCell1Before );
 			} );
 		} );
 
@@ -2182,13 +2182,13 @@ describe( 'downcast converters', () => {
 				const viewElement = editor.editing.mapper.toViewElement( cell );
 
 				checkCustomPropertyForHighlight( viewElement );
-				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.true;
+				expect( viewElement.hasClass( 'highlight-yellow' ) ).toBe( true );
 
 				model.change( writer => {
 					writer.removeMarker( 'marker:yellow' );
 				} );
 
-				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.false;
+				expect( viewElement.hasClass( 'highlight-yellow' ) ).toBe( false );
 			} );
 
 			it( 'should preserve marker class on tableCell - when changing heading rows', () => {
@@ -2217,13 +2217,13 @@ describe( 'downcast converters', () => {
 				const viewElement = editor.editing.mapper.toViewElement( cell );
 
 				checkCustomPropertyForHighlight( viewElement );
-				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.true;
+				expect( viewElement.hasClass( 'highlight-yellow' ) ).toBe( true );
 
 				model.change( writer => {
 					writer.removeMarker( 'marker:yellow' );
 				} );
 
-				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.false;
+				expect( viewElement.hasClass( 'highlight-yellow' ) ).toBe( false );
 			} );
 		} );
 
@@ -2378,15 +2378,15 @@ describe( 'downcast converters', () => {
 				const cell = root.getNodeByPath( [ 0, 0, 1 ] );
 				const viewElement = editor.editing.mapper.toViewElement( cell );
 
-				expect( viewElement.getAttribute( 'data-foo' ) ).to.equal( 'bar' );
-				expect( viewElement.getAttribute( 'data-abc' ) ).to.equal( 'xyz' );
+				expect( viewElement.getAttribute( 'data-foo' ) ).toEqual( 'bar' );
+				expect( viewElement.getAttribute( 'data-abc' ) ).toEqual( 'xyz' );
 
 				model.change( writer => {
 					writer.removeMarker( 'marker:yellow' );
 				} );
 
-				expect( viewElement.hasAttribute( 'data-foo' ) ).to.be.false;
-				expect( viewElement.hasAttribute( 'data-abc' ) ).to.be.false;
+				expect( viewElement.hasAttribute( 'data-foo' ) ).toBe( false );
+				expect( viewElement.hasAttribute( 'data-abc' ) ).toBe( false );
 			} );
 		} );
 
@@ -2412,8 +2412,8 @@ describe( 'downcast converters', () => {
 			const set = viewElement.getCustomProperty( 'addHighlight' );
 			const remove = viewElement.getCustomProperty( 'removeHighlight' );
 
-			expect( typeof set ).to.equal( 'function' );
-			expect( typeof remove ).to.equal( 'function' );
+			expect( typeof set ).toEqual( 'function' );
+			expect( typeof remove ).toEqual( 'function' );
 		}
 	} );
 
@@ -2442,13 +2442,12 @@ describe( 'downcast converters', () => {
 					[ 'foo' ]
 				] ) );
 
-				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
+				expect( getClipboardData( editor ) )
+					.toEqual( '<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<tbody>' +
 							'<tr><td>foo</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should create heading rows', () => {
@@ -2458,8 +2457,8 @@ describe( 'downcast converters', () => {
 					[ '5', '6' ]
 				], { headingRows: 2 } ) );
 
-				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
+				expect( getClipboardData( editor ) )
+					.toEqual( '<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
@@ -2467,8 +2466,7 @@ describe( 'downcast converters', () => {
 						'<tbody>' +
 							'<tr><td>5</td><td>6</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should create heading columns', () => {
@@ -2478,15 +2476,14 @@ describe( 'downcast converters', () => {
 					[ '5', '6' ]
 				], { headingColumns: 1 } ) );
 
-				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
+				expect( getClipboardData( editor ) )
+					.toEqual( '<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<tbody>' +
 							'<tr><th>1</th><td>2</td></tr>' +
 							'<tr><th>3</th><td>4</td></tr>' +
 							'<tr><th>5</th><td>6</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should create heading rows and columns', () => {
@@ -2496,8 +2493,8 @@ describe( 'downcast converters', () => {
 					[ '5', '6' ]
 				], { headingRows: 1, headingColumns: 1 } ) );
 
-				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
+				expect( getClipboardData( editor ) )
+					.toEqual( '<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 						'</thead>' +
@@ -2505,8 +2502,7 @@ describe( 'downcast converters', () => {
 							'<tr><th>3</th><td>4</td></tr>' +
 							'<tr><th>5</th><td>6</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should work when heading rows number is bigger than number of rows', () => {
@@ -2515,14 +2511,13 @@ describe( 'downcast converters', () => {
 					[ '3', '4' ]
 				], { headingRows: 3 } ) );
 
-				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
+				expect( getClipboardData( editor ) )
+					.toEqual( '<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
 						'</thead>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should create caption element', () => {
@@ -2536,14 +2531,13 @@ describe( 'downcast converters', () => {
 					'</table>'
 				);
 
-				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
+				expect( getClipboardData( editor ) )
+					.toEqual( '<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<caption>Foo</caption>' +
 						'<tbody>' +
 							'<tr><td>1</td><td>2</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 			} );
 
 			it( 'should not create caption element without TableCaption plugin', async () => {
@@ -2560,13 +2554,11 @@ describe( 'downcast converters', () => {
 					'</table>'
 				);
 
-				expect( getClipboardData( testEditor ) ).to.equal(
-					'<table class="table">' +
+				expect( getClipboardData( testEditor ) ).toEqual( '<table class="table">' +
 						'<tbody>' +
 							'<tr><td>1</td><td>2</td></tr>' +
 						'</tbody>' +
-					'</table>'
-				);
+					'</table>' );
 
 				await testEditor.destroy();
 			} );
@@ -2676,7 +2668,7 @@ describe( 'downcast converters', () => {
 					assertPlainTableStyle( editor, 'margin-left:0;margin-right:auto;', 'table table-style-block-align-left' );
 				} );
 
-				it( ' with TableLayout plugin', async () => {
+				it( 'with TableLayout plugin', async () => {
 					const testEditor = await ClassicTestEditor.create( editorElement, {
 						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
 					} );
@@ -3156,12 +3148,10 @@ describe( 'downcast converters', () => {
 					'</figure>'
 				);
 
-				expect( testEditor.getData() ).to.equal(
-					'<figure class="image">' +
+				expect( testEditor.getData() ).toEqual( '<figure class="image">' +
 						'<img src="/sample.png">' +
 						'<figcaption>Caption</figcaption>' +
-					'</figure>'
-				);
+					'</figure>' );
 
 				await testEditor.destroy();
 			} );
@@ -3188,12 +3178,10 @@ describe( 'downcast converters', () => {
 					'</figure>'
 				);
 
-				expect( testEditor.getData() ).to.equal(
-					'<figure class="image">' +
+				expect( testEditor.getData() ).toEqual( '<figure class="image">' +
 						'<img src="/sample.png">' +
 						'<foobar>Caption</foobar>' +
-					'</figure>'
-				);
+					'</figure>' );
 
 				await testEditor.destroy();
 			} );

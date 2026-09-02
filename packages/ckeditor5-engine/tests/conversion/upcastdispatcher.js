@@ -69,8 +69,8 @@ describe( 'UpcastDispatcher', () => {
 			let writer;
 
 			// Conversion process properties should be undefined/empty before conversion.
-			expect( dispatcher.conversionApi.writer ).to.not.ok;
-			expect( dispatcher.conversionApi.store ).to.not.ok;
+			expect( dispatcher.conversionApi.writer ).toBeFalsy();
+			expect( dispatcher.conversionApi.store ).toBeFalsy();
 
 			dispatcher.on( 'element', ( evt, data, conversionApi ) => {
 				// Check conversion api params.
@@ -105,8 +105,8 @@ describe( 'UpcastDispatcher', () => {
 			expect( spy ).toHaveBeenCalledTimes( 2 );
 
 			// Conversion process properties should be cleared after conversion.
-			expect( dispatcher.conversionApi.writer ).to.not.ok;
-			expect( dispatcher.conversionApi.store ).to.not.ok;
+			expect( dispatcher.conversionApi.writer ).toBeFalsy();
+			expect( dispatcher.conversionApi.store ).toBeFalsy();
 		} );
 
 		it( 'should fire viewCleanup event on converted view part', () => {
@@ -382,12 +382,12 @@ describe( 'UpcastDispatcher', () => {
 			// Default context $root.
 			model.change( writer => dispatcher.convert( viewElement, writer ) );
 			expect( spy ).toHaveBeenCalledOnce();
-			expect( checkChildResult ).to.false;
+			expect( checkChildResult ).toBe( false );
 
 			// SchemaDefinition as context.
 			model.change( writer => dispatcher.convert( viewElement, writer, [ 'first' ] ) );
 			expect( spy ).toHaveBeenCalledTimes( 2 );
-			expect( checkChildResult ).to.false;
+			expect( checkChildResult ).toBe( false );
 
 			// Position as context.
 			const fragment = new ModelDocumentFragment( [
@@ -398,7 +398,7 @@ describe( 'UpcastDispatcher', () => {
 
 			model.change( writer => dispatcher.convert( viewElement, writer, new ModelPosition( fragment, [ 0, 0, 0 ] ) ) );
 			expect( spy ).toHaveBeenCalledTimes( 3 );
-			expect( checkChildResult ).to.true;
+			expect( checkChildResult ).toBe( true );
 		} );
 	} );
 
@@ -685,7 +685,7 @@ describe( 'UpcastDispatcher', () => {
 
 					const result = conversionApi.splitToAllowedParent( span, position );
 
-					expect( result ).to.null;
+					expect( result ).toBeNull();
 					spy();
 				} );
 
@@ -704,7 +704,7 @@ describe( 'UpcastDispatcher', () => {
 					const code = conversionApi.writer.createElement( 'div' );
 					const result = conversionApi.splitToAllowedParent( code, data.modelCursor );
 
-					expect( result ).to.null;
+					expect( result ).toBeNull();
 					spy();
 				} );
 

@@ -297,7 +297,7 @@ describe( 'ShiftEnterCommand', () => {
 		} );
 
 		function test( title, input, output ) {
-			it( title, () => {
+			it( `execute(): ${ title }`, () => {
 				_setModelData( model, input );
 
 				command.execute();

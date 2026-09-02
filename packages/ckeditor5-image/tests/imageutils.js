@@ -557,7 +557,7 @@ describe( 'ImageUtils plugin', () => {
 				expect( consoleWarnStub ).not.toHaveBeenCalled();
 				expect( _getModelData( model ) ).toBe( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 
-				vi.restoreAllMocks();
+				consoleWarnStub.mockRestore();
 			} );
 
 			it( 'should use the block image type when there is only ImageBlockEditing plugin enabled', async () => {
@@ -576,7 +576,7 @@ describe( 'ImageUtils plugin', () => {
 				expect( consoleWarnStub ).not.toHaveBeenCalled();
 				expect( _getModelData( model ) ).toBe( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
 
-				vi.restoreAllMocks();
+				consoleWarnStub.mockRestore();
 			} );
 
 			it( 'should pass the allowed custom attributes to the inserted block image', () => {
@@ -741,7 +741,7 @@ describe( 'ImageUtils plugin', () => {
 				expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toBe( 'image-block-plugin-required' );
 				expect( _getModelData( model ) ).toBe( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 
-				vi.restoreAllMocks();
+				consoleWarnStub.mockRestore();
 			} );
 		} );
 
@@ -784,7 +784,7 @@ describe( 'ImageUtils plugin', () => {
 				expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toBe( 'image-inline-plugin-required' );
 				expect( _getModelData( model ) ).toBe( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
 
-				vi.restoreAllMocks();
+				consoleWarnStub.mockRestore();
 			} );
 		} );
 
@@ -824,7 +824,7 @@ describe( 'ImageUtils plugin', () => {
 				expect( consoleWarnStub ).not.toHaveBeenCalled();
 				expect( _getModelData( model ) ).toBe( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 
-				vi.restoreAllMocks();
+				consoleWarnStub.mockRestore();
 			} );
 
 			it( 'should use the block image type by default', () => {

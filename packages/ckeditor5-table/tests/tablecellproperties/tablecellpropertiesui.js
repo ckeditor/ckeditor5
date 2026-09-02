@@ -73,15 +73,15 @@ describe( 'table cell properties', () => {
 		}
 
 		it( 'should be named', () => {
-			expect( TableCellPropertiesUI.pluginName ).to.equal( 'TableCellPropertiesUI' );
+			expect( TableCellPropertiesUI.pluginName ).toEqual( 'TableCellPropertiesUI' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( TableCellPropertiesUI.isOfficialPlugin ).to.be.true;
+			expect( TableCellPropertiesUI.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( TableCellPropertiesUI.isPremiumPlugin ).to.be.false;
+			expect( TableCellPropertiesUI.isPremiumPlugin ).toBe( false );
 		} );
 
 		it( 'should load ContextualBalloon', () => {
@@ -93,20 +93,20 @@ describe( 'table cell properties', () => {
 				expect( editor.config.get( 'table.tableCellProperties' ) ).to.be.an( 'object' );
 
 				expect( editor.config.get( 'table.tableCellProperties' ) ).to.have.property( 'borderColors' );
-				expect( editor.config.get( 'table.tableCellProperties.borderColors' ) ).to.deep.equal( defaultColors );
+				expect( editor.config.get( 'table.tableCellProperties.borderColors' ) ).toEqual( defaultColors );
 				expect( editor.config.get( 'table.tableCellProperties' ) ).to.have.property( 'backgroundColors' );
-				expect( editor.config.get( 'table.tableCellProperties.backgroundColors' ) ).to.deep.equal( defaultColors );
+				expect( editor.config.get( 'table.tableCellProperties.backgroundColors' ) ).toEqual( defaultColors );
 			} );
 		} );
 
 		describe( 'init()', () => {
 			it( 'should set a batch', () => {
-				expect( tableCellPropertiesUI._undoStepBatch ).to.be.undefined;
+				expect( tableCellPropertiesUI._undoStepBatch ).toBeUndefined();
 			} );
 
 			describe( '#view', () => {
 				it( 'should not be created', () => {
-					expect( tableCellPropertiesUI.view ).to.be.null;
+					expect( tableCellPropertiesUI.view ).toBeNull();
 				} );
 
 				it( 'should be created on first show', () => {
@@ -116,7 +116,7 @@ describe( 'table cell properties', () => {
 
 				it( 'should be rendered', () => {
 					tableCellPropertiesUI._showView();
-					expect( tableCellPropertiesUI.view.isRendered ).to.be.true;
+					expect( tableCellPropertiesUI.view.isRendered ).toBe( true );
 				} );
 
 				it( 'should get the border colors configurations', () => {
@@ -138,11 +138,11 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should have a label', () => {
-					expect( tableCellPropertiesButton.label ).to.equal( 'Cell properties' );
+					expect( tableCellPropertiesButton.label ).toEqual( 'Cell properties' );
 				} );
 
 				it( 'should have a tooltip', () => {
-					expect( tableCellPropertiesButton.tooltip ).to.be.true;
+					expect( tableCellPropertiesButton.tooltip ).toBe( true );
 				} );
 
 				it( 'should call #_showView upon #execute', () => {
@@ -166,11 +166,11 @@ describe( 'table cell properties', () => {
 						editor.commands.get( command ).isEnabled = false;
 					} );
 
-					expect( tableCellPropertiesButton.isEnabled ).to.be.false;
+					expect( tableCellPropertiesButton.isEnabled ).toBe( false );
 
 					editor.commands.get( 'tableCellBackgroundColor' ).isEnabled = true;
 
-					expect( tableCellPropertiesButton.isEnabled ).to.be.true;
+					expect( tableCellPropertiesButton.isEnabled ).toBe( true );
 				} );
 			} );
 		} );
@@ -199,10 +199,10 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 
 				tableCellPropertiesView.fire( 'submit' );
-				expect( contextualBalloon.visibleView ).to.be.null;
+				expect( contextualBalloon.visibleView ).toBeNull();
 			} );
 
 			describe( '#cancel event', () => {
@@ -231,29 +231,25 @@ describe( 'table cell properties', () => {
 					tableCellPropertiesView.borderStyle = 'dotted';
 					tableCellPropertiesView.backgroundColor = 'red';
 
-					expect( _getModelData( editor.model ) ).to.equal(
-						'<table>' +
+					expect( _getModelData( editor.model ) ).toEqual( '<table>' +
 							'<tableRow>' +
 								'<tableCell tableCellBackgroundColor="red" tableCellBorderStyle="dotted">' +
 									'<paragraph>[]foo</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
 						'</table>' +
-						'<paragraph>bar</paragraph>'
-					);
+						'<paragraph>bar</paragraph>' );
 
 					tableCellPropertiesView.fire( 'cancel' );
 
-					expect( _getModelData( editor.model ) ).to.equal(
-						'<table>' +
+					expect( _getModelData( editor.model ) ).toEqual( '<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>[]foo</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
 						'</table>' +
-						'<paragraph>bar</paragraph>'
-					);
+						'<paragraph>bar</paragraph>' );
 
 					expect( spy ).toHaveBeenCalledWith( 'undo', tableCellPropertiesUI._undoStepBatch );
 				} );
@@ -262,10 +258,10 @@ describe( 'table cell properties', () => {
 					tableCellPropertiesButton.fire( 'execute' );
 					tableCellPropertiesView = tableCellPropertiesUI.view;
 
-					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+					expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 
 					tableCellPropertiesView.fire( 'cancel' );
-					expect( contextualBalloon.visibleView ).to.be.null;
+					expect( contextualBalloon.visibleView ).toBeNull();
 				} );
 			} );
 
@@ -279,37 +275,37 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 
 				tableCellPropertiesView.keystrokes.press( keyEvtData );
-				expect( contextualBalloon.visibleView ).to.be.null;
+				expect( contextualBalloon.visibleView ).toBeNull();
 			} );
 
 			it( 'should hide if the table cell is no longer selected on EditorUI#update', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 
 				editor.model.change( writer => {
 					// Set selection in the paragraph.
 					writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 0 );
 				} );
 
-				expect( contextualBalloon.visibleView ).to.be.null;
+				expect( contextualBalloon.visibleView ).toBeNull();
 			} );
 
 			it( 'should reposition if table cell is still selected on on EditorUI#update', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 
 				editor.model.change( writer => {
 					writer.insertText( 'qux', editor.model.document.selection.getFirstPosition() );
 				} );
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 			} );
 
 			it( 'should not reposition if view is not visible', () => {
@@ -326,11 +322,11 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 
 				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-				expect( contextualBalloon.visibleView ).to.be.null;
+				expect( contextualBalloon.visibleView ).toBeNull();
 			} );
 
 			it( 'should bind cellTypeDropdown enabled state to tableCellType command', async () => {
@@ -340,10 +336,10 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
 				command.isEnabled = true;
-				expect( tableCellPropertiesView.cellTypeDropdown.isEnabled ).to.be.true;
+				expect( tableCellPropertiesView.cellTypeDropdown.isEnabled ).toBe( true );
 
 				command.isEnabled = false;
-				expect( tableCellPropertiesView.cellTypeDropdown.isEnabled ).to.be.false;
+				expect( tableCellPropertiesView.cellTypeDropdown.isEnabled ).toBe( false );
 			} );
 
 			describe( 'property changes', () => {
@@ -386,7 +382,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.borderColorInput.errorText ).to.match( /^The color is invalid/ );
+						expect( tableCellPropertiesView.borderColorInput.errorText ).toMatch( /^The color is invalid/ );
 						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
@@ -394,7 +390,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.borderColorInput.errorText ).to.be.null;
+						expect( tableCellPropertiesView.borderColorInput.errorText ).toBeNull();
 						expect( spy ).toHaveBeenCalledWith( 'tableCellBorderColor', { value: '#AAA', batch } );
 					} );
 				} );
@@ -417,7 +413,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.borderWidthInput.errorText ).to.match( /^The value is invalid/ );
+						expect( tableCellPropertiesView.borderWidthInput.errorText ).toMatch( /^The value is invalid/ );
 						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
@@ -425,7 +421,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						expect( tableCellPropertiesView.backgroundInput.errorText ).toBeNull();
 						expect( spy ).toHaveBeenCalledWith( 'tableCellBorderWidth', { value: '3em', batch } );
 					} );
 				} );
@@ -448,7 +444,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.widthInput.errorText ).to.match( /^The value is invalid/ );
+						expect( tableCellPropertiesView.widthInput.errorText ).toMatch( /^The value is invalid/ );
 						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
@@ -456,7 +452,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						expect( tableCellPropertiesView.backgroundInput.errorText ).toBeNull();
 						expect( spy ).toHaveBeenCalledWith( 'tableCellWidth', { value: '3em', batch } );
 					} );
 				} );
@@ -479,7 +475,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.heightInput.errorText ).to.match( /^The value is invalid/ );
+						expect( tableCellPropertiesView.heightInput.errorText ).toMatch( /^The value is invalid/ );
 						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
@@ -487,7 +483,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						expect( tableCellPropertiesView.backgroundInput.errorText ).toBeNull();
 						expect( spy ).toHaveBeenCalledWith( 'tableCellHeight', { value: '3em', batch } );
 					} );
 				} );
@@ -510,7 +506,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.paddingInput.errorText ).to.match( /^The value is invalid/ );
+						expect( tableCellPropertiesView.paddingInput.errorText ).toMatch( /^The value is invalid/ );
 						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
@@ -518,7 +514,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						expect( tableCellPropertiesView.backgroundInput.errorText ).toBeNull();
 						expect( spy ).toHaveBeenCalledWith( 'tableCellPadding', { value: '3em', batch } );
 					} );
 				} );
@@ -541,7 +537,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.backgroundInput.errorText ).to.match( /^The color is invalid/ );
+						expect( tableCellPropertiesView.backgroundInput.errorText ).toMatch( /^The color is invalid/ );
 						expect( spy ).not.toHaveBeenCalled();
 
 						// And now let's pass a valid value and check if the error text will be gone.
@@ -549,7 +545,7 @@ describe( 'table cell properties', () => {
 
 						vi.advanceTimersByTime( 500 );
 
-						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						expect( tableCellPropertiesView.backgroundInput.errorText ).toBeNull();
 						expect( spy ).toHaveBeenCalledWith( 'tableCellBackgroundColor', { value: '#AAA', batch } );
 					} );
 				} );
@@ -599,7 +595,7 @@ describe( 'table cell properties', () => {
 					vi.advanceTimersByTime( 400 );
 
 					// Because they were quick, they should see no error
-					expect( tableCellPropertiesView.borderColorInput.errorText ).to.be.null;
+					expect( tableCellPropertiesView.borderColorInput.errorText ).toBeNull();
 				} );
 
 				it( 'should not affect the editor state if internal property has changed', () => {
@@ -625,19 +621,19 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 
 				const firstBatch = tableCellPropertiesUI._undoStepBatch;
 				expect( firstBatch ).to.be.instanceOf( Batch );
 
 				tableCellPropertiesView.fire( 'submit' );
-				expect( contextualBalloon.visibleView ).to.be.null;
+				expect( contextualBalloon.visibleView ).toBeNull();
 
 				tableCellPropertiesButton.fire( 'execute' );
 
 				const secondBatch = tableCellPropertiesUI._undoStepBatch;
 				expect( secondBatch ).to.be.instanceOf( Batch );
-				expect( firstBatch ).to.not.equal( secondBatch );
+				expect( firstBatch ).not.toBe( secondBatch );
 			} );
 
 			it( 'should show the ui for multi-cell selection', () => {
@@ -653,7 +649,7 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 			} );
 
 			describe( 'initial data', () => {
@@ -704,7 +700,7 @@ describe( 'table cell properties', () => {
 					tableCellPropertiesButton.fire( 'execute' );
 					tableCellPropertiesView = tableCellPropertiesUI.view;
 
-					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+					expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 					expect( tableCellPropertiesView ).to.include( {
 						borderStyle: 'a',
 						borderColor: 'b',
@@ -730,7 +726,7 @@ describe( 'table cell properties', () => {
 					tableCellPropertiesButton.fire( 'execute' );
 					tableCellPropertiesView = tableCellPropertiesUI.view;
 
-					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+					expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 					expect( tableCellPropertiesView ).to.include( {
 						borderStyle: 'solid',
 						borderColor: 'hsl(0, 0%, 75%)',
@@ -758,8 +754,8 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
-				expect( tableCellPropertiesView.borderStyle ).to.equal( 'solid' );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
+				expect( tableCellPropertiesView.borderStyle ).toEqual( 'solid' );
 			} );
 
 			it( 'should focus the form view', () => {
@@ -789,10 +785,10 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 
 				tableCellPropertiesView.fire( 'submit' );
-				expect( contextualBalloon.visibleView ).to.be.null;
+				expect( contextualBalloon.visibleView ).toBeNull();
 
 				expect( spy ).toHaveBeenCalledOnce();
 				expect( spy ).toHaveBeenCalledWith( editor.ui, 'update' );
@@ -804,7 +800,7 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 
 				tableCellPropertiesView.fire( 'submit' );
 
@@ -881,7 +877,7 @@ describe( 'table cell properties', () => {
 
 				describe( '#view', () => {
 					it( 'should get the default table cell properties configurations', () => {
-						expect( tableCellPropertiesView.options.defaultTableCellProperties ).to.deep.equal( {
+						expect( tableCellPropertiesView.options.defaultTableCellProperties ).toEqual( {
 							horizontalAlignment: 'center',
 							verticalAlignment: 'bottom',
 							borderStyle: 'dashed',
@@ -923,7 +919,7 @@ describe( 'table cell properties', () => {
 
 						tableCellPropertiesButton.fire( 'execute' );
 
-						expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+						expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 						expect( tableCellPropertiesView ).to.include( {
 							borderStyle: 'dashed',
 							borderColor: '#ff0',
@@ -942,7 +938,7 @@ describe( 'table cell properties', () => {
 
 						tableCellPropertiesButton.fire( 'execute' );
 
-						expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+						expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 						expect( tableCellPropertiesView ).to.include( {
 							borderStyle: 'none',
 							borderColor: '',
@@ -984,7 +980,7 @@ describe( 'table cell properties', () => {
 
 						tableCellPropertiesButton.fire( 'execute' );
 
-						expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+						expect( contextualBalloon.visibleView ).toEqual( tableCellPropertiesView );
 						expect( tableCellPropertiesView ).to.include( {
 							borderStyle: 'none',
 							borderColor: '',
@@ -1037,7 +1033,7 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should define table.tableCellProperties.colorPicker', () => {
-				expect( editor.config.get( 'table.tableCellProperties.colorPicker' ) ).to.be.false;
+				expect( editor.config.get( 'table.tableCellProperties.colorPicker' ) ).toBe( false );
 			} );
 
 			it( 'should not have color picker in dropdown', () => {
@@ -1046,7 +1042,7 @@ describe( 'table cell properties', () => {
 				const panelView = tableCellPropertiesUI.view.borderColorInput.fieldView.dropdownView.panelView;
 				const colorPicker = panelView.children.get( 0 ).colorPickerFragmentView.element;
 
-				expect( colorPicker ).to.be.null;
+				expect( colorPicker ).toBeNull();
 			} );
 		} );
 
@@ -1102,7 +1098,7 @@ describe( 'table cell properties', () => {
 
 				ui._showView();
 
-				expect( ui.view.width ).to.equal( '40%' );
+				expect( ui.view.width ).toEqual( '40%' );
 			} );
 
 			it( 'should execute the tableColumnWidth command for a multi-cell selection', () => {

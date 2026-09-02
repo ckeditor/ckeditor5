@@ -59,15 +59,15 @@ describe( 'ListItemFontSizeIntegration', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListItemFontSizeIntegration.pluginName ).to.equal( 'ListItemFontSizeIntegration' );
+		expect( ListItemFontSizeIntegration.pluginName ).toEqual( 'ListItemFontSizeIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListItemFontSizeIntegration.isOfficialPlugin ).to.be.true;
+		expect( ListItemFontSizeIntegration.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListItemFontSizeIntegration.isPremiumPlugin ).to.be.false;
+		expect( ListItemFontSizeIntegration.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
@@ -75,7 +75,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 	} );
 
 	it( 'should require ListEditing plugin', () => {
-		expect( ListItemFontSizeIntegration.requires ).to.deep.equal( [
+		expect( ListItemFontSizeIntegration.requires ).toEqual( [
 			ListEditing
 		] );
 	} );
@@ -89,7 +89,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			const modelElement = new ModelElement( 'myElement', { listItemId: 'a' } );
 
-			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemFontSize' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemFontSize' ) ).toBe( true );
 		} );
 
 		it( 'listItemFontSize attribute should have isFormatting set to true', () => {
@@ -109,15 +109,15 @@ describe( 'ListItemFontSizeIntegration', () => {
 			const heading = new ModelElement( 'heading1' );
 			const table = new ModelElement( 'table' );
 
-			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemFontSize' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemFontSize' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemFontSize' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemFontSize' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemFontSize' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemFontSize' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemFontSize' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemFontSize' ) ).toBe( true );
 
-			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemFontSize' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemFontSize' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemFontSize' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemFontSize' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemFontSize' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemFontSize' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemFontSize' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemFontSize' ) ).toBe( false );
 		} );
 	} );
 
@@ -130,15 +130,13 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size-tiny">' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'<span class="text-tiny">foo</span>' +
 							'</span>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -159,8 +157,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size-tiny">' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'<span class="text-tiny">foo</span>' +
@@ -173,8 +170,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 								'</li>' +
 							'</ul>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -200,8 +196,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size-tiny">' +
 							'<p>' +
 								'<span class="text-tiny">foo</span>' +
@@ -210,8 +205,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 								'<span class="text-tiny">bar</span>' +
 							'</p>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -236,8 +230,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</blockQuote>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size-tiny">' +
 							'<blockquote>' +
 								'<p>' +
@@ -245,8 +238,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 								'</p>' +
 							'</blockquote>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -268,15 +260,13 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</heading1>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size-tiny">' +
 							'<h2>' +
 								'<span class="text-tiny">foo</span>' +
 							'</h2>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -303,8 +293,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</table>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size-tiny">' +
 							'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 								'<div class="ck ck-widget__selection-handle"></div>' +
@@ -322,8 +311,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 								'</table>' +
 							'</figure>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -351,15 +339,13 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li>' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'foo' +
 							'</span>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -380,15 +366,13 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size-tiny" style="--ck-content-list-marker-dummy-font-size:0">' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'<span class="text-tiny">foo</span>' +
 							'</span>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -590,7 +574,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should upcast and consume class', () => {
 				const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-					expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-font-size-tiny' } ) ).to.be.false;
+					expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-font-size-tiny' } ) ).toBe( false );
 				} );
 
 				editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:li', upcastCheck, { priority: 'lowest' } ) );
@@ -630,11 +614,10 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				const content = spy.mock.calls[ 0 ][ 0 ];
 
-				expect( _stringifyModel( content ) ).to.equal(
-					'<paragraph listIndent="0" listItemFontSize="tiny" listItemId="a00" listType="numbered">' +
+				expect( _stringifyModel( content ) )
+					.toEqual( '<paragraph listIndent="0" listItemFontSize="tiny" listItemId="a00" listType="numbered">' +
 						'foo' +
-					'</paragraph>'
-				);
+					'</paragraph>' );
 			} );
 
 			function createDataTransfer( data ) {
@@ -661,15 +644,13 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'<span style="font-size:10px">foo</span>' +
 							'</span>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -690,8 +671,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'<span style="font-size:10px">foo</span>' +
@@ -704,8 +684,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 								'</li>' +
 							'</ul>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -731,8 +710,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<p>' +
 								'<span style="font-size:10px">foo</span>' +
@@ -741,8 +719,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 								'<span style="font-size:10px">bar</span>' +
 							'</p>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -767,8 +744,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</blockQuote>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<blockquote>' +
 								'<p>' +
@@ -776,8 +752,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 								'</p>' +
 							'</blockquote>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -799,15 +774,13 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</heading1>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<h2>' +
 								'<span style="font-size:10px">foo</span>' +
 							'</h2>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -834,8 +807,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</table>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 								'<div class="ck ck-widget__selection-handle"></div>' +
@@ -853,8 +825,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 								'</table>' +
 							'</figure>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -882,15 +853,13 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<ul>' +
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 						'<li>' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'foo' +
 							'</span>' +
 						'</li>' +
-					'</ul>'
-				);
+					'</ul>' );
 
 				expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 					'<ul>' +
@@ -1076,8 +1045,9 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should upcast and consume class', () => {
 				const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
-					expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-font-size' } ) ).to.be.false;
-					expect( conversionApi.consumable.test( data.viewItem, { styles: '--ck-content-list-marker-font-size' } ) ).to.be.false;
+					expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-font-size' } ) ).toBe( false );
+					expect( conversionApi.consumable.test( data.viewItem, { styles: '--ck-content-list-marker-font-size' } ) )
+						.toBe( false );
 				} );
 
 				editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:li', upcastCheck, { priority: 'lowest' } ) );
@@ -1117,11 +1087,10 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				const content = spy.mock.calls[ 0 ][ 0 ];
 
-				expect( _stringifyModel( content ) ).to.equal(
-					'<paragraph listIndent="0" listItemFontSize="10px" listItemId="a00" listType="numbered">' +
+				expect( _stringifyModel( content ) )
+					.toEqual( '<paragraph listIndent="0" listItemFontSize="10px" listItemId="a00" listType="numbered">' +
 						'foo' +
-					'</paragraph>'
-				);
+					'</paragraph>' );
 			} );
 
 			function createDataTransfer( data ) {
@@ -1181,13 +1150,11 @@ describe( 'ListItemFontSizeIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 						'<span style="font-size:10px;">foo</span>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		it( 'should upcast a numeric value not specified in config from <li> to listItemFontSize attribute', () => {
@@ -1205,13 +1172,11 @@ describe( 'ListItemFontSizeIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:11px;">' +
 						'<span style="font-size:11px;">foo</span>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 
 		it( 'should not upcast a class from <li> to listItemFontSize attribute', () => {
@@ -1229,11 +1194,9 @@ describe( 'ListItemFontSizeIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<ul>' +
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ul>' +
 					'<li>foo</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 		} );
 	} );
 
@@ -1273,15 +1236,13 @@ describe( 'ListItemFontSizeIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li>' +
 						'<p>' +
 							'<span class="text-tiny">foo</span>' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -1301,15 +1262,13 @@ describe( 'ListItemFontSizeIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li>' +
 						'<p>' +
 							'<span style="font-size:10px">foo</span>' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +
@@ -1349,15 +1308,13 @@ describe( 'ListItemFontSizeIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
+			expect( _getViewData( view, { withoutSelection: true } ) ).toEqual( '<ul>' +
 					'<li>' +
 						'<p>' +
 							'foo' +
 						'</p>' +
 					'</li>' +
-				'</ul>'
-			);
+				'</ul>' );
 
 			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
 				'<ul>' +

@@ -1389,10 +1389,6 @@ describe( 'LinkUI', () => {
 
 	describe( 'keyboard support', () => {
 		beforeEach( () => {
-			// Make sure that forms are lazy initiated.
-			expect( linkUIFeature.formView ).toBeNull();
-			expect( linkUIFeature.toolbarView ).toBeNull();
-
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
 			toolbarView = linkUIFeature.toolbarView;
@@ -1666,10 +1662,6 @@ describe( 'LinkUI', () => {
 
 	describe( 'mouse support', () => {
 		beforeEach( () => {
-			// Make sure that forms are lazy initiated.
-			expect( linkUIFeature.formView ).toBeNull();
-			expect( linkUIFeature.toolbarView ).toBeNull();
-
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
 			toolbarView = linkUIFeature.toolbarView;
@@ -1845,10 +1837,6 @@ describe( 'LinkUI', () => {
 		let focusEditableSpy;
 
 		beforeEach( () => {
-			// Make sure that forms are lazy initiated.
-			expect( linkUIFeature.formView ).toBeNull();
-			expect( linkUIFeature.toolbarView ).toBeNull();
-
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
 			toolbarView = linkUIFeature.toolbarView;
@@ -1981,10 +1969,6 @@ describe( 'LinkUI', () => {
 		};
 
 		beforeEach( () => {
-			// Make sure that forms are lazy initiated.
-			expect( linkUIFeature.formView ).toBeNull();
-			expect( linkUIFeature.toolbarView ).toBeNull();
-
 			linkUIFeature._createViews();
 			formView = linkUIFeature.formView;
 			toolbarView = linkUIFeature.toolbarView;
@@ -3265,10 +3249,12 @@ describe( 'LinkUI', () => {
 	describe( 'Links Providers', () => {
 		describe( 'registerLinksListProvider()', () => {
 			it( 'should not crash the editor when called before showing the form', () => {
-				linkUIFeature.registerLinksListProvider( {
-					label: 'Foo',
-					getItems: () => []
-				} );
+				expect( () => {
+					linkUIFeature.registerLinksListProvider( {
+						label: 'Foo',
+						getItems: () => []
+					} );
+				} ).not.toThrow();
 			} );
 
 			it( 'should show links provider that were registered before showing form', () => {
@@ -3780,7 +3766,7 @@ describe( 'LinkUI', () => {
 
 				linkButton.fire( 'execute' );
 
-				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( 'https://ckeditor.com' );
+				expect( linkUIFeature.formView.urlInputView.fieldView.value ).toEqual( 'https://ckeditor.com' );
 				expect( linkUIFeature._balloon.visibleView ).toBe( linkUIFeature.formView );
 				expect( focusSpy ).toHaveBeenCalledOnce();
 			} );
@@ -3804,7 +3790,7 @@ describe( 'LinkUI', () => {
 
 				bookmarkButton.fire( 'execute' );
 
-				expect( linkUIFeature.formView.urlInputView.fieldView.value ).is.equal( 'https://ckeditor.com' );
+				expect( linkUIFeature.formView.urlInputView.fieldView.value ).toEqual( 'https://ckeditor.com' );
 				expect( linkUIFeature._balloon.visibleView ).toBe( linkUIFeature.formView );
 				expect( focusSpy ).toHaveBeenCalledOnce();
 

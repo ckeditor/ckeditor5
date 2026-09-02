@@ -181,7 +181,7 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domRoot.getAttribute( 'class' ) ).toBe( 'foo' );
-			expect( domRoot.getAttribute( 'id' ) ).to.be.not.ok;
+			expect( domRoot.getAttribute( 'id' ) ).toBeFalsy();
 
 			expect( renderer.markedAttributes.size ).toBe( 0 );
 		} );
@@ -193,8 +193,8 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'attributes', viewRoot );
 			renderer.render();
 
-			expect( domRoot.getAttribute( 'class' ) ).to.be.not.ok;
-			expect( domRoot.getAttribute( 'style' ) ).to.be.not.ok;
+			expect( domRoot.getAttribute( 'class' ) ).toBeFalsy();
+			expect( domRoot.getAttribute( 'style' ) ).toBeFalsy();
 
 			expect( renderer.markedAttributes.size ).toBe( 0 );
 		} );
@@ -519,7 +519,7 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			// Expect no error on render.
-			expect( viewRoot ).to.be.ok;
+			expect( viewRoot ).toBeTruthy();
 		} );
 
 		it( 'should not add filler when inside contenteditable=false parent', () => {
@@ -2094,7 +2094,7 @@ describe( 'Renderer', () => {
 					expect( createRangeSpy ).toHaveBeenCalledTimes( 2 );
 				} );
 
-				it( 'correctly maps fake selection ', () => {
+				it( 'correctly maps fake selection', () => {
 					// See https://github.com/ckeditor/ckeditor5-engine/pull/1792#issuecomment-529814641
 					const label = 'subsequent fake selection calls';
 					const { view: newParagraph, selection: newSelection } = _parseView( '<container:p>[baz]</container:p>' );
@@ -2179,7 +2179,7 @@ describe( 'Renderer', () => {
 				expect( domRoot.childNodes.length ).toBe( 2 );
 
 				const newContainer = domRoot.childNodes[ 1 ];
-				expect( newContainer ).equals( container );
+				expect( newContainer ).toEqual( container );
 				expect( newContainer.childNodes.length ).toBe( 1 );
 
 				const textNode = newContainer.childNodes[ 0 ];
@@ -2205,7 +2205,7 @@ describe( 'Renderer', () => {
 				expect( domRoot.childNodes.length ).toBe( 2 );
 
 				const newContainer = domRoot.childNodes[ 1 ];
-				expect( newContainer ).equals( container );
+				expect( newContainer ).toEqual( container );
 				expect( newContainer.childNodes.length ).toBe( 1 );
 
 				const textNode = newContainer.childNodes[ 0 ];
@@ -2226,7 +2226,7 @@ describe( 'Renderer', () => {
 				expect( domRoot.childNodes.length ).toBe( 2 );
 
 				const newContainer = domRoot.childNodes[ 1 ];
-				expect( newContainer ).equals( container );
+				expect( newContainer ).toEqual( container );
 				expect( newContainer.childNodes.length ).toBe( 1 );
 
 				const textNode = newContainer.childNodes[ 0 ];
@@ -2284,7 +2284,7 @@ describe( 'Renderer', () => {
 				const container = domRoot.childNodes[ 1 ];
 
 				const bindSelection = renderer.domConverter.fakeSelectionToView( container );
-				expect( bindSelection ).to.not.be.undefined;
+				expect( bindSelection ).not.toBeUndefined();
 				expect( bindSelection.isEqual( selection ) ).toBe( true );
 			} );
 
@@ -2319,7 +2319,7 @@ describe( 'Renderer', () => {
 			function assertDomSelectionContents( domSelection, expectedContainer, expectedText ) {
 				const domSelectionContainer = domSelection.getRangeAt( 0 ).commonAncestorContainer;
 
-				expect( domSelection.toString() ).to.match( expectedText );
+				expect( domSelection.toString() ).toMatch( expectedText );
 				expect(
 					domSelectionContainer == expectedContainer.firstChild || domSelectionContainer == expectedContainer
 				).toBe( true );
@@ -3213,11 +3213,11 @@ describe( 'Renderer', () => {
 
 				// Assert if new view elements are bind to new DOM elements.
 				const viewMappings = renderer.domConverter._domToViewMapping;
-				expect( viewMappings.get( viewRoot.getChild( 1 ) ) ).not.equal( domBQ );
-				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ) ) ).not.equal( domUL );
-				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 0 ) ) ).not.equal( domLI1 );
-				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 1 ) ) ).not.equal( domLI2 );
-				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 2 ) ) ).not.equal( domLI3 );
+				expect( viewMappings.get( viewRoot.getChild( 1 ) ) ).not.toBe( domBQ );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ) ) ).not.toBe( domUL );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 0 ) ) ).not.toBe( domLI1 );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 1 ) ) ).not.toBe( domLI2 );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 2 ) ) ).not.toBe( domLI3 );
 			} );
 
 			it( 'should handle complex view replace', () => {
@@ -3773,7 +3773,7 @@ describe( 'Renderer', () => {
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
 
-				expect( getMutationStats( observer.takeRecords() ) ).to.be.empty;
+				expect( getMutationStats( observer.takeRecords() ) ).toHaveLength( 0 );
 			} );
 
 			it( 'should remove and add one', () => {
@@ -4052,7 +4052,7 @@ describe( 'Renderer', () => {
 					renderer.markToSync( 'children', viewRoot );
 					renderer.render();
 
-					expect( getMutationStats( observer.takeRecords() ) ).to.be.empty;
+					expect( getMutationStats( observer.takeRecords() ) ).toHaveLength( 0 );
 				} );
 
 				it( 'should remove and add one', () => {

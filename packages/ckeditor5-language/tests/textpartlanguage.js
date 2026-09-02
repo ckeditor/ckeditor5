@@ -10,18 +10,18 @@ import { TextPartLanguageUI } from '../src/textpartlanguageui.js';
 
 describe( 'TextPartLanguage', () => {
 	it( 'should require TextPartLanguageEditing and TextPartLanguageUI', () => {
-		expect( TextPartLanguage.requires ).to.deep.equal( [ TextPartLanguageEditing, TextPartLanguageUI ] );
+		expect( TextPartLanguage.requires ).toEqual( [ TextPartLanguageEditing, TextPartLanguageUI ] );
 	} );
 
 	it( 'should be named', () => {
-		expect( TextPartLanguage.pluginName ).to.equal( 'TextPartLanguage' );
+		expect( TextPartLanguage.pluginName ).toEqual( 'TextPartLanguage' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TextPartLanguage.isOfficialPlugin ).to.be.true;
+		expect( TextPartLanguage.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TextPartLanguage.isPremiumPlugin ).to.be.false;
+		expect( TextPartLanguage.isPremiumPlugin ).toBe( false );
 	} );
 } );

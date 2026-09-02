@@ -1352,10 +1352,7 @@ describe( 'DowncastDispatcher', () => {
 
 			dispatcher.on( 'addMarker:name', ( evt, data ) => {
 				if ( !data.item ) {
-					spyWholeRange();
-
-					expect( data.markerName ).toBe( 'name' );
-					expect( data.markerRange.isEqual( range ) ).toBe( true );
+					spyWholeRange( data );
 				}
 			} );
 
@@ -1364,11 +1361,7 @@ describe( 'DowncastDispatcher', () => {
 
 			dispatcher.on( 'addMarker:name', ( evt, data, conversionApi ) => {
 				if ( data.item ) {
-					spyItems();
-
-					expect( data.markerName ).toBe( 'name' );
-					expect( data.markerRange.isEqual( range ) ).toBe( true );
-					expect( conversionApi.consumable.test( data.item, 'addMarker:name' ) );
+					spyItems( data, conversionApi.consumable.test( data.item, 'addMarker:name' ) );
 
 					items.push( data.item );
 				}
@@ -1377,7 +1370,19 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher._convertMarkerAdd( 'name', range, dispatcher._createConversionApi() );
 
 			expect( spyWholeRange ).toHaveBeenCalledOnce();
+
+			const wholeRangeData = spyWholeRange.mock.calls[ 0 ][ 0 ];
+
+			expect( wholeRangeData.markerName ).toBe( 'name' );
+			expect( wholeRangeData.markerRange.isEqual( range ) ).toBe( true );
+
 			expect( spyItems ).toHaveBeenCalledTimes( 2 );
+
+			for ( const [ itemData, isConsumable ] of spyItems.mock.calls ) {
+				expect( itemData.markerName ).toBe( 'name' );
+				expect( itemData.markerRange.isEqual( range ) ).toBe( true );
+				expect( isConsumable ).toBe( true );
+			}
 
 			expect( items[ 0 ] ).toBe( element );
 			expect( items[ 1 ].data ).toBe( text.data );

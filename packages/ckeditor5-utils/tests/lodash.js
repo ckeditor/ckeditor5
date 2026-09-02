@@ -28,10 +28,10 @@ describe( 'utils', () => {
 
 			extend( target, ext1, ext2 );
 
-			expect( target ).to.have.property( 'a' ).to.equal( 0 );
-			expect( target ).to.have.property( 'b' ).to.equal( 1 );
-			expect( target ).to.have.property( 'c' ).to.equal( 2 );
-			expect( target ).to.have.property( 'd' ).to.equal( 2 );
+			expect( target ).toHaveProperty( 'a', 0 );
+			expect( target ).toHaveProperty( 'b', 1 );
+			expect( target ).toHaveProperty( 'c', 2 );
+			expect( target ).toHaveProperty( 'd', 2 );
 		} );
 	} );
 } );

@@ -95,8 +95,8 @@ describe( 'Menu Behaviors', () => {
 
 	describe( 'DropdownMenuBehaviors', () => {
 		const arrowKeyboardMappings = [
-			[ 'arrowleft', 'arrowright', 'rtl' ],
-			[ 'arrowright', 'arrowleft', 'ltr' ]
+			[ 'RTL', 'arrowleft', 'arrowright' ],
+			[ 'LTR', 'arrowright', 'arrowleft' ]
 		];
 
 		let menuView;
@@ -106,62 +106,60 @@ describe( 'Menu Behaviors', () => {
 			rootListView.element.remove();
 		} );
 
-		for ( const [ openArrowKey, hideArrowKey, uiDirection ] of arrowKeyboardMappings ) {
-			describe( uiDirection.toUpperCase(), () => {
-				beforeEach( () => {
-					locale.uiLanguageDirection = uiDirection;
+		describe.each( arrowKeyboardMappings )( '%s', ( uiDirection, openArrowKey, hideArrowKey ) => {
+			beforeEach( () => {
+				locale.uiLanguageDirection = uiDirection.toLowerCase();
 
-					rootListView = createRootListView();
+				rootListView = createRootListView();
 
-					menuView = menuViewById( 'menu_1' );
+				menuView = menuViewById( 'menu_1' );
+			} );
+
+			describe( 'openOnArrowRightKey', () => {
+				it( 'should not open menu on arrow right key if not focused', () => {
+					menuView.isOpen = false;
+					menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
+					expect( menuView.isOpen ).toBe( false );
 				} );
 
-				describe( 'openOnArrowRightKey', () => {
-					it( 'should not open menu on arrow right key if not focused', () => {
-						menuView.isOpen = false;
-						menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
-						expect( menuView.isOpen ).toBe( false );
-					} );
-
-					it( 'should open menu on arrow right key if focused', () => {
-						menuView.isOpen = false;
-						menuView.focusTracker._focus( menuView.buttonView.element );
-						menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
-						expect( menuView.isOpen ).toBe( true );
-					} );
-
-					it( 'should not open menu on arrow right key if focused and disabled', () => {
-						menuView.isOpen = false;
-						menuView.isEnabled = false;
-						menuView.focusTracker._focus( menuView.buttonView.element );
-						menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
-						expect( menuView.isOpen ).toBe( false );
-					} );
-
-					it( 'should not toggle menu on arrow right key when menu is already open', () => {
-						menuView.isOpen = true;
-						menuView.focusTracker._focus( menuView.buttonView.element );
-						menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
-						expect( menuView.isOpen ).toBe( true );
-					} );
+				it( 'should open menu on arrow right key if focused', () => {
+					menuView.isOpen = false;
+					menuView.focusTracker._focus( menuView.buttonView.element );
+					menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
+					expect( menuView.isOpen ).toBe( true );
 				} );
 
-				describe( 'closeOnArrowLeftKey', () => {
-					it( 'should not toggle menu on arrow left key when menu is already closed', () => {
-						menuView.isOpen = false;
-						menuView.focusTracker._focus( menuView.buttonView.element );
-						menuView.keystrokes.press( getArrowKeyData( hideArrowKey ) );
-						expect( menuView.isOpen ).toBe( false );
-					} );
+				it( 'should not open menu on arrow right key if focused and disabled', () => {
+					menuView.isOpen = false;
+					menuView.isEnabled = false;
+					menuView.focusTracker._focus( menuView.buttonView.element );
+					menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
+					expect( menuView.isOpen ).toBe( false );
+				} );
 
-					it( 'should close menu on arrow left key', () => {
-						menuView.isOpen = true;
-						menuView.keystrokes.press( getArrowKeyData( hideArrowKey ) );
-						expect( menuView.isOpen ).toBe( false );
-					} );
+				it( 'should not toggle menu on arrow right key when menu is already open', () => {
+					menuView.isOpen = true;
+					menuView.focusTracker._focus( menuView.buttonView.element );
+					menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
+					expect( menuView.isOpen ).toBe( true );
 				} );
 			} );
-		}
+
+			describe( 'closeOnArrowLeftKey', () => {
+				it( 'should not toggle menu on arrow left key when menu is already closed', () => {
+					menuView.isOpen = false;
+					menuView.focusTracker._focus( menuView.buttonView.element );
+					menuView.keystrokes.press( getArrowKeyData( hideArrowKey ) );
+					expect( menuView.isOpen ).toBe( false );
+				} );
+
+				it( 'should close menu on arrow left key', () => {
+					menuView.isOpen = true;
+					menuView.keystrokes.press( getArrowKeyData( hideArrowKey ) );
+					expect( menuView.isOpen ).toBe( false );
+				} );
+			} );
+		} );
 
 		describe( 'closeOnEscKey', () => {
 			beforeEach( () => {

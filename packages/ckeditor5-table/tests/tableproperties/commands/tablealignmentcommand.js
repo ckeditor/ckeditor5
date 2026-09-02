@@ -36,29 +36,29 @@ describe( 'table properties', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be false if selection does not have table', () => {
 						_setModelData( model, '<paragraph>foo[]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection has table', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be false if selection does not have table', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true if selection is in a table', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true if table is selected', () => {
 						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 			} );
@@ -68,19 +68,19 @@ describe( 'table properties', () => {
 					it( 'should be set if selected table has alignment property', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableAlignment: 'left' } ) );
 
-						expect( command.value ).to.equal( 'left' );
+						expect( command.value ).toEqual( 'left' );
 					} );
 
 					it( 'should be undefined if selected table has set the default value', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableAlignment: 'center' } ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be undefined if selected table has no alignment property', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 				} );
 
@@ -88,31 +88,31 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selection does not have table', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be undefined if selected table has set the default value (selection inside table)', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableAlignment: 'center' } ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selection has table (selection inside table)', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableAlignment: 'left' } ) );
 
-						expect( command.value ).to.equal( 'left' );
+						expect( command.value ).toEqual( 'left' );
 					} );
 
 					it( 'should be undefined if selected table has set the default value (selected table)', () => {
 						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ], { tableAlignment: 'center' } ) + ']' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selection has table (selected table)', () => {
 						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ], { tableAlignment: 'left' } ) + ']' );
 
-						expect( command.value ).to.equal( 'left' );
+						expect( command.value ).toEqual( 'left' );
 					} );
 				} );
 			} );

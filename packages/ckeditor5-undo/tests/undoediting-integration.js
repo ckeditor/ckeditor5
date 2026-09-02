@@ -58,9 +58,11 @@ describe( 'UndoEditing integration', () => {
 		} );
 	}
 
-	function output( output ) {
+	function assertOutput( output ) {
 		expect( _getModelData( model ) ).toEqual( output );
 	}
+
+	const output = assertOutput;
 
 	function undoDisabled() {
 		expect( editor.commands.get( 'undo' ).isEnabled ).toBe( false );
@@ -77,7 +79,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
-			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
+			assertOutput( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
 			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
@@ -93,7 +95,7 @@ describe( 'UndoEditing integration', () => {
 				writer.insertText( 'xxx', writer.createPositionFromPath( root, [ 1, 0 ] ) );
 			} );
 
-			output( '<paragraph>fozzz[]o</paragraph><paragraph>xxxbar</paragraph>' );
+			assertOutput( '<paragraph>fozzz[]o</paragraph><paragraph>xxxbar</paragraph>' );
 
 			model.change( writer => {
 				setSelection( [ 1, 0 ], [ 1, 0 ] );
@@ -117,7 +119,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
-			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
+			assertOutput( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
 			model.change( writer => {
 				setSelection( [ 1, 0 ], [ 1, 0 ] );
@@ -151,7 +153,7 @@ describe( 'UndoEditing integration', () => {
 				const start = doc.selection.getFirstPosition();
 				writer.remove( writer.createRange( start, start.getShiftedBy( 2 ) ) );
 			} );
-			output( '<paragraph>[]o</paragraph><paragraph>bar</paragraph>' );
+			assertOutput( '<paragraph>[]o</paragraph><paragraph>bar</paragraph>' );
 
 			model.change( writer => {
 				setSelection( [ 1, 1 ], [ 1, 1 ] );
@@ -177,7 +179,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
-			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
+			assertOutput( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
 			model.change( writer => {
 				setSelection( [ 1, 2 ], [ 1, 2 ] );
@@ -201,7 +203,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
-			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
+			assertOutput( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
 			model.change( writer => {
 				const start = writer.createPositionFromPath( root, [ 0, 2 ] );
@@ -224,7 +226,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
 			} );
-			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
+			assertOutput( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
 
 			editor.execute( 'undo' );
 			output( '<paragraph>foo[]</paragraph>' );
@@ -234,7 +236,7 @@ describe( 'UndoEditing integration', () => {
 
 		it( 'undo insert first content', () => {
 			input( '' );
-			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
+			assertOutput( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
@@ -262,7 +264,7 @@ describe( 'UndoEditing integration', () => {
 				writer.insertElement( 'heading2', pos.getShiftedBy( 1 ) );
 			} );
 
-			output( '<heading1>[]</heading1><heading2></heading2>' );
+			assertOutput( '<heading1>[]</heading1><heading2></heading2>' );
 
 			editor.execute( 'undo' );
 
@@ -279,7 +281,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.move( doc.selection.getFirstRange(), writer.createPositionFromPath( root, [ 1, 0 ] ) );
 			} );
-			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
+			assertOutput( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
 			model.change( writer => {
 				writer.move( doc.selection.getFirstRange(), writer.createPositionFromPath( root, [ 0, 2 ] ) );
@@ -301,7 +303,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.move( doc.selection.getFirstRange(), writer.createPositionFromPath( root, [ 1, 0 ] ) );
 			} );
-			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
+			assertOutput( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
 			model.change( writer => {
 				setSelection( [ 1 ], [ 2 ] );
@@ -356,7 +358,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.wrap( doc.selection.getFirstRange(), 'paragraph' );
 			} );
-			output( 'fo<paragraph>[zb]</paragraph>ar' );
+			assertOutput( 'fo<paragraph>[zb]</paragraph>ar' );
 
 			editor.execute( 'undo' );
 			output( 'fo[zb]ar' );
@@ -372,7 +374,7 @@ describe( 'UndoEditing integration', () => {
 				writer.wrap( doc.selection.getFirstRange(), 'paragraph' );
 			} );
 			// Would be better if selection was inside P.
-			output( 'fo<paragraph>[zb]</paragraph>ar' );
+			assertOutput( 'fo<paragraph>[zb]</paragraph>ar' );
 
 			model.change( writer => {
 				setSelection( [ 2, 0 ], [ 2, 1 ] );
@@ -395,7 +397,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.unwrap( doc.selection.getFirstPosition().parent );
 			} );
-			output( 'foo[]bar' );
+			assertOutput( 'foo[]bar' );
 
 			editor.execute( 'undo' );
 			output( '<paragraph>foo[]bar</paragraph>' );
@@ -409,7 +411,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.merge( writer.createPositionFromPath( root, [ 1 ] ) );
 			} );
-			output( '<paragraph>foo[]bar</paragraph>' );
+			assertOutput( '<paragraph>foo[]bar</paragraph>' );
 
 			editor.execute( 'undo' );
 			output( '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
@@ -423,7 +425,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.split( doc.selection.getFirstPosition() );
 			} );
-			output( '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+			assertOutput( '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
 			output( '<paragraph>foo[]bar</paragraph>' );
@@ -438,7 +440,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
+			assertOutput( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			split( [ 1, 4 ] );
 			output( '<paragraph>123</paragraph><paragraph>4567</paragraph><paragraph>[]8</paragraph>' );
@@ -473,7 +475,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>123</paragraph><paragraph>45</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<paragraph>123[]45</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
+			assertOutput( '<paragraph>123[]45</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			merge( [ 2 ] );
 			output( '<paragraph>12345</paragraph><paragraph>67[]8</paragraph>' );
@@ -508,7 +510,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
+			assertOutput( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			merge( [ 1 ] );
 			output( '<paragraph>123[]45678</paragraph>' );
@@ -552,7 +554,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
+			assertOutput( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			split( [ 1, 4 ] );
 			output( '<paragraph>123</paragraph><paragraph>4567</paragraph><paragraph>[]8</paragraph>' );
@@ -614,7 +616,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
+			assertOutput( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			split( [ 1, 2 ] );
 			output( '<paragraph>123</paragraph><paragraph>45</paragraph><paragraph>[]678</paragraph>' );
@@ -667,7 +669,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
+			assertOutput( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			remove( [ 1, 4 ] );
 			remove( [ 1, 3 ] );
@@ -721,7 +723,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
+			assertOutput( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			type( [ 1, 4 ], 'x' );
 			type( [ 1, 5 ], 'y' );
@@ -780,7 +782,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.rename( root.getChild( 0 ), 'paragraph' );
 			} );
-			output( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
+			assertOutput( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
 				writer.split( writer.createPositionAt( root.getChild( 0 ), 1 ) );
@@ -809,7 +811,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.rename( root.getChild( 0 ), 'heading2' );
 			} );
-			output( '<heading2>[]Foo</heading2><paragraph>Bar</paragraph>' );
+			assertOutput( '<heading2>[]Foo</heading2><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
 				writer.merge( writer.createPositionAt( root, 1 ) );
@@ -830,7 +832,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.merge( writer.createPositionAt( root, 1 ) );
 			} );
-			output( '<heading1>[]FooBar</heading1>' );
+			assertOutput( '<heading1>[]FooBar</heading1>' );
 
 			model.change( writer => {
 				writer.rename( root.getChild( 0 ), 'heading2' );
@@ -860,7 +862,7 @@ describe( 'UndoEditing integration', () => {
 			model.change( writer => {
 				writer.wrap( writer.createRangeIn( root ), 'div' );
 			} );
-			output( '<div><paragraph>[]Foo</paragraph><paragraph>Bar</paragraph></div>' );
+			assertOutput( '<div><paragraph>[]Foo</paragraph><paragraph>Bar</paragraph></div>' );
 
 			model.change( writer => {
 				writer.split( writer.createPositionFromPath( root, [ 0, 0, 1 ] ) );
@@ -879,7 +881,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>Foo[]</paragraph><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'enter' );
-			output( '<paragraph>Foo</paragraph><paragraph>[]</paragraph><paragraph>Bar</paragraph>' );
+			assertOutput( '<paragraph>Foo</paragraph><paragraph>[]</paragraph><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'bold' );
 			output(
@@ -921,7 +923,7 @@ describe( 'UndoEditing integration', () => {
 
 				editor.execute( 'delete' );
 			} );
-			output( '<paragraph>Foo[]</paragraph>' );
+			assertOutput( '<paragraph>Foo[]</paragraph>' );
 
 			editor.execute( 'undo' );
 			output( '<paragraph>Foo[</paragraph><paragraph>bar]</paragraph>' );
@@ -959,7 +961,7 @@ describe( 'UndoEditing integration', () => {
 				pasteHtml( editor, '<p>a</p><p>b</p>' );
 			} );
 
-			output( '<paragraph>Fooa</paragraph><paragraph>b[]</paragraph>' );
+			assertOutput( '<paragraph>Fooa</paragraph><paragraph>b[]</paragraph>' );
 
 			model.change( () => {
 				pasteHtml( editor, '<p>c</p><p>d</p>' );
@@ -986,7 +988,7 @@ describe( 'UndoEditing integration', () => {
 
 			editor.execute( 'undo' );
 
-			output( '<paragraph>Fo[oba]r</paragraph>' );
+			assertOutput( '<paragraph>Fo[oba]r</paragraph>' );
 			undoDisabled();
 		} );
 	} );
@@ -996,7 +998,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 
 			editor.model.deleteContent( doc.selection );
-			output( '<paragraph>fo[]ar</paragraph>' );
+			assertOutput( '<paragraph>fo[]ar</paragraph>' );
 
 			editor.execute( 'undo' );
 			output( '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
@@ -1050,7 +1052,7 @@ describe( 'UndoEditing integration', () => {
 
 			editor.execute( 'mergeTableCells' );
 
-			output(
+			assertOutput(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -1142,7 +1144,7 @@ describe( 'UndoEditing integration', () => {
 				writer.setSelection( writer.createRangeOn( targetCell ) );
 			} );
 
-			output(
+			assertOutput(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +

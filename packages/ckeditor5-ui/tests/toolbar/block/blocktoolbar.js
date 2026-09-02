@@ -99,6 +99,8 @@ describe( 'BlockToolbar', () => {
 		editor = await ClassicTestEditor.create( element, {
 			plugins: [ BlockToolbar ]
 		} );
+
+		expect( editor.plugins.get( BlockToolbar ) ).toBeInstanceOf( BlockToolbar );
 	} );
 
 	it( 'should accept the extended format of the toolbar config', () => {
@@ -334,7 +336,7 @@ describe( 'BlockToolbar', () => {
 				} );
 			} );
 
-			it( 'should have extended label when `DragDropBlockToolbar` is enabled ', () => {
+			it( 'should have extended label when `DragDropBlockToolbar` is enabled', () => {
 				return ClassicTestEditor.create( element, {
 					plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, DragDropBlockToolbar ],
 					blockToolbar: {
@@ -1072,6 +1074,8 @@ describe( 'BlockToolbar', () => {
 				plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, Image, ImageCaption ],
 				blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ]
 			} ).then( newEditor => {
+				expect( newEditor.plugins.get( BlockToolbar ) ).toBeInstanceOf( BlockToolbar );
+
 				return newEditor.destroy();
 			} );
 		} );

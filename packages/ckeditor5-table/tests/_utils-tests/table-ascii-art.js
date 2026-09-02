@@ -48,7 +48,7 @@ describe( 'table ascii-art and model helpers', () => {
 		it( 'should create proper ascii-art', () => {
 			const asciiArt = createTableAsciiArt( model, table );
 
-			expect( asciiArt ).to.equal( [
+			expect( asciiArt ).toEqual( [
 				'+----+',
 				'| 00 |',
 				'+----+'
@@ -59,7 +59,7 @@ describe( 'table ascii-art and model helpers', () => {
 			const modelData = prepareModelTableInput( model, table );
 			const modelDataString = prettyFormatModelTableInput( modelData );
 
-			expect( modelData ).to.deep.equal( tableData );
+			expect( modelData ).toEqual( tableData );
 
 			assertSameCodeString( modelDataString,
 				`[
@@ -85,7 +85,7 @@ describe( 'table ascii-art and model helpers', () => {
 		it( 'should create proper ascii-art', () => {
 			const asciiArt = createTableAsciiArt( model, table );
 
-			expect( asciiArt ).to.equal( [
+			expect( asciiArt ).toEqual( [
 				'+----+----+',
 				'| 00 | 01 |',
 				'+----+----+'
@@ -96,7 +96,7 @@ describe( 'table ascii-art and model helpers', () => {
 			const modelData = prepareModelTableInput( model, table );
 			const modelDataString = prettyFormatModelTableInput( modelData );
 
-			expect( modelData ).to.deep.equal( tableData );
+			expect( modelData ).toEqual( tableData );
 
 			assertSameCodeString( modelDataString,
 				`[
@@ -123,7 +123,7 @@ describe( 'table ascii-art and model helpers', () => {
 		it( 'should create proper ascii-art', () => {
 			const asciiArt = createTableAsciiArt( model, table );
 
-			expect( asciiArt ).to.equal( [
+			expect( asciiArt ).toEqual( [
 				'+----+',
 				'| 00 |',
 				'+----+',
@@ -136,7 +136,7 @@ describe( 'table ascii-art and model helpers', () => {
 			const modelData = prepareModelTableInput( model, table );
 			const modelDataString = prettyFormatModelTableInput( modelData );
 
-			expect( modelData ).to.deep.equal( tableData );
+			expect( modelData ).toEqual( tableData );
 
 			assertSameCodeString( modelDataString,
 				`[
@@ -164,7 +164,7 @@ describe( 'table ascii-art and model helpers', () => {
 		it( 'should create proper ascii-art', () => {
 			const asciiArt = createTableAsciiArt( model, table );
 
-			expect( asciiArt ).to.equal( [
+			expect( asciiArt ).toEqual( [
 				'+----+----+',
 				'| 00 | 01 |',
 				'+----+----+',
@@ -177,7 +177,7 @@ describe( 'table ascii-art and model helpers', () => {
 			const modelData = prepareModelTableInput( model, table );
 			const modelDataString = prettyFormatModelTableInput( modelData );
 
-			expect( modelData ).to.deep.equal( tableData );
+			expect( modelData ).toEqual( tableData );
 
 			assertSameCodeString( modelDataString,
 				`[
@@ -207,7 +207,7 @@ describe( 'table ascii-art and model helpers', () => {
 		it( 'should create proper ascii-art', () => {
 			const asciiArt = createTableAsciiArt( model, table );
 
-			expect( asciiArt ).to.equal( [
+			expect( asciiArt ).toEqual( [
 				'+----+----+----+----+',
 				'| 00      | 02 | 03 |',
 				'+         +    +----+',
@@ -224,7 +224,7 @@ describe( 'table ascii-art and model helpers', () => {
 			const modelData = prepareModelTableInput( model, table );
 			const modelDataString = prettyFormatModelTableInput( modelData );
 
-			expect( modelData ).to.deep.equal( tableData );
+			expect( modelData ).toEqual( tableData );
 
 			assertSameCodeString( modelDataString,
 				`[
@@ -257,7 +257,7 @@ describe( 'table ascii-art and model helpers', () => {
 		it( 'should create proper ascii-art', () => {
 			const asciiArt = createTableAsciiArt( model, table );
 
-			expect( asciiArt ).to.equal( [
+			expect( asciiArt ).toEqual( [
 				'+----+----+----+----+',
 				'| 00 | 01 | 02 | 03 |',
 				'+----+    +    +    +',
@@ -276,7 +276,7 @@ describe( 'table ascii-art and model helpers', () => {
 			const modelData = prepareModelTableInput( model, table );
 			const modelDataString = prettyFormatModelTableInput( modelData );
 
-			expect( modelData ).to.deep.equal( tableData );
+			expect( modelData ).toEqual( tableData );
 
 			assertSameCodeString( modelDataString,
 				`[
@@ -307,7 +307,7 @@ describe( 'table ascii-art and model helpers', () => {
 		it( 'should create proper ascii-art', () => {
 			const asciiArt = createTableAsciiArt( model, table );
 
-			expect( asciiArt ).to.equal( [
+			expect( asciiArt ).toEqual( [
 				'+----+----+',
 				'|    | x  |',
 				'+----+----+',
@@ -325,7 +325,7 @@ describe( 'table ascii-art and model helpers', () => {
 				[ '10', 'foobar' ]
 			];
 
-			expect( modelData ).to.deep.equal( tableData );
+			expect( modelData ).toEqual( tableData );
 
 			assertSameCodeString( modelDataString,
 				`[
@@ -341,7 +341,7 @@ describe( 'table ascii-art and model helpers', () => {
 	}
 
 	function assertSameCodeString( actual, expected ) {
-		expect( trimLines( actual ) ).to.equal( trimLines( expected ) );
+		expect( trimLines( actual ) ).toEqual( trimLines( expected ) );
 	}
 
 	function trimLines( string ) {

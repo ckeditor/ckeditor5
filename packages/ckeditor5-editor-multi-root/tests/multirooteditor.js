@@ -160,7 +160,7 @@ describe( 'MultiRootEditor', () => {
 				} ) );
 			} );
 
-			it( 'it should throw if config.roots.<name>.initialData is set and initial data is passed in constructor', () => {
+			it( 'should throw if config.roots.<name>.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new MultiRootEditor(
@@ -173,7 +173,7 @@ describe( 'MultiRootEditor', () => {
 				} ) );
 			} );
 
-			it( 'it should throw if config.root is set', () => {
+			it( 'should throw if config.root is set', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -763,8 +763,10 @@ describe( 'MultiRootEditor', () => {
 			} );
 		} );
 
-		it( 'initializes the editor if no roots are specified', () => {
-			return MultiRootEditor.create( {} ).then( editor => editor.destroy() );
+		it( 'initializes the editor if no roots are specified', async () => {
+			const editor = await MultiRootEditor.create( {} );
+
+			await expect( editor.destroy() ).resolves.toBeUndefined();
 		} );
 
 		it( 'creates editor from config-only', () => {
@@ -1604,10 +1606,10 @@ describe( 'MultiRootEditor', () => {
 
 			const root = editor.model.document.getRoot( 'bar' );
 
-			expect( root.getAttribute( '$description' ) ).to.equal( 'My description' );
+			expect( root.getAttribute( '$description' ) ).toEqual( 'My description' );
 
 			// The description must not leak into `$rootEditableOptions` (the editable options bag).
-			expect( root.getAttribute( '$rootEditableOptions' ) ).to.deep.equal( {} );
+			expect( root.getAttribute( '$rootEditableOptions' ) ).toEqual( {} );
 		} );
 
 		it( 'should not set `$description` when no description is provided', () => {
@@ -1615,7 +1617,7 @@ describe( 'MultiRootEditor', () => {
 
 			const root = editor.model.document.getRoot( 'bar' );
 
-			expect( root.hasAttribute( '$description' ) ).to.be.false;
+			expect( root.hasAttribute( '$description' ) ).toBe( false );
 		} );
 
 		it( 'should set title as a dedicated `$title` root attribute', () => {
@@ -1623,10 +1625,10 @@ describe( 'MultiRootEditor', () => {
 
 			const root = editor.model.document.getRoot( 'bar' );
 
-			expect( root.getAttribute( '$title' ) ).to.equal( 'My title' );
+			expect( root.getAttribute( '$title' ) ).toEqual( 'My title' );
 
 			// The title must not leak into `$rootEditableOptions` (the editable options bag).
-			expect( root.getAttribute( '$rootEditableOptions' ) ).to.deep.equal( {} );
+			expect( root.getAttribute( '$rootEditableOptions' ) ).toEqual( {} );
 		} );
 
 		it( 'should register `$title` as a root attribute', () => {
@@ -1642,7 +1644,7 @@ describe( 'MultiRootEditor', () => {
 
 			const root = editor.model.document.getRoot( 'bar' );
 
-			expect( root.hasAttribute( '$title' ) ).to.be.false;
+			expect( root.hasAttribute( '$title' ) ).toBe( false );
 		} );
 
 		it( 'should set both placeholder and label as root editable options', () => {

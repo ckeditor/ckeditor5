@@ -36,29 +36,29 @@ describe( 'table properties', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be false if selection does not have table', () => {
 						_setModelData( model, '<paragraph>foo[]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true is selection has table', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be false if selection does not have table', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
-						expect( command.isEnabled ).to.be.false;
+						expect( command.isEnabled ).toBe( false );
 					} );
 
 					it( 'should be true if selection is in table', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 
 					it( 'should be true if selection is over table', () => {
 						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).toBe( true );
 					} );
 				} );
 			} );
@@ -68,13 +68,13 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selected table has no borderStyle property', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table has borderStyle property (single string)', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'ridge' } ) );
 
-						expect( command.value ).to.equal( 'ridge' );
+						expect( command.value ).toEqual( 'ridge' );
 					} );
 
 					it( 'should be set if selected table has borderStyle property object with same values', () => {
@@ -86,7 +86,7 @@ describe( 'table properties', () => {
 								left: 'ridge'
 							}
 						}, '[]foo' );
-						expect( command.value ).to.equal( 'ridge' );
+						expect( command.value ).toEqual( 'ridge' );
 					} );
 
 					it( 'should be undefined if selected table has borderStyle property object with different values', () => {
@@ -99,7 +99,7 @@ describe( 'table properties', () => {
 							}
 						}, '[]foo' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 				} );
 
@@ -107,19 +107,19 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selection does not have table', () => {
 						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selection is inside table', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderStyle: 'ridge' } ) );
 
-						expect( command.value ).to.equal( 'ridge' );
+						expect( command.value ).toEqual( 'ridge' );
 					} );
 
 					it( 'should be set id selection is over table', () => {
 						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ], { tableBorderStyle: 'ridge' } ) + ']' );
 
-						expect( command.value ).to.equal( 'ridge' );
+						expect( command.value ).toEqual( 'ridge' );
 					} );
 				} );
 			} );
@@ -235,13 +235,13 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'none' } ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table has borderStyle property other than the default value', () => {
 						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'solid' } ) );
 
-						expect( command.value ).to.equal( 'solid' );
+						expect( command.value ).toEqual( 'solid' );
 					} );
 				} );
 
@@ -249,13 +249,13 @@ describe( 'table properties', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderStyle: 'none' } ) );
 
-						expect( command.value ).to.be.undefined;
+						expect( command.value ).toBeUndefined();
 					} );
 
 					it( 'should be set if selected table has borderStyle property other than the default value', () => {
 						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderStyle: 'solid' } ) );
 
-						expect( command.value ).to.equal( 'solid' );
+						expect( command.value ).toEqual( 'solid' );
 					} );
 				} );
 			} );

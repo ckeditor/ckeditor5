@@ -11,7 +11,7 @@ describe( 'utils', () => {
 		it( 'should not have `called` after creation', () => {
 			const fn = spy();
 
-			expect( fn.called ).to.not.be.true;
+			expect( fn.called ).not.toBe( true );
 		} );
 
 		it( 'should register calls', () => {
@@ -20,8 +20,8 @@ describe( 'utils', () => {
 
 			fn1();
 
-			expect( fn1.called ).to.be.true;
-			expect( fn2.called ).to.not.be.true;
+			expect( fn1.called ).toBe( true );
+			expect( fn2.called ).not.toBe( true );
 		} );
 	} );
 } );

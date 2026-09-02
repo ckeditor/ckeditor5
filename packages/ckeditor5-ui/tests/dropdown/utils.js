@@ -631,14 +631,20 @@ describe( 'utils', () => {
 
 				addToolbarToDropdown( dropdownView, buttons );
 
+				let toolbarViewOnOpen;
+				let toolbarItemsCountOnOpen;
+
 				dropdownView.listenTo( observable, 'change:isDropdownOpen', ( evt, name, isDropdownOpen ) => {
 					if ( isDropdownOpen ) {
-						expect( dropdownView.toolbarView ).not.toBeUndefined();
-						expect( dropdownView.toolbarView.items.length ).toBe( 2 );
+						toolbarViewOnOpen = dropdownView.toolbarView;
+						toolbarItemsCountOnOpen = toolbarViewOnOpen && toolbarViewOnOpen.items.length;
 					}
 				} );
 
 				dropdownView.isOpen = true;
+
+				expect( toolbarViewOnOpen ).not.toBeUndefined();
+				expect( toolbarItemsCountOnOpen ).toBe( 2 );
 			} );
 
 			it( 'is created immediately on already open dropdown', () => {
@@ -842,14 +848,20 @@ describe( 'utils', () => {
 
 				addListToDropdown( dropdownView, definitions );
 
+				let listViewOnOpen;
+				let listItemsCountOnOpen;
+
 				dropdownView.listenTo( observable, 'change:isDropdownOpen', ( evt, name, isDropdownOpen ) => {
 					if ( isDropdownOpen ) {
-						expect( dropdownView.listView ).not.toBeUndefined();
-						expect( dropdownView.listView.items.length ).toBe( 2 );
+						listViewOnOpen = dropdownView.listView;
+						listItemsCountOnOpen = listViewOnOpen && listViewOnOpen.items.length;
 					}
 				} );
 
 				dropdownView.isOpen = true;
+
+				expect( listViewOnOpen ).not.toBeUndefined();
+				expect( listItemsCountOnOpen ).toBe( 2 );
 			} );
 
 			it( 'is created immediately on already open dropdown', () => {

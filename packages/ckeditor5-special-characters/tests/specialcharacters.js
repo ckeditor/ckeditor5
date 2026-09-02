@@ -48,7 +48,7 @@ describe( 'SpecialCharacters', () => {
 	} );
 
 	it( 'should require proper plugins', () => {
-		expect( SpecialCharacters.requires ).to.deep.equal( [ Typing, Dialog ] );
+		expect( SpecialCharacters.requires ).toEqual( [ Typing, Dialog ] );
 	} );
 
 	it( 'should be named', () => {
@@ -73,7 +73,7 @@ describe( 'SpecialCharacters', () => {
 		} );
 
 		it( 'should have a tooltip', () => {
-			expect( button.tooltip ).to.be.true;
+			expect( button.tooltip ).toBe( true );
 		} );
 
 		testButton();
@@ -89,30 +89,30 @@ describe( 'SpecialCharacters', () => {
 
 	function testButton() {
 		it( 'should get basic properties', () => {
-			expect( button.label ).to.equal( 'Special characters' );
-			expect( button.icon ).to.equal( IconSpecialCharacters );
-			expect( button.isToggleable ).to.be.true;
+			expect( button.label ).toEqual( 'Special characters' );
+			expect( button.icon ).toEqual( IconSpecialCharacters );
+			expect( button.isToggleable ).toBe( true );
 		} );
 
 		it( 'should bind #isEnabled to the command', () => {
-			expect( button.isEnabled ).to.be.true;
+			expect( button.isEnabled ).toBe( true );
 
 			command.isEnabled = false;
-			expect( button.isEnabled ).to.be.false;
+			expect( button.isEnabled ).toBe( false );
 			command.isEnabled = true;
 		} );
 
 		it( 'should open special characters dialog when pressed', () => {
 			button.fire( 'execute' );
 
-			expect( dialog.id == 'specialCharacters' );
+			expect( dialog.id ).toBe( 'specialCharacters' );
 		} );
 
 		it( 'should close dialog when pressed when dialog opened', () => {
 			button.fire( 'execute' );
 			button.fire( 'execute' );
 
-			expect( dialog.id == null );
+			expect( dialog.id ).toBeNull();
 		} );
 	}
 
@@ -145,8 +145,8 @@ describe( 'SpecialCharacters', () => {
 			const listView = groupDropdownView.panelView.children.first;
 
 			// "Mathematical" and "Arrows" are provided by other plugins. "All" is being added by SpecialCharacters itself.
-			expect( listView.items.length ).to.equal( 3 );
-			expect( listView.items.first.children.first.label ).to.equal( 'All' );
+			expect( listView.items.length ).toEqual( 3 );
+			expect( listView.items.first.children.first.label ).toEqual( 'All' );
 		} );
 
 		it( 'has a grid view', () => {
@@ -185,10 +185,10 @@ describe( 'SpecialCharacters', () => {
 			it( 'is updated when categories view fires #execute', () => {
 				const categoriesView = dialogContent.categoriesView;
 
-				expect( grid.tiles.get( 0 ).label ).to.equal( '<' );
+				expect( grid.tiles.get( 0 ).label ).toEqual( '<' );
 				categoriesView._dropdownView.fieldView.fire( new EventInfo( { name: 'Arrows' }, 'execute' ) );
 
-				expect( grid.tiles.get( 0 ).label ).to.equal( '←' );
+				expect( grid.tiles.get( 0 ).label ).toEqual( '←' );
 			} );
 		} );
 
@@ -203,9 +203,9 @@ describe( 'SpecialCharacters', () => {
 			it( 'is empty when the dropdown was shown', () => {
 				// dropdown.fire( 'change:isOpen' );
 
-				expect( characterInfo.character ).to.equal( null );
-				expect( characterInfo.name ).to.equal( null );
-				expect( characterInfo.code ).to.equal( '' );
+				expect( characterInfo.character ).toEqual( null );
+				expect( characterInfo.name ).toEqual( null );
+				expect( characterInfo.code ).toEqual( '' );
 			} );
 
 			it( 'is updated when the tile fires #mouseover', () => {
@@ -213,10 +213,10 @@ describe( 'SpecialCharacters', () => {
 
 				tile.fire( 'mouseover' );
 
-				expect( tile.label ).to.equal( '<' );
-				expect( characterInfo.character ).to.equal( '<' );
-				expect( characterInfo.name ).to.equal( 'Less-than sign' );
-				expect( characterInfo.code ).to.equal( 'U+003c' );
+				expect( tile.label ).toEqual( '<' );
+				expect( characterInfo.character ).toEqual( '<' );
+				expect( characterInfo.name ).toEqual( 'Less-than sign' );
+				expect( characterInfo.code ).toEqual( 'U+003c' );
 			} );
 
 			it( 'is updated when the tile fires #focus', () => {
@@ -224,10 +224,10 @@ describe( 'SpecialCharacters', () => {
 
 				tile.fire( 'focus' );
 
-				expect( tile.label ).to.equal( '<' );
-				expect( characterInfo.character ).to.equal( '<' );
-				expect( characterInfo.name ).to.equal( 'Less-than sign' );
-				expect( characterInfo.code ).to.equal( 'U+003c' );
+				expect( tile.label ).toEqual( '<' );
+				expect( characterInfo.character ).toEqual( '<' );
+				expect( characterInfo.name ).toEqual( 'Less-than sign' );
+				expect( characterInfo.code ).toEqual( 'U+003c' );
 			} );
 		} );
 	} );
@@ -242,12 +242,12 @@ describe( 'SpecialCharacters', () => {
 				{ title: 'custom arrow right', character: '→' }
 			] );
 
-			expect( plugin._groups.size ).to.equal( startingGroupSize + 1 );
-			expect( plugin._groups.has( 'Custom arrows' ) ).to.equal( true );
+			expect( plugin._groups.size ).toEqual( startingGroupSize + 1 );
+			expect( plugin._groups.has( 'Custom arrows' ) ).toEqual( true );
 
-			expect( plugin._characters.size ).to.equal( startingCharacterSize + 2 );
-			expect( plugin._characters.has( 'custom arrow left' ) ).to.equal( true );
-			expect( plugin._characters.has( 'custom arrow right' ) ).to.equal( true );
+			expect( plugin._characters.size ).toEqual( startingCharacterSize + 2 );
+			expect( plugin._characters.has( 'custom arrow left' ) ).toEqual( true );
+			expect( plugin._characters.has( 'custom arrow right' ) ).toEqual( true );
 		} );
 
 		it( 'works with subsequent calls to the same group', () => {
@@ -271,8 +271,8 @@ describe( 'SpecialCharacters', () => {
 			const groups = Array.from( plugin.getGroups() );
 
 			expect( groups ).to.contains( 'Custom mathematical' );
-			expect( plugin._groups.size ).to.equal( startingGroupSize + 1 );
-			expect( plugin._characters.size ).to.equal( startingCharacterSize + 2 );
+			expect( plugin._groups.size ).toEqual( startingGroupSize + 1 );
+			expect( plugin._characters.size ).toEqual( startingCharacterSize + 2 );
 		} );
 
 		it( 'allows defining a displayed label different from a category name', () => {
@@ -281,15 +281,15 @@ describe( 'SpecialCharacters', () => {
 				{ title: 'arrow right', character: '→' }
 			], { label: 'Custom arrows plugin' } );
 
-			expect( plugin._groups.has( 'Symbols' ) ).to.equal( true );
+			expect( plugin._groups.has( 'Symbols' ) ).toEqual( true );
 
 			const arrowGroup = plugin._groups.get( 'Symbols' );
 
 			expect( arrowGroup ).to.have.property( 'label', 'Custom arrows plugin' );
 			expect( arrowGroup ).to.have.property( 'items' );
-			expect( arrowGroup.items.size ).to.equal( 2 );
-			expect( arrowGroup.items.has( 'arrow left' ) ).to.equal( true );
-			expect( arrowGroup.items.has( 'arrow right' ) ).to.equal( true );
+			expect( arrowGroup.items.size ).toEqual( 2 );
+			expect( arrowGroup.items.has( 'arrow left' ) ).toEqual( true );
+			expect( arrowGroup.items.has( 'arrow right' ) ).toEqual( true );
 		} );
 
 		it( 'does not accept "All" as a group name', () => {
@@ -303,7 +303,7 @@ describe( 'SpecialCharacters', () => {
 		it( 'returns iterator of defined groups in the registration order by default', () => {
 			const groups = Array.from( plugin.getGroups() );
 
-			expect( groups ).to.deep.equal( [ 'Mathematical', 'Arrows' ] );
+			expect( groups ).toEqual( [ 'Mathematical', 'Arrows' ] );
 		} );
 
 		it( 'returns iterator of defined groups in the order defined in the config', () => {
@@ -314,7 +314,7 @@ describe( 'SpecialCharacters', () => {
 
 			const groups = Array.from( plugin.getGroups() );
 
-			expect( groups ).to.deep.equal( [ 'Arrows', 'Mathematical' ] );
+			expect( groups ).toEqual( [ 'Arrows', 'Mathematical' ] );
 		} );
 
 		it( 'returns iterator of all defined groups even if order doesn\'t contain some of them', () => {
@@ -324,7 +324,7 @@ describe( 'SpecialCharacters', () => {
 
 			const groups = Array.from( plugin.getGroups() );
 
-			expect( groups ).to.deep.equal( [ 'Arrows', 'Mathematical' ] );
+			expect( groups ).toEqual( [ 'Arrows', 'Mathematical' ] );
 		} );
 
 		it( 'throws an error if order contains invalid category', () => {
@@ -349,9 +349,9 @@ describe( 'SpecialCharacters', () => {
 
 			const characters = plugin.getCharactersForGroup( 'Mathematical' );
 
-			expect( characters.size ).to.equal( startingCharacterSize + 2 );
-			expect( characters.has( 'custom precedes' ) ).to.equal( true );
-			expect( characters.has( 'custom succeeds' ) ).to.equal( true );
+			expect( characters.size ).toEqual( startingCharacterSize + 2 );
+			expect( characters.has( 'custom precedes' ) ).toEqual( true );
+			expect( characters.has( 'custom succeeds' ) ).toEqual( true );
 		} );
 
 		it( 'returns a collection of all special characters for "All" group', () => {
@@ -369,11 +369,11 @@ describe( 'SpecialCharacters', () => {
 
 			const characters = plugin.getCharactersForGroup( 'All' );
 
-			expect( characters.size ).to.equal( startingCharacterSize + 4 );
-			expect( characters.has( 'custom arrow left' ) ).to.equal( true );
-			expect( characters.has( 'custom arrow right' ) ).to.equal( true );
-			expect( characters.has( 'custom precedes' ) ).to.equal( true );
-			expect( characters.has( 'custom succeeds' ) ).to.equal( true );
+			expect( characters.size ).toEqual( startingCharacterSize + 4 );
+			expect( characters.has( 'custom arrow left' ) ).toEqual( true );
+			expect( characters.has( 'custom arrow right' ) ).toEqual( true );
+			expect( characters.has( 'custom precedes' ) ).toEqual( true );
+			expect( characters.has( 'custom succeeds' ) ).toEqual( true );
 		} );
 
 		it( 'returns undefined for non-existing group', () => {
@@ -384,7 +384,7 @@ describe( 'SpecialCharacters', () => {
 
 			const characters = plugin.getCharactersForGroup( 'Foo' );
 
-			expect( characters ).to.be.undefined;
+			expect( characters ).toBeUndefined();
 		} );
 	} );
 
@@ -395,11 +395,11 @@ describe( 'SpecialCharacters', () => {
 				{ title: 'custom succeeds', character: '≻' }
 			] );
 
-			expect( plugin.getCharacter( 'custom succeeds' ) ).to.equal( '≻' );
+			expect( plugin.getCharacter( 'custom succeeds' ) ).toEqual( '≻' );
 		} );
 
 		it( 'returns undefined for non-existing character', () => {
-			expect( plugin.getCharacter( 'custom succeeds' ) ).to.be.undefined;
+			expect( plugin.getCharacter( 'custom succeeds' ) ).toBeUndefined();
 		} );
 	} );
 } );

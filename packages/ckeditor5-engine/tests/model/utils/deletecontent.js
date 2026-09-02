@@ -1710,7 +1710,7 @@ describe( 'DataController utils', () => {
 		} );
 
 		function test( title, input, output, options ) {
-			it( title, () => {
+			it( `${ title }`, () => {
 				model.enqueueChange( { isUndoable: false }, () => {
 					_setModelData( model, input );
 

@@ -59,11 +59,11 @@ describe( 'FontSizeUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FontSizeUI.isOfficialPlugin ).to.be.true;
+		expect( FontSizeUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( FontSizeUI.isPremiumPlugin ).to.be.false;
+		expect( FontSizeUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'toolbar dropdown', () => {
@@ -85,7 +85,7 @@ describe( 'FontSizeUI', () => {
 		it( 'should add custom CSS class to dropdown', () => {
 			dropdown.render();
 
-			expect( dropdown.element.classList.contains( 'ck-font-size-dropdown' ) ).to.be.true;
+			expect( dropdown.element.classList.contains( 'ck-font-size-dropdown' ) ).toBe( true );
 		} );
 
 		it( 'should focus view after command execution', () => {
@@ -99,7 +99,7 @@ describe( 'FontSizeUI', () => {
 
 		it( 'should activate current option in dropdown', () => {
 			// Make sure that list view is not created before first dropdown open.
-			expect( dropdown.listView ).to.be.undefined;
+			expect( dropdown.listView ).toBeUndefined();
 
 			// Trigger list view creation (lazy init).
 			dropdown.isOpen = true;
@@ -109,22 +109,22 @@ describe( 'FontSizeUI', () => {
 			command.value = undefined;
 
 			// The third item is 'default' font size.
-			expect( listView.items.map( item => item.children.first.isOn ) ).to.deep.equal( [ false, false, true, false, false ] );
+			expect( listView.items.map( item => item.children.first.isOn ) ).toEqual( [ false, false, true, false, false ] );
 
 			command.value = 'tiny';
 
 			// The first item is 'tiny' font size.
-			expect( listView.items.map( item => item.children.first.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+			expect( listView.items.map( item => item.children.first.isOn ) ).toEqual( [ true, false, false, false, false ] );
 		} );
 
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
 
-				expect( dropdown.buttonView.isEnabled ).to.be.false;
+				expect( dropdown.buttonView.isEnabled ).toBe( false );
 
 				command.isEnabled = true;
-				expect( dropdown.buttonView.isEnabled ).to.be.true;
+				expect( dropdown.buttonView.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -157,14 +157,14 @@ describe( 'FontSizeUI', () => {
 
 				it( 'adds css class to listView#items in the panel', () => {
 					// Make sure that list view is not created before first dropdown open.
-					expect( dropdown.listView ).to.be.undefined;
+					expect( dropdown.listView ).toBeUndefined();
 
 					// Trigger list view creation (lazy init).
 					dropdown.isOpen = true;
 
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.children.first.class ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.class ) ).toEqual( [
 						'ck-fontsize-option text-tiny',
 						'ck-fontsize-option text-small',
 						'ck-fontsize-option',
@@ -194,14 +194,14 @@ describe( 'FontSizeUI', () => {
 
 				it( 'adds css class to listView#items in the panel', () => {
 					// Make sure that list view is not created before first dropdown open.
-					expect( dropdown.listView ).to.be.undefined;
+					expect( dropdown.listView ).toBeUndefined();
 
 					// Trigger list view creation (lazy init).
 					dropdown.isOpen = true;
 
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.children.first.class ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.class ) ).toEqual( [
 						'ck-fontsize-option',
 						'ck-fontsize-option',
 						'ck-fontsize-option',
@@ -212,14 +212,14 @@ describe( 'FontSizeUI', () => {
 
 				it( 'adds font-size style to listView#items in the panel', () => {
 					// Make sure that list view is not created before first dropdown open.
-					expect( dropdown.listView ).to.be.undefined;
+					expect( dropdown.listView ).toBeUndefined();
 
 					// Trigger list view creation (lazy init).
 					dropdown.isOpen = true;
 
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.children.first.labelStyle ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.labelStyle ) ).toEqual( [
 						'font-size:10px',
 						'font-size:12px',
 						undefined,
@@ -240,7 +240,7 @@ describe( 'FontSizeUI', () => {
 
 			it( 'does not alter normalizeOptions() internals', () => {
 				const options = normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ] );
-				expect( options ).to.deep.equal( [
+				expect( options ).toEqual( [
 					{ title: 'Tiny', model: 'tiny', view: { name: 'span', classes: 'text-tiny', priority: 7 } },
 					{ title: 'Small', model: 'small', view: { name: 'span', classes: 'text-small', priority: 7 } },
 					{ title: 'Default', model: undefined },
@@ -252,19 +252,19 @@ describe( 'FontSizeUI', () => {
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
-				expect( buttonView.label ).to.equal( 'Rozmiar czcionki' );
+				expect( buttonView.label ).toEqual( 'Rozmiar czcionki' );
 			} );
 
 			it( 'works for the listView#items in the panel', () => {
 				// Make sure that list view is not created before first dropdown open.
-				expect( dropdown.listView ).to.be.undefined;
+				expect( dropdown.listView ).toBeUndefined();
 
 				// Trigger list view creation (lazy init).
 				dropdown.isOpen = true;
 
 				const listView = dropdown.listView;
 
-				expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
+				expect( listView.items.map( item => item.children.first.label ) ).toEqual( [
 					'Tyci',
 					'Mały',
 					'Domyślny',
@@ -305,8 +305,8 @@ describe( 'FontSizeUI', () => {
 
 				const listView = dropdown.listView;
 
-				expect( listView.element.role ).to.equal( 'menu' );
-				expect( listView.element.ariaLabel ).to.equal( 'Font Size' );
+				expect( listView.element.role ).toEqual( 'menu' );
+				expect( listView.element.ariaLabel ).toEqual( 'Font Size' );
 			} );
 		} );
 	} );
@@ -329,10 +329,10 @@ describe( 'FontSizeUI', () => {
 		it( 'button has binding to isEnabled', () => {
 			command.isEnabled = false;
 
-			expect( subMenu.buttonView.isEnabled ).to.be.false;
+			expect( subMenu.buttonView.isEnabled ).toBe( false );
 
 			command.isEnabled = true;
-			expect( subMenu.buttonView.isEnabled ).to.be.true;
+			expect( subMenu.buttonView.isEnabled ).toBe( true );
 		} );
 
 		describe( 'font size sub menu button', () => {
@@ -356,18 +356,18 @@ describe( 'FontSizeUI', () => {
 			} );
 
 			it( 'sets item\'s #isOn depending on the value of the CodeBlockCommand', () => {
-				expect( buttonSmall.isOn ).to.be.false;
+				expect( buttonSmall.isOn ).toBe( false );
 
 				command.value = 'small';
-				expect( buttonSmall.isOn ).to.be.true;
+				expect( buttonSmall.isOn ).toBe( true );
 			} );
 
 			it( 'button has proper `aria-checked` attribute set when active', () => {
-				expect( buttonSmall.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+				expect( buttonSmall.element.getAttribute( 'aria-checked' ) ).toEqual( 'false' );
 
 				command.value = 'small';
 
-				expect( buttonSmall.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+				expect( buttonSmall.element.getAttribute( 'aria-checked' ) ).toEqual( 'true' );
 			} );
 		} );
 	} );

@@ -46,54 +46,54 @@ describe( 'TableEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( TableEditing.pluginName ).to.equal( 'TableEditing' );
+		expect( TableEditing.pluginName ).toEqual( 'TableEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TableEditing.isOfficialPlugin ).to.be.true;
+		expect( TableEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TableEditing.isPremiumPlugin ).to.be.false;
+		expect( TableEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should set proper schema rules', () => {
 		// Table:
-		expect( model.schema.isRegistered( 'table' ) ).to.be.true;
-		expect( model.schema.isObject( 'table' ) ).to.be.true;
-		expect( model.schema.isBlock( 'table' ) ).to.be.true;
+		expect( model.schema.isRegistered( 'table' ) ).toBe( true );
+		expect( model.schema.isObject( 'table' ) ).toBe( true );
+		expect( model.schema.isBlock( 'table' ) ).toBe( true );
 
-		expect( model.schema.checkChild( [ '$root' ], 'table' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingRows' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingColumns' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'footerRows' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root' ], 'table' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingRows' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingColumns' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'footerRows' ) ).toBe( false );
 
 		// Table row:
-		expect( model.schema.isRegistered( 'tableRow' ) ).to.be.true;
-		expect( model.schema.isLimit( 'tableRow' ) ).to.be.true;
+		expect( model.schema.isRegistered( 'tableRow' ) ).toBe( true );
+		expect( model.schema.isLimit( 'tableRow' ) ).toBe( true );
 
-		expect( model.schema.checkChild( [ '$root' ], 'tableRow' ) ).to.be.false;
-		expect( model.schema.checkChild( [ 'table' ], 'tableRow' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'tableRow' ) ).toBe( false );
+		expect( model.schema.checkChild( [ 'table' ], 'tableRow' ) ).toBe( true );
 
 		// Table cell:
-		expect( model.schema.isRegistered( 'tableCell' ) ).to.be.true;
-		expect( model.schema.isLimit( 'tableCell' ) ).to.be.true;
-		expect( model.schema.isObject( 'tableCell' ) ).to.be.false;
-		expect( model.schema.isSelectable( 'tableCell' ) ).to.be.true;
+		expect( model.schema.isRegistered( 'tableCell' ) ).toBe( true );
+		expect( model.schema.isLimit( 'tableCell' ) ).toBe( true );
+		expect( model.schema.isObject( 'tableCell' ) ).toBe( false );
+		expect( model.schema.isSelectable( 'tableCell' ) ).toBe( true );
 
-		expect( model.schema.checkChild( [ '$root' ], 'tableCell' ) ).to.be.false;
-		expect( model.schema.checkChild( [ 'table' ], 'tableCell' ) ).to.be.false;
-		expect( model.schema.checkChild( [ 'tableRow' ], 'tableCell' ) ).to.be.true;
-		expect( model.schema.checkChild( [ 'tableCell' ], 'tableCell' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root' ], 'tableCell' ) ).toBe( false );
+		expect( model.schema.checkChild( [ 'table' ], 'tableCell' ) ).toBe( false );
+		expect( model.schema.checkChild( [ 'tableRow' ], 'tableCell' ) ).toBe( true );
+		expect( model.schema.checkChild( [ 'tableCell' ], 'tableCell' ) ).toBe( false );
 
-		expect( model.schema.checkAttribute( [ 'tableCell' ], 'colspan' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ 'tableCell' ], 'rowspan' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ 'tableCell' ], 'colspan' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ 'tableCell' ], 'rowspan' ) ).toBe( true );
 
 		// Table cell contents:
-		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$text' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$block' ) ).to.be.true;
-		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'table' ) ).to.be.true;
-		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'imageBlock' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$text' ) ).toBe( false );
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$block' ) ).toBe( true );
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'table' ) ).toBe( true );
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'imageBlock' ) ).toBe( true );
 	} );
 
 	it( 'should define table.showHiddenBorders config', async () => {
@@ -105,8 +105,8 @@ describe( 'TableEditing', () => {
 			plugins: [ TableEditing, Paragraph ]
 		} );
 
-		expect( editor.config.get( 'table.showHiddenBorders' ) ).to.be.true;
-		expect( editor.editing.view.getDomRoot().classList.contains( 'ck-table-show-hidden-borders' ) ).to.be.true;
+		expect( editor.config.get( 'table.showHiddenBorders' ) ).toBe( true );
+		expect( editor.editing.view.getDomRoot().classList.contains( 'ck-table-show-hidden-borders' ) ).toBe( true );
 
 		editorElement.remove();
 		await editor.destroy();
@@ -124,8 +124,8 @@ describe( 'TableEditing', () => {
 			}
 		} );
 
-		expect( editor.config.get( 'table.showHiddenBorders' ) ).to.be.false;
-		expect( editor.editing.view.getDomRoot().classList.contains( 'ck-table-show-hidden-borders' ) ).to.be.false;
+		expect( editor.config.get( 'table.showHiddenBorders' ) ).toBe( false );
+		expect( editor.editing.view.getDomRoot().classList.contains( 'ck-table-show-hidden-borders' ) ).toBe( false );
 
 		editorElement.remove();
 		await editor.destroy();
@@ -136,7 +136,7 @@ describe( 'TableEditing', () => {
 			allowAttributes: 'foo'
 		} );
 
-		expect( model.schema.checkAttribute( 'table', 'foo' ) ).to.be.true;
+		expect( model.schema.checkAttribute( 'table', 'foo' ) ).toBe( true );
 	} );
 
 	it( 'adds insertTable command', () => {
@@ -208,21 +208,21 @@ describe( 'TableEditing', () => {
 	} );
 
 	it( 'does not add setFooterRow command by default', () => {
-		expect( editor.commands.get( 'setTableFooterRow' ) ).to.be.undefined;
+		expect( editor.commands.get( 'setTableFooterRow' ) ).toBeUndefined();
 	} );
 
 	describe( 'config', () => {
 		it( 'disables table footers by default', () => {
-			expect( editor.config.get( 'table.enableFooters' ) ).to.be.false;
+			expect( editor.config.get( 'table.enableFooters' ) ).toBe( false );
 		} );
 
 		it( 'sets proper default heading rows and columns', () => {
-			expect( editor.config.get( 'table.defaultHeadings.rows' ) ).to.equal( 0 );
-			expect( editor.config.get( 'table.defaultHeadings.columns' ) ).to.equal( 0 );
+			expect( editor.config.get( 'table.defaultHeadings.rows' ) ).toEqual( 0 );
+			expect( editor.config.get( 'table.defaultHeadings.columns' ) ).toEqual( 0 );
 		} );
 
 		it( 'sets proper default footer rows', () => {
-			expect( editor.config.get( 'table.defaultFooters' ) ).to.equal( 0 );
+			expect( editor.config.get( 'table.defaultFooters' ) ).toEqual( 0 );
 		} );
 	} );
 
@@ -248,7 +248,7 @@ describe( 'TableEditing', () => {
 		} );
 
 		it( 'allows footerRows table attribute', () => {
-			expect( footerModel.schema.checkAttribute( [ '$root', 'table' ], 'footerRows' ) ).to.be.true;
+			expect( footerModel.schema.checkAttribute( [ '$root', 'table' ], 'footerRows' ) ).toBe( true );
 		} );
 
 		it( 'adds setFooterRow command', () => {
@@ -261,15 +261,13 @@ describe( 'TableEditing', () => {
 			it( 'should create tbody section', () => {
 				_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 
-				expect( editor.getData() ).to.equal(
-					'<figure class="table">' +
+				expect( editor.getData() ).toEqual( '<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
 								'<tr><td>foo</td></tr>' +
 							'</tbody>' +
 						'</table>' +
-					'</figure>'
-				);
+					'</figure>' );
 			} );
 
 			it( 'should create thead section', () => {
@@ -278,15 +276,13 @@ describe( 'TableEditing', () => {
 					'<table headingRows="1"><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>'
 				);
 
-				expect( editor.getData() ).to.equal(
-					'<figure class="table">' +
+				expect( editor.getData() ).toEqual( '<figure class="table">' +
 						'<table>' +
 							'<thead>' +
 								'<tr><th>foo</th></tr>' +
 							'</thead>' +
 						'</table>' +
-					'</figure>'
-				);
+					'</figure>' );
 			} );
 		} );
 
@@ -295,16 +291,14 @@ describe( 'TableEditing', () => {
 				editor.setData( '<table><tbody><tr><td>foo</td></tr></tbody></table>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+					.toEqual( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should convert table with image', () => {
 				editor.setData( '<table><tbody><tr><td><img src="/sample.png"></td></tr></tbody></table>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal(
-						'<table><tableRow><tableCell><imageBlock src="/sample.png"></imageBlock></tableCell></tableRow></table>'
-					);
+					.toEqual( '<table><tableRow><tableCell><imageBlock src="/sample.png"></imageBlock></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should insert a paragraph when the cell content is unsupported', () => {
@@ -313,7 +307,7 @@ describe( 'TableEditing', () => {
 				);
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
+					.toEqual( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should convert a table with media', () => {
@@ -321,8 +315,7 @@ describe( 'TableEditing', () => {
 					'<table><tbody><tr><td><oembed url="https://www.youtube.com/watch?v=H08tGjXNHO4"></oembed></td></tr></tbody></table>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell>' +
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( '<table><tableRow><tableCell>' +
 						'<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>' +
 					'</tableCell></tableRow></table>' );
 			} );
@@ -331,21 +324,21 @@ describe( 'TableEditing', () => {
 				editor.setData( '<table><tbody><tr><td colspan="abc">foo</td></tr></tbody></table>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+					.toEqual( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should convert table with colspan 0', () => {
 				editor.setData( '<table><tbody><tr><td colspan="0">foo</td></tr></tbody></table>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+					.toEqual( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should convert table with negative rowspan and colspan', () => {
 				editor.setData( '<table><tbody><tr><td colspan="-1" rowspan="-1">foo</td></tr></tbody></table>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+					.toEqual( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 		} );
 	} );

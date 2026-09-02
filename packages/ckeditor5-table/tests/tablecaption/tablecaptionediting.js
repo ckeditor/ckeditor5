@@ -112,11 +112,9 @@ describe( 'TableCaptionEditing', () => {
 					'</foo>'
 				);
 
-				expect( editor.getData() ).to.equal(
-					'<foo>' +
+				expect( editor.getData() ).toEqual( '<foo>' +
 						'<caption>Foo caption</caption>' +
-					'</foo>'
-				);
+					'</foo>' );
 			} );
 
 			it( 'should convert to figure > table + figcaption', () => {
@@ -131,8 +129,7 @@ describe( 'TableCaptionEditing', () => {
 					'</table>'
 				);
 
-				expect( editor.getData() ).to.equal(
-					'<figure class="table">' +
+				expect( editor.getData() ).toEqual( '<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
@@ -141,8 +138,7 @@ describe( 'TableCaptionEditing', () => {
 							'</tbody>' +
 						'</table>' +
 						'<figcaption>Foo caption</figcaption>' +
-					'</figure>'
-				);
+					'</figure>' );
 			} );
 
 			it( 'should merge many captions into one', () => {
@@ -158,8 +154,7 @@ describe( 'TableCaptionEditing', () => {
 					'</table>'
 				);
 
-				expect( editor.getData() ).to.equal(
-					'<figure class="table">' +
+				expect( editor.getData() ).toEqual( '<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
@@ -168,8 +163,7 @@ describe( 'TableCaptionEditing', () => {
 							'</tbody>' +
 						'</table>' +
 						'<figcaption>foobar</figcaption>' +
-					'</figure>'
-				);
+					'</figure>' );
 			} );
 
 			it( 'should place new caption at the end of the table model', () => {
@@ -192,8 +186,7 @@ describe( 'TableCaptionEditing', () => {
 					writer.insert( caption, writer.createPositionFromPath( editor.model.document.getRoot(), [ 0, 0 ] ) );
 				} );
 
-				expect( editor.getData() ).to.equal(
-					'<figure class="table">' +
+				expect( editor.getData() ).toEqual( '<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
@@ -202,8 +195,7 @@ describe( 'TableCaptionEditing', () => {
 							'</tbody>' +
 						'</table>' +
 						'<figcaption>foobar</figcaption>' +
-					'</figure>'
-				);
+					'</figure>' );
 			} );
 		} );
 
@@ -222,9 +214,8 @@ describe( 'TableCaptionEditing', () => {
 					'</table>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( String(
-						'<table>' +
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( String(
+					'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>foobar</paragraph>' +
@@ -232,7 +223,7 @@ describe( 'TableCaptionEditing', () => {
 							'</tableRow>' +
 							'<caption>Foo caption</caption>' +
 						'</table>'
-					)	);
+				) );
 			} );
 
 			it( 'should convert a table inside <figure> with <figcaption> preceding the table', () => {
@@ -251,9 +242,8 @@ describe( 'TableCaptionEditing', () => {
 					'</figure>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( String(
-						'<table>' +
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( String(
+					'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>foobar</paragraph>' +
@@ -263,7 +253,7 @@ describe( 'TableCaptionEditing', () => {
 								'Foo caption' +
 							'</caption>' +
 						'</table>'
-					) );
+				) );
 			} );
 
 			it( 'should not convert a <figcaption> inside <figure> that has no class="table"', () => {
@@ -282,9 +272,8 @@ describe( 'TableCaptionEditing', () => {
 					'</figure>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( String(
-						'<table>' +
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual( String(
+					'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>foobar</paragraph>' +
@@ -292,7 +281,7 @@ describe( 'TableCaptionEditing', () => {
 							'</tableRow>' +
 						'</table>' +
 						'<paragraph>Foo caption</paragraph>'
-					) );
+				) );
 			} );
 		} );
 	} );
@@ -304,8 +293,7 @@ describe( 'TableCaptionEditing', () => {
 					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
 				);
 
-				expect( maskUIDs( _getViewData( view, { withoutSelection: true } ) ) ).to.equal(
-					'<figure ' +
+				expect( maskUIDs( _getViewData( view, { withoutSelection: true } ) ) ).toEqual( '<figure ' +
 						'class="ck-widget ck-widget_with-selection-handle table" ' +
 						'contenteditable="false"' +
 					'>' +
@@ -330,8 +318,7 @@ describe( 'TableCaptionEditing', () => {
 						'>' +
 							'Foo caption' +
 						'</figcaption>' +
-					'</figure>'
-				);
+					'</figure>' );
 			} );
 
 			it( 'should set id on caption and aria-labelledby on table', () => {
@@ -343,9 +330,9 @@ describe( 'TableCaptionEditing', () => {
 				const viewTable = viewFigure.getChild( 1 );
 				const viewCaption = viewFigure.getChild( 2 );
 
-				expect( viewCaption.hasAttribute( 'id' ) ).to.be.true;
-				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).to.be.true;
-				expect( viewTable.getAttribute( 'aria-labelledby' ) ).to.equal( viewCaption.getAttribute( 'id' ) );
+				expect( viewCaption.hasAttribute( 'id' ) ).toBe( true );
+				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).toBe( true );
+				expect( viewTable.getAttribute( 'aria-labelledby' ) ).toEqual( viewCaption.getAttribute( 'id' ) );
 			} );
 
 			it( 'should not crash when view does not contain a <table> element', () => {
@@ -376,8 +363,8 @@ describe( 'TableCaptionEditing', () => {
 					.from( viewFigure.getChildren() )
 					.find( child => child.is( 'element', 'figcaption' ) );
 
-				expect( viewCaption ).to.not.be.undefined;
-				expect( viewCaption.hasAttribute( 'id' ) ).to.be.false;
+				expect( viewCaption ).not.toBeUndefined();
+				expect( viewCaption.hasAttribute( 'id' ) ).toBe( false );
 			} );
 
 			it( 'should not set aria-labelledby on table when there is no caption', () => {
@@ -388,7 +375,7 @@ describe( 'TableCaptionEditing', () => {
 				const viewFigure = view.document.getRoot().getChild( 0 );
 				const viewTable = viewFigure.getChild( 1 );
 
-				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).to.be.false;
+				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).toBe( false );
 			} );
 
 			it( 'should remove aria-labelledby when caption is removed', () => {
@@ -399,7 +386,7 @@ describe( 'TableCaptionEditing', () => {
 				const viewFigure = view.document.getRoot().getChild( 0 );
 				const viewTable = viewFigure.getChild( 1 );
 
-				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).to.be.true;
+				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).toBe( true );
 
 				model.change( writer => {
 					const table = model.document.getRoot().getChild( 0 );
@@ -411,7 +398,7 @@ describe( 'TableCaptionEditing', () => {
 				const viewFigureAfter = view.document.getRoot().getChild( 0 );
 				const viewTableAfter = viewFigureAfter.getChild( 1 );
 
-				expect( viewTableAfter.hasAttribute( 'aria-labelledby' ) ).to.be.false;
+				expect( viewTableAfter.hasAttribute( 'aria-labelledby' ) ).toBe( false );
 			} );
 
 			it( 'should reuse the same id for caption when table is re-rendered', () => {
@@ -434,7 +421,7 @@ describe( 'TableCaptionEditing', () => {
 				const newViewCaption = newViewFigure.getChild( 2 );
 				const secondCaptionId = newViewCaption.getAttribute( 'id' );
 
-				expect( firstCaptionId ).to.equal( secondCaptionId );
+				expect( firstCaptionId ).toEqual( secondCaptionId );
 			} );
 
 			it( 'should not add aria-labelledby when caption is not bound to view', async () => {
@@ -457,7 +444,7 @@ describe( 'TableCaptionEditing', () => {
 				const viewFigure = editor.editing.view.document.getRoot().getChild( 0 );
 				const viewTable = viewFigure.getChild( 1 );
 
-				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).to.be.false;
+				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).toBe( false );
 			} );
 
 			it( 'should reuse id when caption already has id attribute in view', async () => {
@@ -481,8 +468,8 @@ describe( 'TableCaptionEditing', () => {
 				const viewTable = viewFigure.getChild( 1 );
 				const viewCaption = viewFigure.getChild( 2 );
 
-				expect( viewCaption.getAttribute( 'id' ) ).to.equal( 'custom-id-123' );
-				expect( viewTable.getAttribute( 'aria-labelledby' ) ).to.equal( 'custom-id-123' );
+				expect( viewCaption.getAttribute( 'id' ) ).toEqual( 'custom-id-123' );
+				expect( viewTable.getAttribute( 'aria-labelledby' ) ).toEqual( 'custom-id-123' );
 			} );
 		} );
 	} );
@@ -526,8 +513,7 @@ describe( 'TableCaptionEditing - useCaptionElement = true', () => {
 					'</table>'
 				);
 
-				expect( editor.getData() ).to.equal(
-					'<figure class="table">' +
+				expect( editor.getData() ).toEqual( '<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
@@ -536,8 +522,7 @@ describe( 'TableCaptionEditing - useCaptionElement = true', () => {
 							'</tbody>' +
 							'<caption>Foo caption</caption>' +
 						'</table>' +
-					'</figure>'
-				);
+					'</figure>' );
 			} );
 		} );
 	} );
@@ -549,8 +534,7 @@ describe( 'TableCaptionEditing - useCaptionElement = true', () => {
 					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
 				);
 
-				expect( maskUIDs( _getViewData( view, { withoutSelection: true } ) ) ).to.equal(
-					'<figure ' +
+				expect( maskUIDs( _getViewData( view, { withoutSelection: true } ) ) ).toEqual( '<figure ' +
 						'class="ck-widget ck-widget_with-selection-handle table" ' +
 						'contenteditable="false"' +
 					'>' +
@@ -575,8 +559,7 @@ describe( 'TableCaptionEditing - useCaptionElement = true', () => {
 								'Foo caption' +
 							'</caption>' +
 						'</table>' +
-					'</figure>'
-				);
+					'</figure>' );
 			} );
 		} );
 	} );

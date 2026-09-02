@@ -53,6 +53,8 @@ describe( 'IframeView', () => {
 				view = new IframeView();
 
 				view.on( 'loaded', () => {
+					expect( view.element.contentDocument.readyState ).toBe( 'complete' );
+
 					view.element.remove();
 
 					resolve();

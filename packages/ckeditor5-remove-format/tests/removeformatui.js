@@ -52,11 +52,11 @@ describe( 'RemoveFormatUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( RemoveFormatUI.isOfficialPlugin ).to.be.true;
+		expect( RemoveFormatUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( RemoveFormatUI.isPremiumPlugin ).to.be.false;
+		expect( RemoveFormatUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'the "removeFormat" toolbar button', () => {
@@ -67,7 +67,7 @@ describe( 'RemoveFormatUI', () => {
 		testButton( 'removeFormat', 'Remove Format', ButtonView );
 
 		it( 'should have tooltip', () => {
-			expect( button.tooltip ).to.be.true;
+			expect( button.tooltip ).toBe( true );
 		} );
 	} );
 
@@ -85,9 +85,9 @@ describe( 'RemoveFormatUI', () => {
 		} );
 
 		it( 'should create UI component with correct attribute values', () => {
-			expect( button.isOn ).to.be.false;
-			expect( button.label ).to.equal( label );
-			expect( button.icon ).to.equal( IconRemoveFormat );
+			expect( button.isOn ).toBe( false );
+			expect( button.label ).toEqual( label );
+			expect( button.icon ).toEqual( IconRemoveFormat );
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
@@ -105,13 +105,13 @@ describe( 'RemoveFormatUI', () => {
 		it( `should bind #isEnabled to ${ featureName } command`, () => {
 			const command = editor.commands.get( featureName );
 
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 
 			const initState = command.isEnabled;
-			expect( button.isEnabled ).to.equal( initState );
+			expect( button.isEnabled ).toEqual( initState );
 
 			command.isEnabled = !initState;
-			expect( button.isEnabled ).to.equal( !initState );
+			expect( button.isEnabled ).toEqual( !initState );
 		} );
 	}
 } );

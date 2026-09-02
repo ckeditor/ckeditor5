@@ -35,24 +35,24 @@ describe( 'table cell width property commands', () => {
 			describe( 'collapsed selection', () => {
 				it( 'should be false if selection does not have table cell', () => {
 					_setModelData( model, '<paragraph>foo[]</paragraph>' );
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true is selection has table cell', () => {
 					_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 			} );
 
 			describe( 'non-collapsed selection', () => {
 				it( 'should be false if selection does not have table cell', () => {
 					_setModelData( model, '<paragraph>f[oo]</paragraph>' );
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be true is selection has table cell', () => {
 					_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 			} );
 
@@ -63,7 +63,7 @@ describe( 'table cell width property commands', () => {
 						[ '10', { contents: '11', isSelected: true } ]
 					] ) );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 			} );
 		} );
@@ -73,13 +73,13 @@ describe( 'table cell width property commands', () => {
 				it( 'should be undefined if selected table cell has no width property', () => {
 					_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
-					expect( command.value ).to.be.undefined;
+					expect( command.value ).toBeUndefined();
 				} );
 
 				it( 'should be set if selected table cell has tableCellWidth property', () => {
 					_setModelData( model, modelTable( [ [ { tableCellWidth: '100px', contents: '[]foo' } ] ] ) );
 
-					expect( command.value ).to.equal( '100px' );
+					expect( command.value ).toEqual( '100px' );
 				} );
 			} );
 
@@ -87,13 +87,13 @@ describe( 'table cell width property commands', () => {
 				it( 'should be false if selection does not have table cell', () => {
 					_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 
-					expect( command.value ).to.be.undefined;
+					expect( command.value ).toBeUndefined();
 				} );
 
 				it( 'should be true is selection has table cell', () => {
 					_setModelData( model, modelTable( [ [ { tableCellWidth: '100px', contents: 'f[o]o' } ] ] ) );
 
-					expect( command.value ).to.equal( '100px' );
+					expect( command.value ).toEqual( '100px' );
 				} );
 			} );
 
@@ -110,7 +110,7 @@ describe( 'table cell width property commands', () => {
 						]
 					] ) );
 
-					expect( command.value ).to.be.undefined;
+					expect( command.value ).toBeUndefined();
 				} );
 
 				it( 'should be undefined if only some table cells have the "tableCellWidth" property', () => {
@@ -125,7 +125,7 @@ describe( 'table cell width property commands', () => {
 						]
 					] ) );
 
-					expect( command.value ).to.be.undefined;
+					expect( command.value ).toBeUndefined();
 				} );
 
 				it( 'should be undefined if one of selected table cells has a different "tableCellWidth" property value', () => {
@@ -140,7 +140,7 @@ describe( 'table cell width property commands', () => {
 						]
 					] ) );
 
-					expect( command.value ).to.be.undefined;
+					expect( command.value ).toBeUndefined();
 				} );
 
 				it( 'should be set if all table cells have the same "tableCellWidth" property value', () => {
@@ -155,7 +155,7 @@ describe( 'table cell width property commands', () => {
 						]
 					] ) );
 
-					expect( command.value ).to.equal( '100px' );
+					expect( command.value ).toEqual( '100px' );
 				} );
 			} );
 		} );
@@ -333,7 +333,7 @@ describe( 'table cell width property commands', () => {
 				it( 'should be undefined if selected table cell has the default width property', () => {
 					_setModelData( model, modelTable( [ [ { width: '50px', contents: '[]foo' } ] ] ) );
 
-					expect( command.value ).to.be.undefined;
+					expect( command.value ).toBeUndefined();
 				} );
 			} );
 
@@ -341,7 +341,7 @@ describe( 'table cell width property commands', () => {
 				it( 'should be undefined is selection contains the default value', () => {
 					_setModelData( model, modelTable( [ [ { width: '50px', contents: 'f[o]o' } ] ] ) );
 
-					expect( command.value ).to.be.undefined;
+					expect( command.value ).toBeUndefined();
 				} );
 			} );
 
@@ -358,7 +358,7 @@ describe( 'table cell width property commands', () => {
 						]
 					] ) );
 
-					expect( command.value ).to.be.undefined;
+					expect( command.value ).toBeUndefined();
 				} );
 			} );
 		} );

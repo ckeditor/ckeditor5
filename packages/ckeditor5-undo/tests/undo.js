@@ -10,18 +10,18 @@ import { UndoUI } from '../src/undoui.js';
 
 describe( 'Undo', () => {
 	it( 'should be named', () => {
-		expect( Undo.pluginName ).to.equal( 'Undo' );
+		expect( Undo.pluginName ).toEqual( 'Undo' );
 	} );
 
 	it( 'should require UndoEditing and UndoUI', () => {
-		expect( Undo.requires ).to.deep.equal( [ UndoEditing, UndoUI ] );
+		expect( Undo.requires ).toEqual( [ UndoEditing, UndoUI ] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Undo.isOfficialPlugin ).to.be.true;
+		expect( Undo.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Undo.isPremiumPlugin ).to.be.false;
+		expect( Undo.isPremiumPlugin ).toBe( false );
 	} );
 } );

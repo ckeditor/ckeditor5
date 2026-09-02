@@ -32,18 +32,18 @@ describe( 'TableCellTypeCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should be false if selection does not have table cell', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if selection has table cell', () => {
 			_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if selection is in a layout table', () => {
 			_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableType: 'layout' } ) );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -51,12 +51,12 @@ describe( 'TableCellTypeCommand', () => {
 		it( 'should be "data" if selected table cell has no tableCellType property', () => {
 			_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
-			expect( command.value ).to.be.equal( 'data' );
+			expect( command.value ).toEqual( 'data' );
 		} );
 
 		it( 'should be "header" if selected table cell has tableCellType="header"', () => {
 			_setModelData( model, modelTable( [ [ { tableCellType: 'header', contents: '[]foo' } ] ] ) );
-			expect( command.value ).to.equal( 'header' );
+			expect( command.value ).toEqual( 'header' );
 		} );
 
 		it( 'should be undefined if multiple cells with different types are selected', () => {
@@ -67,7 +67,7 @@ describe( 'TableCellTypeCommand', () => {
 				]
 			] ) );
 
-			expect( command.value ).to.be.undefined;
+			expect( command.value ).toBeUndefined();
 		} );
 	} );
 
@@ -115,7 +115,7 @@ describe( 'TableCellTypeCommand', () => {
 				command.execute( { value: 'header' } );
 
 				const table = model.document.getRoot().getChild( 0 );
-				expect( table.getAttribute( 'headingColumns' ) ).to.equal( 1 );
+				expect( table.getAttribute( 'headingColumns' ) ).toEqual( 1 );
 			} );
 
 			it( 'should increment headingRows when changing second row to header if first is already header', () => {
@@ -145,7 +145,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				const table = model.document.getRoot().getChild( 0 );
 
-				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
+				expect( table.hasAttribute( 'headingRows' ) ).toBe( false );
 				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', '01' ],
 					[ { tableCellType: 'header', contents: '10' }, { tableCellType: 'header', contents: '11' } ]
@@ -165,7 +165,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				const table = model.document.getRoot().getChild( 0 );
 
-				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
+				expect( table.hasAttribute( 'headingRows' ) ).toBe( false );
 			} );
 
 			it( 'should decrement headingRows when changing second row (header) to data (headingRows=2)', () => {
@@ -198,7 +198,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				const table = model.document.getRoot().getChild( 0 );
 
-				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
+				expect( table.hasAttribute( 'headingRows' ) ).toBe( false );
 			} );
 
 			it( 'should decrement headingColumns when changing first column (header) to data', () => {
@@ -211,7 +211,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				const table = model.document.getRoot().getChild( 0 );
 
-				expect( table.hasAttribute( 'headingColumns' ) ).to.be.false;
+				expect( table.hasAttribute( 'headingColumns' ) ).toBe( false );
 			} );
 
 			it( 'should properly set headingRows and headingColumns ' +
@@ -257,7 +257,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				const table = model.document.getRoot().getChild( 0 );
 
-				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
+				expect( table.hasAttribute( 'headingRows' ) ).toBe( false );
 				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { tableCellType: 'header', contents: '00' }, '01' ],
 					[ '10', '11' ]
@@ -274,7 +274,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				const table = model.document.getRoot().getChild( 0 );
 
-				expect( table.hasAttribute( 'headingColumns' ) ).to.be.false;
+				expect( table.hasAttribute( 'headingColumns' ) ).toBe( false );
 				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { tableCellType: 'header', contents: '00' }, '01' ],
 					[ '10', '11' ]
@@ -305,7 +305,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				const table = model.document.getRoot().getChild( 0 );
 
-				expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
+				expect( table.getAttribute( 'headingRows' ) ).toEqual( 2 );
 				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ { tableCellType: 'header', contents: '00' }, { tableCellType: 'header', contents: '01' } ],
 					[ { tableCellType: 'header', contents: '10' }, { tableCellType: 'header', contents: '11' } ]
@@ -325,7 +325,7 @@ describe( 'TableCellTypeCommand', () => {
 
 				const table = model.document.getRoot().getChild( 0 );
 
-				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
+				expect( table.hasAttribute( 'headingRows' ) ).toBe( false );
 				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { contents: '01', tableCellType: 'header' } ],
 					[ '10', '11' ]
@@ -438,12 +438,12 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 	describe( 'value', () => {
 		it( 'should be "header-row" if selected table cell has tableCellType="header-row"', () => {
 			_setModelData( model, modelTable( [ [ { tableCellType: 'header-row', contents: '[]foo' } ] ] ) );
-			expect( command.value ).to.equal( 'header-row' );
+			expect( command.value ).toEqual( 'header-row' );
 		} );
 
 		it( 'should be "header-column" if selected table cell has tableCellType="header-column"', () => {
 			_setModelData( model, modelTable( [ [ { tableCellType: 'header-column', contents: '[]foo' } ] ] ) );
-			expect( command.value ).to.equal( 'header-column' );
+			expect( command.value ).toEqual( 'header-column' );
 		} );
 	} );
 
@@ -575,8 +575,8 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 
 				const table = model.document.getRoot().getChild( 0 );
 
-				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
-				expect( table.hasAttribute( 'headingColumns' ) ).to.be.false;
+				expect( table.hasAttribute( 'headingRows' ) ).toBe( false );
+				expect( table.hasAttribute( 'headingColumns' ) ).toBe( false );
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
 					[ '00', { contents: '01', tableCellType: 'header' } ],

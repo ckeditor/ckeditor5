@@ -35,7 +35,7 @@ describe( 'RemoveRowCommand', () => {
 				[ '10', '11' ]
 			] ) );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if selection contains multiple cells', () => {
@@ -52,7 +52,7 @@ describe( 'RemoveRowCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if selection is inside table with one row only', () => {
@@ -60,7 +60,7 @@ describe( 'RemoveRowCommand', () => {
 				[ '00[]', '01' ]
 			] ) );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if all the rows are selected', () => {
@@ -76,13 +76,13 @@ describe( 'RemoveRowCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 0 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if selection is outside a table', () => {
 			_setModelData( model, '<paragraph>11[]</paragraph>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false when the first column with rowspan is selected', () => {
@@ -100,7 +100,7 @@ describe( 'RemoveRowCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 2, 0 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be false if all the rows are selected - table with more than 10 rows (array sort bug)', () => {
@@ -127,7 +127,7 @@ describe( 'RemoveRowCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 12, 0 ] )
 			);
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -458,7 +458,7 @@ describe( 'RemoveRowCommand', () => {
 
 				command.execute();
 
-				expect( createdBatches.size ).to.equal( 1 );
+				expect( createdBatches.size ).toEqual( 1 );
 			} );
 
 			it( 'should properly remove more than 10 rows selected (array sort bug)', () => {

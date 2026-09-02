@@ -528,7 +528,7 @@ describe( 'DomConverter', () => {
 				} );
 			} );
 
-			describe( 'DOM elements with included script ', () => {
+			describe( 'DOM elements with included script', () => {
 				const svgBase64 = 'data:image/svg+xml;base64,' + global.window.btoa( `<svg xmlns="http://www.w3.org/2000/svg">
 							<image href="x" onerror="alert(1)" />
 							</svg>` );

@@ -150,12 +150,12 @@ describe( 'UndoCommand', () => {
 				 - o (key: value)
 				 */
 
-				expect( getText( root ) ).to.equal( 'barofo' );
-				expect( itemAt( root, 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
+				expect( getText( root ) ).toEqual( 'barofo' );
+				expect( itemAt( root, 0 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).toEqual( 'value' );
 
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( false );
 
 				undo.execute();
 
@@ -170,14 +170,14 @@ describe( 'UndoCommand', () => {
 				 - r
 				 */
 
-				expect( getText( root ) ).to.equal( 'foobar' );
-				expect( itemAt( root, 2 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
+				expect( getText( root ) ).toEqual( 'foobar' );
+				expect( itemAt( root, 2 ).getAttribute( 'key' ) ).toEqual( 'value' );
+				expect( itemAt( root, 3 ).getAttribute( 'key' ) ).toEqual( 'value' );
 
 				// Since selection restoring is not 100% accurate, selected range is not perfectly correct
 				// with what is expected in comment above. The correct result would be if range was [ 1 ] - [ 3 ].
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( false );
 
 				undo.execute();
 
@@ -192,12 +192,12 @@ describe( 'UndoCommand', () => {
 				 - r
 				 */
 
-				expect( getText( root ) ).to.equal( 'foobar' );
-				expect( itemAt( root, 2 ).hasAttribute( 'key' ) ).to.be.false;
-				expect( itemAt( root, 3 ).hasAttribute( 'key' ) ).to.be.false;
+				expect( getText( root ) ).toEqual( 'foobar' );
+				expect( itemAt( root, 2 ).hasAttribute( 'key' ) ).toBe( false );
+				expect( itemAt( root, 3 ).hasAttribute( 'key' ) ).toBe( false );
 
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 2, 4 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.true;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 2, 4 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( true );
 
 				undo.execute();
 
@@ -206,8 +206,8 @@ describe( 'UndoCommand', () => {
 				 [root]
 				 */
 
-				expect( root.childCount ).to.equal( 0 );
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
+				expect( root.childCount ).toEqual( 0 );
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).toBe( true );
 			} );
 
 			it( 'should not revert changes when operation target was done on non-editable space', () => {
@@ -221,7 +221,7 @@ describe( 'UndoCommand', () => {
 
 				undo.execute();
 
-				expect( getText( root ) ).to.equal( 'barbarofo' );
+				expect( getText( root ) ).toEqual( 'barbarofo' );
 			} );
 
 			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert set attribute)', () => {
@@ -238,18 +238,18 @@ describe( 'UndoCommand', () => {
 				 - o
 				 */
 
-				expect( itemAt( root, 0 ).name ).to.equal( 'p' );
-				expect( getText( root.getChild( 0 ) ) ).to.equal( 'bar' );
-				expect( root.getChild( 1 ).data ).to.equal( 'ofo' );
+				expect( itemAt( root, 0 ).name ).toEqual( 'p' );
+				expect( getText( root.getChild( 0 ) ) ).toEqual( 'bar' );
+				expect( root.getChild( 1 ).data ).toEqual( 'ofo' );
 
-				expect( itemAt( root.getChild( 0 ), 0 ).hasAttribute( 'key' ) ).to.be.false;
-				expect( itemAt( root, 2 ).hasAttribute( 'key' ) ).to.be.false;
-				expect( itemAt( root, 3 ).hasAttribute( 'key' ) ).to.be.false;
+				expect( itemAt( root.getChild( 0 ), 0 ).hasAttribute( 'key' ) ).toBe( false );
+				expect( itemAt( root, 2 ).hasAttribute( 'key' ) ).toBe( false );
+				expect( itemAt( root, 3 ).hasAttribute( 'key' ) ).toBe( false );
 
 				// Selection is only partially restored because the range got broken.
 				// The selection would have to best on letter "b" and letter "o", but it is set only on letter "b".
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( [ 0, 0 ], [ 0, 1 ] ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.true;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( [ 0, 0 ], [ 0, 1 ] ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( true );
 			} );
 
 			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert insert foobar)', () => {
@@ -260,27 +260,27 @@ describe( 'UndoCommand', () => {
 				 - p
 				 */
 
-				expect( root.childCount ).to.equal( 1 );
-				expect( root.getChild( 0 ).name ).to.equal( 'p' );
+				expect( root.childCount ).toEqual( 1 );
+				expect( root.getChild( 0 ).name ).toEqual( 'p' );
 
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( false );
 
 				undo.execute( batch1 );
 				// Remove attributes.
 				// This does nothing in the `root` because attributes were set on nodes that already got removed.
 				// But those nodes should change in the graveyard and we can check them there.
 
-				expect( root.childCount ).to.equal( 1 );
+				expect( root.childCount ).toEqual( 1 );
 
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).toBe( true );
+				expect( editor.model.document.selection.isBackward ).toBe( false );
 
 				// Graveyard contains "foobar".
-				expect( doc.graveyard.maxOffset ).to.equal( 6 );
+				expect( doc.graveyard.maxOffset ).toEqual( 6 );
 
 				for ( const item of model.createRangeIn( doc.graveyard ).getItems() ) {
-					expect( item.hasAttribute( 'key' ) ).to.be.false;
+					expect( item.hasAttribute( 'key' ) ).toBe( false );
 				}
 			} );
 
@@ -298,8 +298,8 @@ describe( 'UndoCommand', () => {
 					undo.execute();
 				} );
 
-				expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
-				expect( root.getAttribute( 'foo' ) ).to.not.equal( 'bar' );
+				expect( element.getAttribute( 'foo' ) ).toEqual( 'bar' );
+				expect( root.getAttribute( 'foo' ) ).not.toBe( 'bar' );
 			} );
 
 			it( 'should pass undoing batch to enqueueChange method', () => {
@@ -313,8 +313,8 @@ describe( 'UndoCommand', () => {
 
 				const undoingBatch = enqueueChangeSpy.mock.calls[ 0 ][ 0 ];
 
-				expect( undoingBatch instanceof Batch ).to.be.true;
-				expect( undoSpy.mock.calls[ 0 ][ 1 ] ).to.equal( undoingBatch );
+				expect( undoingBatch instanceof Batch ).toBe( true );
+				expect( undoSpy.mock.calls[ 0 ][ 1 ] ).toEqual( undoingBatch );
 			} );
 
 			it( 'should correctly undo root attribute changes', () => {
@@ -336,13 +336,13 @@ describe( 'UndoCommand', () => {
 					writer.setAttribute( 'foo', 'A', root );
 				} );
 
-				expect( root.getAttribute( 'foo' ) ).to.equal( 'A' );
+				expect( root.getAttribute( 'foo' ) ).toEqual( 'A' );
 
 				undo.execute();
-				expect( root.getAttribute( 'foo' ) ).to.equal( 'B' );
+				expect( root.getAttribute( 'foo' ) ).toEqual( 'B' );
 
 				undo.execute();
-				expect( root.getAttribute( 'foo' ) ).to.equal( 'A' );
+				expect( root.getAttribute( 'foo' ) ).toEqual( 'A' );
 			} );
 		} );
 
@@ -362,7 +362,7 @@ describe( 'UndoCommand', () => {
 				writer.appendText( 'abcdef', root );
 			} );
 
-			expect( getCaseText( root ) ).to.equal( 'abcdef' );
+			expect( getCaseText( root ) ).toEqual( 'abcdef' );
 
 			model.change( writer => {
 				writer.setSelection( r( 1, 4 ) );
@@ -372,7 +372,7 @@ describe( 'UndoCommand', () => {
 			model.enqueueChange( batch0, writer => {
 				writer.setAttribute( 'uppercase', true, r( 1, 4 ) );
 			} );
-			expect( getCaseText( root ) ).to.equal( 'aBCDef' );
+			expect( getCaseText( root ) ).toEqual( 'aBCDef' );
 
 			model.change( writer => {
 				writer.setSelection( r( 3, 4 ) );
@@ -382,14 +382,14 @@ describe( 'UndoCommand', () => {
 			model.enqueueChange( batch1, writer => {
 				writer.move( r( 3, 4 ), p( 1 ) );
 			} );
-			expect( getCaseText( root ) ).to.equal( 'aDBCef' );
+			expect( getCaseText( root ) ).toEqual( 'aDBCef' );
 
 			undo.execute( batch0 );
 
 			// After undo-attr: acdbef <--- "cdb" should be selected, it would look weird if only "cd" or "b" is selected
 			// but the whole unbroken part "cdb" changed attribute.
-			expect( getCaseText( root ) ).to.equal( 'adbcef' );
-			expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 4 ) ) ).to.be.true;
+			expect( getCaseText( root ) ).toEqual( 'adbcef' );
+			expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 4 ) ) ).toBe( true );
 		} );
 
 		it( 'should clear stack on DataController set()', () => {
@@ -426,7 +426,7 @@ describe( 'UndoCommand', () => {
 			const data = dataSetSpy.mock.calls[ 0 ][ 1 ];
 
 			expect( data[ 1 ] ).to.be.an( 'object' );
-			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: false } );
+			expect( data[ 1 ].batchType ).toEqual( { isUndoable: false } );
 		} );
 
 		it( 'should not override the batch type in editor.data.set() when the batch type is set', () => {
@@ -439,30 +439,30 @@ describe( 'UndoCommand', () => {
 			const data = dataSetSpy.mock.calls[ 0 ][ 1 ];
 
 			expect( data[ 1 ] ).to.be.an( 'object' );
-			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: true } );
+			expect( data[ 1 ].batchType ).toEqual( { isUndoable: true } );
 		} );
 
 		it( 'should fire `revert` event when executed, after all changes are applied (including post-fixer)', () => {
 			return new Promise( resolve => {
 				undo.on( 'revert', ( evt, undoneBatch, undoingBatch ) => {
 					// We undone "insert text `foo`".
-					expect( undoneBatch.operations.length ).to.equal( 1 );
+					expect( undoneBatch.operations.length ).toEqual( 1 );
 
 					// The undoing batch contains "remove text `foo`" and "add text `x`".
-					expect( undoingBatch.operations.length ).to.equal( 2 );
+					expect( undoingBatch.operations.length ).toEqual( 2 );
 
 					// Remove text `foo`:
-					expect( undoingBatch.operations[ 0 ].type ).to.equal( 'remove' );
-					expect( undoingBatch.operations[ 0 ].sourcePosition.root ).to.equal( root );
-					expect( undoingBatch.operations[ 0 ].sourcePosition.path ).to.deep.equal( [ 0 ] );
-					expect( undoingBatch.operations[ 0 ].howMany ).to.equal( 3 );
+					expect( undoingBatch.operations[ 0 ].type ).toEqual( 'remove' );
+					expect( undoingBatch.operations[ 0 ].sourcePosition.root ).toEqual( root );
+					expect( undoingBatch.operations[ 0 ].sourcePosition.path ).toEqual( [ 0 ] );
+					expect( undoingBatch.operations[ 0 ].howMany ).toEqual( 3 );
 
 					// Add text `x`:
-					expect( undoingBatch.operations[ 1 ].type ).to.equal( 'insert' );
-					expect( undoingBatch.operations[ 1 ].position.root ).to.equal( root );
-					expect( undoingBatch.operations[ 1 ].position.path ).to.deep.equal( [ 0 ] );
-					expect( undoingBatch.operations[ 1 ].nodes.length ).to.equal( 1 );
-					expect( undoingBatch.operations[ 1 ].nodes.getNode( 0 ).data ).to.equal( 'x' );
+					expect( undoingBatch.operations[ 1 ].type ).toEqual( 'insert' );
+					expect( undoingBatch.operations[ 1 ].position.root ).toEqual( root );
+					expect( undoingBatch.operations[ 1 ].position.path ).toEqual( [ 0 ] );
+					expect( undoingBatch.operations[ 1 ].nodes.length ).toEqual( 1 );
+					expect( undoingBatch.operations[ 1 ].nodes.getNode( 0 ).data ).toEqual( 'x' );
 
 					resolve();
 				} );

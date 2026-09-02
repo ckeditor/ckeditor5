@@ -38,12 +38,12 @@ describe( 'SetFooterRowCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should be false if selection is not in a table', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if selection is in table', () => {
 			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if multiple cells are selected', () => {
@@ -58,7 +58,7 @@ describe( 'SetFooterRowCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true if multiple cells in a footer row are selected', () => {
@@ -73,7 +73,7 @@ describe( 'SetFooterRowCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		describe( 'with `TableLayout` plugin', () => {
@@ -97,7 +97,7 @@ describe( 'SetFooterRowCommand', () => {
 
 			it( 'should be true if selection is in table', () => {
 				_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if selection is in table with `tableType="layout"`', () => {
@@ -105,7 +105,7 @@ describe( 'SetFooterRowCommand', () => {
 					'<table tableType="layout">' +
 						'<tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow>' +
 					'</table>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 	} );
@@ -117,7 +117,7 @@ describe( 'SetFooterRowCommand', () => {
 				[ '11', '12' ]
 			] ) );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should be false if selection is not in a footer row', () => {
@@ -126,7 +126,7 @@ describe( 'SetFooterRowCommand', () => {
 				[ '11', '12' ]
 			], { footerRows: 1 } ) );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'should be true if selection is in a footer row', () => {
@@ -135,7 +135,7 @@ describe( 'SetFooterRowCommand', () => {
 				[ '11', '12[]' ]
 			], { footerRows: 1 } ) );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'should be true if multiple footer rows are selected', () => {
@@ -151,7 +151,7 @@ describe( 'SetFooterRowCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'should be false if only part of selected columns are footers', () => {
@@ -167,7 +167,7 @@ describe( 'SetFooterRowCommand', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 0 ] )
 			);
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 	} );
 

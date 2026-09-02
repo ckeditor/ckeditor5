@@ -94,9 +94,9 @@ Some additional things you should keep in mind:
 
 ## Translating
 
-CKEditor&nbsp;5 is a project with global impact, so contributing translations is both an easy and powerful way to help.
+CKEditor&nbsp;5 is a project with global impact, so contributing translations is a valuable way to help.
 
-To make CKEditor&nbsp;5 available in multiple languages, we use `.po` files for storing translations. These are text files commonly used in software development to translate interface texts. Each CKEditor&nbsp;5 package keeps translation files in the `lang/translations` directory. To provide missing translations, just edit the `.po` file and prepare a [pull request](#creating-a-pull-request).
+Each CKEditor&nbsp;5 package keeps generated TypeScript translation files in the `lang/translations` directory. To provide a missing translation, edit only the dictionary value in the appropriate `.ts` file and prepare a [pull request](#creating-a-pull-request). Do not edit the generated comments, keys, order, module structure, or plural-form function.
 
 Here as well, having a CLA in place is a requirement to become an official translator (see below).
 

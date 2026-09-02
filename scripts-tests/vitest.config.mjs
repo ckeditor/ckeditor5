@@ -15,6 +15,7 @@ export default defineConfig( {
 		testTimeout: 10000,
 		mockReset: true,
 		restoreMocks: true,
+		unstubGlobals: true,
 		include: [
 			'scripts-tests/**/*.@(js|mjs|cjs)'
 		],

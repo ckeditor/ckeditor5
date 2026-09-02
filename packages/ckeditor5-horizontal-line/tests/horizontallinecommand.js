@@ -109,6 +109,8 @@ describe( 'HorizontalLineCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableCell', view: 'tableCell' } );
 
 			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false when schema disallows horizontal line', () => {

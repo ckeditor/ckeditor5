@@ -322,8 +322,11 @@ describe( 'ImageCustomResizeUI', () => {
 			let hideSpy, focusSpy;
 
 			beforeEach( () => {
+				// A sanity check of the setup. Each test below relies on the balloon being shown by the button.
+				// eslint-disable-next-line vitest/no-standalone-expect
 				expect( balloon.visibleView ).toBeNull();
 				button.fire( 'execute' );
+				// eslint-disable-next-line vitest/no-standalone-expect
 				expect( balloon.visibleView ).not.toBeNull();
 
 				hideSpy = vi.spyOn( plugin, '_hideForm' );

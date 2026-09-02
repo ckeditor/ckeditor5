@@ -49,19 +49,19 @@ describe( 'table properties', () => {
 		} );
 
 		it( 'should have pluginName', () => {
-			expect( TablePropertiesEditing.pluginName ).to.equal( 'TablePropertiesEditing' );
+			expect( TablePropertiesEditing.pluginName ).toEqual( 'TablePropertiesEditing' );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-			expect( TablePropertiesEditing.isOfficialPlugin ).to.be.true;
+			expect( TablePropertiesEditing.isOfficialPlugin ).toBe( true );
 		} );
 
 		it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
-			expect( TablePropertiesEditing.isPremiumPlugin ).to.be.true;
+			expect( TablePropertiesEditing.isPremiumPlugin ).toBe( true );
 		} );
 
 		it( 'should have `licenseFeatureCode` static flag set to `TCP`', () => {
-			expect( TablePropertiesEditing.licenseFeatureCode ).to.equal( 'TCP' );
+			expect( TablePropertiesEditing.licenseFeatureCode ).toEqual( 'TCP' );
 		} );
 
 		describe( 'init()', () => {
@@ -70,7 +70,7 @@ describe( 'table properties', () => {
 
 				expect( config ).to.be.an( 'object' );
 				expect( config ).to.have.property( 'defaultProperties' );
-				expect( config.defaultProperties ).to.deep.equal( {} );
+				expect( config.defaultProperties ).toEqual( {} );
 			} );
 
 			it( 'adds tableBorderColor command', () => {
@@ -104,28 +104,28 @@ describe( 'table properties', () => {
 
 		describe( 'border', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderColor' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderStyle' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderWidth' ) ).to.be.true;
-				expect( model.schema.getAttributeProperties( 'tableBorderColor' ).isFormatting ).to.be.true;
-				expect( model.schema.getAttributeProperties( 'tableBorderStyle' ).isFormatting ).to.be.true;
-				expect( model.schema.getAttributeProperties( 'tableBorderWidth' ).isFormatting ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderColor' ) ).toBe( true );
+				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderStyle' ) ).toBe( true );
+				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderWidth' ) ).toBe( true );
+				expect( model.schema.getAttributeProperties( 'tableBorderColor' ).isFormatting ).toBe( true );
+				expect( model.schema.getAttributeProperties( 'tableBorderStyle' ).isFormatting ).toBe( true );
+				expect( model.schema.getAttributeProperties( 'tableBorderWidth' ).isFormatting ).toBe( true );
 			} );
 
 			describe( 'upcast conversion', () => {
 				it( 'should not upcast border shorthand when values are the same as default values', () => {
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'border' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'border' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table style="border:1px double hsl(0, 0%, 70%)"><tr><td>foo</td></tr></table>' );
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
-					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
-					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderColor' ) ).toBeUndefined();
+					expect( table.getAttribute( 'tableBorderStyle' ) ).toBeUndefined();
+					expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 				} );
 
 				it( 'should upcast border shorthand', () => {
@@ -133,9 +133,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderColor' ) ).to.equal( '#f00' );
-					expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'solid' );
-					expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '2px' );
+					expect( table.getAttribute( 'tableBorderColor' ) ).toEqual( '#f00' );
+					expect( table.getAttribute( 'tableBorderStyle' ) ).toEqual( 'solid' );
+					expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '2px' );
 				} );
 
 				it( 'should upcast border-color shorthand', () => {
@@ -143,7 +143,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderColor' ) ).to.equal( '#f00' );
+					expect( table.getAttribute( 'tableBorderColor' ) ).toEqual( '#f00' );
 				} );
 
 				it( 'should upcast border-style shorthand', () => {
@@ -151,7 +151,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'ridge' );
+					expect( table.getAttribute( 'tableBorderStyle' ) ).toEqual( 'ridge' );
 				} );
 
 				it( 'should upcast border-width shorthand', () => {
@@ -159,7 +159,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '3px' );
+					expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '3px' );
 				} );
 
 				it( 'should upcast border-top shorthand', () => {
@@ -269,9 +269,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
-					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
-					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderColor' ) ).toBeUndefined();
+					expect( table.getAttribute( 'tableBorderStyle' ) ).toBeUndefined();
+					expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 				} );
 
 				it( 'should allow to be overridden (only border-top consumed) and not consume border attribute', () => {
@@ -291,11 +291,11 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
-					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
-					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderColor' ) ).toBeUndefined();
+					expect( table.getAttribute( 'tableBorderStyle' ) ).toBeUndefined();
+					expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 
-					expect( borderConsumed ).to.be.false;
+					expect( borderConsumed ).toBe( false );
 				} );
 
 				describe( 'nested tables', () => {
@@ -314,14 +314,14 @@ describe( 'table properties', () => {
 
 						const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-						expect( table.getAttribute( 'tableBorderColor' ) ).to.equal( 'red' );
-						expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'solid' );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '2px' );
+						expect( table.getAttribute( 'tableBorderColor' ) ).toEqual( 'red' );
+						expect( table.getAttribute( 'tableBorderStyle' ) ).toEqual( 'solid' );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '2px' );
 
 						// Also check the entire structure of the model.
 						// Previously the test was too loose in that regard.
-						expect( _getModelData( editor.model ) ).to.equal(
-							'[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="2px">' +
+						expect( _getModelData( editor.model ) )
+							.toEqual( '[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="2px">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>' +
@@ -340,8 +340,7 @@ describe( 'table properties', () => {
 										'</table>' +
 									'</tableCell>' +
 								'</tableRow>' +
-							'</table>]'
-						);
+							'</table>]' );
 					} );
 
 					// https://github.com/ckeditor/ckeditor5/issues/8393.
@@ -366,8 +365,7 @@ describe( 'table properties', () => {
 							);
 						} ).not.to.throw();
 
-						expect( _getModelData( editor.model ) ).to.equal(
-							'[<table>' +
+						expect( _getModelData( editor.model ) ).toEqual( '[<table>' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<table>' +
@@ -379,8 +377,7 @@ describe( 'table properties', () => {
 										'</table>' +
 									'</tableCell>' +
 								'</tableRow>' +
-							'</table>]'
-						);
+							'</table>]' );
 					} );
 
 					// https://github.com/ckeditor/ckeditor5/issues/8393.
@@ -399,8 +396,7 @@ describe( 'table properties', () => {
 							);
 						} ).not.to.throw();
 
-						expect( _getModelData( editor.model ) ).to.equal(
-							'[<table>' +
+						expect( _getModelData( editor.model ) ).toEqual( '[<table>' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<table ' +
@@ -416,8 +412,7 @@ describe( 'table properties', () => {
 										'</table>' +
 									'</tableCell>' +
 								'</tableRow>' +
-							'</table>]'
-						);
+							'</table>]' );
 					} );
 
 					// https://github.com/ckeditor/ckeditor5/issues/8393.
@@ -447,8 +442,7 @@ describe( 'table properties', () => {
 							);
 						} ).not.to.throw();
 
-						expect( _getModelData( editor.model ) ).to.equal(
-							'[<table>' +
+						expect( _getModelData( editor.model ) ).toEqual( '[<table>' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>parent:00</paragraph>' +
@@ -463,8 +457,7 @@ describe( 'table properties', () => {
 										'</table>' +
 									'</tableCell>' +
 								'</tableRow>' +
-							'</table>]'
-						);
+							'</table>]' );
 					} );
 
 					describe( 'nested tables forbidden by custom rule', () => {
@@ -492,12 +485,12 @@ describe( 'table properties', () => {
 
 							const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-							expect( table.getAttribute( 'tableBorderColor' ) ).to.equal( 'red' );
-							expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'solid' );
-							expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '2px' );
+							expect( table.getAttribute( 'tableBorderColor' ) ).toEqual( 'red' );
+							expect( table.getAttribute( 'tableBorderStyle' ) ).toEqual( 'solid' );
+							expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '2px' );
 
-							expect( _getModelData( editor.model ) ).to.equal(
-								'[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="2px">' +
+							expect( _getModelData( editor.model ) )
+								.toEqual( '[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="2px">' +
 									'<tableRow>' +
 										'<tableCell>' +
 											'<paragraph>' +
@@ -510,8 +503,7 @@ describe( 'table properties', () => {
 											'</paragraph>' +
 										'</tableCell>' +
 									'</tableRow>' +
-								'</table>]'
-							);
+								'</table>]' );
 						} );
 
 						// https://github.com/ckeditor/ckeditor5/issues/8393.
@@ -536,15 +528,13 @@ describe( 'table properties', () => {
 								);
 							} ).not.to.throw();
 
-							expect( _getModelData( editor.model ) ).to.equal(
-								'[<table>' +
+							expect( _getModelData( editor.model ) ).toEqual( '[<table>' +
 									'<tableRow>' +
 										'<tableCell>' +
 										'<paragraph></paragraph>' +
 										'</tableCell>' +
 									'</tableRow>' +
-								'</table>]'
-							);
+								'</table>]' );
 						} );
 
 						// https://github.com/ckeditor/ckeditor5/issues/8393.
@@ -563,15 +553,13 @@ describe( 'table properties', () => {
 								);
 							} ).not.to.throw();
 
-							expect( _getModelData( editor.model ) ).to.equal(
-								'[<table>' +
+							expect( _getModelData( editor.model ) ).toEqual( '[<table>' +
 									'<tableRow>' +
 										'<tableCell>' +
 										'<paragraph></paragraph>' +
 										'</tableCell>' +
 									'</tableRow>' +
-								'</table>]'
-							);
+								'</table>]' );
 						} );
 
 						// https://github.com/ckeditor/ckeditor5/issues/8393.
@@ -601,8 +589,7 @@ describe( 'table properties', () => {
 								);
 							} ).not.to.throw();
 
-							expect( _getModelData( editor.model ) ).to.equal(
-								'[<table>' +
+							expect( _getModelData( editor.model ) ).toEqual( '[<table>' +
 									'<tableRow>' +
 										'<tableCell>' +
 											'<paragraph>parent:00</paragraph>' +
@@ -611,8 +598,7 @@ describe( 'table properties', () => {
 											'<paragraph>child:00</paragraph>' +
 										'</tableCell>' +
 									'</tableRow>' +
-								'</table>]'
-							);
+								'</table>]' );
 						} );
 					} );
 				} );
@@ -638,7 +624,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '10px' );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '10px' );
 					} );
 
 					it( 'should not convert border="abc" (default width is set to `1px`)', () => {
@@ -651,7 +637,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 					} );
 
 					it( 'should not convert border="Infinite" (default width is set to `1px`)', () => {
@@ -664,7 +650,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 					} );
 
 					it( 'should not convert negative border values (default width is set to `1px`)', () => {
@@ -677,7 +663,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 					} );
 
 					it( 'should not convert border="1" to tableBorderWidth="1px" (default width)', () => {
@@ -690,7 +676,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).is.undefined;
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 					} );
 
 					it( 'should not convert border="10" to tableBorderWidth="10px" when inline border width (5px) style is present', () => {
@@ -703,7 +689,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '5px' );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '5px' );
 					} );
 
 					it( 'should not convert border="10" to tableBorderWidth="10px" when inline border width (0px) style is present', () => {
@@ -716,7 +702,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '0px' );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '0px' );
 					} );
 
 					it( 'should respect inline border overrides (left) when converting border attribute', () => {
@@ -729,7 +715,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.deep.equal( {
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( {
 							top: '10px',
 							right: '10px',
 							bottom: '10px',
@@ -747,7 +733,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.deep.equal( {
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( {
 							top: '5px',
 							right: '10px',
 							bottom: '5px',
@@ -788,9 +774,9 @@ describe( 'table properties', () => {
 
 							const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-							expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
-							expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
-							expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.equal( '10px' );
+							expect( table.getAttribute( 'tableBorderColor' ) ).toBeUndefined();
+							expect( table.getAttribute( 'tableBorderStyle' ) ).toBeUndefined();
+							expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '10px' );
 						} );
 					} );
 				} );
@@ -816,7 +802,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 					} );
 
 					describe( 'when default table border width is set to `10px`', () => {
@@ -847,7 +833,7 @@ describe( 'table properties', () => {
 							);
 
 							const table = model.document.getRoot().getChild( 0 );
-							expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '1px' );
+							expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '1px' );
 						} );
 					} );
 				} );
@@ -873,7 +859,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '0px' );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '0px' );
 					} );
 
 					it( 'should not convert consumed border', () => {
@@ -890,7 +876,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+						expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 					} );
 
 					it( 'should consume border attribute', () => {
@@ -908,7 +894,7 @@ describe( 'table properties', () => {
 							'</table>'
 						);
 
-						expect( borderConsumed ).to.be.true;
+						expect( borderConsumed ).toBe( true );
 					} );
 
 					it( 'should not override existing tableBorderStyle attribute', () => {
@@ -1038,8 +1024,8 @@ describe( 'table properties', () => {
 							);
 
 							const table = model.document.getRoot().getChild( 0 );
-							expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
-							expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '0px' );
+							expect( table.getAttribute( 'tableBorderStyle' ) ).toBeUndefined();
+							expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '0px' );
 						} );
 					} );
 				} );
@@ -1055,7 +1041,7 @@ describe( 'table properties', () => {
 				it( 'should consume converted item tableBorderColor attribute', () => {
 					editor.conversion.for( 'downcast' )
 						.add( dispatcher => dispatcher.on( 'attribute:tableBorderColor:table', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).toBe( false );
 						} ) );
 
 					model.change( writer => writer.setAttribute( 'tableBorderColor', '#f00', table ) );
@@ -1102,7 +1088,7 @@ describe( 'table properties', () => {
 				it( 'should consume converted item tableBorderStyle attribute', () => {
 					editor.conversion.for( 'downcast' )
 						.add( dispatcher => dispatcher.on( 'attribute:tableBorderStyle:table', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).toBe( false );
 						} ) );
 
 					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'solid', table ) );
@@ -1149,7 +1135,7 @@ describe( 'table properties', () => {
 				it( 'should consume converted item tableBorderWidth attribute', () => {
 					editor.conversion.for( 'downcast' )
 						.add( dispatcher => dispatcher.on( 'attribute:tableBorderWidth:table', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).toBe( false );
 						} ) );
 
 					model.change( writer => writer.setAttribute( 'tableBorderWidth', '2px', table ) );
@@ -1364,8 +1350,8 @@ describe( 'table properties', () => {
 
 		describe( 'background color', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBackgroundColor' ) ).to.be.true;
-				expect( model.schema.getAttributeProperties( 'tableBackgroundColor' ).isFormatting ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBackgroundColor' ) ).toBe( true );
+				expect( model.schema.getAttributeProperties( 'tableBackgroundColor' ).isFormatting ).toBe( true );
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1373,7 +1359,7 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="background-color:#f00"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).toEqual( '#f00' );
 				} );
 
 				it( 'should upcast background-color from table within <figure> with `.table` class', () => {
@@ -1382,7 +1368,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).toEqual( '#f00' );
 				} );
 
 				it( 'should upcast background-color from table without <figure> without `.table` class', () => {
@@ -1391,28 +1377,28 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).toEqual( '#f00' );
 				} );
 
 				it( 'should upcast from background shorthand', () => {
 					editor.setData( '<table style="background:#f00 center center"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).toEqual( '#f00' );
 				} );
 
 				it( 'should upcast from background shorthand (rbg color value with spaces)', () => {
 					editor.setData( '<table style="background:rgb(253, 253, 119) center center"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( 'rgb(253, 253, 119)' );
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).toEqual( 'rgb(253, 253, 119)' );
 				} );
 
 				it( 'should upcast bgcolor attribute', () => {
 					editor.setData( '<table bgcolor="#f00"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).toEqual( '#f00' );
 				} );
 
 				it( 'should consume background color style even if it is default', async () => {
@@ -1430,13 +1416,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'background-color' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'background-color' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table style="background-color:#f00"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableBackgroundColor' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableBackgroundColor' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -1456,13 +1442,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'bgcolor' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'bgcolor' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table bgcolor="#f00"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableBackgroundColor' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableBackgroundColor' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -1482,7 +1468,7 @@ describe( 'table properties', () => {
 						'</table>'
 					);
 
-					expect( cellpaddingConsumed ).to.be.true;
+					expect( cellpaddingConsumed ).toBe( true );
 				} );
 			} );
 
@@ -1496,7 +1482,7 @@ describe( 'table properties', () => {
 				it( 'should consume converted item', () => {
 					editor.conversion.for( 'downcast' )
 						.add( dispatcher => dispatcher.on( 'attribute:tableBackgroundColor:table', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).toBe( false );
 						} ) );
 
 					model.change( writer => writer.setAttribute( 'tableBackgroundColor', '#f00', table ) );
@@ -1542,7 +1528,7 @@ describe( 'table properties', () => {
 				editor.setData( '<table style="background-color:#f00"><tr><td>foo</td></tr></table>' );
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
+				expect( table.getAttribute( 'tableBackgroundColor' ) ).toEqual( '#f00' );
 
 				model.change( writer => writer.setAttribute( 'tableBackgroundColor', '#ba7', table ) );
 
@@ -1562,8 +1548,8 @@ describe( 'table properties', () => {
 
 		describe( 'tableWidth', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableWidth' ) ).to.be.true;
-				expect( model.schema.getAttributeProperties( 'tableWidth' ).isFormatting ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableWidth' ) ).toBe( true );
+				expect( model.schema.getAttributeProperties( 'tableWidth' ).isFormatting ).toBe( true );
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1571,14 +1557,14 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="width:1337px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337px' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '1337px' );
 				} );
 
 				it( 'should upcast width from <figure>', () => {
 					editor.setData( '<figure class="table" style="width:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337px' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '1337px' );
 				} );
 
 				it( 'should upcast width from <figure> if both <figure> and <table> has width style set', () => {
@@ -1590,7 +1576,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '75%' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '75%' );
 				} );
 
 				it( 'should not upcast width if <table> inside <figure> has width style set', () => {
@@ -1602,28 +1588,28 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableWidth' ) ).toBeUndefined();
 				} );
 
 				it( 'should upcast width attribute from <table>', () => {
 					editor.setData( '<table width="1337.3"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337.3px' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '1337.3px' );
 				} );
 
 				it( 'should upcast width (px) attribute from <table>', () => {
 					editor.setData( '<table width="1337.3px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337.3px' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '1337.3px' );
 				} );
 
 				it( 'should upcast width (%) attribute from <table>', () => {
 					editor.setData( '<table width="37.3%"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '37.3%' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '37.3%' );
 				} );
 
 				it( 'should upcast width (em) attribute from <table>', () => {
@@ -1631,7 +1617,7 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					// Normalize to px as other units are not supported by browsers.
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337.3px' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '1337.3px' );
 				} );
 
 				it( 'should upcast width (float) with space between number and unit attribute from <table>', () => {
@@ -1639,7 +1625,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5%' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '100.5%' );
 				} );
 
 				it( 'should upcast width (float) with spaces around attribute from <table>', () => {
@@ -1647,7 +1633,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5%' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '100.5%' );
 				} );
 
 				it( 'should upcast only the digits before the unknown unit in width attribute from <table>', () => {
@@ -1655,7 +1641,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5px' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '100.5px' );
 				} );
 
 				it( 'should upcast only the digits before the percentage unit in width attribute from <table>', () => {
@@ -1663,7 +1649,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5%' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '100.5%' );
 				} );
 
 				it( 'should not upcast NaN width attribute on table', () => {
@@ -1671,14 +1657,14 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableWidth' ) ).toBeUndefined();
 				} );
 
 				it( 'should upcast width from style not <table> attribute', () => {
 					editor.setData( '<table width="1337" style="width: 654px;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '654px' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '654px' );
 				} );
 
 				it( 'should upcast width from <figure> style and ignore table width attribute', () => {
@@ -1690,7 +1676,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '543px' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '543px' );
 				} );
 
 				it( 'should consume width style even if it is default', async () => {
@@ -1708,13 +1694,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'width' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'width' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table style="width:50%"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableWidth' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableWidth' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -1734,13 +1720,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'width' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'width' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table width=123><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableWidth' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableWidth' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -1760,9 +1746,8 @@ describe( 'table properties', () => {
 
 					editor.setData( '<figure class="image" style="width:50%"><img src="/sample.png" alt="alt text"></figure>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" resizedWidth="50%" src="/sample.png"></imageBlock>'
-					);
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<imageBlock alt="alt text" resizedWidth="50%" src="/sample.png"></imageBlock>' );
 
 					await editor.destroy();
 				} );
@@ -1778,7 +1763,7 @@ describe( 'table properties', () => {
 				it( 'should consume converted item', () => {
 					editor.conversion.for( 'downcast' )
 						.add( dispatcher => dispatcher.on( 'attribute:tableWidth:table', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).toBe( false );
 						} ) );
 
 					model.change( writer => writer.setAttribute( 'tableWidth', '400px', table ) );
@@ -1823,8 +1808,8 @@ describe( 'table properties', () => {
 
 		describe( 'tableHeight', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableHeight' ) ).to.be.true;
-				expect( model.schema.getAttributeProperties( 'tableHeight' ).isFormatting ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableHeight' ) ).toBe( true );
+				expect( model.schema.getAttributeProperties( 'tableHeight' ).isFormatting ).toBe( true );
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1832,14 +1817,14 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="height:1337px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337px' );
+					expect( table.getAttribute( 'tableHeight' ) ).toEqual( '1337px' );
 				} );
 
 				it( 'should upcast height from <figure>', () => {
 					editor.setData( '<figure class="table" style="height:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337px' );
+					expect( table.getAttribute( 'tableHeight' ) ).toEqual( '1337px' );
 				} );
 
 				it( 'should upcast height from <figure> if both <figure> and <table> has height style set', () => {
@@ -1851,7 +1836,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '75%' );
+					expect( table.getAttribute( 'tableHeight' ) ).toEqual( '75%' );
 				} );
 
 				it( 'should not upcast height if <table> inside <figure> has height style set', () => {
@@ -1863,28 +1848,28 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableHeight' ) ).toBeUndefined();
 				} );
 
 				it( 'should upcast height attribute from <table>', () => {
 					editor.setData( '<table height="1337.3"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3px' );
+					expect( table.getAttribute( 'tableHeight' ) ).toEqual( '1337.3px' );
 				} );
 
 				it( 'should upcast height (px) attribute from <table>', () => {
 					editor.setData( '<table height="1337.3px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3px' );
+					expect( table.getAttribute( 'tableHeight' ) ).toEqual( '1337.3px' );
 				} );
 
 				it( 'should upcast height (%) attribute from <table>', () => {
 					editor.setData( '<table height="1337.3%"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3%' );
+					expect( table.getAttribute( 'tableHeight' ) ).toEqual( '1337.3%' );
 				} );
 
 				it( 'should upcast height (em) attribute from <table>', () => {
@@ -1892,14 +1877,14 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					// Normalize to px as other units are not supported by browsers.
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3px' );
+					expect( table.getAttribute( 'tableHeight' ) ).toEqual( '1337.3px' );
 				} );
 
 				it( 'should upcast height from style not <table> attribute', () => {
 					editor.setData( '<table height="1337" style="height: 654px;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '654px' );
+					expect( table.getAttribute( 'tableHeight' ) ).toEqual( '654px' );
 				} );
 
 				it( 'should upcast height from <figure> style and ignore table height attribute', () => {
@@ -1911,7 +1896,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '543px' );
+					expect( table.getAttribute( 'tableHeight' ) ).toEqual( '543px' );
 				} );
 
 				it( 'should consume height style even if it is default', async () => {
@@ -1929,13 +1914,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'height' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'height' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table style="height:123px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableHeight' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableHeight' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -1955,13 +1940,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'height' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'height' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table height=123><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableHeight' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableHeight' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -1981,9 +1966,8 @@ describe( 'table properties', () => {
 
 					editor.setData( '<figure class="image" style="height:50%"><img src="/sample.png" alt="alt text"></figure>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" resizedHeight="50%" src="/sample.png"></imageBlock>'
-					);
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<imageBlock alt="alt text" resizedHeight="50%" src="/sample.png"></imageBlock>' );
 
 					await editor.destroy();
 				} );
@@ -2023,7 +2007,7 @@ describe( 'table properties', () => {
 				it( 'should consume converted item', () => {
 					editor.conversion.for( 'downcast' )
 						.add( dispatcher => dispatcher.on( 'attribute:tableHeight:table', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).toBe( false );
 						} ) );
 
 					model.change( writer => writer.setAttribute( 'tableHeight', '400px', table ) );
@@ -2044,8 +2028,8 @@ describe( 'table properties', () => {
 
 		describe( 'tableAlignment', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableAlignment' ) ).to.be.true;
-				expect( model.schema.getAttributeProperties( 'tableAlignment' ).isFormatting ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableAlignment' ) ).toBe( true );
+				expect( model.schema.getAttributeProperties( 'tableAlignment' ).isFormatting ).toBe( true );
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -2053,66 +2037,67 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="float:right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'right' );
 				} );
 
 				it( 'should upcast style="float:left;" to left value', () => {
 					editor.setData( '<table style="float:left;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'left' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'left' );
 				} );
 
 				it( 'should discard the unknown float value (style="float:foo;")', () => {
 					editor.setData( '<table style="float:foo;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 				} );
 
 				it( 'should upcast align=right attribute', () => {
 					editor.setData( '<table align="right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'right' );
 				} );
 
 				it( 'should upcast align=left attribute', () => {
 					editor.setData( '<table align="left"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'left' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'left' );
 				} );
 
 				it( 'should discard align=center attribute', () => {
 					// But it should consume it as it is the default alignment, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'align' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'align' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table align="center"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 				} );
 
 				it( 'should consume default align style', () => {
 					// But it should consume it as it is the default alignment, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'margin-left', 'margin-right' ] } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'margin-left', 'margin-right' ] } ) )
+							.toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table style="margin-left: auto; margin-right: auto;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 				} );
 
 				it( 'should discard align=justify attribute', () => {
 					editor.setData( '<table align="justify"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableAlignment' ) ).toBe( false );
 				} );
 
 				it( 'should consume alignment style even if it is default', async () => {
@@ -2130,13 +2115,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'float' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'float' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table style="float:left"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableAlignment' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -2156,13 +2141,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'align' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'align' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table align="left"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableAlignment' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -2182,14 +2167,13 @@ describe( 'table properties', () => {
 
 					// Make sure that float style is not consumed from other figure elements.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'float' } ) ).to.be.true;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'float' } ) ).toBe( true );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<figure class="image" style="float:right"><img src="/sample.png" alt="alt text"></figure>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" src="/sample.png"></imageBlock>'
-					);
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<imageBlock alt="alt text" src="/sample.png"></imageBlock>' );
 
 					await editor.destroy();
 				} );
@@ -2209,8 +2193,8 @@ describe( 'table properties', () => {
 
 					// Make sure that float style is not consumed from other figure elements.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).to.be.true;
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-right' } ) ).to.be.true;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).toBe( true );
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-right' } ) ).toBe( true );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData(
@@ -2219,16 +2203,15 @@ describe( 'table properties', () => {
 						'</figure>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock alt="alt text" src="/sample.png"></imageBlock>'
-					);
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.toEqual( '<imageBlock alt="alt text" src="/sample.png"></imageBlock>' );
 
 					await editor.destroy();
 				} );
 
 				it( 'should consume margin-left when upcasting float:right', () => {
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData(
@@ -2238,7 +2221,7 @@ describe( 'table properties', () => {
 
 				it( 'should consume margin-right when upcasting float:left', () => {
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-right' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-right' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData(
@@ -2250,42 +2233,42 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="margin-left: 0; margin-right: auto;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockLeft' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'blockLeft' );
 				} );
 
 				it( 'should upcast style="margin: 0 auto 0 0;" attribute', () => {
 					editor.setData( '<table style="margin: 0 auto 0 0;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockLeft' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'blockLeft' );
 				} );
 
 				it( 'should upcast style="margin-left: auto; margin-right: 0;" attribute', () => {
 					editor.setData( '<table style="margin-left: auto; margin-right: 0;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockRight' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'blockRight' );
 				} );
 
 				it( 'should upcast style="margin: 0 0 0 auto;" attribute', () => {
 					editor.setData( '<table style="margin: 0 0 0 auto;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockRight' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'blockRight' );
 				} );
 
 				it( 'should upcast class="table-style-block-align-left" to blockLeft value', () => {
 					editor.setData( '<table class="table-style-block-align-left"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockLeft' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'blockLeft' );
 				} );
 
 				it( 'should upcast class="table-style-block-align-right" to blockRight value', () => {
 					editor.setData( '<table class="table-style-block-align-right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockRight' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'blockRight' );
 				} );
 
 				it( 'should consume margin styles even if it is default (blockLeft)', async () => {
@@ -2303,13 +2286,14 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'margin-left', 'margin-right' ] } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'margin-left', 'margin-right' ] } ) )
+							.toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table style="margin-left:0;margin-right:auto;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableAlignment' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -2329,13 +2313,14 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'margin-left', 'margin-right' ] } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'margin-left', 'margin-right' ] } ) )
+							.toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table style="margin-left:auto;margin-right:0;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableAlignment' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -2355,13 +2340,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { classes: 'table-style-block-align-left' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { classes: 'table-style-block-align-left' } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table class="table-style-block-align-left"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableAlignment' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -2381,13 +2366,14 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { classes: 'table-style-block-align-right' } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { classes: 'table-style-block-align-right' } ) )
+							.toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table class="table-style-block-align-right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableAlignment' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -2396,26 +2382,26 @@ describe( 'table properties', () => {
 					editor.setData( '<table class="table-style-align-left"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'left' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'left' );
 				} );
 
 				it( 'should upcast "table-style-align-right" class to right value', () => {
 					editor.setData( '<table class="table-style-align-right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'right' );
 				} );
 
 				it( 'should consume default align class (table-style-align-center)', () => {
 					// It should consume it as it is the default alignment, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table-style-align-center' ] } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table-style-align-center' ] } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table class="table-style-align-center"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 				} );
 
 				it( 'should upcast "table-style-align-center" class to center value (if default is not center)', async () => {
@@ -2434,7 +2420,7 @@ describe( 'table properties', () => {
 					editor.setData( '<table class="table-style-align-center"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'center' );
 
 					await editor.destroy();
 				} );
@@ -2454,13 +2440,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table-style-align-left' ] } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table-style-align-left' ] } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table class="table-style-align-left"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableAlignment' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -2480,13 +2466,13 @@ describe( 'table properties', () => {
 
 					// But it should consume it, so GHS won't store it.
 					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table-style-align-right' ] } ) ).to.be.false;
+						expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table-style-align-right' ] } ) ).toBe( false );
 					}, { priority: 'lowest' } ) );
 
 					editor.setData( '<table class="table-style-align-right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+					expect( table.hasAttribute( 'tableAlignment' ) ).toBe( false );
 
 					await editor.destroy();
 				} );
@@ -2502,7 +2488,7 @@ describe( 'table properties', () => {
 				it( 'should consume converted item', () => {
 					editor.conversion.for( 'downcast' )
 						.add( dispatcher => dispatcher.on( 'attribute:tableAlignment:table', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).toBe( false );
 						} ) );
 
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
@@ -2686,15 +2672,14 @@ describe( 'table properties', () => {
 						const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
-						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="margin-left:auto;margin-right:auto;">' +
+						expect( editor.getData() )
+							.toEqual( '<figure class="table content-table" style="margin-left:auto;margin-right:auto;">' +
 								'<table>' +
 									'<tbody>' +
 										'<tr><td>content table</td></tr>' +
 									'</tbody>' +
 								'</table>' +
-							'</figure>'
-						);
+							'</figure>' );
 					} );
 
 					it( 'should downcast "center" alignment for layout table using auto margins', () => {
@@ -2708,13 +2693,12 @@ describe( 'table properties', () => {
 
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', layoutTable ) );
 
-						expect( editor.getData() ).to.be.equal(
-							'<table class="table layout-table" style="margin-left:auto;margin-right:auto;" role="presentation">' +
+						expect( editor.getData() )
+							.toEqual( '<table class="table layout-table" style="margin-left:auto;margin-right:auto;" role="presentation">' +
 								'<tbody>' +
 									'<tr><td>layout table</td></tr>' +
 								'</tbody>' +
-							'</table>'
-						);
+							'</table>' );
 					} );
 
 					it( 'should downcast `blockLeft` alignment for content table using margin styles', () => {
@@ -2728,15 +2712,14 @@ describe( 'table properties', () => {
 
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', contentTable ) );
 
-						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="margin-left:0;margin-right:auto;">' +
+						expect( editor.getData() )
+							.toEqual( '<figure class="table content-table" style="margin-left:0;margin-right:auto;">' +
 								'<table>' +
 									'<tbody>' +
 										'<tr><td>content table</td></tr>' +
 									'</tbody>' +
 								'</table>' +
-							'</figure>'
-						);
+							'</figure>' );
 					} );
 
 					it( 'should downcast `blockRight` alignment for content table using margin styles', () => {
@@ -2750,15 +2733,14 @@ describe( 'table properties', () => {
 
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'blockRight', contentTable ) );
 
-						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="margin-left:auto;margin-right:0;">' +
+						expect( editor.getData() )
+							.toEqual( '<figure class="table content-table" style="margin-left:auto;margin-right:0;">' +
 								'<table>' +
 									'<tbody>' +
 										'<tr><td>content table</td></tr>' +
 									'</tbody>' +
 								'</table>' +
-							'</figure>'
-						);
+							'</figure>' );
 					} );
 
 					it( 'should downcast border styles for layout table', () => {
@@ -2766,18 +2748,16 @@ describe( 'table properties', () => {
 							'<table class="table layout-table" style="border:2px solid #f00"></table>'
 						);
 
-						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-							'<table tableBorderColor="#f00" tableBorderStyle="solid" tableBorderWidth="2px" tableType="layout">' +
+						expect( _getModelData( model, { withoutSelection: true } ) )
+							.toEqual( '<table tableBorderColor="#f00" tableBorderStyle="solid" tableBorderWidth="2px" tableType="layout">' +
 								'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
-							'</table>'
-						);
-						expect( editor.getData() ).to.be.equal(
-							'<table class="table layout-table" style="border:2px solid #f00;" role="presentation">' +
+							'</table>' );
+						expect( editor.getData() )
+							.toEqual( '<table class="table layout-table" style="border:2px solid #f00;" role="presentation">' +
 								'<tbody>' +
 									'<tr><td>&nbsp;</td></tr>' +
 								'</tbody>' +
-							'</table>'
-						);
+							'</table>' );
 					} );
 
 					describe( 'with config option `useInlineStyles` set to `false`', () => {
@@ -2812,13 +2792,12 @@ describe( 'table properties', () => {
 							const layoutTable = model.document.getRoot().getNodeByPath( [ 0 ] );
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', layoutTable ) );
 
-							expect( editor.getData() ).to.be.equal(
-								'<table class="table layout-table table-style-block-align-left" role="presentation">' +
+							expect( editor.getData() )
+								.toEqual( '<table class="table layout-table table-style-block-align-left" role="presentation">' +
 									'<tbody>' +
 										'<tr><td>layout table</td></tr>' +
 									'</tbody>' +
-								'</table>'
-							);
+								'</table>' );
 						} );
 
 						it( 'should downcast `blockRight` alignment for layout table using margin styles', () => {
@@ -2831,13 +2810,12 @@ describe( 'table properties', () => {
 							const layoutTable = model.document.getRoot().getNodeByPath( [ 0 ] );
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', layoutTable ) );
 
-							expect( editor.getData() ).to.be.equal(
-								'<table class="table layout-table table-style-block-align-left" role="presentation">' +
+							expect( editor.getData() )
+								.toEqual( '<table class="table layout-table table-style-block-align-left" role="presentation">' +
 									'<tbody>' +
 										'<tr><td>layout table</td></tr>' +
 									'</tbody>' +
-								'</table>'
-							);
+								'</table>' );
 						} );
 
 						it( 'should downcast "center" alignment for content table using "table-style-align-center" class', () => {
@@ -2850,15 +2828,13 @@ describe( 'table properties', () => {
 							const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
-							expect( editor.getData() ).to.be.equal(
-								'<figure class="table content-table table-style-align-center">' +
+							expect( editor.getData() ).toEqual( '<figure class="table content-table table-style-align-center">' +
 									'<table>' +
 										'<tbody>' +
 											'<tr><td>content table</td></tr>' +
 										'</tbody>' +
 									'</table>' +
-								'</figure>'
-							);
+								'</figure>' );
 						} );
 
 						it( 'should downcast "center" alignment for layout table using "table-style-align-center" class', () => {
@@ -2871,13 +2847,12 @@ describe( 'table properties', () => {
 							const layoutTable = model.document.getRoot().getNodeByPath( [ 0 ] );
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'center', layoutTable ) );
 
-							expect( editor.getData() ).to.be.equal(
-								'<table class="table layout-table table-style-align-center" role="presentation">' +
+							expect( editor.getData() )
+								.toEqual( '<table class="table layout-table table-style-align-center" role="presentation">' +
 									'<tbody>' +
 										'<tr><td>layout table</td></tr>' +
 									'</tbody>' +
-								'</table>'
-							);
+								'</table>' );
 						} );
 					} );
 				} );
@@ -2963,9 +2938,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
-					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
-					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderColor' ) ).toBeUndefined();
+					expect( table.getAttribute( 'tableBorderStyle' ) ).toBeUndefined();
+					expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 				} );
 
 				it( 'should not upcast the default `border-color` value', () => {
@@ -2973,7 +2948,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderColor' ) ).toBeUndefined();
 				} );
 
 				it( 'should not upcast the default `border-style` value', () => {
@@ -2981,7 +2956,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderStyle' ) ).toBeUndefined();
 				} );
 
 				it( 'should not upcast the default `border-width` value', () => {
@@ -2989,7 +2964,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 				} );
 			} );
 
@@ -2998,14 +2973,14 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="background-color:#00f"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).toBeUndefined();
 				} );
 
 				it( 'should not upcast the default `background` value', () => {
 					editor.setData( '<table style="background:#00f"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).toBeUndefined();
 				} );
 			} );
 
@@ -3014,14 +2989,14 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="width:250px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableWidth' ) ).toBeUndefined();
 				} );
 
 				it( 'should not upcast the default `width` value from <figure>', () => {
 					editor.setData( '<figure class="table" style="width:250px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableWidth' ) ).toBeUndefined();
 				} );
 			} );
 
@@ -3030,14 +3005,14 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="height:150px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableHeight' ) ).toBeUndefined();
 				} );
 
 				it( 'should not upcast the default `height` value from <figure>', () => {
 					editor.setData( '<figure class="table" style="height:150px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableHeight' ) ).toBeUndefined();
 				} );
 			} );
 
@@ -3046,35 +3021,35 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="float:left"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 				} );
 
 				it( 'should not upcast the default value from the align attribute (left)', () => {
 					editor.setData( '<table align="left"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 				} );
 
 				it( 'should upcast style="float:none" as "center" option', () => {
 					editor.setData( '<table style="float:none;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'center' );
 				} );
 
 				it( 'should upcast style="margin-left:auto;margin-right:auto;" as "center" option', () => {
 					editor.setData( '<table style="margin-left:auto;margin-right:auto;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'center' );
 				} );
 
 				it( 'should upcast align=center attribute', () => {
 					editor.setData( '<table align="center"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'center' );
 				} );
 
 				it( 'should not upcast the default value (center) from style margin auto', async () => {
@@ -3093,7 +3068,7 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="margin-left:auto;margin-right:auto;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 
 					await editor.destroy();
 				} );
@@ -3145,9 +3120,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
-					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
-					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderColor' ) ).toBeUndefined();
+					expect( table.getAttribute( 'tableBorderStyle' ) ).toBeUndefined();
+					expect( table.getAttribute( 'tableBorderWidth' ) ).toBeUndefined();
 				} );
 
 				it( 'should upcast non-default `border-style` value', () => {
@@ -3161,7 +3136,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.equal( 'dashed' );
+					expect( table.getAttribute( 'tableBorderStyle' ) ).toEqual( 'dashed' );
 				} );
 
 				it( 'should upcast non-default `border-color` value', () => {
@@ -3175,7 +3150,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.equal( '#ff0' );
+					expect( table.getAttribute( 'tableBorderColor' ) ).toEqual( '#ff0' );
 				} );
 
 				it( 'should upcast non-default `border-width` value', () => {
@@ -3189,7 +3164,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.equal( '2px' );
+					expect( table.getAttribute( 'tableBorderWidth' ) ).toEqual( '2px' );
 				} );
 			} );
 
@@ -3204,7 +3179,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.equal( '#00f' );
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).toEqual( '#00f' );
 				} );
 
 				it( 'should upcast non-default `background` value', () => {
@@ -3217,7 +3192,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.equal( '#00f' );
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).toEqual( '#00f' );
 				} );
 			} );
 
@@ -3232,7 +3207,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.be.equal( '250px' );
+					expect( table.getAttribute( 'tableWidth' ) ).toEqual( '250px' );
 				} );
 			} );
 
@@ -3247,7 +3222,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.be.equal( '150px' );
+					expect( table.getAttribute( 'tableHeight' ) ).toEqual( '150px' );
 				} );
 			} );
 
@@ -3262,7 +3237,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 				} );
 
 				it( 'should upcast the non-default value from the style attribute (float:left)', () => {
@@ -3275,7 +3250,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.equal( 'left' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'left' );
 				} );
 
 				it( 'should upcast the non-default value from the style attribute (float:right)', () => {
@@ -3288,7 +3263,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.equal( 'right' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'right' );
 				} );
 
 				it( 'should upcast the non-default value from the style attribute (margin-left:auto;margin-right:auto)', () => {
@@ -3301,7 +3276,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.equal( 'center' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'center' );
 				} );
 
 				it( 'should upcast align=left attribute', () => {
@@ -3314,7 +3289,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'left' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'left' );
 				} );
 
 				it( 'should upcast align=right attribute', () => {
@@ -3327,7 +3302,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'right' );
 				} );
 
 				it( 'should upcast the table default value from the style attribute (margin-left:auto;margin-right:auto)', async () => {
@@ -3348,7 +3323,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'center' );
 
 					await editor.destroy();
 				} );
@@ -3368,7 +3343,7 @@ describe( 'table properties', () => {
 				);
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockRight' );
+				expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'blockRight' );
 			} );
 
 			it( 'should upcast align `center` attribute from div wrapped on table', () => {
@@ -3383,7 +3358,7 @@ describe( 'table properties', () => {
 				);
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+				expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'center' );
 			} );
 
 			it( 'should upcast align `left` attribute from div wrapped on table', () => {
@@ -3398,7 +3373,7 @@ describe( 'table properties', () => {
 				);
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockLeft' );
+				expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'blockLeft' );
 			} );
 
 			it( 'should upcast align `left` attribute from div wrapped on table on table with align `left` to `left`', () => {
@@ -3413,7 +3388,7 @@ describe( 'table properties', () => {
 				);
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'left' );
+				expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'left' );
 			} );
 
 			it( 'should upcast align `right` attribute from div wrapped on table with align `right`', () => {
@@ -3428,7 +3403,7 @@ describe( 'table properties', () => {
 				);
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+				expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'right' );
 			} );
 
 			it( 'should upcast align `right` attribute from div wrapped on table with align `left`', () => {
@@ -3443,7 +3418,7 @@ describe( 'table properties', () => {
 				);
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'left' );
+				expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'left' );
 			} );
 
 			it( 'should upcast the table alignment to default alignment value when align value is not recognized', () => {
@@ -3458,7 +3433,7 @@ describe( 'table properties', () => {
 				);
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+				expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'center' );
 			} );
 
 			it( 'should upcast the table alignment to the one set in config when align value is not recognized', async () => {
@@ -3486,7 +3461,7 @@ describe( 'table properties', () => {
 
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+				expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'right' );
 
 				await editor.destroy();
 			} );
@@ -3503,7 +3478,7 @@ describe( 'table properties', () => {
 				);
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+				expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 			} );
 
 			it( 'should not upcast alignment when align value is not set', () => {
@@ -3518,7 +3493,7 @@ describe( 'table properties', () => {
 				);
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-				expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+				expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 			} );
 
 			it( 'should not convert empty div', () => {
@@ -3526,7 +3501,7 @@ describe( 'table properties', () => {
 					'<div align="right"></div>'
 				);
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>[]</paragraph>' );
 			} );
 
 			it( 'should not consume if the div element was not converted', () => {
@@ -3538,7 +3513,7 @@ describe( 'table properties', () => {
 				}, { priority: 'highest' } );
 
 				editor.data.upcastDispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
-					expect( conversionApi.consumable.test( data.viewItem, { name: true, attributes: 'align' } ) ).to.be.true;
+					expect( conversionApi.consumable.test( data.viewItem, { name: true, attributes: 'align' } ) ).toBe( true );
 				} );
 
 				editor.setData( '<div align="right"><table>xyz</table></div>' );
@@ -3552,7 +3527,7 @@ describe( 'table properties', () => {
 				}, { priority: 'highest' } );
 
 				const converter = vi.fn( ( evt, data, conversionApi ) => {
-					expect( conversionApi.consumable.test( data.viewItem, { name: true } ) ).to.be.false;
+					expect( conversionApi.consumable.test( data.viewItem, { name: true } ) ).toBe( false );
 				} );
 
 				editor.data.upcastDispatcher.on( 'element:div', converter, { priority: 'low' } );
@@ -3566,8 +3541,8 @@ describe( 'table properties', () => {
 					'</div>'
 				);
 
-				expect( converter ).to.be.calledOnce;
-				expect( editor.getData() ).to.be.equal( '' );
+				expect( converter ).toHaveBeenCalledOnce();
+				expect( editor.getData() ).toEqual( '' );
 			} );
 
 			it( 'should pass down the model range and cursor when the table view element converts ' +
@@ -3595,10 +3570,8 @@ describe( 'table properties', () => {
 					'</div>'
 				);
 
-				expect( _getModelData( editor.model ) ).to.equal(
-					'<paragraph>[]</paragraph>' +
-					'<paragraph></paragraph>'
-				);
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>[]</paragraph>' +
+					'<paragraph></paragraph>' );
 			} );
 
 			describe( 'when div contains more than a single table', () => {
@@ -3621,10 +3594,10 @@ describe( 'table properties', () => {
 					const firstTable = model.document.getRoot().getNodeByPath( [ 0 ] );
 					const secondTable = model.document.getRoot().getNodeByPath( [ 1 ] );
 
-					expect( firstTable.is( 'element', 'table' ) ).to.be.true;
-					expect( secondTable.is( 'element', 'table' ) ).to.be.true;
-					expect( firstTable.getAttribute( 'tableAlignment' ) ).to.be.undefined;
-					expect( secondTable.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( firstTable.is( 'element', 'table' ) ).toBe( true );
+					expect( secondTable.is( 'element', 'table' ) ).toBe( true );
+					expect( firstTable.getAttribute( 'tableAlignment' ) ).toBeUndefined();
+					expect( secondTable.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 				} );
 
 				it( 'should not upcast alignment when div wraps a table and other block content', () => {
@@ -3641,8 +3614,8 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.is( 'element', 'table' ) ).to.be.true;
-					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+					expect( table.is( 'element', 'table' ) ).toBe( true );
+					expect( table.getAttribute( 'tableAlignment' ) ).toBeUndefined();
 				} );
 
 				it( 'should still upcast alignment when the table is the only significant child ' +
@@ -3660,7 +3633,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockLeft' );
+					expect( table.getAttribute( 'tableAlignment' ) ).toEqual( 'blockLeft' );
 				} );
 			} );
 
@@ -3692,7 +3665,7 @@ describe( 'table properties', () => {
 						'</section>'
 					);
 
-					expect( _getModelData( editor.model ) ).to.equal( '<limitContainer>[]123foo456</limitContainer>' );
+					expect( _getModelData( editor.model ) ).toEqual( '<limitContainer>[]123foo456</limitContainer>' );
 				} );
 
 				it( 'should strip an empty table in section if parent does not allow it and there is nothing ' +
@@ -3707,7 +3680,7 @@ describe( 'table properties', () => {
 						'</section>'
 					);
 
-					expect( _getModelData( editor.model ) ).to.equal( '<limitContainer>[]123456</limitContainer>' );
+					expect( _getModelData( editor.model ) ).toEqual( '<limitContainer>[]123456</limitContainer>' );
 				} );
 			} );
 		} );
@@ -3750,16 +3723,14 @@ describe( 'table properties', () => {
 				);
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( data.method ).to.equal( 'copy' );
+					expect( data.method ).toEqual( 'copy' );
 					expect( preventDefaultSpy ).toHaveBeenCalled();
-					expect( data.dataTransfer ).to.equal( dataTransferMock );
-					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
-						'<div align="right">' +
+					expect( data.dataTransfer ).toEqual( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).toEqual( '<div align="right">' +
 							'<table class="table table-style-block-align-right" style="margin-left:auto;margin-right:0;">' +
 								'<tbody><tr><td>foo</td></tr></tbody>' +
 							'</table>' +
-						'</div>'
-					);
+						'</div>' );
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3786,17 +3757,15 @@ describe( 'table properties', () => {
 				);
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( data.method ).to.equal( 'copy' );
+					expect( data.method ).toEqual( 'copy' );
 					expect( preventDefaultSpy ).toHaveBeenCalled();
-					expect( data.dataTransfer ).to.equal( dataTransferMock );
-					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
-						'<div align="right">' +
+					expect( data.dataTransfer ).toEqual( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).toEqual( '<div align="right">' +
 							'<table class="table table-style-align-right" ' +
 							'style="float:right;" align="right">' +
 								'<tbody><tr><td>foo</td></tr></tbody>' +
 							'</table>' +
-						'</div>'
-					);
+						'</div>' );
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3823,17 +3792,15 @@ describe( 'table properties', () => {
 				);
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( data.method ).to.equal( 'copy' );
+					expect( data.method ).toEqual( 'copy' );
 					expect( preventDefaultSpy ).toHaveBeenCalled();
-					expect( data.dataTransfer ).to.equal( dataTransferMock );
-					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
-						'<div align="center">' +
+					expect( data.dataTransfer ).toEqual( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).toEqual( '<div align="center">' +
 							'<table class="table table-style-align-center" ' +
 							'style="margin-left:auto;margin-right:auto;" align="center">' +
 								'<tbody><tr><td>foo</td></tr></tbody>' +
 							'</table>' +
-						'</div>'
-					);
+						'</div>' );
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3860,14 +3827,13 @@ describe( 'table properties', () => {
 				);
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( data.method ).to.equal( 'copy' );
+					expect( data.method ).toEqual( 'copy' );
 					expect( preventDefaultSpy ).toHaveBeenCalled();
-					expect( data.dataTransfer ).to.equal( dataTransferMock );
-					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
-						'<table class="table table-style-block-align-left" style="margin-left:0;margin-right:auto;">' +
+					expect( data.dataTransfer ).toEqual( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) )
+						.toEqual( '<table class="table table-style-block-align-left" style="margin-left:0;margin-right:auto;">' +
 							'<tbody><tr><td>foo</td></tr></tbody>' +
-						'</table>'
-					);
+						'</table>' );
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3894,15 +3860,13 @@ describe( 'table properties', () => {
 				);
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( data.method ).to.equal( 'copy' );
+					expect( data.method ).toEqual( 'copy' );
 					expect( preventDefaultSpy ).toHaveBeenCalled();
-					expect( data.dataTransfer ).to.equal( dataTransferMock );
-					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
-						'<table class="table table-style-align-left" ' +
+					expect( data.dataTransfer ).toEqual( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).toEqual( '<table class="table table-style-align-left" ' +
 						'style="float:left;" align="left">' +
 							'<tbody><tr><td>foo</td></tr></tbody>' +
-						'</table>'
-					);
+						'</table>' );
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3930,17 +3894,15 @@ describe( 'table properties', () => {
 				);
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( data.method ).to.equal( 'copy' );
+					expect( data.method ).toEqual( 'copy' );
 					expect( preventDefaultSpy ).toHaveBeenCalled();
-					expect( data.dataTransfer ).to.equal( dataTransferMock );
-					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
-						'<p>bar</p>' +
+					expect( data.dataTransfer ).toEqual( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).toEqual( '<p>bar</p>' +
 						'<div align="right">' +
 							'<table class="table table-style-block-align-right" style="margin-left:auto;margin-right:0;">' +
 								'<tbody><tr><td>foo</td></tr></tbody>' +
 							'</table>' +
-						'</div>'
-					);
+						'</div>' );
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {
@@ -3973,11 +3935,10 @@ describe( 'table properties', () => {
 				);
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( data.method ).to.equal( 'copy' );
+					expect( data.method ).toEqual( 'copy' );
 					expect( preventDefaultSpy ).toHaveBeenCalled();
-					expect( data.dataTransfer ).to.equal( dataTransferMock );
-					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
-						'<div align="right">' +
+					expect( data.dataTransfer ).toEqual( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).toEqual( '<div align="right">' +
 							'<table class="table table-style-block-align-right" style="margin-left:auto;margin-right:0;">' +
 								'<tbody><tr><td>' +
 									'<div align="right">' +
@@ -3987,8 +3948,7 @@ describe( 'table properties', () => {
 									'</div>' +
 								'</td></tr></tbody>' +
 							'</table>' +
-						'</div>'
-					);
+						'</div>' );
 				}, { priority: 'lowest' } );
 
 				viewDocument.fire( 'copy', {

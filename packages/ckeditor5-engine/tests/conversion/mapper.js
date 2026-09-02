@@ -343,60 +343,60 @@ describe( 'Mapper', () => {
 			} );
 
 			// Default algorithm tests.
-			it( 'should transform viewDiv 0', () => createToModelTest( viewDiv, 0, modelDiv, 0 ) );
-			it( 'should transform viewDiv 1', () => createToModelTest( viewDiv, 1, modelDiv, 1 ) );
-			it( 'should transform viewDiv 2', () => createToModelTest( viewDiv, 2, modelDiv, 2 ) );
-			it( 'should transform viewDiv 3', () => createToModelTest( viewDiv, 3, modelDiv, 4 ) );
+			it( 'should transform viewDiv 0', () => testToModelPosition( viewDiv, 0, modelDiv, 0 ) );
+			it( 'should transform viewDiv 1', () => testToModelPosition( viewDiv, 1, modelDiv, 1 ) );
+			it( 'should transform viewDiv 2', () => testToModelPosition( viewDiv, 2, modelDiv, 2 ) );
+			it( 'should transform viewDiv 3', () => testToModelPosition( viewDiv, 3, modelDiv, 4 ) );
 
-			it( 'should transform viewTextX 0', () => createToModelTest( viewTextX, 0, modelDiv, 0 ) );
-			it( 'should transform viewTextX 1', () => createToModelTest( viewTextX, 1, modelDiv, 1 ) );
+			it( 'should transform viewTextX 0', () => testToModelPosition( viewTextX, 0, modelDiv, 0 ) );
+			it( 'should transform viewTextX 1', () => testToModelPosition( viewTextX, 1, modelDiv, 1 ) );
 
-			it( 'should transform viewP 0', () => createToModelTest( viewP, 0, modelP, 0 ) );
-			it( 'should transform viewP 1', () => createToModelTest( viewP, 1, modelP, 1 ) );
-			it( 'should transform viewP 2', () => createToModelTest( viewP, 2, modelP, 4 ) );
-			it( 'should transform viewP 3', () => createToModelTest( viewP, 3, modelP, 7 ) );
-			it( 'should transform viewP 4', () => createToModelTest( viewP, 4, modelP, 8 ) );
-			it( 'should transform viewP 5', () => createToModelTest( viewP, 5, modelP, 11 ) );
+			it( 'should transform viewP 0', () => testToModelPosition( viewP, 0, modelP, 0 ) );
+			it( 'should transform viewP 1', () => testToModelPosition( viewP, 1, modelP, 1 ) );
+			it( 'should transform viewP 2', () => testToModelPosition( viewP, 2, modelP, 4 ) );
+			it( 'should transform viewP 3', () => testToModelPosition( viewP, 3, modelP, 7 ) );
+			it( 'should transform viewP 4', () => testToModelPosition( viewP, 4, modelP, 8 ) );
+			it( 'should transform viewP 5', () => testToModelPosition( viewP, 5, modelP, 11 ) );
 
-			it( 'should transform viewTextY 0', () => createToModelTest( viewTextY, 0, modelP, 0 ) );
-			it( 'should transform viewTextY 1', () => createToModelTest( viewTextY, 1, modelP, 1 ) );
+			it( 'should transform viewTextY 0', () => testToModelPosition( viewTextY, 0, modelP, 0 ) );
+			it( 'should transform viewTextY 1', () => testToModelPosition( viewTextY, 1, modelP, 1 ) );
 
-			it( 'should transform viewB 0', () => createToModelTest( viewB, 0, modelP, 1 ) );
-			it( 'should transform viewB 1', () => createToModelTest( viewB, 1, modelP, 4 ) );
+			it( 'should transform viewB 0', () => testToModelPosition( viewB, 0, modelP, 1 ) );
+			it( 'should transform viewB 1', () => testToModelPosition( viewB, 1, modelP, 4 ) );
 
-			it( 'should transform viewI 0', () => createToModelTest( viewI, 0, modelP, 1 ) );
-			it( 'should transform viewI 1', () => createToModelTest( viewI, 1, modelP, 4 ) );
+			it( 'should transform viewI 0', () => testToModelPosition( viewI, 0, modelP, 1 ) );
+			it( 'should transform viewI 1', () => testToModelPosition( viewI, 1, modelP, 4 ) );
 
-			it( 'should transform viewTextFOO 0', () => createToModelTest( viewTextFOO, 0, modelP, 1 ) );
-			it( 'should transform viewTextFOO 1', () => createToModelTest( viewTextFOO, 1, modelP, 2 ) );
-			it( 'should transform viewTextFOO 2', () => createToModelTest( viewTextFOO, 2, modelP, 3 ) );
-			it( 'should transform viewTextFOO 3', () => createToModelTest( viewTextFOO, 3, modelP, 4 ) );
+			it( 'should transform viewTextFOO 0', () => testToModelPosition( viewTextFOO, 0, modelP, 1 ) );
+			it( 'should transform viewTextFOO 1', () => testToModelPosition( viewTextFOO, 1, modelP, 2 ) );
+			it( 'should transform viewTextFOO 2', () => testToModelPosition( viewTextFOO, 2, modelP, 3 ) );
+			it( 'should transform viewTextFOO 3', () => testToModelPosition( viewTextFOO, 3, modelP, 4 ) );
 
-			it( 'should transform viewTextBAR 0', () => createToModelTest( viewTextBAR, 0, modelP, 4 ) );
-			it( 'should transform viewTextBAR 1', () => createToModelTest( viewTextBAR, 1, modelP, 5 ) );
-			it( 'should transform viewTextBAR 2', () => createToModelTest( viewTextBAR, 2, modelP, 6 ) );
-			it( 'should transform viewTextBAR 3', () => createToModelTest( viewTextBAR, 3, modelP, 7 ) );
+			it( 'should transform viewTextBAR 0', () => testToModelPosition( viewTextBAR, 0, modelP, 4 ) );
+			it( 'should transform viewTextBAR 1', () => testToModelPosition( viewTextBAR, 1, modelP, 5 ) );
+			it( 'should transform viewTextBAR 2', () => testToModelPosition( viewTextBAR, 2, modelP, 6 ) );
+			it( 'should transform viewTextBAR 3', () => testToModelPosition( viewTextBAR, 3, modelP, 7 ) );
 
-			it( 'should transform viewU 0', () => createToModelTest( viewU, 0, modelP, 8 ) );
-			it( 'should transform viewU 1', () => createToModelTest( viewU, 1, modelP, 9 ) );
-			it( 'should transform viewU 2', () => createToModelTest( viewU, 2, modelP, 10 ) );
-			it( 'should transform viewU 3', () => createToModelTest( viewU, 3, modelP, 11 ) );
+			it( 'should transform viewU 0', () => testToModelPosition( viewU, 0, modelP, 8 ) );
+			it( 'should transform viewU 1', () => testToModelPosition( viewU, 1, modelP, 9 ) );
+			it( 'should transform viewU 2', () => testToModelPosition( viewU, 2, modelP, 10 ) );
+			it( 'should transform viewU 3', () => testToModelPosition( viewU, 3, modelP, 11 ) );
 
-			it( 'should transform viewTextB 0', () => createToModelTest( viewTextB, 0, modelP, 8 ) );
-			it( 'should transform viewTextB 1', () => createToModelTest( viewTextB, 1, modelP, 9 ) );
+			it( 'should transform viewTextB 0', () => testToModelPosition( viewTextB, 0, modelP, 8 ) );
+			it( 'should transform viewTextB 1', () => testToModelPosition( viewTextB, 1, modelP, 9 ) );
 
-			it( 'should transform viewSup 0', () => createToModelTest( viewSup, 0, modelP, 9 ) );
-			it( 'should transform viewSup 1', () => createToModelTest( viewSup, 1, modelP, 10 ) );
+			it( 'should transform viewSup 0', () => testToModelPosition( viewSup, 0, modelP, 9 ) );
+			it( 'should transform viewSup 1', () => testToModelPosition( viewSup, 1, modelP, 10 ) );
 
-			it( 'should transform viewTextO 0', () => createToModelTest( viewTextO, 0, modelP, 9 ) );
-			it( 'should transform viewTextO 1', () => createToModelTest( viewTextO, 1, modelP, 10 ) );
+			it( 'should transform viewTextO 0', () => testToModelPosition( viewTextO, 0, modelP, 9 ) );
+			it( 'should transform viewTextO 1', () => testToModelPosition( viewTextO, 1, modelP, 10 ) );
 
-			it( 'should transform viewTextM 0', () => createToModelTest( viewTextM, 0, modelP, 10 ) );
-			it( 'should transform viewTextM 1', () => createToModelTest( viewTextM, 1, modelP, 11 ) );
+			it( 'should transform viewTextM 0', () => testToModelPosition( viewTextM, 0, modelP, 10 ) );
+			it( 'should transform viewTextM 1', () => testToModelPosition( viewTextM, 1, modelP, 11 ) );
 
-			it( 'should transform viewTextZZ 0', () => createToModelTest( viewTextZZ, 0, modelDiv, 2 ) );
-			it( 'should transform viewTextZZ 1', () => createToModelTest( viewTextZZ, 1, modelDiv, 3 ) );
-			it( 'should transform viewTextZZ 2', () => createToModelTest( viewTextZZ, 2, modelDiv, 4 ) );
+			it( 'should transform viewTextZZ 0', () => testToModelPosition( viewTextZZ, 0, modelDiv, 2 ) );
+			it( 'should transform viewTextZZ 1', () => testToModelPosition( viewTextZZ, 1, modelDiv, 3 ) );
+			it( 'should transform viewTextZZ 2', () => testToModelPosition( viewTextZZ, 2, modelDiv, 4 ) );
 		} );
 
 		describe( 'toViewPosition', () => {
@@ -450,24 +450,24 @@ describe( 'Mapper', () => {
 			} );
 
 			// Default algorithm tests.
-			it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewTextX, 0 ) );
-			it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewTextX, 1 ) );
-			it( 'should transform modelDiv 2', () => createToViewTest( modelDiv, 2, viewTextZZ, 0 ) );
-			it( 'should transform modelDiv 3', () => createToViewTest( modelDiv, 3, viewTextZZ, 1 ) );
-			it( 'should transform modelDiv 4', () => createToViewTest( modelDiv, 4, viewTextZZ, 2 ) );
+			it( 'should transform modelDiv 0', () => testToViewPosition( modelDiv, 0, viewTextX, 0 ) );
+			it( 'should transform modelDiv 1', () => testToViewPosition( modelDiv, 1, viewTextX, 1 ) );
+			it( 'should transform modelDiv 2', () => testToViewPosition( modelDiv, 2, viewTextZZ, 0 ) );
+			it( 'should transform modelDiv 3', () => testToViewPosition( modelDiv, 3, viewTextZZ, 1 ) );
+			it( 'should transform modelDiv 4', () => testToViewPosition( modelDiv, 4, viewTextZZ, 2 ) );
 
-			it( 'should transform modelP 0', () => createToViewTest( modelP, 0, viewTextY, 0 ) );
-			it( 'should transform modelP 1', () => createToViewTest( modelP, 1, viewTextY, 1 ) );
-			it( 'should transform modelP 2', () => createToViewTest( modelP, 2, viewTextFOO, 1 ) );
-			it( 'should transform modelP 3', () => createToViewTest( modelP, 3, viewTextFOO, 2 ) );
-			it( 'should transform modelP 4', () => createToViewTest( modelP, 4, viewTextBAR, 0 ) );
-			it( 'should transform modelP 5', () => createToViewTest( modelP, 5, viewTextBAR, 1 ) );
-			it( 'should transform modelP 6', () => createToViewTest( modelP, 6, viewTextBAR, 2 ) );
-			it( 'should transform modelP 7', () => createToViewTest( modelP, 7, viewTextBAR, 3 ) );
-			it( 'should transform modelP 8', () => createToViewTest( modelP, 8, viewP, 4 ) );
-			it( 'should transform modelP 9', () => createToViewTest( modelP, 9, viewTextB, 1 ) );
-			it( 'should transform modelP 10', () => createToViewTest( modelP, 10, viewTextM, 0 ) );
-			it( 'should transform modelP 11', () => createToViewTest( modelP, 11, viewP, 5 ) );
+			it( 'should transform modelP 0', () => testToViewPosition( modelP, 0, viewTextY, 0 ) );
+			it( 'should transform modelP 1', () => testToViewPosition( modelP, 1, viewTextY, 1 ) );
+			it( 'should transform modelP 2', () => testToViewPosition( modelP, 2, viewTextFOO, 1 ) );
+			it( 'should transform modelP 3', () => testToViewPosition( modelP, 3, viewTextFOO, 2 ) );
+			it( 'should transform modelP 4', () => testToViewPosition( modelP, 4, viewTextBAR, 0 ) );
+			it( 'should transform modelP 5', () => testToViewPosition( modelP, 5, viewTextBAR, 1 ) );
+			it( 'should transform modelP 6', () => testToViewPosition( modelP, 6, viewTextBAR, 2 ) );
+			it( 'should transform modelP 7', () => testToViewPosition( modelP, 7, viewTextBAR, 3 ) );
+			it( 'should transform modelP 8', () => testToViewPosition( modelP, 8, viewP, 4 ) );
+			it( 'should transform modelP 9', () => testToViewPosition( modelP, 9, viewTextB, 1 ) );
+			it( 'should transform modelP 10', () => testToViewPosition( modelP, 10, viewTextM, 0 ) );
+			it( 'should transform modelP 11', () => testToViewPosition( modelP, 11, viewP, 5 ) );
 
 			// Below tests a particular code execution path that can happen only if cache for given mapped element ends deep (in view)
 			// in that element while we request mapping that reaches somewhere further in this model element.
@@ -532,7 +532,7 @@ describe( 'Mapper', () => {
 				//
 				// Then, again request mapping for model offset at the end of `<paragraph>`.
 				// This way, `Mapper` will start looking side `viewU` and will have to "traverse up" into `<p>` after reaching end of `<b>`.
-				createToViewTest( modelP2, 7, viewTextF, 1 );
+				testToViewPosition( modelP2, 7, viewTextF, 1 );
 			} );
 
 			// Below tests whether the cache is correctly built and invalidated in a particular scenario that involves nested attribute
@@ -652,14 +652,14 @@ describe( 'Mapper', () => {
 			} ).toThrow( /mapping-model-offset-not-found/ );
 		} );
 
-		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
+		function testToViewPosition( modelElement, modelOffset, viewElement, viewOffset ) {
 			const modelPosition = ModelPosition._createAt( modelElement, modelOffset );
 			const viewPosition = mapper.toViewPosition( modelPosition );
 			expect( viewPosition.parent ).toBe( viewElement );
 			expect( viewPosition.offset ).toBe( viewOffset );
 		}
 
-		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
+		function testToModelPosition( viewElement, viewOffset, modelElement, modelOffset ) {
 			const viewPosition = new ViewPosition( viewElement, viewOffset );
 			const modelPosition = mapper.toModelPosition( viewPosition );
 			expect( modelPosition.parent ).toBe( modelElement );
@@ -744,45 +744,45 @@ describe( 'Mapper', () => {
 		} );
 
 		describe( 'toModelPosition', () => {
-			it( 'should transform viewDiv 0', () => createToModelTest( viewDiv, 0, modelDiv, 0 ) );
-			it( 'should transform viewDiv 1', () => createToModelTest( viewDiv, 1, modelDiv, 1 ) );
-			it( 'should transform viewDiv 2', () => createToModelTest( viewDiv, 2, modelDiv, 2 ) );
-			it( 'should transform viewDiv 3', () => createToModelTest( viewDiv, 3, modelDiv, 4 ) );
+			it( 'should transform viewDiv 0', () => testToModelPosition( viewDiv, 0, modelDiv, 0 ) );
+			it( 'should transform viewDiv 1', () => testToModelPosition( viewDiv, 1, modelDiv, 1 ) );
+			it( 'should transform viewDiv 2', () => testToModelPosition( viewDiv, 2, modelDiv, 2 ) );
+			it( 'should transform viewDiv 3', () => testToModelPosition( viewDiv, 3, modelDiv, 4 ) );
 
-			it( 'should transform viewTextX 0', () => createToModelTest( viewTextX, 0, modelDiv, 0 ) );
-			it( 'should transform viewTextX 1', () => createToModelTest( viewTextX, 1, modelDiv, 1 ) );
+			it( 'should transform viewTextX 0', () => testToModelPosition( viewTextX, 0, modelDiv, 0 ) );
+			it( 'should transform viewTextX 1', () => testToModelPosition( viewTextX, 1, modelDiv, 1 ) );
 
-			it( 'should transform viewTextZZ 0', () => createToModelTest( viewTextZZ, 0, modelDiv, 2 ) );
-			it( 'should transform viewTextZZ 1', () => createToModelTest( viewTextZZ, 1, modelDiv, 3 ) );
-			it( 'should transform viewTextZZ 2', () => createToModelTest( viewTextZZ, 2, modelDiv, 4 ) );
+			it( 'should transform viewTextZZ 0', () => testToModelPosition( viewTextZZ, 0, modelDiv, 2 ) );
+			it( 'should transform viewTextZZ 1', () => testToModelPosition( viewTextZZ, 1, modelDiv, 3 ) );
+			it( 'should transform viewTextZZ 2', () => testToModelPosition( viewTextZZ, 2, modelDiv, 4 ) );
 
-			it( 'should transform viewImg 0', () => createToModelTest( viewImg, 0, modelImg, 0 ) );
+			it( 'should transform viewImg 0', () => testToModelPosition( viewImg, 0, modelImg, 0 ) );
 
-			it( 'should transform viewCaption 0', () => createToModelTest( viewCaption, 0, modelCaption, 0 ) );
-			it( 'should transform viewCaption 1', () => createToModelTest( viewCaption, 1, modelCaption, 3 ) );
+			it( 'should transform viewCaption 0', () => testToModelPosition( viewCaption, 0, modelCaption, 0 ) );
+			it( 'should transform viewCaption 1', () => testToModelPosition( viewCaption, 1, modelCaption, 3 ) );
 
-			it( 'should transform viewTextFOO 0', () => createToModelTest( viewTextFOO, 0, modelCaption, 0 ) );
-			it( 'should transform viewTextFOO 1', () => createToModelTest( viewTextFOO, 1, modelCaption, 1 ) );
-			it( 'should transform viewTextFOO 2', () => createToModelTest( viewTextFOO, 2, modelCaption, 2 ) );
-			it( 'should transform viewTextFOO 3', () => createToModelTest( viewTextFOO, 3, modelCaption, 3 ) );
+			it( 'should transform viewTextFOO 0', () => testToModelPosition( viewTextFOO, 0, modelCaption, 0 ) );
+			it( 'should transform viewTextFOO 1', () => testToModelPosition( viewTextFOO, 1, modelCaption, 1 ) );
+			it( 'should transform viewTextFOO 2', () => testToModelPosition( viewTextFOO, 2, modelCaption, 2 ) );
+			it( 'should transform viewTextFOO 3', () => testToModelPosition( viewTextFOO, 3, modelCaption, 3 ) );
 		} );
 
 		describe( 'toViewPosition and findPositionIn', () => {
-			it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewTextX, 0 ) );
-			it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewTextX, 1 ) );
-			it( 'should transform modelDiv 2', () => createToViewTest( modelDiv, 2, viewTextZZ, 0 ) );
-			it( 'should transform modelDiv 3', () => createToViewTest( modelDiv, 3, viewTextZZ, 1 ) );
-			it( 'should transform modelDiv 4', () => createToViewTest( modelDiv, 4, viewTextZZ, 2 ) );
+			it( 'should transform modelDiv 0', () => testToViewPosition( modelDiv, 0, viewTextX, 0 ) );
+			it( 'should transform modelDiv 1', () => testToViewPosition( modelDiv, 1, viewTextX, 1 ) );
+			it( 'should transform modelDiv 2', () => testToViewPosition( modelDiv, 2, viewTextZZ, 0 ) );
+			it( 'should transform modelDiv 3', () => testToViewPosition( modelDiv, 3, viewTextZZ, 1 ) );
+			it( 'should transform modelDiv 4', () => testToViewPosition( modelDiv, 4, viewTextZZ, 2 ) );
 
-			it( 'should transform modelImg 0', () => createToViewTest( modelImg, 0, viewImg, 0 ) );
+			it( 'should transform modelImg 0', () => testToViewPosition( modelImg, 0, viewImg, 0 ) );
 
-			it( 'should transform modelCaption 0', () => createToViewTest( modelCaption, 0, viewTextFOO, 0 ) );
-			it( 'should transform modelCaption 1', () => createToViewTest( modelCaption, 1, viewTextFOO, 1 ) );
-			it( 'should transform modelCaption 2', () => createToViewTest( modelCaption, 2, viewTextFOO, 2 ) );
-			it( 'should transform modelCaption 3', () => createToViewTest( modelCaption, 3, viewTextFOO, 3 ) );
+			it( 'should transform modelCaption 0', () => testToViewPosition( modelCaption, 0, viewTextFOO, 0 ) );
+			it( 'should transform modelCaption 1', () => testToViewPosition( modelCaption, 1, viewTextFOO, 1 ) );
+			it( 'should transform modelCaption 2', () => testToViewPosition( modelCaption, 2, viewTextFOO, 2 ) );
+			it( 'should transform modelCaption 3', () => testToViewPosition( modelCaption, 3, viewTextFOO, 3 ) );
 		} );
 
-		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
+		function testToViewPosition( modelElement, modelOffset, viewElement, viewOffset ) {
 			const modelPosition = ModelPosition._createAt( modelElement, modelOffset );
 			let viewPosition = mapper.toViewPosition( modelPosition );
 			expect( viewPosition.parent ).toBe( viewElement );
@@ -793,7 +793,7 @@ describe( 'Mapper', () => {
 			expect( viewPosition.offset ).toBe( viewOffset );
 		}
 
-		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
+		function testToModelPosition( viewElement, viewOffset, modelElement, modelOffset ) {
 			const viewPosition = new ViewPosition( viewElement, viewOffset );
 			const modelPosition = mapper.toModelPosition( viewPosition );
 			expect( modelPosition.parent ).toBe( modelElement );
@@ -852,14 +852,14 @@ describe( 'Mapper', () => {
 		} );
 
 		describe( 'toModelPosition', () => {
-			it( 'should transform viewRoot 0', () => createToModelTest( viewRoot, 0, modelRoot, 0 ) );
-			it( 'should transform viewRoot 1', () => createToModelTest( viewRoot, 1, modelRoot, 4 ) );
-			it( 'should transform viewList 0', () => createToModelTest( viewList, 0, modelRoot, 0 ) );
-			it( 'should transform viewList 1', () => createToModelTest( viewList, 1, modelRoot, 3 ) );
-			it( 'should transform viewList 2', () => createToModelTest( viewList, 2, modelRoot, 4 ) );
+			it( 'should transform viewRoot 0', () => testToModelPosition( viewRoot, 0, modelRoot, 0 ) );
+			it( 'should transform viewRoot 1', () => testToModelPosition( viewRoot, 1, modelRoot, 4 ) );
+			it( 'should transform viewList 0', () => testToModelPosition( viewList, 0, modelRoot, 0 ) );
+			it( 'should transform viewList 1', () => testToModelPosition( viewList, 1, modelRoot, 3 ) );
+			it( 'should transform viewList 2', () => testToModelPosition( viewList, 2, modelRoot, 4 ) );
 		} );
 
-		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
+		function testToModelPosition( viewElement, viewOffset, modelElement, modelOffset ) {
 			const viewPosition = new ViewPosition( viewElement, viewOffset );
 			const modelPosition = mapper.toModelPosition( viewPosition );
 			expect( modelPosition.parent ).toBe( modelElement );

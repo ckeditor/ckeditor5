@@ -258,12 +258,7 @@ describe( 'Token', () => {
 			// Simulate token fetching error.
 			requests[ 0 ].error();
 
-			try {
-				await initPromise;
-				throw new Error( 'Promise should be rejected' );
-			} catch ( error ) {
-				expect( error.message ).toMatch( /Network Error/ );
-			}
+			await expect( initPromise ).rejects.toThrow( /Network Error/ );
 
 			expect( registerRefreshTokenTimeoutSpy ).toHaveBeenCalledOnce();
 			expect( consoleWarnStub ).toHaveBeenCalledOnce();
@@ -334,45 +329,49 @@ describe( 'Token', () => {
 			return promise;
 		} );
 
-		it( 'should throw an error if the returned token is wrapped in additional quotes', () => {
+		it( 'should throw an error if the returned token is wrapped in additional quotes', async () => {
 			vi.spyOn( console, 'warn' ).mockReturnValue( undefined );
 
 			const tokenValue = getTestTokenValue();
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
-			const promise = token.refreshToken()
-				.then( () => {
-					throw new Error( 'Promise should be rejected' );
-				} )
-				.catch( error => {
-					expect( error.constructor ).toBe( CKEditorError );
-					expect( error.message ).toMatch( /token-not-in-jwt-format/ );
-					token.destroy();
-				} );
+			const promise = token.refreshToken();
 
 			requests[ 0 ].respond( 200, '', `"${ tokenValue }"` );
 
-			return promise;
+			const error = await promise.then(
+				() => {
+					throw new Error( 'Promise should be rejected' );
+				},
+				err => err
+			);
+
+			expect( error.constructor ).toBe( CKEditorError );
+			expect( error.message ).toMatch( /token-not-in-jwt-format/ );
+
+			token.destroy();
 		} );
 
-		it( 'should throw an error if the returned token is not a valid JWT token', () => {
+		it( 'should throw an error if the returned token is not a valid JWT token', async () => {
 			vi.spyOn( console, 'warn' ).mockReturnValue( undefined );
 
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
-			const promise = token.refreshToken()
-				.then( () => {
-					throw new Error( 'Promise should be rejected' );
-				} )
-				.catch( error => {
-					expect( error.constructor ).toBe( CKEditorError );
-					expect( error.message ).toMatch( /token-not-in-jwt-format/ );
-					token.destroy();
-				} );
+			const promise = token.refreshToken();
 
 			requests[ 0 ].respond( 200, '', 'token' );
 
-			return promise;
+			const error = await promise.then(
+				() => {
+					throw new Error( 'Promise should be rejected' );
+				},
+				err => err
+			);
+
+			expect( error.constructor ).toBe( CKEditorError );
+			expect( error.message ).toMatch( /token-not-in-jwt-format/ );
+
+			token.destroy();
 		} );
 
 		it( 'should get a token from the specified callback function', () => {
@@ -432,15 +431,13 @@ describe( 'Token', () => {
 			} );
 		} );
 
-		it( 'should throw an error when the callback throws an error', () => {
+		it( 'should throw an error when the callback throws an error', async () => {
 			const tokenInitValue = getTestTokenValue();
 			const token = new Token( () => Promise.reject( 'Custom error occurred' ), { initValue: tokenInitValue, autoRefresh: false } );
 
-			token.refreshToken()
-				.catch( error => {
-					expect( error ).toBe( 'Custom error occurred' );
-					token.destroy();
-				} );
+			await expect( token.refreshToken() ).rejects.toBe( 'Custom error occurred' );
+
+			token.destroy();
 		} );
 
 		describe( 'refresh failure handling', () => {
@@ -481,97 +478,79 @@ describe( 'Token', () => {
 				const promise = token.refreshToken();
 
 				// The timer-driven refreshToken() calls re-throw after logging+rescheduling.
-				// Suppress those unhandled rejections — they are expected in this test.
+				// Suppress those unhandled rejections. They are expected in this test.
 				const suppressUnhandledRejection = event => event.preventDefault();
 				window.addEventListener( 'unhandledrejection', suppressUnhandledRejection );
 
 				requests[ 0 ].error();
 
-				return promise
-					.then( async () => {
-						throw new Error( 'Promise should fail' );
-					} )
-					.catch( async err => {
-						expect( err.message ).toMatch( /Network Error/ );
+				await expect( promise ).rejects.toThrow( /Network Error/ );
 
-						await vi.advanceTimersByTimeAsync( 5000 );
-						expect( requests.length ).toBe( 2 );
+				await vi.advanceTimersByTimeAsync( 5000 );
+				expect( requests.length ).toBe( 2 );
 
-						requests[ 1 ].error();
+				requests[ 1 ].error();
 
-						await vi.advanceTimersByTimeAsync( 5000 );
-						expect( requests.length ).toBe( 3 );
+				await vi.advanceTimersByTimeAsync( 5000 );
+				expect( requests.length ).toBe( 3 );
 
-						requests[ 2 ].error();
+				requests[ 2 ].error();
 
-						await vi.advanceTimersByTimeAsync( 5000 );
-						expect( requests.length ).toBe( 4 );
+				await vi.advanceTimersByTimeAsync( 5000 );
+				expect( requests.length ).toBe( 4 );
 
-						token.destroy();
-						window.removeEventListener( 'unhandledrejection', suppressUnhandledRejection );
-					} );
+				token.destroy();
+				window.removeEventListener( 'unhandledrejection', suppressUnhandledRejection );
 			} );
 
-			it( 'should restore the regular refresh interval after a successfull refresh', () => {
+			it( 'should restore the regular refresh interval after a successfull refresh', async () => {
 				const tokenInitValue = getTestTokenValue();
 				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: true } );
 				const promise = token.refreshToken();
 
 				requests[ 0 ].error();
 
-				return promise
-					.then( async () => {
-						throw new Error( 'Promise should fail' );
-					} )
-					.catch( async err => {
-						expect( err.message ).toMatch( /Network Error/ );
+				await expect( promise ).rejects.toThrow( /Network Error/ );
 
-						await vi.advanceTimersByTimeAsync( 5000 );
-						expect( requests.length ).toBe( 2 );
+				await vi.advanceTimersByTimeAsync( 5000 );
+				expect( requests.length ).toBe( 2 );
 
-						requests[ 1 ].respond( 200, '', getTestTokenValue( 20 ) );
+				requests[ 1 ].respond( 200, '', getTestTokenValue( 20 ) );
 
-						await vi.advanceTimersByTimeAsync( 5000 );
-						// Switched to 10s interval because refresh was successful.
-						expect( requests.length ).toBe( 2 );
+				await vi.advanceTimersByTimeAsync( 5000 );
+				// Switched to 10s interval because refresh was successful.
+				expect( requests.length ).toBe( 2 );
 
-						await vi.advanceTimersByTimeAsync( 5000 );
-						expect( requests.length ).toBe( 3 );
+				await vi.advanceTimersByTimeAsync( 5000 );
+				expect( requests.length ).toBe( 3 );
 
-						requests[ 2 ].respond( 200, '', getTestTokenValue( 20 ) );
+				requests[ 2 ].respond( 200, '', getTestTokenValue( 20 ) );
 
-						await vi.advanceTimersByTimeAsync( 10000 );
-						expect( requests.length ).toBe( 4 );
+				await vi.advanceTimersByTimeAsync( 10000 );
+				expect( requests.length ).toBe( 4 );
 
-						token.destroy();
-					} );
+				token.destroy();
 			} );
 
-			it( 'should not auto-refresh after a failure if options.autoRefresh option is false', () => {
+			it( 'should not auto-refresh after a failure if options.autoRefresh option is false', async () => {
 				const tokenInitValue = getTestTokenValue();
 				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
 				const promise = token.refreshToken();
 
 				requests[ 0 ].error();
 
-				return promise
-					.then( async () => {
-						throw new Error( 'Promise should fail' );
-					} )
-					.catch( async err => {
-						expect( err.message ).toMatch( /Network Error/ );
+				await expect( promise ).rejects.toThrow( /Network Error/ );
 
-						await vi.advanceTimersByTimeAsync( 5000 );
-						expect( requests.length ).toBe( 1 );
+				await vi.advanceTimersByTimeAsync( 5000 );
+				expect( requests.length ).toBe( 1 );
 
-						await vi.advanceTimersByTimeAsync( 10000 );
-						expect( requests.length ).toBe( 1 );
+				await vi.advanceTimersByTimeAsync( 10000 );
+				expect( requests.length ).toBe( 1 );
 
-						token.destroy();
-					} );
+				token.destroy();
 			} );
 
-			it( 'should clear any queued refresh upon manual refreshToken() call to avoid duplicated refreshes', () => {
+			it( 'should clear any queued refresh upon manual refreshToken() call to avoid duplicated refreshes', async () => {
 				const tokenInitValue = getTestTokenValue();
 				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: true } );
 				const promise = token.refreshToken();
@@ -582,32 +561,26 @@ describe( 'Token', () => {
 
 				requests[ 0 ].error();
 
-				return promise
-					.then( async () => {
-						throw new Error( 'Promise should fail' );
-					} )
-					.catch( async err => {
-						expect( err.message ).toMatch( /Network Error/ );
+				await expect( promise ).rejects.toThrow( /Network Error/ );
 
-						await vi.advanceTimersByTimeAsync( 5000 );
-						expect( requests.length ).toBe( 2 );
+				await vi.advanceTimersByTimeAsync( 5000 );
+				expect( requests.length ).toBe( 2 );
 
-						token.refreshToken().catch( () => {} );
-						token.refreshToken().catch( () => {} );
-						token.refreshToken().catch( () => {} );
+				token.refreshToken().catch( () => {} );
+				token.refreshToken().catch( () => {} );
+				token.refreshToken().catch( () => {} );
 
-						requests[ 1 ].error();
-						requests[ 2 ].error();
-						requests[ 3 ].error();
-						requests[ 4 ].error();
+				requests[ 1 ].error();
+				requests[ 2 ].error();
+				requests[ 3 ].error();
+				requests[ 4 ].error();
 
-						await vi.advanceTimersByTimeAsync( 5000 );
+				await vi.advanceTimersByTimeAsync( 5000 );
 
-						expect( requests.length ).toBe( 6 );
+				expect( requests.length ).toBe( 6 );
 
-						token.destroy();
-						window.removeEventListener( 'unhandledrejection', suppressUnhandledRejection );
-					} );
+				token.destroy();
+				window.removeEventListener( 'unhandledrejection', suppressUnhandledRejection );
 			} );
 		} );
 	} );

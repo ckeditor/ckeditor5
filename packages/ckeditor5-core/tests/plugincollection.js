@@ -790,7 +790,7 @@ describe( 'PluginCollection', () => {
 
 				const plugins = new PluginCollection( editor, [ PluginA ], context.plugins );
 
-				return plugins.init( sharedConfig.plugins, [], sharedConfig.substitutePlugins );
+				await expect( plugins.init( sharedConfig.plugins, [], sharedConfig.substitutePlugins ) ).resolves.toBeDefined();
 			} );
 		} );
 	} );

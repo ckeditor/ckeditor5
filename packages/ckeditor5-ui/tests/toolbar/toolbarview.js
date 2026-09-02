@@ -1120,8 +1120,8 @@ describe( 'ToolbarView', () => {
 
 				view.switchBehavior( 'dynamic' );
 
-				expect( view._behavior.ungroupedItems.length === 3 );
-				expect( view.focusables.length === 3 );
+				expect( view._behavior.ungroupedItems ).toHaveLength( 3 );
+				expect( view.focusables ).toHaveLength( 3 );
 			} );
 		} );
 	} );
@@ -1580,7 +1580,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 
 				expect( view.children.has( groupedItemsDropdown ) ).toBe( true );
-				expect( groupedItemsDropdown.element.classList.contains( 'ck-toolbar__grouped-dropdown' ) );
+				expect( groupedItemsDropdown.element.classList.contains( 'ck-toolbar__grouped-dropdown' ) ).toBe( true );
 				expect( groupedItemsDropdown.buttonView.label ).toBe( 'Show more items' );
 			} );
 

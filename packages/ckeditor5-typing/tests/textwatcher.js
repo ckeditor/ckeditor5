@@ -45,13 +45,13 @@ describe( 'TextWatcher', () => {
 
 	describe( '#isEnabled', () => {
 		it( 'should be enabled after initialization', () => {
-			expect( watcher.isEnabled ).to.be.true;
+			expect( watcher.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be disabled after setting #isEnabled to false', () => {
 			watcher.isEnabled = false;
 
-			expect( watcher.isEnabled ).to.be.false;
+			expect( watcher.isEnabled ).toBe( false );
 		} );
 	} );
 

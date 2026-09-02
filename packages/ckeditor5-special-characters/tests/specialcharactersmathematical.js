@@ -33,11 +33,11 @@ describe( 'SpecialCharactersMathematical', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( SpecialCharactersMathematical.isOfficialPlugin ).to.be.true;
+		expect( SpecialCharactersMathematical.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( SpecialCharactersMathematical.isPremiumPlugin ).to.be.false;
+		expect( SpecialCharactersMathematical.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'adds new items', () => {
@@ -45,11 +45,11 @@ describe( 'SpecialCharactersMathematical', () => {
 	} );
 
 	it( 'properly names the category', () => {
-		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Mathematical' );
+		expect( addItemsFirstCallArgs[ 0 ] ).toEqual( 'Mathematical' );
 	} );
 
 	it( 'defines a label displayed in the toolbar', () => {
-		expect( addItemsFirstCallArgs[ 2 ] ).to.deep.equal( {
+		expect( addItemsFirstCallArgs[ 2 ] ).toEqual( {
 			label: 'Mathematical'
 		} );
 	} );
