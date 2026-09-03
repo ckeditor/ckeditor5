@@ -124,6 +124,7 @@
     "check-css-imports": "node ./scripts/check-css-imports.mjs",
     "check-css-variables": "node ./scripts/check-css-variables.mjs",
     "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
+    "validate-file-names": "node ./scripts/ci/validate-file-names.mjs",
     "bump-year": "node ./scripts/bump-year.mjs",
     "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run",
     "test:memory": "node ./scripts/memory/test-memory.mjs",
