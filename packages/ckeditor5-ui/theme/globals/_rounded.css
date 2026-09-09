@@ -4,7 +4,8 @@
  */
 
 
-:root {
+:root,
+:host {
 	/**
 	* Default border-radius value.
 	*/

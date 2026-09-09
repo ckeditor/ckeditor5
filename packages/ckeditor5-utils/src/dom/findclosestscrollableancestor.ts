@@ -7,16 +7,23 @@
  * @module utils/dom/findclosestscrollableancestor
  */
 
+import { getParentElement } from './getparentelement.js';
 import { global } from './global.js';
 
 /**
  * Returns the closest scrollable ancestor of a DOM element.
  *
+ * The search crosses shadow DOM boundaries, continuing from the host element of a shadow root instead of
+ * stopping at it. Without that, an element rendered inside a shadow tree would report no scrollable ancestor at
+ * all, even when one exists further up in the surrounding document, because the walk goes over `parentElement`,
+ * which is `null` for a direct child of a shadow root. Works for both open and closed shadow roots.
+ *
  * @param domElement DOM element.
  * @returns First ancestor of `domElement` that is scrollable or null if such ancestor doesn't exist.
  */
 export function findClosestScrollableAncestor( domElement: HTMLElement ): HTMLElement | null {
-	let element = domElement.parentElement;
+	let element = getParentElement( domElement ) as HTMLElement | null;
+
 	if ( !element ) {
 		return null;
 	}
@@ -28,7 +35,7 @@ export function findClosestScrollableAncestor( domElement: HTMLElement ): HTMLEl
 			break;
 		}
 
-		element = element.parentElement;
+		element = getParentElement( element ) as HTMLElement | null;
 
 		if ( !element ) {
 			return null;

@@ -1756,6 +1756,43 @@ describe( 'ToolbarView', () => {
 				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
+
+		describe( 'in a shadow root', () => {
+			let host;
+
+			beforeEach( () => {
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+			} );
+
+			afterEach( () => {
+				host.remove();
+			} );
+
+			for ( const mode of [ 'open', 'closed' ] ) {
+				it( `should not skip the grouping analysis for a toolbar inside a ${ mode } shadow root`, () => {
+					const shadowRoot = host.attachShadow( { mode } );
+
+					// Move the rendered toolbar out of the <body> and into the shadow root. The host is hidden
+					// so that #_updateGrouping() stops at the visibility check that immediately follows the
+					// connection check, which keeps this test independent of the toolbar geometry (the theme
+					// stylesheet is not adopted into the shadow root).
+					host.style.display = 'none';
+					shadowRoot.appendChild( view.element );
+
+					// The toolbar is connected, but a `document.body.contains()` check does not see through the
+					// shadow boundary and would have abandoned the analysis for good.
+					expect( document.body.contains( view.element ) ).toBe( false );
+					expect( view.element.isConnected ).toBe( true );
+
+					view._behavior.shouldUpdateGroupingOnNextResize = false;
+
+					view._behavior._updateGrouping();
+
+					expect( view._behavior.shouldUpdateGroupingOnNextResize ).toBe( true );
+				} );
+			}
+		} );
 	} );
 } );
 

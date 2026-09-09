@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	/* Based on default CKBox theme colors */
 	--ck-image-processing-highlight-color: hsl(220, 10%, 98%);
 	--ck-image-processing-background-color: hsl(220, 10%, 90%);

@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-balloon-border-width: 1px;
 	--ck-balloon-arrow-offset: 2px;
 	--ck-balloon-arrow-height: 10px;

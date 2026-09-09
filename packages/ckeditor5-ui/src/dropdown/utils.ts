@@ -31,9 +31,10 @@ import type { FalsyValue } from '../template.js';
 import { type BodyCollection } from '../editorui/bodycollection.js';
 
 import {
-	global,
 	priorities,
 	logWarning,
+	getActiveElement,
+	containsNode,
 	type FocusTracker,
 	type Collection,
 	type Locale,
@@ -540,7 +541,8 @@ function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
 			// Include all elements connected to the dropdown's focus tracker, but exclude those that are direct children
 			// of DropdownView#element. They would be identified as descendants of #element anyway upon clicking and would
 			// not contribute to the logic.
-			...getFocusTrackerTreeElements( dropdownView.focusTracker ).filter( element => !dropdownView.element!.contains( element ) )
+			...getFocusTrackerTreeElements( dropdownView.focusTracker )
+				.filter( element => !containsNode( dropdownView.element!, element ) )
 		]
 	} );
 }
@@ -621,7 +623,7 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute).
 		// See https://github.com/ckeditor/ckeditor5/issues/12178.
 		// Note: Don't use the state of the DropdownView#focusTracker here. It fires #blur with the timeout.
-		if ( elements.some( element => element.contains( global.document.activeElement ) ) ) {
+		if ( elements.some( element => element.contains( getActiveElement( element ) ) ) ) {
 			dropdownView.buttonView.focus();
 		}
 	} );

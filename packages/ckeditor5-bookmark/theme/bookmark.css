@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
 	--ck-bookmark-icon-selected-fill-color: var(--ck-color-focus-border);
 	--ck-bookmark-icon-animation-duration: var(--ck-widget-handler-animation-duration);

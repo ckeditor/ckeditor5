@@ -7,7 +7,17 @@
  * @module ui/textarea/textareaview
  */
 
-import { Rect, type Locale, toUnit, getBorderWidths, global, CKEditorError, isVisible, ResizeObserver } from '@ckeditor/ckeditor5-utils';
+import {
+	Rect,
+	type Locale,
+	toUnit,
+	getBorderWidths,
+	global,
+	CKEditorError,
+	isVisible,
+	ResizeObserver,
+	getParentNode
+} from '@ckeditor/ckeditor5-utils';
 import { InputBase } from '../input/inputbase.js';
 
 /**
@@ -260,7 +270,7 @@ function getTextareaElementClone( element: HTMLTextAreaElement, value: string ):
 	clone.rows = 1;
 	clone.value = value;
 
-	element.parentNode!.insertBefore( clone, element );
+	getParentNode( element )!.insertBefore( clone, element );
 
 	return clone;
 }

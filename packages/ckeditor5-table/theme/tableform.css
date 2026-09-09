@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-table-properties-error-arrow-size: 6px;
 	--ck-table-properties-min-error-width: 150px;
 }

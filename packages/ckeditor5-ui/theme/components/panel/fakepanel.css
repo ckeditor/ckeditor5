@@ -4,7 +4,8 @@
  */
 
 
-:root {
+:root,
+:host {
 	--ck-balloon-fake-panel-offset-horizontal: 6px;
 	--ck-balloon-fake-panel-offset-vertical: 6px;
 }

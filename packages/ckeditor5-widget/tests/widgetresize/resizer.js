@@ -239,6 +239,42 @@ describe( 'Resizer', () => {
 			// Cleanup.
 			renderedElement.remove();
 		} );
+
+		for ( const mode of [ 'open', 'closed' ] ) {
+			it( `should redraw a resizer whose editing root lives in a ${ mode } shadow root`, () => {
+				const resizerInstance = createResizer( {
+					getHandleHost: widgetWrapper => widgetWrapper
+				} );
+
+				resizerInstance.attach();
+
+				// The resizer wrapper is mapped to a DOM element inside the editing root, so the editing
+				// root itself has to move into the shadow root for the resizer to end up there.
+				const domRoot = editor.editing.view.getDomRoot();
+				const originalParent = domRoot.parentElement;
+				const shadowHost = document.createElement( 'div' );
+
+				document.body.appendChild( shadowHost );
+				shadowHost.attachShadow( { mode } ).appendChild( domRoot );
+
+				const domWrapper = resizerInstance._domResizerWrapper;
+
+				// The resizer wrapper is connected, but an `ownerDocument.contains()` check does not see
+				// through the shadow boundary and would have made #redraw() bail out as if it was detached.
+				expect( document.contains( domWrapper ) ).toBe( false );
+				expect( domWrapper.isConnected ).toBe( true );
+
+				const viewChangeSpy = vi.spyOn( editor.editing.view, 'change' );
+
+				resizerInstance.redraw();
+
+				expect( viewChangeSpy ).toHaveBeenCalledTimes( 1 );
+
+				// Cleanup: the editor is shared by the whole suite, so put its editing root back.
+				originalParent.appendChild( domRoot );
+				shadowHost.remove();
+			} );
+		}
 	} );
 
 	describe( '_proposeNewSize()', () => {

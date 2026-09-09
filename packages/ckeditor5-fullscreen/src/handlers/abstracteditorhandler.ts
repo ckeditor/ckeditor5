@@ -8,12 +8,56 @@
  */
 
 import { BodyCollection, ButtonView, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
-import { global, createElement, Rect, type EventInfo, ResizeObserver } from '@ckeditor/ckeditor5-utils';
+import {
+	global,
+	adoptGlobalStyleSheet,
+	createElement,
+	getOverlayMountRoot,
+	getParentElement,
+	isShadowRoot,
+	Rect,
+	type EventInfo,
+	ResizeObserver
+} from '@ckeditor/ckeditor5-utils';
 import type { ElementApi, Editor, EditorConfig } from '@ckeditor/ckeditor5-core';
 import { IconDocumentOutlineToggle, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 import { registerFullscreenBalloonOffsetCorrection } from './integrations/contextualballoon.js';
 
 const DIALOG_OFFSET = 28;
+
+/*
+ * The part of the fullscreen mode styling that has to reach the light DOM, and so cannot come from the
+ * stylesheet an integrator loaded into the shadow root the editor lives in: the `<html>` and `<body>`
+ * elements, which no shadow root can contain, and the CKBox UI, which mounts in `document.body` on purpose.
+ * Adopted into the editor's document instead – see `adoptGlobalStyleSheet()`.
+ *
+ * `--ck-z-dialog` is read with a fallback, because it is declared by the fullscreen stylesheet – which in a
+ * shadow DOM setup is loaded into that root rather than into the document, leaving it undefined here. Keep
+ * the fallback in sync with the value declared there.
+ */
+const LIGHT_DOM_STYLES = `
+	/* Disable scrollbars that can be present due to the rest of the website content. */
+	html.ck-fullscreen-scroll-locked,
+	body.ck-fullscreen-scroll-locked {
+		overflow: hidden;
+	}
+
+	/* CKBox wrappers have z-index of 9999, let's bump them over the dialog's to ensure visibility like outside fullscreen mode. */
+	body.ck-fullscreen .ckbox:not(#n) {
+		--ckbox-z-index-root: calc(var(--ck-z-dialog, 100000) + 1);
+
+		/*
+		 * Safari composites \`overflow: auto\` scroll layers (like \`.ck-fullscreen__editable-wrapper\`) on top of
+		 * sibling stacking contexts regardless of z-index. Setting \`position: absolute\` promotes \`.ckbox\` to its
+		 * own compositing layer, which Safari then sorts correctly above the editable wrapper's layer.
+		 */
+		position: absolute;
+	}
+
+	body.ck-fullscreen .ckbox:not(#n) .ckbox-img-editor {
+		--ckbox-z-index-preview: calc(var(--ck-z-dialog, 100000) + 1);
+	}
+`;
 
 /**
  * The abstract editor type handler.
@@ -96,13 +140,35 @@ export class FullscreenAbstractEditorHandler {
 	private _document: Document;
 
 	/**
+	 * The element or shadow root the {@link #_wrapper} is mounted in – not to be confused with the *root* that
+	 * wrapper ends up living in, which is what the editor's own overlay layer is mounted in. Resolved when the
+	 * wrapper is created and reused until it is destroyed – see {@link #_getWrapperMountTarget}.
+	 */
+	private _wrapperMountTarget: HTMLElement | ShadowRoot | null = null;
+
+	/**
+	 * Whether the fullscreen mode covers the viewport, which is the case unless the integrator provided a
+	 * `fullscreen.container` other than the mount target that would be resolved anyway. It decides both the
+	 * positioning of the wrapper and the page scroll blocking, and cannot be derived from the position of the
+	 * wrapper in the DOM: mounted in a shadow root, it is not a child of the `<body>` element either way.
+	 * Resolved together with {@link #_wrapperMountTarget}.
+	 */
+	private _coversViewport: boolean = false;
+
+	/**
+	 * The host of the shadow root the fullscreen mode is mounted in, when it was marked with the `ck-fullscreen`
+	 * class next to the `<body>` element. `null` for a mount target in the light DOM, which needs no marking.
+	 */
+	private _markedHostElement: HTMLElement | null = null;
+
+	/**
 	 * Data of the annotations UIs that were active before entering the fullscreen mode.
 	 */
 	private _annotationsUIsData: Map<string, Record<string, any>> | null = null;
 
 	/**
 	 * The pagination body collection that is used in the fullscreen mode.
-	 * If we don't move pagination lines to the fullscreen container, they won't be visible.
+	 * If we don't move pagination lines to the fullscreen wrapper, they won't be visible.
 	 */
 	private _paginationBodyCollection: BodyCollection | null = null;
 
@@ -200,17 +266,46 @@ export class FullscreenAbstractEditorHandler {
 
 		this._editor = editor;
 		this._document = this._editor.sourceElement ? this._editor.sourceElement.ownerDocument : global.document;
-		this._editor.config.define( 'fullscreen.container', this._document.body );
 
 		editor.on( 'destroy', () => {
-			if ( this._wrapper ) {
-				this.destroy();
-			}
+			// Not guarded by the presence of the wrapper: it may already be gone (every moved element restored
+			// individually) while the overlay host and the `ck-fullscreen` classes are still around, and nothing
+			// else would clean those up.
+			this.destroy();
 
 			if ( this._resizeObserver ) {
 				this._resizeObserver.destroy();
 			}
 		} );
+	}
+
+	/**
+	 * Returns the element or shadow root the fullscreen mode is mounted in: the configured `fullscreen.container`,
+	 * otherwise the shared `ui.overlayContainer`, otherwise the root the editor lives in (so that the editor UI moved
+	 * to the fullscreen mode keeps the styles adopted by that root).
+	 *
+	 * The root is resolved from the editable element when the wrapper is created rather than from the source element
+	 * in the constructor: an editor may still be detached then (a decoupled editor is often inserted into the
+	 * document – possibly into a shadow root – only after it has been created), and a detached node has no root to
+	 * resolve.
+	 */
+	private _getWrapperMountTarget(): HTMLElement | ShadowRoot {
+		if ( !this._wrapperMountTarget ) {
+			const editableElement = this._editor.ui.getEditableElement();
+			const defaultMountTarget = this._editor.config.get( 'ui.overlayContainer' ) ||
+				( editableElement && getOverlayMountRoot( editableElement ) ) ||
+				this._document.body;
+
+			this._wrapperMountTarget = this._editor.config.get( 'fullscreen.container' ) || defaultMountTarget;
+
+			// A configured `fullscreen.container` pointing at the default target still covers the viewport. So does
+			// the `<body>` element, which used to be the documented default and therefore may be configured
+			// explicitly – it is the viewport-covering target even when it is not the one that would be resolved
+			// here (the editor lives in a shadow root, or a shared `ui.overlayContainer` is set).
+			this._coversViewport = this._wrapperMountTarget === defaultMountTarget || this._wrapperMountTarget === this._document.body;
+		}
+
+		return this._wrapperMountTarget;
 	}
 
 	/**
@@ -243,20 +338,26 @@ export class FullscreenAbstractEditorHandler {
 		this._placeholderMap.delete( placeholderName );
 
 		if ( this._placeholderMap.size === 0 ) {
-			this._destroyContainer();
+			this._destroyWrapper();
 		}
 	}
 
 	/**
-	 * Returns the fullscreen mode container element.
+	 * Returns the fullscreen mode wrapper element.
 	 */
 	public getWrapper(): HTMLElement {
 		if ( !this._wrapper ) {
+			const wrapperMountTarget = this._getWrapperMountTarget();
+
 			this._wrapper = createElement( this._document, 'div', {
 				class: 'ck ck-fullscreen__main-wrapper'
 			} );
 
-			// For now, the container is generated in a very straightforward way. If necessary, it may be rewritten using editor's UI lib.
+			if ( !this._coversViewport ) {
+				this._wrapper.classList.add( 'ck-fullscreen__main-wrapper_custom-container' );
+			}
+
+			// For now, the wrapper is generated in a very straightforward way. If necessary, it may be rewritten using editor's UI lib.
 			this._wrapper.innerHTML = `
 				<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
 					<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
@@ -275,7 +376,14 @@ export class FullscreenAbstractEditorHandler {
 				</div>
 			`;
 
-			this._editor.config.get( 'fullscreen.container' )!.appendChild( this._wrapper );
+			wrapperMountTarget.appendChild( this._wrapper );
+
+			// The editor's own overlay layer follows the UI into the fullscreen mode by itself: its mount target
+			// is re-resolved from the editing root, which `defaultOnEnter()` moves into this wrapper. The wrapper
+			// is the one thing not covered by that, as nothing else registers it – so track it here, and the tree
+			// it lives in stays the one the tooltips of everything inside it are hosted in. Paired with
+			// `_destroyWrapper()`, so that the registration cannot outlive the element it is for.
+			this._editor.ui.shadowRootRegistry.registerNode( this._wrapper );
 		}
 
 		return this._wrapper;
@@ -285,14 +393,44 @@ export class FullscreenAbstractEditorHandler {
 	 * Enables the fullscreen mode. It executes the editor-specific enable handler and then the configured callback.
 	 */
 	public enable(): void {
-		this._saveAncestorsScrollPositions( this._editor.ui.getEditableElement()! )!;
+		this._saveAncestorsScrollPositions( this._editor.ui.getEditableElement()! );
+
+		// Resolve the wrapper's mount target while the editor UI is still in its original place. It is resolved
+		// from the editable element, and `defaultOnEnter()` moves that element to the fullscreen mode – a detached
+		// node has no root to resolve, so resolving afterwards would fall back to the `<body>` element. It also
+		// settles `_coversViewport` before it is read below, which `defaultOnEnter()` alone does not guarantee:
+		// it is the method a custom handler overrides, and it does not have to create the wrapper.
+		this._getWrapperMountTarget();
 
 		this.defaultOnEnter();
 
-		// Block scroll if the fullscreen container is the body element. Otherwise the document has to stay scrollable.
-		if ( this._editor.config.get( 'fullscreen.container' ) === this._document.body ) {
-			this._document.body.classList.add( 'ck-fullscreen' );
-			this._document.body.parentElement!.classList.add( 'ck-fullscreen' );
+		// Block scroll and bump the stacking context if the fullscreen mode covers the viewport. Otherwise the
+		// document has to stay scrollable.
+		if ( this._coversViewport ) {
+			// Both elements get both classes. The scroll lock, because either of them can be the one that scrolls
+			// the page, depending on how the integrator's page is laid out. The stacking variables, because other
+			// stylesheets derive custom properties from them at `:root`, and a `var()` inside a custom property is
+			// substituted on the element that declares it – bumping them on the `<body>` element alone would leave
+			// those derived properties computed from the base values.
+			adoptGlobalStyleSheet( this._document, LIGHT_DOM_STYLES );
+
+			this._document.documentElement.classList.add( 'ck-fullscreen', 'ck-fullscreen-scroll-locked' );
+			this._document.body.classList.add( 'ck-fullscreen', 'ck-fullscreen-scroll-locked' );
+
+			// A fullscreen mode living in a shadow root is marked on that root's host as well, and with
+			// `ck-fullscreen` only – the page scroll is locked on the document. Once something declares the base
+			// stacking values on the root itself, that declaration beats the value inherited from the `<body>`
+			// element for the whole tree, dropping the floating UI below the fullscreen layer; marking the host
+			// makes the bumped values win there too. The root is resolved from the mount target rather than the
+			// mount target being tested for a shadow root, because it may just as well be an element inside one
+			// (a shadow root resolves to itself). A mount target in the light DOM needs no marking: it inherits
+			// the values from the `<body>` element.
+			const wrapperMountRoot = this._getWrapperMountTarget().getRootNode();
+
+			if ( isShadowRoot( wrapperMountRoot ) ) {
+				this._markedHostElement = wrapperMountRoot.host as HTMLElement;
+				this._markedHostElement.classList.add( 'ck-fullscreen' );
+			}
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
@@ -320,14 +458,15 @@ export class FullscreenAbstractEditorHandler {
 
 			this._paginationBodyCollection = new BodyCollection( this._editor.locale );
 
-			this._paginationBodyCollection.attachToDom();
+			this._paginationBodyCollection.attachToDom(
+				this.getWrapper().querySelector<HTMLElement>( '[data-ck-fullscreen="body-wrapper"]' )!
+			);
+
 			paginationRenderer.linesRepository.setViewCollection( this._paginationBodyCollection );
 
 			this._editor.once( 'destroy', () => {
-				this._paginationBodyCollection!.detachFromDom();
+				this._paginationBodyCollection!.destroy();
 			} );
-
-			this.moveToFullscreen( this._paginationBodyCollection.bodyCollectionContainer!, 'body-wrapper' );
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
@@ -358,13 +497,13 @@ export class FullscreenAbstractEditorHandler {
 			( this._editor.plugins.get( 'SourceEditing' ) as any ).on( 'change:isSourceEditingMode', this._sourceEditingCallback );
 		}
 
-		// Dialog position should be done after all known elements are moved to the fullscreen container.
+		// Dialog position should be done after all known elements are moved to the fullscreen wrapper.
 		if ( this._editor.plugins.has( 'Dialog' ) ) {
 			this._registerFullscreenDialogPositionAdjustments();
 		}
 
-		// Hide all other elements in the container to ensure they don't create an empty unscrollable space.
-		for ( const element of this._editor.config.get( 'fullscreen.container' )!.children ) {
+		// Hide all other elements in the wrapper's mount target to ensure they don't create an empty unscrollable space.
+		for ( const element of this._getWrapperMountTarget().children ) {
 			// Do not hide body wrapper and ckbox wrapper to keep dialogs, balloons etc visible.
 			if (
 				element !== this._wrapper &&
@@ -391,6 +530,9 @@ export class FullscreenAbstractEditorHandler {
 		// Must be called after all elements are moved so the slot heights are final.
 		this._disableContextualBalloonPositionHandler = registerFullscreenBalloonOffsetCorrection( this._editor, this.getWrapper() );
 
+		// The editor UI has been moved, so let it re-resolve the root its own overlay layer is mounted in.
+		this._editor.ui.update();
+
 		if ( this._editor.config.get( 'fullscreen.onEnterCallback' ) ) {
 			this._editor.config.get( 'fullscreen.onEnterCallback' )!( this.getWrapper() );
 		}
@@ -404,8 +546,9 @@ export class FullscreenAbstractEditorHandler {
 			this._editor.config.get( 'fullscreen.onLeaveCallback' )!( this.getWrapper() );
 		}
 
-		this._document.body.classList.remove( 'ck-fullscreen' );
-		this._document.body.parentElement!.classList.remove( 'ck-fullscreen' );
+		this._document.documentElement.classList.remove( 'ck-fullscreen', 'ck-fullscreen-scroll-locked' );
+		this._document.body.classList.remove( 'ck-fullscreen', 'ck-fullscreen-scroll-locked' );
+		this._unmarkHostElement();
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* v8 ignore if -- @preserve */
@@ -438,8 +581,8 @@ export class FullscreenAbstractEditorHandler {
 		}
 
 		// Container is also destroyed in the `restoreMovedElementLocation()` method, but we need to do it here
-		// to ensure that the container is destroyed even if no elements were moved.
-		this._destroyContainer();
+		// to ensure that the wrapper is destroyed even if no elements were moved.
+		this._destroyWrapper();
 
 		if ( this._editor.ui.view.toolbar ) {
 			this._editor.ui.view.toolbar.switchBehavior(
@@ -469,8 +612,7 @@ export class FullscreenAbstractEditorHandler {
 			paginationRenderer.setupScrollableAncestor();
 			paginationRenderer.linesRepository.setViewCollection( this._editor.ui.view.body );
 
-			this._paginationBodyCollection!.detachFromDom();
-			this._paginationBodyCollection?.destroy();
+			this._paginationBodyCollection!.destroy();
 		}
 
 		// Also dialog position needs to be recalculated after leaving fullscreen mode.
@@ -484,6 +626,9 @@ export class FullscreenAbstractEditorHandler {
 		this._keepLeftSidebarHidden = false;
 
 		this._resizeObserver?.destroy();
+
+		// The editor UI is back in its original place, so let it re-resolve the root its overlay layer is mounted in.
+		this._editor.ui.update();
 	}
 
 	/**
@@ -495,16 +640,28 @@ export class FullscreenAbstractEditorHandler {
 			movedElement.remove();
 		}
 
-		this._destroyContainer();
+		this._destroyWrapper();
 
-		this._document.body.classList.remove( 'ck-fullscreen' );
-		this._document.body.parentElement!.classList.remove( 'ck-fullscreen' );
+		this._document.documentElement.classList.remove( 'ck-fullscreen', 'ck-fullscreen-scroll-locked' );
+		this._document.body.classList.remove( 'ck-fullscreen', 'ck-fullscreen-scroll-locked' );
+		this._unmarkHostElement();
+	}
+
+	/**
+	 * Removes the `ck-fullscreen` class from the element it was added to next to the `<body>` and `<html>` elements.
+	 * The element is remembered instead of being resolved again, because the wrapper's mount target is forgotten before this runs.
+	 */
+	private _unmarkHostElement(): void {
+		if ( this._markedHostElement ) {
+			this._markedHostElement.classList.remove( 'ck-fullscreen' );
+			this._markedHostElement = null;
+		}
 	}
 
 	/**
 	 * A function that moves the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
 	 *
-	 * Returns the fullscreen mode container element so it can be further customized via
+	 * Returns the fullscreen mode wrapper element so it can be further customized via
 	 * `fullscreen.onEnterCallback` configuration property.
 	 */
 	public defaultOnEnter(): HTMLElement {
@@ -512,17 +669,21 @@ export class FullscreenAbstractEditorHandler {
 	}
 
 	/**
-	 * Destroys the fullscreen mode container.
+	 * Destroys the fullscreen mode wrapper.
 	 */
-	private _destroyContainer(): void {
+	private _destroyWrapper(): void {
 		if ( !this._wrapper ) {
 			return;
 		}
 
+		this._editor.ui.shadowRootRegistry.unregisterNode( this._wrapper );
+
 		this._wrapper.remove();
 		this._wrapper = null;
+		this._wrapperMountTarget = null;
+		this._coversViewport = false;
 
-		// Restore visibility of all other elements in the container.
+		// Restore visibility of all other elements in the wrapper's mount target.
 		for ( const [ element, displayValue ] of this._hiddenElements ) {
 			element.style.display = displayValue;
 		}
@@ -537,7 +698,8 @@ export class FullscreenAbstractEditorHandler {
 	/* v8 ignore next -- @preserve */
 	private _generatePresenceListContainer(): void {
 		const t = this._editor.t;
-		const presenceListElement = createElement( document, 'div', {
+		const wrapper = this.getWrapper();
+		const presenceListElement = createElement( this._document, 'div', {
 			class: 'ck ck-fullscreen__left-sidebar-item'
 		} );
 
@@ -547,16 +709,16 @@ export class FullscreenAbstractEditorHandler {
 		`;
 		( presenceListElement.firstElementChild as HTMLElement ).innerText = t( 'Connected users' );
 
-		if ( !document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' ) ) {
-			document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild(
-				createElement( document, 'div', {
+		if ( !wrapper.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' ) ) {
+			wrapper.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild(
+				createElement( this._document, 'div', {
 					class: 'ck ck-fullscreen__left-sidebar-sticky',
 					'data-ck-fullscreen': 'left-sidebar-sticky'
 				} )
 			);
 		}
 
-		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presenceListElement );
+		wrapper.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presenceListElement );
 
 		const presenceListUI = this._editor.plugins.get( 'PresenceListUI' ) as any;
 
@@ -572,7 +734,8 @@ export class FullscreenAbstractEditorHandler {
 	/* v8 ignore next -- @preserve */
 	private _generateDocumentOutlineContainer(): void {
 		const t = this._editor.t;
-		const documentOutlineHeaderElement = createElement( document, 'div', {
+		const wrapper = this.getWrapper();
+		const documentOutlineHeaderElement = createElement( this._document, 'div', {
 			class: 'ck-fullscreen__left-sidebar-item ck-fullscreen__left-sidebar-item--no-margin'
 		} );
 
@@ -581,7 +744,7 @@ export class FullscreenAbstractEditorHandler {
 		`;
 		( documentOutlineHeaderElement.firstElementChild as HTMLElement ).innerText = t( 'Document outline' );
 
-		const documentOutlineBodyWrapper = createElement( document, 'div', {
+		const documentOutlineBodyWrapper = createElement( this._document, 'div', {
 			class: 'ck ck-fullscreen__left-sidebar-item ck-fullscreen__document-outline-wrapper'
 		} );
 
@@ -589,20 +752,20 @@ export class FullscreenAbstractEditorHandler {
 			<div class="ck ck-fullscreen__document-outline" data-ck-fullscreen="document-outline"></div>
 		`;
 
-		if ( !document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' ) ) {
-			document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild(
-				createElement( document, 'div', {
+		if ( !wrapper.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' ) ) {
+			wrapper.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild(
+				createElement( this._document, 'div', {
 					class: 'ck ck-fullscreen__left-sidebar-sticky',
 					'data-ck-fullscreen': 'left-sidebar-sticky'
 				} )
 			);
 		}
 
-		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( documentOutlineBodyWrapper );
-		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( documentOutlineHeaderElement );
+		wrapper.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( documentOutlineBodyWrapper );
+		wrapper.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( documentOutlineHeaderElement );
 
 		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as any;
-		documentOutlineUI.view.documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
+		documentOutlineUI.view.documentOutlineContainer = wrapper.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
 
@@ -623,7 +786,7 @@ export class FullscreenAbstractEditorHandler {
 	/* v8 ignore next -- @preserve */
 	private _generateCollapseButton(): void {
 		const button = new ButtonView( this._editor.locale );
-		const leftSidebarContainer = document.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
+		const leftSidebarContainer = this.getWrapper().querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
 		const t = this._editor.t;
 
 		button.set( {
@@ -874,11 +1037,11 @@ export class FullscreenAbstractEditorHandler {
 			this._wrapper!.querySelector( '.ck-fullscreen__right-edge' ) as HTMLElement :
 			this._wrapper!;
 		const relativeContainerRect = new Rect( relativeContainer ).getVisible();
-		const editorContainerRect = new Rect( document.querySelector( '.ck-fullscreen__editable' ) as HTMLElement ).getVisible();
+		const editorContainerRect = new Rect( this._wrapper!.querySelector( '.ck-fullscreen__editable' ) as HTMLElement ).getVisible();
 		const dialogRect = new Rect( dialogView.element!.querySelector( '.ck-dialog' ) as HTMLElement ).getVisible();
-		const scrollOffset = new Rect( document.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement )
+		const scrollOffset = new Rect( this._wrapper!.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement )
 			.excludeScrollbarsAndBorders().getVisible()!.width -
-			new Rect( document.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement ).getVisible()!.width;
+			new Rect( this._wrapper!.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement ).getVisible()!.width;
 
 		if ( relativeContainerRect && editorContainerRect && dialogRect ) {
 			dialogView.position = null;
@@ -898,7 +1061,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Saves the scroll positions of all ancestors of the given element.
 	 */
 	private _saveAncestorsScrollPositions( domElement: HTMLElement ): void {
-		let element = domElement.parentElement;
+		let element = getParentElement( domElement ) as HTMLElement | null;
 
 		if ( !element ) {
 			return;
@@ -926,7 +1089,7 @@ export class FullscreenAbstractEditorHandler {
 				} );
 			}
 
-			element = element.parentElement;
+			element = getParentElement( element ) as HTMLElement | null;
 		}
 	}
 

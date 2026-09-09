@@ -12,6 +12,8 @@ import { isWindow } from './iswindow.js';
 import { getBorderWidths } from './getborderwidths.js';
 import { isText } from './istext.js';
 import { getPositionedAncestor } from './getpositionedancestor.js';
+import { getParentElement } from './getparentelement.js';
+import { isShadowRoot } from './isshadowroot.js';
 import { global } from './global.js';
 
 const RECT_PROPERTIES: ReadonlyArray<keyof DomRectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
@@ -115,9 +117,10 @@ export class Rect {
 			// The `Rect` class depends on `getBoundingClientRect` and `getClientRects` DOM methods. If the source
 			// of a rect in an HTML element or a DOM range but it does not belong to any rendered DOM tree, these methods
 			// will fail to obtain the geometry and the rect instance makes little sense to the features using it.
-			// To get rid of this warning make sure the source passed to the constructor is a descendant of `window.document.body`.
+			// To get rid of this warning make sure the source passed to the constructor is connected to a rendered
+			// DOM tree, that is, to a document or to a shadow tree attached to one.
 			// @if CK_DEBUG // const sourceNode = isSourceRange ? source.startContainer : source;
-			// @if CK_DEBUG // if ( !sourceNode.ownerDocument || !sourceNode.ownerDocument.body.contains( sourceNode ) ) {
+			// @if CK_DEBUG // if ( !sourceNode.isConnected ) {
 			// @if CK_DEBUG // 	console.warn(
 			// @if CK_DEBUG // 		'rect-source-not-in-dom: The source of this rect does not belong to any rendered DOM tree.',
 			// @if CK_DEBUG // 		{ source } );
@@ -250,10 +253,14 @@ export class Rect {
 	 * const visibleInViewportRect = new Rect( window ).getIntersection( new Rect( source ).getVisible() );
 	 * ```
 	 *
+	 * **Note**: The ancestor walk crosses shadow DOM boundaries, continuing from the host element of a shadow
+	 * root instead of stopping at it, so a rect inside a shadow tree is still cropped by the ancestors in the
+	 * surrounding document. Works for open and closed shadow roots alike.
+	 *
 	 * @returns A visible rect instance or `null`, if there's none.
 	 */
 	public getVisible(): Rect | null {
-		const source: RectSource & { parentNode?: Node | null; commonAncestorContainer?: Node | null } = this._source;
+		const source: RectSource = this._source;
 
 		let visibleRect = this.clone();
 
@@ -263,7 +270,18 @@ export class Rect {
 		}
 
 		let child: any = source;
-		let parent = source.parentNode || source.commonAncestorContainer;
+		let parent: Node | null = null;
+
+		if ( isDomElement( source ) ) {
+			parent = getParentElement( source );
+		} else if ( isRange( source ) ) {
+			// A range spanning the top level of a shadow root has that root as its common ancestor. The root
+			// has no parent to continue from, so hop straight to the host instead.
+			const container = source.commonAncestorContainer;
+
+			parent = isShadowRoot( container ) ? container.host : container;
+		}
+
 		let lastPositionedChildElement;
 
 		// Check the ancestors all the way up to the <body>.
@@ -285,7 +303,7 @@ export class Rect {
 				( lastPositionedChildElement && getElementPosition( lastPositionedChildElement ) === 'absolute' && !isPositioned( parent ) )
 			) {
 				child = parent;
-				parent = parent.parentNode;
+				parent = getParentElement( parent );
 				continue;
 			}
 
@@ -303,7 +321,7 @@ export class Rect {
 			}
 
 			child = parent;
-			parent = parent.parentNode;
+			parent = getParentElement( parent );
 		}
 
 		return visibleRect;
@@ -433,7 +451,7 @@ export class Rect {
 			let startContainer = range.startContainer;
 
 			if ( isText( startContainer ) ) {
-				startContainer = startContainer.parentNode!;
+				startContainer = getParentElement( startContainer )!;
 			}
 
 			const rect = new Rect( ( startContainer as Element ).getBoundingClientRect() );

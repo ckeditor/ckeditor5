@@ -13,9 +13,9 @@
  *
  * 1. Every custom property consumed without a fallback in a graph must be declared in that graph
  *    (or in the same graph of the base packages, or be a known runtime-provided variable).
- * 2. A custom property declared in the top-level `:root` scope of both graphs must have an
- *    identical value in every copy, as the copies shadow each other once both stylesheets are
- *    loaded on a single page.
+ * 2. A custom property declared in the top-level root scope (`:root` or `:host`) of both graphs
+ *    must have an identical value in every copy, as the copies shadow each other once both
+ *    stylesheets are loaded on a single page.
  *
  * Options:
  *   --base-packages <path>  Path to another packages directory whose declarations extend both
@@ -84,7 +84,7 @@ function analyzeGraph( entryFile ) {
 	const analysis = {
 		// All declared variable names, regardless of the scope.
 		declared: new Set(),
-		// variable name -> Map( normalized value -> [ locations ] ), for top-level `:root` declarations only.
+		// variable name -> Map( normalized value -> [ locations ] ), for top-level root scope declarations only.
 		rootDeclarations: new Map(),
 		// variable name -> [ locations ], for `var()` usages without a fallback.
 		usedWithoutFallback: new Map()
@@ -149,7 +149,7 @@ function analyzeFile( filePath, analysis, analyzedFiles ) {
 			analysis.declared.add( node.property );
 
 			const isTopLevelRootRule = !this.atrule && this.rule?.prelude?.type === 'SelectorList' &&
-				generate( this.rule.prelude ) === ':root';
+				hasRootSelector( this.rule.prelude );
 
 			if ( isTopLevelRootRule ) {
 				const value = generate( node.value );
@@ -174,6 +174,20 @@ function analyzeFile( filePath, analysis, analyzedFiles ) {
 				analysis.usedWithoutFallback.set( name, locations );
 			}
 		}
+	} );
+}
+
+/**
+ * Checks whether the given selector list declares the root scope, which either `:root` or `:host`
+ * does. The stylesheets pair the two (`:root,\n:host { … }`) so that one stylesheet resolves its
+ * custom properties in the light DOM and inside a shadow root alike – hence the selector list
+ * cannot be compared as a whole string, and either selector on its own marks the root scope.
+ */
+function hasRootSelector( prelude ) {
+	return prelude.children.some( selector => {
+		const text = generate( selector ).toLowerCase();
+
+		return text === ':root' || text === ':host';
 	} );
 }
 
@@ -212,7 +226,7 @@ function validateUsages( kind, otherKind ) {
 }
 
 /**
- * Checks that every variable declared at the top-level `:root` scope of both the editor and
+ * Checks that every variable declared at the top-level root scope of both the editor and
  * content graphs has an identical value in every copy.
  */
 function validateRootValueSync( editorDeclarations, contentDeclarations ) {
@@ -229,7 +243,7 @@ function validateRootValueSync( editorDeclarations, contentDeclarations ) {
 		];
 
 		errors.push(
-			`"${ name }" is declared at ":root" in both the editor and content styles ` +
+			`"${ name }" is declared at the root scope in both the editor and content styles ` +
 			`with different values: ${ details.join( ', ' ) }.`
 		);
 	}

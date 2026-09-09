@@ -11,6 +11,9 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { createObserver } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+
+import { getOverlayConfig, wrapInShadowRoot } from '@ckeditor/ckeditor5-ui/manual/_utils/shadow.js';
+
 declare global {
 	interface Window {
 		editor: any;
@@ -18,12 +21,15 @@ declare global {
 	}
 }
 
+const uiRoot: Document | ShadowRoot = wrapInShadowRoot( document.getElementById( 'editor-ui' )! ) ?? document;
+
 const editorData = '<h2>Hello world</h2><p>This is the decoupled editor.</p>';
 let editor: any, editable, observer: any;
 
 function initEditor() {
 	DecoupledEditor
 		.create( {
+			...getOverlayConfig(),
 			root: {
 				initialData: editorData,
 				modelAttributes: {
@@ -37,9 +43,9 @@ function initEditor() {
 			console.log( 'Editor was initialized', newEditor );
 			console.log( 'You can now play with it using global `editor` and `editable` variables.' );
 
-			document.querySelector( '.menubar-container' )!.appendChild( newEditor.ui.view.menuBarView.element! );
-			document.querySelector( '.toolbar-container' )!.appendChild( newEditor.ui.view.toolbar.element! );
-			document.querySelector( '.editable-container' )!.appendChild( newEditor.ui.view.editable.element! );
+			uiRoot.querySelector( '.menubar-container' )!.appendChild( newEditor.ui.view.menuBarView.element! );
+			uiRoot.querySelector( '.toolbar-container' )!.appendChild( newEditor.ui.view.toolbar.element! );
+			uiRoot.querySelector( '.editable-container' )!.appendChild( newEditor.ui.view.editable.element! );
 
 			window.editor = editor = newEditor;
 			window.editable = editable = editor.editing.view.document.getRoot();

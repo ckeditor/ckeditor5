@@ -344,7 +344,7 @@ describe( 'scripts/check-css-variables', () => {
 
 		expect( process.exit ).toHaveBeenCalledWith( 1 );
 		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
-			'"--ck-shared-size" is declared at ":root" in both the editor and content styles with different values'
+			'"--ck-shared-size" is declared at the root scope in both the editor and content styles with different values'
 		) );
 	} );
 

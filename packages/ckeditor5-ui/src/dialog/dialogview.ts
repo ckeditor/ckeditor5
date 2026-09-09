@@ -327,6 +327,11 @@ export class DialogView extends DialogViewBase implements DraggableView {
 		} );
 
 		// Update dialog position upon document scroll, if the position was not changed manually.
+		//
+		// No `useCapture` here, and no per-shadow-root listeners either. The dialog is rendered into the body
+		// collection, which is never itself a scrollable element, so the only scroll this needs to react to is
+		// the page (`document`) scrolling underneath it — never a scrollable container the dialog happens to
+		// live inside. `document`, as the light DOM root, is unaffected by shadow boundaries either way.
 		this.listenTo( global.document, 'scroll', () => {
 			if ( this._isVisible && !this.wasMoved ) {
 				this.updatePosition();
@@ -483,7 +488,7 @@ export class DialogView extends DialogViewBase implements DraggableView {
 	 * and moves it to the new position.
 	 */
 	public updatePosition(): void {
-		if ( !this.element || !this.element.parentNode ) {
+		if ( !this.element || !this.element.isConnected ) {
 			return;
 		}
 

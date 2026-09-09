@@ -2590,6 +2590,28 @@ describe( 'Drag and Drop', () => {
 				expect.any( String ) // Link to the documentation
 			);
 		} );
+
+		it( 'should mount the preview in the editable shadow root when the editor lives in one', () => {
+			const host = document.createElement( 'div' );
+			document.body.appendChild( host );
+
+			const shadowRoot = host.attachShadow( { mode: 'open' } );
+			const domEditable = editor.editing.view.getDomRoot();
+
+			vi.spyOn( domEditable, 'getRootNode' ).mockReturnValue( shadowRoot );
+
+			dragDrop._updatePreview( {
+				target: targetElement,
+				clientX: 10,
+				dataTransfer: createDataTransfer( {
+					'text/html': '<strong>Test</strong>'
+				} )
+			} );
+
+			expect( dragDrop._previewContainer.parentNode ).toBe( shadowRoot );
+
+			host.remove();
+		} );
 	} );
 
 	function fireDragStart( dataTransferMock, preventDefault = () => {}, domTarget ) {

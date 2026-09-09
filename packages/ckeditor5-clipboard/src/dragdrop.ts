@@ -34,6 +34,8 @@ import {
 	uid,
 	global,
 	createElement,
+	isShadowRoot,
+	containsNode,
 	DomEmitterMixin,
 	delay,
 	Rect,
@@ -683,17 +685,30 @@ export class DragDrop extends Plugin {
 		const domEditable = view.domConverter.mapViewToDom( editable )!;
 		const computedStyle = global.window.getComputedStyle( domEditable );
 
+		// Create the preview in the editable's own document so it can be appended into the editable's tree
+		// (its shadow root, or that document's body) without crossing document boundaries.
+		const editableDocument = domEditable.ownerDocument;
+
 		if ( !this._previewContainer ) {
-			this._previewContainer = createElement( global.document, 'div', {
+			this._previewContainer = createElement( editableDocument, 'div', {
 				style: 'position: fixed; left: -999999px;'
 			} );
-
-			global.document.body.appendChild( this._previewContainer );
 		} else if ( this._previewContainer.firstElementChild ) {
 			this._previewContainer.removeChild( this._previewContainer.firstElementChild );
 		}
 
-		const preview = createElement( global.document, 'div' );
+		// Mount the preview in the same root as the editable so it inherits the editor content styles,
+		// which live inside the shadow root when the editor is placed in one. Done on every drag (rather
+		// than only on creation) so the preview follows the editable if it moves to a different root.
+		const editableRoot = domEditable.getRootNode();
+
+		if ( isShadowRoot( editableRoot ) ) {
+			editableRoot.appendChild( this._previewContainer );
+		} else {
+			editableDocument.body.appendChild( this._previewContainer );
+		}
+
+		const preview = createElement( editableDocument, 'div' );
 
 		preview.className = 'ck ck-content ck-clipboard-preview';
 
@@ -703,7 +718,7 @@ export class DragDrop extends Plugin {
 		const editableWidth = parseFloat( computedStyle.width ) - domEditablePaddingLeft - domEditablePaddingRight;
 
 		// Dragging by the drag handle outside editable element.
-		if ( !domEditable.contains( domTarget ) ) {
+		if ( !containsNode( domEditable, domTarget ) ) {
 			if ( !env.isiOS ) {
 				const offsetLeft = domRect.left - clientX + domEditablePaddingLeft;
 

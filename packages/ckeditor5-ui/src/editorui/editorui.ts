@@ -8,6 +8,7 @@
  */
 
 import { ComponentFactory } from '../componentfactory.js';
+import { OverlayHost } from '../overlayhost.js';
 import { TooltipManager } from '../tooltipmanager.js';
 import { PoweredBy } from './poweredby.js';
 import { EvaluationBadge } from './evaluationbadge.js';
@@ -22,7 +23,10 @@ import {
 	DomEmitterMixin,
 	global,
 	isVisible,
+	getOverlayMountRoot,
+	logWarning,
 	FocusTracker,
+	ShadowRootRegistry,
 	getVisualViewportOffset,
 	type EventInfo,
 	type CollectionAddEvent,
@@ -130,6 +134,25 @@ export abstract class EditorUI extends EditorUIBase {
 	public declare viewportOffset: ViewportOffset;
 
 	/**
+	 * Tracks the shadow roots hosting the DOM elements used by the editor UI (editables, toolbars, menu bar).
+	 *
+	 * Features that need the DOM events which do not cross a shadow boundary – `scroll`, `mouseenter`,
+	 * `mouseleave` – attach them to every tracked root with
+	 * {@link module:utils/dom/shadowrootregistry~listenToShadowRoots `listenToShadowRoots()`}. A feature that
+	 * has a node in hand wants a shadow-aware helper instead, such as
+	 * {@link module:utils/dom/getshadowroots~getShadowRoots `getShadowRoots()`}.
+	 */
+	public readonly shadowRootRegistry: ShadowRootRegistry = new ShadowRootRegistry();
+
+	/**
+	 * Hosts the editor's floating UI: keeps the {@link module:ui/editorui/editoruiview~EditorUIView#body body
+	 * collection} mounted in the target resolved by {@link #_getBodyCollectionMountTarget} and registers it
+	 * with the shared tooltip manager. Created once the editor is {@link #isReady ready} – the view does not
+	 * exist earlier.
+	 */
+	private _overlayHost: OverlayHost | null = null;
+
+	/**
 	 * Stores all editable elements used by the editor instance.
 	 */
 	private _editableElementsMap = new Map<string, HTMLElement>();
@@ -167,7 +190,8 @@ export abstract class EditorUI extends EditorUIBase {
 		this.editor = editor;
 		this.componentFactory = new ComponentFactory( editor );
 		this.focusTracker = new FocusTracker();
-		this.tooltipManager = new TooltipManager( editor );
+
+		this.tooltipManager = TooltipManager.for( editor.locale );
 		this.poweredBy = new PoweredBy( editor );
 		this.evaluationBadge = new EvaluationBadge( editor );
 		this.ariaLiveAnnouncer = new AriaLiveAnnouncer( editor );
@@ -175,7 +199,22 @@ export abstract class EditorUI extends EditorUIBase {
 		this._initViewportOffset( this._readViewportOffsetFromConfig() );
 
 		this.once<EditorUIReadyEvent>( 'ready', () => {
-			this._bindBodyCollectionWithFocusTracker();
+			warnIfConfiguredOverlayContainerDetached( editor );
+
+			// Delegate hosting of the floating UI to the overlay host: it keeps the body collection mounted in
+			// the target resolved by #_getBodyCollectionMountTarget (re-syncing on every #update and whenever a
+			// view is added to the collection) and lets the shared tooltip manager host tooltips there, pinned
+			// into the tree the hovered UI (editables, toolbar, menu bar) lives in.
+			this._overlayHost = new OverlayHost( editor.locale, {
+				bodyCollection: this.view.body,
+				shadowRootRegistry: this.shadowRootRegistry,
+				tooltipManager: this.tooltipManager,
+				resolveMountTarget: () => this._getBodyCollectionMountTarget(),
+				updateEmitter: this
+			} );
+
+			this._bindBodyCollectionWatchers();
+			this._overlayHost.sync();
 
 			this.isReady = true;
 		} );
@@ -221,7 +260,17 @@ export abstract class EditorUI extends EditorUIBase {
 		this.stopListening();
 
 		this.focusTracker.destroy();
-		this.tooltipManager.destroy( this.editor );
+
+		// Stop hosting the shared tooltip balloon in this editor's body collection (which also pulls the balloon
+		// out before the view is destroyed).
+		if ( this._overlayHost ) {
+			this._overlayHost.destroy();
+			this._overlayHost = null;
+		}
+
+		// Release the editor's single reference to the shared tooltip manager (the host borrowed it), so the
+		// singleton is destroyed with the last editor.
+		this.tooltipManager.release();
 		this.poweredBy.destroy();
 		this.evaluationBadge.destroy();
 
@@ -230,6 +279,8 @@ export abstract class EditorUI extends EditorUIBase {
 			( domElement as any ).ckeditorInstance = null;
 			this.editor.keystrokes.stopListening( domElement );
 		}
+
+		this.shadowRootRegistry.destroy();
 
 		this._editableElementsMap = new Map();
 		this._focusableToolbarDefinitions = [];
@@ -261,6 +312,9 @@ export abstract class EditorUI extends EditorUIBase {
 
 		// Register the element, so it becomes available for Alt+F10 and Esc navigation.
 		this.focusTracker.add( domElement );
+
+		// Register editable in the shadow root registry.
+		this.shadowRootRegistry.registerNode( domElement );
 
 		const setUpKeystrokeHandler = () => {
 			// The editing view of the editor is already listening to keystrokes from DOM roots (see: KeyObserver).
@@ -298,6 +352,7 @@ export abstract class EditorUI extends EditorUIBase {
 
 		this.editor.keystrokes.stopListening( domElement );
 		this.focusTracker.remove( domElement );
+		this.shadowRootRegistry.unregisterNode( domElement );
 
 		( domElement as any ).ckeditorInstance = null;
 	}
@@ -327,14 +382,16 @@ export abstract class EditorUI extends EditorUIBase {
 	 * @param toolbarView A instance of the toolbar to be registered.
 	 */
 	public addToolbar( toolbarView: ToolbarView, options: FocusableToolbarOptions = {} ): void {
-		if ( toolbarView.isRendered ) {
+		const attach = () => {
 			this.focusTracker.add( toolbarView );
 			this.editor.keystrokes.listenTo( toolbarView.element! );
+			this.shadowRootRegistry.registerNode( toolbarView.element! );
+		};
+
+		if ( toolbarView.isRendered ) {
+			attach();
 		} else {
-			toolbarView.once<UIViewRenderEvent>( 'render', () => {
-				this.focusTracker.add( toolbarView );
-				this.editor.keystrokes.listenTo( toolbarView.element! );
-			} );
+			toolbarView.once<UIViewRenderEvent>( 'render', attach );
 		}
 
 		this._focusableToolbarDefinitions.push( { toolbarView, options } );
@@ -393,6 +450,7 @@ export abstract class EditorUI extends EditorUIBase {
 
 		this.focusTracker.add( menuBarViewElement );
 		this.editor.keystrokes.listenTo( menuBarViewElement );
+		this.shadowRootRegistry.registerNode( menuBarViewElement );
 
 		const normalizedMenuBarConfig = normalizeMenuBarConfig( this.editor.config.get( 'menuBar' ) || {} );
 
@@ -671,21 +729,58 @@ export abstract class EditorUI extends EditorUIBase {
 	}
 
 	/**
-	 * Ensures that the focus tracker is aware of all views' DOM elements in the body collection.
+	 * Resolves where the {@link module:ui/editorui/editoruiview~EditorUIView#body body collection} should be
+	 * mounted:
+	 *
+	 * * the {@link module:core/editor/editorconfig~UiConfig#overlayContainer `ui.overlayContainer`}
+	 *   configuration, if set;
+	 * * otherwise, resolved from the first editing root connected to a document (an editor may span several,
+	 *   for example a multi-root editor): the shadow root that root lives in (open or closed) when there is
+	 *   one, otherwise `document.body`;
+	 * * otherwise `null` – no editing root is connected yet, so the body collection is not attached to the
+	 *   DOM before the editor itself is.
+	 *
+	 * Resolving from the connected editing root on every sync also moves the body collection back out
+	 * of a shadow root if the editing root ever leaves it.
 	 */
-	private _bindBodyCollectionWithFocusTracker() {
+	private _getBodyCollectionMountTarget(): HTMLElement | ShadowRoot | null {
+		const configuredTarget = this.editor.config.get( 'ui.overlayContainer' );
+
+		if ( configuredTarget ) {
+			return configuredTarget;
+		}
+
+		for ( const domRoot of this.editor.editing.view.domRoots.values() ) {
+			const mountRoot = getOverlayMountRoot( domRoot );
+
+			if ( mountRoot ) {
+				return mountRoot;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Ensures that the focus tracker and the shadow root registry are aware of all views' DOM elements in the
+	 * body collection.
+	 */
+	private _bindBodyCollectionWatchers() {
 		const body = this.view.body;
 
 		for ( const view of body ) {
 			this.focusTracker.add( view.element! );
+			this.shadowRootRegistry.registerNode( view.element! );
 		}
 
 		body.on<CollectionAddEvent<View>>( 'add', ( evt, view ) => {
 			this.focusTracker.add( view.element! );
+			this.shadowRootRegistry.registerNode( view.element! );
 		} );
 
 		body.on<CollectionRemoveEvent<View>>( 'remove', ( evt, view ) => {
 			this.focusTracker.remove( view.element! );
+			this.shadowRootRegistry.unregisterNode( view.element! );
 		} );
 	}
 
@@ -845,4 +940,32 @@ function getToolbarDefinitionWeight( toolbarDef: FocusableToolbarDefinition ): n
 	}
 
 	return weight;
+}
+
+/**
+ * Warns, when the editor is ready, if a {@link module:core/editor/editorconfig~UiConfig#overlayContainer
+ * `ui.overlayContainer`} is configured but is not connected to the document. The overlay layer still mounts
+ * into it, but its floating UI (balloons, dialogs, tooltips) will not be visible until the element is inserted
+ * into the document.
+ *
+ * @param editor The editor to read the configuration from.
+ */
+function warnIfConfiguredOverlayContainerDetached( editor: Editor ): void {
+	const configuredContainer = editor.config.get( 'ui.overlayContainer' );
+
+	if ( configuredContainer && !configuredContainer.isConnected ) {
+		/**
+		 * The element passed as {@link module:core/editor/editorconfig~UiConfig#overlayContainer
+		 * `config.ui.overlayContainer`} is not connected to the document. The overlay layer mounts into it
+		 * anyway, but its floating UI (balloons, dialogs, tooltips) stays invisible until the element is
+		 * inserted into the document.
+		 *
+		 * Make sure the configured container is attached to the document before creating the editor, or attach
+		 * it afterwards.
+		 *
+		 * @error ui-overlay-container-not-connected
+		 * @param {HTMLElement|ShadowRoot} overlayContainer The configured, not connected container.
+		 */
+		logWarning( 'ui-overlay-container-not-connected', { overlayContainer: configuredContainer } );
+	}
 }

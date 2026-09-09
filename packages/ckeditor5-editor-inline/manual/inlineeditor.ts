@@ -6,6 +6,9 @@
 import { InlineEditor } from '../src/inlineeditor.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { createObserver } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+
+import { getOverlayConfig, wrapInShadowRoot } from '@ckeditor/ckeditor5-ui/manual/_utils/shadow.js';
+
 declare global {
 	interface Window {
 		_observers: any;
@@ -13,6 +16,8 @@ declare global {
 		editors: any;
 	}
 }
+
+const uiRoot: Document | ShadowRoot = wrapInShadowRoot( document.getElementById( 'editor-ui' )! ) ?? document;
 
 window.editors = {};
 window.editables = [];
@@ -25,12 +30,13 @@ function initEditors() {
 	function init( selector: string ) {
 		InlineEditor
 			.create( {
+				...getOverlayConfig(),
 				image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 				plugins: [ ArticlePluginSet ],
 				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 				menuBar: { isVisible: true },
 				root: {
-					element: document.querySelector( selector ) as HTMLElement,
+					element: uiRoot.querySelector( selector ) as HTMLElement,
 					modelAttributes: {
 						foo: selector
 					}

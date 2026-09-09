@@ -363,6 +363,14 @@ export class EmojiRepository extends Plugin {
 		const emojiSupportedVersionByOs = emojiUtils.getEmojiSupportedVersionByOs();
 
 		const container = emojiUtils.createEmojiWidthTestingContainer();
+
+		// The container must be attached to the main document, because widths cannot be measured in a tree
+		// that is not rendered. The editor root may still be detached or hidden at this point.
+		//
+		// Skipping the shadow DOM check is safe here. The container is hidden, placed off-screen and removed
+		// right after measuring, so it never touches the editor UI. It only checks how the system font draws
+		// an emoji, which does not depend on the editor styles.
+		// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 		document.body.appendChild( container );
 
 		const results = insertableEmoji

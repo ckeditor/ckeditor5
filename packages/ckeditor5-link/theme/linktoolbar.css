@@ -4,7 +4,8 @@
  */
 
 
-:root {
+:root,
+:host {
 	--ck-link-bookmark-icon-size: calc( var(--ck-icon-size) * 0.7); /* 0.7 = 14/20 cause default the icon size is 20px */
 }
 

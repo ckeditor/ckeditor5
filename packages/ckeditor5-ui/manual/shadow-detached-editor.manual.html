@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Shadow DOM (detached editor attached into a root)</title>
+	<script type="module" src="./shadow-detached-editor.ts"></script>
+	<style>
+		.section { margin: 20px 0; padding: 12px; border: 1px solid #ccc; border-radius: 4px; }
+		#mount { display: block; margin-top: 8px; padding: 8px; border: 2px dashed #4a934a; border-radius: 4px; }
+		#mount::before { content: "attach target"; display: block; margin-bottom: 6px; font: 12px monospace; color: #4a934a; }
+		button { cursor: pointer; }
+	</style>
+</head>
+<body>
+	<ck-manual-header>
+		<h2>Detached editor attached into a root</h2>
+
+		<p>
+			The editor is created <strong>detached</strong> – from a data string, with no source element – so its UI
+			element starts outside the DOM and its body collection has nowhere to mount yet. Clicking
+			<strong>Attach</strong> inserts the UI into the root picked below, and the editor has to resolve that root
+			on its own the moment floating UI is first shown.
+		</p>
+
+		<p>
+			This test deliberately configures <strong>no</strong> <code>ui.overlayContainer</code>: the point is the
+			auto-resolution, which a configured container would short-circuit. So the overlay layer is expected in the
+			attach target itself.
+		</p>
+
+		<ol>
+			<li>Click <strong>Attach</strong>.</li>
+			<li>
+				Select text to show the balloon toolbar, open <strong>Find &amp; Replace</strong> for a dialog, and use
+				the <strong>block toolbar</strong> handle. All of it must appear inside the attach target, styled –
+				never in the light DOM behind it.
+			</li>
+		</ol>
+
+		<p>
+			In the shadow modes the editor stylesheet is forwarded into the root and disabled in the main document, so
+			anything that mounts outside it renders unstyled and is easy to spot. A closed root only hides
+			<code>host.shadowRoot</code> from outside code, so both shadow modes should behave identically. The root
+			starts empty here, with no editor in it to reach it through, so it is exposed as
+			<code>window.editorDomRoot</code> – the only way into a closed one before you click <strong>Attach</strong>.
+		</p>
+
+		<p>
+			The <code>rect-source-not-in-dom</code> warnings logged before you click <strong>Attach</strong> are
+			expected: they come from rects measured while the editor UI is still outside the DOM, which is exactly the
+			state this test starts in.
+		</p>
+	</ck-manual-header>
+
+	<ck-manual-shadow-mode></ck-manual-shadow-mode>
+
+	<div class="section">
+		<p>
+			<button id="attach-btn" type="button" disabled>Attach editor into the root</button>
+			<span id="attach-status">Editor created detached – its body collection is not in the DOM yet.</span>
+		</p>
+		<div id="mount"></div>
+	</div>
+
+	<div id="editor-data" style="display: none">
+		<h2>Shadow DOM smoke test</h2>
+		<p>Select text to trigger the <strong>balloon toolbar</strong>. Use the <strong>block toolbar</strong> handle
+		on the left. Open <strong>Find &amp; Replace</strong> for a dialog. Hover toolbar buttons for
+		<strong>tooltips</strong>.</p>
+
+		<figure class="table">
+			<table>
+				<tbody>
+					<tr><td>A1</td><td>B1</td><td>C1</td></tr>
+					<tr><td>A2</td><td>B2</td><td>C2</td></tr>
+				</tbody>
+			</table>
+		</figure>
+
+		<ul>
+			<li>List item with a <a href="https://ckeditor.com">link</a></li>
+			<li>Another item</li>
+		</ul>
+
+		<blockquote><p>A block quote to drag with the block toolbar.</p></blockquote>
+	</div>
+</body>
+</html>

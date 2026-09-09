@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Full page editing with a lazily mounted editable</title>
+		<script type="module" src="./fullpage-decoupled.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Full page editing with a lazily mounted editable</h2>
+
+			<p>
+				A <code>DecoupledEditor</code> created from initial data alone, with no source element to attach to,
+				is a <em>detached editor</em>: it creates its editable but leaves placing it in the DOM to the
+				integration. So between <strong>Create editor</strong> and <strong>Mount editable</strong> the data
+				is loaded while the editable is detached. The tree the <code>&#x3C;style></code> elements from the
+				data's <code>&#x3C;head></code> belong to is unknown then – it may still turn out to be
+				<code>document.head</code>, a shadow root, or nothing at all – so nothing may be rendered until the
+				editable is connected.
+			</p>
+
+			<p>
+				The mount target is chosen at mount time, so the same editor instance can end up in the light DOM or
+				in a shadow root. The data variants set different declarations for <code>h2</code> and
+				<code>p</code>, so styles left over from a previously loaded document show up in the content, which is
+				what to watch – the report only counts them and says where they are.
+			</p>
+
+			<p>What to check:</p>
+
+			<ul>
+				<li>
+					Right after <strong>Create editor</strong> the report counts zero styles in
+					<code>document.head</code>. The data is loaded – the editable simply is not anywhere yet.
+				</li>
+				<li>
+					<strong>Mount editable</strong> into the light DOM puts two styles in
+					<code>document.head</code> and the content picks up the variant colors.
+				</li>
+				<li>
+					Mounting into either shadow root puts them in that root instead, with nothing stranded in
+					<code>document.head</code>, and the content inside the shadow root is styled.
+				</li>
+				<li>
+					Switching the data variant <em>before</em> mounting and then mounting renders the styles of the
+					variant loaded last only – no leftovers from the initial data.
+				</li>
+				<li>
+					Switching it after mounting keeps the count at two – it must not grow – and the content picks up
+					the new colors, with none of the previous variant's declarations still applying.
+				</li>
+				<li>Loading the variant with no head styles drops the count to zero.</li>
+				<li>
+					<strong>Destroy editor</strong> drops the count to zero as well, wherever the styles were. The
+					toolbar and the editable are taken out of the page by this test, not by the editor – a detached
+					editor leaves that to whoever mounted them.
+				</li>
+				<li>
+					With <strong>Render styles from &lt;head&gt;</strong> off, no styles are rendered at any point,
+					before or after mounting.
+				</li>
+				<li>
+					Leaving source editing mode re-sets the data, so it goes through the same path as the
+					<strong>Load data</strong> button.
+				</li>
+				<li>The <code>&#x3C;script></code> in the data is preserved in the output but never runs: no alert.</li>
+			</ul>
+
+			<p>
+				The styles are rendered once the editable is connected, which the browser reports asynchronously, so
+				the report is taken a moment after each action. <strong>Refresh report</strong> takes another look.
+			</p>
+		</ck-manual-header>
+
+		<div class="dashboard">
+			<ck-manual-shadow-mode></ck-manual-shadow-mode>
+			<label
+				>Data
+				<select id="data-variant">
+					<option value="a" selected>A</option>
+					<option value="b">B</option>
+					<option value="noStyles">without head styles</option>
+				</select>
+			</label>
+			<label title="Sets htmlSupport.fullPage.allowRenderStylesFromHead – with it off, the head styles stay in the data and are never rendered">
+				<input name="allow-styles" type="checkbox" id="allow-styles" checked />
+				Render styles from &lt;head&gt;
+			</label>
+			<button type="button" id="create">Create editor</button>
+			<button type="button" id="mount">Mount editable</button>
+			<button type="button" id="set-data">Load data</button>
+			<button type="button" id="destroy">Destroy editor</button>
+			<button type="button" id="refresh-report">Refresh report</button>
+		</div>
+
+		<pre id="report" class="report"></pre>
+
+		<div id="stage" class="stage"></div>
+
+		<style data-manual-page>
+			.dashboard {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: 0.2em 1.2em;
+				font-size: 0.85em;
+			}
+
+			.dashboard label {
+				white-space: nowrap;
+			}
+
+			.report {
+				margin: 1em 0;
+				padding: 0.6em 0.8em;
+				border: 1px solid #ccc;
+				background: #fafafa;
+				font-size: 0.8em;
+				line-height: 1.5;
+				white-space: pre-wrap;
+			}
+
+			.stage {
+				max-width: 800px;
+				margin: 2em auto;
+				min-height: 3em;
+			}
+		</style>
+	</body>
+</html>

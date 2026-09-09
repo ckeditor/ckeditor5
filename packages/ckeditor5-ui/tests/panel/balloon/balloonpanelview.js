@@ -1101,6 +1101,18 @@ describe( 'BalloonPanelView', () => {
 					expect( view._resizeObserver ).toBeNull();
 				} );
 
+				it( 'should keep the existing resize observer instead of creating a second one', () => {
+					const existingObserver = { destroy: vi.fn() };
+
+					view._resizeObserver = existingObserver;
+
+					view.pin( { target, limiter } );
+					vi.advanceTimersByTime( 100 );
+
+					expect( view._resizeObserver ).toBe( existingObserver );
+					expect( existingObserver.destroy ).not.toHaveBeenCalled();
+				} );
+
 				it( 'should watch parent element visibility changes if target is text node', () => {
 					const resizeCallbackRef = createResizeObserverCallbackRef();
 					const textNode = target.appendChild(
@@ -1796,6 +1808,138 @@ describe( 'BalloonPanelView', () => {
 					withArrow: true
 				} );
 			}
+		} );
+	} );
+
+	describe( 'shadow DOM', () => {
+		let attachToSpy, host, target, targetParent;
+
+		beforeEach( () => {
+			attachToSpy = vi.spyOn( view, 'attachTo' );
+			view.show();
+		} );
+
+		afterEach( () => {
+			if ( host ) {
+				host.remove();
+				host = null;
+			}
+		} );
+
+		for ( const mode of [ 'open', 'closed' ] ) {
+			it( `keeps the balloon pinned when a scrollable ancestor inside a shadow root scrolls (mode: '${ mode }')`, () => {
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				const root = host.attachShadow( { mode } );
+
+				targetParent = document.createElement( 'div' );
+				target = document.createElement( 'div' );
+
+				targetParent.appendChild( target );
+				root.appendChild( targetParent );
+
+				view.pin( { target } );
+
+				expect( attachToSpy ).toHaveBeenCalledOnce();
+
+				// The listener is attached directly to `root`; `scroll` is neither `composed` nor bubbling, so
+				// this is only observable at all because of that — a `document`-level listener, however it is
+				// configured, could never see a scroll happening inside a shadow root.
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
+			} );
+		}
+
+		it( 'crosses nested shadow boundaries to keep the balloon pinned', () => {
+			host = document.createElement( 'div' );
+			document.body.appendChild( host );
+
+			const outerRoot = host.attachShadow( { mode: 'open' } );
+			const innerHost = document.createElement( 'div' );
+
+			outerRoot.appendChild( innerHost );
+
+			const innerRoot = innerHost.attachShadow( { mode: 'open' } );
+
+			targetParent = document.createElement( 'div' );
+			target = document.createElement( 'div' );
+
+			targetParent.appendChild( target );
+			innerRoot.appendChild( targetParent );
+
+			view.pin( { target } );
+
+			expect( attachToSpy ).toHaveBeenCalledOnce();
+
+			targetParent.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
+		} );
+
+		it( 'still reacts to a scroll of the whole page when the target lives in a shadow root', () => {
+			host = document.createElement( 'div' );
+			document.body.appendChild( host );
+
+			const root = host.attachShadow( { mode: 'open' } );
+
+			target = document.createElement( 'div' );
+			root.appendChild( target );
+
+			view.pin( { target } );
+
+			expect( attachToSpy ).toHaveBeenCalledOnce();
+
+			// `document` is unconditionally among the listened-to roots, regardless of where `target` lives —
+			// this is the light-DOM case this feature must not regress.
+			document.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
+		} );
+
+		it( 'does not react to an unrelated element scrolling in the same shadow root', () => {
+			host = document.createElement( 'div' );
+			document.body.appendChild( host );
+
+			const root = host.attachShadow( { mode: 'open' } );
+			const notRelatedElement = document.createElement( 'div' );
+
+			target = document.createElement( 'div' );
+			root.appendChild( target );
+			root.appendChild( notRelatedElement );
+
+			view.pin( { target } );
+
+			expect( attachToSpy ).toHaveBeenCalledOnce();
+
+			notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
+
+			// Still once: the shadow-root-level listener correctly filters by containment, the same way the
+			// `document`-level one already does for unrelated elements in the light DOM.
+			expect( attachToSpy ).toHaveBeenCalledOnce();
+		} );
+
+		it( 'stops reacting to a shadow root once the balloon is unpinned', () => {
+			host = document.createElement( 'div' );
+			document.body.appendChild( host );
+
+			const root = host.attachShadow( { mode: 'open' } );
+
+			target = document.createElement( 'div' );
+			root.appendChild( target );
+
+			view.pin( { target } );
+
+			expect( attachToSpy ).toHaveBeenCalledOnce();
+
+			view.unpin();
+
+			root.dispatchEvent( new Event( 'scroll' ) );
+
+			// Still once: `#_stopPinning` must have detached the shadow-root listener along with the
+			// `document` one.
+			expect( attachToSpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 } );

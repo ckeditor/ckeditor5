@@ -9,9 +9,13 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
+import type { EditingView } from '@ckeditor/ckeditor5-engine';
+
 import {
 	env,
 	global,
+	isShadowRoot,
+	getElementFromPoint,
 	DomEmitterMixin,
 	type ObservableChangeEvent,
 	type DomEmitter
@@ -134,10 +138,10 @@ export class DragDropBlockToolbar extends Plugin {
 
 		const clientX = domEvent.clientX + ( this.editor.locale.contentLanguageDirection == 'ltr' ? 100 : -100 );
 		const clientY = domEvent.clientY;
-		const target = document.elementFromPoint( clientX, clientY );
 		const view = this.editor.editing.view;
+		const target = getTargetAcrossRoots( view, clientX, clientY );
 
-		if ( !target || !target.closest( '.ck-editor__editable' ) ) {
+		if ( !target ) {
 			return;
 		}
 
@@ -159,4 +163,24 @@ export class DragDropBlockToolbar extends Plugin {
 	private _handleBlockDragEnd(): void {
 		this._isBlockDragging = false;
 	}
+}
+
+/**
+ * Returns the topmost `.ck-editor__editable`-contained element at the given point, resolved across
+ * every DOM root the editing view knows about (including open and closed shadow roots).
+ */
+function getTargetAcrossRoots( view: EditingView, x: number, y: number ): Element | null {
+	const shadowRoots = new Set<ShadowRoot>();
+
+	for ( const domRoot of view.domRoots.values() ) {
+		const root = domRoot.getRootNode();
+
+		if ( isShadowRoot( root ) ) {
+			shadowRoots.add( root );
+		}
+	}
+
+	const target = getElementFromPoint( x, y, Array.from( shadowRoots ) );
+
+	return target && target.closest( '.ck-editor__editable' ) ? target : null;
 }

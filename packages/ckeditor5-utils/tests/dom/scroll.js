@@ -102,6 +102,110 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 		} );
 	} );
 
+	describe( 'in a shadow root', () => {
+		let outerAncestor, shadowHost, shadowTarget;
+
+		beforeEach( () => {
+			outerAncestor = document.createElement( 'div' );
+			shadowHost = document.createElement( 'div' );
+			shadowTarget = document.createElement( 'p' );
+
+			outerAncestor.appendChild( shadowHost );
+			document.body.appendChild( outerAncestor );
+
+			stubGeometry( outerAncestor, {
+				top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+			}, {
+				scrollLeft: 0, scrollTop: 0
+			} );
+
+			stubGeometry( shadowHost, {
+				top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+			}, {
+				scrollLeft: 0, scrollTop: 0
+			} );
+
+			// The target sits below the visible area of both ancestors, so each of them must scroll down.
+			stubGeometry( shadowTarget, {
+				top: 200, right: 100, bottom: 300, left: 0, width: 100, height: 100
+			} );
+		} );
+
+		afterEach( () => {
+			outerAncestor.remove();
+		} );
+
+		for ( const mode of [ 'open', 'closed' ] ) {
+			it( `should scroll ancestors outside a ${ mode } shadow root`, () => {
+				shadowHost.attachShadow( { mode } ).appendChild( shadowTarget );
+
+				// Without crossing the host the walk is seeded with the shadow root itself, which has no
+				// geometry to measure, and then runs off the top of the shadow tree.
+				expect( () => scrollAncestorsToShowTarget( shadowTarget ) ).not.toThrow();
+
+				assertScrollPosition( shadowHost, { scrollTop: 200, scrollLeft: 0 } );
+				assertScrollPosition( outerAncestor, { scrollTop: 200, scrollLeft: 0 } );
+			} );
+
+			it( `should stop walking when the limiter is not an ancestor of a target in a ${ mode } shadow root`, () => {
+				shadowHost.attachShadow( { mode } ).appendChild( shadowTarget );
+
+				// A limiter outside the ancestor chain is never reached, so the walk runs past the root
+				// element. It has to end there rather than continue with no element to measure.
+				const unrelatedLimiter = document.createElement( 'div' );
+
+				expect( () => scrollAncestorsToShowTarget( shadowTarget, 0, unrelatedLimiter ) ).not.toThrow();
+			} );
+
+			it( `should scroll ancestors for a range spanning the top level of a ${ mode } shadow root`, () => {
+				const first = document.createElement( 'p' );
+				const second = document.createElement( 'p' );
+
+				shadowHost.attachShadow( { mode } ).append( first, second );
+
+				const range = document.createRange();
+
+				range.setStart( first, 0 );
+				range.setEnd( second, 0 );
+
+				// Such a range has the shadow root itself as its common ancestor, and a shadow root can be
+				// neither measured nor scrolled.
+				expect( range.commonAncestorContainer.constructor.name ).toBe( 'ShadowRoot' );
+
+				stubGeometry( range, {
+					top: 200, right: 100, bottom: 300, left: 0, width: 100, height: 100
+				} );
+
+				expect( () => scrollAncestorsToShowTarget( range ) ).not.toThrow();
+
+				assertScrollPosition( shadowHost, { scrollTop: 200, scrollLeft: 0 } );
+				assertScrollPosition( outerAncestor, { scrollTop: 200, scrollLeft: 0 } );
+			} );
+
+			it( `should scroll ancestors for a range in a text node inside a ${ mode } shadow root`, () => {
+				const text = new Text( 'foo' );
+
+				shadowHost.attachShadow( { mode } ).appendChild( text );
+
+				const range = document.createRange();
+
+				range.setStart( text, 1 );
+				range.setEnd( text, 2 );
+
+				stubGeometry( range, {
+					top: 200, right: 100, bottom: 300, left: 0, width: 100, height: 100
+				} );
+
+				// The common ancestor of the range is the text node and its parent is the shadow root itself,
+				// so resolving an element to scroll has to hop to the host.
+				expect( () => scrollAncestorsToShowTarget( range ) ).not.toThrow();
+
+				assertScrollPosition( shadowHost, { scrollTop: 200, scrollLeft: 0 } );
+				assertScrollPosition( outerAncestor, { scrollTop: 200, scrollLeft: 0 } );
+			} );
+		}
+	} );
+
 	function testWithoutAncestorOffset() {
 		it( 'should not touch the #scrollTop #scrollLeft of the ancestor if target is visible', () => {
 			stubGeometry( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );

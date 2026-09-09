@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Fullscreen in shadow DOM</title>
+		<script type="module" src="./fullscreen-shadow.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Fullscreen mode in the shadow DOM</h2>
+
+			<p>
+				The editor is built in the root picked below. In the shadow modes the editor stylesheets are forwarded
+				into that root and disabled in the main document, so the fullscreen layer is styled only if it lands in
+				a root that adopted them – which is exactly what this test watches.
+			</p>
+
+			<p>Where the layer is expected to mount, by combination:</p>
+
+			<ul>
+				<li>
+					With <strong>Overlay layer in its own container</strong> on (the default), the layer mounts in that
+					separate container – <em>not</em> in the editor's own root – because the editor resolves its
+					floating UI against the configured <code>ui.overlayContainer</code>. The editable moves there with
+					it for as long as fullscreen is on.
+				</li>
+				<li>
+					With it off, the editor resolves the root it lives in on its own, so the layer mounts in the
+					editor's root (or <code>document.body</code> in the light DOM).
+				</li>
+				<li>
+					With <strong>Fullscreen in a custom container</strong> on, <code>fullscreen.container</code> wins
+					over both. That container lives inside the editor's root and is easy to spot: it inverts its
+					colors.
+				</li>
+			</ul>
+
+			<p>
+				In every combination the layer must be fully styled, the toolbar and the menu bar must work from
+				inside it, and leaving fullscreen must put the editable back where it came from. A closed root cannot
+				be resolved through <code>host.shadowRoot</code>, so reach it from the console through the editor:
+				<code>editor.editing.view.getDomRoot().getRootNode()</code>.
+			</p>
+		</ck-manual-header>
+
+		<div class="dashboard">
+			<label
+				>Editor
+				<select id="editor-type">
+					<option value="classic" selected>Classic</option>
+					<option value="decoupled">Decoupled</option>
+				</select>
+			</label>
+			<ck-manual-shadow-mode overlay-container></ck-manual-shadow-mode>
+			<label title="Sets fullscreen.container to an element with an inverting filter, so the layer is easy to tell apart">
+				<input name="custom-container" type="checkbox" id="custom-container" />
+				Fullscreen in a custom container
+			</label>
+			<label
+				><input name="menu-bar" type="checkbox" id="menu-bar" /> Menu bar
+			</label>
+			<label
+				><input name="menu-bar-fullscreen" type="checkbox" id="menu-bar-fullscreen" checked />
+				Menu bar in fullscreen
+			</label>
+		</div>
+
+		<div id="mount" class="mount"></div>
+
+		<template id="editor-template">
+			<!-- Styles the markup below, so they have to travel with it: cloned into a shadow root, this
+			     `<style>` goes along, while the page's own stylesheets do not reach that root. -->
+			<style>
+				.editor-container {
+					max-width: 800px;
+					margin: 0 auto;
+				}
+
+				/* Only a filter, so it is obvious at a glance that the fullscreen layer landed in the custom
+				   container instead of its default place. The container is positioned only while it holds the
+				   layer, which fills it absolutely and would otherwise have nothing to resolve its size against. */
+				.custom-fullscreen-container {
+					filter: invert( 1 ) hue-rotate( 180deg );
+					display: none;
+				}
+
+				.custom-fullscreen-container:not( :empty ) {
+					position: fixed;
+					inset: 0;
+				}
+			</style>
+
+			<div class="editor-container">
+				<div class="document-editor__menu-bar"></div>
+				<div class="document-editor__toolbar"></div>
+				<div id="editor">
+					<h1 style="text-align: center">The Flavorful Tuscany Meetup</h1>
+					<p>
+						We are delighted to welcome you to the annual
+						<i>Flavorful Tuscany Meetup</i>. We hope you will enjoy the program as well
+						as your stay at the
+						<a target="_blank" rel="noopener noreferrer" href="http://ckeditor.com"
+							>Bilancino Hotel</a
+						>.
+					</p>
+					<figure class="image">
+						<img
+							src="https://ckeditor.com/assets/images/ckdemo/editor-types/malta.jpg"
+							alt="Bilancino Hotel"
+						/>
+						<figcaption>Bilancino Hotel</figcaption>
+					</figure>
+					<figure class="table">
+						<table>
+							<thead>
+								<tr>
+									<th colspan="2">Saturday, July 14</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>9:30 AM - 11:30 AM</td>
+									<td><strong>Americano vs. Brewed</strong> - “know your coffee”</td>
+								</tr>
+								<tr>
+									<td>1:00 PM - 3:00 PM</td>
+									<td><strong>Regional delicacies of Tuscany</strong> - live cooking</td>
+								</tr>
+								<tr>
+									<td>5:00 PM - 8:00 PM</td>
+									<td><strong>Tuscan vineyards at a glance</strong> - wine-tasting</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<p>
+						Please arrive at the reception desk
+						<span style="background-color: #ffecb3">at least half an hour earlier</span>
+						to ensure that the registration process goes as smoothly as possible.
+					</p>
+				</div>
+			</div>
+
+			<div class="custom-fullscreen-container"></div>
+		</template>
+
+		<style>
+			/* Forces the `behavior: 'instant'` scroll restoring path taken when leaving the fullscreen mode. */
+			html {
+				scroll-behavior: smooth;
+			}
+
+			.dashboard {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: 0.2em 1.2em;
+				font-size: 0.85em;
+			}
+
+			.dashboard label {
+				white-space: nowrap;
+			}
+
+			.mount {
+				margin: 2em auto;
+			}
+		</style>
+	</body>
+</html>

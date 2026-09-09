@@ -4,7 +4,8 @@
  */
 
 
-:root {
+:root,
+:host {
 	--ck-image-insert-insert-by-url-width: 250px;
 }
 

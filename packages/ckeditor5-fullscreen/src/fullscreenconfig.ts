@@ -45,9 +45,17 @@ export interface FullscreenConfig {
 
 	/**
 	 * The container element for the fullscreen mode. This should be a reference to an existing, positioned element in the DOM.
-	 * By default, the fullscreen mode is appended to the `<body>` element.
+	 *
+	 * By default, the fullscreen mode is appended to the shared {@link module:core/editor/editorconfig~UiConfig#overlayContainer
+	 * `ui.overlayContainer`} if it is set, otherwise to the shadow root the editor lives in (open or closed), otherwise to
+	 * the `<body>` element. Mounting it in the root the editor lives in is what keeps the editor UI moved to the fullscreen
+	 * mode (editable, toolbar, menu bar, sidebars) styled – in a shadow root, the editor stylesheets are adopted by that
+	 * root only.
+	 *
+	 * Setting it to anything else than that default also keeps the page scrollable, as the fullscreen mode then fills an
+	 * element of the page layout instead of covering the viewport.
 	 */
-	container?: HTMLElement;
+	container?: HTMLElement | ShadowRoot;
 
 	/**
 	 * The configuration of the menu bar in the fullscreen mode.

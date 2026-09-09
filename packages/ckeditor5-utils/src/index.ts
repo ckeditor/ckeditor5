@@ -75,12 +75,20 @@ export { isIterable } from './isiterable.js';
 export { DomEmitterMixin, type DomEmitter, type DomEmitterMixinConstructor, type DomEventMap } from './dom/emittermixin.js';
 export { findClosestScrollableAncestor } from './dom/findclosestscrollableancestor.js';
 export { global, type GlobalType } from './dom/global.js';
+export { containsNode } from './dom/containsnode.js';
 export { getAncestors } from './dom/getancestors.js';
 export { getDataFromElement } from './dom/getdatafromelement.js';
 export { getBorderWidths, type BorderWidths } from './dom/getborderwidths.js';
 export { getRangeFromMouseEvent } from './dom/getrangefrommouseevent.js';
-export { getCommonAncestor } from './dom/getcommonancestor.js';
+export { getElementFromPoint } from './dom/getelementfrompoint.js';
 export { getPositionedAncestor } from './dom/getpositionedancestor.js';
+export { getActiveElement } from './dom/getactiveelement.js';
+export { getShadowRoots } from './dom/getshadowroots.js';
+export { getOverlayMountRoot } from './dom/getoverlaymountroot.js';
+export { adoptGlobalStyleSheet } from './dom/adoptglobalstylesheet.js';
+export { getParentElement } from './dom/getparentelement.js';
+export { getParentNode } from './dom/getparentnode.js';
+export { getSelection, ShadowSelection } from './dom/getselection.js';
 export { isText } from './dom/istext.js';
 export { isWindow } from './dom/iswindow.js';
 export { Rect, type RectSource, type DomRectLike } from './dom/rect.js';
@@ -90,8 +98,18 @@ export { toUnit, type ToUnitHelper } from './dom/tounit.js';
 export { indexOf } from './dom/indexof.js';
 export { insertAt } from './dom/insertat.js';
 export { isComment } from './dom/iscomment.js';
+export { isDomSelectionBackward } from './dom/isdomselectionbackward.js';
 export { isNode } from './dom/isnode.js';
 export { isRange } from './dom/isrange.js';
+export { isShadowRoot } from './dom/isshadowroot.js';
+export { isShadowHostOf } from './dom/isshadowhostof.js';
+export { whenElementConnected } from './dom/whenelementconnected.js';
+export {
+	ShadowRootRegistry,
+	listenToShadowRoots,
+	type ShadowRootRegistryAddEvent,
+	type ShadowRootRegistryRemoveEvent
+} from './dom/shadowrootregistry.js';
 export { isValidAttributeName } from './dom/isvalidattributename.js';
 export { isVisible } from './dom/isvisible.js';
 export {

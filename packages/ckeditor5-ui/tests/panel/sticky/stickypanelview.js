@@ -258,6 +258,152 @@ describe( 'StickyPanelView', () => {
 			view.isActive = false;
 			expect( spy ).toHaveBeenCalledTimes( 3 );
 		} );
+
+		describe( 'shadow DOM', () => {
+			let host;
+
+			afterEach( () => {
+				if ( host ) {
+					host.remove();
+					host = null;
+				}
+			} );
+
+			for ( const mode of [ 'open', 'closed' ] ) {
+				it( `calls checkIfShouldBeSticky() on scroll of the shadow root hosting the limiter (mode: '${ mode }')`, () => {
+					host = document.createElement( 'div' );
+					document.body.appendChild( host );
+
+					const root = host.attachShadow( { mode } );
+					const shadowLimiterElement = document.createElement( 'div' );
+
+					root.appendChild( shadowLimiterElement );
+					view.limiterElement = shadowLimiterElement;
+
+					const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+					view.render();
+					expect( spy ).toHaveBeenCalledOnce();
+
+					// `scroll` is neither `composed` nor bubbling, so this is only observable at all because the
+					// listener is attached directly to `root` — a `document`-level one, however it is
+					// configured, could never see this.
+					root.dispatchEvent( new Event( 'scroll' ) );
+
+					expect( spy ).toHaveBeenCalledTimes( 2 );
+				} );
+			}
+
+			it( 'crosses nested shadow boundaries to keep reacting to scroll', () => {
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				const outerRoot = host.attachShadow( { mode: 'open' } );
+				const innerHost = document.createElement( 'div' );
+
+				outerRoot.appendChild( innerHost );
+
+				const innerRoot = innerHost.attachShadow( { mode: 'open' } );
+				const shadowLimiterElement = document.createElement( 'div' );
+
+				innerRoot.appendChild( shadowLimiterElement );
+				view.limiterElement = shadowLimiterElement;
+
+				const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+				view.render();
+				expect( spy ).toHaveBeenCalledOnce();
+
+				outerRoot.dispatchEvent( new Event( 'scroll' ) );
+				expect( spy ).toHaveBeenCalledTimes( 2 );
+
+				innerRoot.dispatchEvent( new Event( 'scroll' ) );
+				expect( spy ).toHaveBeenCalledTimes( 3 );
+			} );
+
+			it( 'picks up the limiter moving into a shadow root after render(), without #limiterElement itself changing', () => {
+				// Reproduces the scenario described on #checkIfShouldBeSticky(): `ClassicEditor` renders its UI
+				// before replacing the source element, moving the whole tree — so the roots must be re-derived
+				// on every check, not only when `#limiterElement` changes.
+				view.limiterElement = limiterElement;
+				view.render();
+
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				const root = host.attachShadow( { mode: 'open' } );
+
+				root.appendChild( limiterElement );
+
+				const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+				// The move alone does not call it — something has to trigger a check for the roots to be
+				// re-derived, same as in production (any scroll, resize, or activity change would do).
+				view.isActive = true;
+				expect( spy ).toHaveBeenCalledOnce();
+
+				spy.mockClear();
+
+				root.dispatchEvent( new Event( 'scroll' ) );
+				expect( spy ).toHaveBeenCalledOnce();
+			} );
+
+			it( 'detaches the old shadow root and attaches the new one when #limiterElement is swapped', () => {
+				const firstHost = document.createElement( 'div' );
+
+				document.body.appendChild( firstHost );
+
+				const firstRoot = firstHost.attachShadow( { mode: 'open' } );
+				const firstLimiterElement = document.createElement( 'div' );
+
+				firstRoot.appendChild( firstLimiterElement );
+				view.limiterElement = firstLimiterElement;
+				view.render();
+
+				const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				const secondRoot = host.attachShadow( { mode: 'open' } );
+				const secondLimiterElement = document.createElement( 'div' );
+
+				secondRoot.appendChild( secondLimiterElement );
+				view.limiterElement = secondLimiterElement;
+
+				spy.mockClear();
+
+				firstRoot.dispatchEvent( new Event( 'scroll' ) );
+				expect( spy ).not.toHaveBeenCalled();
+
+				secondRoot.dispatchEvent( new Event( 'scroll' ) );
+				expect( spy ).toHaveBeenCalledOnce();
+
+				firstHost.remove();
+			} );
+
+			it( 'stops reacting to a shadow root once the view is destroyed', async () => {
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				const root = host.attachShadow( { mode: 'open' } );
+				const shadowLimiterElement = document.createElement( 'div' );
+
+				root.appendChild( shadowLimiterElement );
+				view.limiterElement = shadowLimiterElement;
+				view.render();
+
+				const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+				await view.destroy();
+
+				expect( () => {
+					root.dispatchEvent( new Event( 'scroll' ) );
+				} ).not.toThrow();
+
+				expect( spy ).not.toHaveBeenCalled();
+			} );
+		} );
 	} );
 
 	describe( 'destroy()', () => {

@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	/* Match the icon size with the upload indicator brought by the image upload feature. */
 	--ck-link-image-indicator-icon-size: 20;
 	--ck-link-image-indicator-icon-is-visible: clamp(0px, 100% - 50px, 1px);

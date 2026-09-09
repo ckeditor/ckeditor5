@@ -4,7 +4,8 @@
  */
 
 
-:root {
+:root,
+:host {
 	--ck-character-grid-tile-size: 24px;
 }
 

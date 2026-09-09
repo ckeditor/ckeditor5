@@ -61,6 +61,7 @@
     "@ckeditor/ckeditor5-easy-image": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-multi-root": "workspace:*",
+    "@ckeditor/ckeditor5-editor-decoupled": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-font": "workspace:*",
     "@ckeditor/ckeditor5-highlight": "workspace:*",
@@ -76,6 +77,7 @@
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-style": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
+    "@ckeditor/ckeditor5-ui": "workspace:*",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"

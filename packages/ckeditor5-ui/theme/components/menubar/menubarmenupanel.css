@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-menu-bar-menu-max-width: 75vw;
 	--ck-menu-bar-nested-menu-horizontal-offset: 5px;
 }

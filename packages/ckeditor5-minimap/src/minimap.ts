@@ -89,7 +89,7 @@ export class Minimap extends Plugin {
 		this._scrollableRootAncestor = findClosestScrollableAncestor( editingRootElement );
 
 		// DOM root element is not yet attached to the document.
-		if ( !editingRootElement.ownerDocument.body.contains( editingRootElement ) ) {
+		if ( !editingRootElement.isConnected ) {
 			editor.ui.once( 'update', this._onUiReady.bind( this ) );
 
 			return;
@@ -138,7 +138,7 @@ export class Minimap extends Plugin {
 		minimapView.render();
 
 		// Scrollable ancestor scroll -> minimap position update.
-		minimapView.listenTo( global.document, 'scroll', ( evt, data ) => {
+		minimapView.listenTo( scrollableRootAncestor.getRootNode(), 'scroll', ( evt, data ) => {
 			if ( scrollableRootAncestor === global.document.body ) {
 				if ( data.target !== global.document ) {
 					return;

@@ -34,7 +34,7 @@ export { addKeyboardHandlingForGrid } from './bindings/addkeyboardhandlingforgri
 
 export { AccessibilityHelpContentView } from './editorui/accessibilityhelp/accessibilityhelpcontentview.js';
 export { AccessibilityHelp } from './editorui/accessibilityhelp/accessibilityhelp.js';
-export { BodyCollection } from './editorui/bodycollection.js';
+export { BodyCollection, type BodyCollectionRemountEvent } from './editorui/bodycollection.js';
 export { PoweredBy } from './editorui/poweredby.js';
 
 export { Badge, type BadgeConfig } from './badge/badge.js';
@@ -240,7 +240,9 @@ export { HighlightedTextView } from './highlightedtext/highlightedtextview.js';
 export { ButtonLabelWithHighlightView } from './highlightedtext/buttonlabelwithhighlightview.js';
 export { LabelWithHighlightView } from './highlightedtext/labelwithhighlightview.js';
 
-export { TooltipManager, type TooltipPosition } from './tooltipmanager.js';
+export { TooltipManager, type TooltipPosition, type BodyCollectionRegistration } from './tooltipmanager.js';
+
+export { OverlayHost, type OverlayHostOptions } from './overlayhost.js';
 
 export {
 	Template,

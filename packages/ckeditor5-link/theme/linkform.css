@@ -4,7 +4,8 @@
  */
 
 
-:root {
+:root,
+:host {
 	--ck-link-panel-width: 340px;
 	/* The height of the text inside the link providers list button. */
 	--ck-link-provider-list-item-text-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
@@ -13,7 +14,8 @@
 }
 
 @media screen and (max-width: 600px) {
-	:root {
+	:root,
+	:host {
 		--ck-link-panel-width: 300px;
 	}
 }

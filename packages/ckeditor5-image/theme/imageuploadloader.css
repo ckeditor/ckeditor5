@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-color-upload-placeholder-loader: hsl(0, 0%, 70%);
 	--ck-upload-placeholder-loader-size: 32px;
 	--ck-upload-placeholder-image-aspect-ratio: 2.8;

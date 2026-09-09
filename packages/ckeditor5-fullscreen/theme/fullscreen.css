@@ -3,33 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* Increase z-index of everything to make sure nothing sticks in front of the editor.
-Disable scrollbars that can be present due to the rest of the website content. */
+/*
+ * Increase z-index of everything to make sure nothing sticks in front of the editor.
+ *
+ * The `<html>` element is included on purpose, next to the `<body>` one. Other stylesheets derive custom
+ * properties from these at `:root` (for example `--ck-balloon-panel-arrow-z-index`), and a `var()` inside a
+ * custom property is substituted on the element that declares it – so a value bumped on the `<body>` element
+ * alone would come too late and leave those derived properties computed from the base values.
+ */
 html.ck-fullscreen,
-body.ck-fullscreen {
+body.ck-fullscreen,
+:host(.ck-fullscreen) {
 	--ck-z-fullscreen: 10000;
-
-	overflow: hidden;
 
 	--ck-z-default: calc(var(--ck-z-fullscreen) + 1);
 	--ck-z-panel: calc(var(--ck-z-default) + 999);
 	--ck-z-dialog: 100000;
-
-	/* CKBox wrappers have z-index of 9999, let's bump them over the dialog's to ensure visibility like outside fullscreen mode. */
-	& .ckbox:not(#n) {
-		--ckbox-z-index-root: calc(var(--ck-z-dialog) + 1);
-
-		/*
-		 * Safari composites `overflow: auto` scroll layers (like `.ck-fullscreen__editable-wrapper`) on top of
-		 * sibling stacking contexts regardless of z-index. Setting `position: absolute` promotes `.ckbox` to its
-		 * own compositing layer, which Safari then sorts correctly above the editable wrapper's layer.
-		 */
-		position: absolute;
-	}
-
-	& .ckbox:not(#n) .ckbox-img-editor {
-		--ckbox-z-index-preview: calc(var(--ck-z-dialog) + 1);
-	}
 
 	& .ck-pagination-view-line {
 		z-index: calc(var(--ck-z-fullscreen) + 1);
@@ -79,8 +68,13 @@ Fullscreen layout:
 	}
 }
 
-/* If the fullscreen container is not directly in the body, we need to make sure it's positioned absolutely. */
-:not(body> .ck-fullscreen__main-wrapper).ck-fullscreen__main-wrapper {
+/*
+ * If the fullscreen mode fills a container provided by the integrator instead of covering the viewport, it needs to be
+ * positioned absolutely. Which of the two it is cannot be read from the position of the wrapper in the DOM (this used
+ * to be `:not(body > .ck-fullscreen__main-wrapper)`): mounted in the shadow root the editor lives in, the wrapper is
+ * not a child of the `<body>` element either way. The handler resolves the container, so it marks the wrapper instead.
+ */
+.ck.ck-fullscreen__main-wrapper.ck-fullscreen__main-wrapper_custom-container {
 	position: absolute;
 
 	& .ck-fullscreen__top-wrapper {

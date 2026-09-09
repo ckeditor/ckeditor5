@@ -10,7 +10,7 @@
 import { convertColor, convertToHex, registerCustomElement, type ColorPickerViewConfig } from './utils.js';
 
 import type { HexColor } from '@ckeditor/ckeditor5-core';
-import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
+import { type Locale, global, env, getActiveElement } from '@ckeditor/ckeditor5-utils';
 import { debounce } from 'es-toolkit/compat';
 import { View } from '../view.js';
 import { type InputTextView } from '../inputtext/inputtextview.js';
@@ -140,7 +140,7 @@ export class ColorPickerView extends View {
 		this.on( 'change:_hexColor', () => {
 			// Update the selected color in the color picker palette when it's not focused.
 			// It means the user typed the color in the input.
-			if ( document.activeElement !== this.picker ) {
+			if ( getActiveElement( this.picker ) !== this.picker ) {
 				this.picker.setAttribute( 'color', this._hexColor );
 			}
 
@@ -183,6 +183,8 @@ export class ColorPickerView extends View {
 				'outline: 1px solid var(--ck-color-focus-border);' +
 				'box-shadow: 0 0 0 2px #fff;' +
 				'}';
+
+			// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 			this.picker.shadowRoot!.appendChild( styleSheetForFocusedColorPicker );
 		}
 
@@ -224,6 +226,7 @@ export class ColorPickerView extends View {
 	 * @private
 	 */
 	private _createSlidersView(): void {
+		// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 		const colorPickersChildren = [ ...this.picker.shadowRoot!.children ] as Array<HTMLElement>;
 		const sliders = colorPickersChildren.filter( item => item.getAttribute( 'role' ) === 'slider' );
 

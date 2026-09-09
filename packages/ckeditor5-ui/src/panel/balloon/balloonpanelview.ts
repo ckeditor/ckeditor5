@@ -11,7 +11,10 @@ import { View } from '../../view.js';
 import { type ViewCollection } from '../../viewcollection.js';
 
 import {
+	containsNode,
+	getShadowRoots,
 	getOptimalPosition,
+	getParentElement,
 	global,
 	isRange,
 	toUnit,
@@ -160,6 +163,16 @@ export class BalloonPanelView extends View {
 	 * An instance of resize observer used to detect if target element is still visible.
 	 */
 	private _resizeObserver: ResizeObserver | null;
+
+	/**
+	 * The nodes the `scroll` listener of the currently pinned panel is attached to: `document` plus every shadow
+	 * root hosting the positioning target or the limiter. Emptied by {@link #_stopPinning}.
+	 *
+	 * A single `document` listener is not enough, because `scroll` is not `composed` — its event path ends at
+	 * the shadow root it originated in, so not even a capturing listener on `document` sees a scrollable
+	 * container living inside a shadow root.
+	 */
+	private _scrollListenerDomRoots: Array<Document | ShadowRoot> = [];
 
 	/**
 	 * @inheritDoc
@@ -400,21 +413,25 @@ export class BalloonPanelView extends View {
 		const limiterElement = options.limiter ? getDomElement( options.limiter ) : global.document.body;
 
 		// Then we need to listen on scroll event of eny element in the document.
-		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
-			const scrollTarget = domEvt.target as Element;
+		this._scrollListenerDomRoots = getScrollListenerDomRoots( [ targetElement, limiterElement ] );
 
-			// The position needs to be updated if the positioning target is within the scrolled element.
-			const isWithinScrollTarget = targetElement && scrollTarget.contains( targetElement );
+		for ( const root of this._scrollListenerDomRoots ) {
+			this.listenTo( root, 'scroll', ( evt, domEvt ) => {
+				const scrollTarget = domEvt.target as Element;
 
-			// The position needs to be updated if the positioning limiter is within the scrolled element.
-			const isLimiterWithinScrollTarget = limiterElement && scrollTarget.contains( limiterElement );
+				// The position needs to be updated if the positioning target is within the scrolled element.
+				const isWithinScrollTarget = targetElement && containsNode( scrollTarget, targetElement );
 
-			// The positioning target and/or limiter can be a Rect, object etc..
-			// There's no way to optimize the listener then.
-			if ( isWithinScrollTarget || isLimiterWithinScrollTarget || !targetElement || !limiterElement ) {
-				this.attachTo( options );
-			}
-		}, { useCapture: true } );
+				// The position needs to be updated if the positioning limiter is within the scrolled element.
+				const isLimiterWithinScrollTarget = limiterElement && containsNode( scrollTarget, limiterElement );
+
+				// The positioning target and/or limiter can be a Rect, object etc..
+				// There's no way to optimize the listener then.
+				if ( isWithinScrollTarget || isLimiterWithinScrollTarget || !targetElement || !limiterElement ) {
+					this.attachTo( options );
+				}
+			}, { useCapture: true } );
+		}
 
 		// We need to listen on window resize event and update position.
 		this.listenTo( global.window, 'resize', () => {
@@ -426,7 +443,7 @@ export class BalloonPanelView extends View {
 			// If the target element is a text node, we need to check the parent element.
 			// It's because `ResizeObserver` accept only elements, not text nodes.
 			if ( targetElement && isText( targetElement ) ) {
-				targetElement = targetElement.parentElement;
+				targetElement = getParentElement( targetElement ) as HTMLElement | null;
 			}
 
 			if ( targetElement ) {
@@ -450,7 +467,12 @@ export class BalloonPanelView extends View {
 	 * Stops managing the pinned state of the panel. See {@link #pin}.
 	 */
 	private _stopPinning(): void {
-		this.stopListening( global.document, 'scroll' );
+		for ( const root of this._scrollListenerDomRoots ) {
+			this.stopListening( root, 'scroll' );
+		}
+
+		this._scrollListenerDomRoots = [];
+
 		this.stopListening( global.window, 'resize' );
 
 		if ( this._resizeObserver ) {
@@ -1264,4 +1286,24 @@ function getDomElement( object: any ): HTMLElement | null {
 	}
 
 	return null;
+}
+
+/**
+ * Returns the nodes a `scroll` listener must be attached to in order to observe scrolling of any container that
+ * hosts one of the given nodes: `document` plus every shadow root those nodes live in.
+ */
+function getScrollListenerDomRoots( nodes: Array<Node | null> ): Array<Document | ShadowRoot> {
+	const roots = new Set<Document | ShadowRoot>( [ global.document ] );
+
+	for ( const node of nodes ) {
+		if ( !node ) {
+			continue;
+		}
+
+		for ( const root of getShadowRoots( node ) ) {
+			roots.add( root );
+		}
+	}
+
+	return Array.from( roots );
 }

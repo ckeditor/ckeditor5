@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `tableproperties.css`. */
 	--ck-content-table-style-spacing: 1.5em;
 

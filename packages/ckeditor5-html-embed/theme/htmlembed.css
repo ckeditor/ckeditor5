@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-html-embed-content-width: calc(100% - 1.5 * var(--ck-icon-size));
 	--ck-html-embed-source-height: 10em;
 	--ck-html-embed-unfocused-outline-width: 1px;

@@ -9,7 +9,7 @@
 
 import { ViewElement, type ViewElementAttributes } from './element.js';
 import { ViewNode } from './node.js';
-import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, keyCodes, getSelection } from '@ckeditor/ckeditor5-utils';
 
 import { type EditingView } from './view.js';
 import { type ViewDocument } from './document.js';
@@ -187,7 +187,12 @@ function getFillerOffset() {
  */
 function jumpOverUiElement( evt: unknown, data: ViewDocumentKeyEventData, domConverter: ViewDomConverter ) {
 	if ( data.keyCode == keyCodes.arrowright ) {
-		const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
+		const domSelection = getSelection( data.domTarget );
+
+		if ( !domSelection ) {
+			return;
+		}
+
 		const domSelectionCollapsed = domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed;
 
 		// Jump over UI element if selection is collapsed or shift key is pressed. These are the cases when selection would extend.

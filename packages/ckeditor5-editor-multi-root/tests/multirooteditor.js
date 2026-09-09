@@ -978,7 +978,7 @@ describe( 'MultiRootEditor', () => {
 				)
 				.finally( () => {
 					// Cleanup. This is difficult as we don't have editor instance to destroy.
-					document.querySelector( '.ck-body-wrapper' ).remove();
+					document.querySelector( '.ck-body-wrapper' )?.remove();
 				} );
 		} );
 
@@ -1016,7 +1016,7 @@ describe( 'MultiRootEditor', () => {
 				)
 				.finally( () => {
 					// Cleanup. This is difficult as we don't have editor instance to destroy.
-					document.querySelector( '.ck-body-wrapper' ).remove();
+					document.querySelector( '.ck-body-wrapper' )?.remove();
 				} );
 		} );
 
@@ -1054,7 +1054,7 @@ describe( 'MultiRootEditor', () => {
 				)
 				.finally( () => {
 					// Cleanup. This is difficult as we don't have editor instance to destroy.
-					document.querySelector( '.ck-body-wrapper' ).remove();
+					document.querySelector( '.ck-body-wrapper' )?.remove();
 				} );
 		} );
 
@@ -1078,7 +1078,7 @@ describe( 'MultiRootEditor', () => {
 				)
 				.finally( () => {
 					// Cleanup. This is difficult as we don't have editor instance to destroy.
-					document.querySelector( '.ck-body-wrapper' ).remove();
+					document.querySelector( '.ck-body-wrapper' )?.remove();
 				} );
 		} );
 
@@ -1121,7 +1121,7 @@ describe( 'MultiRootEditor', () => {
 				)
 				.finally( () => {
 					// Cleanup. This is difficult as we don't have editor instance to destroy.
-					document.querySelector( '.ck-body-wrapper' ).remove();
+					document.querySelector( '.ck-body-wrapper' )?.remove();
 				} );
 		} );
 

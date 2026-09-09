@@ -8,15 +8,31 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { FullPage, HtmlComment, HtmlPageDataProcessor } from '../src/index.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 describe( 'FullPage', () => {
-	let editor;
+	let editor, editorElement, preExistingStyles;
+
+	// The feature does not mark the `<style>` elements it renders, so they are told apart from whatever the test
+	// runner and the page already contain by snapshotting what was there before the editor was created.
+	beforeEach( () => {
+		preExistingStyles = new Set( document.querySelectorAll( 'style' ) );
+	} );
 
 	afterEach( async () => {
 		if ( editor ) {
 			await editor.destroy();
+
+			editor = null;
+		}
+
+		if ( editorElement ) {
+			editorElement.remove();
+
+			editorElement = null;
 		}
 	} );
 
@@ -262,15 +278,16 @@ describe( 'FullPage', () => {
 					}
 				};
 
-				await createEditor( content, config );
+				// A real editor, as the styles are rendered in the tree the editing root lives in and
+				// `VirtualTestEditor` has none.
+				await createClassicEditor( content, config );
 
 				expect( editor.getData() ).toBe( content );
-				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).toHaveLength( 1 );
 
-				const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+				const styles = await waitForDataStyles( document, 1 );
 
-				expect( stylesheet.textContent ).toBe( 'p { color: red; }' );
-				expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).toBe( editor.id );
+				expect( styles[ 0 ].textContent ).toBe( 'p { color: red; }' );
+				expect( styles[ 0 ].parentNode ).toBe( document.head );
 			} );
 
 			it( 'should remove previously attached `<style>` tag after update the editor content', async () => {
@@ -293,15 +310,13 @@ describe( 'FullPage', () => {
 					}
 				};
 
-				await createEditor( content, config );
+				await createClassicEditor( content, config );
 
 				expect( editor.getData() ).toBe( content );
-				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).toHaveLength( 1 );
 
-				const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+				const styles = await waitForDataStyles( document, 1 );
 
-				expect( stylesheet.textContent ).toBe( 'p { color: red; }' );
-				expect( stylesheet.getAttribute( 'data-full-page-style-id' ) ).toBe( editor.id );
+				expect( styles[ 0 ].textContent ).toBe( 'p { color: red; }' );
 
 				const contentToSet =
 					'<html>' +
@@ -318,12 +333,9 @@ describe( 'FullPage', () => {
 
 				expect( editor.getData() ).toBe( contentToSet );
 
-				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).toHaveLength( 1 );
+				const updatedStyles = await waitForDataStyles( document, 1 );
 
-				const stylesheetUpdated = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
-
-				expect( stylesheetUpdated.textContent ).toBe( 'p { color: green; }' );
-				expect( stylesheetUpdated.getAttribute( 'data-full-page-style-id' ) ).toBe( editor.id );
+				expect( updatedStyles[ 0 ].textContent ).toBe( 'p { color: green; }' );
 			} );
 		} );
 
@@ -418,14 +430,14 @@ describe( 'FullPage', () => {
 						'</body>' +
 					'</html>';
 
-				editor.setData( content );
+				// `config` holds the custom sanitizer defined in `beforeEach` above.
+				await createClassicEditor( content, config );
 
 				expect( editor.getData() ).toBe( content );
-				expect( document.querySelectorAll( 'style[data-full-page-style-id]' ) ).toHaveLength( 1 );
 
-				const stylesheet = document.querySelectorAll( 'style[data-full-page-style-id]' )[ 0 ];
+				const styles = await waitForDataStyles( document, 1 );
 
-				expect( stylesheet.textContent ).toBe( 'p { color: #c0ffee; }' );
+				expect( styles[ 0 ].textContent ).toBe( 'p { color: #c0ffee; }' );
 			} );
 
 			it( 'should not display a warning when using the custom sanitizer', () => {
@@ -434,6 +446,201 @@ describe( 'FullPage', () => {
 				expect( console.warn ).toHaveBeenCalledTimes( 0 );
 			} );
 		} );
+	} );
+
+	describe( 'rendering the head styles in the DOM', () => {
+		beforeEach( () => {
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+		} );
+
+		it( 'should render nothing when `allowRenderStylesFromHead` is not enabled', async () => {
+			await createClassicEditor( pageData( '<style>p { color: red; }</style>' ) );
+			await settle();
+
+			expect( dataStyles( document ) ).toHaveLength( 0 );
+		} );
+
+		it( 'should render every `<style>` element from the `<head>`', async () => {
+			await createClassicEditor( pageData(
+				'<style>p { color: red; }</style>' +
+				'<style>h2 { color: blue; }</style>'
+			), allowStyles() );
+
+			const styles = await waitForDataStyles( document, 2 );
+
+			expect( styles.map( style => style.textContent ) ).toEqual( [ 'p { color: red; }', 'h2 { color: blue; }' ] );
+		} );
+
+		it( 'should render nothing when the loaded page has no styles in the `<head>`', async () => {
+			await createClassicEditor( pageData( '' ), allowStyles() );
+			await settle();
+
+			expect( dataStyles( document ) ).toHaveLength( 0 );
+		} );
+
+		it( 'should render nothing when the loaded data is not a full page', async () => {
+			await createClassicEditor( '<p>foo</p>', allowStyles() );
+			await settle();
+
+			expect( dataStyles( document ) ).toHaveLength( 0 );
+		} );
+
+		it( 'should remove the rendered styles when data without any is loaded', async () => {
+			await createClassicEditor( pageData( '<style>p { color: red; }</style>' ), allowStyles() );
+			await waitForDataStyles( document, 1 );
+
+			editor.setData( pageData( '' ) );
+
+			const styles = await waitForDataStyles( document, 0 );
+
+			expect( styles ).toHaveLength( 0 );
+		} );
+
+		it( 'should preserve the attributes that decide when a style applies', async () => {
+			await createClassicEditor(
+				pageData( '<style media="print" type="text/css" title="printing">p { color: red; }</style>' ),
+				allowStyles()
+			);
+
+			const [ style ] = await waitForDataStyles( document, 1 );
+
+			expect( style.getAttribute( 'media' ) ).toBe( 'print' );
+			expect( style.getAttribute( 'type' ) ).toBe( 'text/css' );
+			expect( style.getAttribute( 'title' ) ).toBe( 'printing' );
+		} );
+
+		it( 'should not copy event handler attributes from the data', async () => {
+			await createClassicEditor(
+				pageData( '<style onload="window.__fullPageXss = true">p { color: red; }</style>' ),
+				allowStyles()
+			);
+
+			const [ style ] = await waitForDataStyles( document, 1 );
+
+			expect( style.hasAttribute( 'onload' ) ).toBe( false );
+			expect( window.__fullPageXss ).toBeUndefined();
+		} );
+
+		it( 'should not render anything for an editor without an editing root', async () => {
+			// `VirtualTestEditor` has no DOM, so there is no tree the styles could apply to. It must not throw.
+			await createEditor( pageData( '<style>p { color: red; }</style>' ), allowStyles() );
+			await settle();
+
+			expect( dataStyles( document ) ).toHaveLength( 0 );
+		} );
+
+		it( 'should remove the rendered styles when the editor is destroyed', async () => {
+			await createClassicEditor( pageData( '<style>p { color: red; }</style>' ), allowStyles() );
+			await waitForDataStyles( document, 1 );
+
+			await editor.destroy();
+
+			editor = null;
+
+			expect( dataStyles( document ) ).toHaveLength( 0 );
+		} );
+
+		describe( 'with a detached editable', () => {
+			it( 'should postpone the rendering until the editable is mounted', async () => {
+				editor = await DecoupledEditor.create( {
+					plugins: [ Paragraph, ClipboardPipeline, FullPage ],
+					initialData: pageData( '<style>p { color: red; }</style>' ),
+					...allowStyles()
+				} );
+
+				await settle();
+
+				// The editable is created by the editor but not placed in the DOM yet, so the tree the styles
+				// belong to is not known and nothing may be rendered anywhere.
+				expect( dataStyles( document ) ).toHaveLength( 0 );
+
+				editorElement = document.body.appendChild( document.createElement( 'div' ) );
+				editorElement.append( editor.ui.view.editable.element );
+
+				const [ style ] = await waitForDataStyles( document, 1 );
+
+				expect( style.textContent ).toBe( 'p { color: red; }' );
+				expect( style.parentNode ).toBe( document.head );
+			} );
+
+			it( 'should render the styles in the shadow root the editable is mounted in', async () => {
+				editor = await DecoupledEditor.create( {
+					plugins: [ Paragraph, ClipboardPipeline, FullPage ],
+					initialData: pageData( '<style>p { color: red; }</style>' ),
+					...allowStyles()
+				} );
+
+				await settle();
+
+				editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+				const shadowRoot = editorElement.attachShadow( { mode: 'open' } );
+
+				shadowRoot.append( editor.ui.view.editable.element );
+
+				const [ style ] = await waitForDataStyles( shadowRoot, 1 );
+
+				expect( style.textContent ).toBe( 'p { color: red; }' );
+				expect( style.parentNode ).toBe( shadowRoot );
+
+				// Styles left in the document would never apply to content inside a shadow root.
+				expect( dataStyles( document ) ).toHaveLength( 0 );
+			} );
+
+			it( 'should remove the styles from the shadow root when the editor is destroyed', async () => {
+				editor = await DecoupledEditor.create( {
+					plugins: [ Paragraph, ClipboardPipeline, FullPage ],
+					initialData: pageData( '<style>p { color: red; }</style>' ),
+					...allowStyles()
+				} );
+
+				editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+				const shadowRoot = editorElement.attachShadow( { mode: 'open' } );
+
+				shadowRoot.append( editor.ui.view.editable.element );
+
+				await waitForDataStyles( shadowRoot, 1 );
+
+				await editor.destroy();
+
+				editor = null;
+
+				expect( dataStyles( shadowRoot ) ).toHaveLength( 0 );
+			} );
+
+			it( 'should not render the styles of data replaced before the editable was mounted', async () => {
+				editor = await DecoupledEditor.create( {
+					plugins: [ Paragraph, ClipboardPipeline, FullPage ],
+					initialData: pageData( '<style>p { color: red; }</style>' ),
+					...allowStyles()
+				} );
+
+				editor.setData( pageData( '<style>p { color: green; }</style>' ) );
+
+				editorElement = document.body.appendChild( document.createElement( 'div' ) );
+				editorElement.append( editor.ui.view.editable.element );
+
+				const styles = await waitForDataStyles( document, 1 );
+
+				expect( styles[ 0 ].textContent ).toBe( 'p { color: green; }' );
+			} );
+		} );
+
+		function pageData( head ) {
+			return '<html><head><title>Testing full page</title>' + head + '</head><body><p>foo</p></body></html>';
+		}
+
+		function allowStyles() {
+			return {
+				htmlSupport: {
+					fullPage: {
+						allowRenderStylesFromHead: true,
+						sanitizeCss: rawCss => ( { css: rawCss, hasChanged: false } )
+					}
+				}
+			};
+		}
 	} );
 
 	describe( 'HtmlComment integration', () => {
@@ -456,6 +663,47 @@ describe( 'FullPage', () => {
 			expect( editor.getData() ).toBe( content );
 		} );
 	} );
+
+	async function createClassicEditor( initialData, config = null ) {
+		if ( editor ) {
+			await editor.destroy();
+
+			editor = null;
+		}
+
+		if ( editorElement ) {
+			editorElement.remove();
+		}
+
+		editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+		editor = await ClassicEditor.create( {
+			attachTo: editorElement,
+			plugins: [ Paragraph, ClipboardPipeline, FullPage ],
+			initialData,
+			...config
+		} );
+	}
+
+	// The `<style>` elements rendered by the feature in the given document or shadow root.
+	function dataStyles( container ) {
+		return Array.from( container.querySelectorAll( 'style' ) ).filter( style => !preExistingStyles.has( style ) );
+	}
+
+	// Rendering waits for the editing root to be connected to a document, which is reported asynchronously – and
+	// in WebKit not necessarily within the same frame for an element with no height.
+	async function waitForDataStyles( container, count ) {
+		await vi.waitFor( () => {
+			expect( dataStyles( container ) ).toHaveLength( count );
+		}, { timeout: 3000 } );
+
+		return dataStyles( container );
+	}
+
+	// Gives the pending rendering a chance to happen, for the assertions stating that it must not.
+	function settle() {
+		return new Promise( resolve => setTimeout( resolve, 250 ) );
+	}
 
 	async function createEditor( initialData, fullPageConfig = null ) {
 		editor = await VirtualTestEditor.create( {

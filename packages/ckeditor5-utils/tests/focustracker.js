@@ -1082,4 +1082,47 @@ describe( 'FocusTracker', () => {
 			this.focusTracker.destroy();
 		}
 	}
+
+	describe( 'DOM focus in a shadow root', () => {
+		let host;
+
+		beforeEach( () => {
+			host = document.createElement( 'div' );
+			document.body.appendChild( host );
+		} );
+
+		afterEach( () => {
+			host.remove();
+		} );
+
+		for ( const mode of [ 'open', 'closed' ] ) {
+			it( `retains focus for an element inside a ${ mode } shadow root on a spurious blur`, () => {
+				const root = host.attachShadow( { mode } );
+				const input = document.createElement( 'input' );
+
+				root.appendChild( input );
+				focusTracker.add( input );
+
+				input.focus();
+
+				// The document retargets the active element to the shadow host, so a raw
+				// `document.activeElement` containment check would fail here.
+				expect( document.activeElement ).toBe( host );
+				expect( root.activeElement ).toBe( input );
+
+				input.dispatchEvent( new Event( 'focus' ) );
+
+				expect( focusTracker.isFocused ).toBe( true );
+				expect( focusTracker.focusedElement ).toBe( input );
+
+				// A blur must not clear the state while focus truly remains inside the shadow root,
+				// which the `getActiveElement()` resolution now detects.
+				input.dispatchEvent( new Event( 'blur' ) );
+				vi.advanceTimersByTime( 0 );
+
+				expect( focusTracker.isFocused ).toBe( true );
+				expect( focusTracker.focusedElement ).toBe( input );
+			} );
+		}
+	} );
 } );

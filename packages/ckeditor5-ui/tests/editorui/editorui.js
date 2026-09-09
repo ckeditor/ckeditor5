@@ -6,6 +6,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { EditorUI } from '../../src/editorui/editorui.js';
+import { BodyCollection } from '../../src/editorui/bodycollection.js';
 
 import { ComponentFactory } from '../../src/componentfactory.js';
 import { ToolbarView } from '../../src/toolbar/toolbarview.js';
@@ -183,13 +184,31 @@ describe( 'EditorUI', () => {
 			expect( keystrokesSpy ).toHaveBeenCalledWith( barElement );
 		} );
 
-		it( 'should destroy #tooltipManager', () => {
-			const destroySpy = vi.spyOn( ui.tooltipManager, 'destroy' );
+		it( 'should unregister its body collection from #tooltipManager and release it', () => {
+			ui.fire( 'ready' );
+
+			const unregisterSpy = vi.spyOn( ui.tooltipManager, 'unregisterBodyCollection' );
+			const releaseSpy = vi.spyOn( ui.tooltipManager, 'release' );
+			const body = ui.view.body;
 
 			ui.destroy();
 
-			expect( destroySpy ).toHaveBeenCalledTimes( 1 );
-			expect( destroySpy ).toHaveBeenCalledWith( editor );
+			expect( unregisterSpy ).toHaveBeenCalledTimes( 1 );
+			expect( unregisterSpy ).toHaveBeenCalledWith( body );
+
+			// The editor counts as a single holder: the overlay host borrows the UI's reference.
+			expect( releaseSpy ).toHaveBeenCalledTimes( 1 );
+		} );
+
+		it( 'should release #tooltipManager once when destroyed before the UI became ready', () => {
+			const unregisterSpy = vi.spyOn( ui.tooltipManager, 'unregisterBodyCollection' );
+			const releaseSpy = vi.spyOn( ui.tooltipManager, 'release' );
+
+			ui.destroy();
+
+			// The overlay host (and the tooltip registration with it) is only created once the UI is ready.
+			expect( unregisterSpy ).not.toHaveBeenCalled();
+			expect( releaseSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should destroy #poweredBy', () => {
@@ -1521,6 +1540,219 @@ describe( 'EditorUI', () => {
 			ui.view.body.remove( view );
 
 			expect( ui.focusTracker.remove ).toHaveBeenCalledWith( view.element );
+		} );
+	} );
+
+	describe( 'body collection mount target (shadow DOM)', () => {
+		let shadowHosts, createdElements;
+
+		beforeEach( () => {
+			shadowHosts = [];
+			createdElements = [];
+		} );
+
+		afterEach( () => {
+			for ( const el of createdElements ) {
+				el.remove();
+			}
+
+			for ( const host of shadowHosts ) {
+				host.remove();
+			}
+
+			for ( const wrapper of Array.from( document.querySelectorAll( '.ck-body-wrapper' ) ) ) {
+				wrapper.remove();
+			}
+
+			BodyCollection._bodyWrappers.clear();
+		} );
+
+		function createShadowRoot( mode = 'open' ) {
+			const host = document.createElement( 'div' );
+
+			document.body.appendChild( host );
+			shadowHosts.push( host );
+
+			return host.attachShadow( { mode } );
+		}
+
+		function domRootIn( parent ) {
+			const editableElement = document.createElement( 'div' );
+
+			parent.appendChild( editableElement );
+			createdElements.push( editableElement );
+
+			return editableElement;
+		}
+
+		// Registers a connected editing root inside `parent` in the editing view, as `attachDomRoot()` would.
+		function attachEditingRoot( parent, name = 'main' ) {
+			const editableElement = domRootIn( parent );
+
+			editor.editing.view.domRoots.set( name, editableElement );
+
+			return editableElement;
+		}
+
+		it( 'mounts the body collection into the configured overlay container on ready', () => {
+			const shadowRoot = createShadowRoot();
+
+			editor.config.set( 'ui.overlayContainer', shadowRoot );
+
+			ui.fire( 'ready' );
+
+			expect( ui.view.body.mountTarget ).toBe( shadowRoot );
+		} );
+
+		it( 'auto-resolves the open shadow root the editing root lives in', () => {
+			const shadowRoot = createShadowRoot( 'open' );
+
+			attachEditingRoot( shadowRoot );
+
+			ui.fire( 'ready' );
+
+			expect( ui.view.body.mountTarget ).toBe( shadowRoot );
+		} );
+
+		it( 'auto-resolves the closed shadow root the editing root lives in', () => {
+			const shadowRoot = createShadowRoot( 'closed' );
+
+			attachEditingRoot( shadowRoot );
+
+			ui.fire( 'ready' );
+
+			expect( ui.view.body.mountTarget ).toBe( shadowRoot );
+		} );
+
+		it( 'mounts the body collection in document.body for a connected light-DOM editor', () => {
+			attachEditingRoot( document.body );
+
+			ui.fire( 'ready' );
+
+			expect( ui.view.body.mountTarget ).toBe( document.body );
+		} );
+
+		it( 'resolves from the first connected root of a multi-root editor', () => {
+			const shadowRoot = createShadowRoot();
+
+			// A multi-root editor has no `main` root; the first connected one wins.
+			editor.editing.view.domRoots.set( 'foo', document.createElement( 'div' ) );
+			attachEditingRoot( shadowRoot, 'bar' );
+
+			ui.fire( 'ready' );
+
+			expect( ui.view.body.mountTarget ).toBe( shadowRoot );
+		} );
+
+		it( 'does not attach the body collection while the editor is detached', () => {
+			const spy = vi.spyOn( ui.view.body, 'attachToDom' );
+
+			// A registered but disconnected editing root (not inserted into a document yet).
+			editor.editing.view.domRoots.set( 'main', document.createElement( 'div' ) );
+
+			ui.fire( 'ready' );
+			ui.fire( 'update' );
+
+			// The body collection is not attached anywhere before the editor is in the DOM.
+			expect( spy ).not.toHaveBeenCalled();
+			expect( ui.view.body.mountTarget ).toBeUndefined();
+		} );
+
+		it( 'attaches the body collection once a detached editor is inserted into a shadow root', () => {
+			editor.editing.view.domRoots.set( 'main', document.createElement( 'div' ) );
+
+			ui.fire( 'ready' );
+
+			expect( ui.view.body.mountTarget ).toBeUndefined();
+
+			// The integrator inserts the editor into a shadow root; the next render fires `update`.
+			const shadowRoot = createShadowRoot();
+			editor.editing.view.domRoots.set( 'main', domRootIn( shadowRoot ) );
+
+			ui.fire( 'update' );
+
+			expect( ui.view.body.mountTarget ).toBe( shadowRoot );
+		} );
+
+		it( 'attaches the body collection when a view is added after the editor connects without a render', () => {
+			// A detached editor: registered but disconnected editing root.
+			editor.editing.view.domRoots.set( 'main', document.createElement( 'div' ) );
+
+			ui.fire( 'ready' );
+
+			expect( ui.view.body.mountTarget ).toBeUndefined();
+
+			// The editor is inserted into a shadow root, but no view render (and thus no `update`) happens.
+			const shadowRoot = createShadowRoot();
+			editor.editing.view.domRoots.set( 'main', domRootIn( shadowRoot ) );
+
+			// Showing floating UI adds a view to the body collection – this alone must mount it.
+			const view = new View();
+			view.setTemplate( { tag: 'div' } );
+			ui.view.body.add( view );
+
+			expect( ui.view.body.mountTarget ).toBe( shadowRoot );
+		} );
+
+		it( 'moves the body collection back to document.body when the editor leaves the shadow root', () => {
+			const shadowRoot = createShadowRoot();
+
+			attachEditingRoot( shadowRoot );
+
+			ui.fire( 'ready' );
+
+			expect( ui.view.body.mountTarget ).toBe( shadowRoot );
+
+			// The editing root moves to the light DOM.
+			attachEditingRoot( document.body );
+
+			ui.fire( 'update' );
+
+			expect( ui.view.body.mountTarget ).toBe( document.body );
+		} );
+
+		it( 'unmounts the body collection when the editing root leaves the document', () => {
+			const shadowRoot = createShadowRoot();
+
+			attachEditingRoot( shadowRoot );
+
+			ui.fire( 'ready' );
+
+			expect( ui.view.body.mountTarget ).toBe( shadowRoot );
+
+			// The editing root is removed from the document (the editor itself is not destroyed).
+			editor.editing.view.domRoots.set( 'main', document.createElement( 'div' ) );
+
+			ui.fire( 'update' );
+
+			expect( ui.view.body.mountTarget ).toBeUndefined();
+		} );
+
+		it( 'warns when the configured overlay container is not connected to the document', () => {
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+			const detachedHost = document.createElement( 'div' );
+
+			editor.config.set( 'ui.overlayContainer', detachedHost );
+
+			ui.fire( 'ready' );
+
+			// The body collection still mounts into it (it just is not visible yet).
+			expect( ui.view.body.mountTarget ).toBe( detachedHost );
+
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^ui-overlay-container-not-connected/ );
+			expect( consoleWarnStub.mock.calls[ 0 ][ 1 ] ).toMatchObject( { overlayContainer: detachedHost } );
+		} );
+
+		it( 'does not warn when the configured overlay container is connected to the document', () => {
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+			const shadowRoot = createShadowRoot();
+
+			editor.config.set( 'ui.overlayContainer', shadowRoot );
+
+			ui.fire( 'ready' );
+
+			expect( consoleWarnStub ).not.toHaveBeenCalled();
 		} );
 	} );
 } );

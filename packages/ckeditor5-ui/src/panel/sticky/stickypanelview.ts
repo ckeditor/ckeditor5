@@ -17,6 +17,7 @@ import {
 	type ObservableChangeEvent,
 	Rect,
 	toUnit,
+	getShadowRoots,
 	getVisualViewportOffset,
 	global
 } from '@ckeditor/ckeditor5-utils';
@@ -146,6 +147,14 @@ export class StickyPanelView extends View {
 	private _contentPanelPlaceholder: HTMLElement;
 
 	/**
+	 * The shadow roots {@link #limiterElement} lives in, currently covered by their own `scroll` listener
+	 * (in addition to `document`). `scroll` is not `composed`, so it never crosses a shadow boundary: a
+	 * listener on `document`, even with `useCapture: true`, never sees a scrollable container inside a shadow
+	 * root hosting the limiter.
+	 */
+	private _scrollListenerShadowRoots: Set<ShadowRoot> = new Set();
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
@@ -238,6 +247,13 @@ export class StickyPanelView extends View {
 			this.checkIfShouldBeSticky();
 		}, { useCapture: true } );
 
+		// #checkIfShouldBeSticky() re-derives the roots on its own, but it is not called when the limiter is
+		// swapped, so cover that case here too — otherwise the new limiter's tree would go unlistened until
+		// something else happened to trigger a check.
+		this.listenTo<ObservableChangeEvent>( this, 'change:limiterElement', () => {
+			this._syncScrollListenerRoots();
+		} );
+
 		// Synchronize with `model.isActive` because sticking an inactive panel is pointless.
 		this.listenTo<ObservableChangeEvent>( this, 'change:isActive', () => {
 			this.checkIfShouldBeSticky();
@@ -255,11 +271,40 @@ export class StickyPanelView extends View {
 	}
 
 	/**
+	 * Attaches or detaches the `scroll` listener on the shadow roots {@link #limiterElement} currently lives in,
+	 * so they match exactly. See {@link #_scrollListenerShadowRoots}.
+	 */
+	private _syncScrollListenerRoots(): void {
+		const currentRoots = this.limiterElement ? new Set( getShadowRoots( this.limiterElement ) ) : new Set<ShadowRoot>();
+
+		for ( const root of this._scrollListenerShadowRoots ) {
+			if ( !currentRoots.has( root ) ) {
+				this.stopListening( root, 'scroll' );
+				this._scrollListenerShadowRoots.delete( root );
+			}
+		}
+
+		for ( const root of currentRoots ) {
+			if ( !this._scrollListenerShadowRoots.has( root ) ) {
+				this.listenTo( root, 'scroll', this.checkIfShouldBeSticky.bind( this ), { useCapture: true } );
+				this._scrollListenerShadowRoots.add( root );
+			}
+		}
+	}
+
+	/**
 	 * Analyzes the environment to decide whether the panel should be sticky or not.
 	 * Then handles the positioning of the panel.
 	 */
 	public checkIfShouldBeSticky(): void {
 		// @if CK_DEBUG_STICKYPANEL // RectDrawer.clear();
+
+		// The limiter can be moved into (or out of) a shadow root long after this view was rendered, without
+		// #limiterElement itself ever changing — `ClassicEditor`, for instance, renders its UI first and only
+		// then replaces the source element, moving the whole tree. Re-deriving the roots here, rather than only
+		// when #limiterElement changes, keeps the listeners correct through such a move. The cost is negligible
+		// next to the rect math below, and this method is already the place where the environment is re-read.
+		this._syncScrollListenerRoots();
 
 		if ( !this.limiterElement || !this.isActive ) {
 			this._unstick();

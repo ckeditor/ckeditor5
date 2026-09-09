@@ -1281,6 +1281,61 @@ editor.data.upcastDispatcher.convert( viewFragment, writer, [ '$root' ] );
 
 If the default `'$root'` context is intentional (for example, an internal editor whose only root always uses the default model element), opt out with an `// eslint-disable-next-line` comment that explains why.
 
+### Disallow shadow-unsafe DOM APIs: `ckeditor5-rules/no-shadow-unsafe-dom-apis`
+
+This rule reports DOM APIs that stop working correctly once the editor is placed inside a shadow root. None of them throw an error. Each one resolves against the top-level document, so it either finds nothing or returns the shadow host instead of the node inside it. The problem surfaces later as a feature that silently stops reacting, which makes it difficult to trace back to the API that caused it.
+
+The reported APIs fall into the following groups:
+
+* **Active element and selection** &ndash; `document.activeElement` and `getSelection()`. Neither can see into a shadow root: both report the host of the tree rather than the focused or selected node inside it. Because the rule matches the access path rather than the value, it recognizes the top-level document however it is written &ndash; `document`, `window.document`, or any `*.ownerDocument`. `getSelection()` is caught on the window forms too, whether a bare call or through `window.`, `self.`, or `*.defaultView.`, because it is defined on both `Window` and `Document`, while `activeElement` belongs to `DocumentOrShadowRoot`. Use the {@link module:utils/dom/getactiveelement~getActiveElement `getActiveElement()`} and {@link module:utils/dom/getselection~getSelection `getSelection()`} helpers instead, which read from the node's own root.
+* **Containment and traversal** &ndash; `contains()` called on the top-level document or its body, and every read of `.parentNode` or `.parentElement`. All of them stop at the boundary. Use `isConnected` or {@link module:utils/dom/containsnode~containsNode `containsNode()`} in place of `contains()`, and {@link module:utils/dom/getparentnode~getParentNode `getParentNode()`} or {@link module:utils/dom/getparentelement~getParentElement `getParentElement()`} in place of the raw properties.
+* **Element lookup** &ndash; `querySelector()`, `querySelectorAll()`, `getElementById()`, `getElementsByTagName()`, `getElementsByClassName()`, and `getElementsByName()` called on the top-level document or its body. The contents of a shadow root are not reachable from the document, so these lookups find nothing. Query the editor's own root instead.
+* **Point resolution** &ndash; `document.elementFromPoint()` and `document.elementsFromPoint()` ignore shadow content, so the point must be resolved through the element's own root. `caretPositionFromPoint()` needs a `{ shadowRoots }` option to resolve carets inside a shadow root and is reported when that option is missing.
+* **Root discovery** &ndash; `.shadowRoot` and `composedPath()`. Both are reported on every use, not only when they serve to discover the root. Keep a held reference to the root, or call `getRootNode()` instead.
+* **Document listeners** &ndash; `mouseenter`, `mouseleave`, `pointerenter`, `pointerleave`, and `scroll` listeners added to or removed from the top-level document. They do not fire for events that happen inside another shadow root.
+* **Body mounting** &ndash; `document.body.appendChild()`. Mount it into the body collection root instead.
+* **Tree traversal** &ndash; `createTreeWalker()` and `createNodeIterator()` rooted at the top-level document or its body. Neither one descends into shadow roots. Only the root argument matters here, not the object the factory is called on.
+* **Retargeted event properties** &ndash; any read or write of `relatedTarget`. It is retargeted at a shadow boundary, so it does not point at the node the pointer actually came from or went to.
+
+Some cases are deliberately left out. Legacy `caretRangeFromPoint()` is never reported, because it accepts coordinates only and has no shadow-aware form. It is used exactly where `caretPositionFromPoint()` is unavailable, so there is nothing to switch to. Destructuring, for example `const { relatedTarget } = domEvent;`, is not covered either, because the rule matches property access rather than bindings. Private class fields are left alone as well &ndash; `this.#parentNode`, `this.#shadowRoot`, and `this.#relatedTarget` are ordinary class state, not DOM properties. Conversely, `relatedTarget` is reported on every access without checking which object it belongs to, since the name is rarely used for anything else.
+
+Wrapping an access does not sidestep the rule. It matches through optional chaining, non-null assertions, `as` casts, bracket notation, and template-literal property keys, so `document?.querySelector( '.x' )` and `document[ 'querySelector' ]( '.x' )` are both reported.
+
+A bare call to a function that resolves to a local binding, whether imported or declared in the file, is never reported, even when it shares a name with a global. That is how the shadow-aware helpers themselves pass the rule. A name introduced only by a `/* global */` directive comment does not count as a local binding and is still reported.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+const active = document.activeElement;
+const selection = window.getSelection();
+const isInside = document.body.contains( element );
+const parent = element.parentNode;
+const toolbarElement = document.querySelector( '.ck-toolbar' );
+
+document.addEventListener( 'scroll', handler );
+document.caretPositionFromPoint( x, y );
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+import { getActiveElement, getSelection, containsNode, getParentNode } from '@ckeditor/ckeditor5-utils';
+
+const active = getActiveElement( element );
+const selection = getSelection( element );
+const isInside = containsNode( container, element );
+const parent = getParentNode( element );
+
+// Resolve the root once, then query it and listen on it.
+const editorRoot = element.getRootNode() as Document | ShadowRoot;
+const toolbarElement = editorRoot.querySelector( '.ck-toolbar' );
+
+editorRoot.addEventListener( 'scroll', handler );
+document.caretPositionFromPoint( x, y, { shadowRoots } );
+```
+
+If a raw API is the correct call at a given site, opt out with an `// eslint-disable-next-line` comment that explains why. The shadow-aware helpers that wrap these APIs are the main case.
+
 ## CKEditor&nbsp;5 custom CSS ESLint rules
 
 In addition to the rules provided by ESLint and its CSS plugin, CKEditor&nbsp;5 uses a few custom CSS rules described below.
@@ -1314,6 +1369,8 @@ This rule requires content styles scoped with `.ck-content` to be placed in `the
 ### Editor stylesheet placement: `ckeditor5-rules/no-editor-styles-in-index-content`
 
 This rule prevents editor UI and editing-view selectors from being placed in `theme/index-content.css`. The content entry point may also contain supporting custom properties, font definitions, and keyframes.
+
+A bare `:host` selector that declares only custom properties is allowed. Together with `:root`, it marks the root scope the stylesheet resolves its custom properties in, so `:root, :host { --ck-content-*: ... }` is accepted here. A parameterized `:host(...)` still counts as an editor selector. See the [`ckeditor5-rules/require-host-with-root-selector`](#root-selectors-require-host-ckeditor5-rulesrequire-host-with-root-selector) rule for why the two selectors are paired.
 
 ### Selector specificity order: `ckeditor5-rules/no-descending-specificity`
 
@@ -1366,5 +1423,30 @@ Properties whose values legitimately contain dashed identifiers are not checked.
 .ck-button {
 	color: var(--ck-color-text);
 	--ck-button-color: var(--ck-color-text);
+}
+```
+
+### `:root` selectors require `:host`: `ckeditor5-rules/require-host-with-root-selector`
+
+A `:root` selector matches nothing inside a shadow root, so a stylesheet that anchors its custom properties on `:root` alone leaves every one of them undefined for an editor mounted inside one. This rule requires each `:root` selector to be paired with `:host`, which matches the shadow host from inside the shadow tree and matches nothing in the light DOM. Pairing the two lets a single stylesheet resolve its tokens in both contexts.
+
+Only a bare `:host` satisfies the rule. A parameterized `:host(...)` targets specific hosts rather than the root scope, so it does not count.
+
+The rule is autofixable. The fix adds `:host` as a new selector after `:root`, indented to match it.
+
+👎&nbsp; Example of incorrect code for this rule:
+
+```css
+:root {
+	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
+}
+```
+
+👍&nbsp; Example of correct code for this rule:
+
+```css
+:root,
+:host {
+	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
 }
 ```

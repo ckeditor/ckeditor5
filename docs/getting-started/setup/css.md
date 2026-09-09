@@ -85,6 +85,31 @@ Knowing the variables, you can push the customization even further and create yo
 
 To apply classes or styles directly to the editable area from the editor configuration, see the {@link getting-started/setup/root-types#styling-the-editable-area Styling the editable area} section of the Root types guide.
 
+### Styles inside a shadow DOM
+
+Attaching a shadow root creates a separate DOM tree, and style sheets are scoped to the tree they belong to. This isolation works both ways: selectors in a page style sheet do not match elements inside a shadow tree, and styles defined inside a shadow tree do not affect the rest of the page.
+
+Load the editor style sheets into the appropriate DOM tree where the editor is attached. For the light DOM, load them in the main document, as shown above. For an editor inside a shadow root, load styles into that root.
+
+Besides the main editing area, the editor also renders floating UI, such as balloons, tooltips, and dialogs, outside the editable. If you give it a separate shadow root through the {@link module:core/editor/editorconfig~UiConfig#overlayContainer `ui.overlayContainer`} configuration option, for example, one attached to an element at the end of the document body, load the same style sheets into that root as well.
+
+The editor declares its CSS variables on both `:root` and `:host`, so one style sheet resolves them in the main document and inside a shadow root alike. This is necessary because `:root` matches nothing inside a shadow tree, and `:host` matches nothing outside one.
+
+<info-box warning>
+	One consequence is that overriding a variable on `:root` has no effect on an editor inside a shadow root. Custom properties do inherit across the shadow boundary, so the value reaches the host. But the editor style sheet declares that variable on `:host`, which sets it on the host element itself, and a value set on an element always beats one inherited from an ancestor. Marking the override `!important` does not change this.
+</info-box>
+
+Override the variable on the shadow host element instead, or anywhere inside the shadow root. A rule in the main document that matches the host still wins, so the override does not have to live inside the root.
+
+Giving every host that holds editor UI the same class, the editor root and the overlay container alike, keeps this to a single rule:
+
+```css
+/* A class you put on every shadow host that holds editor UI. */
+.my-editor-shadow-host {
+	--ck-border-radius: 16px;
+}
+```
+
 ## Customizing the look of the features
 
 Similarly to the customizable editor look, some features also provide an interface to change their styles via [native CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascading_variables/Using_CSS_custom_properties).

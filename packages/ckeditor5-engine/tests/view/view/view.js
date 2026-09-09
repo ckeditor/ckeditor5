@@ -122,6 +122,19 @@ describe( 'view', () => {
 			expect( view._renderer.markedChildren.has( viewH1 ) ).toBe( true );
 		} );
 
+		it( 'should register the editing root with the renderer so its DOM selection can be managed', () => {
+			const domDiv = document.createElement( 'div' );
+
+			document.body.appendChild( domDiv );
+
+			createViewRoot( viewDocument, 'div', 'main' );
+			view.attachDomRoot( domDiv );
+
+			expect( view._renderer._domRoots.has( domDiv ) ).toBe( true );
+
+			domDiv.remove();
+		} );
+
 		it( 'should handle the "contenteditable" attribute management on #isReadOnly change', () => {
 			const domDiv = document.createElement( 'div' );
 			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
@@ -215,6 +228,20 @@ describe( 'view', () => {
 			view.detachDomRoot( 'main' );
 			expect( count( view.domRoots ) ).toEqual( 0 );
 			expect( view.domConverter.mapViewToDom( viewRoot ) ).toBeUndefined();
+
+			domDiv.remove();
+		} );
+
+		it( 'should stop tracking the editing root in the renderer', () => {
+			const domDiv = document.createElement( 'div' );
+
+			createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domDiv );
+			expect( view._renderer._domRoots.has( domDiv ) ).toBe( true );
+
+			view.detachDomRoot( 'main' );
+			expect( view._renderer._domRoots.has( domDiv ) ).toBe( false );
 
 			domDiv.remove();
 		} );
@@ -1073,6 +1100,82 @@ describe( 'view', () => {
 				expect( document.getSelection().rangeCount ).toEqual( 1 );
 				expect( document.getSelection().focusNode ).toBe( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
 				expect( document.getSelection().focusOffset ).toEqual( 3 );
+			} );
+		} );
+
+		describe( 'DOM selection clearing on editable blur inside a shadow root', () => {
+			// The observers listen on the DOM roots themselves, so a `relatedTarget` in the tree a root lives in –
+			// or anywhere above it – arrives as the real node rather than a retargeted stand-in.
+			let view, viewDocument, editorHost, unrelatedHost, domRoot, siblingDomRoot;
+
+			function setupTest() {
+				vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
+
+				editorHost = document.body.appendChild( createElement( document, 'div' ) );
+				unrelatedHost = document.body.appendChild( createElement( document, 'div' ) );
+
+				unrelatedHost.attachShadow( { mode: 'open' } );
+
+				const shadowRoot = editorHost.attachShadow( { mode: 'open' } );
+
+				domRoot = shadowRoot.appendChild( createElement( document, 'div' ) );
+				siblingDomRoot = shadowRoot.appendChild( createElement( document, 'div' ) );
+
+				view = new EditingView( new StylesProcessor() );
+				viewDocument = view.document;
+
+				createViewRoot( viewDocument, 'div', 'main' );
+				createViewRoot( viewDocument, 'div', 'second' );
+
+				view.attachDomRoot( domRoot, 'main' );
+				view.attachDomRoot( siblingDomRoot, 'second' );
+
+				const viewText = new ViewText( viewDocument, 'foobar' );
+				const viewP = new ViewContainerElement( viewDocument, 'p', null, viewText );
+
+				viewDocument.getRoot( 'main' )._appendChild( viewP );
+				viewDocument.selection._setTo( viewText, 3 );
+				viewDocument.isFocused = true;
+
+				view.forceRender();
+			}
+
+			afterEach( () => {
+				view.destroy();
+				editorHost.remove();
+				unrelatedHost.remove();
+			} );
+
+			it( 'should not clear DOM selection when focus moves to another DOM root in the same shadow root', () => {
+				setupTest();
+
+				expect( document.getSelection().rangeCount ).toEqual( 1 );
+
+				// A related target in the tree the blurred root lives in is reported as the real node, so it is
+				// recognized as an editable of this editor.
+				domRoot.dispatchEvent( new FocusEvent( 'blur', { relatedTarget: siblingDomRoot } ) );
+
+				expect( document.getSelection().rangeCount ).toEqual( 1 );
+			} );
+
+			it( 'should clear DOM selection when focus moves into a shadow root holding no DOM root of this editor', () => {
+				setupTest();
+
+				expect( document.getSelection().rangeCount ).toEqual( 1 );
+
+				domRoot.dispatchEvent( new FocusEvent( 'blur', { relatedTarget: unrelatedHost } ) );
+
+				expect( document.getSelection().rangeCount ).toEqual( 0 );
+			} );
+
+			it( 'should clear DOM selection when focus moves to the shadow host wrapping the editor', () => {
+				setupTest();
+
+				expect( document.getSelection().rangeCount ).toEqual( 1 );
+
+				domRoot.dispatchEvent( new FocusEvent( 'blur', { relatedTarget: editorHost } ) );
+
+				expect( document.getSelection().rangeCount ).toEqual( 0 );
 			} );
 		} );
 

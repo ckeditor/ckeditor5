@@ -5,7 +5,8 @@
 
 /* The values should be synchronized with the "FONT_SIZE_PRESET_UNITS" object in the "/src/fontsize/utils.js" file. */
 
-:root {
+:root,
+:host {
 	--ck-content-font-size-tiny: 0.7em;
 	--ck-content-font-size-small: 0.85em;
 	--ck-content-font-size-big: 1.4em;

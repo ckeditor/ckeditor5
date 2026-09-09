@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-color-split-button-hover-background: hsl(0, 0%, 92%);
 	--ck-color-split-button-hover-border: hsl(0, 0%, 70%);
 }

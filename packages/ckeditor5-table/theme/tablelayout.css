@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-table-layout-widget-type-around-button-size: 16px;
 	--ck-table-layout-widget-type-around-icon-width: 10px;
 	--ck-table-layout-widget-type-around-icon-height: 8px;

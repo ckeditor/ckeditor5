@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	/* 34px at 13px font-size */
 	--ck-switch-button-toggle-width: 2.6153846154em;
 	/* 14px at 13px font-size */

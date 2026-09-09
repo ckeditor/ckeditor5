@@ -260,6 +260,71 @@ describe( 'InputObserver', () => {
 				expect( viewRange.end.offset ).toBe( 2 );
 			} );
 
+			it( 'should provide editing view ranges corresponding to DOM selection ranges inside a shadow root (Android)', () => {
+				vi.spyOn( env, 'isAndroid', 'get' ).mockReturnValue( true );
+
+				// Host the editing root inside a shadow tree, so the DOM selection must be resolved against
+				// the shadow root (shadow-scoped) rather than the document.
+				const shadowHost = global.document.createElement( 'div' );
+
+				global.document.body.appendChild( shadowHost );
+
+				const shadowRoot = shadowHost.attachShadow( { mode: 'open' } );
+				const shadowEditable = global.document.createElement( 'div' );
+
+				shadowRoot.appendChild( shadowEditable );
+
+				const shadowView = new EditingView( new StylesProcessor() );
+				const shadowViewDocument = shadowView.document;
+				const shadowViewRoot = createViewRoot( shadowViewDocument );
+
+				shadowView.attachDomRoot( shadowEditable );
+
+				// <p>foo</p>
+				shadowView.change( writer => {
+					const paragraph = writer.createContainerElement( 'p' );
+					const text = writer.createText( 'foo' );
+
+					writer.insert( writer.createPositionAt( paragraph, 0 ), text );
+					writer.insert( writer.createPositionAt( shadowViewRoot, 0 ), paragraph );
+				} );
+
+				const shadowObserver = shadowView.getObserver( InputObserver );
+				const shadowBeforeInputSpy = vi.fn();
+
+				shadowViewDocument.on( 'beforeinput', shadowBeforeInputSpy );
+
+				// <p>[fo]o</p> — a selection placed on nodes inside the shadow tree. On Blink this keeps the
+				// selection shadow-scoped, which is what the observer resolves against.
+				const selection = window.getSelection();
+
+				selection.collapse( shadowEditable.firstChild.firstChild, 0 );
+				selection.extend( shadowEditable.firstChild.firstChild, 2 );
+
+				shadowObserver.onDomEvent( {
+					type: 'beforeinput',
+					target: shadowEditable,
+					getTargetRanges: () => [],
+					preventDefault: vi.fn()
+				} );
+
+				const shadowEvtData = shadowBeforeInputSpy.mock.calls[ 0 ][ 1 ];
+
+				expect( shadowEvtData.targetRanges ).toHaveLength( 1 );
+
+				const viewRange = shadowEvtData.targetRanges[ 0 ];
+
+				expect( viewRange ).toBeInstanceOf( ViewRange );
+
+				expect( viewRange.start.parent ).toBe( shadowViewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( viewRange.start.offset ).toBe( 0 );
+				expect( viewRange.end.parent ).toBe( shadowViewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( viewRange.end.offset ).toBe( 2 );
+
+				shadowView.destroy();
+				shadowHost.remove();
+			} );
+
 			describe( 'target range followed by an inline filler', () => {
 				it( 'should prevent default if target range end touches an inline filler', () => {
 					// <p>om<span>w</span></p>

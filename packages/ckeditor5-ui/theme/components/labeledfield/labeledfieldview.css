@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-labeled-field-view-transition: .1s cubic-bezier(0, 0, 0.24, 0.95);
 	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-spacing-medium);
 	--ck-labeled-field-label-default-position-x: var(--ck-spacing-medium);

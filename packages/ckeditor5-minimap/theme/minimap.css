@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-color-minimap-tracker-background: 208, 0%, 51%;
 	--ck-color-minimap-iframe-outline: hsl(0deg 0% 75%);
 	--ck-color-minimap-iframe-shadow: hsl(0deg 0% 0% / 11%);

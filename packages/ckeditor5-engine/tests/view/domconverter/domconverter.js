@@ -156,6 +156,45 @@ describe( 'ViewDomConverter', () => {
 			expect( documentElementScrollLeftSpy ).toHaveBeenCalledWith( 60 );
 			expect( documentElementScrollTopSpy ).toHaveBeenCalledWith( 600 );
 		} );
+
+		for ( const mode of [ 'open', 'closed' ] ) {
+			it( `should actively prevent scrolling across a ${ mode } shadow boundary`, () => {
+				const scrollToSpy = vi.spyOn( global.window, 'scrollTo' ).mockImplementation( () => {} );
+				const editableScrollTopSpy = vi.fn();
+				const hostScrollTopSpy = vi.fn();
+				const documentElementScrollTopSpy = vi.fn();
+
+				// Move the editable into a shadow root attached to its former parent, so restoring the
+				// scroll positions of the outer elements requires crossing the shadow host.
+				domEditableParent.attachShadow( { mode } ).appendChild( domEditable );
+
+				Object.defineProperties( domEditable, {
+					scrollLeft: { get: () => 20, set: vi.fn() },
+					scrollTop: { get: () => 200, set: editableScrollTopSpy }
+				} );
+
+				Object.defineProperties( domEditableParent, {
+					scrollLeft: { get: () => 40, set: vi.fn() },
+					scrollTop: { get: () => 400, set: hostScrollTopSpy }
+				} );
+
+				vi.spyOn( global.document.documentElement, 'scrollTop', 'get' ).mockReturnValue( 600 );
+				vi.spyOn( global.document.documentElement, 'scrollTop', 'set' ).mockImplementation( documentElementScrollTopSpy );
+
+				vi.spyOn( global.window, 'scrollX', 'get' ).mockReturnValue( 10 );
+				vi.spyOn( global.window, 'scrollY', 'get' ).mockReturnValue( 100 );
+
+				converter.focus( viewEditable );
+
+				expect( scrollToSpy ).toHaveBeenCalledWith( 10, 100 );
+				expect( editableScrollTopSpy ).toHaveBeenCalledWith( 200 );
+
+				// Without crossing the host the walk ends at the editable, so nothing outside the shadow
+				// root ever gets its scroll position restored.
+				expect( hostScrollTopSpy ).toHaveBeenCalledWith( 400 );
+				expect( documentElementScrollTopSpy ).toHaveBeenCalledWith( 600 );
+			} );
+		}
 	} );
 
 	describe( 'DOM nodes type checking', () => {
@@ -1108,6 +1147,20 @@ describe( 'ViewDomConverter', () => {
 			converter._clearDomSelection();
 
 			expect( domSelection.rangeCount ).toBe( 0 );
+		} );
+
+		it( 'should do nothing when the editable is detached (no resolvable selection)', () => {
+			const viewSelection = viewDocument.selection;
+
+			viewSelection._setTo( new ViewRange(
+				new ViewPosition( viewP.getChild( 0 ), 3 ),
+				new ViewPosition( viewP.getChild( 0 ), 5 )
+			) );
+
+			// A detached editable is no longer inside any document, so it has no resolvable DOM selection.
+			domEditable.remove();
+
+			expect( () => converter._clearDomSelection() ).not.toThrow();
 		} );
 
 		it( 'should do nothing if DOM selection is not in editor editable element', () => {

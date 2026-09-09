@@ -15,7 +15,7 @@ import { global } from './global.js';
  * @param element The native DOM element to be checked.
  */
 export function getPositionedAncestor( element?: HTMLElement ): HTMLElement | null {
-	if ( !element || !element.parentNode ) {
+	if ( !element || !element.isConnected ) {
 		return null;
 	}
 

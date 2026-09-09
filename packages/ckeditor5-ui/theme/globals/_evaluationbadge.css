@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	/* where 7.5(px) is the font size of the evaluation badge label and 13(px) is the base font size. */
 	--ck-evaluation-badge-font-size: calc(var(--ck-font-size-base) * 7.5 / 13);
 	/* where 7.5(px) is the line height of the evaluation badge label and 13(px) is the base font size. */

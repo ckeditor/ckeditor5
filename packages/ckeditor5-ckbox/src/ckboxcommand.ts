@@ -201,7 +201,11 @@ export class CKBoxCommand extends Command {
 				return;
 			}
 
+			// CKBox is a standalone application with its own styles, so its wrapper is mounted in the light
+			// DOM (`document.body`) even when the editor lives in a shadow root. Keeping it outside the
+			// shadow root is intentional until its shadow DOM support is verified.
 			this._wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
+			// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 			document.body.appendChild( this._wrapper );
 
 			window.CKBox.mount( this._wrapper, this._prepareOptions() );

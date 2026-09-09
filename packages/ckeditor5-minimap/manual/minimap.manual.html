@@ -21,7 +21,31 @@
 
 <ck-manual-header>
 	<h2>TODO</h2>
+
+	<p>
+		Use the picker to move the editor into shadow roots. In the shadow modes the whole minimap UI goes into one
+		root, and the editing root into a second one <strong>nested inside it</strong>. The scrollable
+		<code>.editor-container</code> sits between the two, so resolving the minimap's scrollable ancestor has to
+		cross a shadow host – which is what this test is for.
+	</p>
+
+	<p>
+		In every mode the minimap must appear, its preview must match the content, and its position tracker must
+		follow the editor as you scroll – dragging the tracker must scroll the editor too. Loading the short,
+		medium and long data must resize the preview accordingly, and switching the preview style must keep all of
+		that working.
+	</p>
+
+	<p>
+		The editor stylesheet is forwarded into both roots and disabled in the main document, so anything that ends
+		up outside them renders unstyled and is easy to spot – the toolbar and the minimap frame included. Closed
+		roots cannot be resolved through <code>host.shadowRoot</code>, so reach them from the console through the
+		editor: <code>editorInstance.editing.view.getDomRoot().getRootNode()</code> is the inner one, and its
+		<code>host.getRootNode()</code> the outer one above it.
+	</p>
 </ck-manual-header>
+
+<ck-manual-shadow-mode></ck-manual-shadow-mode>
 
 <p>
 	<b>Preview style</b>:
