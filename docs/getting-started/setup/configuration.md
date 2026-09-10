@@ -12,7 +12,7 @@ modified_at: 2024-06-25
 You configure CKEditor&nbsp;5 features through the configuration object passed to the editor's `create()` method: import each feature's plugin, list it in the `plugins` array, and add its buttons to the `toolbar`. Features are accessible via a configurable toolbar or keyboard shortcuts, and some are only available with certain {@link getting-started/setup/editor-types editor types}.
 
 <info-box>
-	The best tool for experimenting with different features is [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs). You can test various possibilities and setups.
+	The best tool for experimenting with different features is [CKEditor&nbsp;5 Builder](https://builder.ckeditor.com/?redirect=docs). You can test various possibilities and setups.
 
 	Additionally, almost all features offer multiple configuration options and APIs. For detailed information, consult the {@link features/index feature pages}.
 </info-box>
@@ -39,7 +39,7 @@ ClassicEditor
 ```
 </code-switcher>
 
-Note that some features may require more than one plugin to run, as shown above. This granular approach lets the integrators adjust available features to their specific needs. It is done during the setup and [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) is the easiest way to choose all needed features.
+Note that some features may require more than one plugin to run, as shown above. This granular approach lets the integrators adjust available features to their specific needs. It is done during the setup and [Builder](https://builder.ckeditor.com/?redirect=docs) is the easiest way to choose all needed features.
 
 ### Adding premium features
 
