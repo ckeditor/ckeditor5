@@ -67,7 +67,7 @@ describe( 'Config', () => {
 			expect( config.get( 'bar' ) ).toBe( 2 );
 		} );
 
-		it( 'should copy default configuration to not share properties between config instances [watchdog]', () => {
+		it( 'should copy default configuration to not share properties between config instances', () => {
 			const defaultConfig = {
 				foo: 1,
 				bar: [

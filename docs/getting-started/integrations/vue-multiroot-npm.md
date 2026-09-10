@@ -117,13 +117,11 @@ The `CkeditorMultiRoot` component supports the following properties:
 * `rootsAttributes: Object` &ndash; The initial roots attributes for the created editor. Use it with `v-model:roots-attributes`.
 * `config: Object` &ndash; The editor configuration. See the {@link getting-started/setup/configuration Configuration} guide.
 * `disabled: Boolean` &ndash; The {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} is switched to read-only mode if the property is set to `true`.
-* `disableWatchdog: Boolean` &ndash; If set to `true`, {@link features/watchdog the watchdog feature} will be disabled. It is set to `false` by default.
-* `watchdogConfig: WatchdogConfig` &ndash; {@link module:watchdog/watchdog~WatchdogConfig Configuration object} for the [watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html).
 * `disableTwoWayDataBinding: Boolean` &ndash; Allows disabling the two-way data binding mechanism between the editor state and `modelValue` object to improve editor efficiency. The default value is `false`.
 
 The component emits the following events:
 
-* `ready` &ndash; It is called when the editor is ready with a {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} instance. This event is also emitted after the reinitialization of the component if an error occurred.
+* `ready` &ndash; It is called when the editor is ready with a {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} instance.
 * `destroy` &ndash; It is called when the editor instance is destroyed.
 * `change` &ndash; It is called when the editor data has changed. See the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`} event.
 * `blur` &ndash; It is called when the editor was blurred. See the {@link module:engine/view/document~ViewDocument#event:blur `editor.editing.view.document#blur`} event.
@@ -133,10 +131,13 @@ The component emits the following events:
 * `update:modelValue` &ndash; It is emitted when the editor data changes and updates `v-model`.
 * `update:rootsAttributes` &ndash; It is emitted when the roots attributes change and updates `v-model:roots-attributes`.
 
-Error details is an object that contains two properties:
+<!-- TODO (https://github.com/ckeditor/ckeditor5-commercial/issues/11304): the Watchdog is gone, so the
+error handling described here still has to explain that a crashed editor is no longer restarted and what an
+integrator should do instead. Only the removed API was stripped here. -->
+
+Error details is an object that contains one property:
 
 * `phase: 'initialization'|'runtime'` &ndash; Informs when an error has occurred (during the editor or context initialization, or after the initialization).
-* `causesRestart: Boolean` &ndash; If set to `true`, the watchdog will attempt to restart the editor.
 
 The editor event callbacks (`change`, `blur`, `focus`) receive two arguments:
 

@@ -254,64 +254,10 @@ export class MyComponent {
 </button>
 ```
 
-<!-- TODO: Change the watchdog section if needed -->
-
-### `watchdog`
-
-An instance of the {@link module:watchdog/contextwatchdog~ContextWatchdog `ContextWatchdog`} class that is responsible for providing the same context to multiple editor instances and restarting the whole structure in case of crashes.
-
-```angular-ts
-import { Editor, Context, ContextWatchdog } from 'ckeditor5';
-
-@Component( {
-	// ...
-} )
-export class MyComponent {
-	public editor = Editor;
-	public watchdog: any;
-	public ready = false;
-
-	ngOnInit() {
-		const contextConfig = {};
-
-		this.watchdog = new ContextWatchdog( Context );
-
-		this.watchdog.create( contextConfig )
-			.then( () => {
-				this.ready = true;
-			} );
-	}
-}
-```
-
-```angular-html
-<div *ngIf="ready">
-	<ckeditor [watchdog]="watchdog"></ckeditor>
-	<ckeditor [watchdog]="watchdog"></ckeditor>
-	<ckeditor [watchdog]="watchdog"></ckeditor>
-</div>
-```
-
-### `editorWatchdogConfig`
-
-If the `watchdog` property is not used, {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`} will be used by default. `editorWatchdogConfig` property allows for passing a {@link module:watchdog/watchdog~WatchdogConfig config} to that watchdog.
-
-```angular-ts
-@Component( {
-	// ...
-} )
-export class MyComponent {
-	public myWatchdogConfig = {
-		crashNumberLimit: 5,
-		// ...
-	};
-	// ...
-}
-```
-
-```angular-html
-<ckeditor [editorWatchdogConfig]="myWatchdogConfig"></ckeditor>
-```
+<!-- TODO (https://github.com/ckeditor/ckeditor5-commercial/issues/11304): the Watchdog is gone, so the
+error handling described here still has to explain that a crashed editor is no longer restarted and what an
+integrator should do instead, and the shared-context guidance that the removed `watchdog` input carried needs
+a replacement. Only the removed API was stripped here. -->
 
 ### `disableTwoWayDataBinding`
 
@@ -329,8 +275,6 @@ The following `@Output` properties are supported by the CKEditor&nbsp;5 rich tex
 
 Fired when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event.
 It is fired with the editor instance.
-
-Note that this method might be called multiple times. It is fired on the initial editor initialization and also each time the editor is re-initialized after a crash recovery. Each re-initialization is a full editor restart that counts as a new editor load for {@link getting-started/licensing/usage-based-billing usage-based billing} purposes. Do not keep the reference to the editor instance internally, because it will change in case of a restart. Instead, you should use the `watchdog.editor` property.
 
 ### `change`
 
@@ -372,7 +316,7 @@ It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus`
 
 ### `error`
 
-Fired when the editor crashes. Once the editor has crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+Fired when the editor crashes.
 
 <info-box>
 	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.

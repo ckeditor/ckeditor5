@@ -1778,14 +1778,6 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 	</ck:card>
 </ck:columns>
 
-### Watchdog
-
-The watchdog utility protects you from data loss in case the editor crashes. It saves your content just before the crash and creates a new instance of the editor with your content intact.
-
-<ck:button-link size='sm' variant='secondary' href='{@link features/watchdog}'>
-	Feature page
-</ck:button-link>
-
 ## Compliance
 
 Make your content accessible to any person or restrict it to specific users.

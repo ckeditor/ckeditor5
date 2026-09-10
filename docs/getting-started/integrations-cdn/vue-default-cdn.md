@@ -250,54 +250,6 @@ const disableTwoWayDataBinding = ref( true );
 </script>
 ```
 
-### `watchdog-config`
-
-Allows passing a configuration object to the underlying {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`}. By default, the `<ckeditor>` component automatically wraps the editor with a watchdog that detects crashes and restarts the editor to recover lost content. Use this prop to customize the watchdog behavior, such as the number of allowed crashes before the watchdog gives up, or the minimum time between crashes.
-
-```vue
-<template>
-	<ckeditor
-		:editor="editor"
-		:watchdog-config="watchdogConfig"
-	/>
-</template>
-
-<script setup>
-import { Ckeditor } from '@ckeditor/ckeditor5-vue';
-
-// Editor loading and configuration is skipped for brevity.
-
-const watchdogConfig = {
-	crashNumberLimit: 5,
-	minimumNonErrorTimePeriod: 2000
-};
-</script>
-```
-
-See the {@link module:watchdog/watchdog~WatchdogConfig `WatchdogConfig` API} for the full list of available options.
-
-This prop has no effect when [`disable-watchdog`](#disable-watchdog) is set to `true`.
-
-### `disable-watchdog`
-
-Allows disabling the built-in watchdog. The default value is `false`.
-
-By default, the `<ckeditor>` component wraps the editor with CKEditor&nbsp;5's {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`}, which automatically detects and recovers from editor crashes. Setting `disable-watchdog` to `true` opts out of this behavior - the editor will run without crash recovery.
-
-When the watchdog is disabled, the [`ready`](#ready) and [`destroy`](#destroy) events will each fire at most once during the component's lifetime, and the [`error`](#error) event will never be emitted.
-
-```vue
-<template>
-	<ckeditor :editor="editor" :disable-watchdog="true" />
-</template>
-
-<script setup>
-import { Ckeditor } from '@ckeditor/ckeditor5-vue';
-
-// Editor loading and configuration is skipped for brevity.
-</script>
-```
-
 ## Component events
 
 ### `ready`
@@ -307,10 +259,6 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 ```vue
 <ckeditor :editor="editor" @ready="onEditorReady" />
 ```
-
-<info-box note>
-When the watchdog is active (the default), this event can fire **multiple times** during the component's lifetime - once after the initial mount and again after each watchdog-triggered editor restart. If you need one-time initialization logic (for example, inserting a toolbar into the DOM for the Document editor type), make sure your handler is idempotent or guard it with a flag.
-</info-box>
 
 ### `focus`
 
@@ -338,7 +286,11 @@ Corresponds to the {@link module:engine/model/document~ModelDocument#event:chang
 
 ### `error`
 
-Fired when an error is detected by the watchdog - either during editor initialization or at runtime.
+<!-- TODO (https://github.com/ckeditor/ckeditor5-commercial/issues/11304): the Watchdog is gone, so this
+section still has to explain that a crashed editor is no longer restarted and what an integrator should do
+instead. Only the removed `causesRestart` detail was stripped here. -->
+
+Fired when an error is detected - either during editor initialization or at runtime.
 
 ```vue
 <ckeditor :editor="editor" @error="onEditorError" />
@@ -349,7 +301,6 @@ The event handler receives two arguments:
 * `error` – the `Error` object describing what went wrong.
 * `details` – an object with the following properties:
   * `phase: 'initialization' | 'runtime'` – `'initialization'` when the error occurred during `Editor.create()`, or `'runtime'` for errors caught during normal operation.
-  * `causesRestart: boolean` – whether the watchdog will attempt to restart the editor. When `false`, no automatic restart is scheduled (for example, the crash limit was reached, or restarting does not apply to this error).
 
 ```vue
 <template>
@@ -361,17 +312,11 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
 // Editor loading and configuration is skipped for brevity.
 
-function onEditorError( error, { phase, causesRestart } ) {
-	if ( phase === 'runtime' && causesRestart ) {
-		console.warn( 'Editor crashed: the watchdog is restarting it.', error );
-	} else {
-		console.error( 'Editor error: the watchdog will not restart the editor automatically.', error );
-	}
+function onEditorError( error, { phase } ) {
+	console.error( `Editor error during ${ phase }:`, error );
 }
 </script>
 ```
-
-This event is not emitted when [`disable-watchdog`](#disable-watchdog) is set to `true`.
 
 ### `destroy`
 
@@ -386,7 +331,7 @@ Because the destruction of the editor is promise–driven, this event can be fir
 </info-box>
 
 <info-box note>
-When the watchdog is active (the default), this event can fire **multiple times** during the component's lifetime - once for each editor instance destroyed during a watchdog restart. It is **not** fired when the component unmounts before the editor finishes initializing. If you need to react to component unmount, use Vue's `onBeforeUnmount` lifecycle hook instead.
+This event is **not** fired when the component unmounts before the editor finishes initializing. If you need to react to component unmount, use Vue's `onBeforeUnmount` lifecycle hook instead.
 </info-box>
 
 ## How to?

@@ -250,10 +250,10 @@ export class TooltipManager extends TooltipManagerBase {
 		this.listenTo( global.document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
 
 		// Because this class is a singleton, its only instance is shared across all editors and connects them through the reference.
-		// This causes issues with the ContextWatchdog. When an error is thrown in one editor, the watchdog traverses the references
-		// and (because of shared tooltip manager) figures that the error affects all editors and restarts them all.
-		// This flag, excludes tooltip manager instance from the traversal and brings ContextWatchdog back to normal.
-		// More in https://github.com/ckeditor/ckeditor5/issues/12292.
+		// Error attribution walks those references to work out which editor an error came from, and the shared tooltip manager
+		// would make every error look like it belongs to every editor. This flag excludes the instance from that walk.
+		// The name is historical: the walk used to belong to the Watchdog. More in
+		// https://github.com/ckeditor/ckeditor5/issues/12292.
 		this._watchdogExcluded = true;
 	}
 

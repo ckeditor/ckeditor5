@@ -104,7 +104,6 @@
     "@ckeditor/ckeditor5-undo": "workspace:*",
     "@ckeditor/ckeditor5-upload": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "@ckeditor/ckeditor5-watchdog": "workspace:*",
     "@ckeditor/ckeditor5-widget": "workspace:*",
     "@ckeditor/ckeditor5-word-count": "workspace:*"
   },

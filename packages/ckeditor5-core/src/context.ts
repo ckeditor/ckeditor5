@@ -16,6 +16,9 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { PluginCollection } from './plugincollection.js';
+import { getSubNodes } from './errorattribution/getsubnodes.js';
+import { _addLiveContext, _removeLiveContext } from './errorattribution/liveeditors.js';
+import { type EditorErrorCallback } from './errorreporter.js';
 import { type Editor } from './editor/editor.js';
 import type { LoadedPlugins, PluginConstructor } from './plugin.js';
 import type { EditorConfig } from './editor/editorconfig.js';
@@ -69,6 +72,25 @@ export class Context {
 	 * A list of editors that this context instance is injected to.
 	 */
 	public readonly editors: Collection<Editor>;
+
+	/**
+	 * Everything reachable from this context, with the editors in it left out.
+	 *
+	 * Error attribution decides whether an object belongs to an editor by looking for anything the two have
+	 * in common. Every editor in a context can be reached from every other one through
+	 * {@link #editors}, so without excluding what the context itself owns, any error would look like it
+	 * belongs to any editor.
+	 *
+	 * Filled in by {@link ~Context#initPlugins}, so it covers a context created through
+	 * {@link ~Context.create} as well as one built by hand, as long as its plugins were initialized. A
+	 * context an editor made for itself never gets there, because the editor initializes its own plugins
+	 * instead: it holds that editor alone, so there is nothing to tell apart.
+	 *
+	 * Temporary, for as long as attribution walks object graphs.
+	 *
+	 * @internal
+	 */
+	public _errorExclusions: Set<unknown> | undefined;
 
 	/**
 	 * The default configuration which is built into the `Context` class.
@@ -210,7 +232,21 @@ export class Context {
 			}
 		}
 
-		return this.plugins.init( plugins, [], substitutePlugins );
+		return this.plugins.init( plugins, [], substitutePlugins ).then( loadedPlugins => {
+			// After the plugins have been initialized, so that they are part of the snapshot. The editors are
+			// kept out of it explicitly rather than by counting on there being none yet — this method is
+			// public, so it can run at a moment the context does not choose: again later, when the context
+			// already has editors, or, for a context built by hand, while the integrator is creating them.
+			// A snapshot that took an editor in would make every error from it look like the context's own.
+			this._errorExclusions = getSubNodes( this, new Set( this.editors ) );
+
+			// Here rather than in `create()`, because a context can also be built by hand — `new Context()`
+			// followed by this method — and attribution has to know about that one too. A context an editor
+			// made for itself never reaches this point: the editor initializes its own plugins instead.
+			_addLiveContext( this );
+
+			return loadedPlugins;
+		} );
 	}
 
 	/**
@@ -220,6 +256,8 @@ export class Context {
 	 * @returns A promise that resolves once the context instance is fully destroyed.
 	 */
 	public destroy(): Promise<unknown> {
+		_removeLiveContext( this );
+
 		return Promise.all( Array.from( this.editors, editor => editor.destroy() ) )
 			.then( () => this.plugins.destroy() );
 	}
@@ -354,6 +392,15 @@ export class Context {
 			resolve( context.initPlugins().then( () => context ) );
 		} );
 	}
+
+	/**
+	 * {@link module:core/errorreporter~onEditorError `onEditorError()`}, reachable without importing it.
+	 *
+	 * The same field as {@link module:core/editor/editor~Editor.onEditorError `Editor.onEditorError`}, and
+	 * here for the same reason. A context is the only handle some integrations have: a component that
+	 * provides a shared context holds no editor class at all.
+	 */
+	public static declare onEditorError: ( callback: EditorErrorCallback ) => () => void;
 
 	/**
 	 * `Context` class is commonly put in `config.plugins` array.

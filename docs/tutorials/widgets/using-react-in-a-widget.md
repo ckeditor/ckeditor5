@@ -728,7 +728,13 @@ The product preview (`.product-preview` class) uses `background-image: var(--pro
 
 You can see the entire application working below. Click the products in the sidebar to add them to the editor. You can also check out the [full source code](#final-solution) of this tutorial if you want to extend it further or use it as base for your application.
 
-{@snippet framework/tutorials/using-react-in-widget}
+<!-- TODO (https://github.com/ckeditor/ckeditor5-commercial/issues/11304): a snippet embed was removed
+from here — the `framework/tutorials/using-react-in-widget` demo. It mounts the published
+`@ckeditor/ckeditor5-react`, which constructs `Editor.EditorWatchdog`, a static the Watchdog removal took
+away, so the page failed to mount. Put the embed back once a version of the integration without the
+Watchdog is published and `external/ckeditor5/package.json` points at it. The snippet files themselves are
+untouched. The directive is not spelled out here on purpose, so that nothing picks it up from inside this
+comment. -->
 
 ## Final solution
 

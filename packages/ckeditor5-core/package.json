@@ -49,7 +49,6 @@
     "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "@ckeditor/ckeditor5-watchdog": "workspace:*",
     "es-toolkit": "1.45.1"
   },
   "devDependencies": {

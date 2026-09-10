@@ -383,9 +383,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      '@ckeditor/ckeditor5-watchdog':
-        specifier: workspace:*
-        version: link:../ckeditor5-watchdog
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
@@ -1128,9 +1125,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      '@ckeditor/ckeditor5-watchdog':
-        specifier: workspace:*
-        version: link:../ckeditor5-watchdog
       es-toolkit:
         specifier: 1.45.1
         version: 1.45.1
@@ -1260,9 +1254,6 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
-      '@ckeditor/ckeditor5-watchdog':
-        specifier: workspace:*
-        version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 4.1.10(playwright@1.60.0)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@4.1.10)
@@ -1315,9 +1306,6 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
-      '@ckeditor/ckeditor5-watchdog':
-        specifier: workspace:*
-        version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 4.1.10(playwright@1.60.0)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@4.1.10)
@@ -1367,9 +1355,6 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
-      '@ckeditor/ckeditor5-watchdog':
-        specifier: workspace:*
-        version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 4.1.10(playwright@1.60.0)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@4.1.10)
@@ -1422,9 +1407,6 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
-      '@ckeditor/ckeditor5-watchdog':
-        specifier: workspace:*
-        version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 4.1.10(playwright@1.60.0)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@4.1.10)
@@ -1483,9 +1465,6 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
-      '@ckeditor/ckeditor5-watchdog':
-        specifier: workspace:*
-        version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 4.1.10(playwright@1.60.0)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@4.1.10)
@@ -2420,9 +2399,6 @@ importers:
       '@ckeditor/ckeditor5-table':
         specifier: workspace:*
         version: link:../ckeditor5-table
-      '@ckeditor/ckeditor5-watchdog':
-        specifier: workspace:*
-        version: link:../ckeditor5-watchdog
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 4.1.10(playwright@1.60.0)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@4.1.10)
@@ -4157,52 +4133,6 @@ importers:
       '@ckeditor/ckeditor5-engine':
         specifier: workspace:*
         version: link:../ckeditor5-engine
-      '@vitest/browser-playwright':
-        specifier: 'catalog:'
-        version: 4.1.10(playwright@1.60.0)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@4.1.10)
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.10(@types/node@25.9.5)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
-
-  packages/ckeditor5-watchdog:
-    dependencies:
-      '@ckeditor/ckeditor5-core':
-        specifier: workspace:*
-        version: link:../ckeditor5-core
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
-      '@ckeditor/ckeditor5-utils':
-        specifier: workspace:*
-        version: link:../ckeditor5-utils
-      es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
-    devDependencies:
-      '@ckeditor/ckeditor5-basic-styles':
-        specifier: workspace:*
-        version: link:../ckeditor5-basic-styles
-      '@ckeditor/ckeditor5-clipboard':
-        specifier: workspace:*
-        version: link:../ckeditor5-clipboard
-      '@ckeditor/ckeditor5-editor-balloon':
-        specifier: workspace:*
-        version: link:../ckeditor5-editor-balloon
-      '@ckeditor/ckeditor5-editor-classic':
-        specifier: workspace:*
-        version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-editor-multi-root':
-        specifier: workspace:*
-        version: link:../ckeditor5-editor-multi-root
-      '@ckeditor/ckeditor5-heading':
-        specifier: workspace:*
-        version: link:../ckeditor5-heading
-      '@ckeditor/ckeditor5-paragraph':
-        specifier: workspace:*
-        version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 4.1.10(playwright@1.60.0)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@4.1.10)
