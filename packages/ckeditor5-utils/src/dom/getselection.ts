@@ -10,6 +10,8 @@
 import { toArray, type ArrayOrItem } from '../toarray.js';
 import { isNativeShadowRoot } from './isshadowroot.js';
 import { isDomSelectionBackward } from './isdomselectionbackward.js';
+import { isComment } from './iscomment.js';
+import { isText } from './istext.js';
 
 /**
  * Returns the selection of the tree the given node lives in.
@@ -232,16 +234,30 @@ export class ShadowSelection {
 	 * unrelated tree, rather than surfacing foreign nodes. The document itself is one of those trees: it is
 	 * where every node ends up when walking out of its shadow roots, and it is where a selection made in a
 	 * sibling light-DOM editable lives, so such a selection is kept rather than dropped.
+	 *
+	 * A range with an endpoint outside its container is dropped as well, see `isOffsetInNode()` below.
 	 */
 	private _getRanges(): Array<StaticRange> {
 		const domDocument = this._shadowRoots[ 0 ].ownerDocument;
 
 		return this._getComposedRanges().filter( range => {
-			const startContainerRootNode = range.startContainer.getRootNode();
-			const endContainerRootNode = range.endContainer.getRootNode();
+			const rootNode = range.startContainer.getRootNode();
 
-			return startContainerRootNode == endContainerRootNode &&
-				( startContainerRootNode == domDocument || this._shadowRoots.includes( startContainerRootNode as ShadowRoot ) );
+			// Only a range with both endpoints in one tree can be represented as a live `Range`.
+			if ( rootNode != range.endContainer.getRootNode() ) {
+				return false;
+			}
+
+			// And that tree has to be one of the trees this selection resolves against.
+			if ( rootNode != domDocument && !this._shadowRoots.includes( rootNode as ShadowRoot ) ) {
+				return false;
+			}
+
+			// Both endpoints have to be positions their containers can hold.
+			return (
+				isOffsetInNode( range.startContainer, range.startOffset ) &&
+				isOffsetInNode( range.endContainer, range.endOffset )
+			);
 		} );
 	}
 
@@ -322,6 +338,24 @@ export class ShadowSelection {
 			{ node: range.startContainer, offset: range.startOffset } :
 			{ node: range.endContainer, offset: range.endOffset };
 	}
+}
+
+/**
+ * Whether the offset is a position the container can actually hold: within its text for a character-data
+ * node, within its children for any other node.
+ *
+ * Unlike a `Range`, a `StaticRange` is not validated, so the offsets `getComposedRanges()` returns may
+ * point past the end of their containers. Safari can report a range describing the tree as it was before
+ * the last DOM mutation, so an offset can outlive the children it pointed at, for example while rendering
+ * a change that removed the last child of a container. Such an endpoint has no position to resolve to and
+ * cannot be turned into a `Range` (which validates and throws an `IndexSizeError`), so the whole range is
+ * left out rather than reported as an out-of-bounds position.
+ */
+function isOffsetInNode( node: Node, offset: number ): boolean {
+	// The offsets of a `StaticRange` are unsigned, so only the upper bound can be exceeded.
+	const length = isText( node ) || isComment( node ) ? node.length : node.childNodes.length;
+
+	return offset <= length;
 }
 
 /**

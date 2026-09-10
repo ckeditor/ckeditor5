@@ -76,7 +76,7 @@ describe( 'getSelection()', () => {
 
 		it( 'resolves from a later node when an earlier one is detached, rather than returning null', () => {
 			// Regression guard: a disconnected first editing root must not poison resolution of the
-			// still-attached roots (https://github.com/ckeditor/ckeditor5-commercial/pull/11359).
+			// still-attached roots.
 			const detached = document.createElement( 'div' );
 			const attached = document.createTextNode( 'foobar' );
 
@@ -230,7 +230,7 @@ describe( 'getSelection()', () => {
 		it( 'surfaces a light-DOM selection when resolving a mix of light-DOM and shadow nodes', () => {
 			// Regression guard: with one node in a shadow tree and one in the light DOM, a caret in the
 			// light-DOM node must still resolve. Dropping it here regressed selection in mixed multiroot
-			// editors (https://github.com/ckeditor/ckeditor5-commercial/pull/11359).
+			// editors.
 			const outside = document.createTextNode( 'outside' );
 
 			document.body.appendChild( outside );
@@ -259,6 +259,128 @@ describe( 'getSelection()', () => {
 			expect( result.anchorNode ).toBe( null );
 
 			outside.remove();
+		} );
+
+		it( 'drops a range resolving into a tree it was not asked about', () => {
+			// Composed ranges can only be resolved against the shadow roots they were requested for. An
+			// engine reporting a range from any other tree – here a second shadow root, whose nodes the
+			// caller cannot map – must not have its endpoints surfaced, so the range is left out.
+			const otherHost = document.createElement( 'div' );
+
+			document.body.appendChild( otherHost );
+
+			const otherRoot = otherHost.attachShadow( { mode: 'open' } );
+			const otherText = document.createTextNode( 'foobar' );
+
+			otherRoot.appendChild( otherText );
+
+			const foreignRange = {
+				startContainer: otherText, startOffset: 1, endContainer: otherText, endOffset: 4, collapsed: false
+			};
+
+			vi.stubGlobal( 'getSelection', () => ( {
+				direction: 'forward',
+				removeAllRanges() {},
+				getComposedRanges: () => [ foreignRange ]
+			} ) );
+
+			const result = getSelection( text );
+
+			expect( result.rangeCount ).toBe( 0 );
+			expect( result.anchorNode ).toBe( null );
+
+			otherHost.remove();
+		} );
+
+		it( 'drops a stale range pointing past the last child of its container', () => {
+			// Safari can report a composed range describing the tree from before the last DOM mutation, and
+			// a `StaticRange` is not validated, so its offsets may point past the end of their containers.
+			// Here the paragraph holds a single child, while the range still points after a second one that
+			// has just been removed. Materializing such a range throws an `IndexSizeError`, so it is left
+			// out instead.
+			const p = text.parentNode;
+			const staleRange = { startContainer: p, startOffset: 2, endContainer: p, endOffset: 2, collapsed: true };
+
+			vi.stubGlobal( 'getSelection', () => ( {
+				direction: 'forward',
+				removeAllRanges() {},
+				getComposedRanges: () => [ staleRange ]
+			} ) );
+
+			const result = getSelection( text );
+
+			expect( result.rangeCount ).toBe( 0 );
+			expect( result.anchorNode ).toBe( null );
+			expect( result.anchorOffset ).toBe( 0 );
+			expect( result.focusNode ).toBe( null );
+			expect( result.focusOffset ).toBe( 0 );
+			expect( result.isCollapsed ).toBe( true );
+			expect( result.direction ).toBe( 'none' );
+			expect( () => result.getRangeAt( 0 ) ).toThrowError( /out of range/ );
+		} );
+
+		it( 'drops a stale range pointing past the end of the text of its container', () => {
+			// The same as above, with the text of the container shortened since the range was reported.
+			// Only the end offset is out of bounds here, which is enough to make the range unusable.
+			text.data = 'foo';
+
+			const staleRange = { startContainer: text, startOffset: 1, endContainer: text, endOffset: 6, collapsed: false };
+
+			vi.stubGlobal( 'getSelection', () => ( {
+				direction: 'forward',
+				removeAllRanges() {},
+				getComposedRanges: () => [ staleRange ]
+			} ) );
+
+			const result = getSelection( text );
+
+			expect( result.rangeCount ).toBe( 0 );
+			expect( result.anchorNode ).toBe( null );
+			expect( () => result.getRangeAt( 0 ) ).toThrowError( /out of range/ );
+		} );
+
+		it( 'keeps a range ending at the very end of the text of its container', () => {
+			// An offset equal to the length of the container is a valid position – the caret after the last
+			// character – and must not be taken for an out-of-bounds one.
+			window.getSelection().setBaseAndExtent( text, 3, text, 6 );
+
+			const result = getSelection( text );
+
+			expect( result.rangeCount ).toBe( 1 );
+			expect( result.anchorNode ).toBe( text );
+			expect( result.anchorOffset ).toBe( 3 );
+			expect( result.focusOffset ).toBe( 6 );
+			expect( result.getRangeAt( 0 ).toString() ).toBe( 'bar' );
+		} );
+
+		it( 'keeps a range ending after the last child of its container', () => {
+			// As above, for a container bounded by its children rather than by its text.
+			const p = text.parentNode;
+
+			window.getSelection().setBaseAndExtent( p, 1, p, 1 );
+
+			const result = getSelection( text );
+
+			expect( result.rangeCount ).toBe( 1 );
+			expect( result.anchorNode ).toBe( p );
+			expect( result.anchorOffset ).toBe( 1 );
+			expect( result.getRangeAt( 0 ).startOffset ).toBe( 1 );
+		} );
+
+		it( 'keeps a range inside a comment node', () => {
+			// A comment is bounded by the length of its data, like a text node, and not by its (always
+			// empty) list of children.
+			const comment = document.createComment( 'foobar' );
+
+			root.appendChild( comment );
+			window.getSelection().setBaseAndExtent( comment, 1, comment, 4 );
+
+			const result = getSelection( text );
+
+			expect( result.rangeCount ).toBe( 1 );
+			expect( result.anchorNode ).toBe( comment );
+			expect( result.anchorOffset ).toBe( 1 );
+			expect( result.focusOffset ).toBe( 4 );
 		} );
 
 		it( 'swaps anchor and focus for a backward selection (direction reported)', () => {
