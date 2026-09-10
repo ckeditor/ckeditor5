@@ -15,7 +15,6 @@ import {
 	DomEmitterMixin,
 	containsNode,
 	first,
-	global,
 	isShadowHostOf,
 	isShadowRoot,
 	isVisible,
@@ -148,6 +147,11 @@ export class TooltipManager extends TooltipManagerBase {
 	private _shadowRoots = new Set<ShadowRoot>();
 
 	/**
+	 * Documents the manager currently has listeners attached to.
+	 */
+	private _documents = new Set<Document>();
+
+	/**
 	 * Maps each DOM tree (the document or a shadow root) that hosts tooltip-bearing UI to the body collection
 	 * the shared tooltip balloon should be pinned into for targets in that tree. Rebuilt from
 	 * {@link module:ui/tooltipmanager~TooltipManager._registrations} by {@link #_rebuild}.
@@ -232,23 +236,6 @@ export class TooltipManager extends TooltipManagerBase {
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
 		this._unpinTooltipDebounced = debounce( this._unpinTooltip, 400 );
 
-		this.listenTo( global.document, 'keydown', this._onKeyDown.bind( this ), { useCapture: true } );
-
-		// These are all attached on `document` to cover the light (non-shadow) DOM. Shadow roots get their
-		// own listeners for the same events, see #_resyncShadowRootListeners — `document`'s copies either never
-		// fire for shadow-originated events (`mouseenter`, `mouseleave`, `scroll`, all non-`composed`) or fire
-		// with a retargeted, unusable target (`focus`, `blur`, which are `composed`).
-		//
-		// Unlike these, set up once here, the shadow-root listeners are attached and detached over time by
-		// `#_resyncShadowRootListeners`, as registered body collections and their shadow roots come and go.
-		this.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
-		this.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
-
-		this.listenTo( global.document, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );
-		this.listenTo( global.document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
-
-		this.listenTo( global.document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
-
 		// Because this class is a singleton, its only instance is shared across all editors and connects them through the reference.
 		// Error attribution walks those references to work out which editor an error came from, and the shared tooltip manager
 		// would make every error look like it belongs to every editor. This flag excludes the instance from that walk.
@@ -274,6 +261,7 @@ export class TooltipManager extends TooltipManagerBase {
 
 		TooltipManager._registrations.clear();
 		this._bodyCollectionByTree.clear();
+		this._documents.clear();
 		this._shadowRoots.clear();
 
 		TooltipManager._instance = null;
@@ -421,7 +409,41 @@ export class TooltipManager extends TooltipManagerBase {
 
 		this._bodyCollectionByTree = map;
 
+		this._resyncDocumentListeners();
 		this._resyncShadowRootListeners();
+	}
+
+	/**
+	 * Attaches or detaches listeners on documents so they match the documents containing registered UI.
+	 */
+	private _resyncDocumentListeners(): void {
+		const currentDocuments = new Set<Document>();
+
+		for ( const tree of this._bodyCollectionByTree.keys() ) {
+			currentDocuments.add( isShadowRoot( tree ) ? tree.ownerDocument : tree );
+		}
+
+		for ( const document of this._documents ) {
+			if ( !currentDocuments.has( document ) ) {
+				this.stopListening( document );
+				this._documents.delete( document );
+			}
+		}
+
+		for ( const document of currentDocuments ) {
+			if ( this._documents.has( document ) ) {
+				continue;
+			}
+
+			this.listenTo( document, 'keydown', this._onKeyDown.bind( this ), { useCapture: true } );
+			this.listenTo( document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
+			this.listenTo( document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
+			this.listenTo( document, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );
+			this.listenTo( document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
+			this.listenTo( document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
+
+			this._documents.add( document );
+		}
 	}
 
 	/**
