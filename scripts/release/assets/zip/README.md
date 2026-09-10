@@ -4,7 +4,7 @@ Thank you for downloading the sample. To run it, start a web server (`nginx`, `c
 
 Want to test more features? Get started with CKEditor 5 Builder 🚀
 
-With [CKEditor’s interactive builder](https://ckeditor.com/ckeditor-5/builder/), select:
+With [CKEditor’s interactive builder](https://builder.ckeditor.com/), select:
 
 * The features you need.
 * Your preferred framework (React, Angular, Vue, or Vanilla JS).
