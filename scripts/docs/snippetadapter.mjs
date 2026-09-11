@@ -91,14 +91,14 @@ async function buildCKBoxAssets( paths ) {
 			...sharedOptions,
 			entryPoints: [ 'ckbox' ],
 			format: 'esm',
-			target: 'es2022',
+			target: 'es2023',
 			outfile: upath.join( outputDir, 'ckbox.js' )
 		} ),
 		esbuild( {
 			...sharedOptions,
 			entryPoints: [ '@ckbox/uploader' ],
 			format: 'esm',
-			target: 'es2022',
+			target: 'es2023',
 			outfile: upath.join( outputDir, 'ckboxWidget.js' )
 		} ),
 		esbuild( {
@@ -141,7 +141,7 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 		platform: 'browser',
 		legalComments: 'none',
 		format: 'esm',
-		target: 'es2022',
+		target: 'es2023',
 		tsconfigRaw: {},
 		alias: {
 			'@snippets': paths.snippetsInput,

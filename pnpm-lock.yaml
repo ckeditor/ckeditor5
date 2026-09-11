@@ -51,32 +51,32 @@ importers:
         specifier: 2.13.1
         version: 2.13.1(@types/node@25.9.5)
       '@ckeditor/ckeditor5-dev-build-tools':
-        specifier: ^61.2.0
-        version: 61.2.0(rollup@4.61.1)
+        specifier: ^62.0.0
+        version: 62.0.0(rollup@4.61.1)
       '@ckeditor/ckeditor5-dev-bump-year':
-        specifier: ^61.2.0
-        version: 61.2.0
+        specifier: ^62.0.0
+        version: 62.0.0
       '@ckeditor/ckeditor5-dev-changelog':
-        specifier: ^61.2.0
-        version: 61.2.0(@types/node@25.9.5)
+        specifier: ^62.0.0
+        version: 62.0.0(@types/node@25.9.5)
       '@ckeditor/ckeditor5-dev-docs':
-        specifier: ^61.2.0
-        version: 61.2.0(typescript@5.5.4)
+        specifier: ^62.0.0
+        version: 62.0.0(typescript@5.8.3)
       '@ckeditor/ckeditor5-dev-license-checker':
-        specifier: ^61.2.0
-        version: 61.2.0
+        specifier: ^62.0.0
+        version: 62.0.0
       '@ckeditor/ckeditor5-dev-manual-server':
-        specifier: ^61.2.0
-        version: 61.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
+        specifier: ^62.0.0
+        version: 62.0.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
       '@ckeditor/ckeditor5-dev-release-tools':
-        specifier: ^61.2.0
-        version: 61.2.0(@types/node@25.9.5)
+        specifier: ^62.0.0
+        version: 62.0.0(@types/node@25.9.5)
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^61.2.0
-        version: 61.2.0
+        specifier: ^62.0.0
+        version: 62.0.0
       '@ckeditor/ckeditor5-dev-web-crawler':
-        specifier: ^61.2.0
-        version: 61.2.0(typescript@5.5.4)(yauzl@3.4.0)
+        specifier: ^62.0.0
+        version: 62.0.0(typescript@5.8.3)(yauzl@3.4.0)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.1
         version: 5.0.2
@@ -103,7 +103,7 @@ importers:
         version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
       '@vitest/eslint-plugin':
         specifier: ^1.6.24
-        version: 1.6.24(@typescript-eslint/eslint-plugin@8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)(vitest@4.1.10)
+        version: 1.6.24(@typescript-eslint/eslint-plugin@8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)(vitest@4.1.10)
       '@webspellchecker/wproofreader-ckeditor5':
         specifier: ^3.0.0
         version: 3.1.3(ckeditor5@packages+ckeditor5)
@@ -126,14 +126,14 @@ importers:
         specifier: ^10.0.0
         version: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
       eslint-config-ckeditor5:
-        specifier: ^20.1.0
-        version: 20.1.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
+        specifier: ^21.0.0
+        version: 21.0.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
       eslint-formatter-stylish:
         specifier: ^8.40.0
         version: 8.40.0
       eslint-plugin-ckeditor5-rules:
-        specifier: ^20.1.0
-        version: 20.1.0
+        specifier: ^21.0.0
+        version: 21.0.0
       estree-walker:
         specifier: ^3.0.3
         version: 3.0.3
@@ -172,7 +172,7 @@ importers:
         version: 0.3.21
       puppeteer:
         specifier: ^24.43.1
-        version: 24.43.1(typescript@5.5.4)(yauzl@3.4.0)
+        version: 24.43.1(typescript@5.8.3)(yauzl@3.4.0)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -195,8 +195,8 @@ importers:
         specifier: ^15.3.2
         version: 15.3.2
       typescript:
-        specifier: 5.5.4
-        version: 5.5.4
+        specifier: 5.8.3
+        version: 5.8.3
       umberto:
         specifier: ^10.7.5
         version: 10.7.5
@@ -4368,42 +4368,42 @@ packages:
   '@ckbox/uploader@2.13.1':
     resolution: {integrity: sha512-fIRGmBNA6O64YIb4TuPiNj8Kdx+kDpL9b2L5/yUMGFOiRORRncITKUHmd4sazljdfCFknxkxOm+ifKfrd7tyZQ==}
 
-  '@ckeditor/ckeditor5-dev-build-tools@61.2.0':
-    resolution: {integrity: sha512-4YR4ZpaPoaDE61I4hrAhB0YNKfWWDPL51kFiD1BNJwXpvw0tzbr1vliB0czGKEVnp1vGOmn3lLfus+PHm1ZzeQ==}
+  '@ckeditor/ckeditor5-dev-build-tools@62.0.0':
+    resolution: {integrity: sha512-pxt+BLuuYL6JcwL4yRb2C3EfSVIhu3GH5rl8yNUDHhiNX0/5ZKj8Q9zXeVIX+bpzaFBTunMsKVnb28ZmU620Qg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-bump-year@61.2.0':
-    resolution: {integrity: sha512-zG3VH1+9tuDLhq+psDRdz926aLtYbAJ3cGz1gY9oiUGIBNwmYjIj2Cc54wN0dsnnwt+6bD9sNZYTuoa89qkspg==}
+  '@ckeditor/ckeditor5-dev-bump-year@62.0.0':
+    resolution: {integrity: sha512-FapvJl1A3SQGcpcGlvk+Cd7gkmsqrpyQI+BdtaunoIw9nr8WOvE2AvxWAHsh/GU6Ps+k1Uyj9lfT8u3TNNPSqg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-changelog@61.2.0':
-    resolution: {integrity: sha512-fz7P9e42XK5+9IiOfaMIgYUhmfb7kfiRdGoAPfLj1X4gtBCfdieCPuE3Ss4YjMhkdjrWYovHuqbHbv3V+9gaOg==}
+  '@ckeditor/ckeditor5-dev-changelog@62.0.0':
+    resolution: {integrity: sha512-E/uET/4gSwB00AUbckUKyiXA2Fop24YQru4NTurfN+Cb3X5CEpJb+m56DRvRRSVk1kP08gfenirfZbpXJSV9Yw==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-docs@61.2.0':
-    resolution: {integrity: sha512-5bD57j2pvv71CjH33LgXyJnVhrx5xOuyQJy7+obnXI9O6EySX7CesWT4GW8sX7zq2brWkQX55Cu3SoY2EmnKoQ==}
+  '@ckeditor/ckeditor5-dev-docs@62.0.0':
+    resolution: {integrity: sha512-z5omdE172pbNt7cOAQzwdL+/ZbgBqWqBAbYG3ASrvRUXBaBuQsf/72sh7WsCFEzhzxicwU9S2x+15bi7vNW3vQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-license-checker@61.2.0':
-    resolution: {integrity: sha512-VQCUY0aHKU8y3hia6E5RNqjZAZs2XHpDbaC1RYF1Sz7kvBF9G713rnyZKu8AXWCcHBTjuX11AwJI3TfE7joh3g==}
+  '@ckeditor/ckeditor5-dev-license-checker@62.0.0':
+    resolution: {integrity: sha512-/fZzQ45SD2fSMhUPLkglE3vzcbwLXlaQX3Lh/DpeMeJ8XigGWVEd0xr7MsscNMQoGva3nO406ygUA/lUeA+03Q==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-manual-server@61.2.0':
-    resolution: {integrity: sha512-ULZmlwwHbqzaBgB0fTTrrR+UCkyCoIdBbf2XB4zAU4xF4MKJiqcTBrWQVtxNJx8EdWvSCYPR4R9kRGN+/nNGPQ==}
+  '@ckeditor/ckeditor5-dev-manual-server@62.0.0':
+    resolution: {integrity: sha512-53Qzl8r2uIeiTJ0UX4VIypeosBraQI2se0dourK8BoC9JJvtUK+3aM9Eo3X3/SUAJRq51dbgxoeSYrknI4kuYw==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-release-tools@61.2.0':
-    resolution: {integrity: sha512-m6Il4L7k6mi8lfiZ5mGxv8PAk2ARzNkfKnKVCRTp8YpX35KpO4xs/6S3jHTWsvoUd5bkXcczDqYndqofOeunJA==}
+  '@ckeditor/ckeditor5-dev-release-tools@62.0.0':
+    resolution: {integrity: sha512-0nxY0QWhYj9rguMHnHbonZGyagpC4ftkPxKYCz9Qgh6i8Dhvr/wBAsLiR9Brpwoano6OLcObRtt5oyBkGXrNnw==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-utils@61.2.0':
-    resolution: {integrity: sha512-9PexVW4RBhZpCiX7bHoyYQfNWmjenoCHDSAvzeuNkZ5CFoIU4bKdEAIPBoSif3yqeNLHvfgVL3m+NQs4JHBU/Q==}
+  '@ckeditor/ckeditor5-dev-utils@62.0.0':
+    resolution: {integrity: sha512-HCT7saGFeO/y4iUToM6InYy1dSN5AJYNa3/KOsLvsFLE5fVBMjqVwZA+M9Z+Y4ppOZeSQxC+JZdxdGpZ43yLPA==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-web-crawler@61.2.0':
-    resolution: {integrity: sha512-SqrN5abUBy7E8i0czZgVpTIk9sTMtsQbb5ThRZL/sKRJ99rtGWo6Dc0H4PYu4OyKySSbmW4sfx2nLZ1K8QZ7Vw==}
+  '@ckeditor/ckeditor5-dev-web-crawler@62.0.0':
+    resolution: {integrity: sha512-gx2wgFy265BWeet/UNR+QoxuDk/mTLmCNNAGIzw3w0znBPkkMM5QYGRcbaJCSi9oAuqIS3VFCwZyqvOtN+0WfQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-inspector@5.0.2':
@@ -4439,8 +4439,8 @@ packages:
       ckeditor5: '>=42.0.0 || ^0.0.0-nightly'
       react: ^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@ckeditor/typedoc-plugins@61.2.0':
-    resolution: {integrity: sha512-MqSbJDpYoXIbcy5rlyxNGZMwnH9bdztvx3AB2LouibVM3e0lxPesPI7uneFyohIMzakQQBwp0iXo+lzyvNWUMA==}
+  '@ckeditor/typedoc-plugins@62.0.0':
+    resolution: {integrity: sha512-v7CJrFfd/NRm55qU4SjVqPW9LL/ppI04mS7iAexju7dSrC3LUjsBZmHgJ+iHqr1OoXWiiGPCkdHwZfa74UcaLA==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     peerDependencies:
       typedoc: ^0.28.20
@@ -7219,19 +7219,19 @@ packages:
     resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
     engines: {node: '>=12'}
 
-  eslint-config-ckeditor5@20.1.0:
-    resolution: {integrity: sha512-NWJi2P3hYXE2EKCAVXvX/+pU1kzZog5INMGPxLgwD8fdp/rPbUfLKSVQxEnCmXl6kyVHTAdAclf7AGNbRoBXdg==}
+  eslint-config-ckeditor5@21.0.0:
+    resolution: {integrity: sha512-Z5BdQdEU0GEFKdc5/oRydSWUcIXwjuh/v1tpmrvFW99HXt6PQKK1ZHsAAaNF7eoZd3UFSn5G5a//fMWrgdUUJw==}
     engines: {node: '>=24.11.0'}
     peerDependencies:
       eslint: ^10.0.0
-      typescript: ^5.5.4
+      typescript: ^5.8.3
 
   eslint-formatter-stylish@8.40.0:
     resolution: {integrity: sha512-blbD5ZSQnjNEUaG38VCO4WG9nfDQWE8/IOmt8DFRHXUIfZikaIXmsQTdWNFk0/e0j7RgIVRza86MpsJ+aHgFLg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  eslint-plugin-ckeditor5-rules@20.1.0:
-    resolution: {integrity: sha512-fw65Dm0x4VubJezttUJWbzI4C1mmFsllvDJLlJYxKOrGBbxWlIqcNun5/i6Rw2e3GPfJZveM4x1rLEXl1t6iUQ==}
+  eslint-plugin-ckeditor5-rules@21.0.0:
+    resolution: {integrity: sha512-KvUhiaejGXE3fDhaPa9pQ1YA0Sm8zak7Q9vk5tDEqMyji1AcVUL06QIcZwZ0t3Xfhfl7PdFef7oo3n2zULlEfA==}
     engines: {node: '>=24.11.0'}
 
   eslint-scope@9.1.2:
@@ -9639,8 +9639,8 @@ packages:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: '>=4.8.4 <6.1.0'
 
-  typescript@5.5.4:
-    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
+  typescript@5.8.3:
+    resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -10107,7 +10107,7 @@ snapshots:
       - '@types/hoist-non-react-statics'
       - '@types/node'
 
-  '@ckeditor/ckeditor5-dev-build-tools@61.2.0(rollup@4.61.1)':
+  '@ckeditor/ckeditor5-dev-build-tools@62.0.0(rollup@4.61.1)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.61.1)
       es-toolkit: 1.45.1
@@ -10119,14 +10119,14 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@ckeditor/ckeditor5-dev-bump-year@61.2.0':
+  '@ckeditor/ckeditor5-dev-bump-year@62.0.0':
     dependencies:
       glob: 13.0.6
 
-  '@ckeditor/ckeditor5-dev-changelog@61.2.0(@types/node@25.9.5)':
+  '@ckeditor/ckeditor5-dev-changelog@62.0.0(@types/node@25.9.5)':
     dependencies:
       '@11ty/gray-matter': 2.1.0
-      '@ckeditor/ckeditor5-dev-utils': 61.2.0
+      '@ckeditor/ckeditor5-dev-utils': 62.0.0
       '@types/semver': 7.8.0
       cac: 7.0.0
       date-fns: 4.4.0
@@ -10138,22 +10138,22 @@ snapshots:
       - '@types/node'
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-docs@61.2.0(typescript@5.5.4)':
+  '@ckeditor/ckeditor5-dev-docs@62.0.0(typescript@5.8.3)':
     dependencies:
-      '@ckeditor/typedoc-plugins': 61.2.0(typedoc@0.28.20(typescript@5.5.4))
+      '@ckeditor/typedoc-plugins': 62.0.0(typedoc@0.28.20(typescript@5.8.3))
       glob: 13.0.6
-      typedoc: 0.28.20(typescript@5.5.4)
-      typedoc-plugin-rename-defaults: 0.7.3(typedoc@0.28.20(typescript@5.5.4))
+      typedoc: 0.28.20(typescript@5.8.3)
+      typedoc-plugin-rename-defaults: 0.7.3(typedoc@0.28.20(typescript@5.8.3))
       upath: 2.0.1
     transitivePeerDependencies:
       - typescript
 
-  '@ckeditor/ckeditor5-dev-license-checker@61.2.0':
+  '@ckeditor/ckeditor5-dev-license-checker@62.0.0':
     dependencies:
       diff: 8.0.4
       upath: 2.0.1
 
-  '@ckeditor/ckeditor5-dev-manual-server@61.2.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)':
+  '@ckeditor/ckeditor5-dev-manual-server@62.0.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)':
     dependencies:
       '@ckeditor/ckeditor5-inspector': 5.0.2
       vite: 8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
@@ -10171,9 +10171,9 @@ snapshots:
       - tsx
       - yaml
 
-  '@ckeditor/ckeditor5-dev-release-tools@61.2.0(@types/node@25.9.5)':
+  '@ckeditor/ckeditor5-dev-release-tools@62.0.0(@types/node@25.9.5)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 61.2.0
+      '@ckeditor/ckeditor5-dev-utils': 62.0.0
       '@octokit/rest': 22.0.1
       cli-columns: 4.0.0
       glob: 13.0.6
@@ -10186,7 +10186,7 @@ snapshots:
       - '@types/node'
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-utils@61.2.0':
+  '@ckeditor/ckeditor5-dev-utils@62.0.0':
     dependencies:
       '@types/pacote': 11.1.8
       '@types/shelljs': 0.10.0
@@ -10203,10 +10203,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-web-crawler@61.2.0(typescript@5.5.4)(yauzl@3.4.0)':
+  '@ckeditor/ckeditor5-dev-web-crawler@62.0.0(typescript@5.8.3)(yauzl@3.4.0)':
     dependencies:
-      puppeteer: 24.43.1(typescript@5.5.4)(yauzl@3.4.0)
-      puppeteer-cluster: 0.24.0(puppeteer@24.43.1(typescript@5.5.4)(yauzl@3.4.0))
+      puppeteer: 24.43.1(typescript@5.8.3)(yauzl@3.4.0)
+      puppeteer-cluster: 0.24.0(puppeteer@24.43.1(typescript@5.8.3)(yauzl@3.4.0))
     transitivePeerDependencies:
       - bufferutil
       - proxy-agent
@@ -10234,9 +10234,9 @@ snapshots:
       ckeditor5: link:packages/ckeditor5
       react: 18.3.1
 
-  '@ckeditor/typedoc-plugins@61.2.0(typedoc@0.28.20(typescript@5.5.4))':
+  '@ckeditor/typedoc-plugins@62.0.0(typedoc@0.28.20(typescript@5.8.3))':
     dependencies:
-      typedoc: 0.28.20(typescript@5.5.4)
+      typedoc: 0.28.20(typescript@5.8.3)
       upath: 2.0.1
 
   '@emnapi/core@1.11.2':
@@ -11407,9 +11407,9 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@stylistic/eslint-plugin@4.4.1(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)':
+  '@stylistic/eslint-plugin@4.4.1(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)':
     dependencies:
-      '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
+      '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
       eslint: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
@@ -11658,40 +11658,40 @@ snapshots:
 
   '@types/unist@3.0.3': {}
 
-  '@typescript-eslint/eslint-plugin@8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)':
+  '@typescript-eslint/eslint-plugin@8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
+      '@typescript-eslint/parser': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
       '@typescript-eslint/scope-manager': 8.61.0
-      '@typescript-eslint/type-utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
-      '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
+      '@typescript-eslint/type-utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
+      '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
       '@typescript-eslint/visitor-keys': 8.61.0
       eslint: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
       ignore: 7.0.5
       natural-compare: 1.4.0
-      ts-api-utils: 2.5.0(typescript@5.5.4)
-      typescript: 5.5.4
+      ts-api-utils: 2.5.0(typescript@5.8.3)
+      typescript: 5.8.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)':
+  '@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.61.0
       '@typescript-eslint/types': 8.61.0
-      '@typescript-eslint/typescript-estree': 8.61.0(typescript@5.5.4)
+      '@typescript-eslint/typescript-estree': 8.61.0(typescript@5.8.3)
       '@typescript-eslint/visitor-keys': 8.61.0
       debug: 4.4.3(supports-color@7.2.0)
       eslint: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
-      typescript: 5.5.4
+      typescript: 5.8.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.61.0(typescript@5.5.4)':
+  '@typescript-eslint/project-service@8.61.0(typescript@5.8.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.61.0(typescript@5.5.4)
+      '@typescript-eslint/tsconfig-utils': 8.61.0(typescript@5.8.3)
       '@typescript-eslint/types': 8.61.0
       debug: 4.4.3(supports-color@7.2.0)
-      typescript: 5.5.4
+      typescript: 5.8.3
     transitivePeerDependencies:
       - supports-color
 
@@ -11700,47 +11700,47 @@ snapshots:
       '@typescript-eslint/types': 8.61.0
       '@typescript-eslint/visitor-keys': 8.61.0
 
-  '@typescript-eslint/tsconfig-utils@8.61.0(typescript@5.5.4)':
+  '@typescript-eslint/tsconfig-utils@8.61.0(typescript@5.8.3)':
     dependencies:
-      typescript: 5.5.4
+      typescript: 5.8.3
 
-  '@typescript-eslint/type-utils@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)':
+  '@typescript-eslint/type-utils@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)':
     dependencies:
       '@typescript-eslint/types': 8.61.0
-      '@typescript-eslint/typescript-estree': 8.61.0(typescript@5.5.4)
-      '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
+      '@typescript-eslint/typescript-estree': 8.61.0(typescript@5.8.3)
+      '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
       debug: 4.4.3(supports-color@7.2.0)
       eslint: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
-      ts-api-utils: 2.5.0(typescript@5.5.4)
-      typescript: 5.5.4
+      ts-api-utils: 2.5.0(typescript@5.8.3)
+      typescript: 5.8.3
     transitivePeerDependencies:
       - supports-color
 
   '@typescript-eslint/types@8.61.0': {}
 
-  '@typescript-eslint/typescript-estree@8.61.0(typescript@5.5.4)':
+  '@typescript-eslint/typescript-estree@8.61.0(typescript@5.8.3)':
     dependencies:
-      '@typescript-eslint/project-service': 8.61.0(typescript@5.5.4)
-      '@typescript-eslint/tsconfig-utils': 8.61.0(typescript@5.5.4)
+      '@typescript-eslint/project-service': 8.61.0(typescript@5.8.3)
+      '@typescript-eslint/tsconfig-utils': 8.61.0(typescript@5.8.3)
       '@typescript-eslint/types': 8.61.0
       '@typescript-eslint/visitor-keys': 8.61.0
       debug: 4.4.3(supports-color@7.2.0)
       minimatch: 10.2.5
       semver: 7.8.5
       tinyglobby: 0.2.17
-      ts-api-utils: 2.5.0(typescript@5.5.4)
-      typescript: 5.5.4
+      ts-api-utils: 2.5.0(typescript@5.8.3)
+      typescript: 5.8.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)':
+  '@typescript-eslint/utils@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)':
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))
       '@typescript-eslint/scope-manager': 8.61.0
       '@typescript-eslint/types': 8.61.0
-      '@typescript-eslint/typescript-estree': 8.61.0(typescript@5.5.4)
+      '@typescript-eslint/typescript-estree': 8.61.0(typescript@5.8.3)
       eslint: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
-      typescript: 5.5.4
+      typescript: 5.8.3
     transitivePeerDependencies:
       - supports-color
 
@@ -11802,14 +11802,14 @@ snapshots:
     optionalDependencies:
       '@vitest/browser': 4.1.10(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@4.1.10)
 
-  '@vitest/eslint-plugin@1.6.24(@typescript-eslint/eslint-plugin@8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)(vitest@4.1.10)':
+  '@vitest/eslint-plugin@1.6.24(@typescript-eslint/eslint-plugin@8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)(vitest@4.1.10)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.61.0
-      '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
+      '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
       eslint: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
     optionalDependencies:
-      '@typescript-eslint/eslint-plugin': 8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
-      typescript: 5.5.4
+      '@typescript-eslint/eslint-plugin': 8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
+      typescript: 5.8.3
       vitest: 4.1.10(@types/node@25.9.5)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
     transitivePeerDependencies:
       - supports-color
@@ -12246,14 +12246,14 @@ snapshots:
     dependencies:
       layout-base: 2.0.1
 
-  cosmiconfig@9.0.2(typescript@5.5.4):
+  cosmiconfig@9.0.2(typescript@5.8.3):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
       js-yaml: 4.3.1
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.5.4
+      typescript: 5.8.3
 
   create-mixin@3.0.0: {}
 
@@ -12682,16 +12682,16 @@ snapshots:
 
   escape-string-regexp@5.0.0: {}
 
-  eslint-config-ckeditor5@20.1.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4):
+  eslint-config-ckeditor5@21.0.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3):
     dependencies:
       '@eslint/css': 1.4.0
       '@eslint/js': 10.0.1(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))
       '@eslint/markdown': 6.6.0
-      '@stylistic/eslint-plugin': 4.4.1(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
+      '@stylistic/eslint-plugin': 4.4.1(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
       eslint: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
-      eslint-plugin-ckeditor5-rules: 20.1.0
-      typescript: 5.5.4
-      typescript-eslint: 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
+      eslint-plugin-ckeditor5-rules: 21.0.0
+      typescript: 5.8.3
+      typescript-eslint: 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -12701,7 +12701,7 @@ snapshots:
       strip-ansi: 6.0.1
       text-table: 0.2.0
 
-  eslint-plugin-ckeditor5-rules@20.1.0:
+  eslint-plugin-ckeditor5-rules@21.0.0:
     dependencies:
       '@es-joy/jsdoccomment': 0.50.2
       '@eslint/css-tree': 4.0.4
@@ -14860,10 +14860,10 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-cluster@0.24.0(puppeteer@24.43.1(typescript@5.5.4)(yauzl@3.4.0)):
+  puppeteer-cluster@0.24.0(puppeteer@24.43.1(typescript@5.8.3)(yauzl@3.4.0)):
     dependencies:
       debug: 4.4.3(supports-color@7.2.0)
-      puppeteer: 24.43.1(typescript@5.5.4)(yauzl@3.4.0)
+      puppeteer: 24.43.1(typescript@5.8.3)(yauzl@3.4.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -14883,11 +14883,11 @@ snapshots:
       - utf-8-validate
       - yauzl
 
-  puppeteer@24.43.1(typescript@5.5.4)(yauzl@3.4.0):
+  puppeteer@24.43.1(typescript@5.8.3)(yauzl@3.4.0):
     dependencies:
       '@puppeteer/browsers': 3.2.1(yauzl@3.4.0)
       chromium-bidi: 14.0.0(devtools-protocol@0.0.1608973)
-      cosmiconfig: 9.0.2(typescript@5.5.4)
+      cosmiconfig: 9.0.2(typescript@5.8.3)
       devtools-protocol: 0.0.1608973
       puppeteer-core: 24.43.1(yauzl@3.4.0)
       typed-query-selector: 2.12.2
@@ -15674,9 +15674,9 @@ snapshots:
 
   trough@2.2.0: {}
 
-  ts-api-utils@2.5.0(typescript@5.5.4):
+  ts-api-utils@2.5.0(typescript@5.8.3):
     dependencies:
-      typescript: 5.5.4
+      typescript: 5.8.3
 
   ts-dedent@2.3.0: {}
 
@@ -15703,32 +15703,32 @@ snapshots:
 
   typed-query-selector@2.12.2: {}
 
-  typedoc-plugin-rename-defaults@0.7.3(typedoc@0.28.20(typescript@5.5.4)):
+  typedoc-plugin-rename-defaults@0.7.3(typedoc@0.28.20(typescript@5.8.3)):
     dependencies:
       camelcase: 8.0.0
-      typedoc: 0.28.20(typescript@5.5.4)
+      typedoc: 0.28.20(typescript@5.8.3)
 
-  typedoc@0.28.20(typescript@5.5.4):
+  typedoc@0.28.20(typescript@5.8.3):
     dependencies:
       '@gerrit0/mini-shiki': 3.23.0
       lunr: 2.3.9
       markdown-it: 14.3.0
       minimatch: 10.2.5
-      typescript: 5.5.4
+      typescript: 5.8.3
       yaml: 2.9.0
 
-  typescript-eslint@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4):
+  typescript-eslint@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
-      '@typescript-eslint/parser': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
-      '@typescript-eslint/typescript-estree': 8.61.0(typescript@5.5.4)
-      '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.5.4)
+      '@typescript-eslint/eslint-plugin': 8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
+      '@typescript-eslint/parser': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
+      '@typescript-eslint/typescript-estree': 8.61.0(typescript@5.8.3)
+      '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.8.3)
       eslint: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
-      typescript: 5.5.4
+      typescript: 5.8.3
     transitivePeerDependencies:
       - supports-color
 
-  typescript@5.5.4: {}
+  typescript@5.8.3: {}
 
   typical@5.2.0: {}
 

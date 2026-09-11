@@ -127,9 +127,7 @@ export default defineConfig( [
 		files: [ '**/*.css' ],
 
 		rules: {
-			// TODO: remove this entry once the upstream config enforces this.
-			'css/no-important': 'error',
-
+			// See tracking issue: https://github.com/ckeditor/ckeditor5-commercial/issues/11155.
 			// TODO (RTL): off pending a migration of physical properties/values to logical. Step 1
 			// (required first): fix the ~10 logical-*value* cases in source - text-align/float/resize
 			// `right`/`left`/`vertical` - which have no allow option, so they block enabling. Then, as a
@@ -158,6 +156,7 @@ export default defineConfig( [
 			// } ],
 			'css/prefer-logical-properties': 'off',
 
+			// See tracking issue: https://github.com/ckeditor/ckeditor5-commercial/issues/10452
 			// The features marked with TODO are used but are not yet baseline "widely available", so they are
 			// temporarily white-listed locally. The rest are acceptable (supported in practice or handled by the build).
 			// All TODOs should be fixed in source and have the exceptions removed afterwards.
