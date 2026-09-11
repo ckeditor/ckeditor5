@@ -11,7 +11,7 @@ import { FocusCycler } from '../../src/focuscycler.js';
 import { ColorPickerView } from '../../src/colorpicker/colorpickerview.js';
 import { ColorGridsFragmentView } from '../../src/colorselector/colorgridsfragmentview.js';
 
-import { Collection, FocusTracker, KeystrokeHandler, keyCodes, env } from '@ckeditor/ckeditor5-utils';
+import { Collection, FocusTracker, KeystrokeHandler, keyCodes, env, global, _clearTrustedTypesCache } from '@ckeditor/ckeditor5-utils';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
@@ -279,6 +279,67 @@ describe( 'ColorSelectorView', () => {
 			viewWithoutPicker.destroy();
 			viewWithoutPicker.element.remove();
 		} );
+	} );
+
+	describe( 'when Trusted Types are enforced', () => {
+		// The markup of the color picker does not go through the editor's Trusted Types policy, so the picker is turned
+		// off rather than left to fail when it renders.
+		beforeEach( () => {
+			_clearTrustedTypesCache();
+
+			const element = {};
+
+			Object.defineProperty( element, 'innerHTML', {
+				set() {
+					throw new TypeError( 'This document requires \'TrustedHTML\' assignment.' );
+				}
+			} );
+
+			vi.spyOn( global, 'document', 'get' ).mockReturnValue( {
+				createElement: () => element
+			} );
+		} );
+
+		afterEach( () => {
+			_clearTrustedTypesCache();
+		} );
+
+		it( 'should hide the color picker', () => {
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+
+			const view = createSelector( { format: 'hsl' } );
+			const spy = vi.spyOn( view, '_appendColorPickerFragment' );
+
+			view.appendUI();
+
+			expect( spy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'should warn that the color picker is not available', () => {
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+
+			createSelector( { format: 'hsl' } );
+
+			expect( warnStub ).toHaveBeenCalledOnce();
+			expect( warnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /color-picker-unavailable-with-trusted-types/ );
+		} );
+
+		it( 'should not warn when the color picker is turned off anyway', () => {
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+
+			createSelector( false );
+
+			expect( warnStub ).not.toHaveBeenCalled();
+		} );
+
+		function createSelector( colorPickerViewConfig ) {
+			return new ColorSelectorView( locale, {
+				colors: colorDefinitions,
+				columns: 5,
+				removeButtonLabel: 'Remove color',
+				colorPickerViewConfig
+			} );
+		}
 	} );
 
 	describe( 'Document colors', () => {

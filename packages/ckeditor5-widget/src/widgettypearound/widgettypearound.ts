@@ -22,6 +22,7 @@ import {
 import {
 	env,
 	isForwardArrowKeyCode,
+	trustedHtml,
 	type BaseEvent,
 	type Emitter,
 	type GetCallback,
@@ -68,7 +69,8 @@ import { type Widget } from '../widget.js';
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ] as const;
 
 // Do the SVG parsing once and then clone the result <svg> DOM element for each new button.
-const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( IconReturnArrow, 'image/svg+xml' ).firstChild!;
+const RETURN_ARROW_ICON_ELEMENT = new DOMParser()
+	.parseFromString( trustedHtml( IconReturnArrow ), 'image/svg+xml' ).firstChild!;
 
 const PLUGIN_DISABLED_EDITING_ROOT_CLASS = 'ck-widget__type-around_disabled';
 

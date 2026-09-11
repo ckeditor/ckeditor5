@@ -8,7 +8,7 @@
  */
 
 import { IframeView } from '@ckeditor/ckeditor5-ui';
-import { toUnit, type Locale } from '@ckeditor/ckeditor5-utils';
+import { toUnit, trustedHtml, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { MinimapViewOptions } from './minimapview.js';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
@@ -161,7 +161,9 @@ export class MinimapIframeView extends IframeView {
 		</html>`;
 
 		iframeDocument.open();
-		iframeDocument.write( html );
+		// The policy is created in the document that hosts the editor, while this writes into the one inside the
+		// iframe. A `TrustedHTML` object is accepted across that boundary, so the iframe needs no policy of its own.
+		iframeDocument.write( trustedHtml( html ) );
 		iframeDocument.close();
 		iframeDocument.body.appendChild( domRootClone );
 	}

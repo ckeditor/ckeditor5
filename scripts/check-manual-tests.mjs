@@ -13,6 +13,18 @@ import { DEFAULT_CONCURRENCY, DEFAULT_TIMEOUT, runCrawler } from '@ckeditor/cked
 // The Vite config is resolved from the current working directory so the script adapts to the repository it is run from.
 const configFile = resolve( process.cwd(), 'vite.manual.mts' );
 
+/**
+ * Pages that are supposed to fail, matched anywhere in the URL. A page belongs here only when the error it
+ * produces is the thing it demonstrates, so the crawler reporting it says nothing useful.
+ *
+ * Entries that do not match anything in the repository the script runs from are simply never used.
+ */
+const EXCLUSIONS = [
+	// Shows what an application gets wrong when it enforces Trusted Types without allowing the editor's
+	// policy: the editor cannot write any HTML, and the first attempt throws while its module loads.
+	'manual/trustedtypes/policy-not-allowed'
+];
+
 try {
 	console.log( styleText( [ 'bold', 'green' ], 'Building manual tests using Vite...' ) );
 
@@ -31,7 +43,7 @@ try {
 	await runCrawler( {
 		url,
 		depth: 1,
-		exclusions: [],
+		exclusions: EXCLUSIONS,
 		concurrency: Math.min( DEFAULT_CONCURRENCY, 12 ),
 		timeout: DEFAULT_TIMEOUT,
 		silent: false,

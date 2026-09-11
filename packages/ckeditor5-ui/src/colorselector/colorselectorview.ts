@@ -10,7 +10,7 @@
 import { FocusCycler, type FocusableView } from '../focuscycler.js';
 import { View } from '../view.js';
 import { ViewCollection } from '../viewcollection.js';
-import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
+import { FocusTracker, KeystrokeHandler, isTrustedTypesEnforced, logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import type { ColorPickerViewConfig } from '../colorpicker/utils.js';
 import type { ColorDefinition } from '../colorgrid/colorgridview.js';
@@ -165,6 +165,25 @@ export class ColorSelectorView extends View {
 		}
 	) {
 		super( locale );
+
+		// The color picker cannot be rendered when the application enforces Trusted Types, because its markup does not
+		// go through the editor's Trusted Types policy. Turning it off leaves the color grids working.
+		if ( colorPickerViewConfig && isTrustedTypesEnforced() ) {
+			/**
+			 * The color picker is not available, because the application enforces Trusted Types with the
+			 * `require-trusted-types-for 'script'` CSP directive. The color picker cannot be rendered under that
+			 * directive, so the editor turns it off.
+			 *
+			 * The color palettes and the document colors are not affected. To turn the color picker off yourself, and
+			 * stop this warning, set the `colorPicker` option of the feature to `false`.
+			 *
+			 * @error color-picker-unavailable-with-trusted-types
+			 */
+			logWarning( 'color-picker-unavailable-with-trusted-types' );
+
+			colorPickerViewConfig = false;
+		}
+
 		this.items = this.createCollection();
 
 		this.focusTracker = new FocusTracker();

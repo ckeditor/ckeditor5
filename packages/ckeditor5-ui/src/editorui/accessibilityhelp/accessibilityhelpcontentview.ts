@@ -11,6 +11,7 @@ import {
 	createElement,
 	env,
 	getEnvKeystrokeText,
+	trustedHtml,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
 
@@ -119,9 +120,9 @@ export class AccessibilityHelpContentView extends View<HTMLDivElement> {
 			keystrokeAlternativeHTMLs.push( keystrokeAlternative.map( keystrokeToEnvKbd ).join( '' ) );
 		}
 
-		dt.innerHTML = keystrokeDefinition.label;
-		dd.innerHTML = keystrokeAlternativeHTMLs.join( ', ' ) +
-			( keystrokeDefinition.mayRequireFn && env.isMac ? ` ${ t( '(may require <kbd>Fn</kbd>)' ) }` : '' );
+		dt.innerHTML = trustedHtml( keystrokeDefinition.label );
+		dd.innerHTML = trustedHtml( keystrokeAlternativeHTMLs.join( ', ' ) +
+			( keystrokeDefinition.mayRequireFn && env.isMac ? ` ${ t( '(may require <kbd>Fn</kbd>)' ) }` : '' ) );
 
 		return [ dt, dd ];
 	}

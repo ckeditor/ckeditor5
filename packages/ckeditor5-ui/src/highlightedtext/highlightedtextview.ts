@@ -7,6 +7,8 @@
  * @module ui/highlightedtext/highlightedtextview
  */
 
+import { trustedHtml } from '@ckeditor/ckeditor5-utils';
+
 import { View } from '../view.js';
 import { escape } from 'es-toolkit/compat';
 
@@ -64,7 +66,7 @@ export class HighlightedTextView extends View {
 	 * Updates element's `innerHTML` with the passed content.
 	 */
 	private _updateInnerHTML( newInnerHTML: string | undefined ) {
-		this.element!.innerHTML = newInnerHTML || '';
+		this.element!.innerHTML = trustedHtml( newInnerHTML || '' );
 	}
 }
 

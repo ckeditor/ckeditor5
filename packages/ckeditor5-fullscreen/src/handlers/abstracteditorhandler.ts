@@ -16,6 +16,7 @@ import {
 	getParentElement,
 	isShadowRoot,
 	Rect,
+	trustedHtml,
 	type EventInfo,
 	ResizeObserver
 } from '@ckeditor/ckeditor5-utils';
@@ -358,7 +359,7 @@ export class FullscreenAbstractEditorHandler {
 			}
 
 			// For now, the wrapper is generated in a very straightforward way. If necessary, it may be rewritten using editor's UI lib.
-			this._wrapper.innerHTML = `
+			this._wrapper.innerHTML = trustedHtml( `
 				<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
 					<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
 					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
@@ -374,7 +375,7 @@ export class FullscreenAbstractEditorHandler {
 				<div class="ck ck-fullscreen__bottom-wrapper">
 					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
 				</div>
-			`;
+			` );
 
 			wrapperMountTarget.appendChild( this._wrapper );
 
@@ -703,10 +704,10 @@ export class FullscreenAbstractEditorHandler {
 			class: 'ck ck-fullscreen__left-sidebar-item'
 		} );
 
-		presenceListElement.innerHTML = `
+		presenceListElement.innerHTML = trustedHtml( `
 			<div class="ck ck-fullscreen__left-sidebar-header"></div>
 			<div class="ck ck-fullscreen__presence-list" data-ck-fullscreen="presence-list"></div>
-		`;
+		` );
 		( presenceListElement.firstElementChild as HTMLElement ).innerText = t( 'Connected users' );
 
 		if ( !wrapper.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' ) ) {
@@ -739,18 +740,18 @@ export class FullscreenAbstractEditorHandler {
 			class: 'ck-fullscreen__left-sidebar-item ck-fullscreen__left-sidebar-item--no-margin'
 		} );
 
-		documentOutlineHeaderElement.innerHTML = `
+		documentOutlineHeaderElement.innerHTML = trustedHtml( `
 			<div class="ck ck-fullscreen__left-sidebar-header ck-fullscreen__document-outline-header"></div>
-		`;
+		` );
 		( documentOutlineHeaderElement.firstElementChild as HTMLElement ).innerText = t( 'Document outline' );
 
 		const documentOutlineBodyWrapper = createElement( this._document, 'div', {
 			class: 'ck ck-fullscreen__left-sidebar-item ck-fullscreen__document-outline-wrapper'
 		} );
 
-		documentOutlineBodyWrapper.innerHTML = `
+		documentOutlineBodyWrapper.innerHTML = trustedHtml( `
 			<div class="ck ck-fullscreen__document-outline" data-ck-fullscreen="document-outline"></div>
-		`;
+		` );
 
 		if ( !wrapper.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' ) ) {
 			wrapper.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild(

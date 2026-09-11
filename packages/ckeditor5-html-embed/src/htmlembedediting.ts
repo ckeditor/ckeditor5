@@ -10,7 +10,7 @@
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
-import { logWarning, createElement } from '@ckeditor/ckeditor5-utils';
+import { logWarning, createElement, trustedHtml } from '@ckeditor/ckeditor5-utils';
 import { IconCancel, IconCheck, IconPencil } from '@ckeditor/ckeditor5-icons';
 
 import type { HtmlEmbedConfig } from './htmlembedconfig.js';
@@ -147,7 +147,7 @@ export class HtmlEmbedEditing extends Plugin {
 			model: 'rawHtml',
 			view: ( modelElement, { writer } ) => {
 				return writer.createRawElement( 'div', { class: 'raw-html-embed' }, function( domElement ) {
-					domElement.innerHTML = modelElement.getAttribute( 'value' ) as string || '';
+					domElement.innerHTML = trustedHtml( modelElement.getAttribute( 'value' ) as string || '' );
 				} );
 			}
 		} );
@@ -396,8 +396,12 @@ export class HtmlEmbedEditing extends Plugin {
 
 			// Creating a contextual document fragment allows executing scripts when inserting into the preview element.
 			// See: https://github.com/ckeditor/ckeditor5/issues/8326.
+			//
+			// The `htmlEmbed.sanitizeHtml` callback of the integrator is what makes this content safe. The policy of the
+			// editor only lets the assignment through, so that switching Trusted Types on does not change who is
+			// responsible for it.
 			const domRange = domDocument.createRange();
-			const domDocumentFragment = domRange.createContextualFragment( sanitizedOutput.html );
+			const domDocumentFragment = domRange.createContextualFragment( trustedHtml( sanitizedOutput.html ) );
 
 			domPreviewContent.appendChild( domDocumentFragment );
 

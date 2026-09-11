@@ -13,6 +13,7 @@ import {
 	type StylesProcessor,
 	type ViewDocumentFragment
 } from '@ckeditor/ckeditor5-engine';
+import { trustedHtml } from '@ckeditor/ckeditor5-utils';
 
 import { normalizeSpacing, normalizeSpacerunSpans } from './space.js';
 
@@ -34,7 +35,7 @@ export function parsePasteOfficeHtml( htmlString: string, stylesProcessor: Style
 	const normalizedHtml = normalizeSpacing( cleanContentAfterBody( htmlString ) );
 
 	// Parse htmlString as native Document object.
-	const htmlDocument = domParser.parseFromString( normalizedHtml, 'text/html' );
+	const htmlDocument = domParser.parseFromString( trustedHtml( normalizedHtml ), 'text/html' );
 
 	normalizeSpacerunSpans( htmlDocument );
 

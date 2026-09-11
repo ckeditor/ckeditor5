@@ -94,6 +94,7 @@ export { isWindow } from './dom/iswindow.js';
 export { Rect, type RectSource, type DomRectLike } from './dom/rect.js';
 export { ResizeObserver } from './dom/resizeobserver.js';
 export { setDataInElement } from './dom/setdatainelement.js';
+export { trustedHtml, isTrustedTypesEnforced, _clearTrustedTypesCache } from './dom/trustedtypes.js';
 export { toUnit, type ToUnitHelper } from './dom/tounit.js';
 export { indexOf } from './dom/indexof.js';
 export { insertAt } from './dom/insertat.js';

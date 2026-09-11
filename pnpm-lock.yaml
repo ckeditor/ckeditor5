@@ -2742,6 +2742,9 @@ importers:
       '@ckeditor/ckeditor5-engine':
         specifier: workspace:*
         version: link:../ckeditor5-engine
+      '@ckeditor/ckeditor5-utils':
+        specifier: workspace:*
+        version: link:../ckeditor5-utils
       hast-util-from-dom:
         specifier: 5.0.1
         version: 5.0.1
@@ -2751,9 +2754,6 @@ importers:
       hastscript:
         specifier: 9.0.1
         version: 9.0.1
-      rehype-dom-parse:
-        specifier: 5.0.2
-        version: 5.0.2
       rehype-dom-stringify:
         specifier: 4.0.2
         version: 4.0.2
@@ -2833,9 +2833,6 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
-      '@ckeditor/ckeditor5-utils':
-        specifier: workspace:*
-        version: link:../ckeditor5-utils
       '@types/hast':
         specifier: 3.0.4
         version: 3.0.4
@@ -9092,9 +9089,6 @@ packages:
   regex@6.1.0:
     resolution: {integrity: sha512-6VwtthbV4o/7+OaAF9I5L5V3llLEsoPyq9P1JVXkedTP33c7MfCG0/5NOPcSJn0TzXcG9YUrR0gQSWioew3LDg==}
 
-  rehype-dom-parse@5.0.2:
-    resolution: {integrity: sha512-8CqP11KaqvtWsMqVEC2yM3cZWZsDNqqpr8nPvogjraLuh45stabgcpXadCAxu1n6JaUNJ/Xr3GIqXP7okbNqLg==}
-
   rehype-dom-stringify@4.0.2:
     resolution: {integrity: sha512-2HVFYbtmm5W3C2j8QsV9lcHdIMc2Yn/ytlPKcSC85/tRx2haZbU8V67Wxyh8STT38ZClvKlZ993Me/Hw8g88Aw==}
 
@@ -15051,12 +15045,6 @@ snapshots:
   regex@6.1.0:
     dependencies:
       regex-utilities: 2.3.0
-
-  rehype-dom-parse@5.0.2:
-    dependencies:
-      '@types/hast': 3.0.4
-      hast-util-from-dom: 5.0.1
-      unified: 11.0.5
 
   rehype-dom-stringify@4.0.2:
     dependencies:

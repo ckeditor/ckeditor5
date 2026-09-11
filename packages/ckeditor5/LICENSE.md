@@ -21,7 +21,6 @@ Where not otherwise indicated, all CKEditor&nbsp;5 content is authored by CKSour
 The following libraries are included in CKEditor&nbsp;5 under the [ISC license](https://opensource.org/licenses/ISC):
 
 * hast-util-from-dom - Copyright (c) Keith McKnight <keith@mcknig.ht>.
-* rehype-dom-parse - Copyright (c) 2018 Keith McKnight <keith@mcknig.ht>.
 * rehype-dom-stringify - Copyright (c) 2018 Keith McKnight <keith@mcknig.ht>.
 
 The following libraries are included in CKEditor&nbsp;5 under the [MIT license](https://opensource.org/licenses/MIT):

@@ -36,7 +36,8 @@ import {
 	first,
 	getParentElement,
 	getParentNode,
-	env
+	env,
+	trustedHtml
 } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewNode } from './node.js';
@@ -313,12 +314,12 @@ export class ViewDomConverter {
 	public setContentOf( domElement: DomElement, html: string ): void {
 		// For data pipeline we pass the HTML as-is.
 		if ( this.renderingMode === 'data' ) {
-			domElement.innerHTML = html;
+			domElement.innerHTML = trustedHtml( html );
 
 			return;
 		}
 
-		const document = new DOMParser().parseFromString( html, 'text/html' );
+		const document = new DOMParser().parseFromString( trustedHtml( html ), 'text/html' );
 		const fragment = document.createDocumentFragment();
 		const bodyChildNodes = document.body.childNodes;
 
