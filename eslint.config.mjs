@@ -117,6 +117,7 @@ export default defineConfig( [
 		files: [ '**/theme/**/*.css' ],
 
 		rules: {
+			'ckeditor5-rules/require-host-with-root-selector': 'error',
 			'ckeditor5-rules/ck-content-variable-name': [ 'error', {
 				ignoredVariableSubstrings: [ '-suggestion-', '-comment-', '-color-base-' ]
 			} ]
@@ -225,7 +226,6 @@ export default defineConfig( [
 
 		rules: {
 			'ckeditor5-rules/no-shadow-unsafe-dom-apis': 'error',
-			'ckeditor5-rules/require-host-with-root-selector': 'error',
 			'ckeditor5-rules/validate-module-tag': 'error',
 			'ckeditor5-rules/no-default-export': 'error',
 			'ckeditor5-rules/allow-svg-imports-only-in-icons-package': 'error',
