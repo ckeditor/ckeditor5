@@ -11,7 +11,7 @@ import { global, type CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { resolveErrorSource } from './resolveerrorsource.js';
 import { Editor } from './editor/editor.js';
-import { Context } from './context.js';
+import { type Context } from './context.js';
 
 /**
  * What a callback registered with {@link module:core/errorreporter~onEditorError} receives.
@@ -182,12 +182,3 @@ const reporter = /* #__PURE__ -- @preserve */ new EditorErrorReporter();
 export function onEditorError( callback: EditorErrorCallback ): () => void {
 	return reporter.add( callback );
 }
-
-// Filled in here rather than in the classes themselves. `Editor` and this module already refer to each
-// other — the filter below needs the class — so reading this function while defining the class would read
-// it before it exists. Assigning from this side runs after both are defined.
-//
-// See the docblocks on those fields for why they exist at all: an integration handed an editor class
-// cannot import from CKEditor without loading the npm build and locking the application out of the CDN.
-Editor.onEditorError = onEditorError;
-Context.onEditorError = onEditorError;

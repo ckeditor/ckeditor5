@@ -18,7 +18,7 @@ import {
 import { PluginCollection } from './plugincollection.js';
 import { getSubNodes } from './errorattribution/getsubnodes.js';
 import { _addLiveContext, _removeLiveContext } from './errorattribution/liveeditors.js';
-import { type EditorErrorCallback } from './errorreporter.js';
+import { onEditorError, type EditorErrorCallback } from './errorreporter.js';
 import { type Editor } from './editor/editor.js';
 import type { LoadedPlugins, PluginConstructor } from './plugin.js';
 import type { EditorConfig } from './editor/editorconfig.js';
@@ -396,11 +396,13 @@ export class Context {
 	/**
 	 * {@link module:core/errorreporter~onEditorError `onEditorError()`}, reachable without importing it.
 	 *
-	 * The same field as {@link module:core/editor/editor~Editor.onEditorError `Editor.onEditorError`}, and
-	 * here for the same reason. A context is the only handle some integrations have: a component that
+	 * The same accessor as {@link module:core/editor/editor~Editor.onEditorError `Editor.onEditorError`},
+	 * and here for the same reason. A context is the only handle some integrations have: a component that
 	 * provides a shared context holds no editor class at all.
 	 */
-	public static declare onEditorError: ( callback: EditorErrorCallback ) => () => void;
+	public static get onEditorError(): ( callback: EditorErrorCallback ) => () => void {
+		return onEditorError;
+	}
 
 	/**
 	 * `Context` class is commonly put in `config.plugins` array.

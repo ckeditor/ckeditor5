@@ -39,7 +39,7 @@ import type { EditorUI } from '@ckeditor/ckeditor5-ui';
 
 import { Context } from '../context.js';
 import { _addLiveEditor, _removeLiveEditor } from '../errorattribution/liveeditors.js';
-import { type EditorErrorCallback } from '../errorreporter.js';
+import { onEditorError, type EditorErrorCallback } from '../errorreporter.js';
 import { PluginCollection } from '../plugincollection.js';
 import { CommandCollection, type CommandsMap } from '../commandcollection.js';
 import { EditingKeystrokeHandler } from '../editingkeystrokehandler.js';
@@ -1048,9 +1048,15 @@ export abstract class Editor extends EditorBase {
 	/**
 	 * The {@link module:core/context~Context} class.
 	 *
-	 * Exposed as static editor field for easier access in editor builds.
+	 * Exposed as a static editor member for easier access in editor builds.
+	 *
+	 * A getter rather than a field, for the same reason as {@link ~Editor.onEditorError}: a field would
+	 * read `Context` while this class is being defined, and the error reporter puts this module and
+	 * `context.ts` in an import cycle, so at that moment `Context` is not always initialized yet.
 	 */
-	public static Context: typeof Context = Context;
+	public static get Context(): typeof Context {
+		return Context;
+	}
 
 	/**
 	 * {@link module:core/errorreporter~onEditorError `onEditorError()`}, reachable without importing it.
@@ -1073,10 +1079,14 @@ export abstract class Editor extends EditorBase {
 	 * The same page-level registration as the exported function — not a registration scoped to this editor
 	 * class. Prefer the import wherever imports are an option.
 	 *
-	 * Filled in by the error reporter rather than here: this module and that one already refer to each
-	 * other, and reading its export while defining this class would read it before it exists.
+	 * A getter rather than a field: this module and the error reporter already refer to each other, so
+	 * reading its export while defining this class would read it before it exists. A getter body runs on
+	 * access, long after both modules are done. It also keeps the property off the list of the class's own
+	 * enumerable properties, which a field would have joined.
 	 */
-	public static declare onEditorError: ( callback: EditorErrorCallback ) => () => void;
+	public static get onEditorError(): ( callback: EditorErrorCallback ) => () => void {
+		return onEditorError;
+	}
 
 	protected _showLicenseError( reason: LicenseErrorReason, name?: string ): void {
 		setTimeout( () => {
