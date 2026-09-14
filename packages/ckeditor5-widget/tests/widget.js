@@ -513,6 +513,144 @@ describe( 'Widget', () => {
 		expect( focusSpy ).toHaveBeenCalled();
 	} );
 
+	describe( 'clicking beside a block widget in an element that cannot hold the caret', () => {
+		// The `widget` element above inherits `$text` from `$block`, so it can hold the caret itself. A real block
+		// widget - an image, a table - cannot, which is the shape these tests need.
+		beforeEach( () => {
+			model.schema.register( 'block-widget', {
+				allowIn: [ '$root', 'blockQuote' ],
+				isObject: true,
+				isBlock: true
+			} );
+			model.schema.register( 'block-widget-caption', {
+				allowIn: 'block-widget',
+				isLimit: true
+			} );
+			model.schema.extend( '$text', { allowIn: 'block-widget-caption' } );
+
+			editor.conversion.for( 'downcast' )
+				.elementToElement( {
+					model: 'block-widget',
+					view: ( modelItem, { writer } ) => toWidget( writer.createContainerElement( 'figure' ), writer )
+				} )
+				.elementToElement( {
+					model: 'block-widget-caption',
+					view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption' )
+				} );
+		} );
+
+		it( 'should select a widget that is the only child of a block quote when clicked after it', () => {
+			_setModelData( model, '<paragraph>foo[]</paragraph><blockQuote><widget></widget></blockQuote>' );
+
+			const domBlockQuote = view.domConverter.mapViewToDom( viewDocument.getRoot().getChild( 1 ) );
+
+			// Where the browser resolves a click in the block quote's own padding to: after the widget, with no text
+			// node for the caret. Only the hit test is stubbed, everything downstream of it runs for real.
+			stubCaretPositionAt( domBlockQuote, 1 );
+
+			viewDocument.fire( 'pointerdown', new ViewDocumentDomEventData( view, {
+				target: domBlockQuote,
+				isPrimary: true,
+				preventDefault: vi.fn(),
+				clientX: 0,
+				clientY: 0
+			} ) );
+
+			expect( _getModelData( model ) ).toBe(
+				'<paragraph>foo</paragraph><blockQuote>[<widget></widget>]</blockQuote>'
+			);
+		} );
+
+		it( 'should select a widget that is the only child of a block quote when clicked before it', () => {
+			_setModelData( model, '<paragraph>foo[]</paragraph><blockQuote><widget></widget></blockQuote>' );
+
+			const domBlockQuote = view.domConverter.mapViewToDom( viewDocument.getRoot().getChild( 1 ) );
+
+			stubCaretPositionAt( domBlockQuote, 0 );
+
+			viewDocument.fire( 'pointerdown', new ViewDocumentDomEventData( view, {
+				target: domBlockQuote,
+				isPrimary: true,
+				preventDefault: vi.fn(),
+				clientX: 0,
+				clientY: 0
+			} ) );
+
+			expect( _getModelData( model ) ).toBe(
+				'<paragraph>foo</paragraph><blockQuote>[<widget></widget>]</blockQuote>'
+			);
+		} );
+
+		it( 'should not select a widget in a block quote that has a paragraph after it', () => {
+			_setModelData( model, '<paragraph>foo[]</paragraph><blockQuote><widget></widget><paragraph>bar</paragraph></blockQuote>' );
+
+			const domBlockQuote = view.domConverter.mapViewToDom( viewDocument.getRoot().getChild( 1 ) );
+
+			// The same position as above, but no longer at the end of the block quote, so the caret has the
+			// paragraph to go to and the click is left to the browser.
+			stubCaretPositionAt( domBlockQuote, 1 );
+
+			viewDocument.fire( 'pointerdown', new ViewDocumentDomEventData( view, {
+				target: domBlockQuote,
+				isPrimary: true,
+				preventDefault: vi.fn(),
+				clientX: 0,
+				clientY: 0
+			} ) );
+
+			expect( _getModelData( model ) ).toBe(
+				'<paragraph>foo[]</paragraph><blockQuote><widget></widget><paragraph>bar</paragraph></blockQuote>'
+			);
+		} );
+
+		it( 'should select a widget when the click point resolves to the end of the widget itself', () => {
+			_setModelData( model,
+				'<paragraph>foo[]</paragraph><block-widget><block-widget-caption>abc</block-widget-caption></block-widget>'
+			);
+
+			const widgetView = viewDocument.getRoot().getChild( 1 );
+			const domWidget = view.domConverter.mapViewToDom( widgetView );
+
+			// A click that misses everything selectable resolves to a position inside the widget, while the event
+			// target stays the root editable. The widget itself must be picked, not whatever child sits at that
+			// position - a nested editable or the type around UI, neither of which is a widget.
+			stubCaretPositionAt( domWidget, domWidget.childNodes.length );
+
+			viewDocument.fire( 'pointerdown', new ViewDocumentDomEventData( view, {
+				target: view.getDomRoot(),
+				isPrimary: true,
+				preventDefault: vi.fn(),
+				clientX: 0,
+				clientY: 0
+			} ) );
+
+			expect( _getModelData( model ) ).toBe(
+				'<paragraph>foo</paragraph>[<block-widget><block-widget-caption>abc</block-widget-caption></block-widget>]'
+			);
+		} );
+
+		it( 'should not select an inline widget when clicking at the start of a paragraph holding it', () => {
+			_setModelData( model, '<paragraph>foo[]</paragraph><paragraph><inline-widget></inline-widget></paragraph>' );
+
+			const domParagraph = view.domConverter.mapViewToDom( viewDocument.getRoot().getChild( 1 ) );
+
+			// A paragraph accepts `$text`, so the caret can sit in it and the widget must not be selected instead.
+			stubCaretPositionAt( domParagraph, 0 );
+
+			viewDocument.fire( 'pointerdown', new ViewDocumentDomEventData( view, {
+				target: domParagraph,
+				isPrimary: true,
+				preventDefault: vi.fn(),
+				clientX: 0,
+				clientY: 0
+			} ) );
+
+			expect( _getModelData( model ) ).toBe(
+				'<paragraph>foo[]</paragraph><paragraph><inline-widget></inline-widget></paragraph>'
+			);
+		} );
+	} );
+
 	it( 'should create selection over clicked widget', () => {
 		_setModelData( model, '<paragraph>[]</paragraph><widget></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 1 );
@@ -3826,6 +3964,23 @@ describe( 'Widget', () => {
 		} );
 	} );
 } );
+
+function stubCaretPositionAt( domNode, offset ) {
+	const domDocument = domNode.ownerDocument;
+
+	if ( domDocument.caretPositionFromPoint ) {
+		vi.spyOn( domDocument, 'caretPositionFromPoint' ).mockReturnValue( { offsetNode: domNode, offset } );
+	}
+
+	vi.spyOn( domDocument, 'caretRangeFromPoint' ).mockImplementation( () => {
+		const domRange = domDocument.createRange();
+
+		domRange.setStart( domNode, offset );
+		domRange.collapse( true );
+
+		return domRange;
+	} );
+}
 
 function stubCaretFromPoint( domDocument, offsetNode = null ) {
 	if ( domDocument.caretPositionFromPoint ) {
