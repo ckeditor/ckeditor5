@@ -13,6 +13,7 @@ import { getBorderWidths } from './getborderwidths.js';
 import { isText } from './istext.js';
 import { getPositionedAncestor } from './getpositionedancestor.js';
 import { getParentElement } from './getparentelement.js';
+import { getLayoutParentElement } from './getlayoutparentelement.js';
 import { isShadowRoot } from './isshadowroot.js';
 import { global } from './global.js';
 
@@ -273,7 +274,7 @@ export class Rect {
 		let parent: Node | null = null;
 
 		if ( isDomElement( source ) ) {
-			parent = getParentElement( source );
+			parent = getLayoutParentElement( source );
 		} else if ( isRange( source ) ) {
 			// A range spanning the top level of a shadow root has that root as its common ancestor. The root
 			// has no parent to continue from, so hop straight to the host instead.
@@ -303,7 +304,7 @@ export class Rect {
 				( lastPositionedChildElement && getElementPosition( lastPositionedChildElement ) === 'absolute' && !isPositioned( parent ) )
 			) {
 				child = parent;
-				parent = getParentElement( parent );
+				parent = getLayoutParentElement( parent );
 				continue;
 			}
 
@@ -321,7 +322,7 @@ export class Rect {
 			}
 
 			child = parent;
-			parent = getParentElement( parent );
+			parent = getLayoutParentElement( parent );
 		}
 
 		return visibleRect;

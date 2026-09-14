@@ -403,6 +403,47 @@ describe( 'StickyPanelView', () => {
 
 				expect( spy ).not.toHaveBeenCalled();
 			} );
+
+			// The frame's root has to be open: `Element#assignedSlot` is `null` for a slot in a closed root, so
+			// there the walk falls back to the node tree and never reaches that root. The editor component's own
+			// root is free to be either, because the walk leaves it through `.host` rather than through a slot.
+			for ( const mode of [ 'open', 'closed' ] ) {
+				it( `reacts to scroll of the shadow root the limiter is slotted into (own root mode: '${ mode }')`, () => {
+					host = document.createElement( 'div' );
+					document.body.appendChild( host );
+
+					const frameRoot = host.attachShadow( { mode: 'open' } );
+					const frame = document.createElement( 'div' );
+
+					frame.appendChild( document.createElement( 'slot' ) );
+					frameRoot.appendChild( frame );
+
+					// The editor component: the limiter lives in a shadow root of its own, and the component
+					// itself is the light DOM child assigned to the frame's slot.
+					const editorHost = document.createElement( 'div' );
+
+					host.appendChild( editorHost );
+
+					const editorRoot = editorHost.attachShadow( { mode } );
+					const shadowLimiterElement = document.createElement( 'div' );
+
+					editorRoot.appendChild( shadowLimiterElement );
+					view.limiterElement = shadowLimiterElement;
+
+					const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+					view.render();
+					expect( spy ).toHaveBeenCalledOnce();
+
+					editorRoot.dispatchEvent( new Event( 'scroll' ) );
+					expect( spy ).toHaveBeenCalledTimes( 2 );
+
+					// The root that actually lays the limiter out. A node-tree walk leaves the component through
+					// its host straight into the light DOM, so this root is never listened to at all.
+					frameRoot.dispatchEvent( new Event( 'scroll' ) );
+					expect( spy ).toHaveBeenCalledTimes( 3 );
+				} );
+			}
 		} );
 	} );
 
@@ -1496,6 +1537,73 @@ describe( 'StickyPanelView', () => {
 						_stickyTopOffset: null,
 						_stickyBottomOffset: null,
 						_marginLeft: null
+					} );
+				} );
+			} );
+
+			describe( 'if the only scrollable non-window parent is reached through a slot', () => {
+				let frameHost, scrollableContainer;
+
+				beforeEach( () => {
+					// The same composition as "if there is one scrollable non-window parent", except the limiter is
+					// assigned to a slot instead of being a child of the scrollable element. Assigning a node to a
+					// slot does not move it – it stays a child of the host in the node tree while rendering inside
+					// the slot – so only a walk over the flattened tree finds the element that clips it.
+					frameHost = document.createElement( 'div' );
+
+					scrollableContainer = document.createElement( 'div' );
+					scrollableContainer.className = 'scrollable';
+					scrollableContainer.style.overflow = 'scroll';
+					scrollableContainer.appendChild( document.createElement( 'slot' ) );
+
+					frameHost.attachShadow( { mode: 'open' } ).appendChild( scrollableContainer );
+					frameHost.appendChild( limiterElement );
+					global.document.body.appendChild( frameHost );
+
+					view.isActive = true;
+				} );
+
+				afterEach( () => {
+					frameHost.remove();
+				} );
+
+				it( 'should make panel sticky to the top of the scrollable parent if the limiter top is not visible', () => {
+					const stickToTopSpy = vi.spyOn( view, '_stickToTopOfAncestors' );
+
+					vi.spyOn( scrollableContainer, 'getBoundingClientRect' ).mockReturnValue( {
+						top: 40,
+						bottom: 140,
+						height: 100,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					vi.spyOn( limiterElement, 'getBoundingClientRect' ).mockReturnValue( {
+						top: 20,
+						bottom: 200,
+						height: 180,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					vi.spyOn( contentPanelElement, 'getBoundingClientRect' ).mockReturnValue( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					// A node-tree walk goes from the limiter straight to `frameHost`, never seeing the scrollable
+					// element, and so finds the limiter's top edge fully visible – which unsticks the panel
+					// instead of sticking it at the top edge of the scrollable parent.
+					expect( stickToTopSpy ).toHaveBeenCalledOnce();
+					expectStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: 40,
+						_stickyBottomOffset: null,
+						_marginLeft: '0px'
 					} );
 				} );
 			} );

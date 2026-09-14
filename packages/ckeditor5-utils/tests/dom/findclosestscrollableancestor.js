@@ -190,4 +190,122 @@ describe( 'findClosestScrollableAncestor', () => {
 			}
 		} );
 	} );
+
+	describe( 'slotted content', () => {
+		it( 'finds the scrollable element of the shadow tree a slotted node renders in', () => {
+			// HOST
+			//  |- B                        (light DOM child, assigned to the slot below)
+			//  |    (shadow root)
+			//  |      |- DIV (overflow: auto)
+			//  |          |- SLOT
+			const b = createElement( document, 'b' );
+			const host = createElement( document, 'div', {}, [ b ] );
+			const frame = createElement( document, 'div', overflowAutoStyleAttribute, [
+				createElement( document, 'slot' )
+			] );
+
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			expect( findClosestScrollableAncestor( b ) ).toBe( frame );
+		} );
+
+		it( 'prefers the scrollable element the node renders in over one further out in the light DOM', () => {
+			// DIV (overflow: auto)          <- further away in the flattened tree
+			//  |- HOST
+			//      |- B
+			//         (shadow root)
+			//           |- DIV (overflow: auto)   <- the answer
+			//               |- SLOT
+			const b = createElement( document, 'b' );
+			const host = createElement( document, 'div', {}, [ b ] );
+			const frame = createElement( document, 'div', overflowAutoStyleAttribute, [
+				createElement( document, 'slot' )
+			] );
+
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+			createElement( document, 'div', overflowAutoStyleAttribute, [ host ] );
+
+			expect( findClosestScrollableAncestor( b ) ).toBe( frame );
+		} );
+
+		it( 'walks through a plain element between the slot and the scrollable one', () => {
+			const b = createElement( document, 'b' );
+			const host = createElement( document, 'div', {}, [ b ] );
+			const pad = createElement( document, 'div', {}, [ createElement( document, 'slot' ) ] );
+			const frame = createElement( document, 'div', overflowAutoStyleAttribute, [ pad ] );
+
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			expect( findClosestScrollableAncestor( b ) ).toBe( frame );
+		} );
+
+		it( 'walks through a plain element between the assigned element and the node', () => {
+			// The wrapper is what the slot assigns, so `assignedSlot` is null on the node itself and the walk
+			// has to reach the wrapper before it can step into the shadow tree.
+			const b = createElement( document, 'b' );
+			const wrapper = createElement( document, 'div', {}, [ b ] );
+			const host = createElement( document, 'div', {}, [ wrapper ] );
+			const frame = createElement( document, 'div', overflowAutoStyleAttribute, [
+				createElement( document, 'slot' )
+			] );
+
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			expect( b.assignedSlot ).toBeNull();
+			expect( findClosestScrollableAncestor( b ) ).toBe( frame );
+		} );
+
+		it( 'follows a slot assigned to an outer slot', () => {
+			// OUTER-HOST
+			//  |- MIDDLE-HOST
+			//  |   |- B
+			//  |      (middle shadow root)
+			//  |        |- INNER-SLOT
+			//     (outer shadow root)
+			//       |- DIV (overflow: auto)
+			//           |- OUTER-SLOT
+			const b = createElement( document, 'b' );
+			const middleHost = createElement( document, 'div', {}, [ b ] );
+			const innerSlot = createElement( document, 'slot' );
+
+			middleHost.attachShadow( { mode: 'open' } ).appendChild( innerSlot );
+
+			const outerHost = createElement( document, 'div', {}, [ middleHost ] );
+			const frame = createElement( document, 'div', overflowAutoStyleAttribute, [
+				createElement( document, 'slot' )
+			] );
+
+			outerHost.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			expect( findClosestScrollableAncestor( b ) ).toBe( frame );
+		} );
+
+		it( 'falls back to the node tree when the slot is in a closed root, which does not expose it', () => {
+			// The scrollable element inside the closed root cannot be reached, so the light-DOM one answers.
+			const b = createElement( document, 'b' );
+			const host = createElement( document, 'div', {}, [ b ] );
+			const frame = createElement( document, 'div', overflowAutoStyleAttribute, [
+				createElement( document, 'slot' )
+			] );
+
+			host.attachShadow( { mode: 'closed' } ).appendChild( frame );
+
+			const lightDomScrollable = createElement( document, 'div', overflowAutoStyleAttribute, [ host ] );
+
+			expect( b.assignedSlot ).toBeNull();
+			expect( findClosestScrollableAncestor( b ) ).toBe( lightDomScrollable );
+		} );
+
+		it( 'returns null when neither tree has a scrollable ancestor', () => {
+			const b = createElement( document, 'b' );
+			const host = createElement( document, 'div', {}, [ b ] );
+
+			host.attachShadow( { mode: 'open' } ).appendChild(
+				createElement( document, 'div', {}, [ createElement( document, 'slot' ) ] )
+			);
+			createElement( document, 'div', {}, [ host ] );
+
+			expect( findClosestScrollableAncestor( b ) ).toBeNull();
+		} );
+	} );
 } );

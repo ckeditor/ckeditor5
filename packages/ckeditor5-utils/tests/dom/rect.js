@@ -1239,6 +1239,82 @@ describe( 'Rect', () => {
 				} );
 			} );
 		}
+
+		describe( 'slotted content', () => {
+			let host;
+
+			beforeEach( () => {
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				// The host itself does not clip, so anything cropping the rect has to come from the shadow tree.
+				stubRect( host, { top: 0, right: 400, bottom: 400, left: 0, width: 400, height: 400 } );
+			} );
+
+			afterEach( () => {
+				host.remove();
+			} );
+
+			it( 'crops the rect with the clipping element a slotted node renders inside', () => {
+				const element = document.createElement( 'div' );
+				const frame = document.createElement( 'div' );
+
+				frame.setAttribute( 'style', 'overflow: hidden' );
+				frame.appendChild( document.createElement( 'slot' ) );
+				host.attachShadow( { mode: 'open' } ).appendChild( frame );
+				host.appendChild( element );
+
+				stubRect( frame, { top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100 } );
+				stubRect( element, { top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200 } );
+
+				// The element is a child of the host in the node tree, so only a walk over the flattened tree
+				// visits the frame it renders inside.
+				assertRect( new Rect( element ).getVisible(), {
+					top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+				} );
+			} );
+
+			it( 'keeps cropping outside the root after the clipping element inside it', () => {
+				const element = document.createElement( 'div' );
+				const frame = document.createElement( 'div' );
+
+				frame.setAttribute( 'style', 'overflow: hidden' );
+				frame.appendChild( document.createElement( 'slot' ) );
+				host.attachShadow( { mode: 'open' } ).appendChild( frame );
+				host.appendChild( element );
+
+				// Both the frame in the shadow tree and the host clip, so the walk applies the inner crop and
+				// then carries on out of the root. The frame is the tighter of the two, so a walk that skipped
+				// it would answer with the host's 150px instead.
+				host.setAttribute( 'style', 'overflow: hidden' );
+				stubRect( host, { top: 0, right: 150, bottom: 150, left: 0, width: 150, height: 150 } );
+				stubRect( frame, { top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100 } );
+				stubRect( element, { top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200 } );
+
+				assertRect( new Rect( element ).getVisible(), {
+					top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+				} );
+			} );
+
+			it( 'does not crop with a clipping element in a closed root, which does not expose its slot', () => {
+				const element = document.createElement( 'div' );
+				const frame = document.createElement( 'div' );
+
+				frame.setAttribute( 'style', 'overflow: hidden' );
+				frame.appendChild( document.createElement( 'slot' ) );
+				host.attachShadow( { mode: 'closed' } ).appendChild( frame );
+				host.appendChild( element );
+
+				stubRect( frame, { top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100 } );
+				stubRect( element, { top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200 } );
+
+				// The walk falls back to the node tree and is cropped by the non-clipping host only.
+				expect( element.assignedSlot ).toBeNull();
+				assertRect( new Rect( element ).getVisible(), {
+					top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'isEqual()', () => {
@@ -1404,15 +1480,29 @@ describe( 'Rect', () => {
 				width: 50,
 				height: 30
 			} );
+			// The ancestor must read as positioned, or the lookup rightly walks past it. Everything else is a
+			// well-formed static box, so a lookup stepping over an extra element does not fall over an
+			// `undefined` style.
+			positionedAncestor.style.position = 'absolute';
+
 			vi.spyOn( window, 'getComputedStyle' ).mockImplementation( target => {
 				if ( target === positionedAncestor ) {
 					return {
+						position: 'absolute',
 						borderTopWidth: '3px',
 						borderRightWidth: '0px',
 						borderBottomWidth: '0px',
 						borderLeftWidth: '2px'
 					};
 				}
+
+				return {
+					position: 'static',
+					borderTopWidth: '0px',
+					borderRightWidth: '0px',
+					borderBottomWidth: '0px',
+					borderLeftWidth: '0px'
+				};
 			} );
 
 			Object.defineProperty( positionedAncestor, 'scrollLeft', { value: 5 } );
@@ -1443,6 +1533,46 @@ describe( 'Rect', () => {
 				width: 20,
 				height: 20
 			} );
+		} );
+
+		it( 'should compensate for a positioned ancestor reached through a slot', () => {
+			// The same compensation as above, except the positioned ancestor lives in a shadow tree and is
+			// reached only because the element is assigned to a `<slot>` inside it. Over the node tree the
+			// element leaves for its host straight into the light DOM, no ancestor is found, and the rect stays
+			// in viewport coordinates.
+			const host = document.createElement( 'div' );
+			const positionedAncestor = document.createElement( 'div' );
+			const element = document.createElement( 'div' );
+
+			positionedAncestor.style.position = 'relative';
+			positionedAncestor.appendChild( document.createElement( 'slot' ) );
+			host.attachShadow( { mode: 'open' } ).appendChild( positionedAncestor );
+
+			host.appendChild( element );
+			document.body.appendChild( host );
+
+			vi.spyOn( window, 'scrollX', 'get' ).mockReturnValue( 100 );
+			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 200 );
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
+			vi.spyOn( positionedAncestor, 'getBoundingClientRect' ).mockReturnValue( {
+				top: 60,
+				right: 100,
+				bottom: 90,
+				left: 50,
+				width: 50,
+				height: 30
+			} );
+
+			assertRect( new Rect( element ).toAbsoluteRect(), {
+				top: 150,
+				right: 90,
+				bottom: 170,
+				left: 70,
+				width: 20,
+				height: 20
+			} );
+
+			host.remove();
 		} );
 	} );
 

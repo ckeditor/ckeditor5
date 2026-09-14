@@ -476,6 +476,101 @@ function expectCalledWithExactly( mock, ...args ) {
 	expect( mock ).toHaveBeenCalledWith( ...args );
 }
 
+describe( 'scrollAncestorsToShowTarget() with slotted content', () => {
+	let host, frame, target;
+
+	beforeEach( () => {
+		host = document.createElement( 'div' );
+		frame = document.createElement( 'div' );
+		target = document.createElement( 'p' );
+
+		document.body.appendChild( host );
+
+		// Make the elements immune to the border-width-* styles in the test environment.
+		vi.spyOn( window, 'getComputedStyle' ).mockReturnValue( {
+			borderTopWidth: '0px',
+			borderRightWidth: '0px',
+			borderBottomWidth: '0px',
+			borderLeftWidth: '0px',
+			direction: 'ltr'
+		} );
+
+		stubGeometry( host, {
+			top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+		}, {
+			scrollLeft: 0, scrollTop: 0
+		} );
+
+		stubGeometry( frame, {
+			top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+		}, {
+			scrollLeft: 0, scrollTop: 0
+		} );
+
+		// The target sits below the visible area of the frame, so the frame has to scroll down.
+		stubGeometry( target, {
+			top: 200, right: 100, bottom: 300, left: 0, width: 100, height: 100
+		} );
+
+		stubGeometry( document.body, {
+			top: 1000, right: 2000, bottom: 1000, left: 1000, width: 1000, height: 1000
+		}, {
+			scrollLeft: 1000, scrollTop: 1000
+		} );
+	} );
+
+	afterEach( () => {
+		host.remove();
+	} );
+
+	it( 'scrolls the element of the shadow tree the target renders in', () => {
+		frame.appendChild( document.createElement( 'slot' ) );
+		host.attachShadow( { mode: 'open' } ).appendChild( frame );
+		host.appendChild( target );
+
+		// The target is a child of the host in the node tree, so only a walk over the flattened tree reaches
+		// the frame that scrolls it.
+		scrollAncestorsToShowTarget( target );
+
+		assertScrollPosition( frame, { scrollTop: 200, scrollLeft: 0 } );
+	} );
+
+	it( 'scrolls it for a target several levels below the assigned element', () => {
+		const wrapper = document.createElement( 'div' );
+
+		wrapper.appendChild( target );
+		frame.appendChild( document.createElement( 'slot' ) );
+		host.attachShadow( { mode: 'open' } ).appendChild( frame );
+		host.appendChild( wrapper );
+
+		stubGeometry( wrapper, {
+			top: 200, right: 100, bottom: 300, left: 0, width: 100, height: 100
+		}, {
+			scrollLeft: 0, scrollTop: 0
+		} );
+
+		// The wrapper is what the slot assigns, so `assignedSlot` is null on the target itself.
+		expect( target.assignedSlot ).toBeNull();
+
+		scrollAncestorsToShowTarget( target );
+
+		assertScrollPosition( frame, { scrollTop: 200, scrollLeft: 0 } );
+	} );
+
+	it( 'leaves it alone when the slot is in a closed root, which does not expose it', () => {
+		frame.appendChild( document.createElement( 'slot' ) );
+		host.attachShadow( { mode: 'closed' } ).appendChild( frame );
+		host.appendChild( target );
+
+		expect( target.assignedSlot ).toBeNull();
+
+		scrollAncestorsToShowTarget( target );
+
+		// The walk falls back to the node tree, which never visits the frame.
+		assertScrollPosition( frame, { scrollTop: 0, scrollLeft: 0 } );
+	} );
+} );
+
 describe( 'scrollViewportToShowTarget()', () => {
 	let target, firstAncestor, element;
 	const viewportOffset = 30;

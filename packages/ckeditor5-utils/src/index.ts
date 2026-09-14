@@ -76,6 +76,8 @@ export { DomEmitterMixin, type DomEmitter, type DomEmitterMixinConstructor, type
 export { findClosestScrollableAncestor } from './dom/findclosestscrollableancestor.js';
 export { global, type GlobalType } from './dom/global.js';
 export { containsNode } from './dom/containsnode.js';
+export { getLayoutParentNode } from './dom/getlayoutparentnode.js';
+export { getLayoutParentElement } from './dom/getlayoutparentelement.js';
 export { getAncestors } from './dom/getancestors.js';
 export { getDataFromElement } from './dom/getdatafromelement.js';
 export { getBorderWidths, type BorderWidths } from './dom/getborderwidths.js';

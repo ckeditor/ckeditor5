@@ -10,7 +10,7 @@
 import { isRange } from './isrange.js';
 import { Rect } from './rect.js';
 import { isText } from './istext.js';
-import { getParentElement } from './getparentelement.js';
+import { getLayoutParentElement } from './getlayoutparentelement.js';
 import { isShadowRoot } from './isshadowroot.js';
 
 export type IfTrue<T> = T extends true ? true : never;
@@ -393,7 +393,7 @@ function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 			}
 		}
 
-		currentParent = getParentElement( currentParent ) as HTMLElement | null;
+		currentParent = getLayoutParentElement( currentParent ) as HTMLElement | null;
 	}
 }
 
@@ -439,9 +439,11 @@ function getWindow( elementOrRange: HTMLElement | Range ): Window {
 /**
  * Returns the closest parent of an element or DOM range.
  *
- * The lookup crosses shadow DOM boundaries, so for a target at the top of a shadow root it returns the
- * host instead of the shadow root itself. This matters because the result seeds the ancestor walk of
- * {@link ~scrollAncestorsToShowRect}, which needs an element to measure and scroll.
+ * The lookup runs over the flattened tree, so for a target at the top of a shadow root it returns the host
+ * instead of the shadow root itself, and for slotted content it returns the `<slot>` the content renders in.
+ * The result only seeds the ancestor walk of {@link ~scrollAncestorsToShowRect} – a cursor, not something
+ * measured, as that walk takes the target rect separately – so a slot, which generates no box of its own, is a
+ * valid answer and the walk carries on from inside the shadow tree.
  */
 function getTargetParentElement( elementOrRange: HTMLElement | Range ): HTMLElement {
 	if ( isRange( elementOrRange ) ) {
@@ -455,12 +457,12 @@ function getTargetParentElement( elementOrRange: HTMLElement | Range ): HTMLElem
 
 		// If a Range is attached to the Text, use the closest element ancestor.
 		if ( isText( parent ) ) {
-			parent = getParentElement( parent ) as HTMLElement;
+			parent = getLayoutParentElement( parent ) as HTMLElement;
 		}
 
 		return parent;
 	} else {
-		return getParentElement( elementOrRange ) as HTMLElement;
+		return getLayoutParentElement( elementOrRange ) as HTMLElement;
 	}
 }
 

@@ -1008,6 +1008,57 @@ describe( 'AbstractHandler', () => {
 			innerScrollableAncestor.remove();
 			innerElement.remove();
 		} );
+
+		// Builds a host whose shadow root wraps a scrollable frame around a `<slot>`, with `slottedElement` as a
+		// light DOM child of the host: it renders inside the frame while staying a child of the host in the node
+		// tree, so only a walk over the flattened tree reaches the frame.
+		function createSlottedComposition( mode ) {
+			const host = global.document.createElement( 'div' );
+			const scrollableFrame = global.document.createElement( 'div' );
+			const slottedElement = global.document.createElement( 'div' );
+
+			scrollableFrame.style.overflow = 'scroll';
+			scrollableFrame.style.width = '100px';
+			scrollableFrame.style.height = '100px';
+			scrollableFrame.appendChild( global.document.createElement( 'slot' ) );
+
+			slottedElement.style.width = '400px';
+			slottedElement.style.height = '400px';
+
+			host.attachShadow( { mode } ).appendChild( scrollableFrame );
+			global.document.body.appendChild( host );
+			host.appendChild( slottedElement );
+
+			scrollableFrame.scrollTo( 30, 50 );
+
+			return { host, scrollableFrame, slottedElement };
+		}
+
+		it( 'should save a scrollable element the element is slotted into', () => {
+			const { host, scrollableFrame, slottedElement } = createSlottedComposition( 'open' );
+
+			abstractHandler._saveAncestorsScrollPositions( slottedElement );
+
+			expect( abstractHandler._savedAncestorsScrollPositions.has( scrollableFrame ) ).toBe( true );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( scrollableFrame ).scrollLeft ).toBeCloseTo( 30, 0 );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( scrollableFrame ).scrollTop ).toBeCloseTo( 50, 0 );
+
+			host.remove();
+		} );
+
+		it( 'should not save a scrollable element behind a closed shadow root, which does not expose its slot', () => {
+			const { host, scrollableFrame, slottedElement } = createSlottedComposition( 'closed' );
+
+			// `Element#assignedSlot` is null for a slot in a closed root, so the walk falls back to the node tree
+			// and never visits the frame.
+			expect( slottedElement.assignedSlot ).toBeNull();
+
+			abstractHandler._saveAncestorsScrollPositions( slottedElement );
+
+			expect( abstractHandler._savedAncestorsScrollPositions.has( scrollableFrame ) ).toBe( false );
+
+			host.remove();
+		} );
 	} );
 
 	describe( 'on _collapseLeftSidebarButton#execute', () => {

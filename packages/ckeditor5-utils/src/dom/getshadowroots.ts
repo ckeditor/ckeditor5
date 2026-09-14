@@ -8,9 +8,10 @@
  */
 
 import { isShadowRoot } from './isshadowroot.js';
+import { getLayoutParentNode } from './getlayoutparentnode.js';
 
 /**
- * Returns every shadow root the given node lives in, innermost first.
+ * Returns every shadow root the given node renders in, innermost first.
  *
  * For code that has to act on *all* the shadow boundaries above a node – attaching listeners, injecting styles –
  * rather than only the nearest one. Empty for a node in the light DOM, and one entry per boundary for a node
@@ -25,11 +26,19 @@ import { isShadowRoot } from './isshadowroot.js';
  */
 export function getShadowRoots( node: Node ): Array<ShadowRoot> {
 	const shadowRoots: Array<ShadowRoot> = [];
-	let root = node.getRootNode();
 
-	while ( isShadowRoot( root ) ) {
-		shadowRoots.push( root );
-		root = root.host.getRootNode();
+	// One ancestor at a time, rather than a hop from root to root through `getRootNode()`. A slotted node belongs
+	// to its host's tree while rendering in the tree that holds the slot, so `getRootNode()` never reports the
+	// second one. Hopping from a host straight to its own root misses it too, because `assignedSlot` sits on
+	// whichever element was assigned, and that can be an ordinary element any number of levels above the host.
+	let current: Node | null = node;
+
+	while ( current ) {
+		if ( isShadowRoot( current ) ) {
+			shadowRoots.push( current );
+		}
+
+		current = getLayoutParentNode( current );
 	}
 
 	return shadowRoots;

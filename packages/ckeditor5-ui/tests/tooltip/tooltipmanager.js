@@ -1782,6 +1782,96 @@ describe( 'TooltipManager', () => {
 			expect( unpinSpy ).not.toHaveBeenCalled();
 		} );
 	} );
+
+	describe( 'slotted content', () => {
+		let frameHost, frameRoot, frame, componentRoot, slottedEditor, pinSpy, unpinSpy;
+
+		beforeEach( async () => {
+			// A container component wrapping its `<slot>` in a scrollable element, with an editor component
+			// assigned to that slot. Both the tooltipped element and the tooltip balloon end up in the editor
+			// component's own root, which renders inside the frame while staying in the light DOM of the node
+			// tree – so only a walk over the flattened tree finds the frame above them.
+			frameHost = document.createElement( 'div' );
+			document.body.appendChild( frameHost );
+
+			frameRoot = frameHost.attachShadow( { mode: 'open' } );
+			frame = document.createElement( 'div' );
+			frame.appendChild( document.createElement( 'slot' ) );
+			frameRoot.appendChild( frame );
+
+			const componentHost = document.createElement( 'div' );
+
+			frameHost.appendChild( componentHost );
+
+			componentRoot = componentHost.attachShadow( { mode: 'open' } );
+
+			const editorElement = document.createElement( 'div' );
+
+			componentRoot.appendChild( editorElement );
+
+			slottedEditor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ Paragraph, Bold, Italic ]
+			} );
+
+			pinSpy = vi.spyOn( tooltipManager.balloonPanelView, 'pin' );
+			unpinSpy = vi.spyOn( tooltipManager.balloonPanelView, 'unpin' );
+
+			vi.useFakeTimers();
+		} );
+
+		afterEach( async () => {
+			vi.useRealTimers();
+
+			await slottedEditor?.destroy();
+			frameHost.remove();
+		} );
+
+		function pinTooltipInComponent() {
+			const button = document.createElement( 'button' );
+
+			button.dataset.ckeTooltipText = 'Slotted tooltip';
+			componentRoot.appendChild( button );
+
+			button.dispatchEvent( new MouseEvent( 'mouseenter' ) );
+			vi.advanceTimersByTime( 650 );
+
+			expect( pinSpy ).toHaveBeenCalledOnce();
+
+			unpinSpy.mockClear();
+		}
+
+		it( 'keeps the tooltip on scroll of the scrollable element the editor component is slotted into', () => {
+			pinTooltipInComponent();
+
+			// The balloon mounts into the slotted editor's body collection, so the frame renders both it and the
+			// tooltipped element – which makes the frame a common ancestor, and scrolling it must keep the
+			// tooltip, exactly as scrolling `<body>` does in the light DOM.
+			expect( slottedEditor.ui.view.body.has( tooltipManager.balloonPanelView ) ).toBe( true );
+
+			// A node-tree walk fails at both halves of this: the frame's root is not among the roots listened
+			// to, and the containment checks would both say no even if it were.
+			expect( tooltipManager._shadowRoots.has( frameRoot ) ).toBe( true );
+
+			frame.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( unpinSpy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'unpins the tooltip on scroll of an element in the frame\'s root that renders neither of them', () => {
+			const unrelatedElement = document.createElement( 'div' );
+
+			frameRoot.appendChild( unrelatedElement );
+
+			pinTooltipInComponent();
+
+			// A sibling of the frame, so it renders neither the balloon nor the tooltipped element. Only the
+			// frame itself is a common ancestor through the slot – the flattened walk has to stay as precise
+			// as the node-tree one was.
+			unrelatedElement.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( unpinSpy ).toHaveBeenCalledOnce();
+		} );
+	} );
 } );
 
 function getElementsWithTooltips( definitions ) {

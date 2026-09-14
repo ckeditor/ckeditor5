@@ -13,7 +13,7 @@ import {
 	adoptGlobalStyleSheet,
 	createElement,
 	getOverlayMountRoot,
-	getParentElement,
+	getLayoutParentElement,
 	isShadowRoot,
 	Rect,
 	trustedHtml,
@@ -1062,7 +1062,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Saves the scroll positions of all ancestors of the given element.
 	 */
 	private _saveAncestorsScrollPositions( domElement: HTMLElement ): void {
-		let element = getParentElement( domElement ) as HTMLElement | null;
+		let element = getLayoutParentElement( domElement ) as HTMLElement | null;
 
 		if ( !element ) {
 			return;
@@ -1090,7 +1090,7 @@ export class FullscreenAbstractEditorHandler {
 				} );
 			}
 
-			element = getParentElement( element ) as HTMLElement | null;
+			element = getLayoutParentElement( element ) as HTMLElement | null;
 		}
 	}
 

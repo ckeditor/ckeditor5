@@ -7,7 +7,7 @@
  * @module utils/dom/findclosestscrollableancestor
  */
 
-import { getParentElement } from './getparentelement.js';
+import { getLayoutParentElement } from './getlayoutparentelement.js';
 import { global } from './global.js';
 
 /**
@@ -22,7 +22,7 @@ import { global } from './global.js';
  * @returns First ancestor of `domElement` that is scrollable or null if such ancestor doesn't exist.
  */
 export function findClosestScrollableAncestor( domElement: HTMLElement ): HTMLElement | null {
-	let element = getParentElement( domElement ) as HTMLElement | null;
+	let element = getLayoutParentElement( domElement ) as HTMLElement | null;
 
 	if ( !element ) {
 		return null;
@@ -35,7 +35,7 @@ export function findClosestScrollableAncestor( domElement: HTMLElement ): HTMLEl
 			break;
 		}
 
-		element = getParentElement( element ) as HTMLElement | null;
+		element = getLayoutParentElement( element ) as HTMLElement | null;
 
 		if ( !element ) {
 			return null;

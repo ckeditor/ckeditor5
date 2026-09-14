@@ -11,7 +11,8 @@
  * of the editor's own editing roots, which live inside it.
  *
  * A page opts in by putting `<ck-manual-shadow-mode>` in its markup (add the `overlay-container` attribute for
- * the second control) and building its DOM root through `createEditorDomRoot()`:
+ * the second control, and `modes` to narrow the picker – see {@link ~getShadowMode}) and building its DOM root
+ * through `createEditorDomRoot()`:
  *
  * ```html
  * <ck-manual-shadow-mode overlay-container></ck-manual-shadow-mode>
@@ -70,6 +71,8 @@ const SHADOW_MODE_LABELS: Record<ShadowMode, string> = {
 	closed: 'closed shadow DOM'
 };
 
+const ALL_SHADOW_MODES = Object.keys( SHADOW_MODE_LABELS ) as Array<ShadowMode>;
+
 /* Public API ------------------------------------------------------------------------------------------- */
 
 /**
@@ -85,6 +88,11 @@ const SHADOW_MODE_LABELS: Record<ShadowMode, string> = {
  *
  * Picking a mode still overrides both, and does so suite-wide through the shared storage key, so the whole suite
  * can be swept in one mode regardless of what each page defaults to.
+ *
+ * A page that cannot be built in every mode narrows the picker with a `modes` attribute listing the ones it
+ * offers – `<ck-manual-shadow-mode modes="open closed">` on a test of web components, where a `<slot>` needs a
+ * shadow root and there is no light DOM variant to run. A mode outside that list is never returned, whichever of
+ * the three paths above suggested it.
  */
 export function getShadowMode(): ShadowMode {
 	const control = getControl();
@@ -93,16 +101,23 @@ export function getShadowMode(): ShadowMode {
 		return 'none';
 	}
 
+	const offeredModes = getOfferedModes( control );
 	const stored = localStorage.getItem( SHADOW_MODE_STORAGE_KEY );
 
-	// Only a known mode is honored on either path, so a corrupted value never reaches `attachShadow()`.
-	if ( isShadowMode( stored ) ) {
+	// Only a known mode the page offers is honored on either path, so neither a corrupted value nor a mode picked
+	// on another page – the storage key is shared by the whole suite – reaches `attachShadow()`.
+	if ( isShadowMode( stored ) && offeredModes.includes( stored ) ) {
 		return stored;
 	}
 
 	const pageDefault = control.getAttribute( 'default' );
 
-	return isShadowMode( pageDefault ) ? pageDefault : 'closed';
+	if ( isShadowMode( pageDefault ) && offeredModes.includes( pageDefault ) ) {
+		return pageDefault;
+	}
+
+	// `closed` is the strictest, so it stays the fallback wherever the page offers it.
+	return offeredModes.includes( 'closed' ) ? 'closed' : offeredModes[ 0 ];
 }
 
 export interface EditorDomRootOptions extends ShadowRootOptions {
@@ -230,6 +245,24 @@ function isShadowMode( value: string | null ): value is ShadowMode {
 }
 
 /**
+ * The modes the control offers, from its space-separated `modes` attribute, and all three when it carries none.
+ *
+ * An attribute naming nothing valid is ignored rather than honored, so a typo leaves the page working with the
+ * full picker instead of resolving to a mode nobody asked for.
+ */
+function getOfferedModes( control: Element ): Array<ShadowMode> {
+	const attribute = control.getAttribute( 'modes' );
+
+	if ( !attribute ) {
+		return ALL_SHADOW_MODES;
+	}
+
+	const modes = attribute.trim().split( /\s+/ ).filter( isShadowMode );
+
+	return modes.length ? modes : ALL_SHADOW_MODES;
+}
+
+/**
  * The `<ck-manual-shadow-mode>` the page opted in with, optionally required to carry the given attribute, or
  * `null`. Both settings are gated on this: a page that renders no control must not be pushed into a mode nobody on
  * that page can see or change – which is what would otherwise happen through the shared storage keys, after
@@ -335,7 +368,7 @@ class ManualShadowModeElement extends HTMLElement {
 		const select = document.createElement( 'select' );
 		const currentMode = getShadowMode();
 
-		for ( const mode of Object.keys( SHADOW_MODE_LABELS ) as Array<ShadowMode> ) {
+		for ( const mode of getOfferedModes( this ) ) {
 			const option = document.createElement( 'option' );
 
 			option.value = mode;
@@ -458,9 +491,17 @@ function syncStyles( shadowRoot: ShadowRoot, options: ShadowRootOptions ): void 
  * disables the document-level copies, so whatever is mounted there is styled only through the adopted sheets.
  * That is what makes these tests prove the theme works with no light-DOM copy to fall back on.
  *
+ * {@link ~createEditorDomRoot}, {@link ~wrapInShadowRoot} and {@link ~getOverlayConfig} already do this for the
+ * roots they build. Call it directly where the page attaches a root itself instead of taking one from those – a
+ * web component's own shadow root, typically, which it has to attach in `connectedCallback()`. Such a component
+ * is free to read {@link ~getShadowMode} for the mode to attach in.
+ *
+ * It replaces `shadowRoot.adoptedStyleSheets` wholesale, so a component that also styles its own tree either
+ * appends a `<style>` to the root or keeps those rules in the document, where they reach its host.
+ *
  * Safe to call for every shadow root that should be styled, including more than once for the same one.
  */
-function forwardStyles( shadowRoot: ShadowRoot, options: ShadowRootOptions ): void {
+export function forwardStyles( shadowRoot: ShadowRoot, options: ShadowRootOptions = {} ): void {
 	styledShadowRoots.set( shadowRoot, options );
 
 	syncStyles( shadowRoot, options );

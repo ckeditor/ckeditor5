@@ -92,4 +92,71 @@ describe( 'getShadowRoots()', () => {
 
 		expect( getShadowRoots( element ) ).toEqual( [ rootA ] );
 	} );
+
+	describe( 'slotted content', () => {
+		it( 'should include the root holding the slot a node renders in', () => {
+			const host = attach( document.createElement( 'div' ) );
+			const root = host.attachShadow( { mode: 'open' } );
+			const element = document.createElement( 'div' );
+
+			root.appendChild( document.createElement( 'slot' ) );
+			host.appendChild( element );
+
+			expect( getShadowRoots( element ) ).toEqual( [ root ] );
+		} );
+
+		it( 'should include that root when a plain element sits between the slot and the inner host', () => {
+			const outerHost = attach( document.createElement( 'div' ) );
+			const outerRoot = outerHost.attachShadow( { mode: 'open' } );
+
+			outerRoot.appendChild( document.createElement( 'slot' ) );
+
+			// The wrapper is what the slot assigns, so `assignedSlot` is null on the inner host below it.
+			// A walk that hops straight from a host to its own root skips the outer root entirely.
+			const wrapper = document.createElement( 'div' );
+			const innerHost = document.createElement( 'div' );
+			const innerRoot = innerHost.attachShadow( { mode: 'open' } );
+			const element = document.createElement( 'div' );
+
+			innerRoot.appendChild( element );
+			wrapper.appendChild( innerHost );
+			outerHost.appendChild( wrapper );
+
+			expect( innerHost.assignedSlot ).toBe( null );
+			expect( getShadowRoots( element ) ).toEqual( [ innerRoot, outerRoot ] );
+		} );
+
+		it( 'should include every root a node renders in through nested slots', () => {
+			const outerHost = attach( document.createElement( 'div' ) );
+			const outerRoot = outerHost.attachShadow( { mode: 'open' } );
+
+			outerRoot.appendChild( document.createElement( 'slot' ) );
+
+			const middleHost = document.createElement( 'div' );
+			const middleRoot = middleHost.attachShadow( { mode: 'open' } );
+
+			middleRoot.appendChild( document.createElement( 'slot' ) );
+			outerHost.appendChild( middleHost );
+
+			const innerHost = document.createElement( 'div' );
+			const innerRoot = innerHost.attachShadow( { mode: 'open' } );
+			const element = document.createElement( 'div' );
+
+			innerRoot.appendChild( element );
+			middleHost.appendChild( innerHost );
+
+			expect( getShadowRoots( element ) ).toEqual( [ innerRoot, middleRoot, outerRoot ] );
+		} );
+
+		it( 'should not include the root holding the slot when that root is closed', () => {
+			const host = attach( document.createElement( 'div' ) );
+			const root = host.attachShadow( { mode: 'closed' } );
+			const element = document.createElement( 'div' );
+
+			root.appendChild( document.createElement( 'slot' ) );
+			host.appendChild( element );
+
+			expect( getShadowRoots( element ) ).toEqual( [] );
+		} );
+	} );
 } );

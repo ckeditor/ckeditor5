@@ -7,7 +7,7 @@
  * @module utils/dom/containsnode
  */
 
-import { getParentNode } from './getparentnode.js';
+import { getLayoutParentNode } from './getlayoutparentnode.js';
 
 /**
  * Checks whether `node` is inside `container`, looking through shadow roots on the way.
@@ -30,7 +30,7 @@ export function containsNode( container: Node, node: Node | null ): boolean {
 			return true;
 		}
 
-		current = getParentNode( current );
+		current = getLayoutParentNode( current );
 	}
 
 	return false;

@@ -788,6 +788,51 @@ describe( 'BalloonPanelView', () => {
 				expect( view.left ).toBe( OFF_THE_SCREEN_POSITION );
 			} );
 		} );
+
+		it( 'compensates for the positioned frame the balloon renders inside when it is slotted', () => {
+			// The composition of the `shadow-slotted` manual test: the overlay layer mounts into a component root
+			// that is assigned to a `<slot>` inside a positioned frame, so the balloon is laid out against that
+			// frame while staying in the light DOM of the node tree.
+			mockBoundingBox( target, {
+				top: 200,
+				left: 100,
+				width: 100,
+				height: 100
+			} );
+
+			// First in the light DOM, where there is no positioned ancestor, so `#top` and `#left` are the
+			// viewport coordinates the positioning engine computed.
+			view.attachTo( { target } );
+
+			const viewportTop = view.top;
+			const viewportLeft = view.left;
+
+			const host = document.createElement( 'div' );
+			const frame = document.createElement( 'div' );
+
+			frame.style.position = 'relative';
+			frame.appendChild( document.createElement( 'slot' ) );
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+			document.body.appendChild( host );
+			host.appendChild( view.element );
+
+			mockBoundingBox( frame, {
+				top: 60,
+				left: 40,
+				width: 400,
+				height: 400
+			} );
+
+			view.attachTo( { target } );
+
+			// `#top` and `#left` are `position: absolute` coordinates, so the same spot on the screen is now
+			// expressed relative to the frame's box. Over the node tree the frame is never found and the balloon
+			// keeps the viewport coordinates, which renders it one frame offset too low and too far right.
+			expect( view.top ).toBe( viewportTop - 60 );
+			expect( view.left ).toBe( viewportLeft - 40 );
+
+			host.remove();
+		} );
 	} );
 
 	describe( 'pin() and unpin()', () => {
@@ -1939,6 +1984,70 @@ describe( 'BalloonPanelView', () => {
 
 			// Still once: `#_stopPinning` must have detached the shadow-root listener along with the
 			// `document` one.
+			expect( attachToSpy ).toHaveBeenCalledOnce();
+		} );
+
+		it( 'keeps the balloon pinned when the scrollable element the target is slotted into scrolls', () => {
+			// A container component wrapping its `<slot>` in a scrollable element, with the component holding the
+			// balloon's target assigned to that slot. Assigning a node to a slot does not move it, so the target
+			// keeps living in the light DOM while rendering – and scrolling – inside the frame's shadow tree.
+			host = document.createElement( 'div' );
+			document.body.appendChild( host );
+
+			const frameRoot = host.attachShadow( { mode: 'open' } );
+
+			targetParent = document.createElement( 'div' );
+			targetParent.appendChild( document.createElement( 'slot' ) );
+			frameRoot.appendChild( targetParent );
+
+			const targetHost = document.createElement( 'div' );
+
+			host.appendChild( targetHost );
+
+			target = document.createElement( 'div' );
+			targetHost.attachShadow( { mode: 'open' } ).appendChild( target );
+
+			view.pin( { target } );
+
+			expect( attachToSpy ).toHaveBeenCalledOnce();
+
+			// This fails twice over on a node-tree walk: `frameRoot` is not among the roots the listener is
+			// attached to, and the containment check would say the scrolled element does not hold the target
+			// even if it were.
+			targetParent.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
+		} );
+
+		it( 'does not react to a scroll of a scrollable element holding a different slot of the same component', () => {
+			// Two named slots in one component, each in a scrollable element of its own – the shape of a container
+			// component with several regions. Only one of them renders the target, so the other one scrolling must
+			// not reposition the balloon: the flattened walk has to stay as precise as the node-tree one was.
+			host = document.createElement( 'div' );
+			document.body.appendChild( host );
+
+			const frameRoot = host.attachShadow( { mode: 'open' } );
+			const otherFrame = document.createElement( 'div' );
+			const otherSlot = document.createElement( 'slot' );
+
+			otherSlot.setAttribute( 'name', 'other' );
+			otherFrame.appendChild( otherSlot );
+
+			targetParent = document.createElement( 'div' );
+			targetParent.appendChild( document.createElement( 'slot' ) );
+
+			frameRoot.appendChild( targetParent );
+			frameRoot.appendChild( otherFrame );
+
+			target = document.createElement( 'div' );
+			host.appendChild( target );
+
+			view.pin( { target } );
+
+			expect( attachToSpy ).toHaveBeenCalledOnce();
+
+			otherFrame.dispatchEvent( new Event( 'scroll' ) );
+
 			expect( attachToSpy ).toHaveBeenCalledOnce();
 		} );
 	} );

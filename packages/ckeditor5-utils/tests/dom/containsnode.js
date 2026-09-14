@@ -147,4 +147,76 @@ describe( 'containsNode()', () => {
 
 		expect( containsNode( document, detachedChild ) ).toBe( false );
 	} );
+
+	describe( 'slotted content', () => {
+		it( 'should return true for an element rendering inside the container through a slot', () => {
+			const host = attach( document.createElement( 'div' ) );
+			const root = host.attachShadow( { mode: 'open' } );
+			const frame = document.createElement( 'div' );
+			const element = document.createElement( 'div' );
+
+			frame.appendChild( document.createElement( 'slot' ) );
+			root.appendChild( frame );
+			host.appendChild( element );
+
+			expect( containsNode( frame, element ) ).toBe( true );
+		} );
+
+		it( 'should still return true for the host itself, which the flattened walk also reaches', () => {
+			const host = attach( document.createElement( 'div' ) );
+			const root = host.attachShadow( { mode: 'open' } );
+			const element = document.createElement( 'div' );
+
+			root.appendChild( document.createElement( 'slot' ) );
+			host.appendChild( element );
+
+			expect( containsNode( host, element ) ).toBe( true );
+		} );
+
+		it( 'should return true through a slot assigned to an outer slot', () => {
+			const outerHost = attach( document.createElement( 'div' ) );
+			const outerRoot = outerHost.attachShadow( { mode: 'open' } );
+			const frame = document.createElement( 'div' );
+
+			frame.appendChild( document.createElement( 'slot' ) );
+			outerRoot.appendChild( frame );
+
+			const middleHost = document.createElement( 'div' );
+			const middleRoot = middleHost.attachShadow( { mode: 'open' } );
+
+			middleRoot.appendChild( document.createElement( 'slot' ) );
+			outerHost.appendChild( middleHost );
+
+			const element = document.createElement( 'div' );
+
+			middleHost.appendChild( element );
+
+			expect( containsNode( frame, element ) ).toBe( true );
+		} );
+
+		it( 'should return true for the shadow root a slotted node renders in, as the container', () => {
+			const host = attach( document.createElement( 'div' ) );
+			const root = host.attachShadow( { mode: 'open' } );
+			const element = document.createElement( 'div' );
+
+			root.appendChild( document.createElement( 'slot' ) );
+			host.appendChild( element );
+
+			// A `ShadowRoot` is a supported container, and the walk steps onto it on the way out.
+			expect( containsNode( root, element ) ).toBe( true );
+		} );
+
+		it( 'should return false for a container in a closed root, which does not expose its slot', () => {
+			const host = attach( document.createElement( 'div' ) );
+			const root = host.attachShadow( { mode: 'closed' } );
+			const frame = document.createElement( 'div' );
+			const element = document.createElement( 'div' );
+
+			frame.appendChild( document.createElement( 'slot' ) );
+			root.appendChild( frame );
+			host.appendChild( element );
+
+			expect( containsNode( frame, element ) ).toBe( false );
+		} );
+	} );
 } );
