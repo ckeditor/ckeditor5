@@ -190,11 +190,6 @@ export class MyComponent {
 </button>
 ```
 
-<!-- TODO (https://github.com/ckeditor/ckeditor5-commercial/issues/11304): the Watchdog is gone, so the
-error handling described here still has to explain that a crashed editor is no longer restarted and what an
-integrator should do instead, and the shared-context guidance that the removed `watchdog` input carried needs
-a replacement. Only the removed API was stripped here. -->
-
 ### `disableTwoWayDataBinding`
 
 Allows disabling the two-way data binding mechanism. The default value is `false`.
@@ -265,6 +260,10 @@ Fired when the editor crashes.
 <info-box>
 	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
 </info-box>
+
+A reported error does not stop the editor. It keeps working, with its content, selection, and undo history intact. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.
+
+The {@link getting-started/setup/error-handling error handling} guide covers the options: telling the user and switching the editor to read-only, recreating it, and recovering its content. If you are moving off the Watchdog, the {@link updating/migration-from-watchdog migrating from the Watchdog} guide shows how to recreate the editor and when to do it. In Angular that check differs from the other integrations because the `error` output carries no `phase`.
 
 ## Integration with `ngModel`
 
@@ -555,6 +554,22 @@ We provide **ready-to-use integration** featuring collaborative editing in an An
 * [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
 
 It is not mandatory to build an application on top of the above samples, however, it should help you get started.
+
+### Sharing a context
+
+To share one {@link module:core/context~Context `Context`} between editors, create it yourself and pass it in the editor configuration:
+
+```angular-ts
+this.context = await MyEditor.Context.create( {
+	// The context configuration.
+} );
+
+this.config = { context: this.context };
+```
+
+The context is yours, so destroy it when you are done with it.
+
+Hold the editors back until the context is ready, with `*ngIf="config"` on the `<ckeditor>` element. The component reads its configuration only once, when it creates the editor. If it renders before `Context.create()` resolves, the editor gets no context, and setting the configuration later changes nothing. Errors attributed to the context rather than to one of its editors are not emitted by the component; register a callback for those with `MyEditor.Context.onEditorError()`.
 
 ### Localization
 

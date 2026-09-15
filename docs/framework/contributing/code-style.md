@@ -920,12 +920,12 @@ import { toArray } from '@ckeditor/ckeditor5-utils';
 
 However, some packages cannot import modules from CKEditor&nbsp;5 as it could lead to code duplication and errors in runtime. Hence, the rule disables this kind of import.
 
-Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
+Which packages those are is configured per project, through the `disallowedCrossImportsPackages` ESLint setting. No package is restricted by default.
 
 👎&nbsp; Examples of incorrect code for this rule:
 
 ```js
-// Assume we edit a file located in the `packages/ckeditor5-watchdog/` directory.
+// Assume we edit a file in a package the rule is configured for.
 
 import { toArray } from '@ckeditor/ckeditor5-utils';
 import { toArray } from 'ckeditor5';

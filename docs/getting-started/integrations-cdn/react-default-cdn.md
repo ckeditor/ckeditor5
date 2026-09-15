@@ -90,14 +90,14 @@ The `<CKEditor>` component supports the following properties:
 * `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
   * `phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during or after the editor/context initialization).
 
-<!-- TODO (https://github.com/ckeditor/ckeditor5-commercial/issues/11304): the Watchdog is gone, so
-`onError` still has to explain that a crashed editor is no longer restarted and what an integrator should
-do instead. Only the removed API was stripped here. The same applies to `onError` of `<CKEditorContext>` below. -->
-
 The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
 
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:core/editor/editor~Editor `Editor`} instance.
+
+A reported error does not stop the editor. It keeps working, with its content, selection, and undo history intact. Nothing is restarted and no data is restored for you, so what happens next is your application's decision. `<CKEditorContext>` has an `onError` of its own, with the same two arguments, for the errors of the context rather than of one of its editors.
+
+The {@link getting-started/setup/error-handling error handling} guide covers the options: telling the user and switching the editor to read-only, recreating it, and recovering its content. If you are moving off the Watchdog, the {@link updating/migration-from-watchdog migrating from the Watchdog} guide shows how to recreate the editor by changing the component's `key`, and when to do it.
 
 ## Context feature
 

@@ -111,14 +111,14 @@ The `useMultiRootEditor` hook supports the following properties:
   Error details is an object that contains one property:
   * `phase: 'initialization'|'runtime'` &ndash; Informs when an error has occurred (during the editor or context initialization, or after the initialization).
 
-<!-- TODO (https://github.com/ckeditor/ckeditor5-commercial/issues/11304): the Watchdog is gone, so
-`onError` still has to explain that a crashed editor is no longer restarted and what an integrator should
-do instead. Only the removed API was stripped here. -->
-
 The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
 
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} instance.
+
+A reported error does not stop the editor. It keeps working, with its content, selection, and undo history intact. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.
+
+The {@link getting-started/setup/error-handling error handling} guide covers the options: telling the user and switching the editor to read-only, recreating it, and recovering its content. If you are moving off the Watchdog, the {@link updating/migration-from-watchdog migrating from the Watchdog} guide shows how to recreate an editor created by this hook, and when to do it.
 
 ## Hook values
 

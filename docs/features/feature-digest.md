@@ -1778,6 +1778,14 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 	</ck:card>
 </ck:columns>
 
+### Error handling
+
+Learn about the errors that escape a running editor and decide what your application does next: tell the user, switch the editor to read-only, recreate it, or recover its content from your own source.
+
+<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/error-handling}'>
+	Feature page
+</ck:button-link>
+
 ## Compliance
 
 Make your content accessible to any person or restrict it to specific users.
