@@ -5,6 +5,7 @@
 
 :root,
 :host {
+	/* content-layer: pending color palette */
 	--ck-content-color-mention-background: hsla(341, 100%, 30%, 0.1);
 	--ck-content-color-mention-text: hsl(341, 100%, 30%);
 }

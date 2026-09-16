@@ -198,9 +198,7 @@ function formatLocation( filePath, line ) {
 function isKnownUndeclaredVariable( name ) {
 	return KNOWN_UNDECLARED_VARIABLES.has( name ) ||
 		// Set from JavaScript by the show blocks feature (`showblockscommand.ts`).
-		name.startsWith( '--ck-show-blocks-label-' ) ||
-		// Optional user-defined overrides consumed by the color definitions in `_colors.css`.
-		name.startsWith( '--ck-custom-' );
+		name.startsWith( '--ck-show-blocks-label-' );
 }
 
 /**

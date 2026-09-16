@@ -6,11 +6,21 @@
 
 :root,
 :host {
-	--ck-form-default-width: 340px;
+	/* Size */
+	--ck-form-default-width: var(--ck-width-md);
+
+	/* Spacing */
+	--ck-form-padding: 0;
+	/* Bottom breathing room below the form's last child, for themes that zero the container padding. */
+	--ck-form-content-padding-bottom: var(--ck-spacing-padding-comfortable);
 }
 
 .ck.ck-form {
-	padding: 0 0 var(--ck-spacing-large);
+	padding: var(--ck-form-padding);
+
+	& > *:last-child {
+		padding-bottom: var(--ck-form-content-padding-bottom);
+	}
 
 	&.ck-form_default-width {
 		width: var(--ck-form-default-width);
@@ -31,7 +41,7 @@
 
 		& .ck-dropdown__button {
 			&:not(:focus) {
-				border: 1px solid var(--ck-color-base-border);
+				border: var(--ck-border-control);
 			}
 
 			& .ck-button__label {
@@ -52,7 +62,7 @@
 
 				> .ck {
 					@media screen and (max-width: 600px) {
-						margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+						margin: var(--ck-spacing-gap-comfortable) var(--ck-spacing-gap-comfortable) 0;
 					}
 				}
 
@@ -65,7 +75,7 @@
 
 			&.ck-form__row_large-bottom-padding {
 				@media screen and (max-width: 600px) {
-					padding-bottom: var(--ck-spacing-large);
+					padding-bottom: var(--ck-spacing-padding-comfortable);
 				}
 			}
 		}

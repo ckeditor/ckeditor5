@@ -281,7 +281,6 @@ describe( 'scripts/check-css-variables', () => {
 				'ckeditor5-example': {
 					'index-editor.css': [
 						'.ck.ck-example {',
-						'	color: var(--ck-custom-background);',
 						'	width: var(--ck-block-toolbar-size);',
 						'}',
 						''

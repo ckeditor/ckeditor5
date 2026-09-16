@@ -5,6 +5,7 @@
 
 :root,
 :host {
+	/* Size */
 	--ck-menu-bar-menu-item-min-width: 18em;
 }
 

@@ -3,10 +3,29 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Spacing */
+	--ck-color-selector-padding: var(--ck-spacing-padding-compact);
+	--ck-color-selector-grids-fragment-padding: var(--ck-spacing-padding-compact);
+	--ck-color-selector-color-picker-padding: var(--ck-spacing-padding-compact);
+	--ck-color-selector-action-bar-padding: 0 8px 8px;
+
+	/* Radius */
+	/* Uniform (fully rounded) corners by default; set this to initial to restore the attached-corner (squared connecting edge) look, as the legacy theme does. */
+	--ck-color-selector-uniform-border-radius: var(--ck-border-radius-uniform);
+
+	/* Border */
+	--ck-color-selector-color-picker-border-top: var(--ck-border-divider);
+}
 
 .ck.ck-color-selector {
+	padding: var(--ck-color-selector-padding);
+
 	/* View fragment with color grids. */
 	& .ck-color-grids-fragment {
+		padding: var(--ck-color-selector-grids-fragment-padding);
+
 		& .ck-button.ck-color-selector__remove-color,
 		& .ck-button.ck-color-selector__color-picker {
 			width: 100%;
@@ -19,45 +38,44 @@
 		}
 
 		& .ck-button.ck-color-selector__color-picker {
-			padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
+			padding: calc(var(--ck-spacing-control-padding-inline) / 2) var(--ck-spacing-control-padding-inline);
+			border-radius: var(--ck-color-selector-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
 
 			&:not(:focus) {
-				border-top: 1px solid var(--ck-color-base-border);
+				border-top: var(--ck-color-selector-color-picker-border-top);
 			}
 
 			& .ck.ck-icon {
 				[dir="ltr"] & {
-					margin-right: var(--ck-spacing-standard);
+					margin-right: var(--ck-spacing-control-padding-inline);
 				}
 
 				[dir="rtl"] & {
-					margin-left: var(--ck-spacing-standard);
+					margin-left: var(--ck-spacing-control-padding-inline);
 				}
 			}
 		}
 
 		& label.ck.ck-color-grid__label {
-			font-weight: unset;
+			font-weight: var(--ck-font-weight-ui-inherit);
 		}
 	}
 
 	/* View fragment with a color picker. */
 	& .ck-color-picker-fragment {
 		& .ck.ck-color-picker {
-			padding: 8px;
+			padding: var(--ck-color-selector-color-picker-padding);
 
 			& .hex-color-picker {
 				height: 100px;
 				min-width: 180px;
 
 				&::part(saturation) {
-					border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+					border-radius: var(--ck-border-radius-surface) var(--ck-border-radius-surface) 0 0;
 				}
 
 				&::part(hue) {
-					border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
+					border-radius: 0 0 var(--ck-border-radius-surface) var(--ck-border-radius-surface);
 				}
 
 				&::part(saturation-pointer),
@@ -69,7 +87,7 @@
 		}
 
 		& .ck.ck-color-selector_action-bar {
-			padding: 0 8px 8px;
+			padding: var(--ck-color-selector-action-bar-padding);
 			display: flex;
 			flex-direction: row;
 			justify-content: space-around;
@@ -80,7 +98,4 @@
 			}
 		}
 	}
-	/* View fragment with color grids. */
-
-	/* View fragment with a color picker. */
 }

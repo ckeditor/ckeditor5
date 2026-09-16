@@ -3,6 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	--ck-fullscreen-editor-top-margin: 28px;
+	--ck-fullscreen-editor-bottom-margin: 28px;
+	--ck-fullscreen-editable-shadow: none;
+	--ck-fullscreen-left-sidebar-avatar-size: 32px;
+
+	/* Radius of the fullscreen editable "page", controllable separately from the editor frame radius. */
+	--ck-fullscreen-editable-border-radius: var(--ck-radius-md);
+}
+
 /*
  * Increase z-index of everything to make sure nothing sticks in front of the editor.
  *
@@ -16,9 +27,15 @@ body.ck-fullscreen,
 :host(.ck-fullscreen) {
 	--ck-z-fullscreen: 10000;
 
-	--ck-z-default: calc(var(--ck-z-fullscreen) + 1);
-	--ck-z-panel: calc(var(--ck-z-default) + 999);
-	--ck-z-dialog: 100000;
+	overflow: hidden;
+
+	/* Override both legacy and new z-index tokens for fullscreen mode. */
+	--ck-z-default: calc(var(--ck-z-fullscreen) + 1); /* legacy */
+	--ck-z-base: calc(var(--ck-z-fullscreen) + 1);
+	--ck-z-panel: calc(var(--ck-z-default) + 999); /* legacy */
+	--ck-z-overlay: calc(var(--ck-z-default) + 999);
+	--ck-z-dialog: 100000; /* legacy */
+	--ck-z-modal: 100000;
 
 	& .ck-pagination-view-line {
 		z-index: calc(var(--ck-z-fullscreen) + 1);
@@ -27,6 +44,18 @@ body.ck-fullscreen,
 	& .page-break__label {
 		/* Needs to be higher than for .ck-pagination-view-line to be displayed on top of the line. */
 		z-index: calc(var(--ck-z-fullscreen) + 2);
+	}
+
+	& .ck .ck-thread__header {
+		& .ck-context {
+			&.overlay {
+				z-index: calc(var(--ck-z-fullscreen) + 2);
+			}
+		}
+	}
+
+	& .ck-source-editing-area textarea {
+		border-radius: var(--ck-source-editing-area-border-radius);
 	}
 }
 
@@ -81,7 +110,8 @@ Fullscreen layout:
 		border-top: 1px solid var(--ck-color-base-border);
 		border-left: 1px solid var(--ck-color-base-border);
 		border-right: 1px solid var(--ck-color-base-border);
-		border-radius: var(--ck-border-radius) 0;
+		/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+		border-radius: var(--ck-border-radius, var(--ck-radius-base)) 0;
 	}
 }
 
@@ -89,15 +119,13 @@ Fullscreen layout:
 	border: none;
 }
 
-.ck.ck-fullscreen__toolbar .ck-toolbar {
+.ck.ck-fullscreen__toolbar > .ck-toolbar {
 	border-left: 0;
 	border-right: 0;
 	border-radius: 0;
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable-wrapper {
-	--ck-fullscreen-editor-top-margin: 28px;
-	--ck-fullscreen-editor-bottom-margin: 28px;
 	display: flex;
 	justify-content: flex-start;
 	overflow: auto;
@@ -128,8 +156,9 @@ Fullscreen layout:
 	margin: 0;
 	padding: 20mm 12mm;
 	border: 1px var(--ck-color-base-border) solid;
-	background: hsl(0, 0%, 100%);
-	box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.078);
+	background: var(--ck-color-base-background);
+	box-shadow: var(--ck-fullscreen-editable-shadow);
+	border-radius: var(--ck-fullscreen-editable-border-radius);
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable .ck-source-editing-area {
@@ -143,8 +172,9 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__left-sidebar {
-	font-family: Helvetica, Arial, sans-serif;
-	--ck-user-avatar-size: 28px;
+	--ck-user-avatar-size: var(--ck-fullscreen-left-sidebar-avatar-size);
+	--ck-user-name-font-size: 1em;
+
 	position: sticky;
 	align-self: flex-start;
 	top: 0;
@@ -158,12 +188,11 @@ Fullscreen layout:
 
 	& .ck-button.ck-fullscreen__left-sidebar-toggle-button {
 		--ck-icon-size: 20px;
-		--ck-ui-component-min-height: 0px;
+		--ck-size-control-min-height: 0px;
 
 		align-self: flex-start;
-		padding-top: 0;
 		margin-top: var(--ck-fullscreen-editor-top-margin);
-		margin-bottom: var(--ck-spacing-large);
+		margin-bottom: var(--ck-spacing-large, var(--ck-spacing-lg));
 		opacity: 0.5;
 		border-radius: 100%;
 	}
@@ -199,8 +228,8 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__left-sidebar-item {
-	padding: var(--ck-spacing-medium);
-	margin-bottom: var(--ck-spacing-medium);
+	padding: var(--ck-spacing-medium, var(--ck-spacing-md));
+	margin-bottom: var(--ck-spacing-medium, var(--ck-spacing-md));
 
 	/* First header should not have top padding. */
 	&:first-child {
@@ -232,7 +261,7 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__presence-list {
-	margin-top: var(--ck-spacing-medium);
+	margin-top: var(--ck-spacing-medium, var(--ck-spacing-md));
 }
 
 .ck-fullscreen__left-sidebar-item--no-margin {

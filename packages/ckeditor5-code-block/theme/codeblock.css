@@ -5,7 +5,7 @@
 
 :root,
 :host {
-	--ck-color-code-block-label-background: hsl(0, 0%, 46%);
+	--ck-color-code-block-label-background: var(--ck-color-base-text-light);
 }
 
 .ck.ck-editor__editable pre[data-language]::after {
@@ -14,6 +14,7 @@
 	top: -1px;
 	right: 10px;
 	background: var(--ck-color-code-block-label-background);
+	border-radius: var(--ck-widget-label-border-radius);
 
 	font-size: 10px;
 	font-family: var(--ck-font-face);

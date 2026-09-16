@@ -1,7 +1,7 @@
 {
 	"Emoji": "Toolbar button tooltip for the Emoji feature.",
 	"Show all emoji...": "Dropdown option label for opening an emoji picker offering more results to choose from.",
-	"Find an emoji (min. 2 characters)": "Label of an input field for filtering an emoji collection by the typed value.",
+	"Find an emoji": "Label of an input field for filtering an emoji collection by the typed value.",
 	"No emojis were found matching \"%0\".": "The main text of the message shown to the user when no emoji are available for the search criteria.",
 	"Keep on typing to see the emoji.": "The main text of the message shown to the user when the provided search query does not contain the required number of characters.",
 	"The query must contain at least two characters.": "The secondary text of the message shown to the user to explain how many characters the search query must consist of.",

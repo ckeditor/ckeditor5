@@ -6,17 +6,19 @@
 
 :root,
 :host {
-	--ck-accessibility-help-dialog-max-width: 600px;
+	/* Size */
 	--ck-accessibility-help-dialog-max-height: 400px;
-	--ck-accessibility-help-dialog-border-color: hsl(220, 6%, 81%);
-	--ck-accessibility-help-dialog-code-background-color: hsl(0deg 0% 92.94%);
-	--ck-accessibility-help-dialog-kbd-shadow-color: hsl(0deg 0% 61%);
+	--ck-accessibility-help-dialog-max-width: 600px;
+	--ck-accessibility-help-dialog-item-divider-width: 1px;
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {
-	padding: var(--ck-spacing-large);
+	margin: var(--ck-dialog-content-padding);
+	padding: var(--ck-spacing-padding-comfortable);
 	max-width: var(--ck-accessibility-help-dialog-max-width);
 	max-height: var(--ck-accessibility-help-dialog-max-height);
+	border: var(--ck-border-control);
+	border-radius: var(--ck-input-border-radius);
 	overflow: auto;
 	/*
 	 * `-webkit-user-select` is included to match the ancestor `.ck-dialog-overlay`'s own
@@ -26,12 +28,13 @@
 	-webkit-user-select: text;
 	user-select: text;
 
-	border: 1px solid transparent;
+	/* border: 1px solid transparent; */
 
 	&:focus {
 		outline: none;
-		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-focus-outer-shadow), 0 0;
+		border-color: var(--ck-focus-border-color);
+		/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow if overridden. */
+		box-shadow: var(--ck-focus-outer-shadow, var(--ck-focus-shadow)), 0 0;
 	}
 
 	* {
@@ -44,12 +47,12 @@
 	}
 
 	& h3 {
-		font-weight: bold;
+		font-weight: var(--ck-font-weight-ui-heading);
 		font-size: 1.2em;
 	}
 
 	& h4 {
-		font-weight: bold;
+		font-weight: var(--ck-font-weight-ui-heading);
 		font-size: 1em;
 	}
 
@@ -60,14 +63,21 @@
 		margin: 1em 0;
 	}
 
+	& > p:first-child {
+		margin-top: 0;
+	}
+
 	& dl {
+		/* Used for third value fallback. */
+		--ck-divider-border-color: var(--ck-color-divider, hsl(220, 6%, 81%));
+
 		display: grid;
 		grid-template-columns: 2fr 1fr;
-		border-top: 1px solid var(--ck-accessibility-help-dialog-border-color);
+		border-top: var(--ck-accessibility-help-dialog-item-divider-width) solid var(--ck-divider-border-color);
 		border-bottom: none;
 
 		& dt, & dd {
-			border-bottom: 1px solid var(--ck-accessibility-help-dialog-border-color);
+			border-bottom: var(--ck-accessibility-help-dialog-item-divider-width) solid var(--ck-divider-border-color);
 			padding: .4em 0;
 		}
 
@@ -83,7 +93,7 @@
 
 	& kbd, & code {
 		display: inline-block;
-		background: var(--ck-accessibility-help-dialog-code-background-color);
+		background: var(--ck-accessibility-help-dialog-code-background-color, hsl(0deg 0% 92.94%));
 		padding: .4em;
 		vertical-align: middle;
 		line-height: 1;
@@ -98,7 +108,7 @@
 
 	& kbd {
 		min-width: 1.8em;
-		box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color);
+		box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color, hsl(0deg 0% 61%));
 		margin: 0 1px;
 
 		& + kbd {

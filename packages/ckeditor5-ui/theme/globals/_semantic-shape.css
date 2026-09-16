@@ -1,0 +1,42 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root,
+:host {
+	--ck-border-width-control: var(--ck-border-width-thin);
+	--ck-border-width-surface: var(--ck-border-width-thin);
+	--ck-border-width-divider: var(--ck-border-width-thin);
+	--ck-border-width-emphasis: var(--ck-border-width-thick);
+
+	/* Border shorthands (width + style + color). */
+	--ck-border-control: var(--ck-border-width-control) solid var(--ck-color-border-control);
+	--ck-border-surface: var(--ck-border-width-surface) solid var(--ck-color-border-container);
+	--ck-border-divider: 0;
+
+	/* Semantic radii for interactive controls (buttons, inputs, toggles). */
+	--ck-border-radius-control: var(--ck-radius-md);
+	/* Tighter radius for small-variant controls. */
+	--ck-border-radius-control-small: var(--ck-radius-sm);
+
+	/* Semantic radii for elevated surfaces (dropdowns, panels, dialogs, toolbars). */
+	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+	--ck-border-radius-surface: var(--ck-border-radius, var(--ck-radius-base));
+
+	/* Uniform radius for attached surfaces (panels, dropdowns, menus, toolbars). Defaults to a real
+	 * radius, so those surfaces render fully rounded. Set to `initial` to restore the attached-corner
+	 * look — `initial` is a guaranteed-invalid value, so consumers fall back to their per-corner radii. */
+	--ck-border-radius-uniform: var(--ck-radius-base);
+
+	/* Radius for attached surfaces where one edge touches trigger/control. */
+	--ck-border-radius-surface-attached: var(--ck-border-radius-surface);
+	--ck-border-radius-surface-attached-top: 0 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-attached-bottom: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0 0;
+
+	/* Radius with one corner cut for positioned attached surfaces. */
+	--ck-border-radius-surface-cut-top-left: 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-cut-top-right: var(--ck-border-radius-surface-attached) 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-cut-bottom-right: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0 var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-cut-bottom-left: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0;
+}

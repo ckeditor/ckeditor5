@@ -6,18 +6,11 @@
 
 :root,
 :host {
-	--ck-link-panel-width: 340px;
+	--ck-link-panel-width: var(--ck-width-balloon-form);
 	/* The height of the text inside the link providers list button. */
 	--ck-link-provider-list-item-text-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
 	/* The height of the link providers list item contained paddings. */
-	--ck-link-provider-list-item-height: calc(var(--ck-link-provider-list-item-text-height) + var(--ck-spacing-small) + var(--ck-spacing-small));
-}
-
-@media screen and (max-width: 600px) {
-	:root,
-	:host {
-		--ck-link-panel-width: 300px;
-	}
+	--ck-link-provider-list-item-height: calc(var(--ck-link-provider-list-item-text-height) + var(--ck-spacing-small, var(--ck-spacing-sm)) + var(--ck-spacing-small, var(--ck-spacing-sm)));
 }
 
 /* Generic class that wraps each link balloon view. */
@@ -37,20 +30,32 @@
 	& .ck-link-form__providers-list {
 		display: flex;
 		flex-direction: column;
-		border-top: 1px solid var(--ck-color-base-border);
+		position: relative;
+
+		/* Full-width divider drawn as an overlay so the panel's rounded corners
+		don't clip its ends like a real top border would. */
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 0;
+			border-top: var(--ck-border-divider);
+		}
 
 		/* The list should be scrollable when there are more than 4 items. */
 		&:has(.ck-list__item:nth-child(n + 5)) {
 			overflow: auto;
 			/* Scroll should appear when there are more than 5 item on the list.
-			* var(--ck-spacing-large) - is a form padding.
+			* var(--ck-spacing-large, var(--ck-spacing-lg)) - is a form padding.
 			* 1px - is a border width. */
-			max-height: calc(var(--ck-link-provider-list-item-height) * 4 + var(--ck-spacing-large) + 1px);
+			max-height: calc(var(--ck-link-provider-list-item-height) * 4 + var(--ck-spacing-large, var(--ck-spacing-lg)) + 1px);
 		}
 
 		& .ck-link__button {
-			padding: var(--ck-spacing-small) var(--ck-spacing-large);
-			border-radius: 0;
+			padding: var(--ck-spacing-small, var(--ck-spacing-sm)) var(--ck-spacing-large, var(--ck-spacing-lg));
+			border-radius: var(--ck-button-border-radius);
 
 			& > .ck-button__label {
 				flex-grow: 1;

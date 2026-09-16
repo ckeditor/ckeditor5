@@ -3,13 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Spacing */
+	--ck-menu-bar-padding: var(--ck-spacing-padding-compact);
+	--ck-menu-bar-gap: var(--ck-spacing-gap-compact);
+}
+
 .ck.ck-menu-bar {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
-	background: var(--ck-color-base-background);
-	padding: var(--ck-spacing-small);
-	gap: var(--ck-spacing-small);
-	border: 1px solid var(--ck-color-toolbar-border);
+	background: var(--ck-color-surface-canvas);
+	padding: var(--ck-menu-bar-padding);
+	gap: var(--ck-menu-bar-gap);
+	border: var(--ck-toolbar-border);
 	width: 100%;
+
+	/* Decoupled from inherited font-size so changes don't scale icons or spacing. */
+	& .ck-button__label {
+		font-size: var(--ck-menubar-text-font-size);
+	}
 }

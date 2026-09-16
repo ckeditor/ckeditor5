@@ -38,7 +38,7 @@ export class EmojiSearchView extends View {
 
 		this.inputView = new SearchTextView( this.locale!, {
 			queryView: {
-				label: t( 'Find an emoji (min. 2 characters)' ),
+				label: t( 'Find an emoji' ),
 				creator: createLabeledInputText
 			},
 			filteredView: this.gridView,

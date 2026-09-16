@@ -10,10 +10,10 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 // there). These tests assert that contract against the real theme stylesheets, which the test runner loads
 // into the document for every test in this package.
 //
-// `--ck-border-radius` stands in for the whole theme: it is declared once, at the root scope, in
+// `--ck-radius-base` stands in for the whole theme: it is declared once, at the root scope, in
 // `theme/globals/_rounded.css`.
-const TOKEN = '--ck-border-radius';
-const THEME_VALUE = '2px';
+const TOKEN = '--ck-radius-base';
+const THEME_VALUE = '8px';
 
 describe( 'theme tokens in a shadow root', () => {
 	let host, disabledStyleSheets;

@@ -3,13 +3,72 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Spacing */
+	--ck-button-padding: var(--ck-spacing-control-padding-block);
+	/* Padding of a button with a text label. */
+	--ck-button-with-text-padding: var(--ck-spacing-padding-compact) var(--ck-spacing-padding-comfortable);
+
+	/* Typography */
+	/* Font size of the whole button: the label inherits it and the SVG icon scales with it
+	   (via em-based icon sizing). Defaults to `inherit` for fluid UI scaling.
+	   NOTE: a label-only token (e.g. --ck-button-label-font-size) may be reintroduced later
+	   if text-only sizing (without touching the icon) is needed. */
+	--ck-button-font-size: var(--ck-font-size-md);
+
+	/* Radius */
+	--ck-button-border-radius: var(--ck-border-radius-control);
+
+	/* Border */
+	--ck-button-border: var(--ck-border-width-control) solid transparent;
+
+	/* Color */
+	--ck-button-default-background-color: transparent;
+	--ck-button-default-hover-background-color: var(--ck-color-interactive-hover-surface);
+	--ck-button-default-active-background-color: var(--ck-color-interactive-active-surface);
+	--ck-button-default-disabled-background-color: transparent;
+	--ck-button-on-background-color: var(--ck-color-interactive-selected-surface);
+	--ck-button-on-hover-background-color: var(--ck-color-interactive-selected-surface-hover);
+	--ck-button-on-active-background-color: var(--ck-color-interactive-selected-surface-hover);
+	/* Intentionally hardcoded: no matching semantic disabled surface exists yet. */
+	--ck-button-on-disabled-background-color: hsl(211, 15%, 95%);
+	--ck-button-on-text-color: var(--ck-color-interactive-selected-text);
+	--ck-button-action-background-color: var(--ck-color-interactive-primary-surface);
+	--ck-button-action-hover-background-color: var(--ck-color-interactive-primary-surface-hover);
+	--ck-button-action-active-background-color: var(--ck-color-interactive-primary-surface-hover);
+	/* Intentionally hardcoded: a faded variant of the action color with no semantic equivalent yet. */
+	--ck-button-action-disabled-background-color: hsl(228, 63%, 76%);
+	--ck-button-action-text-color: var(--ck-color-interactive-primary-text);
+	--ck-button-save-color: var(--ck-color-feedback-success);
+	--ck-button-cancel-color: var(--ck-color-feedback-error);
+
+	/* State / meta */
+	--ck-button-focus-border-color: var(--ck-interactive-focus-border-color);
+	/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+	--ck-button-opacity-disabled: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
+
+	/* Minimum width for standard (form/dialog/balloon) action buttons. Defaults to the icon-button
+	   min size for backward compatibility; widened in the new theme. Opt in with .ck-button_standard. */
+	--ck-button-standard-min-width: 60px;
+
+	/* Small button variant (opt in with .ck-button_small). */
+	--ck-button-small-font-size: var(--ck-font-size-sm);
+	--ck-button-small-min-width: 40px;
+	--ck-button-small-padding: var(--ck-spacing-padding-tight) var(--ck-spacing-padding);
+	/* Padding of an icon-only small button. 3px so a 16px icon plus the 1px border lands on a 24px square. */
+	--ck-button-small-icon-padding: 3px;
+	/* Tighter corner radius for the small variant. */
+	--ck-button-small-border-radius: var(--ck-border-radius-control-small);
+}
+
 /* Use :where(a) (not plain a) to keep the anchor variant at zero specificity. */
 .ck.ck-button,
 :where(a).ck.ck-button {
-	--ck-button-background: var(--ck-color-button-default-background);
-	--ck-button-hover-background: var(--ck-color-button-default-hover-background);
-	--ck-button-active-background: var(--ck-color-button-default-active-background);
-	--ck-button-disabled-background: var(--ck-color-button-default-disabled-background);
+	--ck-button-background: var(--ck-button-default-background-color);
+	--ck-button-hover-background: var(--ck-button-default-hover-background-color);
+	--ck-button-active-background: var(--ck-button-default-active-background-color);
+	--ck-button-disabled-background: var(--ck-button-default-disabled-background-color);
 
 	background: var(--ck-button-background);
 
@@ -23,29 +82,30 @@
 		}
 	}
 
-	border-radius: var(--ck-rounded-corners-radius);
+	border-radius: var(--ck-button-border-radius);
 	white-space: nowrap;
 	cursor: default;
 	vertical-align: middle;
-	padding: var(--ck-spacing-tiny);
+	padding: var(--ck-button-padding);
 	text-align: center;
 
 	/* A very important piece of styling. Go to variable declaration to learn more. */
-	min-width: var(--ck-ui-component-min-height);
-	min-height: var(--ck-ui-component-min-height);
+	min-width: var(--ck-size-control-min-height);
+	min-height: var(--ck-size-control-min-height);
 
 	/* Normalize the height of the line. Removing this will break consistent height
 	among text and text-less buttons (with icons). */
 	line-height: 1;
 
-	/* Enable font size inheritance, which allows fluid UI scaling. */
-	font-size: inherit;
+	/* Font size of the button. Defaults to `inherit` (fluid UI scaling); the label inherits it
+	and the icon scales with it. */
+	font-size: var(--ck-button-font-size);
 
 	/* Avoid flickering when the foucs border shows up. */
-	border: 1px solid transparent;
+	border: var(--ck-button-border);
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition: box-shadow .2s ease-in-out, border .2s ease-in-out;
+	transition: var(--ck-transition-control);
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3414 */
 	-webkit-appearance: none;
@@ -57,14 +117,14 @@
 	align-items: center;
 
 	@media (prefers-reduced-motion: reduce) {
-		transition: none;
+		transition: var(--ck-transition-none);
 	}
 
 	&:active,
 	&:focus {
 		outline: none;
-		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-focus-outer-shadow), 0 0;
+		border-color: var(--ck-button-focus-border-color);
+		box-shadow: var(--ck-interactive-focus-shadow), 0 0;
 	}
 
 	/* Allow icon coloring using the text "color" property. */
@@ -76,9 +136,9 @@
 	}
 
 	& .ck-button__label {
-		/* Enable font size inheritance, which allows fluid UI scaling. */
+		/* Inherit the button's font size so label and icon scale together. */
 		font-size: inherit;
-		font-weight: inherit;
+		font-weight: var(--ck-font-weight-ui-inherit);
 		color: inherit;
 		cursor: inherit;
 
@@ -98,15 +158,15 @@
 
 	& .ck-button__keystroke {
 		color: inherit;
-
+		font-size: inherit;
 		opacity: .5;
 
 		[dir="ltr"] & {
-			margin-left: var(--ck-spacing-large);
+			margin-left: var(--ck-spacing-gap-comfortable);
 		}
 
 		[dir="rtl"] & {
-			margin-right: var(--ck-spacing-large);
+			margin-right: var(--ck-spacing-gap-comfortable);
 		}
 	}
 
@@ -117,16 +177,16 @@
 		&:active,
 		&:focus {
 			/* The disabled button should have a slightly less visible shadow when focused. */
-			box-shadow: var(--ck-focus-disabled-outer-shadow), 0 0;
+			box-shadow: var(--ck-interactive-focus-disabled-shadow), 0 0;
 		}
 
 		& .ck-button__icon {
-			opacity: var(--ck-disabled-opacity);
+			opacity: var(--ck-button-opacity-disabled);
 		}
 
 		/* https://github.com/ckeditor/ckeditor5/issues/3376 */
 		& .ck-button__label {
-			opacity: var(--ck-disabled-opacity);
+			opacity: var(--ck-button-opacity-disabled);
 		}
 
 		& .ck-button__keystroke {
@@ -135,15 +195,15 @@
 	}
 
 	&.ck-button_with-text {
-		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
+		padding: var(--ck-button-with-text-padding);
 
 		& .ck-button__icon {
 			[dir="ltr"] & {
-				margin-right: var(--ck-spacing-medium);
+				margin-right: var(--ck-spacing-control-icon-gap);
 			}
 
 			[dir="rtl"] & {
-				margin-left: var(--ck-spacing-medium);
+				margin-left: var(--ck-spacing-control-icon-gap);
 			}
 		}
 		& .ck-button__label {
@@ -157,22 +217,46 @@
 		}
 	}
 
+	/* Standard (form/dialog/balloon) action button: a comfortable minimum width. */
+	&.ck-button_standard {
+		min-width: var(--ck-button-standard-min-width);
+	}
+
+	/* Small button: smaller font, padding and min-width; height follows content. */
+	&.ck-button_small {
+		--ck-button-font-size: var(--ck-button-small-font-size);
+		/* Icon-to-font ratio tuned for the small variant (16px icon at the 12px small font).
+		   --ck-icon-size is re-declared here (not only the ratio) because it is composed on :root,
+		   where the ratio would otherwise be baked in before this override applies. */
+		--ck-icon-size-ratio: calc(16 / 12);
+		--ck-icon-size: calc(1em * var(--ck-icon-size-ratio));
+		--ck-size-control-min-height: calc(var(--ck-button-font-size) * 2);
+		--ck-button-border-radius: var(--ck-button-small-border-radius);
+
+		padding: var(--ck-button-small-icon-padding);
+
+		&.ck-button_with-text {
+			min-width: var(--ck-button-small-min-width);
+			padding: var(--ck-button-small-padding);
+		}
+	}
+
 	/* A style of the button which is currently on, e.g. its feature is active. */
 	&.ck-on {
-		--ck-button-background: var(--ck-color-button-on-background);
-		--ck-button-hover-background: var(--ck-color-button-on-hover-background);
-		--ck-button-active-background: var(--ck-color-button-on-active-background);
-		--ck-button-disabled-background: var(--ck-color-button-on-disabled-background);
+		--ck-button-background: var(--ck-button-on-background-color);
+		--ck-button-hover-background: var(--ck-button-on-hover-background-color);
+		--ck-button-active-background: var(--ck-button-on-active-background-color);
+		--ck-button-disabled-background: var(--ck-button-on-disabled-background-color);
 
-		color: var(--ck-color-button-on-color);
+		color: var(--ck-button-on-text-color);
 	}
 
 	&.ck-button-save {
-		color: var(--ck-color-button-save);
+		color: var(--ck-button-save-color);
 	}
 
 	&.ck-button-cancel {
-		color: var(--ck-color-button-cancel);
+		color: var(--ck-button-cancel-color);
 	}
 
 	[dir="ltr"] & {
@@ -187,21 +271,27 @@
 	&:not(.ck-button_with-text) {
 		justify-content: center;
 	}
+
+	/* Center the label in standard/small buttons. */
+	&.ck-button_standard,
+	&.ck-button_small {
+		justify-content: center;
+	}
 }
 
 /* A style of the button which handles the primary action. */
 
 .ck.ck-button-action,
 a.ck.ck-button-action {
-	--ck-button-background: var(--ck-color-button-action-background);
-	--ck-button-hover-background: var(--ck-color-button-action-hover-background);
-	--ck-button-active-background: var(--ck-color-button-action-active-background);
-	--ck-button-disabled-background: var(--ck-color-button-action-disabled-background);
+	--ck-button-background: var(--ck-button-action-background-color);
+	--ck-button-hover-background: var(--ck-button-action-hover-background-color);
+	--ck-button-active-background: var(--ck-button-action-active-background-color);
+	--ck-button-disabled-background: var(--ck-button-action-disabled-background-color);
 
-	color: var(--ck-color-button-action-text);
+	color: var(--ck-button-action-text-color);
 }
 
 .ck.ck-button-bold,
 a.ck.ck-button-bold {
-	font-weight: bold;
+	font-weight: var(--ck-font-weight-ui-emphasis);
 }

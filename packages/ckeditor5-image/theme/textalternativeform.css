@@ -6,14 +6,7 @@
 
 :root,
 :host {
-	--ck-text-alternative-form-width: 340px;
-}
-
-@media screen and (max-width: 600px) {
-	:root,
-	:host {
-		--ck-text-alternative-form-width: 300px;
-	}
+	--ck-text-alternative-form-width: var(--ck-width-balloon-form);
 }
 
 .ck.ck-text-alternative-form {

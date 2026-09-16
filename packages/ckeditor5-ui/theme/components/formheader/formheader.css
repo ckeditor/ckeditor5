@@ -5,14 +5,24 @@
 
 :root,
 :host {
-	--ck-form-header-height: 3.384em;
+	/* Size */
+	--ck-form-header-height: 3em;
+
+	/* Spacing */
+	--ck-form-header-padding-block: var(--ck-spacing-padding-compact);
+	--ck-form-header-padding: 12px 12px 4px 12px;
+	/* Opt-in: set to a value to override the inline-start padding of the header when the back button is visible. */
+	--ck-form-header-with-back-button-padding-inline-start: var(--ck-spacing-padding-comfortable);
+
+	/* Typography */
+	--ck-form-header-label-font-size: var(--ck-font-size-base);
 }
 
 .ck.ck-form__header {
-	padding: var(--ck-spacing-small) var(--ck-spacing-large);
+	padding: var(--ck-form-header-padding);
 	height: var(--ck-form-header-height);
 	line-height: var(--ck-form-header-height);
-	border-bottom: 1px solid var(--ck-color-base-border);
+	border-bottom: var(--ck-border-divider);
 	/* To prevent shrinking when placed in flexbox. */
 	flex-shrink: 0;
 	display: flex;
@@ -22,29 +32,27 @@
 	justify-content: space-between;
 
 	& > .ck-icon {
-		margin-inline-end: var(--ck-spacing-medium);
+		margin-inline-end: var(--ck-spacing-control-icon-gap);
 		flex-shrink: 0;
 	}
 
 	& .ck-form__header__label {
-		/* Defaults to 15px. */
-		--ck-font-size-base: 1.153em;
-
-		font-weight: bold;
+		--ck-font-size-base: var(--ck-form-header-label-font-size);
+		font-weight: var(--ck-font-weight-ui-heading);
 	}
 
 	/* Padding when back button is hidden */
-	&:has(.ck-button-back.ck-hidden) {
-		padding-inline: var(--ck-spacing-large) var(--ck-spacing-large);
-	}
+	/* &:has(.ck-button-back.ck-hidden) {
+		padding: var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-comfortable);
+	} */
 
 	/* Padding when back button is visible */
 	&:has(.ck-button-back:not(.ck-hidden)) {
-		padding-inline: var(--ck-spacing-small) var(--ck-spacing-small);
+		padding-inline-start: var(--ck-form-header-with-back-button-padding-inline-start, var(--ck-spacing-padding));
 	}
 
 	& > .ck-button-back {
-		margin-inline-end: var(--ck-spacing-small);
+		margin-inline-end: var(--ck-spacing-gap-compact);
 	}
 
 	& > .ck.ck-button {

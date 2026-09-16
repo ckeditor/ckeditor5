@@ -451,9 +451,9 @@ describe( 'Badge', () => {
 
 			const domRoot = editor.editing.view.getDomRoot();
 
-			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 10, height: 10 } );
-
-			vi.spyOn( rootRect, 'getVisible' ).mockReturnValue( null );
+			// The root's visible area is smaller than the badge balloon, so the balloon cannot fit
+			// within it and the positioning function returns `null` (the balloon is hidden).
+			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 5, height: 5 } );
 
 			focusEditor( editor );
 
@@ -483,7 +483,9 @@ describe( 'Badge', () => {
 
 			const domRoot = editor.editing.view.getDomRoot();
 
-			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 10, height: 10 } );
+			// Only a thin strip of the root is visible - shorter than the badge balloon - so the
+			// balloon is partially cropped and the positioning function returns `null` (hidden).
+			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 5, height: 5 } );
 
 			focusEditor( editor );
 

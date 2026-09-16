@@ -27,5 +27,5 @@
 	height: 100%;
 	border-right: 1px solid var(--ck-color-base-text);
 	margin-right: -1px;
-	outline: solid 1px hsla(0, 0%, 100%, .5);
+	outline: var(--ck-outline-fake-caret);
 }

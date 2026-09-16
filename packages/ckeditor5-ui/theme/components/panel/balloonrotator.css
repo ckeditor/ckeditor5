@@ -4,25 +4,26 @@
  */
 
 .ck .ck-balloon-rotator__navigation {
-	background: var(--ck-color-toolbar-background);
-	border-bottom: 1px solid var(--ck-color-toolbar-border);
-	padding: 0 var(--ck-spacing-small);
+	background: var(--ck-toolbar-background-color);
+	border-bottom: var(--ck-border-divider);
+	padding: 0 var(--ck-spacing-padding);
+	border-radius: var(--ck-balloon-panel-border-radius) var(--ck-balloon-panel-border-radius) 0 0;
 	display: flex;
 	align-items: center;
 
 	/* Let's keep similar appearance to `ck-toolbar`. */
 	& > * {
-		margin-right: var(--ck-spacing-small);
-		margin-top: var(--ck-spacing-small);
-		margin-bottom: var(--ck-spacing-small);
+		margin-right: var(--ck-spacing-gap-compact);
+		margin-top: var(--ck-spacing-gap-compact);
+		margin-bottom: var(--ck-spacing-gap-compact);
 	}
 
 	/* Gives counter more breath than buttons. */
 	& .ck-balloon-rotator__counter {
-		margin-right: var(--ck-spacing-standard);
+		margin-right: var(--ck-spacing-control-padding-inline);
 
 		/* We need to use smaller margin because of previous button's right margin. */
-		margin-left: var(--ck-spacing-small);
+		margin-left: var(--ck-spacing-gap-compact);
 	}
 	justify-content: center
 }
@@ -32,6 +33,13 @@
 	/* Disable default annotation shadow inside rotator with fake panels. */
 	& .ck.ck-annotation-wrapper {
 		box-shadow: none;
+	}
+
+	/* Disable default panel border radius inside rotator and top left/right corners radiuses. */
+	& > .ck {
+		/* border-start-start-radius: 0;
+		border-start-end-radius: 0; */
+		border: none;
 	}
 }
 

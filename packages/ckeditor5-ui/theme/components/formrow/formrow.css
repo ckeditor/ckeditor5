@@ -3,26 +3,52 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Spacing */
+	--ck-form-row-padding: var(--ck-spacing-padding-compact) var(--ck-spacing-padding-comfortable);
+	--ck-form-row-edge-padding-top: var(--ck-spacing-padding-spacious);
+	--ck-form-row-edge-padding-bottom: var(--ck-spacing-padding);
+	--ck-form-row-edge-gap-top: var(--ck-spacing-gap-comfortable);
+	--ck-form-row-edge-gap-bottom: var(--ck-spacing-gap-comfortable);
+
+	/* Typography */
+	--ck-form-row-label-font-size: var(--ck-font-size-md);
+}
+
 .ck.ck-form__row {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: flex-start;
-	padding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;
+	padding: var(--ck-form-row-padding);
+
+	/* The label/description shown above a row's labeled control(s). */
+	& > .ck-label {
+		font-size: var(--ck-form-row-label-font-size);
+	}
 
 	&.ck-form__row_large-top-padding {
-		padding-top: var(--ck-spacing-large);
+		padding-top: var(--ck-form-row-edge-padding-top);
 	}
 
 	&.ck-form__row_large-bottom-padding {
-		padding-bottom: var(--ck-spacing-large);
+		padding-bottom: var(--ck-form-row-edge-padding-bottom);
+	}
+
+	&.ck-form__row_large-top-margin {
+		margin-top: var(--ck-form-row-edge-gap-top);
+	}
+
+	&.ck-form__row_large-bottom-margin {
+		margin-bottom: var(--ck-form-row-edge-gap-bottom);
 	}
 
 	&.ck-form__row_with-submit {
 		flex-wrap: nowrap;
 
 		& > *:not(:first-child) {
-			margin-inline-start: var(--ck-spacing-standard);
+			margin-inline-start: var(--ck-spacing-padding);
 		}
 	}
 

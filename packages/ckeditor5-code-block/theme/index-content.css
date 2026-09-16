@@ -6,8 +6,8 @@
 .ck-content pre {
 	padding: 1em;
 	color: hsl(0, 0%, 20.8%);
-	background: hsla(0, 0%, 78%, 0.3);
-	border: 1px solid hsl(0, 0%, 77%);
+	background: hsl(0, 0%, 96%);
+	border: 1px solid hsl(213, 40%, 90.2%);
 	border-radius: 2px;
 
 	/* The first value should be equal to --ck-spacing-large variable if used in the editor context

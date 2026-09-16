@@ -1,0 +1,44 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root,
+:host {
+	--ck-color-base-foreground: hsl(0, 0%, 97%);
+	--ck-color-base-background: hsl(0, 0%, 100%);
+	--ck-color-base-border: hsl(213, 40%, 90.2%);
+	--ck-color-base-border-light: hsl(214, 39%, 93%);
+	--ck-color-base-action: hsl(227.7, 62.7%, 55.9%);
+	--ck-color-base-action-hover: hsl(227, 58%, 49%);
+	--ck-color-base-focus: hsl(227.7, 62.7%, 55.9%);
+	--ck-color-base-text: hsl(216, 41%, 12%);
+	--ck-color-base-text-light: hsl(215, 19%, 40%);
+	--ck-color-base-active: hsl(227.7, 62.7%, 55.9%);
+	--ck-color-base-active-focus: hsl(227, 58%, 49%);
+	--ck-color-base-hover: hsl(225, 20%, 96%);
+	--ck-color-base-selected: hsl(220, 78.9%, 96.3%);
+	--ck-color-base-selected-hover: hsl(221, 81%, 94%);
+	--ck-color-base-error: hsl(0, 74.9%, 46.9%);
+	--ck-color-base-warning: hsl(37, 81%, 50%);
+	--ck-color-base-success: hsl(157.2, 77.1%, 27.5%);
+	--ck-color-base-highlight: hsl(60, 100%, 50%);
+	--ck-color-base-attention: hsl(41.9, 86.9%, 55.1%);
+
+	--ck-color-base-focus-shadow: hsla(227.6, 63.1%, 56.5%, .22);
+	--ck-color-base-focus-shadow-faded: hsla(227.6, 63.1%, 56.5%, .10);
+	--ck-color-base-error-shadow: hsl(0, 64.3%, 94.5%);
+
+	--ck-color-shadow-drop: hsla(0, 0%, 0%, 0.125);
+	--ck-color-shadow-drop-active: hsla(0, 0%, 0%, 0.2);
+	--ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1);
+
+	/* Diff seeds — inline change markers derive their alpha variants from these (see `_semantic-diff.css`).
+	Stored as HSL triplets so the semantic layer can modulate opacity via `hsl(<triplet> / N%)`. */
+	--ck-color-base-diff-insertion: 157 80% 34%;
+	--ck-color-base-diff-deletion: 0 75% 52%;
+	--ck-color-base-diff-format: 191 60% 75%;
+
+	/* Comment marker accent (annotation family, not a diff). */
+	--ck-color-base-comment: 42.1 95.4% 57.3%;
+}

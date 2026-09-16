@@ -3,23 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck.ck-toolbar-dropdown .ck-toolbar {
-	border: 0;
-}
-
 :root,
 :host {
-	--ck-toolbar-dropdown-max-width: 60vw;
+	--ck-toolbar-dropdown-vertical-padding: var(--ck-spacing-padding-compact);
+}
+
+.ck.ck-toolbar-dropdown .ck-toolbar {
+	border: 0;
+
+	&.ck-toolbar_vertical {
+		padding: var(--ck-toolbar-dropdown-vertical-padding);
+	}
 }
 
 .ck.ck-toolbar-dropdown > .ck-dropdown__panel {
 	/* https://github.com/ckeditor/ckeditor5/issues/5586 */
 	width: max-content;
-	max-width: var(--ck-toolbar-dropdown-max-width);
+	/* Backward compatibility: falls back to legacy --ck-toolbar-dropdown-max-width if overridden. */
+	max-width: var(--ck-toolbar-dropdown-max-width, 60vw);
 
 	& .ck-button {
 		&:focus {
-			z-index: calc(var(--ck-z-default) + 1);
+			z-index: var(--ck-layer-control-raised);
 		}
 	}
 }

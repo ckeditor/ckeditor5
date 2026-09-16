@@ -6,14 +6,7 @@
 
 :root,
 :host {
-	--ck-link-properties-width: 340px;
-}
-
-@media screen and (max-width: 600px) {
-	:root,
-	:host {
-		--ck-link-properties-width: 300px;
-	}
+	--ck-link-properties-width: var(--ck-width-balloon-form);
 }
 
 .ck.ck-link-properties {

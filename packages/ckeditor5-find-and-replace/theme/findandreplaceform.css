@@ -4,8 +4,18 @@
  */
 
 
+:root,
+:host {
+	--ck-find-and-replace-form-width: var(--ck-width-dialog);
+	--ck-find-and-replace-form-replace-field-padding-top: var(--ck-spacing-padding);
+	/* Defaults to the shared actions padding; the inputs area can be tuned independently. */
+	--ck-find-and-replace-form-inputs-padding: var(--ck-spacing-padding-spacious) var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-compact) var(--ck-spacing-padding-comfortable);
+	/* No top padding — the inputs' bottom padding already provides the gap between the two sections. */
+	--ck-find-and-replace-form-actions-padding: 0 var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-comfortable);
+}
+
 .ck.ck-find-and-replace-form {
-	width: 400px;
+	width: var(--ck-find-and-replace-form-width);
 	max-width: 100%;
 
 	/*
@@ -26,7 +36,7 @@
 		align-items: center;
 		align-content: stretch;
 
-		padding: var(--ck-spacing-large);
+		padding: var(--ck-dialog-actions-padding);
 		margin: 0;
 
 		& > .ck-button {
@@ -35,13 +45,13 @@
 
 		[dir="ltr"] & {
 			& > * + * {
-				margin-left: var(--ck-spacing-standard);
+				margin-left: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 		}
 
 		[dir="rtl"] & {
 			& > * + * {
-				margin-right: var(--ck-spacing-standard);
+				margin-right: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 		}
 
@@ -58,6 +68,8 @@
 
 	/* Styles specific for inputs area. */
 	& .ck-find-and-replace-form__inputs {
+		padding: var(--ck-find-and-replace-form-inputs-padding);
+
 		/* To display all controls in line when there's an error under the input */
 		align-items: flex-start;
 
@@ -77,17 +89,17 @@
 			color: var(--ck-color-base-border);
 
 			[dir="ltr"] & {
-				right: var(--ck-spacing-standard);
+				right: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 
 			[dir="rtl"] & {
-				left: var(--ck-spacing-standard);
+				left: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 		}
 
 		& > .ck-labeled-field-replace {
 			flex: 0 0 100%;
-			padding-top: var(--ck-spacing-standard);
+			padding-top: var(--ck-find-and-replace-form-replace-field-padding-top);
 
 			[dir="ltr"] & {
 				margin-left: 0;
@@ -101,19 +113,9 @@
 
 	/* Styles specific for actions area. */
 	& .ck-find-and-replace-form__actions {
+		padding: var(--ck-find-and-replace-form-actions-padding);
 		flex-wrap: wrap;
 		justify-content: flex-end;
-		margin-top: calc( -1 * var(--ck-spacing-large) );
-
-		& > .ck-button-find {
-			font-weight: bold;
-
-			/* Beef the find button up a little. It's the main action button in the form */
-			& .ck-button__label {
-				padding-left: var(--ck-spacing-large);
-				padding-right: var(--ck-spacing-large);
-			}
-		}
 	}
 
 	& .ck-switchbutton {
@@ -140,7 +142,7 @@
 			& .ck-labeled-field-view {
 				flex: 1 0 auto;
 				width: 100%;
-				margin-bottom: var(--ck-spacing-standard);
+				margin-bottom: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 
 			& > .ck-button {

@@ -13,7 +13,7 @@ const translations: Translations = {
 			// Dropdown option label for opening an emoji picker offering more results to choose from.
 			'Show all emoji...': 'সমস্ত ইমোজি দেখান...',
 			// Label of an input field for filtering an emoji collection by the typed value.
-			'Find an emoji (min. 2 characters)': 'একটি ইমোজির সন্ধান করুন (কমপক্ষে 2 টি ক্যারেক্টার)',
+			'Find an emoji': 'একটি ইমোজির সন্ধান করুন (কমপক্ষে 2 টি ক্যারেক্টার)',
 			// The main text of the message shown to the user when no emoji are available for the search criteria.
 			'No emojis were found matching "%0".': '"%0" এর সাথে মেলে এমন কোনো ইমোজি পাওয়া যায়নি।',
 			// The main text of the message shown to the user when the provided search query does not contain the required number of characters.

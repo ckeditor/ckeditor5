@@ -1,0 +1,19 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root,
+:host {
+	/*
+	 * Width scale for floating surfaces (balloons, dialogs).
+	 * Font-relative (factor * --ck-font-size-base) so panels scale with the configured font size.
+	 * Values shown are at the 16px base: 240 / 320 / 400 / 480 / 560 / 640.
+	 */
+	--ck-width-xs: calc(var(--ck-font-size-base) * 15);
+	--ck-width-sm: calc(var(--ck-font-size-base) * 20);
+	--ck-width-md: calc(var(--ck-font-size-base) * 25);
+	--ck-width-lg: calc(var(--ck-font-size-base) * 30);
+	--ck-width-xl: calc(var(--ck-font-size-base) * 35);
+	--ck-width-2xl: calc(var(--ck-font-size-base) * 40);
+}

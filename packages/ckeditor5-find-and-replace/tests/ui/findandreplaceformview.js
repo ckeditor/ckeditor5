@@ -260,7 +260,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have a class', () => {
-						expect( view._replaceAllButtonView.class ).toBe( 'ck-button-replaceall' );
+						expect( view._replaceAllButtonView.class ).toBe( 'ck-button-replaceall ck-button_standard' );
 					} );
 
 					it( 'should be with text', () => {
@@ -274,7 +274,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have a class', () => {
-						expect( view._replaceButtonView.class ).toBe( 'ck-button-replace' );
+						expect( view._replaceButtonView.class ).toBe( 'ck-button-replace ck-button_standard' );
 					} );
 
 					it( 'should be with text', () => {
@@ -288,7 +288,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have a class', () => {
-						expect( view._findButtonView.class ).toBe( 'ck-button-find ck-button-action' );
+						expect( view._findButtonView.class ).toBe( 'ck-button-find ck-button-action ck-button_standard' );
 					} );
 
 					it( 'should have a text', () => {

@@ -6,13 +6,14 @@
 :root,
 :host {
 	--ck-list-style-button-size: 44px;
+	--ck-list-styles-list-padding: var(--ck-spacing-padding);
 }
 
 .ck.ck-list-styles-list {
 	grid-template-columns: repeat( 3, auto );
-	row-gap: var(--ck-spacing-medium);
-	column-gap: var(--ck-spacing-medium);
-	padding: var(--ck-spacing-large);
+	row-gap: var(--ck-spacing-medium, var(--ck-spacing-md));
+	column-gap: var(--ck-spacing-medium, var(--ck-spacing-md));
+	padding: var(--ck-list-styles-list-padding);
 
 	& .ck-button {
 		/* Make the button look like a thumbnail (the icon "takes it all"). */

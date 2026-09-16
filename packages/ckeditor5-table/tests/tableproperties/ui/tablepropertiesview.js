@@ -574,7 +574,7 @@ describe( 'table properties', () => {
 						expect( view.saveButtonView.label ).toBe( 'Save' );
 						expect( view.saveButtonView.type ).toBe( 'submit' );
 						expect( view.saveButtonView.withText ).toBe( true );
-						expect( view.saveButtonView.class ).toBe( 'ck-button-action' );
+						expect( view.saveButtonView.class ).toBe( 'ck-button-action ck-button_standard' );
 
 						expect( view.cancelButtonView.label ).toBe( 'Cancel' );
 						expect( view.cancelButtonView.withText ).toBe( true );

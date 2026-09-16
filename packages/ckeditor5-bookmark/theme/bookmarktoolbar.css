@@ -13,7 +13,7 @@
 }
 
 .ck.ck-bookmark-toolbar__preview {
-	padding: 0 var(--ck-spacing-medium);
+	padding: 0 var(--ck-spacing-medium, var(--ck-spacing-md));
 	max-width: var(--ck-input-width);
 	min-width: 3em;
 	font-weight: normal;

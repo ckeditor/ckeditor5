@@ -1,0 +1,36 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root,
+:host {
+	/* Spacing used by controls like buttons and inputs. */
+	--ck-spacing-control-padding-block: var(--ck-spacing-sm);
+	/* Backward compatibility: falls back to legacy --ck-spacing-standard if overridden. */
+	--ck-spacing-control-padding-inline: var(--ck-spacing-standard, var(--ck-spacing-base));
+	/* Backward compatibility: falls back to legacy --ck-spacing-small if overridden. */
+	--ck-spacing-control-padding-inline-compact: var(--ck-spacing-small, var(--ck-spacing-sm));
+	/* Backward compatibility: falls back to legacy --ck-spacing-tiny if overridden. */
+	--ck-spacing-control-padding-inline-start-compact: var(--ck-spacing-tiny, var(--ck-spacing-xs));
+	--ck-spacing-control-padding-block-compact: var(--ck-spacing-xs);
+	--ck-spacing-control-icon-gap: var(--ck-spacing-ms);
+
+	/*
+	 * Padding density scale. A value tier, not a purpose: pick the comfort level here,
+	 * and let the component token name the purpose — e.g.
+	 * `--ck-toolbar-padding: 0 var(--ck-spacing-padding);`.
+	 */
+	--ck-spacing-padding-tight: var(--ck-spacing-xs); /* 2px */
+	--ck-spacing-padding-compact: var(--ck-spacing-sm); /* 4px */
+	--ck-spacing-padding: var(--ck-spacing-md); /* 8px */
+	--ck-spacing-padding-comfortable: var(--ck-spacing-lg); /* 12px */
+	--ck-spacing-padding-spacious: var(--ck-spacing-xl); /* 16px */
+
+	/* Gap density scale — same values as padding, for gaps and margins. */
+	--ck-spacing-gap-tight: var(--ck-spacing-xs); /* 2px */
+	--ck-spacing-gap-compact: var(--ck-spacing-sm); /* 4px */
+	--ck-spacing-gap: var(--ck-spacing-md); /* 8px */
+	--ck-spacing-gap-comfortable: var(--ck-spacing-lg); /* 12px */
+	--ck-spacing-gap-spacious: var(--ck-spacing-xl); /* 16px */
+}

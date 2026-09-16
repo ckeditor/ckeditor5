@@ -13,7 +13,7 @@ const translations: Translations = {
 			// Dropdown option label for opening an emoji picker offering more results to choose from.
 			'Show all emoji...': 'Покажи всички емотикони...',
 			// Label of an input field for filtering an emoji collection by the typed value.
-			'Find an emoji (min. 2 characters)': 'Намери емотикон (мин. 2 знака)',
+			'Find an emoji': 'Намери емотикон (мин. 2 знака)',
 			// The main text of the message shown to the user when no emoji are available for the search criteria.
 			'No emojis were found matching "%0".': 'Не бяха намерени емотикони, съответстващи на „%0“.',
 			// The main text of the message shown to the user when the provided search query does not contain the required number of characters.

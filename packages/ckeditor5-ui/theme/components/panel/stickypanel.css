@@ -4,14 +4,19 @@
  */
 
 
+:root,
+:host {
+	/* Uniform (fully rounded) corners by default; set this to initial to restore the attached-corner (squared connecting edge) look, as the legacy theme does. */
+	--ck-sticky-panel-uniform-border-radius: 0;
+}
+
 .ck.ck-sticky-panel {
 	& .ck-sticky-panel__content_sticky {
-		box-shadow: var(--ck-drop-shadow), 0 0;
+		box-shadow: var(--ck-shadow-surface-floating), 0 0;
 
-		border-width: 0 1px 1px;
-		border-top-left-radius: 0;
-		border-top-right-radius: 0;
-		z-index: var(--ck-z-panel); /* https://github.com/ckeditor/ckeditor5/issues/315 */
+		border-width: 0 var(--ck-border-width-surface) var(--ck-border-width-surface);
+		border-radius: var(--ck-sticky-panel-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
+		z-index: var(--ck-layer-panel); /* https://github.com/ckeditor/ckeditor5/issues/315 */
 		position: fixed;
 		top: 0;
 	}

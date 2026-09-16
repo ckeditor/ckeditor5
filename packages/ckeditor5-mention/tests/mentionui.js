@@ -680,9 +680,12 @@ describe( 'MentionUI', () => {
 
 						// ...and each list view item size to 25px...
 						Array.from( mentionsView.items ).forEach( item => {
-							const listItemElement = item.children.get( 0 ).element;
+							const itemStyle = `min-height:unset;height:25px;max-height:25px;${ reset };min-width:12em;`;
 
-							listItemElement.style = `min-height:unset;height:25px;max-height:25px;${ reset };min-width:12em;`;
+							// Pin both the list item (`<li>`, which carries the theme's outer padding) and its
+							// button to 25px, so each row is exactly 25px regardless of the loaded theme.
+							item.element.style = itemStyle;
+							item.children.get( 0 ).element.style = itemStyle;
 						} );
 
 						// ...so after those changes it is safe to assume that:

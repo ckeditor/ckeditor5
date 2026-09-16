@@ -3,18 +3,46 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Size */
+	--ck-list-item-min-width: 15em;
+
+	/* Spacing */
+	--ck-list-padding: var(--ck-spacing-padding-compact);
+	--ck-list-item-outer-padding: var(--ck-spacing-padding-tight);
+
+	/* Radius */
+	--ck-list-border-radius: var(--ck-border-radius-surface);
+
+	/* Color */
+	--ck-list-background-color: var(--ck-color-surface-control);
+	--ck-list-button-hover-background-color: var(--ck-button-default-hover-background-color);
+	--ck-list-button-on-background-color: var(--ck-button-on-text-color);
+	--ck-list-button-on-text-color: var(--ck-color-text-inverse);
+	--ck-list-divider-color: var(--ck-color-divider);
+
+	/* Typography */
+	--ck-list-group-label-font-size: var(--ck-font-size-sm);
+}
+
 .ck.ck-list {
-	border-radius: var(--ck-rounded-corners-radius);
+	border-radius: var(--ck-list-border-radius);
 	list-style-type: none;
-	background: var(--ck-color-list-background);
+	background: var(--ck-list-background-color);
 
 	/* A spacing at the beginning and end of the list */
-	padding: var(--ck-spacing-small) 0;
+	padding: var(--ck-list-padding);
 	-webkit-user-select: none;
 	user-select: none;
 
 	display: flex;
 	flex-direction: column;
+
+	/* Modifier that removes the list's inline (left/right) padding. */
+	&.ck-list_no-inline-padding {
+		padding-inline: 0;
+	}
 
 	& .ck-list__item,
 	& .ck-list__separator {
@@ -26,21 +54,22 @@
 	adjacent list items. */
 	& .ck-list__item > *:focus {
 		position: relative;
-		z-index: var(--ck-z-default);
+		z-index: var(--ck-layer-base);
 	}
 }
 
 .ck.ck-list__item {
 	cursor: default;
+	padding: var(--ck-list-item-outer-padding);
 
 	/* Almost as wide as menu bar items. */
-	min-width: 15em;
+	min-width: var(--ck-list-item-min-width);
 
 	& > .ck-button:not(.ck-list-item-button) {
-		padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
+		padding: var(--ck-spacing-control-padding-block) calc(2 * var(--ck-spacing-control-padding-inline));
 		min-height: unset;
 		width: 100%;
-		border-radius: 0;
+		border-radius: var(--ck-list-item-button-border-radius);
 
 		[dir="ltr"] & {
 			text-align: left;
@@ -60,24 +89,24 @@
 		}
 
 		&.ck-on {
-			background: var(--ck-color-list-button-on-background);
-			color: var(--ck-color-list-button-on-text);
+			background: var(--ck-list-button-on-background-color);
+			color: var(--ck-list-button-on-text-color);
 
 			&:active {
 				box-shadow: none;
 			}
 
 			&:hover:not(.ck-disabled) {
-				background: var(--ck-color-list-button-on-background-focus);
+				background: var(--ck-list-button-on-background-color);
 			}
 
 			&:focus:not(.ck-disabled) {
-				border-color: var(--ck-color-base-background);
+				border-color: var(--ck-color-surface-control);
 			}
 		}
 
 		&:hover:not(.ck-disabled) {
-			background: var(--ck-color-list-button-hover-background);
+			background: var(--ck-list-button-hover-background-color);
 		}
 	}
 
@@ -85,11 +114,11 @@
 	of conveying its state (like the switcher) */
 	& > .ck-button.ck-switchbutton {
 		&.ck-on {
-			background: var(--ck-color-list-background);
+			background: var(--ck-list-background-color);
 			color: inherit;
 
 			&:hover:not(.ck-disabled) {
-				background: var(--ck-color-list-button-hover-background);
+				background: var(--ck-list-button-hover-background-color);
 				color: inherit;
 			}
 		}
@@ -97,7 +126,7 @@
 }
 
 .ck-list .ck-list__group {
-	padding-top: var(--ck-spacing-medium);
+	padding-top: var(--ck-spacing-gap);
 
 	/* Lists come with an inner vertical padding. Don't duplicate it. */
 	&:first-child {
@@ -106,21 +135,21 @@
 
 	/* The group should have a border when it's not the first item. */
 	*:not(.ck-hidden) ~ & {
-		border-top: 1px solid var(--ck-color-base-border);
+		border-top: var(--ck-border-width-divider) solid var(--ck-list-divider-color);
 	}
 
 	& > .ck-label {
-		font-size: 11px;
-		font-weight: bold;
-		padding: var(--ck-spacing-medium) var(--ck-spacing-large) 0;
+		font-size: var(--ck-list-group-label-font-size);
+		font-weight: var(--ck-font-weight-ui-label);
+		padding: var(--ck-spacing-gap) var(--ck-spacing-padding-comfortable) 0;
 	}
 }
 
 .ck.ck-list__separator {
 	height: 1px;
 	width: 100%;
-	background: var(--ck-color-base-border);
+	background: var(--ck-list-divider-color);
 
 	/* Give the separator some air */
-	margin: var(--ck-spacing-small) 0;
+	margin: var(--ck-spacing-gap-compact) 0;
 }

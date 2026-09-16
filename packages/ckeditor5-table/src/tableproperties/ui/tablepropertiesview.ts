@@ -340,7 +340,9 @@ export class TablePropertiesView extends View {
 				this.cancelButtonView,
 				this.saveButtonView
 			],
-			class: 'ck-table-form__action-row'
+			class: [
+				'ck-table-form__action-row'
+			]
 		} ) );
 
 		this.setTemplate( {
@@ -709,7 +711,7 @@ export class TablePropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			class: 'ck-button-action',
+			class: 'ck-button-action ck-button_standard',
 			type: 'submit',
 			withText: true
 		} );
@@ -720,7 +722,8 @@ export class TablePropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			withText: true
+			withText: true,
+			class: 'ck-button_standard'
 		} );
 
 		cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );

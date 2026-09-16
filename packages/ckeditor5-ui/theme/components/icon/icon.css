@@ -5,15 +5,23 @@
 
 :root,
 :host {
-	--ck-icon-size: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
-	--ck-icon-font-size: .8333350694em;
+	/* Size */
+	/* Icon box as a multiple of the surrounding font size (icons stay em-based and scale with it).
+	   The ratio is the target icon size over the font size it is tuned for (20px at the 14px UI font);
+	   override --ck-icon-size-ratio in a context that needs a different icon-to-font proportion. */
+	--ck-icon-size-ratio: calc(20 / 14);
+	--ck-icon-size: calc(1em * var(--ck-icon-size-ratio));
+
+	/* Icon font size drives the SVG "viewport"; multiplied by the line height it gives the icon
+	   box (--ck-icon-size), so icons stay em-based and scale with the surrounding font size. */
+	--ck-icon-font-size: inherit;
 }
 
 .ck.ck-icon {
 	width: var(--ck-icon-size);
 	height: var(--ck-icon-size);
 
-	/* Multiplied by the height of the line in "px" should give SVG "viewport" dimensions */
+	/* Multiplied by the height of the line in "px" should give SVG "viewport" dimensions. */
 	font-size: var(--ck-icon-font-size);
 
 	/* Inherit cursor style (https://github.com/ckeditor/ckeditor5/issues/5). */

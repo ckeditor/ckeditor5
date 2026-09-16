@@ -1,0 +1,32 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root,
+:host {
+	/* Standard form shown inside a balloon. Capped with vw (not %) so it does not collapse
+	   against the shrink-to-fit balloon container; collapses toward the viewport on narrow screens. */
+	--ck-width-balloon-form: min(var(--ck-width-md), 90vw);
+
+	/* Dialog widths. Capped with vw so a large base font cannot overrun the screen. */
+	--ck-width-dialog: min(var(--ck-width-md), 90vw);
+	--ck-width-dialog-lg: min(var(--ck-width-xl), 90vw);
+}
+
+/*
+ * FALLBACK — media-query responsiveness instead of the fluid min()/vw approach above.
+ * If min()/vw misbehaves, do two things: (1) change the three definitions above to plain
+ * widths (e.g. `--ck-width-balloon-form: var(--ck-width-md);`), and (2) remove this comment's
+ * opening and closing markers to activate the breakpoint below. Tune the 600px breakpoint
+ * and the mobile steps to taste.
+
+@media screen and (max-width: 600px) {
+	:root {
+		--ck-width-balloon-form: var(--ck-width-sm);
+		--ck-width-dialog: var(--ck-width-sm);
+		--ck-width-dialog-lg: var(--ck-width-lg);
+	}
+}
+*/
+

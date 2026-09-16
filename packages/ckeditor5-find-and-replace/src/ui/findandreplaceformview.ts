@@ -277,19 +277,19 @@ export class FindAndReplaceFormView extends View {
 
 		this._replaceAllButtonView = this._createButton( {
 			label: t( 'Replace all' ),
-			class: 'ck-button-replaceall',
+			class: 'ck-button-replaceall ck-button_standard',
 			withText: true
 		} );
 
 		this._replaceButtonView = this._createButton( {
 			label: t( 'Replace' ),
-			class: 'ck-button-replace',
+			class: 'ck-button-replace ck-button_standard',
 			withText: true
 		} );
 
 		this._findButtonView = this._createButton( {
 			label: t( 'Find' ),
-			class: 'ck-button-find ck-button-action',
+			class: 'ck-button-find ck-button-action ck-button_standard',
 			withText: true
 		} );
 

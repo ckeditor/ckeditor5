@@ -38,7 +38,6 @@ describe( 'BookmarkFormView', () => {
 			expect( view.backButtonView ).toBeInstanceOf( View );
 
 			expect( view.saveButtonView.element.classList.contains( 'ck-button-action' ) ).toBe( true );
-			expect( view.saveButtonView.element.classList.contains( 'ck-button-bold' ) ).toBe( true );
 
 			expect( view.children.get( 0 ) ).toBeInstanceOf( FormHeaderView );
 			expect( view.children.get( 1 ) ).toBeInstanceOf( View );

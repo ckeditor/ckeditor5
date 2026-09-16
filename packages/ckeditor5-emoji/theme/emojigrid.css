@@ -6,6 +6,8 @@
 :root,
 :host {
 	--ck-emoji-grid-tile-size: 27px;
+	--ck-emoji-grid-margin: var(--ck-spacing-padding) var(--ck-spacing-padding-comfortable);
+	--ck-emoji-grid-gap: var(--ck-spacing-gap-compact) var(--ck-spacing-gap-compact);
 }
 
 .ck.ck-emoji {
@@ -20,8 +22,8 @@
 		& .ck-emoji__grid {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(var(--ck-emoji-grid-tile-size), 1fr));
-			margin: var(--ck-spacing-standard) var(--ck-spacing-large);
-			grid-gap: var(--ck-spacing-small);
+			margin: var(--ck-emoji-grid-margin);
+			grid-gap: var(--ck-emoji-grid-gap);
 		}
 
 		& .ck-emoji__tile {
@@ -42,7 +44,7 @@
 			&:hover:not(.ck-disabled) {
 				/* Disable the default .ck-button's border ring. */
 				border: 0;
-				box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border);
+				box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 			}
 
 			/* Make sure the glyph is rendered in the center of the button */

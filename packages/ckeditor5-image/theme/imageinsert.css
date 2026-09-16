@@ -6,17 +6,26 @@
 
 :root,
 :host {
-	--ck-image-insert-insert-by-url-width: 250px;
+	--ck-image-insert-insert-by-url-width: var(--ck-width-md);
+
+	/* Spacing */
+	--ck-image-insert-form-padding: var(--ck-spacing-padding);
+	--ck-image-insert-form-button-gap: var(--ck-spacing-gap-tight);
 }
 
 .ck.ck-image-insert-url {
 	--ck-input-width: 100%;
+
 	width: 400px;
 
 	& .ck-image-insert-url__action-row {
-		grid-column-gap: var(--ck-spacing-large);
-		margin-top: var(--ck-spacing-large);
+		grid-column-gap: var(--ck-spacing-large, var(--ck-spacing-lg));
+		margin-top: var(--ck-spacing-large, var(--ck-spacing-lg));
 		display: grid;
+
+		&:empty {
+			margin-top: 0;
+		}
 
 		& .ck-button-save,
 		& .ck-button-cancel {
@@ -29,10 +38,12 @@
 		}
 		grid-template-columns: repeat(2, 1fr)
 	}
-	padding: var(--ck-spacing-large) var(--ck-spacing-large) 0
+	padding: var(--ck-dialog-content-padding)
 }
 
 .ck.ck-image-insert-form {
+	padding: var(--ck-image-insert-form-padding);
+
 	& > .ck.ck-button {
 		display: block;
 		width: 100%;
@@ -43,6 +54,10 @@
 
 		[dir="rtl"] & {
 			text-align: right;
+		}
+
+		&:not(:last-child) {
+			margin-bottom: var(--ck-image-insert-form-button-gap);
 		}
 	}
 
@@ -56,12 +71,6 @@
 		}
 
 		min-width: var(--ck-image-insert-insert-by-url-width);
-	}
-
-	/* This is the case when there are no other integrations configured than insert by URL */
-	& > .ck.ck-image-insert-url {
-		min-width: var(--ck-image-insert-insert-by-url-width);
-		padding: var(--ck-spacing-large);
 	}
 
 	&:focus {

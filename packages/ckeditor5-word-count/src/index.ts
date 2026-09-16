@@ -12,4 +12,6 @@ export type { WordCountConfig } from './wordcountconfig.js';
 
 export { modelElementToPlainText as _modelElementToPlainText } from './utils.js';
 
+import '../theme/index-editor.css';
+import '../theme/index-content.css';
 import './augmentation.js';

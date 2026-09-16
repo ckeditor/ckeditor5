@@ -4,12 +4,18 @@
  */
 
 
+:root,
+:host {
+	--ck-media-form-width: var(--ck-width-dialog);
+}
+
 .ck.ck-media-form {
 	display: flex;
 	align-items: flex-start;
 	flex-direction: row;
 	flex-wrap: nowrap;
-	width: 400px;
+	width: var(--ck-media-form-width);
+	padding: var(--ck-dialog-content-padding);
 
 	& .ck-labeled-field-view {
 		display: inline-block;
