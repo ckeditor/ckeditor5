@@ -792,8 +792,13 @@ function createEventNamespace( source: EmitterInternal, eventName: string ): voi
 		}
 
 		childEventName = name;
-		// If `.lastIndexOf()` returns -1, `.substr()` will return '' which will break the loop.
-		name = name.substr( 0, name.lastIndexOf( ':' ) );
+
+		// Truncate to the parent namespace. Do not use `substr( 0, lastIndexOf( ':' ) )`:
+		// when there is no `:`, `lastIndexOf` is -1 and some JSC builds (Safari 27 x86_64)
+		// miscompile `substr` with a negative length, returning the original string instead of `''`.
+		const colonIndex = name.lastIndexOf( ':' );
+
+		name = colonIndex > -1 ? name.substring( 0, colonIndex ) : '';
 	}
 
 	if ( name !== '' ) {
@@ -806,7 +811,10 @@ function createEventNamespace( source: EmitterInternal, eventName: string ): voi
 		}
 
 		// Add last newly created event to the already registered event.
-		events[ name ].childEvents.push( childEventName! );
+		// Guard against a self-edge if truncation ever failed (would recurse forever in getCallbacksListsForNamespace).
+		if ( childEventName && childEventName !== name ) {
+			events[ name ].childEvents.push( childEventName );
+		}
 	}
 }
 
