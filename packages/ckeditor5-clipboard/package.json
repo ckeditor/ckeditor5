@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-clipboard",
-  "version": "47.7.3",
+  "version": "47.7.4",
   "description": "Clipboard integration feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -18,7 +18,7 @@
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "@ckeditor/ckeditor5-widget": "workspace:*",
-    "es-toolkit": "1.39.5"
+    "es-toolkit": "1.52.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "workspace:*",

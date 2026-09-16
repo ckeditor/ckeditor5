@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-image",
-  "version": "47.7.3",
+  "version": "47.7.4",
   "description": "Image feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -24,7 +24,7 @@
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "@ckeditor/ckeditor5-widget": "workspace:*",
     "ckeditor5": "workspace:*",
-    "es-toolkit": "1.39.5"
+    "es-toolkit": "1.52.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "workspace:*",

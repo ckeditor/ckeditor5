@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-core",
-  "version": "47.7.3",
+  "version": "47.7.4",
   "description": "The core architecture of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "wysiwyg",
@@ -28,7 +28,7 @@
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "@ckeditor/ckeditor5-watchdog": "workspace:*",
-    "es-toolkit": "1.39.5"
+    "es-toolkit": "1.52.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-autoformat": "workspace:*",
