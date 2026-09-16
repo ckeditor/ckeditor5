@@ -576,8 +576,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
@@ -808,8 +808,8 @@ importers:
         specifier: 2.0.5
         version: 2.0.5
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-autosave':
         specifier: workspace:*
@@ -906,8 +906,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-widget
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -1131,8 +1131,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-autoformat':
         specifier: workspace:*
@@ -1235,8 +1235,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -1287,8 +1287,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -1342,8 +1342,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -1394,8 +1394,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -1449,8 +1449,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -1516,8 +1516,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
       fuzzysort:
         specifier: 3.1.0
         version: 3.1.0
@@ -1565,8 +1565,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -1736,8 +1736,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -2172,8 +2172,8 @@ importers:
         specifier: 'catalog:'
         version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
       sanitize-html:
         specifier: ^2.13.0
         version: 2.17.5
@@ -2217,8 +2217,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-widget
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -2344,8 +2344,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-widget
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-adapter-ckfinder':
         specifier: workspace:*
@@ -2584,8 +2584,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-widget
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -2657,8 +2657,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -2930,8 +2930,8 @@ importers:
         specifier: 'catalog:'
         version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
       vitest:
         specifier: 'catalog:'
         version: 4.1.10(@types/node@25.9.5)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
@@ -2954,8 +2954,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -3658,8 +3658,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -3779,8 +3779,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-widget
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -3867,8 +3867,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-autoformat':
         specifier: workspace:*
@@ -3961,8 +3961,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
       vanilla-colorful:
         specifier: 0.7.2
         version: 0.7.2
@@ -4138,8 +4138,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-ui
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
@@ -4172,8 +4172,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -4230,8 +4230,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -4300,8 +4300,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
       es-toolkit:
-        specifier: 1.45.1
-        version: 1.45.1
+        specifier: 1.52.0
+        version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -7335,8 +7335,8 @@ packages:
     resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
     engines: {node: '>= 0.4'}
 
-  es-toolkit@1.45.1:
-    resolution: {integrity: sha512-/jhoOj/Fx+A+IIyDNOvO3TItGmlMKhtX8ISAHKE90c4b/k1tqaqEZ+uUqfpU8DMnW5cgNJv606zS55jGvza0Xw==}
+  es-toolkit@1.52.0:
+    resolution: {integrity: sha512-XTNEJQh1tY1ZJVcf6ayP/2n4ZPyaHlW2FWs7xvw5ddPuhUVjLD3olQVQS7kf58JbAB48iL0uL/jerTrjtV3lDA==}
 
   esbuild@0.28.1:
     resolution: {integrity: sha512-HrJrvZv5ayxBzPfwphOoNzkzOIIlifzk0KJrGK2c8R4+LKpMtpYLQeUdjnwjWv/LZlkH2laZk+4w78pi99D4Vw==}
@@ -10317,7 +10317,7 @@ snapshots:
   '@ckeditor/ckeditor5-dev-build-tools@61.1.0(rollup@4.61.1)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.61.1)
-      es-toolkit: 1.45.1
+      es-toolkit: 1.52.0
       glob: 13.0.6
       lightningcss: 1.33.0
       rolldown: 1.2.1
@@ -10433,7 +10433,7 @@ snapshots:
     dependencies:
       '@ckeditor/ckeditor5-core': link:packages/ckeditor5-core
       ckeditor5: link:packages/ckeditor5
-      es-toolkit: 1.45.1
+      es-toolkit: 1.52.0
       mermaid: 11.15.0
 
   '@ckeditor/ckeditor5-react@9.5.0(ckeditor5@packages+ckeditor5)(react@18.3.1)':
@@ -12946,7 +12946,7 @@ snapshots:
       has-tostringtag: 1.0.2
       hasown: 2.0.4
 
-  es-toolkit@1.45.1: {}
+  es-toolkit@1.52.0: {}
 
   esbuild@0.28.1:
     optionalDependencies:
@@ -14460,7 +14460,7 @@ snapshots:
       dagre-d3-es: 7.0.14
       dayjs: 1.11.21
       dompurify: 3.4.13
-      es-toolkit: 1.45.1
+      es-toolkit: 1.52.0
       katex: 0.16.47
       khroma: 2.1.0
       marked: 16.4.2

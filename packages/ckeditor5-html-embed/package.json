@@ -51,7 +51,7 @@
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "es-toolkit": "1.45.1",
+    "es-toolkit": "1.52.0",
     "sanitize-html": "^2.13.0",
     "vitest": "catalog:"
   },
