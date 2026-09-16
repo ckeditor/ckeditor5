@@ -510,6 +510,130 @@ describe( 'ViewDomConverter', () => {
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<SCRIPT>something</SCRIPT>' ) ).toBe( false );
 			expect( converter.shouldRenderAttribute( 'srcdoc', 'something</SCRIPT>' ) ).toBe( false );
 		} );
+
+		it( 'should reject data: URIs that the browser can load as a document', () => {
+			// XML-based MIME types passed the old blocklist and could execute JavaScript once loaded
+			// in an <iframe>, <embed> or <object>.
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:application/xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:application/xhtml+xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/xsl,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:application/rss+xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:application/atom+xml,foo', 'iframe' ) ).toBe( false );
+
+			// MIME types blocked before the fix as well.
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/html,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/xhtml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/svg+xml,foo', 'iframe' ) ).toBe( false );
+
+			// The same payload in the remaining document-loading contexts.
+			expect( converter.shouldRenderAttribute( 'data', 'data:image/svg+xml,foo', 'object' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/svg+xml,foo', 'embed' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/xml,foo', 'frame' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'href', 'data:text/html,foo', 'a' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/javascript,alert(1)', 'script' ) ).toBe( false );
+
+			// Elements unknown to the converter (for instance enabled via General HTML Support).
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/xml,foo', 'ck-custom-widget' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/xml,foo' ) ).toBe( false );
+		} );
+
+		it( 'should reject data: URIs regardless of the letter case and whitespace', () => {
+			expect( converter.shouldRenderAttribute( 'src', 'DATA:TEXT/XML,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', '   data:text/xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'da ta:te\txt/xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/xml;base64,PHN2Zy8+', 'iframe' ) ).toBe( false );
+		} );
+
+		it.each( [
+			'image/png', 'image/jpeg', 'image/jpg', 'image/gif',
+			'image/webp', 'image/avif', 'image/bmp', 'image/apng',
+			'image/tiff', 'image/heic', 'image/heif', 'image/jxl',
+			'image/vnd.microsoft.icon', 'image/x-icon',
+			'video/mp4', 'video/webm', 'video/quicktime',
+			'audio/mpeg', 'audio/wav', 'audio/ogg'
+		] )( 'should allow a data: URI of the %s type', mimeType => {
+			const url = `data:${ mimeType };base64,AAA`;
+
+			expect( converter.shouldRenderAttribute( 'src', url, 'iframe' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', url, 'img' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'srcset', url, 'img' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'srcset', url, 'source' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', url, 'video' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', url, 'audio' ) ).toBe( true );
+		} );
+
+		it( 'should allow an allow listed data: URI regardless of its letter case and parameters', () => {
+			expect( converter.shouldRenderAttribute( 'src', 'DATA:IMAGE/PNG;base64,AAA', 'iframe' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', 'data:audio/ogg;codecs=opus;base64,AAA', 'audio' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/png,foo', 'iframe' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/png', 'iframe' ) ).toBe( true );
+		} );
+
+		it( 'should not affect values that are not data: URIs', () => {
+			expect( converter.shouldRenderAttribute( 'src', 'https://example.com/foo.png', 'iframe' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', '/foo.png', 'iframe' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'anything', 'foobar data:text/xml,foo' ) ).toBe( true );
+		} );
+
+		it( 'should allow any data: URI in the img and source exceptions', () => {
+			// An SVG loaded as an image is processed in the secure static mode, so it cannot run scripts.
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/svg+xml,foo', 'img' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'srcset', 'data:image/svg+xml,foo', 'img' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'srcset', 'data:image/svg+xml,foo', 'source' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/xml,foo', 'img' ) ).toBe( true );
+		} );
+
+		// Documents the deliberate trade-off of the allow list: it is element agnostic, so an SVG is dropped
+		// everywhere except the `img` / `source` exceptions, even where it could never be executed. The same
+		// goes for formats that are simply not on the list, like WebVTT subtitles. Update these expectations
+		// (not just the code) if any of them gets allow listed.
+		it( 'should reject SVG and other non-listed data: URIs outside of the img and source exceptions', () => {
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/svg+xml,foo', 'source' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'poster', 'data:image/svg+xml,foo', 'video' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/vtt,WEBVTT', 'track' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'data', 'data:application/pdf;base64,AAA', 'object' ) ).toBe( false );
+		} );
+
+		it( 'should match the allowed subtypes exactly, not as a prefix', () => {
+			// Every `+xml` subtype is an XML MIME type, so it is parsed as a document and can run scripts.
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/png+xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:video/mp4+xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:audio/mpeg+xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/pngfoo,foo', 'iframe' ) ).toBe( false );
+
+			// The allowed subtypes followed by a parameter, by the data or by nothing at all.
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/png;base64,AAA', 'iframe' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/png,foo', 'iframe' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', 'data:video/mp4', 'iframe' ) ).toBe( true );
+		} );
+
+		it( 'should reject URIs with a scheme hidden behind control characters', () => {
+			// The URL parser strips leading C0 control characters, so `\u0001data:` loads as `data:`.
+			// `String.prototype.replace( /\\s+/g, '' )` does not remove them - `\\s` covers whitespace only.
+			expect( converter.shouldRenderAttribute( 'src', '\u0001data:text/html,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', '\u001fdata:text/xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', '\u0001\u0002data:image/svg+xml,foo', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'href', '\u0001javascript:alert(1)', 'a' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'href', '\u001b JAVASCRIPT:alert(1)', 'a' ) ).toBe( false );
+
+			// Allow listed types are not affected by the extra stripping.
+			expect( converter.shouldRenderAttribute( 'src', '\u0001data:image/png;base64,AAA', 'iframe' ) ).toBe( true );
+		} );
+
+		it( 'should reject javascript: URIs split with whitespace', () => {
+			expect( converter.shouldRenderAttribute( 'src', 'jav\tascript:alert(1)', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'src', 'jav\nascript:alert(1)', 'iframe' ) ).toBe( false );
+			expect( converter.shouldRenderAttribute( 'href', 'JAVASCRIPT:alert(1)', 'a' ) ).toBe( false );
+		} );
+
+		it( 'should allow all the newly blocked data: URIs in the data pipeline', () => {
+			converter.renderingMode = 'data';
+
+			expect( converter.shouldRenderAttribute( 'src', 'data:text/xml,foo', 'iframe' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'src', 'data:application/xhtml+xml,foo', 'iframe' ) ).toBe( true );
+			expect( converter.shouldRenderAttribute( 'data', 'data:image/svg+xml,foo', 'object' ) ).toBe( true );
+		} );
 	} );
 
 	describe( 'setContentOf()', () => {
@@ -806,6 +930,45 @@ describe( 'ViewDomConverter', () => {
 					expect.any( String ) // Link to the documentation
 				);
 			} );
+
+			it( 'should rename the src attribute of an iframe loading an unsafe data: URI', () => {
+				const element = document.createElement( 'p' );
+
+				// The base64 part decodes to an SVG with an `onload` handler.
+				const payload = 'data:text/xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIG9ubG9hZD0nYWxlcnQoMSknLz4=';
+
+				converter.setContentOf( element, `<iframe src="${ payload }"></iframe>` );
+
+				expect( element.innerHTML ).toBe( `<iframe data-ck-unsafe-attribute-src="${ payload }"></iframe>` );
+				expect( warnStub ).toHaveBeenCalledWith(
+					expect.stringMatching( /^domconverter-unsafe-attribute-detected/ ),
+					expect.objectContaining( { key: 'src', value: payload } ),
+					expect.any( String ) // Link to the documentation
+				);
+			} );
+
+			it( 'should keep data: URIs of binary images in the raw content', () => {
+				const element = document.createElement( 'p' );
+				const payload = 'data:image/png;base64,AAA';
+
+				converter.setContentOf( element, `<img src="${ payload }"><iframe src="${ payload }"></iframe>` );
+
+				expect( element.innerHTML ).toBe( `<img src="${ payload }"><iframe src="${ payload }"></iframe>` );
+				expect( warnStub ).not.toHaveBeenCalled();
+			} );
+
+			it( 'should rename an attribute whose scheme is hidden behind a control character', () => {
+				const element = document.createElement( 'p' );
+
+				converter.setContentOf( element, '<iframe src="&#1;data:text/html,foo"></iframe>' );
+
+				const iframe = element.firstChild;
+
+				// The HTML parser keeps the control character, and the URL parser ignores it later on.
+				expect( iframe.hasAttribute( 'src' ) ).toBe( false );
+				expect( iframe.getAttribute( 'data-ck-unsafe-attribute-src' ) ).toBe( '\u0001data:text/html,foo' );
+				expect( warnStub ).toHaveBeenCalled();
+			} );
 		} );
 	} );
 
@@ -984,6 +1147,23 @@ describe( 'ViewDomConverter', () => {
 
 			converter.setDomElementAttribute( domElement, 'data', 'data:image/svg,foo' );
 			expect( domElement.outerHTML ).toBe( '<object data-ck-unsafe-attribute-data="data:image/svg,foo"></object>' );
+		} );
+
+		it( 'should transform src attribute to unsafe for XML-based data: URIs on iframe element', () => {
+			const domElement = document.createElement( 'iframe' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:text/xml,foo' );
+			expect( domElement.outerHTML ).toBe( '<iframe data-ck-unsafe-attribute-src="data:text/xml,foo"></iframe>' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:application/xhtml+xml,foo' );
+			expect( domElement.outerHTML ).toBe( '<iframe data-ck-unsafe-attribute-src="data:application/xhtml+xml,foo"></iframe>' );
+		} );
+
+		it( 'should set src attribute for binary image data: URIs on iframe element', () => {
+			const domElement = document.createElement( 'iframe' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/png;base64,AAA' );
+			expect( domElement.outerHTML ).toBe( '<iframe src="data:image/png;base64,AAA"></iframe>' );
 		} );
 	} );
 

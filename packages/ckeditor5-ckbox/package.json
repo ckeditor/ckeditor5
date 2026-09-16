@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-ckbox",
-  "version": "48.5.0",
+  "version": "48.5.1",
   "description": "CKBox integration for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -45,7 +45,7 @@
     "@ckeditor/ckeditor5-upload": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "blurhash": "2.0.5",
-    "es-toolkit": "1.45.1"
+    "es-toolkit": "1.52.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-autosave": "workspace:*",
