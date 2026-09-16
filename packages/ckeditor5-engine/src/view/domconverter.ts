@@ -291,8 +291,32 @@ export class ViewDomConverter {
 			return true;
 		}
 
-		if ( attributeValue.replace( /\s+/g, '' ).match( /^(javascript:|data:(image\/svg|text\/x?html))/i ) ) {
+		// eslint-disable-next-line no-control-regex
+		attributeValue = attributeValue.replace( /[\s\u0000-\u0020]+/g, '' );
+
+		if ( attributeValue.match( /^javascript:/i ) ) {
 			return false;
+		}
+
+		// Block all data: URIs except known-safe binary image, audio and video formats. Such a payload is
+		// decoded by an image decoder or a media player, so it cannot execute a script - not even when
+		// loaded in an iframe, embed or object element. Any XML-based or text-based MIME type (text/xml,
+		// application/xml, application/xhtml+xml, text/xsl, image/svg+xml, text/html, etc.) can.
+		//
+		// The subtype must end at a parameter (`;`) or at the data itself (`,`) - a prefix match would let
+		// `data:image/png+xml` through, and the HTML specification treats every `+xml` subtype as XML.
+		if ( attributeValue.match( /^data:/i ) ) {
+			const isImage = attributeValue.match(
+				/^data:image\/(png|jpeg|jpg|gif|webp|avif|bmp|x-icon|vnd\.microsoft\.icon|apng|tiff|heic|heif|jxl)($|[;,])/i
+			);
+
+			const isMedia = attributeValue.match(
+				/^data:(audio|video)\/(mp4|mpeg|mp3|ogg|webm|wav|x-wav|aac|flac|quicktime|3gpp)($|[;,])/i
+			);
+
+			if ( !isImage && !isMedia ) {
+				return false;
+			}
 		}
 
 		return true;

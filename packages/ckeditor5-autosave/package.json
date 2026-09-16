@@ -16,7 +16,7 @@
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "ckeditor5": "workspace:*",
-    "es-toolkit": "1.39.5"
+    "es-toolkit": "1.52.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^54.8.0",

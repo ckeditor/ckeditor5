@@ -23,7 +23,7 @@
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "ckeditor5": "workspace:*",
     "blurhash": "2.0.5",
-    "es-toolkit": "1.39.5"
+    "es-toolkit": "1.52.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-autosave": "workspace:*",
