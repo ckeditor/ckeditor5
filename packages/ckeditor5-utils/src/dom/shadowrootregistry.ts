@@ -136,7 +136,28 @@ export class ShadowRootRegistry extends ShadowRootRegistryBase {
  * roots that appear later, detaching from roots that disappear — for as long as the returned function is not
  * called.
  *
+ * Attach it alongside the `document` listener rather than instead of it — one covers the light DOM, the other
+ * each shadow root:
+ *
+ * ```ts
+ * view.listenTo( global.document, 'scroll', repositionOnScroll, { useCapture: true } );
+ *
+ * const stopListening = listenToShadowRoots( editor.ui.shadowRootRegistry, {
+ * 	emitter: view,
+ * 	event: 'scroll',
+ * 	callback: repositionOnScroll,
+ * 	listenerOptions: { useCapture: true }
+ * } );
+ * ```
+ *
+ * The `useCapture` above is not incidental. The events this function exists for do not bubble when fired on an
+ * element, so a listener on a shadow root only sees one that originates inside that root during the capture
+ * phase. Without it the listener is attached but never fires.
+ *
+ * Call the returned function to detach.
+ *
  * @param registry The registry whose shadow roots should be listened to.
+ * @param options Describes the listener to attach to each shadow root.
  * @param options.emitter The emitter to which this behavior should be added.
  * @param options.event The DOM event to listen to.
  * @param options.callback The event handler.

@@ -110,6 +110,10 @@ Giving every host that holds editor UI the same class, the editor root and the o
 }
 ```
 
+<info-box warning>
+	One thing beyond styles depends on the mode you attach: placing the editor in a `<slot>` of your own component. A slot inside a **closed** root is not reported by `Element#assignedSlot`, and the DOM standard exposes no alternative, so the editor cannot work out which element really scrolls and clips it. Balloons are then positioned against the wrong ancestor, and scrolling the selection into view scrolls the window rather than your container. Attach an open root for that composition &ndash; which is what component frameworks attach by default.
+</info-box>
+
 ## Customizing the look of the features
 
 Similarly to the customizable editor look, some features also provide an interface to change their styles via [native CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascading_variables/Using_CSS_custom_properties).

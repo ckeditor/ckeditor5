@@ -1776,7 +1776,8 @@ export interface UiConfig {
 	 * overlayContainer.adoptedStyleSheets = editorStyleSheets;
 	 *
 	 * ClassicEditor
-	 * 	.create( element, {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		ui: {
 	 * 			overlayContainer
 	 * 		}
