@@ -174,6 +174,25 @@ describe( 'EmitterMixin', () => {
 			expect( spyFoo2 ).toHaveBeenCalledTimes( 3 );
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5/issues/20237.
+		it( 'should not depend on String#substr() clamping a negative length', () => {
+			const originalSubstr = String.prototype.substr;
+
+			// Some JSC builds (Safari 27 on x86_64) miscompile `substr()` with a negative length
+			// and return the whole string instead of an empty one. Event names without a colon
+			// made the namespace node reference itself and recursion never ended.
+			vi.spyOn( String.prototype, 'substr' ).mockImplementation( function( start, length ) {
+				return length < 0 ? String( this ) : originalSubstr.call( this, start, length );
+			} );
+
+			const spy = vi.fn();
+
+			emitter.on( 'foo', spy );
+			emitter.fire( 'foo' );
+
+			expect( spy ).toHaveBeenCalledOnce();
+		} );
+
 		it( 'should rethrow the CKEditorError error', () => {
 			emitter.on( 'test', () => {
 				throw new CKEditorError( 'foo', null );
