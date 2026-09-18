@@ -426,7 +426,7 @@ If you plan to run the editor in a right–to–left (RTL) language, keep in min
 
 You can use the `shouldNotGroupWhenFull` [configuration option](#multiline-wrapping-toolbar) to prevent {@link module:core/editor/editorconfig~EditorConfig#toolbar automatic items grouping} in the block toolbar.
 
-You can also change the current default toolbar icon `'dragIndicator'` {@icon @ckeditor/ckeditor5-icons/theme/icons/drag-indicator.svg Drag indicator} by choosing predefined icon from [icon list](#changing-the-icon) using the `icon` option or by passing a `SVG` string:
+You can also change the current default toolbar icon `'dragIndicator'` {@icon @ckeditor/ckeditor5-icons/theme/icons/drag-indicator.svg Drag indicator} by choosing predefined icon from [icon list](#changing-the-icon) using the `icon` option or by passing an SVG string:
 
 ```js
 blockToolbar: {

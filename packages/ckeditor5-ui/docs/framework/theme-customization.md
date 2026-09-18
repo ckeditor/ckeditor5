@@ -31,6 +31,7 @@ The UI theme uses a 3-layer token model:
 | Component | Tokens for a specific component contract. | Adjust one component without changing all others. |
 
 A practical rule:
+
 1. Start with semantic tokens.
 2. Use component tokens for local exceptions.
 3. Change foundation tokens when you want a global visual shift.
@@ -132,8 +133,7 @@ The file containing custom variables can be named `custom.css` and it will look 
 }
 ```
 
-Depending on your setup method, you can either import a style sheet into your `js` file:
-
+Depending on your setup method, you can either import a style sheet into your JavaScript file:
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
@@ -153,7 +153,7 @@ ClassicEditor
 	} );
 ```
 
-Or import it via the `link` in `html` in the CDN setup:
+Or import it with the `<link>` element in the CDN setup:
 
 ```html
 <link rel="stylesheet" href="path/to/custom.css" type="text/css">

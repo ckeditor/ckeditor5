@@ -88,7 +88,7 @@ As part of the new media embed resize and styling features, the built-in media p
 Because the wrapper `<div>` is still present, custom CSS and queries that target it continue to work, so no changes are required in most cases. However:
 
 * If your custom styles **relied on the previous inline styles** (the wrapper `padding-bottom` aspect-ratio hack or the absolutely positioned iframe), review them against the new `aspect-ratio`-based markup.
-* If you registered **custom media providers** through `config.mediaEmbed.providers` or `config.mediaEmbed.extraProviders`, your existing `html` output keeps working, but we recommend switching to the `aspect-ratio` approach so resizing and styling behave correctly.
+* If you registered **custom media providers** through `config.mediaEmbed.providers` or `config.mediaEmbed.extraProviders`, your existing HTML output keeps working, but we recommend switching to the `aspect-ratio` approach so resizing and styling behave correctly.
 
 ### Editor roots on paragraph-like elements (⭐)
 

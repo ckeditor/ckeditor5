@@ -27,7 +27,7 @@ To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/cke
 
 ## Handling the anchor markup
 
-Do not worry about setting a bookmark inside an empty paragraph. The block with the `a` tag will not be rendered in the final content (for example for printing).
+Do not worry about setting a bookmark inside an empty paragraph. The block with the `<a>` element will not be rendered in the final content (for example for printing).
 
 The feature converts anchors into bookmarks during the {@link getting-started/setup/getting-and-setting-data#initializing-the-editor-with-data initialization of the editor} or while {@link getting-started/setup/getting-and-setting-data#replacing-the-editor-data-with-setdata replacing the editor data with `setData()`}. The notation based on the `id` attribute in an `a` HTML element without a `href` attribute is converted. Similar notations meet the conditions, too:
 
