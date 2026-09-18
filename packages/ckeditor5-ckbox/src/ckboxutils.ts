@@ -8,7 +8,7 @@
  */
 
 import { CloudServices, type InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import { CKEditorError, logError } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, logError, isOffline } from '@ckeditor/ckeditor5-utils';
 import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	convertMimeTypeToExtension,
@@ -150,6 +150,11 @@ export class CKBoxUtils extends Plugin {
 	public async getCategoryIdForFile( fileOrUrl: File | string, options: { signal: AbortSignal } ): Promise<string> {
 		const t = this.editor.t;
 		const cannotFindCategoryError = t( 'Cannot determine a category for the uploaded file.' );
+		const noConnectionError = t( 'No internet connection. Check your connection and try again.' );
+
+		if ( isOffline() ) {
+			throw noConnectionError;
+		}
 
 		const defaultCategories = this.editor.config.get( 'ckbox.defaultUploadCategories' );
 
@@ -161,9 +166,10 @@ export class CKBoxUtils extends Plugin {
 
 		const allCategories = await allCategoriesPromise;
 
-		// Couldn't fetch all categories. Perhaps the authorization token is invalid.
+		// Couldn't fetch all categories. Perhaps the authorization token is invalid or the connection
+		// was lost while the request was in flight.
 		if ( !allCategories ) {
-			throw cannotFindCategoryError;
+			throw isOffline() ? noConnectionError : cannotFindCategoryError;
 		}
 
 		// If a user specifies the plugin configuration, find the first category that accepts the uploaded file.
@@ -188,7 +194,7 @@ export class CKBoxUtils extends Plugin {
 		const category = allCategories.find( category => category.extensions.find( e => e.toLowerCase() == extension ) );
 
 		if ( !category ) {
-			throw cannotFindCategoryError;
+			throw isOffline() ? noConnectionError : cannotFindCategoryError;
 		}
 
 		return category.id;

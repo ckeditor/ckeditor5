@@ -102,6 +102,7 @@ export { indexOf } from './dom/indexof.js';
 export { insertAt } from './dom/insertat.js';
 export { isComment } from './dom/iscomment.js';
 export { isDomSelectionBackward } from './dom/isdomselectionbackward.js';
+export { isOffline } from './dom/isoffline.js';
 export { isNode } from './dom/isnode.js';
 export { isRange } from './dom/isrange.js';
 export { isShadowRoot } from './dom/isshadowroot.js';

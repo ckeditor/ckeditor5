@@ -14,6 +14,7 @@ import {
 	createElement,
 	retry,
 	delay,
+	isOffline,
 	type AbortableFunc
 } from '@ckeditor/ckeditor5-utils';
 import type { ModelElement } from '@ckeditor/ckeditor5-engine';
@@ -127,13 +128,23 @@ export class CKBoxImageEditCommand extends Command {
 		this._prepareOptions( processingState ).then(
 			options => window.CKBox.mountImageEditor( wrapper, options ),
 			error => {
+				// The dialog this request was made for is already gone (the command has been destroyed),
+				// so there is nobody left to notify and no wrapper of ours to clean up.
+				if ( this._wrapper !== wrapper ) {
+					return;
+				}
+
 				const editor = this.editor;
 				const t = editor.t;
 				const notification = editor.plugins.get( Notification );
 
-				notification.showWarning( t( 'Failed to determine category of edited image.' ), {
-					namespace: 'ckbox'
-				} );
+				// `CKBoxUtils` rejects with a ready, localized message (including the one about the lost connection).
+				// Reusing it keeps the notification consistent with the logged reason, which would not be the case
+				// if the connection state was sampled again here, after the failure.
+				notification.showWarning(
+					typeof error == 'string' ? error : t( 'Failed to determine category of edited image.' ),
+					{ namespace: 'ckbox' }
+				);
 				console.error( error );
 				this._handleImageEditorClose();
 			}
@@ -288,9 +299,12 @@ export class CKBoxImageEditCommand extends Command {
 					}
 
 					if ( !error || error instanceof CKEditorError ) {
-						notification.showWarning( t( 'Server failed to process the image.' ), {
-							namespace: 'ckbox'
-						} );
+						notification.showWarning(
+							isOffline() ?
+								t( 'No internet connection. Check your connection and try again.' ) :
+								t( 'Server failed to process the image.' ),
+							{ namespace: 'ckbox' }
+						);
 					} else {
 						console.error( error );
 					}

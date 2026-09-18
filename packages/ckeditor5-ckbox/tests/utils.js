@@ -5,7 +5,14 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import { getWorkspaceId, getImageUrls, blurHashToDataUrl, convertMimeTypeToExtension, getContentTypeOfUrl } from '../src/utils.js';
+import {
+	getWorkspaceId,
+	getImageUrls,
+	blurHashToDataUrl,
+	convertMimeTypeToExtension,
+	getContentTypeOfUrl,
+	getFileExtension
+} from '../src/utils.js';
 
 describe( 'utils', () => {
 	describe( 'getWorkspaceId', () => {
@@ -293,5 +300,21 @@ describe( 'utils', () => {
 
 			expect( result ).toBe( '' );
 		} );
+	} );
+
+	describe( 'getFileExtension()', () => {
+		const testData = [
+			[ 'image.jpg', 'jpg' ],
+			[ 'image.JPG', 'jpg' ],
+			[ 'archive.tar.gz', 'gz' ],
+			[ 'file.name.with.dots.png', 'png' ],
+			[ '.hidden.txt', 'txt' ]
+		];
+
+		for ( const [ fileName, extension ] of testData ) {
+			it( `should return '${ extension }' for '${ fileName }'`, () => {
+				expect( getFileExtension( { name: fileName } ) ).toBe( extension );
+			} );
+		}
 	} );
 } );
