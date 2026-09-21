@@ -4,7 +4,7 @@ menu-title: Editor and content styles
 meta-title: Editor and content styles | CKEditor 5 Documentation
 meta-description: Learn how to style the editor and content with CSS.
 order: 90
-modified_at: 2024-06-25
+modified_at: 2026-09-17
 ---
 
 # Editor and content styles
@@ -87,32 +87,9 @@ To apply classes or styles directly to the editable area from the editor configu
 
 ### Styles inside a shadow DOM
 
-Attaching a shadow root creates a separate DOM tree, and style sheets are scoped to the tree they belong to. This isolation works both ways: selectors in a page style sheet do not match elements inside a shadow tree, and styles defined inside a shadow tree do not affect the rest of the page.
+Style sheets are scoped to the DOM tree they belong to. An editor inside a shadow root needs the editor style sheets loaded into that root rather than into the main document. Overriding a CSS variable differs as well: the override has to target the shadow host, because the editor declares its variables on `:host` there.
 
-Load the editor style sheets into the appropriate DOM tree where the editor is attached. For the light DOM, load them in the main document, as shown above. For an editor inside a shadow root, load styles into that root.
-
-Besides the main editing area, the editor also renders floating UI, such as balloons, tooltips, and dialogs, outside the editable. If you give it a separate shadow root through the {@link module:core/editor/editorconfig~UiConfig#overlayContainer `ui.overlayContainer`} configuration option, for example, one attached to an element at the end of the document body, load the same style sheets into that root as well.
-
-The editor declares its CSS variables on both `:root` and `:host`, so one style sheet resolves them in the main document and inside a shadow root alike. This is necessary because `:root` matches nothing inside a shadow tree, and `:host` matches nothing outside one.
-
-<info-box warning>
-	One consequence is that overriding a variable on `:root` has no effect on an editor inside a shadow root. Custom properties do inherit across the shadow boundary, so the value reaches the host. But the editor style sheet declares that variable on `:host`, which sets it on the host element itself, and a value set on an element always beats one inherited from an ancestor. Marking the override `!important` does not change this.
-</info-box>
-
-Override the variable on the shadow host element instead, or anywhere inside the shadow root. A rule in the main document that matches the host still wins, so the override does not have to live inside the root.
-
-Giving every host that holds editor UI the same class, the editor root and the overlay container alike, keeps this to a single rule:
-
-```css
-/* A class you put on every shadow host that holds editor UI. */
-.my-editor-shadow-host {
-	--ck-border-radius: 16px;
-}
-```
-
-<info-box warning>
-	One thing beyond styles depends on the mode you attach: placing the editor in a `<slot>` of your own component. A slot inside a **closed** root is not reported by `Element#assignedSlot`, and the DOM standard exposes no alternative, so the editor cannot work out which element really scrolls and clips it. Balloons are then positioned against the wrong ancestor, and scrolling the selection into view scrolls the window rather than your container. Attach an open root for that composition &ndash; which is what component frameworks attach by default.
-</info-box>
+The {@link getting-started/setup/shadow-dom Shadow DOM} guide covers both, together with where the floating user interface mounts.
 
 ## Customizing the look of the features
 

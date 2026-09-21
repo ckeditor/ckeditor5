@@ -15,7 +15,7 @@ The editor leans on some DOM APIs that resolve against the document, such as `do
 This guide covers helpers that replace those APIs, the problems you are most likely to hit, and the order to work through when porting a preexisting feature. It is intended for people writing editor features.
 
 <info-box>
-	Integrating CKEditor&nbsp;5 into a page that already uses a shadow root is a different job. The {@link getting-started/setup/css#styles-inside-a-shadow-dom Styles inside a shadow DOM} section of the CSS guide covers it.
+	Integrating CKEditor&nbsp;5 into a page that already uses a shadow root is a different job. The {@link getting-started/setup/shadow-dom Shadow DOM} guide covers it.
 </info-box>
 
 ## Start from a node, not from the document
@@ -167,7 +167,7 @@ Resolving the scrollable ancestor of the editing root gives `null`, or an elemen
 
 **Fix:** Walk with {@link module:utils/dom/getlayoutparentelement~getLayoutParentElement `getLayoutParentElement()`}, which crosses boundaries and follows slots &ndash; see [Structure or geometry](#structure-or-geometry-which-walk-to-use).
 
-Most features need no change at all, because the shared machinery already walks this way: {@link module:utils/dom/findclosestscrollableancestor~findClosestScrollableAncestor `findClosestScrollableAncestor()`}, `Rect#getVisible()`, {@link module:utils/dom/containsnode~containsNode `containsNode()`}, {@link module:utils/dom/getshadowroots~getShadowRoots `getShadowRoots()`} and the `scroll` utilities. What needs your attention is a hand-rolled `Node#parentNode` walk that feeds a measurement.
+Most features need no change at all, because the shared machinery already walks this way: {@link module:utils/dom/findclosestscrollableancestor~findClosestScrollableAncestor `findClosestScrollableAncestor()`}, {@link module:utils/dom/rect~Rect#getVisible `Rect#getVisible()`}, {@link module:utils/dom/containsnode~containsNode `containsNode()`}, {@link module:utils/dom/getshadowroots~getShadowRoots `getShadowRoots()`} and the `scroll` utilities. What needs your attention is a hand-rolled `Node#parentNode` walk that feeds a measurement.
 
 <info-box warning>
 	Slots are followed through `Element#assignedSlot`, which is `null` when the slot lives in a **closed** shadow root. Slotted content inside a closed root therefore keeps the wrong-tree behavior, and no helper can recover it &ndash; see [Known limitations](#known-limitations).
@@ -271,11 +271,11 @@ Inside a shadow root your feature renders with none of its colors, spacing or bo
 ```css
 :root,
 :host {
-	--ck-drop-shadow: 0 1px 2px 1px var(--ck-color-shadow-drop);
+	--ck-shadow-md: 0 1px 2px 1px var(--ck-color-shadow-drop);
 }
 ```
 
-The override itself has to target the host element or something inside the root &ndash; the {@link getting-started/setup/css#styles-inside-a-shadow-dom CSS guide} explains that to integrators.
+The override itself has to target the host element or something inside the root &ndash; the {@link getting-started/setup/shadow-dom#overriding-css-variables Shadow DOM} guide explains that to integrators.
 
 ### A style sheet rule for `<html>` or `<body>` never applies
 
@@ -310,7 +310,7 @@ Steps 1 and 2 lean on two ESLint rules from the [`eslint-plugin-ckeditor5-rules`
 4. **Decide, for every outward walk, whether it asks about structure or geometry.** A walk that feeds a `Rect`, a scroll handler or a positioning decision is asking about geometry and uses {@link module:utils/dom/getlayoutparentelement~getLayoutParentElement `getLayoutParentElement()`}. A walk that checks what contains a node is asking about structure and uses {@link module:utils/dom/getparentelement~getParentElement `getParentElement()`}. The linter cannot tell them apart, so this one is on you. See [Structure or geometry](#structure-or-geometry-which-walk-to-use).
 5. **Audit `relatedTarget` by hand.** The rule reports property access, so it finds `domEvent.relatedTarget` and misses `const { relatedTarget } = domEvent`. Grep for the destructured form yourself. The pointer's destination cannot be recovered at all &ndash; see [A focus or containment check gets it wrong](#a-focus-or-containment-check-gets-it-wrong).
 6. **Give the events that do not compose a listener per root.** A `document` listener for `scroll`, `mouseenter`, `mouseleave`, `pointerenter` or `pointerleave` never hears an event fired inside a shadow root, and needs a per-root listener beside it. See [Scroll and pointer listeners never fire](#scroll-and-pointer-listeners-never-fire).
-7. **Mount the floating UI in the right tree.** Any `BodyCollection#attachToDom()` with no argument puts the feature's balloons in the light DOM. UI that belongs to one editor takes that editor's `mountTarget`; UI that lives outside an editor, for example, in a container the integrator places, needs {@link module:ui/overlayhost~OverlayHost `OverlayHost`}. This is the step with real design decisions, so give it a thought &ndash; see [Floating UI renders unstyled](#floating-ui-renders-unstyled-or-is-clipped-by-its-own-container).
+7. **Mount the floating UI in the right tree.** Any {@link module:ui/editorui/bodycollection~BodyCollection#attachToDom `BodyCollection#attachToDom()`} with no argument puts the feature's balloons in the light DOM. UI that belongs to one editor takes that editor's `mountTarget`; UI that lives outside an editor, for example, in a container the integrator places, needs {@link module:ui/overlayhost~OverlayHost `OverlayHost`}. This is the step with real design decisions, so give it a thought &ndash; see [Floating UI renders unstyled](#floating-ui-renders-unstyled-or-is-clipped-by-its-own-container).
 8. **Re-scope the element lookups.** `document.querySelector()` searches the document only, so it cannot find the feature's own elements once they are inside a shadow root. Query from a node the feature already holds instead. See [A selector finds nothing](#a-selector-finds-nothing).
 9. **Add a closed-root manual test** and work through it by hand. See [Testing in a shadow root](#testing-in-a-shadow-root).
 
