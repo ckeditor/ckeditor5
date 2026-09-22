@@ -46,6 +46,9 @@ export { ButtonLabelView } from './button/buttonlabelview.js';
 export { SwitchButtonView } from './button/switchbuttonview.js';
 export { ListItemButtonView } from './button/listitembuttonview.js';
 
+export { TabButtonView, TAB_POSITIONS, type TabButtonViewOptions, type TabPosition } from './tabs/tabbuttonview.js';
+export { TabPanelView } from './tabs/tabpanelview.js';
+
 export {
 	FileDialogButtonView,
 	FileDialogListItemButtonView,

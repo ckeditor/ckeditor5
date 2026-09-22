@@ -77,3 +77,5 @@
 @import "./components/menubar/menubarmenu.css";
 @import "./components/menubar/menubarmenulistitem.css";
 @import "./components/menubar/menubarmenulistitembutton.css";
+@import "./components/tabs/tabbutton.css";
+@import "./components/tabs/tabpanel.css";

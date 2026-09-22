@@ -11,6 +11,7 @@
 	--ck-color-base-border-light: hsl(214, 39%, 93%);
 	--ck-color-base-action: hsl(227.7, 62.7%, 55.9%);
 	--ck-color-base-action-hover: hsl(227, 58%, 49%);
+	--ck-color-base-action-muted: hsl(228, 47%, 93%);
 	--ck-color-base-action-disabled: hsl(227.7, 62.7%, 77.9%);
 	--ck-color-base-focus: hsl(227.7, 62.7%, 55.9%);
 	--ck-color-base-text: hsl(216, 41%, 12%);
@@ -18,6 +19,7 @@
 	--ck-color-base-active: hsl(227.7, 62.7%, 55.9%);
 	--ck-color-base-active-focus: hsl(227, 58%, 49%);
 	--ck-color-base-hover: hsl(225, 20%, 96%);
+	--ck-color-base-hover-strong: hsl(225, 24%, 93%);
 	--ck-color-base-selected: hsl(220, 78.9%, 96.3%);
 	--ck-color-base-selected-hover: hsl(221, 81%, 94%);
 	--ck-color-base-error: hsl(0, 74.9%, 46.9%);

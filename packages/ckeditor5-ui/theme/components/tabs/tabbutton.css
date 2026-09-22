@@ -1,0 +1,194 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root,
+:host {
+	/* Sizing */
+	--ck-tab-button-size: 36px;
+	/* Two margins by role: the larger one (-bar) holds the active-indicator bar, the smaller one (-gap)
+	   is the space between adjacent tabs. Left/right tabs put the bar margin inline (defaults below);
+	   top tabs swap them (see .ck-tab-button_top). */
+	--ck-tab-button-margin-bar: var(--ck-spacing-gap);
+	--ck-tab-button-margin-gap: var(--ck-spacing-gap-compact);
+	--ck-tab-button-margin-block: var(--ck-tab-button-margin-gap);
+	--ck-tab-button-margin-inline: var(--ck-tab-button-margin-bar);
+	--ck-tab-button-icon-size: 20px;
+	/* Follows the core radius scale. Intentionally rounder than --ck-border-radius-control (which is
+	   tighter), to keep the distinct tab-button shape. */
+	--ck-tab-button-border-radius: var(--ck-radius-base);
+	--ck-tab-button-border-width: var(--ck-border-width-control);
+	/* Inline padding for labeled tabs (those that size to content via .ck-button_with-text). */
+	--ck-tab-button-with-text-padding-inline: var(--ck-spacing-padding-compact);
+
+	/* Color */
+	--ck-tab-button-background: transparent;
+	--ck-tab-button-active-background: var(--ck-color-interactive-primary-surface-muted);
+	--ck-tab-button-icon-color: var(--ck-color-base-text-light);
+	/* Accent used for the active icon, the active indicator and the hover/focus border. */
+	--ck-tab-button-active-icon-color: var(--ck-color-base-action);
+	/* Backgrounds shown while focused, and while focused and hovered at once. */
+	--ck-tab-button-focus-background: var(--ck-color-base-background);
+	--ck-tab-button-focus-hover-background: var(--ck-color-interactive-hover-surface-strong);
+
+	/* Active indicator: the bar on the tab's outer edge, growing from hidden to hover to active. */
+	--ck-tab-button-indicator-width: 3px;
+	--ck-tab-button-indicator-radius: var(--ck-border-radius-control-small);
+	--ck-tab-button-indicator-hover-height: 16px;
+	--ck-tab-button-indicator-active-height: 28px;
+	/* Intentionally hardcoded: a light tint of the accent color with no semantic equivalent yet. */
+	--ck-tab-button-indicator-hover-color: hsl(228, 63%, 86%);
+	/* Follows the active icon color, so overriding the accent retints both the icon and the bar. */
+	--ck-tab-button-indicator-active-color: var(--ck-tab-button-active-icon-color);
+
+	/* Small variant (opt in with .ck-tab-button_small). */
+	--ck-tab-button-size-small: 28px;
+	--ck-tab-button-margin-bar-small: 5px;
+	--ck-tab-button-margin-gap-small: var(--ck-spacing-gap-tight);
+	--ck-tab-button-indicator-width-small: 2px;
+	--ck-tab-button-indicator-hover-height-small: 14px;
+	--ck-tab-button-indicator-active-height-small: 24px;
+}
+
+.ck.ck-button.ck-tab-button {
+	/* Per-state indicator geometry/color; overridden on hover and in the active (.ck-on) state. */
+	--ck-tab-button-indicator-length: 0;
+	--ck-tab-button-indicator-color: transparent;
+
+	position: relative;
+	box-sizing: border-box;
+	width: var(--ck-tab-button-size);
+	height: var(--ck-tab-button-size);
+	min-width: 0;
+	min-height: 0;
+	padding: 0;
+	margin: var(--ck-tab-button-margin-block) var(--ck-tab-button-margin-inline);
+	border: var(--ck-tab-button-border-width) solid transparent;
+	border-radius: var(--ck-tab-button-border-radius);
+	cursor: pointer;
+	justify-content: center;
+	background: var(--ck-tab-button-background);
+	transition: background-color .2s ease, border-color .2s ease;
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: var(--ck-transition-none);
+	}
+
+	& .ck.ck-icon {
+		--ck-icon-size: var(--ck-tab-button-icon-size);
+		color: var(--ck-tab-button-icon-color);
+	}
+
+	/* The active-state indicator bar. Length and color come from the per-state variables above. */
+	&::before {
+		content: '';
+		position: absolute;
+		background: var(--ck-tab-button-indicator-color);
+		transition: width .2s ease, height .2s ease, background-color .2s ease;
+		pointer-events: none;
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: var(--ck-transition-none);
+		}
+	}
+
+	/* The accent border shows on focus only (including active + focus, which matches :focus). */
+	&:not(.ck-disabled):focus {
+		border-color: var(--ck-tab-button-active-icon-color);
+	}
+
+	&:not(.ck-disabled):hover {
+		background: var(--ck-tab-button-active-background);
+	}
+
+	&:not(.ck-disabled):focus {
+		background: var(--ck-tab-button-focus-background);
+	}
+
+	/* Focused and hovered at once uses its own background. */
+	&:not(.ck-disabled):hover:focus {
+		background: var(--ck-tab-button-focus-hover-background);
+	}
+
+	/* Hover grows the indicator to its hover size only on inactive tabs; an active (.ck-on) tab keeps
+	   its active-size indicator on hover and merely gains the border. */
+	&:not(.ck-disabled):not(.ck-on):hover {
+		--ck-tab-button-indicator-length: var(--ck-tab-button-indicator-hover-height);
+		--ck-tab-button-indicator-color: var(--ck-tab-button-indicator-hover-color);
+	}
+
+	&.ck-on {
+		background: var(--ck-tab-button-active-background);
+		color: var(--ck-tab-button-active-icon-color);
+
+		--ck-tab-button-indicator-length: var(--ck-tab-button-indicator-active-height);
+		--ck-tab-button-indicator-color: var(--ck-tab-button-indicator-active-color);
+
+		& .ck.ck-icon {
+			color: var(--ck-tab-button-active-icon-color);
+		}
+	}
+
+	/* Small variant: a more compact tab button. Colors and states are inherited; only sizes change. */
+	&.ck-tab-button_small {
+		--ck-tab-button-size: var(--ck-tab-button-size-small);
+		--ck-tab-button-margin-bar: var(--ck-tab-button-margin-bar-small);
+		--ck-tab-button-margin-gap: var(--ck-tab-button-margin-gap-small);
+		--ck-tab-button-indicator-width: var(--ck-tab-button-indicator-width-small);
+		--ck-tab-button-indicator-hover-height: var(--ck-tab-button-indicator-hover-height-small);
+		--ck-tab-button-indicator-active-height: var(--ck-tab-button-indicator-active-height-small);
+	}
+
+	/* Top tabs run horizontally, so the bar margin moves to the block axis and the gap to the inline axis. */
+	&.ck-tab-button_top {
+		--ck-tab-button-margin-block: var(--ck-tab-button-margin-bar);
+		--ck-tab-button-margin-inline: var(--ck-tab-button-margin-gap);
+	}
+
+	/* A tab with a visible text label sizes to its content (icon + label) instead of the icon square. */
+	&.ck-button_with-text {
+		width: auto;
+		min-width: var(--ck-tab-button-size);
+		padding-inline: var(--ck-tab-button-with-text-padding-inline);
+	}
+
+	/*
+	 * The bar sits on the panel-facing (inner) edge - the side opposite to where the tab container is
+	 * placed. The `_left`/`_right`/`_top` classes name the container side, so a `_left` container puts
+	 * the bar on the inline-end, `_right` on the inline-start, and `_top` on the block-end.
+	 */
+
+	/* Vertical (left/right) tabs: a vertical bar centered vertically on the inner inline edge. */
+	&.ck-tab-button_left::before,
+	&.ck-tab-button_right::before {
+		inset-block-start: 50%;
+		transform: translateY(-50%);
+		width: var(--ck-tab-button-indicator-width);
+		height: var(--ck-tab-button-indicator-length);
+	}
+
+	&.ck-tab-button_left::before {
+		inset-inline-end: calc(-1 * (var(--ck-tab-button-margin-inline) + var(--ck-tab-button-border-width)));
+		border-start-start-radius: var(--ck-tab-button-indicator-radius);
+		border-end-start-radius: var(--ck-tab-button-indicator-radius);
+	}
+
+	&.ck-tab-button_right::before {
+		inset-inline-start: calc(-1 * (var(--ck-tab-button-margin-inline) + var(--ck-tab-button-border-width)));
+		border-start-end-radius: var(--ck-tab-button-indicator-radius);
+		border-end-end-radius: var(--ck-tab-button-indicator-radius);
+	}
+
+	/* Horizontal (top) tabs: a horizontal bar centered horizontally on the inner block edge. */
+	&.ck-tab-button_top::before {
+		inset-block-end: calc(-1 * (var(--ck-tab-button-margin-block) + var(--ck-tab-button-border-width)));
+		/* Center horizontally in a direction-agnostic way (a physical translateX would not flip in RTL). */
+		inset-inline: 0;
+		margin-inline: auto;
+		width: var(--ck-tab-button-indicator-length);
+		height: var(--ck-tab-button-indicator-width);
+		border-start-start-radius: var(--ck-tab-button-indicator-radius);
+		border-start-end-radius: var(--ck-tab-button-indicator-radius);
+	}
+}

@@ -7,7 +7,7 @@
  * @module emoji/ui/emojicategoriesview
  */
 
-import { ButtonView, View, FocusCycler, type ViewCollection } from '@ckeditor/ckeditor5-ui';
+import { TabButtonView, View, FocusCycler, type ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, type Locale, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import type { EmojiCategory } from '../emojirepository.js';
 
@@ -39,7 +39,7 @@ export class EmojiCategoriesView extends View {
 	/**
 	 * A collection of the categories buttons.
 	 */
-	public readonly buttonViews: ViewCollection<ButtonView>;
+	public readonly buttonViews: ViewCollection<TabButtonView>;
 
 	/**
 	 * @inheritDoc
@@ -167,8 +167,8 @@ export class EmojiCategoriesView extends View {
 	/**
 	 * Creates a button representing a category item.
 	 */
-	private _createCategoryButton( emojiCategory: EmojiCategory ): ButtonView {
-		const buttonView = new ButtonView();
+	private _createCategoryButton( emojiCategory: EmojiCategory ): TabButtonView {
+		const buttonView = new TabButtonView( this.locale, { side: 'top', class: 'ck-tab-button_small' } );
 		const bind = buttonView.bindTemplate;
 
 		// A `[role="tab"]` element requires also the `[aria-selected]` attribute with its state.
@@ -187,6 +187,9 @@ export class EmojiCategoriesView extends View {
 			role: 'tab',
 			tooltip: emojiCategory.title,
 			withText: true,
+			// These items use tab semantics (`role="tab"` + `[aria-selected]`), so turn off the toggle
+			// behavior inherited from `TabButtonView` to avoid also emitting a conflicting `[aria-pressed]`.
+			isToggleable: false,
 			// To improve accessibility, disconnect a button and its label connection so that screen
 			// readers can read the `[aria-label]` attribute directly from the more descriptive button.
 			ariaLabelledBy: undefined

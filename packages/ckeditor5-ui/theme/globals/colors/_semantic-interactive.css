@@ -13,6 +13,7 @@
 	--ck-color-interactive-focus-error-shadow: var(--ck-color-base-error-shadow);
 
 	--ck-color-interactive-hover-surface: var(--ck-color-base-hover);
+	--ck-color-interactive-hover-surface-strong: var(--ck-color-base-hover-strong);
 	--ck-color-interactive-active-surface: var(--ck-color-base-hover);
 	--ck-color-interactive-selected-surface: var(--ck-color-base-selected);
 	--ck-color-interactive-selected-surface-hover: var(--ck-color-base-selected-hover);
@@ -20,6 +21,7 @@
 
 	--ck-color-interactive-primary-surface: var(--ck-color-base-action);
 	--ck-color-interactive-primary-surface-hover: var(--ck-color-base-action-hover);
+	--ck-color-interactive-primary-surface-muted: var(--ck-color-base-action-muted);
 	--ck-color-interactive-primary-surface-disabled: var(--ck-color-base-action-disabled);
 	--ck-color-interactive-primary-text: var(--ck-color-text-inverse);
 
