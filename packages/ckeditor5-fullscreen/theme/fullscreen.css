@@ -27,8 +27,6 @@ body.ck-fullscreen,
 :host(.ck-fullscreen) {
 	--ck-z-fullscreen: 10000;
 
-	overflow: hidden;
-
 	/* Override both legacy and new z-index tokens for fullscreen mode. */
 	--ck-z-default: calc(var(--ck-z-fullscreen) + 1); /* legacy */
 	--ck-z-base: calc(var(--ck-z-fullscreen) + 1);
