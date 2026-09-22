@@ -52,7 +52,7 @@
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "es-toolkit": "1.52.0",
-    "sanitize-html": "^2.13.0",
+    "sanitize-html": "^2.17.7",
     "vitest": "catalog:"
   },
   "scripts": {
