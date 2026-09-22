@@ -191,6 +191,49 @@ describe( 'DropdownView', () => {
 						} ) );
 					} );
 
+					it( 'does not pass a limiter to _getOptimalPosition() by default', () => {
+						const spy = vi.spyOn( DropdownView, '_getOptimalPosition' );
+
+						view.isOpen = true;
+
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy.mock.calls[ 0 ][ 0 ].limiter ).toBeUndefined();
+					} );
+
+					it( 'passes view#panelPositionLimiter (an element) as the limiter', () => {
+						const spy = vi.spyOn( DropdownView, '_getOptimalPosition' );
+						const limiterElement = global.document.createElement( 'div' );
+
+						view.panelPositionLimiter = limiterElement;
+						view.isOpen = true;
+
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy.mock.calls[ 0 ][ 0 ].limiter ).toBe( limiterElement );
+					} );
+
+					it( 'resolves view#panelPositionLimiter when it is a function', () => {
+						const spy = vi.spyOn( DropdownView, '_getOptimalPosition' );
+						const limiterElement = global.document.createElement( 'div' );
+						const limiterSpy = vi.fn( () => limiterElement );
+
+						view.panelPositionLimiter = limiterSpy;
+						view.isOpen = true;
+
+						expect( limiterSpy ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy.mock.calls[ 0 ][ 0 ].limiter ).toBe( limiterElement );
+					} );
+
+					it( 'does not pass a limiter when view#panelPositionLimiter (a function) returns null', () => {
+						const spy = vi.spyOn( DropdownView, '_getOptimalPosition' );
+
+						view.panelPositionLimiter = () => null;
+						view.isOpen = true;
+
+						expect( spy ).toHaveBeenCalledOnce();
+						expect( spy.mock.calls[ 0 ][ 0 ].limiter ).toBeUndefined();
+					} );
+
 					it( 'fallback when _getOptimalPosition() will return null', () => {
 						const locale = {
 							t() {}

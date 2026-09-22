@@ -187,6 +187,19 @@ export class DropdownView extends View<HTMLDivElement> {
 	declare public panelPosition: PanelPosition | 'auto';
 
 	/**
+	 * An optional limiter used when {@link #panelPosition} is `'auto'`.
+	 *
+	 * By default, the `'auto'` position is only checked against the browser viewport, so a dropdown
+	 * nested in a scrollable ancestor (e.g. a sidebar list) may pick a position that fits the window
+	 * but is actually clipped by, or forces extra scrolling in, that ancestor. Set this to the
+	 * scrollable ancestor (or a callback returning it) to have the optimal position calculation take
+	 * its visible bounds into account too.
+	 *
+	 * @default null
+	 */
+	public panelPositionLimiter: HTMLElement | ( () => HTMLElement | null ) | null = null;
+
+	/**
 	 * @observable
 	 */
 	declare public ariaDescribedById: string | undefined;
@@ -276,11 +289,16 @@ export class DropdownView extends View<HTMLDivElement> {
 			// If "auto", find the best position of the panel to fit into the viewport.
 			// Otherwise, simply assign the static position.
 			if ( this.panelPosition === 'auto' ) {
+				const limiter = typeof this.panelPositionLimiter === 'function' ?
+					this.panelPositionLimiter() :
+					this.panelPositionLimiter;
+
 				const optimalPanelPosition = DropdownView._getOptimalPosition( {
 					element: this.panelView.element!,
 					target: this.buttonView.element!,
 					fitInViewport: true,
-					positions: this._panelPositions
+					positions: this._panelPositions,
+					...( limiter ? { limiter } : {} )
 				} );
 
 				this.panelView.position = (

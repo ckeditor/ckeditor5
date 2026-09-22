@@ -128,19 +128,10 @@ export class TextareaView extends InputBase<HTMLTextAreaElement> {
 			this.fire<TextareaViewUpdateEvent>( 'update' );
 		} );
 
-		this.on( 'change:value', () => {
-			// The content needs to be updated by the browser after the value is changed. It takes a few ms.
-			global.window.requestAnimationFrame( () => {
-				if ( !isVisible( this.element ) ) {
-					this._isUpdateAutoGrowHeightPending = true;
-
-					return;
-				}
-
-				this._updateAutoGrowHeight();
-				this.fire<TextareaViewUpdateEvent>( 'update' );
-			} );
-		} );
+		// The height depends on the value but also on the placeholder, which is rendered whenever the textarea
+		// is empty and, when long enough, wraps into multiple lines.
+		this.on( 'change:value', () => this._updateAutoGrowHeightWhenVisible() );
+		this.on( 'change:placeholder', () => this._updateAutoGrowHeightWhenVisible() );
 
 		// It may occur that the Textarea size needs to be updated (e.g. because it's content was changed)
 		// when it is not visible or detached from DOM.
@@ -181,6 +172,25 @@ export class TextareaView extends InputBase<HTMLTextAreaElement> {
 
 		this._updateAutoGrowHeight();
 		this.fire<TextareaViewUpdateEvent>( 'update' );
+	}
+
+	/**
+	 * Updates the {@link #_height} of the view once the DOM element reflects the change that triggered the update.
+	 * If the view is not visible at that moment, the update is deferred until it becomes visible again
+	 * (see {@link #_resizeObserver}).
+	 */
+	private _updateAutoGrowHeightWhenVisible(): void {
+		// The DOM element needs to be updated by the browser first. It takes a few ms.
+		global.window.requestAnimationFrame( () => {
+			if ( !isVisible( this.element ) ) {
+				this._isUpdateAutoGrowHeightPending = true;
+
+				return;
+			}
+
+			this._updateAutoGrowHeight();
+			this.fire<TextareaViewUpdateEvent>( 'update' );
+		} );
 	}
 
 	/**
