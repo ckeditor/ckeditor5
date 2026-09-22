@@ -11,6 +11,8 @@
 	--ck-link-provider-list-item-text-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
 	/* The height of the link providers list item contained paddings. */
 	--ck-link-provider-list-item-height: calc(var(--ck-link-provider-list-item-text-height) + var(--ck-spacing-small, var(--ck-spacing-sm)) + var(--ck-spacing-small, var(--ck-spacing-sm)));
+	/* Bottom padding so the last provider button is not flush against the list's bottom edge. */
+	--ck-link-provider-list-padding-bottom: var(--ck-spacing-padding-compact);
 }
 
 /* Generic class that wraps each link balloon view. */
@@ -31,6 +33,7 @@
 		display: flex;
 		flex-direction: column;
 		position: relative;
+		padding-bottom: var(--ck-link-provider-list-padding-bottom);
 
 		/* Full-width divider drawn as an overlay so the panel's rounded corners
 		don't clip its ends like a real top border would. */

@@ -50,12 +50,19 @@ export function getBalloonPositionData( editor: Editor ): Partial<DomOptimalPosi
 			imageUtils.getClosestSelectedImageWidget( editingView.document.selection )!
 		) as HTMLElement,
 		positions: [
+			// Prefer centering the balloon on the image (unchanged for centered or inline images).
 			defaultPositions.northArrowSouth,
-			defaultPositions.northArrowSouthWest,
-			defaultPositions.northArrowSouthEast,
+			// When centering would overflow the editable (e.g. a left- or right-aligned image that
+			// leaves little room on one side), hug the image's near edge instead of drifting toward
+			// the editable center: its left edge for left-aligned images, its right edge for
+			// right-aligned ones. `getOptimalPosition` picks the first candidate that fully fits, so
+			// it self-selects the correct side based on where the image sits.
+			defaultPositions.northWestArrowSouthWest,
+			defaultPositions.northEastArrowSouthEast,
+			// The same set, below the image.
 			defaultPositions.southArrowNorth,
-			defaultPositions.southArrowNorthWest,
-			defaultPositions.southArrowNorthEast,
+			defaultPositions.southWestArrowNorthWest,
+			defaultPositions.southEastArrowNorthEast,
 			defaultPositions.viewportStickyNorth
 		]
 	};

@@ -792,7 +792,7 @@ export class FullscreenAbstractEditorHandler {
 
 		button.set( {
 			label: t( 'Toggle sidebar' ),
-			class: 'ck-fullscreen__left-sidebar-toggle-button',
+			class: 'ck-fullscreen__left-sidebar-toggle-button ck-button_surface',
 			tooltip: t( 'Hide left sidebar' ),
 			tooltipPosition: 'se',
 			icon: IconPreviousArrow

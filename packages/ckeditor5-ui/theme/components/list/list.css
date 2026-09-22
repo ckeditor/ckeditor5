@@ -6,11 +6,13 @@
 :root,
 :host {
 	/* Size */
-	--ck-list-item-min-width: 15em;
+	--ck-list-item-min-width: 10em;
 
 	/* Spacing */
 	--ck-list-padding: var(--ck-spacing-padding-compact);
 	--ck-list-item-outer-padding: var(--ck-spacing-padding-tight);
+	/* Negative inline margin that bleeds the separator across the list's inline padding to both edges. */
+	--ck-list-separator-inline-margin: calc(-1 * var(--ck-spacing-padding-compact));
 
 	/* Radius */
 	--ck-list-border-radius: var(--ck-border-radius-surface);
@@ -41,6 +43,9 @@
 
 	/* Modifier that removes the list's inline (left/right) padding. */
 	&.ck-list_no-inline-padding {
+		/* No inline padding to bleed into, so the separator does not bleed either. */
+		--ck-list-separator-inline-margin: 0;
+
 		padding-inline: 0;
 	}
 
@@ -147,9 +152,10 @@
 
 .ck.ck-list__separator {
 	height: 1px;
-	width: 100%;
+	/* Full-bleed: the negative inline margin pulls the divider across the list's inline padding to both edges. */
+	width: calc(100% - 2 * var(--ck-list-separator-inline-margin));
 	background: var(--ck-list-divider-color);
 
-	/* Give the separator some air */
-	margin: var(--ck-spacing-gap-compact) 0;
+	/* Vertical air, plus the inline bleed on both sides. */
+	margin: var(--ck-spacing-gap-compact) var(--ck-list-separator-inline-margin);
 }

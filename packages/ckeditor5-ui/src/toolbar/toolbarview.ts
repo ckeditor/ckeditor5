@@ -1012,10 +1012,15 @@ class DynamicGrouping implements ToolbarBehavior {
 			this.cachedPadding = Number.parseInt( computedStyle[ paddingProperty ] );
 		}
 
+		// A sub-pixel tolerance so that browser/OS zoom rounding of the Rects (getBoundingClientRect()
+		// returns fractional values at non-integer zoom levels) does not falsely report an overflow and
+		// cascade every item into the grouped dropdown.
+		const overflowTolerance = 1;
+
 		if ( uiLanguageDirection === 'ltr' ) {
-			return lastChildRect.right > toolbarRect.right - this.cachedPadding;
+			return lastChildRect.right > toolbarRect.right - this.cachedPadding + overflowTolerance;
 		} else {
-			return lastChildRect.left < toolbarRect.left + this.cachedPadding;
+			return lastChildRect.left < toolbarRect.left + this.cachedPadding - overflowTolerance;
 		}
 	}
 

@@ -6,7 +6,7 @@
 :root,
 :host {
 	/* Spacing */
-	--ck-collapsible-children-padding: var(--ck-spacing-padding) 0 0;
+	--ck-collapsible-children-padding: var(--ck-spacing-padding-comfortable) 0 0;
 
 	/* Radius */
 	--ck-collapsible-button-border-radius: var(--ck-border-radius-control);

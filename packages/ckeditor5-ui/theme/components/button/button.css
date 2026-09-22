@@ -37,11 +37,15 @@
 	--ck-button-action-background-color: var(--ck-color-interactive-primary-surface);
 	--ck-button-action-hover-background-color: var(--ck-color-interactive-primary-surface-hover);
 	--ck-button-action-active-background-color: var(--ck-color-interactive-primary-surface-hover);
-	/* Intentionally hardcoded: a faded variant of the action color with no semantic equivalent yet. */
-	--ck-button-action-disabled-background-color: hsl(228, 63%, 76%);
+	--ck-button-action-disabled-background-color: var(--ck-color-interactive-primary-surface-disabled);
+	/* The disabled action button reads its state from the faded background, so its label/icon stay fully opaque. */
+	--ck-button-action-opacity-disabled: 1;
 	--ck-button-action-text-color: var(--ck-color-interactive-primary-text);
 	--ck-button-save-color: var(--ck-color-feedback-success);
 	--ck-button-cancel-color: var(--ck-color-feedback-error);
+
+	/* Spacing */
+	--ck-button-icon-gap: var(--ck-spacing-gap-compact);
 
 	/* State / meta */
 	--ck-button-focus-border-color: var(--ck-interactive-focus-border-color);
@@ -199,11 +203,11 @@
 
 		& .ck-button__icon {
 			[dir="ltr"] & {
-				margin-right: var(--ck-spacing-control-icon-gap);
+				margin-right: var(--ck-button-icon-gap);
 			}
 
 			[dir="rtl"] & {
-				margin-left: var(--ck-spacing-control-icon-gap);
+				margin-left: var(--ck-button-icon-gap);
 			}
 		}
 		& .ck-button__label {
@@ -277,21 +281,110 @@
 	&.ck-button_small {
 		justify-content: center;
 	}
-}
 
-/* A style of the button which handles the primary action. */
 
-.ck.ck-button-action,
-a.ck.ck-button-action {
-	--ck-button-background: var(--ck-button-action-background-color);
-	--ck-button-hover-background: var(--ck-button-action-hover-background-color);
-	--ck-button-active-background: var(--ck-button-action-active-background-color);
-	--ck-button-disabled-background: var(--ck-button-action-disabled-background-color);
+	/* A style of the button which handles the primary action. */
+	&.ck-button-action {
+		--ck-button-background: var(--ck-button-action-background-color);
+		--ck-button-hover-background: var(--ck-button-action-hover-background-color);
+		--ck-button-active-background: var(--ck-button-action-active-background-color);
+		--ck-button-disabled-background: var(--ck-button-action-disabled-background-color);
+		--ck-button-opacity-disabled: var(--ck-button-action-opacity-disabled);
 
-	color: var(--ck-button-action-text-color);
-}
+		color: var(--ck-button-action-text-color);
+	}
 
-.ck.ck-button-bold,
-a.ck.ck-button-bold {
-	font-weight: var(--ck-font-weight-ui-emphasis);
+	&.ck-button-bold {
+		font-weight: var(--ck-font-weight-ui-emphasis);
+	}
+
+	/*
+	* A modifier that makes the button use the surface (canvas) color as its background across all
+	* engaged states - hover, focus, active (pressed) and on (toggled) - instead of the default subtle
+	* tints. The button keeps its resting background; the surface color only appears once engaged.
+	* Useful for buttons on a tinted or filled background that should lift to the surface color on
+	* interaction. Override --ck-button-surface-background to retarget all four states at once;
+	* it defaults to --ck-color-surface-canvas, so it follows the theme (e.g. dark mode) and integrator
+	* overrides rather than a hardcoded white. In the toggled-on state it also gains the accent border
+	* used by the outline variant (retarget with --ck-button-surface-border-color).
+	*/
+	&.ck-button_surface {
+		--ck-button-surface-background: var(--ck-color-surface-canvas);
+		--ck-button-surface-border-color: var(--ck-color-interactive-primary-surface);
+
+		--ck-button-hover-background: var(--ck-button-surface-background);
+		--ck-button-active-background: var(--ck-button-surface-background);
+
+		/* Focus does not swap the background by default, so apply the engaged surface color explicitly
+		(routed through the same variable so all four states stay overridable together). */
+		&:not(.ck-disabled):focus {
+			background: var(--ck-button-surface-background);
+		}
+
+		/* Keep the surface background in the toggled-on state, which otherwise uses the selected tints. */
+		&.ck-on {
+			--ck-button-background: var(--ck-button-surface-background);
+			--ck-button-hover-background: var(--ck-button-surface-background);
+			--ck-button-active-background: var(--ck-button-surface-background);
+
+			/* Delineate the raised surface with the accent border from the outline variant. Suppressed
+			on focus so the focus outline shows instead. */
+			&:not(:focus) {
+				border: var(--ck-border-width-control) solid var(--ck-button-surface-border-color);
+			}
+		}
+	}
+
+	/*
+	* A modifier that renders the button as an outline (bordered) variant: an accent-colored label and
+	* border on the surface background, tinting through the interactive surface shades on hover and when
+	* toggled on, while the accent text and border stay put. A faithful port of the AI "secondary"
+	* button. Override --ck-button-outline-color (the accent used for the label and border) or the
+	* per-state background variables to retarget it; they default to the theme's semantic interactive
+	* roles.
+	*/
+	&.ck-button_outline {
+		--ck-button-outline-color: var(--ck-color-interactive-primary-surface);
+		--ck-button-outline-background: var(--ck-color-surface-canvas);
+		--ck-button-outline-hover-background: var(--ck-color-interactive-hover-surface);
+		--ck-button-outline-active-background: var(--ck-color-interactive-selected-surface);
+		--ck-button-outline-active-hover-background: var(--ck-color-interactive-selected-surface-hover);
+
+		color: var(--ck-button-outline-color);
+		background: var(--ck-button-outline-background);
+
+		/* Focus swaps the border for the focus outline, so only draw the accent border when not focused. */
+		&:not(:focus) {
+			border: var(--ck-border-width-control) solid var(--ck-button-outline-color);
+		}
+
+		/* Active (pressed) and toggled-on share the selected surface, deepening one step on hover. */
+		&:active,
+		&.ck-on {
+			&:not(.ck-disabled) {
+				color: var(--ck-button-outline-color);
+				background: var(--ck-button-outline-active-background);
+
+				&:hover {
+					background: var(--ck-button-outline-active-hover-background);
+				}
+			}
+		}
+
+		/* Dim the whole button (border included) when disabled and keep the label and icon fully opaque. */
+		&:disabled,
+		&.ck-disabled {
+			opacity: var(--ck-button-opacity-disabled);
+			background: var(--ck-button-outline-background);
+
+			& > .ck-button__label,
+			& > .ck-button__icon {
+				opacity: 1;
+			}
+		}
+
+		&:hover:not(.ck-disabled, :active, .ck-on) {
+			background: var(--ck-button-outline-hover-background);
+		}
+	}
 }

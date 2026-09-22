@@ -1680,6 +1680,89 @@ describe( 'ToolbarView', () => {
 				view.destroy();
 				view.element.remove();
 			} );
+
+			// A sub-pixel overflow is rounding noise from getBoundingClientRect() at non-integer zoom
+			// levels and must not cascade every item into the grouped dropdown.
+			it( 'ignores a sub-pixel overflow (LTR UI)', () => {
+				view.class = 'ck-reset_all';
+				view.element.style.width = '400px';
+				view.element.style.paddingLeft = '0px';
+				view.element.style.paddingRight = '20px';
+
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				const behavior = view._behavior;
+
+				// The content boundary sits at 400 - 20 = 380px.
+				behavior.cachedPadding = 20;
+				vi.spyOn( view.element, 'getBoundingClientRect' ).mockReturnValue(
+					{ left: 0, right: 400, top: 0, bottom: 30, width: 400, height: 30 }
+				);
+
+				// Overflowing the boundary by only 0.6px is rounding noise, not a real overflow.
+				vi.spyOn( view.element.lastChild, 'getBoundingClientRect' ).mockReturnValue(
+					{ left: 0, right: 380.6, top: 0, bottom: 30, width: 380.6, height: 30 }
+				);
+
+				expect( behavior._areItemsOverflowing ).toBe( false );
+
+				// A genuine overflow (more than a pixel past the boundary) is still detected.
+				view.element.lastChild.getBoundingClientRect.mockReturnValue(
+					{ left: 0, right: 381.5, top: 0, bottom: 30, width: 381.5, height: 30 }
+				);
+
+				expect( behavior._areItemsOverflowing ).toBe( true );
+			} );
+
+			it( 'ignores a sub-pixel overflow (RTL UI)', () => {
+				const locale = new Locale( { uiLanguage: 'ar' } );
+				const view = new ToolbarView( locale, {
+					shouldGroupWhenFull: true
+				} );
+
+				view.extendTemplate( {
+					attributes: {
+						dir: locale.uiLanguageDirection
+					}
+				} );
+
+				view.render();
+				document.body.appendChild( view.element );
+
+				view.class = 'ck-reset_all';
+				view.element.style.width = '400px';
+				view.element.style.paddingLeft = '20px';
+				view.element.style.paddingRight = '0px';
+
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				const behavior = view._behavior;
+
+				// The content boundary sits at 0 + 20 = 20px from the left.
+				behavior.cachedPadding = 20;
+				vi.spyOn( view.element, 'getBoundingClientRect' ).mockReturnValue(
+					{ left: 0, right: 400, top: 0, bottom: 30, width: 400, height: 30 }
+				);
+
+				// Overflowing the boundary by only 0.6px is rounding noise, not a real overflow.
+				vi.spyOn( view.element.lastChild, 'getBoundingClientRect' ).mockReturnValue(
+					{ left: 19.4, right: 400, top: 0, bottom: 30, width: 380.6, height: 30 }
+				);
+
+				expect( behavior._areItemsOverflowing ).toBe( false );
+
+				// A genuine overflow (more than a pixel past the boundary) is still detected.
+				view.element.lastChild.getBoundingClientRect.mockReturnValue(
+					{ left: 18.5, right: 400, top: 0, bottom: 30, width: 381.5, height: 30 }
+				);
+
+				expect( behavior._areItemsOverflowing ).toBe( true );
+
+				view.destroy();
+				view.element.remove();
+			} );
 		} );
 
 		describe( 'focus management', () => {

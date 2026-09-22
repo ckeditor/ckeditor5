@@ -22,6 +22,7 @@ describe( 'MentionDomWrapperView', () => {
 	describe( 'constructor()', () => {
 		it( 'should add CSS class to the element', () => {
 			expect( domElement.classList.contains( 'ck-button' ) ).toBe( true );
+			expect( domElement.classList.contains( 'ck-list-item-button' ) ).toBe( true );
 		} );
 
 		it( 'should set #isOn observable property with a CSS class binding', () => {

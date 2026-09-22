@@ -24,8 +24,9 @@
 
 	--ck-powered-by-svg-width: 53;
 	--ck-powered-by-svg-height: 10;
-	--ck-powered-by-icon-width: calc(var(--ck-font-size-base) * var(--ck-powered-by-svg-width) / 13);
-	--ck-powered-by-icon-height: calc(var(--ck-font-size-base) * var(--ck-powered-by-svg-height) / 13);
+	/* Scale the logo from its intrinsic size (53x10 at the 16px base font size) with --ck-font-size-base. */
+	--ck-powered-by-icon-width: calc(var(--ck-font-size-base) * var(--ck-powered-by-svg-width) / 16);
+	--ck-powered-by-icon-height: calc(var(--ck-font-size-base) * var(--ck-powered-by-svg-height) / 16);
 }
 
 .ck.ck-balloon-panel.ck-powered-by-balloon {

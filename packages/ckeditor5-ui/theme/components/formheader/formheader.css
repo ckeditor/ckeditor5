@@ -6,11 +6,19 @@
 :root,
 :host {
 	/* Size */
-	--ck-form-header-height: 3em;
+	/* One line of the header label + the header's top/bottom padding, so the header is exactly as tall
+	   as its content needs (no centering slack) while staying a real length that dialog height calcs
+	   can subtract. Mirrors the block values in --ck-form-header-padding. Legacy theme sets 3em. */
+	--ck-form-header-height: calc(
+		var(--ck-form-header-label-font-size) * var(--ck-line-height-base)
+		+ var(--ck-spacing-padding-comfortable)
+		+ var(--ck-spacing-padding-compact)
+	);
 
 	/* Spacing */
 	--ck-form-header-padding-block: var(--ck-spacing-padding-compact);
-	--ck-form-header-padding: 12px 12px 4px 12px;
+	/* top / inline / bottom / inline. The block (top + bottom) values also drive --ck-form-header-height. */
+	--ck-form-header-padding: var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-compact) var(--ck-spacing-padding-comfortable);
 	/* Opt-in: set to a value to override the inline-start padding of the header when the back button is visible. */
 	--ck-form-header-with-back-button-padding-inline-start: var(--ck-spacing-padding-comfortable);
 
@@ -21,7 +29,6 @@
 .ck.ck-form__header {
 	padding: var(--ck-form-header-padding);
 	height: var(--ck-form-header-height);
-	line-height: var(--ck-form-header-height);
 	border-bottom: var(--ck-border-divider);
 	/* To prevent shrinking when placed in flexbox. */
 	flex-shrink: 0;
@@ -41,11 +48,6 @@
 		font-weight: var(--ck-font-weight-ui-heading);
 	}
 
-	/* Padding when back button is hidden */
-	/* &:has(.ck-button-back.ck-hidden) {
-		padding: var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-comfortable);
-	} */
-
 	/* Padding when back button is visible */
 	&:has(.ck-button-back:not(.ck-hidden)) {
 		padding-inline-start: var(--ck-form-header-with-back-button-padding-inline-start, var(--ck-spacing-padding));
@@ -57,6 +59,11 @@
 
 	& > .ck.ck-button {
 		flex-shrink: 0;
+		/* To have button size to be 24pxx24px */
+		padding: 1px;
+
+		/* One line-height of the header label, so the button matches the header text line box (16px * 1.5 = 24px). */
+		--ck-size-control-min-height: calc(var(--ck-form-header-label-font-size) * var(--ck-line-height-base));
 	}
 
 	& h2.ck-form__header__label {

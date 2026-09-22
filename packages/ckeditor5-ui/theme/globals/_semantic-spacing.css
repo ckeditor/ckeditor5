@@ -23,6 +23,7 @@
 	 */
 	--ck-spacing-padding-tight: var(--ck-spacing-xs); /* 2px */
 	--ck-spacing-padding-compact: var(--ck-spacing-sm); /* 4px */
+	--ck-spacing-padding-snug: var(--ck-spacing-ms); /* 6px */
 	--ck-spacing-padding: var(--ck-spacing-md); /* 8px */
 	--ck-spacing-padding-comfortable: var(--ck-spacing-lg); /* 12px */
 	--ck-spacing-padding-spacious: var(--ck-spacing-xl); /* 16px */

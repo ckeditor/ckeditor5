@@ -6,7 +6,9 @@
 :root,
 :host {
 	/* Spacing */
-	--ck-form-row-padding: var(--ck-spacing-padding-compact) var(--ck-spacing-padding-comfortable);
+	/* Symmetric 6px (snug) top/bottom so stacked rows sum to a 12px gap between them while a standalone
+	   row stays balanced — this token is shared across many forms. */
+	--ck-form-row-padding: var(--ck-spacing-padding-snug) var(--ck-spacing-padding-comfortable);
 	--ck-form-row-edge-padding-top: var(--ck-spacing-padding-spacious);
 	--ck-form-row-edge-padding-bottom: var(--ck-spacing-padding);
 	--ck-form-row-edge-gap-top: var(--ck-spacing-gap-comfortable);
@@ -34,6 +36,10 @@
 
 	&.ck-form__row_large-bottom-padding {
 		padding-bottom: var(--ck-form-row-edge-padding-bottom);
+
+		&:last-child {
+			padding-bottom: var(--ck-spacing-padding-comfortable);
+		}
 	}
 
 	&.ck-form__row_large-top-margin {

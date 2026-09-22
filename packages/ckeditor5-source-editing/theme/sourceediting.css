@@ -7,6 +7,7 @@
 :host {
 	/* Backward compatibility: falls back to the legacy --ck-rounded-corners-radius if overridden. */
 	--ck-source-editing-area-border-radius: var(--ck-radius-md);
+	--ck-source-editing-area-font-size: var(--ck-font-size-md);
 }
 
 .ck-source-editing-area {
@@ -20,7 +21,8 @@
 	margin: 0;
 	border: 1px solid transparent;
 	line-height: var(--ck-line-height-base);
-	font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
+	/* Kept on the shared textarea/::after rule so the auto-grow mirror matches the textarea's metrics. */
+	font-size: var(--ck-source-editing-area-font-size);
 	font-family: monospace;
 	white-space: pre-wrap;
 }

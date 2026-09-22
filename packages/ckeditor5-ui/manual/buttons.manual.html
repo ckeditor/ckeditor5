@@ -1,0 +1,70 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8" />
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="
+		default-src 'none';
+		connect-src 'self';
+		script-src 'self' 'unsafe-inline' 'unsafe-eval';
+		img-src * data:;
+		style-src 'self' 'unsafe-inline';
+		font-src 'self' data:;
+		frame-src *"
+	/>
+
+	<title>UI - buttons</title>
+	<script type="module" src="./buttons.ts"></script>
+</head>
+
+<ck-manual-header>
+	<p>
+		Every <code>ckeditor5-ui</code> button variant &times; content (just label, label &amp; icon,
+		just icon) &times; state (default, hover, disabled, active/on, active hover), using only UI
+		classes &mdash; no feature-specific ones.
+	</p>
+	<p>
+		The <strong>Hover</strong> and <strong>Active hover</strong> columns are simulated with a
+		<code>ck-force-hover</code> class (the manual harness has no pointer).
+		<strong>Focus</strong> is a live-only state &mdash; <strong>Tab</strong> to a button to check it
+		(e.g. the <code>Surface</code> row / <code>ck-button_surface</code> also lifts to the
+		surface color on focus).
+	</p>
+	<p>The checkerboard cell background makes transparent vs. filled button backgrounds easy to spot.</p>
+</ck-manual-header>
+
+<h1>UI Buttons</h1>
+
+<table
+	id="buttons"
+	class="table button-grid ck-rounded-corners"
+	style="border: 1px solid #ccc; border-collapse: collapse"
+></table>
+
+<style>
+	table.table.button-grid th,
+	table.table.button-grid td {
+		border: 1px solid #ccc;
+		padding: 0.7em 1em;
+		vertical-align: middle;
+	}
+
+	table.table.button-grid td {
+		background-image:
+			linear-gradient(45deg, #efefef 26%, transparent 26%),
+			linear-gradient(135deg, #efefef 26%, transparent 26%),
+			linear-gradient(45deg, transparent 75%, #efefef 75%),
+			linear-gradient(135deg, transparent 75%, #efefef 75%);
+		background-size: 20px 20px;
+		background-position:
+			0 0,
+			10px 0,
+			10px -10px,
+			0px 10px;
+	}
+
+	table.table.button-grid th {
+		font-weight: bold;
+		background-color: #eee;
+	}
+</style>

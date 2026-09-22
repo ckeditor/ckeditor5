@@ -17,11 +17,11 @@ describe( 'Utils', () => {
 	const defaultPositions = BalloonPanelView.defaultPositions;
 	const positions = [
 		defaultPositions.northArrowSouth,
-		defaultPositions.northArrowSouthWest,
-		defaultPositions.northArrowSouthEast,
+		defaultPositions.northWestArrowSouthWest,
+		defaultPositions.northEastArrowSouthEast,
 		defaultPositions.southArrowNorth,
-		defaultPositions.southArrowNorthWest,
-		defaultPositions.southArrowNorthEast,
+		defaultPositions.southWestArrowNorthWest,
+		defaultPositions.southEastArrowNorthEast,
 		defaultPositions.viewportStickyNorth
 	];
 

@@ -39,11 +39,6 @@
 					flex-grow: 1;
 				}
 
-				&:first-of-type,
-				&:last-of-type {
-					border-radius: var(--ck-border-radius-control);
-				}
-
 				& .ck-button {
 					flex-grow: 1;
 				}

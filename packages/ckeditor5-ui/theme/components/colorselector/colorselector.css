@@ -8,8 +8,8 @@
 	/* Spacing */
 	--ck-color-selector-padding: var(--ck-spacing-padding-compact);
 	--ck-color-selector-grids-fragment-padding: var(--ck-spacing-padding-compact);
-	--ck-color-selector-color-picker-padding: var(--ck-spacing-padding-compact);
-	--ck-color-selector-action-bar-padding: 0 8px 8px;
+	--ck-color-selector-color-picker-padding: var(--ck-spacing-padding);
+	--ck-color-selector-action-bar-padding: 0 var(--ck-spacing-padding) var(--ck-spacing-padding);
 
 	/* Radius */
 	/* Uniform (fully rounded) corners by default; set this to initial to restore the attached-corner (squared connecting edge) look, as the legacy theme does. */

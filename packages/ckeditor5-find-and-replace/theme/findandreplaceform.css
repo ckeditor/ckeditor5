@@ -7,7 +7,7 @@
 :root,
 :host {
 	--ck-find-and-replace-form-width: var(--ck-width-dialog);
-	--ck-find-and-replace-form-replace-field-padding-top: var(--ck-spacing-padding);
+	--ck-find-and-replace-form-replace-field-padding-top: var(--ck-spacing-padding-comfortable);
 	/* Defaults to the shared actions padding; the inputs area can be tuned independently. */
 	--ck-find-and-replace-form-inputs-padding: var(--ck-spacing-padding-spacious) var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-compact) var(--ck-spacing-padding-comfortable);
 	/* No top padding — the inputs' bottom padding already provides the gap between the two sections. */

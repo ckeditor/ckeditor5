@@ -25,6 +25,16 @@
 		overflow: hidden;
 		flex-shrink: 0;
 	}
+
+	/*
+	 * The editable keeps DOM focus while the list is navigated, so the selected item is indicated
+	 * with a focus-style ring instead of the "on" background. The hover background still applies on
+	 * :hover only, matching the toolbar dropdown lists (e.g. headings).
+	 */
+	& > .ck-list__item.ck-mentions__item_focused > .ck-button {
+		border-color: var(--ck-button-focus-border-color);
+		box-shadow: var(--ck-interactive-focus-shadow), 0 0;
+	}
 }
 
 div.ck.ck-balloon-panel.ck-mention-balloon {

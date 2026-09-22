@@ -20,7 +20,6 @@
 
 			& .ck.ck-toolbar {
 				background: none;
-				border-radius: var(--ck-border-radius-control);
 
 				/* Compensate for missing input label that would push the margin (toolbar has no inputs). */
 				margin-top: var(--ck-spacing-standard);

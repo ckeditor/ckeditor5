@@ -33,7 +33,7 @@ body.ck-fullscreen,
 	--ck-z-default: calc(var(--ck-z-fullscreen) + 1); /* legacy */
 	--ck-z-base: calc(var(--ck-z-fullscreen) + 1);
 	--ck-z-panel: calc(var(--ck-z-default) + 999); /* legacy */
-	--ck-z-overlay: calc(var(--ck-z-default) + 999);
+	--ck-z-overlay: calc(var(--ck-z-base) + 999);
 	--ck-z-dialog: 100000; /* legacy */
 	--ck-z-modal: 100000;
 
@@ -191,9 +191,12 @@ Fullscreen layout:
 		--ck-size-control-min-height: 0px;
 
 		align-self: flex-start;
+
+		/* Keep the round toggle at its content size. Because min-height is 0 above, the sticky flex
+		   column would otherwise shrink it vertically into an ellipse. */
+		flex-shrink: 0;
 		margin-top: var(--ck-fullscreen-editor-top-margin);
 		margin-bottom: var(--ck-spacing-large, var(--ck-spacing-lg));
-		opacity: 0.5;
 		border-radius: 100%;
 	}
 

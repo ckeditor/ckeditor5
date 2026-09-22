@@ -16,8 +16,8 @@ import type {
 } from '@ckeditor/ckeditor5-engine';
 
 import {
-	ButtonView,
 	ContextualBalloon,
+	ListItemButtonView,
 	clickOutsideHandler
 } from '@ckeditor/ckeditor5-ui';
 
@@ -515,7 +515,7 @@ export class MentionUI extends Plugin {
 	/**
 	 * Renders a single item in the autocomplete list.
 	 */
-	private _renderItem( item: MentionFeedObjectItem, marker: string ): MentionDomWrapperView | ButtonView {
+	private _renderItem( item: MentionFeedObjectItem, marker: string ): MentionDomWrapperView | ListItemButtonView {
 		const editor = this.editor;
 
 		let view;
@@ -534,7 +534,7 @@ export class MentionUI extends Plugin {
 		}
 
 		if ( !view ) {
-			const buttonView = new ButtonView( editor.locale );
+			const buttonView = new ListItemButtonView( editor.locale );
 
 			buttonView.label = label;
 			buttonView.withText = true;

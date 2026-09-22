@@ -10,8 +10,8 @@
 	--ck-tooltip-max-width: 200px;
 
 	/* Spacing */
-	--ck-tooltip-padding: 0 var(--ck-spacing-ms) var(--ck-spacing-xs) var(--ck-spacing-ms);
-	--ck-tooltip-multiline-padding: 0 4px;
+	--ck-tooltip-padding: 0 var(--ck-spacing-padding-snug) var(--ck-spacing-padding-tight) var(--ck-spacing-padding-snug);
+	--ck-tooltip-multiline-padding: 0 var(--ck-spacing-padding-compact);
 
 	/* Border */
 	--ck-tooltip-border: 0px solid transparent;

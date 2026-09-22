@@ -10,8 +10,6 @@
 	--ck-toolbar-padding: 0 var(--ck-spacing-padding-compact);
 
 	/* Radius */
-	/* Uniform (fully rounded) corners by default; set this to initial to restore the attached-corner (squared connecting edge) look, as the legacy theme does. */
-	--ck-toolbar-compact-uniform-border-radius: var(--ck-border-radius-uniform);
 	--ck-toolbar-border-radius: var(--ck-border-radius-surface);
 	--ck-toolbar-vertical-button-border-radius: var(--ck-border-radius-control);
 
@@ -39,7 +37,7 @@
 	& .ck-button__label {
 		font-size: var(--ck-toolbar-text-font-size);
 		/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
-		line-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
+		line-height: calc(var(--ck-line-height-base) * var(--ck-button-font-size));
 	}
 
 	/* Pin the line-height to the small button's font, not the base font, so it does not
@@ -122,6 +120,7 @@
 	&.ck-toolbar_compact {
 		/* No spacing around items. */
 		padding: 0;
+		border-radius: var(--ck-border-radius-control);
 
 		& > .ck-toolbar__items > * {
 			/* Compact toolbar items have no spacing between them. */
@@ -131,16 +130,19 @@
 			&:not(:first-child):not(:last-child) {
 				border-radius: 0;
 			}
+
+			/* The first/last children round their outer corners to fit the toolbar — see the
+			   direction-specific rules below (the radii must mirror for LTR vs RTL). */
 		}
 	}
 
 	& > .ck.ck-toolbar__grouped-dropdown {
 		/*
-		 * Dropdown button has asymmetric padding to fit the arrow.
-		 * This button has no arrow so let's revert that padding back to normal.
+		 * This button has no arrow (hidden below), so give it symmetric inline padding to keep
+		 * the icon centered instead of the reduced start padding used when an arrow is present.
 		 */
 		& > .ck.ck-button.ck-dropdown__button {
-			padding-left: var(--ck-spacing-control-padding-inline-start-compact);
+			padding-inline: var(--ck-spacing-control-padding-inline-compact);
 		}
 		& > .ck-dropdown__button .ck-dropdown__arrow {
 			display: none;
@@ -182,7 +184,7 @@
 
 	& .ck.ck-list__item > .ck.ck-button .ck-button__label {
 		/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
-		line-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
+		line-height: calc(var(--ck-line-height-base) * var(--ck-button-font-size));
 	}
 }
 
@@ -210,14 +212,19 @@
 	}
 
 	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
-		/* No rounded corners on the right side of the first child. */
+		/* Round the first child's outer (right) corners to fit the toolbar; inner edge stays square. */
 		&:first-child {
-			border-radius: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
+			border-radius: 0 var(--ck-border-radius-control) var(--ck-border-radius-control) 0;
 		}
 
-		/* No rounded corners on the left side of the last child. */
+		/* Round the last child's outer (left) corners to fit the toolbar; inner edge stays square. */
 		&:last-child {
-			border-radius: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
+			border-radius: var(--ck-border-radius-control) 0 0 var(--ck-border-radius-control);
+		}
+
+		/* A lone item is both first and last, so it takes both children's outer corners (fully rounded). */
+		&:first-child:last-child {
+			border-radius: var(--ck-border-radius-control);
 		}
 	}
 
@@ -246,14 +253,19 @@
 	}
 
 	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
-		/* No rounded corners on the right side of the first child. */
+		/* Round the first child's outer (left) corners to fit the toolbar; inner edge stays square. */
 		&:first-child {
-			border-radius: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
+			border-radius: var(--ck-border-radius-control) 0 0 var(--ck-border-radius-control);
 		}
 
-		/* No rounded corners on the left side of the last child. */
+		/* Round the last child's outer (right) corners to fit the toolbar; inner edge stays square. */
 		&:last-child {
-			border-radius: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
+			border-radius: 0 var(--ck-border-radius-control) var(--ck-border-radius-control) 0;
+		}
+
+		/* A lone item is both first and last, so it takes both children's outer corners (fully rounded). */
+		&:first-child:last-child {
+			border-radius: var(--ck-border-radius-control);
 		}
 	}
 
@@ -276,6 +288,6 @@
 
 	& .ck.ck-list__item > .ck.ck-button .ck-button__label {
 		/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
-		line-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
+		line-height: calc(var(--ck-line-height-base) * var(--ck-button-font-size));
 	}
 }
