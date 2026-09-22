@@ -21,6 +21,11 @@ const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
 const _delegations = Symbol( 'delegations' );
 
+// Keep this a plain alias. A conditional type does not work here: TypeScript cannot reduce a
+// conditional over an unresolved type parameter, so a generic wrapper around `EmitterMixin( base )`
+// silently loses the base class members. The default is a concrete nullary constructor, which
+// is why `undefined` is no longer a valid type argument.
+// See https://github.com/ckeditor/ckeditor5/issues/20238.
 /**
  * Constructor returned by {@link ~EmitterMixin}. Use it to name a mixin base class before extending it.
  *
@@ -30,12 +35,7 @@ const _delegations = Symbol( 'delegations' );
  * class MyEmitter extends MyEmitterBase {}
  * ```
  */
-export type EmitterMixinConstructor<Base extends Constructor | undefined = undefined> = Base extends Constructor ?
-	Mixed<Base, Emitter> :
-	{
-		new (): Emitter;
-		prototype: Emitter;
-	};
+export type EmitterMixinConstructor<Base extends Constructor = new () => object> = Mixed<Base, Emitter>;
 
 const defaultEmitterClass = /* #__PURE__ */ EmitterMixin( Object );
 
@@ -792,8 +792,12 @@ function createEventNamespace( source: EmitterInternal, eventName: string ): voi
 		}
 
 		childEventName = name;
-		// If `.lastIndexOf()` returns -1, `.substr()` will return '' which will break the loop.
-		name = name.substr( 0, name.lastIndexOf( ':' ) );
+		// Truncate to the parent namespace. Do not use `substr( 0, lastIndexOf( ':' ) )`:
+		// when there is no `:`, `lastIndexOf` is -1 and some JSC builds (Safari 27 x86_64)
+		// miscompile `substr` with a negative length, returning the original string instead of `''`.
+		const colonIndex = name.lastIndexOf( ':' );
+
+		name = colonIndex > -1 ? name.substring( 0, colonIndex ) : '';
 	}
 
 	if ( name !== '' ) {

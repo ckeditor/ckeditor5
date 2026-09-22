@@ -22,6 +22,11 @@ const boundPropertiesSymbol = Symbol( 'boundProperties' );
 const decoratedMethods = Symbol( 'decoratedMethods' );
 const decoratedOriginal = Symbol( 'decoratedOriginal' );
 
+// Keep this a plain alias. A conditional type does not work here: TypeScript cannot reduce a
+// conditional over an unresolved type parameter, so a generic wrapper around `ObservableMixin( base )`
+// silently loses the base class members. The default is a concrete nullary constructor, which
+// is why `undefined` is no longer a valid type argument.
+// See https://github.com/ckeditor/ckeditor5/issues/20238.
 /**
  * Constructor returned by {@link ~ObservableMixin}. Use it to name a mixin base class before extending it.
  *
@@ -31,12 +36,7 @@ const decoratedOriginal = Symbol( 'decoratedOriginal' );
  * class MyObservable extends MyObservableBase {}
  * ```
  */
-export type ObservableMixinConstructor<Base extends Constructor<Emitter> | undefined = undefined> = Base extends Constructor<Emitter> ?
-	Mixed<Base, Observable> :
-	{
-		new (): Observable;
-		prototype: Observable;
-	};
+export type ObservableMixinConstructor<Base extends Constructor<Emitter> = new () => Emitter> = Mixed<Base, Observable>;
 
 const defaultObservableClass = /* #__PURE__ */ ObservableMixin( /* #__PURE__ */ EmitterMixin() );
 

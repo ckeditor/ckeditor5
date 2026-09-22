@@ -24,6 +24,11 @@ import { type EventInfo } from '../eventinfo.js';
 import type { Constructor, Mixed } from '../mix.js';
 import { global } from './global.js';
 
+// Keep this a plain alias. A conditional type does not work here: TypeScript cannot reduce a
+// conditional over an unresolved type parameter, so a generic wrapper around `DomEmitterMixin( base )`
+// silently loses the base class members. The default is a concrete nullary constructor, which
+// is why `undefined` is no longer a valid type argument.
+// See https://github.com/ckeditor/ckeditor5/issues/20238.
 /**
  * Constructor returned by {@link ~DomEmitterMixin}. Use it to name a mixin base class before extending it.
  *
@@ -33,12 +38,7 @@ import { global } from './global.js';
  * class MyDomEmitter extends MyDomEmitterBase {}
  * ```
  */
-export type DomEmitterMixinConstructor<Base extends Constructor<Emitter> | undefined = undefined> = Base extends Constructor<Emitter> ?
-	Mixed<Base, DomEmitter> :
-	{
-		new (): DomEmitter;
-		prototype: DomEmitter;
-	};
+export type DomEmitterMixinConstructor<Base extends Constructor<Emitter> = new () => Emitter> = Mixed<Base, DomEmitter>;
 
 const defaultEmitterClass = /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ EmitterMixin() );
 const ProxyEmitterBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
