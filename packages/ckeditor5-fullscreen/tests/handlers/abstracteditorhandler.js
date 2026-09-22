@@ -1266,6 +1266,158 @@ describe( 'AbstractHandler', () => {
 		} );
 	} );
 
+	describe( '_handleAITabsTransfer() and _restoreAITabs()', () => {
+		let aiTabs, viewElement, originalContainer, assignments, pluginsGetSpy;
+
+		// A stand-in for the AI tabs plugin, which lives in the commercial package repository. It records the
+		// order its observable properties are assigned in, which is a part of the contract: switching the type
+		// makes the plugin resolve a container of its own, so the container the fullscreen mode points it at
+		// has to be assigned after that.
+		beforeEach( () => {
+			viewElement = global.document.createElement( 'div' );
+			originalContainer = global.document.createElement( 'div' );
+			assignments = [];
+
+			global.document.body.append( viewElement, originalContainer );
+
+			const values = { side: 'left', type: 'overlay', container: originalContainer };
+
+			aiTabs = {
+				view: { element: viewElement }
+			};
+
+			for ( const name of [ 'side', 'type', 'container' ] ) {
+				Object.defineProperty( aiTabs, name, {
+					get: () => values[ name ],
+					set: value => {
+						values[ name ] = value;
+						assignments.push( name );
+					}
+				} );
+			}
+
+			pluginsGetSpy = vi.spyOn( editor.plugins, 'get' )
+				.mockImplementation( pluginName => pluginName === 'AITabs' ? aiTabs : undefined );
+		} );
+
+		afterEach( () => {
+			// The automatic `restoreMocks` cleanup runs only before the next test, so restore manually first:
+			// the outer `afterEach()` calls `abstractHandler.disable()`, which must use the real
+			// `editor.plugins.get()` instead of the mock returning `undefined` for non-AITabs plugins.
+			pluginsGetSpy.mockRestore();
+
+			// Returns the view to the document before the elements below are removed. Inner hooks run first, so
+			// without this the `disable()` call in the outer `afterEach()` would put it back afterwards and leak
+			// it into the next test – the browser mode runs them all in one document.
+			abstractHandler.restoreMovedElementLocation( 'right-edge' );
+
+			viewElement.remove();
+			originalContainer.remove();
+		} );
+
+		function getRightEdge() {
+			return abstractHandler.getWrapper().querySelector( '[data-ck-fullscreen="right-edge"]' );
+		}
+
+		it( 'should move the view of the tabs to the right edge of the fullscreen wrapper', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			expect( viewElement.parentNode ).toBe( getRightEdge() );
+		} );
+
+		it( 'should leave the placeholder of the view where the view came from', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			// Left behind before the type is switched, so that it marks the place the view came from rather than
+			// the one that switch relocates it to.
+			expect( global.document.body.querySelector( '[data-ck-fullscreen-placeholder="right-edge"]' ) ).not.toBe( null );
+		} );
+
+		it( 'should dock the tabs to the right side', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			expect( aiTabs.type ).toBe( 'sidebar' );
+			expect( aiTabs.side ).toBe( 'right' );
+		} );
+
+		it( 'should point the container of the tabs at the slot the view was moved to', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			// Which is what keeps the plugin from moving the view back out of the fullscreen wrapper, and what
+			// mounts the floating UI of the AI features in the tree that wrapper lives in.
+			expect( aiTabs.container ).toBe( getRightEdge() );
+		} );
+
+		it( 'should set the container of the tabs after the type that resolves one of its own', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			expect( assignments ).toEqual( [ 'side', 'type', 'container' ] );
+		} );
+
+		it( 'should save the state of the tabs from before the transfer', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			expect( abstractHandler._aiTabsData ).toEqual( {
+				side: 'left',
+				type: 'overlay',
+				container: originalContainer
+			} );
+		} );
+
+		it( 'should start listening to the width transitions of the tabs', () => {
+			const spy = vi.spyOn( abstractHandler, '_handleAISidebarTransitions' ).mockImplementation( () => {} );
+
+			abstractHandler._handleAITabsTransfer();
+
+			viewElement.dispatchEvent( new TransitionEvent( 'transitionend', { propertyName: 'width' } ) );
+
+			expect( spy ).toHaveBeenCalledOnce();
+		} );
+
+		it( 'should restore the saved state of the tabs', () => {
+			abstractHandler._handleAITabsTransfer();
+			abstractHandler._restoreAITabs();
+
+			expect( aiTabs.side ).toBe( 'left' );
+			expect( aiTabs.type ).toBe( 'overlay' );
+			expect( aiTabs.container ).toBe( originalContainer );
+		} );
+
+		it( 'should restore the container of the tabs after the type that resolves one of its own', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			assignments.length = 0;
+
+			abstractHandler._restoreAITabs();
+
+			expect( assignments ).toEqual( [ 'side', 'type', 'container' ] );
+		} );
+
+		it( 'should clear the container of the tabs when there is no saved state', () => {
+			abstractHandler._restoreAITabs();
+
+			expect( aiTabs.container ).toBe( null );
+		} );
+
+		it( 'should forget the saved state of the tabs', () => {
+			abstractHandler._handleAITabsTransfer();
+			abstractHandler._restoreAITabs();
+
+			expect( abstractHandler._aiTabsData ).toBe( null );
+		} );
+
+		it( 'should stop listening to the width transitions of the tabs', () => {
+			const spy = vi.spyOn( abstractHandler, '_handleAISidebarTransitions' ).mockImplementation( () => {} );
+
+			abstractHandler._handleAITabsTransfer();
+			abstractHandler._restoreAITabs();
+
+			viewElement.dispatchEvent( new TransitionEvent( 'transitionend', { propertyName: 'width' } ) );
+
+			expect( spy ).not.toHaveBeenCalled();
+		} );
+	} );
+
 	describe( '_handleAISidebarTransitions', () => {
 		let aiElement, nestedElement, pluginsGetSpy;
 

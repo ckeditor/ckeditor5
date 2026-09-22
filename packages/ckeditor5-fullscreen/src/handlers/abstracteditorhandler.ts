@@ -252,7 +252,11 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * A map of AI Tabs data that were set before entering the fullscreen mode.
 	 */
-	private _aiTabsData: { side: 'right' | 'left'; type: 'sidebar' | 'overlay' | 'custom' } | null = null;
+	private _aiTabsData: {
+		side: 'right' | 'left';
+		type: 'sidebar' | 'overlay' | 'custom';
+		container: HTMLElement | ShadowRoot | null;
+	} | null = null;
 
 	/**
 	 * @inheritDoc
@@ -1097,20 +1101,28 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Stores the current state of the AI Tabs and moves it to the fullscreen mode.
 	 */
-	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* v8 ignore next -- @preserve */
 	private _handleAITabsTransfer(): void {
 		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
 
 		this._aiTabsData = {
 			side: aiTabs.side,
-			type: aiTabs.type
+			type: aiTabs.type,
+			container: aiTabs.container
 		};
 
+		// Moved before the type is switched below, so that the placeholder left behind marks the place the view
+		// came from rather than the one that switch relocates it to.
 		this.moveToFullscreen( aiTabs.view.element!, 'right-edge' );
 
 		aiTabs.side = 'right';
 		aiTabs.type = 'sidebar';
+
+		// Switching the type re-resolves the container of the tabs on the plugin side, and that container is
+		// where the plugin keeps the view – and the tree it mounts the floating UI of the AI features in. Without this,
+		// he view would be moved out of the fullscreen wrapper and back into the page under it. Point it at the slot
+		// the view was moved to instead, so that the plugin agrees with where the view now is. Set last, as the
+		// type switch would override it.
+		aiTabs.container = this.getWrapper().querySelector( '[data-ck-fullscreen="right-edge"]' );
 
 		// Adjust the visible elements when the transition (changing the size of the AI tabs) ends. Earlier we do not have the
 		// correct sizes of elements.
@@ -1133,13 +1145,16 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Restores the state of the AI Tabs to the original values.
 	 */
-	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* v8 ignore next -- @preserve */
 	private _restoreAITabs(): void {
 		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
 
 		aiTabs.side = this._aiTabsData?.side;
 		aiTabs.type = this._aiTabsData?.type;
+
+		// Restored after the type, which resolves a container of its own – and in the `'custom'` type resolves
+		// none at all, so there the saved one is the only thing that brings the view and the floating UI of the
+		// AI features back to the tree the integrator put their UI in.
+		aiTabs.container = this._aiTabsData?.container ?? null;
 
 		this._aiTabsData = null;
 

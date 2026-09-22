@@ -92,7 +92,8 @@ const ALL_SHADOW_MODES = Object.keys( SHADOW_MODE_LABELS ) as Array<ShadowMode>;
  * A page that cannot be built in every mode narrows the picker with a `modes` attribute listing the ones it
  * offers – `<ck-manual-shadow-mode modes="open closed">` on a test of web components, where a `<slot>` needs a
  * shadow root and there is no light DOM variant to run. A mode outside that list is never returned, whichever of
- * the three paths above suggested it.
+ * the three paths above suggested it. Narrowed to a single mode – `modes="open"` on a slot-based test, where the
+ * other two cannot run – the page renders no picker at all and simply comes up in that mode.
  */
 export function getShadowMode(): ShadowMode {
 	const control = getControl();
@@ -357,7 +358,13 @@ class ManualShadowModeElement extends HTMLElement {
 
 		shadow.adoptedStyleSheets = [ controlStyleSheet ];
 
-		shadow.appendChild( this._createModeControl() );
+		// A picker listing one mode is a control with nothing to control, so a page that narrows `modes` to a
+		// single one gets no picker – only the instructions it states its mode in anyway. The element itself stays,
+		// because the overlay toggle below is gated on finding it, and `getShadowMode()` keeps answering from the
+		// attribute whether the picker is rendered or not.
+		if ( getOfferedModes( this ).length > 1 ) {
+			shadow.appendChild( this._createModeControl() );
+		}
 
 		if ( this.hasAttribute( 'overlay-container' ) ) {
 			shadow.appendChild( this._createOverlayControl() );

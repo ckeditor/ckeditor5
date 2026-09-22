@@ -88,13 +88,13 @@ export class OverlayHost extends OverlayHostBase {
 	/**
 	 * See {@link module:ui/overlayhost~OverlayHostOptions#resolveInlineContainer}.
 	 */
-	private readonly _resolveInlineContainer?: () => HTMLElement | null | undefined;
+	private readonly _resolveInlineContainer?: () => HTMLElement | ShadowRoot | null | undefined;
 
 	/**
 	 * The inline UI container currently registered with {@link #shadowRootRegistry}, so it can be
 	 * replaced when the feature moves to a different container.
 	 */
-	private _registeredInlineContainer: HTMLElement | null = null;
+	private _registeredInlineContainer: HTMLElement | ShadowRoot | null = null;
 
 	/**
 	 * Whether the {@link #bodyCollection} was created by this host (and is destroyed with it), as opposed to
@@ -259,23 +259,24 @@ export interface OverlayHostOptions {
 	resolveMountTarget: () => HTMLElement | ShadowRoot | null;
 
 	/**
-	 * Resolves the DOM element holding the feature's *inline* UI – the parts the feature renders directly into
+	 * Resolves the DOM node holding the feature's *inline* UI – the parts the feature renders directly into
 	 * its own container (buttons, badges, and similar), as opposed to the floating views it puts into the
-	 * {@link module:ui/overlayhost~OverlayHost#bodyCollection}.
+	 * {@link module:ui/overlayhost~OverlayHost#bodyCollection}. Usually the container element itself, but it
+	 * may also be a shadow root, when that root is all the feature knows of the tree its inline UI lives in.
 	 *
-	 * The host registers this element with its {@link module:ui/overlayhost~OverlayHost#shadowRootRegistry} so
+	 * The host registers this node with its {@link module:ui/overlayhost~OverlayHost#shadowRootRegistry} so
 	 * the shared {@link module:ui/tooltipmanager~TooltipManager} can drive the tooltips of that inline UI. This
 	 * matters when the inline UI sits inside a shadow root: in events observed at the document level the
 	 * elements inside the root are hidden behind their shadow host, so the tooltip manager has to attach its
-	 * listeners inside each registered root – without this element being registered, the tooltips of the
-	 * feature's inline UI would never fire. The element is re-resolved on every
+	 * listeners inside each registered root – without this node being registered, the tooltips of the
+	 * feature's inline UI would never fire. The node is re-resolved on every
 	 * {@link module:ui/overlayhost~OverlayHost#sync}, so the registration follows the feature if it moves to a
 	 * different container.
 	 *
 	 * Omit it when the feature has no tooltip-bearing UI outside the body collection, or when those nodes are
 	 * registered directly with the {@link module:ui/overlayhost~OverlayHost#shadowRootRegistry} instead.
 	 */
-	resolveInlineContainer?: () => HTMLElement | null | undefined;
+	resolveInlineContainer?: () => HTMLElement | ShadowRoot | null | undefined;
 
 	/**
 	 * An existing body collection to host instead of creating one – used by
