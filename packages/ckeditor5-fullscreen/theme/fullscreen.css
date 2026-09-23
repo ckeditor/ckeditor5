@@ -9,6 +9,7 @@
 	--ck-fullscreen-editor-bottom-margin: 28px;
 	--ck-fullscreen-editable-shadow: none;
 	--ck-fullscreen-left-sidebar-avatar-size: 32px;
+	--ck-fullscreen-left-sidebar-toggle-button-hover-background: var(--ck-color-interactive-primary-surface-muted);
 
 	/* Radius of the fullscreen editable "page", controllable separately from the editor frame radius. */
 	--ck-fullscreen-editable-border-radius: var(--ck-radius-md);
@@ -187,6 +188,7 @@ Fullscreen layout:
 	& .ck-button.ck-fullscreen__left-sidebar-toggle-button {
 		--ck-icon-size: 20px;
 		--ck-size-control-min-height: 0px;
+		--ck-button-hover-background: var(--ck-fullscreen-left-sidebar-toggle-button-hover-background);
 
 		align-self: flex-start;
 

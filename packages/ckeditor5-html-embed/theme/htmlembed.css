@@ -11,6 +11,7 @@
 	--ck-html-embed-content-min-height: calc(var(--ck-icon-size) + var(--ck-spacing-standard, var(--ck-spacing-base)));
 
 	--ck-html-embed-background: var(--ck-color-base-foreground);
+	--ck-html-embed-button-hover-background: var(--ck-color-interactive-primary-surface-muted);
 	--ck-html-embed-source-disabled-background: var(--ck-color-base-foreground);
 	--ck-html-embed-source-disabled-color: var(--ck-color-text-disabled);
 }
@@ -101,6 +102,12 @@
 		right: var(--ck-spacing-standard, var(--ck-spacing-base));
 		position: absolute;
 		display: flex;
+
+		/* The muted hover applies to all action buttons (save, cancel, edit). The token has to be
+		set on the button itself because `.ck.ck-button` declares its own `--ck-button-hover-background`. */
+		& .ck-button {
+			--ck-button-hover-background: var(--ck-html-embed-button-hover-background);
+		}
 
 		& .ck-button.raw-html-embed__save-button {
 			color: var(--ck-color-button-save);
