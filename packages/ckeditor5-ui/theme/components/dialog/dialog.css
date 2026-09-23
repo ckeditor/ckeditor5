@@ -84,7 +84,8 @@
 
 	/* Modals should not be draggable. */
 	&:not(.ck-dialog_modal) {
-		& .ck.ck-form__header .ck-form__header__label {
+		& .ck.ck-form__header,
+		& .ck.ck-form__header *:not(.ck-button, .ck-button *) {
 			cursor: grab;
 		}
 	}
