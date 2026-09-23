@@ -177,6 +177,9 @@ export class ColorSelectorView extends View {
 			 * The color palettes and the document colors are not affected. To turn the color picker off yourself, and
 			 * stop this warning, set the `colorPicker` option of the feature to `false`.
 			 *
+			 * For a detailed overview, check the {@glink getting-started/setup/csp#known-limitations Content Security
+			 * Policy} guide.
+			 *
 			 * @error color-picker-unavailable-with-trusted-types
 			 */
 			logWarning( 'color-picker-unavailable-with-trusted-types' );

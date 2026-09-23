@@ -76,7 +76,8 @@ let isEnforced: boolean | undefined;
  * CSP directive. A sink then accepts only a `TrustedHTML` object. This function returns such an object when the browser
  * supports Trusted Types, and the string it was given when it does not. TypeScript types every sink as taking a
  * `string`, so the result is typed that way too, whichever it is. That keeps type casts out of the call sites, but it
- * also means the result is not always a real string: pass it to a sink, and do not call string methods on it.
+ * also means the result is not always a real string: pass it to a sink, and do not call string methods on it. For the
+ * same reason `+=` never works on a sink: it reads the property, joins the strings and assigns a plain one.
  *
  * An application that enforces Trusted Types must also allow the name of the editor's policy, plus `lit-html` when it
  * loads the premium features, whichever of them it uses:
@@ -85,9 +86,12 @@ let isEnforced: boolean | undefined;
  * Content-Security-Policy: require-trusted-types-for 'script'; trusted-types ckeditor5 lit-html;
  * ```
  *
- * The policy returns the string unchanged, because the editor writes markup that it created itself. This makes the browser
- * accept the assignment, but it does not clean the markup in any way. Making sure that the data loaded into the editor is
+ * The policy returns the string unchanged, because the editor writes markup that it created itself. It makes the browser
+ * accept the assignment, but it cleans nothing, so pass this function only markup that the calling code produced, and
+ * never content that came from a user or from a server response. Making sure that the data loaded into the editor is
  * safe stays the job of the application, exactly as before.
+ *
+ * See the {@glink getting-started/setup/csp#trusted-types Content Security Policy} guide for more information.
  *
  * @param html The HTML string to prepare.
  * @returns A value that can be assigned to a DOM injection sink.
@@ -163,6 +167,9 @@ function createPolicy(): TrustedTypePolicy {
 			 *   ```
 			 *   Content-Security-Policy: require-trusted-types-for 'script'; trusted-types ckeditor5 lit-html 'allow-duplicates';
 			 *   ```
+			 *
+			 * For a detailed overview, check the {@glink getting-started/setup/csp#enabling-trusted-types Content
+			 * Security Policy} guide.
 			 *
 			 * @error trusted-types-policy-creation-failed
 			 */

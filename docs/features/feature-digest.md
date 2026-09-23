@@ -1786,6 +1786,14 @@ Learn about the errors that escape a running editor and decide what your applica
 	Feature page
 </ck:button-link>
 
+### Trusted Types support
+
+CKEditor 5 supports running in applications that enforce Trusted Types, a browser mechanism that rejects plain strings wherever they would become live HTML.
+
+<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/csp#trusted-types}'>
+	Feature page
+</ck:button-link>
+
 ## Compliance
 
 Make your content accessible to any person or restrict it to specific users.
