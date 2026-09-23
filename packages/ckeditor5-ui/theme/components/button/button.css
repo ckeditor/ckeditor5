@@ -32,7 +32,7 @@
 	--ck-button-on-hover-background-color: var(--ck-color-interactive-selected-surface-hover);
 	--ck-button-on-active-background-color: var(--ck-color-interactive-selected-surface-hover);
 	/* Intentionally hardcoded: no matching semantic disabled surface exists yet. */
-	--ck-button-on-disabled-background-color: hsl(211, 15%, 95%);
+	--ck-button-on-disabled-background-color: hsl(211 15% 95%);
 	--ck-button-on-text-color: var(--ck-color-interactive-selected-text);
 	--ck-button-action-background-color: var(--ck-color-interactive-primary-surface);
 	--ck-button-action-hover-background-color: var(--ck-color-interactive-primary-surface-hover);

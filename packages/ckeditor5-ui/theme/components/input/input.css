@@ -22,7 +22,7 @@
 	--ck-input-border-color: var(--ck-color-border-control);
 	--ck-input-error-border-color: var(--ck-color-feedback-error);
 	--ck-input-text-color: var(--ck-color-text-primary);
-	--ck-input-disabled-background-color: hsl(0, 0%, 95%);
+	--ck-input-disabled-background-color: hsl(0 0% 95%);
 	--ck-input-disabled-border-color: var(--ck-color-border-control);
 	--ck-input-disabled-text-color: var(--ck-color-text-disabled);
 

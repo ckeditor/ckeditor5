@@ -16,10 +16,10 @@
 	--ck-powered-by-label-padding-inline-start: 2px;
 	--ck-powered-by-label-margin-inline-end: 4px;
 	--ck-powered-by-label-font-weight: var(--ck-font-weight-semibold);
-	--ck-powered-by-text-color: hsl(0, 0%, 31%);
+	--ck-powered-by-text-color: hsl(0 0% 31%);
 	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
 	--ck-powered-by-border-radius: var(--ck-border-radius, var(--ck-radius-base));
-	--ck-powered-by-background: hsl(0, 0%, 100%);
+	--ck-powered-by-background: hsl(0 0% 100%);
 	--ck-powered-by-border-color: var(--ck-color-focus-border);
 
 	--ck-powered-by-svg-width: 53;

@@ -38,11 +38,11 @@
 	 * Use this instead of --ck-focus-ring when the component has a customizable border-width,
 	 * to avoid overriding the width on focus.
 	 */
-	--ck-focus-border-color: hsl(227.7, 62.7%, 55.9%);
+	--ck-focus-border-color: hsl(227.7 62.7% 55.9%);
 
 	/**
 	 * Contrast outline for fake collapsed selections and carets.
 	 * Used across link, widget, emoji, and bookmark packages.
 	 */
-	--ck-outline-fake-caret: solid 1px hsla(0, 0%, 100%, .5);
+	--ck-outline-fake-caret: solid 1px hsl(0 0% 100% / .5);
 }

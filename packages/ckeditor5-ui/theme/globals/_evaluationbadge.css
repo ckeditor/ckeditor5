@@ -16,10 +16,10 @@
 	--ck-evaluation-badge-label-padding-inline: 2px;
 	--ck-evaluation-badge-label-padding: 0 var(--ck-evaluation-badge-label-padding-inline);
 	--ck-evaluation-badge-label-font-weight: var(--ck-font-weight-semibold);
-	--ck-evaluation-badge-text-color: hsl(0, 0%, 31%);
+	--ck-evaluation-badge-text-color: hsl(0 0% 31%);
 	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
 	--ck-evaluation-badge-border-radius: var(--ck-border-radius, var(--ck-radius-base));
-	--ck-evaluation-badge-background: hsl(0, 0%, 100%);
+	--ck-evaluation-badge-background: hsl(0 0% 100%);
 	--ck-evaluation-badge-border-color: var(--ck-color-focus-border);
 }
 

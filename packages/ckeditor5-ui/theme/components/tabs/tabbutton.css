@@ -38,7 +38,7 @@
 	--ck-tab-button-indicator-hover-height: 16px;
 	--ck-tab-button-indicator-active-height: 28px;
 	/* Intentionally hardcoded: a light tint of the accent color with no semantic equivalent yet. */
-	--ck-tab-button-indicator-hover-color: hsl(228, 63%, 86%);
+	--ck-tab-button-indicator-hover-color: hsl(228 63% 86%);
 	/* Follows the active icon color, so overriding the accent retints both the icon and the bar. */
 	--ck-tab-button-indicator-active-color: var(--ck-tab-button-active-icon-color);
 

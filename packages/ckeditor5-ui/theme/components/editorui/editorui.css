@@ -95,7 +95,7 @@
 	/* eslint-disable-next-line css/use-baseline */
 	&.ck-blurred ::selection {
 		/* Fallback to `--ck-color-editable-blur-selection` for backward compatibility. */
-		background: var(--ck-color-editable-blur-selection, hsl(0, 0%, 85%));
+		background: var(--ck-color-editable-blur-selection, hsl(0 0% 85%));
 	}
 
 	&.ck-editor__editable_inline-root br {

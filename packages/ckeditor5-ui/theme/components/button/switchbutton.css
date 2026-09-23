@@ -100,7 +100,7 @@
 
 			& .ck-button__toggle__inner {
 				/* Backward compatibility: falls back to legacy --ck-switch-button-inner-hover-shadow if overridden. */
-				box-shadow: var(--ck-switch-button-inner-hover-shadow, 0 0 0 5px hsla(0, 0%, 0%, 0.1));
+				box-shadow: var(--ck-switch-button-inner-hover-shadow, 0 0 0 5px hsl(0 0% 0% / 0.1));
 			}
 		}
 		display: block

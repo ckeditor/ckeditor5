@@ -11,11 +11,20 @@
 .ck.ck-table-cell-properties-form {
 	width: var(--ck-table-cell-properties-width);
 
+	/*
+	 * The border row (equal thirds) and the dimensions row (two thirds) are inherited from the shared
+	 * `.ck-table-form` rules in tableform.css, so the cell form matches the table properties form.
+	 */
 	& .ck-form__row {
 		&.ck-table-cell-properties-form__padding-row {
+			/* One third of the row, aligned to the last column (padding sits under the Color column). */
+			--ck-table-cell-properties-padding-width: calc((100% - 2 * var(--ck-spacing-large, var(--ck-spacing-lg))) / 3);
+
 			align-self: flex-end;
 			padding: 0;
-			width: 25%;
+			width: var(--ck-table-cell-properties-padding-width);
+			max-width: var(--ck-table-cell-properties-padding-width);
+			min-width: var(--ck-table-cell-properties-padding-width);
 		}
 
 		&.ck-table-cell-properties-form__alignment-row {
@@ -26,16 +35,17 @@
 				margin-top: var(--ck-spacing-standard, var(--ck-spacing-base));
 
 				&.ck-table-cell-properties-form__horizontal-alignment-toolbar {
-					--ck-table-form-dimensions-input-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
+					/* Two thirds of the row, aligned to the first two columns above. */
+					--ck-table-cell-properties-horizontal-alignment-width: calc((100% - 2 * var(--ck-spacing-large, var(--ck-spacing-lg))) / 3 * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
 
-					width: var(--ck-table-form-dimensions-input-width);
-					max-width: var(--ck-table-form-dimensions-input-width);
-					min-width: var(--ck-table-form-dimensions-input-width);
+					width: var(--ck-table-cell-properties-horizontal-alignment-width);
+					max-width: var(--ck-table-cell-properties-horizontal-alignment-width);
+					min-width: var(--ck-table-cell-properties-horizontal-alignment-width);
 					padding: 0;
 				}
 
 				&.ck-table-cell-properties-form__vertical-alignment-toolbar {
-					/* Fill the row space remaining next to the fixed-width horizontal toolbar. */
+					/* Fill the row space remaining next to the two-thirds horizontal toolbar (the last third). */
 					flex-grow: 1;
 				}
 
@@ -44,44 +54,6 @@
 				}
 			}
 			flex-wrap: wrap
-		}
-
-		&.ck-table-form__border-row {
-			& .ck-table-form__border-style,
-			& .ck-table-form__border-width {
-				width: 80px;
-				min-width: 80px;
-				max-width: 80px;
-			}
-		}
-
-		&.ck-table-form__dimensions-row {
-			--ck-table-form-dimensions-input-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
-
-			width: var(--ck-table-form-dimensions-input-width);
-			max-width: var(--ck-table-form-dimensions-input-width);
-			min-width: var(--ck-table-form-dimensions-input-width);
-			padding: 0;
-
-			& .ck-table-form__dimensions-row__width,
-			& .ck-table-form__dimensions-row__height {
-				width: var(--ck-table-form-default-input-width);
-				min-width: var(--ck-table-form-default-input-width);
-				max-width: var(--ck-table-form-default-input-width);
-				margin: 0;
-			}
-
-			& .ck-table-form__dimension-operator {
-				position: relative;
-				left: -0.5ch;
-				width: 0;
-				overflow: visible;
-				align-self: flex-end;
-				display: inline-block;
-				height: var(--ck-size-control-min-height);
-				line-height: var(--ck-size-control-min-height);
-				margin: 0 var(--ck-spacing-small, var(--ck-spacing-sm));
-			}
 		}
 
 		&.ck-form__row.ck-table-form__action-row {
@@ -95,12 +67,18 @@
 		}
 
 		&.ck-table-form__cell-type-row {
-			--ck-table-form-dimensions-input-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
+			/* Two thirds of the row, aligned to the first two border columns; Background takes the last third. */
+			--ck-table-form-cell-type-width: calc((100% - 2 * var(--ck-spacing-large, var(--ck-spacing-lg))) / 3 * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
 
-			width: var(--ck-table-form-dimensions-input-width);
-			max-width: var(--ck-table-form-dimensions-input-width);
-			min-width: var(--ck-table-form-dimensions-input-width);
+			width: var(--ck-table-form-cell-type-width);
+			max-width: var(--ck-table-form-cell-type-width);
+			min-width: var(--ck-table-form-cell-type-width);
 			padding: 0;
+
+			/* The cell-type control is a dropdown (inline-block by default); make it fill its column. */
+			& .ck-dropdown {
+				width: 100%;
+			}
 		}
 	}
 }

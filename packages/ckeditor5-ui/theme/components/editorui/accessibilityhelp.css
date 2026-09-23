@@ -69,7 +69,7 @@
 
 	& dl {
 		/* Used for third value fallback. */
-		--ck-divider-border-color: var(--ck-color-divider, hsl(220, 6%, 81%));
+		--ck-divider-border-color: var(--ck-color-divider, hsl(220 6% 81%));
 
 		display: grid;
 		grid-template-columns: 2fr 1fr;

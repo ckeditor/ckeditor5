@@ -20,7 +20,7 @@
 
 	/* Color */
 	--ck-dialog-background-color: var(--ck-color-surface-container);
-	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 );
+	--ck-dialog-overlay-background-color: hsl(0 0% 0% / .5);
 
 	/* Spacing */
 	/* Dialog-scoped header padding: the header's own (tight) vertical padding + the overlay inline padding,
@@ -96,7 +96,7 @@
 
 @keyframes ck-dialog-fade-in {
 	0% {
-		background: hsla( 0, 0%, 0%, 0 );
+		background: hsl(0 0% 0% / 0);
 	}
 
 	100% {

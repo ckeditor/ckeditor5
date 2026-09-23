@@ -7,7 +7,7 @@
 :host {
 	/* -- Engine -------------------------------------------------------------------------------- */
 
-	--ck-color-engine-placeholder-text: hsl(0, 0%, 44%);
+	--ck-color-engine-placeholder-text: hsl(0 0% 44%);
 
 	/* -- Upload -------------------------------------------------------------------------------- */
 
@@ -15,9 +15,9 @@
 
 	/* -- Link ---------------------------------------------------------------------------------- */
 
-	--ck-color-link-default: hsl(240, 100%, 47%);
-	--ck-color-link-selected-background: hsla(201, 100%, 56%, 0.1);
-	--ck-color-link-fake-selection: hsla(201, 100%, 56%, 0.3);
+	--ck-color-link-default: hsl(240 100% 47%);
+	--ck-color-link-selected-background: hsl(201 100% 56% / 0.1);
+	--ck-color-link-fake-selection: hsl(201 100% 56% / 0.3);
 
 	/* -- Search result highlight --------------------------------------------------------------- */
 
@@ -25,5 +25,5 @@
 
 	/* -- Generic colors ----------------------------------------------------------------------- */
 
-	--ck-color-light-red: hsl(0, 100%, 90%);
+	--ck-color-light-red: hsl(0 100% 90%);
 }

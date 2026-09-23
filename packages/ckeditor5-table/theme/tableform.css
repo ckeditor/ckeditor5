@@ -14,16 +14,27 @@
 
 	& .ck-form__row {
 		&.ck-table-form__border-row {
+			/* Style, width and color fill the row as three equal-width columns. Each column is an
+			   explicit third of the row minus the two inter-column gaps (rather than flex-grow, which
+			   distributes unevenly across these heterogeneous controls). The row keeps its default
+			   justify-content: the columns sum to the full width, so there is no free space to spread. */
 			& .ck-table-form__border-style,
-			& .ck-table-form__border-width {
-				width: var(--ck-table-form-default-input-width);
-				min-width: var(--ck-table-form-default-input-width);
-				max-width: var(--ck-table-form-default-input-width);
+			& .ck-table-form__border-width,
+			& .ck-table-form__border-color {
+				flex: 0 0 auto;
+				width: calc((100% - 2 * var(--ck-spacing-large, var(--ck-spacing-lg))) / 3);
+				min-width: 0;
+			}
+
+			/* The style control is a dropdown (inline-block by default); make it fill its column. */
+			& .ck-table-form__border-style .ck-dropdown {
+				width: 100%;
 			}
 		}
 
 		&.ck-table-form__dimensions-row {
-			--ck-table-form-dimensions-input-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
+			/* Two thirds of the row, aligned to the first two border-row columns (two equal columns plus one gap). */
+			--ck-table-form-dimensions-input-width: calc((100% - 2 * var(--ck-spacing-large, var(--ck-spacing-lg))) / 3 * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
 
 			width: var(--ck-table-form-dimensions-input-width);
 			max-width: var(--ck-table-form-dimensions-input-width);
@@ -32,9 +43,8 @@
 
 			& .ck-table-form__dimensions-row__width,
 			& .ck-table-form__dimensions-row__height {
-				width: var(--ck-table-form-default-input-width);
-				min-width: var(--ck-table-form-default-input-width);
-				max-width: var(--ck-table-form-default-input-width);
+				/* The two inputs split the dimensions row equally, filling its two-thirds width. */
+				flex: 1 1 0;
 				margin: 0
 			}
 
@@ -47,9 +57,20 @@
 				display: inline-block;
 				height: var(--ck-size-control-min-height);
 				line-height: var(--ck-size-control-min-height);
-				margin: 0 var(--ck-spacing-small, var(--ck-spacing-sm));
+				/* Half a column gap on each side, so the total space around the operator matches the
+				   gap between the other columns (and Width/Height line up with the border columns). */
+				margin: 0 calc(var(--ck-spacing-large, var(--ck-spacing-lg)) / 2);
 			}
 		}
+		&.ck-table-form__background-row {
+			/* One third of the row, aligned to the last border-row column. */
+			--ck-table-form-background-width: calc((100% - 2 * var(--ck-spacing-large, var(--ck-spacing-lg))) / 3);
+
+			width: var(--ck-table-form-background-width);
+			max-width: var(--ck-table-form-background-width);
+			min-width: var(--ck-table-form-background-width);
+		}
+
 		&.ck-table-form__border-row,
 		&.ck-table-form__background-row,
 		&.ck-table-form__cell-type-row {

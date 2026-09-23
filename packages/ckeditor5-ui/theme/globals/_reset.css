@@ -80,7 +80,7 @@
 
 	& fieldset:not(.ck-reset_all-excluded *) {
 		padding: 10px;
-		border: 2px groove hsl(255, 7%, 88%);
+		border: 2px groove hsl(255 7% 88%);
 	}
 
 	& button:not(.ck-reset_all-excluded *)::-moz-focus-inner {
