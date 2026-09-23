@@ -19,6 +19,7 @@ import {
 	type ColorPickerConfig,
 	type ColorSelectorExecuteEvent,
 	type ColorSelectorColorPickerCancelEvent,
+	type ColorSelectorColorPickerShowEvent,
 	type FocusableView,
 	_DEFAULT_COLOR_GRID_COLUMNS as defaultColorGridColumns
 } from '@ckeditor/ckeditor5-ui';
@@ -263,7 +264,15 @@ export class ColorInputView extends View implements FocusableView {
 		dropdown.panelView.children.add( colorSelector );
 		dropdown.bind( 'isEnabled' ).to( this, 'isReadOnly', value => !value );
 
+		let colorSelectorRendered = false;
+
 		dropdown.on( 'change:isOpen', ( evt, name, isVisible ) => {
+			if ( !colorSelectorRendered ) {
+				colorSelectorRendered = true;
+
+				colorSelector.appendUI();
+			}
+
 			if ( isVisible ) {
 				colorSelector.updateSelectedColors();
 				colorSelector.showColorGridsFragment();
@@ -330,8 +339,6 @@ export class ColorInputView extends View implements FocusableView {
 			}
 		} );
 
-		colorSelector.appendUI();
-
 		colorSelector.on<ColorSelectorExecuteEvent>( 'execute', ( evt, data ) => {
 			if ( data.source === 'colorPickerSaveButton' ) {
 				this.dropdownView.isOpen = false;
@@ -365,7 +372,7 @@ export class ColorInputView extends View implements FocusableView {
 			this.dropdownView.isOpen = false;
 		} );
 
-		colorSelector.colorGridsFragmentView.colorPickerButtonView!.on( 'execute', () => {
+		colorSelector.on<ColorSelectorColorPickerShowEvent>( 'colorPicker:show', () => {
 			/**
 			 * Save color value before changes in color picker.
 			 */

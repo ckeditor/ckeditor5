@@ -1015,8 +1015,11 @@ describe( 'table properties', () => {
 		it( 'should render dropdown without color picker', () => {
 			tablePropertiesUI._showView();
 
-			const panelView = tablePropertiesUI.view.borderColorInput.fieldView.dropdownView.panelView;
-			const colorPicker = panelView.children.get( 0 ).colorPickerFragmentView.element;
+			const dropdownView = tablePropertiesUI.view.borderColorInput.fieldView.dropdownView;
+
+			dropdownView.isOpen = true;
+
+			const colorPicker = dropdownView.panelView.children.get( 0 ).colorPickerFragmentView.element;
 
 			expect( colorPicker ).toBeNull();
 		} );

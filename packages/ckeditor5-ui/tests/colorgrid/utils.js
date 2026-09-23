@@ -170,20 +170,20 @@ describe( 'utils', () => {
 		it( 'should localize the hue of a shaded color option and keep the shade', () => {
 			expect( getLocalizedColorOptions( locale, [
 				{
-					color: 'hsl(1.4, 77.2%, 55.3%)',
+					color: 'hsl(1, 77%, 55%)',
 					label: 'Red 600'
 				},
 				{
-					color: 'hsl(199.4, 18.3%, 33.1%)',
+					color: 'hsl(199, 18%, 33%)',
 					label: 'Blue grey 700'
 				}
 			] ) ).toEqual( [
 				{
-					color: 'hsl(1.4, 77.2%, 55.3%)',
+					color: 'hsl(1, 77%, 55%)',
 					label: 'Localized:Red 600'
 				},
 				{
-					color: 'hsl(199.4, 18.3%, 33.1%)',
+					color: 'hsl(199, 18%, 33%)',
 					label: 'Localized:Blue grey 700'
 				}
 			] );
