@@ -4,10 +4,12 @@
  */
 
 import url from 'node:url';
+import { realpathSync } from 'node:fs';
 import { constants, readFile, writeFile, copyFile, access, mkdir } from 'node:fs/promises';
 import upath from 'upath';
 import { build as esbuild } from 'esbuild';
 import { CKEDITOR5_COMMERCIAL_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import getPremiumSnippets from './get-premium-snippets.mjs';
 
 /**
  * @param {Set<Snippet>} snippets Snippet collection extracted from documentation files.
@@ -23,9 +25,11 @@ export default async function snippetAdapter( snippets, _options, { getSnippetPl
 	const constants = await getConstants();
 
 	await addBootstrapSnippet( snippets, paths );
-	await buildCKBoxAssets( paths );
-	await buildSnippets( snippets, paths, constants, imports );
-	await buildDocuments( snippets, paths, constants, imports, getSnippetPlaceholder );
+
+	const ckboxModulePaths = await buildCKBoxAssets( paths );
+	const premiumSnippets = await buildSnippets( snippets, paths, constants, imports );
+
+	await buildDocuments( snippets, paths, constants, imports, premiumSnippets, ckboxModulePaths, getSnippetPlaceholder );
 
 	console.log( 'Finished building snippets.' );
 }
@@ -69,7 +73,7 @@ async function getDependencies( packageName ) {
  * Builds CKBox JS and CSS assets from the `ckbox` npm package and writes them to the output path.
  *
  * @param {Paths} paths
- * @returns {Promise<void>}
+ * @returns {Promise<Array<string>>} Module paths relative to the documentation project, including shared chunks.
  */
 async function buildCKBoxAssets( paths ) {
 	const outputDir = upath.join( paths.output, 'assets', 'ckbox' );
@@ -86,20 +90,17 @@ async function buildCKBoxAssets( paths ) {
 		]
 	};
 
-	await Promise.all( [
+	const [ { metafile } ] = await Promise.all( [
 		esbuild( {
 			...sharedOptions,
-			entryPoints: [ 'ckbox' ],
+			// Both packages use the same CKBox core and React runtime. Bundle them together to avoid downloading
+			// and evaluating those dependencies twice, while preserving their separate module exports.
+			entryPoints: { ckbox: 'ckbox', ckboxWidget: '@ckbox/uploader' },
 			format: 'esm',
 			target: 'es2023',
-			outfile: upath.join( outputDir, 'ckbox.js' )
-		} ),
-		esbuild( {
-			...sharedOptions,
-			entryPoints: [ '@ckbox/uploader' ],
-			format: 'esm',
-			target: 'es2023',
-			outfile: upath.join( outputDir, 'ckboxWidget.js' )
+			splitting: true,
+			metafile: true,
+			outdir: outputDir
 		} ),
 		esbuild( {
 			...sharedOptions,
@@ -107,6 +108,9 @@ async function buildCKBoxAssets( paths ) {
 			outfile: upath.join( outputDir, 'ckbox.css' )
 		} )
 	] );
+
+	// Preload shared chunks with the entries so their discovery does not add a network round trip.
+	return Object.keys( metafile.outputs ).map( path => upath.relative( paths.output, path ) );
 }
 
 /**
@@ -116,12 +120,13 @@ async function buildCKBoxAssets( paths ) {
  * @param {Paths} paths
  * @param {Record<string, string>} constants
  * @param {Record<string, any>} imports
- * @returns {Promise<void>}
+ * @returns {Promise<Set<string>>} Absolute entry paths of snippets that need premium assets.
  */
 async function buildSnippets( snippets, paths, constants, imports ) {
 	const externals = Object.keys( imports );
 
-	await esbuild( {
+	const { metafile } = await esbuild( {
+		metafile: true,
 		entryPoints: Array.from( snippets ).map( snippet => snippet.snippetSources.js ).filter( Boolean ),
 		define: Object.fromEntries( Object.entries( constants ).map( ( [ key, value ] ) => [ key, JSON.stringify( value ) ] ) ),
 		outdir: paths.snippetsOutput,
@@ -213,6 +218,8 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 			}
 		]
 	} );
+
+	return getPremiumSnippets( metafile, imports );
 }
 
 /**
@@ -222,10 +229,12 @@ async function buildSnippets( snippets, paths, constants, imports ) {
  * @param {Paths} paths
  * @param {Record<string, string>} constants
  * @param {Record<string, any>} imports
+ * @param {Set<string>} premiumSnippets
+ * @param {Array<string>} ckboxModulePaths
  * @param {function} getSnippetPlaceholder
  * @returns {Promise<void>}
  */
-async function buildDocuments( snippets, paths, constants, imports, getSnippetPlaceholder ) {
+async function buildDocuments( snippets, paths, constants, imports, premiumSnippets, ckboxModulePaths, getSnippetPlaceholder ) {
 	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true">`;
 	const getScript = src => `<script type="module" src="${ src }"></script>`;
 	const getLayeredStyles = ( layer, hrefs ) =>
@@ -235,35 +244,40 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 
 	const documents = Object.groupBy( snippets, snippet => snippet.destinationPath );
 
-	// Style paths for preloading and layered imports
-	const editorStylePaths = [
-		'%BASE_PATH%/assets/ckeditor5/ckeditor5.css',
-		'%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
-		'%BASE_PATH%/assets/ckbox/ckbox.css',
-		'%BASE_PATH%/assets/global.css'
-	];
-
-	// Gather global tags added to each document that do not require relative paths.
-	const globalTags = [
-		...editorStylePaths.map( href => `<link rel="preload" href="${ href }" as="style">` ),
-		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
-		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">',
-		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckbox/ckbox.js">',
-		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckbox/ckboxWidget.js">',
-		'<link rel="preload" href="%BASE_PATH%/assets/global.js" as="script">',
-		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
-		'<script src="%BASE_PATH%/assets/global.js"></script>',
-		'<script type="module">' +
-			'import * as CKBox from \'ckbox\';' +
-			'import * as CKBoxUploader from \'@ckbox/uploader\'; ' +
-			'window.CKBox = Object.assign( {}, CKBox, CKBoxUploader );' +
-		'</script>',
-		getLayeredStyles( 'editor', editorStylePaths )
-	];
-
 	// Iterate over each document and replace placeholders with the actual content.
 	for ( const [ document, documentSnippets ] of Object.entries( documents ) ) {
-		const documentTags = [ ...globalTags ];
+		const usesPremiumFeatures = documentSnippets.some( snippet => {
+			// Esbuild resolves symlinks in entry point paths (including macOS temporary directories).
+			const sourcePath = snippet.snippetSources.js && upath.normalize( realpathSync( snippet.snippetSources.js ) );
+
+			return premiumSnippets.has( sourcePath );
+		} );
+
+		// Keep the styles and their preloads in the same order on every page that needs them.
+		const editorStylePaths = [
+			'%BASE_PATH%/assets/ckeditor5/ckeditor5.css',
+			...( usesPremiumFeatures ? [ '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css' ] : [] ),
+			'%BASE_PATH%/assets/ckbox/ckbox.css',
+			'%BASE_PATH%/assets/global.css'
+		];
+
+		const documentTags = [
+			...editorStylePaths.map( href => `<link rel="preload" href="${ href }" as="style">` ),
+			'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
+			...( usesPremiumFeatures ? [
+				'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">'
+			] : [] ),
+			...ckboxModulePaths.map( path => `<link rel="modulepreload" href="%BASE_PATH%/${ path }">` ),
+			'<link rel="preload" href="%BASE_PATH%/assets/global.js" as="script">',
+			`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
+			'<script src="%BASE_PATH%/assets/global.js"></script>',
+			'<script type="module">' +
+				'import * as CKBox from \'ckbox\';' +
+				'import * as CKBoxUploader from \'@ckbox/uploader\'; ' +
+				'window.CKBox = Object.assign( {}, CKBox, CKBoxUploader );' +
+			'</script>',
+			getLayeredStyles( 'editor', editorStylePaths )
+		];
 		const relativeOutputPath = upath.relative( upath.dirname( document ), paths.output );
 
 		let documentContent = await readFile( document, { encoding: 'utf-8' } );
