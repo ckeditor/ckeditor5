@@ -5,7 +5,6 @@
 
 import { AutoLink } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
@@ -14,7 +13,6 @@ import {
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-autolink' ),
-		cloudServices: CS_CONFIG,
 		extraPlugins: [
 			AutoLink
 		],

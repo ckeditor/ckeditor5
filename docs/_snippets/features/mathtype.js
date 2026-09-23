@@ -15,7 +15,6 @@ import {
 import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ArticlePluginSet,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
@@ -70,8 +69,7 @@ ClassicEditor
 		},
 		list: {
 			enableSkipLevelLists: true
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 
 	.then( editor => {

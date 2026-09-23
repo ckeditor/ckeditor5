@@ -7,7 +7,6 @@ import { CloudServices, CKBox, CKBoxImageEdit, IndentBlock, PictureEditing, Imag
 import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ArticlePluginSet,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
@@ -34,7 +33,6 @@ ClassicEditor
 			lang: 'auto',
 			srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
 		},
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

@@ -6,7 +6,6 @@
 import { TodoList, CKBox, CKBoxImageEdit, PictureEditing, ImageResize, AutoImage } from 'ckeditor5';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
@@ -18,7 +17,6 @@ ClassicEditor.builtinPlugins.push( TodoList, CKBox, CKBoxImageEdit, PictureEditi
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-todo-list' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

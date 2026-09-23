@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -36,8 +35,7 @@ BasicStylesEditor
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

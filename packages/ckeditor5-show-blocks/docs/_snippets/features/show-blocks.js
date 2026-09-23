@@ -7,7 +7,6 @@ import { GeneralHtmlSupport, ShowBlocks, CKBox, CKBoxImageEdit, ImageInsert, Pic
 import { SourceEditingEnhanced } from 'ckeditor5-premium-features';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
@@ -20,7 +19,6 @@ ClassicEditor.builtinPlugins.push( ShowBlocks, GeneralHtmlSupport, SourceEditing
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-show-blocks' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

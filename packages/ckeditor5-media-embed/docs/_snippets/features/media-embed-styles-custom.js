@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -21,7 +20,6 @@ MediaEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-media-embed-styles-custom' ),
 		extraPlugins: [ MediaEmbedToolbar, MediaEmbedStyle ],
-		cloudServices: CS_CONFIG,
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],

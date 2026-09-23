@@ -17,7 +17,6 @@ import {
 } from 'ckeditor5';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ArticlePluginSet,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
@@ -61,7 +60,6 @@ async function startMode( selectedMode ) {
 async function startStandardEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'RestrictedEditingMode' ],
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'restrictedEditingException:auto',
@@ -102,7 +100,6 @@ async function startStandardEditingMode() {
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'StandardEditingMode' ],
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'restrictedEditing',

@@ -5,7 +5,6 @@
 
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
 	findToolbarItem
@@ -15,7 +14,6 @@ import { RemoveFormatEditor } from './build-remove-format-source.js';
 RemoveFormatEditor
 	.create( {
 		attachTo: document.querySelector( '#editor' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

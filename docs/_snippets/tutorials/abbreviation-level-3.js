@@ -20,7 +20,6 @@ import {
 	toMap
 } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
 	findToolbarItem
@@ -319,7 +318,6 @@ class Abbreviation extends Plugin {
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-abbreviation-plugin' ),
-		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()

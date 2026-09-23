@@ -17,7 +17,6 @@ import {
 } from 'ckeditor5';
 import { SourceEditingEnhanced } from 'ckeditor5-premium-features';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
@@ -40,7 +39,6 @@ export class GHSEditor extends ClassicEditor {
 	];
 
 	static defaultConfig = {
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'sourceEditingEnhanced', '|', 'heading',

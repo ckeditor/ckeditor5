@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -13,7 +12,6 @@ import { ClassicEditor } from './build-word-count-source.js';
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#demo-editor' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

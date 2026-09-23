@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -13,7 +12,6 @@ import { MentionEditor } from './build-mention-source.js';
 MentionEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-mention' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

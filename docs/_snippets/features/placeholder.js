@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -16,7 +15,6 @@ PlaceholderEditor
 		root: {
 			placeholder: 'Type some content here!'
 		},
-		cloudServices: CS_CONFIG,
 		toolbar: [
 			'undo', 'redo', '|', 'heading',
 			'|', 'bold', 'italic',

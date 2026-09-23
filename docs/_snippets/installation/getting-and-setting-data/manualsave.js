@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -21,7 +20,6 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	AutosaveEditor
 		.create( {
 			attachTo: document.querySelector( '#snippet-manualsave' ),
-			cloudServices: CS_CONFIG,
 			ckbox: {
 				tokenUrl: TOKEN_URL,
 				forceDemoLabel: true,

@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -24,7 +23,6 @@ ImageEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

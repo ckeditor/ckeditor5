@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	InlineEditor,
 	getViewportTopOffsetConfig,
@@ -32,7 +31,6 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
-		cloudServices: CS_CONFIG,
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,

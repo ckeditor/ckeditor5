@@ -5,7 +5,6 @@
 
 import { ListProperties } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -54,8 +53,7 @@ ListEditor
 				startIndex: false,
 				reversed: true
 			}
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editorStyles = editor;

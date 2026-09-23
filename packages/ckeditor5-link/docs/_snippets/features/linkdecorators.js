@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
@@ -12,7 +11,6 @@ import {
 
 ClassicEditor.create( {
 	attachTo: document.querySelector( '#snippet-link-decorators' ),
-	cloudServices: CS_CONFIG,
 	toolbar: {
 		items: [
 			'undo',

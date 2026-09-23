@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -13,7 +12,6 @@ import { CodeBlockEditor } from './build-code-block-source.js';
 CodeBlockEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-custom-languages' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

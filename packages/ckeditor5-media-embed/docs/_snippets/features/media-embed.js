@@ -5,7 +5,6 @@
 
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
 	findToolbarItem
@@ -15,7 +14,6 @@ import { MediaEditor } from './build-media-source.js';
 MediaEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-media-embed' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

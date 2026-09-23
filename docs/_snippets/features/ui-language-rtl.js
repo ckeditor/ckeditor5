@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -17,7 +16,6 @@ UiLanguageEditor
 		attachTo: document.querySelector( '#snippet-ui-language-rtl' ),
 		language: 'ar',
 		translations,
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

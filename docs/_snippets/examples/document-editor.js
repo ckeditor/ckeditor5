@@ -5,7 +5,6 @@
 
 import { TableColumnResize } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	DecoupledEditor,
 	getViewportTopOffsetConfig,
@@ -20,7 +19,6 @@ DecoupledEditor
 		extraPlugins: [
 			TableColumnResize
 		],
-		cloudServices: CS_CONFIG,
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,

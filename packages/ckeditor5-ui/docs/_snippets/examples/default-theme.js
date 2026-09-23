@@ -16,7 +16,7 @@ import {
 	CodeBlock
 } from 'ckeditor5';
 
-import { CS_CONFIG, TOKEN_URL, ArticlePluginSet, getViewportTopOffsetConfig } from '@snippets/index.js';
+import { TOKEN_URL, ArticlePluginSet, getViewportTopOffsetConfig } from '@snippets/index.js';
 
 import DARK_MODE_STYLES from './custom.css?raw';
 
@@ -207,8 +207,7 @@ ClassicEditor
 		},
 		list: {
 			enableSkipLevelLists: true
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

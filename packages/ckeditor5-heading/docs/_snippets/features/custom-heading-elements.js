@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -13,7 +12,6 @@ import { HeadingEditor } from './heading-source.js';
 HeadingEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-custom-heading-elements' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CS_CONFIG, attachTourBalloon } from '@snippets/index.js';
+import { attachTourBalloon } from '@snippets/index.js';
 import { DragDropEditor } from './build-drag-drop-source.js';
 
 const contactsContainer = document.querySelector( '.contacts' );
@@ -12,8 +12,7 @@ DragDropEditor.create( {
 	attachTo: document.querySelector( '#snippet-drag-drop' ),
 	root: {
 		placeholder: 'Drop the content here to test the feature.'
-	},
-	cloudServices: CS_CONFIG
+	}
 } )
 	.then( editor => {
 		window.editor = editor;

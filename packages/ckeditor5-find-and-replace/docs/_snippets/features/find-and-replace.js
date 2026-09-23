@@ -5,7 +5,6 @@
 
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
 	findToolbarItem
@@ -15,7 +14,6 @@ import { FindAndReplaceEditor } from './build-find-and-replace-source.js';
 FindAndReplaceEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-findandreplace' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'findAndReplace', '|', 'heading',

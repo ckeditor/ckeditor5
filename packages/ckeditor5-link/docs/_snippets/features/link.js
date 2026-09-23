@@ -6,7 +6,6 @@
 import { AutoLink, LinkImage, Bookmark, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage } from 'ckeditor5';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
@@ -29,7 +28,6 @@ ClassicEditor
 			CKBoxImageEdit,
 			SocialLinksPlugin
 		],
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

@@ -27,7 +27,6 @@ import {
 
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ArticlePluginSet,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
@@ -117,7 +116,6 @@ ClassicEditor
 				{ language: 'php', label: 'PHP' }
 			]
 		},
-		cloudServices: CS_CONFIG,
 		list: {
 			enableSkipLevelLists: true
 		},

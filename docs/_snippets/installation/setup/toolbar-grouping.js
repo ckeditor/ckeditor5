@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -60,8 +59,7 @@ ToolbarEditor
 				{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' },
 				{ model: 'heading4', view: 'h5', title: 'Heading 4', class: 'ck-heading_heading4' }
 			]
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

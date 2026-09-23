@@ -11,7 +11,6 @@ import {
 	Underline, Table, TableToolbar
 } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	DecoupledEditor,
 	attachTourBalloon,
@@ -194,7 +193,6 @@ DecoupledEditor
 				'mergeTableCells'
 			]
 		},
-		cloudServices: CS_CONFIG,
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,

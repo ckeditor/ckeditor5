@@ -6,7 +6,6 @@
 import { Underline, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage } from 'ckeditor5';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
@@ -18,7 +17,6 @@ ClassicEditor.builtinPlugins.push( Underline, PictureEditing, ImageInsert, Image
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#editor' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'selectAll', '|', 'heading',

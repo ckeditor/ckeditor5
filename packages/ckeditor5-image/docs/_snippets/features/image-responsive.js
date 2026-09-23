@@ -5,7 +5,6 @@
 
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
 	findToolbarItem
@@ -80,8 +79,7 @@ ImageEditor
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

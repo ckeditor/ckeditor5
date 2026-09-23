@@ -27,7 +27,6 @@ import {
 	LinkImage
 } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
@@ -60,7 +59,6 @@ export class SourceEditingEditor extends ClassicEditor {
 	];
 
 	static defaultConfig = {
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -13,7 +12,6 @@ import { MediaEditor } from './build-media-source.js';
 MediaEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-media-embed-resize' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

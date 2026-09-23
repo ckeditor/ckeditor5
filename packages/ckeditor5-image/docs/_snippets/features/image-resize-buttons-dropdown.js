@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -58,8 +57,7 @@ ImageEditor
 				}
 			],
 			toolbar: [ 'resizeImage', '|', 'ckboxImageEdit' ]
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editorResizeUIDropdown = editor;

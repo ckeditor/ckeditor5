@@ -9,7 +9,6 @@ import { CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoIm
 import { SourceEditingEnhanced } from 'ckeditor5-premium-features';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
@@ -49,8 +48,7 @@ ClassicEditor
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editorBasic = editor;

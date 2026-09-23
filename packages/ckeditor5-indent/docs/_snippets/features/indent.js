@@ -5,7 +5,6 @@
 
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
 	findToolbarItem
@@ -15,7 +14,6 @@ import { IndentEditor } from './build-indent-source.js';
 IndentEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-indent' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

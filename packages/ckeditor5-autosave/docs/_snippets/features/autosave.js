@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -19,7 +18,6 @@ document.querySelector( '#snippet-autosave-lag' ).addEventListener( 'change', ev
 AutosaveEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-autosave' ),
-		cloudServices: CS_CONFIG,
 		image: {
 			toolbar: [
 				'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|',

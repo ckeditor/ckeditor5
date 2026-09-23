@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -38,7 +37,6 @@ ToolbarEditor
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText',
 				'|', 'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit' ]
 		},
-		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()

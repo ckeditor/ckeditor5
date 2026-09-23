@@ -25,7 +25,6 @@ import {
 } from 'ckeditor5';
 import { SourceEditingEnhanced } from 'ckeditor5-premium-features';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
@@ -60,7 +59,6 @@ ClassicEditor
 			],
 			shouldNotGroupWhenFull: true
 		},
-		cloudServices: CS_CONFIG,
 		image: {
 			toolbar: [
 				'imageStyle:inline',
