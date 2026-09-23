@@ -4,7 +4,7 @@ meta-title: Using CKEditor 5 with Angular from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate, and configure CKEditor 5 using the Angular component with CDN.
 category: cloud
 order: 30
-modified_at: 2026-05-27
+modified_at: 2026-09-23
 ---
 
 # Integrating CKEditor&nbsp;5 with Angular from CDN
@@ -546,6 +546,71 @@ Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the sch
 <info-box important>
 	The `<ckeditor>` component always renders a `<div>` host for `ClassicEditor`, regardless of `root.element`. Classic editor wraps its toolbar and editable inside its own structure. Use `InlineEditor`, `BalloonEditor`, or `DecoupledEditor` to control the host element.
 </info-box>
+
+### Using inside a shadow root
+
+Rendering the editor inside a shadow root isolates it from the styles of the host page. Set [`ViewEncapsulation.ShadowDom`](https://angular.dev/api/core/ViewEncapsulation) on the component and Angular attaches the root for you. Use a component that wraps the editor rather than the root component of the application, or everything the application renders ends up inside the root.
+
+The loader injects the editor style sheets as `<link>` tags, so point it at that root with the `injectedStylesheetsLocation` option. Without it they would land in `document.head`, which the shadow root cannot see. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside the shadow root, so the scoped style sheets cover all of it.
+
+```angular-ts
+// editor.component.ts
+
+import { Component, ElementRef, ViewEncapsulation, inject, type AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CKEditorCloudResult, CKEditorModule, loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
+import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+
+@Component( {
+	selector: 'app-editor',
+	templateUrl: './editor.component.html',
+	imports: [ CommonModule, CKEditorModule ],
+	standalone: true,
+	encapsulation: ViewEncapsulation.ShadowDom
+} )
+export class EditorComponent implements AfterViewInit {
+	public Editor: typeof ClassicEditor | null = null;
+
+	public config: EditorConfig | null = null;
+
+	private readonly _elementRef: ElementRef<HTMLElement> = inject( ElementRef );
+
+	// Loading starts after the view is initialized, so that the shadow root is already in the
+	// document. A `<link>` in a detached tree never starts loading, and the loader would wait for it.
+	public ngAfterViewInit(): void {
+		loadCKEditorCloud( {
+			version: '{@var ckeditor5-version}',
+			injectedStylesheetsLocation: {
+				targetNode: this._elementRef.nativeElement.shadowRoot!
+			}
+		} ).then( this._setupEditor.bind( this ) );
+	}
+
+	private _setupEditor( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}' }> ) {
+		const { ClassicEditor, Essentials, Paragraph, Bold, Italic } = cloud.CKEditor;
+
+		this.Editor = ClassicEditor;
+		this.config = {
+			licenseKey: '<YOUR_LICENSE_KEY>',
+			plugins: [ Essentials, Paragraph, Bold, Italic ],
+			toolbar: [ 'bold', 'italic' ]
+		};
+	}
+}
+```
+
+```angular-html
+<!-- editor.component.html -->
+
+<ckeditor
+  *ngIf="(Editor && config)"
+  data="<p>Hello, world!</p>"
+  [editor]="Editor"
+  [config]="config"
+></ckeditor>
+```
+
+An override of a `--ck-*` variable on `:root` has no effect on an editor inside a shadow root, so put it on the shadow host instead. The {@link getting-started/setup/shadow-dom Shadow DOM} guide explains why, and covers the known limitations.
 
 ### Using the editor with collaboration plugins
 

@@ -4,7 +4,7 @@ meta-title: Using CKEditor 5 with React from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate, and configure CKEditor 5 using the React component with CDN.
 category: react-cdn
 order: 10
-modified_at: 2026-05-25
+modified_at: 2026-09-23
 ---
 
 # Integrating CKEditor&nbsp;5 with React from CDN
@@ -330,6 +330,82 @@ Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the sch
 <info-box important>
 	The `<CKEditor>` component always renders a `<div>` host for `ClassicEditor`, regardless of `root.element`. Classic editor wraps its toolbar and editable inside its own structure. Use `InlineEditor`, `BalloonEditor`, or `DecoupledEditor` to control the host element.
 </info-box>
+
+### Using inside a shadow root
+
+Rendering the editor inside a shadow root isolates it from the styles of the host page. The CDN loader injects the style sheets as `<link>` tags, so point it at the shadow root with the `injectedStylesheetsLocation` option of the `useCKEditorCloud()` hook. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside the shadow root, so the scoped style sheets cover all of it.
+
+Attach the shadow root before loading. A `<link>` that is not in the document never starts loading, which is why the hook is called from a component rendered into an already attached root rather than from the one that creates it.
+
+```jsx
+import { useCallback, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+
+import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+
+function App() {
+	const [ shadowRoot, setShadowRoot ] = useState( null );
+
+	// `attachShadow()` can be called only once per element, and `host.shadowRoot` cannot
+	// report an existing root in closed mode, so track the call instead.
+	const attached = useRef( false );
+
+	const hostRef = useCallback( host => {
+		if ( host && !attached.current ) {
+			attached.current = true;
+
+			setShadowRoot( host.attachShadow( { mode: 'open' } ) );
+		}
+	}, [] );
+
+	return (
+		<div ref={ hostRef }>
+			{ shadowRoot && createPortal( <Editor shadowRoot={ shadowRoot } />, shadowRoot ) }
+		</div>
+	);
+}
+
+function Editor( { shadowRoot } ) {
+	const cloud = useCKEditorCloud( {
+		version: '{@var ckeditor5-version}',
+		injectedStylesheetsLocation: {
+			targetNode: shadowRoot
+		}
+	} );
+
+	if ( cloud.status === 'error' ) {
+		return <div>Error!</div>;
+	}
+
+	if ( cloud.status === 'loading' ) {
+		return <div>Loading...</div>;
+	}
+
+	const { ClassicEditor, Essentials, Paragraph, Bold, Italic } = cloud.CKEditor;
+
+	return (
+		<CKEditor
+			editor={ ClassicEditor }
+			config={ {
+				licenseKey: '<YOUR_LICENSE_KEY>',
+				plugins: [ Essentials, Paragraph, Bold, Italic ],
+				toolbar: [ 'bold', 'italic' ],
+				root: {
+					initialData: '<p>Hello from a shadow root!</p>'
+				}
+			} }
+		/>
+	);
+}
+
+export default App;
+```
+
+<info-box important>
+	`attachShadow()` can be called only once per element. If the mode of the root has to change at runtime, give the component holding the host a `key` so that React remounts it.
+</info-box>
+
+An override of a `--ck-*` variable on `:root` has no effect on an editor inside a shadow root, so put it on the shadow host instead. The {@link getting-started/setup/shadow-dom Shadow DOM} guide explains why, and covers the known limitations.
 
 ### Using the editor with collaboration plugins
 

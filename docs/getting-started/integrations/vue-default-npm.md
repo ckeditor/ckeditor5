@@ -4,7 +4,7 @@ meta-title: Using CKEditor 5 with Vue.js 3+ rich text editor component from npm 
 meta-description: Install, integrate, and configure CKEditor 5 using the Vue.js 3+ component with npm.
 category: vuejs-v3-npm
 order: 10
-modified_at: 2026-05-25
+modified_at: 2026-09-23
 ---
 
 # Integrating CKEditor&nbsp;5 with Vue.js 3+ from npm
@@ -433,6 +433,69 @@ const config = computed( () => {
 ```
 
 For more information, refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
+
+### Using inside a shadow root
+
+Rendering the editor inside a shadow root isolates it from the styles of the host page. The bundler injects `ckeditor5.css` into `<head>`, where the shadow root cannot see it, so import the style sheet as a string and adopt it in the root as a [constructed style sheet](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/adoptedStyleSheets) instead. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside that root, so this one style sheet covers all of it.
+
+The editor is rendered with `<Teleport>`, because the shadow root exists only after the host element has been mounted.
+
+```vue
+<template>
+	<div ref="host" />
+
+	<Teleport
+		v-if="target"
+		:to="target"
+	>
+		<ckeditor
+			v-model="data"
+			:editor="ClassicEditor"
+			:config="config"
+		/>
+	</Teleport>
+</template>
+
+<script setup>
+import { onMounted, ref, shallowRef, useTemplateRef } from 'vue';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
+
+// The `?inline` query makes the bundler return the style sheet as a string.
+import editorStyles from 'ckeditor5/ckeditor5.css?inline';
+
+const styleSheet = new CSSStyleSheet();
+
+styleSheet.replaceSync( editorStyles );
+
+const host = useTemplateRef( 'host' );
+const target = shallowRef( null );
+const data = ref( '<p>Hello from a shadow root!</p>' );
+
+const config = {
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+	plugins: [ Essentials, Paragraph, Bold, Italic ],
+	toolbar: [ 'bold', 'italic' ]
+};
+
+onMounted( () => {
+	const shadowRoot = host.value.attachShadow( { mode: 'open' } );
+
+	shadowRoot.adoptedStyleSheets = [ styleSheet ];
+
+	// A teleport needs an element as its target, so create one inside the shadow root.
+	target.value = shadowRoot.appendChild( document.createElement( 'div' ) );
+} );
+</script>
+```
+
+The `?inline` query is supported by Vite. Other bundlers spell it differently &ndash; in webpack&nbsp;5 the same result comes from the `asset/source` type or the `?raw` query.
+
+<info-box important>
+	`attachShadow()` can be called only once per element. If the mode of the root has to change at runtime, give the component holding the host a `key` so that Vue rebuilds the element.
+</info-box>
+
+An override of a `--ck-*` variable on `:root` has no effect on an editor inside a shadow root, so put it on the shadow host instead. The {@link getting-started/setup/shadow-dom Shadow DOM} guide explains why, and covers the known limitations.
 
 ### Jest testing
 

@@ -13,6 +13,11 @@ CKEditor&nbsp;5 runs inside an open shadow root. Selection, focus, positioning, 
 
 Two things do not happen by themselves, because a shadow root is a separate DOM tree with a styling boundary of its own. The editor style sheets have to reach every tree that holds the editor user interface, and CSS variables have to be overridden on the shadow host rather than on `:root`.
 
+The integration guides show how to do both in each framework:
+
+* From npm: {@link getting-started/integrations/react-default-npm#using-inside-a-shadow-root React}, {@link getting-started/integrations/vue-default-npm#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations/angular#using-inside-a-shadow-root Angular}.
+* From CDN: {@link getting-started/integrations-cdn/react-default-cdn#using-inside-a-shadow-root React}, {@link getting-started/integrations-cdn/vue-default-cdn#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations-cdn/angular#using-inside-a-shadow-root Angular}.
+
 <info-box>
 	Writing an editor feature that has to keep working inside a shadow root is a different job. The {@link framework/deep-dive/shadow-dom Deep dive into shadow DOM support} guide covers it.
 </info-box>

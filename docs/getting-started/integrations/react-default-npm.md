@@ -4,7 +4,7 @@ meta-title: Using CKEditor 5 with React rich text editor component from npm | CK
 meta-description: Install, integrate, and configure CKEditor 5 using the default React component with npm.
 category: react-npm
 order: 10
-modified_at: 2026-05-25
+modified_at: 2026-09-23
 ---
 
 # Integrating CKEditor&nbsp;5 with React rich text editor component from npm
@@ -264,6 +264,76 @@ Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the sch
 <info-box important>
 	The `<CKEditor>` component always renders a `<div>` host for `ClassicEditor`, regardless of `root.element`. Classic editor wraps its toolbar and editable inside its own structure. Use `InlineEditor`, `BalloonEditor`, or `DecoupledEditor` to control the host element.
 </info-box>
+
+### Using inside a shadow root
+
+Rendering the editor inside a shadow root isolates it from the styles of the host page. The bundler injects `ckeditor5.css` into `<head>`, where the shadow root cannot see it, so import the style sheet as a string and adopt it in the root as a [constructed style sheet](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/adoptedStyleSheets) instead. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside that root, so this one style sheet covers all of it.
+
+```jsx
+import { useCallback, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
+
+// The `?inline` query makes the bundler return the style sheet as a string.
+import editorStyles from 'ckeditor5/ckeditor5.css?inline';
+
+const styleSheet = new CSSStyleSheet();
+
+styleSheet.replaceSync( editorStyles );
+
+function App() {
+	const [ shadowRoot, setShadowRoot ] = useState( null );
+
+	// `attachShadow()` can be called only once per element, and `host.shadowRoot` cannot
+	// report an existing root in closed mode, so track the call instead.
+	const attached = useRef( false );
+
+	const hostRef = useCallback( host => {
+		if ( !host || attached.current ) {
+			return;
+		}
+
+		attached.current = true;
+
+		const root = host.attachShadow( { mode: 'open' } );
+
+		root.adoptedStyleSheets = [ styleSheet ];
+
+		setShadowRoot( root );
+	}, [] );
+
+	return (
+		<div ref={ hostRef }>
+			{ shadowRoot && createPortal(
+				<CKEditor
+					editor={ ClassicEditor }
+					config={ {
+						licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+						plugins: [ Essentials, Paragraph, Bold, Italic ],
+						toolbar: [ 'bold', 'italic' ],
+						root: {
+							initialData: '<p>Hello from a shadow root!</p>'
+						}
+					} }
+				/>,
+				shadowRoot
+			) }
+		</div>
+	);
+}
+
+export default App;
+```
+
+The `?inline` query is supported by Vite. Other bundlers spell it differently &ndash; in webpack&nbsp;5 the same result comes from the `asset/source` type or the `?raw` query.
+
+<info-box important>
+	`attachShadow()` can be called only once per element. If the mode of the root has to change at runtime, give the component holding the host a `key` so that React remounts it.
+</info-box>
+
+An override of a `--ck-*` variable on `:root` has no effect on an editor inside a shadow root, so put it on the shadow host instead. The {@link getting-started/setup/shadow-dom Shadow DOM} guide explains why, and covers the known limitations.
 
 ### Using the editor with collaboration plugins
 

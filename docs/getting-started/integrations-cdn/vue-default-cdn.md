@@ -4,7 +4,7 @@ meta-title: Using CKEditor 5 with Vue.js 3+ from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate, and configure CKEditor 5 using the Vue.js 3+ component with CDN.
 category: vuejs-v3-cdn
 order: 10
-modified_at: 2026-05-25
+modified_at: 2026-09-23
 ---
 
 # Integrating CKEditor&nbsp;5 with Vue.js 3+ from CDN
@@ -552,6 +552,105 @@ import type { Mention } from 'https://cdn.ckeditor.com/typings/ckeditor5-premium
 // ...
 </script>
 ```
+
+### Using inside a shadow root
+
+Rendering the editor inside a shadow root isolates it from the styles of the host page. The CDN loader injects the style sheets as `<link>` tags, so point it at the shadow root with the `injectedStylesheetsLocation` option of the `useCKEditorCloud` helper. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside the shadow root, so the scoped style sheets cover all of it.
+
+Attach the shadow root before loading. A `<link>` that is not in the document never starts loading, which is why the helper is called from a child component mounted only once the root is there.
+
+```vue
+<!-- App.vue -->
+<template>
+	<div ref="host" />
+
+	<Teleport
+		v-if="target && shadowRoot"
+		:to="target"
+	>
+		<Editor :shadow-root="shadowRoot" />
+	</Teleport>
+</template>
+
+<script setup>
+import { onMounted, shallowRef, useTemplateRef } from 'vue';
+import Editor from './Editor.vue';
+
+const host = useTemplateRef( 'host' );
+const shadowRoot = shallowRef( null );
+const target = shallowRef( null );
+
+onMounted( () => {
+	const root = host.value.attachShadow( { mode: 'open' } );
+
+	shadowRoot.value = root;
+
+	// A teleport needs an element as its target, so create one inside the shadow root.
+	target.value = root.appendChild( document.createElement( 'div' ) );
+} );
+</script>
+```
+
+```vue
+<!-- Editor.vue -->
+<template>
+	<ckeditor
+		v-if="editor"
+		v-model="data"
+		:editor="editor"
+		:config="config"
+	/>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue';
+import { Ckeditor, useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
+
+const props = defineProps( {
+	shadowRoot: {
+		type: Object,
+		required: true
+	}
+} );
+
+const cloud = useCKEditorCloud( {
+	version: '{@var ckeditor5-version}',
+	injectedStylesheetsLocation: {
+		targetNode: props.shadowRoot
+	}
+} );
+
+const data = ref( '<p>Hello from a shadow root!</p>' );
+
+const editor = computed( () => {
+	if ( !cloud.data.value ) {
+		return null;
+	}
+
+	return cloud.data.value.CKEditor.ClassicEditor;
+} );
+
+const config = computed( () => {
+	if ( !cloud.data.value ) {
+		return null;
+	}
+
+	const { Essentials, Paragraph, Bold, Italic } = cloud.data.value.CKEditor;
+
+	return {
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ Essentials, Paragraph, Bold, Italic ],
+		toolbar: [ 'bold', 'italic' ]
+	};
+} );
+</script>
+```
+
+<info-box important>
+	`attachShadow()` can be called only once per element. If the mode of the root has to change at runtime, give the component holding the host a `key` so that Vue rebuilds the element.
+</info-box>
+
+An override of a `--ck-*` variable on `:root` has no effect on an editor inside a shadow root, so put it on the shadow host instead. The {@link getting-started/setup/shadow-dom Shadow DOM} guide explains why, and covers the known limitations.
 
 ## Known issues
 
