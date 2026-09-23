@@ -70,6 +70,13 @@ export interface TablePropertiesViewOptions {
 	defaultTableProperties: TablePropertiesOptions;
 
 	/**
+	 * The number of columns in the color palettes.
+	 *
+	 * Defaults to {@link module:ui/colorgrid/colors~defaultColorGridColumns}.
+	 */
+	colorGridColumns?: number;
+
+	/**
 	 * The default color picker config.
 	 */
 	colorPickerConfig: false | ColorPickerConfig;
@@ -435,7 +442,7 @@ export class TablePropertiesView extends View {
 
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.borderColors,
-			columns: 5,
+			columns: this.options.colorGridColumns,
 			defaultColorValue: defaultBorder.color,
 			colorPickerConfig: this.options.colorPickerConfig
 		} );
@@ -553,7 +560,7 @@ export class TablePropertiesView extends View {
 
 		const backgroundInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.backgroundColors,
-			columns: 5,
+			columns: this.options.colorGridColumns,
 			defaultColorValue: this.options.defaultTableProperties.backgroundColor,
 			colorPickerConfig: this.options.colorPickerConfig
 		} );

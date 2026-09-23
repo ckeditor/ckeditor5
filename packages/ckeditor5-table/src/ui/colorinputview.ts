@@ -19,7 +19,8 @@ import {
 	type ColorPickerConfig,
 	type ColorSelectorExecuteEvent,
 	type ColorSelectorColorPickerCancelEvent,
-	type FocusableView
+	type FocusableView,
+	_DEFAULT_COLOR_GRID_COLUMNS as defaultColorGridColumns
 } from '@ckeditor/ckeditor5-ui';
 
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
@@ -31,7 +32,7 @@ import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5
  */
 export type ColorInputViewOptions = {
 	colorDefinitions: Array<ColorDefinition>;
-	columns: number;
+	columns?: number;
 	defaultColorValue?: string;
 	colorPickerConfig: false | ColorPickerConfig;
 };
@@ -320,7 +321,7 @@ export class ColorInputView extends View implements FocusableView {
 
 		const colorSelector = new ColorSelectorView( locale, {
 			colors: this.options.colorDefinitions,
-			columns: this.options.columns,
+			columns: this.options.columns ?? defaultColorGridColumns,
 			removeButtonLabel: removeColorButtonLabel,
 			colorPickerLabel: t( 'Color picker' ),
 			colorPickerViewConfig: this.options.colorPickerConfig === false ? false : {

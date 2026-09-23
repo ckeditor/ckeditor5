@@ -11,7 +11,7 @@ import { _getModelData, _setModelData, Batch } from '@ckeditor/ckeditor5-engine'
 
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ButtonView, ContextualBalloon } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, ContextualBalloon, _DEFAULT_COLOR_GRID_COLUMNS as defaultColorGridColumns } from '@ckeditor/ckeditor5-ui';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { WidgetResize } from '@ckeditor/ckeditor5-widget';
 
@@ -96,6 +96,7 @@ describe( 'table cell properties', () => {
 				expect( editor.config.get( 'table.tableCellProperties.borderColors' ) ).toEqual( defaultColors );
 				expect( editor.config.get( 'table.tableCellProperties' ) ).to.have.property( 'backgroundColors' );
 				expect( editor.config.get( 'table.tableCellProperties.backgroundColors' ) ).toEqual( defaultColors );
+				expect( editor.config.get( 'table.tableCellProperties.colorGridColumns' ) ).toBe( defaultColorGridColumns );
 			} );
 		} );
 
@@ -122,13 +123,19 @@ describe( 'table cell properties', () => {
 				it( 'should get the border colors configurations', () => {
 					tableCellPropertiesUI._showView();
 					tableCellPropertiesView = tableCellPropertiesUI.view;
-					expect( tableCellPropertiesView.options.borderColors ).to.have.length( 15 );
+					expect( tableCellPropertiesView.options.borderColors ).to.have.length( defaultColors.length );
 				} );
 
 				it( 'should get the background colors configurations', () => {
 					tableCellPropertiesUI._showView();
 					tableCellPropertiesView = tableCellPropertiesUI.view;
-					expect( tableCellPropertiesView.options.backgroundColors ).to.have.length( 15 );
+					expect( tableCellPropertiesView.options.backgroundColors ).to.have.length( defaultColors.length );
+				} );
+
+				it( 'should get the color palette columns configuration', () => {
+					tableCellPropertiesUI._showView();
+					tableCellPropertiesView = tableCellPropertiesUI.view;
+					expect( tableCellPropertiesView.options.colorGridColumns ).toBe( defaultColorGridColumns );
 				} );
 			} );
 

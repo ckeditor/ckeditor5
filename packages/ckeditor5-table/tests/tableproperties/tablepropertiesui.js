@@ -10,7 +10,7 @@ import { _getModelData, Batch } from '@ckeditor/ckeditor5-engine';
 
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ButtonView, ContextualBalloon } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, ContextualBalloon, _DEFAULT_COLOR_GRID_COLUMNS as defaultColorGridColumns } from '@ckeditor/ckeditor5-ui';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 import { Table } from '../../src/table.js';
@@ -80,6 +80,7 @@ describe( 'table properties', () => {
 				expect( editor.config.get( 'table.tableProperties.borderColors' ) ).toEqual( defaultColors );
 				expect( editor.config.get( 'table.tableProperties' ) ).to.have.property( 'backgroundColors' );
 				expect( editor.config.get( 'table.tableProperties.backgroundColors' ) ).toEqual( defaultColors );
+				expect( editor.config.get( 'table.tableProperties.colorGridColumns' ) ).toBe( defaultColorGridColumns );
 			} );
 		} );
 
@@ -110,13 +111,19 @@ describe( 'table properties', () => {
 				it( 'should get the border colors configurations', () => {
 					tablePropertiesUI._showView();
 					tablePropertiesView = tablePropertiesUI.view;
-					expect( tablePropertiesView.options.borderColors ).to.have.length( 15 );
+					expect( tablePropertiesView.options.borderColors ).to.have.length( defaultColors.length );
 				} );
 
 				it( 'should get the background colors configurations', () => {
 					tablePropertiesUI._showView();
 					tablePropertiesView = tablePropertiesUI.view;
-					expect( tablePropertiesView.options.backgroundColors ).to.have.length( 15 );
+					expect( tablePropertiesView.options.backgroundColors ).to.have.length( defaultColors.length );
+				} );
+
+				it( 'should get the color palette columns configuration', () => {
+					tablePropertiesUI._showView();
+					tablePropertiesView = tablePropertiesUI.view;
+					expect( tablePropertiesView.options.colorGridColumns ).toBe( defaultColorGridColumns );
 				} );
 			} );
 

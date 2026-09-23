@@ -7,7 +7,7 @@
 :root,
 :host {
 	/* Size */
-	--ck-color-grid-tile-size: 20px;
+	--ck-color-grid-tile-size: 24px;
 
 	/* Spacing */
 	--ck-color-grid-gap: var(--ck-spacing-gap-tight);
@@ -15,7 +15,7 @@
 	--ck-color-grid-padding: var(--ck-spacing-padding) 0;
 
 	/* Radius */
-	--ck-color-grid-tile-border-radius: 0;
+	--ck-color-grid-tile-border-radius: var(--ck-radius-sm);
 
 	/* Motion */
 	--ck-color-grid-tile-hover-transform: none;
@@ -29,6 +29,7 @@
 	margin: var(--ck-color-grid-margin);
 	padding: var(--ck-color-grid-padding);
 	display: grid;
+	width: min-content;
 }
 
 .ck.ck-color-grid__tile {
@@ -51,7 +52,7 @@
 		}
 
 		&.ck-color-selector__color-tile_bordered {
-			box-shadow: 0 0 0 1px var(--ck-color-border-control);
+			box-shadow: inset 0 0 0 1px var(--ck-color-border-control);
 		}
 
 		&.ck-on {

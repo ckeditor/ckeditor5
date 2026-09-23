@@ -15,7 +15,8 @@ import {
 	clickOutsideHandler,
 	getLocalizedColorOptions,
 	normalizeColorOptions,
-	type LabeledFieldView
+	type LabeledFieldView,
+	_DEFAULT_COLOR_GRID_COLUMNS as defaultColorGridColumns
 } from '@ckeditor/ckeditor5-ui';
 
 import { debounce } from 'es-toolkit/compat';
@@ -132,7 +133,8 @@ export class TablePropertiesUI extends Plugin {
 
 		editor.config.define( 'table.tableProperties', {
 			borderColors: defaultColors,
-			backgroundColors: defaultColors
+			backgroundColors: defaultColors,
+			colorGridColumns: defaultColorGridColumns
 		} );
 	}
 
@@ -215,6 +217,7 @@ export class TablePropertiesUI extends Plugin {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
 			defaultTableProperties,
+			colorGridColumns: config.colorGridColumns!,
 			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
 		} );
 		const t = editor.t;

@@ -39,7 +39,8 @@ const VIEW_OPTIONS = {
 		height: '',
 		padding: '',
 		backgroundColor: ''
-	}
+	},
+	colorGridColumns: 7
 };
 
 describe( 'table cell properties', () => {
@@ -274,6 +275,21 @@ describe( 'table cell properties', () => {
 							] );
 						} );
 
+						it( 'should be constructible without the columns configuration', () => {
+							const optionsWithoutColumns = { ...VIEW_OPTIONS };
+							delete optionsWithoutColumns.colorGridColumns;
+
+							const viewWithDefaults = new TableCellPropertiesView( { t: val => val }, optionsWithoutColumns );
+
+							expect( viewWithDefaults.borderColorInput.fieldView.options.columns ).toBeUndefined();
+
+							viewWithDefaults.destroy();
+						} );
+
+						it( 'should obtain the columns configuration', () => {
+							expect( labeledInput.fieldView.options.columns ).toBe( 7 );
+						} );
+
 						it( 'should reflect #borderColor property', () => {
 							view.borderColor = 'foo';
 							expect( labeledInput.fieldView.value ).toBe( 'foo' );
@@ -413,6 +429,10 @@ describe( 'table cell properties', () => {
 									}
 								}
 							] );
+						} );
+
+						it( 'should obtain the columns configuration', () => {
+							expect( labeledInput.fieldView.options.columns ).toBe( 7 );
 						} );
 
 						it( 'should reflect #backgroundColor property', () => {

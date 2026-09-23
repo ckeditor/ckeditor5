@@ -59,6 +59,7 @@ export interface TableCellPropertiesViewOptions {
 	borderColors: Array<NormalizedColorOption>;
 	backgroundColors: Array<NormalizedColorOption>;
 	defaultTableCellProperties: TableCellPropertiesOptions;
+	colorGridColumns?: number;
 	colorPickerConfig: false | ColorPickerConfig;
 	showScopedHeaderOptions?: boolean;
 }
@@ -501,7 +502,7 @@ export class TableCellPropertiesView extends View {
 
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.borderColors,
-			columns: 5,
+			columns: this.options.colorGridColumns,
 			defaultColorValue: defaultBorder.color,
 			colorPickerConfig: this.options.colorPickerConfig
 		} );
@@ -619,7 +620,7 @@ export class TableCellPropertiesView extends View {
 
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.backgroundColors,
-			columns: 5,
+			columns: this.options.colorGridColumns,
 			defaultColorValue: this.options.defaultTableCellProperties.backgroundColor,
 			colorPickerConfig: this.options.colorPickerConfig
 		} );

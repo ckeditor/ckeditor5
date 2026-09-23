@@ -9,6 +9,7 @@
 
 import { View } from '../view.js';
 import { ColorTileView } from './colortileview.js';
+import { defaultColorGridColumns } from './colors.js';
 import { addKeyboardHandlingForGrid } from '../bindings/addkeyboardhandlingforgrid.js';
 
 import type { ButtonExecuteEvent } from '../button/button.js';
@@ -76,7 +77,7 @@ export class ColorGridView extends View implements DropdownPanelFocusable {
 
 		const colorDefinitions = options && options.colorDefinitions ? options.colorDefinitions : [];
 
-		this.columns = options?.columns || 5;
+		this.columns = options?.columns || defaultColorGridColumns;
 
 		const viewStyleAttribute = {
 			gridTemplateColumns: `repeat( ${ this.columns }, 1fr)`

@@ -308,6 +308,9 @@ export { normalizeMenuBarConfig, DefaultMenuBarItems } from './menubar/utils.js'
 export { preventDefault as _preventUiViewDefault } from './bindings/preventdefault.js';
 export { CheckIconHolderView as _CheckIconHolderView } from './button/listitembuttonview.js';
 export { CollapsibleView as _CollapsibleView } from './collapsible/collapsibleview.js';
+export { defaultColors as _DEFAULT_COLORS } from './colorgrid/colors.js';
+export { defaultColorGridColumns as _DEFAULT_COLOR_GRID_COLUMNS } from './colorgrid/colors.js';
+export { getLocalizedColorName as _getLocalizedColorName } from './colorgrid/utils.js';
 export { tryParseHexColor as _tryNormalizeHexColor } from './colorpicker/colorpickerview.js';
 export { convertColor as _convertColor } from './colorpicker/utils.js';
 export { convertToHex as _convertColorToHex } from './colorpicker/utils.js';

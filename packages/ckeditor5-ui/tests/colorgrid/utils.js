@@ -6,7 +6,8 @@
 import { describe, it, expect } from 'vitest';
 import {
 	normalizeColorOptions,
-	getLocalizedColorOptions
+	getLocalizedColorOptions,
+	getLocalizedColorName
 } from '../../src/colorgrid/utils.js';
 
 describe( 'utils', () => {
@@ -118,6 +119,27 @@ describe( 'utils', () => {
 		} );
 	} );
 
+	describe( 'getLocalizedColorName()', () => {
+		const locale = {
+			t: string => 'Localized:' + string
+		};
+
+		it( 'should translate a plain color name', () => {
+			expect( getLocalizedColorName( locale, 'Red' ) ).toBe( 'Localized:Red' );
+		} );
+
+		it( 'should translate the hue of a shaded color name and keep the shade', () => {
+			expect( getLocalizedColorName( locale, 'Amber 500' ) ).toBe( 'Localized:Amber 500' );
+			expect( getLocalizedColorName( locale, 'Blue grey 700' ) ).toBe( 'Localized:Blue grey 700' );
+		} );
+
+		it( 'should return an unknown color name unchanged', () => {
+			expect( getLocalizedColorName( locale, 'Unknown' ) ).toBe( 'Unknown' );
+			expect( getLocalizedColorName( locale, 'Unknown 600' ) ).toBe( 'Unknown 600' );
+			expect( getLocalizedColorName( locale, 'toString' ) ).toBe( 'toString' );
+		} );
+	} );
+
 	describe( 'getLocalizedColorOptions()', () => {
 		const locale = {
 			t: string => 'Localized:' + string
@@ -145,7 +167,65 @@ describe( 'utils', () => {
 			] );
 		} );
 
-		it( 'should omit unknown color options', () => {
+		it( 'should localize the hue of a shaded color option and keep the shade', () => {
+			expect( getLocalizedColorOptions( locale, [
+				{
+					color: 'hsl(1.4, 77.2%, 55.3%)',
+					label: 'Red 600'
+				},
+				{
+					color: 'hsl(199.4, 18.3%, 33.1%)',
+					label: 'Blue grey 700'
+				}
+			] ) ).toEqual( [
+				{
+					color: 'hsl(1.4, 77.2%, 55.3%)',
+					label: 'Localized:Red 600'
+				},
+				{
+					color: 'hsl(199.4, 18.3%, 33.1%)',
+					label: 'Localized:Blue grey 700'
+				}
+			] );
+		} );
+
+		it( 'should leave a shaded color option with an unknown hue untouched', () => {
+			expect( getLocalizedColorOptions( locale, [
+				{
+					color: '#123456',
+					label: 'Unknown 600'
+				}
+			] ) ).toEqual( [
+				{
+					color: '#123456',
+					label: 'Unknown 600'
+				}
+			] );
+		} );
+
+		it( 'should leave labels matching inherited object properties untouched', () => {
+			expect( getLocalizedColorOptions( locale, [
+				{
+					color: '#123456',
+					label: 'toString'
+				},
+				{
+					color: '#654321',
+					label: 'constructor 500'
+				}
+			] ) ).toEqual( [
+				{
+					color: '#123456',
+					label: 'toString'
+				},
+				{
+					color: '#654321',
+					label: 'constructor 500'
+				}
+			] );
+		} );
+
+		it( 'should leave color options with unknown labels untouched', () => {
 			expect( getLocalizedColorOptions( locale, [
 				{
 					color: 'red',

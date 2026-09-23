@@ -6,6 +6,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { ColorGridView } from './../../src/colorgrid/colorgridview.js';
+import { defaultColorGridColumns } from '../../src/colorgrid/colors.js';
 import { ColorTileView } from '../../src/colorgrid/colortileview.js';
 
 import { ViewCollection } from '../../src/viewcollection.js';
@@ -60,6 +61,15 @@ describe( 'ColorGridView', () => {
 
 			// Note: Different browsers use different value optimization.
 			expect( [ '1fr 1fr 1fr', 'repeat(3, 1fr)' ] ).toContain( view.element.style.gridTemplateColumns );
+
+			view.destroy();
+		} );
+
+		it( 'falls back to the default number of columns', () => {
+			const view = new ColorGridView( locale );
+			view.render();
+
+			expect( view.columns ).toBe( defaultColorGridColumns );
 
 			view.destroy();
 		} );
