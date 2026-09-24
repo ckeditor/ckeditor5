@@ -132,6 +132,57 @@ describe( 'DomEmitterMixin', () => {
 			} );
 		} );
 
+		describe( 'shadow roots', () => {
+			let host, shadowRoot;
+
+			beforeEach( () => {
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				shadowRoot = host.attachShadow( { mode: 'open' } );
+			} );
+
+			afterEach( () => {
+				host.remove();
+			} );
+
+			it( 'should listen to native DOM events fired on a native shadow root', () => {
+				const spy = vi.fn();
+
+				domEmitter.listenTo( shadowRoot, 'test', spy );
+
+				shadowRoot.dispatchEvent( new Event( 'test' ) );
+
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+			} );
+
+			it( 'should not listen to a synthetic shadow root', () => {
+				const spy = vi.fn();
+				const addEventListenerSpy = vi.spyOn( shadowRoot, 'addEventListener' );
+
+				markAsSynthetic( shadowRoot );
+
+				domEmitter.listenTo( shadowRoot, 'test', spy );
+
+				shadowRoot.dispatchEvent( new Event( 'test' ) );
+
+				expect( spy ).not.toHaveBeenCalled();
+				expect( addEventListenerSpy ).not.toHaveBeenCalled();
+			} );
+
+			it( 'should listen to a node which is not a shadow root even if it carries the `synthetic` flag', () => {
+				const spy = vi.fn();
+
+				markAsSynthetic( node );
+
+				domEmitter.listenTo( node, 'test', spy );
+
+				node.dispatchEvent( new Event( 'test' ) );
+
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+			} );
+		} );
+
 		describe( 'event capturing', () => {
 			beforeEach( () => {
 				document.body.appendChild( node );
@@ -770,6 +821,23 @@ describe( 'DomEmitterMixin', () => {
 			expect( spyFire2b ).toHaveBeenCalledTimes( 1 );
 		} );
 
+		it( 'should not throw when stopping listening to a skipped synthetic shadow root', () => {
+			const host = document.createElement( 'div' );
+			document.body.appendChild( host );
+
+			const shadowRoot = host.attachShadow( { mode: 'open' } );
+			const removeEventListenerSpy = vi.spyOn( shadowRoot, 'removeEventListener' );
+
+			markAsSynthetic( shadowRoot );
+
+			domEmitter.listenTo( shadowRoot, 'test', () => {} );
+
+			expect( () => domEmitter.stopListening( shadowRoot ) ).not.toThrow();
+			expect( removeEventListenerSpy ).not.toHaveBeenCalled();
+
+			host.remove();
+		} );
+
 		// #187
 		it( 'should work for DOM Nodes belonging to another window', async () => {
 			const spy = vi.fn();
@@ -830,4 +898,8 @@ describe( 'DomEmitterMixin', () => {
 			} );
 		} );
 	} );
+
+	function markAsSynthetic( root ) {
+		Object.defineProperty( root, 'synthetic', { value: true } );
+	}
 } );
