@@ -49,13 +49,25 @@ const translations: Translations = {
 			// Label of a button that applies a aquamarine color in color pickers.
 			'Aquamarine': 'Biru laut',
 			// Label of a button that applies a turquoise color in color pickers.
-			'Turquoise': 'Turkish',
+			'Turquoise': 'Pirus',
 			// Label of a button that applies a light blue color in color pickers.
 			'Light blue': 'Biru terang',
 			// Label of a button that applies a blue color in color pickers.
 			'Blue': 'Biru',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'Ungu',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'Nila',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'Sian',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'Biru kehijauan',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'Hijau limau',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'Ambar',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'Kelabu kebiruan',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'Bilah alat konten blok editor',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

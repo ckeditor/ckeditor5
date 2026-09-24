@@ -27,35 +27,47 @@ const translations: Translations = {
 			// Label used by assistive technologies describing a menu displayed inside a dropdown.
 			'Dropdown menu': 'ड्रापडाउन मेन्यू',
 			// Label of a button that applies a black color in color pickers.
-			'Black': 'Black',
+			'Black': 'काला',
 			// Label of a button that applies a dim grey color in color pickers.
-			'Dim grey': 'Dim grey',
+			'Dim grey': 'गहरा धूसर',
 			// Label of a button that applies a grey color in color pickers.
-			'Grey': 'Grey',
+			'Grey': 'धूसर',
 			// Label of a button that applies a light grey color in color pickers.
-			'Light grey': 'Light grey',
+			'Light grey': 'हल्का धूसर',
 			// Label of a button that applies a white color in color pickers.
-			'White': 'White',
+			'White': 'सफ़ेद',
 			// Label of a button that applies a red color in color pickers.
-			'Red': 'Red',
+			'Red': 'लाल',
 			// Label of a button that applies a orange color in color pickers.
-			'Orange': 'Orange',
+			'Orange': 'नारंगी',
 			// Label of a button that applies a yellow color in color pickers.
-			'Yellow': 'Yellow',
+			'Yellow': 'पीला',
 			// Label of a button that applies a light green color in color pickers.
-			'Light green': 'Light green',
+			'Light green': 'हल्का हरा',
 			// Label of a button that applies a green color in color pickers.
-			'Green': 'Green',
+			'Green': 'हरा',
 			// Label of a button that applies a aquamarine color in color pickers.
-			'Aquamarine': 'Aquamarine',
+			'Aquamarine': 'एक्वामरीन',
 			// Label of a button that applies a turquoise color in color pickers.
-			'Turquoise': 'Turquoise',
+			'Turquoise': 'फ़िरोज़ी',
 			// Label of a button that applies a light blue color in color pickers.
-			'Light blue': 'Light blue',
+			'Light blue': 'हल्का नीला',
 			// Label of a button that applies a blue color in color pickers.
-			'Blue': 'Blue',
+			'Blue': 'नीला',
 			// Label of a button that applies a purple color in color pickers.
-			'Purple': 'Purple',
+			'Purple': 'बैंगनी',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'नील',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'सियान',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'टील',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'नींबू हरा',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'एम्बर',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'नीला-धूसर',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'एडीटर ब्लॉक कंटेंट टूलबार',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

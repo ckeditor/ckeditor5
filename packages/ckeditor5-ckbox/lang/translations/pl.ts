@@ -23,7 +23,9 @@ const translations: Translations = {
 			// A message is displayed when the server fails to process an image or doesn't respond.
 			'Server failed to process the image.': 'Serwer nie mógł przetworzyć obrazu.',
 			// A message is displayed when category of the image user wants to edit can't be determined.
-			'Failed to determine category of edited image.': 'Nie udało się określić kategorii edytowanego obrazu.'
+			'Failed to determine category of edited image.': 'Nie udało się określić kategorii edytowanego obrazu.',
+			// A message is displayed when an operation (uploading or editing an asset) cannot be performed because the browser has no network connection.
+			'No internet connection. Check your connection and try again.': 'Brak połączenia z internetem. Sprawdź połączenie i spróbuj ponownie.'
 		}
 	}
 };

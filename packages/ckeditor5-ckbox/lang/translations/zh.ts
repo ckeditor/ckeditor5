@@ -23,7 +23,9 @@ const translations: Translations = {
 			// A message is displayed when the server fails to process an image or doesn't respond.
 			'Server failed to process the image.': '伺服器無法處理該圖片。',
 			// A message is displayed when category of the image user wants to edit can't be determined.
-			'Failed to determine category of edited image.': '無法判斷已編輯圖片的類別。'
+			'Failed to determine category of edited image.': '無法判斷已編輯圖片的類別。',
+			// A message is displayed when an operation (uploading or editing an asset) cannot be performed because the browser has no network connection.
+			'No internet connection. Check your connection and try again.': '沒有網際網路連線。請檢查連線後再試一次。'
 		}
 	}
 };

@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'Modrá',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'Fialová',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'Indigová',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'Azúrová',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'Modrozelená',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'Limetková',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'Jantárová',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'Modrosivá',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'Panel s nástrojmi obsahu bloku editora',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

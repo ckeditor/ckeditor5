@@ -23,7 +23,9 @@ const translations: Translations = {
 			// A message is displayed when the server fails to process an image or doesn't respond.
 			'Server failed to process the image.': 'Serverul nu a putut procesa imaginea.',
 			// A message is displayed when category of the image user wants to edit can't be determined.
-			'Failed to determine category of edited image.': 'Nu s-a putut determina categoria imaginii editate.'
+			'Failed to determine category of edited image.': 'Nu s-a putut determina categoria imaginii editate.',
+			// A message is displayed when an operation (uploading or editing an asset) cannot be performed because the browser has no network connection.
+			'No internet connection. Check your connection and try again.': 'Nu există conexiune la internet. Verificați conexiunea și încercați din nou.'
 		}
 	}
 };

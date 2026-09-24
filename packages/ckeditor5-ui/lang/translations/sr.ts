@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'Плава',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'Љубичаста',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'Индиго',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'Цијан',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'Тамнотиркизна',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'Жутозелена',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'Ћилибарска',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'Плавосива',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'Трака са алаткама за блокирање садржаја уређивача',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

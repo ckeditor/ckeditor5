@@ -23,7 +23,9 @@ const translations: Translations = {
 			// A message is displayed when the server fails to process an image or doesn't respond.
 			'Server failed to process the image.': 'Det lykkedes ikke for serveren at behandle billedet.',
 			// A message is displayed when category of the image user wants to edit can't be determined.
-			'Failed to determine category of edited image.': 'Det lykkedes ikke at bestemme kategorien for det redigerede billede.'
+			'Failed to determine category of edited image.': 'Det lykkedes ikke at bestemme kategorien for det redigerede billede.',
+			// A message is displayed when an operation (uploading or editing an asset) cannot be performed because the browser has no network connection.
+			'No internet connection. Check your connection and try again.': 'Ingen internetforbindelse. Kontrollér din forbindelse, og prøv igen.'
 		}
 	}
 };

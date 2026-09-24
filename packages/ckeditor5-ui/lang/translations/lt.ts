@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'Mėlyna',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'Violetinė',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'Indigo',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'Žydra',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'Žalsvai mėlyna',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'Gelsvai žalia',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'Gintarinė',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'Melsvai pilka',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'Redaktoriaus bloko turinio įrankių juosta',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

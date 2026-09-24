@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'Kék',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'Lila',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'Indigó',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'Cián',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'Pávakék',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'Limezöld',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'Borostyánsárga',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'Kékesszürke',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'Szerkesztő - tartalomblokk  eszköztár',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).
