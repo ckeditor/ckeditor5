@@ -35,7 +35,14 @@ try {
 	// The preview server runs inside this process (not a spawned child), and `runCrawler()` ends the
 	// process itself via `process.exit()` once crawling finishes. So the server is always torn down
 	// with the process - there is nothing to close explicitly and no background server left to hang on.
-	const server = await preview( { configFile } );
+	// The crawler launches a fresh browser for this immutable build. Reuse its cached assets
+	// across pages without imposing caching on the interactive development/preview servers.
+	const server = await preview( {
+		configFile,
+		preview: {
+			headers: { 'Cache-Control': 'public, max-age=3600' }
+		}
+	} );
 	const url = server.resolvedUrls.local[ 0 ];
 
 	console.log( styleText( [ 'bold', 'green' ], `Verifying manual tests at ${ url }` ) );
