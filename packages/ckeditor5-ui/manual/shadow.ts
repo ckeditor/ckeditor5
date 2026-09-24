@@ -7,7 +7,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { BlockToolbar, BalloonToolbar } from '@ckeditor/ckeditor5-ui';
 import { FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
-import { ImageResize } from '@ckeditor/ckeditor5-image';
+import { ImageResize, ImageInsertViaUrl } from '@ckeditor/ckeditor5-image';
 import { TableProperties, TableCellProperties } from '@ckeditor/ckeditor5-table';
 import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 
@@ -30,7 +30,7 @@ ClassicEditor
 			ArticlePluginSet,
 			BlockToolbar, BalloonToolbar,
 			FontColor, FontBackgroundColor,
-			ImageResize, TableProperties, TableCellProperties,
+			ImageResize, ImageInsertViaUrl, TableProperties, TableCellProperties,
 			FindAndReplace
 		],
 		toolbar: [
