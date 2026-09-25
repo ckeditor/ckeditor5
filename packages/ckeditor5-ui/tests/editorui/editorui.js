@@ -1754,5 +1754,132 @@ describe( 'EditorUI', () => {
 
 			expect( consoleWarnStub ).not.toHaveBeenCalled();
 		} );
+
+		describe( 'warning about a missing overlay container in shadow DOM', () => {
+			let consoleWarnStub;
+
+			beforeEach( () => {
+				consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+			} );
+
+			// Other code may log unrelated warnings, so only the calls of the tested warning are checked.
+			function getNotConfiguredWarnings() {
+				return consoleWarnStub.mock.calls.filter( ( [ message ] ) => /^ui-overlay-container-not-configured/.test( message ) );
+			}
+
+			it( 'warns as soon as an editable in a shadow root is registered, before the UI is ready', () => {
+				const shadowRoot = createShadowRoot();
+
+				ui.setEditableElement( 'main', domRootIn( shadowRoot ) );
+
+				const warnings = getNotConfiguredWarnings();
+
+				expect( warnings ).toHaveLength( 1 );
+				expect( warnings[ 0 ][ 1 ] ).toMatchObject( { shadowRoot } );
+			} );
+
+			it( 'works for a closed shadow root', () => {
+				const shadowRoot = createShadowRoot( 'closed' );
+
+				ui.shadowRootRegistry.registerNode( domRootIn( shadowRoot ) );
+
+				const warnings = getNotConfiguredWarnings();
+
+				expect( warnings ).toHaveLength( 1 );
+				expect( warnings[ 0 ][ 1 ] ).toMatchObject( { shadowRoot } );
+			} );
+
+			it( 'warns when the first shadow root is added to the registry after ready', () => {
+				ui.fire( 'ready' );
+
+				expect( getNotConfiguredWarnings() ).toHaveLength( 0 );
+
+				const shadowRoot = createShadowRoot();
+
+				ui.shadowRootRegistry.registerNode( domRootIn( shadowRoot ) );
+
+				const warnings = getNotConfiguredWarnings();
+
+				expect( warnings ).toHaveLength( 1 );
+				expect( warnings[ 0 ][ 1 ] ).toMatchObject( { shadowRoot } );
+			} );
+
+			it( 'warns when a detached registered node gets inserted into a shadow root and the registry refreshes', () => {
+				const element = document.createElement( 'div' );
+
+				ui.shadowRootRegistry.registerNode( element );
+
+				expect( getNotConfiguredWarnings() ).toHaveLength( 0 );
+
+				const shadowRoot = createShadowRoot();
+
+				shadowRoot.appendChild( element );
+				createdElements.push( element );
+				ui.shadowRootRegistry.refresh();
+
+				const warnings = getNotConfiguredWarnings();
+
+				expect( warnings ).toHaveLength( 1 );
+				expect( warnings[ 0 ][ 1 ] ).toMatchObject( { shadowRoot } );
+			} );
+
+			it( 'warns only once if more shadow roots are added', () => {
+				ui.shadowRootRegistry.registerNode( domRootIn( createShadowRoot() ) );
+				ui.shadowRootRegistry.registerNode( domRootIn( createShadowRoot() ) );
+
+				ui.fire( 'ready' );
+
+				ui.shadowRootRegistry.registerNode( domRootIn( createShadowRoot() ) );
+
+				expect( getNotConfiguredWarnings() ).toHaveLength( 1 );
+			} );
+
+			it( 'does not warn again when the shadow root is removed and re-added', () => {
+				const element = domRootIn( createShadowRoot() );
+
+				ui.shadowRootRegistry.registerNode( element );
+				ui.shadowRootRegistry.unregisterNode( element );
+				ui.shadowRootRegistry.registerNode( element );
+
+				expect( getNotConfiguredWarnings() ).toHaveLength( 1 );
+			} );
+
+			it( 'does not warn if the overlay container is configured', async () => {
+				const shadowRoot = createShadowRoot();
+
+				// The configuration is checked when the UI is created, so the editor has to be created with it.
+				// The recreated instances are cleaned up by the global `afterEach()`.
+				ui.destroy();
+				editor.fire( 'ready' );
+				await editor.destroy();
+
+				editor = new Editor( { ui: { overlayContainer: shadowRoot } } );
+				editor.ui = ui = new MyEditorUI( editor );
+				editor.state = 'ready';
+
+				ui.shadowRootRegistry.registerNode( domRootIn( shadowRoot ) );
+				ui.fire( 'ready' );
+				ui.shadowRootRegistry.registerNode( domRootIn( createShadowRoot() ) );
+
+				expect( getNotConfiguredWarnings() ).toHaveLength( 0 );
+			} );
+
+			it( 'does not warn if the editor UI lives in the light DOM', () => {
+				ui.setEditableElement( 'main', domRootIn( document.body ) );
+
+				ui.fire( 'ready' );
+
+				expect( getNotConfiguredWarnings() ).toHaveLength( 0 );
+			} );
+
+			it( 'does not warn for a registered node that is not connected to the document', () => {
+				// The host is never inserted into the document, so the shadow root is not rendered.
+				const detachedShadowRoot = document.createElement( 'div' ).attachShadow( { mode: 'open' } );
+
+				ui.shadowRootRegistry.registerNode( domRootIn( detachedShadowRoot ) );
+
+				expect( getNotConfiguredWarnings() ).toHaveLength( 0 );
+			} );
+		} );
 	} );
 } );

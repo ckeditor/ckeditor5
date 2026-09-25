@@ -32,6 +32,7 @@ import {
 	type CollectionAddEvent,
 	type CollectionRemoveEvent,
 	type ObservableSetEvent,
+	type ShadowRootRegistryAddEvent,
 	type DomEmitter,
 	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
@@ -197,6 +198,8 @@ export abstract class EditorUI extends EditorUIBase {
 		this.ariaLiveAnnouncer = new AriaLiveAnnouncer( editor );
 
 		this._initViewportOffset( this._readViewportOffsetFromConfig() );
+
+		warnIfShadowRootUsedWithoutOverlayContainer( this );
 
 		this.once<EditorUIReadyEvent>( 'ready', () => {
 			warnIfConfiguredOverlayContainerDetached( editor );
@@ -968,4 +971,40 @@ function warnIfConfiguredOverlayContainerDetached( editor: Editor ): void {
 		 */
 		logWarning( 'ui-overlay-container-not-connected', { overlayContainer: configuredContainer } );
 	}
+}
+
+/**
+ * Warns as soon as the {@link ~EditorUI#shadowRootRegistry shadow root registry} starts tracking the first shadow
+ * root (i.e. the editor UI turns out to live in shadow DOM) while no
+ * {@link module:core/editor/editorconfig~UiConfig#overlayContainer `ui.overlayContainer`} is configured.
+ *
+ * @param ui The editor UI whose registry and configuration should be checked.
+ */
+function warnIfShadowRootUsedWithoutOverlayContainer( ui: EditorUI ): void {
+	if ( ui.editor.config.get( 'ui.overlayContainer' ) ) {
+		return;
+	}
+
+	ui.shadowRootRegistry.once<ShadowRootRegistryAddEvent>( 'add', ( evt, shadowRoot ) => {
+		/**
+		 * The editor UI is rendered inside a shadow root but
+		 * {@link module:core/editor/editorconfig~UiConfig#overlayContainer `config.ui.overlayContainer`} is not
+		 * configured. In this case the overlay layer (balloons, dialogs, tooltips) is mounted automatically into
+		 * the shadow root hosting the editing root.
+		 *
+		 * Such an automatically chosen container inherits the layout of the shadow host and its ancestors. If any of
+		 * them creates a containing block or a stacking context – for example it has `position: relative`,
+		 * `overflow: hidden`, a `transform`, or a low `z-index` – the floating UI may be misplaced, clipped, or
+		 * rendered underneath other content of the page.
+		 *
+		 * To make sure the floating UI behaves correctly, set the overlay container explicitly. See the
+		 * {@link module:core/editor/editorconfig~UiConfig#overlayContainer `config.ui.overlayContainer`}
+		 * documentation to learn where such a container should be located. Configuring it also silences
+		 * this warning.
+		 *
+		 * @error ui-overlay-container-not-configured
+		 * @param {ShadowRoot} shadowRoot The shadow root the editor UI was detected in.
+		 */
+		logWarning( 'ui-overlay-container-not-configured', { shadowRoot } );
+	} );
 }

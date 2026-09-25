@@ -72,6 +72,8 @@ ClassicEditor
 ATTACH_BUTTON.addEventListener( 'click', () => {
 	attachRoot.appendChild( window.editor.ui.element );
 
+	window.editor.ui.update();
+
 	ATTACH_BUTTON.disabled = true;
 	ATTACH_STATUS.textContent =
 		'Editor inserted into the root. Select text to show the balloon toolbar – it has to appear there, styled.';
