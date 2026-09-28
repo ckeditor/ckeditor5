@@ -35,15 +35,6 @@
 			[dir="rtl"] & {
 				justify-content: flex-start;
 			}
-		}
-
-		& .ck-button.ck-color-selector__color-picker {
-			padding: calc(var(--ck-spacing-control-padding-inline) / 2) var(--ck-spacing-control-padding-inline);
-			border-radius: var(--ck-color-selector-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
-
-			&:not(:focus) {
-				border-top: var(--ck-color-selector-color-picker-border-top);
-			}
 
 			& .ck.ck-icon {
 				[dir="ltr"] & {
@@ -54,6 +45,10 @@
 					margin-left: var(--ck-spacing-control-padding-inline);
 				}
 			}
+		}
+
+		& .ck-button.ck-color-selector__color-picker:not(:focus) {
+			border-top: var(--ck-color-selector-color-picker-border-top);
 		}
 
 		& label.ck.ck-color-grid__label {
