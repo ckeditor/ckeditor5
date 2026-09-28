@@ -3,6 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Corner radius of the color swatch preview. Square by default, like the color grid tiles. */
+	--ck-input-color-preview-border-radius: 0;
+}
 
 .ck.ck-input-color {
 	& > .ck.ck-input-text {
@@ -55,8 +60,7 @@
 			}
 
 			& > .ck.ck-input-color__button__preview {
-				/* Backward compatibility: falls back to legacy --ck-rounded-corners-radius if overridden. */
-				border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
+				border-radius: var(--ck-input-color-preview-border-radius);
 				width: 20px;
 				height: 20px;
 				border: 1px solid var(--ck-color-input-border);

@@ -30,6 +30,14 @@
 	padding: var(--ck-color-grid-padding);
 	display: grid;
 	width: min-content;
+
+	/* Drop the redundant bottom padding only when the grid ends the panel (e.g. the menu bar color UI
+	   with no trailing button), so it matches the toolbar case. Key off "no visible sibling follows"
+	   rather than "no button follows": a following label or second grid (document colors) is not a
+	   button, and hidden siblings (`.ck-hidden` empty document grid / picker fragment) must not count. */
+	&:not(:has( ~ :not(.ck-hidden) )) {
+		padding-bottom: 0;
+	}
 }
 
 .ck.ck-color-grid__tile {
