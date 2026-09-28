@@ -6,16 +6,15 @@
 
 :root,
 :host {
-	--ck-radius-xs: calc(var(--ck-radius-unit) / 8);
-	--ck-radius-sm: calc(var(--ck-radius-unit) / 4);
-	/**
-	* Default border-radius value.
-	*/
-	--ck-radius-unit: 8px;
-	--ck-radius-base: var(--ck-radius-unit);
-	--ck-radius-md: calc(var(--ck-radius-unit) / 2);
-	--ck-radius-lg: calc(var(--ck-radius-unit) * 1.5);
-	--ck-radius-xl: calc(var(--ck-radius-unit) * 2);
+	/* Anchor of the radius scale; every rung derives from it. `--ck-radius-unit` stays the legacy
+	   override hook, so overriding it still rescales the whole ladder. */
+	--ck-radius-base: var(--ck-radius-unit, 8px);       /* 8px */
+
+	--ck-radius-xs: calc(var(--ck-radius-base) / 8);    /* 1px  */
+	--ck-radius-sm: calc(var(--ck-radius-base) / 4);    /* 2px  */
+	--ck-radius-md: calc(var(--ck-radius-base) / 2);    /* 4px  */
+	--ck-radius-lg: calc(var(--ck-radius-base) * 1.5);  /* 12px */
+	--ck-radius-xl: calc(var(--ck-radius-base) * 2);    /* 16px */
 	--ck-radius-full: 50%;
 
 	/**

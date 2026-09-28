@@ -11,8 +11,8 @@
 
 .ck.ck-list-styles-list {
 	grid-template-columns: repeat( 3, auto );
-	row-gap: var(--ck-spacing-medium, var(--ck-spacing-md));
-	column-gap: var(--ck-spacing-medium, var(--ck-spacing-md));
+	row-gap: var(--ck-spacing-medium, var(--ck-spacing-base));
+	column-gap: var(--ck-spacing-medium, var(--ck-spacing-base));
 	padding: var(--ck-list-styles-list-padding);
 
 	& .ck-button {

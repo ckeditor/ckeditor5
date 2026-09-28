@@ -231,8 +231,8 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__left-sidebar-item {
-	padding: var(--ck-spacing-medium, var(--ck-spacing-md));
-	margin-bottom: var(--ck-spacing-medium, var(--ck-spacing-md));
+	padding: var(--ck-spacing-medium, var(--ck-spacing-base));
+	margin-bottom: var(--ck-spacing-medium, var(--ck-spacing-base));
 
 	/* First header should not have top padding. */
 	&:first-child {
@@ -264,7 +264,7 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__presence-list {
-	margin-top: var(--ck-spacing-medium, var(--ck-spacing-md));
+	margin-top: var(--ck-spacing-medium, var(--ck-spacing-base));
 }
 
 .ck-fullscreen__left-sidebar-item--no-margin {

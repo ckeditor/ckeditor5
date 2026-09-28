@@ -14,8 +14,8 @@
 	--ck-spacing-extra-tiny: var(--ck-spacing-2xs);
 	--ck-spacing-tiny: var(--ck-spacing-xs);
 	--ck-spacing-small: var(--ck-spacing-sm);
-	--ck-spacing-medium-small: var(--ck-spacing-ms);
-	--ck-spacing-medium: var(--ck-spacing-md);
+	--ck-spacing-medium-small: var(--ck-spacing-md);
+	--ck-spacing-medium: var(--ck-spacing-base);
 	--ck-spacing-standard: var(--ck-spacing-base);
 	--ck-spacing-large: var(--ck-spacing-lg);
 	--ck-spacing-extra-large: var(--ck-spacing-xl);

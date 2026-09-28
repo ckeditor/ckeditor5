@@ -20,7 +20,7 @@ a.ck.ck-button.ck-link-toolbar__preview {
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	padding: 0 var(--ck-spacing-medium, var(--ck-spacing-md));
+	padding: 0 var(--ck-spacing-medium, var(--ck-spacing-base));
 	color: var(--ck-color-link-default);
 	cursor: pointer;
 

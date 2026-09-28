@@ -62,8 +62,8 @@
 	--ck-button-small-padding: var(--ck-spacing-padding-tight) var(--ck-spacing-padding);
 	/* Padding of an icon-only small button. 3px so a 16px icon plus the 1px border lands on a 24px square. */
 	--ck-button-small-icon-padding: 3px;
-	/* Tighter corner radius for the small variant. */
-	--ck-button-small-border-radius: var(--ck-border-radius-control-small);
+	/* Corner radius for the small variant (uses the standard control radius). */
+	--ck-button-small-border-radius: var(--ck-border-radius-control);
 }
 
 /* Use :where(a) (not plain a) to keep the anchor variant at zero specificity. */

@@ -107,7 +107,7 @@
 			border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
 			background: var(--ck-color-base-error);
 			color: var(--ck-color-base-background);
-			padding: var(--ck-spacing-small, var(--ck-spacing-sm)) var(--ck-spacing-medium, var(--ck-spacing-md));
+			padding: var(--ck-spacing-small, var(--ck-spacing-sm)) var(--ck-spacing-medium, var(--ck-spacing-base));
 			min-width: var(--ck-table-properties-min-error-width);
 			text-align: center;
 

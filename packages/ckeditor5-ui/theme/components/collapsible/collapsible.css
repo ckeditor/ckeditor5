@@ -6,6 +6,7 @@
 :root,
 :host {
 	/* Spacing */
+	--ck-collapsible-padding: var(--ck-spacing-padding);
 	--ck-collapsible-children-padding: var(--ck-spacing-padding-comfortable) 0 0;
 
 	/* Radius */
@@ -16,7 +17,7 @@
 }
 
 .ck.ck-collapsible {
-	padding: var(--ck-spacing-md);
+	padding: var(--ck-collapsible-padding);
 
 	& > .ck.ck-button {
 		width: 100%;

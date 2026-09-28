@@ -10,7 +10,7 @@
 .ck .ck.ck-emoji__search {
 	display: flex;
 	padding: var(--ck-spacing-large, var(--ck-spacing-lg));
-	padding-bottom: var(--ck-spacing-medium, var(--ck-spacing-md));
+	padding-bottom: var(--ck-spacing-medium, var(--ck-spacing-base));
 	justify-content: space-between;
 	align-items: center;
 
