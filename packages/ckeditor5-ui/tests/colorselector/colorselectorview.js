@@ -11,7 +11,8 @@ import { FocusCycler } from '../../src/focuscycler.js';
 import { ColorPickerView } from '../../src/colorpicker/colorpickerview.js';
 import { ColorGridsFragmentView } from '../../src/colorselector/colorgridsfragmentview.js';
 
-import { Collection, FocusTracker, KeystrokeHandler, keyCodes, env, global, _clearTrustedTypesCache } from '@ckeditor/ckeditor5-utils';
+import { Collection, FocusTracker, KeystrokeHandler, keyCodes, env } from '@ckeditor/ckeditor5-utils';
+import { stubTrustedTypesEnforcement } from '@ckeditor/ckeditor5-utils/tests/_utils/trustedtypes.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
@@ -285,23 +286,7 @@ describe( 'ColorSelectorView', () => {
 		// The markup of the color picker does not go through the editor's Trusted Types policy, so the picker is turned
 		// off rather than left to fail when it renders.
 		beforeEach( () => {
-			_clearTrustedTypesCache();
-
-			const element = {};
-
-			Object.defineProperty( element, 'innerHTML', {
-				set() {
-					throw new TypeError( 'This document requires \'TrustedHTML\' assignment.' );
-				}
-			} );
-
-			vi.spyOn( global, 'document', 'get' ).mockReturnValue( {
-				createElement: () => element
-			} );
-		} );
-
-		afterEach( () => {
-			_clearTrustedTypesCache();
+			stubTrustedTypesEnforcement();
 		} );
 
 		it( 'should hide the color picker', () => {

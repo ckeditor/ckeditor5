@@ -123,7 +123,9 @@ Three features are affected when your application enforces Trusted Types. All th
 In the first two cases, the editor turns the feature off and logs a warning instead of letting it fail:
 
 1. **The color picker**, everywhere it appears: {@link features/font font color and font background color} and {@link features/tables-styling table properties and table cell properties}. The color palettes and the document colors are not affected, so users keep every predefined color and lose only the custom ones. The editor logs `color-picker-unavailable-with-trusted-types` once for every color selector that it creates. To turn the picker off yourself and stop the warning, set the `colorPicker` option of each of those features to `false`.
-2. **The Uploadcare dialog and image editor.** Uploading files by pasting or dropping them keeps working. What is unavailable is the dialog that the toolbar button opens and the image editor. The editor logs `uploadcare-unavailable-with-trusted-types` once while it starts.
+2. **Parts of the file managers.**
+	* **Uploadcare:** the dialog that the toolbar button opens and the image editor. Uploading files by pasting or dropping them keeps working. The editor logs `uploadcare-unavailable-with-trusted-types` once while it starts.
+	* **CKBox:** the image editor. Choosing assets keeps working. The editor disables its **Edit image** button and logs `ckbox-image-edit-unavailable-with-trusted-types` once while it starts. The **Edit** button in the CKBox dialog is part of CKBox, so the editor cannot disable it: it opens the image editor, but the image never loads. When CKBox shows the thumbnail of a PDF file, the browser also reports a refused `Worker`. The thumbnail still renders.
 
 The third case is different because it is an error on ordinary content rather than a feature switched off:
 
