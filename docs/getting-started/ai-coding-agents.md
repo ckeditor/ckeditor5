@@ -1,7 +1,7 @@
 ---
 category: getting-started
 order: 20
-menu-title: Build with AI
+menu-title: Build with AI ✨
 meta-title: CKEditor 5 skill for AI coding agents | CKEditor 5 Documentation
 meta-description: Install the official CKEditor 5 skill in Claude Code, Cursor, Codex, OpenCode, or Copilot to set up, configure, and get the most out of its features.
 modified_at: 2026-06-29
