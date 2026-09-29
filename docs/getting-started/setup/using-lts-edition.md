@@ -37,8 +37,8 @@ CKEditor&nbsp;5 LTS Edition is for teams that need **long-term stability without
 			<td>Security fixes only in the latest version</td>
 		</tr>
 		<tr>
-			<td><strong>Third-party API changes assurance</strong></td>
-			<td>No third-party compatibility fixes</td>
+			<td><strong>3-year third-party API changes assurance</strong></td>
+			<td>Third-party compatibility fixes only in the latest version</td>
 		</tr>
 		<tr>
 			<td><strong>Zero breaking changes</strong></td>
