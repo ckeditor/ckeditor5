@@ -9,7 +9,7 @@
 
 import { ViewElement, type ViewElementAttributes } from './element.js';
 import { ViewNode } from './node.js';
-import { CKEditorError, keyCodes, getSelection } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, keyCodes, getSelection, _trustedAttributeValue } from '@ckeditor/ckeditor5-utils';
 
 import { type EditingView } from './view.js';
 import { type ViewDocument } from './document.js';
@@ -122,7 +122,7 @@ export class ViewUIElement extends ViewElement {
 		const domElement = domDocument.createElement( this.name );
 
 		for ( const key of this.getAttributeKeys() ) {
-			domElement.setAttribute( key, this.getAttribute( key )! );
+			domElement.setAttribute( key, _trustedAttributeValue( domElement, key, this.getAttribute( key )! ) );
 		}
 
 		return domElement;

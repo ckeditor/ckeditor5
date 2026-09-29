@@ -78,9 +78,9 @@ This comes with some trade–offs, though. For example, it requires you to:
 
 ## Trusted Types
 
-[Trusted Types](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) is a browser mechanism against DOM-based XSS. It applies to DOM injection sinks: the properties and methods that turn a string into live HTML, such as `innerHTML`, `insertAdjacentHTML()` or `DOMParser#parseFromString()`. Under Trusted Types, a sink rejects a plain string and accepts only a value produced by a policy that the application allows.
+[Trusted Types](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) is a browser mechanism against DOM-based XSS. It applies to DOM injection sinks: the properties and methods that turn a string into live HTML, such as `innerHTML`, `insertAdjacentHTML()` or `DOMParser#parseFromString()`. It also applies to attributes that run code or load a script, such as `onclick` or the `src` attribute of a `<script>` element. Under Trusted Types, a sink rejects a plain string and accepts only a value produced by a policy that the application allows.
 
-CKEditor&nbsp;5 supports running in applications that enforce Trusted Types. The editor creates a single policy named `ckeditor5` and passes through it every piece of markup that it writes to a sink.
+CKEditor&nbsp;5 supports running in applications that enforce Trusted Types. The editor creates a single policy named `ckeditor5`. It passes through this policy all markup that it writes to a sink, and all values that it writes to these attributes.
 
 ### Enabling Trusted Types
 
@@ -106,9 +106,16 @@ The first directive turns the mechanism on. The second one lists the policy name
 
 ### Trusted Types and content safety
 
-The policy of the editor returns every string unchanged. It makes the browser accept the markup that the editor writes, and it does not inspect, clean, or filter anything. Turning Trusted Types on therefore does not make the editor filter content, and the responsibility for the safety of the data loaded into the editor stays with your application, exactly as before.
+The policy of the editor returns every string unchanged. It makes the browser accept the markup and the attribute values that the editor writes, and it does not inspect, clean, or filter anything. Turning Trusted Types on therefore does not make the editor filter content, and the responsibility for the safety of the data loaded into the editor stays with your application, exactly as before.
 
 This matters most for the {@link features/html-embed HTML embed} feature. When it is configured to show previews, the browser runs whatever the embedded snippets contain. Trusted Types does not change that, and the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option remains the way to control it.
+
+If you configure {@link features/general-html-support General HTML Support} to allow event handler attributes, such as `onclick`, or `<script>` elements, the editor keeps them in the content. The policy passes these values through unchanged, like the HTML. As a result:
+
+* The data that the editor returns contains them, exactly as without Trusted Types.
+* Nothing runs while users edit the content, because the editing view renames such attributes and replaces `<script>` elements. The only exception is an attribute that your own converter explicitly allows.
+
+To keep such content out of the editor, exclude it with the {@link module:html-support/generalhtmlsupportconfig~GeneralHtmlSupportConfig#disallow `htmlSupport.disallow`} option.
 
 ### Detecting Trusted Types enforcement
 
@@ -118,7 +125,7 @@ The editor catches the refusal, but the browser still logs an error of its own a
 
 ### Known limitations
 
-Three features are affected when your application enforces Trusted Types. All three come from third-party code that writes HTML the editor cannot route through its policy.
+Four cases are affected when your application enforces Trusted Types. All four come from third-party code that writes HTML or attribute values the editor cannot route through its policy.
 
 In the first two cases, the editor turns the feature off and logs a warning instead of letting it fail:
 
@@ -127,9 +134,10 @@ In the first two cases, the editor turns the feature off and logs a warning inst
 	* **Uploadcare:** the dialog that the toolbar button opens and the image editor. Uploading files by pasting or dropping them keeps working. The editor logs `uploadcare-unavailable-with-trusted-types` once while it starts.
 	* **CKBox:** the image editor. Choosing assets keeps working. The editor disables its **Edit image** button and logs `ckbox-image-edit-unavailable-with-trusted-types` once while it starts. The **Edit** button in the CKBox dialog is part of CKBox, so the editor cannot disable it: it opens the image editor, but the image never loads. When CKBox shows the thumbnail of a PDF file, the browser also reports a refused `Worker`. The thumbnail still renders.
 
-The third case is different because it is an error on ordinary content rather than a feature switched off:
+The last two cases are different because they are errors on content rather than a feature switched off:
 
 3. **Markdown that contains a named character reference**, such as `&nbsp;` or `&amp;`. Parsing such content fails, while Markdown without character references works. This affects every feature that parses Markdown, not only {@link features/markdown Markdown output}.
+4. **Markdown with HTML that contains event handlers, external scripts, or inline frame content**, such as `<p onclick="...">`, `<script src="...">`, or `<iframe srcdoc="...">`. Parsing such content fails, while Markdown without them works. This affects {@link features/markdown Markdown output} and {@link features/paste-markdown pasting Markdown}.
 
 ### Using the `trustedHtml()` helper
 

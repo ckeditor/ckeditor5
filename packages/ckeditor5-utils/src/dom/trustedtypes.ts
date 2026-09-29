@@ -10,26 +10,34 @@
 import { logWarning } from '../ckeditorerror.js';
 import { global } from './global.js';
 
-// The TypeScript DOM library does not describe Trusted Types at all, so the three interfaces below declare the parts of them
+// The TypeScript DOM library does not describe Trusted Types at all, so the declarations below describe the parts of them
 // that the editor uses.
 
 /**
- * A [Trusted Types policy](https://w3c.github.io/trusted-types/dist/spec/), as returned by `createPolicy()`.
+ * A [Trusted Types policy](https://w3c.github.io/trusted-types/dist/spec/), as returned by `createPolicy()`. Each method
+ * returns the object of a Trusted Type, which a sink of that type accepts.
  */
 interface TrustedTypePolicy {
-	// Returns the `TrustedHTML` object that a DOM injection sink accepts.
-	createHTML( input: string ): {
-		toString(): string;
-	};
+	createHTML( input: string ): TrustedValue;
+	createScript( input: string ): TrustedValue;
+	createScriptURL( input: string ): TrustedValue;
 }
 
 /**
- * The options given to `createPolicy()`.
+ * The object of a Trusted Type, for example `TrustedHTML`.
+ */
+interface TrustedValue {
+	toString(): string;
+}
+
+/**
+ * The options given to `createPolicy()`. Each method returns a plain string, which the browser wraps in the object that
+ * the matching method of `TrustedTypePolicy` returns.
  */
 interface TrustedTypePolicyOptions {
-	// Returns a plain string. The browser wraps it in the `TrustedHTML` object that
-	// `TrustedTypePolicy#createHTML()` returns.
 	createHTML: ( input: string ) => string;
+	createScript: ( input: string ) => string;
+	createScriptURL: ( input: string ) => string;
 }
 
 /**
@@ -37,7 +45,13 @@ interface TrustedTypePolicyOptions {
  */
 interface TrustedTypePolicyFactory {
 	createPolicy( policyName: string, policyOptions: TrustedTypePolicyOptions ): TrustedTypePolicy;
+	getAttributeType( tagName: string, attribute: string, elementNs?: string | null ): TrustedTypeName | null;
 }
+
+/**
+ * The name of a Trusted Type.
+ */
+type TrustedTypeName = 'TrustedHTML' | 'TrustedScript' | 'TrustedScriptURL';
 
 /**
  * The name of the editor's policy. An application that enforces Trusted Types must list it in the `trusted-types` CSP
@@ -46,11 +60,15 @@ interface TrustedTypePolicyFactory {
 const POLICY_NAME = 'ckeditor5';
 
 /**
- * An object with a `createHTML()` that returns the string it was given. The browser builds the editor's policy from it,
- * because the editor writes markup that it created itself. It also takes the place of that policy when the editor cannot
- * have one, so that both cases behave the same way.
+ * An object whose methods return the string they were given. The browser builds the editor's policy from it, because the
+ * editor writes markup that it created itself, and content that the application loaded into it. It also takes the place of
+ * that policy when the editor cannot have one, so that both cases behave the same way.
  */
-const PASS_THROUGH: TrustedTypePolicyOptions = { createHTML: input => input };
+const PASS_THROUGH: TrustedTypePolicyOptions = {
+	createHTML: input => input,
+	createScript: input => input,
+	createScriptURL: input => input
+};
 
 /**
  * The editor's policy, created on first use. The browser allows each policy name only once per document, so a single
@@ -128,6 +146,45 @@ export function isTrustedTypesEnforced(): boolean {
 	}
 
 	return isEnforced;
+}
+
+/**
+ * Prepares the value of an attribute for `setAttribute()`. Under Trusted Types, some attributes accept only the object of
+ * a Trusted Type, even in a document that is not displayed: an event handler such as `onclick` takes a `TrustedScript`,
+ * `src` of a `<script>` takes a `TrustedScriptURL`, and `srcdoc` of an `<iframe>` takes a `TrustedHTML`. For such an
+ * attribute, the editor's policy creates that object from the unchanged value. Any other attribute gets the given string.
+ * The browser tells which attribute is which, because the list differs between browsers.
+ *
+ * Like {@link ~trustedHtml}, it cleans nothing, and its result is typed as a string whichever it is.
+ *
+ * @internal
+ * @param element The element that the attribute is set on.
+ * @param attributeName The name of the attribute.
+ * @param value The value of the attribute.
+ */
+export function _trustedAttributeValue( element: Element, attributeName: string, value: string ): string {
+	const trustedTypes = ( global.window as { trustedTypes?: TrustedTypePolicyFactory } ).trustedTypes;
+
+	// Applications commonly define `trustedTypes` with `createPolicy()` alone in browsers without Trusted Types, as the spec
+	// polyfill suggests. Such a browser checks no attribute.
+	if ( !trustedTypes || typeof trustedTypes.getAttributeType != 'function' ) {
+		return value;
+	}
+
+	if ( !policy ) {
+		policy = createPolicy();
+	}
+
+	switch ( trustedTypes.getAttributeType( element.localName, attributeName, element.namespaceURI ) ) {
+		case 'TrustedHTML':
+			return policy.createHTML( value ) as string;
+		case 'TrustedScript':
+			return policy.createScript( value ) as string;
+		case 'TrustedScriptURL':
+			return policy.createScriptURL( value ) as string;
+		default:
+			return value;
+	}
 }
 
 /**

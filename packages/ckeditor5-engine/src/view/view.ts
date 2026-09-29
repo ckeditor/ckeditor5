@@ -45,7 +45,8 @@ import {
 	scrollViewportToShowTarget,
 	type ObservableChangeEvent,
 	type IfTrue,
-	type ObservableMixinConstructor
+	type ObservableMixinConstructor,
+	_trustedAttributeValue
 } from '@ckeditor/ckeditor5-utils';
 import { injectUiElementHandling } from './uielement.js';
 import { injectQuirksHandling } from './filler.js';
@@ -353,7 +354,7 @@ export class EditingView extends EditingViewBase {
 
 		// Revert all view root attributes back to the state before attachDomRoot was called.
 		for ( const attribute in initialDomRootAttributes ) {
-			domRoot.setAttribute( attribute, initialDomRootAttributes[ attribute ] );
+			domRoot.setAttribute( attribute, _trustedAttributeValue( domRoot, attribute, initialDomRootAttributes[ attribute ] ) );
 		}
 
 		this.domRoots.delete( name );

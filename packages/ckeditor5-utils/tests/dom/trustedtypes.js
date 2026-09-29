@@ -3,8 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { _clearTrustedTypesCache, isTrustedTypesEnforced, trustedHtml } from '../../src/dom/trustedtypes.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+	_clearTrustedTypesCache,
+	_trustedAttributeValue,
+	isTrustedTypesEnforced,
+	trustedHtml
+} from '../../src/dom/trustedtypes.js';
 import { global } from '../../src/dom/global.js';
 
 /*
@@ -254,4 +259,89 @@ describe( 'isTrustedTypesEnforced()', () => {
 
 		return createElement;
 	}
+} );
+
+describe( '_trustedAttributeValue()', () => {
+	let element;
+
+	beforeEach( () => {
+		element = document.createElement( 'p' );
+	} );
+
+	afterEach( () => {
+		_clearTrustedTypesCache();
+	} );
+
+	// Mirrors the native factory: the policy wraps what its options return in an object that tells the type, so that tests
+	// can tell the object of a Trusted Type from a plain string. The browser answers `getAttributeType()` with `type`.
+	function stubTrustedTypes( type ) {
+		const wrap = ( trustedType, create ) => input => ( { trustedType, toString: () => create( input ) } );
+		const getAttributeType = vi.fn( () => type );
+
+		vi.stubGlobal( 'trustedTypes', {
+			createPolicy: vi.fn( ( name, options ) => ( {
+				createHTML: wrap( 'TrustedHTML', options.createHTML ),
+				createScript: wrap( 'TrustedScript', options.createScript ),
+				createScriptURL: wrap( 'TrustedScriptURL', options.createScriptURL )
+			} ) ),
+			getAttributeType
+		} );
+
+		return getAttributeType;
+	}
+
+	it( 'should create the policy only once, no matter how many times it is called', () => {
+		stubTrustedTypes( 'TrustedScript' );
+
+		_trustedAttributeValue( element, 'onclick', 'foo()' );
+		_trustedAttributeValue( element, 'onclick', 'bar()' );
+
+		expect( window.trustedTypes.createPolicy ).toHaveBeenCalledOnce();
+	} );
+
+	it( 'should ask the browser about the attribute of the element', () => {
+		const svgElement = document.createElementNS( 'http://www.w3.org/2000/svg', 'script' );
+		const getAttributeType = stubTrustedTypes( 'TrustedScriptURL' );
+
+		_trustedAttributeValue( svgElement, 'href', '/a.js' );
+
+		expect( getAttributeType ).toHaveBeenCalledWith( 'script', 'href', 'http://www.w3.org/2000/svg' );
+	} );
+
+	for ( const type of [ 'TrustedHTML', 'TrustedScript', 'TrustedScriptURL' ] ) {
+		it( `should return a ${ type } object for an attribute that takes one, with the value unchanged`, () => {
+			stubTrustedTypes( type );
+
+			const result = _trustedAttributeValue( element, 'foo', 'alert( "1" )' );
+
+			expect( result.trustedType ).toEqual( type );
+			expect( String( result ) ).toEqual( 'alert( "1" )' );
+		} );
+	}
+
+	it( 'should return the given string for an attribute that takes a plain string', () => {
+		stubTrustedTypes( null );
+
+		expect( _trustedAttributeValue( element, 'class', 'foo' ) ).toEqual( 'foo' );
+	} );
+
+	// Setting the value it would return otherwise, `undefined`, would silently write the "undefined" string.
+	it( 'should return the given string for a type that it does not know', () => {
+		stubTrustedTypes( 'TrustedSomethingElse' );
+
+		expect( _trustedAttributeValue( element, 'foo', 'bar' ) ).toEqual( 'bar' );
+	} );
+
+	it( 'should return the given string when the browser does not support Trusted Types', () => {
+		vi.stubGlobal( 'trustedTypes', undefined );
+
+		expect( _trustedAttributeValue( element, 'onclick', 'foo()' ) ).toEqual( 'foo()' );
+	} );
+
+	// The "tinyfill" of the spec: `trustedTypes` with `createPolicy()` only, for browsers without Trusted Types.
+	it( 'should return the given string when trustedTypes cannot tell the type of an attribute', () => {
+		vi.stubGlobal( 'trustedTypes', { createPolicy: ( name, rules ) => rules } );
+
+		expect( _trustedAttributeValue( element, 'onclick', 'foo()' ) ).toEqual( 'foo()' );
+	} );
 } );

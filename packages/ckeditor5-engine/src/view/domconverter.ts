@@ -37,7 +37,8 @@ import {
 	getParentElement,
 	getParentNode,
 	env,
-	trustedHtml
+	trustedHtml,
+	_trustedAttributeValue
 } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewNode } from './node.js';
@@ -551,7 +552,9 @@ export class ViewDomConverter {
 
 		// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
 		// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
-		domElement.setAttribute( shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key, value );
+		const attributeName = shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key;
+
+		domElement.setAttribute( attributeName, _trustedAttributeValue( domElement, attributeName, value ) );
 	}
 
 	/**
