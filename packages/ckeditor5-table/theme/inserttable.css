@@ -6,8 +6,8 @@
 :root,
 :host {
 	--ck-insert-table-dropdown-padding: var(--ck-spacing-padding);
-	--ck-insert-table-dropdown-box-height: 11px;
-	--ck-insert-table-dropdown-box-width: 12px;
+	--ck-insert-table-dropdown-box-height: 16px;
+	--ck-insert-table-dropdown-box-width: 16px;
 	--ck-insert-table-dropdown-box-margin: 1px;
 	--ck-insert-table-dropdown-box-border-radius: var(--ck-radius-xs);
 	--ck-insert-table-dropdown-label-font-size: var(--ck-font-size-sm);
