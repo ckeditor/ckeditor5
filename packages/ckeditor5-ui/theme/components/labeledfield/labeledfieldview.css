@@ -7,7 +7,8 @@
 :host {
 	/* Color */
 	--ck-labeled-field-label-background-color: var(--ck-color-surface-control);
-	--ck-labeled-field-label-start-gap: var(--ck-spacing-control-icon-gap);
+	/* Aligns the resting label's left edge with the field text, which uses the same inline padding. */
+	--ck-labeled-field-label-start-gap: var(--ck-spacing-padding);
 
 	/* Typography */
 	--ck-labeled-field-label-font-size: var(--ck-font-size-md);
@@ -122,6 +123,9 @@
 	/* Make sure dropdown' background color in any of dropdown's state does not collide with labeled field. */
 	& > .ck.ck-labeled-field-view__input-wrapper > .ck-dropdown > .ck.ck-button {
 		background: transparent;
+
+		/* Match the input's inline padding so the dropdown text lines up with input text and the label. */
+		padding-inline: var(--ck-spacing-padding);
 	}
 
 	/* When the dropdown is "empty", the labeled field label replaces its label. */
