@@ -8,6 +8,7 @@ import { mkdtemp, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { build } from 'esbuild';
+import upath from 'upath';
 import getPremiumSnippets from '../../scripts/docs/get-premium-snippets.mjs';
 
 describe( 'getPremiumSnippets', () => {
@@ -54,7 +55,7 @@ describe( 'getPremiumSnippets', () => {
 		} );
 
 		expect( getPremiumSnippets( metafile, imports ) ).toEqual( new Set(
-			[ 'premium', 'alias', 'nested', 'dynamic' ].map( name => join( directory, `${ name }.js` ) )
+			[ 'premium', 'alias', 'nested', 'dynamic' ].map( name => upath.toUnix( join( directory, `${ name }.js` ) ) )
 		) );
 	} );
 } );

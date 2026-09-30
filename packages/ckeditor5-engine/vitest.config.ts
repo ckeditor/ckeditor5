@@ -6,7 +6,7 @@
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ViteUserConfig } from 'vitest/config';
-import { createVitestConfig } from '../../vitest.config';
+import { createVitestConfig } from '../../vitest.config.mts';
 
 const __dirname = dirname( fileURLToPath( import.meta.url ) );
 

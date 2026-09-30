@@ -10,7 +10,7 @@ import { dirname, join } from 'node:path';
 import {
 	collectPrebundledDependencies,
 	prebundleDependencies
-} from '../scripts/vitest/prebundle-dependencies.ts';
+} from '../scripts/vitest/prebundle-dependencies.mts';
 
 describe( 'prebundleDependencies', () => {
 	let packageDir;

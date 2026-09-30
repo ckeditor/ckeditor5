@@ -10,7 +10,7 @@ import { defineConfig, mergeConfig, type ViteUserConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import { rawSvgPlugin } from '@ckeditor/ckeditor5-dev-manual-server';
 import { NON_FULL_COVERAGE_PACKAGES } from './scripts/ci/constants.mjs';
-import { prebundleDependencies } from './scripts/vitest/prebundle-dependencies.js';
+import { prebundleDependencies } from './scripts/vitest/prebundle-dependencies.mts';
 
 const CHROME_EXECUTABLE_PATH = process.env.PUPPETEER_EXECUTABLE_PATH;
 
@@ -33,7 +33,7 @@ export interface PackageTestOptions extends TestOptions {
  * configuring Vitest from scratch, so that common options stay in one place:
  *
  * ```ts
- * import { createVitestConfig } from '../../vitest.config';
+ * import { createVitestConfig } from '../../vitest.config.mts';
  *
  * const config: ViteUserConfig = createVitestConfig( import.meta.dirname );
  *
@@ -83,6 +83,7 @@ export function createVitestConfig( packageDir: string, options: PackageTestOpti
 				unstubEnvs: true,
 
 				maxWorkers: Math.min( availableParallelism(), 4 ),
+				isolate: false,
 				include: [
 					'tests/**/*.{js,ts}'
 				],
@@ -107,7 +108,6 @@ export function createVitestConfig( packageDir: string, options: PackageTestOpti
 				browser: {
 					enabled: true,
 					headless: true,
-					isolate: false,
 					provider: playwright( {
 						launchOptions: CHROME_EXECUTABLE_PATH ?
 							{ executablePath: CHROME_EXECUTABLE_PATH } :
