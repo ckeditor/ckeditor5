@@ -13,6 +13,18 @@ import { DEFAULT_CONCURRENCY, DEFAULT_TIMEOUT, runCrawler } from '@ckeditor/cked
 // The Vite config is resolved from the current working directory so the script adapts to the repository it is run from.
 const configFile = resolve( process.cwd(), 'vite.manual.mts' );
 
+/**
+ * Pages that are supposed to fail, matched anywhere in the URL. A page belongs here only when the error it
+ * produces is the thing it demonstrates, so the crawler reporting it says nothing useful.
+ *
+ * Entries that do not match anything in the repository the script runs from are simply never used.
+ */
+const EXCLUSIONS = [
+	// Shows what an application gets wrong when it enforces Trusted Types without allowing the editor's
+	// policy: the editor cannot write any HTML, and the first attempt throws while its module loads.
+	'manual/trustedtypes/policy-not-allowed'
+];
+
 try {
 	console.log( styleText( [ 'bold', 'green' ], 'Building manual tests using Vite...' ) );
 
@@ -23,7 +35,14 @@ try {
 	// The preview server runs inside this process (not a spawned child), and `runCrawler()` ends the
 	// process itself via `process.exit()` once crawling finishes. So the server is always torn down
 	// with the process - there is nothing to close explicitly and no background server left to hang on.
-	const server = await preview( { configFile } );
+	// The crawler launches a fresh browser for this immutable build. Reuse its cached assets
+	// across pages without imposing caching on the interactive development/preview servers.
+	const server = await preview( {
+		configFile,
+		preview: {
+			headers: { 'Cache-Control': 'public, max-age=3600' }
+		}
+	} );
 	const url = server.resolvedUrls.local[ 0 ];
 
 	console.log( styleText( [ 'bold', 'green' ], `Verifying manual tests at ${ url }` ) );
@@ -31,7 +50,7 @@ try {
 	await runCrawler( {
 		url,
 		depth: 1,
-		exclusions: [],
+		exclusions: EXCLUSIONS,
 		concurrency: Math.min( DEFAULT_CONCURRENCY, 12 ),
 		timeout: DEFAULT_TIMEOUT,
 		silent: false,

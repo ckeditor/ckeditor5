@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'Синій',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'Фіолетовий',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'Індиго',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'Блакитний',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'Синьо-зелений',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'Лаймовий',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'Бурштиновий',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'Синьо-сірий',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'Панель інструментів вмісту блоку редактора',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

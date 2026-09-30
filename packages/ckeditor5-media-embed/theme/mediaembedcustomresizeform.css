@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-media-embed-custom-resize-form-width: 340px;
 }
 
 @media screen and (max-width: 600px) {
-	:root {
+	:root,
+	:host {
 		--ck-media-embed-custom-resize-form-width: 300px;
 	}
 }

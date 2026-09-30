@@ -730,7 +730,9 @@ describe( 'EvaluationBadge', () => {
 
 			const domRoot = editor.editing.view.getDomRoot();
 
-			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 10, height: 10 } );
+			// Only a thin strip of the root is visible - shorter than the badge balloon - so the
+			// balloon is partially cropped and the positioning function returns `null` (hidden).
+			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 5, height: 5 } );
 
 			focusEditor( editor );
 
@@ -762,9 +764,9 @@ describe( 'EvaluationBadge', () => {
 				licenseKey: developmentLicenseKey
 			} );
 
-			rootRect = new Rect( { top: 0, left: 0, width: 400, right: 400, bottom: 200, height: 200 } );
-
-			vi.spyOn( rootRect, 'getVisible' ).mockReturnValue( { top: 0, left: 0, width: 400, right: 400, bottom: 10, height: 10 } );
+			// Only a small sliver in the corner of the root is visible - smaller than the badge
+			// balloon - so the balloon is partially cropped and the positioning function returns `null`.
+			rootRect = new Rect( { top: 0, left: 0, width: 10, right: 10, bottom: 5, height: 5 } );
 
 			balloonRect = new Rect( { top: 200, left: 0, width: 20, right: 20, bottom: 210, height: 10 } );
 
@@ -947,7 +949,7 @@ describe( 'EvaluationBadge', () => {
 			licenseKey: developmentLicenseKey
 		} );
 
-		_setModelData( editor.model, '<heading2>foo[]bar</heading2>' );
+		_setModelData( editor.model, '<heading2>foo[]bar</heading2><heading2>foo[]bar</heading2>' );
 
 		focusEditor( editor );
 

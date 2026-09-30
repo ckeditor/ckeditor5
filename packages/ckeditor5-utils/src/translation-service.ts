@@ -234,7 +234,7 @@ export function _unifyTranslations(
 	translations?: ArrayOrItem<Translations>
 ): Translations | undefined {
 	return Array.isArray( translations ) ?
-		translations.reduce( ( acc, translation ) => merge( acc, translation ) ) :
+		translations.reduce( ( acc, translation ) => merge( acc, translation ), {} ) :
 		translations;
 }
 

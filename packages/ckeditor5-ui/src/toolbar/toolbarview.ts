@@ -935,7 +935,7 @@ class DynamicGrouping implements ToolbarBehavior {
 		// from DOM. DOMRects won't work anyway and there will be tons of warning in the console and
 		// nothing else. This happens, for instance, when the toolbar is detached from DOM and
 		// some logic adds or removes its #items.
-		if ( !this.viewElement!.ownerDocument.body.contains( this.viewElement! ) ) {
+		if ( !this.viewElement!.isConnected ) {
 			return;
 		}
 
@@ -1012,10 +1012,15 @@ class DynamicGrouping implements ToolbarBehavior {
 			this.cachedPadding = Number.parseInt( computedStyle[ paddingProperty ] );
 		}
 
+		// A sub-pixel tolerance so that browser/OS zoom rounding of the Rects (getBoundingClientRect()
+		// returns fractional values at non-integer zoom levels) does not falsely report an overflow and
+		// cascade every item into the grouped dropdown.
+		const overflowTolerance = 1;
+
 		if ( uiLanguageDirection === 'ltr' ) {
-			return lastChildRect.right > toolbarRect.right - this.cachedPadding;
+			return lastChildRect.right > toolbarRect.right - this.cachedPadding + overflowTolerance;
 		} else {
-			return lastChildRect.left < toolbarRect.left + this.cachedPadding;
+			return lastChildRect.left < toolbarRect.left + this.cachedPadding - overflowTolerance;
 		}
 	}
 

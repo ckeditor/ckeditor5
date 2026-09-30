@@ -74,7 +74,7 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * **Note:** This configuration works only for simple plugins which utilize the
 	 * {@link module:core/plugin~PluginInterface plugin interface} and have no dependencies. To extend a
-	 * build with complex features, try [CKEditr 5 Builder](https://ckeditor.com/ckeditor-5/builder?redirect=docs).
+	 * build with complex features, try [CKEditr 5 Builder](https://builder.ckeditor.com/?redirect=docs).
 	 *
 	 * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
 	 * about the {@glink getting-started/setup/toolbar toolbar setup}.
@@ -1753,4 +1753,40 @@ export interface UiConfig {
 	 * Read more in {@link module:core/editor/editorconfig~PoweredByConfig}.
 	 **/
 	poweredBy?: PoweredByConfig;
+
+	/**
+	 * The element or shadow root that hosts the editor's overlay layer.
+	 *
+	 * The overlay layer (internally the {@link module:ui/editorui/editoruiview~EditorUIView#body body collection})
+	 * hosts the editor's floating UI – balloons, dialogs, and tooltips. It is rendered outside the editor's own
+	 * DOM structure so it stacks above the editor and is not clipped by scrollable or `overflow: hidden`
+	 * ancestors.
+	 *
+	 * When the editor runs inside a shadow root, provide this container as a separate shadow root attached to a
+	 * host element placed at the end of `document.body`, rather than to an element nested in the editor's own
+	 * tree. As a direct child of `document.body`, that host has no scrollable or `overflow: hidden` ancestor to
+	 * clip the overlay layer, and its own shadow root keeps it a self-contained styling boundary:
+	 *
+	 * ```ts
+	 * const overlayHost = document.body.appendChild( document.createElement( 'div' ) );
+	 * const overlayContainer = overlayHost.attachShadow( { mode: 'open' } );
+	 *
+	 * // A shadow root does not inherit the page styles, so the editor stylesheets must be adopted into it
+	 * // (for example through its `adoptedStyleSheets`) for the overlay layer to render styled.
+	 * overlayContainer.adoptedStyleSheets = editorStyleSheets;
+	 *
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		ui: {
+	 * 			overlayContainer
+	 * 		}
+	 * 	} );
+	 * ```
+	 *
+	 * When it is not set, the editor falls back to auto-detecting the shadow root it lives in (open or closed).
+	 * Treat this only as a fallback – that root may clip the overlay layer; the `document.body` default is meant
+	 * just for editors embedded in the light DOM.
+	 **/
+	overlayContainer?: HTMLElement | ShadowRoot;
 }

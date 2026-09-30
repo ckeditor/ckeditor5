@@ -23,7 +23,9 @@ const translations: Translations = {
 			// A message is displayed when the server fails to process an image or doesn't respond.
 			'Server failed to process the image.': 'Pelayan gagal memproses imej.',
 			// A message is displayed when category of the image user wants to edit can't be determined.
-			'Failed to determine category of edited image.': 'Gagal menentukan kategori imej yang disunting.'
+			'Failed to determine category of edited image.': 'Gagal menentukan kategori imej yang disunting.',
+			// A message is displayed when an operation (uploading or editing an asset) cannot be performed because the browser has no network connection.
+			'No internet connection. Check your connection and try again.': 'Tiada sambungan internet. Semak sambungan anda dan cuba lagi.'
 		}
 	}
 };

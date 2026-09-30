@@ -12,6 +12,8 @@ import {
 	Rect,
 	ObservableMixin,
 	compareArrays,
+	getParentElement,
+	containsNode,
 	type ObservableChangeEvent,
 	type DecoratedMethodEvent,
 	type ObservableMixinConstructor
@@ -278,11 +280,11 @@ export class WidgetResizer extends WidgetResizerBase {
 		const domWrapper = this._domResizerWrapper;
 
 		// Refresh only if resizer exists in the DOM.
-		if ( !existsInDom( domWrapper ) ) {
+		if ( !domWrapper?.isConnected ) {
 			return;
 		}
 
-		const widgetWrapper = domWrapper!.parentElement;
+		const widgetWrapper = getParentElement( domWrapper ) as HTMLElement | null;
 		const handleHost = this._getHandleHost();
 		const resizerWrapper = this._viewResizerWrapper!;
 		const currentDimensions = [
@@ -334,7 +336,7 @@ export class WidgetResizer extends WidgetResizerBase {
 	}
 
 	public containsHandle( domElement: HTMLElement ): boolean {
-		return this._domResizerWrapper!.contains( domElement );
+		return containsNode( this._domResizerWrapper!, domElement );
 	}
 
 	public static isResizeHandle( domElement: HTMLElement ): boolean {
@@ -419,7 +421,7 @@ export class WidgetResizer extends WidgetResizerBase {
 	 * Resize host is an object that receives dimensions which are the result of resizing.
 	 */
 	private _getResizeHost(): HTMLElement {
-		const widgetWrapper = this._domResizerWrapper!.parentElement;
+		const widgetWrapper = getParentElement( this._domResizerWrapper! ) as HTMLElement | null;
 
 		return this._options.getResizeHost( widgetWrapper! );
 	}
@@ -433,7 +435,7 @@ export class WidgetResizer extends WidgetResizerBase {
 	 * contains an image and a caption. Only the image should be surrounded with handles.
 	 */
 	private _getHandleHost(): HTMLElement {
-		const widgetWrapper = this._domResizerWrapper!.parentElement;
+		const widgetWrapper = getParentElement( this._domResizerWrapper! ) as HTMLElement | null;
 
 		return this._options.getHandleHost( widgetWrapper! );
 	}
@@ -512,8 +514,4 @@ function extractCoordinates( event: MouseEvent ) {
 		x: event.pageX,
 		y: event.pageY
 	};
-}
-
-function existsInDom( element: Node | DocumentFragment | undefined | null ) {
-	return element && element.ownerDocument && element.ownerDocument.contains( element );
 }

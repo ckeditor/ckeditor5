@@ -13,7 +13,7 @@ const translations: Translations = {
 			// Dropdown option label for opening an emoji picker offering more results to choose from.
 			'Show all emoji...': '显示所有表情符号...',
 			// Label of an input field for filtering an emoji collection by the typed value.
-			'Find an emoji (min. 2 characters)': '查找表情符号（最少 2 个字符）',
+			'Find an emoji': '查找表情符号（最少 2 个字符）',
 			// The main text of the message shown to the user when no emoji are available for the search criteria.
 			'No emojis were found matching "%0".': '未找到与“%0”匹配的表情符号。',
 			// The main text of the message shown to the user when the provided search query does not contain the required number of characters.

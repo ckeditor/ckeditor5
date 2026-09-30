@@ -44,7 +44,8 @@
 		width: 100%;
 	}
 }
-:root {
+:root,
+:host {
 	/* Side spacing between a floated media and surrounding text. */
 	--ck-content-media-style-spacing: 1.5em;
 }

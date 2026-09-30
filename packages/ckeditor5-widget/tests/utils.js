@@ -849,6 +849,39 @@ describe( 'widget utils', () => {
 				tree.remove();
 				unknownTree.remove();
 			} );
+
+			for ( const mode of [ 'open', 'closed' ] ) {
+				describe( `${ mode } shadow root`, () => {
+					it( 'gets the size from the shadow host of a resize host at the top of the root', () => {
+						const domResizeHost = tag( 'div' );
+						const host = tag( 'div', sizeAttributes( 200 ) );
+
+						document.body.appendChild( host );
+						host.attachShadow( { mode } ).appendChild( domResizeHost );
+
+						// Without crossing the boundary the resize host has no parent element at all, so the
+						// width could not be resolved and 0 was returned.
+						expect( calculateResizeHostAncestorWidth( domResizeHost ) ).toBe( 200 );
+
+						host.remove();
+					} );
+
+					it( 'walks past the shadow host when the ancestor inside the root has no known size', () => {
+						const domResizeHost = tag( 'with-size' );
+						// An unknown tag name is displayed inline, so its computed width is `auto` and the
+						// helper has to keep walking up, and here that means crossing the shadow boundary.
+						const wrapper = tag( 'without-size', {}, [ domResizeHost ] );
+						const host = tag( 'div', sizeAttributes( 300 ) );
+
+						document.body.appendChild( host );
+						host.attachShadow( { mode } ).appendChild( wrapper );
+
+						expect( calculateResizeHostAncestorWidth( domResizeHost ) ).toBe( 300 );
+
+						host.remove();
+					} );
+				} );
+			}
 		} );
 
 		describe( 'calculateResizeHostPercentageWidth()', () => {

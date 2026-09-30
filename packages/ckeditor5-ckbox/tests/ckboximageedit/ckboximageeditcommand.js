@@ -380,6 +380,129 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( productionCalls[ 0 ][ 0 ] ).toEqual( reason );
 				expect( notificationStub ).toHaveBeenCalledTimes( 1 );
 			} );
+
+			it( 'should repeat the reason of the failure in the notification', async () => {
+				const notification = editor.plugins.get( Notification );
+				const notificationStub = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+				const reason = 'Cannot determine a category for the uploaded file.';
+
+				vi.spyOn( console, 'error' ).mockImplementation( () => {} );
+				vi.spyOn( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).mockReturnValue( Promise.reject( reason ) );
+
+				_setModelData( model,
+					'[<imageBlock alt="alt text" src="https://example.com/assets/sample.png"></imageBlock>]'
+				);
+
+				command.execute();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				expect( notificationStub ).toHaveBeenCalledTimes( 1 );
+				expect( notificationStub.mock.calls[ 0 ][ 0 ] ).toEqual( reason );
+				expect( notificationStub.mock.calls[ 0 ][ 1 ] ).toEqual( { namespace: 'ckbox' } );
+			} );
+
+			it( 'should display the category error notification if the failure has no message to display', async () => {
+				const notification = editor.plugins.get( Notification );
+				const notificationStub = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+
+				vi.spyOn( console, 'error' ).mockImplementation( () => {} );
+				vi.spyOn( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' )
+					.mockReturnValue( Promise.reject( new TypeError( 'Something went terribly wrong.' ) ) );
+
+				_setModelData( model,
+					'[<imageBlock alt="alt text" src="https://example.com/assets/sample.png"></imageBlock>]'
+				);
+
+				command.execute();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				expect( notificationStub ).toHaveBeenCalledTimes( 1 );
+				expect( notificationStub.mock.calls[ 0 ][ 0 ] ).toEqual( 'Failed to determine category of edited image.' );
+				expect( notificationStub.mock.calls[ 0 ][ 1 ] ).toEqual( { namespace: 'ckbox' } );
+			} );
+
+			it( 'should display the connection error notification when preparing options fails while offline', async () => {
+				const notification = editor.plugins.get( Notification );
+				const notificationStub = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+				const consoleStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
+				const reason = 'No internet connection. Check your connection and try again.';
+
+				vi.spyOn( window.navigator, 'onLine', 'get' ).mockReturnValue( false );
+				vi.spyOn( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).mockReturnValue( Promise.reject( reason ) );
+
+				_setModelData( model,
+					'[<imageBlock alt="alt text" src="https://example.com/assets/sample.png"></imageBlock>]'
+				);
+
+				command.execute();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				// Ignore Vitest browser-mode forwarding of cross-file unhandled rejections,
+				// which surface as PromiseRejectionEvent objects on the shared `console.error`.
+				const productionCalls = consoleStub.mock.calls.filter(
+					call => !( call[ 0 ] instanceof PromiseRejectionEvent )
+				);
+
+				expect( notificationStub ).toHaveBeenCalledTimes( 1 );
+				expect( notificationStub.mock.calls[ 0 ][ 0 ] ).toEqual( reason );
+				expect( notificationStub.mock.calls[ 0 ][ 1 ] ).toEqual( { namespace: 'ckbox' } );
+
+				// The dialog must be cleaned up and the reason still logged, exactly as in the online case.
+				expect( command._wrapper ).toBeNull();
+				expect( productionCalls ).toHaveLength( 1 );
+			} );
+
+			it( 'should not contradict the logged reason if the connection is restored before the failure is handled', async () => {
+				const notification = editor.plugins.get( Notification );
+				const notificationStub = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+				const reason = 'No internet connection. Check your connection and try again.';
+
+				vi.spyOn( console, 'error' ).mockImplementation( () => {} );
+
+				// The request failed while offline, but the connection is back by the time the rejection is handled.
+				// The notification must still match the reason instead of sampling the connection state anew.
+				vi.spyOn( window.navigator, 'onLine', 'get' ).mockReturnValue( true );
+				vi.spyOn( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).mockReturnValue( Promise.reject( reason ) );
+
+				_setModelData( model,
+					'[<imageBlock alt="alt text" src="https://example.com/assets/sample.png"></imageBlock>]'
+				);
+
+				command.execute();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				expect( notificationStub ).toHaveBeenCalledTimes( 1 );
+				expect( notificationStub.mock.calls[ 0 ][ 0 ] ).toEqual( reason );
+			} );
+
+			it( 'should not display any notification if the command was destroyed while preparing options', async () => {
+				const notification = editor.plugins.get( Notification );
+				const notificationStub = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+				const consoleStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
+
+				vi.spyOn( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' )
+					.mockReturnValue( Promise.reject( 'No internet connection. Check your connection and try again.' ) );
+
+				_setModelData( model,
+					'[<imageBlock alt="alt text" src="https://example.com/assets/sample.png"></imageBlock>]'
+				);
+
+				command.execute();
+				command.destroy();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				const productionCalls = consoleStub.mock.calls.filter(
+					call => !( call[ 0 ] instanceof PromiseRejectionEvent )
+				);
+
+				expect( notificationStub ).not.toHaveBeenCalled();
+				expect( productionCalls ).toHaveLength( 0 );
+			} );
 		} );
 
 		describe( 'closing dialog', () => {
@@ -608,6 +731,52 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 			} );
 
+			it( 'should not cancel the ongoing save when the options for another image are prepared', async () => {
+				const notification = editor.plugins.get( Notification );
+				vi.useFakeTimers();
+				const spy = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					200,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						id: 'image-id1',
+						extension: 'png',
+						metadata: {
+							metadataProcessingStatus: 'success',
+							width: 100,
+							height: 100
+						},
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						}
+					} )
+				] );
+
+				options.onSave( dataMock );
+
+				await vi.advanceTimersByTimeAsync( 10 );
+
+				// Opening the editor for another image aborts the previous `_prepareOptions()` call,
+				// which must not touch the image that is already being processed.
+				vi.spyOn( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).mockResolvedValue( 'id-category-1' );
+
+				command._prepareOptions( {
+					element: model.document.selection.getSelectedElement(),
+					controller: new AbortController()
+				} );
+
+				await vi.advanceTimersByTimeAsync( 20000 );
+
+				expect( _getModelData( model ) ).toEqual(
+					'[<imageBlock alt="alt text" ckboxImageId="image-id1" height="100" sources="[object Object]"' +
+						' src="https://example.com/workspace1/assets/image-id1/images/100.png" width="100">' +
+					'</imageBlock>]'
+				);
+				expect( spy ).not.toHaveBeenCalled();
+			} );
+
 			it( 'should display notification in case fail', async () => {
 				const notification = editor.plugins.get( Notification );
 				vi.useFakeTimers();
@@ -628,6 +797,78 @@ describe( 'CKBoxImageEditCommand', () => {
 				await vi.advanceTimersByTimeAsync( 20000 );
 
 				expect( spy ).toHaveBeenCalledTimes( 1 );
+			} );
+
+			it( 'should display the processing error notification if the image processing failed while online', async () => {
+				const notification = editor.plugins.get( Notification );
+				vi.useFakeTimers();
+				const spy = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+
+				vi.spyOn( window.navigator, 'onLine', 'get' ).mockReturnValue( true );
+
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					500,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'queued'
+						}
+					} )
+				] );
+
+				options.onSave( dataMock );
+
+				await vi.advanceTimersByTimeAsync( 20000 );
+
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( 'Server failed to process the image.' );
+				expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( { namespace: 'ckbox' } );
+			} );
+
+			it( 'should display the connection error notification if the connection was lost while processing', async () => {
+				const notification = editor.plugins.get( Notification );
+				vi.useFakeTimers();
+				const spy = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+
+				const onLineStub = vi.spyOn( window.navigator, 'onLine', 'get' ).mockReturnValue( true );
+
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
+					// The connection drops while polling for the processing status.
+					onLineStub.mockReturnValue( false );
+
+					return xhr.error();
+				} );
+
+				options.onSave( dataMock );
+
+				await vi.advanceTimersByTimeAsync( 20000 );
+
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( spy.mock.calls[ 0 ][ 0 ] ).toEqual( 'No internet connection. Check your connection and try again.' );
+				expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( { namespace: 'ckbox' } );
+			} );
+
+			it( 'should not display any notification if the request was aborted while offline', async () => {
+				const notification = editor.plugins.get( Notification );
+				vi.useFakeTimers();
+				const spy = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+
+				vi.spyOn( window.navigator, 'onLine', 'get' ).mockReturnValue( false );
+
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
+					return xhr.error();
+				} );
+
+				options.onSave( dataMock );
+
+				await vi.advanceTimersByTimeAsync( 10 );
+
+				command.destroy();
+
+				await vi.advanceTimersByTimeAsync( 20000 );
+
+				// Losing the connection must not resurrect the notification for an aborted process.
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should log error in case runtime error in asynchronous code', async () => {

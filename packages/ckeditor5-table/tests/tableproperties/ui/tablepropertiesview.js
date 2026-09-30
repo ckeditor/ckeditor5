@@ -37,7 +37,8 @@ const VIEW_OPTIONS = {
 		width: '',
 		height: '',
 		backgroundColor: ''
-	}
+	},
+	colorGridColumns: 7
 };
 
 describe( 'table properties', () => {
@@ -271,8 +272,19 @@ describe( 'table properties', () => {
 							] );
 						} );
 
+						it( 'should be constructible without the columns configuration', () => {
+							const optionsWithoutColumns = { ...VIEW_OPTIONS };
+							delete optionsWithoutColumns.colorGridColumns;
+
+							const viewWithDefaults = new TablePropertiesView( { t: val => val }, optionsWithoutColumns );
+
+							expect( viewWithDefaults.borderColorInput.fieldView.options.columns ).toBeUndefined();
+
+							viewWithDefaults.destroy();
+						} );
+
 						it( 'should obtain the columns configuration', () => {
-							expect( labeledInput.fieldView.options.columns ).toBe( 5 );
+							expect( labeledInput.fieldView.options.columns ).toBe( 7 );
 						} );
 
 						it( 'should reflect #borderColor property', () => {
@@ -341,7 +353,7 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should obtain the columns configuration', () => {
-							expect( labeledInput.fieldView.options.columns ).toBe( 5 );
+							expect( labeledInput.fieldView.options.columns ).toBe( 7 );
 						} );
 
 						it( 'should reflect #backgroundColor property', () => {
@@ -574,7 +586,7 @@ describe( 'table properties', () => {
 						expect( view.saveButtonView.label ).toBe( 'Save' );
 						expect( view.saveButtonView.type ).toBe( 'submit' );
 						expect( view.saveButtonView.withText ).toBe( true );
-						expect( view.saveButtonView.class ).toBe( 'ck-button-action' );
+						expect( view.saveButtonView.class ).toBe( 'ck-button-action ck-button_standard' );
 
 						expect( view.cancelButtonView.label ).toBe( 'Cancel' );
 						expect( view.cancelButtonView.withText ).toBe( true );

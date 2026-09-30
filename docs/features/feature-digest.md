@@ -1778,11 +1778,19 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 	</ck:card>
 </ck:columns>
 
-### Watchdog
+### Error handling
 
-The watchdog utility protects you from data loss in case the editor crashes. It saves your content just before the crash and creates a new instance of the editor with your content intact.
+Learn about the errors that escape a running editor and decide what your application does next: tell the user, switch the editor to read-only, recreate it, or recover its content from your own source.
 
-<ck:button-link size='sm' variant='secondary' href='{@link features/watchdog}'>
+<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/error-handling}'>
+	Feature page
+</ck:button-link>
+
+### Trusted Types support
+
+CKEditor 5 supports running in applications that enforce Trusted Types, a browser mechanism that rejects plain strings wherever they would become live HTML.
+
+<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/csp#trusted-types}'>
 	Feature page
 </ck:button-link>
 

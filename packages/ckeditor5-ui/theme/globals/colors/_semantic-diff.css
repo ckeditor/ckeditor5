@@ -1,0 +1,51 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Semantic `diff` role layer: colors that communicate change (insertion / deletion / format) plus the
+ * adjacent comment marker accent. This is the single source of truth consumed by suggestion markers,
+ * the revision viewer, and the AI review feed. The inline change markers derive their opacity variants
+ * from the diff seeds in `_foundation.css`; the box, widget, and format hues that diverge from the seed
+ * are kept as literals here so the palette stays value-neutral.
+ */
+
+:root,
+:host {
+	/* Inline change markers — insertion (green). */
+	--ck-color-diff-insertion-border: hsl(var(--ck-color-base-diff-insertion) / 50%);
+	--ck-color-diff-insertion-border-active: hsl(var(--ck-color-base-diff-insertion) / 60%);
+	--ck-color-diff-insertion-background: hsl(var(--ck-color-base-diff-insertion) / 20%);
+	--ck-color-diff-insertion-background-active: hsl(var(--ck-color-base-diff-insertion) / 30%);
+
+	/* Inline change markers — deletion (red). */
+	--ck-color-diff-deletion-border: hsl(var(--ck-color-base-diff-deletion) / 40%);
+	--ck-color-diff-deletion-border-active: hsl(var(--ck-color-base-diff-deletion) / 50%);
+	--ck-color-diff-deletion-background: hsl(var(--ck-color-base-diff-deletion) / 20%);
+	--ck-color-diff-deletion-background-active: hsl(var(--ck-color-base-diff-deletion) / 30%);
+	--ck-color-diff-deletion-stroke: hsl(0 75% 43% / 60%);
+
+	/* Inline change markers — format (cyan). */
+	--ck-color-diff-format-border: hsl(var(--ck-color-base-diff-format) / 100%);
+	--ck-color-diff-format-border-active: hsl(191 60% 60%);
+
+	/* Annotation-box left-border accents (sidebar). */
+	--ck-color-diff-insertion-box-border: hsl(145 33% 42.7%);
+	--ck-color-diff-deletion-box-border: hsl(8.4 69% 46.9%);
+
+	/* Widget (image / table / media) diff backgrounds. */
+	--ck-color-diff-insertion-widget-background: hsl(128 71% 65% / 5%);
+	--ck-color-diff-insertion-widget-background-active: hsl(128 71% 50% / 7%);
+	--ck-color-diff-deletion-widget-background: hsl(345 71% 65% / 5%);
+	--ck-color-diff-deletion-widget-background-active: hsl(345 71% 45% / 7%);
+	--ck-color-diff-format-widget-background: hsl(191 90% 40% / 9%);
+	--ck-color-diff-format-widget-background-active: hsl(191 90% 40% / 16%);
+	--ck-color-diff-insertion-widget-th-background: hsl(128 71% 65% / 12%);
+	--ck-color-diff-insertion-widget-th-background-active: hsl(128 71% 50% / 14%);
+	--ck-color-diff-deletion-widget-th-background: hsl(345 71% 65% / 14%);
+	--ck-color-diff-deletion-widget-th-background-active: hsl(345 71% 45% / 16%);
+
+	/* Comment marker box accent (annotation family, not a diff). */
+	--ck-color-comment-box-border: hsl(var(--ck-color-base-comment) / 100%);
+}

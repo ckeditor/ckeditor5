@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'Blu',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'Porpora',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'Indaco',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'Ciano',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'Verde acqua',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'Verde lime',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'Ambra',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'Grigio bluastro',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'Barra degli strumenti contestuale dell\'editor del blocco',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

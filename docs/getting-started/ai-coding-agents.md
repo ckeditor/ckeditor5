@@ -1,7 +1,7 @@
 ---
 category: getting-started
 order: 20
-menu-title: Build with AI
+menu-title: Build with AI ✨
 meta-title: CKEditor 5 skill for AI coding agents | CKEditor 5 Documentation
 meta-description: Install the official CKEditor 5 skill in Claude Code, Cursor, Codex, OpenCode, or Copilot to set up, configure, and get the most out of its features.
 modified_at: 2026-06-29
@@ -146,6 +146,13 @@ https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.md
 ```
 
 Alternatively, request the original `.html` page with an `Accept: text/markdown` header and the server returns the markdown version.
+
+To find a page, start from the index of the project you need. Each one lists every page with its summary, and every markdown page links back to it:
+
+* [https://ckeditor.com/docs/ckeditor5/llms.txt](https://ckeditor.com/docs/ckeditor5/llms.txt) &ndash; the CKEditor&nbsp;5 guides.
+* [https://ckeditor.com/docs/ckeditor5/latest/api/llms.txt](https://ckeditor.com/docs/ckeditor5/latest/api/llms.txt) &ndash; the API reference, which is too large to share a file with the guides.
+* [https://ckeditor.com/docs/cs/llms.txt](https://ckeditor.com/docs/cs/llms.txt) &ndash; CKEditor Cloud Services.
+* [https://ckeditor.com/docs/ckbox/llms.txt](https://ckeditor.com/docs/ckbox/llms.txt) &ndash; CKBox.
 
 For bulk access, [https://ckeditor.com/docs/llms-full.txt](https://ckeditor.com/docs/llms-full.txt) bundles all the guides in a single plain-text file.
 

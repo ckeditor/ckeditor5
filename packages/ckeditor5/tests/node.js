@@ -58,7 +58,6 @@ import * as ui from '@ckeditor/ckeditor5-ui';
 import * as undo from '@ckeditor/ckeditor5-undo';
 import * as upload from '@ckeditor/ckeditor5-upload';
 import * as utils from '@ckeditor/ckeditor5-utils';
-import * as watchdog from '@ckeditor/ckeditor5-watchdog';
 import * as widget from '@ckeditor/ckeditor5-widget';
 import * as wordCount from '@ckeditor/ckeditor5-word-count';
 
@@ -116,7 +115,6 @@ const packages = [
 	undo,
 	upload,
 	utils,
-	watchdog,
 	widget,
 	wordCount
 ];

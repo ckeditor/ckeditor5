@@ -7,8 +7,14 @@
  * @module table/tablescroll/watchers
  */
 
-import { Collection, type EventInfo } from '@ckeditor/ckeditor5-utils';
-import type { EditingView, Model, ModelElement, ModelDocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
+import { Collection, DomEmitterMixin, type EventInfo } from '@ckeditor/ckeditor5-utils';
+import type {
+	EditingView,
+	Model,
+	ModelElement,
+	ModelDocumentChangeEvent,
+	ViewRootEditableElement
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * Creates a live collection of all `table` model elements present in the document and keeps it
@@ -77,54 +83,100 @@ export function watchTableModelElements( model: Model ): Collection<ModelElement
  * @internal
  */
 export function watchRootsWidthResize( view: EditingView, onResize: () => void ): () => void {
-	const { roots } = view.document;
-	const observedRoots = new Map<string, ResizeObserver>();
+	const observers = new Map<string, ResizeObserver>();
 	const lastKnownWidths = new Map<string, number>();
 
-	const attachRoot = ( rootName: string ) => {
-		if ( observedRoots.has( rootName ) ) {
+	return watchRoots( view, {
+		onAttach: ( domRoot, rootName ) => {
+			const observer = new ResizeObserver( entries => {
+				for ( const entry of entries ) {
+					const width = entry.contentRect.width;
+
+					if ( lastKnownWidths.get( rootName ) === width ) {
+						continue;
+					}
+
+					lastKnownWidths.set( rootName, width );
+					onResize();
+				}
+			} );
+
+			observer.observe( domRoot );
+			observers.set( rootName, observer );
+		},
+
+		onDetach: ( _, rootName ) => {
+			observers.get( rootName )!.disconnect();
+			observers.delete( rootName );
+			lastKnownWidths.delete( rootName );
+		}
+	} );
+}
+
+/**
+ * Listens to `scroll` on every editing root and calls `onScroll` for scrolls happening anywhere inside them.
+ *
+ * @internal
+ */
+export function watchRootsScroll( view: EditingView, onScroll: ( evt: EventInfo, domEvent: Event ) => void ): () => void {
+	const domEmitter = new ( DomEmitterMixin() )();
+
+	return watchRoots( view, {
+		onAttach: domRoot => domEmitter.listenTo( domRoot, 'scroll', onScroll, { useCapture: true } ),
+		onDetach: domRoot => domEmitter.stopListening( domRoot, 'scroll', onScroll )
+	} );
+}
+
+/**
+ * Calls `onAttach` for the DOM element of every editing root, both those present now and those added later,
+ * and `onDetach` when a root goes away. Returns a function that detaches everything and stops watching.
+ */
+function watchRoots(
+	view: EditingView,
+	{ onAttach, onDetach }: {
+		onAttach: ( domRoot: HTMLElement, rootName: string ) => void;
+		onDetach: ( domRoot: HTMLElement, rootName: string ) => void;
+	}
+): () => void {
+	const { roots } = view.document;
+	const attachedRoots = new Map<string, HTMLElement>();
+
+	const attach = ( rootName: string ) => {
+		const domRoot = view.getDomRoot( rootName );
+		const previousDomRoot = attachedRoots.get( rootName );
+
+		if ( previousDomRoot === domRoot ) {
 			return;
 		}
 
-		const domRoot = view.getDomRoot( rootName );
+		if ( previousDomRoot ) {
+			attachedRoots.delete( rootName );
+			onDetach( previousDomRoot, rootName );
+		}
+
+		if ( domRoot ) {
+			attachedRoots.set( rootName, domRoot );
+			onAttach( domRoot, rootName );
+		}
+	};
+
+	const detach = ( rootName: string ) => {
+		const domRoot = attachedRoots.get( rootName );
 
 		if ( !domRoot ) {
 			return;
 		}
 
-		const observer = new ResizeObserver( entries => {
-			for ( const entry of entries ) {
-				const width = entry.contentRect.width;
-
-				if ( lastKnownWidths.get( rootName ) === width ) {
-					continue;
-				}
-
-				lastKnownWidths.set( rootName, width );
-				onResize();
-			}
-		} );
-
-		observer.observe( domRoot );
-		observedRoots.set( rootName, observer );
+		attachedRoots.delete( rootName );
+		onDetach( domRoot, rootName );
 	};
 
-	const detachRoot = ( rootName: string ) => {
-		const observer = observedRoots.get( rootName );
-
-		if ( observer ) {
-			observer.disconnect();
-			observedRoots.delete( rootName );
-			lastKnownWidths.delete( rootName );
-		}
-	};
-
-	const onRootAdd = ( evt: EventInfo, viewRoot: { rootName: string } ) => attachRoot( viewRoot.rootName );
-	const onRootRemove = ( evt: EventInfo, viewRoot: { rootName: string } ) => detachRoot( viewRoot.rootName );
+	const onRootAdd = ( evt: EventInfo, viewRoot: ViewRootEditableElement ) => attach( viewRoot.rootName );
+	const onRootRemove = ( evt: EventInfo, viewRoot: ViewRootEditableElement ) => detach( viewRoot.rootName );
 
 	const attachAllRoots = () => {
 		for ( const root of roots ) {
-			attachRoot( root.rootName );
+			attach( root.rootName );
 		}
 	};
 
@@ -139,11 +191,8 @@ export function watchRootsWidthResize( view: EditingView, onResize: () => void )
 		roots.off( 'remove', onRootRemove );
 		view.off( 'render', attachAllRoots );
 
-		for ( const observer of observedRoots.values() ) {
-			observer.disconnect();
+		for ( const rootName of Array.from( attachedRoots.keys() ) ) {
+			detach( rootName );
 		}
-
-		observedRoots.clear();
-		lastKnownWidths.clear();
 	};
 }

@@ -15,7 +15,7 @@
      */
     "types": [],
     "lib": [
-      "ES2022", // Must match the "target"
+      "ES2023", // Must match the "target"
       "DOM",
       "DOM.Iterable"
     ],
@@ -23,7 +23,7 @@
     "noImplicitOverride": true,
     "strict": true,
     "module": "esnext",
-    "target": "es2022",
+    "target": "es2023",
     "sourceMap": true,
     "moduleResolution": "bundler",
     "skipLibCheck": true,

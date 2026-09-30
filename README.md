@@ -37,7 +37,7 @@ Refer to the [Quick Start](https://ckeditor.com/docs/ckeditor5/latest/getting-st
 
 ### CKEditor 5 Builder
 
-The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized setup with the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
+The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized setup with the [CKEditor&nbsp;5 Builder](https://builder.ckeditor.com/). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
 
 ### Build with AI
 

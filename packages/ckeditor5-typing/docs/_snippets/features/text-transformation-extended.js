@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -13,7 +12,6 @@ import { TextTransformationEditor } from './build-text-transformation-source.js'
 TextTransformationEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-text-transformation-extended' ),
-		cloudServices: CS_CONFIG,
 		root: {
 			placeholder: 'Type here...'
 		},

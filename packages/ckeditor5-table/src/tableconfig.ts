@@ -392,6 +392,21 @@ export interface TablePropertiesConfig {
 	alignment?: TableAlignmentConfig;
 
 	/**
+	 * The number of columns in the `borderColors` and `backgroundColors` palettes of the table properties balloon.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableProperties: {
+	 * 		colorGridColumns: 8
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * Defaults to {@link module:ui/colorgrid/colors~defaultColorGridColumns}.
+	 */
+	colorGridColumns?: number;
+
+	/**
 	 * Configuration of the color picker in the table properties balloon.
 	 *
 	 * If set to `false` the picker will not appear.
@@ -530,6 +545,21 @@ export interface TableCellPropertiesConfig {
 	 * See {@link module:table/tableconfig~TableCellPropertiesOptions} for the full list of properties.
 	 */
 	defaultProperties?: TableCellPropertiesOptions;
+
+	/**
+	 * The number of columns in the `borderColors` and `backgroundColors` palettes of the table cell properties balloon.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		colorGridColumns: 8
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * Defaults to {@link module:ui/colorgrid/colors~defaultColorGridColumns}.
+	 */
+	colorGridColumns?: number;
 
 	/**
 	 * Configuration of the color picker in the table cell properties balloon.

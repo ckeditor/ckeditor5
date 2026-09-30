@@ -4,7 +4,7 @@ menu-title: Editor and content styles
 meta-title: Editor and content styles | CKEditor 5 Documentation
 meta-description: Learn how to style the editor and content with CSS.
 order: 90
-modified_at: 2024-06-25
+modified_at: 2026-09-17
 ---
 
 # Editor and content styles
@@ -44,13 +44,27 @@ The example below shows how the customized variables affect the editor's appeara
 
 ```css
 :root {
-	--ck-color-focus-border: hsl(263, 59%, 52%);
-	--ck-color-toolbar-background: hsl(210, 33%, 99%);
-	--ck-color-button-on-background: hsl(210, 8%, 95%);
-	--ck-color-button-on-color: hsl(263, 59%, 52%);
-	--ck-font-size-base: 16px;
-	--ck-spacing-unit: 1em;
-	--ck-border-radius: 16px;
+	/* Accent colors. */
+	--ck-focus-border-color: hsl(263, 59%, 52%);
+	--ck-editor-frame-border-color: hsl(263, 59%, 52%);
+	--ck-color-base-focus: hsl(263, 59%, 52%);
+	--ck-color-base-active: hsl(263, 59%, 52%);
+	--ck-color-base-active-focus: hsl(263, 59%, 42%);
+
+	/* Toolbar and active button surfaces. */
+	--ck-color-base-background: hsl(210, 33%, 99%);
+	--ck-color-base-selected: hsl(210, 8%, 95%);
+
+	/* Rounded corners. */
+	--ck-radius-unit: 16px;
+	--ck-border-radius-surface: 16px;
+	--ck-editor-frame-border-radius: 16px;
+	--ck-sticky-panel-uniform-border-radius: 16px 16px 0 0;
+	--ck-radius-corners: 16px;
+
+	/* Sizing. */
+	--ck-font-size-base: 18px;
+	--ck-spacing-unit: 20px;
 }
 ```
 
@@ -64,18 +78,24 @@ The editor's look after customization:
 
 Here are some essential CSS variables for customizing the editor:
 
-| Variable                                      | Description                                             |
-|-----------------------------------------------|---------------------------------------------------------|
-| `--ck-border-radius`                          | Border radius for rounded corners throughout the editor.|
-| `--ck-spacing-unit`                           | Base spacing unit that controls all spacing in the UI.  |
-| `--ck-font-size-base`                         | Base font size for the editor UI.                       |
-| `--ck-font-face`                              | Font family used throughout the editor UI.              |
-| `--ck-color-focus-border`                     | Border color when elements are focused.                 |
-| `--ck-color-toolbar-background`               | Background color of the toolbar.                        |
-| `--ck-color-base-border`                      | Primary border color used throughout the UI.            |
-| `--ck-color-button-on-background`             | Background color for active/selected buttons.           |
-| `--ck-color-button-on-color`                  | Text color for active/selected buttons.                 |
-| `--ck-color-button-default-hover-background`  | Background color when hovering over buttons.            |
+| Variable                                    | Description                                                                        |
+|---------------------------------------------|------------------------------------------------------------------------------------|
+| `--ck-radius-unit`                          | Base radius unit that controls rounded corners of buttons, panels, and dropdowns.  |
+| `--ck-border-radius-surface`                | Border radius of floating surfaces such as panels and dropdowns.                   |
+| `--ck-editor-frame-border-radius`           | Border radius of the editor frame.                                                 |
+| `--ck-sticky-panel-uniform-border-radius`   | Border radius of the toolbar container (the top corners of the editor frame).      |
+| `--ck-radius-corners`                       | Border radius of the editing area (the bottom corners of the editor frame).        |
+| `--ck-spacing-unit`                         | Base spacing unit that controls all spacing in the UI.                             |
+| `--ck-font-size-base`                       | Base font size for the editor UI.                                                  |
+| `--ck-font-family`                          | Font family used throughout the editor UI.                                         |
+| `--ck-focus-border-color`                   | Border color of the focused editing area.                                          |
+| `--ck-editor-frame-border-color`            | Border color of the editor frame around the toolbar.                               |
+| `--ck-color-base-focus`                     | Accent color of focused UI elements.                                               |
+| `--ck-color-base-background`                | Background color of the toolbar and other UI surfaces.                             |
+| `--ck-color-base-border`                    | Primary border color used throughout the UI.                                       |
+| `--ck-color-base-selected`                  | Background color of active or selected buttons.                                    |
+| `--ck-color-base-active`                    | Icon and text color of active or selected buttons.                                 |
+| `--ck-color-base-hover`                     | Background color when hovering over buttons.                                       |
 
 <info-box hint>
 	You can also browse [CSS files](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui/theme/globals) to find more available variables.
@@ -84,6 +104,12 @@ Here are some essential CSS variables for customizing the editor:
 Knowing the variables, you can push the customization even further and create your own themes, as in this {@link examples/theme-customization dark theme example}.
 
 To apply classes or styles directly to the editable area from the editor configuration, see the {@link getting-started/setup/root-types#styling-the-editable-area Styling the editable area} section of the Root types guide.
+
+### Styles inside a shadow DOM
+
+Style sheets are scoped to the DOM tree they belong to. An editor inside a shadow root needs the editor style sheets loaded into that root rather than into the main document. Overriding a CSS variable differs as well: the override has to target the shadow host, because the editor declares its variables on `:host` there.
+
+The {@link getting-started/setup/shadow-dom Shadow DOM} guide covers both, together with where the floating user interface mounts.
 
 ## Customizing the look of the features
 

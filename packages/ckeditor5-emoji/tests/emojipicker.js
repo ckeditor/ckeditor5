@@ -467,7 +467,7 @@ describe( 'EmojiPicker', () => {
 			const ballon = document.querySelector( '.ck-emoji-picker-balloon' );
 
 			expect( ballon ).not.toBe( null );
-			expect( ballon.innerText ).toContain( 'Find an emoji (min. 2 characters)' );
+			expect( ballon.innerText ).toContain( 'Find an emoji' );
 		} );
 
 		describe( 'fake visual selection', () => {

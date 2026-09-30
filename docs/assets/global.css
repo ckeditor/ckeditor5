@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	/* This custom property is read by the JS and passed to editor configurations
 	as config.ui.viewportOffset.top. */
 	--ck-snippet-viewport-top-offset: 109.56;

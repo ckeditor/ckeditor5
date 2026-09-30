@@ -20,7 +20,7 @@ Released on 4 March, 2026. ([See full release notes](https://github.com/ckeditor
 
 ### New `htmlSupport.htmlIframeSandbox` configuration option in General HTML Support
 
-This release introduces a potential breaking change related to `iframe` handling in the editing view.
+This release introduces a potential breaking change related to `<iframe>` handling in the editing view.
 
 By default, iframe sandboxing is now enabled. The `htmlSupport.htmlIframeSandbox` configuration option responsible for this behavior defaults to `true`, which means an empty `sandbox=""` attribute is automatically added to all iframes rendered in the editing view.
 
@@ -294,7 +294,7 @@ This is a minor update focused on improving content editing workflows and data c
 
 ### Experimental table cell type support
 
-We are introducing an experimental {@link module:table/tablecellproperties/tablecellpropertiesutils~TableCellType `tableCellTypeSupport`} flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. To enable this functionality, you need to set `experimentalFlags.tableCellTypeSupport` to `true`. You can then use `TableCellPropertiesEditing` and `TableCellPropertiesUIExperimental` to manage the feature.
+We are introducing an experimental {@link module:table/tablecellproperties/tablecellpropertiesutils~TableCellType `tableCellTypeSupport`} flag that enables changing table cell types between data and header cells (`<th>`). This feature provides more flexibility when working with complex table structures. To enable this functionality, you need to set `experimentalFlags.tableCellTypeSupport` to `true`. You can then use `TableCellPropertiesEditing` and `TableCellPropertiesUIExperimental` to manage the feature.
 
 ```js-diff
  ClassicEditor
@@ -327,13 +327,13 @@ We are introducing a new {@link features/tables-styling#helper-lines-when-border
 
 ### Email compatibility improvements
 
-We improved the [email styles transformation](https://ckeditor.com/docs/ckeditor5/latest/features/email-editing/email.html#email-specific-style-transformations) with better appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email styles transformers can replace `figure` (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
+We improved the [email styles transformation](https://ckeditor.com/docs/ckeditor5/latest/features/email-editing/email.html#email-specific-style-transformations) with better appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email styles transformers can replace `<figure>` (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
 
 ### Updated the Emoji plugin dataset
 
 The Emoji plugin can now utilize the Emoji v17.0 dataset, available on the CKEditor CDN. This update does not change the default emoji version used by CKEditor&nbsp;5.
 
-To use the new dataset, download the [Emoji `json` database from the CKEditor&nbsp;5 CDN](https://cdn.ckeditor.com/ckeditor5/data/emoji/17/en.json). Place the downloaded file in your application’s assets folder, for example `public/emoji/en.json` (The specific location may vary depending on your framework and setup). Update the configuration option `definitionsUrl` to point to the URL of your assets, for example:
+To use the new dataset, download the [Emoji JSON database from the CKEditor&nbsp;5 CDN](https://cdn.ckeditor.com/ckeditor5/data/emoji/17/en.json). Place the downloaded file in your application’s assets folder, for example `public/emoji/en.json` (The specific location may vary depending on your framework and setup). Update the configuration option `definitionsUrl` to point to the URL of your assets, for example:
 
 ```js
 ClassicEditor

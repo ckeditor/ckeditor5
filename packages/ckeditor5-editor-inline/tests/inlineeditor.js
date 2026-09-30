@@ -11,7 +11,6 @@ import { InlineEditorUIView } from '../src/inlineeditoruiview.js';
 import { HtmlDataProcessor, ModelRootElement } from '@ckeditor/ckeditor5-engine';
 
 import { Context, Plugin } from '@ckeditor/ckeditor5-core';
-import { EditorWatchdog, ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
@@ -1169,14 +1168,6 @@ describe( 'InlineEditor', () => {
 	describe( 'static fields', () => {
 		it( 'InlineEditor.Context', () => {
 			expect( InlineEditor.Context ).toBe( Context );
-		} );
-
-		it( 'InlineEditor.EditorWatchdog', () => {
-			expect( InlineEditor.EditorWatchdog ).toBe( EditorWatchdog );
-		} );
-
-		it( 'InlineEditor.ContextWatchdog', () => {
-			expect( InlineEditor.ContextWatchdog ).toBe( ContextWatchdog );
 		} );
 	} );
 } );

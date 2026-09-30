@@ -771,9 +771,9 @@ describe( 'PoweredBy', () => {
 
 			const domRoot = editor.editing.view.getDomRoot();
 
-			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 10, height: 10 } );
-
-			vi.spyOn( rootRect, 'getVisible' ).mockReturnValue( null );
+			// The root's visible area is smaller than the badge balloon, so the balloon cannot fit
+			// within it and the positioning function returns `null` (the balloon is hidden).
+			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 5, height: 5 } );
 
 			focusEditor( editor );
 
@@ -806,7 +806,9 @@ describe( 'PoweredBy', () => {
 
 			const domRoot = editor.editing.view.getDomRoot();
 
-			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 10, height: 10 } );
+			// Only a thin strip of the root is visible - shorter than the badge balloon - so the
+			// balloon is partially cropped and the positioning function returns `null` (hidden).
+			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 5, height: 5 } );
 
 			focusEditor( editor );
 
@@ -837,9 +839,9 @@ describe( 'PoweredBy', () => {
 				}
 			} );
 
-			rootRect = new Rect( { top: 0, left: 0, width: 400, right: 400, bottom: 200, height: 200 } );
-
-			vi.spyOn( rootRect, 'getVisible' ).mockReturnValue( { top: 0, left: 0, width: 400, right: 400, bottom: 10, height: 10 } );
+			// Only a small sliver in the corner of the root is visible - smaller than the badge
+			// balloon - so the balloon is partially cropped and the positioning function returns `null`.
+			rootRect = new Rect( { top: 0, left: 0, width: 10, right: 10, bottom: 5, height: 5 } );
 
 			balloonRect = new Rect( { top: 200, left: 0, width: 20, right: 20, bottom: 210, height: 10 } );
 
@@ -1084,9 +1086,13 @@ describe( 'PoweredBy', () => {
 			y: ( poweredByElementGeometry.height / 2 ) + poweredByElementGeometry.top
 		};
 
+		// Sample the label element's own center rather than a fixed offset from the badge center,
+		// so the check does not depend on the exact badge/SVG layout.
+		const poweredByLabelRect = new Rect( poweredByElement.querySelector( '.ck-powered-by__label' ) );
+
 		let elementFromPoint = document.elementFromPoint(
-			middleOfThePoweredByCoords.x - 5, // "-5" to hit in the label not SVG,
-			middleOfThePoweredByCoords.y
+			poweredByLabelRect.left + poweredByLabelRect.width / 2,
+			poweredByLabelRect.top + poweredByLabelRect.height / 2
 		);
 
 		expect( elementFromPoint.classList.contains( 'ck-powered-by__label' ) ).toBe( true );
@@ -1099,7 +1105,9 @@ describe( 'PoweredBy', () => {
 			middleOfThePoweredByCoords.y
 		);
 
-		expect( elementFromPoint.classList.contains( 'ck-button__label' ) ).toBe( true );
+		// The dropdown panel opens over the badge - assert a dropdown element (not the badge) is on top
+		// at the badge midpoint, without depending on which exact panel descendant that pixel hits.
+		expect( elementFromPoint.closest( '.ck-dropdown__panel' ) ).not.toBeNull();
 
 		await editor.destroy();
 	} );

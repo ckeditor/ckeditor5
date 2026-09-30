@@ -141,7 +141,7 @@ sanitizeHtml: inputHtml => {
 }
 ```
 
-Adjust allowed tags/attributes (for example: permit `iframe` only from trusted domains) to balance functionality and safety. Consider pairing this with CSP for stronger security. Check the [Content previews](#content-previews) and [Security](#security) sections of this guide for more details.
+Adjust allowed tags/attributes (for example: permit `<iframe>` only from trusted domains) to balance functionality and safety. Consider pairing this with CSP for stronger security. Check the [Content previews](#content-previews) and [Security](#security) sections of this guide for more details.
 
 #### CSP
 

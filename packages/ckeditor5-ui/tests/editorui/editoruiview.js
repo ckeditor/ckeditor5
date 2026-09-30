@@ -33,14 +33,15 @@ describe( 'EditorUIView', () => {
 	} );
 
 	describe( 'render()', () => {
-		it( 'attach the body collection', () => {
-			expect( view.body._bodyCollectionContainer.parentNode.classList.contains( 'ck-body-wrapper' ) ).toBe( true );
-			expect( view.body._bodyCollectionContainer.parentNode.parentNode ).toBe( document.body );
+		it( 'does not attach the body collection (its mount is managed by EditorUI)', () => {
+			expect( view.body._bodyCollectionContainer ).toBeUndefined();
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'detach the body collection', () => {
+			view.body.attachToDom();
+
 			const el = view.body._bodyCollectionContainer;
 
 			view.destroy();

@@ -9,6 +9,7 @@ import { DragDropTarget } from '../src/dragdroptarget.js';
 import { DragDrop } from '../src/dragdrop.js';
 import { PastePlainText } from '../src/pasteplaintext.js';
 import { DragDropBlockToolbar } from '../src/dragdropblocktoolbar.js';
+import { ClipboardObserver } from '../src/clipboardobserver.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -418,6 +419,196 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			env.isiOS = originalEnviOs;
 		} );
+	} );
+
+	describe( 'dragging with an editable inside a shadow root', () => {
+		// `document.elementFromPoint()` retargets to the shadow host for a point inside a shadow root, so
+		// resolving the drop target against the top-level document reports the host instead of the element
+		// actually under the pointer, and the drag is silently dropped. The point has to be resolved against
+		// the root the editable itself lives in.
+		let host, shadowRoot, shadowEditor;
+
+		afterEach( async () => {
+			if ( shadowEditor ) {
+				await shadowEditor.destroy();
+				shadowEditor = null;
+			}
+
+			if ( host ) {
+				host.remove();
+				host = null;
+			}
+		} );
+
+		it( 'should resolve the drop target in an open shadow root', async () => {
+			await createEditorInShadowRoot( 'open' );
+
+			startDragging();
+			dragOverEditable();
+
+			expect( shadowEditor.model.markers.has( 'drop-target' ) ).toBe( true );
+		} );
+
+		it( 'should resolve the drop target in a closed shadow root', async () => {
+			// A closed root is not reachable through `host.shadowRoot`, so it can only work if the root is
+			// derived from a node the plugin already holds rather than discovered from the hit-tested element.
+			await createEditorInShadowRoot( 'closed' );
+
+			startDragging();
+			dragOverEditable();
+
+			expect( shadowEditor.model.markers.has( 'drop-target' ) ).toBe( true );
+		} );
+
+		it( 'should not resolve a drop target for a point outside the editable', async () => {
+			await createEditorInShadowRoot( 'open' );
+
+			startDragging();
+
+			document.dispatchEvent( new DragEvent( 'dragover', {
+				clientX: -99999,
+				clientY: -99999,
+				dataTransfer: new DataTransfer()
+			} ) );
+
+			expect( shadowEditor.model.markers.has( 'drop-target' ) ).toBe( false );
+		} );
+
+		it( 'should forward the element from inside the shadow root, not the retargeted host', async () => {
+			// `Document#elementFromPoint()` retargets a point inside a shadow tree to that tree's host, and
+			// the host is not a node of the editable's own tree — neither the `.ck-editor__editable` lookup
+			// nor the range resolution downstream can work with it.
+			await createEditorInShadowRoot( 'open' );
+
+			const onDomEventSpy = vi.spyOn( shadowEditor.editing.view.getObserver( ClipboardObserver ), 'onDomEvent' );
+
+			startDragging();
+
+			// `dragstart` is forwarded to the observer as well.
+			onDomEventSpy.mockClear();
+
+			dragOverEditable();
+
+			expect( onDomEventSpy ).toHaveBeenCalledOnce();
+
+			const target = onDomEventSpy.mock.calls[ 0 ][ 0 ].target;
+
+			expect( target ).not.toBe( host );
+			expect( target.getRootNode() ).toBe( shadowRoot );
+		} );
+
+		async function createEditorInShadowRoot( mode ) {
+			host = document.createElement( 'div' );
+			document.body.appendChild( host );
+
+			shadowRoot = host.attachShadow( { mode } );
+
+			const shadowEditorElement = document.createElement( 'div' );
+
+			shadowRoot.appendChild( shadowEditorElement );
+
+			shadowEditor = await ClassicTestEditor.create( shadowEditorElement, {
+				plugins: [
+					DragDrop,
+					DragDropBlockToolbar,
+					DragDropTarget,
+					PastePlainText,
+					Paragraph,
+					BlockToolbar,
+					Bold
+				],
+				blockToolbar: [ 'bold' ]
+			} );
+
+			shadowEditor.ui.focusTracker.isFocused = true;
+
+			_setModelData( shadowEditor.model, '<paragraph>[foo]bar</paragraph>' );
+		}
+
+		function startDragging() {
+			// The block toolbar button is mounted in the body collection, i.e. in the light DOM, even though
+			// the editable it belongs to is not.
+			const buttonElement = shadowEditor.plugins.get( BlockToolbar ).buttonView.element;
+
+			buttonElement.dispatchEvent( new DragEvent( 'dragstart', {
+				dataTransfer: new DataTransfer()
+			} ) );
+		}
+
+		function dragOverEditable() {
+			const { x: clientX, y: clientY } = shadowEditor.editing.view.getDomRoot().getBoundingClientRect();
+
+			document.dispatchEvent( new DragEvent( 'dragover', {
+				clientX: clientX - 50,
+				clientY,
+				dataTransfer: new DataTransfer()
+			} ) );
+		}
+	} );
+
+	describe( 'resolving the drop target', () => {
+		beforeEach( () => {
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+		} );
+
+		it( 'should use the hit-tested element as the target', () => {
+			const domParagraph = getDomParagraph();
+
+			startDragging();
+
+			const onDomEventSpy = vi.spyOn( view.getObserver( ClipboardObserver ), 'onDomEvent' );
+
+			stubFirstElementFromPoint( domParagraph );
+			dispatchDragOverParagraph();
+
+			expect( onDomEventSpy ).toHaveBeenCalledOnce();
+			expect( onDomEventSpy.mock.calls[ 0 ][ 0 ].target ).toBe( domParagraph );
+		} );
+
+		it( 'should not resolve a target when the point lands outside an editable', () => {
+			startDragging();
+
+			const onDomEventSpy = vi.spyOn( view.getObserver( ClipboardObserver ), 'onDomEvent' );
+
+			// Resolvable, but not inside any editable.
+			stubFirstElementFromPoint( document.body );
+			dispatchDragOverParagraph();
+
+			expect( onDomEventSpy ).not.toHaveBeenCalled();
+		} );
+
+		/**
+		 * Hijacks only the plugin's own lookup. The very same API is used again further down the drop
+		 * handling, and feeding it an element of the test's choosing there would resolve a target outside
+		 * the editing view.
+		 */
+		function stubFirstElementFromPoint( element ) {
+			const originalElementFromPoint = document.elementFromPoint;
+
+			vi.spyOn( document, 'elementFromPoint' )
+				.mockImplementationOnce( () => element )
+				.mockImplementation( ( ...args ) => originalElementFromPoint.apply( document, args ) );
+		}
+
+		function startDragging() {
+			blockToolbarButton.dispatchEvent( new DragEvent( 'dragstart', {
+				dataTransfer: new DataTransfer()
+			} ) );
+		}
+
+		function dispatchDragOverParagraph() {
+			const { x: clientX, y: clientY } = getDomParagraph().getBoundingClientRect();
+
+			document.dispatchEvent( new DragEvent( 'dragover', {
+				clientX,
+				clientY,
+				dataTransfer: new DataTransfer()
+			} ) );
+		}
+
+		function getDomParagraph() {
+			return domConverter.mapViewToDom( mapper.toViewElement( root.getNodeByPath( [ 0 ] ) ) );
+		}
 	} );
 
 	function expectDraggingMarker( targetPositionOrRange ) {

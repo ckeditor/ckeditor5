@@ -29,7 +29,7 @@ const translations: Translations = {
 			// Label of a button that applies a black color in color pickers.
 			'Black': 'Musta',
 			// Label of a button that applies a dim grey color in color pickers.
-			'Dim grey': 'Vaaleanharmaa',
+			'Dim grey': 'Tummanharmaa',
 			// Label of a button that applies a grey color in color pickers.
 			'Grey': 'Harmaa',
 			// Label of a button that applies a light grey color in color pickers.
@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'Sininen',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'Purppura',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'Indigo',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'Syaani',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'Sinivihreä',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'Limetinvihreä',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'Meripihka',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'Siniharmaa',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'Editorin lohkon sisällön työkalupalkki',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

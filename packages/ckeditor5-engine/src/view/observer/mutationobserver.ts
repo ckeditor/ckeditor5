@@ -9,6 +9,7 @@
 
 import { Observer } from './observer.js';
 import { startsWithFiller } from '../filler.js';
+import { getParentNode } from '@ckeditor/ckeditor5-utils';
 import { isEqualWith } from 'es-toolkit/compat';
 
 import { type ViewDomConverter } from '../domconverter.js';
@@ -190,7 +191,7 @@ export class MutationObserver extends Observer {
 				// need to handle it as a 'children' mutation instead of 'text'.
 				else if ( !text && startsWithFiller( mutation.target ) ) {
 					elementsWithMutatedChildren.add(
-						domConverter.mapDomToView( mutation.target.parentNode as HTMLElement ) as ViewElement
+						domConverter.mapDomToView( getParentNode( mutation.target ) as HTMLElement ) as ViewElement
 					);
 				}
 			}

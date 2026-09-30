@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': '파랑색',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': '보라색',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': '남색',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': '시안색',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': '짙은 청록색',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': '라임색',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': '호박색',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': '청회색',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': '편집기 영역 내용 툴바',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

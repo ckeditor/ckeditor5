@@ -79,7 +79,6 @@ If you are using the customized build, follow the steps below:
 		@ckeditor/ckeditor5-undo \
 		@ckeditor/ckeditor5-upload \
 		@ckeditor/ckeditor5-utils \
-		@ckeditor/ckeditor5-watchdog \
 		@ckeditor/ckeditor5-widget \
 		@ckeditor/ckeditor5-word-count \
 		@ckeditor/ckeditor5-ai \

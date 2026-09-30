@@ -13,7 +13,7 @@ const translations: Translations = {
 			// Dropdown option label for opening an emoji picker offering more results to choose from.
 			'Show all emoji...': 'Visa alla emojis ...',
 			// Label of an input field for filtering an emoji collection by the typed value.
-			'Find an emoji (min. 2 characters)': 'Hitta en emoji (minst 2 tecken)',
+			'Find an emoji': 'Hitta en emoji (minst 2 tecken)',
 			// The main text of the message shown to the user when no emoji are available for the search criteria.
 			'No emojis were found matching "%0".': 'Inga emojis motsvarande "%0" fanns.',
 			// The main text of the message shown to the user when the provided search query does not contain the required number of characters.

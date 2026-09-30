@@ -476,6 +476,13 @@ describe( 'Rect', () => {
 			expect( visible ).not.toBe( rect );
 		} );
 
+		it( 'should return an equal rect for a source with no ancestors to crop it', () => {
+			// A plain rect object is neither an element nor a range, so there is nothing to walk up from.
+			const rectLike = { top: 10, right: 40, bottom: 30, left: 20, width: 20, height: 20 };
+
+			assertRect( new Rect( rectLike ).getVisible(), rectLike );
+		} );
+
 		it( 'should not fail when the rect is for document#body', () => {
 			vi.spyOn( document.body, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
@@ -1142,6 +1149,172 @@ describe( 'Rect', () => {
 
 			document.body.removeChild( ancestorC );
 		} );
+
+		for ( const mode of [ 'open', 'closed' ] ) {
+			describe( `${ mode } shadow root`, () => {
+				let host;
+
+				beforeEach( () => {
+					host = document.createElement( 'div' );
+					host.setAttribute( 'style', 'overflow: hidden' );
+					document.body.appendChild( host );
+
+					stubRect( host, { top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100 } );
+				} );
+
+				afterEach( () => {
+					host.remove();
+				} );
+
+				it( 'crops the rect with the shadow host of a source at the top of the root', () => {
+					const element = document.createElement( 'div' );
+
+					host.attachShadow( { mode } ).appendChild( element );
+					stubRect( element, { top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200 } );
+
+					// Without crossing the boundary the walk is seeded with the shadow root, ends there, and
+					// the rect comes back uncropped.
+					assertRect( new Rect( element ).getVisible(), {
+						top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+					} );
+				} );
+
+				it( 'crops the rect with the shadow host of a source nested inside the root', () => {
+					const wrapper = document.createElement( 'div' );
+					const element = document.createElement( 'div' );
+
+					wrapper.appendChild( element );
+					host.attachShadow( { mode } ).appendChild( wrapper );
+
+					// The wrapper does not clip, so the walk has to advance past it and cross the host.
+					stubRect( wrapper, { top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200 } );
+					stubRect( element, { top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200 } );
+
+					assertRect( new Rect( element ).getVisible(), {
+						top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+					} );
+				} );
+
+				it( 'crops the rect of a range whose common ancestor is the shadow root itself', () => {
+					const first = document.createElement( 'div' );
+					const second = document.createElement( 'div' );
+
+					host.attachShadow( { mode } ).append( first, second );
+
+					const range = document.createRange();
+
+					range.setStart( first, 0 );
+					range.setEnd( second, 0 );
+
+					// A range spanning the top level of a shadow root has the root as its common ancestor,
+					// and a shadow root has no parent element to continue the walk from.
+					expect( range.commonAncestorContainer.constructor.name ).toBe( 'ShadowRoot' );
+
+					vi.spyOn( range, 'getClientRects' ).mockReturnValue( [ {
+						top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200
+					} ] );
+
+					assertRect( new Rect( range ).getVisible(), {
+						top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+					} );
+				} );
+
+				it( 'keeps cropping outside the root after a clipping ancestor inside it', () => {
+					const inner = document.createElement( 'div' );
+					const element = document.createElement( 'div' );
+
+					inner.setAttribute( 'style', 'overflow: hidden' );
+					inner.appendChild( element );
+					host.attachShadow( { mode } ).appendChild( inner );
+
+					// Both the ancestor inside the root and the host clip, so the walk must cross the boundary
+					// right after applying the inner crop.
+					stubRect( host, { top: 0, right: 50, bottom: 50, left: 0, width: 50, height: 50 } );
+					stubRect( inner, { top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100 } );
+					stubRect( element, { top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200 } );
+
+					assertRect( new Rect( element ).getVisible(), {
+						top: 0, right: 50, bottom: 50, left: 0, width: 50, height: 50
+					} );
+				} );
+			} );
+		}
+
+		describe( 'slotted content', () => {
+			let host;
+
+			beforeEach( () => {
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				// The host itself does not clip, so anything cropping the rect has to come from the shadow tree.
+				stubRect( host, { top: 0, right: 400, bottom: 400, left: 0, width: 400, height: 400 } );
+			} );
+
+			afterEach( () => {
+				host.remove();
+			} );
+
+			it( 'crops the rect with the clipping element a slotted node renders inside', () => {
+				const element = document.createElement( 'div' );
+				const frame = document.createElement( 'div' );
+
+				frame.setAttribute( 'style', 'overflow: hidden' );
+				frame.appendChild( document.createElement( 'slot' ) );
+				host.attachShadow( { mode: 'open' } ).appendChild( frame );
+				host.appendChild( element );
+
+				stubRect( frame, { top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100 } );
+				stubRect( element, { top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200 } );
+
+				// The element is a child of the host in the node tree, so only a walk over the flattened tree
+				// visits the frame it renders inside.
+				assertRect( new Rect( element ).getVisible(), {
+					top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+				} );
+			} );
+
+			it( 'keeps cropping outside the root after the clipping element inside it', () => {
+				const element = document.createElement( 'div' );
+				const frame = document.createElement( 'div' );
+
+				frame.setAttribute( 'style', 'overflow: hidden' );
+				frame.appendChild( document.createElement( 'slot' ) );
+				host.attachShadow( { mode: 'open' } ).appendChild( frame );
+				host.appendChild( element );
+
+				// Both the frame in the shadow tree and the host clip, so the walk applies the inner crop and
+				// then carries on out of the root. The frame is the tighter of the two, so a walk that skipped
+				// it would answer with the host's 150px instead.
+				host.setAttribute( 'style', 'overflow: hidden' );
+				stubRect( host, { top: 0, right: 150, bottom: 150, left: 0, width: 150, height: 150 } );
+				stubRect( frame, { top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100 } );
+				stubRect( element, { top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200 } );
+
+				assertRect( new Rect( element ).getVisible(), {
+					top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+				} );
+			} );
+
+			it( 'does not crop with a clipping element in a closed root, which does not expose its slot', () => {
+				const element = document.createElement( 'div' );
+				const frame = document.createElement( 'div' );
+
+				frame.setAttribute( 'style', 'overflow: hidden' );
+				frame.appendChild( document.createElement( 'slot' ) );
+				host.attachShadow( { mode: 'closed' } ).appendChild( frame );
+				host.appendChild( element );
+
+				stubRect( frame, { top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100 } );
+				stubRect( element, { top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200 } );
+
+				// The walk falls back to the node tree and is cropped by the non-clipping host only.
+				expect( element.assignedSlot ).toBeNull();
+				assertRect( new Rect( element ).getVisible(), {
+					top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'isEqual()', () => {
@@ -1307,15 +1480,29 @@ describe( 'Rect', () => {
 				width: 50,
 				height: 30
 			} );
+			// The ancestor must read as positioned, or the lookup rightly walks past it. Everything else is a
+			// well-formed static box, so a lookup stepping over an extra element does not fall over an
+			// `undefined` style.
+			positionedAncestor.style.position = 'absolute';
+
 			vi.spyOn( window, 'getComputedStyle' ).mockImplementation( target => {
 				if ( target === positionedAncestor ) {
 					return {
+						position: 'absolute',
 						borderTopWidth: '3px',
 						borderRightWidth: '0px',
 						borderBottomWidth: '0px',
 						borderLeftWidth: '2px'
 					};
 				}
+
+				return {
+					position: 'static',
+					borderTopWidth: '0px',
+					borderRightWidth: '0px',
+					borderBottomWidth: '0px',
+					borderLeftWidth: '0px'
+				};
 			} );
 
 			Object.defineProperty( positionedAncestor, 'scrollLeft', { value: 5 } );
@@ -1346,6 +1533,46 @@ describe( 'Rect', () => {
 				width: 20,
 				height: 20
 			} );
+		} );
+
+		it( 'should compensate for a positioned ancestor reached through a slot', () => {
+			// The same compensation as above, except the positioned ancestor lives in a shadow tree and is
+			// reached only because the element is assigned to a `<slot>` inside it. Over the node tree the
+			// element leaves for its host straight into the light DOM, no ancestor is found, and the rect stays
+			// in viewport coordinates.
+			const host = document.createElement( 'div' );
+			const positionedAncestor = document.createElement( 'div' );
+			const element = document.createElement( 'div' );
+
+			positionedAncestor.style.position = 'relative';
+			positionedAncestor.appendChild( document.createElement( 'slot' ) );
+			host.attachShadow( { mode: 'open' } ).appendChild( positionedAncestor );
+
+			host.appendChild( element );
+			document.body.appendChild( host );
+
+			vi.spyOn( window, 'scrollX', 'get' ).mockReturnValue( 100 );
+			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 200 );
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
+			vi.spyOn( positionedAncestor, 'getBoundingClientRect' ).mockReturnValue( {
+				top: 60,
+				right: 100,
+				bottom: 90,
+				left: 50,
+				width: 50,
+				height: 30
+			} );
+
+			assertRect( new Rect( element ).toAbsoluteRect(), {
+				top: 150,
+				right: 90,
+				bottom: 170,
+				left: 70,
+				width: 20,
+				height: 20
+			} );
+
+			host.remove();
 		} );
 	} );
 
@@ -1626,6 +1853,30 @@ describe( 'Rect', () => {
 			assertRect( rects[ 0 ], expectedGeometry );
 		} );
 
+		for ( const mode of [ 'open', 'closed' ] ) {
+			it( `should return rects for the host of a text node at the top level of a ${ mode } shadow root`, () => {
+				const range = document.createRange();
+				const host = document.createElement( 'div' );
+				const shadowRoot = host.attachShadow( { mode } );
+				const textNode = document.createTextNode( 'abc' );
+
+				shadowRoot.appendChild( textNode );
+
+				range.setStart( textNode, 3 );
+				range.collapse();
+				vi.spyOn( range, 'getClientRects' ).mockReturnValue( [] );
+				vi.spyOn( host, 'getBoundingClientRect' ).mockReturnValue( geometry );
+
+				const expectedGeometry = Object.assign( {}, geometry );
+				expectedGeometry.right = expectedGeometry.left;
+				expectedGeometry.width = 0;
+
+				const rects = Rect.getDomRangeRects( range );
+				expect( rects ).toHaveLength( 1 );
+				assertRect( rects[ 0 ], expectedGeometry );
+			} );
+		}
+
 		it( 'should point the rect sources to the DOM range instead of of client rects to allow proper clipping calculations', () => {
 			const range = document.createRange();
 
@@ -1740,4 +1991,8 @@ describe( 'Rect', () => {
 
 function assertRect( rect, expected ) {
 	expect( rect ).toEqual( expected );
+}
+
+function stubRect( element, rect ) {
+	vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( rect );
 }

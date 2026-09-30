@@ -315,6 +315,52 @@ describe( 'getOptimalPosition()', () => {
 				} );
 			} );
 		} );
+
+		describe( 'positioned element parent reached through a slot', () => {
+			let host;
+
+			afterEach( () => {
+				host.remove();
+			} );
+
+			it( 'should return coordinates', () => {
+				// The same geometry and the same expectation as "positioned element parent" above, except the
+				// positioned parent wraps a `<slot>` in a shadow tree and the element is assigned to it. The
+				// element renders inside that parent while staying a child of the host in the node tree, so a
+				// node-tree lookup finds no positioned ancestor and leaves the coordinates uncompensated.
+				stubWindow( {
+					innerWidth: 10000,
+					innerHeight: 10000,
+					scrollX: 1000,
+					scrollY: 1000
+				} );
+
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				const parent = getElement( {
+					top: 1000,
+					right: 1010,
+					bottom: 1010,
+					left: 1000,
+					width: 10,
+					height: 10
+				}, {
+					position: 'absolute'
+				} );
+
+				parent.appendChild( document.createElement( 'slot' ) );
+				host.attachShadow( { mode: 'open' } ).appendChild( parent );
+
+				host.appendChild( element );
+
+				assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
+					top: 100,
+					left: 80,
+					name: 'left-bottom'
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'for multiple positions', () => {

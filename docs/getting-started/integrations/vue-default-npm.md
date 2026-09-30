@@ -4,7 +4,7 @@ meta-title: Using CKEditor 5 with Vue.js 3+ rich text editor component from npm 
 meta-description: Install, integrate, and configure CKEditor 5 using the Vue.js 3+ component with npm.
 category: vuejs-v3-npm
 order: 10
-modified_at: 2026-05-25
+modified_at: 2026-09-23
 ---
 
 # Integrating CKEditor&nbsp;5 with Vue.js 3+ from npm
@@ -248,52 +248,6 @@ const disableTwoWayDataBinding = ref( true );
 </script>
 ```
 
-### `watchdog-config`
-
-Allows passing a configuration object to the underlying {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`}. By default, the `<ckeditor>` component automatically wraps the editor with a watchdog that detects crashes and restarts the editor to recover lost content. Use this prop to customize the watchdog behavior, such as the number of allowed crashes before the watchdog gives up, or the minimum time between crashes.
-
-```vue
-<template>
-	<ckeditor
-		:editor="ClassicEditor"
-		:watchdog-config="watchdogConfig"
-	/>
-</template>
-
-<script setup>
-import { ClassicEditor } from 'ckeditor5';
-import { Ckeditor } from '@ckeditor/ckeditor5-vue';
-
-const watchdogConfig = {
-	crashNumberLimit: 5,
-	minimumNonErrorTimePeriod: 2000
-};
-</script>
-```
-
-See the {@link module:watchdog/watchdog~WatchdogConfig `WatchdogConfig` API} for the full list of available options.
-
-This prop has no effect when [`disable-watchdog`](#disable-watchdog) is set to `true`.
-
-### `disable-watchdog`
-
-Allows disabling the built-in watchdog. The default value is `false`.
-
-By default, the `<ckeditor>` component wraps the editor with CKEditor&nbsp;5's {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`}, which automatically detects and recovers from editor crashes. Setting `disable-watchdog` to `true` opts out of this behavior - the editor will run without crash recovery.
-
-When the watchdog is disabled, the [`ready`](#ready) and [`destroy`](#destroy) events will each fire at most once during the component's lifetime, and the [`error`](#error) event will never be emitted.
-
-```vue
-<template>
-	<ckeditor :editor="ClassicEditor" :disable-watchdog="true" />
-</template>
-
-<script setup>
-import { ClassicEditor } from 'ckeditor5';
-import { Ckeditor } from '@ckeditor/ckeditor5-vue';
-</script>
-```
-
 ## Component events
 
 ### `ready`
@@ -303,10 +257,6 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 ```vue
 <ckeditor :editor="editor" @ready="onEditorReady" />
 ```
-
-<info-box note>
-When the watchdog is active (the default), this event can fire **multiple times** during the component's lifetime - once after the initial mount and again after each watchdog-triggered editor restart. If you need one-time initialization logic (for example, inserting a toolbar into the DOM for the Document editor type), make sure your handler is idempotent or guard it with a flag.
-</info-box>
 
 ### `focus`
 
@@ -334,7 +284,7 @@ Corresponds to the {@link module:engine/model/document~ModelDocument#event:chang
 
 ### `error`
 
-Fired when an error is detected by the watchdog - either during editor initialization or at runtime.
+Fired when an error is detected - either during editor initialization or at runtime.
 
 ```vue
 <ckeditor :editor="editor" @error="onEditorError" />
@@ -345,7 +295,6 @@ The event handler receives two arguments:
 * `error` – the `Error` object describing what went wrong.
 * `details` – an object with the following properties:
   * `phase: 'initialization' | 'runtime'` – `'initialization'` when the error occurred during `Editor.create()`, or `'runtime'` for errors caught during normal operation.
-  * `causesRestart: boolean` – whether the watchdog will attempt to restart the editor. When `false`, no automatic restart is scheduled (for example, the crash limit was reached, or restarting does not apply to this error).
 
 ```vue
 <template>
@@ -356,17 +305,15 @@ The event handler receives two arguments:
 import { ClassicEditor } from 'ckeditor5';
 import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
-function onEditorError( error, { phase, causesRestart } ) {
-	if ( phase === 'runtime' && causesRestart ) {
-		console.warn( 'Editor crashed: the watchdog is restarting it.', error );
-	} else {
-		console.error( 'Editor error: the watchdog will not restart the editor automatically.', error );
-	}
+function onEditorError( error, { phase } ) {
+	console.error( `Editor error during ${ phase }:`, error );
 }
 </script>
 ```
 
-This event is not emitted when [`disable-watchdog`](#disable-watchdog) is set to `true`.
+A reported error does not stop the editor. It keeps working, with its content, selection, and undo history intact. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.
+
+The {@link getting-started/setup/error-handling error handling} guide covers the options: telling the user and switching the editor to read-only, recreating it, and recovering its content. If you are moving off the Watchdog, the {@link updating/migration-from-watchdog migrating from the Watchdog} guide shows how to recreate the editor by changing the component's `:key`, and when to do it.
 
 ### `destroy`
 
@@ -381,7 +328,7 @@ Because the destruction of the editor is promise–driven, this event can be fir
 </info-box>
 
 <info-box note>
-When the watchdog is active (the default), this event can fire **multiple times** during the component's lifetime - once for each editor instance destroyed during a watchdog restart. It is **not** fired when the component unmounts before the editor finishes initializing. If you need to react to component unmount, use Vue's `onBeforeUnmount` lifecycle hook instead.
+This event is **not** fired when the component unmounts before the editor finishes initializing. If you need to react to component unmount, use Vue's `onBeforeUnmount` lifecycle hook instead.
 </info-box>
 
 ## How to?
@@ -486,6 +433,69 @@ const config = computed( () => {
 ```
 
 For more information, refer to the {@link getting-started/setup/ui-language Setting the UI language} guide.
+
+### Using inside a shadow root
+
+Rendering the editor inside a shadow root isolates it from the styles of the host page. The bundler injects `ckeditor5.css` into `<head>`, where the shadow root cannot see it, so import the style sheet as a string and adopt it in the root as a [constructed style sheet](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/adoptedStyleSheets) instead. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside that root, so this one style sheet covers all of it.
+
+The editor is rendered with `<Teleport>`, because the shadow root exists only after the host element has been mounted.
+
+```vue
+<template>
+	<div ref="host" />
+
+	<Teleport
+		v-if="target"
+		:to="target"
+	>
+		<ckeditor
+			v-model="data"
+			:editor="ClassicEditor"
+			:config="config"
+		/>
+	</Teleport>
+</template>
+
+<script setup>
+import { onMounted, ref, shallowRef, useTemplateRef } from 'vue';
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
+
+// The `?inline` query makes the bundler return the style sheet as a string.
+import editorStyles from 'ckeditor5/ckeditor5.css?inline';
+
+const styleSheet = new CSSStyleSheet();
+
+styleSheet.replaceSync( editorStyles );
+
+const host = useTemplateRef( 'host' );
+const target = shallowRef( null );
+const data = ref( '<p>Hello from a shadow root!</p>' );
+
+const config = {
+	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+	plugins: [ Essentials, Paragraph, Bold, Italic ],
+	toolbar: [ 'bold', 'italic' ]
+};
+
+onMounted( () => {
+	const shadowRoot = host.value.attachShadow( { mode: 'open' } );
+
+	shadowRoot.adoptedStyleSheets = [ styleSheet ];
+
+	// A teleport needs an element as its target, so create one inside the shadow root.
+	target.value = shadowRoot.appendChild( document.createElement( 'div' ) );
+} );
+</script>
+```
+
+The `?inline` query is supported by Vite. Other bundlers spell it differently &ndash; in webpack&nbsp;5 the same result comes from the `asset/source` type or the `?raw` query.
+
+<info-box important>
+	`attachShadow()` can be called only once per element. If the mode of the root has to change at runtime, give the component holding the host a `key` so that Vue rebuilds the element.
+</info-box>
+
+An override of a `--ck-*` variable on `:root` has no effect on an editor inside a shadow root, so put it on the shadow host instead. The {@link getting-started/setup/shadow-dom Shadow DOM} guide explains why, and covers the known limitations.
 
 ### Jest testing
 

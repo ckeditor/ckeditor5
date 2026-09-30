@@ -23,6 +23,10 @@ export function getAncestors( node: Node ): Array<Node> {
 	// We are interested in `Node`s `DocumentFragment`s only.
 	while ( currentNode && currentNode.nodeType != Node.DOCUMENT_NODE ) {
 		nodes.unshift( currentNode );
+
+		// This walk deliberately does not cross shadow boundaries. It stops at the containing `DocumentFragment`
+		// (a `ShadowRoot` is one), which is the documented behavior of this function.
+		// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 		currentNode = currentNode.parentNode;
 	}
 

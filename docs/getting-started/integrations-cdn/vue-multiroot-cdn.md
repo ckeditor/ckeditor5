@@ -151,31 +151,29 @@ The `CkeditorMultiRoot` component supports the following properties:
 * `rootsAttributes: Object` &ndash; The initial roots attributes for the created editor. Use it with `v-model:roots-attributes`.
 * `config: Object` &ndash; The editor configuration. See the {@link getting-started/setup/configuration Configuration} guide.
 * `disabled: Boolean` &ndash; The {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} is switched to read-only mode if the property is set to `true`.
-* `disableWatchdog: Boolean` &ndash; If set to `true`, {@link features/watchdog the watchdog feature} will be disabled. It is set to `false` by default.
-* `watchdogConfig: WatchdogConfig` &ndash; {@link module:watchdog/watchdog~WatchdogConfig Configuration object} for the [watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html).
 * `disableTwoWayDataBinding: Boolean` &ndash; Allows disabling the two-way data binding mechanism between the editor state and `modelValue` object to improve editor efficiency. The default value is `false`.
 
 The component emits the following events:
 
-* `ready` &ndash; It is called when the editor is ready with a {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} instance. This event is also emitted after the reinitialization of the component if an error occurred.
+* `ready` &ndash; It is called when the editor is ready with a {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} instance.
 * `destroy` &ndash; It is called when the editor instance is destroyed.
 * `change` &ndash; It is called when the editor data has changed. See the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`} event.
 * `blur` &ndash; It is called when the editor was blurred. See the {@link module:engine/view/document~ViewDocument#event:blur `editor.editing.view.document#blur`} event.
 * `focus` &ndash; It is called when the editor was focused. See the {@link module:engine/view/document~ViewDocument#event:focus `editor.editing.view.document#focus`} event.
-* `error` &ndash; It is called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
+* `error` &ndash; It is called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
+  * `phase: 'initialization'|'runtime'` &ndash; Informs when an error has occurred (during the editor or context initialization, or after the initialization).
 * `input` &ndash; It is emitted when the editor data changes. It receives three arguments: the current data, an {@link module:utils/eventinfo~EventInfo `EventInfo`} object or `null`, and a {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} instance.
 * `update:modelValue` &ndash; It is emitted when the editor data changes and updates `v-model`.
 * `update:rootsAttributes` &ndash; It is emitted when the roots attributes change and updates `v-model:roots-attributes`.
-
-Error details is an object that contains two properties:
-
-* `phase: 'initialization'|'runtime'` &ndash; Informs when an error has occurred (during the editor or context initialization, or after the initialization).
-* `causesRestart: Boolean` &ndash; If set to `true`, the watchdog will attempt to restart the editor.
 
 The editor event callbacks (`change`, `blur`, `focus`) receive two arguments:
 
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} instance.
+
+A reported error does not stop the editor. It keeps working, with its content, selection, and undo history intact. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.
+
+The {@link getting-started/setup/error-handling error handling} guide covers the options: telling the user and switching the editor to read-only, recreating it, and recovering its content. If you are moving off the Watchdog, the {@link updating/migration-from-watchdog migrating from the Watchdog} guide shows how to recreate the editor by changing the component's `:key`, and when to do it.
 
 ## Slot values
 

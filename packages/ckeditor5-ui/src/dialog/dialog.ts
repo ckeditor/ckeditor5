@@ -12,7 +12,14 @@ import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import { DialogView, type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
 import type { DialogActionButtonDefinition } from './dialogactionsview.js';
 import type { ModelDocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
-import type { KeystrokeHandlerOptions, Rect } from '@ckeditor/ckeditor5-utils';
+import { adoptGlobalStyleSheet, type KeystrokeHandlerOptions, type Rect } from '@ckeditor/ckeditor5-utils';
+
+/*
+ * Styles the `<html>` element, which no shadow root can contain, so the rule cannot come from a stylesheet an
+ * integrator loaded into the shadow root the editor lives in. Adopted into the document instead – see
+ * `adoptGlobalStyleSheet()`.
+ */
+const SCROLL_LOCK_STYLES = '.ck-dialog-scroll-locked{overflow:hidden}';
 
 /**
  * The dialog controller class. It is used to show and hide the {@link module:ui/dialog/dialogview~DialogView}.
@@ -403,6 +410,7 @@ export class Dialog extends Plugin {
 	 * Makes the <body> unscrollable (e.g. when the modal shows up).
 	 */
 	private _lockBodyScroll(): void {
+		adoptGlobalStyleSheet( document, SCROLL_LOCK_STYLES );
 		document.documentElement.classList.add( 'ck-dialog-scroll-locked' );
 	}
 

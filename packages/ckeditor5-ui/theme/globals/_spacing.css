@@ -3,14 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
-	--ck-spacing-unit: 						0.6em;
-	--ck-spacing-extra-large:				calc(var(--ck-spacing-unit) * 2);
-	--ck-spacing-large: 					calc(var(--ck-spacing-unit) * 1.5);
-	--ck-spacing-standard: 					var(--ck-spacing-unit);
-	--ck-spacing-medium: 					calc(var(--ck-spacing-unit) * 0.8);
-	--ck-spacing-medium-small:				calc(var(--ck-spacing-unit) * 0.667);
-	--ck-spacing-small: 					calc(var(--ck-spacing-unit) * 0.5);
-	--ck-spacing-tiny: 						calc(var(--ck-spacing-unit) * 0.3);
-	--ck-spacing-extra-tiny: 				calc(var(--ck-spacing-unit) * 0.16);
+:root,
+:host {
+	/* Anchor of the spacing scale; every rung derives from it. `--ck-spacing-unit` stays the legacy
+	   override hook, so em/fluid overrides of it still rescale the whole ladder. */
+	--ck-spacing-base: var(--ck-spacing-unit, 8px);          /* 8px */
+
+	--ck-spacing-2xs: calc(0.125 * var(--ck-spacing-base));  /* 1px  */
+	--ck-spacing-xs:  calc(0.25 * var(--ck-spacing-base));   /* 2px  */
+	--ck-spacing-sm:  calc(0.5 * var(--ck-spacing-base));    /* 4px  */
+	--ck-spacing-md:  calc(0.75 * var(--ck-spacing-base));   /* 6px  */
+	/*               base .............................. 8px  (central rung) */
+	--ck-spacing-lg:  calc(1.5 * var(--ck-spacing-base));    /* 12px */
+	--ck-spacing-xl:  calc(2 * var(--ck-spacing-base));      /* 16px */
+
+	/* Backward-compatible bridge for the retired `--ck-spacing-ms` name (= `--ck-spacing-md` = 6px).
+	   Migrated consumers use `--ck-spacing-md`; kept for external integrations. */
+	--ck-spacing-ms: var(--ck-spacing-md);                   /* 6px, retired */
 }

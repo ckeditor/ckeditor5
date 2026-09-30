@@ -1,0 +1,19 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-tab-panel {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+
+	& > * {
+		flex-grow: 1;
+	}
+
+	&.ck-tab-panel_disabled {
+		pointer-events: none;
+		opacity: var(--ck-disabled-opacity);
+	}
+}

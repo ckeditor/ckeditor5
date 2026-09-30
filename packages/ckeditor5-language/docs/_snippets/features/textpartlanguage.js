@@ -16,7 +16,6 @@ import {
 } from 'ckeditor5';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
@@ -29,7 +28,6 @@ ClassicEditor.builtinPlugins.push( TextPartLanguage, Superscript, PictureEditing
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-text-part-language' ),
-		cloudServices: CS_CONFIG,
 		language: {
 			textPartLanguage: [
 				{ title: 'Arabic', languageCode: 'ar' },

@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'Μπλε',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'Πορφυρό',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'Λουλακί',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'Κυανό',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'Γαλαζοπράσινο',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'Λαχανί',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'Κεχριμπαρί',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'Μπλε γκρι',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'Γραμμή εργαλείων επεξεργασίας περιεχομένου αποκλεισμού',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

@@ -3,11 +3,29 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Spacing */
+	--ck-toolbar-item-gap-inline: var(--ck-spacing-gap-compact);
+	--ck-toolbar-padding: 0 var(--ck-spacing-padding-compact);
+
+	/* Radius */
+	--ck-toolbar-border-radius: var(--ck-border-radius-surface);
+	--ck-toolbar-vertical-button-border-radius: var(--ck-border-radius-control);
+
+	/* Color */
+	--ck-toolbar-background-color: var(--ck-color-surface-container);
+	--ck-toolbar-border-color: var(--ck-color-border-container);
+
+	/* Border */
+	--ck-toolbar-border: var(--ck-border-width-surface) solid var(--ck-toolbar-border-color);
+}
+
 .ck.ck-toolbar {
-	border-radius: var(--ck-rounded-corners-radius);
-	background: var(--ck-color-toolbar-background);
-	padding: 0 var(--ck-spacing-small);
-	border: 1px solid var(--ck-color-toolbar-border);
+	border-radius: var(--ck-toolbar-border-radius);
+	background: var(--ck-toolbar-background-color);
+	padding: var(--ck-toolbar-padding);
+	border: var(--ck-toolbar-border);
 	-webkit-user-select: none;
 	user-select: none;
 
@@ -15,18 +33,31 @@
 	flex-flow: row nowrap;
 	align-items: center;
 
+	/* Decoupled from the toolbar's inherited font-size so changes don't scale icons. */
+	& .ck-button__label {
+		font-size: var(--ck-toolbar-text-font-size);
+		/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
+		line-height: calc(var(--ck-line-height-base) * var(--ck-button-font-size));
+	}
+
+	/* Pin the line-height to the small button's font, not the base font, so it does not
+	   force the row taller than the small size. */
+	& .ck-button_small .ck-button__label {
+		line-height: calc(var(--ck-line-height-base) * var(--ck-button-small-font-size));
+	}
+
 	& .ck.ck-toolbar__separator {
 		height: var(--ck-icon-size);
 		width: 1px;
 		min-width: 1px;
-		background: var(--ck-color-toolbar-border);
+		background: var(--ck-color-divider);
 
 		/*
 		 * These margins make the separators look better in balloon toolbars (when aligned with the "tip").
 		 * See https://github.com/ckeditor/ckeditor5/issues/7493.
 		 */
-		margin-top: var(--ck-spacing-small);
-		margin-bottom: var(--ck-spacing-small);
+		margin-top: var(--ck-spacing-gap-compact);
+		margin-bottom: var(--ck-spacing-gap-compact);
 		display: inline-block;
 
 		/*
@@ -48,7 +79,7 @@
 	& > .ck-toolbar__items {
 		& > *:not(.ck-toolbar__line-break) {
 			/* (https://github.com/ckeditor/ckeditor5/issues/11) Separate toolbar items. */
-			margin-right: var(--ck-spacing-small);
+			margin-right: var(--ck-toolbar-item-gap-inline);
 		}
 
 		/* Don't display a separator after an empty items container, for instance,
@@ -65,8 +96,8 @@
 	& > .ck-toolbar__items > *:not(.ck-toolbar__line-break),
 	& > .ck.ck-toolbar__grouped-dropdown {
 		/* Make sure items wrapped to the next line have v-spacing */
-		margin-top: var(--ck-spacing-small);
-		margin-bottom: var(--ck-spacing-small);
+		margin-top: var(--ck-spacing-gap-compact);
+		margin-bottom: var(--ck-spacing-gap-compact);
 	}
 
 	&.ck-toolbar_vertical {
@@ -82,13 +113,14 @@
 			margin: 0;
 
 			/* Items in a vertical toolbar span the entire width so rounded corners are pointless. */
-			border-radius: 0;
+			border-radius: var(--ck-toolbar-vertical-button-border-radius);
 		}
 	}
 
 	&.ck-toolbar_compact {
 		/* No spacing around items. */
 		padding: 0;
+		border-radius: var(--ck-border-radius-control);
 
 		& > .ck-toolbar__items > * {
 			/* Compact toolbar items have no spacing between them. */
@@ -98,16 +130,19 @@
 			&:not(:first-child):not(:last-child) {
 				border-radius: 0;
 			}
+
+			/* The first/last children round their outer corners to fit the toolbar — see the
+			   direction-specific rules below (the radii must mirror for LTR vs RTL). */
 		}
 	}
 
 	& > .ck.ck-toolbar__grouped-dropdown {
 		/*
-		 * Dropdown button has asymmetric padding to fit the arrow.
-		 * This button has no arrow so let's revert that padding back to normal.
+		 * This button has no arrow (hidden below), so give it symmetric inline padding to keep
+		 * the icon centered instead of the reduced start padding used when an arrow is present.
 		 */
 		& > .ck.ck-button.ck-dropdown__button {
-			padding-left: var(--ck-spacing-tiny);
+			padding-inline: var(--ck-spacing-control-padding-inline-compact);
 		}
 		& > .ck-dropdown__button .ck-dropdown__arrow {
 			display: none;
@@ -146,6 +181,11 @@
 	&.ck-toolbar_floating > .ck-toolbar__items {
 		flex-wrap: nowrap;
 	}
+
+	& .ck.ck-list__item > .ck.ck-button .ck-button__label {
+		/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
+		line-height: calc(var(--ck-line-height-base) * var(--ck-button-font-size));
+	}
 }
 
 
@@ -164,7 +204,7 @@
 
 	&:not(.ck-toolbar_compact) > .ck-toolbar__items > .ck {
 		/* (https://github.com/ckeditor/ckeditor5/issues/11) Separate toolbar items. */
-		margin-left: var(--ck-spacing-small);
+		margin-left: var(--ck-toolbar-item-gap-inline);
 	}
 
 	& > .ck-toolbar__items > .ck:last-child {
@@ -172,27 +212,30 @@
 	}
 
 	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
-		/* No rounded corners on the right side of the first child. */
+		/* Round the first child's outer (right) corners to fit the toolbar; inner edge stays square. */
 		&:first-child {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
+			border-radius: 0 var(--ck-border-radius-control) var(--ck-border-radius-control) 0;
 		}
 
-		/* No rounded corners on the left side of the last child. */
+		/* Round the last child's outer (left) corners to fit the toolbar; inner edge stays square. */
 		&:last-child {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-border-radius-control) 0 0 var(--ck-border-radius-control);
+		}
+
+		/* A lone item is both first and last, so it takes both children's outer corners (fully rounded). */
+		&:first-child:last-child {
+			border-radius: var(--ck-border-radius-control);
 		}
 	}
 
 	/* Separate the the separator form the grouping dropdown when some items are grouped. */
 	& > .ck.ck-toolbar__separator {
-		margin-left: var(--ck-spacing-small);
+		margin-left: var(--ck-spacing-gap-compact);
 	}
 
 	/* Some spacing between the items and the separator before the grouped items dropdown. */
 	&.ck-toolbar_grouping > .ck-toolbar__items:not(:empty):not(:only-child) {
-		margin-left: var(--ck-spacing-small);
+		margin-left: var(--ck-spacing-gap-compact);
 	}
 }
 
@@ -210,27 +253,41 @@
 	}
 
 	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
-		/* No rounded corners on the right side of the first child. */
+		/* Round the first child's outer (left) corners to fit the toolbar; inner edge stays square. */
 		&:first-child {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-border-radius-control) 0 0 var(--ck-border-radius-control);
 		}
 
-		/* No rounded corners on the left side of the last child. */
+		/* Round the last child's outer (right) corners to fit the toolbar; inner edge stays square. */
 		&:last-child {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
+			border-radius: 0 var(--ck-border-radius-control) var(--ck-border-radius-control) 0;
+		}
+
+		/* A lone item is both first and last, so it takes both children's outer corners (fully rounded). */
+		&:first-child:last-child {
+			border-radius: var(--ck-border-radius-control);
 		}
 	}
 
 	/* Separate the the separator form the grouping dropdown when some items are grouped. */
 	& > .ck.ck-toolbar__separator {
-		margin-right: var(--ck-spacing-small);
+		margin-right: var(--ck-toolbar-item-gap-inline);
 	}
 
 	/* Some spacing between the items and the separator before the grouped items dropdown. */
 	&.ck-toolbar_grouping > .ck-toolbar__items:not(:empty):not(:only-child) {
-		margin-right: var(--ck-spacing-small);
+		margin-right: var(--ck-spacing-gap-compact);
 	}
 }
 
+/* Toolbar UI rendered outside the toolbar DOM hierarchy. */
+.ck-toolbar-context {
+	& .ck.ck-button .ck-button__label {
+		font-size: var(--ck-toolbar-text-font-size);
+	}
+
+	& .ck.ck-list__item > .ck.ck-button .ck-button__label {
+		/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
+		line-height: calc(var(--ck-line-height-base) * var(--ck-button-font-size));
+	}
+}

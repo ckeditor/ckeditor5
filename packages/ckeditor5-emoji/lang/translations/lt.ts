@@ -13,7 +13,7 @@ const translations: Translations = {
 			// Dropdown option label for opening an emoji picker offering more results to choose from.
 			'Show all emoji...': 'Rodyti visus jaustukus...',
 			// Label of an input field for filtering an emoji collection by the typed value.
-			'Find an emoji (min. 2 characters)': 'Rasti jaustuką (mažiausiai 2 ženklai)',
+			'Find an emoji': 'Rasti jaustuką (mažiausiai 2 ženklai)',
 			// The main text of the message shown to the user when no emoji are available for the search criteria.
 			'No emojis were found matching "%0".': 'Nerastas nė vienas jaustukas, atitinkantis "[%0]".',
 			// The main text of the message shown to the user when the provided search query does not contain the required number of characters.

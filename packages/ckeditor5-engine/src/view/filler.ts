@@ -32,7 +32,7 @@
  * @module engine/view/filler
  */
 
-import { keyCodes, isText, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
+import { keyCodes, isText, getSelection, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 import { type EditingView } from './view.js';
 import { type ViewDocumentDomEventData } from './observer/domeventdata.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
@@ -169,9 +169,9 @@ export function injectQuirksHandling( view: EditingView ): void {
  */
 function jumpOverInlineFiller( evt: unknown, data: ViewDocumentDomEventData & KeystrokeInfo ) {
 	if ( data.keyCode == keyCodes.arrowleft ) {
-		const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
+		const domSelection = getSelection( data.domTarget );
 
-		if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
+		if ( domSelection && domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
 			const domParent = domSelection.getRangeAt( 0 ).startContainer;
 			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
 

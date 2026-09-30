@@ -10,7 +10,7 @@ meta-description: Learn how to start with CKEditor 5, the modern JavaScript-rich
 
 CKEditor&nbsp;5 is a flexible editing framework that provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Notion, Slack, or Twitter-like applications, all is possible within a single editing framework. It is a modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent support for modern bundlers. Find out the most convenient way to start using it!
 
-To start using CKEditor&nbsp;5, choose an installation method: the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) for the quickest setup, or install from npm, CDN, or a ZIP file. You can also use one of the official framework integrations. This section walks you through installation, integration, configuration, and licensing.
+To start using CKEditor&nbsp;5, choose an installation method: the [CKEditor&nbsp;5 Builder](https://builder.ckeditor.com/?redirect=docs) for the quickest setup, or install from npm, CDN, or a ZIP file. You can also use one of the official framework integrations. This section walks you through installation, integration, configuration, and licensing.
 
 {@snippet getting-started/use-builder}
 
@@ -18,7 +18,7 @@ To start using CKEditor&nbsp;5, choose an installation method: the [CKEditor&nbs
 
 If your dive into using our WYSIWYG editor is only starting, find out how to kick off this adventure easily. You have a few methods to choose from:
 
-* [Using CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) for the smoothest setup with live preview and multiple integration options.
+* [Using CKEditor&nbsp;5 Builder](https://builder.ckeditor.com/?redirect=docs) for the smoothest setup with live preview and multiple integration options.
 * {@link getting-started/ai-coding-agents Using an AI coding agent} such as Claude&nbsp;Code, Cursor, or Copilot, with the official CKEditor skill to install and configure the editor for you.
 * {@link getting-started/integrations/quick-start#installing-ckeditor-5-using-npm Using npm}, where you use a JavaScript package and build the editor with a bundler.
 * {@link getting-started/integrations-cdn/quick-start#installing-ckeditor-5-from-cdn Using CDN}, where you use our cloud-distributed CDN in a no-build setup.

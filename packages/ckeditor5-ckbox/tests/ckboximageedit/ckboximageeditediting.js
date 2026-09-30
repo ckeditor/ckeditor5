@@ -5,6 +5,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { global } from '@ckeditor/ckeditor5-utils';
+import { stubTrustedTypesEnforcement } from '@ckeditor/ckeditor5-utils/tests/_utils/trustedtypes.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -76,5 +77,48 @@ describe( 'CKBoxImageEditEditing', () => {
 		const command = editor.commands.get( 'ckboxImageEdit' );
 
 		expect( command ).toBeInstanceOf( CKBoxImageEditCommand );
+	} );
+
+	it( 'should not force-disable the "ckboxImageEdit" command when Trusted Types are not enforced', () => {
+		expect( editor.commands.get( 'ckboxImageEdit' )._disableStack.has( 'trustedTypes' ) ).toBe( false );
+	} );
+
+	describe( 'when Trusted Types are enforced', () => {
+		let consoleWarnStub;
+
+		beforeEach( async () => {
+			await editor.destroy();
+
+			stubTrustedTypesEnforcement();
+			consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+
+			editor = await ClassicTestEditor.create( domElement, {
+				plugins: [
+					Paragraph,
+					Heading,
+					Essentials,
+					ImageBlockEditing,
+					ImageEditing,
+					ImageUploadEditing,
+					ImageUploadProgress,
+					PictureEditing,
+					LinkEditing,
+					CKBoxImageEditEditing,
+					CloudServices
+				],
+				ckbox: {
+					tokenUrl: 'http://cs.example.com'
+				}
+			} );
+		} );
+
+		it( 'should force-disable the "ckboxImageEdit" command', () => {
+			expect( editor.commands.get( 'ckboxImageEdit' )._disableStack.has( 'trustedTypes' ) ).toBe( true );
+		} );
+
+		it( 'should log a warning', () => {
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).toMatch( /ckbox-image-edit-unavailable-with-trusted-types/ );
+		} );
 	} );
 } );

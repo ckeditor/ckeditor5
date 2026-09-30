@@ -8,6 +8,7 @@
  */
 
 import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
+import { trustedHtml } from '@ckeditor/ckeditor5-utils';
 import { ClipboardPipeline, type ClipboardInputTransformationEvent } from '@ckeditor/ckeditor5-clipboard';
 import { MarkdownGfmDataProcessor } from './gfmdataprocessor.js';
 import type { ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
@@ -143,7 +144,7 @@ export class PasteFromMarkdownExperimental extends Plugin {
 	 */
 	private _containsOnlyAllowedFirstLevelTags( htmlString: string ): boolean {
 		const parser = new DOMParser();
-		const { body: tempElement } = parser.parseFromString( htmlString, 'text/html' );
+		const { body: tempElement } = parser.parseFromString( trustedHtml( htmlString ), 'text/html' );
 
 		const tagNames = Array.from( tempElement.children ).map( el => el.tagName );
 
@@ -157,7 +158,7 @@ export class PasteFromMarkdownExperimental extends Plugin {
 	 */
 	private _removeFirstLevelWrapperTagsAndBrs( htmlString: string ): string {
 		const parser = new DOMParser();
-		const { body: tempElement } = parser.parseFromString( htmlString, 'text/html' );
+		const { body: tempElement } = parser.parseFromString( trustedHtml( htmlString ), 'text/html' );
 
 		const brElements = tempElement.querySelectorAll( 'br' );
 

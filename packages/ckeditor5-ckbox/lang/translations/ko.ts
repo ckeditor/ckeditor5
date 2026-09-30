@@ -23,7 +23,9 @@ const translations: Translations = {
 			// A message is displayed when the server fails to process an image or doesn't respond.
 			'Server failed to process the image.': '서버가 이미지를 처리하지 못했습니다.',
 			// A message is displayed when category of the image user wants to edit can't be determined.
-			'Failed to determine category of edited image.': '편집한 이미지의 카테고리를 결정하지 못했습니다.'
+			'Failed to determine category of edited image.': '편집한 이미지의 카테고리를 결정하지 못했습니다.',
+			// A message is displayed when an operation (uploading or editing an asset) cannot be performed because the browser has no network connection.
+			'No internet connection. Check your connection and try again.': '인터넷에 연결되어 있지 않습니다. 연결을 확인한 후 다시 시도하세요.'
 		}
 	}
 };

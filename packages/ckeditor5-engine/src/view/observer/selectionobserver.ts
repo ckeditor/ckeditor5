@@ -10,7 +10,12 @@
 import { Observer } from './observer.js';
 import { MutationObserver } from './mutationobserver.js';
 import { FocusObserver } from './focusobserver.js';
-import { env, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import {
+	env,
+	getSelection,
+	type ShadowSelection,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 import { debounce } from 'es-toolkit/compat';
 
 import type { EditingView } from '../view.js';
@@ -21,7 +26,7 @@ import type { ViewDocumentCompositionStartEvent } from './compositionobserver.js
 
 // @if CK_DEBUG_TYPING // import { _debouncedLine, _buildLogMessage } from '../../dev-utils/utils.js';
 
-type DomSelection = globalThis.Selection;
+type DomSelection = globalThis.Selection | ShadowSelection;
 
 /**
  * Selection observer class observes selection changes in the document. If a selection changes on the document this
@@ -91,10 +96,16 @@ export class SelectionObserver extends Observer {
 	private _loopbackCounter = 0;
 
 	/**
-	 * A set of DOM documents that have a pending selection change.
+	 * A set of DOM trees (editing roots' shadow roots, or documents) that have a pending selection change.
 	 * Pending selection change is recorded while selection change event is detected on non focused editable.
 	 */
-	private _pendingSelectionChange = new Set<Document>();
+	private _pendingSelectionChange = new Set<Document | ShadowRoot>();
+
+	/**
+	 * The observed editing roots. The DOM selection is resolved against all of them at once, which is what
+	 * makes it pierce every shadow boundary they live behind.
+	 */
+	private readonly _observedDomRoots = new Set<HTMLElement>();
 
 	constructor( view: EditingView ) {
 		super( view );
@@ -120,10 +131,7 @@ export class SelectionObserver extends Observer {
 				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 
-				// Iterate over a copy of set because it is modified in selection change handler.
-				for ( const domDocument of Array.from( this._pendingSelectionChange ) ) {
-					this._handleSelectionChange( domDocument );
-				}
+				this._handleSelectionChange();
 
 				this._pendingSelectionChange.clear();
 			}
@@ -150,7 +158,7 @@ export class SelectionObserver extends Observer {
 
 			// Make sure that model selection is up-to-date at the end of selecting process.
 			// Sometimes `selectionchange` events could arrive after the `mouseup` event and that selection could be already outdated.
-			this._handleSelectionChange( domDocument );
+			this._handleSelectionChange();
 
 			this.document.isSelecting = false;
 
@@ -165,6 +173,8 @@ export class SelectionObserver extends Observer {
 
 		this.listenTo( domElement, 'keydown', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
+
+		this._observedDomRoots.add( domElement );
 
 		// Add document-wide listeners only once. This method could be called for multiple editing roots.
 		if ( this._documents.has( domDocument ) ) {
@@ -202,7 +212,7 @@ export class SelectionObserver extends Observer {
 				return;
 			}
 
-			this._handleSelectionChange( domDocument );
+			this._handleSelectionChange();
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -229,7 +239,7 @@ export class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
-			this._handleSelectionChange( domDocument );
+			this._handleSelectionChange();
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -244,6 +254,8 @@ export class SelectionObserver extends Observer {
 	 */
 	public override stopObserving( domElement: HTMLElement ): void {
 		this.stopListening( domElement );
+
+		this._observedDomRoots.delete( domElement );
 	}
 
 	/**
@@ -269,15 +281,22 @@ export class SelectionObserver extends Observer {
 	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
 	 * a selection changes and fires {@link module:engine/view/document~ViewDocument#event:selectionChange} event on every change
 	 * and {@link module:engine/view/document~ViewDocument#event:selectionChangeDone} when a selection stop changing.
-	 *
-	 * @param domDocument DOM document.
 	 */
-	private _handleSelectionChange( domDocument: Document ) {
+	private _handleSelectionChange() {
 		if ( !this.isEnabled ) {
 			return;
 		}
 
-		const domSelection = domDocument.defaultView!.getSelection()!;
+		// A `selectionchange` event does not tell which DOM tree it comes from. Resolving the selection
+		// against all the observed editing roots at once covers them all, whichever tree they live in,
+		// including nested shadow trees.
+		const domSelection = getSelection( Array.from( this._observedDomRoots ) );
+
+		if ( !domSelection ) {
+			this.view.hasDomSelection = false;
+
+			return;
+		}
 
 		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode! ) ) {
 			return;
@@ -300,6 +319,9 @@ export class SelectionObserver extends Observer {
 
 		this.view.hasDomSelection = true;
 
+		// The tree the selection lives in, so that a pending change is recorded per tree.
+		const domTarget = domSelection.anchorNode!.getRootNode() as Document | ShadowRoot;
+
 		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
 		this.focusObserver.flush();
 
@@ -312,12 +334,12 @@ export class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
-			this._pendingSelectionChange.add( domDocument );
+			this._pendingSelectionChange.add( domTarget );
 
 			return;
 		}
 
-		this._pendingSelectionChange.delete( domDocument );
+		this._pendingSelectionChange.delete( domTarget );
 
 		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection ) ) {
 			return;

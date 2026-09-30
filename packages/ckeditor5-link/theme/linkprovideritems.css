@@ -4,16 +4,11 @@
  */
 
 
-:root {
-	--ck-link-providers-width: 340px;
+:root,
+:host {
+	--ck-link-providers-width: var(--ck-width-balloon-form);
 	--ck-link-list-view-max-height: 240px;
 	--ck-link-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
-}
-
-@media screen and (max-width: 600px) {
-	:root {
-		--ck-link-providers-width: 300px;
-	}
 }
 
 .ck.ck-link-providers {
@@ -47,7 +42,7 @@
 	}
 
 	& .ck-link__empty-list-info {
-		padding: calc( 2 * var(--ck-spacing-large) ) var(--ck-spacing-medium);
+		padding: calc( 2 * var(--ck-spacing-large, var(--ck-spacing-lg)) ) var(--ck-spacing-medium, var(--ck-spacing-base));
 		text-align: center;
 		font-style: italic;
 	}

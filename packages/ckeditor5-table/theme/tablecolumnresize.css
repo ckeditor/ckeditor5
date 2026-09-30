@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-color-table-column-resizer-hover: var(--ck-color-base-active);
 	--ck-table-column-resizer-width: 7px;
 
@@ -27,7 +28,7 @@
 	cursor: col-resize;
 	-webkit-user-select: none;
 	user-select: none;
-	z-index: var(--ck-z-default);
+	z-index: var(--ck-z-default, var(--ck-z-base));
 }
 
 .ck.ck-editor__editable.ck-column-resize_disabled .table .ck-table-column-resizer {

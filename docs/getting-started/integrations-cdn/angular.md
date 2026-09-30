@@ -4,7 +4,7 @@ meta-title: Using CKEditor 5 with Angular from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate, and configure CKEditor 5 using the Angular component with CDN.
 category: cloud
 order: 30
-modified_at: 2026-05-27
+modified_at: 2026-09-23
 ---
 
 # Integrating CKEditor&nbsp;5 with Angular from CDN
@@ -190,86 +190,6 @@ export class MyComponent {
 </button>
 ```
 
-<!-- TODO: Change the watchdog section if needed -->
-
-### `watchdog`
-
-An instance of the {@link module:watchdog/contextwatchdog~ContextWatchdog `ContextWatchdog`} class that is responsible for providing the same context to multiple editor instances and restarting the whole structure in case of crashes.
-
-```angular-ts
-import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
-
-@Component( {
-	// ...
-} )
-export class MyComponent {
-	public editor;
-	public watchdog: any;
-	public ready;
-
-	ngOnInit() {
-		loadCKEditorCloud( {
-			version: '{@var ckeditor5-version}',
-		} ).then( this._setupEditor.bind( this ) );
-	}
-
-	private _setupEditor( cloud ) {
-		const {
-			ClassicEditor,
-			ContextWatchdog,
-			Context
-		} = cloud.CKEditor;
-
-		const contextConfig = {
-			// Your context configuration.
-		};
-
-		this.Editor = ClassicEditor;
-		this.ready = false;
-
-		this.watchdog = new ContextWatchdog( Context );
-
-		this.watchdog.create( contextConfig )
-			.then( () => {
-				this.ready = true;
-			} );
-	}
-}
-```
-
-```angular-html
-<div *ngIf="ready">
-	<ckeditor [watchdog]="watchdog"></ckeditor>
-	<ckeditor [watchdog]="watchdog"></ckeditor>
-	<ckeditor [watchdog]="watchdog"></ckeditor>
-</div>
-```
-
-### `editorWatchdogConfig`
-
-If the `watchdog` property is not used, {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`} will be used by default. `editorWatchdogConfig` property allows for passing a {@link module:watchdog/watchdog~WatchdogConfig config} to that watchdog.
-
-```angular-ts
-@Component( {
-	// ...
-} )
-export class MyComponent {
-	public myWatchdogConfig;
-
-	private _setupEditor( cloud ) {
-		this.myWatchdogConfig = {
-			crashNumberLimit: 5,
-			// ...
-		};
-	}
-	// ...
-}
-```
-
-```angular-html
-<ckeditor [editorWatchdogConfig]="myWatchdogConfig"></ckeditor>
-```
-
 ### `disableTwoWayDataBinding`
 
 Allows disabling the two-way data binding mechanism. The default value is `false`.
@@ -286,8 +206,6 @@ The following `@Output` properties are supported by the CKEditor&nbsp;5 rich tex
 
 Fired when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event.
 It is fired with the editor instance.
-
-Note that this method might be called multiple times. It is fired on the initial editor initialization and also each time the editor is re-initialized after a crash recovery. Each re-initialization is a full editor restart that counts as a new editor load for {@link getting-started/licensing/usage-based-billing usage-based billing} purposes. Do not keep the reference to the editor instance internally, because it will change in case of a restart. Instead, you should use the `watchdog.editor` property.
 
 ### `change`
 
@@ -337,11 +255,15 @@ It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus`
 
 ### `error`
 
-Fired when the editor crashes. Once the editor has crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+Fired when the editor crashes.
 
 <info-box>
 	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
 </info-box>
+
+A reported error does not stop the editor. It keeps working, with its content, selection, and undo history intact. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.
+
+The {@link getting-started/setup/error-handling error handling} guide covers the options: telling the user and switching the editor to read-only, recreating it, and recovering its content. If you are moving off the Watchdog, the {@link updating/migration-from-watchdog migrating from the Watchdog} guide shows how to recreate the editor and when to do it. In Angular that check differs from the other integrations because the `error` output carries no `phase`.
 
 ## Integration with `ngModel`
 
@@ -625,6 +547,71 @@ Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the sch
 	The `<ckeditor>` component always renders a `<div>` host for `ClassicEditor`, regardless of `root.element`. Classic editor wraps its toolbar and editable inside its own structure. Use `InlineEditor`, `BalloonEditor`, or `DecoupledEditor` to control the host element.
 </info-box>
 
+### Using inside a shadow root
+
+Rendering the editor inside a shadow root isolates it from the styles of the host page. Set [`ViewEncapsulation.ShadowDom`](https://angular.dev/api/core/ViewEncapsulation) on the component and Angular attaches the root for you. Use a component that wraps the editor rather than the root component of the application, or everything the application renders ends up inside the root.
+
+The loader injects the editor style sheets as `<link>` tags, so point it at that root with the `injectedStylesheetsLocation` option. Without it they would land in `document.head`, which the shadow root cannot see. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside the shadow root, so the scoped style sheets cover all of it.
+
+```angular-ts
+// editor.component.ts
+
+import { Component, ElementRef, ViewEncapsulation, inject, type AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CKEditorCloudResult, CKEditorModule, loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
+import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+
+@Component( {
+	selector: 'app-editor',
+	templateUrl: './editor.component.html',
+	imports: [ CommonModule, CKEditorModule ],
+	standalone: true,
+	encapsulation: ViewEncapsulation.ShadowDom
+} )
+export class EditorComponent implements AfterViewInit {
+	public Editor: typeof ClassicEditor | null = null;
+
+	public config: EditorConfig | null = null;
+
+	private readonly _elementRef: ElementRef<HTMLElement> = inject( ElementRef );
+
+	// Loading starts after the view is initialized, so that the shadow root is already in the
+	// document. A `<link>` in a detached tree never starts loading, and the loader would wait for it.
+	public ngAfterViewInit(): void {
+		loadCKEditorCloud( {
+			version: '{@var ckeditor5-version}',
+			injectedStylesheetsLocation: {
+				targetNode: this._elementRef.nativeElement.shadowRoot!
+			}
+		} ).then( this._setupEditor.bind( this ) );
+	}
+
+	private _setupEditor( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}' }> ) {
+		const { ClassicEditor, Essentials, Paragraph, Bold, Italic } = cloud.CKEditor;
+
+		this.Editor = ClassicEditor;
+		this.config = {
+			licenseKey: '<YOUR_LICENSE_KEY>',
+			plugins: [ Essentials, Paragraph, Bold, Italic ],
+			toolbar: [ 'bold', 'italic' ]
+		};
+	}
+}
+```
+
+```angular-html
+<!-- editor.component.html -->
+
+<ckeditor
+  *ngIf="(Editor && config)"
+  data="<p>Hello, world!</p>"
+  [editor]="Editor"
+  [config]="config"
+></ckeditor>
+```
+
+An override of a `--ck-*` variable on `:root` has no effect on an editor inside a shadow root, so put it on the shadow host instead. The {@link getting-started/setup/shadow-dom Shadow DOM} guide explains why, and covers the known limitations.
+
 ### Using the editor with collaboration plugins
 
 We provide **ready-to-use integration** featuring collaborative editing in an Angular application:
@@ -632,6 +619,22 @@ We provide **ready-to-use integration** featuring collaborative editing in an An
 * [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
 
 It is not mandatory to build an application on top of the above samples, however, it should help you get started.
+
+### Sharing a context
+
+To share one {@link module:core/context~Context `Context`} between editors, create it yourself and pass it in the editor configuration:
+
+```angular-ts
+this.context = await MyEditor.Context.create( {
+	// The context configuration.
+} );
+
+this.config = { context: this.context };
+```
+
+The context is yours, so destroy it when you are done with it.
+
+Hold the editors back until the context is ready, with `*ngIf="config"` on the `<ckeditor>` element. The component reads its configuration only once, when it creates the editor. If it renders before `Context.create()` resolves, the editor gets no context, and setting the configuration later changes nothing. Errors attributed to the context rather than to one of its editors are not emitted by the component; register a callback for those with `MyEditor.Context.onEditorError()`.
 
 ### Localization
 

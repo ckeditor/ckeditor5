@@ -8,7 +8,6 @@ import {
 	PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage
 } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
@@ -55,8 +54,7 @@ ClassicEditor
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editorBasic = editor;

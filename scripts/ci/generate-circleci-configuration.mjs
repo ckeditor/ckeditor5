@@ -65,6 +65,7 @@ batchJobNames.forEach( ( jobName, batchIndex ) => {
 
 	config.jobs[ jobName ] = {
 		docker: [ { image: 'cimg/node:24.11.0-browsers' } ],
+		resource_class: 'large.gen2',
 		steps: [
 			'checkout_command',
 			'bootstrap_repository_command',

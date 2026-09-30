@@ -493,10 +493,6 @@ Instead of `ai:admin`, you can grant only the permissions a given script needs, 
 
 The same token also governs collaboration features. If your scripts also use collaboration features, for example the comments feature, the token must carry the relevant collaboration permissions next to the AI ones in its `auth` claim. See the [roles and permissions](https://ckeditor.com/docs/cs/latest/developer-resources/security/token-endpoint.html#roles-and-permissions) section of the token endpoint documentation for the available collaboration permissions.
 
-<info-box warning>
-	Currently, to use AI through the Server-side Editor API, a self-hosted (on-premises) AI service must be available at a publicly reachable address. The Server-side Editor API cannot yet reach an AI service hosted on a private network address. Support for this will be added in a future release.
-</info-box>
-
 ## Custom plugins
 
 Server-side editor API capabilities could be extended by creating custom plugins. Custom plugins may implement complex logic and maintain reusable functionality across multiple server-side operations. Through the editor instance, you can access custom plugin API in your server-side scripts. This approach will make your code more organized and maintainable. Using a plugin will be necessary if you need to import a class or a function from one of the CKEditor 5 packages to implement your desired functionality.

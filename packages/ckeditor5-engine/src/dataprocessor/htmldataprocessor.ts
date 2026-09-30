@@ -7,6 +7,8 @@
  * @module engine/dataprocessor/htmldataprocessor
  */
 
+import { trustedHtml } from '@ckeditor/ckeditor5-utils';
+
 import { BasicHtmlWriter } from './basichtmlwriter.js';
 import { ViewDomConverter } from '../view/domconverter.js';
 
@@ -117,7 +119,7 @@ export class HtmlDataProcessor implements DataProcessor {
 			data = `<body>${ data }</body>`;
 		}
 
-		const document = this.domParser.parseFromString( data, 'text/html' );
+		const document = this.domParser.parseFromString( trustedHtml( data ), 'text/html' );
 		const fragment = document.createDocumentFragment();
 		const bodyChildNodes = document.body.childNodes;
 

@@ -70,6 +70,13 @@ export interface TablePropertiesViewOptions {
 	defaultTableProperties: TablePropertiesOptions;
 
 	/**
+	 * The number of columns in the color palettes.
+	 *
+	 * Defaults to {@link module:ui/colorgrid/colors~defaultColorGridColumns}.
+	 */
+	colorGridColumns?: number;
+
+	/**
 	 * The default color picker config.
 	 */
 	colorPickerConfig: false | ColorPickerConfig;
@@ -340,7 +347,9 @@ export class TablePropertiesView extends View {
 				this.cancelButtonView,
 				this.saveButtonView
 			],
-			class: 'ck-table-form__action-row'
+			class: [
+				'ck-table-form__action-row'
+			]
 		} ) );
 
 		this.setTemplate( {
@@ -433,7 +442,7 @@ export class TablePropertiesView extends View {
 
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.borderColors,
-			columns: 5,
+			columns: this.options.colorGridColumns,
 			defaultColorValue: defaultBorder.color,
 			colorPickerConfig: this.options.colorPickerConfig
 		} );
@@ -551,7 +560,7 @@ export class TablePropertiesView extends View {
 
 		const backgroundInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.backgroundColors,
-			columns: 5,
+			columns: this.options.colorGridColumns,
 			defaultColorValue: this.options.defaultTableProperties.backgroundColor,
 			colorPickerConfig: this.options.colorPickerConfig
 		} );
@@ -709,7 +718,7 @@ export class TablePropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			class: 'ck-button-action',
+			class: 'ck-button-action ck-button_standard',
 			type: 'submit',
 			withText: true
 		} );
@@ -720,7 +729,8 @@ export class TablePropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			withText: true
+			withText: true,
+			class: 'ck-button_standard'
 		} );
 
 		cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );

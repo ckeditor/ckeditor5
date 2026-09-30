@@ -8,7 +8,8 @@
 .ck.ck-editor__main > .ck-editor__editable {
 	/* https://github.com/ckeditor/ckeditor5/issues/3384 */
 	background: var(--ck-color-base-background);
-	border-radius: var(--ck-rounded-corners-radius);
+	/* Backward compatibility: falls back to legacy --ck-rounded-corners-radius if overridden. */
+	border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 
@@ -25,6 +26,7 @@
 
 	& .ck-editor__top .ck-sticky-panel .ck-toolbar {
 		/* https://github.com/ckeditor/ckeditor5-editor-classic/issues/62 */
-		z-index: var(--ck-z-panel);
+		/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
+		z-index: var(--ck-z-panel, var(--ck-z-overlay));
 	}
 }

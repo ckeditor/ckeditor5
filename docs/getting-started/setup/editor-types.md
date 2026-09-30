@@ -15,7 +15,7 @@ Editor types are imported from the main `ckeditor5` package, the same way featur
 Other custom-tailored editor types can be made using the {@link framework/external-ui CKEditor&nbsp;5 Framework}.
 
 <info-box>
-	If you are unsure which editor type to choose, try the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs). It lets you quickly view and experiment with different presets.
+	If you are unsure which editor type to choose, try the [CKEditor&nbsp;5 Builder](https://builder.ckeditor.com/?redirect=docs). It lets you quickly view and experiment with different presets.
 </info-box>
 
 ## Classic editor
@@ -207,7 +207,7 @@ The multi-root editor is an editor type that features multiple, separate editabl
 	See an {@link examples/builds/multi-root-editor example of the multi-root editor} in action.
 </snippet-footer>
 
-At this time, the multi-root editor is not yet available via the [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
+At this time, the multi-root editor is not yet available via the [Builder](https://builder.ckeditor.com/?redirect=docs).
 
 <info-box>
 	The multi-root editor requires a more advanced configuration of the roots.

@@ -10,6 +10,7 @@
 import { PendingActions, Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { Notification } from '@ckeditor/ckeditor5-ui';
 import { ImageEditing, ImageUtils } from '@ckeditor/ckeditor5-image';
+import { isTrustedTypesEnforced, logWarning } from '@ckeditor/ckeditor5-utils';
 import { CKBoxImageEditCommand } from './ckboximageeditcommand.js';
 import { CKBoxEditing } from '../ckboxediting.js';
 import { CKBoxUtils } from '../ckboxutils.js';
@@ -59,6 +60,29 @@ export class CKBoxImageEditEditing extends Plugin {
 	public init(): void {
 		const { editor } = this;
 
-		editor.commands.add( 'ckboxImageEdit', new CKBoxImageEditCommand( editor ) );
+		const imageEditCommand = new CKBoxImageEditCommand( editor );
+
+		editor.commands.add( 'ckboxImageEdit', imageEditCommand );
+
+		// The image editor of CKBox writes its markup as a plain string, so under enforcement it never loads the image.
+		// Disabling greys out its toolbar button instead of leaving one that opens an editor stuck on loading.
+		if ( isTrustedTypesEnforced() ) {
+			/**
+			 * The CKBox image editor is not available, because the application enforces Trusted Types with the
+			 * `require-trusted-types-for 'script'` CSP directive. The image editor writes HTML in a way that this directive
+			 * rejects, and the editor cannot change how it does that. Choosing assets in CKBox still works.
+			 *
+			 * The editor disables its own **Edit image** button. The **Edit** button in the CKBox dialog is part of CKBox, so
+			 * it stays available, but the image editor that it opens cannot load the image either.
+			 *
+			 * For a detailed overview, check the {@glink getting-started/setup/csp#known-limitations Content Security
+			 * Policy} guide.
+			 *
+			 * @error ckbox-image-edit-unavailable-with-trusted-types
+			 */
+			logWarning( 'ckbox-image-edit-unavailable-with-trusted-types' );
+
+			imageEditCommand.forceDisabled( 'trustedTypes' );
+		}
 	}
 }

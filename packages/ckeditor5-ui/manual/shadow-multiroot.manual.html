@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Shadow DOM + Multi-root Editor</title>
+	<style>
+		/* Only reaches the light DOM. Everything inside `editorShadow` — the roots container and the shadow
+		hosts wrapping each editable — is styled from the script instead. */
+		body {
+			max-width: 60em;
+			margin: 0 auto;
+			padding: 0 1.5em 4em;
+		}
+
+		#editor-component-slot {
+			margin-top: 1.5em;
+		}
+	</style>
+	<script type="module" src="./shadow-multiroot.js"></script>
+</head>
+<body>
+	<ck-manual-header>
+		<h2>Multi-root editor inside a nested Shadow DOM</h2>
+
+		<p>
+			`MultiRootEditor` leaves placement of the toolbar, the menu bar and every editable entirely to the
+			integrator. This test places all of them itself and puts <strong>each root in its own shadow
+			root</strong>, so adding and detaching roots at runtime makes shadow roots appear and disappear while
+			the editor is alive. The toolbar and the menu bar are pushed two more shadow levels deep on top of
+			that. The body-collection wrapper (balloons, dropdown panels) sits in its own, separate shadow root.
+		</p>
+
+		<p>
+			Use <strong>Add root</strong> / <strong>Detach last root</strong> to exercise code that has to keep up
+			with shadow roots coming and going, rather than resolving them once at startup — tooltips, the block
+			toolbar and the balloon toolbar all attach listeners per shadow root.
+		</p>
+
+		<p>
+			The editor stylesheet is forwarded into every shadow root involved verbatim and disabled in the main
+			document – the theme declares its custom properties on <code>:root, :host</code>, so they resolve
+			inside each shadow root.
+		</p>
+
+		<p>
+			In the light DOM there is nothing to nest, so every root is placed directly and the rest of the test
+			behaves the same – which makes that mode a fair comparison rather than a different code path.
+		</p>
+	</ck-manual-header>
+
+	<ck-manual-shadow-mode overlay-container></ck-manual-shadow-mode>
+
+	<div style="margin: 1em 0;">
+		<button type="button" id="add-root">Add root</button>
+		<button type="button" id="detach-root">Detach last root</button>
+		<span>roots: <code id="root-list">—</code></span>
+	</div>
+
+	<div id="editor-component-slot"></div>
+
+	<div id="editor-data" style="display: none">
+		<h2>Shadow DOM smoke test</h2>
+		<p>Hover toolbar buttons to test <strong>tooltips</strong> — the toolbar is nested two shadow levels deep.
+		Open the heading/font <strong>dropdowns</strong>. Select text to trigger the <strong>balloon toolbar</strong>.
+		Use the <strong>block toolbar</strong> handle on the left. Select across
+		<strong>table</strong> cells. Resize the <strong>image</strong>. Open the
+		<strong>font color</strong> picker. Open the <strong>menu bar</strong> — it is nested two shadow levels
+		deep too.</p>
+
+		<figure class="table">
+			<table>
+				<tbody>
+					<tr><td>A1</td><td>B1</td><td>C1</td></tr>
+					<tr><td>A2</td><td>B2</td><td>C2</td></tr>
+					<tr><td>A3</td><td>B3</td><td>C3</td></tr>
+				</tbody>
+			</table>
+		</figure>
+
+		<figure class="image">
+			<img alt="sample" src="/images/sample.jpg">
+			<figcaption>Resizable image</figcaption>
+		</figure>
+
+		<ul>
+			<li>List item with a <a href="https://ckeditor.com">link</a></li>
+			<li>Another item</li>
+		</ul>
+
+		<p>Inline drag target: some text, then an inline image <img alt="inline sample" src="/images/sample.jpg" style="width:80px">
+		right in the middle of the sentence, then more text after it. Grab the image and drop it elsewhere in this
+		paragraph, into another paragraph, or into a table cell — it must land inline, between characters, rather
+		than as a block of its own.</p>
+
+		<blockquote><p>A block quote to drag with the block toolbar.</p></blockquote>
+	</div>
+
+	<div id="secondary-editor-data" style="display: none">
+		<h3>Second root</h3>
+		<p>This root lives in a shadow root of its own. Hover the toolbar while the selection is here to check
+		that the block toolbar follows the <em>currently selected</em> root across shadow boundaries.</p>
+	</div>
+</body>
+</html>

@@ -54,7 +54,13 @@ Developers can build widgets that connect to external APIs and data sources to d
 
 Developers can integrate components from popular UI frameworks like React, Vue, Angular, and others into CKEditor&nbsp;5, enabling reuse of existing component libraries and business logic. The editor below presents integration between React library and a block widget from the CKEditor ecosystem. You can {@link tutorials/widgets/using-react-in-a-widget learn how to build widgets with React} in our framework section.
 
-{@snippet framework/tutorials/using-react-in-widget}
+<!-- TODO (https://github.com/ckeditor/ckeditor5-commercial/issues/11304): a snippet embed was removed
+from here — the `framework/tutorials/using-react-in-widget` demo. It mounts the published
+`@ckeditor/ckeditor5-react`, which constructs `Editor.EditorWatchdog`, a static the Watchdog removal took
+away, so the page failed to mount. Put the embed back once a version of the integration without the
+Watchdog is published and `external/ckeditor5/package.json` points at it. The snippet files themselves are
+untouched. The directive is not spelled out here on purpose, so that nothing picks it up from inside this
+comment. -->
 
 **Example applications developers can build:**
 * Design system component integration across frameworks,

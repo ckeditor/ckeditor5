@@ -4,7 +4,7 @@
  */
 
 .ck.ck-emoji__skin-tone {
-	margin-left: var(--ck-spacing-standard);
+	margin-left: var(--ck-spacing-standard, var(--ck-spacing-base));
 
 	> .ck.ck-dropdown {
 

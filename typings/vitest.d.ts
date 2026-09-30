@@ -10,11 +10,11 @@ import 'vitest';
 // implemented in the `scripts/vitest/` directory, outside of the TypeScript program, so their
 // types must be maintained here manually.
 declare module 'vitest' {
-	interface Matchers<T = any> {
+	interface Matchers<R, T> {
 
 		/**
 		 * Asserts that two markup strings are equal. Unlike `toEqual()`, it formats the markup before showing a diff.
 		 */
-		toEqualMarkup( expected: string ): T;
+		toEqualMarkup( expected: string ): R;
 	}
 }

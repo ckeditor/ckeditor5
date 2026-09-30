@@ -3,33 +3,38 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* Increase z-index of everything to make sure nothing sticks in front of the editor.
-Disable scrollbars that can be present due to the rest of the website content. */
+:root,
+:host {
+	--ck-fullscreen-editor-top-margin: 28px;
+	--ck-fullscreen-editor-bottom-margin: 28px;
+	--ck-fullscreen-editable-shadow: none;
+	--ck-fullscreen-left-sidebar-avatar-size: 32px;
+	--ck-fullscreen-left-sidebar-toggle-button-hover-background: var(--ck-color-interactive-primary-surface-muted);
+
+	/* Radius of the fullscreen editable "page", controllable separately from the editor frame radius. */
+	--ck-fullscreen-editable-border-radius: var(--ck-radius-md);
+}
+
+/*
+ * Increase z-index of everything to make sure nothing sticks in front of the editor.
+ *
+ * The `<html>` element is included on purpose, next to the `<body>` one. Other stylesheets derive custom
+ * properties from these at `:root` (for example `--ck-balloon-panel-arrow-z-index`), and a `var()` inside a
+ * custom property is substituted on the element that declares it – so a value bumped on the `<body>` element
+ * alone would come too late and leave those derived properties computed from the base values.
+ */
 html.ck-fullscreen,
-body.ck-fullscreen {
+body.ck-fullscreen,
+:host(.ck-fullscreen) {
 	--ck-z-fullscreen: 10000;
 
-	overflow: hidden;
-
-	--ck-z-default: calc(var(--ck-z-fullscreen) + 1);
-	--ck-z-panel: calc(var(--ck-z-default) + 999);
-	--ck-z-dialog: 100000;
-
-	/* CKBox wrappers have z-index of 9999, let's bump them over the dialog's to ensure visibility like outside fullscreen mode. */
-	& .ckbox:not(#n) {
-		--ckbox-z-index-root: calc(var(--ck-z-dialog) + 1);
-
-		/*
-		 * Safari composites `overflow: auto` scroll layers (like `.ck-fullscreen__editable-wrapper`) on top of
-		 * sibling stacking contexts regardless of z-index. Setting `position: absolute` promotes `.ckbox` to its
-		 * own compositing layer, which Safari then sorts correctly above the editable wrapper's layer.
-		 */
-		position: absolute;
-	}
-
-	& .ckbox:not(#n) .ckbox-img-editor {
-		--ckbox-z-index-preview: calc(var(--ck-z-dialog) + 1);
-	}
+	/* Override both legacy and new z-index tokens for fullscreen mode. */
+	--ck-z-default: calc(var(--ck-z-fullscreen) + 1); /* legacy */
+	--ck-z-base: calc(var(--ck-z-fullscreen) + 1);
+	--ck-z-panel: calc(var(--ck-z-default) + 999); /* legacy */
+	--ck-z-overlay: calc(var(--ck-z-base) + 999);
+	--ck-z-dialog: 100000; /* legacy */
+	--ck-z-modal: 100000;
 
 	& .ck-pagination-view-line {
 		z-index: calc(var(--ck-z-fullscreen) + 1);
@@ -38,6 +43,18 @@ body.ck-fullscreen {
 	& .page-break__label {
 		/* Needs to be higher than for .ck-pagination-view-line to be displayed on top of the line. */
 		z-index: calc(var(--ck-z-fullscreen) + 2);
+	}
+
+	& .ck .ck-thread__header {
+		& .ck-context {
+			&.overlay {
+				z-index: calc(var(--ck-z-fullscreen) + 2);
+			}
+		}
+	}
+
+	& .ck-source-editing-area textarea {
+		border-radius: var(--ck-source-editing-area-border-radius);
 	}
 }
 
@@ -79,15 +96,21 @@ Fullscreen layout:
 	}
 }
 
-/* If the fullscreen container is not directly in the body, we need to make sure it's positioned absolutely. */
-:not(body> .ck-fullscreen__main-wrapper).ck-fullscreen__main-wrapper {
+/*
+ * If the fullscreen mode fills a container provided by the integrator instead of covering the viewport, it needs to be
+ * positioned absolutely. Which of the two it is cannot be read from the position of the wrapper in the DOM (this used
+ * to be `:not(body > .ck-fullscreen__main-wrapper)`): mounted in the shadow root the editor lives in, the wrapper is
+ * not a child of the `<body>` element either way. The handler resolves the container, so it marks the wrapper instead.
+ */
+.ck.ck-fullscreen__main-wrapper.ck-fullscreen__main-wrapper_custom-container {
 	position: absolute;
 
 	& .ck-fullscreen__top-wrapper {
 		border-top: 1px solid var(--ck-color-base-border);
 		border-left: 1px solid var(--ck-color-base-border);
 		border-right: 1px solid var(--ck-color-base-border);
-		border-radius: var(--ck-border-radius) 0;
+		/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+		border-radius: var(--ck-border-radius, var(--ck-radius-base)) 0;
 	}
 }
 
@@ -95,15 +118,13 @@ Fullscreen layout:
 	border: none;
 }
 
-.ck.ck-fullscreen__toolbar .ck-toolbar {
+.ck.ck-fullscreen__toolbar > .ck-toolbar {
 	border-left: 0;
 	border-right: 0;
 	border-radius: 0;
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable-wrapper {
-	--ck-fullscreen-editor-top-margin: 28px;
-	--ck-fullscreen-editor-bottom-margin: 28px;
 	display: flex;
 	justify-content: flex-start;
 	overflow: auto;
@@ -134,8 +155,9 @@ Fullscreen layout:
 	margin: 0;
 	padding: 20mm 12mm;
 	border: 1px var(--ck-color-base-border) solid;
-	background: hsl(0, 0%, 100%);
-	box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.078);
+	background: var(--ck-color-base-background);
+	box-shadow: var(--ck-fullscreen-editable-shadow);
+	border-radius: var(--ck-fullscreen-editable-border-radius);
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable .ck-source-editing-area {
@@ -149,8 +171,9 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__left-sidebar {
-	font-family: Helvetica, Arial, sans-serif;
-	--ck-user-avatar-size: 28px;
+	--ck-user-avatar-size: var(--ck-fullscreen-left-sidebar-avatar-size);
+	--ck-user-name-font-size: 1em;
+
 	position: sticky;
 	align-self: flex-start;
 	top: 0;
@@ -164,13 +187,16 @@ Fullscreen layout:
 
 	& .ck-button.ck-fullscreen__left-sidebar-toggle-button {
 		--ck-icon-size: 20px;
-		--ck-ui-component-min-height: 0px;
+		--ck-size-control-min-height: 0px;
+		--ck-button-hover-background: var(--ck-fullscreen-left-sidebar-toggle-button-hover-background);
 
 		align-self: flex-start;
-		padding-top: 0;
+
+		/* Keep the round toggle at its content size. Because min-height is 0 above, the sticky flex
+		   column would otherwise shrink it vertically into an ellipse. */
+		flex-shrink: 0;
 		margin-top: var(--ck-fullscreen-editor-top-margin);
-		margin-bottom: var(--ck-spacing-large);
-		opacity: 0.5;
+		margin-bottom: var(--ck-spacing-large, var(--ck-spacing-lg));
 		border-radius: 100%;
 	}
 
@@ -205,8 +231,8 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__left-sidebar-item {
-	padding: var(--ck-spacing-medium);
-	margin-bottom: var(--ck-spacing-medium);
+	padding: var(--ck-spacing-medium, var(--ck-spacing-base));
+	margin-bottom: var(--ck-spacing-medium, var(--ck-spacing-base));
 
 	/* First header should not have top padding. */
 	&:first-child {
@@ -238,7 +264,7 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__presence-list {
-	margin-top: var(--ck-spacing-medium);
+	margin-top: var(--ck-spacing-medium, var(--ck-spacing-base));
 }
 
 .ck-fullscreen__left-sidebar-item--no-margin {

@@ -6,7 +6,6 @@
 import { ListProperties, ImageResize } from 'ckeditor5';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
@@ -56,8 +55,7 @@ ClassicEditor
 				startIndex: true,
 				reversed: true
 			}
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editorBasic = editor;

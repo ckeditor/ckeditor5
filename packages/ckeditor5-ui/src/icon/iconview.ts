@@ -9,7 +9,7 @@
 
 import { View } from '../view.js';
 
-import { CKEditorError, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, trustedHtml, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The icon view class.
@@ -151,7 +151,7 @@ export class IconView extends View {
 	 */
 	private _updateXMLContent() {
 		if ( this.content ) {
-			const parsed = new DOMParser().parseFromString( this.content.trim(), 'image/svg+xml' );
+			const parsed = new DOMParser().parseFromString( trustedHtml( this.content.trim() ), 'image/svg+xml' );
 			const svg = parsed.querySelector( 'svg' );
 
 			if ( !svg ) {

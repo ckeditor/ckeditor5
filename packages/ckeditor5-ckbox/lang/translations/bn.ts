@@ -23,7 +23,9 @@ const translations: Translations = {
 			// A message is displayed when the server fails to process an image or doesn't respond.
 			'Server failed to process the image.': 'সার্ভার ছবিটি প্রক্রিয়া করতে ব্যর্থ হয়েছে।',
 			// A message is displayed when category of the image user wants to edit can't be determined.
-			'Failed to determine category of edited image.': 'এডিট করা ছবির ক্যাটাগরি নির্ধারণ করতে ব্যর্থ হয়েছে।'
+			'Failed to determine category of edited image.': 'এডিট করা ছবির ক্যাটাগরি নির্ধারণ করতে ব্যর্থ হয়েছে।',
+			// A message is displayed when an operation (uploading or editing an asset) cannot be performed because the browser has no network connection.
+			'No internet connection. Check your connection and try again.': 'ইন্টারনেট সংযোগ নেই। আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।'
 		}
 	}
 };

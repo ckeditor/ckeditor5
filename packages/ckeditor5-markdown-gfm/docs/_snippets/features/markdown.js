@@ -21,7 +21,6 @@ import {
 } from 'ckeditor5';
 import { SourceEditingEnhanced } from 'ckeditor5-premium-features';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ArticlePluginSet,
 	getViewportTopOffsetConfig
@@ -63,7 +62,6 @@ ClassicEditor
 				{ language: 'php', label: 'PHP' }
 			]
 		},
-		cloudServices: CS_CONFIG,
 		list: {
 			enableSkipLevelLists: true
 		},

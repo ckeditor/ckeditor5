@@ -26,6 +26,17 @@ export { type PluginsMap, PluginCollection, type PluginEntry } from './plugincol
 
 export { Context, type ContextConfig } from './context.js';
 export { ContextPlugin, type ContextInterface, type ContextPluginDependencies } from './contextplugin.js';
+export { onEditorError, type EditorErrorData, type EditorErrorCallback } from './errorreporter.js';
+
+export { ActionsRecorder } from './actionsrecorder.js';
+export type {
+	ActionsRecorderConfig,
+	ActionsRecorderEntry,
+	ActionsRecorderEntryEditorSnapshot,
+	ActionsRecorderErrorCallback,
+	ActionsRecorderFilterCallback,
+	ActionsRecorderMaxEntriesCallback
+} from './actionsrecorderconfig.js';
 export { EditingKeystrokeHandler, type EditingKeystrokeCallback } from './editingkeystrokehandler.js';
 
 export type { PartialBy, NonEmptyArray, HexColor } from './typings.js';

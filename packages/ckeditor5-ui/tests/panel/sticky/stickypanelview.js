@@ -258,6 +258,193 @@ describe( 'StickyPanelView', () => {
 			view.isActive = false;
 			expect( spy ).toHaveBeenCalledTimes( 3 );
 		} );
+
+		describe( 'shadow DOM', () => {
+			let host;
+
+			afterEach( () => {
+				if ( host ) {
+					host.remove();
+					host = null;
+				}
+			} );
+
+			for ( const mode of [ 'open', 'closed' ] ) {
+				it( `calls checkIfShouldBeSticky() on scroll of the shadow root hosting the limiter (mode: '${ mode }')`, () => {
+					host = document.createElement( 'div' );
+					document.body.appendChild( host );
+
+					const root = host.attachShadow( { mode } );
+					const shadowLimiterElement = document.createElement( 'div' );
+
+					root.appendChild( shadowLimiterElement );
+					view.limiterElement = shadowLimiterElement;
+
+					const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+					view.render();
+					expect( spy ).toHaveBeenCalledOnce();
+
+					// `scroll` is neither `composed` nor bubbling, so this is only observable at all because the
+					// listener is attached directly to `root` — a `document`-level one, however it is
+					// configured, could never see this.
+					root.dispatchEvent( new Event( 'scroll' ) );
+
+					expect( spy ).toHaveBeenCalledTimes( 2 );
+				} );
+			}
+
+			it( 'crosses nested shadow boundaries to keep reacting to scroll', () => {
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				const outerRoot = host.attachShadow( { mode: 'open' } );
+				const innerHost = document.createElement( 'div' );
+
+				outerRoot.appendChild( innerHost );
+
+				const innerRoot = innerHost.attachShadow( { mode: 'open' } );
+				const shadowLimiterElement = document.createElement( 'div' );
+
+				innerRoot.appendChild( shadowLimiterElement );
+				view.limiterElement = shadowLimiterElement;
+
+				const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+				view.render();
+				expect( spy ).toHaveBeenCalledOnce();
+
+				outerRoot.dispatchEvent( new Event( 'scroll' ) );
+				expect( spy ).toHaveBeenCalledTimes( 2 );
+
+				innerRoot.dispatchEvent( new Event( 'scroll' ) );
+				expect( spy ).toHaveBeenCalledTimes( 3 );
+			} );
+
+			it( 'picks up the limiter moving into a shadow root after render(), without #limiterElement itself changing', () => {
+				// Reproduces the scenario described on #checkIfShouldBeSticky(): `ClassicEditor` renders its UI
+				// before replacing the source element, moving the whole tree — so the roots must be re-derived
+				// on every check, not only when `#limiterElement` changes.
+				view.limiterElement = limiterElement;
+				view.render();
+
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				const root = host.attachShadow( { mode: 'open' } );
+
+				root.appendChild( limiterElement );
+
+				const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+				// The move alone does not call it — something has to trigger a check for the roots to be
+				// re-derived, same as in production (any scroll, resize, or activity change would do).
+				view.isActive = true;
+				expect( spy ).toHaveBeenCalledOnce();
+
+				spy.mockClear();
+
+				root.dispatchEvent( new Event( 'scroll' ) );
+				expect( spy ).toHaveBeenCalledOnce();
+			} );
+
+			it( 'detaches the old shadow root and attaches the new one when #limiterElement is swapped', () => {
+				const firstHost = document.createElement( 'div' );
+
+				document.body.appendChild( firstHost );
+
+				const firstRoot = firstHost.attachShadow( { mode: 'open' } );
+				const firstLimiterElement = document.createElement( 'div' );
+
+				firstRoot.appendChild( firstLimiterElement );
+				view.limiterElement = firstLimiterElement;
+				view.render();
+
+				const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				const secondRoot = host.attachShadow( { mode: 'open' } );
+				const secondLimiterElement = document.createElement( 'div' );
+
+				secondRoot.appendChild( secondLimiterElement );
+				view.limiterElement = secondLimiterElement;
+
+				spy.mockClear();
+
+				firstRoot.dispatchEvent( new Event( 'scroll' ) );
+				expect( spy ).not.toHaveBeenCalled();
+
+				secondRoot.dispatchEvent( new Event( 'scroll' ) );
+				expect( spy ).toHaveBeenCalledOnce();
+
+				firstHost.remove();
+			} );
+
+			it( 'stops reacting to a shadow root once the view is destroyed', async () => {
+				host = document.createElement( 'div' );
+				document.body.appendChild( host );
+
+				const root = host.attachShadow( { mode: 'open' } );
+				const shadowLimiterElement = document.createElement( 'div' );
+
+				root.appendChild( shadowLimiterElement );
+				view.limiterElement = shadowLimiterElement;
+				view.render();
+
+				const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+				await view.destroy();
+
+				expect( () => {
+					root.dispatchEvent( new Event( 'scroll' ) );
+				} ).not.toThrow();
+
+				expect( spy ).not.toHaveBeenCalled();
+			} );
+
+			// The frame's root has to be open: `Element#assignedSlot` is `null` for a slot in a closed root, so
+			// there the walk falls back to the node tree and never reaches that root. The editor component's own
+			// root is free to be either, because the walk leaves it through `.host` rather than through a slot.
+			for ( const mode of [ 'open', 'closed' ] ) {
+				it( `reacts to scroll of the shadow root the limiter is slotted into (own root mode: '${ mode }')`, () => {
+					host = document.createElement( 'div' );
+					document.body.appendChild( host );
+
+					const frameRoot = host.attachShadow( { mode: 'open' } );
+					const frame = document.createElement( 'div' );
+
+					frame.appendChild( document.createElement( 'slot' ) );
+					frameRoot.appendChild( frame );
+
+					// The editor component: the limiter lives in a shadow root of its own, and the component
+					// itself is the light DOM child assigned to the frame's slot.
+					const editorHost = document.createElement( 'div' );
+
+					host.appendChild( editorHost );
+
+					const editorRoot = editorHost.attachShadow( { mode } );
+					const shadowLimiterElement = document.createElement( 'div' );
+
+					editorRoot.appendChild( shadowLimiterElement );
+					view.limiterElement = shadowLimiterElement;
+
+					const spy = vi.spyOn( view, 'checkIfShouldBeSticky' );
+
+					view.render();
+					expect( spy ).toHaveBeenCalledOnce();
+
+					editorRoot.dispatchEvent( new Event( 'scroll' ) );
+					expect( spy ).toHaveBeenCalledTimes( 2 );
+
+					// The root that actually lays the limiter out. A node-tree walk leaves the component through
+					// its host straight into the light DOM, so this root is never listened to at all.
+					frameRoot.dispatchEvent( new Event( 'scroll' ) );
+					expect( spy ).toHaveBeenCalledTimes( 3 );
+				} );
+			}
+		} );
 	} );
 
 	describe( 'destroy()', () => {
@@ -1350,6 +1537,73 @@ describe( 'StickyPanelView', () => {
 						_stickyTopOffset: null,
 						_stickyBottomOffset: null,
 						_marginLeft: null
+					} );
+				} );
+			} );
+
+			describe( 'if the only scrollable non-window parent is reached through a slot', () => {
+				let frameHost, scrollableContainer;
+
+				beforeEach( () => {
+					// The same composition as "if there is one scrollable non-window parent", except the limiter is
+					// assigned to a slot instead of being a child of the scrollable element. Assigning a node to a
+					// slot does not move it – it stays a child of the host in the node tree while rendering inside
+					// the slot – so only a walk over the flattened tree finds the element that clips it.
+					frameHost = document.createElement( 'div' );
+
+					scrollableContainer = document.createElement( 'div' );
+					scrollableContainer.className = 'scrollable';
+					scrollableContainer.style.overflow = 'scroll';
+					scrollableContainer.appendChild( document.createElement( 'slot' ) );
+
+					frameHost.attachShadow( { mode: 'open' } ).appendChild( scrollableContainer );
+					frameHost.appendChild( limiterElement );
+					global.document.body.appendChild( frameHost );
+
+					view.isActive = true;
+				} );
+
+				afterEach( () => {
+					frameHost.remove();
+				} );
+
+				it( 'should make panel sticky to the top of the scrollable parent if the limiter top is not visible', () => {
+					const stickToTopSpy = vi.spyOn( view, '_stickToTopOfAncestors' );
+
+					vi.spyOn( scrollableContainer, 'getBoundingClientRect' ).mockReturnValue( {
+						top: 40,
+						bottom: 140,
+						height: 100,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					vi.spyOn( limiterElement, 'getBoundingClientRect' ).mockReturnValue( {
+						top: 20,
+						bottom: 200,
+						height: 180,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					vi.spyOn( contentPanelElement, 'getBoundingClientRect' ).mockReturnValue( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					// A node-tree walk goes from the limiter straight to `frameHost`, never seeing the scrollable
+					// element, and so finds the limiter's top edge fully visible – which unsticks the panel
+					// instead of sticking it at the top edge of the scrollable parent.
+					expect( stickToTopSpy ).toHaveBeenCalledOnce();
+					expectStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: 40,
+						_stickyBottomOffset: null,
+						_marginLeft: '0px'
 					} );
 				} );
 			} );

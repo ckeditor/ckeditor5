@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-content-list-marker-color: var(--ck-content-font-color);
 	--ck-content-list-marker-font-family: var(--ck-content-font-family);
 	--ck-content-list-marker-font-size: var(--ck-content-font-size);

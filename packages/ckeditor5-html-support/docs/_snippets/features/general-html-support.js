@@ -6,7 +6,6 @@
 import { GeneralHtmlSupport } from 'ckeditor5';
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	ArticlePluginSet,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
@@ -55,7 +54,6 @@ GHSEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
-		cloudServices: CS_CONFIG,
 		htmlSupport: {
 			allow: [
 				// Enables all HTML features.

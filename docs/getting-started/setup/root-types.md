@@ -165,7 +165,7 @@ The {@link module:core/editor/editorconfig~RootConfig#element `root.element`} op
 
 ### Choosing a semantic element
 
-By default, the editor creates a `<div>` as the editable area. For non-classic editors, consider passing a semantically appropriate element instead. For example, if the inline root serves as a document title, an `h1` element is a better fit:
+By default, the editor creates a `<div>` as the editable area. For non-classic editors, consider passing a semantically appropriate element instead. For example, if the inline root serves as a document title, an `<h1>` element is a better fit:
 
 ```js
 InlineEditor
@@ -182,7 +182,7 @@ InlineEditor
 ```
 
 <info-box>
-	When using a semantic element such as `h1` as the editable area, keep in mind that the `.ck-content` CSS class applied to all editables defines default font and line-height values that may override the element's native browser styles. If this affects your layout, scope the relevant {@link getting-started/setup/css#general-content-styling CSS variables} to that element.
+	When using a semantic element such as `<h1>` as the editable area, keep in mind that the `.ck-content` CSS class applied to all editables defines default font and line-height values that may override the element's native browser styles. If this affects your layout, scope the relevant {@link getting-started/setup/css#general-content-styling CSS variables} to that element.
 </info-box>
 
 ### Applying classes and styles

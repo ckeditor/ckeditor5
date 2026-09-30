@@ -12,6 +12,7 @@ import {
 	Rect,
 	CKEditorError,
 	toArray,
+	getParentElement,
 	type ObservableChangeEvent,
 	type GetCallback
 } from '@ckeditor/ckeditor5-utils';
@@ -474,6 +475,9 @@ function addSelectionHandle( widgetElement: ViewContainerElement, writer: ViewDo
  *
  *	* It searches up to 5 levels of ancestors only.
  *
+ * The search crosses shadow DOM boundaries, so for a resize host inside a shadow root it continues
+ * through the host into the surrounding (light) DOM instead of stopping at the boundary.
+ *
  * @param domResizeHost Resize host DOM element that receives dimensions as a result of resizing.
  * @returns Width of ancestor element in pixels or 0 if no ancestor with a computed width has been found.
  */
@@ -484,7 +488,7 @@ export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): 
 		return parseFloat( width ) - ( parseFloat( paddingLeft ) || 0 ) - ( parseFloat( paddingRight ) || 0 );
 	};
 
-	const domResizeHostParent = domResizeHost.parentElement;
+	const domResizeHostParent = getParentElement( domResizeHost ) as HTMLElement | null;
 
 	if ( !domResizeHostParent ) {
 		return 0;
@@ -502,7 +506,7 @@ export function calculateResizeHostAncestorWidth( domResizeHost: HTMLElement ): 
 	let checkedElement = domResizeHostParent!;
 
 	while ( isNaN( parentWidth ) ) {
-		checkedElement = checkedElement.parentElement!;
+		checkedElement = getParentElement( checkedElement ) as HTMLElement;
 
 		if ( ++currentLevel > ancestorLevelLimit ) {
 			return 0;

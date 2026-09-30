@@ -5,7 +5,7 @@
 
 
 .ck.ck-character-info {
-	padding: var(--ck-spacing-small) var(--ck-spacing-large);
+	padding: var(--ck-dialog-actions-padding);
 	border-top: 1px solid var(--ck-color-base-border);
 	display: flex;
 

@@ -11,7 +11,6 @@ import { ClassicEditorUIView } from '../src/classiceditoruiview.js';
 import { HtmlDataProcessor, ModelRootElement } from '@ckeditor/ckeditor5-engine';
 
 import { Context, Plugin } from '@ckeditor/ckeditor5-core';
-import { EditorWatchdog, ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -867,7 +866,7 @@ describe( 'ClassicEditor', () => {
 
 			const err = await createPromise.catch( err => err );
 
-			expect( err.context ).toBeNull(); // avoid watchdog restart
+			expect( err.context ).toBeNull(); // not attributable to any editor
 			expect( err.message ).toContain( 'editor-source-element-not-attached' );
 		} );
 
@@ -1104,14 +1103,6 @@ describe( 'ClassicEditor', () => {
 	describe( 'static fields', () => {
 		it( 'ClassicEditor.Context', () => {
 			expect( ClassicEditor.Context ).toBe( Context );
-		} );
-
-		it( 'ClassicEditor.EditorWatchdog', () => {
-			expect( ClassicEditor.EditorWatchdog ).toBe( EditorWatchdog );
-		} );
-
-		it( 'ClassicEditor.ContextWatchdog', () => {
-			expect( ClassicEditor.ContextWatchdog ).toBe( ContextWatchdog );
 		} );
 	} );
 } );

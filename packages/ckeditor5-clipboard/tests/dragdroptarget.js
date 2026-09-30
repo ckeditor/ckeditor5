@@ -74,6 +74,41 @@ describe( 'Drag and Drop target', () => {
 		expect( DragDropTarget.isPremiumPlugin ).toBe( false );
 	} );
 
+	describe( '#_getScrollableRect() in a shadow root', () => {
+		let scrollableContainer, shadowHost;
+
+		beforeEach( () => {
+			scrollableContainer = document.createElement( 'div' );
+			scrollableContainer.setAttribute( 'style', 'overflow-y: auto; height: 100px;' );
+
+			shadowHost = document.createElement( 'div' );
+
+			scrollableContainer.appendChild( shadowHost );
+			document.body.appendChild( scrollableContainer );
+		} );
+
+		afterEach( () => {
+			scrollableContainer.remove();
+		} );
+
+		for ( const mode of [ 'open', 'closed' ] ) {
+			it( `should find a scrollable element outside a ${ mode } shadow root`, () => {
+				_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+				// Move the editing root into the shadow root, leaving the only scrollable element outside it.
+				shadowHost.attachShadow( { mode } ).appendChild( view.getDomRoot() );
+
+				const viewElement = viewDocument.getRoot().getChild( 0 );
+
+				// Without crossing the host the walk runs out of parent elements inside the shadow root and
+				// reads the overflow of `null`, throwing before it can reach the container.
+				expect( () => dragDropTarget._getScrollableRect( viewElement ) ).not.toThrow();
+
+				expect( dragDropTarget._scrollables.get( 'main' ).domElement ).toBe( scrollableContainer );
+			} );
+		}
+	} );
+
 	describe( 'getFinalDropRange', () => {
 		it( 'should return drop position after paragraph', () => {
 			_setModelData( model,
