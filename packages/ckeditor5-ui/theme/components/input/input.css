@@ -9,7 +9,7 @@
 	--ck-input-width: 18em;
 
 	/* Spacing */
-	--ck-input-padding: var(--ck-spacing-padding-compact);
+	--ck-input-padding: var(--ck-spacing-padding-compact) var(--ck-spacing-padding);
 
 	/* Typography */
 	--ck-input-font-size: var(--ck-font-size-control);
