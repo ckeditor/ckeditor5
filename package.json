@@ -37,7 +37,7 @@
     "@ckeditor/ckeditor5-react": "^9.5.0",
     "@inquirer/prompts": "^7.5.0",
     "@listr2/prompt-adapter-inquirer": "^2.0.16",
-    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/coverage-v8": "^5.0.0",
     "@webspellchecker/wproofreader-ckeditor5": "^3.0.0",
     "acorn": "^8.11.3",
     "assert": "^2.0.0",
@@ -74,7 +74,7 @@
     "typescript": "5.3.3",
     "umberto": "^10.9.0",
     "upath": "^2.0.0",
-    "vitest": "^4.0.18",
+    "vitest": "^5.0.0",
     "wait-on": "^8.0.3",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
