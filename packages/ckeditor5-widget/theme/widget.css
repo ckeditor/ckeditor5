@@ -26,6 +26,9 @@
 
 	/* Corner label (type-around style) shown on widgets such as raw HTML embed, code blocks and footnotes lists. */
 	--ck-widget-label-border-radius: 0 0 var(--ck-radius-sm) var(--ck-radius-sm);
+
+	/* Selection handle (drag handle) shown on widgets such as images and tables. Only the top corners are round. */
+	--ck-widget-selection-handle-border-radius: var(--ck-radius-sm) var(--ck-radius-sm) 0 0;
 }
 
 .ck .ck-widget {
@@ -94,9 +97,7 @@
 			visibility var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve),
 			opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
 
-		/* Make only top corners round. */
-		/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
-		border-radius: var(--ck-border-radius, var(--ck-radius-base)) var(--ck-border-radius, var(--ck-radius-base)) 0 0;
+		border-radius: var(--ck-widget-selection-handle-border-radius);
 
 		/* Place the drag handler outside the widget wrapper. */
 		transform: translateY(-100%);
