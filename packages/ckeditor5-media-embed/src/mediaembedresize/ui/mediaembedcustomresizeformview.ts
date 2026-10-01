@@ -102,7 +102,8 @@ export class MediaEmbedCustomResizeFormView extends View {
 			],
 			class: [
 				'ck-form__row_with-submit',
-				'ck-form__row_large-top-padding'
+				'ck-form__row_large-top-padding',
+				'ck-form__row_large-bottom-padding'
 			]
 		} ) );
 
