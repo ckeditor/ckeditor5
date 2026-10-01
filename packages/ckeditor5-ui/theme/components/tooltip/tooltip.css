@@ -23,11 +23,21 @@
 
 	/* Typography */
 	--ck-tooltip-text-font-size: var(--ck-font-size-xs);
+
+	/* Arrow */
+	--ck-tooltip-arrow-half-width: 4px;
+	--ck-tooltip-arrow-height: 4px;
+	--ck-tooltip-arrow-offset: 1px;
 }
 
 .ck.ck-balloon-panel.ck-tooltip {
 	--ck-balloon-panel-border: var(--ck-tooltip-border);
 	--ck-balloon-panel-background-color: var(--ck-tooltip-background-color);
+
+	/* Tooltips use a smaller arrow than the default balloon panel. */
+	--ck-balloon-arrow-half-width: var(--ck-tooltip-arrow-half-width);
+	--ck-balloon-arrow-height: var(--ck-tooltip-arrow-height);
+	--ck-balloon-arrow-offset: var(--ck-tooltip-arrow-offset);
 
 	padding: var(--ck-tooltip-padding);
 	border-radius: var(--ck-tooltip-border-radius);
