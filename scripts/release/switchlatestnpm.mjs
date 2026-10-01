@@ -23,7 +23,6 @@ const currentMajor = semver.major( currentVersion );
 const ltsMajors = rootPkgJson[ 'ck-lts-versions' ];
 const isCurrentVersionLTS = ltsMajors.includes( currentMajor );
 
-const npmOwner = 'ckeditor';
 const packages = globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
 	.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name );
 
@@ -38,7 +37,7 @@ if ( shouldAssignLatest ) {
 	console.log( `Moving \`@latest\` → v${ currentVersion }.` );
 
 	await releaseTools.reassignNpmTags( {
-		npmOwner,
+		useOidc: true,
 		packages,
 		version: currentVersion,
 		npmTag: 'latest'
@@ -50,7 +49,7 @@ if ( shouldAssignLatest ) {
 // Update the corresponding LTS tag (e.g., `lts-v47`) if the current version is part of an LTS release line.
 if ( isCurrentVersionLTS ) {
 	await releaseTools.reassignNpmTags( {
-		npmOwner,
+		useOidc: true,
 		packages,
 		version: currentVersion,
 		npmTag: `lts-v${ currentMajor }`
