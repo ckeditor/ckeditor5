@@ -195,3 +195,24 @@
 		}
 	}
 }
+
+@media screen and (max-width: 450px) {
+	.ck.ck-find-and-replace-form {
+		& .ck-find-and-replace-form__inputs {
+			& > .ck-labeled-field-view:not(.ck-labeled-field-replace) {
+				flex: 1 1 100%;
+				margin-bottom: var(--ck-spacing-standard, var(--ck-spacing-base));
+			}
+
+			& > .ck-button-prev {
+				[dir="ltr"] & {
+					margin-left: auto;
+				}
+
+				[dir="rtl"] & {
+					margin-right: auto;
+				}
+			}
+		}
+	}
+}
