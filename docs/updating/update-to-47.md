@@ -8,6 +8,16 @@ modified_at: 2026-03-04
 
 # Update to CKEditor&nbsp;5 v47.x
 
+<info-box tip>
+	**Let an AI coding agent do the update for you.** The official `ckeditor-update` skill walks your agent through every update guide between your version and the target one and applies the changes to your code. Install the CKEditor&nbsp;5 skills:
+
+	```bash
+	npx skills add ckeditor/skills
+	```
+
+	Then ask your agent, for example: _"Update CKEditor&nbsp;5 to the latest version"_ or name the version you want. Review the changes before you commit them. See the {@link getting-started/ai-coding-agents Using CKEditor&nbsp;5 with AI coding agents} guide for setup options and supported agents.
+</info-box>
+
 <info-box>
 	When updating your CKEditor&nbsp;5 installation, ensure **all the packages are the same version** to avoid errors.
 

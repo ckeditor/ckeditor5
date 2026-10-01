@@ -7,6 +7,16 @@ meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at a
 
 # Updating CKEditor&nbsp;5
 
+<info-box tip>
+	**Let an AI coding agent do the update for you.** The official `ckeditor-update` skill walks your agent through every update guide between your version and the target one and applies the changes to your code. Install the CKEditor&nbsp;5 skills:
+
+	```bash
+	npx skills add ckeditor/skills
+	```
+
+	Then ask your agent, for example: _"Update CKEditor&nbsp;5 to the latest version"_ or name the version you want. Review the changes before you commit them. See the {@link getting-started/ai-coding-agents Using CKEditor&nbsp;5 with AI coding agents} guide for setup options and supported agents.
+</info-box>
+
 CKEditor&nbsp;5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
 
 <info-box>
