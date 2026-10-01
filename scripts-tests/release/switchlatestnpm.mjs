@@ -305,4 +305,31 @@ describe( 'scripts/release/switchlatestnpm', () => {
 			npmTag: 'latest'
 		} ) );
 	} );
+
+	// npm Trusted Publishing (OIDC): `npm whoami` does not reflect OIDC authentication, so the npm account is not verified.
+	it( 'should reassign all npm tags using npm Trusted Publishing (OIDC)', async () => {
+		const packageJsonMapInternal = {
+			...packageJsonMap,
+			'/workspace/ckeditor/ckeditor5-commercial/external/ckeditor5/package.json': {
+				version: '47.0.0',
+				'ck-lts-versions': [
+					47
+				]
+			}
+		};
+
+		vi.mocked( fs.readJsonSync ).mockImplementation( path => packageJsonMapInternal[ path ] );
+		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '46.1.0' );
+
+		// Act: import executes the script (top-level await).
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
+
+		// Both `@latest` and `@lts-v47`.
+		expect( releaseTools.reassignNpmTags ).toHaveBeenCalledTimes( 2 );
+
+		for ( const [ options ] of vi.mocked( releaseTools.reassignNpmTags ).mock.calls ) {
+			expect( options.useOidc ).toEqual( true );
+			expect( options ).not.toHaveProperty( 'npmOwner' );
+		}
+	} );
 } );
