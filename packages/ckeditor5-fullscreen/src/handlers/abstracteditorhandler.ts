@@ -18,7 +18,8 @@ import {
 	Rect,
 	trustedHtml,
 	type EventInfo,
-	ResizeObserver
+	ResizeObserver,
+	containsNode
 } from '@ckeditor/ckeditor5-utils';
 import type { ElementApi, Editor, EditorConfig } from '@ckeditor/ckeditor5-core';
 import { IconDocumentOutlineToggle, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
@@ -507,11 +508,19 @@ export class FullscreenAbstractEditorHandler {
 			this._registerFullscreenDialogPositionAdjustments();
 		}
 
-		// Hide all other elements in the wrapper's mount target to ensure they don't create an empty unscrollable space.
-		for ( const element of this._getWrapperMountTarget().children ) {
-			// Do not hide body wrapper and ckbox wrapper to keep dialogs, balloons etc visible.
+		// Hide all other elements to ensure they don't create an empty unscrollable space. Keep the wrapper visible, and
+		// every place the editor's body collection (dialogs, balloons etc) may be in once the `ui.update()` call below
+		// re-mounts it: where it is now, the configured `ui.overlayContainer`, or the body wrapper shared with other
+		// editors (when it follows the editable from a shadow root to the `<body>` element).
+		const elementsToKeepVisible = [
+			this.getWrapper(),
+			this._editor.ui.view.body.bodyCollectionContainer,
+			this._editor.config.get( 'ui.overlayContainer' ) || null
+		];
+
+		for ( const element of ( this._editor.config.get( 'fullscreen.container' ) || this._document.body ).children ) {
 			if (
-				element !== this._wrapper &&
+				!elementsToKeepVisible.some( node => containsNode( element, node ) ) &&
 				!element.classList.contains( 'ck-body-wrapper' ) &&
 				!element.classList.contains( 'ckbox-wrapper' ) &&
 				// Already hidden elements are not hidden again to avoid accidentally showing them after leaving fullscreen.
@@ -688,7 +697,7 @@ export class FullscreenAbstractEditorHandler {
 		this._wrapperMountTarget = null;
 		this._coversViewport = false;
 
-		// Restore visibility of all other elements in the wrapper's mount target.
+		// Restore visibility of all elements hidden when the fullscreen mode was enabled.
 		for ( const [ element, displayValue ] of this._hiddenElements ) {
 			element.style.display = displayValue;
 		}
