@@ -19,9 +19,19 @@ import { FullscreenAbstractEditorHandler } from '../../src/handlers/abstractedit
 import { Fullscreen } from '../../src/fullscreen.js';
 
 describe( 'AbstractHandler', () => {
-	let abstractHandler, domElement, editor;
+	let abstractHandler, domElement, editor, consoleWarnSpy;
 
 	beforeEach( async () => {
+		// An editor rendered in a shadow root without `ui.overlayContainer` warns about it. That is expected in the tests
+		// creating such editors, so only this warning is silenced – every other one still gets through.
+		const originalWarn = console.warn;
+
+		consoleWarnSpy = vi.spyOn( console, 'warn' ).mockImplementation( ( ...args ) => {
+			if ( args[ 0 ] !== 'ui-overlay-container-not-configured' ) {
+				originalWarn( ...args );
+			}
+		} );
+
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );
 
@@ -36,11 +46,13 @@ describe( 'AbstractHandler', () => {
 		abstractHandler = new FullscreenAbstractEditorHandler( editor );
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		domElement.remove();
 		abstractHandler.disable();
 
-		return editor.destroy();
+		await editor.destroy();
+
+		consoleWarnSpy.mockRestore();
 	} );
 
 	describe( 'constructor', () => {
@@ -257,6 +269,126 @@ describe( 'AbstractHandler', () => {
 
 			abstractHandler.disable();
 			overlayContainer.remove();
+		} );
+
+		describe( 'hiding other elements', () => {
+			let pageElement;
+
+			beforeEach( () => {
+				pageElement = global.document.createElement( 'div' );
+				global.document.body.appendChild( pageElement );
+			} );
+
+			afterEach( () => {
+				pageElement.remove();
+			} );
+
+			it( 'should hide the other elements of the page', () => {
+				abstractHandler.enable();
+
+				expect( pageElement.style.display ).toBe( 'none' );
+				expect( editor.ui.element.checkVisibility() ).toBe( false );
+			} );
+
+			it( 'should restore the hidden elements when the fullscreen mode is disabled', () => {
+				abstractHandler.enable();
+				abstractHandler.disable();
+
+				expect( pageElement.style.display ).toBe( '' );
+				expect( editor.ui.element.checkVisibility() ).toBe( true );
+			} );
+
+			it( 'should restore the original inline `display` value of the hidden elements', () => {
+				pageElement.style.display = 'flex';
+
+				abstractHandler.enable();
+
+				expect( pageElement.style.display ).toBe( 'none' );
+
+				abstractHandler.disable();
+
+				expect( pageElement.style.display ).toBe( 'flex' );
+			} );
+
+			it( 'should not touch elements that are already hidden, so that they stay hidden after leaving', () => {
+				pageElement.style.display = 'none';
+
+				abstractHandler.enable();
+
+				expect( abstractHandler._hiddenElements.has( pageElement ) ).toBe( false );
+
+				abstractHandler.disable();
+
+				expect( pageElement.style.display ).toBe( 'none' );
+			} );
+
+			it( 'should keep the wrapper visible', () => {
+				abstractHandler.enable();
+
+				expect( abstractHandler.getWrapper().checkVisibility() ).toBe( true );
+			} );
+
+			it( 'should keep the element holding the editor body collection visible', () => {
+				abstractHandler.enable();
+
+				const bodyCollectionContainer = editor.ui.view.body.bodyCollectionContainer;
+
+				expect( bodyCollectionContainer.checkVisibility() ).toBe( true );
+				expect( abstractHandler._hiddenElements.has( bodyCollectionContainer.parentElement ) ).toBe( false );
+			} );
+
+			it( 'should keep the CKBox wrapper visible', () => {
+				pageElement.className = 'ck ckbox-wrapper';
+
+				abstractHandler.enable();
+
+				expect( pageElement.checkVisibility() ).toBe( true );
+			} );
+
+			it( 'should hide only the other children of a custom `fullscreen.container`', () => {
+				const customContainer = global.document.createElement( 'div' );
+				const containerChild = global.document.createElement( 'div' );
+
+				customContainer.appendChild( containerChild );
+				global.document.body.appendChild( customContainer );
+				editor.config.set( 'fullscreen.container', customContainer );
+
+				abstractHandler.enable();
+
+				expect( containerChild.style.display ).toBe( 'none' );
+				expect( abstractHandler.getWrapper().checkVisibility() ).toBe( true );
+				// The rest of the page stays visible, as the fullscreen mode does not cover the viewport.
+				expect( pageElement.checkVisibility() ).toBe( true );
+				expect( editor.ui.element.checkVisibility() ).toBe( true );
+
+				abstractHandler.disable();
+
+				expect( containerChild.style.display ).toBe( '' );
+
+				customContainer.remove();
+			} );
+
+			// The body collection is still in the shared body wrapper when the elements are hidden, and it is remounted
+			// to the overlay container only by the `ui.update()` call at the end of `enable()`.
+			it( 'should keep a `ui.overlayContainer` configured after the editor was created visible', () => {
+				const overlayContainer = global.document.createElement( 'div' );
+
+				global.document.body.appendChild( overlayContainer );
+				editor.config.set( 'ui.overlayContainer', overlayContainer );
+
+				try {
+					abstractHandler.enable();
+
+					const bodyCollectionContainer = editor.ui.view.body.bodyCollectionContainer;
+
+					expect( overlayContainer.contains( bodyCollectionContainer ) ).toBe( true );
+					expect( abstractHandler.getWrapper().checkVisibility() ).toBe( true );
+					expect( bodyCollectionContainer.checkVisibility() ).toBe( true );
+				} finally {
+					abstractHandler.disable();
+					overlayContainer.remove();
+				}
+			} );
 		} );
 
 		it( 'should adopt the scroll lock styles into the document, so they work without a light DOM stylesheet', () => {
@@ -1877,6 +2009,82 @@ describe( 'AbstractHandler', () => {
 
 				expect( global.document.body.classList.contains( 'ck-fullscreen' ) ).toBe( false );
 				expect( shadowHost.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+			} );
+		} );
+
+		describe( 'hiding other elements', () => {
+			it( 'should hide the elements of the page outside the shadow root the wrapper is mounted in', async () => {
+				await createEditorInShadowRoot();
+
+				shadowHandler.enable();
+
+				// The editor created in the light DOM by the top-level `beforeEach()`.
+				expect( editor.ui.element.checkVisibility() ).toBe( false );
+
+				shadowHandler.disable();
+
+				expect( editor.ui.element.checkVisibility() ).toBe( true );
+			} );
+
+			it( 'should keep the host of the shadow root the wrapper is mounted in visible', async () => {
+				await createEditorInShadowRoot();
+
+				shadowHandler.enable();
+
+				expect( shadowHost.style.display ).not.toBe( 'none' );
+				expect( shadowHandler.getWrapper().checkVisibility() ).toBe( true );
+				expect( shadowEditor.ui.view.body.bodyCollectionContainer.checkVisibility() ).toBe( true );
+
+				shadowHandler.disable();
+			} );
+
+			it( 'should keep the host of the shadow root the wrapper is mounted in visible in a closed shadow root', async () => {
+				await createEditorInShadowRoot( 'closed' );
+
+				shadowHandler.enable();
+
+				expect( shadowHost.style.display ).not.toBe( 'none' );
+				expect( shadowHandler.getWrapper().checkVisibility() ).toBe( true );
+
+				shadowHandler.disable();
+			} );
+
+			it( 'should keep the host of a `ui.overlayContainer` shadow root visible and hide the editor\'s own host', async () => {
+				const overlayContainer = createShadowRoot();
+
+				await createEditorInShadowRoot( 'open', { ui: { overlayContainer } } );
+
+				shadowHandler.enable();
+
+				expect( overlayContainer.host.style.display ).not.toBe( 'none' );
+				expect( shadowHandler.getWrapper().checkVisibility() ).toBe( true );
+				expect( shadowEditor.ui.view.body.bodyCollectionContainer.checkVisibility() ).toBe( true );
+				// Nothing of the fullscreen mode lives in the shadow root the editor was created in.
+				expect( shadowHost.style.display ).toBe( 'none' );
+
+				shadowHandler.disable();
+
+				expect( shadowHost.style.display ).toBe( '' );
+
+				overlayContainer.host.remove();
+			} );
+
+			// The body collection is still in the editor's shadow root when the elements are hidden, and it is remounted
+			// to the body wrapper shared with the light DOM editor only by the `ui.update()` call at the end of `enable()`.
+			it( 'should keep the body collection visible when it is remounted from the shadow root to the body', async () => {
+				await createEditorInShadowRoot( 'open', { fullscreen: { container: global.document.body } } );
+
+				// The real editor handler is needed here: it moves the editable, which makes the body collection follow it.
+				shadowEditor.execute( 'toggleFullscreen' );
+
+				try {
+					const bodyCollectionContainer = shadowEditor.ui.view.body.bodyCollectionContainer;
+
+					expect( bodyCollectionContainer.getRootNode() ).toBe( global.document );
+					expect( bodyCollectionContainer.checkVisibility() ).toBe( true );
+				} finally {
+					shadowEditor.execute( 'toggleFullscreen' );
+				}
 			} );
 		} );
 
