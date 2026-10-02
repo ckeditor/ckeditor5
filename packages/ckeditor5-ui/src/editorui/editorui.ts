@@ -176,6 +176,11 @@ export abstract class EditorUI extends /* #__PURE__ */ ObservableMixin() {
 
 			// The editable could be in a different document (an iframe or another window) than the one the editor code runs in.
 			// Move the body collection to the editable document so the UI rendered there is visible and positioned properly.
+			//
+			// Note: This is a workaround for a simple case only, not a general multi-window solution. It assumes that the `main`
+			// root is attached to its target document before the UI is ready and stays in that document for the editor's
+			// lifetime. Roots with other names, roots attached later, and roots in different documents are not handled.
+			// The empty body wrapper is also left in the editable document after the editor is destroyed.
 			if ( domRoot && domRoot.ownerDocument != global.document ) {
 				const domDocument = domRoot.ownerDocument;
 				let bodyWrapper = domDocument.querySelector( 'body > .ck-body-wrapper' );

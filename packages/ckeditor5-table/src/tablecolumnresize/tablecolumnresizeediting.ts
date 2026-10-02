@@ -505,6 +505,10 @@ export class TableColumnResizeEditing extends Plugin {
 
 		// The editable could be in a different document (an iframe or another window) than the one the editor code runs in.
 		// DOM roots are attached after the plugins are initialized, so wait for the editor to be ready.
+		//
+		// Note: This is a workaround for a simple case only, not a general multi-window solution. It assumes that the `main`
+		// root is attached to its target document before the editor is ready and stays in that document for the editor's
+		// lifetime. Roots with other names, roots attached later, and roots in different documents are not handled.
 		this.listenTo( this.editor, 'ready', () => {
 			const domRoot = editingView.getDomRoot();
 			const domDocument = domRoot ? domRoot.ownerDocument : global.window.document;
