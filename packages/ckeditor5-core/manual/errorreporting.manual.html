@@ -27,8 +27,9 @@
 
 			<ol>
 				<li>
-					Click <strong>Throw from a plugin</strong> under the first editor. One entry should appear
-					in the log, naming <strong>editor 1</strong>. The error should also be in the console.
+					Click <strong>Throw from a plugin</strong> under the first editor. Two entries should appear
+					in the log, one naming <strong>editor 1</strong> and one naming <strong>editor 3</strong> —
+					see the note below. The error should also be in the console, once.
 				</li>
 				<li>
 					Do the same under the second editor. One entry, naming <strong>editor 2</strong>. Both
@@ -48,25 +49,26 @@
 					<strong>nothing should appear in the log</strong>, and the console shows it as usual.
 				</li>
 				<li>
-					Click <strong>Throw from a plugin</strong> under the third editor. It is expected to be
-					named <strong>editor 1</strong> rather than editor 3 — see the note below. When this starts
-					naming editor 3, attribution no longer searches object graphs and this case can go.
+					Click <strong>Throw from a plugin</strong> under the third editor. Again two entries,
+					naming <strong>editor 1</strong> and <strong>editor 3</strong>. When this names editor 3
+					alone, attribution no longer searches object graphs and this case can go.
 				</li>
 			</ol>
 
 			<p>
-				<strong>Why the third editor is misattributed.</strong> Which editor an error belongs to is
+				<strong>Why editors 1 and 3 are both reported.</strong> Which editor an error belongs to is
 				currently decided by walking both object graphs and looking for anything they have in common,
-				and the first editor that matches wins.
+				and every editor that matches is reported, the way the Watchdog restarted every editor connected
+				to the error.
 			</p>
 
 			<p>
 				Editors 1 and 3 both load the list feature. <code>ListEditing</code> passes one and the same
 				module-level array to the schema of every editor that loads it
 				(<code>LIST_BASE_ATTRIBUTES</code>), so those two have an object in common and an error from
-				either of them looks like it belongs to editor 1. It takes two editors to show this: a feature
-				loaded by a single editor shares nothing with anyone. Editor 2 does not load lists, which is
-				why it is named correctly.
+				either of them matches both. It takes two editors to show this: a feature loaded by a single
+				editor shares nothing with anyone. Editor 2 does not load lists, which is why it is named
+				alone.
 			</p>
 		</ck-manual-header>
 

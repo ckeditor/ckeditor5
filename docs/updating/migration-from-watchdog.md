@@ -33,7 +33,7 @@ const off = onEditorError( ( { error, source } ) => {
 } );
 ```
 
-`source` is the editor or context the error was attributed to, so comparing it with your own instance tells you whether the error is yours to handle.
+`source` is the editor or context the error was attributed to, so comparing it with your own instance tells you whether the error is yours to handle. Editors that share an object can all be reported for the same error, as described in the {@link getting-started/setup/error-handling#what-does-the-handler-receive What does the handler receive?} section of the error handling guide.
 
 The framework integrations already do this for you and pass the error to the callback they have always had. If you use one of them, you do not register anything yourself for the errors of an editor. Errors attributed to a `Context` are the exception, and only React reports those through a component of its own.
 
