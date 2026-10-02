@@ -9,7 +9,7 @@
 
 import { global, type CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import { resolveErrorSource } from './resolveerrorsource.js';
+import { resolveErrorSources } from './resolveerrorsource.js';
 import { Editor } from './editor/editor.js';
 import { type Context } from './context.js';
 
@@ -29,6 +29,10 @@ export interface EditorErrorData {
 	 * whatever the throwing code happened to have at hand: a plugin, a command, the model, a writer.
 	 *
 	 * Compare this with your own instance to tell whether the error came from an editor you manage.
+	 *
+	 * When editors share an object, an error can be attributed to more than one of them. The callback is
+	 * then called once for each, with the same `error` and a different `source`, so `source` may be an
+	 * editor the error did not come from.
 	 *
 	 * `null` is reserved for errors that could not be attributed. Under the current filter such an error
 	 * is not reported at all, but the type does not promise that, so that the filter stays a policy rather
@@ -117,32 +121,33 @@ class EditorErrorReporter {
 			return;
 		}
 
-		const source = resolveErrorSource( error.context );
-
-		// An error nobody can be told about is not reported at all.
-		if ( !source ) {
-			return;
-		}
-
 		// Reporting is limited to a running editor. Beyond that there is nothing useful an integrator can
 		// do with a half-built or already-destroyed editor, and its internals are in no defined state.
 		//
 		// Editors only. A context has no lifecycle state, and it does not need one here: attribution never
 		// names a context it has stopped knowing about.
-		if ( source instanceof Editor && source.state !== 'ready' ) {
+		const sources = resolveErrorSources( error.context )
+			.filter( source => !( source instanceof Editor ) || source.state === 'ready' );
+
+		// An error nobody can be told about is not reported at all.
+		if ( !sources.length ) {
 			return;
 		}
 
 		this._reported.add( error );
 
-		for ( const { callback } of Array.from( this._registrations ) ) {
-			try {
-				callback( { error, source } );
-			} catch ( callbackError ) {
-				// A broken callback must not take down the others, nor the page. We are inside a `window`
-				// error handler, so letting this escape would break error handling for everything else on
-				// the page as well.
-				console.error( 'An error happened in an editor error callback.', callbackError );
+		// One call per source, so that every editor the error is attributed to hears about it. A callback that
+		// compares `source` with its own instance then matches whichever of them it manages.
+		for ( const source of sources ) {
+			for ( const { callback } of Array.from( this._registrations ) ) {
+				try {
+					callback( { error, source } );
+				} catch ( callbackError ) {
+					// A broken callback must not take down the others, nor the page. We are inside a `window`
+					// error handler, so letting this escape would break error handling for everything else on
+					// the page as well.
+					console.error( 'An error happened in an editor error callback.', callbackError );
+				}
 			}
 		}
 	}
@@ -176,6 +181,9 @@ const reporter = /* #__PURE__ -- @preserve */ new EditorErrorReporter();
  * There is one registration surface for the whole page rather than one per editor, so an integrator running
  * several editors compares `source` with their own instance, as above. Registering the same callback twice
  * gives two independent registrations, and each unregisters on its own.
+ *
+ * One error can reach the callback more than once, once for every editor it is attributed to — see
+ * {@link module:core/errorreporter~EditorErrorData#source}.
  *
  * Reporting only. Nothing is restarted and nothing is swallowed — the error still reaches the console.
  */

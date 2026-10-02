@@ -15,7 +15,7 @@ import { stubWindowOnError } from '@ckeditor/ckeditor5-core/tests/_utils/stubwin
 describe( 'ImageStyle integration', () => {
 	// Covers the reporting path end to end: an error thrown with an editor as its context reaches a
 	// registered callback, naming that editor. It does not cover attribution — an error whose context is the
-	// editor itself short-circuits in `resolveErrorSource()` and never reaches the graph walk. Telling two
+	// editor itself short-circuits in `resolveErrorSources()` and never reaches the graph walk. Telling two
 	// editors apart when they share objects is a known stage-1 limitation; ImageStyle does connect them
 	// today, so strengthening this test has to wait for #11300.
 	describe( 'error reporting', () => {

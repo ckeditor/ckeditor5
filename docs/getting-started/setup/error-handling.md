@@ -58,6 +58,10 @@ onEditorError( ( { error, source } ) => {
 } );
 ```
 
+<info-box warning>
+	When several editors on one page share an object, an error can be attributed to more than one of them. That happens when you pass the same configuration object or the same `plugins` array to each editor, and with features that keep state shared between editors, such as the {@link features/lists list feature}. The callback is then called once for each of these editors, with the same `error` and a different `source`, so an editor may be reported for an error that did not come from it. Give every editor a configuration of its own to avoid the first case.
+</info-box>
+
 In TypeScript `source` is typed `Editor | Context | null`. It is never `null` today, because an error that cannot be attributed is not reported at all, but the type leaves room for that to change.
 
 The object that actually threw is in {@link module:utils/ckeditorerror~CKEditorError#context `error.context`}. It is whatever the throwing code had at hand, such as a plugin, a command, the model, or a writer, so it is rarely what you want to act on.

@@ -9,7 +9,7 @@ import { areConnectedThroughProperties } from '../../src/errorattribution/arecon
 
 // This function and the `getSubNodes()` it walks with exist for as long as error attribution has to search
 // object graphs. The cases below cover the paths that attribution itself never reaches — the rest is
-// exercised through `resolveErrorSource()`.
+// exercised through `resolveErrorSources()`.
 describe( 'areConnectedThroughProperties()', () => {
 	it( 'should return true for one and the same object', () => {
 		const shared = { foo: 'bar' };

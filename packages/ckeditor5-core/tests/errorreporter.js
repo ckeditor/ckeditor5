@@ -69,6 +69,25 @@ describe( 'onEditorError()', () => {
 			expect( callback ).toHaveBeenCalledWith( { error, source: editor } );
 		} );
 
+		it( 'should report the error once for every editor it is attributed to', async () => {
+			const callback = vi.fn();
+			const shared = [ 'shared' ];
+			const first = await VirtualTestEditor.create( { shared } );
+			const second = await VirtualTestEditor.create( { shared } );
+
+			onTestFinished( () => Promise.all( [ first.destroy(), second.destroy() ] ) );
+
+			register( callback );
+
+			const error = throwUncaught( second.config );
+
+			await waitCycle();
+
+			expect( callback ).toHaveBeenCalledTimes( 2 );
+			expect( callback ).toHaveBeenNthCalledWith( 1, { error, source: first } );
+			expect( callback ).toHaveBeenNthCalledWith( 2, { error, source: second } );
+		} );
+
 		it( 'should report an error carried by an unhandled rejection', async () => {
 			const callback = vi.fn();
 

@@ -6,13 +6,13 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import { resolveErrorSource } from '../src/resolveerrorsource.js';
+import { resolveErrorSources } from '../src/resolveerrorsource.js';
 import { Context } from '../src/context.js';
 import { Plugin } from '../src/plugin.js';
 import { ContextPlugin } from '../src/contextplugin.js';
 import { VirtualTestEditor } from './_utils/virtualtesteditor.js';
 
-describe( 'resolveErrorSource()', () => {
+describe( 'resolveErrorSources()', () => {
 	let editor;
 
 	beforeEach( async () => {
@@ -27,13 +27,13 @@ describe( 'resolveErrorSource()', () => {
 
 	describe( 'a context that is the answer itself', () => {
 		it( 'should return the editor passed as the context', () => {
-			expect( resolveErrorSource( editor ) ).toBe( editor );
+			expect( resolveErrorSources( editor ) ).toEqual( [ editor ] );
 		} );
 
 		it( 'should return the context passed as the context', async () => {
 			const context = await Context.create();
 
-			expect( resolveErrorSource( context ) ).toBe( context );
+			expect( resolveErrorSources( context ) ).toEqual( [ context ] );
 
 			await context.destroy();
 		} );
@@ -43,7 +43,7 @@ describe( 'resolveErrorSource()', () => {
 		it( 'should return the editor for a context that editor made for itself', async () => {
 			const own = await VirtualTestEditor.create();
 
-			expect( resolveErrorSource( own.config.get( 'context' ) ?? own._context ) ).toBe( own );
+			expect( resolveErrorSources( own.config.get( 'context' ) ?? own._context ) ).toEqual( [ own ] );
 
 			await own.destroy();
 		} );
@@ -52,43 +52,67 @@ describe( 'resolveErrorSource()', () => {
 			const notReady = new VirtualTestEditor();
 
 			expect( notReady.state ).to.not.equal( 'ready' );
-			expect( resolveErrorSource( notReady ) ).toBe( notReady );
+			expect( resolveErrorSources( notReady ) ).toEqual( [ notReady ] );
 		} );
 	} );
 
 	describe( 'no answer', () => {
 		it( 'should return null for null', () => {
-			expect( resolveErrorSource( null ) ).toBeNull();
+			expect( resolveErrorSources( null ) ).toEqual( [] );
 		} );
 
 		it( 'should return null for undefined', () => {
-			expect( resolveErrorSource( undefined ) ).toBeNull();
+			expect( resolveErrorSources( undefined ) ).toEqual( [] );
 		} );
 
 		it( 'should return null for a primitive', () => {
-			expect( resolveErrorSource( 'foo' ) ).toBeNull();
-			expect( resolveErrorSource( 42 ) ).toBeNull();
+			expect( resolveErrorSources( 'foo' ) ).toEqual( [] );
+			expect( resolveErrorSources( 42 ) ).toEqual( [] );
 		} );
 
 		it( 'should return null for an object that shares nothing with any editor', () => {
-			expect( resolveErrorSource( { foo: 'bar' } ) ).toBeNull();
+			expect( resolveErrorSources( { foo: 'bar' } ) ).toEqual( [] );
 		} );
 	} );
 
 	describe( 'a context that belongs to an editor', () => {
 		it( 'should return the editor for an object reachable from it', () => {
-			expect( resolveErrorSource( editor.model ) ).toBe( editor );
-			expect( resolveErrorSource( editor.model.document ) ).toBe( editor );
-			expect( resolveErrorSource( editor.plugins ) ).toBe( editor );
+			expect( resolveErrorSources( editor.model ) ).toEqual( [ editor ] );
+			expect( resolveErrorSources( editor.model.document ) ).toEqual( [ editor ] );
+			expect( resolveErrorSources( editor.plugins ) ).toEqual( [ editor ] );
 		} );
 
 		it( 'should tell two editors apart', async () => {
 			const other = await VirtualTestEditor.create();
 
-			expect( resolveErrorSource( editor.model ) ).toBe( editor );
-			expect( resolveErrorSource( other.model ) ).toBe( other );
+			expect( resolveErrorSources( editor.model ) ).toEqual( [ editor ] );
+			expect( resolveErrorSources( other.model ) ).toEqual( [ other ] );
 
 			await other.destroy();
+		} );
+
+		// The configuration keeps arrays by reference, so both editors reach the same one. `second` is the
+		// telling case: a single answer would be `first`, which leaves out the editor the object came from.
+		it( 'should name every editor that shares an object with the context', async () => {
+			const shared = [ 'shared' ];
+			const first = await VirtualTestEditor.create( { shared } );
+			const second = await VirtualTestEditor.create( { shared } );
+
+			expect( resolveErrorSources( second.config ) ).toEqual( [ first, second ] );
+
+			await first.destroy();
+			await second.destroy();
+		} );
+
+		it( 'should name every context that shares an object with the context when no editor does', async () => {
+			const shared = [ 'shared' ];
+			const first = await Context.create( { shared } );
+			const second = await Context.create( { shared } );
+
+			expect( resolveErrorSources( second.config ) ).toEqual( [ first, second ] );
+
+			await first.destroy();
+			await second.destroy();
 		} );
 	} );
 
@@ -98,17 +122,17 @@ describe( 'resolveErrorSource()', () => {
 			// reachable from nothing the resolver knows about.
 			const notReady = new VirtualTestEditor();
 
-			expect( resolveErrorSource( notReady.model ) ).toBeNull();
+			expect( resolveErrorSources( notReady.model ) ).toEqual( [] );
 		} );
 
 		it( 'should stop naming an editor once it is destroyed', async () => {
 			const model = editor.model;
 
-			expect( resolveErrorSource( model ) ).toBe( editor );
+			expect( resolveErrorSources( model ) ).toEqual( [ editor ] );
 
 			await editor.destroy();
 
-			expect( resolveErrorSource( model ) ).toBeNull();
+			expect( resolveErrorSources( model ) ).toEqual( [] );
 		} );
 	} );
 
@@ -132,8 +156,8 @@ describe( 'resolveErrorSource()', () => {
 		// without excluding what the context owns, the first editor asked would answer for all of them.
 		// `second` is the telling case, because `first` is asked first.
 		it( 'should name the editor the object actually belongs to', () => {
-			expect( resolveErrorSource( first.model ) ).toBe( first );
-			expect( resolveErrorSource( second.model ) ).toBe( second );
+			expect( resolveErrorSources( first.model ) ).toEqual( [ first ] );
+			expect( resolveErrorSources( second.model ) ).toEqual( [ second ] );
 		} );
 
 		// A model has no way back to its editor, so it never reaches anything the editors have in common.
@@ -149,11 +173,11 @@ describe( 'resolveErrorSource()', () => {
 			const withPlugin = await VirtualTestEditor.create( { context, plugins: [ Marker ] } );
 			const alsoWithPlugin = await VirtualTestEditor.create( { context, plugins: [ Marker ] } );
 
-			expect( resolveErrorSource( withPlugin.plugins.get( Marker ) ) ).toBe( withPlugin );
-			expect( resolveErrorSource( alsoWithPlugin.plugins.get( Marker ) ) ).toBe( alsoWithPlugin );
+			expect( resolveErrorSources( withPlugin.plugins.get( Marker ) ) ).toEqual( [ withPlugin ] );
+			expect( resolveErrorSources( alsoWithPlugin.plugins.get( Marker ) ) ).toEqual( [ alsoWithPlugin ] );
 
-			expect( resolveErrorSource( withPlugin.commands ) ).toBe( withPlugin );
-			expect( resolveErrorSource( alsoWithPlugin.commands ) ).toBe( alsoWithPlugin );
+			expect( resolveErrorSources( withPlugin.commands ) ).toEqual( [ withPlugin ] );
+			expect( resolveErrorSources( alsoWithPlugin.commands ) ).toEqual( [ alsoWithPlugin ] );
 
 			await withPlugin.destroy();
 			await alsoWithPlugin.destroy();
@@ -162,7 +186,7 @@ describe( 'resolveErrorSource()', () => {
 		// An error no editor claims belongs to the context. A context plugin is shared by every editor, so it
 		// is exactly what produces such an error.
 		it( 'should name the context for an object the context itself owns', () => {
-			expect( resolveErrorSource( context.plugins ) ).toBe( context );
+			expect( resolveErrorSources( context.plugins ) ).toEqual( [ context ] );
 		} );
 
 		it( 'should name the context for a context plugin', async () => {
@@ -175,10 +199,10 @@ describe( 'resolveErrorSource()', () => {
 			const sharedContext = await Context.create( { plugins: [ SharedPlugin ] } );
 			const editorInContext = await VirtualTestEditor.create( { context: sharedContext } );
 
-			expect( resolveErrorSource( sharedContext.plugins.get( SharedPlugin ) ) ).toBe( sharedContext );
+			expect( resolveErrorSources( sharedContext.plugins.get( SharedPlugin ) ) ).toEqual( [ sharedContext ] );
 
 			// The editor still wins for what belongs to it alone.
-			expect( resolveErrorSource( editorInContext.model ) ).toBe( editorInContext );
+			expect( resolveErrorSources( editorInContext.model ) ).toEqual( [ editorInContext ] );
 
 			await editorInContext.destroy();
 			await sharedContext.destroy();
@@ -197,7 +221,7 @@ describe( 'resolveErrorSource()', () => {
 			expect( notReady.state ).to.not.equal( 'ready' );
 			expect( Array.from( ownContext.editors ) ).toContain( notReady );
 
-			expect( resolveErrorSource( notReady.model ) ).toBeNull();
+			expect( resolveErrorSources( notReady.model ) ).toEqual( [] );
 
 			ownContext.editors.remove( notReady );
 
@@ -215,9 +239,9 @@ describe( 'resolveErrorSource()', () => {
 			const one = await VirtualTestEditor.create( { context: built } );
 			const other = await VirtualTestEditor.create( { context: built } );
 
-			expect( resolveErrorSource( one.model ) ).toBe( one );
-			expect( resolveErrorSource( other.model ) ).toBe( other );
-			expect( resolveErrorSource( built.plugins ) ).toBe( built );
+			expect( resolveErrorSources( one.model ) ).toEqual( [ one ] );
+			expect( resolveErrorSources( other.model ) ).toEqual( [ other ] );
+			expect( resolveErrorSources( built.plugins ) ).toEqual( [ built ] );
 
 			await one.destroy();
 			await other.destroy();
@@ -228,12 +252,12 @@ describe( 'resolveErrorSource()', () => {
 		// context has editors — taking the snapshot then would pull them in, and every error from any of them
 		// would look like the context's own.
 		it( 'should keep naming the editor after the plugins are initialized again', async () => {
-			expect( resolveErrorSource( first.model ) ).toBe( first );
+			expect( resolveErrorSources( first.model ) ).toEqual( [ first ] );
 
 			await context.initPlugins();
 
-			expect( resolveErrorSource( first.model ) ).toBe( first );
-			expect( resolveErrorSource( second.model ) ).toBe( second );
+			expect( resolveErrorSources( first.model ) ).toEqual( [ first ] );
+			expect( resolveErrorSources( second.model ) ).toEqual( [ second ] );
 		} );
 
 		// A context built by hand is in the integrator's hands while `initPlugins()` is still pending, so an
@@ -262,7 +286,7 @@ describe( 'resolveErrorSource()', () => {
 			await initialized;
 
 			expect( Array.from( built.editors ) ).toContain( early );
-			expect( resolveErrorSource( early.model ) ).toBe( early );
+			expect( resolveErrorSources( early.model ) ).toEqual( [ early ] );
 
 			await early.destroy();
 			await built.destroy();
@@ -281,11 +305,11 @@ describe( 'resolveErrorSource()', () => {
 			const goneContext = await Context.create();
 			const plugins = goneContext.plugins;
 
-			expect( resolveErrorSource( plugins ) ).toBe( goneContext );
+			expect( resolveErrorSources( plugins ) ).toEqual( [ goneContext ] );
 
 			await goneContext.destroy();
 
-			expect( resolveErrorSource( plugins ) ).toBeNull();
+			expect( resolveErrorSources( plugins ) ).toEqual( [] );
 		} );
 	} );
 
@@ -293,13 +317,13 @@ describe( 'resolveErrorSource()', () => {
 		it( 'should work for an error thrown with an editor-owned object', () => {
 			const error = new CKEditorError( 'test-error', editor.model );
 
-			expect( resolveErrorSource( error.context ) ).toBe( editor );
+			expect( resolveErrorSources( error.context ) ).toEqual( [ editor ] );
 		} );
 
 		it( 'should give no answer for an error thrown with no context', () => {
 			const error = new CKEditorError( 'test-error' );
 
-			expect( resolveErrorSource( error.context ) ).toBeNull();
+			expect( resolveErrorSources( error.context ) ).toEqual( [] );
 		} );
 	} );
 } );
