@@ -31,6 +31,8 @@ overrides:
   'undici@^6': '^6.28.0'
   'uuid@^8': '^14.0.0'
   'yauzl@^2': '^3.2.1'
+  # Remove after `v49` is released.
+  '@ckeditor/ckeditor5-react>ckeditor5': '>=48.0.0 || ^0.0.0-nightly || ^0.0.0-internal'
 
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
