@@ -172,6 +172,23 @@ export abstract class EditorUI extends /* #__PURE__ */ ObservableMixin() {
 		this._initViewportOffset( this._readViewportOffsetFromConfig() );
 
 		this.once<EditorUIReadyEvent>( 'ready', () => {
+			const domRoot = editingView.getDomRoot();
+
+			// The editable could be in a different document (an iframe or another window) than the one the editor code runs in.
+			// Move the body collection to the editable document so the UI rendered there is visible and positioned properly.
+			if ( domRoot && domRoot.ownerDocument != global.document ) {
+				const domDocument = domRoot.ownerDocument;
+				let bodyWrapper = domDocument.querySelector( 'body > .ck-body-wrapper' );
+
+				if ( !bodyWrapper ) {
+					bodyWrapper = domDocument.createElement( 'div' );
+					bodyWrapper.className = 'ck-body-wrapper';
+					domDocument.body.appendChild( bodyWrapper );
+				}
+
+				bodyWrapper.appendChild( this.view.body.bodyCollectionContainer! );
+			}
+
 			this._bindBodyCollectionWithFocusTracker();
 
 			this.isReady = true;
