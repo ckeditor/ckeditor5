@@ -256,6 +256,42 @@ describe( 'TooltipManager', () => {
 		} );
 	} );
 
+	describe( 'registered documents', () => {
+		it( 'should listen for and render tooltips in each registered document', () => {
+			const iframe = document.createElement( 'iframe' );
+
+			document.body.appendChild( iframe );
+
+			const iframeDocument = iframe.contentDocument;
+			const iframeBody = new BodyCollection( editor.locale );
+			const button = iframeDocument.createElement( 'button' );
+			const pinSpy = vi.spyOn( tooltipManager.balloonPanelView, 'pin' );
+
+			iframeBody.attachToDom( iframeDocument.body );
+			tooltipManager.registerBodyCollection( iframeBody );
+
+			button.dataset.ckeTooltipText = 'Iframe tooltip';
+			button.dataset.ckeTooltipInstant = 'true';
+			iframeDocument.body.appendChild( button );
+
+			button.dispatchEvent( new iframe.contentWindow.MouseEvent( 'mouseenter' ) );
+
+			expect( tooltipManager._documents.has( iframeDocument ) ).toBe( true );
+			expect( iframeBody.has( tooltipManager.balloonPanelView ) ).toBe( true );
+			expect( pinSpy ).toHaveBeenCalledWith( {
+				target: button,
+				positions: expect.any( Array )
+			} );
+
+			tooltipManager.unregisterBodyCollection( iframeBody );
+
+			expect( tooltipManager._documents.has( iframeDocument ) ).toBe( false );
+
+			iframeBody.destroy();
+			iframe.remove();
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		describe( 'singleton', () => {
 			it( 'should not be destroyed until the last editor instance gets destroyed', async () => {
