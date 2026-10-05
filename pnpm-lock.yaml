@@ -823,6 +823,9 @@ importers:
       '@ckeditor/ckeditor5-essentials':
         specifier: workspace:*
         version: link:../ckeditor5-essentials
+      '@ckeditor/ckeditor5-fullscreen':
+        specifier: workspace:*
+        version: link:../ckeditor5-fullscreen
       '@ckeditor/ckeditor5-heading':
         specifier: workspace:*
         version: link:../ckeditor5-heading

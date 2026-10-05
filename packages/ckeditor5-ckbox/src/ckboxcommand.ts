@@ -9,7 +9,7 @@
 
 import type { ModelWriter } from '@ckeditor/ckeditor5-engine';
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import { createElement, toMap } from '@ckeditor/ckeditor5-utils';
+import { toMap } from '@ckeditor/ckeditor5-utils';
 
 import type {
 	CKBoxAssetDefinition,
@@ -21,7 +21,7 @@ import type {
 	CKBoxRawAssetDefinition
 } from './ckboxconfig.js';
 
-import { blurHashToDataUrl, getImageUrls } from './utils.js';
+import { blurHashToDataUrl, getImageUrls, mountCKBoxDialog } from './utils.js';
 
 // Defines the waiting time (in milliseconds) for inserting the chosen asset into the model. The chosen asset is temporarily stored in the
 // `CKBoxCommand#_chosenAssets` and it is removed from there automatically after this time. See `CKBoxCommand#_chosenAssets` for more
@@ -65,9 +65,9 @@ export class CKBoxCommand extends Command {
 	public readonly _chosenAssets: Set<CKBoxAssetDefinition> = new Set<CKBoxAssetDefinition>();
 
 	/**
-	 * The DOM element that acts as a mounting point for the CKBox dialog.
+	 * Unmounts the open CKBox dialog. `null` while the dialog is closed.
 	 */
-	private _wrapper: Element | null = null;
+	private _unmountDialog: VoidFunction | null = null;
 
 	/**
 	 * @inheritDoc
@@ -100,7 +100,7 @@ export class CKBoxCommand extends Command {
 	 * @returns {Boolean}
 	 */
 	private _getValue(): boolean {
-		return this._wrapper !== null;
+		return this._unmountDialog !== null;
 	}
 
 	/**
@@ -201,14 +201,9 @@ export class CKBoxCommand extends Command {
 				return;
 			}
 
-			// CKBox is a standalone application with its own styles, so its wrapper is mounted in the light
-			// DOM (`document.body`) even when the editor lives in a shadow root. Keeping it outside the
-			// shadow root is intentional until its shadow DOM support is verified.
-			this._wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
-			// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
-			document.body.appendChild( this._wrapper );
-
-			window.CKBox.mount( this._wrapper, this._prepareOptions() );
+			this._unmountDialog = mountCKBoxDialog( editor, ( element, stylesTarget ) => {
+				window.CKBox.mount( element, this._prepareOptions(), { stylesTarget } );
+			} );
 		} );
 
 		// Handle closing of the CKBox dialog.
@@ -217,8 +212,8 @@ export class CKBoxCommand extends Command {
 				return;
 			}
 
-			this._wrapper!.remove();
-			this._wrapper = null;
+			this._unmountDialog!();
+			this._unmountDialog = null;
 
 			editor.editing.view.focus();
 		} );

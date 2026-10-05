@@ -30,34 +30,13 @@ const DIALOG_OFFSET = 28;
 /*
  * The part of the fullscreen mode styling that has to reach the light DOM, and so cannot come from the
  * stylesheet an integrator loaded into the shadow root the editor lives in: the `<html>` and `<body>`
- * elements, which no shadow root can contain, and the CKBox UI, which mounts in `document.body` on purpose.
- * Adopted into the editor's document instead – see `adoptGlobalStyleSheet()`.
- *
- * `--ck-z-dialog` is read with a fallback, because it is declared by the fullscreen stylesheet – which in a
- * shadow DOM setup is loaded into that root rather than into the document, leaving it undefined here. Keep
- * the fallback in sync with the value declared there.
+ * elements, which no shadow root can contain. Adopted into the editor's document instead – see `adoptGlobalStyleSheet()`.
  */
 const LIGHT_DOM_STYLES = `
 	/* Disable scrollbars that can be present due to the rest of the website content. */
 	html.ck-fullscreen-scroll-locked,
 	body.ck-fullscreen-scroll-locked {
 		overflow: hidden;
-	}
-
-	/* CKBox wrappers have z-index of 9999, let's bump them over the dialog's to ensure visibility like outside fullscreen mode. */
-	body.ck-fullscreen .ckbox:not(#n) {
-		--ckbox-z-index-root: calc(var(--ck-z-dialog, 100000) + 1);
-
-		/*
-		 * Safari composites \`overflow: auto\` scroll layers (like \`.ck-fullscreen__editable-wrapper\`) on top of
-		 * sibling stacking contexts regardless of z-index. Setting \`position: absolute\` promotes \`.ckbox\` to its
-		 * own compositing layer, which Safari then sorts correctly above the editable wrapper's layer.
-		 */
-		position: absolute;
-	}
-
-	body.ck-fullscreen .ckbox:not(#n) .ckbox-img-editor {
-		--ckbox-z-index-preview: calc(var(--ck-z-dialog, 100000) + 1);
 	}
 `;
 
@@ -522,7 +501,6 @@ export class FullscreenAbstractEditorHandler {
 			if (
 				!elementsToKeepVisible.some( node => containsNode( element, node ) ) &&
 				!element.classList.contains( 'ck-body-wrapper' ) &&
-				!element.classList.contains( 'ckbox-wrapper' ) &&
 				// Already hidden elements are not hidden again to avoid accidentally showing them after leaving fullscreen.
 				( element as HTMLElement ).style.display !== 'none'
 			) {
