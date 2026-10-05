@@ -80,7 +80,9 @@ Nothing is swallowed. Every reported error still reaches the console, exactly as
 
 ## Responding to an error
 
-The editor stays as it is. Its content, its selection, and its undo history are all still there, and it keeps working. Whether that state is worth keeping is a judgment only your application can make, which is why the decision is yours. You have three options, and they combine.
+The editor stays as it is, and nothing stops the user from editing further. That does not mean its state is consistent, though. An error thrown in the middle of an operation, for example while the user is typing, can leave what is on screen out of sync with the editor data, the text typed afterward may never reach it, and undo may stop working. So do not leave a reported error unhandled.
+
+Whether the state is worth keeping is a judgment only your application can make, which is why the decision is yours. You have three options, and they combine.
 
 ### Tell the user and stop editing
 
@@ -134,7 +136,7 @@ You already hold a better copy of the content than the editor could hand you. Th
 
 * **Your own backend.** If you used the {@link features/autosave autosave feature}, your application has been saving the content at points where it was known to be complete.
 * **Cloud Services document storage.** If it is enabled for your environment, `GET /storage/{document_id}` returns the stored content of a document. See the [document storage guide](https://ckeditor.com/docs/cs/latest/guides/collaboration/document-storage.html) for what is stored and how to read it back.
-* **The editor itself, as a last resort.** The editor is still running, so {@link module:core/editor/editor~Editor#getData `editor.getData()`} still answers. Nothing stops you calling it from the handler, but it is the one source with no guarantee behind it: the error may have interrupted an operation halfway, which is why CKEditor&nbsp;5 does not hand you this data by itself. If you have no other source, prefer it to losing the content, and treat what you get as needing review rather than as a clean save.
+* **The editor itself, as a last resort.** The editor is still running, so you can try {@link module:core/editor/editor~Editor#getData `editor.getData()`} from the handler, but it may also throw. Even when it answers, it is the one source with no guarantee behind it: the error may have interrupted an operation halfway, which is why CKEditor&nbsp;5 does not hand you this data by itself. If you have no other source, prefer it to losing the content, and treat what you get as needing review rather than as a clean save.
 
 ## Framework integrations
 

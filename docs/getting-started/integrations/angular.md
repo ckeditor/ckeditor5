@@ -317,7 +317,7 @@ Fired when the editor crashes.
 	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
 </info-box>
 
-A reported error does not stop the editor. It keeps working, with its content, selection, and undo history intact. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.
+A reported error does not stop the editor. Its state may no longer be consistent, so do not leave the error unhandled. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.
 
 The {@link getting-started/setup/error-handling error handling} guide covers the options: telling the user and switching the editor to read-only, recreating it, and recovering its content. If you are moving off the Watchdog, the {@link updating/migration-from-watchdog migrating from the Watchdog} guide shows how to recreate the editor and when to do it. In Angular that check differs from the other integrations because the `error` output carries no `phase`.
 
