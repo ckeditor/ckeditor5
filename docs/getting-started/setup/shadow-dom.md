@@ -4,7 +4,7 @@ menu-title: Shadow DOM
 meta-title: Running CKEditor 5 inside a shadow DOM | CKEditor 5 Documentation
 meta-description: Load the editor styles into a shadow root, choose where the floating user interface mounts, and override CSS variables on the shadow host.
 order: 100
-modified_at: 2026-09-18
+modified_at: 2026-10-05
 ---
 
 # Running CKEditor&nbsp;5 inside a shadow DOM
@@ -31,13 +31,67 @@ Load the editor style sheets into the tree the editor is attached to:
 * In the light DOM, load them in the main document, as the {@link getting-started/setup/css Editor and content styles} guide shows.
 * Inside a shadow root, load them into that root, for example through [`ShadowRoot.adoptedStyleSheets`](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/adoptedStyleSheets).
 
+Inside a shadow root, the most practical way is to adopt a [constructed style sheet](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/CSSStyleSheet). The same sheet can be adopted by any number of roots, so the editor root and the overlay container described in the next section share a single copy.
+
+When you install from npm, import the style sheets as strings and create the sheets from them:
+
+```js
+// The `?inline` query makes the bundler return the style sheet as a string.
+import editorStyles from 'ckeditor5/ckeditor5.css?inline';
+// If you use premium features.
+import premiumStyles from 'ckeditor5-premium-features/ckeditor5-premium-features.css?inline';
+
+const editorStyleSheet = new CSSStyleSheet();
+const premiumStyleSheet = new CSSStyleSheet();
+
+editorStyleSheet.replaceSync( editorStyles );
+premiumStyleSheet.replaceSync( premiumStyles );
+
+const host = document.querySelector( '#editor-host' );
+const editorShadowRoot = host.attachShadow( { mode: 'open' } );
+const editorElement = editorShadowRoot.appendChild( document.createElement( 'div' ) );
+
+editorShadowRoot.adoptedStyleSheets = [ editorStyleSheet, premiumStyleSheet ];
+```
+
+The `?inline` query is supported by Vite. In webpack&nbsp;5, import the style sheets with a `?raw` query loaded with the `asset/source` type, as the [webpack documentation](https://webpack.js.org/guides/asset-modules/#replacing-inline-loader-syntax) shows. Exclude that query from your CSS rule, or the regular CSS loader handles the import and the shadow root gets an empty style sheet.
+
+When you load the editor from CDN, fetch the style sheet text instead:
+
+```js
+async function createStyleSheet( url ) {
+	const response = await fetch( url );
+	const styleSheet = new CSSStyleSheet();
+
+	await styleSheet.replace( await response.text() );
+
+	return styleSheet;
+}
+
+const host = document.querySelector( '#editor-host' );
+const editorShadowRoot = host.attachShadow( { mode: 'open' } );
+const editorElement = editorShadowRoot.appendChild( document.createElement( 'div' ) );
+
+editorShadowRoot.adoptedStyleSheets = await Promise.all( [
+	createStyleSheet( 'https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css' ),
+	// If you use premium features.
+	createStyleSheet( 'https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css' )
+] );
+```
+
+<info-box important>
+	Top-level `await` works only in a module script, `<script type="module">`. In a classic script, put this code and the code that creates the editor in an `async` function.
+</info-box>
+
+A `<link rel="stylesheet">` element placed inside the shadow root works as well. Each root then loads a style sheet of its own, and its content is unstyled until the style sheet loads. The CDN loader of the framework integrations uses this approach when you set its `injectedStylesheetsLocation` option, as the {@link getting-started/integrations-cdn/react-default-cdn#using-inside-a-shadow-root React}, {@link getting-started/integrations-cdn/vue-default-cdn#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations-cdn/angular#using-inside-a-shadow-root Angular} CDN guides show.
+
 The editor renders its floating user interface outside the editing area, so that tree needs the same style sheets. Which tree? That depends on where the overlay layer mounts, described in the next section.
 
 ## Where the floating user interface mounts
 
 Balloons, dialogs, and tooltips are rendered outside the editor's own DOM structure, so they stack above the editor and are not clipped by a scrollable or `overflow: hidden` ancestor. That is the overlay layer.
 
-When you do not configure anything, the editor mounts the overlay layer in the tree its editing root lives in. It is the shadow root when the editor is inside one. Treat that as a fallback rather than a plan: the root the editor lives in may itself clip the overlay layer.
+When you do not configure anything, the editor mounts the overlay layer in the tree its editing root lives in. It is the shadow root when the editor is inside one. Treat that as a fallback rather than a plan: the shadow host or one of its ancestors may clip or misplace the overlay layer, for example when it has `overflow: hidden` or `position: relative`. That is why an editor in a shadow root without a configured overlay container logs the `ui-overlay-container-not-configured` warning.
 
 Point {@link module:core/editor/editorconfig~UiConfig#overlayContainer `config.ui.overlayContainer`} at a shadow root of your own instead, attached to a host element at the end of `document.body`. As a direct child of the body, that host has no ancestor that can clip the overlay layer, and its own shadow root keeps it a self-contained styling boundary:
 
@@ -45,13 +99,13 @@ Point {@link module:core/editor/editorconfig~UiConfig#overlayContainer `config.u
 const overlayHost = document.body.appendChild( document.createElement( 'div' ) );
 const overlayContainer = overlayHost.attachShadow( { mode: 'open' } );
 
-// A shadow root does not inherit the page styles. The same constructed style sheets
-// can be adopted by any number of roots, so reuse the ones the editor root has.
+// A shadow root does not inherit the page styles. Reuse the constructed style sheets
+// adopted by the editor root, as shown in the "Loading the editor styles" section.
 overlayContainer.adoptedStyleSheets = editorShadowRoot.adoptedStyleSheets;
 
 ClassicEditor
 	.create( {
-		attachTo: editorShadowRoot.querySelector( '#editor' ),
+		attachTo: editorElement,
 		ui: {
 			overlayContainer
 		}
@@ -60,7 +114,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Only constructed style sheets can be adopted this way, meaning ones created with the [`CSSStyleSheet`](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet) constructor rather than the sheets a `<style>` or `<link>` element brings in. Because one constructed sheet can be adopted by any number of roots, the editor root and the overlay container share a single array.
+Only constructed style sheets can be adopted this way, meaning ones created with the [`CSSStyleSheet`](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet) constructor rather than the sheets a `<style>` or `<link>` element brings in. The assignment copies the list of sheets, not the sheets themselves, so a sheet you adopt into the editor root later has to be adopted into the overlay container as well. If the editor root loads its styles through `<link>` elements instead, there is nothing to copy, so add the same `<link>` elements to the overlay container.
 
 <info-box warning>
 	The overlay container is a separate tree, so it needs the editor style sheets of its own. Without them the balloons and dialogs render unstyled even though the editing area looks correct.
