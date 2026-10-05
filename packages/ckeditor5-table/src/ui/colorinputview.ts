@@ -260,6 +260,12 @@ export class ColorInputView extends View implements FocusableView {
 		dropdown.buttonView.label = t( 'Color picker' );
 		dropdown.buttonView.tooltip = true;
 
+		dropdown.panelView.extendTemplate( {
+			attributes: {
+				class: 'ck-dropdown__panel_fit-content'
+			}
+		} );
+
 		dropdown.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
 		dropdown.panelView.children.add( colorSelector );
 		dropdown.bind( 'isEnabled' ).to( this, 'isReadOnly', value => !value );

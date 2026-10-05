@@ -29,6 +29,12 @@
 	max-width: var(--ck-menu-bar-menu-max-width, 75vw);
 	position: absolute;
 
+	/* Do not limit the width of panels with content that cannot shrink, for example the color grid.
+	   Otherwise, it would stick out of the panel. */
+	&.ck-menu-bar__menu__panel_fit-content {
+		max-width: var(--ck-menu-bar-menu-max-width, none);
+	}
+
 	/* Corner border radius consistent with the button. */
 	&.ck-menu-bar__menu__panel_position_es,
 	&.ck-menu-bar__menu__panel_position_se {
