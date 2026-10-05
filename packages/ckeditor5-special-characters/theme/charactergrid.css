@@ -16,7 +16,7 @@
 	& .ck-character-grid__tiles {
 		grid-template-columns: repeat(auto-fill, minmax(var(--ck-character-grid-tile-size), 1fr));
 		margin: var(--ck-dialog-actions-padding);
-		grid-gap: var(--ck-spacing-standard);
+		grid-gap: var(--ck-spacing-standard, var(--ck-spacing-base));
 		display: grid;
 	}
 

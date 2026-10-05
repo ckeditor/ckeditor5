@@ -27,7 +27,7 @@
 	/* Uniform radius for attached surfaces (panels, dropdowns, menus, toolbars). Defaults to a real
 	 * radius, so those surfaces render fully rounded. Set to `initial` to restore the attached-corner
 	 * look — `initial` is a guaranteed-invalid value, so consumers fall back to their per-corner radii. */
-	--ck-border-radius-uniform: var(--ck-radius-base);
+	--ck-border-radius-uniform: var(--ck-border-radius, var(--ck-radius-base));
 
 	/* Radius for attached surfaces where one edge touches trigger/control. */
 	--ck-border-radius-surface-attached: var(--ck-border-radius-surface);

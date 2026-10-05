@@ -10,5 +10,5 @@
  */
 .ck.ck-toolbar-container .ck-menu-bar {
 	border: none;
-	border-bottom: 1px solid var(--ck-color-toolbar-border);
+	border-bottom: 1px solid var(--ck-color-toolbar-border, var(--ck-toolbar-border-color));
 }

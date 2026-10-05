@@ -56,14 +56,14 @@
 			}
 
 			&.ck-disabled {
-				background: var(--ck-color-input-disabled-background);
+				background: var(--ck-color-input-disabled-background, var(--ck-input-disabled-background-color));
 			}
 
 			& > .ck.ck-input-color__button__preview {
 				border-radius: var(--ck-input-color-preview-border-radius);
 				width: 20px;
 				height: 20px;
-				border: 1px solid var(--ck-color-input-border);
+				border: 1px solid var(--ck-color-input-border, var(--ck-input-border-color));
 				position: relative;
 				overflow: hidden;
 
@@ -91,7 +91,7 @@
 		border-bottom-right-radius: 0;
 
 		&:not(:focus) {
-			border-bottom: 1px solid var(--ck-color-input-border);
+			border-bottom: 1px solid var(--ck-color-input-border, var(--ck-input-border-color));
 		}
 
 		[dir="ltr"] & {

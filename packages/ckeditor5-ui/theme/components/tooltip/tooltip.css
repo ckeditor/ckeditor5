@@ -22,7 +22,7 @@
 	--ck-tooltip-text-color: var(--ck-color-text-inverse);
 
 	/* Typography */
-	--ck-tooltip-text-font-size: var(--ck-font-size-xs);
+	--ck-tooltip-text-font-size: var(--ck-font-size-tiny, var(--ck-font-size-xs));
 
 	/* Arrow */
 	--ck-tooltip-arrow-half-width: 4px;
@@ -32,7 +32,7 @@
 
 .ck.ck-balloon-panel.ck-tooltip {
 	--ck-balloon-panel-border: var(--ck-tooltip-border);
-	--ck-balloon-panel-background-color: var(--ck-tooltip-background-color);
+	--ck-balloon-panel-background-color: var(--ck-color-tooltip-background, var(--ck-tooltip-background-color));
 
 	/* Tooltips use a smaller arrow than the default balloon panel. */
 	--ck-balloon-arrow-half-width: var(--ck-tooltip-arrow-half-width);
@@ -54,7 +54,7 @@
 	& .ck-tooltip__text {
 		font-size: var(--ck-tooltip-text-font-size);
 		line-height: 1.5;
-		color: var(--ck-tooltip-text-color);
+		color: var(--ck-color-tooltip-text, var(--ck-tooltip-text-color));
 	}
 
 	&.ck-tooltip_multi-line .ck-tooltip__text {

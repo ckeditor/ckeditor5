@@ -9,7 +9,7 @@
 }
 
 .ck-widget.html-object-embed {
-	font-size: var(--ck-font-size-base);
+	font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
 	background-color: var(--ck-color-base-foreground);
 	/* Backward compatibility: falls back to legacy --ck-spacing-small if overridden. */
 	padding: var(--ck-spacing-small, var(--ck-spacing-sm));

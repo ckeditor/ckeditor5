@@ -6,7 +6,7 @@
 :root,
 :host {
 	/* where 7.5(px) is the font size of the powered by label and 13(px) is the base font size. */
-	--ck-powered-by-font-size: calc(0.5 * var(--ck-font-size-base));
+	--ck-powered-by-font-size: calc(0.5 * var(--ck-font-size-normal, var(--ck-font-size-base)));
 	/* where 10(px) is the line height of the powered by label and 13(px) is the base font size. */
 	--ck-powered-by-line-height: 1.35;
 	/* where -0.2(px) is the letter spacing of the powered by label and 13(px) is the base font size. */
@@ -25,8 +25,8 @@
 	--ck-powered-by-svg-width: 53;
 	--ck-powered-by-svg-height: 10;
 	/* Scale the logo from its intrinsic size (53x10 at the 16px base font size) with --ck-font-size-base. */
-	--ck-powered-by-icon-width: calc(var(--ck-font-size-base) * var(--ck-powered-by-svg-width) / 16);
-	--ck-powered-by-icon-height: calc(var(--ck-font-size-base) * var(--ck-powered-by-svg-height) / 16);
+	--ck-powered-by-icon-width: calc(var(--ck-font-size-normal, var(--ck-font-size-base)) * var(--ck-powered-by-svg-width) / 16);
+	--ck-powered-by-icon-height: calc(var(--ck-font-size-normal, var(--ck-font-size-base)) * var(--ck-powered-by-svg-height) / 16);
 }
 
 .ck.ck-balloon-panel.ck-powered-by-balloon {

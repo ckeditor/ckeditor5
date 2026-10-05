@@ -19,19 +19,19 @@
 
 	/* Color */
 	--ck-list-background-color: var(--ck-color-surface-control);
-	--ck-list-button-hover-background-color: var(--ck-button-default-hover-background-color);
-	--ck-list-button-on-background-color: var(--ck-button-on-text-color);
+	--ck-list-button-hover-background-color: var(--ck-color-button-default-hover-background, var(--ck-button-default-hover-background-color));
+	--ck-list-button-on-background-color: var(--ck-color-button-on-color, var(--ck-button-on-text-color));
 	--ck-list-button-on-text-color: var(--ck-color-text-inverse);
 	--ck-list-divider-color: var(--ck-color-divider);
 
 	/* Typography */
-	--ck-list-group-label-font-size: var(--ck-font-size-sm);
+	--ck-list-group-label-font-size: var(--ck-font-size-small, var(--ck-font-size-sm));
 }
 
 .ck.ck-list {
 	border-radius: var(--ck-list-border-radius);
 	list-style-type: none;
-	background: var(--ck-list-background-color);
+	background: var(--ck-color-list-background, var(--ck-list-background-color));
 
 	/* A spacing at the beginning and end of the list */
 	padding: var(--ck-list-padding);
@@ -86,7 +86,7 @@
 
 		& .ck-button__label {
 			/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
-			line-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
+			line-height: calc(var(--ck-line-height-base) * var(--ck-font-size-normal, var(--ck-font-size-base)));
 		}
 
 		&:active {
@@ -94,15 +94,15 @@
 		}
 
 		&.ck-on {
-			background: var(--ck-list-button-on-background-color);
-			color: var(--ck-list-button-on-text-color);
+			background: var(--ck-color-list-button-on-background, var(--ck-list-button-on-background-color));
+			color: var(--ck-color-list-button-on-text, var(--ck-list-button-on-text-color));
 
 			&:active {
 				box-shadow: none;
 			}
 
 			&:hover:not(.ck-disabled) {
-				background: var(--ck-list-button-on-background-color);
+				background: var(--ck-color-list-button-on-background-focus, var(--ck-color-list-button-on-background, var(--ck-list-button-on-background-color)));
 			}
 
 			&:focus:not(.ck-disabled) {
@@ -111,7 +111,7 @@
 		}
 
 		&:hover:not(.ck-disabled) {
-			background: var(--ck-list-button-hover-background-color);
+			background: var(--ck-color-list-button-hover-background, var(--ck-list-button-hover-background-color));
 		}
 	}
 
@@ -119,11 +119,11 @@
 	of conveying its state (like the switcher) */
 	& > .ck-button.ck-switchbutton {
 		&.ck-on {
-			background: var(--ck-list-background-color);
+			background: var(--ck-color-list-background, var(--ck-list-background-color));
 			color: inherit;
 
 			&:hover:not(.ck-disabled) {
-				background: var(--ck-list-button-hover-background-color);
+				background: var(--ck-color-list-button-hover-background, var(--ck-list-button-hover-background-color));
 				color: inherit;
 			}
 		}

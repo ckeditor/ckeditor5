@@ -175,13 +175,13 @@
 
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_n"] {
 	&::after {
-		border-bottom-color: var(--ck-balloon-panel-background-color);
+		border-bottom-color: var(--ck-color-panel-background, var(--ck-balloon-panel-background-color));
 	}
 }
 
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_s"] {
 	&::after {
-		border-top-color: var(--ck-balloon-panel-background-color);
+		border-top-color: var(--ck-color-panel-background, var(--ck-balloon-panel-background-color));
 	}
 }
 

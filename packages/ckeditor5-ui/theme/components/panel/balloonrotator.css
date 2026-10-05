@@ -4,7 +4,7 @@
  */
 
 .ck .ck-balloon-rotator__navigation {
-	background: var(--ck-toolbar-background-color);
+	background: var(--ck-color-toolbar-background, var(--ck-toolbar-background-color));
 	border-bottom: var(--ck-border-divider);
 	padding: 0 var(--ck-spacing-padding);
 	border-radius: var(--ck-balloon-panel-border-radius) var(--ck-balloon-panel-border-radius) 0 0;

@@ -46,13 +46,13 @@
 			padding: var(--ck-dialog-actions-padding);
 
 			& > .ck-labeled-field-view {
-				padding-top: var(--ck-spacing-standard);
+				padding-top: var(--ck-spacing-standard, var(--ck-spacing-base));
 				width: 100%;
 
 				& .ck.ck-labeled-field-view__status {
 					background: var(--ck-color-base-error);
 					color: var(--ck-color-base-background);
-					padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+					padding: var(--ck-spacing-small, var(--ck-spacing-sm)) var(--ck-spacing-medium, var(--ck-spacing-base));
 					min-width: var(--ck-table-properties-min-error-width);
 					text-align: center;
 
@@ -76,7 +76,7 @@
 				}
 
 				& > .ck-label {
-					font-size: var(--ck-font-size-tiny);
+					font-size: var(--ck-font-size-tiny, var(--ck-font-size-xs));
 					text-align: center;
 				}
 			}

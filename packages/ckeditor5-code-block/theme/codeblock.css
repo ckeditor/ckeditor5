@@ -17,9 +17,9 @@
 	border-radius: var(--ck-widget-label-border-radius);
 
 	font-size: 10px;
-	font-family: var(--ck-font-face);
+	font-family: var(--ck-font-face, var(--ck-font-family));
 	line-height: 16px;
-	padding: var(--ck-spacing-tiny) var(--ck-spacing-medium);
+	padding: var(--ck-spacing-tiny, var(--ck-spacing-xs)) var(--ck-spacing-medium, var(--ck-spacing-base));
 	color: hsl(0, 0%, 100%);
 	white-space: nowrap;
 }

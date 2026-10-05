@@ -19,7 +19,7 @@
 /* The feature container. */
 
 .ck-widget.raw-html-embed {
-	font-size: var(--ck-font-size-base);
+	font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
 	background-color: var(--ck-html-embed-background);
 	/* Give the embed some air. */
 	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
@@ -110,11 +110,11 @@
 		}
 
 		& .ck-button.raw-html-embed__save-button {
-			color: var(--ck-color-button-save);
+			color: var(--ck-color-button-save, var(--ck-button-save-color));
 		}
 
 		& .ck-button.raw-html-embed__cancel-button {
-			color: var(--ck-color-button-cancel);
+			color: var(--ck-color-button-cancel, var(--ck-button-cancel-color));
 		}
 
 		& .ck-button:not(:first-child) {
@@ -140,7 +140,7 @@
 		font-family: monospace;
 		tab-size: 4;
 		white-space: pre-wrap;
-		font-size: var(--ck-font-size-base); /* Safari needs this. */
+		font-size: var(--ck-font-size-normal, var(--ck-font-size-base)); /* Safari needs this. */
 
 		/* HTML code is direction–agnostic. */
 		text-align: left;

@@ -11,7 +11,7 @@
 
 	min-height: 15px;
 
-	background: var(--ck-balloon-panel-background-color);
+	background: var(--ck-color-panel-background, var(--ck-balloon-panel-background-color));
 	border: var(--ck-balloon-panel-border);
 	border-radius: var(--ck-border-radius-surface);
 

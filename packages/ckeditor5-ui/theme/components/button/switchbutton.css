@@ -26,7 +26,7 @@
 	/* Color */
 	--ck-switch-button-off-background-color: var(--ck-color-text-secondary);
 	--ck-switch-button-off-hover-background-color: var(--ck-color-base-text-light);
-	--ck-switch-button-on-background-color: var(--ck-button-action-background-color);
+	--ck-switch-button-on-background-color: var(--ck-color-button-action-background, var(--ck-button-action-background-color));
 	--ck-switch-button-on-hover-background-color: var(--ck-color-interactive-primary-surface-hover);
 	--ck-switch-button-inner-background-color: var(--ck-color-surface-canvas);
 }
@@ -66,7 +66,7 @@
 		/* Backward compatibility: falls back to legacy --ck-switch-button-toggle-width if overridden. */
 		/* 34px at 13px font-size */
 		width: var(--ck-switch-button-toggle-width, 2.6153846154em);
-		background: var(--ck-switch-button-off-background-color);
+		background: var(--ck-color-switch-button-off-background, var(--ck-switch-button-off-background-color));
 
 		[dir="ltr"] & {
 			/* Make sure the toggle is always to the right as far as possible. */
@@ -84,7 +84,7 @@
 			/* 14px at 13px font-size + 1px */
 			width: var(--ck-switch-button-toggle-inner-size, calc(1.0769230769em + 1px));
 			height: var(--ck-switch-button-toggle-inner-size, calc(1.0769230769em + 1px));
-			background: var(--ck-switch-button-inner-background-color);
+			background: var(--ck-color-switch-button-inner-background, var(--ck-switch-button-inner-background-color));
 
 			/* Gently animate the inner part of the toggle switch */
 			transition: all var(--ck-transition-duration-control-emphasized) var(--ck-transition-timing-function-surface);
@@ -96,7 +96,7 @@
 		}
 
 		&:hover {
-			background: var(--ck-switch-button-off-hover-background-color);
+			background: var(--ck-color-switch-button-off-hover-background, var(--ck-switch-button-off-hover-background-color));
 
 			& .ck-button__toggle__inner {
 				/* Backward compatibility: falls back to legacy --ck-switch-button-inner-hover-shadow if overridden. */
@@ -126,10 +126,10 @@
 
 	&.ck-on {
 		& .ck-button__toggle {
-			background: var(--ck-switch-button-on-background-color);
+			background: var(--ck-color-switch-button-on-background, var(--ck-switch-button-on-background-color));
 
 			&:hover {
-				background: var(--ck-switch-button-on-hover-background-color);
+				background: var(--ck-color-switch-button-on-hover-background, var(--ck-switch-button-on-hover-background-color));
 			}
 
 			& .ck-button__toggle__inner {

@@ -10,11 +10,11 @@
 	   override hook, so overriding it still rescales the whole ladder. */
 	--ck-radius-base: var(--ck-radius-unit, 8px);       /* 8px */
 
-	--ck-radius-xs: calc(var(--ck-radius-base) / 8);    /* 1px  */
-	--ck-radius-sm: calc(var(--ck-radius-base) / 4);    /* 2px  */
-	--ck-radius-md: calc(var(--ck-radius-base) / 2);    /* 4px  */
-	--ck-radius-lg: calc(var(--ck-radius-base) * 1.5);  /* 12px */
-	--ck-radius-xl: calc(var(--ck-radius-base) * 2);    /* 16px */
+	--ck-radius-xs: calc(var(--ck-border-radius, var(--ck-radius-base)) / 8);    /* 1px  */
+	--ck-radius-sm: calc(var(--ck-border-radius, var(--ck-radius-base)) / 4);    /* 2px  */
+	--ck-radius-md: calc(var(--ck-border-radius, var(--ck-radius-base)) / 2);    /* 4px  */
+	--ck-radius-lg: calc(var(--ck-border-radius, var(--ck-radius-base)) * 1.5);  /* 12px */
+	--ck-radius-xl: calc(var(--ck-border-radius, var(--ck-radius-base)) * 2);    /* 16px */
 	--ck-radius-full: 50%;
 
 	/**

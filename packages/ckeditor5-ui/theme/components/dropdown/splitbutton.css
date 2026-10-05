@@ -119,7 +119,7 @@
 			& > .ck-splitbutton__action:not(.ck-disabled),
 			& > .ck-splitbutton__arrow:not(.ck-disabled),
 			& > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
-				background-color: var(--ck-color-button-on-background);
+				background-color: var(--ck-color-button-on-background, var(--ck-button-on-background-color));
 
 				&::after {
 					display: none;
@@ -131,7 +131,7 @@
 			& > .ck-splitbutton__action:not(.ck-disabled),
 			& > .ck-splitbutton__arrow:not(.ck-disabled),
 			& > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
-				background-color: var(--ck-color-button-on-hover-background);
+				background-color: var(--ck-color-button-on-hover-background, var(--ck-button-on-hover-background-color));
 			}
 		}
 	}

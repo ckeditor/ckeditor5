@@ -66,7 +66,7 @@
 	/* Backward compatibility: falls back to legacy --ck-dialog-drop-shadow if overridden. */
 	box-shadow: var(--ck-dialog-drop-shadow, var(--ck-dialog-shadow)), 0 0;
 
-	background: var(--ck-dialog-background-color);
+	background: var(--ck-color-dialog-background, var(--ck-dialog-background-color));
 	max-height: var(--ck-dialog-max-height);
 	max-width: var(--ck-dialog-max-width);
 	border: var(--ck-dialog-border);

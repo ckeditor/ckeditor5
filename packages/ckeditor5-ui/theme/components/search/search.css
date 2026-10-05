@@ -11,7 +11,7 @@
 
 	/* Typography */
 	--ck-search-results-info-primary-font-size: var(--ck-font-size-md);
-	--ck-search-results-info-secondary-font-size: var(--ck-font-size-sm);
+	--ck-search-results-info-secondary-font-size: var(--ck-font-size-small, var(--ck-font-size-sm));
 }
 
 .ck.ck-search {
