@@ -450,6 +450,163 @@ describe( 'AbstractHandler', () => {
 
 			return tempEditor.destroy();
 		} );
+
+		describe( 'dialog position', () => {
+			let dialogPlugin, dialogContentView;
+
+			beforeEach( () => {
+				dialogPlugin = editor.plugins.get( Dialog );
+				dialogContentView = new View();
+
+				dialogContentView.setTemplate( {
+					tag: 'div',
+					attributes: {
+						style: {
+							width: '100px',
+							height: '50px'
+						}
+					}
+				} );
+			} );
+
+			it( 'should update the position of a dialog positioned relative to the editable once the editable is moved', () => {
+				const positionCallback = vi.fn( () => ( { left: 0, top: 0 } ) );
+
+				dialogPlugin.show( {
+					label: 'Foo',
+					content: dialogContentView,
+					position: positionCallback
+				} );
+
+				positionCallback.mockClear();
+
+				const editableRectBefore = new Rect( editor.ui.getEditableElement() );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				const editableRectAfter = new Rect( editor.ui.getEditableElement() );
+
+				expect( editableRectAfter.isEqual( editableRectBefore ) ).toBe( false );
+				expect( positionCallback.mock.lastCall[ 2 ].isEqual( editableRectAfter ) ).toBe( true );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+			} );
+
+			it( 'should update the position of a dialog against the editable moved by showing or hiding the sidebars', () => {
+				const handler = editor.commands.get( 'toggleFullscreen' ).fullscreenHandler;
+				const editableElement = editor.ui.getEditableElement();
+				const positionCallback = vi.fn( () => ( { left: 0, top: 0 } ) );
+
+				dialogPlugin.show( {
+					label: 'Foo',
+					content: dialogContentView,
+					position: positionCallback
+				} );
+
+				// Collapsing a sidebar shifts the editable sideways.
+				vi.spyOn( handler, '_adjustVisibleElements' ).mockImplementation( () => {
+					editableElement.style.marginLeft = '100px';
+				} );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				expect( positionCallback.mock.lastCall[ 2 ].isEqual( new Rect( editableElement ) ) ).toBe( true );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+				editableElement.style.marginLeft = '';
+			} );
+
+			it( 'should not move a dialog moved to the right side of the editable again', () => {
+				dialogPlugin.show( {
+					label: 'Foo',
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				const moveToSpy = vi.spyOn( dialogPlugin.view, 'moveTo' );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				expect( dialogPlugin.view.position ).toBeNull();
+				expect( moveToSpy ).toHaveBeenCalledOnce();
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+			} );
+
+			it( 'should not move a dialog dragged by the user when entering the fullscreen mode', () => {
+				dialogPlugin.show( {
+					title: 'Foo',
+					content: dialogContentView,
+					position: () => ( { left: 0, top: 0 } )
+				} );
+
+				const { left, top } = dragDialogBy( 10, 10 );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				expect( getDialogCoordinates() ).toEqual( { left, top } );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+			} );
+
+			it( 'should not move a dialog with the editor-top-side position dragged by the user when entering the fullscreen mode', () => {
+				dialogPlugin.show( {
+					title: 'Foo',
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				const { left, top } = dragDialogBy( -10, 10 );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				expect( dialogPlugin.view.position ).toBe( DialogViewPosition.EDITOR_TOP_SIDE );
+				expect( getDialogCoordinates() ).toEqual( { left, top } );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+			} );
+
+			it( 'should not move a dialog dragged by the user when leaving the fullscreen mode', () => {
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				// Opened in the fullscreen mode, the dialog is moved to the right side and its position is cleared.
+				dialogPlugin.show( {
+					title: 'Foo',
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				const { left, top } = dragDialogBy( -10, 10 );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				expect( dialogPlugin.view.position ).toBe( DialogViewPosition.EDITOR_TOP_SIDE );
+				expect( getDialogCoordinates() ).toEqual( { left, top } );
+			} );
+
+			// Drags the dialog by its header, the way the user does, and returns the coordinates it was dragged to.
+			function dragDialogBy( deltaX, deltaY ) {
+				const headerElement = dialogPlugin.view.headerView.element;
+				const coordinatesBefore = getDialogCoordinates();
+
+				headerElement.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true, clientX: 100, clientY: 100 } ) );
+				global.document.dispatchEvent( new MouseEvent( 'mousemove', { clientX: 100 + deltaX, clientY: 100 + deltaY } ) );
+				headerElement.dispatchEvent( new MouseEvent( 'mouseup', { bubbles: true } ) );
+
+				const coordinatesAfter = getDialogCoordinates();
+
+				expect( dialogPlugin.view.wasMoved ).toBe( true );
+				expect( coordinatesAfter ).not.toEqual( coordinatesBefore );
+
+				return coordinatesAfter;
+			}
+
+			function getDialogCoordinates() {
+				const { left, top } = dialogPlugin.view.element.querySelector( '.ck-dialog' ).getBoundingClientRect();
+
+				return { left: Math.round( left ), top: Math.round( top ) };
+			}
+		} );
 	} );
 
 	describe( '#disable()', () => {

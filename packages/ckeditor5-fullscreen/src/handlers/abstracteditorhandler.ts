@@ -482,11 +482,6 @@ export class FullscreenAbstractEditorHandler {
 			( this._editor.plugins.get( 'SourceEditing' ) as any ).on( 'change:isSourceEditingMode', this._sourceEditingCallback );
 		}
 
-		// Dialog position should be done after all known elements are moved to the fullscreen wrapper.
-		if ( this._editor.plugins.has( 'Dialog' ) ) {
-			this._registerFullscreenDialogPositionAdjustments();
-		}
-
 		// Hide all other elements to ensure they don't create an empty unscrollable space. Keep the wrapper visible, and
 		// every place the editor's body collection (dialogs, balloons etc) may be in once the `ui.update()` call below
 		// re-mounts it: where it is now, the configured `ui.overlayContainer`, or the body wrapper shared with other
@@ -521,6 +516,12 @@ export class FullscreenAbstractEditorHandler {
 
 		// Must be called after all elements are moved so the slot heights are final.
 		this._disableContextualBalloonPositionHandler = registerFullscreenBalloonOffsetCorrection( this._editor, this.getWrapper() );
+
+		// Dialog position should be done after all known elements are moved to the fullscreen wrapper and the sidebars are
+		// shown or hidden, as both move the editable.
+		if ( this._editor.plugins.has( 'Dialog' ) ) {
+			this._registerFullscreenDialogPositionAdjustments();
+		}
 
 		// The editor UI has been moved, so let it re-resolve the root its own overlay layer is mounted in.
 		this._editor.ui.update();
@@ -966,13 +967,21 @@ export class FullscreenAbstractEditorHandler {
 	}
 
 	/**
-	 * Adds an event listener when the dialog opens to adjust its position in fullscreen mode,
-	 * utilizing the empty space on the right side of the editable element.
+	 * Adjusts the position of the open dialog to the editable moved to the fullscreen mode, and adds an event listener when
+	 * the dialog opens to adjust its position in fullscreen mode, utilizing the empty space on the right side of the editable element.
 	 */
 	private _registerFullscreenDialogPositionAdjustments(): void {
 		const dialog = this._editor.plugins.get( 'Dialog' );
+		const dialogView = dialog.view;
 
 		this._setNewDialogPosition();
+
+		// `_setNewDialogPosition()` moves only the dialogs with the "editor-top-side" position and clears their position, so the
+		// update below leaves them where they are. A dialog with any other position keeps it and is recalculated against the moved
+		// editable, which its own listeners would do only if the page happened to scroll. A dialog dragged by the user stays put.
+		if ( dialogView && !dialogView.wasMoved ) {
+			dialogView.updatePosition();
+		}
 
 		dialog.on( 'change:isOpen', this.updateDialogPositionCallback, { priority: 'highest' } );
 	}
@@ -988,7 +997,8 @@ export class FullscreenAbstractEditorHandler {
 			dialogView.position = DialogViewPosition.EDITOR_TOP_SIDE;
 		}
 
-		if ( dialogView ) {
+		// Like when entering the fullscreen mode, a dialog dragged by the user stays put.
+		if ( dialogView && !dialogView.wasMoved ) {
 			dialogView.updatePosition();
 		}
 
@@ -1012,13 +1022,13 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Adjusts the dialog position to utilize the empty space on the right side of the editable.
 	 * The new dialog position should be on the right side of the fullscreen view with a 30px margin.
-	 * Only dialogs with the position set to "editor-top-side" should have their position changed.
+	 * Only dialogs with the position set to "editor-top-side" and not dragged by the user should have their position changed.
 	 */
 	private _setNewDialogPosition(): void {
 		const dialog = this._editor.plugins.get( 'Dialog' );
 		const dialogView = dialog.view!;
 
-		if ( !dialogView || dialogView.position !== DialogViewPosition.EDITOR_TOP_SIDE ) {
+		if ( !dialogView || dialogView.position !== DialogViewPosition.EDITOR_TOP_SIDE || dialogView.wasMoved ) {
 			return;
 		}
 
