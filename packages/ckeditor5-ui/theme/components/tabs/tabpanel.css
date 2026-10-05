@@ -14,6 +14,6 @@
 
 	&.ck-tab-panel_disabled {
 		pointer-events: none;
-		opacity: var(--ck-disabled-opacity);
+		opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 	}
 }

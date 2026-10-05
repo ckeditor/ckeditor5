@@ -18,12 +18,12 @@
 	--ck-toolbar-border-color: var(--ck-color-border-container);
 
 	/* Border */
-	--ck-toolbar-border: var(--ck-border-width-surface) solid var(--ck-toolbar-border-color);
+	--ck-toolbar-border: var(--ck-border-width-surface) solid var(--ck-color-toolbar-border, var(--ck-toolbar-border-color));
 }
 
 .ck.ck-toolbar {
 	border-radius: var(--ck-toolbar-border-radius);
-	background: var(--ck-toolbar-background-color);
+	background: var(--ck-color-toolbar-background, var(--ck-toolbar-background-color));
 	padding: var(--ck-toolbar-padding);
 	border: var(--ck-toolbar-border);
 	-webkit-user-select: none;

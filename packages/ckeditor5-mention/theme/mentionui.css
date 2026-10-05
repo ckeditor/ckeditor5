@@ -33,7 +33,7 @@
 	 */
 	& > .ck-list__item.ck-mentions__item_focused > .ck-button {
 		border-color: var(--ck-button-focus-border-color);
-		box-shadow: var(--ck-interactive-focus-shadow), 0 0;
+		box-shadow: var(--ck-focus-outer-shadow, var(--ck-interactive-focus-shadow)), 0 0;
 	}
 }
 

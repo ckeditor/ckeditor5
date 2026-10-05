@@ -15,7 +15,7 @@
 	margin: 0 auto;
 
 	& .ck-media__placeholder {
-		padding: calc(3 * var(--ck-spacing-standard));
+		padding: calc(3 * var(--ck-spacing-standard, var(--ck-spacing-base)));
 		background: var(--ck-color-base-foreground);
 		display: flex;
 		flex-direction: column;
@@ -24,7 +24,7 @@
 		& .ck-media__placeholder__icon {
 			min-width: var(--ck-media-embed-placeholder-icon-size);
 			height: var(--ck-media-embed-placeholder-icon-size);
-			margin-bottom: var(--ck-spacing-large);
+			margin-bottom: var(--ck-spacing-large, var(--ck-spacing-lg));
 			background-position: center;
 			background-size: cover;
 

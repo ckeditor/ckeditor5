@@ -9,7 +9,7 @@
 	--ck-balloon-panel-border-radius: var(--ck-border-radius-surface);
 
 	/* Border */
-	--ck-balloon-panel-border: var(--ck-border-width-surface) solid var(--ck-balloon-panel-border-color);
+	--ck-balloon-panel-border: var(--ck-balloon-border-width, var(--ck-border-width-surface)) solid var(--ck-color-panel-border, var(--ck-balloon-panel-border-color));
 
 	/* Color */
 	--ck-balloon-panel-background-color: var(--ck-color-surface-container);
@@ -30,7 +30,7 @@
 
 	min-height: 15px;
 
-	background: var(--ck-balloon-panel-background-color);
+	background: var(--ck-color-panel-background, var(--ck-balloon-panel-background-color));
 	border: var(--ck-balloon-panel-border);
 	display: none;
 	position: absolute;
@@ -65,14 +65,14 @@
 		}
 
 		&::before {
-			border-color: transparent transparent var(--ck-balloon-panel-border-color) transparent;
-			margin-top: calc( -1 * var(--ck-border-width-surface) );
+			border-color: transparent transparent var(--ck-color-panel-border, var(--ck-balloon-panel-border-color)) transparent;
+			margin-top: calc( -1 * var(--ck-balloon-border-width, var(--ck-border-width-surface)) );
 			z-index: var(--ck-layer-balloon-arrow-back);
 		}
 
 		&::after {
-			border-color: transparent transparent var(--ck-balloon-panel-background-color) transparent;
-			margin-top: calc( var(--ck-balloon-arrow-offset) - var(--ck-border-width-surface) );
+			border-color: transparent transparent var(--ck-color-panel-background, var(--ck-balloon-panel-background-color)) transparent;
+			margin-top: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width, var(--ck-border-width-surface)) );
 			z-index: var(--ck-layer-balloon-arrow-front);
 		}
 	}
@@ -84,16 +84,16 @@
 		}
 
 		&::before {
-			border-color: var(--ck-balloon-panel-border-color) transparent transparent;
+			border-color: var(--ck-color-panel-border, var(--ck-balloon-panel-border-color)) transparent transparent;
 			/* Backward compatibility: falls back to legacy --ck-balloon-arrow-drop-shadow if overridden. */
 			filter: drop-shadow(var(--ck-balloon-arrow-drop-shadow, 0 2px 2px var(--ck-color-shadow-drop)));
-			margin-bottom: calc( -1 * var(--ck-border-width-surface) );
+			margin-bottom: calc( -1 * var(--ck-balloon-border-width, var(--ck-border-width-surface)) );
 			z-index: var(--ck-layer-balloon-arrow-back);
 		}
 
 		&::after {
-			border-color: var(--ck-balloon-panel-background-color) transparent transparent transparent;
-			margin-bottom: calc( var(--ck-balloon-arrow-offset) - var(--ck-border-width-surface) );
+			border-color: var(--ck-color-panel-background, var(--ck-balloon-panel-background-color)) transparent transparent transparent;
+			margin-bottom: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width, var(--ck-border-width-surface)) );
 			z-index: var(--ck-layer-balloon-arrow-front);
 		}
 	}
@@ -105,13 +105,13 @@
 		}
 
 		&::before {
-			border-color: transparent transparent transparent var(--ck-balloon-panel-border-color);
-			margin-right: calc( -1 * var(--ck-border-width-surface) );
+			border-color: transparent transparent transparent var(--ck-color-panel-border, var(--ck-balloon-panel-border-color));
+			margin-right: calc( -1 * var(--ck-balloon-border-width, var(--ck-border-width-surface)) );
 		}
 
 		&::after {
-			border-color: transparent transparent transparent var(--ck-balloon-panel-background-color);
-			margin-right: calc( var(--ck-balloon-arrow-offset) - var(--ck-border-width-surface) );
+			border-color: transparent transparent transparent var(--ck-color-panel-background, var(--ck-balloon-panel-background-color));
+			margin-right: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width, var(--ck-border-width-surface)) );
 		}
 	}
 
@@ -122,13 +122,13 @@
 		}
 
 		&::before {
-			border-color: transparent var(--ck-balloon-panel-border-color) transparent transparent;
-			margin-left: calc( -1 * var(--ck-border-width-surface) );
+			border-color: transparent var(--ck-color-panel-border, var(--ck-balloon-panel-border-color)) transparent transparent;
+			margin-left: calc( -1 * var(--ck-balloon-border-width, var(--ck-border-width-surface)) );
 		}
 
 		&::after {
-			border-color: transparent var(--ck-balloon-panel-background-color) transparent transparent;
-			margin-left: calc( var(--ck-balloon-arrow-offset) - var(--ck-border-width-surface) );
+			border-color: transparent var(--ck-color-panel-background, var(--ck-balloon-panel-background-color)) transparent transparent;
+			margin-left: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width, var(--ck-border-width-surface)) );
 		}
 	}
 

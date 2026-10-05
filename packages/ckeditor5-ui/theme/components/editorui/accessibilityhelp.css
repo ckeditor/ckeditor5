@@ -73,11 +73,11 @@
 
 		display: grid;
 		grid-template-columns: 2fr 1fr;
-		border-top: var(--ck-accessibility-help-dialog-item-divider-width) solid var(--ck-divider-border-color);
+		border-top: var(--ck-accessibility-help-dialog-item-divider-width) solid var(--ck-accessibility-help-dialog-border-color, var(--ck-divider-border-color));
 		border-bottom: none;
 
 		& dt, & dd {
-			border-bottom: var(--ck-accessibility-help-dialog-item-divider-width) solid var(--ck-divider-border-color);
+			border-bottom: var(--ck-accessibility-help-dialog-item-divider-width) solid var(--ck-accessibility-help-dialog-border-color, var(--ck-divider-border-color));
 			padding: .4em 0;
 		}
 

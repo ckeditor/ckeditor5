@@ -19,5 +19,5 @@
 
 	/* Backward-compatible bridge for the retired `--ck-spacing-ms` name (= `--ck-spacing-md` = 6px).
 	   Migrated consumers use `--ck-spacing-md`; kept for external integrations. */
-	--ck-spacing-ms: var(--ck-spacing-md);                   /* 6px, retired */
+	--ck-spacing-ms: var(--ck-spacing-medium-small, var(--ck-spacing-md));                   /* 6px, retired */
 }

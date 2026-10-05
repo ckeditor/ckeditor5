@@ -97,18 +97,18 @@
 	/* Disabled fields and fields that have no focus should fade out. */
 	&.ck-disabled > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
-		color: var(--ck-input-disabled-text-color);
+		color: var(--ck-color-input-disabled-text, var(--ck-input-disabled-text-color));
 	}
 
 	/* Fields that are disabled or not focused and without a placeholder should have full-sized labels. */
 	&.ck-disabled.ck-labeled-field-view_empty:not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder):not(.ck-error) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
 		[dir="ltr"] & {
-			transform: translate(var(--ck-labeled-field-label-default-position-x, var(--ck-labeled-field-label-start-gap)), calc((var(--ck-size-control-min-height) - 1lh) / 2)) scale(1);
+			transform: translate(var(--ck-labeled-field-label-default-position-x, var(--ck-labeled-field-label-start-gap)), var(--ck-labeled-field-label-default-position-y, calc((var(--ck-size-control-min-height) - 1lh) / 2))) scale(1);
 		}
 
 		[dir="rtl"] & {
-			transform: translate(calc(-1 * var(--ck-labeled-field-label-default-position-x, var(--ck-labeled-field-label-start-gap))), calc((var(--ck-size-control-min-height) - 1lh) / 2)) scale(1);
+			transform: translate(calc(-1 * var(--ck-labeled-field-label-default-position-x, var(--ck-labeled-field-label-start-gap))), var(--ck-labeled-field-label-default-position-y, calc((var(--ck-size-control-min-height) - 1lh) / 2))) scale(1);
 		}
 
 		/* Compensate for the default translate position. */

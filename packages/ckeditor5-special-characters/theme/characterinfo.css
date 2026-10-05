@@ -19,7 +19,7 @@
 
 	& > * {
 		text-transform: uppercase;
-		font-size: var(--ck-font-size-small);
+		font-size: var(--ck-font-size-small, var(--ck-font-size-sm));
 	}
 
 	& .ck-character-info__name {

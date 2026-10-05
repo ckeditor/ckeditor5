@@ -7,5 +7,5 @@
 :host {
 	/* Semantic sizing for shared cross-component layout constraints.
 	 * This layer will expand as more components adopt the token system. */
-	--ck-size-control-min-height: calc(var(--ck-font-size-base)*2);
+	--ck-size-control-min-height: calc(var(--ck-font-size-normal, var(--ck-font-size-base))*2);
 }

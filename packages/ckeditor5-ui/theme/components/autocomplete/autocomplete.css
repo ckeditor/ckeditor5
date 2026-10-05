@@ -14,7 +14,7 @@
 	--ck-autocomplete-results-border-radius: var(--ck-border-radius-surface-attached);
 
 	/* Border */
-	--ck-autocomplete-results-border: var(--ck-border-width-surface) solid var(--ck-dropdown-panel-border-color);
+	--ck-autocomplete-results-border: var(--ck-border-width-surface) solid var(--ck-color-dropdown-panel-border, var(--ck-dropdown-panel-border-color));
 
 	/* Color */
 	--ck-autocomplete-results-background-color: var(--ck-color-surface-container);

@@ -19,7 +19,7 @@
 	border-radius: var(--ck-dropdown-menu-panel-border-radius);
 	box-shadow: var(--ck-shadow-surface-floating), 0 0;
 
-	background: var(--ck-dropdown-panel-background-color);
+	background: var(--ck-color-dropdown-panel-background, var(--ck-dropdown-panel-background-color));
 	border: var(--ck-dropdown-panel-border);
 	bottom: 0;
 	height: fit-content;

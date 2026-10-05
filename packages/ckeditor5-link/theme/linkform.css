@@ -8,7 +8,7 @@
 :host {
 	--ck-link-panel-width: var(--ck-width-balloon-form);
 	/* The height of the text inside the link providers list button. */
-	--ck-link-provider-list-item-text-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
+	--ck-link-provider-list-item-text-height: calc(var(--ck-line-height-base) * var(--ck-font-size-normal, var(--ck-font-size-base)));
 	/* The height of the link providers list item contained paddings. */
 	--ck-link-provider-list-item-height: calc(var(--ck-link-provider-list-item-text-height) + var(--ck-spacing-small, var(--ck-spacing-sm)) + var(--ck-spacing-small, var(--ck-spacing-sm)));
 	/* Bottom padding so the last provider button is not flush against the list's bottom edge. */

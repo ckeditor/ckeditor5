@@ -23,7 +23,7 @@
 	--ck-form-header-with-back-button-padding-inline-start: var(--ck-spacing-padding-comfortable);
 
 	/* Typography */
-	--ck-form-header-label-font-size: var(--ck-font-size-base);
+	--ck-form-header-label-font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
 }
 
 .ck.ck-form__header {

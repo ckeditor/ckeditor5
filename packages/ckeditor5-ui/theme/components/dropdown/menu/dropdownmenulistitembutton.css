@@ -33,7 +33,7 @@
 		box-shadow: none;
 
 		&:not(.ck-on) {
-			background: var(--ck-button-default-hover-background-color);
+			background: var(--ck-color-button-default-hover-background, var(--ck-button-default-hover-background-color));
 		}
 	}
 }

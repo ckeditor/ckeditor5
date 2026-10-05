@@ -10,7 +10,7 @@
 	--ck-insert-table-dropdown-box-width: 16px;
 	--ck-insert-table-dropdown-box-margin: 1px;
 	--ck-insert-table-dropdown-box-border-radius: var(--ck-radius-xs);
-	--ck-insert-table-dropdown-label-font-size: var(--ck-font-size-sm);
+	--ck-insert-table-dropdown-label-font-size: var(--ck-font-size-small, var(--ck-font-size-sm));
 	--ck-insert-table-dropdown-label-padding: var(--ck-spacing-padding-compact) 0;
 }
 

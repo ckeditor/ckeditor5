@@ -17,7 +17,7 @@
 	--ck-tab-button-icon-size: 20px;
 	/* Follows the core radius scale. Intentionally rounder than --ck-border-radius-control (which is
 	   tighter), to keep the distinct tab-button shape. */
-	--ck-tab-button-border-radius: var(--ck-radius-base);
+	--ck-tab-button-border-radius: var(--ck-border-radius, var(--ck-radius-base));
 	--ck-tab-button-border-width: var(--ck-border-width-control);
 	/* Inline padding for labeled tabs (those that size to content via .ck-button_with-text). */
 	--ck-tab-button-with-text-padding-inline: var(--ck-spacing-padding-compact);
