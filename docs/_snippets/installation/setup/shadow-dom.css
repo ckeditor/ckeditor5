@@ -1,0 +1,40 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+@layer snippets {
+	/* --- Demo layout ------------------------------------------------------------------------ */
+
+	.shadow-dom-demo__editors {
+		margin: 1.5em 0;
+		display: grid;
+		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+		gap: 1.5em;
+	}
+
+	@media (max-width: 800px) {
+		.shadow-dom-demo__editors {
+			grid-template-columns: minmax( 0, 1fr );
+		}
+	}
+
+	.shadow-dom-demo__label {
+		margin-bottom: 0.5em;
+		font-weight: bold;
+	}
+
+	/* --- Editor size ------------------------------------------------------------------------ */
+
+	.shadow-dom-demo .ck.ck-editor,
+	:host(.shadow-dom-demo__shadow-host) .ck.ck-editor {
+		margin: 0;
+	}
+
+	.shadow-dom-demo .ck.ck-editor__main > .ck-editor__editable,
+	:host(.shadow-dom-demo__shadow-host) .ck.ck-editor__main > .ck-editor__editable {
+		box-sizing: border-box;
+		height: 300px;
+		overflow-y: auto;
+	}
+}
