@@ -108,7 +108,7 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} instance.
 
-A reported error does not stop the editor. It keeps working, with its content, selection, and undo history intact. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.
+A reported error does not stop the editor. Its state may no longer be consistent, so do not leave the error unhandled. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.
 
 The {@link getting-started/setup/error-handling error handling} guide covers the options: telling the user and switching the editor to read-only, recreating it, and recovering its content. If you are moving off the Watchdog, the {@link updating/migration-from-watchdog migrating from the Watchdog} guide shows how to recreate an editor created by this hook, and when to do it.
 
