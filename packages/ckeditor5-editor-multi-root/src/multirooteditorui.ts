@@ -111,6 +111,11 @@ export class MultiRootEditorUI extends EditorUI {
 	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
 	 */
 	public addEditable( editable: InlineEditableUIView, placeholder?: string ): void {
+		// Mark every editing root (both the initial ones and those added dynamically via `addRoot`) as a main
+		// editing root. It adds the `ck-editor__editable_root` class so themes can target the roots without
+		// reaching secondary editables that share the `ck-editor__editable` class (comments, etc.).
+		editable.isMainFrameEditingRoot = true;
+
 		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
 		// But it can be available earlier if a DOM element has been passed to `MultiRootEditor.create()`.
 		const editableElement = editable.element!;
