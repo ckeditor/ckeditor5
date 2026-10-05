@@ -22,7 +22,7 @@ modified_at: 2026-09-15
 
 ### The Watchdog is removed
 
-The Watchdog is gone in v49. That removes the `@ckeditor/ckeditor5-watchdog` package, the `EditorWatchdog` and `ContextWatchdog` classes, and the static fields that exposed them on every editor class. Nothing restarts a crashed editor anymore, and no editor content is saved or restored for you.
+The Watchdog is gone in v49. That removes the `@ckeditor/ckeditor5-watchdog` package, the `EditorWatchdog` and `ContextWatchdog` classes, and the static fields that exposed them on every editor class. Nothing restarts a crashed editor anymore, and no editor content is saved or restored for you. To learn why we removed it, see the [announcement on GitHub](https://github.com/ckeditor/ckeditor5/issues/20230).
 
 In its place, `onEditorError()` reports the errors that escape a running editor, together with the editor or context they were attributed to, and your application decides what happens next. The {@link getting-started/setup/error-handling error handling} guide covers the options; the {@link updating/migration-from-watchdog migrating from the Watchdog} guide covers the move in plain JavaScript and in each of the framework integrations.
 
