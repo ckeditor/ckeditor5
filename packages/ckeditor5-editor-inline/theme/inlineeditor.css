@@ -3,7 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck.ck-menu-bar {
+/*
+ * Scoped to the floating toolbar container on purpose: an unscoped `.ck.ck-menu-bar` rule here used to strip
+ * the top and side borders of every menu bar on the page (for example in the decoupled and multi-root editors),
+ * a regression present since v43.0.0.
+ */
+.ck.ck-toolbar-container .ck-menu-bar {
 	border: none;
 	border-bottom: 1px solid var(--ck-color-toolbar-border);
 }

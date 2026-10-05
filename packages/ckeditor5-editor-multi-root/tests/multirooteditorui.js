@@ -159,6 +159,18 @@ describe( 'MultiRootEditorUI', () => {
 			it( 'attaches editable UI as view DOM root', () => {
 				expect( editor.editing.view.getDomRoot( 'new' ) ).toBe( element );
 			} );
+
+			it( 'marks a dynamically added editable as an editing root (adds the ck-editor__editable_root class)', () => {
+				expect( editable.isMainFrameEditingRoot ).toBe( true );
+				expect( element.classList.contains( 'ck-editor__editable_root' ) ).toBe( true );
+			} );
+		} );
+
+		it( 'marks each editable as an editing root (adds the ck-editor__editable_root class)', () => {
+			expect( view.editables.foo.isMainFrameEditingRoot ).toBe( true );
+			expect( view.editables.bar.isMainFrameEditingRoot ).toBe( true );
+			expect( view.editables.foo.element.classList.contains( 'ck-editor__editable_root' ) ).toBe( true );
+			expect( view.editables.bar.element.classList.contains( 'ck-editor__editable_root' ) ).toBe( true );
 		} );
 
 		describe( 'inline root', () => {

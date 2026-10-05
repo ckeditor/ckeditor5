@@ -6,8 +6,8 @@
 
 :root,
 :host {
-	/* Uniform (fully rounded) corners by default; set this to initial to restore the attached-corner (squared connecting edge) look, as the legacy theme does. */
-	--ck-sticky-panel-uniform-border-radius: 0;
+	/* Unset by default, so consumers fall back to their own radii. Set to a radius value to force uniform corners. */
+	--ck-sticky-panel-uniform-border-radius: initial;
 }
 
 .ck.ck-sticky-panel {

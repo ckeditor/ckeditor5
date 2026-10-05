@@ -42,6 +42,17 @@ export class EditableUIView extends View {
 	declare public isInlineRoot: boolean;
 
 	/**
+	 * Whether this editable is a top-level editing root of the editor, as opposed to a secondary editable that
+	 * shares the `ck-editor__editable` class (for instance a comment input, the AI or revision-history sub-editor,
+	 * or a nested editable). Set to `true` by the editor type's UI for every main editing root, which adds the
+	 * `ck-editor__editable_root` CSS class so themes can target only the main roots (for example, to round the
+	 * editor's outer shell without affecting secondary editables).
+	 *
+	 * @observable
+	 */
+	declare public isMainFrameEditingRoot: boolean;
+
+	/**
 	 * The editing view instance the editable is related to. Editable uses the editing
 	 * view to dynamically modify its certain DOM attributes after {@link #render rendering}.
 	 *
@@ -83,6 +94,7 @@ export class EditableUIView extends View {
 
 		this.set( 'isFocused', false );
 		this.set( 'isInlineRoot', false );
+		this.set( 'isMainFrameEditingRoot', false );
 
 		this.setTemplate( {
 			tag: name || 'div',
@@ -94,6 +106,7 @@ export class EditableUIView extends View {
 					'ck-editor__editable',
 					'ck-rounded-corners',
 					this.bindTemplate.if( 'isInlineRoot', 'ck-editor__editable_inline-root' ),
+					this.bindTemplate.if( 'isMainFrameEditingRoot', 'ck-editor__editable_root' ),
 					...( classes ? toArray( classes ) : [] )
 				],
 				...( styles && { style: styles } ),

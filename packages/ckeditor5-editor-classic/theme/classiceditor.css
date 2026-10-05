@@ -8,14 +8,21 @@
 .ck.ck-editor__main > .ck-editor__editable {
 	/* https://github.com/ckeditor/ckeditor5/issues/3384 */
 	background: var(--ck-color-base-background);
-	/* Backward compatibility: falls back to legacy --ck-rounded-corners-radius if overridden. */
-	border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
 
 	&:not(.ck-focused) {
 		border-color: var(--ck-color-base-border);
 	}
+}
+
+/*
+ * The editable carries only the bottom corners; the top block (toolbar / menu bar) carries the top ones,
+ * so together they read as a single rounded box. The bottom radius comes from the shared editing-root rule
+ * (`--ck-editor-frame-border-radius`); this selector only flattens the top corners and is one class more
+ * specific than that rule, so it wins regardless of stylesheet order.
+ */
+.ck.ck-editor__main > .ck-editor__editable_root:not(.ck-editor__nested-editable) {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 }
 
 .ck.ck-editor {
