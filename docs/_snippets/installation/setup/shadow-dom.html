@@ -1,0 +1,14 @@
+<div class="shadow-dom-demo" id="snippet-shadow-dom">
+	<div class="shadow-dom-demo__editors">
+		<div class="shadow-dom-demo__column" role="group" aria-labelledby="snippet-shadow-dom-light-label">
+			<div class="shadow-dom-demo__label" id="snippet-shadow-dom-light-label">Light DOM</div>
+			<div class="shadow-dom-demo__light-editor"></div>
+		</div>
+		<div class="shadow-dom-demo__column" role="group" aria-labelledby="snippet-shadow-dom-shadow-label">
+			<div class="shadow-dom-demo__label" id="snippet-shadow-dom-shadow-label">Shadow DOM</div>
+			<snippet-shadow-root class="shadow-dom-demo__shadow-host" layers="editor snippets">
+				<div class="shadow-dom-demo__shadow-editor"></div>
+			</snippet-shadow-root>
+		</div>
+	</div>
+</div>

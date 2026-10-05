@@ -22,6 +22,22 @@ The integration guides show how to do both in each framework:
 	Writing an editor feature that has to keep working inside a shadow root is a different job. The {@link framework/deep-dive/shadow-dom Deep dive into shadow DOM support} guide covers it.
 </info-box>
 
+## Demo
+
+The two editors below have the same configuration. The one on the left runs in the regular page DOM, and the one on the right runs inside a shadow root. Use the button to add global rules that restyle every paragraph, heading, and list item on this page, and see how each editor reacts.
+
+<br />
+<ck:button id="snippet-shadow-dom-apply-styles">Apply page styles</ck:button>
+<ck:button id="snippet-shadow-dom-reset-styles" variant="secondary" disabled>Reset</ck:button>
+
+{@snippet installation/setup/shadow-dom}
+
+A shadow root isolates the editor from the styles of the page that hosts it. Changes to the global styles of your application do not alter the edited content or the editor user interface, so both keep a consistent look wherever you embed the editor.
+
+In the demo, the rules reach the content of the light-DOM editor because it is part of the page, like every other paragraph, heading, and list around it. This is expected behavior, and you can handle it with additional CSS in your application. The editor on the right needs no such adjustments. Its floating user interface is isolated as well, because it renders in a separate shadow root at the end of the page. Open the developer tools of your browser and inspect the right editor to find it inside a `#shadow-root`.
+
+The demo uses the setup described in the sections below.
+
 ## Loading the editor styles
 
 Attaching a shadow root creates a separate DOM tree, and style sheets are scoped to the tree they belong to. The isolation works both ways: selectors in a page style sheet do not match elements inside a shadow tree, and styles defined inside a shadow tree do not affect the rest of the page.

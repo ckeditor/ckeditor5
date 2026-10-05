@@ -13,8 +13,13 @@ export {
 	getViewportTopOffsetConfig,
 	setViewportTopOffsetDynamically,
 	createTabs,
-	querySnippetCSSUrl
+	querySnippetCSSUrl,
+	defineCustomElement,
+	whenPageLoaded,
+	createElement
 } from './shared-helpers.js';
+
+export { createSnippetShadowRootElement } from './shadow-dom.js';
 
 export { BalloonBlockEditor } from './build-balloon-block.js';
 export { BalloonEditor } from './build-balloon.js';

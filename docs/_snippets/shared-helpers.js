@@ -184,3 +184,97 @@ export function createTabs( tabsContainer, onTabChange ) {
 export function querySnippetCSSUrl( snippetName ) {
 	return document.querySelector( `link[href*="${ snippetName }/snippet.css"][data-cke]` )?.href || '';
 }
+
+/**
+ * Wraps `callback`, so that it is called only the first time and every call returns the result of that first one.
+ *
+ *		const getStyleSheet = once( () => new CSSStyleSheet() );
+ *
+ *		getStyleSheet() === getStyleSheet(); // true
+ *
+ * @param {Function} callback
+ * @returns {Function}
+ */
+export function once( callback ) {
+	let isCalled = false;
+	let result;
+
+	return ( ...args ) => {
+		if ( !isCalled ) {
+			isCalled = true;
+			result = callback( ...args );
+		}
+
+		return result;
+	};
+}
+
+/**
+ * Registers a custom element, unless an element with this name is already defined, for example by another snippet
+ * on the same page. Defining the same name twice throws otherwise.
+ *
+ *		defineCustomElement( 'snippet-shadow-root', SnippetShadowRootElement );
+ *
+ * @param {String} name
+ * @param {Function} constructor A class extending `HTMLElement`.
+ */
+export function defineCustomElement( name, constructor ) {
+	if ( !customElements.get( name ) ) {
+		customElements.define( name, constructor );
+	}
+}
+
+/**
+ * Resolves once the page has loaded, including its style sheets, or right away if it already has.
+ *
+ * @returns {Promise<void>}
+ */
+export function whenPageLoaded() {
+	return document.readyState === 'complete' ?
+		Promise.resolve() :
+		new Promise( resolve => window.addEventListener( 'load', () => resolve(), { once: true } ) );
+}
+
+/**
+ * Creates an element and assigns the given properties to it.
+ *
+ *		const link = createElement( 'link', { rel: 'stylesheet', href: 'styles.css' } );
+ *
+ * @param {String} name The tag name.
+ * @param {Object} [properties] The properties to assign, for example `className` or `textContent`.
+ * @returns {HTMLElement}
+ */
+export function createElement( name, properties ) {
+	return Object.assign( document.createElement( name ), properties );
+}
+
+/**
+ * Resolves once the element (for example a `<link>`, `<style>`, `<img>` or `<script>`) fires `load` or `error`.
+ * Check the result yourself – after an error, a `<link>` has no `sheet`.
+ *
+ * Start waiting before the event can fire, that is, in the same task in which the element is inserted.
+ *
+ * @param {HTMLElement} element
+ * @returns {Promise<void>}
+ */
+export function whenLoaded( element ) {
+	return new Promise( resolve => {
+		element.addEventListener( 'load', () => resolve(), { once: true } );
+		element.addEventListener( 'error', () => resolve(), { once: true } );
+	} );
+}
+
+/**
+ * Returns the rules of a style sheet, or an empty array if they cannot be read: the style sheet is missing,
+ * disabled, or comes from another origin.
+ *
+ * @param {CSSStyleSheet|null} styleSheet
+ * @returns {Array.<CSSRule>}
+ */
+export function readCssRules( styleSheet ) {
+	try {
+		return styleSheet && !styleSheet.disabled ? Array.from( styleSheet.cssRules ) : [];
+	} catch {
+		return [];
+	}
+}
