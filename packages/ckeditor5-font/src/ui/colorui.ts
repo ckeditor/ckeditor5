@@ -151,6 +151,12 @@ export class FontColorUIBase extends Plugin {
 				}
 			} );
 
+			dropdownView.panelView.extendTemplate( {
+				attributes: {
+					class: 'ck-dropdown__panel_fit-content'
+				}
+			} );
+
 			dropdownView.bind( 'isEnabled' ).to( command );
 
 			colorSelectorView.on<ColorSelectorExecuteEvent>( 'execute', ( evt, data ) => {
@@ -270,6 +276,12 @@ export class FontColorUIBase extends Plugin {
 
 					colorSelectorView!.updateSelectedColors();
 					colorSelectorView!.showColorGridsFragment();
+				}
+			} );
+
+			menuView.panelView.extendTemplate( {
+				attributes: {
+					class: 'ck-menu-bar__menu__panel_fit-content'
 				}
 			} );
 

@@ -112,6 +112,7 @@ describe( 'ColorInputView', () => {
 				expect( view.dropdownView.buttonView.element.classList.contains( 'ck-input-color__button' ) ).toBe( true );
 				expect( view.dropdownView.buttonView.tooltip ).toBe( true );
 				expect( view.dropdownView.buttonView.label ).toEqual( 'Color picker' );
+				expect( view.dropdownView.panelView.element.classList.contains( 'ck-dropdown__panel_fit-content' ) ).toBe( true );
 			} );
 
 			it( 'should bind #isEnabled to the view\'s #isReadOnly', () => {

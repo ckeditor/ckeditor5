@@ -124,6 +124,12 @@
 			display: inline-block;
 		}
 
+		/* Do not limit the width of panels with content that cannot shrink, for example the color grid.
+		   Otherwise, it would stick out of the panel. */
+		&.ck-dropdown__panel_fit-content {
+			max-width: var(--ck-dropdown-max-width, none);
+		}
+
 		&.ck-dropdown__panel_ne,
 		&.ck-dropdown__panel_nw,
 		&.ck-dropdown__panel_n,
