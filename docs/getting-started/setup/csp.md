@@ -4,7 +4,7 @@ menu-title: Content Security Policy (CSP)
 meta-title: Content Security Policy | CKEditor 5 Documentation
 meta-description: Learn which Content Security Policy (CSP) directives CKEditor 5 needs, and how to run the editor in applications that enforce Trusted Types.
 order: 110
-modified_at: 2026-09-21
+modified_at: 2026-10-06
 ---
 
 # Content Security Policy
@@ -80,28 +80,30 @@ This comes with some trade–offs, though. For example, it requires you to:
 
 [Trusted Types](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) is a browser mechanism against DOM-based XSS. It applies to DOM injection sinks: the properties and methods that turn a string into live HTML, such as `innerHTML`, `insertAdjacentHTML()` or `DOMParser#parseFromString()`. It also applies to attributes that run code or load a script, such as `onclick` or the `src` attribute of a `<script>` element. Under Trusted Types, a sink rejects a plain string and accepts only a value produced by a policy that the application allows.
 
-CKEditor&nbsp;5 supports running in applications that enforce Trusted Types. The editor creates a single policy named `ckeditor5`. It passes through this policy all markup that it writes to a sink, and all values that it writes to these attributes.
+CKEditor&nbsp;5 supports running in applications that enforce Trusted Types. It creates its own policies and passes through them every value that it writes to a sink or to one of these attributes. Your application needs to allow the names of these policies, together with the policies of any third-party code that your setup includes.
 
 ### Enabling Trusted Types
 
 Add two directives to the Content Security Policy that your application sends:
 
 ```plain
-require-trusted-types-for 'script'; trusted-types ckeditor5 lit-html;
+require-trusted-types-for 'script'; trusted-types ckeditor5 ckeditor5-integrations lit-html;
 ```
 
-The first directive turns the mechanism on. The second one lists the policy names that the browser allows. Add both names below to any that your application already lists:
+The first directive turns the mechanism on. The second one lists the policy names that the browser allows. Add the names below to any that your application already lists. The `ckeditor5` name is always required, and the other two depend on your setup:
 
 * `ckeditor5` &ndash; the policy of the editor.
-* `lit-html` &ndash; a policy that the {@link features/uploadcare Uploadcare} file uploader creates. It does not come from the editor. Add it whenever your build **contains** that feature. The ready-made premium features bundle always contains it.
+* `ckeditor5-integrations` &ndash; a policy that the `useCKEditorCloud()` and `loadCKEditorCloud()` helpers create to inject the editor scripts. Add it whenever you {@link getting-started/setup/loading-cdn-resources load the editor from CDN with these helpers}, for example in the React, Vue.js 3+, or Angular integration.
+* `lit-html` &ndash; a policy that the {@link features/uploadcare Uploadcare} file uploader creates. It does not come from the editor. Add it whenever your build **contains** that feature. The ready-made premium features bundle always contains it, and the CDN helpers load that bundle when you set their {@link getting-started/setup/loading-cdn-resources#the-loadckeditorcloud-function-options `premium` option} to `true`.
 
 <info-box warning>
-	Under enforcement, the editor cannot recover from a refused policy. The failure happens as soon as the browser loads the editor's code, so no editor is created, and the console names the policy that was refused. What differs is which code reports it.
+	Under enforcement, the editor cannot recover from a refused policy, so it is never created. The console names the policy that was refused. What differs is when the failure happens and which code reports it.
 
-	* Without `ckeditor5`, the editor also logs the `trusted-types-policy-creation-failed` warning, because it creates that policy itself and catches the refusal.
-	* Without `lit-html`, only the browser reports it, because the editor does not create that policy and never sees the refusal.
+	* Without `ckeditor5`, the failure happens as soon as the browser loads the editor's code. The editor also logs the `trusted-types-policy-creation-failed` warning, because it creates that policy itself and catches the refusal.
+	* Without `ckeditor5-integrations`, the failure happens before the browser loads the editor's code. The CDN helpers also fail with the `TrustedTypesPolicyCreationError` error, because they create that policy themselves.
+	* Without `lit-html`, the failure happens as soon as the browser loads the editor's code. Only the browser reports it, because the editor does not create that policy and never sees the refusal.
 
-	A policy is also refused when your application already created one with the same name, even though the name is listed. An application that uses Lit itself can hit this, because the premium features bundle brings its own copy. To allow the same name twice, add `'allow-duplicates'` to the `trusted-types` directive.
+	A policy is also refused when your application already created one with the same name, even though the name is listed. An application that uses Lit itself can hit this, because the premium features bundle brings its own copy. The same happens to `ckeditor5-integrations` when the page loads more than one copy of the `@ckeditor/ckeditor5-integrations-common` package. To allow the same name twice, add `'allow-duplicates'` to the `trusted-types` directive.
 </info-box>
 
 ### Trusted Types and content safety
