@@ -57,6 +57,7 @@ export { default as IconClose } from '../theme/icons/close.svg';
 export { default as IconCodeBlock } from '../theme/icons/code-block.svg';
 export { default as IconCode } from '../theme/icons/code.svg';
 export { default as IconCog } from '../theme/icons/cog.svg';
+export { default as IconComments } from '../theme/icons/comments.svg';
 export { default as IconColorPalette } from '../theme/icons/color-palette.svg';
 export { default as IconColorTileCheck } from '../theme/icons/color-tile-check.svg';
 export { default as IconCommentsArchive } from '../theme/icons/comments-archive.svg';
