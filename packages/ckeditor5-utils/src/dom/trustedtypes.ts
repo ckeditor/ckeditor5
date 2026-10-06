@@ -72,7 +72,8 @@ const PASS_THROUGH: TrustedTypePolicyOptions = {
 
 /**
  * The editor's policy, created on first use. The browser allows each policy name only once per document, so a single
- * policy is shared by every editor in the document, by all roots of a multi-root editor and across watchdog restarts.
+ * policy is shared by every editor in the document, by all roots of a multi-root editor, and by editors created later,
+ * such as one recreated after an error.
  */
 let policy: TrustedTypePolicy | undefined;
 
