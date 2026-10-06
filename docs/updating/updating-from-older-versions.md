@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Updating from older versions | CKEditor 5 Documentation
 meta-description: Follow the guide to update CKEditor 5 from older versions.
 menu-title: Updating from older versions
-order: 83
+order: 90
 modified_at: 2026-01-23
 ---
 

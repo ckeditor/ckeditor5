@@ -97,7 +97,7 @@ Files included in the ZIP archive:
 * `ckeditor5/ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
 * `ckeditor5/ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
 * `ckeditor5/ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
-* `ckeditor5/*.css` &ndash; The style sheets for the editor. You will use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
+* `ckeditor5/*.css` &ndash; The style sheets for the editor. You will use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/content-styles#optimizing-the-size-of-style-sheets Content styles} guide.
 * `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
 * The `README.md` and `LICENSE.md` files.
 
@@ -179,7 +179,7 @@ Files in the ZIP archive:
   * `ckeditor.js.map` &ndash; The source map for the editor ESM bundle.
   * `ckeditor5.umd.js` &ndash; The ready-to-use editor UMD bundle contains the editor and all plugins. [Secondary build]
   * `ckeditor5.umd.js.map` &ndash; The source map for the editor UMD bundle.
-  * `*.css` &ndash; The style sheets for the editor, use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/css Editor and content styles} guide.
+  * `*.css` &ndash; The style sheets for the editor, use `ckeditor5.css` in most cases. Read about other files in the {@link getting-started/setup/content-styles#optimizing-the-size-of-style-sheets Content styles} guide.
   * `translations/` &ndash; The editor UI translations (see the {@link getting-started/setup/ui-language Setting the UI language} guide).
   * The `ckeditor5-premium-features/` directory:
     * `ckeditor5-premium-features.js` &ndash; ESM bundle of premium features.  [Recommended build]

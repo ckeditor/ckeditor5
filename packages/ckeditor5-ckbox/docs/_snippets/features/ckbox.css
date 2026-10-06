@@ -21,7 +21,7 @@
 	line-height: var(--line-height-sm);
 }
 #ckbox-button {
-	background-color: var(--ck-color-list-button-on-background);
+	background-color: var(--ck-list-button-on-background-color);
 	color: var(--color-common-white);
 	border: none;
 	padding: 10px 20px;

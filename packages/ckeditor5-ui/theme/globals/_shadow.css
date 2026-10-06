@@ -23,5 +23,5 @@
 	/**
 	 * A visual style of element's floating shadow (e.g. a floating panel or dialog).
 	 */
-	--ck-shadow-xl: 0 16px 32px -4px hsl(0 0% 0% / .1), 0 4px 16px hsl(0 0% 0% / .05);
+	--ck-shadow-xl: 0 16px 32px -4px hsl(0 0% 0% / 0.102), 0 4px 16px hsl(0 0% 0% / 0.102);
 }

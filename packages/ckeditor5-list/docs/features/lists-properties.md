@@ -125,7 +125,7 @@ If your content requires all markers to start at the same position, use one of t
 * Keep one font family and one font size for all markers, as shown in [Styling the markers with CSS](#styling-the-markers-with-css).
 * [Disable marker formatting](#disabling-marker-formatting), so that markers always use the content font.
 
-Apply the same CSS wherever the content is presented outside the editor. For example in the {@link getting-started/setup/css#styling-the-published-content published content} styles, and in the style sheets passed to the {@link features/export-pdf export to PDF} or {@link features/export-word export to Word} features.
+Apply the same CSS wherever the content is presented outside the editor. For example in the {@link getting-started/setup/content-styles#styling-the-published-content published content} styles, and in the style sheets passed to the {@link features/export-pdf export to PDF} or {@link features/export-word export to Word} features.
 
 ### Disabling marker formatting
 

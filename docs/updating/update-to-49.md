@@ -2,7 +2,7 @@
 category: update-guides
 meta-title: Update to version 49.x | CKEditor 5 Documentation
 menu-title: Update to v49.x
-order: 75
+order: 50
 modified_at: 2026-10-01
 ---
 
@@ -19,6 +19,12 @@ modified_at: 2026-10-01
 </info-box>
 
 ## Update to CKEditor&nbsp;5 v49.0.0
+
+### Refreshed theme and design tokens
+
+Version 49 ships a refreshed default editor theme built on a reorganized set of design tokens (CSS variables). The default look changed, and many token names were renamed or restructured. Overriding the old names continues to work through backward-compatible fallbacks, but reading old names or depending on specific old values may need adjustments.
+
+If you customized the editor's appearance, start with the {@link updating/migration-to-refreshed-theme Migrating to the refreshed theme} guide, which covers what changed, the backward-compatibility mechanisms, and how to restore the previous look. To work with the new tokens, see the {@link framework/theme-customization Theme customization} and {@link framework/theme-token-naming Theme token naming} guides.
 
 ### The Watchdog is removed
 

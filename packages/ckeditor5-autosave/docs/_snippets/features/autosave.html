@@ -26,10 +26,10 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		background: var(--ck-color-toolbar-background);
-		border: 1px solid var(--ck-color-toolbar-border);
+		background: var(--ck-toolbar-background-color);
+		border: 1px solid var(--ck-toolbar-border-color);
 		padding: 10px;
-		border-radius: var(--ck-border-radius);
+		border-radius: var(--ck-border-radius-surface);
 		margin-top: -1.5em;
 		margin-bottom: 1.5em;
 		border-top: 0;
@@ -50,7 +50,7 @@
 		content: 'Saved!';
 		color: green;
 		display: inline-block;
-		margin-right: var(--ck-spacing-medium);
+		margin-right: var(--ck-spacing-gap);
 	}
 
 	/* During "Saving" display spinner and change content of label. */
@@ -78,7 +78,7 @@
 	#snippet-autosave-server_label,
 	#snippet-autosave-status_label {
 		font-weight: bold;
-		margin-right: var(--ck-spacing-medium);
+		margin-right: var(--ck-spacing-gap);
 	}
 
 	#snippet-autosave + .ck.ck-editor .ck-editor__editable {

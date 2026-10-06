@@ -213,12 +213,12 @@ We will use our set spacing variables to keep things uniform.
 /* style.css */
 
 .ck.ck-abbr-form {
-	padding: var(--ck-spacing-large);
+	padding: var(--ck-spacing-padding-comfortable);
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	grid-template-rows: repeat(3, 1fr);
 	grid-column-gap: 0px;
-	grid-row-gap: var(--ck-spacing-standard);
+	grid-row-gap: var(--ck-spacing-gap);
 }
 
 .ck.ck-abbr-form .ck.ck-labeled-field-view:nth-of-type(1) {

@@ -55,7 +55,7 @@ The plugin provides the following five style options out of the box. Each option
 
 	You can find the source of the default styles applied by the editor here: [`ckeditor5-media-embed/theme/index-content.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/theme/index-content.css).
 
-	Read more about {@link getting-started/setup/css styling the content of the editor}.
+	Read more about {@link getting-started/setup/content-styles styling the content of the editor}.
 </info-box>
 
 The demo below shows the five built-in alignment styles, wired through the two compact split-button dropdowns and combined with the {@link features/media-embed-resize media embed resize feature}. Select a figure and try the **Wrap text** and **Break text** dropdowns in its contextual toolbar &ndash; the action button reflects whichever alignment is currently applied.

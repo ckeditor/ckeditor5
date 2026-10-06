@@ -178,8 +178,8 @@ Here is the HTML structure used to create the customized word and character coun
 ```html
 <style>
 	.demo-update {
-		border: 1px solid var(--ck-color-base-border);
-		border-radius: var(--ck-border-radius);
+		border: 1px solid var(--ck-color-border-container);
+		border-radius: var(--ck-border-radius-surface);
 		box-shadow: 2px 2px 0px hsla( 0, 0%, 0%, 0.1 );
 		margin: 1.5em 0;
 		padding: 1em;

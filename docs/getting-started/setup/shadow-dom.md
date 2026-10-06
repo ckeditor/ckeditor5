@@ -44,7 +44,7 @@ Attaching a shadow root creates a separate DOM tree, and style sheets are scoped
 
 Load the editor style sheets into the tree the editor is attached to:
 
-* In the light DOM, load them in the main document, as the {@link getting-started/setup/css Editor and content styles} guide shows.
+* In the light DOM, load them in the main document, as the {@link getting-started/setup/content-styles Content styles} guide shows.
 * Inside a shadow root, load them into that root, for example through [`ShadowRoot.adoptedStyleSheets`](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/adoptedStyleSheets).
 
 Inside a shadow root, the most practical way is to adopt a [constructed style sheet](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/CSSStyleSheet). The same sheet can be adopted by any number of roots, so the editor root and the overlay container described in the next section share a single copy.

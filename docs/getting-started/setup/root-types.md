@@ -182,7 +182,7 @@ InlineEditor
 ```
 
 <info-box>
-	When using a semantic element such as `<h1>` as the editable area, keep in mind that the `.ck-content` CSS class applied to all editables defines default font and line-height values that may override the element's native browser styles. If this affects your layout, scope the relevant {@link getting-started/setup/css#general-content-styling CSS variables} to that element.
+	When using a semantic element such as `<h1>` as the editable area, keep in mind that the `.ck-content` CSS class applied to all editables defines default font and line-height values that may override the element's native browser styles. If this affects your layout, scope the relevant {@link getting-started/setup/content-styles#general-content-styling CSS variables} to that element.
 </info-box>
 
 ### Applying classes and styles
@@ -211,7 +211,7 @@ InlineEditor
 	.catch( /* ... */ );
 ```
 
-The `classes` array and `styles` object are applied to the editable element. This is useful for controlling dimensions, scoping CSS rules, or integrating with a class-based styling system. For broader CSS customization options, see the {@link getting-started/setup/css Editor and content styles} guide.
+The `classes` array and `styles` object are applied to the editable element. This is useful for controlling dimensions, scoping CSS rules, or integrating with a class-based styling system. For broader CSS customization options, see the {@link getting-started/setup/editor-styles Editor styles} and {@link getting-started/setup/content-styles Content styles} guides.
 
 ## Styling the editable area
 

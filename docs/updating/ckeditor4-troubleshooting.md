@@ -25,7 +25,7 @@ There is no equivalent of `config.allowedContent = true`. To keep your content, 
 
 ## What happened to the `contents.css` file? How do I style the content of the editor?
 
-There is no such thing as the `contents.css` file anymore. This is because in CKEditor&nbsp;5 the features bring their own content styles, {@link getting-started/setup/css provided via CSS files}.
+There is no such thing as the `contents.css` file anymore. This is because in CKEditor&nbsp;5 the features bring their own content styles, {@link getting-started/setup/content-styles provided via CSS files}.
 
 ## Where are the `editor.insertHtml()` and `editor.insertText()` methods? How to insert some content?
 

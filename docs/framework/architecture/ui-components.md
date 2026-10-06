@@ -614,7 +614,7 @@ class MinimalisticDialog extends Plugin {
 					tag: 'div',
 					attributes: {
 						style: {
-							padding: 'var(--ck-spacing-large)',
+							padding: 'var(--ck-spacing-padding-comfortable)',
 							whiteSpace: 'initial',
 							width: '100%',
 							maxWidth: '500px'
@@ -728,7 +728,7 @@ class MinimalisticModal extends Plugin {
 					tag: 'div',
 					attributes: {
 						style: {
-							padding: 'var(--ck-spacing-large)',
+							padding: 'var(--ck-spacing-padding-comfortable)',
 							whiteSpace: 'initial',
 							width: '100%',
 							maxWidth: '500px'

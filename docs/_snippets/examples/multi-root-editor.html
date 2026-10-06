@@ -4,8 +4,12 @@
 	}
 
 	.editor {
-		border: #ccced1 1px solid;
+		/* border: #ccced1 1px solid; */
 		margin-top: 10px;
+	}
+
+	.editor .ck.ck-editor__editable:not(.ck-editor__nested-editable):not(.ck-focused) {
+		border-color: var(--ck-color-border-container);
 	}
 
 	.boxes {

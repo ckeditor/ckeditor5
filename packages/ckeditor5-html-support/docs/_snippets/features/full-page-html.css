@@ -42,7 +42,7 @@
 
 .ck .post__category {
 	font-weight: 600;
-	color: var(--ck-color-button-on-color);
+	color: var(--ck-button-on-text-color);
 	background-color: var(--ck-color-link-selected-background);
 	padding: 2px 8px;
 	border-radius: 8px;

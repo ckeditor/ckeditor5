@@ -9,8 +9,8 @@ closes:
 
 The editor now ships a refreshed, more modern default look, expressed entirely through the new tiered design tokens. Every integration that uses the default theme gets the new appearance.
 
-The previous look remains available as an opt-in legacy theme - a single stylesheet you load - so integrations that prefer the old appearance can keep it with a one-line change.
+The previous look remains available as an opt-in legacy theme preset. Copy it from the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/migration-to-refreshed-theme.html#keeping-the-old-look) into your own stylesheet and load it after the editor styles.
 
-Some of the refreshed styles also apply to `.ck-content`, so already-published documents render slightly differently - for example comment and suggestion markers, block quotes, code blocks, and horizontal lines. Rollback snippets that restore the previous content colors ship with this release.
+Some of the refreshed styles also apply to `.ck-content`, so already-published documents render slightly differently - for example comment and suggestion markers, block quotes, code blocks, and horizontal lines. The migration guide includes rollback snippets that restore the previous content colors.
 
-Custom themes are largely unaffected: CSS that reads the previous token names keeps working through backward-compatible aliases. Overriding a legacy name to re-skin the editor's internals is the part that changes - use the new tokens or the legacy theme instead. See the theme migration guide for the upgrade path.
+Custom themes are largely unaffected: overrides of the previous token names keep working, because the theme still reads each legacy name first. CSS that reads the previous names needs the opt-in aliases from the migration guide. See the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/migration-to-refreshed-theme.html) for the upgrade path and the few exceptions.

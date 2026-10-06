@@ -2,7 +2,7 @@
 category: update-guides
 meta-title: Update to version 48.x | CKEditor 5 Documentation
 menu-title: Update to v48.x
-order: 76
+order: 55
 modified_at: 2026-06-30
 ---
 
