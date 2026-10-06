@@ -1,7 +1,7 @@
 <div class="document-container">
 	<div id="toolbar-container" class="toolbar-container"></div>
 	<div class="minimap-wrapper">
-		<div class="editor-container">
+		<div class="editor-container ck-rounded-corners">
 			<div id="editor">
 				<h2>APPENDIX C&nbsp;</h2>
 				<h3>
@@ -909,7 +909,7 @@
 				</ul>
 			</div>
 		</div>
-		<div class="minimap-container"></div>
+		<div class="minimap-container ck-rounded-corners"></div>
 	</div>
 </div>
 
@@ -977,10 +977,11 @@
 	.minimap-container {
 		width: 120px;
 		flex: 0 0 auto;
-		border: 1px solid var(--ck-color-toolbar-border);
+		border: 1px solid var(--ck-toolbar-border-color);
 		position: relative;
 		overflow: hidden;
 		max-height: 100%;
+		border-bottom-right-radius: var(--ck-editor-outer-radius);
 	}
 
 	.document-container {
@@ -997,6 +998,11 @@
 		width: 100%;
 	}
 
+	.toolbar-container .ck.ck-toolbar {
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+
 	.editor-container {
 		width: 100%;
 		border: 1px solid hsl(0, 0%, 80%);
@@ -1005,6 +1011,7 @@
 		box-sizing: border-box;
 		position: relative;
 		overflow: auto;
+		border-bottom-left-radius: var(--ck-editor-outer-radius);
 	}
 
 	#editor {

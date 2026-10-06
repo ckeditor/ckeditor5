@@ -688,7 +688,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-uiColor"><code>uiColor</code></a></td>
-			<td>CKEditor&nbsp;5 comes with an idea of much more powerful themes, where you can style almost every aspect of the UI. See the {@link framework/theme-customization Theme customization} guide and {@link examples/theme-customization Theme customization example}. Thanks to {@link framework/theme-customization#customization-with-css-variables CSS variables} rebuilding the editor is not needed to change its styles.</td>
+			<td>CKEditor&nbsp;5 comes with an idea of much more powerful themes, where you can style almost every aspect of the UI. See the {@link framework/theme-customization Theme customization} guide and {@link examples/theme-customization Theme customization example}. Thanks to {@link framework/theme-customization#working-with-the-token-layers CSS variables} rebuilding the editor is not needed to change its styles.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-undoStackSize"><code>undoStackSize</code></a></td>

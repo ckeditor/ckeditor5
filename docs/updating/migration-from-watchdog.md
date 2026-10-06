@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Migrating from the Watchdog | CKEditor 5 Documentation
 meta-description: Learn how to move off the removed CKEditor 5 Watchdog, in plain JavaScript and in the React, Vue, and Angular integrations.
 menu-title: Migrating from the Watchdog
-order: 12
+order: 51
 modified_at: 2026-09-07
 ---
 

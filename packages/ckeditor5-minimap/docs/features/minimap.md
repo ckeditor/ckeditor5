@@ -143,7 +143,7 @@ Employ the following CSS:
 .minimap-container {
 	width: 120px;
 	flex: 0 0 auto;
-	border: 1px solid var(--ck-color-toolbar-border);
+	border: 1px solid var(--ck-toolbar-border-color);
 	position: relative;
 	overflow: hidden;
 	max-height: 100%;

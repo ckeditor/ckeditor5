@@ -6,8 +6,8 @@
 
 :root,
 :host {
-	/* Anchor of the radius scale; every rung derives from it. `--ck-radius-unit` stays the legacy
-	   override hook, so overriding it still rescales the whole ladder. */
+	/* Anchor of the radius scale; every rung derives from it. `--ck-radius-unit` is an optional
+	   override hook, so overriding it also rescales the whole ladder. */
 	--ck-radius-base: var(--ck-radius-unit, 8px);       /* 8px */
 
 	--ck-radius-xs: calc(var(--ck-border-radius, var(--ck-radius-base)) / 8);    /* 1px  */
