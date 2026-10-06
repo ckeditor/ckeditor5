@@ -57,10 +57,8 @@ export class CKEditorError extends Error {
 	 * @param errorName The error id in an `error-name` format. A link to this error documentation page will be added
 	 * to the thrown error's `message`.
 	 * @param context A context of the error by which {@link module:core/errorreporter~onEditorError error reporting}
-	 * works out which editor the error came from. It should be an editor instance or a property connected to it. It can be
-	 * also a `null` value if the error should not be attributed to any editor (e.g. during the editor initialization).
-	 * The error context should be checked using the `areConnectedThroughProperties( editor, context )` utility
-	 * to check if the object works as the context.
+	 * works out which editor the error came from. Pass the editor, the context, or the plugin or command that throws the error.
+	 * Pass `null` if the error should not be attributed to any editor (e.g. during the editor initialization).
 	 * @param data Additional data describing the error. A stringified version of this object
 	 * will be appended to the error message, so the data are quickly visible in the console. The original
 	 * data object will also be later available under the {@link #data} property.
