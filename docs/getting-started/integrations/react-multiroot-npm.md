@@ -99,7 +99,7 @@ The `useMultiRootEditor` hook supports the following properties:
 * `onChange: Function` &ndash; It is called when the editor data has changed. See the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`} event.
 * `onBlur: Function` &ndash; It is called when the editor was blurred. See the {@link module:engine/view/document~ViewDocument#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus: Function` &ndash; It is called when the editor was focused. See the {@link module:engine/view/document~ViewDocument#event:focus `editor.editing.view.document#focus`} event.
-* `onError: Function` &ndash; It is called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
+* `onError: Function` &ndash; It is called when an error is reported for the editor, either during the initialization or at runtime. It receives two arguments: the error instance and the error details.
   Error details is an object that contains one property:
   * `phase: 'initialization'|'runtime'` &ndash; Informs when an error has occurred (during the editor or context initialization, or after the initialization).
 

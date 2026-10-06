@@ -311,10 +311,10 @@ It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus`
 
 ### `error`
 
-Fired when the editor crashes.
+Fired when an error is reported for the editor, either during the initialization or at runtime.
 
 <info-box>
-	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
+	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for errors during the editor initialization.
 </info-box>
 
 A reported error does not stop the editor. Its state may no longer be consistent, so do not leave the error unhandled. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.

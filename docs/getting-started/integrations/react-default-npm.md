@@ -88,7 +88,7 @@ The `<CKEditor>` component supports the following properties:
 * `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`} event.
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~ViewDocument#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~ViewDocument#event:focus `editor.editing.view.document#focus`} event.
-* `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
+* `onError` &ndash; A function called when an error is reported for the editor, either during the initialization or at runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
   * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
 
 The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
@@ -155,7 +155,7 @@ The `CKEditorContext` component supports the following properties:
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
 * `onChangeInitializedEditors` &ndash; A function called when any editor is initialized or destroyed in the tree. It receives a dictionary of fully initialized editors, where the key is the value of the `contextItemMetadata.name` property set on the `CKEditor` component. The editor's ID is the key if the `contextItemMetadata` property is absent. Additional data can be added to the `contextItemMetadata` in the `CKEditor` component, which will be passed to the `onChangeInitializedEditors` function.
 * `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance.
-* `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
+* `onError` &ndash; A function called when an error is reported for the context, either during the initialization or at runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
   * `{String} phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during the editor or context initialization, or after the initialization).
 
 <info-box>
