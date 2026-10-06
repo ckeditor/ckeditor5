@@ -200,11 +200,9 @@ function setUpPageStylesButtons() {
 	const pageStyleSheet = new CSSStyleSheet();
 
 	pageStyleSheet.replaceSync( `
-		:is( .shadow-dom-demo, .shadow-dom-demo__overlay ) {
-			& p { color: #9a3412; font-family: Georgia, serif; font-size: 1.125em; }
-			& h2 { color: #15803d; }
-			& li { font-style: italic; }
-		}
+		p { color: #9a3412; font-family: Georgia, serif; font-size: 1.125em; }
+		h2 { color: #15803d; }
+		li { font-style: italic; }
 	` );
 
 	const togglePageStyles = isApplied => {
