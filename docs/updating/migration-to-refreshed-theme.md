@@ -1166,11 +1166,65 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-user-avatar-text-color: var(--ck-user-avatar-color, hsl(0 0% 100%));
 	--ck-user-me-border-color: hsl(0 0% 100%);
 	--ck-user-name-font-size: var(--ck-font-size-base);
+	--ck-presence-list-dropdown-background-color: hsl(0 0% 100%);
+	--ck-presence-list-dropdown-border-color: hsl(0 0% 92%);
+	--ck-presence-list-hover-background-color: transparent;
+	--ck-presence-list-dropdown-list-min-width: 180px;
+	--ck-presence-list-padding: 1px 1px 1px 2px;
+	--ck-presence-list-border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
+	--ck-presence-list-list-item-padding: 1px;
+	--ck-presence-list-marker-length: 100%;
+	--ck-presence-list-marker-thickness: 3px;
+	--ck-presence-list-marker-gap: 5px;
+	--ck-presence-list-marker-border-radius: 4px;
 	--ck-presence-list-dropdown-avatar-size: var(--ck-user-avatar-size);
 	--ck-presence-list-dropdown-list-item-padding: var(--ck-spacing-standard, var(--ck-spacing-base));
+	--ck-presence-list-dropdown-list-item-gap: var(--ck-spacing-standard, var(--ck-spacing-base));
 	--ck-presence-list-dropdown-list-item-border-radius: 0;
 	--ck-presence-list-dropdown-user-name-font-size: inherit;
 	--ck-presence-list-focus-border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
+}
+
+/* Presence list. */
+.ck.ck-presence-list__list-item {
+	margin-left: var(--ck-spacing-medium, var(--ck-spacing-base));
+
+	& .ck-user {
+		margin: 2px;
+	}
+}
+
+.ck.ck-presence-list--collapsed .ck.ck-presence-list__list-item {
+	& .ck-user {
+		margin-inline: 0;
+	}
+
+	& .ck.ck-presence-list__users-counter {
+		margin-inline: 2px;
+	}
+}
+
+.ck.ck-presence-list__users-counter {
+	margin-top: 4px;
+}
+
+.ck.ck-presence-list__balloon {
+	border: 0;
+
+	& .ck.ck-presence-list__dropdown-list-item {
+		margin: 0;
+		padding: var(--ck-presence-list-dropdown-list-item-padding);
+
+		& .ck-user {
+			margin: 2px;
+		}
+	}
+
+	& .ck.ck-presence-list__dropdown-list .ck.ck-presence-list__marker {
+		position: absolute;
+		left: 0;
+		height: 100%;
+	}
 }
 
 .ck .ck-annotation__actions {
