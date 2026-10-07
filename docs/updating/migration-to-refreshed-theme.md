@@ -331,6 +331,10 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-color-shadow-drop-active: hsl(0 0% 0% / 0.2);
 	--ck-color-shadow-inner: hsl(0 0% 0% / 0.1);
 
+	--ck-color-base-diff-insertion: 128 71% 40%;
+	--ck-color-base-diff-deletion: 345 71% 40%;
+	--ck-color-base-diff-format: 191 60% 75%;
+
 	/* Foundation / Border & Radius */
 	--ck-radius-xs: 1px;
 	--ck-radius-sm: 2px;
@@ -378,7 +382,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-font-size-lg: 1.15em;
 	--ck-font-size-xl: 1.4em;
 	--ck-font-size-2xl: 1.8em;
-	--ck-font-size-normal: 1em;
+	--ck-font-size-normal: var(--ck-font-size-base);
 	--ck-font-weight-normal: 400;
 	--ck-font-weight-medium: 500;
 	--ck-font-weight-semibold: 600;
@@ -562,7 +566,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 
 	/* Component / Button */
 	--ck-button-padding: var(--ck-spacing-control-padding-block);
-	/* Old theme: `.ck-button_with-text` padded with `--ck-spacing-tiny --ck-spacing-standard`. */
 	--ck-button-with-text-padding: var(--ck-spacing-tiny, var(--ck-spacing-xs)) var(--ck-spacing-standard, var(--ck-spacing-base));
 	--ck-button-standard-min-width: var(--ck-size-control-min-height);
 	--ck-button-font-size: inherit;
@@ -586,9 +589,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-button-cancel-color: var(--ck-color-feedback-warning);
 	--ck-button-focus-border-color: var(--ck-interactive-focus-border-color);
 	--ck-button-opacity-disabled: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
-	/* The old theme dimmed disabled action buttons like any other button. */
 	--ck-button-action-opacity-disabled: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
-	/* The old theme used the shared control icon gap between a button's icon and label. */
 	--ck-button-icon-gap: var(--ck-spacing-control-icon-gap);
 
 	--ck-button-background: var(--ck-button-default-background-color);
@@ -637,7 +638,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-list-item-min-width: 15em;
 	--ck-list-padding: var(--ck-spacing-padding-compact) 0;
 	--ck-list-item-outer-padding: 0;
-	/* The old theme had no inline list padding, so the separator did not bleed. */
 	--ck-list-separator-inline-margin: 0;
 	--ck-list-border-radius: var(--ck-border-radius-surface);
 	--ck-list-background-color: var(--ck-color-surface-control);
@@ -667,8 +667,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-dropdown-menu-button-border-radius: 0;
 
 	/* Component / Menu Bar */
-	/* Old theme (v48.5.2): `.ck-menu-bar { padding: var(--ck-spacing-small) }` = 0.3em — the compact tier,
-	   not the base padding. */
 	--ck-menu-bar-padding: var(--ck-spacing-padding-compact);
 	--ck-menu-bar-gap: var(--ck-spacing-gap-compact);
 
@@ -783,7 +781,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-search-results-info-secondary-font-size: inherit;
 
 	/* Component / Icon */
-	--ck-icon-size: calc(var(--ck-line-height-base) * var(--ck-font-size-normal, var(--ck-font-size-base)));
+	--ck-icon-size: calc(var(--ck-line-height-base) * 1em);
 	--ck-icon-font-size: .8333350694em;
 
 	/* Component / Spinner */
@@ -807,7 +805,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-responsive-form-divider-border: var(--ck-border-divider);
 
 	/* Component / Powered By */
-	/* Metrics scaled to the base font size; the trailing "/ 13" is the base these px were designed against. */
 	--ck-powered-by-font-size: calc(var(--ck-font-size-base) * 7.5 / 13);
 	--ck-powered-by-line-height: calc(var(--ck-font-size-base) * 10 / 13);
 	--ck-powered-by-letter-spacing: calc(var(--ck-font-size-base) * -0.2 / 13);
@@ -831,6 +828,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 }
 
 .ck {
+	/* eslint-disable-next-line css/use-baseline */
 	scrollbar-color: auto;
 }
 
@@ -850,9 +848,17 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	padding: var(--ck-button-with-text-padding);
 }
 
+:is(.ck.ck-button, :where(a).ck.ck-button).ck-button_surface {
+	--ck-button-surface-border-color: var(--ck-color-interactive-selected-text);
+}
+
+.ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {
+	margin: 0;
+	border: 1px solid transparent;
+	border-radius: 0;
+}
+
 /* ============================== ckeditor5-block-quote ============================== */
-/* Content styles rollback (see content-styles-rollback.md). Targets .ck-content, so it also
-   affects published content. */
 .ck-content blockquote {
 	border-left: solid 5px hsl(0 0% 80%);
 }
@@ -868,8 +874,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 }
 
 /* ============================== ckeditor5-code-block ============================== */
-/* Content styles rollback (see content-styles-rollback.md). Targets .ck-content, so it also
-   affects published content. */
 .ck-content pre {
 	background: hsl(0 0% 78% / 0.3);
 	border: 1px solid hsl(0 0% 77%);
@@ -908,13 +912,10 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-fullscreen-editable-shadow: var(--ck-shadow-md);
 	--ck-fullscreen-left-sidebar-avatar-size: 28px;
 	--ck-fullscreen-editable-border-radius: 2px;
-	/* The toggle button used the default hover background before the refresh. */
 	--ck-fullscreen-left-sidebar-toggle-button-hover-background: var(--ck-color-interactive-hover-surface);
 }
 
 /* ============================== ckeditor5-horizontal-line ============================== */
-/* Content styles rollback (see content-styles-rollback.md). Targets .ck-content, so it also
-   affects published content. */
 .ck-content hr {
 	background: hsl(0 0% 87%);
 }
@@ -923,7 +924,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 :root,
 :host {
 	--ck-html-embed-background: var(--ck-color-base-foreground);
-	/* The save and cancel buttons used the default hover background before the refresh. */
 	--ck-html-embed-button-hover-background: var(--ck-color-interactive-hover-surface);
 	--ck-widget-label-border-radius: 0;
 }
@@ -946,7 +946,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 :host {
 	--ck-link-panel-width: var(--ck-width-balloon-form);
 	--ck-link-providers-width: var(--ck-width-balloon-form);
-	/* The old theme had no bottom padding on the providers list. */
 	--ck-link-provider-list-padding-bottom: 0;
 	--ck-link-properties-width: var(--ck-width-balloon-form);
 }
@@ -955,6 +954,17 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 :root,
 :host {
 	--ck-media-form-width: var(--ck-width-dialog);
+}
+
+/* ============================== ckeditor5-mention ============================== */
+.ck.ck-mentions > .ck-list__item.ck-mentions__item_focused > .ck-button {
+	background: var(--ck-list-button-on-background-color);
+	border-color: transparent;
+	box-shadow: none;
+}
+
+.ck.ck-mentions > .ck.ck-list__item.ck-mentions__item_focused > .ck.ck-button .ck-button__label {
+	color: var(--ck-list-button-on-text-color);
 }
 
 /* ============================== ckeditor5-table ============================== */
@@ -983,10 +993,9 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 }
 
 .ck.ck-table-cell-properties-form .ck-form__row.ck-table-cell-properties-form__alignment-row .ck.ck-toolbar:last-of-type {
-	flex-grow: 0.43;
+	flex-grow: 1;
 }
 
-/* Border row: style and width are a fixed 80px, color fills the rest. */
 .ck.ck-table-form .ck-form__row.ck-table-form__border-row .ck-table-form__border-style,
 .ck.ck-table-form .ck-form__row.ck-table-form__border-row .ck-table-form__border-width {
 	flex: 0 0 auto;
@@ -1002,7 +1011,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	max-width: none;
 }
 
-/* Dimensions row: a fixed two-input width, 80px inputs and a tight operator gap. */
 .ck.ck-table-form .ck-form__row.ck-table-form__dimensions-row {
 	--ck-table-form-dimensions-input-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
 }
@@ -1019,14 +1027,12 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	margin: 0 var(--ck-spacing-small, var(--ck-spacing-sm));
 }
 
-/* Background row: fills the remaining space instead of a fixed third. */
 .ck.ck-table-form .ck-form__row.ck-table-form__background-row {
 	width: auto;
 	min-width: 0;
 	max-width: none;
 }
 
-/* Cell type row: a fixed two-input width. */
 .ck.ck-table-cell-properties-form .ck-form__row.ck-table-form__cell-type-row {
 	--ck-table-form-cell-type-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
 
@@ -1035,14 +1041,12 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	max-width: var(--ck-table-form-cell-type-width);
 }
 
-/* Padding column: a quarter of the row that grows to fill the space next to the dimensions. */
 .ck.ck-table-cell-properties-form .ck-form__row.ck-table-cell-properties-form__padding-row {
 	width: 25%;
 	min-width: 0;
 	max-width: none;
 }
 
-/* Horizontal alignment toolbar: a fixed two-input width. */
 .ck.ck-table-cell-properties-form .ck-form__row.ck-table-cell-properties-form__alignment-row .ck.ck-toolbar.ck-table-cell-properties-form__horizontal-alignment-toolbar {
 	--ck-table-cell-properties-horizontal-alignment-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
 
@@ -1094,6 +1098,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-ai-chat-prompt-input-padding-inline-start: var(--ck-spacing-control-padding-inline-compact);
 	--ck-ai-chat-prompt-input-padding-inline-end: 2.6em;
 	--ck-ai-chat-content-font-size: 13px;
+	--ck-ai-chat-content-line-height: 1.385;
 	--ck-ai-disclaimer-font-size: 0.75em;
 	--ck-ai-chat-controls-button-min-height: 1.88em;
 	--ck-ai-chat-prompt-submit-button-font-size: 1em;
@@ -1103,7 +1108,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-ai-chat-model-selection-item-capability-icon-size: inherit;
 	--ck-ai-chat-history-section-title-font-size: 0.85em;
 	--ck-ai-chat-history-section-title-padding: 0.48em 0.9em 0 0.9em;
-	/* Concrete size (not `inherit`): this token also feeds a height calc() that `inherit` would invalidate. */
 	--ck-ai-chat-history-item-title-font-size: var(--ck-font-size-base);
 	--ck-ai-chat-history-item-date-font-size: inherit;
 	--ck-ai-chat-loader-text-font-size: inherit;
@@ -1120,7 +1124,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-ai-suggestion-content-part-active-border-color: hsla(from var(--ck-ai-accent-700-color) h s l / var(--ck-ai-alpha-5));
 	--ck-ai-suggestion-content-part-hover-shadow-color: var(--ck-ai-shadow-color);
 	--ck-ai-button-stop-generating-font-size: inherit;
-	/* Concrete size (not `inherit`): this token also feeds a height calc() that `inherit` would invalidate. */
 	--ck-ai-review-check-list-item-title-text-font-size: var(--ck-font-size-base);
 	--ck-ai-review-check-list-item-description-font-size: inherit;
 	--ck-ai-review-check-list-item-radius: var(--ck-radius-base);
@@ -1132,13 +1135,37 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-ai-review-navigation-panel-header-background: var(--ck-color-base-foreground);
 }
 
+.ck.ck-ai-disclaimer {
+	background-color: var(--ck-ai-neutral-50-color);
+}
+
+.ck.ck-ai-chat > .ck-ai-disclaimer {
+	border-top: var(--ck-border-width-divider) solid var(--ck-ai-disclaimer-border-color);
+	margin-block-start: 0;
+}
+
+.ck.ck-ai-chat > .ck-ai-disclaimer::before {
+	display: none;
+}
+
+.ck-ai-chat-controls-button > .ck-icon {
+	--ck-icon-size: 16px;
+}
+
+:is(.ck.ck-balloon-panel, .ck.ck-ai-chat) .ck-ai-chat-context-chip {
+	min-height: 0;
+}
+
+:is(.ck.ck-balloon-panel, .ck.ck-ai-chat) .ck-ai-chat-context-chip > .ck-ai-chat-context-chip__label {
+	line-height: 1.25;
+}
+
 /* ============================== ckeditor5-collaboration-core ============================== */
 :root,
 :host {
 	/* Annotations. */
 	--ck-annotation-icon-color: var(--ck-color-annotation-icon, hsl(0 0% 50%));
 	--ck-annotation-info-color: var(--ck-color-annotation-info, hsl(0 0% 46%));
-	/* The old theme colored the annotation name and time the same as the shared info color. */
 	--ck-annotation-info-name-color: var(--ck-annotation-info-color);
 	--ck-annotation-info-time-color: var(--ck-annotation-info-color);
 	--ck-annotation-button-size: 0.85em;
@@ -1231,7 +1258,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	transition: opacity var(--ck-transition-duration-control) ease;
 	opacity: 0.5;
 
-	/* The old theme had no gap between the action buttons. */
 	gap: 0;
 
 	@media (prefers-reduced-motion: reduce) {
@@ -1265,7 +1291,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-comment-thread-comments-background-color: var(--ck-color-surface-container);
 	--ck-thread-header-background-color: var(--ck-color-thread-header-background, hsl(54 88% 93%));
 	--ck-thread-header-active-background-color: var(--ck-color-thread-header-active-background, hsl(52 100% 83%));
-	/* The header buttons used the default hover background before the refresh. */
 	--ck-thread-header-button-hover-background: var(--ck-color-interactive-hover-surface);
 	--ck-thread-remove-background-color: var(--ck-color-thread-remove-background, var(--ck-comment-remove-background-color));
 	--ck-thread-unlinked-background-color: var(--ck-color-unlinked-background, hsl(0 0% 96%));
@@ -1291,16 +1316,17 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	}
 }
 
+.ck .ck-comment__input-container {
+	background: var(--ck-comment-input-background-color);
+}
+
 /* ============================== ckeditor5-pagination ============================== */
 :root,
 :host {
 	--ck-pagination-divider-color: hsl(0 0% 67%);
 	--ck-pagination-label-background-color: hsl(0 0% 77%);
-	/* The old page-number badge used asymmetric padding (2px block / 8px inline), not the refreshed uniform value. */
 	--ck-pagination-label-padding: var(--ck-spacing-xs) var(--ck-spacing-base);
-	/* The old theme's page-number badge had square corners. */
 	--ck-pagination-label-border-radius: 0;
-	/* The old page navigator inherited the surrounding font size instead of setting its own. */
 	--ck-page-navigator-font-size: inherit;
 }
 
@@ -1362,6 +1388,10 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-slash-command-button-radius: var(--ck-list-dropdown-button-border-radius, 0);
 }
 
+.ck.ck-mentions > .ck-list__item.ck-mentions__item_focused > .ck-button .ck-slash-command-button__description {
+	color: var(--ck-list-button-on-text-color);
+}
+
 /* ============================== ckeditor5-source-editing-enhanced ============================== */
 :root,
 :host {
@@ -1375,9 +1405,18 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	);
 	--ck-source-editing-enhanced-width: min(80vw, 1200px);
 	--ck-source-editing-enhanced-font-size: var(--ck-font-size-base);
-	/* The old theme sized the source textarea at the base font size. */
 	--ck-source-editing-area-font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
 	--ck-source-editing-area-border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
+}
+
+.ck.ck-code-editor {
+	padding: 0;
+}
+
+.ck.ck-code-editor .cm-editor.cm-focused {
+	outline: var(--ck-focus-ring);
+	border-color: var(--ck-color-border-control);
+	box-shadow: none;
 }
 
 /* ============================== ckeditor5-template ============================== */
@@ -1396,11 +1435,10 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 /* ============================== ckeditor5-track-changes ============================== */
 :root,
 :host {
-	/* Track changes. */
-	--ck-track-changes-preview-margin: var(--ck-dialog-content-padding);
+	--ck-track-changes-preview-margin: 0;
 	--ck-track-changes-preview-padding: var(--ck-spacing-padding-comfortable);
-	--ck-track-changes-preview-border: var(--ck-border-control);
-	--ck-track-changes-preview-border-radius: var(--ck-input-border-radius);
+	--ck-track-changes-preview-border: 0;
+	--ck-track-changes-preview-border-radius: 0;
 
 	/* Suggestions. */
 	--ck-annotation-type-border-width: 3px;
@@ -1440,13 +1478,12 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 
 .ck-ai-header > .ck-icon {
 	--ck-icon-font-size: .833335em;
-	--ck-icon-size: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
+	--ck-icon-size: calc(var(--ck-line-height-base) * 1em);
 }
 
 .ck-suggestion__actions .ck.ck-button.ck-button_small,
 .ck-annotation__actions .ck.ck-button.ck-button_small {
-	/* Roll the small-button icon box back to the old, uniform v48 size. */
-	--ck-icon-size: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
+	--ck-icon-size: calc(var(--ck-line-height-base) * 1em);
 }
 ```
 
