@@ -87,7 +87,7 @@ The `<CKEditor>` component supports the following properties:
 * `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`} event.
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~ViewDocument#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~ViewDocument#event:focus `editor.editing.view.document#focus`} event.
-* `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
+* `onError` &ndash; A function called when an error is reported for the editor, either during the initialization or at runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
   * `phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during or after the editor/context initialization).
 
 The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
@@ -200,7 +200,7 @@ The `CKEditorContext` component supports the following properties:
 * `id` &ndash; The context ID. When this property changes, the component restarts the context with its editor and reinitializes it based on the current configuration.
 * `onChangeInitializedEditors` &ndash; A function called when any editor is initialized or destroyed in the tree. It receives a dictionary of fully initialized editors, where the key is the value of the `contextItemMetadata.name` property set on the `CKEditor` component. The editor's ID is the key if the `contextItemMetadata` property is absent. Additional data can be added to the `contextItemMetadata` in the `CKEditor` component, which will be passed to the `onChangeInitializedEditors` function.
 * `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance.
-* `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
+* `onError` &ndash; A function called when an error is reported for the context, either during the initialization or at runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
   * `phase`: `'initialization'|'runtime'` &ndash; Informs when the error has occurred (during or after the editor/context initialization).
 
 <info-box>
@@ -333,7 +333,7 @@ Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the sch
 
 ### Using inside a shadow root
 
-Rendering the editor inside a shadow root isolates it from the styles of the host page. The CDN loader injects the style sheets as `<link>` tags, so point it at the shadow root with the `injectedStylesheetsLocation` option of the `useCKEditorCloud()` hook. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside the shadow root, so the scoped style sheets cover all of it.
+Rendering the editor inside a shadow root isolates it from the styles of the host page. The CDN loader injects the style sheets as `<link>` tags, so point it at the shadow root with the `injectedStylesheetsLocation` option of the `useCKEditorCloud()` hook. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside the shadow root, so the scoped style sheets cover all of it. This happens because {@link module:core/editor/editorconfig~UiConfig#overlayContainer `config.ui.overlayContainer`} is not set, so the editor falls back to the root it is in and logs the `ui-overlay-container-not-configured` warning. For a more robust setup, set your own overlay container and load the same style sheets into it, as described in the {@link getting-started/setup/shadow-dom#where-the-floating-user-interface-mounts Where the floating user interface mounts} section of the Shadow DOM guide.
 
 Attach the shadow root before loading. A `<link>` that is not in the document never starts loading, which is why the hook is called from a component rendered into an already attached root rather than from the one that creates it.
 

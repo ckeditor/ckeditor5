@@ -297,6 +297,7 @@ The event handler receives two arguments:
 * `error` – the `Error` object describing what went wrong.
 * `details` – an object with the following properties:
   * `phase: 'initialization' | 'runtime'` – `'initialization'` when the error occurred during `Editor.create()`, or `'runtime'` for errors caught during normal operation.
+  * `editor` – the editor instance that the error came from, set only for `'runtime'` errors.
 
 ```vue
 <template>
@@ -555,7 +556,7 @@ import type { Mention } from 'https://cdn.ckeditor.com/typings/ckeditor5-premium
 
 ### Using inside a shadow root
 
-Rendering the editor inside a shadow root isolates it from the styles of the host page. The CDN loader injects the style sheets as `<link>` tags, so point it at the shadow root with the `injectedStylesheetsLocation` option of the `useCKEditorCloud` helper. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside the shadow root, so the scoped style sheets cover all of it.
+Rendering the editor inside a shadow root isolates it from the styles of the host page. The CDN loader injects the style sheets as `<link>` tags, so point it at the shadow root with the `injectedStylesheetsLocation` option of the `useCKEditorCloud` helper. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside the shadow root, so the scoped style sheets cover all of it. This happens because {@link module:core/editor/editorconfig~UiConfig#overlayContainer `config.ui.overlayContainer`} is not set, so the editor falls back to the root it is in and logs the `ui-overlay-container-not-configured` warning. For a more robust setup, set your own overlay container and load the same style sheets into it, as described in the {@link getting-started/setup/shadow-dom#where-the-floating-user-interface-mounts Where the floating user interface mounts} section of the Shadow DOM guide.
 
 Attach the shadow root before loading. A `<link>` that is not in the document never starts loading, which is why the helper is called from a child component mounted only once the root is there.
 
