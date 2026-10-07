@@ -135,6 +135,32 @@
 		/* Don't let the form overflow from the dialog (https://github.com/ckeditor/ckeditor5-commercial/issues/5913) */
 		max-width: 100%;
 
+		/* Don't let the "Find" field push the prev/next buttons to the next line. */
+		& .ck-find-and-replace-form__inputs > .ck-labeled-field-view:not(.ck-labeled-field-replace) {
+			flex: 1 1 0;
+			min-width: 0;
+		}
+
+		/* "Replace all" and "Replace" share the first row, "Find" takes the full row below. */
+		& .ck-find-and-replace-form__actions > .ck-button {
+			flex: 1 1 0;
+			min-width: 0;
+			justify-content: center;
+		}
+
+		& .ck-find-and-replace-form__actions > .ck-button-find {
+			flex: 0 0 100%;
+			margin-top: var(--ck-spacing-standard, var(--ck-spacing-base));
+
+			[dir="ltr"] & {
+				margin-left: 0;
+			}
+
+			[dir="rtl"] & {
+				margin-right: 0;
+			}
+		}
+
 		/* Styles specific for inputs area. */
 		&.ck-find-and-replace-form__input {
 			flex-wrap: wrap;
@@ -190,27 +216,6 @@
 				& .ck-button__label {
 					width: 100%;
 					text-align: center;
-				}
-			}
-		}
-	}
-}
-
-@media screen and (max-width: 450px) {
-	.ck.ck-find-and-replace-form {
-		& .ck-find-and-replace-form__inputs {
-			& > .ck-labeled-field-view:not(.ck-labeled-field-replace) {
-				flex: 1 1 100%;
-				margin-bottom: var(--ck-spacing-standard, var(--ck-spacing-base));
-			}
-
-			& > .ck-button-prev {
-				[dir="ltr"] & {
-					margin-left: auto;
-				}
-
-				[dir="rtl"] & {
-					margin-right: auto;
 				}
 			}
 		}
