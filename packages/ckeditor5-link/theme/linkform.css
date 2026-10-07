@@ -22,9 +22,27 @@
 	padding-bottom: 0;
 
 	&.ck-responsive-form {
-		& .ck-labeled-field-view {
-			@media screen and (max-width: 600px) {
+		@media screen and (max-width: 600px) {
+			& .ck-labeled-field-view {
+				flex-basis: 0;
 				margin: 0;
+			}
+
+			& .ck.ck-form__row.ck-form__row_with-submit {
+				flex-direction: row;
+				flex-wrap: wrap;
+				align-items: flex-start;
+				gap: var(--ck-spacing-gap-comfortable) var(--ck-spacing-padding);
+				padding: var(--ck-form-row-padding);
+				padding-bottom: var(--ck-spacing-padding-comfortable);
+
+				& > .ck {
+					margin: 0;
+				}
+
+				& > .ck-button-action {
+					flex-basis: 100%;
+				}
 			}
 		}
 	}
