@@ -18,10 +18,6 @@
 	/* -----------------------------------------------------------------
 	 * 1) FOUNDATION TOKENS
 	 * ----------------------------------------------------------------- */
-	--ck-font-size-base: 14px;
-	--ck-spacing-base: 0.65em;
-	--ck-radius-base: 6px;
-
 	--ck-color-base-background: var(--app-surface-1);
 	--ck-color-base-border: var(--app-surface-3);
 	--ck-color-base-text: var(--app-text-1);
@@ -56,10 +52,6 @@
 	--ck-color-interactive-primary-surface: var(--app-brand);
 	--ck-color-interactive-primary-surface-hover: var(--app-brand-hover);
 	--ck-color-interactive-primary-text: var(--app-brand-contrast);
-
-	--ck-border-radius-control: 6px;
-	--ck-border-radius-surface: 8px;
-	--ck-shadow-surface-floating: 0 6px 18px 2px hsla(0, 0%, 0%, .35);
 
 	/* -----------------------------------------------------------------
 	 * 3) COMPONENT TOKENS
