@@ -55,17 +55,20 @@
 		border-bottom-width: 0px;
 	}
 
-	/* Don't round the bottom left and right corners of the buttons when "open"
-	https://github.com/ckeditor/ckeditor5/issues/816 */
+	/* When "open", the buttons keep fully rounded corners by default, matching an open regular dropdown.
+	The shared `--ck-dropdown-panel-uniform-button-border-radius` knob (set to `initial` by the legacy
+	theme) falls back to the attached-corner square look. See https://github.com/ckeditor/ckeditor5/issues/816 */
 	&.ck-splitbutton_open {
 		border-radius: var(--ck-border-radius-control);
 
 		& > .ck-splitbutton__action {
-			border-bottom-left-radius: 0;
+			/* Logical property so it targets the action's outer bottom corner in both LTR and RTL,
+			not the inner join that the dir-specific `unset` rules above flatten. */
+			border-end-start-radius: var(--ck-dropdown-panel-uniform-button-border-radius, 0);
 		}
 
 		& > .ck-splitbutton__arrow {
-			border-bottom-right-radius: 0;
+			border-end-end-radius: var(--ck-dropdown-panel-uniform-button-border-radius, 0);
 		}
 	}
 
