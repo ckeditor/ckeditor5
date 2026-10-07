@@ -1312,7 +1312,7 @@ const isInside = document.body.contains( element );
 const parent = element.parentNode;
 const toolbarElement = document.querySelector( '.ck-toolbar' );
 
-document.addEventListener( 'scroll', handler );
+document.addEventListener( 'scroll', handler, { capture: true } );
 document.caretPositionFromPoint( x, y );
 ```
 
@@ -1330,7 +1330,7 @@ const parent = getParentNode( element );
 const editorRoot = element.getRootNode() as Document | ShadowRoot;
 const toolbarElement = editorRoot.querySelector( '.ck-toolbar' );
 
-editorRoot.addEventListener( 'scroll', handler );
+editorRoot.addEventListener( 'scroll', handler, { capture: true } );
 document.caretPositionFromPoint( x, y, { shadowRoots } );
 ```
 

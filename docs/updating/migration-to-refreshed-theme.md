@@ -29,7 +29,7 @@ It depends on how your integration uses and customizes the editor. Find the rows
 | Read `--ck-*` tokens in your own CSS                     | Add one opt-in stylesheet so the old names resolve.                                         | [Reading old token names](#reading-old-token-names)                   |
 | Prefer the previous look                                 | Revert it with the legacy theme preset.                                                     | [Keeping the old look](#keeping-the-old-look)                         |
 | Customize with plain CSS (`.ck-*` selectors, not tokens) | Your rules still match; re-check them against the new default values.                       | [Your existing custom styles](#your-existing-custom-styles)           |
-| Mount the editor in a shadow root                        | Override on `:host`, not `:root`.                                                           | [Shadow DOM](#shadow-dom)                                             |
+| Mount the editor in a shadow root                        | Override on the shadow host, not `:root`.                                                   | [Shadow DOM](#shadow-dom)                                             |
 | Render or publish `.ck-content`                          | Some content colors changed; apply rollback snippets if needed.                             | [Published content](#published-content)                               |
 
 ## The two compatibility mechanisms
@@ -1491,11 +1491,11 @@ Your customizations resolve this way: raw selectors win by the cascade (markup a
 
 ## Shadow DOM
 
-Every token is now declared on `:root, :host`, so the theme resolves inside a shadow root. If your editor is mounted in a shadow root, override tokens on the shadow host (`:host`), not `:root` &ndash; a `:root` override does not reach into the shadow tree.
+Every token is now declared on `:root, :host`, so the theme resolves inside a shadow root. If your editor is mounted in a shadow root, a `:root` override has no effect on it. The tokens still inherit into the shadow root, but the editor declares them again on `:host`, and that declaration wins. Override the tokens on the shadow host element instead, for example with a class that you put on it. A rule in the main document that matches the host is enough:
 
 ```css
-/* Light DOM */			:root  { --ck-color-toolbar-background: #1e1e1e; }
-/* Shadow DOM */		:host  { --ck-color-toolbar-background: #1e1e1e; }
+/* Light DOM */  :root                  { --ck-color-toolbar-background: #1e1e1e; }
+/* Shadow DOM */ .my-editor-shadow-host { --ck-color-toolbar-background: #1e1e1e; }
 ```
 
 See {@link getting-started/setup/shadow-dom#overriding-css-variables Overriding CSS variables} in the Shadow DOM guide for details.

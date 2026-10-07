@@ -33,7 +33,7 @@ The Watchdog is gone in v49. That removes the `@ckeditor/ckeditor5-watchdog` pac
 In its place, `onEditorError()` reports the errors that escape a running editor, together with the editor or context they were attributed to, and your application decides what happens next. The {@link getting-started/setup/error-handling error handling} guide covers the options; the {@link updating/migration-from-watchdog migrating from the Watchdog} guide covers the move in plain JavaScript and in each of the framework integrations.
 
 <info-box warning>
-	This changes the default behavior for everyone using the React, Vue, or Angular integrations, not only for those who configured a watchdog. All three attached one on your behalf. An editor that used to be rebuilt after a crash now stays as it is, with its content and undo history intact. They also now require CKEditor&nbsp;5 in version 49 or higher.
+	This changes the default behavior for everyone using the React, Vue, or Angular integrations, not only for those who configured a watchdog. All three attached one on your behalf. An editor that used to be rebuilt after a crash now stays as it is, but its state may no longer be consistent, so handle the error as described in the {@link getting-started/setup/error-handling#responding-to-an-error Error handling} guide. The integrations also now require CKEditor&nbsp;5 in version 49 or higher.
 </info-box>
 
 `ActionsRecorder` was not removed with the package. It moved to `@ckeditor/ckeditor5-core`, so change the specifier if you imported it from the Watchdog package. Importing it from `ckeditor5` keeps working unchanged.
@@ -73,7 +73,9 @@ Native DOM APIs such as `document.activeElement`, `window.getSelection()`, and `
 * Focus, selection, and hit-testing: `getActiveElement()`, `getSelection()`, `containsNode()`, and `getElementFromPoint()`.
 * Walking up the tree: `getParentNode()` and `getParentElement()` for structure, `getLayoutParentNode()` and `getLayoutParentElement()` for geometry.
 * Shadow roots: `getShadowRoots()`, `isShadowRoot()`, `isShadowHostOf()`, `ShadowRootRegistry`, and `listenToShadowRoots()`.
-* Floating user interface and styles: `getOverlayMountRoot()`, `OverlayHost`, and `adoptGlobalStyleSheet()`.
+* Floating user interface and styles: `getOverlayMountRoot()` and `adoptGlobalStyleSheet()`.
+
+Floating user interface that lives outside an editor uses `OverlayHost` instead. The {@link framework/deep-dive/shadow-dom#floating-ui-renders-unstyled-or-is-clipped-by-its-own-container Floating UI renders unstyled, or is clipped by its own container} section of the deep dive guide shows how to set it up.
 
 The {@link framework/deep-dive/shadow-dom#porting-an-existing-feature Porting an existing feature} section of the deep dive guide walks you through updating an existing feature, including the ESLint rules that find the code to change.
 
@@ -120,7 +122,7 @@ See the {@link features/ckeditor-ai-integration#overlay-ui-container overlay UI 
 
 ### Major breaking changes in this release
 
-* **[ckeditor5](https://www.npmjs.com/package/ckeditor5), [core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core), [utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `@ckeditor/ckeditor5-watchdog` package was removed, and with it the automatic restart of a crashed editor. An editor that crashes now stays as it is, with its content and its undo history, instead of being rebuilt from the data it had before.
+* **[ckeditor5](https://www.npmjs.com/package/ckeditor5), [core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core), [utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `@ckeditor/ckeditor5-watchdog` package was removed, and with it the automatic restart of a crashed editor. An editor that crashes now stays as it is instead of being rebuilt from the data it had before, but its state may no longer be consistent.
   * The `EditorWatchdog` and `ContextWatchdog` classes are gone, as are the `Watchdog` base class and the `WatchdogConfig` type. They are no longer re-exported from `ckeditor5`.
   * The `Editor.EditorWatchdog` and `Editor.ContextWatchdog` static fields were removed from every editor class.
   * Use `onEditorError()` to observe errors instead. It reports the error together with the editor or context it came from and returns a function that unregisters the callback. The same function is reachable as `Editor.onEditorError()` and `Context.onEditorError()`.

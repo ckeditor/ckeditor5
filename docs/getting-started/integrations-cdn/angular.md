@@ -255,10 +255,10 @@ It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus`
 
 ### `error`
 
-Fired when the editor crashes.
+Fired when an error is reported for the editor, either during the initialization or at runtime.
 
 <info-box>
-	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
+	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for errors during the editor initialization.
 </info-box>
 
 A reported error does not stop the editor. Its state may no longer be consistent, so do not leave the error unhandled. Nothing is restarted and no data is restored for you, so what happens next is your application's decision.
@@ -551,7 +551,7 @@ Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the sch
 
 Rendering the editor inside a shadow root isolates it from the styles of the host page. Set [`ViewEncapsulation.ShadowDom`](https://angular.dev/api/core/ViewEncapsulation) on the component and Angular attaches the root for you. Use a component that wraps the editor rather than the root component of the application, or everything the application renders ends up inside the root.
 
-The loader injects the editor style sheets as `<link>` tags, so point it at that root with the `injectedStylesheetsLocation` option. Without it they would land in `document.head`, which the shadow root cannot see. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside the shadow root, so the scoped style sheets cover all of it.
+The loader injects the editor style sheets as `<link>` tags, so point it at that root with the `injectedStylesheetsLocation` option. Without it they would land in `document.head`, which the shadow root cannot see. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside the shadow root, so the scoped style sheets cover all of it. This happens because {@link module:core/editor/editorconfig~UiConfig#overlayContainer `config.ui.overlayContainer`} is not set, so the editor falls back to the root it is in and logs the `ui-overlay-container-not-configured` warning. For a more robust setup, set your own overlay container and load the same style sheets into it, as described in the {@link getting-started/setup/shadow-dom#where-the-floating-user-interface-mounts Where the floating user interface mounts} section of the Shadow DOM guide.
 
 ```angular-ts
 // editor.component.ts

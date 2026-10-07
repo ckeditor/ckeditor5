@@ -213,9 +213,7 @@ InlineEditor
 
 The `classes` array and `styles` object are applied to the editable element. This is useful for controlling dimensions, scoping CSS rules, or integrating with a class-based styling system. For broader CSS customization options, see the {@link getting-started/setup/editor-styles Editor styles} and {@link getting-started/setup/content-styles Content styles} guides.
 
-## Styling the editable area
-
-### Styling the host element
+## Styling inline roots
 
 When you mount an inline root on a non-block HTML element such as a `<span>`, the browser may render the editable area with unexpected line breaks or sizing. This happens because block-filler mechanisms used by the editor can interact poorly with inline host elements.
 

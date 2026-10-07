@@ -267,7 +267,7 @@ Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the sch
 
 ### Using inside a shadow root
 
-Rendering the editor inside a shadow root isolates it from the styles of the host page. The bundler injects `ckeditor5.css` into `<head>`, where the shadow root cannot see it, so import the style sheet as a string and adopt it in the root as a [constructed style sheet](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/adoptedStyleSheets) instead. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside that root, so this one style sheet covers all of it.
+Rendering the editor inside a shadow root isolates it from the styles of the host page. The bundler injects `ckeditor5.css` into `<head>`, where the shadow root cannot see it, so import the style sheet as a string and adopt it in the root as a [constructed style sheet](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/adoptedStyleSheets) instead. The whole editor UI, including the body collection that holds balloons and dropdown panels, stays inside that root, so this one style sheet covers all of it. This happens because {@link module:core/editor/editorconfig~UiConfig#overlayContainer `config.ui.overlayContainer`} is not set, so the editor falls back to the root it is in and logs the `ui-overlay-container-not-configured` warning. For a more robust setup, set your own overlay container and load the same style sheets into it, as described in the {@link getting-started/setup/shadow-dom#where-the-floating-user-interface-mounts Where the floating user interface mounts} section of the Shadow DOM guide.
 
 ```jsx
 import { useCallback, useRef, useState } from 'react';
@@ -327,7 +327,7 @@ function App() {
 export default App;
 ```
 
-The `?inline` query is supported by Vite. Other bundlers spell it differently &ndash; in webpack&nbsp;5 the same result comes from the `asset/source` type or the `?raw` query.
+The `?inline` query is supported by Vite. Other bundlers spell it differently &ndash; in webpack&nbsp;5, import the style sheet with a `?raw` query loaded with the `asset/source` type, and exclude that query from your CSS rule. See {@link getting-started/setup/shadow-dom#loading-the-editor-styles Loading the editor styles} in the Shadow DOM guide for details.
 
 <info-box important>
 	`attachShadow()` can be called only once per element. If the mode of the root has to change at runtime, give the component holding the host a `key` so that React remounts it.

@@ -73,7 +73,7 @@ A few essential variables to get started:
 
 ## Styling the editable area
 
-To apply classes or styles directly to the editable area from the editor configuration, see the {@link getting-started/setup/root-types#styling-the-editable-area Styling the editable area} section of the Root types guide.
+To apply classes or styles directly to the editable area from the editor configuration, see the {@link getting-started/setup/root-types#applying-classes-and-styles Applying classes and styles} section of the Root types guide. For the CSS that inline roots need, see the {@link getting-started/setup/root-types#styling-inline-roots Styling inline roots} section.
 
 ## Styles inside a shadow DOM
 

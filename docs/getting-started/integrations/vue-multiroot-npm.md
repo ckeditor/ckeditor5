@@ -126,8 +126,9 @@ The component emits the following events:
 * `change` &ndash; It is called when the editor data has changed. See the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`} event.
 * `blur` &ndash; It is called when the editor was blurred. See the {@link module:engine/view/document~ViewDocument#event:blur `editor.editing.view.document#blur`} event.
 * `focus` &ndash; It is called when the editor was focused. See the {@link module:engine/view/document~ViewDocument#event:focus `editor.editing.view.document#focus`} event.
-* `error` &ndash; It is called when an error is reported for the editor, either during the initialization or at runtime. It receives two arguments: the error instance and the error details. Error details is an object that contains one property:
+* `error` &ndash; It is called when an error is reported for the editor, either during the initialization or at runtime. It receives two arguments: the error instance and the error details. Error details is an object with the following properties:
   * `phase: 'initialization'|'runtime'` &ndash; Informs when an error has occurred (during the editor or context initialization, or after the initialization).
+  * `editor` &ndash; The editor instance that the error came from. It is set only for `'runtime'` errors.
 * `input` &ndash; It is emitted when the editor data changes. It receives three arguments: the current data, an {@link module:utils/eventinfo~EventInfo `EventInfo`} object or `null`, and a {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} instance.
 * `update:modelValue` &ndash; It is emitted when the editor data changes and updates `v-model`.
 * `update:rootsAttributes` &ndash; It is emitted when the roots attributes change and updates `v-model:roots-attributes`.
