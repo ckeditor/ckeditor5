@@ -36,7 +36,7 @@ ClassicEditor
 			'redo'
 		],
 		fontColor: {
-			columns: 3
+			columns: 10
 		}
 	} )
 	.then( editor => {

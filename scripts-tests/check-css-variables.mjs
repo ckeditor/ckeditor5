@@ -281,7 +281,6 @@ describe( 'scripts/check-css-variables', () => {
 				'ckeditor5-example': {
 					'index-editor.css': [
 						'.ck.ck-example {',
-						'	color: var(--ck-custom-background);',
 						'	width: var(--ck-block-toolbar-size);',
 						'}',
 						''
@@ -344,7 +343,7 @@ describe( 'scripts/check-css-variables', () => {
 
 		expect( process.exit ).toHaveBeenCalledWith( 1 );
 		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
-			'"--ck-shared-size" is declared at ":root" in both the editor and content styles with different values'
+			'"--ck-shared-size" is declared at the root scope in both the editor and content styles with different values'
 		) );
 	} );
 

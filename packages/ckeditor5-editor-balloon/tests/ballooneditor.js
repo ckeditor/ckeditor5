@@ -11,7 +11,6 @@ import { BalloonEditorUIView } from '../src/ballooneditoruiview.js';
 import { HtmlDataProcessor, ModelRootElement } from '@ckeditor/ckeditor5-engine';
 
 import { Plugin, Context } from '@ckeditor/ckeditor5-core';
-import { EditorWatchdog, ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
@@ -1175,14 +1174,6 @@ describe( 'BalloonEditor', () => {
 	describe( 'static fields', () => {
 		it( 'BalloonEditor.Context', () => {
 			expect( BalloonEditor.Context ).toBe( Context );
-		} );
-
-		it( 'BalloonEditor.EditorWatchdog', () => {
-			expect( BalloonEditor.EditorWatchdog ).toBe( EditorWatchdog );
-		} );
-
-		it( 'BalloonEditor.ContextWatchdog', () => {
-			expect( BalloonEditor.ContextWatchdog ).toBe( ContextWatchdog );
 		} );
 	} );
 } );

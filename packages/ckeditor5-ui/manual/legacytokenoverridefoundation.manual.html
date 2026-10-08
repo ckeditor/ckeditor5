@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Legacy foundation token override</title>
+		<script type="module" src="./legacytokenoverridefoundation.ts"></script>
+
+		<!-- Integrator overrides LEGACY foundation token names on :root. With the override bridges
+		     in place, components read the legacy name first, so these take effect. !important is used
+		     because this stylesheet loads before the editor CSS injected at runtime. -->
+		<style>
+			:root {
+				--ck-border-radius: 0 !important;
+				--ck-spacing-standard: 30px !important;
+				--ck-spacing-large: 40px !important;
+				--ck-font-size-tiny: 24px !important;
+			}
+		</style>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Legacy foundation token override (backward compatibility)</h1>
+			<p>
+				The page overrides four <em>legacy</em> foundation token names on <code>:root</code>
+				(see the <code>&lt;style&gt;</code> in <code>&lt;head&gt;</code>). Components read the
+				new token names, but the override bridges make them honor the legacy names first.
+			</p>
+			<p><strong>Expected — overrides take effect:</strong></p>
+			<ol>
+				<li>
+					All rounded corners (toolbar, buttons, dropdown panels) are <strong>SQUARE</strong>
+					— <code>--ck-border-radius: 0</code> (a re-defined token, override-only).
+				</li>
+				<li>
+					Spacing/padding is visibly <strong>LARGER</strong> — <code>--ck-spacing-standard</code>
+					and <code>--ck-spacing-large</code> inflate the paddings and gaps that use them.
+				</li>
+				<li>
+					Small UI text is <strong>BIG</strong> — hover a toolbar button; the tooltip text
+					uses <code>--ck-tooltip-text-font-size</code>, which bridges to
+					<code>--ck-font-size-tiny</code>.
+				</li>
+			</ol>
+			<p>
+				Without the bridges, none of these legacy overrides would have any effect. Note: these
+				overrides reach the spots bridged to them, but <code>--ck-spacing-standard</code> does
+				<em>not</em> rescale the whole spacing scale (that is now <code>--ck-spacing-unit</code>).
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Legacy foundation token override test</h2>
+			<p>Some <strong>bold</strong> and <em>italic</em> text. Hover the toolbar buttons to see the tooltip text size, and look at the corner roundness and spacing.</p>
+		</div>
+	</body>
+</html>

@@ -26,7 +26,7 @@ import { _parseView, _stringifyView, _setViewData, _getViewData } from '../../sr
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../src/view/filler.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { createViewRoot } from './_utils/createroot.js';
-import { createElement, env } from '@ckeditor/ckeditor5-utils';
+import { createElement, env, getSelection } from '@ckeditor/ckeditor5-utils';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -39,7 +39,6 @@ describe( 'Renderer', () => {
 		selection = new ViewDocumentSelection();
 		domConverter = new ViewDomConverter( viewDocument );
 		renderer = new ViewRenderer( domConverter, selection );
-		renderer.domDocuments.add( document );
 	} );
 
 	describe( 'constructor()', () => {
@@ -147,6 +146,7 @@ describe( 'Renderer', () => {
 			document.body.appendChild( domRoot );
 
 			domConverter.bindElements( domRoot, viewRoot );
+			renderer.addDomRoot( domRoot );
 
 			renderer.markedTexts.clear();
 			renderer.markedAttributes.clear();
@@ -1511,6 +1511,54 @@ describe( 'Renderer', () => {
 			domDiv.remove();
 		} );
 
+		it( 'should remove the DOM selection from a shadow tree when the root was attached before insertion', () => {
+			// Reproduces the `ClassicEditor` init order: the editing root is registered (attachDomRoot) before
+			// it is inserted into its shadow tree. The tree must be resolved lazily, so the native selection
+			// inside the shadow root is cleared - not the host-retargeted document selection, which would leave
+			// the shadow selection in place.
+			const host = document.createElement( 'div' );
+
+			document.body.appendChild( host );
+
+			const shadowRoot = host.attachShadow( { mode: 'open' } );
+
+			const shadowViewRoot = new ViewEditableElement( viewDocument, 'div' );
+			shadowViewRoot.getFillerOffset = () => null;
+
+			const shadowDomRoot = document.createElement( 'div' );
+
+			shadowDomRoot.contentEditable = 'true';
+			shadowDomRoot.textContent = 'foo';
+
+			domConverter.bindElements( shadowDomRoot, shadowViewRoot );
+
+			// Register the root while disconnected, then insert it into the shadow tree.
+			renderer.addDomRoot( shadowDomRoot );
+			shadowRoot.appendChild( shadowDomRoot );
+
+			shadowDomRoot.focus();
+
+			// Put a native selection on nodes inside the shadow editable. On Blink this keeps the selection
+			// shadow-scoped, which is what the renderer resolves against.
+			const shadowSelection = window.getSelection();
+			const domRange = document.createRange();
+
+			domRange.selectNodeContents( shadowDomRoot );
+			shadowSelection.removeAllRanges();
+			shadowSelection.addRange( domRange );
+
+			expect( window.getSelection().rangeCount ).toBe( 1 );
+
+			// Empty view selection while focused -> render() clears the DOM selection.
+			renderer.isFocused = true;
+			selection._setTo( null );
+			renderer.render();
+
+			expect( window.getSelection().rangeCount ).toBe( 0 );
+
+			host.remove();
+		} );
+
 		it( 'should not add inline filler after text node', () => {
 			const { view: viewP, selection: newSelection } = _parseView( '<container:p>foo[]</container:p>' );
 
@@ -2020,6 +2068,25 @@ describe( 'Renderer', () => {
 			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
+		it( 'does not throw updating the selection when the editable is detached (no resolvable selection)', () => {
+			const { view: viewP, selection: newSelection } = _parseView( '<container:p>foo{}bar</container:p>' );
+
+			viewRoot._appendChild( viewP );
+			selection._setTo( newSelection );
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			// Detach the editable from the document, then change the selection so it needs updating. A
+			// detached editable has no resolvable DOM selection, so the render must be a no-op, not a crash.
+			domRoot.remove();
+			selection._setTo( [ new ViewRange(
+				new ViewPosition( viewP.getChild( 0 ), 1 ),
+				new ViewPosition( viewP.getChild( 0 ), 1 )
+			) ] );
+
+			expect( () => renderer.render() ).not.toThrow();
+		} );
+
 		describe( 'fake selection', () => {
 			beforeEach( () => {
 				const { view: viewP, selection: newSelection } = _parseView(
@@ -2047,6 +2114,21 @@ describe( 'Renderer', () => {
 
 				const domSelection = domRoot.ownerDocument.getSelection();
 				assertDomSelectionContents( domSelection, container, /^fake selection label$/ );
+			} );
+
+			it( 'does not throw when the editable is detached (no resolvable selection)', () => {
+				// Render a fake selection first so the fake selection container is created and attached
+				// to the editable.
+				selection._setTo( selection.getRanges(), { fake: true, label: 'label A' } );
+				renderer.render();
+
+				// Detach the editable from the document, then request another fake-selection render with a
+				// changed label so the fake selection is considered in need of an update. A detached
+				// editable has no resolvable DOM selection, so the render must be a no-op, not a crash.
+				domRoot.remove();
+				selection._setTo( selection.getRanges(), { fake: true, label: 'label B' } );
+
+				expect( () => renderer.render() ).not.toThrow();
 			} );
 
 			describe( 'subsequent call optimization', () => {
@@ -4795,7 +4877,6 @@ describe( 'Renderer', () => {
 				selection = new ViewDocumentSelection();
 				domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
 				renderer = new ViewRenderer( domConverter, selection );
-				renderer.domDocuments.add( document );
 
 				const renderSpy = vi.spyOn( renderer, 'render' );
 
@@ -4815,7 +4896,6 @@ describe( 'Renderer', () => {
 				selection = new ViewDocumentSelection();
 				domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
 				renderer = new ViewRenderer( domConverter, selection );
-				renderer.domDocuments.add( document );
 
 				const renderSpy = vi.spyOn( renderer, 'render' );
 
@@ -4834,7 +4914,6 @@ describe( 'Renderer', () => {
 				selection = new ViewDocumentSelection();
 				domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
 				renderer = new ViewRenderer( domConverter, selection );
-				renderer.domDocuments.add( document );
 
 				const renderSpy = vi.spyOn( renderer, 'render' );
 
@@ -6205,6 +6284,53 @@ describe( 'Renderer', () => {
 	function cleanObserver( observer ) {
 		observer.takeRecords();
 	}
+
+	describe( 'selection rendering in a shadow root', () => {
+		let host, shadowRoot, domRoot, viewRoot;
+
+		for ( const mode of [ 'open', 'closed' ] ) {
+			describe( `${ mode } shadow root`, () => {
+				beforeEach( () => {
+					host = document.createElement( 'div' );
+					document.body.appendChild( host );
+					shadowRoot = host.attachShadow( { mode } );
+
+					viewRoot = new ViewEditableElement( viewDocument, 'div' );
+					viewRoot.getFillerOffset = () => null;
+
+					domRoot = document.createElement( 'div' );
+					shadowRoot.appendChild( domRoot );
+					domConverter.bindElements( domRoot, viewRoot );
+
+					selection._setTo( null );
+					renderer.isFocused = true;
+				} );
+
+				afterEach( () => {
+					host.remove();
+				} );
+
+				it( 'renders a collapsed selection into the shadow tree', () => {
+					const { view: viewP, selection: newSelection } = _parseView( '<container:p>foo{}bar</container:p>' );
+
+					viewRoot._appendChild( viewP );
+					selection._setTo( newSelection );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					// The editable and its content live inside the shadow root, so the selection has to be
+					// resolved through the shadow root rather than the retargeting document selection.
+					const domText = domRoot.childNodes[ 0 ].childNodes[ 0 ];
+					const domSelection = getSelection( domRoot );
+
+					expect( domSelection.anchorNode ).toBe( domText );
+					expect( domSelection.anchorOffset ).toBe( 3 );
+					expect( domSelection.isCollapsed ).toBe( true );
+				} );
+			} );
+		}
+	} );
 } );
 
 function renderAndExpectNoChanges( renderer, domRoot ) {

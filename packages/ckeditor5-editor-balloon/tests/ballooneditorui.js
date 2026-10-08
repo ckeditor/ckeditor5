@@ -81,6 +81,11 @@ describe( 'BalloonEditorUI', () => {
 			} );
 		} );
 
+		it( 'marks view.editable as an editing root (adds the ck-editor__editable_root class)', () => {
+			expect( view.editable.isMainFrameEditingRoot ).toBe( true );
+			expect( view.editable.element.classList.contains( 'ck-editor__editable_root' ) ).toBe( true );
+		} );
+
 		describe( 'inline root', () => {
 			it( 'leaves view.editable#isInlineRoot false for a block root', () => {
 				expect( view.editable.isInlineRoot ).toBe( false );

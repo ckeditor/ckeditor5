@@ -9,6 +9,7 @@ import { FontColorEditing } from './../../src/fontcolor/fontcolorediting.js';
 import { FontColorUI } from './../../src/fontcolor/fontcolorui.js';
 import { FontColorUIBase } from './../../src/ui/colorui.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _DEFAULT_COLOR_GRID_COLUMNS as defaultColorGridColumns } from '@ckeditor/ckeditor5-ui';
 
 describe( 'FontColorUI', () => {
 	let element, editor;
@@ -43,6 +44,6 @@ describe( 'FontColorUI', () => {
 		expect( fontColorUIPlugin.componentName ).toEqual( 'fontColor' );
 		expect( fontColorUIPlugin.icon ).toEqual( IconFontColor );
 		expect( fontColorUIPlugin.dropdownLabel ).toEqual( 'Font Color' );
-		expect( fontColorUIPlugin.columns ).toEqual( 5 );
+		expect( fontColorUIPlugin.columns ).toEqual( defaultColorGridColumns );
 	} );
 } );

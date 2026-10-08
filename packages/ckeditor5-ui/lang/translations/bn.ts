@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'নীল ',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'বেগুনি',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'নীলাভ বেগুনি',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'সায়ান',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'নীলচে সবুজ',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'লেবু সবুজ',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'অ্যাম্বার',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'নীলচে ধূসর',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'সম্পাদক ব্লক কন্টেন্ট টুলবার',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

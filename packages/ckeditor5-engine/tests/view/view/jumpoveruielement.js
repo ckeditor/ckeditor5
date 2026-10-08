@@ -103,6 +103,26 @@ describe( 'View', () => {
 				);
 			} );
 
+			it( 'does nothing when the event target is detached (no resolvable selection)', () => {
+				// <container:p>foo[]<ui:span>xxx</ui:span>bar</container:p>
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, ui, bar ] );
+				viewRoot._appendChild( p );
+
+				view.change( writer => {
+					writer.setSelection( [ ViewRange._createFromParentsAndOffsets( p, 1, p, 1 ) ] );
+				} );
+
+				view.forceRender();
+
+				// A detached target is not inside any document, so it has no resolvable DOM selection and
+				// the handler must be a no-op.
+				const detachedTarget = document.createElement( 'div' );
+
+				expect( () => {
+					viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: detachedTarget } );
+				} ).not.toThrow();
+			} );
+
 			it( 'jump over ui element when right arrow is pressed before ui element - directly before ui element', () => {
 				// <container:p>foo[]<ui:span>xxx</ui:span>bar</container:p>
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, ui, bar ] );

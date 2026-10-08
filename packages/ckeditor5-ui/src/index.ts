@@ -34,7 +34,7 @@ export { addKeyboardHandlingForGrid } from './bindings/addkeyboardhandlingforgri
 
 export { AccessibilityHelpContentView } from './editorui/accessibilityhelp/accessibilityhelpcontentview.js';
 export { AccessibilityHelp } from './editorui/accessibilityhelp/accessibilityhelp.js';
-export { BodyCollection } from './editorui/bodycollection.js';
+export { BodyCollection, type BodyCollectionRemountEvent } from './editorui/bodycollection.js';
 export { PoweredBy } from './editorui/poweredby.js';
 
 export { Badge, type BadgeConfig } from './badge/badge.js';
@@ -45,6 +45,9 @@ export { ButtonView } from './button/buttonview.js';
 export { ButtonLabelView } from './button/buttonlabelview.js';
 export { SwitchButtonView } from './button/switchbuttonview.js';
 export { ListItemButtonView } from './button/listitembuttonview.js';
+
+export { TabButtonView, TAB_POSITIONS, type TabButtonViewOptions, type TabPosition } from './tabs/tabbuttonview.js';
+export { TabPanelView } from './tabs/tabpanelview.js';
 
 export {
 	FileDialogButtonView,
@@ -240,7 +243,9 @@ export { HighlightedTextView } from './highlightedtext/highlightedtextview.js';
 export { ButtonLabelWithHighlightView } from './highlightedtext/buttonlabelwithhighlightview.js';
 export { LabelWithHighlightView } from './highlightedtext/labelwithhighlightview.js';
 
-export { TooltipManager, type TooltipPosition } from './tooltipmanager.js';
+export { TooltipManager, type TooltipPosition, type BodyCollectionRegistration } from './tooltipmanager.js';
+
+export { OverlayHost, type OverlayHostOptions } from './overlayhost.js';
 
 export {
 	Template,
@@ -303,6 +308,9 @@ export { normalizeMenuBarConfig, DefaultMenuBarItems } from './menubar/utils.js'
 export { preventDefault as _preventUiViewDefault } from './bindings/preventdefault.js';
 export { CheckIconHolderView as _CheckIconHolderView } from './button/listitembuttonview.js';
 export { CollapsibleView as _CollapsibleView } from './collapsible/collapsibleview.js';
+export { defaultColors as _DEFAULT_COLORS } from './colorgrid/colors.js';
+export { defaultColorGridColumns as _DEFAULT_COLOR_GRID_COLUMNS } from './colorgrid/colors.js';
+export { getLocalizedColorName as _getLocalizedColorName } from './colorgrid/utils.js';
 export { tryParseHexColor as _tryNormalizeHexColor } from './colorpicker/colorpickerview.js';
 export { convertColor as _convertColor } from './colorpicker/utils.js';
 export { convertToHex as _convertColorToHex } from './colorpicker/utils.js';

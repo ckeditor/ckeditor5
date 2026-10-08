@@ -13,7 +13,7 @@ const translations: Translations = {
 			// Dropdown option label for opening an emoji picker offering more results to choose from.
 			'Show all emoji...': '모든 이모지 표시...',
 			// Label of an input field for filtering an emoji collection by the typed value.
-			'Find an emoji (min. 2 characters)': '이모지 찾기(최소 2자)',
+			'Find an emoji': '이모지 찾기(최소 2자)',
 			// The main text of the message shown to the user when no emoji are available for the search criteria.
 			'No emojis were found matching "%0".': '"%0"에 대한 이모지를 찾을 수 없습니다.',
 			// The main text of the message shown to the user when the provided search query does not contain the required number of characters.

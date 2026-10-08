@@ -38,7 +38,7 @@
 		</p>
 	</div>
 
-	<button class="chat-send" type="button">Send</button>
+	<button class="chat-send c-button c-button--primary c-button--base" type="button">Send</button>
 </div>
 
 <style>
@@ -51,9 +51,9 @@
 	/* ---- Chat posts -------------------------------------------------------------------------- */
 
 	.chat ul.chat__posts {
-		border: 1px solid var(--ck-color-base-border);
-		border-top-left-radius: var(--ck-border-radius);
-		border-top-right-radius: var(--ck-border-radius);
+		border: 1px solid var(--ck-color-border-container);
+		border-top-left-radius: var(--ck-border-radius-surface);
+		border-top-right-radius: var(--ck-border-radius-surface);
 		border-bottom: none;
 		margin: 1em 0 0;
 		padding: 1em;
@@ -107,16 +107,14 @@
 	.chat .chat__editor {
 		/* Anti–FOUC (flash of unstyled content). */
 		padding: 1em;
-		border: 1px solid var(--ck-color-base-border);
+		border: 1px solid var(--ck-color-border-container);
 	}
 
 	.chat .chat__editor + .ck.ck-editor {
 		margin-top: 0;
-	}
 
-	.chat .chat__editor + .ck.ck-editor .ck.ck-toolbar {
-		border-top-left-radius: 0;
-		border-top-right-radius: 0;
+		/* The editor sits under the chat posts list, which carries the rounded top corners. */
+		--ck-editor-sticky-panel-border-radius: 0;
 	}
 
 	.chat .chat__editor + .ck.ck-editor .ck-content.highlighted {
@@ -125,8 +123,29 @@
 
 	/* ---- In–editor mention list --------------------------------------------------------------- */
 
+	/*
+	 * A custom `itemRenderer` returns a plain element, so it does not pick up the list item button
+	 * styles of the editor UI. Reproduce them from the theme tokens, so the list follows the theme
+	 * and the focus ring follows the rounded corners.
+	 */
 	.ck-mentions .mention__item {
-		display: block;
+		display: flex;
+		align-items: center;
+		gap: var(--ck-spacing-gap-compact);
+		padding: var(--ck-list-item-button-padding);
+		border: var(--ck-button-border);
+		border-radius: var(--ck-list-item-button-border-radius);
+		color: var(--ck-color-text);
+	}
+
+	.ck-mentions .mention__item:hover,
+	.ck-mentions .mention__item.ck-on {
+		background: var(--ck-list-button-hover-background-color);
+	}
+
+	.ck-mentions .ck-mentions__item_focused .mention__item {
+		border-color: var(--ck-button-focus-border-color);
+		box-shadow: var(--ck-focus-outer-shadow, var(--ck-interactive-focus-shadow)), 0 0;
 	}
 
 	.ck-mentions .mention__item img {
@@ -134,20 +153,8 @@
 		height: 30px;
 	}
 
-	.ck-mentions .mention__item span {
-		margin-left: .5em;
-	}
-
-	.ck-mentions .mention__item.ck-on span {
-		color: var(--ck-color-base-background);
-	}
-
 	.ck-mentions .mention__item .mention__item__full-name {
-		color: hsl(0, 0%, 45%);
-	}
-
-	.ck-mentions .mention__item:hover:not(.ck-on) .mention__item__full-name {
-		color: hsl(0, 0%, 40%);
+		color: var(--ck-color-text-secondary);
 	}
 
 	/* ---- Chat editor content styles ----------------------------------------------------------- */

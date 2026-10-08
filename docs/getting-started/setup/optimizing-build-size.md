@@ -75,7 +75,6 @@ import '@ckeditor/ckeditor5-typing/dist/index.css';
 import '@ckeditor/ckeditor5-undo/dist/index.css';
 import '@ckeditor/ckeditor5-upload/dist/index.css';
 import '@ckeditor/ckeditor5-utils/dist/index.css';
-import '@ckeditor/ckeditor5-watchdog/dist/index.css';
 import '@ckeditor/ckeditor5-widget/dist/index.css';
 ```
 
@@ -92,7 +91,7 @@ Regarding plugin styles, the rule of thumb is to import the styles from all the 
 
 You may notice that some plugin style sheets are empty. This is intentional, as some plugins do not have styles now but may have them in the future. Adding the imports now will ensure that you do not accidentally miss some styles if this happens. Importing empty style sheets does not increase the build size.
 
-If you use separate editor and content styles, as described in the {@link getting-started/setup/css Editor and content styles} guide, you can still add `-content` and `-editor` suffixes to the style paths:
+If you use separate editor and content styles, as described in the {@link getting-started/setup/content-styles#optimizing-the-size-of-style-sheets Content styles} guide, you can still add `-content` and `-editor` suffixes to the style paths:
 
 ```js
 // All styles
@@ -322,7 +321,6 @@ import '@ckeditor/ckeditor5-ui/dist/index.css';
 import '@ckeditor/ckeditor5-undo/dist/index.css';
 import '@ckeditor/ckeditor5-upload/dist/index.css';
 import '@ckeditor/ckeditor5-utils/dist/index.css';
-import '@ckeditor/ckeditor5-watchdog/dist/index.css';
 import '@ckeditor/ckeditor5-widget/dist/index.css';
 import '@ckeditor/ckeditor5-editor-classic/dist/index.css';
 import '@ckeditor/ckeditor5-essentials/dist/index.css';

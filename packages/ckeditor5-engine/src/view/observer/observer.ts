@@ -7,7 +7,7 @@
  * @module engine/view/observer/observer
  */
 
-import { DomEmitterMixin, type DomEmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
+import { DomEmitterMixin, getParentNode, type DomEmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocument } from '../document.js';
 import { type EditingView } from '../view.js';
@@ -99,7 +99,7 @@ export abstract class Observer extends ObserverBase {
 	 */
 	public checkShouldIgnoreEventFromTarget( domTarget: Node | null ): boolean {
 		if ( domTarget && domTarget.nodeType === 3 ) {
-			domTarget = domTarget.parentNode as any;
+			domTarget = getParentNode( domTarget ) as any;
 		}
 
 		if ( !domTarget || domTarget.nodeType !== 1 ) {

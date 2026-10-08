@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Shadow DOM (editor slotted into a scrollable shadow tree)</title>
+	<script type="module" src="./shadow-slotted.ts"></script>
+	<style>
+		/* Reaches the editor component even though it renders inside the frame's shadow tree: a slotted node
+		   stays in the document tree, so the page's own rules still style it. It cannot come from the sheets
+		   that component adopts, which `forwardStyles()` owns. */
+		ck-manual-editor-host { display: block; }
+		.stage { padding: 12px; }
+	</style>
+</head>
+<body>
+	<ck-manual-header>
+		<h2>Editor slotted into a scrollable shadow tree</h2>
+
+		<p>
+			Two composed web components: <code>&lt;ck-manual-editor-host&gt;</code> keeps the editor in a shadow
+			root of its own and is slotted into <code>&lt;ck-manual-slot-frame&gt;</code>, whose shadow tree wraps
+			its <code>&lt;slot&gt;</code> in a scrollable <code>div.frame</code>
+			(<code>position: relative; overflow: auto; max-height: 300px</code>).
+		</p>
+
+		<p>
+			Slotting does not move a node: it stays a child of the host in the node tree while rendering inside the
+			slot. Clipping, scrolling and positioning follow the <strong>flattened tree</strong>, so a walk over the
+			node tree leaves for <code>&lt;body&gt;</code> and skips <code>div.frame</code> &ndash; the element that
+			actually lays the editor out. Everything below is expected to pass in the <strong>open</strong> mode. In
+			the <strong>closed</strong> mode <code>Element#assignedSlot</code> is <code>null</code>, so the walk
+			falls back to the node tree and the checks fail. That is a known limitation, not a regression.
+		</p>
+
+		<p>
+			Sweep the overlay toggle too. <strong>On</strong>, the overlay layer (balloons, dialogs, tooltips) gets a
+			container of its own at the end of <code>&lt;body&gt;</code>. <strong>Off</strong>, it mounts inside the
+			editor component's own root, so it renders inside the frame and is positioned against
+			<code>div.frame</code> &ndash; and cannot escape the frame's clipping, so a balloon anchored at the
+			frame's edge is cut off by design.
+		</p>
+
+		<h3>What to do</h3>
+
+		<ol>
+			<li>
+				<strong>Balloons clip to the frame.</strong> Scroll the frame until the editable is half out of view,
+				then select a word near its edge. The balloon toolbar has to follow further scrolling and disappear
+				once the selection scrolls out. Same for the link balloon (caret in the link) and the block toolbar
+				handle.
+			</li>
+			<li>
+				<strong>The toolbar sticks to the frame.</strong> Click into the editable, then scroll the frame. The
+				toolbar has to stick to the frame's top edge, not to the window, and not scroll away with the
+				content. It is focus-gated, so an unfocused editor never sticks.
+			</li>
+			<li>
+				<strong>The frame scrolls the selection into view.</strong> Put the caret in the last paragraph,
+				scroll the frame back to the top, then type. The frame has to scroll, not the window.
+			</li>
+			<li>
+				<strong>Nothing is clipped away wrongly.</strong> Open the heading and font dropdowns, a dialog
+				(find &amp; replace) and the menu bar &ndash; all positioned against the editable as the frame
+				shows it.
+			</li>
+		</ol>
+
+		<p>
+			Reach the editor as <code>window.editor</code> and the frame as
+			<code>document.querySelector( 'ck-manual-slot-frame' ).frame</code>, which stays reachable in the closed
+			mode, where <code>host.shadowRoot</code> is <code>null</code>.
+		</p>
+	</ck-manual-header>
+
+	<ck-manual-shadow-mode modes="open closed" overlay-container></ck-manual-shadow-mode>
+
+	<div class="stage">
+		<!-- The composition under test: the editor component is the light DOM child, rendered through the
+		     frame component's slot. -->
+		<ck-manual-slot-frame>
+			<ck-manual-editor-host></ck-manual-editor-host>
+		</ck-manual-slot-frame>
+	</div>
+
+	<template id="editor-template">
+		<div class="editor">
+			<h2>Slotted editor</h2>
+
+			<p>Select a word near the frame's edge to open the <strong>balloon toolbar</strong>, then scroll the
+			frame: the balloon has to follow the selection and disappear once it scrolls out of the frame.</p>
+
+			<p>The frame is <code>overflow: auto</code> with a <code>max-height</code>, so this content overflows
+			it and there is something to scroll. Everything from here down starts out of view.</p>
+
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr><td>A1</td><td>B1</td><td>C1</td></tr>
+						<tr><td>A2</td><td>B2</td><td>C2</td></tr>
+						<tr><td>A3</td><td>B3</td><td>C3</td></tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<ul>
+				<li>List item with a <a href="https://ckeditor.com">link</a> &ndash; put the caret in it to open
+				the link balloon.</li>
+				<li>Another item</li>
+				<li>And one more</li>
+			</ul>
+
+			<blockquote><p>A block quote to drag with the block toolbar handle.</p></blockquote>
+
+			<p>Filler so the frame has more to scroll than the viewport does. Without it the window and the frame
+			would scroll by the same amount and a walk that found <code>&lt;body&gt;</code> instead of the frame
+			could still look correct by accident.</p>
+
+			<p>More filler. More filler. More filler. More filler. More filler. More filler. More filler. More
+			filler. More filler. More filler. More filler. More filler.</p>
+
+			<p>The last paragraph &ndash; put the caret here, scroll the frame back to the top, then type: the
+			frame has to bring the selection back into view.</p>
+		</div>
+	</template>
+</body>
+</html>

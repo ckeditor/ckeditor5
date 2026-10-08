@@ -61,6 +61,10 @@ export class DecoupledEditorUI extends EditorUI {
 		// reflects any plugin-registered root types or additional content rules.
 		editable.isInlineRoot = !rootAcceptsBlocks( editor, editingRoot.rootName );
 
+		// Mark the main editing root (adds `ck-editor__editable_root`) so themes can target it without
+		// reaching secondary editables that share the `ck-editor__editable` class (comments, etc.).
+		editable.isMainFrameEditingRoot = true;
+
 		view.render();
 
 		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.

@@ -95,7 +95,8 @@ export class TextAlternativeFormView extends View {
 			],
 			class: [
 				'ck-form__row_with-submit',
-				'ck-form__row_large-top-padding'
+				'ck-form__row_large-top-padding',
+				'ck-form__row_large-bottom-padding'
 			]
 		} ) );
 
@@ -206,7 +207,7 @@ export class TextAlternativeFormView extends View {
 			label: t( 'Save' ),
 			withText: true,
 			type: 'submit',
-			class: 'ck-button-action ck-button-bold'
+			class: 'ck-button-action ck-button_standard'
 		} );
 
 		return saveButton;

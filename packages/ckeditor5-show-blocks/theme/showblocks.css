@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
-	--ck-show-blocks-border-color: hsl(0, 0%, 46%);
+:root,
+:host {
+	--ck-show-blocks-border-color: var(--ck-color-base-text-light);
 }
 
 .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) {

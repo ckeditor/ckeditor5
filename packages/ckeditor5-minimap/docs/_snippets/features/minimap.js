@@ -28,7 +28,6 @@ import {
 	_MinimapIframeView
 } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ArticlePluginSet,
 	attachTourBalloon,
@@ -105,7 +104,6 @@ const config = {
 		container: document.querySelector( '.minimap-container' ),
 		extraClasses: 'live-snippet formatted'
 	},
-	cloudServices: CS_CONFIG,
 	ui: {
 		viewportOffset: {
 			top: getViewportTopOffsetConfig()

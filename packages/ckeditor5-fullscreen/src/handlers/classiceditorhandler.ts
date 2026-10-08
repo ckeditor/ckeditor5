@@ -8,6 +8,7 @@
  */
 
 import { MenuBarView } from '@ckeditor/ckeditor5-ui';
+import { getParentNode } from '@ckeditor/ckeditor5-utils';
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { FullscreenAbstractEditorHandler } from './abstracteditorhandler.js';
@@ -36,16 +37,19 @@ export class FullscreenClassicEditorHandler extends FullscreenAbstractEditorHand
 	public override defaultOnEnter(): HTMLElement {
 		const editorUI = this._editor.ui;
 		const editorUIView = editorUI.view;
+		const editable = editorUI.getEditableElement()!;
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* v8 ignore next -- @preserve */
 		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
-			this.moveToFullscreen(
-				editorUI.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
-			);
+			const paginationViewElement = getParentNode( editable )?.querySelector<HTMLElement>( '.ck-pagination-view' );
+
+			if ( paginationViewElement ) {
+				this.moveToFullscreen( paginationViewElement, 'pagination-view' );
+			}
 		}
 
-		this.moveToFullscreen( editorUI.getEditableElement()!, 'editable' );
+		this.moveToFullscreen( editable, 'editable' );
 		this.moveToFullscreen( editorUIView.toolbar.element!, 'toolbar' );
 
 		editorUIView.toolbar.switchBehavior(

@@ -20,10 +20,37 @@ import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Minimap } from '../src/minimap.js';
 import { shortData, mediumData, longData } from '../tests/fixtures.js';
 
+import { wrapInShadowRoot } from '@ckeditor/ckeditor5-ui/manual/_utils/shadow.js';
+
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+
 declare global {
-	interface Window { editorInstance: any }
+	interface Window {
+		editorInstance: any;
+	}
 }
+
+// Kept in variables because `document.querySelector()` cannot reach into a shadow root.
+const editorContentElement = document.querySelector( '#editor-content' ) as HTMLElement;
+const documentContainerElement = document.querySelector( '.document-container' ) as HTMLElement;
+
+// The whole minimap UI goes into one DOM root, and the editing root into a second one nested inside it. What sits
+// between them is the point: `.editor-container`, the scrollable ancestor the minimap has to resolve, stays in the
+// outer root, so that resolution has to cross a shadow host.
+//
+// Nesting rather than leaving the toolbar and the minimap container behind in the light DOM is what lets this test
+// disable the document-level theme like every other shadow test: everything that needs the theme is inside a root
+// that adopted it, so UI rendering unstyled is a real signal here too.
+//
+// The page's own stylesheets are mirrored into both, as they carry the A4 geometry of `#editor-content` and the
+// frame of the containers around it.
+const outerDomRoot = wrapInShadowRoot( documentContainerElement );
+
+wrapInShadowRoot( editorContentElement );
+
+// The toolbar and the minimap containers moved into the outer root with the rest of `.document-container`, so they
+// are queried from there rather than from the document. The controls above it stay in the light DOM either way.
+const uiRoot: Document | ShadowRoot = outerDomRoot ?? document;
 
 const config = {
 	plugins: [
@@ -92,7 +119,7 @@ const config = {
 		]
 	},
 	minimap: {
-		container: document.querySelector( '.minimap-container' )
+		container: uiRoot.querySelector( '.minimap-container' )
 	},
 	cloudServices: CS_CONFIG
 };
@@ -105,6 +132,13 @@ standardModeButton!.addEventListener( 'change', handleModeChange );
 
 async function handleModeChange( evt: any ) {
 	await startMode( evt.target.value );
+}
+
+/**
+ * Re-creates the editor in whatever preview style and shadow root mode the UI currently selects.
+ */
+async function reloadSelectedMode() {
+	await startMode( ( document.querySelector( 'input[name="mode"]:checked' ) as HTMLInputElement ).value );
 }
 
 async function startMode( selectedMode: string ) {
@@ -124,7 +158,7 @@ async function startSimpleMinimapMode() {
 		...config,
 		minimap: {
 			useSimplePreview: true,
-			container: document.querySelector( '.minimap-container' )
+			container: uiRoot.querySelector( '.minimap-container' )
 		}
 	} );
 }
@@ -137,11 +171,11 @@ async function reloadEditor( config: any ) {
 	const editor = await DecoupledEditor.create( {
 		...config,
 		root: {
-			element: document.querySelector( '#editor-content' )
+			element: editorContentElement
 		}
 	} );
 
-	const toolbarContainer = document.querySelector( '#toolbar-container' );
+	const toolbarContainer = uiRoot.querySelector( '#toolbar-container' );
 
 	toolbarContainer!.innerHTML = '';
 	toolbarContainer!.appendChild( editor.ui.view.toolbar.element! );
@@ -164,4 +198,4 @@ document.getElementById( 'short' )!.addEventListener( 'click', () => {
 	window.editorInstance.setData( shortData );
 } );
 
-startMode( ( document.querySelector( 'input[name="mode"]:checked' ) as HTMLInputElement ).value );
+reloadSelectedMode();

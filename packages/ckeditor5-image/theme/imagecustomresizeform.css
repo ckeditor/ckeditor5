@@ -4,14 +4,9 @@
  */
 
 
-:root {
-	--ck-image-custom-resize-form-width: 340px;
-}
-
-@media screen and (max-width: 600px) {
-	:root {
-		--ck-image-custom-resize-form-width: 300px;
-	}
+:root,
+:host {
+	--ck-image-custom-resize-form-width: var(--ck-width-balloon-form);
 }
 
 .ck.ck-image-custom-resize-form {

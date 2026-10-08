@@ -32,75 +32,8 @@ export interface FontColorConfig {
 	/**
 	 * Available font colors defined as an array of strings or objects.
 	 *
-	 * The default value registers the following colors:
-	 *
-	 * ```ts
-	 * const fontColorConfig = {
-	 * 	colors: [
-	 * 		{
-	 * 			color: 'hsl(0, 0%, 0%)',
-	 * 			label: 'Black'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(0, 0%, 30%)',
-	 * 			label: 'Dim grey'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(0, 0%, 60%)',
-	 * 			label: 'Grey'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(0, 0%, 90%)',
-	 * 			label: 'Light grey'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(0, 0%, 100%)',
-	 * 			label: 'White',
-	 * 			hasBorder: true
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(0, 75%, 60%)',
-	 * 			label: 'Red'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(30, 75%, 60%)',
-	 * 			label: 'Orange'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(60, 75%, 60%)',
-	 * 			label: 'Yellow'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(90, 75%, 60%)',
-	 * 			label: 'Light green'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(120, 75%, 60%)',
-	 * 			label: 'Green'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(150, 75%, 60%)',
-	 * 			label: 'Aquamarine'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(180, 75%, 60%)',
-	 * 			label: 'Turquoise'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(210, 75%, 60%)',
-	 * 			label: 'Light blue'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(240, 75%, 60%)',
-	 * 			label: 'Blue'
-	 * 		},
-	 * 		{
-	 * 			color: 'hsl(270, 75%, 60%)',
-	 * 			label: 'Purple'
-	 * 		}
-	 * 	]
-	 * };
-	 * ```
+	 * The default value is the {@link module:ui/colorgrid/colors~defaultColors shared default color palette},
+	 * shown in {@link module:ui/colorgrid/colors~defaultColorGridColumns} columns.
 	 *
 	 * **Note**: The colors are displayed in the `'fontColor'` dropdown.
 	 */
@@ -116,9 +49,9 @@ export interface FontColorConfig {
 	 *
 	 * ```ts
 	 * // 1) Neither document colors nor columns are defined in the configuration.
-	 * // Document colors will equal 5,
+	 * // Document colors will equal 12,
 	 * // because the value will be inherited from columns,
-	 * // which has a predefined value of 5.
+	 * // which has a predefined value of 12.
 	 * const fontColorConfig = {}
 	 *
 	 * // 2) Document colors will equal 8, because the value will be inherited from columns.
@@ -148,7 +81,7 @@ export interface FontColorConfig {
 	 *
 	 * ```ts
 	 * const fontColorConfig = {
-	 * 	columns: 5
+	 * 	columns: 12
 	 * }
 	 * ```
 	 */

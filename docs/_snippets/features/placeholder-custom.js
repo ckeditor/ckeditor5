@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -13,7 +12,6 @@ import { PlaceholderEditor } from './placeholder-build.js';
 PlaceholderEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-placeholder-custom' ),
-		cloudServices: CS_CONFIG,
 		toolbar: [
 			'undo', 'redo', '|', 'heading',
 			'|', 'bold', 'italic',

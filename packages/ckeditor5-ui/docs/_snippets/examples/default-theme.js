@@ -16,7 +16,7 @@ import {
 	CodeBlock
 } from 'ckeditor5';
 
-import { CS_CONFIG, TOKEN_URL, ArticlePluginSet, getViewportTopOffsetConfig } from '@snippets/index.js';
+import { TOKEN_URL, ArticlePluginSet, getViewportTopOffsetConfig } from '@snippets/index.js';
 
 import DARK_MODE_STYLES from './custom.css?raw';
 
@@ -43,7 +43,7 @@ class DarkModeCKBoxIntegration extends Plugin {
 		// Load CKBox dark theme.
 		this._ckboxLinkElement = document.createElement( 'link' );
 		this._ckboxLinkElement.rel = 'stylesheet';
-		this._ckboxLinkElement.href = 'https://cdn.ckbox.io/ckbox/2.13.0/styles/themes/dark.css';
+		this._ckboxLinkElement.href = 'https://cdn.ckbox.io/ckbox/2.13.1/styles/themes/dark.css';
 
 		document.head.appendChild( this._ckboxLinkElement );
 
@@ -207,8 +207,7 @@ ClassicEditor
 		},
 		list: {
 			enableSkipLevelLists: true
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -1135,11 +1135,11 @@ describe( 'LegacyTodoListEditing', () => {
 							preventDefault: vi.fn(),
 							stopPropagation: vi.fn(),
 							domTarget: {
-								ownerDocument: {
+								getRootNode: () => ( {
 									defaultView: {
 										getSelection: () => ( { rangeCount: 0 } )
 									}
-								}
+								} )
 							}
 						};
 					} );
@@ -1178,11 +1178,11 @@ describe( 'LegacyTodoListEditing', () => {
 							preventDefault: vi.fn(),
 							stopPropagation: vi.fn(),
 							domTarget: {
-								ownerDocument: {
+								getRootNode: () => ( {
 									defaultView: {
 										getSelection: () => ( { rangeCount: 0 } )
 									}
-								}
+								} )
 							}
 						};
 					} );
@@ -1261,11 +1261,11 @@ describe( 'LegacyTodoListEditing', () => {
 					preventDefault: vi.fn(),
 					stopPropagation: vi.fn(),
 					domTarget: {
-						ownerDocument: {
+						getRootNode: () => ( {
 							defaultView: {
 								getSelection: () => ( { rangeCount: 0 } )
 							}
-						}
+						} )
 					}
 				};
 

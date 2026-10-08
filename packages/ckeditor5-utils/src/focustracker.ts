@@ -10,6 +10,7 @@
 import { DomEmitterMixin, type DomEmitterMixinConstructor } from './dom/emittermixin.js';
 import { ObservableMixin, type ObservableMixinConstructor } from './observablemixin.js';
 import { CKEditorError } from './ckeditorerror.js';
+import { getActiveElement } from './dom/getactiveelement.js';
 import type { View } from '@ckeditor/ckeditor5-ui';
 import { isElement as _isElement } from 'es-toolkit/compat';
 
@@ -275,7 +276,7 @@ export class FocusTracker extends FocusTrackerBase {
 	 * a focus tracker state would experience UI flashes and glitches as the user focus travels across the UI.
 	 */
 	private _blur(): void {
-		const isAnyElementFocused = this.elements.find( element => element.contains( document.activeElement ) );
+		const isAnyElementFocused = this.elements.find( element => element.contains( getActiveElement( element ) ) );
 
 		// Avoid blurs originating from external FTs when the focus still remains in one of the #elements.
 		if ( isAnyElementFocused ) {
@@ -340,8 +341,8 @@ function isExternalViewSubtreeFocused( subTreeRoot: Element, view: ViewWithFocus
 
 function isFocusedView( subTreeRoot: Element, view: View ): boolean {
 	// Note: You cannot depend on externalView.focusTracker.focusedElement because blurs are asynchronous and the value may
-	// be outdated when moving focus between two elements. Using document.activeElement instead.
-	return !!view.element && view.element.contains( document.activeElement ) && subTreeRoot.contains( view.element );
+	// be outdated when moving focus between two elements. Using the resolved active element instead.
+	return !!view.element && view.element.contains( getActiveElement( view.element ) ) && subTreeRoot.contains( view.element );
 }
 
 // @if CK_DEBUG_FOCUSTRACKER // declare global {

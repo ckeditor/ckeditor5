@@ -35,8 +35,8 @@ To address the first issue, add the following styles to your application:
  * modal, it will be rendered over the modal.
  */
 :root {
-	--ck-z-default: 100;
-	--ck-z-panel: calc( var(--ck-z-default) + 999 );
+	--ck-z-base: 100;
+	--ck-z-overlay: calc( var(--ck-z-base) + 999 );
 }
 ```
 
@@ -74,8 +74,8 @@ CKEditor&nbsp;5 requires some minor adjustments to the `z-index` of the UI to wo
  * it will be rendered over the modal.
  */
 :root {
-	--ck-z-default: 100;
-	--ck-z-panel: calc( var(--ck-z-default) + 999 );
+	--ck-z-base: 100;
+	--ck-z-overlay: calc( var(--ck-z-base) + 999 );
 }
 ```
 
@@ -98,8 +98,8 @@ Use the following CSS to address the issues with the `z-index` and selector spec
  * modal, it will be rendered over the modal.
  */
 :root {
-	--ck-z-default: 100;
-	--ck-z-panel: calc( var(--ck-z-default) + 999 );
+	--ck-z-base: 100;
+	--ck-z-overlay: calc( var(--ck-z-base) + 999 );
 }
 
 /*
@@ -109,10 +109,10 @@ Use the following CSS to address the issues with the `z-index` and selector spec
  * See: https://github.com/Dogfalo/materialize/blob/v1-dev/sass/components/forms/_input-fields.scss#L10-L40
  */
 .ck input.ck-input.ck-input-text {
-	box-shadow: var(--ck-inner-shadow),0 0;
-	background: var(--ck-color-input-background);
-	border: 1px solid var(--ck-color-input-border);
-	padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+	box-shadow: var(--ck-inset-shadow-sm),0 0;
+	background: var(--ck-input-background-color);
+	border: 1px solid var(--ck-input-border-color);
+	padding: var(--ck-spacing-padding-tight) var(--ck-spacing-padding);
 	transition-property: box-shadow,border;
 	transition: .2s ease-in-out;
 
@@ -125,7 +125,7 @@ Use the following CSS to address the issues with the `z-index` and selector spec
 
 .ck input.ck-input.ck-input-text:focus {
 	border: var(--ck-focus-ring);
-	box-shadow: var(--ck-focus-outer-shadow),var(--ck-inner-shadow);
+	box-shadow: var(--ck-interactive-focus-shadow),var(--ck-inset-shadow-sm);
 }
 ```
 
@@ -169,8 +169,8 @@ CKEditor&nbsp;5 works properly with [Semantic-UI](https://semantic-ui.com/). To 
  * it will be rendered over the modal.
  */
 :root {
-	--ck-z-default: 100;
-	--ck-z-panel: calc( var(--ck-z-default) + 999 );
+	--ck-z-base: 100;
+	--ck-z-overlay: calc( var(--ck-z-base) + 999 );
 }
 ```
 

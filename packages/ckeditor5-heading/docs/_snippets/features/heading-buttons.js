@@ -5,7 +5,6 @@
 
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
 	findToolbarItem
@@ -15,7 +14,6 @@ import { HeadingEditor } from './heading-source.js';
 HeadingEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-heading-buttons' ),
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'paragraph', 'heading1', 'heading2', 'heading3',

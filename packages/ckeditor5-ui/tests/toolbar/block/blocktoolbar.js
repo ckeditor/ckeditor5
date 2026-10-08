@@ -984,6 +984,69 @@ describe( 'BlockToolbar', () => {
 		} );
 	} );
 
+	describe( '_repositionButtonOnScroll() with a slotted editor', () => {
+		let frameHost, frameRoot, frame, slottedEditor, slottedBlockToolbar;
+
+		beforeEach( async () => {
+			// A container component wrapping its `<slot>` in a scrollable element, with an editor component
+			// assigned to that slot. Assigning a node to a slot does not move it, so the editable stays in the
+			// light DOM of the node tree while rendering – and scrolling – inside the frame.
+			frameHost = document.createElement( 'div' );
+			document.body.appendChild( frameHost );
+
+			frameRoot = frameHost.attachShadow( { mode: 'open' } );
+			frame = document.createElement( 'div' );
+			frame.appendChild( document.createElement( 'slot' ) );
+			frameRoot.appendChild( frame );
+
+			const componentHost = document.createElement( 'div' );
+
+			frameHost.appendChild( componentHost );
+
+			const editorElement = document.createElement( 'div' );
+
+			componentHost.attachShadow( { mode: 'open' } ).appendChild( editorElement );
+
+			slottedEditor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ BlockToolbar, Paragraph, ParagraphButtonUI ],
+				blockToolbar: [ 'paragraph' ]
+			} );
+
+			slottedBlockToolbar = slottedEditor.plugins.get( BlockToolbar );
+			slottedEditor.ui.focusTracker.isFocused = true;
+
+			_setModelData( slottedEditor.model, '<paragraph>foo[]</paragraph>' );
+
+			vi.useFakeTimers();
+		} );
+
+		afterEach( async () => {
+			slottedEditor.ui.focusTracker.isFocused = false;
+
+			await slottedEditor.destroy();
+			frameHost.remove();
+		} );
+
+		it( 'should reposition the button on scroll of the scrollable element the editor is slotted into', () => {
+			const spy = vi.spyOn( slottedBlockToolbar, '_updateButton' );
+
+			slottedBlockToolbar.buttonView.isVisible = true;
+
+			// The listener has to reach the frame's root in the first place: `scroll` is not `composed`, so a
+			// `document`-level listener never sees it. A node-tree walk leaves the editor component through its
+			// host straight into the light DOM, so that root is never among the ones the registry reports.
+			expect( slottedEditor.ui.shadowRootRegistry.getShadowRoots().has( frameRoot ) ).toBe( true );
+
+			frame.dispatchEvent( new Event( 'scroll' ) );
+			vi.advanceTimersByTime( 100 );
+
+			// And the containment check has to recognise the frame as an ancestor of the editable, or the
+			// handler early-returns and the button stays where it was while the content scrolls out from
+			// under it.
+			expect( spy ).toHaveBeenCalledOnce();
+		} );
+	} );
+
 	describe( '_clipButtonToViewport()', () => {
 		let buttonView, editableElement, editableRectStub, buttonRectStub;
 

@@ -7,7 +7,7 @@
  * @module widget/widget
  */
 
-import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	PointerObserver,
@@ -24,10 +24,10 @@ import {
 	type ViewElement,
 	type ModelSchema,
 	type ModelPosition,
-	type EditingView,
 	type ViewDocumentTabEvent,
 	type ViewDocumentKeyDownEvent,
 	type ViewNode,
+	type ViewDocumentFragment,
 	type ViewRange,
 	type ViewPosition,
 	type ModelRange,
@@ -329,7 +329,7 @@ export class Widget extends Plugin {
 				element = editableOrWidgetElement;
 			} else {
 				// Pick view range from the point where the mouse was clicked.
-				const clickTargetFromPoint = getElementFromMouseEvent( view, domEventData );
+				const clickTargetFromPoint = getElementFromMouseEvent( editor, domEventData );
 
 				if ( clickTargetFromPoint && isWidget( clickTargetFromPoint ) ) {
 					element = clickTargetFromPoint;
@@ -825,7 +825,8 @@ function findClosestEditableOrWidgetAncestor( element: ViewElement ): ViewElemen
  * @param domEventData The DOM event data containing the mouse event.
  * @returns The ViewElement associated with the mouse event, or null if not found.
  */
-function getElementFromMouseEvent( view: EditingView, domEventData: ViewDocumentDomEventData<MouseEvent> ): ViewElement | null {
+function getElementFromMouseEvent( editor: Editor, domEventData: ViewDocumentDomEventData<MouseEvent> ): ViewElement | null {
+	const view = editor.editing.view;
 	const domRange = getRangeFromMouseEvent( domEventData.domEvent );
 	let viewRange: ViewRange | null;
 
@@ -849,7 +850,7 @@ function getElementFromMouseEvent( view: EditingView, domEventData: ViewDocument
 
 	let viewNode = viewPosition.parent;
 
-	if ( viewPosition.parent.is( 'editableElement' ) ) {
+	if ( viewPosition.parent.is( 'editableElement' ) || hasNoCaretPosition( editor, viewPosition.parent ) ) {
 		/* v8 ignore else -- @preserve */
 		if ( viewPosition.isAtEnd && viewPosition.nodeBefore ) {
 			// Click after a widget tend to return position at the end of the editable element
@@ -868,6 +869,28 @@ function getElementFromMouseEvent( view: EditingView, domEventData: ViewDocument
 	}
 
 	return viewNode as ViewElement;
+}
+
+/**
+ * Whether the caret cannot sit in `node` itself, that is whether the model element it maps to does not accept
+ * `$text`.
+ *
+ * A block quote is such an element: it holds blocks rather than text, so a click in the strip of its own padding
+ * beside a block widget resolves to a position with nowhere for the caret to go. The browser then drops the
+ * selection instead of moving it, the click is discarded, and the editor restores the previous selection. Such a
+ * click is resolved to the widget instead, the way a click beside a widget in an editable already is.
+ *
+ * Answers `false` for anything that is not a mapped element, so an unmapped node is left to the caller's other
+ * checks rather than treated as caret-less.
+ */
+function hasNoCaretPosition( editor: Editor, node: ViewNode | ViewDocumentFragment ): boolean {
+	if ( !node.is( 'element' ) || isWidget( node ) ) {
+		return false;
+	}
+
+	const modelElement = editor.editing.mapper.toModelElement( node );
+
+	return !!modelElement && !editor.model.schema.checkChild( modelElement, '$text' );
 }
 
 /**

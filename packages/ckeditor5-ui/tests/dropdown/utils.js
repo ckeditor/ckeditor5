@@ -437,6 +437,37 @@ describe( 'utils', () => {
 					// Cleanup.
 					externalButton.remove();
 				} );
+
+				for ( const mode of [ 'open', 'closed' ] ) {
+					it( `should focus a #buttonView while closing inside a ${ mode } shadow root`, () => {
+						const host = global.document.createElement( 'div' );
+
+						global.document.body.appendChild( host );
+
+						const shadowRoot = host.attachShadow( { mode } );
+
+						// Move the rendered dropdown from the body into the shadow root.
+						shadowRoot.appendChild( dropdownView.element );
+
+						const spy = vi.spyOn( dropdownView.buttonView, 'focus' );
+						const button = new ButtonView( locale );
+
+						dropdownView.panelView.children.add( button );
+						dropdownView.isOpen = true;
+
+						// The document retargets the active element to the shadow host, so the focus-return
+						// check relies on resolving the active element against the shadow root.
+						expect( global.document.activeElement ).toBe( host );
+						expect( shadowRoot.activeElement ).toBe( button.element );
+
+						dropdownView.isOpen = false;
+
+						expect( shadowRoot.activeElement ).toBe( dropdownView.buttonView.element );
+						expect( spy ).toHaveBeenCalledOnce();
+
+						host.remove();
+					} );
+				}
 			} );
 
 			describe( 'focusDropdownPanelOnOpen()', () => {

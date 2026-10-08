@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Shadow DOM</title>
+	<script type="module" src="./shadow.ts"></script>
+</head>
+<body>
+	<ck-manual-header>
+		<h2>Editor in the light DOM, an open Shadow DOM or a closed one</h2>
+
+		<p>
+			The editor is built in the root picked below. In the shadow modes the editor stylesheet is forwarded
+			into the shadow root verbatim and disabled in the main document, so the editor is styled only via the
+			shadow-adopted sheets – the theme declares its custom properties on <code>:root, :host</code>, so they
+			resolve inside the shadow root with no rewrite. A closed root only hides <code>host.shadowRoot</code>
+			from outside code; the editor still resolves its own root through <code>getRootNode()</code>, so both
+			shadow modes should behave identically.
+		</p>
+
+		<p>
+			Hover toolbar buttons (tooltips), open the heading/font dropdowns, select text (balloon toolbar), use
+			the block toolbar handle, open a dialog (e.g. find &amp; replace) and the font color picker – all
+			floating UI should appear inside the selected root and be styled.
+		</p>
+
+		<p>
+			With <strong>Overlay layer in its own container</strong> off, the body collection (balloons, dropdowns,
+			dialogs) mounts inside the editor's own root automatically. Turning it on points
+			<code>config.ui.overlayContainer</code> at a separate container at the end of <code>&lt;body&gt;</code>
+			instead – a shadow root of the selected mode, or a plain element in the light DOM – proving the overlay
+			layer is decoupled from the editor.
+		</p>
+
+		<p>
+			A closed root cannot be resolved through <code>host.shadowRoot</code>, so reach it from the console
+			through the editor: <code>editor.editing.view.getDomRoot().getRootNode()</code>.
+		</p>
+	</ck-manual-header>
+
+	<ck-manual-shadow-mode overlay-container></ck-manual-shadow-mode>
+
+	<div id="mount"></div>
+
+	<template id="editor-template">
+		<!-- Styles the markup below, so they have to travel with it: cloned into a shadow root, this `<style>`
+		     goes along, while the page's own stylesheets do not reach that root. -->
+		<style>
+			.editor-container {
+				max-width: 800px;
+				margin: 0 auto;
+			}
+		</style>
+
+		<div class="editor-container">
+			<div id="editor">
+				<h2>Shadow DOM smoke test</h2>
+				<p>Hover toolbar buttons to test <strong>tooltips</strong>. Open the heading/font
+				<strong>dropdowns</strong>. Select text to trigger the <strong>balloon toolbar</strong>.
+				Use the <strong>block toolbar</strong> handle on the left. Select across
+				<strong>table</strong> cells. Resize the <strong>image</strong>. Open the
+				<strong>font color</strong> picker.</p>
+
+				<figure class="table">
+					<table>
+						<tbody>
+							<tr><td>A1</td><td>B1</td><td>C1</td></tr>
+							<tr><td>A2</td><td>B2</td><td>C2</td></tr>
+							<tr><td>A3</td><td>B3</td><td>C3</td></tr>
+						</tbody>
+					</table>
+				</figure>
+
+				<figure class="image">
+					<img alt="sample" src="/images/sample.jpg">
+					<figcaption>Resizable image</figcaption>
+				</figure>
+
+				<ul>
+					<li>List item with a <a href="https://ckeditor.com">link</a></li>
+					<li>Another item</li>
+				</ul>
+
+				<blockquote><p>A block quote to drag with the block toolbar.</p></blockquote>
+			</div>
+		</div>
+	</template>
+</body>
+</html>

@@ -67,6 +67,5 @@ export * from '@ckeditor/ckeditor5-typing';
 export * from '@ckeditor/ckeditor5-undo';
 export * from '@ckeditor/ckeditor5-upload';
 export * from '@ckeditor/ckeditor5-utils';
-export * from '@ckeditor/ckeditor5-watchdog';
 export * from '@ckeditor/ckeditor5-widget';
 export * from '@ckeditor/ckeditor5-word-count';

@@ -436,11 +436,14 @@ export class ViewDowncastWriter {
 	 * ```ts
 	 * writer.createUIElement( 'span', null, function( domDocument ) {
 	 * 	const domElement = this.toDomElement( domDocument );
-	 * 	domElement.innerHTML = '<b>this is ui element</b>';
+	 * 	domElement.innerHTML = trustedHtml( '<b>this is ui element</b>' );
 	 *
 	 * 	return domElement;
 	 * } );
 	 * ```
+	 *
+	 * The {@link module:utils/dom/trustedtypes~trustedHtml `trustedHtml()`} helper keeps the assignment working in
+	 * applications that enforce Trusted Types.
 	 *
 	 * Unlike {@link #createRawElement raw elements}, UI elements are by no means editor content, for instance,
 	 * they are ignored by the editor selection system.
@@ -471,9 +474,12 @@ export class ViewDowncastWriter {
 	 *
 	 * ```ts
 	 * writer.createRawElement( 'span', { id: 'foo-1234' }, function( domElement ) {
-	 * 	domElement.innerHTML = '<b>This is the raw content of the raw element.</b>';
+	 * 	domElement.innerHTML = trustedHtml( '<b>This is the raw content of the raw element.</b>' );
 	 * } );
 	 * ```
+	 *
+	 * The {@link module:utils/dom/trustedtypes~trustedHtml `trustedHtml()`} helper keeps the assignment working in
+	 * applications that enforce Trusted Types.
 	 *
 	 * Raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
 	 * even recognized by the editor. This encapsulation allows integrations to maintain custom DOM structures

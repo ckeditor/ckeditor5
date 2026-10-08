@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `imagecaption.css`. */
 	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
 	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);

@@ -162,7 +162,6 @@ export class AccessibilityHelp extends Plugin {
 				id: 'accessibilityHelp',
 				className: 'ck-accessibility-help-dialog',
 				title: t( 'Accessibility help' ),
-				icon: IconAccessibility,
 				hasCloseButton: true,
 				content: this.contentView
 			} );

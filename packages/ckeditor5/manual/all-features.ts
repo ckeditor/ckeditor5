@@ -38,13 +38,20 @@ import { Fullscreen } from '@ckeditor/ckeditor5-fullscreen';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
+import { getOverlayConfig, wrapInShadowRoot } from '@ckeditor/ckeditor5-ui/manual/_utils/shadow.js';
+
 declare global {
 	interface Window { editor: any }
 }
 
+const editorElement = document.querySelector( '#editor' ) as HTMLElement;
+
+wrapInShadowRoot( editorElement );
+
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ) as HTMLElement,
+		...getOverlayConfig(),
+		attachTo: editorElement,
 		root: {
 			placeholder: 'Type the content here!'
 		},

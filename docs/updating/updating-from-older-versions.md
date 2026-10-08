@@ -3,11 +3,21 @@ category: update-guides
 meta-title: Updating from older versions | CKEditor 5 Documentation
 meta-description: Follow the guide to update CKEditor 5 from older versions.
 menu-title: Updating from older versions
-order: 83
+order: 90
 modified_at: 2026-01-23
 ---
 
 # Updating from older CKEditor 5&nbsp;versions
+
+<info-box tip>
+	**Let an AI coding agent do the update for you.** The official `ckeditor-update` skill walks your agent through every update guide between your version and the target one and applies the changes to your code. Install the CKEditor&nbsp;5 skills:
+
+	```bash
+	npx skills add ckeditor/skills
+	```
+
+	Then ask your agent, for example: _"Update CKEditor&nbsp;5 to the latest version"_ or name the version you want. Review the changes before you commit them. See the {@link getting-started/ai-coding-agents Using CKEditor&nbsp;5 with AI coding agents} guide for setup options and supported agents.
+</info-box>
 
 If you are upgrading a project from an older version of CKEditor&nbsp;5, it is best to update one version at a time to avoid unexpected issues.
 

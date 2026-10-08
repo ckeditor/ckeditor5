@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'Xanh biển',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'Tím',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'Chàm',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'Lục lam',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'Xanh mòng két',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'Xanh vỏ chanh',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'Hổ phách',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'Xám xanh',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'Thanh công cụ chỉnh sửa khối nội dung',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

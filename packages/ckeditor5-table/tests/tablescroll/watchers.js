@@ -13,7 +13,7 @@ import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from '../_utils/utils.js';
 
-import { watchTableModelElements, watchRootsWidthResize } from '../../src/tablescroll/watchers.js';
+import { watchTableModelElements, watchRootsWidthResize, watchRootsScroll } from '../../src/tablescroll/watchers.js';
 
 describe( 'table scroll watchers', () => {
 	describe( 'watchTableModelElements()', () => {
@@ -543,6 +543,46 @@ describe( 'table scroll watchers', () => {
 			} );
 		} );
 
+		describe( 'editable in a shadow root', () => {
+			let editor, shadowHost, onResize;
+
+			afterEach( async () => {
+				if ( editor ) {
+					await editor.destroy();
+				}
+
+				shadowHost.remove();
+			} );
+
+			for ( const mode of [ 'open', 'closed' ] ) {
+				it( `should call the callback when the editable's shadow root uses mode: '${ mode }'`, async () => {
+					shadowHost = document.createElement( 'div' );
+					document.body.appendChild( shadowHost );
+
+					const shadowRoot = shadowHost.attachShadow( { mode } );
+					const editableElement = document.createElement( 'div' );
+
+					shadowRoot.appendChild( editableElement );
+
+					editor = await ClassicTestEditor.create( editableElement, {
+						plugins: [ TableEditing, Paragraph ]
+					} );
+
+					onResize = vi.fn();
+					stopWatching = watchRootsWidthResize( editor.editing.view, onResize );
+
+					const domRoot = editor.editing.view.getDomRoot( 'main' );
+
+					await nextFrame();
+					onResize.mockClear();
+
+					await resizeTo( domRoot, 500 );
+
+					expect( onResize ).toHaveBeenCalledTimes( 1 );
+				} );
+			}
+		} );
+
 		function nextFrame() {
 			return new Promise( resolve => requestAnimationFrame( () => requestAnimationFrame( resolve ) ) );
 		}
@@ -552,5 +592,138 @@ describe( 'table scroll watchers', () => {
 
 			await nextFrame();
 		}
+	} );
+
+	describe( 'watchRootsScroll()', () => {
+		let stopWatching;
+
+		afterEach( () => {
+			if ( stopWatching ) {
+				stopWatching();
+				stopWatching = null;
+			}
+		} );
+
+		describe( 'single-root editor', () => {
+			let editor, element, onScroll;
+
+			beforeEach( async () => {
+				element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				editor = await ClassicTestEditor.create( element, {
+					plugins: [ TableEditing, Paragraph ]
+				} );
+
+				onScroll = vi.fn();
+			} );
+
+			afterEach( async () => {
+				if ( editor ) {
+					await editor.destroy();
+				}
+
+				element.remove();
+			} );
+
+			it( 'should call the callback when the root that exists at watch-time scrolls', () => {
+				let capturedTarget = null;
+
+				onScroll = vi.fn( ( evt, domEvent ) => {
+					capturedTarget = domEvent.target;
+				} );
+
+				stopWatching = watchRootsScroll( editor.editing.view, onScroll );
+
+				const domRoot = editor.editing.view.getDomRoot( 'main' );
+
+				domRoot.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( onScroll ).toHaveBeenCalledTimes( 1 );
+				expect( capturedTarget ).toBe( domRoot );
+			} );
+
+			it( 'should stop reacting to scroll once the returned cleanup callback is called', () => {
+				stopWatching = watchRootsScroll( editor.editing.view, onScroll );
+
+				const domRoot = editor.editing.view.getDomRoot( 'main' );
+
+				stopWatching();
+				stopWatching = null;
+
+				domRoot.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( onScroll ).not.toHaveBeenCalled();
+			} );
+		} );
+
+		describe( 'editable in a shadow root', () => {
+			let editor, shadowHost, onScroll;
+
+			afterEach( async () => {
+				if ( editor ) {
+					await editor.destroy();
+				}
+
+				shadowHost.remove();
+			} );
+
+			for ( const mode of [ 'open', 'closed' ] ) {
+				it( `should call the callback when the editable's shadow root uses mode: '${ mode }'`, async () => {
+					shadowHost = document.createElement( 'div' );
+					document.body.appendChild( shadowHost );
+
+					const shadowRoot = shadowHost.attachShadow( { mode } );
+					const editableElement = document.createElement( 'div' );
+
+					shadowRoot.appendChild( editableElement );
+
+					editor = await ClassicTestEditor.create( editableElement, {
+						plugins: [ TableEditing, Paragraph ]
+					} );
+
+					let capturedTarget = null;
+
+					onScroll = vi.fn( ( evt, domEvent ) => {
+						capturedTarget = domEvent.target;
+					} );
+
+					stopWatching = watchRootsScroll( editor.editing.view, onScroll );
+
+					const domRoot = editor.editing.view.getDomRoot( 'main' );
+
+					domRoot.dispatchEvent( new Event( 'scroll' ) );
+
+					expect( onScroll ).toHaveBeenCalledTimes( 1 );
+					expect( capturedTarget ).toBe( domRoot );
+				} );
+			}
+
+			it( 'should not be reachable via a capturing scroll listener on document (sanity check for the bug this fixes)', async () => {
+				shadowHost = document.createElement( 'div' );
+				document.body.appendChild( shadowHost );
+
+				const shadowRoot = shadowHost.attachShadow( { mode: 'open' } );
+				const editableElement = document.createElement( 'div' );
+
+				shadowRoot.appendChild( editableElement );
+
+				editor = await ClassicTestEditor.create( editableElement, {
+					plugins: [ TableEditing, Paragraph ]
+				} );
+
+				const documentScroll = vi.fn();
+
+				document.addEventListener( 'scroll', documentScroll, { capture: true } );
+
+				const domRoot = editor.editing.view.getDomRoot( 'main' );
+
+				domRoot.dispatchEvent( new Event( 'scroll' ) );
+
+				document.removeEventListener( 'scroll', documentScroll, { capture: true } );
+
+				expect( documentScroll ).not.toHaveBeenCalled();
+			} );
+		} );
 	} );
 } );

@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': 'สีน้ำเงิน',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': 'สีม่วง',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': 'สีคราม',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': 'สีฟ้าอมเขียว',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': 'สีเขียวหัวเป็ด',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': 'สีเขียวมะนาว',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': 'สีเหลืองอำพัน',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': 'สีเทาอมฟ้า',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': 'แถบเครื่องมือแก้ไขบล็อกเนื้อหา',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

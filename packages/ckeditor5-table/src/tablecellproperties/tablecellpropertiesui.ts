@@ -15,7 +15,8 @@ import {
 	ContextualBalloon,
 	getLocalizedColorOptions,
 	normalizeColorOptions,
-	type View
+	type View,
+	_DEFAULT_COLOR_GRID_COLUMNS as defaultColorGridColumns
 } from '@ckeditor/ckeditor5-ui';
 import type { Batch } from '@ckeditor/ckeditor5-engine';
 
@@ -134,7 +135,8 @@ export class TableCellPropertiesUI extends Plugin {
 
 		editor.config.define( 'table.tableCellProperties', {
 			borderColors: defaultColors,
-			backgroundColors: defaultColors
+			backgroundColors: defaultColors,
+			colorGridColumns: defaultColorGridColumns
 		} );
 	}
 
@@ -222,6 +224,7 @@ export class TableCellPropertiesUI extends Plugin {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
 			defaultTableCellProperties,
+			colorGridColumns: config.colorGridColumns!,
 			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false,
 			showScopedHeaderOptions: scopedHeaders
 		} );

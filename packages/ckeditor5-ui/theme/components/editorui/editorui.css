@@ -3,50 +3,130 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
-	--ck-color-editable-blur-selection: hsl(0, 0%, 85%);
+:root,
+:host {
+	/* Spacing */
+	--ck-editor-editable-padding: 1em;
+
+	/* Radius. `--ck-editor-outer-radius` is the single knob for the editor's outer shell roundness;
+	 * the frame and sticky-panel radii derive from it under `.ck-rounded-corners` (see below). Defaults
+	 * are `0` (square), so the editor stays square when the rounded-corners switch is off. */
+	--ck-editor-outer-radius: 0;
+	--ck-editor-sticky-panel-outer-radius: 0;
+	--ck-editor-frame-border-radius: 0;
+	--ck-editor-sticky-panel-border-radius: 0;
+
+	/* Border */
+	--ck-editor-frame-border: var(--ck-border-width-surface) solid var(--ck-editor-frame-border-color);
+
+	/* Color */
+	--ck-editor-frame-border-color: var(--ck-color-border-container);
+
+	/* State / meta */
+	--ck-editor-editable-focus-border-color: var(--ck-interactive-focus-border-color);
+}
+
+/*
+ * When the rounded-corners switch is on (added by every editor UI view), the editor's outer shell
+ * becomes rounded. Declared here (not derived at `:root`) on purpose: a `var()` inside a custom
+ * property is substituted on the element that declares it, so the derivations must sit on the same
+ * element that sets `--ck-editor-outer-radius` to pick up the rounded value.
+ */
+.ck-rounded-corners {
+	/* The editor's outer shell follows the global rounded-corners switch (`--ck-radius-corners`, which already
+	 * carries the `--ck-border-radius` → default fallback). The legacy `--ck-rounded-corners-radius` hook still
+	 * takes precedence. Declared here (not at `:root`) so the `var()` resolves against the switched-on value. */
+	--ck-editor-outer-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
+	--ck-editor-frame-border-radius: var(--ck-editor-outer-radius);
+	--ck-editor-sticky-panel-border-radius: var(--ck-editor-outer-radius);
 }
 
 .ck.ck-editor__top {
 	& .ck-sticky-panel {
 		& .ck-sticky-panel__content {
-			border-radius: var(--ck-rounded-corners-radius);
+			/* Only the top corners are rounded; the bottom edge meets the (square-topped) editable so the top
+			 * block and the editable read as one box. Bottom corners are pinned to 0 explicitly so the generic
+			 * sticky-panel radius cannot round them. */
+			border-top-left-radius: var(--ck-editor-sticky-panel-border-radius);
+			border-top-right-radius: var(--ck-editor-sticky-panel-border-radius);
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
 
-			border: 1px solid var(--ck-color-base-border);
+			border: var(--ck-editor-frame-border);
 			border-bottom-width: 0;
 
 			&.ck-sticky-panel__content_sticky {
-				border-bottom-width: 1px;
+				border-bottom-width: var(--ck-border-width-surface);
+
+				/* While stuck, the bar detaches and floats at the top of the viewport. Flatten its top
+				 * corners by default so the editable's border is not revealed behind it; tokenized so
+				 * integrators can opt back into a radius. */
+				border-top-left-radius: var(--ck-editor-sticky-panel-outer-radius);
+				border-top-right-radius: var(--ck-editor-sticky-panel-outer-radius);
 			}
 
 			& .ck-menu-bar {
 				border: 0;
-				border-bottom: 1px solid var(--ck-color-base-border);
+				border-bottom: var(--ck-editor-frame-border);
 			}
 
 			& .ck-toolbar {
 				border: 0;
 			}
+
+			/*
+			 * The children (menu bar, toolbar) are flat and borderless; the outermost one matches the
+			 * container's top corners so its background follows the rounded border without a clip. We cannot
+			 * use `overflow: hidden` on the container because the toolbar's grouped-items dropdown panel
+			 * renders inside the toolbar and would get cut off. This also resets the toolbar's own default
+			 * (fully rounded) radius so it stays flat inside the box.
+			 */
+			& > * {
+				border-radius: 0;
+			}
+
+			/*
+			 * The outermost child sits inside the container's border, so its own background must round one
+			 * border-width tighter than the container to nest inside the border arc. Without it the child's
+			 * (opaque) background bleeds past the rounded border at the top corners. A negative result (when
+			 * the radius is smaller than the border) is clamped to 0 by the browser.
+			 */
+			& > :first-child {
+				border-top-left-radius: calc(var(--ck-editor-sticky-panel-border-radius) - var(--ck-border-width-surface));
+				border-top-right-radius: calc(var(--ck-editor-sticky-panel-border-radius) - var(--ck-border-width-surface));
+			}
+
+			&.ck-sticky-panel__content_sticky > :first-child {
+				border-top-left-radius: calc(var(--ck-editor-sticky-panel-outer-radius) - var(--ck-border-width-surface));
+				border-top-right-radius: calc(var(--ck-editor-sticky-panel-outer-radius) - var(--ck-border-width-surface));
+			}
 		}
 	}
 }
 
-.ck.ck-editor__editable:not(.ck-editor__nested-editable) {
-	border-radius: var(--ck-rounded-corners-radius);
+/*
+ * Round only the top-level editing roots of the editor (marked with `ck-editor__editable_root` by the
+ * editor UI views). Scoping to the marker keeps the radius off secondary editables that share the
+ * `.ck-editor__editable` class - comment inputs, the AI and revision-history sub-editors, etc. The
+ * `:not(.ck-editor__nested-editable)` is a belt-and-suspenders guard (nested editables are never roots).
+ */
+.ck.ck-editor__editable_root:not(.ck-editor__nested-editable) {
+	border-radius: var(--ck-editor-frame-border-radius);
+}
 
+.ck.ck-editor__editable:not(.ck-editor__nested-editable) {
 	&.ck-focused {
 		outline: none;
-		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-inner-shadow), 0 0;
+		border-color: var(--ck-editor-editable-focus-border-color);
+		/* Backward compatibility: falls back to legacy --ck-inner-shadow if overridden. */
+		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
 	}
 }
 
 .ck.ck-editor__editable_inline {
 	overflow: auto;
-	padding: 0 var(--ck-spacing-standard);
-	border: 1px solid transparent;
+	padding: var(--ck-editor-editable-padding);
+	border: var(--ck-border-width-control) solid transparent;
 
 	&[dir="ltr"] {
 		text-align: left;
@@ -58,7 +138,7 @@
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3385 */
 	& > *:first-child {
-		margin-top: var(--ck-spacing-large);
+		margin-top: var(--ck-spacing-gap-comfortable);
 	}
 
 	/* https://github.com/ckeditor/ckeditor5/issues/847 */
@@ -67,7 +147,7 @@
 		 * This value should match with the default margins of the block elements (like .media or .image)
 		 * to avoid a content jumping when the fake selection container shows up (See https://github.com/ckeditor/ckeditor5/issues/9825).
 		 */
-		margin-bottom: var(--ck-spacing-large);
+		margin-bottom: var(--ck-spacing-gap-comfortable);
 	}
 
 	/* https://github.com/ckeditor/ckeditor5/issues/6517 */
@@ -76,7 +156,8 @@
 	keeps its normal (non-blurred) color, which is harmless. */
 	/* eslint-disable-next-line css/use-baseline */
 	&.ck-blurred ::selection {
-		background: var(--ck-color-editable-blur-selection);
+		/* Fallback to `--ck-color-editable-blur-selection` for backward compatibility. */
+		background: var(--ck-color-editable-blur-selection, hsl(0 0% 85%));
 	}
 
 	&.ck-editor__editable_inline-root br {
@@ -94,12 +175,39 @@
 
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_n"] {
 	&::after {
-		border-bottom-color: var(--ck-color-panel-background);
+		border-bottom-color: var(--ck-color-panel-background, var(--ck-balloon-panel-background-color));
 	}
 }
 
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_s"] {
 	&::after {
-		border-top-color: var(--ck-color-panel-background);
+		border-top-color: var(--ck-color-panel-background, var(--ck-balloon-panel-background-color));
+	}
+}
+
+/*
+ * The floating toolbar container (inline and balloon editor toolbars, and the balloon, block and widget
+ * toolbars) is a fully rounded balloon. Its children - an optional menu bar and the toolbar - are flat and
+ * borderless, so the outermost ones must round to nest inside the container's border; otherwise their opaque
+ * background bleeds past the rounded corners. The first child rounds the top corners and the last child the
+ * bottom ones; a lone toolbar is both, so it rounds all four. The radius nests one border-width tighter than
+ * the container (a negative result is clamped to 0 by the browser). This also resets the toolbar's own
+ * default (fully rounded) radius so it stays flat inside the container.
+ */
+.ck.ck-toolbar-container {
+	/* Target `> .ck` (every child carries it) rather than `> *` so the reset outweighs the toolbar's own
+	 * `.ck.ck-toolbar` radius rule; the first/last rules are one step more specific again. */
+	& > .ck {
+		border-radius: 0;
+	}
+
+	& > .ck:first-child {
+		border-top-left-radius: calc(var(--ck-balloon-panel-border-radius) - var(--ck-border-width-surface));
+		border-top-right-radius: calc(var(--ck-balloon-panel-border-radius) - var(--ck-border-width-surface));
+	}
+
+	& > .ck:last-child {
+		border-bottom-left-radius: calc(var(--ck-balloon-panel-border-radius) - var(--ck-border-width-surface));
+		border-bottom-right-radius: calc(var(--ck-balloon-panel-border-radius) - var(--ck-border-width-surface));
 	}
 }

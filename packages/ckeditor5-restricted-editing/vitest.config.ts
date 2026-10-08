@@ -4,7 +4,7 @@
  */
 
 import type { ViteUserConfig } from 'vitest/config';
-import { createVitestConfig } from '../../vitest.config';
+import { createVitestConfig } from '../../vitest.config.mts';
 
 const config: ViteUserConfig = createVitestConfig( import.meta.dirname );
 

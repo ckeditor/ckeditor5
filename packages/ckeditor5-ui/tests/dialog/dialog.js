@@ -259,6 +259,23 @@ describe( 'Dialog', () => {
 		} );
 	} );
 
+	describe( 'scroll lock styles', () => {
+		it( 'should adopt the scroll lock styles, so they work without a light DOM stylesheet', () => {
+			// The rule styles the `<html>` element, which no shadow root can contain, so it cannot come from a
+			// stylesheet an integrator loaded into the root the editor lives in.
+			dialogPlugin._show( {
+				position: DialogViewPosition.EDITOR_CENTER,
+				isModal: true
+			} );
+
+			expect( window.getComputedStyle( document.documentElement ).overflow ).toBe( 'hidden' );
+
+			dialogPlugin._hide();
+
+			expect( window.getComputedStyle( document.documentElement ).overflow ).not.toBe( 'hidden' );
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		it( 'should unlock scrolling on the document if modal was displayed', () => {
 			dialogPlugin._show( {

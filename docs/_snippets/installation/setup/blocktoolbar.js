@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -33,8 +32,7 @@ ToolbarEditor
 			'bulletedList', 'numberedList',
 			'|',
 			'outdent', 'indent'
-		],
-		cloudServices: CS_CONFIG
+		]
 	} )
 	.then( editor => {
 		window.editorBasic = editor;

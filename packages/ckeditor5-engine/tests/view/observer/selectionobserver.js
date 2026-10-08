@@ -62,6 +62,56 @@ describe( 'SelectionObserver', () => {
 		view.destroy();
 	} );
 
+	it( 'does not throw on selectionchange after the observed editing root is detached', () => {
+		// The document-level `selectionchange` listener is registered once and closes over the first
+		// observed root. After that root is removed from the DOM, resolving the selection must fall back
+		// to the document instead of calling `getSelection()` with a disconnected element (which returns
+		// `null` and would throw).
+		domMain.remove();
+
+		expect( () => {
+			domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+		} ).not.toThrow();
+	} );
+
+	it( 'does not throw on selectionchange when the editing root was observed while disconnected', () => {
+		// Supported detached `ClassicEditor` init path: `attachDomRoot()` (and thus `observe()`) runs
+		// before the UI is inserted into the DOM. The selection target must fall back to the document
+		// instead of the detached tree, so a document `selectionchange` resolves rather than throwing.
+		const detachedView = new EditingView( new StylesProcessor() );
+		const detachedMain = document.createElement( 'div' );
+
+		createViewRoot( detachedView.document );
+		detachedView.attachDomRoot( detachedMain );
+
+		detachedView.getObserver( SelectionObserver ).enable();
+
+		expect( () => {
+			document.dispatchEvent( new Event( 'selectionchange' ) );
+		} ).not.toThrow();
+
+		detachedView.destroy();
+	} );
+
+	it( 'marks hasDomSelection false when the observed root is detached (no resolvable selection)', () => {
+		// A root observed while detached is not inside any document, so a `selectionchange` cannot resolve
+		// a selection for it.
+		const detachedView = new EditingView( new StylesProcessor() );
+		const detachedMain = document.createElement( 'div' );
+
+		createViewRoot( detachedView.document );
+		detachedView.attachDomRoot( detachedMain );
+		detachedView.getObserver( SelectionObserver ).enable();
+
+		detachedView.hasDomSelection = true;
+
+		document.dispatchEvent( new Event( 'selectionchange' ) );
+
+		expect( detachedView.hasDomSelection ).toBe( false );
+
+		detachedView.destroy();
+	} );
+
 	it( 'should fire selectionChange when it is the only change', () => {
 		return new Promise( resolve => {
 			viewDocument.on( 'selectionChange', ( evt, data ) => {
@@ -157,6 +207,28 @@ describe( 'SelectionObserver', () => {
 		} );
 	} );
 
+	it( 'should not fire selectionChange for a pending selection change flushed while the observer is disabled', () => {
+		const spy = vi.fn();
+
+		viewDocument.on( 'selectionChange', spy );
+
+		viewDocument.isFocused = false;
+		changeDomSelection();
+
+		return new Promise( resolve => setTimeout( () => {
+			// The change is now pending, waiting for the editable to regain focus. Disabling the observer here
+			// (as happens while the view renders) must prevent it from being fired once flushed, even though the
+			// flush calls `_handleSelectionChange()` directly, bypassing `_handleSelectionChangeInDomRoots()`.
+			selectionObserver.disable();
+			viewDocument.isFocused = true;
+
+			setTimeout( () => {
+				expect( spy ).not.toHaveBeenCalled();
+				resolve();
+			}, 100 );
+		}, 100 ) );
+	} );
+
 	// See https://github.com/ckeditor/ckeditor5/issues/18514.
 	it( 'should fire selectionChange while editable is not focused but the editor is in read-only mode', () => {
 		const spy = vi.fn();
@@ -236,6 +308,20 @@ describe( 'SelectionObserver', () => {
 		domDocument.dispatchEvent( new Event( 'selectionchange' ) );
 
 		expect( view.hasDomSelection ).toBe( false );
+	} );
+
+	it( 'should handle a DOM selection anchored in the editing root itself', () => {
+		const spy = vi.fn();
+
+		viewDocument.on( 'selectionChange', spy );
+
+		// A caret between blocks or next to a widget is anchored in the editable, not in a text node inside it.
+		// `Node#contains()` is inclusive, so such a selection is inside the editing root.
+		domDocument.getSelection().collapse( domMain, 0 );
+		domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+
+		expect( spy ).toHaveBeenCalledOnce();
+		expect( view.hasDomSelection ).toBe( true );
 	} );
 
 	it( 'should add only one #selectionChange listener to one document', () => {
@@ -634,6 +720,139 @@ describe( 'SelectionObserver', () => {
 			expect( forceRenderSpy ).toHaveBeenCalled();
 			resolve();
 		}, 70 ) );
+	} );
+
+	describe( 'shadow DOM', () => {
+		let shadowHost, shadowRoot, shadowMain, shadowView, shadowText;
+
+		beforeEach( () => {
+			shadowHost = domDocument.createElement( 'div' );
+			domDocument.body.appendChild( shadowHost );
+
+			shadowRoot = shadowHost.attachShadow( { mode: 'open' } );
+			shadowMain = domDocument.createElement( 'div' );
+
+			shadowView = new EditingView( new StylesProcessor() );
+
+			createViewRoot( shadowView.document );
+
+			shadowRoot.appendChild( shadowMain );
+			shadowView.attachDomRoot( shadowMain );
+
+			shadowView.getObserver( SelectionObserver ).enable();
+
+			appendContentTo( 'main', 'foo' );
+
+			shadowView.document.isFocused = true;
+			shadowView.document._isFocusChanging = false;
+
+			shadowText = shadowMain.childNodes[ 0 ].childNodes[ 0 ];
+		} );
+
+		afterEach( () => {
+			domDocument.getSelection().removeAllRanges();
+
+			shadowView.destroy();
+			shadowHost.remove();
+		} );
+
+		it( 'resolves the selection against the shadow root for an editing root in a shadow tree', () => {
+			// The selection of an editing root inside a shadow root has to be resolved against that shadow
+			// root, as the document-level selection only ever reports its host.
+			const spy = vi.fn();
+
+			shadowView.document.on( 'selectionChange', spy );
+
+			putSelectionIn( shadowText );
+
+			domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( shadowView.hasDomSelection ).toBe( true );
+		} );
+
+		it( 'resolves the selection against the tree of the root holding it, not the first observed root', () => {
+			// With one editing root per shadow tree, resolving the selection against the first observed root
+			// only (or against the DOM focus, which at this point still points at the previously focused
+			// editable) drops the change and leaves the view selection in the previous root.
+			const secondHost = domDocument.createElement( 'div' );
+
+			domDocument.body.appendChild( secondHost );
+
+			const secondShadowRoot = secondHost.attachShadow( { mode: 'open' } );
+			const secondDomRoot = domDocument.createElement( 'div' );
+
+			secondShadowRoot.appendChild( secondDomRoot );
+
+			createViewRoot( shadowView.document, 'div', 'second' );
+			shadowView.attachDomRoot( secondDomRoot, 'second' );
+
+			appendContentTo( 'second', 'bar' );
+
+			const spy = vi.fn();
+
+			shadowView.document.on( 'selectionChange', spy );
+
+			putSelectionIn( secondDomRoot.childNodes[ 0 ].childNodes[ 0 ] );
+
+			domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+
+			expect( spy ).toHaveBeenCalledOnce();
+
+			const [ , data ] = spy.mock.calls[ 0 ];
+
+			expect( data.newSelection.getFirstRange().start.root.rootName ).toEqual( 'second' );
+
+			secondHost.remove();
+		} );
+
+		it( 'ignores a selectionchange when no editing root holds the selection', () => {
+			const spy = vi.fn();
+
+			shadowView.document.on( 'selectionChange', spy );
+			shadowView.hasDomSelection = true;
+
+			domDocument.getSelection().removeAllRanges();
+
+			domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+
+			expect( spy ).not.toHaveBeenCalled();
+			expect( shadowView.hasDomSelection ).toBe( false );
+		} );
+
+		it( 'ignores a selectionchange when the selection is outside of the editing root', () => {
+			const spy = vi.fn();
+			const outsideText = domDocument.createTextNode( 'baz' );
+
+			shadowView.document.on( 'selectionChange', spy );
+			shadowView.hasDomSelection = true;
+
+			// A node in the same shadow tree, but not in the editing root.
+			shadowRoot.appendChild( outsideText );
+
+			putSelectionIn( outsideText );
+
+			domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+
+			expect( spy ).not.toHaveBeenCalled();
+			expect( shadowView.hasDomSelection ).toBe( false );
+
+			outsideText.remove();
+		} );
+
+		function appendContentTo( rootName, text ) {
+			shadowView.change( writer => {
+				shadowView.document.getRoot( rootName )._appendChild( _parseView( `<container:p>${ text }</container:p>` ) );
+
+				writer.setSelection( null );
+			} );
+		}
+
+		// `Selection#setBaseAndExtent()` accepts nodes inside an open shadow tree and assigns the selection to
+		// that tree, which is what `getSelection( node )` resolves for a root living in it.
+		function putSelectionIn( domText ) {
+			domDocument.getSelection().setBaseAndExtent( domText, 0, domText, 0 );
+		}
 	} );
 
 	describe( 'stopListening()', () => {

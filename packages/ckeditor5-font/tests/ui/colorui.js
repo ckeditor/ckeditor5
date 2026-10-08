@@ -130,8 +130,9 @@ describe( 'FontColorUIBase', () => {
 			expect( button ).to.have.property( 'icon', '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>' );
 		} );
 
-		it( 'should add custom CSS class to dropdown', () => {
+		it( 'should add custom CSS classes to dropdown and its panel', () => {
 			expect( dropdown.element.classList.contains( 'ck-color-ui-dropdown' ) ).toBe( true );
+			expect( dropdown.panelView.element.classList.contains( 'ck-dropdown__panel_fit-content' ) ).toBe( true );
 		} );
 
 		it( 'should focus view after command execution from dropdown', () => {
@@ -527,6 +528,10 @@ describe( 'FontColorUIBase', () => {
 
 			expect( button ).to.have.property( 'label', 'Test Color' );
 			expect( button ).to.have.property( 'icon', '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>' );
+		} );
+
+		it( 'should let the sub menu panel fit the color grid', () => {
+			expect( subMenu.panelView.element.classList.contains( 'ck-menu-bar__menu__panel_fit-content' ) ).toBe( true );
 		} );
 
 		it( 'should focus view after command execution from sub menu', () => {

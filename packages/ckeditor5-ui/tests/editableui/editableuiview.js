@@ -36,6 +36,7 @@ describe( 'EditableUIView', () => {
 
 			expect( view.isFocused ).toBe( false );
 			expect( view.isInlineRoot ).toBe( false );
+			expect( view.isMainFrameEditingRoot ).toBe( false );
 			expect( view.name ).toBeNull();
 			expect( view._externalElement ).toBeUndefined();
 			expect( view._editingView ).toBe( editingView );
@@ -295,6 +296,22 @@ describe( 'EditableUIView', () => {
 
 				view.isInlineRoot = false;
 				expect( view.element.classList.contains( 'ck-editor__editable_inline-root' ) ).toBe( false );
+			} );
+
+			it( 'adds the editable-root class when view#isMainFrameEditingRoot becomes true', () => {
+				expect( view.element.classList.contains( 'ck-editor__editable_root' ) ).toBe( false );
+
+				view.isMainFrameEditingRoot = true;
+
+				expect( view.element.classList.contains( 'ck-editor__editable_root' ) ).toBe( true );
+			} );
+
+			it( 'removes the editable-root class when view#isMainFrameEditingRoot becomes false', () => {
+				view.isMainFrameEditingRoot = true;
+				expect( view.element.classList.contains( 'ck-editor__editable_root' ) ).toBe( true );
+
+				view.isMainFrameEditingRoot = false;
+				expect( view.element.classList.contains( 'ck-editor__editable_root' ) ).toBe( false );
 			} );
 		} );
 	} );

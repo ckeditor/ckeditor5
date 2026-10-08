@@ -42,8 +42,8 @@ export class MentionDomWrapperView extends View {
 
 		this.domElement = domElement;
 
-		// Render dom wrapper as a button.
-		this.domElement.classList.add( 'ck-button' );
+		// Render dom wrapper as a list item button, so it matches the toolbar dropdown lists (e.g. headings).
+		this.domElement.classList.add( 'ck-button', 'ck-list-item-button' );
 
 		this.set( 'isOn', false );
 

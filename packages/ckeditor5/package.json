@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5",
-  "version": "48.5.2",
+  "version": "49.0.0",
   "description": "A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -104,7 +104,6 @@
     "@ckeditor/ckeditor5-undo": "workspace:*",
     "@ckeditor/ckeditor5-upload": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "@ckeditor/ckeditor5-watchdog": "workspace:*",
     "@ckeditor/ckeditor5-widget": "workspace:*",
     "@ckeditor/ckeditor5-word-count": "workspace:*"
   },

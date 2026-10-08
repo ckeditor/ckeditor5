@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-core",
-  "version": "48.5.2",
+  "version": "49.0.0",
   "description": "The core architecture of CKEditor 5 – the best browser-based rich text editor.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -49,7 +49,6 @@
     "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "@ckeditor/ckeditor5-watchdog": "workspace:*",
     "es-toolkit": "1.52.0"
   },
   "devDependencies": {

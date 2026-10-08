@@ -222,14 +222,14 @@ If you use the `CKEditorContext` component, you need to update it to use the `us
 **Before:**
 
 ```jsx
-import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph, ContextWatchdog } from 'ckeditor5';
+import { ClassicEditor, Context, Bold, Essentials, Italic, Paragraph } from 'ckeditor5';
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
 import 'ckeditor5/ckeditor5.css';
 
 function App() {
   return (
-	<CKEditorContext context={ Context } contextWatchdog={ ContextWatchdog }>
+	<CKEditorContext context={ Context }>
 	  <CKEditor
 		editor={ ClassicEditor }
 		config={ {
@@ -291,14 +291,11 @@ function App() {
 	// Pick the CKEditor 5 plugins you want to use.
 	const {
 		ClassicEditor, Bold, Essentials, Italic, Paragraph,
-		Context, ContextWatchdog
+		Context
 	} = cloud.CKEditor;
 
 	return (
-		<CKEditorContext
-			context={ Context }
-			contextWatchdog={ ContextWatchdog }
-		>
+		<CKEditorContext context={ Context }>
 			<CKEditor
 				editor={ ClassicEditor }
 				config={ {

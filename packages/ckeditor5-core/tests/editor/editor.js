@@ -15,7 +15,6 @@ import { Command } from '../../src/command.js';
 import { EditingKeystrokeHandler } from '../../src/editingkeystrokehandler.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { Accessibility } from '../../src/accessibility.js';
-import { EditorWatchdog, ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
 class TestEditor extends Editor {
 	static create( config ) {
@@ -1589,14 +1588,6 @@ describe( 'Editor', () => {
 	describe( 'static fields', () => {
 		it( 'Editor.Context', () => {
 			expect( Editor.Context ).toBe( Context );
-		} );
-
-		it( 'Editor.EditorWatchdog', () => {
-			expect( Editor.EditorWatchdog ).toBe( EditorWatchdog );
-		} );
-
-		it( 'Editor.ContextWatchdog', () => {
-			expect( Editor.ContextWatchdog ).toBe( ContextWatchdog );
 		} );
 	} );
 } );

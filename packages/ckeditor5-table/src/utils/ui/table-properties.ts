@@ -16,7 +16,8 @@ import {
 	type NormalizedColorOption,
 	type ToolbarView,
 	type View,
-	type ColorPickerConfig
+	type ColorPickerConfig,
+	_DEFAULT_COLORS as uiDefaultColors
 } from '@ckeditor/ckeditor5-ui';
 
 import { Collection, type LocaleTranslate } from '@ckeditor/ckeditor5-utils';
@@ -234,139 +235,12 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
  * {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI}.
  *
  * The color palette follows the {@link module:table/tableconfig~TableColorConfig table color configuration format}
- * and contains the following color definitions:
- *
- * ```ts
- * const defaultColors = [
- *   {
- *     color: 'hsl(0, 0%, 0%)',
- *     label: 'Black'
- *   },
- *   {
- *     color: 'hsl(0, 0%, 30%)',
- *     label: 'Dim grey'
- *   },
- *   {
- *     color: 'hsl(0, 0%, 60%)',
- *     label: 'Grey'
- *   },
- *   {
- *     color: 'hsl(0, 0%, 90%)',
- *     label: 'Light grey'
- *   },
- *   {
- *     color: 'hsl(0, 0%, 100%)',
- *     label: 'White',
- *     hasBorder: true
- *   },
- *   {
- *     color: 'hsl(0, 75%, 60%)',
- *     label: 'Red'
- *   },
- *   {
- *     color: 'hsl(30, 75%, 60%)',
- *     label: 'Orange'
- *   },
- *   {
- *     color: 'hsl(60, 75%, 60%)',
- *     label: 'Yellow'
- *   },
- *   {
- *     color: 'hsl(90, 75%, 60%)',
- *     label: 'Light green'
- *   },
- *   {
- *     color: 'hsl(120, 75%, 60%)',
- *     label: 'Green'
- *   },
- *   {
- *     color: 'hsl(150, 75%, 60%)',
- *     label: 'Aquamarine'
- *   },
- *   {
- *     color: 'hsl(180, 75%, 60%)',
- *     label: 'Turquoise'
- *   },
- *   {
- *     color: 'hsl(210, 75%, 60%)',
- *     label: 'Light blue'
- *   },
- *   {
- *     color: 'hsl(240, 75%, 60%)',
- *     label: 'Blue'
- *   },
- *   {
- *     color: 'hsl(270, 75%, 60%)',
- *     label: 'Purple'
- *   }
- * ];
- * ```
+ * and is shared with the other features that display a color grid. See
+ * {@link module:ui/colorgrid/colors~defaultColors} for its contents.
  *
  * @internal
  */
-export const defaultColors: Array<ColorOption> = [
-	{
-		color: 'hsl(0, 0%, 0%)',
-		label: 'Black'
-	},
-	{
-		color: 'hsl(0, 0%, 30%)',
-		label: 'Dim grey'
-	},
-	{
-		color: 'hsl(0, 0%, 60%)',
-		label: 'Grey'
-	},
-	{
-		color: 'hsl(0, 0%, 90%)',
-		label: 'Light grey'
-	},
-	{
-		color: 'hsl(0, 0%, 100%)',
-		label: 'White',
-		hasBorder: true
-	},
-	{
-		color: 'hsl(0, 75%, 60%)',
-		label: 'Red'
-	},
-	{
-		color: 'hsl(30, 75%, 60%)',
-		label: 'Orange'
-	},
-	{
-		color: 'hsl(60, 75%, 60%)',
-		label: 'Yellow'
-	},
-	{
-		color: 'hsl(90, 75%, 60%)',
-		label: 'Light green'
-	},
-	{
-		color: 'hsl(120, 75%, 60%)',
-		label: 'Green'
-	},
-	{
-		color: 'hsl(150, 75%, 60%)',
-		label: 'Aquamarine'
-	},
-	{
-		color: 'hsl(180, 75%, 60%)',
-		label: 'Turquoise'
-	},
-	{
-		color: 'hsl(210, 75%, 60%)',
-		label: 'Light blue'
-	},
-	{
-		color: 'hsl(240, 75%, 60%)',
-		label: 'Blue'
-	},
-	{
-		color: 'hsl(270, 75%, 60%)',
-		label: 'Purple'
-	}
-];
+export const defaultColors: Array<ColorOption> = uiDefaultColors;
 
 /**
  * Returns a creator for a color input with a label.
@@ -405,7 +279,7 @@ export const defaultColors: Array<ColorOption> = [
 export function getLabeledColorInputCreator(
 	options: {
 		colorConfig: Array<NormalizedColorOption>;
-		columns: number;
+		columns?: number;
 		defaultColorValue?: string;
 		colorPickerConfig: false | ColorPickerConfig;
 	}

@@ -23,6 +23,7 @@ import { isWindow } from './iswindow.js';
 import { type EventInfo } from '../eventinfo.js';
 import type { Constructor, Mixed } from '../mix.js';
 import { global } from './global.js';
+import { isNativeShadowRoot, isShadowRoot } from './isshadowroot.js';
 
 // Keep this a plain alias. A conditional type does not work here: TypeScript cannot reduce a
 // conditional over an unresolved type parameter, so a generic wrapper around `DomEmitterMixin( base )`
@@ -119,6 +120,10 @@ export function DomEmitterMixin( base?: Constructor<Emitter> ): unknown {
 		): void {
 			// Check if emitter is an instance of DOM Node. If so, use corresponding ProxyEmitter (or create one if not existing).
 			if ( isNode( emitter ) || isWindow( emitter ) || emitter instanceof global.window.EventTarget ) {
+				if ( isShadowRoot( emitter ) && !isNativeShadowRoot( emitter ) ) {
+					return;
+				}
+
 				const proxyOptions = {
 					capture: !!options.useCapture,
 					passive: !!options.usePassive

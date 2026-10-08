@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
-	--ck-z-default: 1;
-	--ck-z-panel: calc( var(--ck-z-default) + 999 );
-	--ck-z-dialog: 9999;
+:root,
+:host {
+	--ck-z-base: 1;
+	--ck-z-overlay: calc( var(--ck-z-base) + 999 );
+	--ck-z-modal: 9999;
 }

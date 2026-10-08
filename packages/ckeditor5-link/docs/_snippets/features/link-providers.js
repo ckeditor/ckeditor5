@@ -5,7 +5,6 @@
 
 import { AutoLink } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
@@ -17,7 +16,6 @@ import { SocialLinksPlugin } from './build-link-source.js';
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-link-providers' ),
-		cloudServices: CS_CONFIG,
 		extraPlugins: [
 			AutoLink,
 			SocialLinksPlugin

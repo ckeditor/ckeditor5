@@ -9,6 +9,7 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { View, Dialog, DialogViewPosition, ContextualBalloon, BalloonPanelView } from '@ckeditor/ckeditor5-ui';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Plugin } from '@ckeditor/ckeditor5-core';
@@ -18,9 +19,19 @@ import { FullscreenAbstractEditorHandler } from '../../src/handlers/abstractedit
 import { Fullscreen } from '../../src/fullscreen.js';
 
 describe( 'AbstractHandler', () => {
-	let abstractHandler, domElement, editor;
+	let abstractHandler, domElement, editor, consoleWarnSpy;
 
 	beforeEach( async () => {
+		// An editor rendered in a shadow root without `ui.overlayContainer` warns about it. That is expected in the tests
+		// creating such editors, so only this warning is silenced – every other one still gets through.
+		const originalWarn = console.warn;
+
+		consoleWarnSpy = vi.spyOn( console, 'warn' ).mockImplementation( ( ...args ) => {
+			if ( args[ 0 ] !== 'ui-overlay-container-not-configured' ) {
+				originalWarn( ...args );
+			}
+		} );
+
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );
 
@@ -35,11 +46,13 @@ describe( 'AbstractHandler', () => {
 		abstractHandler = new FullscreenAbstractEditorHandler( editor );
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		domElement.remove();
 		abstractHandler.disable();
 
-		return editor.destroy();
+		await editor.destroy();
+
+		consoleWarnSpy.mockRestore();
 	} );
 
 	describe( 'constructor', () => {
@@ -217,9 +230,217 @@ describe( 'AbstractHandler', () => {
 
 			expect( global.document.body.classList.contains( 'ck-fullscreen' ) ).toBe( false );
 			expect( global.document.body.parentElement.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+			expect( global.document.body.classList.contains( 'ck-fullscreen-scroll-locked' ) ).toBe( false );
+			expect( global.document.documentElement.classList.contains( 'ck-fullscreen-scroll-locked' ) ).toBe( false );
 
 			abstractHandler.disable();
 			customContainer.remove();
+		} );
+
+		it( 'should block document scroll if the configured fullscreen container is the resolved default one', () => {
+			editor.config.set( 'fullscreen.container', global.document.body );
+
+			abstractHandler.enable();
+
+			expect( global.document.body.classList.contains( 'ck-fullscreen' ) ).toBe( true );
+			// Also on the `<html>` element, so that custom properties derived from these at `:root` are computed
+			// from the bumped values rather than the base ones.
+			expect( global.document.documentElement.classList.contains( 'ck-fullscreen' ) ).toBe( true );
+			expect( global.document.body.classList.contains( 'ck-fullscreen-scroll-locked' ) ).toBe( true );
+			expect( global.document.documentElement.classList.contains( 'ck-fullscreen-scroll-locked' ) ).toBe( true );
+			expect(
+				abstractHandler.getWrapper().classList.contains( 'ck-fullscreen__main-wrapper_custom-container' )
+			).toBe( false );
+
+			abstractHandler.disable();
+		} );
+
+		it( 'should not mark a light DOM mount target, which inherits the stacking variables from the body', () => {
+			const overlayContainer = global.document.createElement( 'div' );
+
+			global.document.body.appendChild( overlayContainer );
+			editor.config.set( 'ui.overlayContainer', overlayContainer );
+
+			abstractHandler.enable();
+
+			expect( abstractHandler._getWrapperMountTarget() ).toBe( overlayContainer );
+			expect( global.document.body.classList.contains( 'ck-fullscreen' ) ).toBe( true );
+			expect( overlayContainer.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+
+			abstractHandler.disable();
+			overlayContainer.remove();
+		} );
+
+		describe( 'hiding other elements', () => {
+			let pageElement;
+
+			beforeEach( () => {
+				pageElement = global.document.createElement( 'div' );
+				global.document.body.appendChild( pageElement );
+			} );
+
+			afterEach( () => {
+				pageElement.remove();
+			} );
+
+			it( 'should hide the other elements of the page', () => {
+				abstractHandler.enable();
+
+				expect( pageElement.style.display ).toBe( 'none' );
+				expect( editor.ui.element.checkVisibility() ).toBe( false );
+			} );
+
+			it( 'should restore the hidden elements when the fullscreen mode is disabled', () => {
+				abstractHandler.enable();
+				abstractHandler.disable();
+
+				expect( pageElement.style.display ).toBe( '' );
+				expect( editor.ui.element.checkVisibility() ).toBe( true );
+			} );
+
+			it( 'should restore the original inline `display` value of the hidden elements', () => {
+				pageElement.style.display = 'flex';
+
+				abstractHandler.enable();
+
+				expect( pageElement.style.display ).toBe( 'none' );
+
+				abstractHandler.disable();
+
+				expect( pageElement.style.display ).toBe( 'flex' );
+			} );
+
+			it( 'should not touch elements that are already hidden, so that they stay hidden after leaving', () => {
+				pageElement.style.display = 'none';
+
+				abstractHandler.enable();
+
+				expect( abstractHandler._hiddenElements.has( pageElement ) ).toBe( false );
+
+				abstractHandler.disable();
+
+				expect( pageElement.style.display ).toBe( 'none' );
+			} );
+
+			it( 'should keep the wrapper visible', () => {
+				abstractHandler.enable();
+
+				expect( abstractHandler.getWrapper().checkVisibility() ).toBe( true );
+			} );
+
+			it( 'should keep the element holding the editor body collection visible', () => {
+				abstractHandler.enable();
+
+				const bodyCollectionContainer = editor.ui.view.body.bodyCollectionContainer;
+
+				expect( bodyCollectionContainer.checkVisibility() ).toBe( true );
+				expect( abstractHandler._hiddenElements.has( bodyCollectionContainer.parentElement ) ).toBe( false );
+			} );
+
+			it( 'should keep the CKBox wrapper visible', () => {
+				pageElement.className = 'ck ckbox-wrapper';
+
+				abstractHandler.enable();
+
+				expect( pageElement.checkVisibility() ).toBe( true );
+			} );
+
+			it( 'should hide only the other children of a custom `fullscreen.container`', () => {
+				const customContainer = global.document.createElement( 'div' );
+				const containerChild = global.document.createElement( 'div' );
+
+				customContainer.appendChild( containerChild );
+				global.document.body.appendChild( customContainer );
+				editor.config.set( 'fullscreen.container', customContainer );
+
+				abstractHandler.enable();
+
+				expect( containerChild.style.display ).toBe( 'none' );
+				expect( abstractHandler.getWrapper().checkVisibility() ).toBe( true );
+				// The rest of the page stays visible, as the fullscreen mode does not cover the viewport.
+				expect( pageElement.checkVisibility() ).toBe( true );
+				expect( editor.ui.element.checkVisibility() ).toBe( true );
+
+				abstractHandler.disable();
+
+				expect( containerChild.style.display ).toBe( '' );
+
+				customContainer.remove();
+			} );
+
+			// The body collection is still in the shared body wrapper when the elements are hidden, and it is remounted
+			// to the overlay container only by the `ui.update()` call at the end of `enable()`.
+			it( 'should keep a `ui.overlayContainer` configured after the editor was created visible', () => {
+				const overlayContainer = global.document.createElement( 'div' );
+
+				global.document.body.appendChild( overlayContainer );
+				editor.config.set( 'ui.overlayContainer', overlayContainer );
+
+				try {
+					abstractHandler.enable();
+
+					const bodyCollectionContainer = editor.ui.view.body.bodyCollectionContainer;
+
+					expect( overlayContainer.contains( bodyCollectionContainer ) ).toBe( true );
+					expect( abstractHandler.getWrapper().checkVisibility() ).toBe( true );
+					expect( bodyCollectionContainer.checkVisibility() ).toBe( true );
+				} finally {
+					abstractHandler.disable();
+					overlayContainer.remove();
+				}
+			} );
+		} );
+
+		it( 'should adopt the scroll lock styles into the document, so they work without a light DOM stylesheet', () => {
+			abstractHandler.enable();
+
+			// The rule cannot come from a stylesheet loaded into a shadow root – it styles the `<html>` and
+			// `<body>` elements, which no shadow root can contain.
+			const adopted = [ ...global.document.adoptedStyleSheets ]
+				.flatMap( sheet => [ ...sheet.cssRules ] )
+				.map( rule => rule.cssText )
+				.join( '\n' );
+
+			expect( adopted ).toContain( 'ck-fullscreen-scroll-locked' );
+			expect( global.window.getComputedStyle( global.document.body ).overflow ).toBe( 'hidden' );
+
+			abstractHandler.disable();
+
+			expect( global.window.getComputedStyle( global.document.body ).overflow ).not.toBe( 'hidden' );
+		} );
+
+		it( 'should bump the CKBox UI over the fullscreen mode through the adopted styles', () => {
+			// CKBox mounts its UI in the light DOM on purpose, so the fullscreen stylesheet cannot reach it when
+			// the editor styles live in a shadow root – the adopted ones can.
+			const ckboxWrapper = global.document.createElement( 'div' );
+			const ckbox = global.document.createElement( 'div' );
+			const imageEditor = global.document.createElement( 'div' );
+
+			ckboxWrapper.className = 'ck ckbox-wrapper';
+			ckbox.className = 'ckbox';
+			imageEditor.className = 'ckbox-img-editor';
+
+			ckbox.appendChild( imageEditor );
+			ckboxWrapper.appendChild( ckbox );
+			global.document.body.appendChild( ckboxWrapper );
+
+			expect( global.window.getComputedStyle( ckbox ).position ).toBe( 'static' );
+
+			abstractHandler.enable();
+
+			const ckboxStyle = global.window.getComputedStyle( ckbox );
+
+			expect( ckboxStyle.position ).toBe( 'absolute' );
+			expect( ckboxStyle.getPropertyValue( '--ckbox-z-index-root' ).trim() ).toBe( 'calc(100000 + 1)' );
+			expect(
+				global.window.getComputedStyle( imageEditor ).getPropertyValue( '--ckbox-z-index-preview' ).trim()
+			).toBe( 'calc(100000 + 1)' );
+
+			abstractHandler.disable();
+
+			expect( global.window.getComputedStyle( ckbox ).position ).toBe( 'static' );
+
+			ckboxWrapper.remove();
 		} );
 
 		it( 'should register a getPositionOptions correction that adjusts viewport offset by top bar height', async () => {
@@ -270,6 +491,163 @@ describe( 'AbstractHandler', () => {
 			tempDomElement.remove();
 
 			return tempEditor.destroy();
+		} );
+
+		describe( 'dialog position', () => {
+			let dialogPlugin, dialogContentView;
+
+			beforeEach( () => {
+				dialogPlugin = editor.plugins.get( Dialog );
+				dialogContentView = new View();
+
+				dialogContentView.setTemplate( {
+					tag: 'div',
+					attributes: {
+						style: {
+							width: '100px',
+							height: '50px'
+						}
+					}
+				} );
+			} );
+
+			it( 'should update the position of a dialog positioned relative to the editable once the editable is moved', () => {
+				const positionCallback = vi.fn( () => ( { left: 0, top: 0 } ) );
+
+				dialogPlugin.show( {
+					label: 'Foo',
+					content: dialogContentView,
+					position: positionCallback
+				} );
+
+				positionCallback.mockClear();
+
+				const editableRectBefore = new Rect( editor.ui.getEditableElement() );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				const editableRectAfter = new Rect( editor.ui.getEditableElement() );
+
+				expect( editableRectAfter.isEqual( editableRectBefore ) ).toBe( false );
+				expect( positionCallback.mock.lastCall[ 2 ].isEqual( editableRectAfter ) ).toBe( true );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+			} );
+
+			it( 'should update the position of a dialog against the editable moved by showing or hiding the sidebars', () => {
+				const handler = editor.commands.get( 'toggleFullscreen' ).fullscreenHandler;
+				const editableElement = editor.ui.getEditableElement();
+				const positionCallback = vi.fn( () => ( { left: 0, top: 0 } ) );
+
+				dialogPlugin.show( {
+					label: 'Foo',
+					content: dialogContentView,
+					position: positionCallback
+				} );
+
+				// Collapsing a sidebar shifts the editable sideways.
+				vi.spyOn( handler, '_adjustVisibleElements' ).mockImplementation( () => {
+					editableElement.style.marginLeft = '100px';
+				} );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				expect( positionCallback.mock.lastCall[ 2 ].isEqual( new Rect( editableElement ) ) ).toBe( true );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+				editableElement.style.marginLeft = '';
+			} );
+
+			it( 'should not move a dialog moved to the right side of the editable again', () => {
+				dialogPlugin.show( {
+					label: 'Foo',
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				const moveToSpy = vi.spyOn( dialogPlugin.view, 'moveTo' );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				expect( dialogPlugin.view.position ).toBeNull();
+				expect( moveToSpy ).toHaveBeenCalledOnce();
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+			} );
+
+			it( 'should not move a dialog dragged by the user when entering the fullscreen mode', () => {
+				dialogPlugin.show( {
+					title: 'Foo',
+					content: dialogContentView,
+					position: () => ( { left: 0, top: 0 } )
+				} );
+
+				const { left, top } = dragDialogBy( 10, 10 );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				expect( getDialogCoordinates() ).toEqual( { left, top } );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+			} );
+
+			it( 'should not move a dialog with the editor-top-side position dragged by the user when entering the fullscreen mode', () => {
+				dialogPlugin.show( {
+					title: 'Foo',
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				const { left, top } = dragDialogBy( -10, 10 );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				expect( dialogPlugin.view.position ).toBe( DialogViewPosition.EDITOR_TOP_SIDE );
+				expect( getDialogCoordinates() ).toEqual( { left, top } );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+			} );
+
+			it( 'should not move a dialog dragged by the user when leaving the fullscreen mode', () => {
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				// Opened in the fullscreen mode, the dialog is moved to the right side and its position is cleared.
+				dialogPlugin.show( {
+					title: 'Foo',
+					content: dialogContentView,
+					position: DialogViewPosition.EDITOR_TOP_SIDE
+				} );
+
+				const { left, top } = dragDialogBy( -10, 10 );
+
+				editor.commands.get( 'toggleFullscreen' ).execute();
+
+				expect( dialogPlugin.view.position ).toBe( DialogViewPosition.EDITOR_TOP_SIDE );
+				expect( getDialogCoordinates() ).toEqual( { left, top } );
+			} );
+
+			// Drags the dialog by its header, the way the user does, and returns the coordinates it was dragged to.
+			function dragDialogBy( deltaX, deltaY ) {
+				const headerElement = dialogPlugin.view.headerView.element;
+				const coordinatesBefore = getDialogCoordinates();
+
+				headerElement.dispatchEvent( new MouseEvent( 'mousedown', { bubbles: true, clientX: 100, clientY: 100 } ) );
+				global.document.dispatchEvent( new MouseEvent( 'mousemove', { clientX: 100 + deltaX, clientY: 100 + deltaY } ) );
+				headerElement.dispatchEvent( new MouseEvent( 'mouseup', { bubbles: true } ) );
+
+				const coordinatesAfter = getDialogCoordinates();
+
+				expect( dialogPlugin.view.wasMoved ).toBe( true );
+				expect( coordinatesAfter ).not.toEqual( coordinatesBefore );
+
+				return coordinatesAfter;
+			}
+
+			function getDialogCoordinates() {
+				const { left, top } = dialogPlugin.view.element.querySelector( '.ck-dialog' ).getBoundingClientRect();
+
+				return { left: Math.round( left ), top: Math.round( top ) };
+			}
 		} );
 	} );
 
@@ -919,6 +1297,57 @@ describe( 'AbstractHandler', () => {
 			innerScrollableAncestor.remove();
 			innerElement.remove();
 		} );
+
+		// Builds a host whose shadow root wraps a scrollable frame around a `<slot>`, with `slottedElement` as a
+		// light DOM child of the host: it renders inside the frame while staying a child of the host in the node
+		// tree, so only a walk over the flattened tree reaches the frame.
+		function createSlottedComposition( mode ) {
+			const host = global.document.createElement( 'div' );
+			const scrollableFrame = global.document.createElement( 'div' );
+			const slottedElement = global.document.createElement( 'div' );
+
+			scrollableFrame.style.overflow = 'scroll';
+			scrollableFrame.style.width = '100px';
+			scrollableFrame.style.height = '100px';
+			scrollableFrame.appendChild( global.document.createElement( 'slot' ) );
+
+			slottedElement.style.width = '400px';
+			slottedElement.style.height = '400px';
+
+			host.attachShadow( { mode } ).appendChild( scrollableFrame );
+			global.document.body.appendChild( host );
+			host.appendChild( slottedElement );
+
+			scrollableFrame.scrollTo( 30, 50 );
+
+			return { host, scrollableFrame, slottedElement };
+		}
+
+		it( 'should save a scrollable element the element is slotted into', () => {
+			const { host, scrollableFrame, slottedElement } = createSlottedComposition( 'open' );
+
+			abstractHandler._saveAncestorsScrollPositions( slottedElement );
+
+			expect( abstractHandler._savedAncestorsScrollPositions.has( scrollableFrame ) ).toBe( true );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( scrollableFrame ).scrollLeft ).toBeCloseTo( 30, 0 );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( scrollableFrame ).scrollTop ).toBeCloseTo( 50, 0 );
+
+			host.remove();
+		} );
+
+		it( 'should not save a scrollable element behind a closed shadow root, which does not expose its slot', () => {
+			const { host, scrollableFrame, slottedElement } = createSlottedComposition( 'closed' );
+
+			// `Element#assignedSlot` is null for a slot in a closed root, so the walk falls back to the node tree
+			// and never visits the frame.
+			expect( slottedElement.assignedSlot ).toBeNull();
+
+			abstractHandler._saveAncestorsScrollPositions( slottedElement );
+
+			expect( abstractHandler._savedAncestorsScrollPositions.has( scrollableFrame ) ).toBe( false );
+
+			host.remove();
+		} );
 	} );
 
 	describe( 'on _collapseLeftSidebarButton#execute', () => {
@@ -1126,6 +1555,158 @@ describe( 'AbstractHandler', () => {
 		} );
 	} );
 
+	describe( '_handleAITabsTransfer() and _restoreAITabs()', () => {
+		let aiTabs, viewElement, originalContainer, assignments, pluginsGetSpy;
+
+		// A stand-in for the AI tabs plugin, which lives in the commercial package repository. It records the
+		// order its observable properties are assigned in, which is a part of the contract: switching the type
+		// makes the plugin resolve a container of its own, so the container the fullscreen mode points it at
+		// has to be assigned after that.
+		beforeEach( () => {
+			viewElement = global.document.createElement( 'div' );
+			originalContainer = global.document.createElement( 'div' );
+			assignments = [];
+
+			global.document.body.append( viewElement, originalContainer );
+
+			const values = { side: 'left', type: 'overlay', container: originalContainer };
+
+			aiTabs = {
+				view: { element: viewElement }
+			};
+
+			for ( const name of [ 'side', 'type', 'container' ] ) {
+				Object.defineProperty( aiTabs, name, {
+					get: () => values[ name ],
+					set: value => {
+						values[ name ] = value;
+						assignments.push( name );
+					}
+				} );
+			}
+
+			pluginsGetSpy = vi.spyOn( editor.plugins, 'get' )
+				.mockImplementation( pluginName => pluginName === 'AITabs' ? aiTabs : undefined );
+		} );
+
+		afterEach( () => {
+			// The automatic `restoreMocks` cleanup runs only before the next test, so restore manually first:
+			// the outer `afterEach()` calls `abstractHandler.disable()`, which must use the real
+			// `editor.plugins.get()` instead of the mock returning `undefined` for non-AITabs plugins.
+			pluginsGetSpy.mockRestore();
+
+			// Returns the view to the document before the elements below are removed. Inner hooks run first, so
+			// without this the `disable()` call in the outer `afterEach()` would put it back afterwards and leak
+			// it into the next test – the browser mode runs them all in one document.
+			abstractHandler.restoreMovedElementLocation( 'right-edge' );
+
+			viewElement.remove();
+			originalContainer.remove();
+		} );
+
+		function getRightEdge() {
+			return abstractHandler.getWrapper().querySelector( '[data-ck-fullscreen="right-edge"]' );
+		}
+
+		it( 'should move the view of the tabs to the right edge of the fullscreen wrapper', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			expect( viewElement.parentNode ).toBe( getRightEdge() );
+		} );
+
+		it( 'should leave the placeholder of the view where the view came from', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			// Left behind before the type is switched, so that it marks the place the view came from rather than
+			// the one that switch relocates it to.
+			expect( global.document.body.querySelector( '[data-ck-fullscreen-placeholder="right-edge"]' ) ).not.toBe( null );
+		} );
+
+		it( 'should dock the tabs to the right side', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			expect( aiTabs.type ).toBe( 'sidebar' );
+			expect( aiTabs.side ).toBe( 'right' );
+		} );
+
+		it( 'should point the container of the tabs at the slot the view was moved to', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			// Which is what keeps the plugin from moving the view back out of the fullscreen wrapper, and what
+			// mounts the floating UI of the AI features in the tree that wrapper lives in.
+			expect( aiTabs.container ).toBe( getRightEdge() );
+		} );
+
+		it( 'should set the container of the tabs after the type that resolves one of its own', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			expect( assignments ).toEqual( [ 'side', 'type', 'container' ] );
+		} );
+
+		it( 'should save the state of the tabs from before the transfer', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			expect( abstractHandler._aiTabsData ).toEqual( {
+				side: 'left',
+				type: 'overlay',
+				container: originalContainer
+			} );
+		} );
+
+		it( 'should start listening to the width transitions of the tabs', () => {
+			const spy = vi.spyOn( abstractHandler, '_handleAISidebarTransitions' ).mockImplementation( () => {} );
+
+			abstractHandler._handleAITabsTransfer();
+
+			viewElement.dispatchEvent( new TransitionEvent( 'transitionend', { propertyName: 'width' } ) );
+
+			expect( spy ).toHaveBeenCalledOnce();
+		} );
+
+		it( 'should restore the saved state of the tabs', () => {
+			abstractHandler._handleAITabsTransfer();
+			abstractHandler._restoreAITabs();
+
+			expect( aiTabs.side ).toBe( 'left' );
+			expect( aiTabs.type ).toBe( 'overlay' );
+			expect( aiTabs.container ).toBe( originalContainer );
+		} );
+
+		it( 'should restore the container of the tabs after the type that resolves one of its own', () => {
+			abstractHandler._handleAITabsTransfer();
+
+			assignments.length = 0;
+
+			abstractHandler._restoreAITabs();
+
+			expect( assignments ).toEqual( [ 'side', 'type', 'container' ] );
+		} );
+
+		it( 'should clear the container of the tabs when there is no saved state', () => {
+			abstractHandler._restoreAITabs();
+
+			expect( aiTabs.container ).toBe( null );
+		} );
+
+		it( 'should forget the saved state of the tabs', () => {
+			abstractHandler._handleAITabsTransfer();
+			abstractHandler._restoreAITabs();
+
+			expect( abstractHandler._aiTabsData ).toBe( null );
+		} );
+
+		it( 'should stop listening to the width transitions of the tabs', () => {
+			const spy = vi.spyOn( abstractHandler, '_handleAISidebarTransitions' ).mockImplementation( () => {} );
+
+			abstractHandler._handleAITabsTransfer();
+			abstractHandler._restoreAITabs();
+
+			viewElement.dispatchEvent( new TransitionEvent( 'transitionend', { propertyName: 'width' } ) );
+
+			expect( spy ).not.toHaveBeenCalled();
+		} );
+	} );
+
 	describe( '_handleAISidebarTransitions', () => {
 		let aiElement, nestedElement, pluginsGetSpy;
 
@@ -1199,6 +1780,485 @@ describe( 'AbstractHandler', () => {
 
 			expect( handleAISidebarTransitionsStub ).toHaveBeenCalledTimes( 1 );
 			expect( handleAISidebarTransitionsStub ).toHaveBeenCalledWith( evt );
+		} );
+	} );
+
+	describe( 'in the shadow DOM', () => {
+		let shadowHost, shadowRoot, shadowDomElement, shadowEditor, shadowHandler;
+
+		// Creates an editor inside a shadow root attached to an element in the document. The shadow root reference is
+		// kept here instead of being read from `shadowHost.shadowRoot`, so that the tests also cover a closed root,
+		// where that property is `null`.
+		async function createEditorInShadowRoot( mode = 'open', config = {} ) {
+			shadowHost = global.document.createElement( 'div' );
+			global.document.body.appendChild( shadowHost );
+
+			shadowRoot = shadowHost.attachShadow( { mode } );
+			shadowDomElement = global.document.createElement( 'div' );
+			shadowRoot.appendChild( shadowDomElement );
+
+			shadowEditor = await ClassicEditor.create( shadowDomElement, {
+				plugins: [
+					Paragraph,
+					Essentials,
+					Fullscreen
+				],
+				...config
+			} );
+
+			shadowHandler = new FullscreenAbstractEditorHandler( shadowEditor );
+		}
+
+		function createShadowRoot() {
+			const host = global.document.createElement( 'div' );
+
+			global.document.body.appendChild( host );
+
+			return host.attachShadow( { mode: 'open' } );
+		}
+
+		afterEach( async () => {
+			shadowHandler.destroy();
+
+			await shadowEditor.destroy();
+
+			shadowHost.remove();
+		} );
+
+		describe( 'container resolution', () => {
+			it( 'should default to the shadow root the editor lives in', async () => {
+				await createEditorInShadowRoot();
+
+				expect( shadowHandler._getWrapperMountTarget() ).toBe( shadowRoot );
+			} );
+
+			it( 'should resolve the root when the wrapper is created, not when the handler is constructed', async () => {
+				shadowHost = global.document.createElement( 'div' );
+				shadowRoot = shadowHost.attachShadow( { mode: 'open' } );
+
+				// A decoupled editor is created detached from the document and inserted into it – here into a shadow
+				// root – only afterwards, so there is no root to resolve while the handler is being constructed.
+				shadowEditor = await DecoupledEditor.create( {
+					root: {
+						initialData: '<p>Foo</p>'
+					},
+					plugins: [
+						Paragraph,
+						Essentials,
+						Fullscreen
+					]
+				} );
+
+				shadowHandler = new FullscreenAbstractEditorHandler( shadowEditor );
+
+				shadowRoot.appendChild( shadowEditor.ui.getEditableElement() );
+				global.document.body.appendChild( shadowHost );
+
+				expect( shadowHandler.getWrapper().getRootNode() ).toBe( shadowRoot );
+			} );
+
+			it( 'should fall back to the body of the editor\'s document if the editor is still detached', async () => {
+				shadowHost = global.document.createElement( 'div' );
+				shadowRoot = shadowHost.attachShadow( { mode: 'open' } );
+
+				// The editable element exists but has not been inserted into the document, so it has no root to
+				// resolve – neither the shadow root it is going to be inserted into, nor any other.
+				shadowEditor = await DecoupledEditor.create( {
+					root: {
+						initialData: '<p>Foo</p>'
+					},
+					plugins: [
+						Paragraph,
+						Essentials,
+						Fullscreen
+					]
+				} );
+
+				shadowHandler = new FullscreenAbstractEditorHandler( shadowEditor );
+
+				expect( shadowHandler._getWrapperMountTarget() ).toBe( global.document.body );
+			} );
+
+			it( 'should mount the wrapper in the shadow root', async () => {
+				await createEditorInShadowRoot();
+
+				const wrapper = shadowHandler.getWrapper();
+
+				// The wrapper has no `parentElement`: its parent node is the shadow root, which is not an element.
+				expect( wrapper.parentNode ).toBe( shadowRoot );
+				expect( wrapper.getRootNode() ).toBe( shadowRoot );
+			} );
+
+			it( 'should mount the wrapper in a closed shadow root as well', async () => {
+				await createEditorInShadowRoot( 'closed' );
+
+				expect( shadowHost.shadowRoot ).toBeNull();
+				expect( shadowHandler.getWrapper().getRootNode() ).toBe( shadowRoot );
+			} );
+
+			it( 'should use the `ui.overlayContainer` instead of the editor\'s shadow root if configured', async () => {
+				const overlayContainer = createShadowRoot();
+
+				await createEditorInShadowRoot( 'open', { ui: { overlayContainer } } );
+
+				expect( shadowHandler.getWrapper().getRootNode() ).toBe( overlayContainer );
+
+				overlayContainer.host.remove();
+			} );
+
+			it( 'should use the `fullscreen.container` instead of the resolved default if configured', async () => {
+				const overlayContainer = createShadowRoot();
+				const customContainer = global.document.createElement( 'div' );
+
+				await createEditorInShadowRoot( 'open', {
+					ui: { overlayContainer },
+					fullscreen: { container: customContainer }
+				} );
+
+				shadowRoot.appendChild( customContainer );
+
+				expect( shadowHandler.getWrapper().parentElement ).toBe( customContainer );
+
+				overlayContainer.host.remove();
+			} );
+
+			it( 'should mount the wrapper in the shadow root when the editable is moved before the wrapper is created', async () => {
+				await createEditorInShadowRoot();
+
+				// The classic editor handler moves the editable to the fullscreen mode before anything creates the
+				// wrapper. The container is resolved from that editable, so resolving it lazily would resolve it
+				// from an already detached element – which has no root – and fall back to the `<body>` element.
+				shadowEditor.execute( 'toggleFullscreen' );
+
+				const commandHandler = shadowEditor.commands.get( 'toggleFullscreen' ).fullscreenHandler;
+
+				expect( commandHandler.getWrapper().getRootNode() ).toBe( shadowRoot );
+
+				shadowEditor.execute( 'toggleFullscreen' );
+			} );
+		} );
+
+		describe( 'viewport and scroll blocking', () => {
+			it( 'should block the document scroll even though the wrapper is not a child of the body', async () => {
+				await createEditorInShadowRoot();
+
+				shadowHandler.enable();
+
+				expect( shadowHandler.getWrapper().parentElement ).toBeNull();
+				expect( global.document.body.classList.contains( 'ck-fullscreen' ) ).toBe( true );
+				// Also on the `<html>` element, so that custom properties derived from these at `:root` are computed
+				// from the bumped values rather than the base ones.
+				expect( global.document.documentElement.classList.contains( 'ck-fullscreen' ) ).toBe( true );
+				expect( global.document.body.classList.contains( 'ck-fullscreen-scroll-locked' ) ).toBe( true );
+				expect( global.document.documentElement.classList.contains( 'ck-fullscreen-scroll-locked' ) ).toBe( true );
+
+				shadowHandler.disable();
+
+				expect( global.document.body.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+				expect( global.document.documentElement.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+				expect( global.document.body.classList.contains( 'ck-fullscreen-scroll-locked' ) ).toBe( false );
+				expect( global.document.documentElement.classList.contains( 'ck-fullscreen-scroll-locked' ) ).toBe( false );
+			} );
+
+			it( 'should mark the shadow host, so the bumped stacking variables are not overridden by its own', async () => {
+				await createEditorInShadowRoot();
+
+				shadowHandler.enable();
+
+				expect( shadowHost.classList.contains( 'ck-fullscreen' ) ).toBe( true );
+
+				// The host carries the stacking variables only – the page scroll is locked on the document.
+				expect( shadowHost.classList.contains( 'ck-fullscreen-scroll-locked' ) ).toBe( false );
+
+				shadowHandler.disable();
+
+				expect( shadowHost.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+			} );
+
+			it( 'should mark the host when the mount target is an element inside a shadow root', async () => {
+				const overlayHost = global.document.createElement( 'div' );
+
+				global.document.body.appendChild( overlayHost );
+
+				const overlayRoot = overlayHost.attachShadow( { mode: 'open' } );
+				const overlayContainer = global.document.createElement( 'div' );
+
+				overlayRoot.appendChild( overlayContainer );
+
+				// The mount target is not a shadow root itself, but it lives in one – so the fullscreen mode is
+				// still subject to the host re-declaring the stacking variables.
+				await createEditorInShadowRoot( 'open', { ui: { overlayContainer } } );
+
+				shadowHandler.enable();
+
+				expect( shadowHandler._getWrapperMountTarget() ).toBe( overlayContainer );
+				expect( overlayHost.classList.contains( 'ck-fullscreen' ) ).toBe( true );
+
+				shadowHandler.disable();
+
+				expect( overlayHost.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+
+				overlayHost.remove();
+			} );
+
+			it( 'should not mark the wrapper as filling a custom container', async () => {
+				await createEditorInShadowRoot();
+
+				expect(
+					shadowHandler.getWrapper().classList.contains( 'ck-fullscreen__main-wrapper_custom-container' )
+				).toBe( false );
+			} );
+
+			it( 'should cover the viewport if the `<body>` element is configured explicitly as the container', async () => {
+				// The `<body>` element used to be the documented default, so it may be configured explicitly. It
+				// covers the viewport even though it is not the container that would be resolved here.
+				await createEditorInShadowRoot( 'open', { fullscreen: { container: global.document.body } } );
+
+				shadowHandler.enable();
+
+				expect( shadowHandler._getWrapperMountTarget() ).toBe( global.document.body );
+				expect( global.document.body.classList.contains( 'ck-fullscreen' ) ).toBe( true );
+				expect( global.document.documentElement.classList.contains( 'ck-fullscreen-scroll-locked' ) ).toBe( true );
+				expect(
+					shadowHandler.getWrapper().classList.contains( 'ck-fullscreen__main-wrapper_custom-container' )
+				).toBe( false );
+
+				shadowHandler.disable();
+			} );
+
+			it( 'should mark the wrapper as filling a custom container and keep the document scrollable', async () => {
+				const customContainer = global.document.createElement( 'div' );
+
+				await createEditorInShadowRoot( 'open', { fullscreen: { container: customContainer } } );
+
+				shadowRoot.appendChild( customContainer );
+				shadowHandler.enable();
+
+				expect(
+					shadowHandler.getWrapper().classList.contains( 'ck-fullscreen__main-wrapper_custom-container' )
+				).toBe( true );
+				expect( global.document.body.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+				expect( global.document.documentElement.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+
+				shadowHandler.disable();
+			} );
+		} );
+
+		describe( '#_saveAncestorsScrollPositions()', () => {
+			it( 'should collect scrollable ancestors across the shadow boundary', async () => {
+				await createEditorInShadowRoot();
+
+				const scrollableAncestor = global.document.createElement( 'div' );
+				const innerElement = global.document.createElement( 'div' );
+
+				scrollableAncestor.style.overflow = 'scroll';
+				scrollableAncestor.style.width = '100px';
+				scrollableAncestor.style.height = '100px';
+				innerElement.style.width = '400px';
+				innerElement.style.height = '400px';
+
+				shadowRoot.appendChild( scrollableAncestor );
+				scrollableAncestor.appendChild( innerElement );
+				scrollableAncestor.scrollTo( 30, 50 );
+
+				shadowHandler._saveAncestorsScrollPositions( innerElement );
+
+				expect( shadowHandler._savedAncestorsScrollPositions.get( scrollableAncestor ).scrollLeft ).toBeCloseTo( 30, 0 );
+				expect( shadowHandler._savedAncestorsScrollPositions.get( scrollableAncestor ).scrollTop ).toBeCloseTo( 50, 0 );
+
+				// Reached only by stepping from the shadow root onto its host.
+				expect( shadowHandler._savedAncestorsScrollPositions.has( global.document.documentElement ) ).toBe( true );
+
+				scrollableAncestor.remove();
+			} );
+		} );
+
+		describe( 'overlay layer', () => {
+			// The fullscreen mode has no overlay layer of its own: the editor's own one follows the UI into it,
+			// because its mount target is re-resolved from the editing root that `defaultOnEnter()` moves.
+			it( 'should keep the editor body collection mounted in the root the wrapper lives in', async () => {
+				await createEditorInShadowRoot();
+
+				shadowHandler.enable();
+
+				expect( shadowEditor.ui.view.body.mountTarget ).toBe( shadowRoot );
+
+				shadowHandler.disable();
+			} );
+
+			// A container in a tree of its own isolates the wrapper: the editor UI and its body collection both
+			// stay in the tree the editor was created in, so that tree is tracked only if the wrapper itself is.
+			it( 'should track the shadow root of the wrapper, so the tooltips of the moved UI keep working', async () => {
+				const containerRoot = createShadowRoot();
+				const container = containerRoot.appendChild( global.document.createElement( 'div' ) );
+
+				await createEditorInShadowRoot( 'open', { fullscreen: { container } } );
+
+				shadowHandler.enable();
+
+				expect( shadowEditor.ui.shadowRootRegistry.getShadowRoots().has( containerRoot ) ).toBe( true );
+
+				shadowHandler.disable();
+				containerRoot.host.remove();
+			} );
+
+			it( 'should stop tracking the shadow root of the wrapper when the fullscreen mode is disabled', async () => {
+				const containerRoot = createShadowRoot();
+				const container = containerRoot.appendChild( global.document.createElement( 'div' ) );
+
+				await createEditorInShadowRoot( 'open', { fullscreen: { container } } );
+
+				shadowHandler.enable();
+
+				const wrapper = shadowHandler.getWrapper();
+
+				// Moving an element is what the real handlers do, and it changes the teardown order: restoring the
+				// last moved element destroys the wrapper before `disable()` gets any further.
+				const movedElement = global.document.createElement( 'div' );
+
+				shadowRoot.appendChild( movedElement );
+				shadowHandler.moveToFullscreen( movedElement, 'editable' );
+
+				shadowHandler.disable();
+
+				expect( shadowEditor.ui.shadowRootRegistry.getShadowRoots().has( containerRoot ) ).toBe( false );
+
+				// The wrapper is destroyed with the fullscreen mode, so a registration left behind would pile up
+				// one dead node per enter and leave.
+				expect( shadowEditor.ui.shadowRootRegistry._rootsByNode.has( wrapper ) ).toBe( false );
+
+				containerRoot.host.remove();
+			} );
+
+			it( 'should not register the wrapper twice if the fullscreen mode is enabled again without disabling', async () => {
+				await createEditorInShadowRoot();
+
+				shadowHandler.enable();
+
+				const wrapper = shadowHandler.getWrapper();
+
+				shadowHandler.enable();
+
+				expect( shadowHandler.getWrapper() ).toBe( wrapper );
+				expect( shadowEditor.ui.shadowRootRegistry.getShadowRoots().has( shadowRoot ) ).toBe( true );
+
+				shadowHandler.disable();
+			} );
+
+			it( 'should stop tracking the wrapper together with the editor even if the wrapper is already gone', async () => {
+				await createEditorInShadowRoot();
+
+				shadowHandler.enable();
+
+				const movedElement = global.document.createElement( 'div' );
+
+				shadowRoot.appendChild( movedElement );
+				shadowHandler.moveToFullscreen( movedElement, 'editable' );
+
+				// Restoring the last moved element destroys the wrapper, while the `ck-fullscreen` classes are
+				// still around. Nothing else would clean those up, so the teardown that follows the editor must
+				// not be skipped just because the wrapper is gone.
+				shadowHandler.restoreMovedElementLocation( 'editable' );
+
+				expect( shadowHandler._wrapper ).toBeNull();
+
+				shadowEditor.fire( 'destroy' );
+
+				expect( global.document.body.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+				expect( shadowHost.classList.contains( 'ck-fullscreen' ) ).toBe( false );
+			} );
+		} );
+
+		describe( 'hiding other elements', () => {
+			it( 'should hide the elements of the page outside the shadow root the wrapper is mounted in', async () => {
+				await createEditorInShadowRoot();
+
+				shadowHandler.enable();
+
+				// The editor created in the light DOM by the top-level `beforeEach()`.
+				expect( editor.ui.element.checkVisibility() ).toBe( false );
+
+				shadowHandler.disable();
+
+				expect( editor.ui.element.checkVisibility() ).toBe( true );
+			} );
+
+			it( 'should keep the host of the shadow root the wrapper is mounted in visible', async () => {
+				await createEditorInShadowRoot();
+
+				shadowHandler.enable();
+
+				expect( shadowHost.style.display ).not.toBe( 'none' );
+				expect( shadowHandler.getWrapper().checkVisibility() ).toBe( true );
+				expect( shadowEditor.ui.view.body.bodyCollectionContainer.checkVisibility() ).toBe( true );
+
+				shadowHandler.disable();
+			} );
+
+			it( 'should keep the host of the shadow root the wrapper is mounted in visible in a closed shadow root', async () => {
+				await createEditorInShadowRoot( 'closed' );
+
+				shadowHandler.enable();
+
+				expect( shadowHost.style.display ).not.toBe( 'none' );
+				expect( shadowHandler.getWrapper().checkVisibility() ).toBe( true );
+
+				shadowHandler.disable();
+			} );
+
+			it( 'should keep the host of a `ui.overlayContainer` shadow root visible and hide the editor\'s own host', async () => {
+				const overlayContainer = createShadowRoot();
+
+				await createEditorInShadowRoot( 'open', { ui: { overlayContainer } } );
+
+				shadowHandler.enable();
+
+				expect( overlayContainer.host.style.display ).not.toBe( 'none' );
+				expect( shadowHandler.getWrapper().checkVisibility() ).toBe( true );
+				expect( shadowEditor.ui.view.body.bodyCollectionContainer.checkVisibility() ).toBe( true );
+				// Nothing of the fullscreen mode lives in the shadow root the editor was created in.
+				expect( shadowHost.style.display ).toBe( 'none' );
+
+				shadowHandler.disable();
+
+				expect( shadowHost.style.display ).toBe( '' );
+
+				overlayContainer.host.remove();
+			} );
+
+			// The body collection is still in the editor's shadow root when the elements are hidden, and it is remounted
+			// to the body wrapper shared with the light DOM editor only by the `ui.update()` call at the end of `enable()`.
+			it( 'should keep the body collection visible when it is remounted from the shadow root to the body', async () => {
+				await createEditorInShadowRoot( 'open', { fullscreen: { container: global.document.body } } );
+
+				// The real editor handler is needed here: it moves the editable, which makes the body collection follow it.
+				shadowEditor.execute( 'toggleFullscreen' );
+
+				try {
+					const bodyCollectionContainer = shadowEditor.ui.view.body.bodyCollectionContainer;
+
+					expect( bodyCollectionContainer.getRootNode() ).toBe( global.document );
+					expect( bodyCollectionContainer.checkVisibility() ).toBe( true );
+				} finally {
+					shadowEditor.execute( 'toggleFullscreen' );
+				}
+			} );
+		} );
+
+		describe( 'DOM queries', () => {
+			it( 'should find the wrapper slots that a document-wide query would not reach', async () => {
+				await createEditorInShadowRoot();
+
+				shadowHandler._hasLeftCollapseButton = true;
+				shadowHandler.enable();
+
+				const leftSidebar = shadowHandler.getWrapper().querySelector( '.ck-fullscreen__left-sidebar' );
+
+				expect( global.document.querySelector( '.ck-fullscreen__left-sidebar' ) ).toBeNull();
+				expect( leftSidebar.firstElementChild ).toBe( shadowHandler._collapseLeftSidebarButton.element );
+
+				shadowHandler.disable();
+			} );
 		} );
 	} );
 } );

@@ -8,6 +8,7 @@ import { globSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import yaml from 'js-yaml';
 import { parseArgs } from 'node:util';
+import path from 'node:path';
 
 vi.mock( 'node:fs' );
 vi.mock( 'node:fs/promises' );
@@ -18,8 +19,8 @@ vi.mock( '../../scripts/constants.mjs', () => ( {
 	CKEDITOR5_MAIN_PACKAGE_PATH: '/workspace/ckeditor5/packages/ckeditor5'
 } ) );
 
-const CIRCLECI_CONFIG_DIRECTORY_PATH = '/workspace/ckeditor5/.circleci';
-const CONFIG_TESTS_PATH = `${ CIRCLECI_CONFIG_DIRECTORY_PATH }/config-tests.yml`;
+const CIRCLECI_CONFIG_DIRECTORY_PATH = path.join( '/workspace/ckeditor5', '.circleci' );
+const CONFIG_TESTS_PATH = path.join( CIRCLECI_CONFIG_DIRECTORY_PATH, 'config-tests.yml' );
 
 describe( 'scripts/ci/generate-circleci-configuration', () => {
 	it( 'creates one batch job per contiguous chunk of the sorted package list', async () => {
@@ -207,8 +208,8 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 		await generateCircleConfiguration();
 
 		expect( fs.readFile ).toHaveBeenCalledTimes( 2 );
-		expect( fs.readFile ).toHaveBeenNthCalledWith( 1, `${ CIRCLECI_CONFIG_DIRECTORY_PATH }/template.yml` );
-		expect( fs.readFile ).toHaveBeenNthCalledWith( 2, `${ CIRCLECI_CONFIG_DIRECTORY_PATH }/config.yml` );
+		expect( fs.readFile ).toHaveBeenNthCalledWith( 1, path.join( CIRCLECI_CONFIG_DIRECTORY_PATH, 'template.yml' ) );
+		expect( fs.readFile ).toHaveBeenNthCalledWith( 2, path.join( CIRCLECI_CONFIG_DIRECTORY_PATH, 'config.yml' ) );
 	} );
 } );
 

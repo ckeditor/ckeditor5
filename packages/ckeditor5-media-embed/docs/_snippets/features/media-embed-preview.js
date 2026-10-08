@@ -5,7 +5,6 @@
 
 import {
 	TOKEN_URL,
-	CS_CONFIG,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
 	findToolbarItem
@@ -23,7 +22,6 @@ MediaEditor
 		// on the figure would fight that — producing a width chosen by the user and a height
 		// chosen by Iframely that no longer match.
 		removePlugins: [ 'MediaEmbedResize' ],
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

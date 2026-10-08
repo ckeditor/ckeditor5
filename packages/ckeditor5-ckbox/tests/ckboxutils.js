@@ -666,6 +666,129 @@ describe( 'CKBoxUtils', () => {
 			expect( fileResult ).toEqual( 'Cannot determine a category for the uploaded file.' );
 			expect( urlResult ).toEqual( 'Cannot determine a category for the uploaded file.' );
 		} );
+
+		it( 'should fail when the configured category does not exist on the server', async () => {
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
+				{ name: 'Covers', id: 'id-category-1', extensions: [ 'png' ] },
+				{ name: 'Albums', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] }
+			] );
+
+			editor.config.set( 'ckbox.defaultUploadCategories', {
+				'id-category-removed': [ 'jpg' ]
+			} );
+
+			const fileResult = await ckboxUtils.getCategoryIdForFile( file, options ).then(
+				() => { throw new Error( 'Expected to be rejected.' ); },
+				err => err
+			);
+
+			expect( fileResult ).toEqual( 'Cannot determine a category for the uploaded file.' );
+		} );
+
+		describe( 'offline handling', () => {
+			let onLineStub;
+
+			beforeEach( () => {
+				// The connection is up by default. Individual tests decide when (and whether) it drops.
+				onLineStub = vi.spyOn( window.navigator, 'onLine', 'get' ).mockReturnValue( true );
+			} );
+
+			afterEach( () => {
+				onLineStub.mockRestore();
+			} );
+
+			it( 'should fail without sending any request if the connection is already lost', async () => {
+				onLineStub.mockReturnValue( false );
+
+				const getCategoriesStub = vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
+					{ name: 'category 1', id: 'id-category-1', extensions: [ 'jpg' ] }
+				] );
+
+				const fileResult = await ckboxUtils.getCategoryIdForFile( file, options ).then(
+					() => { throw new Error( 'Expected to be rejected.' ); },
+					err => err
+				);
+				const urlResult = await ckboxUtils.getCategoryIdForFile( url, options ).then(
+					() => { throw new Error( 'Expected to be rejected.' ); },
+					err => err
+				);
+
+				expect( fileResult ).toEqual( 'No internet connection. Check your connection and try again.' );
+				expect( urlResult ).toEqual( 'No internet connection. Check your connection and try again.' );
+
+				expect( getCategoriesStub ).not.toHaveBeenCalled();
+				expect( fetchStub ).not.toHaveBeenCalled();
+			} );
+
+			it( 'should fail with the connection error if the connection is lost while fetching categories', async () => {
+				// Categories could not be fetched because the connection dropped mid-request.
+				vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockImplementation( async () => {
+					onLineStub.mockReturnValue( false );
+
+					return undefined;
+				} );
+
+				const fileResult = await ckboxUtils.getCategoryIdForFile( file, options ).then(
+					() => { throw new Error( 'Expected to be rejected.' ); },
+					err => err
+				);
+				const urlResult = await ckboxUtils.getCategoryIdForFile( url, options ).then(
+					() => { throw new Error( 'Expected to be rejected.' ); },
+					err => err
+				);
+
+				expect( fileResult ).toEqual( 'No internet connection. Check your connection and try again.' );
+				expect( urlResult ).toEqual( 'No internet connection. Check your connection and try again.' );
+			} );
+
+			it( 'should fail with the connection error if the connection is lost and no category accepts the file', async () => {
+				// A stale (incomplete) list of categories was returned before the connection dropped.
+				vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockImplementation( async () => {
+					onLineStub.mockReturnValue( false );
+
+					return [
+						{ name: 'category 1', id: 'id-category-1', extensions: [ 'png' ] },
+						{ name: 'category 2', id: 'id-category-2', extensions: [ 'gif' ] }
+					];
+				} );
+
+				const fileResult = await ckboxUtils.getCategoryIdForFile( file, options ).then(
+					() => { throw new Error( 'Expected to be rejected.' ); },
+					err => err
+				);
+				const urlResult = await ckboxUtils.getCategoryIdForFile( url, options ).then(
+					() => { throw new Error( 'Expected to be rejected.' ); },
+					err => err
+				);
+
+				expect( fileResult ).toEqual( 'No internet connection. Check your connection and try again.' );
+				expect( urlResult ).toEqual( 'No internet connection. Check your connection and try again.' );
+			} );
+
+			it( 'should keep the generic error if the categories could not be fetched while online', async () => {
+				vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( undefined );
+
+				const fileResult = await ckboxUtils.getCategoryIdForFile( file, options ).then(
+					() => { throw new Error( 'Expected to be rejected.' ); },
+					err => err
+				);
+
+				expect( fileResult ).toEqual( 'Cannot determine a category for the uploaded file.' );
+			} );
+
+			it( 'should resolve normally if the connection is up', async () => {
+				vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
+					{ name: 'category 1', id: 'id-category-1', extensions: [ 'png' ] },
+					{ name: 'category 2', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] }
+				] );
+
+				const fileResult = await ckboxUtils.getCategoryIdForFile( file, options );
+				const urlResult = await ckboxUtils.getCategoryIdForFile( url, options );
+
+				expect( fileResult ).toEqual( 'id-category-2' );
+				expect( urlResult ).toEqual( 'id-category-2' );
+			} );
+		} );
 	} );
 
 	describe( '_getAvailableCategories', () => {

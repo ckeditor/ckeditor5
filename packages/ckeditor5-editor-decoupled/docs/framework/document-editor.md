@@ -78,8 +78,8 @@ Styles are what the document editor needs to materialize. Begin with the styles 
 
 ```css
 .document-editor {
-	border: 1px solid var(--ck-color-base-border);
-	border-radius: var(--ck-border-radius);
+	border: 1px solid var(--ck-color-border-container);
+	border-radius: var(--ck-border-radius-surface);
 
 	/* Set vertical boundaries for the document editor. */
 	max-height: 700px;
@@ -101,7 +101,7 @@ Then, make the toolbar look like it floats over the "page":
 	box-shadow: 0 0 5px hsla( 0,0%,0%,.2 );
 
 	/* Use the CKEditor CSS variables to keep the UI consistent. */
-	border-bottom: 1px solid var(--ck-color-toolbar-border);
+	border-bottom: 1px solid var(--ck-toolbar-border-color);
 }
 
 /* Adjust the look of the toolbar inside the container. */
@@ -116,7 +116,7 @@ The editable should look like a sheet of paper, centered in its scrollable conta
 ```css
 /* Make the editable container look like the inside of a native word processor application. */
 .document-editor__editable-container {
-	padding: calc( 2 * var(--ck-spacing-large) );
+	padding: calc( 2 * var(--ck-spacing-padding-comfortable) );
 	background: var(--ck-color-base-foreground);
 
 	/* Make it possible to scroll the "page" of the edited content. */
@@ -132,7 +132,7 @@ The editable should look like a sheet of paper, centered in its scrollable conta
 	padding: 1cm 2cm 2cm;
 
 	border: 1px hsl( 0,0%,82.7% ) solid;
-	border-radius: var(--ck-border-radius);
+	border-radius: var(--ck-border-radius-surface);
 	background: white;
 
 	/* The "page" should cast a slight shadow (3D illusion). */
@@ -195,7 +195,7 @@ Preserve the relative scale, though. */
 }
 
 .document-editor .ck-heading-dropdown .ck-heading_heading2.ck-on .ck-button__label {
-	color: var(--ck-color-list-button-on-text);
+	color: var(--ck-list-button-on-text-color);
 }
 
 /* Set the styles for "Heading 2". */
@@ -233,8 +233,8 @@ A finishing touch that makes the block quotes more sophisticated and the styling
 /* Make the block quoted text serif with some additional spacing. */
 .document-editor .ck-content blockquote {
 	font-family: Georgia, serif;
-	margin-left: calc( 2 * var(--ck-spacing-large) );
-	margin-right: calc( 2 * var(--ck-spacing-large) );
+	margin-left: calc( 2 * var(--ck-spacing-gap-comfortable) );
+	margin-right: calc( 2 * var(--ck-spacing-gap-comfortable) );
 }
 ```
 

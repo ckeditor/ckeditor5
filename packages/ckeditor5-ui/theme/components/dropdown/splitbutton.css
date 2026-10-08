@@ -3,17 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
-	--ck-color-split-button-hover-background: hsl(0, 0%, 92%);
-	--ck-color-split-button-hover-border: hsl(0, 0%, 70%);
-}
-
 .ck.ck-splitbutton {
 	/*
 	 * Note: ck-rounded and ck-dir mixins don't go together (because they both use @nest).
 	 */
 	& .ck-splitbutton__action:focus {
-		z-index: calc(var(--ck-z-default) + 1);
+		z-index: var(--ck-layer-control-raised);
 	}
 
 	&:hover > .ck-splitbutton__action,
@@ -60,17 +55,20 @@
 		border-bottom-width: 0px;
 	}
 
-	/* Don't round the bottom left and right corners of the buttons when "open"
-	https://github.com/ckeditor/ckeditor5/issues/816 */
+	/* When "open", the buttons keep fully rounded corners by default, matching an open regular dropdown.
+	The shared `--ck-dropdown-panel-uniform-button-border-radius` knob (set to `initial` by the legacy
+	theme) falls back to the attached-corner square look. See https://github.com/ckeditor/ckeditor5/issues/816 */
 	&.ck-splitbutton_open {
-		border-radius: var(--ck-rounded-corners-radius);
+		border-radius: var(--ck-border-radius-control);
 
 		& > .ck-splitbutton__action {
-			border-bottom-left-radius: 0;
+			/* Logical property so it targets the action's outer bottom corner in both LTR and RTL,
+			not the inner join that the dir-specific `unset` rules above flatten. */
+			border-end-start-radius: var(--ck-dropdown-panel-uniform-button-border-radius, 0);
 		}
 
 		& > .ck-splitbutton__arrow {
-			border-bottom-right-radius: 0;
+			border-end-end-radius: var(--ck-dropdown-panel-uniform-button-border-radius, 0);
 		}
 	}
 
@@ -81,7 +79,8 @@
 	&:hover {
 		/* When the split button hovered as a whole, not as individual buttons. */
 		& > .ck-button:not(.ck-on):not(.ck-disabled):not(:hover) {
-			background: var(--ck-color-split-button-hover-background);
+			/* Fallback to `--ck-color-split-button-hover-background` for backward compatibility. */
+			background: var(--ck-color-split-button-hover-background, var(--ck-color-interactive-hover-surface));
 		}
 
 		/* Splitbutton separator needs to be set with the ::after pseudoselector
@@ -91,12 +90,15 @@
 			position: absolute;
 			width: 1px;
 			height: 100%;
-			background-color: var(--ck-color-split-button-hover-border);
+			/* Fallback to `--ck-color-split-button-hover-border` for backward compatibility. */
+			background-color: var(--ck-color-split-button-hover-border, var(--ck-color-border-control));
 		}
 
 		/* Make sure the divider between the buttons looks fine when the button is focused */
 		& > .ck-splitbutton__arrow:focus::after {
-			--ck-color-split-button-hover-border: var(--ck-color-focus-border);
+			/* Fallback to `--ck-color-split-button-hover-border` for backward compatibility. */
+			--ck-color-split-button-hover-border: var(--ck-color-interactive-focus-border);
+			background-color: var(--ck-color-split-button-hover-border, var(--ck-color-interactive-focus-border));
 		}
 
 		[dir="ltr"] & {
@@ -120,7 +122,7 @@
 			& > .ck-splitbutton__action:not(.ck-disabled),
 			& > .ck-splitbutton__arrow:not(.ck-disabled),
 			& > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
-				background-color: var(--ck-color-button-on-background);
+				background-color: var(--ck-color-button-on-background, var(--ck-button-on-background-color));
 
 				&::after {
 					display: none;
@@ -132,7 +134,7 @@
 			& > .ck-splitbutton__action:not(.ck-disabled),
 			& > .ck-splitbutton__arrow:not(.ck-disabled),
 			& > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
-				background-color: var(--ck-color-button-on-hover-background);
+				background-color: var(--ck-color-button-on-hover-background, var(--ck-button-on-hover-background-color));
 			}
 		}
 	}

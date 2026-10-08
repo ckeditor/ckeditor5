@@ -63,8 +63,8 @@
 
 <style>
 	.document-editor {
-		border: 1px solid var(--ck-color-base-border);
-		border-radius: var(--ck-border-radius);
+		border: 1px solid var(--ck-color-border-container);
+		border-radius: var(--ck-border-radius-surface);
 
 		/* Set vertical boundaries for the document editor. */
 		max-height: 700px;
@@ -72,6 +72,9 @@
 		/* This element is a flex container for easier rendering. */
 		display: flex;
 		flex-flow: column nowrap;
+
+		/* Children sit inside the container's border, so they round one border-width tighter. */
+		--document-editor-inner-radius: calc(var(--ck-border-radius-surface) - var(--ck-border-width-surface));
 	}
 
 	.document-editor__toolbar {
@@ -82,22 +85,28 @@
 		box-shadow: 0 0 5px hsla( 0,0%,0%,.2 );
 
 		/* Use the CKEditor CSS variables to keep the UI consistent. */
-		border-bottom: 1px solid var(--ck-color-toolbar-border);
+		border-bottom: 1px solid var(--ck-toolbar-border-color);
+
+		/* Round the top corners so the toolbar's shadow follows the frame. */
+		border-radius: var(--document-editor-inner-radius) var(--document-editor-inner-radius) 0 0;
 	}
 
 	/* Adjust the look of the toolbar inside of the container. */
 	.document-editor__toolbar .ck-toolbar {
 		border: 0;
-		border-radius: 0;
+		border-radius: var(--document-editor-inner-radius) var(--document-editor-inner-radius) 0 0;
 	}
 
 	/* Make the editable container look like the inside of a native word processor app. */
 	.document-editor__editable-container {
-		padding: calc( 2 * var(--ck-spacing-large) );
+		padding: calc( 2 * var(--ck-spacing-padding-comfortable) );
 		background: var(--ck-color-base-foreground);
 
 		/* Make it possible to scroll the "page" of the edited content. */
 		overflow-y: scroll;
+
+		/* Clip the grey background and the scrollbar to the bottom corners of the frame. */
+		border-radius: 0 0 var(--document-editor-inner-radius) var(--document-editor-inner-radius);
 	}
 
 	.document-editor__editable-container .document-editor__editable.ck-editor__editable {
@@ -108,8 +117,8 @@
 		/* Keep the "page" off the boundaries of the container. */
 		padding: 1cm 2cm 2cm;
 
-		border: 1px hsl( 0,0%,82.7% ) solid;
-		border-radius: var(--ck-border-radius);
+		border: 1px solid var(--ck-color-border-container);
+		border-radius: var(--ck-border-radius-surface);
 		background: white;
 
 		/* The "page" should cast a slight shadow (3D illusion). */
@@ -188,8 +197,8 @@
 	/* Make the block quoted text serif with some additional spacing. */
 	.document-editor .ck-content blockquote {
 		font-family: Georgia, serif;
-		margin-left: calc( 2 * var(--ck-spacing-large) );
-		margin-right: calc( 2 * var(--ck-spacing-large) );
+		margin-left: calc( 2 * var(--ck-spacing-gap-comfortable) );
+		margin-right: calc( 2 * var(--ck-spacing-gap-comfortable) );
 	}
 
 	@media only screen and (max-width: 960px) {

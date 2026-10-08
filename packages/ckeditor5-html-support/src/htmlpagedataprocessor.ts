@@ -54,7 +54,14 @@ export class HtmlPageDataProcessor extends HtmlDataProcessor {
 		writer.setCustomProperty( '$fullPageDocument', domFragment.ownerDocument.documentElement.outerHTML, viewFragment );
 
 		// List of `<style>` elements extracted from document's `<head>` element.
-		const headStylesElements = Array.from( domFragment.ownerDocument.querySelectorAll( 'head style' ) );
+		const headStylesElements: Array<FullPageHeadStyle> = Array
+			// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
+			.from( domFragment.ownerDocument.querySelectorAll<HTMLStyleElement>( 'head style' ) )
+			.filter( item => !!item.textContent )
+			.map( item => ( {
+				css: item.textContent!,
+				attributes: extractSafeStyleAttributes( item )
+			} ) );
 
 		writer.setCustomProperty( '$fullPageHeadStyles', headStylesElements, viewFragment );
 
@@ -93,4 +100,37 @@ export class HtmlPageDataProcessor extends HtmlDataProcessor {
 
 		return data;
 	}
+}
+
+/**
+ * Returns the allowlisted attributes of the given `<style>` element.
+ */
+function extractSafeStyleAttributes( styleElement: Element ): Record<string, string> {
+	return [ 'media', 'type', 'title' ].reduce<Record<string, string>>( ( attributes, name ) => {
+		const value = styleElement.getAttribute( name );
+
+		if ( value !== null ) {
+			attributes[ name ] = value;
+		}
+
+		return attributes;
+	}, Object.create( null ) );
+}
+
+/**
+ * A `<style>` element from the `<head>` of the full page data.
+ *
+ * @internal
+ */
+export interface FullPageHeadStyle {
+
+	/**
+	 * The CSS text of the element.
+	 */
+	css: string;
+
+	/**
+	 * The preserved attributes of the element.
+	 */
+	attributes: Record<string, string>;
 }

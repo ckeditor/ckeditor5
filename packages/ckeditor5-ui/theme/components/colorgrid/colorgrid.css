@@ -4,23 +4,45 @@
  */
 
 
-:root {
+:root,
+:host {
+	/* Size */
 	--ck-color-grid-tile-size: 24px;
 
-	/* Not using global colors here because these may change but some colors in a pallette
-	 * require special treatment. For instance, this ensures no matter what the UI text color is,
-	 * the check icon will look good on the black color tile. */
-	--ck-color-color-grid-check-icon: hsl(212, 81%, 46%);
+	/* Spacing */
+	--ck-color-grid-gap: var(--ck-spacing-gap-tight);
+	--ck-color-grid-margin: 0;
+	--ck-color-grid-padding: var(--ck-spacing-padding) 0;
+
+	/* Radius */
+	--ck-color-grid-tile-border-radius: var(--ck-radius-sm);
+
+	/* Motion */
+	--ck-color-grid-tile-hover-transform: none;
+
+	/* State / meta */
+	--ck-color-grid-tile-hover-layer: auto;
 }
 
 .ck.ck-color-grid {
-	grid-gap: 5px;
-	padding: 8px;
+	grid-gap: var(--ck-color-grid-gap);
+	margin: var(--ck-color-grid-margin);
+	padding: var(--ck-color-grid-padding);
 	display: grid;
+	width: min-content;
+
+	/* Drop the redundant bottom padding only when the grid ends the panel (e.g. the menu bar color UI
+	   with no trailing button), so it matches the toolbar case. Key off "no visible sibling follows"
+	   rather than "no button follows": a following label or second grid (document colors) is not a
+	   button, and hidden siblings (`.ck-hidden` empty document grid / picker fragment) must not count. */
+	&:not(:has( ~ :not(.ck-hidden) )) {
+		padding-bottom: 0;
+	}
 }
 
 .ck.ck-color-grid__tile {
-	transition: .2s ease box-shadow;
+	border-radius: var(--ck-color-grid-tile-border-radius);
+	transition: box-shadow var(--ck-transition-duration-control) var(--ck-transition-timing-function-surface);
 
 	@media (forced-colors: none) {
 		width: var(--ck-color-grid-tile-size);
@@ -38,16 +60,23 @@
 		}
 
 		&.ck-color-selector__color-tile_bordered {
-			box-shadow: 0 0 0 1px var(--ck-color-base-border);
+			box-shadow: inset 0 0 0 1px var(--ck-color-border-control);
 		}
 
 		&.ck-on {
-			box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-base-text);
+			box-shadow: inset 0 0 0 1px var(--ck-color-surface-canvas), 0 0 0 2px var(--ck-color-text-primary);
 		}
 
-		&:focus:not( .ck-disabled ),
 		&:hover:not( .ck-disabled ) {
-			box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border);
+			z-index: var(--ck-color-grid-tile-hover-layer);
+			box-shadow: inset 0 0 0 1px var(--ck-color-surface-canvas), 0 0 0 2px var(--ck-color-interactive-focus-border);
+			transform: var(--ck-color-grid-tile-hover-transform);
+		}
+
+		&:focus:not( .ck-disabled ) {
+			z-index: var(--ck-color-grid-tile-hover-layer);
+			box-shadow: inset 0 0 0 1px var(--ck-color-surface-canvas), 0 0 0 2px var(--ck-color-interactive-focus-border);
+			transform: var(--ck-color-grid-tile-hover-transform);
 		}
 	}
 
@@ -60,7 +89,7 @@
 		height: unset;
 		min-width: unset;
 		min-height: unset;
-		padding: 0 var(--ck-spacing-small);
+		padding: 0 var(--ck-spacing-padding);
 
 		& .ck-button__label {
 			display: inline-block;
@@ -68,7 +97,7 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		transition: none;
+		transition: var(--ck-transition-none);
 	}
 
 	&.ck-disabled {
@@ -78,7 +107,8 @@
 
 	& .ck.ck-icon {
 		display: none;
-		color: var(--ck-color-color-grid-check-icon);
+		/* Fallback to `--ck-color-color-grid-check-icon` for backward compatibility. */
+		color: var(--ck-color-color-grid-check-icon, hsl(212 81% 46%));
 	}
 
 	&.ck-on {
@@ -89,5 +119,5 @@
 }
 
 .ck.ck-color-grid__label {
-	padding: 0 var(--ck-spacing-standard);
+	padding: 0 var(--ck-spacing-control-padding-inline);
 }

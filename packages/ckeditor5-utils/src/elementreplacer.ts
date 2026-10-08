@@ -7,6 +7,8 @@
  * @module utils/elementreplacer
  */
 
+import { getParentNode } from './dom/getparentnode.js';
+
 /**
  * Utility class allowing to hide existing HTML elements or replace them with given ones in a way that doesn't remove
  * the original elements from the DOM.
@@ -35,7 +37,7 @@ export class ElementReplacer {
 		element.style.display = 'none';
 
 		if ( newElement ) {
-			element.parentNode!.insertBefore( newElement, element.nextSibling );
+			getParentNode( element )!.insertBefore( newElement, element.nextSibling );
 		}
 	}
 

@@ -21,6 +21,7 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator,
 	colorFieldValidator,
+	defaultColors,
 	fillToolbar,
 	getLabeledColorInputCreator
 } from '../../../src/utils/ui/table-properties.js';
@@ -104,6 +105,12 @@ describe( 'table utils', () => {
 			it( 'should pass for colors surrounded by white spaces', () => {
 				expect( colorFieldValidator( ' #AAA ' ) ).toBe( true );
 				expect( colorFieldValidator( ' rgb(255,123,100) ' ) ).toBe( true );
+			} );
+
+			it( 'should pass for every color of the default palette', () => {
+				const invalidColors = defaultColors.filter( ( { color } ) => !colorFieldValidator( color ) );
+
+				expect( invalidColors ).toEqual( [] );
 			} );
 		} );
 
@@ -529,6 +536,8 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should have proper format in color picker', () => {
+				labeledField.fieldView.dropdownView.isOpen = true;
+
 				const panelView = labeledField.fieldView.dropdownView.panelView;
 				const colorPicker = panelView.children.get( 0 ).colorPickerFragmentView.colorPickerView;
 

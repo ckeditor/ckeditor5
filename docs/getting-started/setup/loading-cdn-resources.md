@@ -3,7 +3,7 @@ category: setup
 meta-title: Loading CDN resources | CKEditor 5 Documentation
 meta-description: Learn how to load CKEditor 5 resources from CDN.
 order: 130
-modified_at: 2024-11-20
+modified_at: 2026-10-01
 ---
 
 # Loading CDN resources
@@ -12,15 +12,15 @@ Loading CKEditor&nbsp;5 and its plugins from a CDN requires adding the necessary
 
 However, other environments may require more work. It is especially true if you want to load some resources conditionally or dynamically or need to wait for the resources to be loaded before using them.
 
-For this reason, we provide the `useCKEditorCloud` and `loadCKEditorCloud` helper functions to make this process easier. These functions will handle adding the necessary script and style sheet tags to your page, ensure that the resources are only loaded once, and provide access to the data exported by them. This way you can load CKEditor&nbsp;5 and its plugins from a CDN without worrying about the technical details.
+For this reason, we provide the `useCKEditorCloud()` and `loadCKEditorCloud()` helper functions to make this process easier. These functions will handle adding the necessary script and style sheet tags to your page, ensure that the resources are only loaded once, and provide access to the data exported by them. This way you can load CKEditor&nbsp;5 and its plugins from a CDN without worrying about the technical details.
 
-If you use our {@link getting-started/integrations-cdn/react-default-cdn React} or {@link getting-started/integrations-cdn/vue-default-cdn Vue.js 3+} integrations, see the {@link getting-started/setup/loading-cdn-resources#using-the-useckeditorcloud-function Using the `useCKEditorCloud` function} section. Otherwise, see the {@link getting-started/setup/loading-cdn-resources#using-the-loadckeditorcloud-function Using the `loadCKEditorCloud` function} section.
+If you use our {@link getting-started/integrations-cdn/react-default-cdn React} or {@link getting-started/integrations-cdn/vue-default-cdn Vue.js 3+} integrations, see the {@link getting-started/setup/loading-cdn-resources#using-the-useckeditorcloud-function Using the `useCKEditorCloud()` function} section. Otherwise, see the {@link getting-started/setup/loading-cdn-resources#using-the-loadckeditorcloud-function Using the `loadCKEditorCloud()` function} section.
 
-## Using the `useCKEditorCloud` function
+## Using the `useCKEditorCloud()` function
 
-Our {@link getting-started/integrations-cdn/react-default-cdn React} and {@link getting-started/integrations-cdn/vue-default-cdn Vue.js 3+} integrations export a helper function named `useCKEditorCloud` to help you load CDN resources. These helpers are only small wrappers around the `loadCKEditorCloud` function but are designed to better integrate with the specific framework, its lifecycle, and reactivity mechanisms.
+Our {@link getting-started/integrations-cdn/react-default-cdn React} and {@link getting-started/integrations-cdn/vue-default-cdn Vue.js 3+} integrations export a helper function named `useCKEditorCloud()` to help you load CDN resources. These helpers are only small wrappers around the `loadCKEditorCloud()` function but are designed to better integrate with the specific framework, its lifecycle, and reactivity mechanisms.
 
-Here is an example of how you can use `useCKEditorCloud`:
+Here is an example of how you can use `useCKEditorCloud()`:
 
 ```js
 const cloud = useCKEditorCloud( {
@@ -29,19 +29,19 @@ const cloud = useCKEditorCloud( {
 } );
 ```
 
-This will add the necessary script and style sheet tags to the page's `<head>` and update the internal state to reflect the loading status. Depending on the framework, the `useCKEditorCloud` function may return different values. Please refer to the documentation of the specific integration for more details.
+This will add the necessary script and style sheet tags to the page's `<head>` and update the internal state to reflect the loading status. Depending on the framework, the `useCKEditorCloud()` function may return different values. Please refer to the documentation of the specific integration for more details.
 
-Regardless of the framework used, the `useCKEditorCloud` functions always accept the same options, which are described in the {@link getting-started/setup/loading-cdn-resources#the-loadckeditorcloud-function-options `loadCKEditorCloud` function options} section.
+Regardless of the framework used, the `useCKEditorCloud()` functions always accept the same options, which are described in the {@link getting-started/setup/loading-cdn-resources#the-loadckeditorcloud-function-options `loadCKEditorCloud()` function options} section.
 
-## Using the `loadCKEditorCloud` function
+## Using the `loadCKEditorCloud()` function
 
-To use the `loadCKEditorCloud` helper, you need to install the following package:
+To use the `loadCKEditorCloud()` helper, you need to install the following package:
 
 ```bash
 npm install @ckeditor/ckeditor5-integrations-common
 ```
 
-Then you can use the `loadCKEditorCloud` function like this:
+Then you can use the `loadCKEditorCloud()` function like this:
 
 ```js
 import { loadCKEditorCloud } from '@ckeditor/ckeditor5-integrations-common';
@@ -52,13 +52,13 @@ const { CKEditor, CKEditorPremiumFeatures } = await loadCKEditorCloud( {
 } );
 ```
 
-The `loadCKEditorCloud` function returns a promise that resolves to an object in which each key contains data of the corresponding CDN resources. The exact object shape depends on the options passed to the function.
+The `loadCKEditorCloud()` function returns a promise that resolves to an object in which each key contains data of the corresponding CDN resources. The exact object shape depends on the options passed to the function.
 
-The options accepted by the `loadCKEditorCloud` function are described in {@link getting-started/setup/loading-cdn-resources#the-loadckeditorcloud-function-options The `loadCKEditorCloud` function options} section.
+The options accepted by the `loadCKEditorCloud()` function are described in {@link getting-started/setup/loading-cdn-resources#the-loadckeditorcloud-function-options The `loadCKEditorCloud()` function options} section.
 
-## The `loadCKEditorCloud` function options
+## The `loadCKEditorCloud()` function options
 
-The `loadCKEditorCloud` function (and `useCKEditorCloud` functions which are small wrappers around it) accepts an object with the following properties:
+The `loadCKEditorCloud()` function (and `useCKEditorCloud()` functions which are small wrappers around it) accepts an object with the following properties:
 
 * `version` (required) &ndash; The version of CKEditor&nbsp;5 and premium features (if `premium` option is set to `true`) to load.
 * `translations` (optional) &ndash; An array of language codes to load translations for.
@@ -119,3 +119,7 @@ With this configuration, the object returned by this function will have the foll
 * `ThirdPartyPlugin` &ndash; The custom plugin registered in the `plugins` option.
 * `AnotherPlugin` &ndash; The custom plugin registered in the `plugins` option.
 * `YetAnotherPlugin` &ndash; The custom plugin registered in the `plugins` option.
+
+## Using the helpers with Trusted Types
+
+The `useCKEditorCloud()` and `loadCKEditorCloud()` functions create a {@link getting-started/setup/csp#trusted-types Trusted Types} policy named `ckeditor5-integrations` to inject the scripts. If your application enforces Trusted Types, its Content Security Policy must allow this name, or the editor will not load. See the {@link getting-started/setup/csp#enabling-trusted-types Enabling Trusted Types} section for the full list of required policy names.

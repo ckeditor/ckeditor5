@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Legacy UI color token override</title>
+		<script type="module" src="./legacytokenoverride.ts"></script>
+
+		<!-- Integrator overrides LEGACY color token names on :root. With the override bridges in
+		     place, components read the legacy name first, so these take effect. !important is used
+		     because this stylesheet loads before the editor CSS injected at runtime. -->
+		<style>
+			:root {
+				--ck-color-toolbar-background: red !important;
+				--ck-color-button-on-background: lime !important;
+				--ck-color-list-button-on-background: orange !important;
+				--ck-color-tooltip-background: purple !important;
+			}
+		</style>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Legacy UI color token override (backward compatibility)</h1>
+			<p>
+				The page overrides four <em>legacy</em> color token names on <code>:root</code>
+				(see the <code>&lt;style&gt;</code> in <code>&lt;head&gt;</code>). Components read the
+				new token names, but the override bridges make them honor the legacy names first.
+			</p>
+			<p><strong>Expected — overrides take effect:</strong></p>
+			<ol>
+				<li>Toolbar background is <span style="color:red;font-weight:bold">RED</span>.</li>
+				<li>
+					Put the caret in a paragraph and apply <em>Heading 1</em>. The active
+					<strong>Heading</strong> dropdown button background becomes
+					<span style="color:green;font-weight:bold">LIME</span>.
+				</li>
+				<li>
+					Open the <strong>Heading</strong> dropdown — the currently selected item background is
+					<span style="color:orange;font-weight:bold">ORANGE</span>.
+				</li>
+				<li>
+					Hover any toolbar button — its tooltip background is
+					<span style="color:purple;font-weight:bold">PURPLE</span>.
+				</li>
+			</ol>
+			<p>
+				Without the bridges, none of these legacy overrides would have any effect (the
+				components would keep their default colors).
+			</p>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Legacy token override test</h2>
+			<p>Some <strong>bold</strong> and <em>italic</em> text. Apply a heading to this paragraph, then open the Heading dropdown and hover the toolbar buttons.</p>
+		</div>
+	</body>
+</html>

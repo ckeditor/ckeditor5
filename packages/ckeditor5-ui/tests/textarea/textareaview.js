@@ -142,6 +142,32 @@ describe( 'TextareaView', () => {
 			expect( view.element.style.height ).toBe( initialHeight );
 		} );
 
+		it( 'should resize the view on the #placeholder change because it is rendered when the view is empty', async () => {
+			view.minRows = 1;
+			view.element.style.width = '100px';
+
+			view.placeholder = 'foo';
+
+			await requestAnimationFrame();
+			const shortPlaceholderHeight = parseFloat( view.element.style.height );
+
+			view.placeholder = 'A placeholder long enough to wrap into more than a single line of text.';
+
+			await requestAnimationFrame();
+			expect( parseFloat( view.element.style.height ) ).toBeGreaterThan( shortPlaceholderHeight );
+		} );
+
+		it( 'should not resize the view on the #placeholder change when the view element is not in DOM', async () => {
+			wrapper.removeChild( view.element );
+
+			const initialHeight = view.element.style.height;
+
+			view.placeholder = 'A placeholder long enough to wrap into more than a single line of text.';
+
+			await requestAnimationFrame();
+			expect( view.element.style.height ).toBe( initialHeight );
+		} );
+
 		describe( 'dynamic resizing', () => {
 			it( 'should respect #minRows and #maxRows', async () => {
 				// One row, it's less than default #minRows.
@@ -284,6 +310,18 @@ describe( 'TextareaView', () => {
 				view.on( 'update', spy );
 
 				view.value = '1\n2\n3\n4\n5\n6';
+
+				await requestAnimationFrame();
+
+				expect( spy ).toHaveBeenCalledOnce();
+			} );
+
+			it( 'should get fired on #placeholder change', async () => {
+				const spy = vi.fn();
+
+				view.on( 'update', spy );
+
+				view.placeholder = 'foo';
 
 				await requestAnimationFrame();
 

@@ -56,6 +56,18 @@ const translations: Translations = {
 			'Blue': '蓝色',
 			// Label of a button that applies a purple color in color pickers.
 			'Purple': '紫色',
+			// Label of a button that applies an indigo color in color pickers.
+			'Indigo': '靛蓝色',
+			// Label of a button that applies a cyan color in color pickers.
+			'Cyan': '亮青色',
+			// Label of a button that applies a teal color in color pickers.
+			'Teal': '深青色',
+			// Label of a button that applies a lime color in color pickers.
+			'Lime': '青柠色',
+			// Label of a button that applies an amber color in color pickers.
+			'Amber': '琥珀色',
+			// Label of a button that applies a blue grey color in color pickers.
+			'Blue grey': '蓝灰色',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
 			'Editor block content toolbar': '编辑器块内容工具栏',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).

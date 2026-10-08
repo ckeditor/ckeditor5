@@ -3,13 +3,12 @@ category: framework-deep-dive-ui
 meta-title: Theme customization | CKEditor 5 Framework Documentation
 meta-description: Learn how to customize CKEditor 5 themes, including styling components and applying custom CSS for a unique editor look.
 order: 10
+modified_at: 2026-10-05
 ---
 
 # Theme customization
 
-You can customize the CKEditor&nbsp;5 UI theme by overriding its CSS variables (custom properties) to change colors, spacing, fonts, and more. The demo below shows the default theme restyled as a dark theme using this approach:
-
-**Mode:**
+You can customize the CKEditor&nbsp;5 UI theme by overriding its CSS variables (custom properties) to change colors, spacing, fonts, and more. The demo below shows the default theme restyled as a dark theme using this approach.
 
 <div class="u-flex-horizontal u-gap-5">
 	<ck:checkbox id="theme-mode-light" type="radio" name="theme-mode" value="light" label="Light" />
@@ -18,124 +17,165 @@ You can customize the CKEditor&nbsp;5 UI theme by overriding its CSS variables (
 
 {@snippet examples/default-theme}
 
-## Customization with CSS variables
+## Working with the token layers
 
-Assuming you finished our {@link getting-started/integrations-cdn/quick-start quick start} guide, and you have a running CKEditor&nbsp;5 instance, let's use the full potential of CSS variables (custom properties). The customization explained in this guide will make the theme dark, with slightly bigger text and more rounded corners.
+The UI theme is organized into three layers - foundation, semantic, and component - defined and named as described in the {@link framework/theme-token-naming Theme token naming} guide. Each layer references the one below, so a value set once in the foundation flows up through the semantic roles into the components that use it.
 
-The file containing custom variables can be named `custom.css` and it will look as below:
+Pick a layer by your task:
+
+* **Customizing the look (integrators)** &ndash; override an existing token, choosing the layer by how far the change should reach: *foundation* for a global shift (palette, density, shape scale), *semantic* for one design role across many components (every surface, every focus ring), or *component* for a single component.
+* **Building a plugin or component (plugin authors)** &ndash; define your component's own tokens in the component layer and resolve them from **semantic** tokens rather than raw values, so the component tracks the theme and exposes clean override points.
+
+When you add tokens for your own component, name them component-first and resolve them from semantic tokens:
+
+```css
+.ck-my-widget {
+	--ck-my-widget-background: var(--ck-color-surface-container);
+	--ck-my-widget-border-radius: var(--ck-border-radius-control);
+
+	background: var(--ck-my-widget-background);
+	border-radius: var(--ck-my-widget-border-radius);
+}
+```
+
+### Global vs scoped overrides
+
+Overriding a token on `:root` changes its value everywhere. Both new and legacy names work at this level, and you can mix layers in one place:
 
 ```css
 :root {
-    /* Helper variables to avoid duplication in the colors. */
+	/* Foundation - changes radius everywhere. */
+	--ck-radius-base: 5px;
 
-    --ck-custom-foreground: hsl(255, 3%, 18%);
-    --ck-custom-border: hsl(300, 1%, 22%);
-    --ck-custom-white: hsl(0, 0%, 100%);
+	/* Legacy name - also works globally via backward-compatible fallbacks. */
+	--ck-border-radius: 5px;
 
-    /* -- Overrides generic colors. ------------------------------------------------------------- */
+	/* Component - changes only button padding. */
+	--ck-button-padding: 5px;
+}
+```
 
-    --ck-content-font-color: var(--ck-custom-white);
+To restyle a single element or region, scope the override to a selector - but **always override the component token there**, never a foundation or semantic name:
 
-    --ck-color-base-background: hsl(270, 1%, 29%);
-    --ck-color-base-border: hsl(240, 4%, 24%);
+```css
+/* ✓ Component token on the scoped element - takes effect. */
+.my-small-button { --ck-button-padding: 2px; }
 
-    --ck-color-focus-border: hsl(208, 90%, 62%);
-    --ck-color-text: hsl(0, 0%, 98%);
-    --ck-color-shadow-drop: hsla(0, 0%, 0%, 0.2);
-    --ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1);
+/* ✗ No effect - the semantic and foundation chain already resolved on :root. */
+.my-small-button { --ck-spacing-control-padding-block: 2px; }
+```
 
-    /* -- Overrides the default .ck-button class colors. ---------------------------------------- */
+All tokens are defined and resolved on `:root`, so a scoped override of a lower-layer token does not re-flow up through the chain. The closer a token sits to the property it controls, the better it works when scoped - which makes component tokens the safe choice for per-element tweaks. Legacy token names are an exception: the theme reads them at each point of use, so a legacy override also works when scoped - the {@link updating/migration-to-refreshed-theme migration guide} covers the few re-themed tokens that stay `:root`-only.
 
-    --ck-color-button-default-hover-background: hsl(270, 1%, 22%);
-    --ck-color-button-default-active-background: hsl(270, 2%, 20%);
-    --ck-color-button-default-active-shadow: hsl(270, 2%, 23%);
+### Best practices
 
-    --ck-color-button-on-background: var(--ck-custom-foreground);
-    --ck-color-button-on-hover-background: hsl(255, 4%, 16%);
-    --ck-color-button-on-active-background: hsl(255, 4%, 14%);
-    --ck-color-button-on-active-shadow: hsl(240, 3%, 19%);
-    --ck-color-button-on-disabled-background: var(--ck-custom-foreground);
+* Override the **closest** token to what you want to change; drop to a lower layer only when the change should reach further.
+* Point your own component tokens at **semantic** tokens, not raw values, so they track the theme.
+* Avoid hardcoding raw colors or sizes in component CSS - you lose theme-ability.
+* Avoid overriding a foundation or semantic token in a scoped selector expecting it to cascade; use the component token instead.
+* For new customizations, prefer the current token names. Legacy names still work as override fallbacks, but they are not the target.
 
-    --ck-color-button-action-background: hsl(168, 76%, 42%);
-    --ck-color-button-action-hover-background: hsl(168, 76%, 38%);
-    --ck-color-button-action-active-background: hsl(168, 76%, 36%);
-    --ck-color-button-action-active-shadow: hsl(168, 75%, 34%);
-    --ck-color-button-action-disabled-background: hsl(168, 76%, 42%);
-    --ck-color-button-action-text: var(--ck-custom-white);
+## Example: a dark theme
 
-    --ck-color-button-save: hsl(120, 100%, 46%);
-    --ck-color-button-cancel: hsl(15, 100%, 56%);
+Assuming you finished our {@link getting-started/integrations-cdn/quick-start quick start} guide and have a running CKEditor&nbsp;5 instance, you can customize the UI theme through CSS variables. The file containing custom variables can be named `custom.css` and it will look as below:
 
-    /* -- Overrides the default .ck-dropdown class colors. -------------------------------------- */
+```css
+:root {
+	/* Optional app palette helpers (outside CKEditor token layers). */
+	--app-surface-1: hsl(255, 3%, 18%);
+	--app-surface-2: hsl(255, 4%, 16%);
+	--app-surface-3: hsl(240, 4%, 24%);
+	--app-text-1: hsl(0, 0%, 98%);
+	--app-text-2: hsl(0, 0%, 78%);
+	--app-focus-hsl: 208, 90%, 62%;
+	--app-brand: hsl(168, 76%, 42%);
+	--app-brand-hover: hsl(168, 76%, 38%);
+	--app-brand-contrast: hsl(0, 0%, 100%);
 
-    --ck-color-dropdown-panel-border: var(--ck-custom-foreground);
+	/* -----------------------------------------------------------------
+	 * 1) FOUNDATION TOKENS
+	 * ----------------------------------------------------------------- */
+	--ck-font-size-base: 14px;
+	--ck-spacing-base: 0.65em;
+	--ck-radius-base: 6px;
 
-    /* -- Overrides the default .ck-dialog class colors. ----------------------------------- */
+	--ck-color-base-background: var(--app-surface-1);
+	--ck-color-base-border: var(--app-surface-3);
+	--ck-color-base-text: var(--app-text-1);
+	--ck-color-base-action: var(--app-brand);
+	--ck-color-base-error: hsl(10, 90%, 62%);
+	--ck-focus-border-color: hsl(var(--app-focus-hsl));
 
-    --ck-color-dialog-form-header-border: var(--ck-custom-border);
+	/* -----------------------------------------------------------------
+	 * 2) SEMANTIC TOKENS
+	 * ----------------------------------------------------------------- */
+	--ck-color-surface-canvas: var(--app-surface-1);
+	--ck-color-surface-control: var(--app-surface-1);
+	--ck-color-surface-container: var(--app-surface-1);
+	--ck-color-surface-inverse: hsl(252, 7%, 14%);
 
-    /* -- Overrides the default .ck-splitbutton class colors. ----------------------------------- */
+	--ck-color-border-control: var(--app-surface-3);
+	--ck-color-border-container: var(--app-surface-3);
+	--ck-color-divider: var(--app-surface-3);
 
-    --ck-color-split-button-hover-background: var(--ck-color-button-default-hover-background);
-    --ck-color-split-button-hover-border: var(--ck-custom-foreground);
+	--ck-color-text-primary: var(--app-text-1);
+	--ck-color-text-secondary: hsl(0, 0%, 86%);
+	--ck-color-text-disabled: var(--app-text-2);
+	--ck-color-text-inverse: var(--app-brand-contrast);
 
-    /* -- Overrides the default .ck-input class colors. ----------------------------------------- */
+	--ck-color-interactive-focus-border-coordinates: var(--app-focus-hsl);
+	--ck-color-interactive-focus-shadow: hsla(208, 90%, 62%, .4);
+	--ck-color-interactive-hover-surface: var(--app-surface-2);
+	--ck-color-interactive-active-surface: hsl(255, 4%, 14%);
+	--ck-color-interactive-selected-surface: hsl(208, 40%, 20%);
+	--ck-color-interactive-selected-surface-hover: hsl(208, 42%, 24%);
+	--ck-color-interactive-selected-text: hsl(205, 100%, 74%);
+	--ck-color-interactive-primary-surface: var(--app-brand);
+	--ck-color-interactive-primary-surface-hover: var(--app-brand-hover);
+	--ck-color-interactive-primary-text: var(--app-brand-contrast);
 
-    --ck-color-input-border: hsl(257, 3%, 43%);
-    --ck-color-input-text: hsl(0, 0%, 98%);
-    --ck-color-input-disabled-background: hsl(255, 4%, 21%);
-    --ck-color-input-disabled-border: hsl(250, 3%, 38%);
-    --ck-color-input-disabled-text: hsl(0, 0%, 78%);
+	--ck-border-radius-control: 6px;
+	--ck-border-radius-surface: 8px;
+	--ck-shadow-surface-floating: 0 6px 18px 2px hsla(0, 0%, 0%, .35);
 
-    /* -- Overrides the default .ck-list class colors. ------------------------------------------ */
+	/* -----------------------------------------------------------------
+	 * 3) COMPONENT TOKENS
+	 * ----------------------------------------------------------------- */
+	--ck-button-border-radius: var(--ck-border-radius-control);
+	--ck-input-border-radius: var(--ck-border-radius-control);
+	--ck-input-disabled-background-color: hsl(255, 4%, 21%);
+	--ck-toolbar-border-radius: var(--ck-border-radius-surface);
+	--ck-dialog-border-radius: var(--ck-border-radius-surface);
+	--ck-dialog-background-color: var(--app-surface-1);
+	--ck-dialog-drop-shadow: 0 10px 24px 2px hsla(0, 0%, 0%, .35);
+}
 
-    --ck-color-list-button-hover-background: var(--ck-custom-foreground);
-    --ck-color-list-button-on-background: hsl(208, 88%, 52%);
-    --ck-color-list-button-on-text: var(--ck-custom-white);
+/* Optional: feature-specific content tokens (outside @ckeditor/ckeditor5-ui theme layers). */
+:root {
+	/* Editable (and published) content text - light on the dark background. */
+	--ck-content-font-color: var(--app-text-1);
 
-    /* -- Overrides the default .ck-balloon-panel class colors. --------------------------------- */
-
-    --ck-color-panel-border: var(--ck-custom-border);
-
-    /* -- Overrides the default .ck-toolbar class colors. --------------------------------------- */
-
-    --ck-color-toolbar-border: var(--ck-custom-border);
-
-    /* -- Overrides the default .ck-tooltip class colors. --------------------------------------- */
-
-    --ck-color-tooltip-background: hsl(252, 7%, 14%);
-    --ck-color-tooltip-text: hsl(0, 0%, 93%);
-
-    /* -- Overrides the default colors used by the ckeditor5-image package. --------------------- */
-
-    --ck-content-color-image-caption-background: hsl(0, 0%, 97%);
-    --ck-content-color-image-caption-text: hsl(0, 0%, 20%);
-
-    /* -- Overrides the default colors used by the ckeditor5-widget package. -------------------- */
-
-    --ck-color-widget-blurred-border: hsl(0, 0%, 87%);
-    --ck-color-widget-hover-border: hsl(43, 100%, 68%);
-    --ck-color-widget-editable-focus-background: var(--ck-custom-white);
-
-    /* -- Overrides the default colors used by the ckeditor5-link package. ---------------------- */
-
-    --ck-color-link-default: hsl(190, 100%, 75%);
+	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
+	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
+	--ck-color-widget-blurred-border: hsl(0, 0%, 87%);
+	--ck-color-widget-hover-border: hsl(43, 100%, 68%);
+	--ck-color-widget-editable-focus-background: hsl(0, 0%, 100%);
+	--ck-color-link-default: hsl(190, 100%, 75%);
 }
 
 /* Improve displaying links. */
 .ck.ck-editor__editable a {
-    color: hsl(210, 100%, 63%);
+	color: hsl(210, 100%, 63%);
 }
 
 /* Improve displaying code blocks. */
 .ck-content pre {
-    color: hsl(0, 0%, 91%);
-    border-color: hsl(0, 0%, 77%);
+	color: hsl(0, 0%, 91%);
+	border-color: hsl(0, 0%, 77%);
 }
 ```
 
-Depending on your setup method, you can either import a style sheet into your `js` file:
-
+Depending on your setup method, you can either import a style sheet into your JavaScript file:
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
@@ -155,7 +195,7 @@ ClassicEditor
 	} );
 ```
 
-Or import it via the `link` in `html` in the CDN setup:
+Or import it with the `<link>` element in the CDN setup:
 
 ```html
 <link rel="stylesheet" href="path/to/custom.css" type="text/css">

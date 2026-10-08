@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	--ck-content-font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
 	--ck-content-font-size: medium;
 	/* See https://github.com/ckeditor/ckeditor5-commercial/commit/b167b86bf4a669758ff401e4b9a6c94413d76196 */

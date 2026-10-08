@@ -112,6 +112,13 @@ export class DialogActionsView extends View {
 				}
 			}
 
+			// Dialog action buttons use the standard (wider) action-button footprint.
+			button.extendTemplate( {
+				attributes: {
+					class: 'ck-button_standard'
+				}
+			} );
+
 			this.children.add( button );
 		}
 

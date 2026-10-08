@@ -42,7 +42,6 @@ describe( 'ColorInputView', () => {
 		colorSelectorView = view.dropdownView.panelView.children.first;
 		inputView = view.inputView;
 		removeColorButton = colorSelectorView.colorGridsFragmentView.removeColorButtonView;
-		colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
 		document.body.appendChild( view.element );
 	} );
 
@@ -113,6 +112,7 @@ describe( 'ColorInputView', () => {
 				expect( view.dropdownView.buttonView.element.classList.contains( 'ck-input-color__button' ) ).toBe( true );
 				expect( view.dropdownView.buttonView.tooltip ).toBe( true );
 				expect( view.dropdownView.buttonView.label ).toEqual( 'Color picker' );
+				expect( view.dropdownView.panelView.element.classList.contains( 'ck-dropdown__panel_fit-content' ) ).toBe( true );
 			} );
 
 			it( 'should bind #isEnabled to the view\'s #isReadOnly', () => {
@@ -258,7 +258,24 @@ describe( 'ColorInputView', () => {
 		} );
 
 		describe( 'color grid', () => {
+			it( 'should not be rendered before the dropdown opens', () => {
+				expect( colorSelectorView.colorGridsFragmentView.staticColorsGrid ).toBeUndefined();
+			} );
+
+			it( 'should be rendered only once', () => {
+				const spy = vi.spyOn( colorSelectorView, 'appendUI' );
+
+				view.dropdownView.isOpen = true;
+				view.dropdownView.isOpen = false;
+				view.dropdownView.isOpen = true;
+
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+			} );
+
 			it( 'should be an instance of ColorGridView', () => {
+				view.dropdownView.isOpen = true;
+				colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
+
 				expect( colorGridView ).to.be.instanceOf( ColorGridView );
 			} );
 
@@ -266,6 +283,7 @@ describe( 'ColorInputView', () => {
 				expect( view.value ).toEqual( '' );
 
 				view.dropdownView.isOpen = true;
+				colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
 
 				colorGridView.items.last.fire( 'execute' );
 
@@ -276,6 +294,7 @@ describe( 'ColorInputView', () => {
 				expect( inputView.value ).toEqual( '' );
 
 				view.dropdownView.isOpen = true;
+				colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
 
 				colorGridView.items.last.fire( 'execute' );
 
@@ -284,6 +303,7 @@ describe( 'ColorInputView', () => {
 
 			it( 'should close the dropdown upon ColorTileView#execute', () => {
 				view.dropdownView.isOpen = true;
+				colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
 
 				colorGridView.items.last.fire( 'execute' );
 
@@ -294,6 +314,7 @@ describe( 'ColorInputView', () => {
 				const spy = vi.spyOn( view, 'fire' );
 
 				view.dropdownView.isOpen = true;
+				colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
 
 				colorGridView.items.last.fire( 'execute' );
 
@@ -303,6 +324,7 @@ describe( 'ColorInputView', () => {
 			it( 'should set #selectedColor to the #value upon dropdown opening', () => {
 				view.value = 'rgb(0,255,0)';
 				view.dropdownView.isOpen = true;
+				colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
 
 				expect( colorGridView.selectedColor ).toEqual( 'rgb(0,255,0)' );
 			} );
@@ -479,6 +501,9 @@ describe( 'ColorInputView', () => {
 
 		describe( 'options', () => {
 			it( 'should pass the color definitions to the color grid', () => {
+				view.dropdownView.isOpen = true;
+				colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
+
 				const colorTiles = colorGridView.items.map( ( { color, hasBorder, label } ) => {
 					return { color, hasBorder, label };
 				} );
@@ -503,6 +528,9 @@ describe( 'ColorInputView', () => {
 			} );
 
 			it( 'should pass the number of columns to the color grid', () => {
+				view.dropdownView.isOpen = true;
+				colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
+
 				expect( colorGridView.element.getAttribute( 'style' ) ).toMatch( /repeat\(5/g );
 			} );
 		} );
@@ -561,8 +589,6 @@ describe( 'ColorInputView', () => {
 				} );
 				view.render();
 				global.document.body.appendChild( view.element );
-
-				colorGridView = view.dropdownView.panelView.children.first.colorGridsFragmentView.staticColorsGrid;
 			} );
 
 			afterEach( () => {
@@ -626,6 +652,7 @@ describe( 'ColorInputView', () => {
 					};
 
 					view.dropdownView.isOpen = true;
+					colorGridView = view.dropdownView.panelView.children.first.colorGridsFragmentView.staticColorsGrid;
 
 					// Mock the first color button is focused.
 					colorGridView.focusTracker.isFocused = true;
@@ -647,6 +674,7 @@ describe( 'ColorInputView', () => {
 					};
 
 					view.dropdownView.isOpen = true;
+					colorGridView = view.dropdownView.panelView.children.first.colorGridsFragmentView.staticColorsGrid;
 
 					// Mock the first color button is focused.
 					colorGridView.focusTracker.isFocused = true;

@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -14,7 +13,6 @@ ImageEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-image-insert-via-pasting-url-into-editor' ),
 		removePlugins: [ 'ArticlePluginSet', 'ImageCaption', 'LinkImage' ],
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

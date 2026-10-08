@@ -5,7 +5,6 @@
 
 import { CKBox, PictureEditing, ImageResize, AutoImage, LinkImage } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
@@ -39,7 +38,6 @@ ClassicEditor
 				top: getViewportTopOffsetConfig()
 			}
 		},
-		cloudServices: CS_CONFIG,
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,

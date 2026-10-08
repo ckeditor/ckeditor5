@@ -140,6 +140,10 @@ describe( 'DialogActionsView', () => {
 			expect( view.children.get( 0 ).class ).toBe( 'ck-button-action' );
 			expect( view.children.get( 0 ).withText ).toBe( true );
 			expect( view.children.get( 0 ) ).toBeInstanceOf( ButtonView );
+
+			// Dialog action buttons receive the standard (wider) action-button class via the template.
+			expect( view.children.get( 0 ).element.classList.contains( 'ck-button_standard' ) ).toBe( true );
+			expect( view.children.get( 1 ).element.classList.contains( 'ck-button_standard' ) ).toBe( true );
 		} );
 
 		it( 'should enable #onExecute callbacks from definitions', () => {

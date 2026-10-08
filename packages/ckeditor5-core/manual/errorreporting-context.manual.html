@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Error reporting in a context</title>
+		<script type="module" src="./errorreporting-context.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Error reporting in a context</h2>
+
+			<p>
+				<strong>Important:</strong> start the server with <code>CK_DEBUG=false pnpm manual</code>, for
+				the same reason as in the other error reporting test.
+			</p>
+
+			<p>
+				Two editors share one <code>Context</code>, and the context has a context plugin of its own.
+				A single <code>onEditorError()</code> callback logs every reported error together with what it
+				was attributed to. Keep the console open — nothing is swallowed.
+			</p>
+
+			<ol>
+				<li>
+					Click <strong>Throw from an editor plugin</strong> under the first editor. One entry naming
+					<strong>editor 1</strong>. Then do the same under the second editor: one entry naming
+					<strong>editor 2</strong>. Sharing a context must not make them look alike.
+				</li>
+				<li>
+					Click <strong>Throw from the context itself</strong>. The error is thrown with the
+					<code>Context</code> as its context, so the entry should name <strong>the context</strong>.
+					This is the case where the reported source is not an editor at all.
+				</li>
+				<li>
+					Click <strong>Throw from a context plugin</strong>. The plugin is shared by both editors,
+					so no single editor owns the error and the entry should name <strong>the context</strong>,
+					just like case 2.
+				</li>
+				<li>
+					Type in both editors, then throw again from either. Nothing restarts, so both editors keep
+					their content and their undo history.
+				</li>
+			</ol>
+
+			<p>
+				<strong>How the source is decided.</strong> Editors are asked first, one at a time, and only
+				what none of them claims is offered to the context. An error is the context's own exactly when
+				no editor in it has already taken responsibility.
+			</p>
+		</ck-manual-header>
+
+		<div class="editor-box">
+			<h3>Context</h3>
+			<button id="throw-context" type="button">Throw from the context itself</button>
+			<button id="throw-context-plugin" type="button">Throw from a context plugin</button>
+		</div>
+
+		<div class="editor-box">
+			<h3>Editor 1</h3>
+			<button id="throw-1" type="button">Throw from an editor plugin</button>
+			<div id="editor-1">
+				<p>The first editor.</p>
+			</div>
+		</div>
+
+		<div class="editor-box">
+			<h3>Editor 2</h3>
+			<button id="throw-2" type="button">Throw from an editor plugin</button>
+			<div id="editor-2">
+				<p>The second editor.</p>
+			</div>
+		</div>
+
+		<h3>Reported errors</h3>
+		<button id="clear-log" type="button">Clear</button>
+		<ol id="log"></ol>
+
+		<style>
+			.editor-box {
+				margin-bottom: 24px;
+			}
+
+			#log {
+				font-family: monospace;
+			}
+
+			#log:empty::after {
+				content: 'Nothing reported yet.';
+				font-family: sans-serif;
+				font-style: italic;
+				color: #666;
+			}
+		</style>
+	</body>
+</html>

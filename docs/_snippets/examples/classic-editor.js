@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig,
@@ -14,7 +13,6 @@ import {
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-classic-editor' ),
-		cloudServices: CS_CONFIG,
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,

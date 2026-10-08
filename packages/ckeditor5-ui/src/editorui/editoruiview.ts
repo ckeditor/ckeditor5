@@ -64,17 +64,8 @@ export abstract class EditorUIView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	public override render(): void {
-		super.render();
-
-		this.body.attachToDom();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public override destroy(): void {
-		this.body.detachFromDom();
+		this.body.destroy();
 
 		return super.destroy();
 	}

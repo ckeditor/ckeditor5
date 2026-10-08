@@ -10,7 +10,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { keyCodes, global, EventInfo, env } from '@ckeditor/ckeditor5-utils';
 import { _setModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
-import { ContextualBalloon } from '@ckeditor/ckeditor5-ui';
+import { ContextualBalloon, ListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 
@@ -680,9 +680,12 @@ describe( 'MentionUI', () => {
 
 						// ...and each list view item size to 25px...
 						Array.from( mentionsView.items ).forEach( item => {
-							const listItemElement = item.children.get( 0 ).element;
+							const itemStyle = `min-height:unset;height:25px;max-height:25px;${ reset };min-width:12em;`;
 
-							listItemElement.style = `min-height:unset;height:25px;max-height:25px;${ reset };min-width:12em;`;
+							// Pin both the list item (`<li>`, which carries the theme's outer padding) and its
+							// button to 25px, so each row is exactly 25px regardless of the loaded theme.
+							item.element.style = itemStyle;
+							item.children.get( 0 ).element.style = itemStyle;
 						} );
 
 						// ...so after those changes it is safe to assume that:
@@ -1083,7 +1086,25 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 
-			it( 'should focus the first item in panel', () => {
+			it( 'should highlight the first item in panel', () => {
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						const item = mentionsView.items.get( 0 );
+
+						// The selected item is indicated with a focus-style ring, not the "on" state.
+						expect( item.isHighlighted ).toBe( true );
+						expect( item.element.classList.contains( 'ck-mentions__item_focused' ) ).toBe( true );
+						expect( item.children.get( 0 ).isOn ).toBe( false );
+					} );
+			} );
+
+			it( 'should render text items as list item buttons, matching toolbar dropdown lists', () => {
 				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
@@ -1094,7 +1115,8 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						const button = mentionsView.items.get( 0 ).children.get( 0 );
 
-						expect( button.isOn ).toBe( true );
+						expect( button ).toBeInstanceOf( ListItemButtonView );
+						expect( button.element.classList.contains( 'ck-list-item-button' ) ).toBe( true );
 					} );
 			} );
 
@@ -2805,9 +2827,8 @@ describe( 'MentionUI', () => {
 	}
 
 	function expectChildViewsIsOnState( expectedState ) {
-		const childViews = [ ...mentionsView.items ].map( item => item.children.get( 0 ) );
-
-		expect( childViews.map( child => child.isOn ) ).toEqual( expectedState );
+		// The selected item is marked with `isHighlighted` (a focus-style ring), not the child button's `isOn`.
+		expect( [ ...mentionsView.items ].map( item => item.isHighlighted ) ).toEqual( expectedState );
 	}
 
 	function assertCommandOptions( commandOptions, marker, item ) {

@@ -134,7 +134,7 @@ class FormattingOptions extends Plugin {
 					contextElements: [
 						dropdownView.element,
 						...[ ...editor.ui.getEditableElementsNames() ].map( name => editor.ui.getEditableElement( name ) ),
-						document.querySelector( '.ck-body-wrapper' )
+						editor.ui.view.body.bodyCollectionContainer
 					]
 				} );
 			} );

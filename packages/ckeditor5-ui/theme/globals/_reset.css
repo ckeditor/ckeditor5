@@ -3,12 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	/* This is super-important. This is **manually** adjusted so a button without an icon
 	is never smaller than a button with icon, additionally making sure that text-less buttons
 	are perfect squares. The value is also shared by other components which should stay "in-line"
 	with buttons. */
-	--ck-ui-component-min-height: 2.3em;
+	--ck-size-min-height: 2.3em;
 }
 
 /**
@@ -42,7 +43,8 @@
 .ck-reset_all *:not(.ck-reset_all-excluded, .ck-reset_all-excluded *) {
 	/* These are rule inherited by all children elements. */
 	border-collapse: collapse;
-	font: normal normal normal var(--ck-font-size-base)/var(--ck-line-height-base) var(--ck-font-face);
+	/* Backward compatibility: falls back to legacy --ck-font-face if overridden. */
+	font: normal normal normal var(--ck-font-size-normal, var(--ck-font-size-base))/var(--ck-line-height-base) var(--ck-font-face, var(--ck-font-family));
 	color: var(--ck-color-text);
 	text-align: left;
 	white-space: nowrap;
@@ -78,7 +80,7 @@
 
 	& fieldset:not(.ck-reset_all-excluded *) {
 		padding: 10px;
-		border: 2px groove hsl(255, 7%, 88%);
+		border: 2px groove hsl(255 7% 88%);
 	}
 
 	& button:not(.ck-reset_all-excluded *)::-moz-focus-inner {

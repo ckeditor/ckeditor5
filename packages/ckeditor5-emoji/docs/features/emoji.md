@@ -155,11 +155,11 @@ If you want to standardize the appearance of emoji accross operating systems, pl
 	}
 	```
 
-2. Update the `--ck-font-face` variable, so that emoji in the picker and mention will use the custom font.
+2. Update the `--ck-font-family` variable, so that emoji in the picker and mention will use the custom font.
 
 	```css
 	:root {
-		--ck-font-face: Helvetica, Arial, Tahoma, Verdana, 'Noto Color Emoji';
+		--ck-font-family: Helvetica, Arial, Tahoma, Verdana, 'Noto Color Emoji';
 	}
 	```
 

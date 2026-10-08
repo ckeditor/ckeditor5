@@ -13,7 +13,6 @@ import {
 	PictureEditing
 } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	ArticlePluginSet,
 	getViewportTopOffsetConfig
@@ -23,7 +22,6 @@ ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#undo-redo' ),
 		plugins: [ ArticlePluginSet, PictureEditing, CKBox, ImageInsert, CKBoxImageEdit, ImageUpload, CloudServices ],
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

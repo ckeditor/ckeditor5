@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
+:root,
+:host {
 	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `index-content.css`. */
 	--ck-content-color-table-caption-background: hsl(0, 0%, 97%);
 	--ck-color-table-caption-highlighted-background: hsl(52deg 100% 50%);

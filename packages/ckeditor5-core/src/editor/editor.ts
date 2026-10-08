@@ -36,9 +36,10 @@ import {
 } from '@ckeditor/ckeditor5-engine';
 
 import type { EditorUI } from '@ckeditor/ckeditor5-ui';
-import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
 import { Context } from '../context.js';
+import { _addLiveEditor, _removeLiveEditor } from '../errorattribution/liveeditors.js';
+import { onEditorError, type EditorErrorCallback } from '../errorreporter.js';
 import { PluginCollection } from '../plugincollection.js';
 import { CommandCollection, type CommandsMap } from '../commandcollection.js';
 import { EditingKeystrokeHandler } from '../editingkeystrokehandler.js';
@@ -293,6 +294,24 @@ export abstract class Editor extends EditorBase {
 	protected readonly _context: Context;
 
 	/**
+	 * Objects that error attribution must not walk into when deciding whether something belongs to this
+	 * editor — see {@link module:core/context~Context#_errorExclusions}.
+	 *
+	 * Exposed here because `_context` is protected and attribution runs outside this class.
+	 *
+	 * It has to be a getter rather than a property. Editors sharing a context share one exclusion set, and
+	 * the set is not a member of itself, so holding it in a property would put the same object on every
+	 * editor — and the search would find it there and match them all. A getter lives on the prototype and
+	 * is not enumerable, so the search does not see it, and the only route left to the set runs through the
+	 * context, which is excluded.
+	 *
+	 * @internal
+	 */
+	public get _errorExclusions(): Set<unknown> | undefined {
+		return this._context._errorExclusions;
+	}
+
+	/**
 	 * A set of lock IDs for the {@link #isReadOnly} getter.
 	 */
 	protected readonly _readOnlyLocks: Set<symbol | string>;
@@ -363,8 +382,7 @@ export abstract class Editor extends EditorBase {
 		this._context = config.context || new Context( { language, translations } );
 		this._context._addEditor( this, !config.context );
 
-		// Clone the plugins to make sure that the plugin array will not be shared
-		// between editors and make the watchdog feature work correctly.
+		// Clone the plugins to make sure that the plugin array will not be shared between editors.
 		const availablePlugins = Array.from( constructor.builtinPlugins || [] );
 
 		this.config = new Config<EditorConfig>( rest, defaultConfig );
@@ -385,6 +403,12 @@ export abstract class Editor extends EditorBase {
 		this.set( 'state', 'initializing' );
 		this.once<EditorReadyEvent>( 'ready', () => ( this.state = 'ready' ), { priority: 'high' } );
 		this.once<EditorDestroyEvent>( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
+
+		// Registered on `ready` rather than in the constructor: error reporting ignores an editor that is
+		// not ready anyway, and an editor whose `create()` rejects never fires `ready`, so it cannot be
+		// left behind in the list.
+		this.once<EditorReadyEvent>( 'ready', () => _addLiveEditor( this ), { priority: 'high' } );
+		this.once<EditorDestroyEvent>( 'destroy', () => _removeLiveEditor( this ), { priority: 'high' } );
 
 		this.model = new Model( this.config );
 
@@ -1024,23 +1048,45 @@ export abstract class Editor extends EditorBase {
 	/**
 	 * The {@link module:core/context~Context} class.
 	 *
-	 * Exposed as static editor field for easier access in editor builds.
+	 * Exposed as a static editor member for easier access in editor builds.
+	 *
+	 * A getter rather than a field, for the same reason as {@link ~Editor.onEditorError}: a field would
+	 * read `Context` while this class is being defined, and the error reporter puts this module and
+	 * `context.ts` in an import cycle, so at that moment `Context` is not always initialized yet.
 	 */
-	public static Context: typeof Context = Context;
+	public static get Context(): typeof Context {
+		return Context;
+	}
 
 	/**
-	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
+	 * {@link module:core/errorreporter~onEditorError `onEditorError()`}, reachable without importing it.
 	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static EditorWatchdog: typeof EditorWatchdog = EditorWatchdog;
-
-	/**
-	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
+	 * Code that is handed an editor class rather than importing one — a framework integration, above all —
+	 * cannot import from CKEditor at all. Importing anything as a value loads the npm build, and an
+	 * application that meant to load CKEditor from a CDN is then refused. Reading the function off the class
+	 * it was given avoids that, and it also lands on the copy of this package the editor itself came from.
 	 *
-	 * Exposed as static editor field for easier access in editor builds.
+	 * ```ts
+	 * const off = ClassicEditor.onEditorError( ( { error, source } ) => {
+	 * 	if ( source !== myEditor ) {
+	 * 		return;
+	 * 	}
+	 *
+	 * 	reportToMyErrorTracker( error );
+	 * } );
+	 * ```
+	 *
+	 * The same page-level registration as the exported function — not a registration scoped to this editor
+	 * class. Prefer the import wherever imports are an option.
+	 *
+	 * A getter rather than a field: this module and the error reporter already refer to each other, so
+	 * reading its export while defining this class would read it before it exists. A getter body runs on
+	 * access, long after both modules are done. It also keeps the property off the list of the class's own
+	 * enumerable properties, which a field would have joined.
 	 */
-	public static ContextWatchdog: typeof ContextWatchdog = ContextWatchdog;
+	public static get onEditorError(): ( callback: EditorErrorCallback ) => () => void {
+		return onEditorError;
+	}
 
 	protected _showLicenseError( reason: LicenseErrorReason, name?: string ): void {
 		setTimeout( () => {

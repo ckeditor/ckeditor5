@@ -34,7 +34,6 @@ import {
 	CloudServices
 } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -128,7 +127,6 @@ BalloonEditor
 		root: {
 			element: document.querySelector( '#snippet-title' )
 		},
-		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()

@@ -301,9 +301,9 @@ function customItemRenderer( item ) {
 	/* ---- Chat posts -------------------------------------------------------------------------- */
 
 	.chat ul.chat__posts {
-		border: 1px solid var(--ck-color-base-border);
-		border-top-left-radius: var(--ck-border-radius);
-		border-top-right-radius: var(--ck-border-radius);
+		border: 1px solid var(--ck-color-border-container);
+		border-top-left-radius: var(--ck-border-radius-surface);
+		border-top-right-radius: var(--ck-border-radius-surface);
 		border-bottom: none;
 		margin: 1em 0 0;
 		padding: 1em;
@@ -357,7 +357,7 @@ function customItemRenderer( item ) {
 	.chat .chat__editor {
 		/* Anti–FOUC (flash of unstyled content). */
 		padding: 1em;
-		border: 1px solid var(--ck-color-base-border);
+		border: 1px solid var(--ck-color-border-container);
 	}
 
 	.chat .chat__editor + .ck.ck-editor {

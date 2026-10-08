@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	BalloonBlockEditor,
 	getViewportTopOffsetConfig,
@@ -16,7 +15,6 @@ BalloonBlockEditor
 		root: {
 			element: document.querySelector( '#snippet-balloon-block-editor' )
 		},
-		cloudServices: CS_CONFIG,
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,

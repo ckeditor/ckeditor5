@@ -4,7 +4,6 @@
  */
 
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -28,7 +27,6 @@ BalloonEditor
 			element: document.querySelector( '#demo-update__editor' ),
 			placeholder: 'Text of the post'
 		},
-		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

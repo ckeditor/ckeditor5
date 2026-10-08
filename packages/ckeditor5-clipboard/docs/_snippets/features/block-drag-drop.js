@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CS_CONFIG } from '@snippets/index.js';
 import { ClassicEditorExperimental } from './build-drag-drop-source.js';
 
 ClassicEditorExperimental.create( {
 	attachTo: document.querySelector( '#snippet-block-drag-drop' ),
 	root: {
 		placeholder: 'Drop the content here to test the feature.'
-	},
-	cloudServices: CS_CONFIG
+	}
 } )
 	.then( editor => {
 		window.editorExperimental = editor;

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Full page editing in shadow DOM</title>
+		<script type="module" src="./fullpage-shadow.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>Full page editing in the shadow DOM</h2>
+
+			<p>
+				With <code>allowRenderStylesFromHead</code> enabled, the feature renders the
+				<code>&#x3C;style></code> elements found in the data's <code>&#x3C;head></code> into the root the
+				editable lives in: <code>document.head</code> in the light DOM, or the shadow root itself when the
+				editor is attached to one. Loading new data must replace those styles, and destroying the editor
+				must take them away.
+			</p>
+
+			<p>
+				The two data variants set different declarations for <code>h2</code> and <code>p</code>, so a
+				<code>&#x3C;style></code> left over from the previously loaded document shows up in the content, not
+				only in the report. Their <code>body</code> rules are there to show the asymmetry between the roots:
+				inside a shadow root such a rule matches nothing, while in the light DOM it repaints the whole page,
+				this header included.
+			</p>
+
+			<p>What to check:</p>
+
+			<ul>
+				<li>
+					In both shadow modes, the styles apply to the editor content and the report counts them in the
+					shadow root, with nothing stranded in <code>document.head</code>.
+				</li>
+				<li>
+					Switching the data variant back and forth keeps the count at two – it must not grow – and the
+					content picks up the new colors, with none of the previous variant's declarations still applying.
+				</li>
+				<li>Loading the variant with no head styles drops the count to zero.</li>
+				<li>
+					<strong>Destroy editor</strong> drops the count to zero as well, and the content of the destroyed
+					editable stops being styled.
+				</li>
+				<li>
+					Leaving source editing mode re-sets the data, so it goes through the same path as the
+					<strong>Load data</strong> button.
+				</li>
+				<li>
+					With <strong>Sanitize CSS</strong> on, the variant backgrounds stop applying; the rest of the CSS
+					survives. With it off, the console logs
+					<code>css-full-page-provide-sanitize-function</code> – expected, that is the feature warning
+					about the missing sanitizer.
+				</li>
+				<li>The <code>&#x3C;script></code> in the data is preserved in the output but never runs: no alert.</li>
+			</ul>
+		</ck-manual-header>
+
+		<div class="dashboard">
+			<ck-manual-shadow-mode overlay-container></ck-manual-shadow-mode>
+			<label
+				>Data
+				<select id="data-variant">
+					<option value="a" selected>A</option>
+					<option value="b">B</option>
+					<option value="noStyles">without head styles</option>
+				</select>
+			</label>
+			<label title="Sets htmlSupport.fullPage.allowRenderStylesFromHead – with it off, the head styles stay in the data and are never rendered">
+				<input name="allow-styles" type="checkbox" id="allow-styles" checked />
+				Render styles from &lt;head&gt;
+			</label>
+			<label title="Sets htmlSupport.fullPage.sanitizeCss to a function dropping background declarations; unchecked leaves the feature's own pass-through function">
+				<input name="sanitize-css" type="checkbox" id="sanitize-css" />
+				Sanitize CSS
+			</label>
+			<button type="button" id="set-data">Load data</button>
+			<button type="button" id="restart">Restart editor</button>
+			<button type="button" id="destroy">Destroy editor</button>
+			<button type="button" id="refresh-report">Refresh report</button>
+		</div>
+
+		<pre id="report" class="report"></pre>
+
+		<div id="mount" class="mount"></div>
+
+		<style data-manual-page>
+			.dashboard {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: 0.2em 1.2em;
+				font-size: 0.85em;
+			}
+
+			.dashboard label {
+				white-space: nowrap;
+			}
+
+			.report {
+				margin: 1em 0;
+				padding: 0.6em 0.8em;
+				border: 1px solid #ccc;
+				background: #fafafa;
+				font-size: 0.8em;
+				line-height: 1.5;
+				white-space: pre-wrap;
+			}
+
+			.mount {
+				max-width: 800px;
+				margin: 2em auto;
+			}
+		</style>
+	</body>
+</html>

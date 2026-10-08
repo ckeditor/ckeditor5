@@ -11,7 +11,6 @@ import {
 	Underline, Table, TableToolbar
 } from 'ckeditor5';
 import {
-	CS_CONFIG,
 	TOKEN_URL,
 	DecoupledEditor,
 	attachTourBalloon,
@@ -76,7 +75,7 @@ class FormattingOptions extends Plugin {
 			// * any floating UI in the "body" collection
 			const focusableElements = [
 				...[ ...editor.ui.getEditableElementsNames() ].map( name => editor.ui.getEditableElement( name ) ),
-				document.querySelector( '.ck-body-wrapper' )
+				editor.ui.view.body.bodyCollectionContainer
 			];
 
 			focusableElements.forEach( el => dropdownView.focusTracker.add( el ) );
@@ -194,7 +193,6 @@ DecoupledEditor
 				'mergeTableCells'
 			]
 		},
-		cloudServices: CS_CONFIG,
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,

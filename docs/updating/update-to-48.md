@@ -2,11 +2,21 @@
 category: update-guides
 meta-title: Update to version 48.x | CKEditor 5 Documentation
 menu-title: Update to v48.x
-order: 76
+order: 55
 modified_at: 2026-06-30
 ---
 
 # Update to CKEditor&nbsp;5 v48.x
+
+<info-box tip>
+	**Let an AI coding agent do the update for you.** The official `ckeditor-update` skill walks your agent through every update guide between your version and the target one and applies the changes to your code. Install the CKEditor&nbsp;5 skills:
+
+	```bash
+	npx skills add ckeditor/skills
+	```
+
+	Then ask your agent, for example: _"Update CKEditor&nbsp;5 to the latest version"_ or name the version you want. Review the changes before you commit them. See the {@link getting-started/ai-coding-agents Using CKEditor&nbsp;5 with AI coding agents} guide for setup options and supported agents.
+</info-box>
 
 <info-box>
 	When updating your CKEditor&nbsp;5 installation, ensure **all the packages are the same version** to avoid errors.
@@ -88,7 +98,7 @@ As part of the new media embed resize and styling features, the built-in media p
 Because the wrapper `<div>` is still present, custom CSS and queries that target it continue to work, so no changes are required in most cases. However:
 
 * If your custom styles **relied on the previous inline styles** (the wrapper `padding-bottom` aspect-ratio hack or the absolutely positioned iframe), review them against the new `aspect-ratio`-based markup.
-* If you registered **custom media providers** through `config.mediaEmbed.providers` or `config.mediaEmbed.extraProviders`, your existing `html` output keeps working, but we recommend switching to the `aspect-ratio` approach so resizing and styling behave correctly.
+* If you registered **custom media providers** through `config.mediaEmbed.providers` or `config.mediaEmbed.extraProviders`, your existing HTML output keeps working, but we recommend switching to the `aspect-ratio` approach so resizing and styling behave correctly.
 
 ### Editor roots on paragraph-like elements (⭐)
 

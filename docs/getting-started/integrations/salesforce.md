@@ -9,7 +9,7 @@ modified_at: 2025-04-04
 
 # Integrating CKEditor&nbsp;5 with Salesforce from ZIP
 
-You can integrate CKEditor&nbsp;5 into [Salesforce](https://www.salesforce.com/) using [Visualforce pages](https://help.salesforce.com/s/articleView?id=platform.pages_pages.htm&type=5). This approach is necessary because Salesforce Lightning modules require Shadow DOM, which [CKEditor&nbsp;5 does not support yet](https://github.com/ckeditor/ckeditor5/issues/3891).
+You can integrate CKEditor&nbsp;5 into [Salesforce](https://www.salesforce.com/) using [Visualforce pages](https://help.salesforce.com/s/articleView?id=platform.pages_pages.htm&type=5). This guide shows how to create a Visualforce page with the editor and embed it in a Lightning page.
 
 {@snippet getting-started/use-builder}
 
@@ -104,7 +104,7 @@ We will start from adding resources required for running CKEditor&nbsp;5 (CSS an
 ```html
 <apex:page showHeader="false" standardStylesheets="false" docType="html-5.0">
 	<head>
-		<!-- Load CKEditor&nbsp;5 JavaScript and CSS from static resources -->
+		<!-- Load CKEditor 5 JavaScript and CSS from static resources -->
 		<apex:includeScript value="{!$Resource.CKEditor5JS}"/>
 		<apex:stylesheet value="{!$Resource.CKEditor5CSS}"/>
 	</head>
@@ -125,10 +125,10 @@ Now, we can add the container that will hold our editor and introduce an initial
 	</head>
 	<body>
 		<!-- Editor container -->
-		 <div id="editor" style="min-height: 300px; border: 1px solid #ccc;"></div>
+		<div id="editor" style="min-height: 300px; border: 1px solid #ccc;"></div>
 
-		 <!-- Initialization script -->
-		  <script type="module">
+		<!-- Initialization script -->
+		<script type="module">
 			const {
 				ClassicEditor,
 				Essentials,
@@ -141,7 +141,7 @@ Now, we can add the container that will hold our editor and introduce an initial
 			ClassicEditor
 				.create( {
 					attachTo: document.querySelector( '#editor' ),
-					licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL',
+					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -150,7 +150,7 @@ Now, we can add the container that will hold our editor and introduce an initial
 				} )
 				.then( /* ... */ )
 				.catch( /* ... */ );
-	   </script>
+		</script>
 	</body>
 </apex:page>
 ```
@@ -162,16 +162,16 @@ Putting everything together, the full integration code looks as follows (remembe
 ```html
 <apex:page showHeader="false" standardStylesheets="false" docType="html-5.0">
 	<head>
-		<!-- Load CKEditor&nbsp;5 JavaScript and CSS from static resources -->
+		<!-- Load CKEditor 5 JavaScript and CSS from static resources -->
 		<apex:includeScript value="{!$Resource.CKEditor5JS}"/>
 		<apex:stylesheet value="{!$Resource.CKEditor5CSS}"/>
 	</head>
 	<body>
 		<!-- Editor container -->
-		 <div id="editor" style="min-height: 300px; border: 1px solid #ccc;">CKEditor&nbsp;5 integration with Salesforce.</div>
+		<div id="editor" style="min-height: 300px; border: 1px solid #ccc;">CKEditor 5 integration with Salesforce.</div>
 
-		 <!-- Initialization script -->
-		  <script type="module">
+		<!-- Initialization script -->
+		<script type="module">
 			const {
 				ClassicEditor,
 				Essentials,
@@ -184,7 +184,7 @@ Putting everything together, the full integration code looks as follows (remembe
 			ClassicEditor
 				.create( {
 					attachTo: document.querySelector( '#editor' ),
-					licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL',
+					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -238,7 +238,7 @@ Once you have added all required components, you can upload your package. The up
 
 After the upload is complete, you will receive an installation URL that looks like this:
 
-```
+```plain
 https://login.salesforce.com/packaging/installPackage.apexp?p0=04td20000002WVF&isdtp=p1
 ```
 

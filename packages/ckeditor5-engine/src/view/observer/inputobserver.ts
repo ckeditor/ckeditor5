@@ -11,7 +11,7 @@ import { DomEventObserver } from './domeventobserver.js';
 import { type ViewDocumentDomEventData } from './domeventdata.js';
 import { type ViewRange } from '../range.js';
 import { ViewDataTransfer } from '../datatransfer.js';
-import { env, isText, indexOf } from '@ckeditor/ckeditor5-utils';
+import { env, isText, indexOf, getSelection, getParentNode } from '@ckeditor/ckeditor5-utils';
 import { INLINE_FILLER_LENGTH, startsWithFiller } from '../filler.js';
 
 // @if CK_DEBUG_TYPING // import { _debouncedLine, _buildLogMessage } from '../../dev-utils/utils.js';
@@ -158,7 +158,7 @@ export class InputObserver extends DomEventObserver<'beforeinput'> {
 		// For Android devices we use a fallback to the current DOM selection, Android modifies it according
 		// to the expected target ranges of input event.
 		else if ( env.isAndroid ) {
-			const domSelection = ( domEvent.target as HTMLElement ).ownerDocument.defaultView!.getSelection()!;
+			const domSelection = getSelection( domEvent.target as HTMLElement )!;
 
 			targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
 
@@ -255,7 +255,7 @@ export class InputObserver extends DomEventObserver<'beforeinput'> {
  * It walks up the DOM tree if the offset is at the end of the node.
  */
 function isFollowedByInlineFiller( node: Node, offset: number ): boolean {
-	while ( node.parentNode ) {
+	while ( getParentNode( node ) ) {
 		if ( isText( node ) ) {
 			if ( offset != node.data.length ) {
 				return false;
@@ -267,7 +267,7 @@ function isFollowedByInlineFiller( node: Node, offset: number ): boolean {
 		}
 
 		offset = indexOf( node ) + 1;
-		node = node.parentNode;
+		node = getParentNode( node )!;
 
 		if ( offset < node.childNodes.length && startsWithFiller( node.childNodes[ offset ] ) ) {
 			return true;
