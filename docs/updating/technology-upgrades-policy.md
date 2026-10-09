@@ -1,22 +1,65 @@
 ---
 menu-title: Technology upgrades policy
-meta-title: Policy for technology upgrades | CKEditor 5 Documentation
-meta-description: How and when CKEditor 5 is upgrading the core technologies that it is built upon.
+meta-title: Browser compatibility and technology upgrades policy | CKEditor 5 Documentation
+meta-description: Browsers, mobile platforms, and webviews officially supported by CKEditor 5, and how and when CKEditor 5 is upgrading the core technologies that it is built upon.
 category: updating
 order: 50
-modified_at: 2025-12-11
+modified_at: 2026-08-19
 ---
 
-# Technology upgrades policy
+# Technology upgrades policy and browser compatibility
 
-This document describes how CKEditor&nbsp;5 handles upgrades of its core technologies. The goal is to provide a stable, predictable upgrade path for everyone who builds with CKEditor&nbsp;5 or contributes to it.
+This document describes which browsers and environments CKEditor&nbsp;5 officially supports, and how CKEditor&nbsp;5 handles upgrades of its core technologies. The goal is to provide a stable, predictable upgrade path for everyone who builds with CKEditor&nbsp;5 or contributes to it.
 
-It covers the following technical areas:
+It covers the following areas:
 
+* Supported browsers, mobile platforms, and webviews,
 * JavaScript and CSS (browser support),
 * TypeScript,
 * Node.js,
 * Framework integrations (Vue, Angular, React).
+
+## Supported browsers and environments
+
+CKEditor 5 aligns with the "Widely available" category of the [Baseline](https://web.dev/baseline) web platform standard, so it works across a broad range of browsers, mobile platforms, and webviews, including many that are not named here.
+
+The browsers and environments listed below are the ones that CKEditor&nbsp;5 is tested against and officially supported in.
+
+### Desktop browsers
+
+* Chrome (latest stable release)
+* Firefox (latest stable release)
+* Safari (latest stable release)
+* Edge (latest stable release)
+* Opera (latest stable release)
+* Electron (latest stable release)
+
+### Mobile browsers
+
+* Android (all vendor-supported versions)
+* iOS (all vendor-supported versions)
+
+### Webviews
+
+* Android WebView
+* iOS WebView (WKWebView)
+
+### What "supported" means
+
+Official support is narrower than technical compatibility, and the difference matters when you pick a target environment.
+
+The [build target](#javascript-and-css-browser-support) defines the JavaScript and CSS features that CKEditor&nbsp;5 relies on, so the editor may well load in browsers beyond the list above. Loading is not the same as being supported, though: a browser can implement every feature that CKEditor&nbsp;5 uses and still break the editing experience through its own quirks or bugs, for example in selection handling or clipboard behavior.
+
+For the browsers and environments listed above, we test the editor and fix bugs reported against them. Outside that list the editor may work, but reported issues are not guaranteed to be addressed.
+
+### Quality assurance
+
+Support for the environments listed above is backed by an extensive test suite:
+
+* Over 44,000 automated unit and integration tests, executed in a headless browser on every change, with code coverage thresholds enforced in the continuous integration pipeline.
+* Over 800 end-to-end tests, executed against a real browser after every nightly build and again after every release.
+* Manual test scenarios verified automatically in headless browsers, plus memory leak detection on every change, so that regressions in long-running editing sessions are caught early.
+* A manual quality assurance phase before every release, during which the editor is tested by hand in the supported browsers and environments.
 
 ## Our primary goal
 
@@ -70,6 +113,8 @@ The table below summarizes how technology-baseline updates affect three key grou
 
 	Our primary goal is to provide a robust and modern editing experience. If a conflict arises between modern browser behavior and a bug in an older browser (for example, related to complex features like selection handling), we will prioritize ensuring correct functionality in modern browsers.
 </info-box>
+
+For the list of browsers, mobile platforms, and webviews that CKEditor&nbsp;5 is tested against and supported in, see [Supported browsers and environments](#supported-browsers-and-environments).
 
 ### TypeScript
 
