@@ -34,7 +34,7 @@ The example below groups the variables by layer:
 	--ck-focus-border-color: hsl(263, 59%, 52%);
 	--ck-radius-base: 16px;
 	--ck-font-size-base: 18px;
-	--ck-spacing-base: 20px;
+	--ck-spacing-base: 12px;
 
 	/* Semantic: design roles shared across components. */
 	--ck-border-radius-surface: 16px;

@@ -82,7 +82,14 @@ The CKEditor&nbsp;5 WYSIWYG editor by default produces HTML output that you can 
 
 ### Other productivity features
 
-The {@link features/ai-assistant-overview AI Assistant} {@icon @ckeditor/ckeditor5-icons/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the existing content to match your needs, or even come up with a completely new one!
+CKEditor&nbsp;AI brings AI writing support right into your editor. You have several options to transform your content with AI:
+
+* working with the {@link features/ckeditor-ai-chat AI Chat},
+* transforming selected text in one click with {@link features/ckeditor-ai-actions AI Quick Actions},
+* checking grammar, style, and tone with {@link features/ckeditor-ai-review AI Review},
+* translating content with {@link features/ckeditor-ai-translate AI Translate}.
+
+See the {@link features/ckeditor-ai-overview CKEditor&nbsp;AI overview} to learn how the features work together.
 
 The {@link features/word-count word and character counter} will help you track progress and control the volume of the content.
 
@@ -90,7 +97,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Create and edit content comfortably on larger viewport in the {@link features/fullscreen fullscreen mode} with better access to the UI.
 
-{@img assets/img/features-ai-assistant.png 800 CKEditor&nbsp;5 AI Assistant feature.}
+{@img assets/img/features-ckeditor-ai.png 800 CKEditor AI Quick Actions in CKEditor&nbsp;5.}
 
 ### Customizable user experience
 
