@@ -458,7 +458,6 @@ export class TooltipManager extends TooltipManagerBase {
 	private _onKeyDown( evt: EventInfo, domEvent: KeyboardEvent ) {
 		if ( domEvent.key === 'Escape' && this._currentElementWithTooltip ) {
 			this._unpinTooltip();
-			domEvent.stopPropagation();
 		}
 	}
 
