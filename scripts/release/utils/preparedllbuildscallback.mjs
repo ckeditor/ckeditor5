@@ -23,7 +23,7 @@ export default async function prepareDllBuildsCallback( packagePath ) {
 
 	// Disable the dependency check explicitly. A package copied to a release directory is not a member of the pnpm
 	// workspace, so the `verifyDepsBeforeRun: false` setting from `pnpm-workspace.yaml` does not apply there. Without
-	// the flag, pnpm (11.27.1+) runs `pnpm install` on its own before the script and fails on the `catalog:` specifiers.
+	// the flag, pnpm runs `pnpm install` on its own before the script and fails on the `catalog:` specifiers.
 	// Inside the workspace, the flag matches the existing setting and changes nothing.
 	await tools.shExec( 'pnpm --config.verify-deps-before-run=false run dll:build', {
 		cwd: packagePath,

@@ -61,7 +61,7 @@ describe( 'scripts/release/utils/preparedllbuildscallback', () => {
 	} );
 
 	// A package in a release directory is not a member of the pnpm workspace, so the workspace settings do not apply there.
-	// Without the flag, pnpm 11.27.1+ runs `pnpm install` on its own before the script and fails.
+	// Without the flag, pnpm runs `pnpm install` on its own before the script and fails.
 	it( 'disables the pnpm dependency check before running the "dll:build" script', async () => {
 		vi.mocked( fs.readJson ).mockResolvedValue( { scripts: { 'dll:build': 'webpack' } } );
 

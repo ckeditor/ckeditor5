@@ -40,10 +40,10 @@ importers:
         version: 54.9.1
       '@ckeditor/ckeditor5-dev-changelog':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(@types/node@25.9.1)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(@types/node@25.9.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-dev-dependency-checker':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-dev-docs':
         specifier: ^54.9.1
         version: 54.9.1(typescript@5.3.3)
@@ -52,13 +52,13 @@ importers:
         version: 54.9.1
       '@ckeditor/ckeditor5-dev-release-tools':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(@types/node@25.9.1)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(@types/node@25.9.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-dev-tests':
         specifier: ^54.9.1
-        version: 54.9.1(@swc/core@1.15.40)(@types/node@25.9.1)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 54.9.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(@types/node@25.9.1)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(supports-color@8.1.1)(webpack-cli@6.0.1)
       '@ckeditor/ckeditor5-dev-web-crawler':
         specifier: ^54.9.1
-        version: 54.9.1(typescript@5.3.3)
+        version: 54.9.1(supports-color@8.1.1)(typescript@5.3.3)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.0
         version: 5.0.1
@@ -100,10 +100,10 @@ importers:
         version: 0.25.12
       eslint:
         specifier: ^9.34.0
-        version: 9.39.4(jiti@2.7.0)
+        version: 9.39.4(jiti@2.7.0)(supports-color@8.1.1)
       eslint-config-ckeditor5:
         specifier: ^13.0.0
-        version: 13.0.1(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
+        version: 13.0.1(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
       eslint-formatter-stylish:
         specifier: ^8.40.0
         version: 8.40.0
@@ -130,7 +130,7 @@ importers:
         version: 8.3.3
       local-web-server:
         specifier: ^5.4.0
-        version: 5.4.0
+        version: 5.4.0(supports-color@8.1.1)
       minimist:
         specifier: ^1.2.8
         version: 1.2.8
@@ -139,7 +139,7 @@ importers:
         version: 3.0.1
       nyc:
         specifier: ^17.1.0
-        version: 17.1.0
+        version: 17.1.0(supports-color@8.1.1)
       postcss-loader:
         specifier: ^8.0.0
         version: 8.2.1(postcss@8.5.15)(typescript@5.3.3)(webpack@5.107.1)
@@ -148,7 +148,7 @@ importers:
         version: 0.3.21
       puppeteer:
         specifier: ^24.1.0
-        version: 24.43.1(typescript@5.3.3)
+        version: 24.43.1(supports-color@8.1.1)(typescript@5.3.3)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -166,10 +166,10 @@ importers:
         version: 0.34.5
       stylelint:
         specifier: ^16.0.0
-        version: 16.26.1(typescript@5.3.3)
+        version: 16.26.1(supports-color@8.1.1)(typescript@5.3.3)
       stylelint-config-ckeditor5:
         specifier: ^13.0.0
-        version: 13.0.1(stylelint@16.26.1(typescript@5.3.3))
+        version: 13.0.1(stylelint@16.26.1(supports-color@8.1.1)(typescript@5.3.3))
       svgo:
         specifier: ^3.3.2
         version: 3.3.3
@@ -190,10 +190,10 @@ importers:
         version: 5.0.2(@types/node@25.9.1)(@vitest/coverage-v8@5.0.2)(vite@8.0.14(@types/node@25.9.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
       wait-on:
         specifier: ^8.0.3
-        version: 8.0.5
+        version: 8.0.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -386,16 +386,16 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-translations':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@wiris/mathtype-ckeditor5':
         specifier: ^8.13.1
         version: 8.15.2(ckeditor5@packages+ckeditor5)
       terser-webpack-plugin:
         specifier: ^5.0.0
-        version: 5.6.0(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(esbuild@0.25.12)(postcss@8.5.15)(webpack@5.107.1)
+        version: 5.6.0(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.107.1)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -404,7 +404,7 @@ importers:
         version: 2.0.1
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -429,7 +429,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -462,7 +462,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -490,7 +490,7 @@ importers:
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -523,7 +523,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -560,7 +560,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -587,7 +587,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -609,7 +609,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -627,7 +627,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -658,7 +658,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -676,7 +676,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -710,7 +710,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -740,7 +740,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -783,7 +783,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -828,7 +828,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -880,7 +880,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -904,7 +904,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -938,7 +938,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -959,7 +959,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1092,7 +1092,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1111,7 +1111,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1123,7 +1123,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1169,7 +1169,7 @@ importers:
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1202,7 +1202,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1269,7 +1269,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1297,7 +1297,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1315,7 +1315,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1346,7 +1346,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1376,7 +1376,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1407,7 +1407,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1440,7 +1440,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1471,7 +1471,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1501,7 +1501,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1532,7 +1532,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1565,7 +1565,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1605,7 +1605,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1641,7 +1641,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1681,7 +1681,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-balloon':
         specifier: workspace:*
         version: link:../ckeditor5-editor-balloon
@@ -1711,7 +1711,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1790,7 +1790,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1833,7 +1833,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1867,7 +1867,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1882,7 +1882,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1913,7 +1913,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1964,7 +1964,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -1992,7 +1992,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2016,7 +2016,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2065,7 +2065,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2155,7 +2155,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2198,7 +2198,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2228,7 +2228,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2259,7 +2259,7 @@ importers:
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2289,7 +2289,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2320,7 +2320,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2344,7 +2344,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2378,7 +2378,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2408,7 +2408,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2472,7 +2472,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2535,7 +2535,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2547,7 +2547,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2611,7 +2611,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2668,7 +2668,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2717,7 +2717,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2771,7 +2771,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2796,7 +2796,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2811,7 +2811,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2866,7 +2866,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2896,7 +2896,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -2957,7 +2957,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3023,7 +3023,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3071,10 +3071,10 @@ importers:
         version: 4.0.0
       remark-gfm:
         specifier: 4.0.1
-        version: 4.0.1
+        version: 4.0.1(supports-color@8.1.1)
       remark-parse:
         specifier: 11.0.0
-        version: 11.0.0
+        version: 11.0.0(supports-color@8.1.1)
       remark-rehype:
         specifier: 11.1.2
         version: 11.1.2
@@ -3102,7 +3102,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3153,7 +3153,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3196,7 +3196,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-balloon':
         specifier: workspace:*
         version: link:../ckeditor5-editor-balloon
@@ -3226,7 +3226,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3266,7 +3266,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3299,7 +3299,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3336,7 +3336,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3369,7 +3369,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3400,7 +3400,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3424,7 +3424,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3476,7 +3476,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3510,7 +3510,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3561,7 +3561,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3592,7 +3592,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3628,7 +3628,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3668,7 +3668,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3704,7 +3704,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3753,7 +3753,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3796,7 +3796,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3889,7 +3889,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3920,7 +3920,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3947,7 +3947,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -3978,7 +3978,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3996,7 +3996,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4051,7 +4051,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -4123,7 +4123,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4175,7 +4175,7 @@ importers:
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -4235,7 +4235,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4342,7 +4342,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4466,7 +4466,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4518,7 +4518,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4537,7 +4537,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4675,7 +4675,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4706,7 +4706,7 @@ importers:
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.9.1
-        version: 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -4742,7 +4742,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+        version: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.107.1)
@@ -4942,7 +4942,7 @@ packages:
       ckeditor5: '>=42.0.0 || ^0.0.0-nightly'
 
   '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/a6d020ca6941e35e2a3110e54896d2f4096383c1':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/a6d020ca6941e35e2a3110e54896d2f4096383c1}
+    resolution: {gitHosted: true, integrity: sha512-5r8XF6itTOz4vYZMyqRVqim4TMxdINxu3F2Q67ZhKS3OxHspEB6PgruPgSwUp/LmgCJhmMuEd/8qMOjeGiko3Q==, tarball: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/a6d020ca6941e35e2a3110e54896d2f4096383c1}
     version: 0.0.4
     engines: {node: '>=22.0.0', pnpm: '>=10.14.0'}
     peerDependencies:
@@ -7315,11 +7315,6 @@ packages:
 
   ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
-    peerDependencies:
-      ajv: ^8.0.0
-    peerDependenciesMeta:
-      ajv:
-        optional: true
 
   ajv-keywords@3.5.2:
     resolution: {integrity: sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==}
@@ -9732,7 +9727,6 @@ packages:
 
   jsonparse@1.3.1:
     resolution: {integrity: sha512-POQXvpdL69+CluYsillJ7SUhKvytYjW9vG/GKpnf+xP8UWgYEM/RaMzHHofbALDiKbbP1W8UEYmgGl39WkPZsg==}
-    engines: {'0': node >= 0.2.0}
 
   jstransformer@1.0.0:
     resolution: {integrity: sha512-C9YK3Rf8q6VAPDCCU9fnqo3mAfOH6vUGnMcP4AQAYIEpWtfGLpwOTmZ+igtdK5y+VvI2n3CyYSzy4Qh34eq24A==}
@@ -12930,16 +12924,16 @@ snapshots:
 
   '@babel/compat-data@7.29.7': {}
 
-  '@babel/core@7.29.7':
+  '@babel/core@7.29.7(supports-color@8.1.1)':
     dependencies:
       '@babel/code-frame': 7.29.7
       '@babel/generator': 7.29.7
       '@babel/helper-compilation-targets': 7.29.7
-      '@babel/helper-module-transforms': 7.29.7(@babel/core@7.29.7)
+      '@babel/helper-module-transforms': 7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
       '@babel/helpers': 7.29.7
       '@babel/parser': 7.29.7
       '@babel/template': 7.29.7
-      '@babel/traverse': 7.29.7
+      '@babel/traverse': 7.29.7(supports-color@8.1.1)
       '@babel/types': 7.29.7
       '@jridgewell/remapping': 2.3.5
       convert-source-map: 2.0.0
@@ -12968,19 +12962,19 @@ snapshots:
 
   '@babel/helper-globals@7.29.7': {}
 
-  '@babel/helper-module-imports@7.29.7':
+  '@babel/helper-module-imports@7.29.7(supports-color@8.1.1)':
     dependencies:
-      '@babel/traverse': 7.29.7
+      '@babel/traverse': 7.29.7(supports-color@8.1.1)
       '@babel/types': 7.29.7
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/helper-module-transforms@7.29.7(@babel/core@7.29.7)':
+  '@babel/helper-module-transforms@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@babel/core': 7.29.7
-      '@babel/helper-module-imports': 7.29.7
+      '@babel/core': 7.29.7(supports-color@8.1.1)
+      '@babel/helper-module-imports': 7.29.7(supports-color@8.1.1)
       '@babel/helper-validator-identifier': 7.29.7
-      '@babel/traverse': 7.29.7
+      '@babel/traverse': 7.29.7(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -13009,7 +13003,7 @@ snapshots:
       '@babel/parser': 7.29.7
       '@babel/types': 7.29.7
 
-  '@babel/traverse@7.29.7':
+  '@babel/traverse@7.29.7(supports-color@8.1.1)':
     dependencies:
       '@babel/code-frame': 7.29.7
       '@babel/generator': 7.29.7
@@ -13136,10 +13130,10 @@ snapshots:
     dependencies:
       glob: 13.0.6
 
-  '@ckeditor/ckeditor5-dev-changelog@54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(@types/node@25.9.1)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)':
+  '@ckeditor/ckeditor5-dev-changelog@54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(@types/node@25.9.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)':
     dependencies:
       '@11ty/gray-matter': 2.1.0
-      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       date-fns: 4.3.0
       glob: 13.0.6
       inquirer: 12.11.1(@types/node@25.9.1)
@@ -13163,10 +13157,10 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-dependency-checker@54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)':
+  '@ckeditor/ckeditor5-dev-dependency-checker@54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
-      depcheck: 1.4.7
+      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
+      depcheck: 1.4.7(supports-color@8.1.1)
       glob: 13.0.6
       minimist: 1.2.8
       oxc-parser: 0.72.3
@@ -13204,16 +13198,16 @@ snapshots:
       diff: 8.0.4
       upath: 2.0.1
 
-  '@ckeditor/ckeditor5-dev-release-tools@54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(@types/node@25.9.1)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)':
+  '@ckeditor/ckeditor5-dev-release-tools@54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(@types/node@25.9.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@octokit/rest': 22.0.1
       cli-columns: 4.0.0
       glob: 13.0.6
       inquirer: 12.11.1(@types/node@25.9.1)
       semver: 7.8.1
       shell-escape: 0.2.0
-      simple-git: 3.36.0
+      simple-git: 3.36.0(supports-color@8.1.1)
       upath: 2.0.1
     transitivePeerDependencies:
       - '@babel/core'
@@ -13233,18 +13227,18 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-tests@54.9.1(@swc/core@1.15.40)(@types/node@25.9.1)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)':
+  '@ckeditor/ckeditor5-dev-tests@54.9.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(@types/node@25.9.1)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(supports-color@8.1.1)(webpack-cli@6.0.1)':
     dependencies:
-      '@babel/core': 7.29.7
-      '@ckeditor/ckeditor5-dev-translations': 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
-      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+      '@babel/core': 7.29.7(supports-color@8.1.1)
+      '@ckeditor/ckeditor5-dev-translations': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
+      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@ckeditor/ckeditor5-inspector': 5.0.1
       '@types/chai': 4.3.20
-      '@types/karma-sinon-chai': 2.0.6
+      '@types/karma-sinon-chai': 2.0.6(supports-color@8.1.1)
       '@types/mocha': 10.0.10
       '@types/sinon': 10.0.20
       assertion-error: 2.0.1
-      babel-plugin-istanbul: 7.0.1
+      babel-plugin-istanbul: 7.0.1(supports-color@8.1.1)
       buffer: 6.0.3
       chai: 4.5.0
       chokidar: 4.0.3
@@ -13257,14 +13251,14 @@ snapshots:
       is-interactive: 2.0.0
       is-wsl: 3.1.1
       js-beautify: 1.15.4
-      karma: 6.4.4
-      karma-chai: 0.1.0(chai@4.5.0)(karma@6.4.4)
+      karma: 6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      karma-chai: 0.1.0(chai@4.5.0)(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))
       karma-chrome-launcher: 3.2.0
-      karma-coverage: 2.2.1
+      karma-coverage: 2.2.1(supports-color@8.1.1)
       karma-firefox-launcher: 2.1.3
       karma-mocha: 2.0.1
-      karma-mocha-reporter: 2.2.5(karma@6.4.4)
-      karma-sinon: 1.0.5(karma@6.4.4)(sinon@9.2.4)
+      karma-mocha-reporter: 2.2.5(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))
+      karma-sinon: 1.0.5(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))(sinon@9.2.4)
       karma-sinon-chai: 2.0.2(chai@4.5.0)(sinon-chai@3.7.0(chai@4.5.0)(sinon@9.2.4))(sinon@9.2.4)
       karma-sourcemap-loader: 0.4.0
       karma-webpack: 5.0.1(webpack@5.107.1)
@@ -13276,10 +13270,10 @@ snapshots:
       process: 0.11.10
       sinon: 9.2.4
       sinon-chai: 3.7.0(chai@4.5.0)(sinon@9.2.4)
-      socket.io: 4.8.3
+      socket.io: 4.8.3(supports-color@8.1.1)
       typescript: 5.3.3
       upath: 2.0.1
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@rspack/core'
@@ -13301,11 +13295,11 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@ckeditor/ckeditor5-dev-translations@54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)':
+  '@ckeditor/ckeditor5-dev-translations@54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)':
     dependencies:
       '@babel/parser': 7.29.7
-      '@babel/traverse': 7.29.7
-      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+      '@babel/traverse': 7.29.7(supports-color@8.1.1)
+      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       glob: 13.0.6
       plural-forms: 0.5.5
       pofile: 1.1.4
@@ -13329,12 +13323,12 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-utils@54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)':
+  '@ckeditor/ckeditor5-dev-utils@54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-translations': 54.9.1(@babel/core@7.29.7)(@swc/core@1.15.40)(esbuild@0.25.12)(typescript@5.3.3)(webpack@5.107.1)
+      '@ckeditor/ckeditor5-dev-translations': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.40)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.107.1)
       '@types/postcss-import': 14.0.3
       '@types/through2': 2.0.41
-      babel-loader: 10.1.1(@babel/core@7.29.7)(webpack@5.107.1)
+      babel-loader: 10.1.1(@babel/core@7.29.7(supports-color@8.1.1))(webpack@5.107.1)
       cli-cursor: 5.0.0
       cli-spinners: 3.4.0
       css-loader: 7.1.4(webpack@5.107.1)
@@ -13344,7 +13338,7 @@ snapshots:
       is-interactive: 2.0.0
       mini-css-extract-plugin: 2.10.2(webpack@5.107.1)
       mocha: 11.7.6
-      pacote: 21.5.0
+      pacote: 21.5.0(supports-color@8.1.1)
       postcss: 8.5.15
       postcss-import: 16.1.1(postcss@8.5.15)
       postcss-loader: 8.2.1(postcss@8.5.15)(typescript@5.3.3)(webpack@5.107.1)
@@ -13352,9 +13346,9 @@ snapshots:
       postcss-nesting: 13.0.2(postcss@8.5.15)
       raw-loader: 4.0.2(webpack@5.107.1)
       shelljs: 0.10.0
-      simple-git: 3.36.0
+      simple-git: 3.36.0(supports-color@8.1.1)
       style-loader: 4.0.0(webpack@5.107.1)
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(esbuild@0.25.12)(postcss@8.5.15)(webpack@5.107.1)
+      terser-webpack-plugin: 5.6.0(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.107.1)
       through2: 4.0.2
       upath: 2.0.1
     transitivePeerDependencies:
@@ -13374,10 +13368,10 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-web-crawler@54.9.1(typescript@5.3.3)':
+  '@ckeditor/ckeditor5-dev-web-crawler@54.9.1(supports-color@8.1.1)(typescript@5.3.3)':
     dependencies:
-      puppeteer: 24.43.1(typescript@5.3.3)
-      puppeteer-cluster: 0.24.0(puppeteer@24.43.1(typescript@5.3.3))
+      puppeteer: 24.43.1(supports-color@8.1.1)(typescript@5.3.3)
+      puppeteer-cluster: 0.24.0(puppeteer@24.43.1(supports-color@8.1.1)(typescript@5.3.3))(supports-color@8.1.1)
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
@@ -13626,14 +13620,14 @@ snapshots:
   '@esbuild/win32-x64@0.28.1':
     optional: true
 
-  '@eslint-community/eslint-utils@4.9.1(eslint@9.39.4(jiti@2.7.0))':
+  '@eslint-community/eslint-utils@4.9.1(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))':
     dependencies:
-      eslint: 9.39.4(jiti@2.7.0)
+      eslint: 9.39.4(jiti@2.7.0)(supports-color@8.1.1)
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.12.2': {}
 
-  '@eslint/config-array@0.21.2':
+  '@eslint/config-array@0.21.2(supports-color@8.1.1)':
     dependencies:
       '@eslint/object-schema': 2.1.7
       debug: 4.4.3(supports-color@8.1.1)
@@ -13657,7 +13651,7 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
 
-  '@eslint/eslintrc@3.3.5':
+  '@eslint/eslintrc@3.3.5(supports-color@8.1.1)':
     dependencies:
       ajv: 6.15.0
       debug: 4.4.3(supports-color@8.1.1)
@@ -13673,14 +13667,14 @@ snapshots:
 
   '@eslint/js@9.39.4': {}
 
-  '@eslint/markdown@6.6.0':
+  '@eslint/markdown@6.6.0(supports-color@8.1.1)':
     dependencies:
       '@eslint/core': 0.14.0
       '@eslint/plugin-kit': 0.3.5
       github-slugger: 2.0.0
-      mdast-util-from-markdown: 2.0.3
-      mdast-util-frontmatter: 2.0.1
-      mdast-util-gfm: 3.1.0
+      mdast-util-from-markdown: 2.0.3(supports-color@8.1.1)
+      mdast-util-frontmatter: 2.0.1(supports-color@8.1.1)
+      mdast-util-gfm: 3.1.0(supports-color@8.1.1)
       micromark-extension-frontmatter: 2.0.0
       micromark-extension-gfm: 3.0.0
     transitivePeerDependencies:
@@ -14036,7 +14030,7 @@ snapshots:
     dependencies:
       vary: 1.1.2
 
-  '@kwsites/file-exists@1.1.1':
+  '@kwsites/file-exists@1.1.1(supports-color@8.1.1)':
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -14150,13 +14144,13 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
-  '@npmcli/agent@4.0.0':
+  '@npmcli/agent@4.0.0(supports-color@8.1.1)':
     dependencies:
       agent-base: 7.1.4
-      http-proxy-agent: 7.0.2
-      https-proxy-agent: 7.0.6
+      http-proxy-agent: 7.0.2(supports-color@8.1.1)
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       lru-cache: 11.5.0
-      socks-proxy-agent: 8.0.5
+      socks-proxy-agent: 8.0.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -14390,12 +14384,12 @@ snapshots:
 
   '@publint/pack@0.1.4': {}
 
-  '@puppeteer/browsers@2.13.2':
+  '@puppeteer/browsers@2.13.2(supports-color@8.1.1)':
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
-      extract-zip: 2.0.1
+      extract-zip: 2.0.1(supports-color@8.1.1)
       progress: 2.0.3
-      proxy-agent: 6.5.0
+      proxy-agent: 6.5.0(supports-color@8.1.1)
       semver: 7.8.1
       tar-fs: 3.1.2
       yargs: 17.7.2
@@ -14689,21 +14683,21 @@ snapshots:
 
   '@sigstore/protobuf-specs@0.5.1': {}
 
-  '@sigstore/sign@4.1.1':
+  '@sigstore/sign@4.1.1(supports-color@8.1.1)':
     dependencies:
       '@gar/promise-retry': 1.0.3
       '@sigstore/bundle': 4.0.0
       '@sigstore/core': 3.2.1
       '@sigstore/protobuf-specs': 0.5.1
-      make-fetch-happen: 15.0.5
+      make-fetch-happen: 15.0.5(supports-color@8.1.1)
       proc-log: 6.1.0
     transitivePeerDependencies:
       - supports-color
 
-  '@sigstore/tuf@4.0.2':
+  '@sigstore/tuf@4.0.2(supports-color@8.1.1)':
     dependencies:
       '@sigstore/protobuf-specs': 0.5.1
-      tuf-js: 4.1.0
+      tuf-js: 4.1.0(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -14741,10 +14735,10 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@stylistic/eslint-plugin@4.4.1(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)':
+  '@stylistic/eslint-plugin@4.4.1(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)':
     dependencies:
-      '@typescript-eslint/utils': 8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
-      eslint: 9.39.4(jiti@2.7.0)
+      '@typescript-eslint/utils': 8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
+      eslint: 9.39.4(jiti@2.7.0)(supports-color@8.1.1)
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
       estraverse: 5.3.0
@@ -14753,7 +14747,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@stylistic/stylelint-plugin@3.1.3(stylelint@16.26.1(typescript@5.3.3))':
+  '@stylistic/stylelint-plugin@3.1.3(stylelint@16.26.1(supports-color@8.1.1)(typescript@5.3.3))':
     dependencies:
       '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
       '@csstools/css-tokenizer': 3.0.4
@@ -14763,7 +14757,7 @@ snapshots:
       postcss-selector-parser: 6.1.2
       postcss-value-parser: 4.2.0
       style-search: 0.1.0
-      stylelint: 16.26.1(typescript@5.3.3)
+      stylelint: 16.26.1(supports-color@8.1.1)(typescript@5.3.3)
 
   '@swc/core-darwin-arm64@1.15.40':
     optional: true
@@ -15004,19 +14998,19 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/karma-sinon-chai@2.0.6':
+  '@types/karma-sinon-chai@2.0.6(supports-color@8.1.1)':
     dependencies:
-      '@types/chai': 5.2.3
-      '@types/karma': 6.3.9
+      '@types/chai': 4.3.20
+      '@types/karma': 6.3.9(supports-color@8.1.1)
       '@types/sinon': 10.0.20
       '@types/sinon-chai': 2.7.42
     transitivePeerDependencies:
       - supports-color
 
-  '@types/karma@6.3.9':
+  '@types/karma@6.3.9(supports-color@8.1.1)':
     dependencies:
       '@types/node': 25.9.1
-      log4js: 6.9.1
+      log4js: 6.9.1(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -15058,11 +15052,11 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 25.9.1
+      '@types/node': 17.0.45
 
   '@types/sinon-chai@2.7.42':
     dependencies:
-      '@types/chai': 5.2.3
+      '@types/chai': 4.3.20
       '@types/sinon': 10.0.20
 
   '@types/sinon@10.0.20':
@@ -15089,15 +15083,15 @@ snapshots:
       '@types/node': 25.9.1
     optional: true
 
-  '@typescript-eslint/eslint-plugin@8.59.4(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3))(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)':
+  '@typescript-eslint/eslint-plugin@8.59.4(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3))(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
+      '@typescript-eslint/parser': 8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
       '@typescript-eslint/scope-manager': 8.59.4
-      '@typescript-eslint/type-utils': 8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
-      '@typescript-eslint/utils': 8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
+      '@typescript-eslint/type-utils': 8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
+      '@typescript-eslint/utils': 8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
       '@typescript-eslint/visitor-keys': 8.59.4
-      eslint: 9.39.4(jiti@2.7.0)
+      eslint: 9.39.4(jiti@2.7.0)(supports-color@8.1.1)
       ignore: 7.0.5
       natural-compare: 1.4.0
       ts-api-utils: 2.5.0(typescript@5.3.3)
@@ -15105,19 +15099,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)':
+  '@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.59.4
       '@typescript-eslint/types': 8.59.4
-      '@typescript-eslint/typescript-estree': 8.59.4(typescript@5.3.3)
+      '@typescript-eslint/typescript-estree': 8.59.4(supports-color@8.1.1)(typescript@5.3.3)
       '@typescript-eslint/visitor-keys': 8.59.4
       debug: 4.4.3(supports-color@8.1.1)
-      eslint: 9.39.4(jiti@2.7.0)
+      eslint: 9.39.4(jiti@2.7.0)(supports-color@8.1.1)
       typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.59.4(typescript@5.3.3)':
+  '@typescript-eslint/project-service@8.59.4(supports-color@8.1.1)(typescript@5.3.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.59.4(typescript@5.3.3)
       '@typescript-eslint/types': 8.59.4
@@ -15135,13 +15129,13 @@ snapshots:
     dependencies:
       typescript: 5.3.3
 
-  '@typescript-eslint/type-utils@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)':
+  '@typescript-eslint/type-utils@8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)':
     dependencies:
       '@typescript-eslint/types': 8.59.4
-      '@typescript-eslint/typescript-estree': 8.59.4(typescript@5.3.3)
-      '@typescript-eslint/utils': 8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
+      '@typescript-eslint/typescript-estree': 8.59.4(supports-color@8.1.1)(typescript@5.3.3)
+      '@typescript-eslint/utils': 8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
       debug: 4.4.3(supports-color@8.1.1)
-      eslint: 9.39.4(jiti@2.7.0)
+      eslint: 9.39.4(jiti@2.7.0)(supports-color@8.1.1)
       ts-api-utils: 2.5.0(typescript@5.3.3)
       typescript: 5.3.3
     transitivePeerDependencies:
@@ -15149,9 +15143,9 @@ snapshots:
 
   '@typescript-eslint/types@8.59.4': {}
 
-  '@typescript-eslint/typescript-estree@8.59.4(typescript@5.3.3)':
+  '@typescript-eslint/typescript-estree@8.59.4(supports-color@8.1.1)(typescript@5.3.3)':
     dependencies:
-      '@typescript-eslint/project-service': 8.59.4(typescript@5.3.3)
+      '@typescript-eslint/project-service': 8.59.4(supports-color@8.1.1)(typescript@5.3.3)
       '@typescript-eslint/tsconfig-utils': 8.59.4(typescript@5.3.3)
       '@typescript-eslint/types': 8.59.4
       '@typescript-eslint/visitor-keys': 8.59.4
@@ -15164,13 +15158,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)':
+  '@typescript-eslint/utils@8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.4(jiti@2.7.0))
+      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))
       '@typescript-eslint/scope-manager': 8.59.4
       '@typescript-eslint/types': 8.59.4
-      '@typescript-eslint/typescript-estree': 8.59.4(typescript@5.3.3)
-      eslint: 9.39.4(jiti@2.7.0)
+      '@typescript-eslint/typescript-estree': 8.59.4(supports-color@8.1.1)(typescript@5.3.3)
+      eslint: 9.39.4(jiti@2.7.0)(supports-color@8.1.1)
       typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
@@ -15330,17 +15324,17 @@ snapshots:
 
   '@webpack-cli/configtest@3.0.1(webpack-cli@6.0.1)(webpack@5.107.1)':
     dependencies:
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli: 6.0.1(webpack@5.107.1)
 
   '@webpack-cli/info@3.0.1(webpack-cli@6.0.1)(webpack@5.107.1)':
     dependencies:
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli: 6.0.1(webpack@5.107.1)
 
   '@webpack-cli/serve@3.0.1(webpack-cli@6.0.1)(webpack@5.107.1)':
     dependencies:
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-cli: 6.0.1(webpack@5.107.1)
 
   '@webspellchecker/wproofreader-ckeditor5@3.1.3(ckeditor5@packages+ckeditor5)':
@@ -15391,7 +15385,7 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  agent-base@6.0.2:
+  agent-base@6.0.2(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -15404,8 +15398,8 @@ snapshots:
       clean-stack: 2.2.0
       indent-string: 4.0.0
 
-  ajv-formats@2.1.1(ajv@8.20.0):
-    optionalDependencies:
+  ajv-formats@2.1.1:
+    dependencies:
       ajv: 8.20.0
 
   ajv-keywords@3.5.2(ajv@6.15.0):
@@ -15522,11 +15516,11 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios@1.16.1:
+  axios@1.16.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
-      follow-redirects: 1.16.0
+      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
       form-data: 4.0.5
-      https-proxy-agent: 5.0.1
+      https-proxy-agent: 5.0.1(supports-color@8.1.1)
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
@@ -15534,19 +15528,19 @@ snapshots:
 
   b4a@1.8.1: {}
 
-  babel-loader@10.1.1(@babel/core@7.29.7)(webpack@5.107.1):
+  babel-loader@10.1.1(@babel/core@7.29.7(supports-color@8.1.1))(webpack@5.107.1):
     dependencies:
-      '@babel/core': 7.29.7
+      '@babel/core': 7.29.7(supports-color@8.1.1)
       find-up: 5.0.0
     optionalDependencies:
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
 
-  babel-plugin-istanbul@7.0.1:
+  babel-plugin-istanbul@7.0.1(supports-color@8.1.1):
     dependencies:
       '@babel/helper-plugin-utils': 7.28.6
       '@istanbuljs/load-nyc-config': 1.1.0
       '@istanbuljs/schema': 0.1.6
-      istanbul-lib-instrument: 6.0.3
+      istanbul-lib-instrument: 6.0.3(supports-color@8.1.1)
       test-exclude: 6.0.0
     transitivePeerDependencies:
       - supports-color
@@ -15619,11 +15613,11 @@ snapshots:
 
   blurhash@2.0.5: {}
 
-  body-parser@1.20.5:
+  body-parser@1.20.5(supports-color@8.1.1):
     dependencies:
       bytes: 3.1.2
       content-type: 1.0.5
-      debug: 2.6.9
+      debug: 2.6.9(supports-color@8.1.1)
       depd: 2.0.0
       destroy: 1.2.0
       http-errors: 2.0.1
@@ -15990,10 +15984,10 @@ snapshots:
       ini: 1.3.8
       proto-list: 1.2.4
 
-  connect@3.7.0:
+  connect@3.7.0(supports-color@8.1.1):
     dependencies:
-      debug: 2.6.9
-      finalhandler: 1.1.2
+      debug: 2.6.9(supports-color@8.1.1)
+      finalhandler: 1.1.2(supports-color@8.1.1)
       parseurl: 1.3.3
       utils-merge: 1.0.1
     transitivePeerDependencies:
@@ -16090,7 +16084,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.8.1
     optionalDependencies:
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
 
   css-select@4.3.0:
     dependencies:
@@ -16444,13 +16438,17 @@ snapshots:
 
   dayjs@1.11.20: {}
 
-  debug@2.6.9:
+  debug@2.6.9(supports-color@8.1.1):
     dependencies:
       ms: 2.0.0
+    optionalDependencies:
+      supports-color: 8.1.1
 
-  debug@3.2.7:
+  debug@3.2.7(supports-color@8.1.1):
     dependencies:
       ms: 2.1.3
+    optionalDependencies:
+      supports-color: 8.1.1
 
   debug@4.4.3(supports-color@8.1.1):
     dependencies:
@@ -16522,10 +16520,10 @@ snapshots:
 
   delegates@1.0.0: {}
 
-  depcheck@1.4.7:
+  depcheck@1.4.7(supports-color@8.1.1):
     dependencies:
       '@babel/parser': 7.29.7
-      '@babel/traverse': 7.29.7
+      '@babel/traverse': 7.29.7(supports-color@8.1.1)
       '@vue/compiler-sfc': 3.5.34
       callsite: 1.0.0
       camelcase: 6.3.0
@@ -16701,7 +16699,7 @@ snapshots:
 
   engine.io-parser@5.2.3: {}
 
-  engine.io@6.6.8:
+  engine.io@6.6.8(supports-color@8.1.1):
     dependencies:
       '@types/cors': 2.8.19
       '@types/node': 25.9.1
@@ -16776,7 +16774,7 @@ snapshots:
       esbuild: 0.28.1
       get-tsconfig: 4.14.0
       loader-utils: 2.0.4
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-sources: 3.5.0
 
   esbuild@0.25.12:
@@ -16855,17 +16853,17 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-config-ckeditor5@13.0.1(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3):
+  eslint-config-ckeditor5@13.0.1(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3):
     dependencies:
       '@eslint/js': 9.39.4
-      '@eslint/markdown': 6.6.0
-      '@stylistic/eslint-plugin': 4.4.1(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
-      eslint: 9.39.4(jiti@2.7.0)
+      '@eslint/markdown': 6.6.0(supports-color@8.1.1)
+      '@stylistic/eslint-plugin': 4.4.1(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
+      eslint: 9.39.4(jiti@2.7.0)(supports-color@8.1.1)
       eslint-plugin-ckeditor5-rules: 13.0.1
-      eslint-plugin-mocha: 11.3.0(eslint@9.39.4(jiti@2.7.0))
+      eslint-plugin-mocha: 11.3.0(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))
       globals: 16.5.0
       typescript: 5.3.3
-      typescript-eslint: 8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
+      typescript-eslint: 8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -16884,10 +16882,10 @@ snapshots:
       validate-npm-package-name: 6.0.2
       yaml: 2.9.0
 
-  eslint-plugin-mocha@11.3.0(eslint@9.39.4(jiti@2.7.0)):
+  eslint-plugin-mocha@11.3.0(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1)):
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.4(jiti@2.7.0))
-      eslint: 9.39.4(jiti@2.7.0)
+      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))
+      eslint: 9.39.4(jiti@2.7.0)(supports-color@8.1.1)
       globals: 15.15.0
 
   eslint-scope@5.1.1:
@@ -16906,14 +16904,14 @@ snapshots:
 
   eslint-visitor-keys@5.0.1: {}
 
-  eslint@9.39.4(jiti@2.7.0):
+  eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1):
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.4(jiti@2.7.0))
+      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))
       '@eslint-community/regexpp': 4.12.2
-      '@eslint/config-array': 0.21.2
+      '@eslint/config-array': 0.21.2(supports-color@8.1.1)
       '@eslint/config-helpers': 0.4.2
       '@eslint/core': 0.17.0
-      '@eslint/eslintrc': 3.3.5
+      '@eslint/eslintrc': 3.3.5(supports-color@8.1.1)
       '@eslint/js': 9.39.4
       '@eslint/plugin-kit': 0.4.1
       '@humanfs/node': 0.16.8
@@ -17015,7 +17013,7 @@ snapshots:
 
   extend@3.0.2: {}
 
-  extract-zip@2.0.1:
+  extract-zip@2.0.1(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       get-stream: 5.2.0
@@ -17079,9 +17077,9 @@ snapshots:
 
   filter-obj@1.1.0: {}
 
-  finalhandler@1.1.2:
+  finalhandler@1.1.2(supports-color@8.1.1):
     dependencies:
-      debug: 2.6.9
+      debug: 2.6.9(supports-color@8.1.1)
       encodeurl: 1.0.2
       escape-html: 1.0.3
       on-finished: 2.3.0
@@ -17137,7 +17135,9 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  follow-redirects@1.16.0: {}
+  follow-redirects@1.16.0(debug@4.4.3(supports-color@8.1.1)):
+    optionalDependencies:
+      debug: 4.4.3(supports-color@8.1.1)
 
   for-each@0.3.5:
     dependencies:
@@ -17242,7 +17242,7 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  get-uri@6.0.5:
+  get-uri@6.0.5(supports-color@8.1.1):
     dependencies:
       basic-ftp: 5.3.1
       data-uri-to-buffer: 6.0.2
@@ -17660,36 +17660,36 @@ snapshots:
       statuses: 2.0.2
       toidentifier: 1.0.1
 
-  http-proxy-agent@6.1.1:
+  http-proxy-agent@6.1.1(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  http-proxy-agent@7.0.2:
+  http-proxy-agent@7.0.2(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  http-proxy@1.18.1:
+  http-proxy@1.18.1(debug@4.4.3(supports-color@8.1.1)):
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.16.0
+      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
 
-  https-proxy-agent@5.0.1:
+  https-proxy-agent@5.0.1(supports-color@8.1.1):
     dependencies:
-      agent-base: 6.0.2
+      agent-base: 6.0.2(supports-color@8.1.1)
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  https-proxy-agent@7.0.6:
+  https-proxy-agent@7.0.6(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
@@ -17909,9 +17909,9 @@ snapshots:
     dependencies:
       append-transform: 2.0.0
 
-  istanbul-lib-instrument@5.2.1:
+  istanbul-lib-instrument@5.2.1(supports-color@8.1.1):
     dependencies:
-      '@babel/core': 7.29.7
+      '@babel/core': 7.29.7(supports-color@8.1.1)
       '@babel/parser': 7.29.7
       '@istanbuljs/schema': 0.1.6
       istanbul-lib-coverage: 3.2.2
@@ -17919,9 +17919,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  istanbul-lib-instrument@6.0.3:
+  istanbul-lib-instrument@6.0.3(supports-color@8.1.1):
     dependencies:
-      '@babel/core': 7.29.7
+      '@babel/core': 7.29.7(supports-color@8.1.1)
       '@babel/parser': 7.29.7
       '@istanbuljs/schema': 0.1.6
       istanbul-lib-coverage: 3.2.2
@@ -17944,7 +17944,7 @@ snapshots:
       make-dir: 4.0.0
       supports-color: 7.2.0
 
-  istanbul-lib-source-maps@4.0.1:
+  istanbul-lib-source-maps@4.0.1(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       istanbul-lib-coverage: 3.2.2
@@ -18066,21 +18066,21 @@ snapshots:
 
   just-extend@4.2.1: {}
 
-  karma-chai@0.1.0(chai@4.5.0)(karma@6.4.4):
+  karma-chai@0.1.0(chai@4.5.0)(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)):
     dependencies:
       chai: 4.5.0
-      karma: 6.4.4
+      karma: 6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
 
   karma-chrome-launcher@3.2.0:
     dependencies:
       which: 1.3.1
 
-  karma-coverage@2.2.1:
+  karma-coverage@2.2.1(supports-color@8.1.1):
     dependencies:
       istanbul-lib-coverage: 3.2.2
-      istanbul-lib-instrument: 5.2.1
+      istanbul-lib-instrument: 5.2.1(supports-color@8.1.1)
       istanbul-lib-report: 3.0.1
-      istanbul-lib-source-maps: 4.0.1
+      istanbul-lib-source-maps: 4.0.1(supports-color@8.1.1)
       istanbul-reports: 3.2.0
       minimatch: 3.1.5
     transitivePeerDependencies:
@@ -18091,10 +18091,10 @@ snapshots:
       is-wsl: 2.2.0
       which: 3.0.1
 
-  karma-mocha-reporter@2.2.5(karma@6.4.4):
+  karma-mocha-reporter@2.2.5(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)):
     dependencies:
       chalk: 2.4.2
-      karma: 6.4.4
+      karma: 6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       log-symbols: 2.2.0
       strip-ansi: 4.0.0
 
@@ -18108,9 +18108,9 @@ snapshots:
       sinon: 9.2.4
       sinon-chai: 3.7.0(chai@4.5.0)(sinon@9.2.4)
 
-  karma-sinon@1.0.5(karma@6.4.4)(sinon@9.2.4):
+  karma-sinon@1.0.5(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))(sinon@9.2.4):
     dependencies:
-      karma: 6.4.4
+      karma: 6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       sinon: 9.2.4
 
   karma-sourcemap-loader@0.4.0:
@@ -18121,31 +18121,31 @@ snapshots:
     dependencies:
       glob: 7.2.3
       minimatch: 9.0.9
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-merge: 4.2.2
 
-  karma@6.4.4:
+  karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       '@colors/colors': 1.5.0
-      body-parser: 1.20.5
+      body-parser: 1.20.5(supports-color@8.1.1)
       braces: 3.0.3
       chokidar: 3.6.0
-      connect: 3.7.0
+      connect: 3.7.0(supports-color@8.1.1)
       di: 0.0.1
       dom-serialize: 2.2.1
       glob: 7.2.3
       graceful-fs: 4.2.11
-      http-proxy: 1.18.1
+      http-proxy: 1.18.1(debug@4.4.3(supports-color@8.1.1))
       isbinaryfile: 4.0.10
       lodash: 4.18.1
-      log4js: 6.9.1
+      log4js: 6.9.1(supports-color@8.1.1)
       mime: 2.6.0
       minimatch: 3.1.5
       mkdirp: 0.5.6
       qjobs: 1.2.0
       range-parser: 1.2.1
       rimraf: 3.0.2
-      socket.io: 4.8.3
+      socket.io: 4.8.3(supports-color@8.1.1)
       source-map: 0.6.1
       tmp: 0.2.5
       ua-parser-js: 0.7.41
@@ -18212,9 +18212,9 @@ snapshots:
       koa-is-json: 1.0.0
       streaming-json-stringify: 3.1.0
 
-  koa-morgan@1.0.1:
+  koa-morgan@1.0.1(supports-color@8.1.1):
     dependencies:
-      morgan: 1.10.1
+      morgan: 1.10.1(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -18222,7 +18222,7 @@ snapshots:
     dependencies:
       stream-slice: 0.1.2
 
-  koa-route@4.0.1:
+  koa-route@4.0.1(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       methods: 1.1.2
@@ -18230,7 +18230,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  koa-send@5.0.1:
+  koa-send@5.0.1(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       http-errors: 1.8.1
@@ -18238,14 +18238,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  koa-static@5.0.0:
+  koa-static@5.0.0(supports-color@8.1.1):
     dependencies:
-      debug: 3.2.7
-      koa-send: 5.0.1
+      debug: 3.2.7(supports-color@8.1.1)
+      koa-send: 5.0.1(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  koa@2.16.4:
+  koa@2.16.4(supports-color@8.1.1):
     dependencies:
       accepts: 1.3.8
       cache-content-type: 1.0.1
@@ -18366,25 +18366,25 @@ snapshots:
       emojis-list: 3.0.0
       json5: 2.2.3
 
-  local-web-server@5.4.0:
+  local-web-server@5.4.0(supports-color@8.1.1):
     dependencies:
       current-module-paths: 1.1.3
-      lws: 4.2.0
+      lws: 4.2.0(supports-color@8.1.1)
       lws-basic-auth: 2.0.0
       lws-blacklist: 3.0.0
       lws-body-parser: 3.0.1
       lws-compress: 3.1.0
       lws-conditional-get: 3.0.0
       lws-cors: 4.2.1
-      lws-index: 3.1.1
+      lws-index: 3.1.1(supports-color@8.1.1)
       lws-json: 2.0.0
-      lws-log: 3.0.0
+      lws-log: 3.0.0(supports-color@8.1.1)
       lws-mime: 2.0.0
       lws-range: 4.0.1
       lws-request-monitor: 2.0.0
-      lws-rewrite: 4.0.0
-      lws-spa: 4.1.1
-      lws-static: 3.1.1
+      lws-rewrite: 4.0.0(supports-color@8.1.1)
+      lws-spa: 4.1.1(supports-color@8.1.1)
+      lws-static: 3.1.1(supports-color@8.1.1)
     transitivePeerDependencies:
       - '@75lb/nature'
       - supports-color
@@ -18436,13 +18436,13 @@ snapshots:
       strip-ansi: 7.2.0
       wrap-ansi: 9.0.2
 
-  log4js@6.9.1:
+  log4js@6.9.1(supports-color@8.1.1):
     dependencies:
       date-format: 4.0.14
       debug: 4.4.3(supports-color@8.1.1)
       flatted: 3.4.2
       rfdc: 1.4.1
-      streamroller: 3.1.5
+      streamroller: 3.1.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -18498,9 +18498,9 @@ snapshots:
     dependencies:
       '@koa/cors': 5.0.0
 
-  lws-index@3.1.1:
+  lws-index@3.1.1(supports-color@8.1.1):
     dependencies:
-      serve-index-75lb: 2.0.1
+      serve-index-75lb: 2.0.1(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -18508,9 +18508,9 @@ snapshots:
     dependencies:
       koa-json: 2.0.2
 
-  lws-log@3.0.0:
+  lws-log@3.0.0(supports-color@8.1.1):
     dependencies:
-      koa-morgan: 1.0.1
+      koa-morgan: 1.0.1(supports-color@8.1.1)
       stream-log-stats: 3.0.2
     transitivePeerDependencies:
       - supports-color
@@ -18525,29 +18525,29 @@ snapshots:
     dependencies:
       byte-size: 6.2.0
 
-  lws-rewrite@4.0.0:
+  lws-rewrite@4.0.0(supports-color@8.1.1):
     dependencies:
       array-back: 6.2.3
-      http-proxy-agent: 6.1.1
-      https-proxy-agent: 5.0.1
-      koa-route: 4.0.1
+      http-proxy-agent: 6.1.1(supports-color@8.1.1)
+      https-proxy-agent: 5.0.1(supports-color@8.1.1)
+      koa-route: 4.0.1(supports-color@8.1.1)
       path-to-regexp: 6.3.0
     transitivePeerDependencies:
       - supports-color
 
-  lws-spa@4.1.1:
+  lws-spa@4.1.1(supports-color@8.1.1):
     dependencies:
-      koa-send: 5.0.1
+      koa-send: 5.0.1(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  lws-static@3.1.1:
+  lws-static@3.1.1(supports-color@8.1.1):
     dependencies:
-      koa-static: 5.0.0
+      koa-static: 5.0.0(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  lws@4.2.0:
+  lws@4.2.0(supports-color@8.1.1):
     dependencies:
       '@75lb/deep-merge': 1.1.4
       ansi-escape-sequences: 6.2.4
@@ -18557,7 +18557,7 @@ snapshots:
       command-line-usage: 7.0.4
       create-mixin: 3.0.0
       current-module-paths: 1.1.3
-      koa: 2.16.4
+      koa: 2.16.4(supports-color@8.1.1)
       load-module: 5.0.0
       open: 8.4.2
       qrcode-terminal: 0.12.0
@@ -18599,10 +18599,10 @@ snapshots:
     dependencies:
       semver: 7.8.1
 
-  make-fetch-happen@15.0.5:
+  make-fetch-happen@15.0.5(supports-color@8.1.1):
     dependencies:
       '@gar/promise-retry': 1.0.3
-      '@npmcli/agent': 4.0.0
+      '@npmcli/agent': 4.0.0(supports-color@8.1.1)
       '@npmcli/redact': 4.0.0
       cacache: 20.0.4
       http-cache-semantics: 4.2.0
@@ -18660,14 +18660,14 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
-  mdast-util-from-markdown@2.0.3:
+  mdast-util-from-markdown@2.0.3(supports-color@8.1.1):
     dependencies:
       '@types/mdast': 4.0.4
       '@types/unist': 3.0.3
       decode-named-character-reference: 1.3.0
       devlop: 1.1.0
       mdast-util-to-string: 4.0.0
-      micromark: 4.0.2
+      micromark: 4.0.2(supports-color@8.1.1)
       micromark-util-decode-numeric-character-reference: 2.0.2
       micromark-util-decode-string: 2.0.1
       micromark-util-normalize-identifier: 2.0.1
@@ -18677,12 +18677,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-frontmatter@2.0.1:
+  mdast-util-frontmatter@2.0.1(supports-color@8.1.1):
     dependencies:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       escape-string-regexp: 5.0.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@8.1.1)
       mdast-util-to-markdown: 2.1.2
       micromark-extension-frontmatter: 2.0.0
     transitivePeerDependencies:
@@ -18696,51 +18696,51 @@ snapshots:
       mdast-util-find-and-replace: 3.0.2
       micromark-util-character: 2.1.1
 
-  mdast-util-gfm-footnote@2.1.0:
+  mdast-util-gfm-footnote@2.1.0(supports-color@8.1.1):
     dependencies:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@8.1.1)
       mdast-util-to-markdown: 2.1.2
       micromark-util-normalize-identifier: 2.0.1
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-strikethrough@2.0.0:
+  mdast-util-gfm-strikethrough@2.0.0(supports-color@8.1.1):
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@8.1.1)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-table@2.0.0:
+  mdast-util-gfm-table@2.0.0(supports-color@8.1.1):
     dependencies:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       markdown-table: 3.0.4
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@8.1.1)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-task-list-item@2.0.0:
+  mdast-util-gfm-task-list-item@2.0.0(supports-color@8.1.1):
     dependencies:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@8.1.1)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm@3.1.0:
+  mdast-util-gfm@3.1.0(supports-color@8.1.1):
     dependencies:
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@8.1.1)
       mdast-util-gfm-autolink-literal: 2.0.1
-      mdast-util-gfm-footnote: 2.1.0
-      mdast-util-gfm-strikethrough: 2.0.0
-      mdast-util-gfm-table: 2.0.0
-      mdast-util-gfm-task-list-item: 2.0.0
+      mdast-util-gfm-footnote: 2.1.0(supports-color@8.1.1)
+      mdast-util-gfm-strikethrough: 2.0.0(supports-color@8.1.1)
+      mdast-util-gfm-table: 2.0.0(supports-color@8.1.1)
+      mdast-util-gfm-task-list-item: 2.0.0(supports-color@8.1.1)
       mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
@@ -19011,7 +19011,7 @@ snapshots:
 
   micromark-util-types@2.0.2: {}
 
-  micromark@4.0.2:
+  micromark@4.0.2(supports-color@8.1.1):
     dependencies:
       '@types/debug': 4.1.13
       debug: 4.4.3(supports-color@8.1.1)
@@ -19058,7 +19058,7 @@ snapshots:
     dependencies:
       schema-utils: 4.3.3
       tapable: 2.3.3
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
 
   minimatch@10.2.5:
     dependencies:
@@ -19162,10 +19162,10 @@ snapshots:
 
   moment@2.30.1: {}
 
-  morgan@1.10.1:
+  morgan@1.10.1(supports-color@8.1.1):
     dependencies:
       basic-auth: 2.0.1
-      debug: 2.6.9
+      debug: 2.6.9(supports-color@8.1.1)
       depd: 2.0.0
       on-finished: 2.3.0
       on-headers: 1.1.0
@@ -19289,11 +19289,11 @@ snapshots:
       npm-package-arg: 13.0.2
       semver: 7.8.1
 
-  npm-registry-fetch@19.1.1:
+  npm-registry-fetch@19.1.1(supports-color@8.1.1):
     dependencies:
       '@npmcli/redact': 4.0.0
       jsonparse: 1.3.1
-      make-fetch-happen: 15.0.5
+      make-fetch-happen: 15.0.5(supports-color@8.1.1)
       minipass: 7.1.3
       minipass-fetch: 5.0.2
       minizlib: 3.1.0
@@ -19318,7 +19318,7 @@ snapshots:
     optionalDependencies:
       chokidar: 4.0.3
 
-  nyc@17.1.0:
+  nyc@17.1.0(supports-color@8.1.1):
     dependencies:
       '@istanbuljs/load-nyc-config': 1.1.0
       '@istanbuljs/schema': 0.1.6
@@ -19332,10 +19332,10 @@ snapshots:
       glob: 7.2.3
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-hook: 3.0.0
-      istanbul-lib-instrument: 6.0.3
+      istanbul-lib-instrument: 6.0.3(supports-color@8.1.1)
       istanbul-lib-processinfo: 2.0.3
       istanbul-lib-report: 3.0.1
-      istanbul-lib-source-maps: 4.0.1
+      istanbul-lib-source-maps: 4.0.1(supports-color@8.1.1)
       istanbul-reports: 3.2.0
       make-dir: 3.1.0
       node-preload: 0.2.1
@@ -19479,16 +19479,16 @@ snapshots:
 
   p-try@2.2.0: {}
 
-  pac-proxy-agent@7.2.0:
+  pac-proxy-agent@7.2.0(supports-color@8.1.1):
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
-      get-uri: 6.0.5
-      http-proxy-agent: 7.0.2
-      https-proxy-agent: 7.0.6
+      get-uri: 6.0.5(supports-color@8.1.1)
+      http-proxy-agent: 7.0.2(supports-color@8.1.1)
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       pac-resolver: 7.0.1
-      socks-proxy-agent: 8.0.5
+      socks-proxy-agent: 8.0.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -19508,7 +19508,7 @@ snapshots:
 
   package-manager-detector@1.6.0: {}
 
-  pacote@21.5.0:
+  pacote@21.5.0(supports-color@8.1.1):
     dependencies:
       '@gar/promise-retry': 1.0.3
       '@npmcli/git': 7.0.2
@@ -19522,9 +19522,9 @@ snapshots:
       npm-package-arg: 13.0.2
       npm-packlist: 10.0.4
       npm-pick-manifest: 11.0.3
-      npm-registry-fetch: 19.1.1
+      npm-registry-fetch: 19.1.1(supports-color@8.1.1)
       proc-log: 6.1.0
-      sigstore: 4.1.1
+      sigstore: 4.1.1(supports-color@8.1.1)
       ssri: 13.0.1
       tar: 7.5.15
     transitivePeerDependencies:
@@ -19721,7 +19721,7 @@ snapshots:
       postcss: 8.5.15
       semver: 7.8.1
     optionalDependencies:
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
     transitivePeerDependencies:
       - typescript
 
@@ -20049,16 +20049,16 @@ snapshots:
 
   proto-list@1.2.4: {}
 
-  proxy-agent@6.5.0:
+  proxy-agent@6.5.0(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
-      http-proxy-agent: 7.0.2
-      https-proxy-agent: 7.0.6
+      http-proxy-agent: 7.0.2(supports-color@8.1.1)
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       lru-cache: 7.18.3
-      pac-proxy-agent: 7.2.0
+      pac-proxy-agent: 7.2.0(supports-color@8.1.1)
       proxy-from-env: 1.1.0
-      socks-proxy-agent: 8.0.5
+      socks-proxy-agent: 8.0.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -20151,16 +20151,16 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-cluster@0.24.0(puppeteer@24.43.1(typescript@5.3.3)):
+  puppeteer-cluster@0.24.0(puppeteer@24.43.1(supports-color@8.1.1)(typescript@5.3.3))(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
-      puppeteer: 24.43.1(typescript@5.3.3)
+      puppeteer: 24.43.1(supports-color@8.1.1)(typescript@5.3.3)
     transitivePeerDependencies:
       - supports-color
 
-  puppeteer-core@24.43.1:
+  puppeteer-core@24.43.1(supports-color@8.1.1):
     dependencies:
-      '@puppeteer/browsers': 2.13.2
+      '@puppeteer/browsers': 2.13.2(supports-color@8.1.1)
       chromium-bidi: 14.0.0(devtools-protocol@0.0.1608973)
       debug: 4.4.3(supports-color@8.1.1)
       devtools-protocol: 0.0.1608973
@@ -20175,13 +20175,13 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  puppeteer@24.43.1(typescript@5.3.3):
+  puppeteer@24.43.1(supports-color@8.1.1)(typescript@5.3.3):
     dependencies:
-      '@puppeteer/browsers': 2.13.2
+      '@puppeteer/browsers': 2.13.2(supports-color@8.1.1)
       chromium-bidi: 14.0.0(devtools-protocol@0.0.1608973)
       cosmiconfig: 9.0.1(typescript@5.3.3)
       devtools-protocol: 0.0.1608973
-      puppeteer-core: 24.43.1
+      puppeteer-core: 24.43.1(supports-color@8.1.1)
       typed-query-selector: 2.12.2
     transitivePeerDependencies:
       - bare-abort-controller
@@ -20233,7 +20233,7 @@ snapshots:
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
 
   react-clientside-effect@1.2.8(react@19.2.6):
     dependencies:
@@ -20412,21 +20412,21 @@ snapshots:
       mdast-util-newline-to-break: 2.0.0
       unified: 11.0.5
 
-  remark-gfm@4.0.1:
+  remark-gfm@4.0.1(supports-color@8.1.1):
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-gfm: 3.1.0
+      mdast-util-gfm: 3.1.0(supports-color@8.1.1)
       micromark-extension-gfm: 3.0.0
-      remark-parse: 11.0.0
+      remark-parse: 11.0.0(supports-color@8.1.1)
       remark-stringify: 11.0.0
       unified: 11.0.5
     transitivePeerDependencies:
       - supports-color
 
-  remark-parse@11.0.0:
+  remark-parse@11.0.0(supports-color@8.1.1):
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-from-markdown: 2.0.3
+      mdast-util-from-markdown: 2.0.3(supports-color@8.1.1)
       micromark-util-types: 2.0.2
       unified: 11.0.5
     transitivePeerDependencies:
@@ -20676,7 +20676,7 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
       ajv: 8.20.0
-      ajv-formats: 2.1.1(ajv@8.20.0)
+      ajv-formats: 2.1.1
       ajv-keywords: 5.1.0(ajv@8.20.0)
 
   section-matter@1.0.0:
@@ -20692,11 +20692,11 @@ snapshots:
 
   serialize-javascript@7.0.5: {}
 
-  serve-index-75lb@2.0.1:
+  serve-index-75lb@2.0.1(supports-color@8.1.1):
     dependencies:
       accepts: 1.3.8
       batch: 0.6.1
-      debug: 2.6.9
+      debug: 2.6.9(supports-color@8.1.1)
       escape-html: 1.0.3
       http-errors: 1.6.3
       mime-types: 2.1.35
@@ -20812,20 +20812,20 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  sigstore@4.1.1:
+  sigstore@4.1.1(supports-color@8.1.1):
     dependencies:
       '@sigstore/bundle': 4.0.0
       '@sigstore/core': 3.2.1
       '@sigstore/protobuf-specs': 0.5.1
-      '@sigstore/sign': 4.1.1
-      '@sigstore/tuf': 4.0.2
+      '@sigstore/sign': 4.1.1(supports-color@8.1.1)
+      '@sigstore/tuf': 4.0.2(supports-color@8.1.1)
       '@sigstore/verify': 3.1.1
     transitivePeerDependencies:
       - supports-color
 
-  simple-git@3.36.0:
+  simple-git@3.36.0(supports-color@8.1.1):
     dependencies:
-      '@kwsites/file-exists': 1.1.1
+      '@kwsites/file-exists': 1.1.1(supports-color@8.1.1)
       '@kwsites/promise-deferred': 1.1.1
       '@simple-git/args-pathspec': 1.0.3
       '@simple-git/argv-parser': 1.1.1
@@ -20880,7 +20880,7 @@ snapshots:
 
   smob@1.6.2: {}
 
-  socket.io-adapter@2.5.7:
+  socket.io-adapter@2.5.7(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       ws: 8.21.0
@@ -20889,28 +20889,28 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  socket.io-parser@4.2.6:
+  socket.io-parser@4.2.6(supports-color@8.1.1):
     dependencies:
       '@socket.io/component-emitter': 3.1.2
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  socket.io@4.8.3:
+  socket.io@4.8.3(supports-color@8.1.1):
     dependencies:
       accepts: 1.3.8
       base64id: 2.0.0
       cors: 2.8.6
       debug: 4.4.3(supports-color@8.1.1)
-      engine.io: 6.6.8
-      socket.io-adapter: 2.5.7
-      socket.io-parser: 4.2.6
+      engine.io: 6.6.8(supports-color@8.1.1)
+      socket.io-adapter: 2.5.7(supports-color@8.1.1)
+      socket.io-parser: 4.2.6(supports-color@8.1.1)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
 
-  socks-proxy-agent@8.0.5:
+  socks-proxy-agent@8.0.5(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
@@ -20991,7 +20991,7 @@ snapshots:
       json-stringify-safe: 5.0.1
       readable-stream: 2.3.8
 
-  streamroller@3.1.5:
+  streamroller@3.1.5(supports-color@8.1.1):
     dependencies:
       date-format: 4.0.14
       debug: 4.4.3(supports-color@8.1.1)
@@ -21065,7 +21065,7 @@ snapshots:
 
   style-loader@4.0.0(webpack@5.107.1):
     dependencies:
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
 
   style-search@0.1.0: {}
 
@@ -21081,22 +21081,22 @@ snapshots:
       postcss: 8.5.15
       postcss-selector-parser: 7.1.1
 
-  stylelint-config-ckeditor5@13.0.1(stylelint@16.26.1(typescript@5.3.3)):
+  stylelint-config-ckeditor5@13.0.1(stylelint@16.26.1(supports-color@8.1.1)(typescript@5.3.3)):
     dependencies:
-      '@stylistic/stylelint-plugin': 3.1.3(stylelint@16.26.1(typescript@5.3.3))
-      stylelint: 16.26.1(typescript@5.3.3)
-      stylelint-config-recommended: 16.0.0(stylelint@16.26.1(typescript@5.3.3))
-      stylelint-plugin-ckeditor5-rules: 13.0.1(stylelint@16.26.1(typescript@5.3.3))
+      '@stylistic/stylelint-plugin': 3.1.3(stylelint@16.26.1(supports-color@8.1.1)(typescript@5.3.3))
+      stylelint: 16.26.1(supports-color@8.1.1)(typescript@5.3.3)
+      stylelint-config-recommended: 16.0.0(stylelint@16.26.1(supports-color@8.1.1)(typescript@5.3.3))
+      stylelint-plugin-ckeditor5-rules: 13.0.1(stylelint@16.26.1(supports-color@8.1.1)(typescript@5.3.3))
 
-  stylelint-config-recommended@16.0.0(stylelint@16.26.1(typescript@5.3.3)):
+  stylelint-config-recommended@16.0.0(stylelint@16.26.1(supports-color@8.1.1)(typescript@5.3.3)):
     dependencies:
-      stylelint: 16.26.1(typescript@5.3.3)
+      stylelint: 16.26.1(supports-color@8.1.1)(typescript@5.3.3)
 
-  stylelint-plugin-ckeditor5-rules@13.0.1(stylelint@16.26.1(typescript@5.3.3)):
+  stylelint-plugin-ckeditor5-rules@13.0.1(stylelint@16.26.1(supports-color@8.1.1)(typescript@5.3.3)):
     dependencies:
-      stylelint: 16.26.1(typescript@5.3.3)
+      stylelint: 16.26.1(supports-color@8.1.1)(typescript@5.3.3)
 
-  stylelint@16.26.1(typescript@5.3.3):
+  stylelint@16.26.1(supports-color@8.1.1)(typescript@5.3.3):
     dependencies:
       '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
       '@csstools/css-syntax-patches-for-csstree': 1.1.4(css-tree@3.2.1)
@@ -21258,17 +21258,20 @@ snapshots:
       - bare-abort-controller
       - react-native-b4a
 
-  terser-webpack-plugin@5.6.0(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(esbuild@0.25.12)(postcss@8.5.15)(webpack@5.107.1):
+  terser-webpack-plugin@5.6.0(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.107.1):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.48.0
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
     optionalDependencies:
+      '@minify-html/node': 0.17.1
       '@swc/core': 1.15.40
       cssnano: 7.1.9(postcss@8.5.15)
+      csso: 5.0.5
       esbuild: 0.25.12
+      lightningcss: 1.32.0
       postcss: 8.5.15
 
   terser@5.48.0:
@@ -21350,11 +21353,11 @@ snapshots:
 
   tsscmp@1.0.6: {}
 
-  tuf-js@4.1.0:
+  tuf-js@4.1.0(supports-color@8.1.1):
     dependencies:
       '@tufjs/models': 4.1.0
       debug: 4.4.3(supports-color@8.1.1)
-      make-fetch-happen: 15.0.5
+      make-fetch-happen: 15.0.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -21395,13 +21398,13 @@ snapshots:
       typescript: 5.3.3
       yaml: 2.9.0
 
-  typescript-eslint@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3):
+  typescript-eslint@8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 8.59.4(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3))(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
-      '@typescript-eslint/parser': 8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
-      '@typescript-eslint/typescript-estree': 8.59.4(typescript@5.3.3)
-      '@typescript-eslint/utils': 8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.3.3)
-      eslint: 9.39.4(jiti@2.7.0)
+      '@typescript-eslint/eslint-plugin': 8.59.4(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3))(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
+      '@typescript-eslint/parser': 8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
+      '@typescript-eslint/typescript-estree': 8.59.4(supports-color@8.1.1)(typescript@5.3.3)
+      '@typescript-eslint/utils': 8.59.4(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.3.3)
+      eslint: 9.39.4(jiti@2.7.0)(supports-color@8.1.1)
       typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
@@ -21627,9 +21630,9 @@ snapshots:
 
   void-elements@3.1.0: {}
 
-  wait-on@8.0.5:
+  wait-on@8.0.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
-      axios: 1.16.1
+      axios: 1.16.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       joi: 18.2.1
       lodash: 4.18.1
       minimist: 1.2.8
@@ -21674,7 +21677,7 @@ snapshots:
       import-local: 3.2.0
       interpret: 3.1.1
       rechoir: 0.8.0
-      webpack: 5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1)
+      webpack: 5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-merge: 6.0.1
 
   webpack-merge@4.2.2:
@@ -21691,7 +21694,7 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
-  webpack@5.107.1(@swc/core@1.15.40)(esbuild@0.25.12)(postcss@8.5.15)(webpack-cli@6.0.1):
+  webpack@5.107.1(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1):
     dependencies:
       '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
@@ -21713,7 +21716,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.3
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(esbuild@0.25.12)(postcss@8.5.15)(webpack@5.107.1)
+      terser-webpack-plugin: 5.6.0(@minify-html/node@0.17.1)(@swc/core@1.15.40)(cssnano@7.1.9(postcss@8.5.15))(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.107.1)
       watchpack: 2.5.1
       webpack-sources: 3.5.0
     optionalDependencies:
