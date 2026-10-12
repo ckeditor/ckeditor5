@@ -37,7 +37,7 @@ ClassicEditor
 	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TextPartLanguage, /* ... */ ],
-		toolbar: [ 'textPartLanguage', /* ... */ ]
+		toolbar: [ 'textPartLanguage', /* ... */ ],
 		language: {
 			// Configuration.
 		}

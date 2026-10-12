@@ -137,12 +137,12 @@ Use the following CSS to address the issues with the `z-index` and selector spec
  */
 .ck.ck-content ul,
 .ck.ck-content ul li {
-  list-style-type: inherit;
+	list-style-type: inherit;
 }
 
 .ck.ck-content ul {
-  /* Default user agent style sheet. You can change it to your needs. */
-  padding-left: 40px;
+	/* Default user agent style sheet. You can change it to your needs. */
+	padding-left: 40px;
 }
 ```
 
