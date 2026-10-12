@@ -41,7 +41,7 @@ commands:
           command: sudo corepack disable
       - run:
           name: Install pnpm
-          command: sudo npm i -g pnpm@^11
+          command: sudo npm i -g pnpm@12.8.2
       - restore_cache:
           name: Restore pnpm store cache
           keys:
