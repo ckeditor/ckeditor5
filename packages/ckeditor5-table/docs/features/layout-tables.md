@@ -101,7 +101,7 @@ ClassicEditor
 	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, /* ... */ ],
-		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
+		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -172,7 +172,9 @@ When the {@link module:table/tableproperties~TableProperties} plugin is availabl
 <!-- Uodate main toolbar to table dropdown eventually. In both. -->
 <code-switcher>
 ```js
-import { ClassicEditor, Table, TableLayout, TableProperties, TableToolbar } from 'ckeditor5';
+import {
+	ClassicEditor, Table, TableLayout, TableProperties, TableToolbar
+} from 'ckeditor5';
 
 ClassicEditor
 	.create( {
@@ -180,7 +182,9 @@ ClassicEditor
 		plugins: [ Table, TableLayout, TableProperties, TableToolbar, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties' ]
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties'
+			]
 		}
 	} )
 	.then( /* ... */ )
@@ -206,7 +210,9 @@ ClassicEditor
 		plugins: [ Table, TableLayout, TableToolbar, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableType', /* ... */  ]
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'tableType', /* ... */
+			]
 		}
 	} )
 	.then( /* ... */ )

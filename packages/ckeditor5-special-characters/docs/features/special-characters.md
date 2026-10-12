@@ -71,8 +71,8 @@ ClassicEditor
 	.create( {
 		// ... Other configuration options ...
 		plugins: [
-			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
-		],
+			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji
+		]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -113,8 +113,8 @@ ClassicEditor
 	.create( {
 		// ... Other configuration options ...
 		plugins: [
-			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
-		],
+			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended
+		]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -151,8 +151,8 @@ ClassicEditor
 	.create( {
 		// ... Other configuration options ...
 		plugins: [
-			SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical,
-		],
+			SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical
+		]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

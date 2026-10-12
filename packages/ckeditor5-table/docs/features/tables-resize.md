@@ -52,7 +52,7 @@ ClassicEditor
 	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableColumnResize, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
+		toolbar: [ 'insertTable', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

@@ -38,7 +38,7 @@ ClassicEditor
 	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ PageBreak, /* ... */ ],
-		toolbar: [ 'pageBreak', /* ... */ ],
+		toolbar: [ 'pageBreak', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
