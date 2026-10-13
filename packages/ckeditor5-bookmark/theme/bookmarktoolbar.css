@@ -4,6 +4,11 @@
  */
 
 
+:root,
+:host {
+	--ck-bookmark-toolbar-preview-font-size: var(--ck-font-size-control);
+}
+
 .ck.ck-bookmark-balloon {
 	& .ck.ck-toolbar {
 		& > .ck-toolbar__items {
@@ -16,6 +21,7 @@
 	padding: 0 var(--ck-spacing-medium, var(--ck-spacing-base));
 	max-width: var(--ck-input-width);
 	min-width: 3em;
+	font-size: var(--ck-bookmark-toolbar-preview-font-size);
 	font-weight: normal;
 	text-overflow: ellipsis;
 	text-align: center;
