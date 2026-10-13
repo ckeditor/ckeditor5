@@ -5,6 +5,9 @@
 
 :root,
 :host {
+	/* Size */
+	--ck-menu-bar-panel-max-width: 75vw;
+
 	/* Radius */
 	/* Uniform (fully rounded) corners by default; set this to initial to restore the attached-corner (squared connecting edge) look, as the legacy theme does. */
 	--ck-menu-bar-panel-uniform-border-radius: var(--ck-radius-md);
@@ -26,8 +29,17 @@
 	/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
 	z-index: var(--ck-z-panel, var(--ck-z-overlay));
 	/* Backward compatibility: falls back to legacy --ck-menu-bar-menu-max-width if overridden. */
-	max-width: var(--ck-menu-bar-menu-max-width, 75vw);
+	max-width: var(--ck-menu-bar-menu-max-width, var(--ck-menu-bar-panel-max-width));
 	position: absolute;
+
+	/* Keep menus with items at least as wide as the item min-width, but never wider than the max-width.
+	   Otherwise, the items would stick out of the panel on narrow viewports. */
+	&:has(> .ck-list) {
+		min-width: min(
+			var(--ck-menu-bar-menu-item-min-width),
+			var(--ck-menu-bar-menu-max-width, var(--ck-menu-bar-panel-max-width))
+		);
+	}
 
 	/* Do not limit the width of panels with content that cannot shrink, for example the color grid.
 	   Otherwise, it would stick out of the panel. */
