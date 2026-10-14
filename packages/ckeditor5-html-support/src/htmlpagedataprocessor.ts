@@ -45,7 +45,10 @@ export class HtmlPageDataProcessor extends HtmlDataProcessor {
 		// Convert DOM DocumentFragment to view DocumentFragment.
 		const viewFragment = this.domConverter.domToView(
 			domFragment,
-			{ skipComments: this.skipComments }
+			{
+				skipComments: this.skipComments,
+				skipProcessingInstructions: this.skipProcessingInstructions
+			}
 		) as ViewDocumentFragment;
 
 		const writer = new ViewUpcastWriter( viewFragment.document );

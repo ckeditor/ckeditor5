@@ -245,4 +245,121 @@ describe( 'HtmlPageDataProcessor', () => {
 			);
 		} );
 	} );
+
+	describe( 'processing instructions', () => {
+		// Whether `<?target data?>` in an HTML string becomes a processing instruction node at all depends on
+		// the browser - engines without that support still parse it into a comment. Tests whose outcome is the
+		// same either way (both node types are skipped by default) run unconditionally.
+		const supportsProcessingInstructions = new DOMParser()
+			.parseFromString( '<body><?foo bar?></body>', 'text/html' )
+			.body.firstChild.nodeType === Node.PROCESSING_INSTRUCTION_NODE;
+
+		it( 'should not treat the xml declaration as a processing instruction', () => {
+			// `xml` is an excluded target, so `<?xml ...?>` is never parsed into a processing instruction.
+			// On top of that, the declaration is stripped before parsing and kept as a custom property.
+			const fragment = dataProcessor.toView(
+				'<?xml version="1.0" encoding="UTF-8"?>' +
+				'<html>' +
+					'<head><title>Testing full page</title></head>' +
+					'<body style="background: red">foobar</body>' +
+				'</html>'
+			);
+
+			expect( _stringifyView( fragment ) ).toBe( 'foobar' );
+			expect( fragment.getCustomProperty( '$fullPageXmlDeclaration' ) ).toBe( '<?xml version="1.0" encoding="UTF-8"?>' );
+		} );
+
+		it( 'should skip processing instructions in the body of a full page', () => {
+			const fragment = dataProcessor.toView(
+				'<html>' +
+					'<head><title>Testing full page</title></head>' +
+					'<body style="background: red">' +
+						'<?instruction 1?>' +
+						'foobar' +
+						'<?instruction 2?>' +
+					'</body>' +
+				'</html>'
+			);
+
+			expect( _stringifyView( fragment ) ).toBe( 'foobar' );
+			expect( fragment.getCustomProperty( '$fullPageDocument' ) ).toBe(
+				'<html><head><title>Testing full page</title></head><body style="background: red"></body></html>'
+			);
+		} );
+
+		it( 'should extract the xml declaration even when the body contains processing instructions', () => {
+			const fragment = dataProcessor.toView(
+				'<?xml version="1.0" encoding="UTF-8"?>' +
+				'<!DOCTYPE html>' +
+				'<html>' +
+					'<head><title>Testing full page</title></head>' +
+					'<body style="background: red">' +
+						'<?instruction 1?>' +
+						'foobar' +
+					'</body>' +
+				'</html>'
+			);
+
+			expect( _stringifyView( fragment ) ).toBe( 'foobar' );
+			expect( fragment.getCustomProperty( '$fullPageDocType' ) ).toBe( '<!DOCTYPE html>' );
+			expect( fragment.getCustomProperty( '$fullPageXmlDeclaration' ) ).toBe( '<?xml version="1.0" encoding="UTF-8"?>' );
+		} );
+
+		it( 'should skip processing instructions in data that is not a full page', () => {
+			const fragment = dataProcessor.toView( '<?instruction 1?><p>foo</p>' );
+
+			expect( _stringifyView( fragment ) ).toBe( '<p>foo</p>' );
+			expect( fragment.getCustomProperty( '$fullPageDocument' ) ).toBeUndefined();
+		} );
+
+		it.skipIf( !supportsProcessingInstructions )( 'should preserve processing instructions when the flag is `false`', () => {
+			dataProcessor.skipProcessingInstructions = false;
+
+			const fragment = dataProcessor.toView(
+				'<html>' +
+					'<head><title>Testing full page</title></head>' +
+					'<body style="background: red">' +
+						'<?instruction 1?>' +
+						'foobar' +
+					'</body>' +
+				'</html>'
+			);
+
+			expect( _stringifyView( fragment ) ).toBe( '<$processingInstruction></$processingInstruction>foobar' );
+		} );
+
+		it.skipIf( !supportsProcessingInstructions )( 'should keep head processing instructions in the full page document', () => {
+			// The skeleton is taken from the parsed document, so anything left in `<head>` survives there
+			// even though it never reaches the view.
+			const fragment = dataProcessor.toView(
+				'<html>' +
+					'<head><title>Testing full page</title><?instruction 1?></head>' +
+					'<body style="background: red">foobar</body>' +
+				'</html>'
+			);
+
+			expect( _stringifyView( fragment ) ).toBe( 'foobar' );
+			expect( fragment.getCustomProperty( '$fullPageDocument' ) ).toContain( 'instruction 1' );
+		} );
+
+		it( 'should round trip a full page containing processing instructions', () => {
+			const input =
+				'<html>' +
+					'<head><title>Testing full page</title></head>' +
+					'<body style="background: red">' +
+						'<?instruction 1?>' +
+						'<p>foo</p>' +
+					'</body>' +
+				'</html>';
+
+			expect( dataProcessor.toData( dataProcessor.toView( input ) ) ).toBe(
+				'<html>' +
+					'<head><title>Testing full page</title></head>' +
+					'<body style="background: red">' +
+						'<p>foo</p>' +
+					'</body>' +
+				'</html>'
+			);
+		} );
+	} );
 } );

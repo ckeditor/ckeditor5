@@ -67,4 +67,10 @@ export interface DataProcessor {
 	 * If `false`, comment nodes will be converted to `$comment`. Otherwise comment nodes are ignored.
 	 */
 	skipComments?: boolean;
+
+	/**
+	 * If `false`, processing instruction nodes (for example `<?target data?>`) will be converted.
+	 * Otherwise, processing instruction nodes are ignored.
+	 */
+	skipProcessingInstructions?: boolean;
 }

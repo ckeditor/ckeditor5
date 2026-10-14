@@ -27,11 +27,13 @@ describe( 'HtmlDataProcessor', () => {
 			expect( dataProcessor ).toHaveProperty( 'domConverter' );
 			expect( dataProcessor ).toHaveProperty( 'htmlWriter' );
 			expect( dataProcessor ).toHaveProperty( 'skipComments' );
+			expect( dataProcessor ).toHaveProperty( 'skipProcessingInstructions' );
 
 			expect( dataProcessor.domParser ).toBeInstanceOf( DOMParser );
 			expect( dataProcessor.domConverter ).toBeInstanceOf( ViewDomConverter );
 			expect( dataProcessor.htmlWriter ).toBeInstanceOf( BasicHtmlWriter );
 			expect( dataProcessor.skipComments ).toBe( true );
+			expect( dataProcessor.skipProcessingInstructions ).toBe( true );
 		} );
 	} );
 
@@ -453,6 +455,95 @@ describe( 'HtmlDataProcessor', () => {
 			);
 
 			expect( _stringifyView( fragment ) ).toBe( '<$comment></$comment><p>foo<$comment></$comment>bar</p><$comment></$comment>' );
+		} );
+	} );
+
+	describe( 'skipProcessingInstructions', () => {
+		// Whether `<?target data?>` in an HTML string is parsed into a processing instruction node at all
+		// depends on the browser - engines without that support still parse it into a comment. The flag
+		// pass-through is therefore asserted on the converter, and only the end-to-end tests are conditional.
+		const supportsProcessingInstructions = new DOMParser()
+			.parseFromString( '<body><?foo bar?></body>', 'text/html' )
+			.body.firstChild.nodeType === Node.PROCESSING_INSTRUCTION_NODE;
+
+		it( 'should pass the default flags to the DOM converter', () => {
+			const spy = vi.spyOn( dataProcessor.domConverter, 'domToView' );
+
+			dataProcessor.toView( '<p>foo</p>' );
+
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( expect.objectContaining( {
+				skipComments: true,
+				skipProcessingInstructions: true
+			} ) );
+		} );
+
+		it( 'should pass the changed flags to the DOM converter', () => {
+			const spy = vi.spyOn( dataProcessor.domConverter, 'domToView' );
+
+			dataProcessor.skipComments = false;
+			dataProcessor.skipProcessingInstructions = false;
+
+			dataProcessor.toView( '<p>foo</p>' );
+
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( expect.objectContaining( {
+				skipComments: false,
+				skipProcessingInstructions: false
+			} ) );
+		} );
+
+		it( 'should pass the flags independently of each other', () => {
+			const spy = vi.spyOn( dataProcessor.domConverter, 'domToView' );
+
+			dataProcessor.skipComments = false;
+
+			dataProcessor.toView( '<p>foo</p>' );
+
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( expect.objectContaining( {
+				skipComments: false,
+				skipProcessingInstructions: true
+			} ) );
+		} );
+
+		it.skipIf( !supportsProcessingInstructions )( 'should skip processing instructions when `true`', () => {
+			const fragment = dataProcessor.toView(
+				'<?instruction 1?>' +
+				'<p>' +
+					'foo' +
+					'<?instruction 2?>' +
+					'bar' +
+				'</p>' +
+				'<?instruction 3?>'
+			);
+
+			expect( _stringifyView( fragment ) ).toBe( '<p>foobar</p>' );
+		} );
+
+		it.skipIf( !supportsProcessingInstructions )( 'should preserve processing instructions when `false`', () => {
+			dataProcessor.skipProcessingInstructions = false;
+
+			const fragment = dataProcessor.toView(
+				'<?instruction 1?>' +
+				'<p>' +
+					'foo' +
+					'<?instruction 2?>' +
+					'bar' +
+				'</p>' +
+				'<?instruction 3?>'
+			);
+
+			expect( _stringifyView( fragment ) ).toBe(
+				'<$processingInstruction></$processingInstruction>' +
+				'<p>foo<$processingInstruction></$processingInstruction>bar</p>' +
+				'<$processingInstruction></$processingInstruction>'
+			);
+		} );
+
+		it.skipIf( !supportsProcessingInstructions )( 'should still skip processing instructions when only comments are preserved', () => {
+			dataProcessor.skipComments = false;
+
+			const fragment = dataProcessor.toView( '<p>foo<!-- c --><?instruction 1?>bar</p>' );
+
+			expect( _stringifyView( fragment ) ).toBe( '<p>foo<$comment></$comment>bar</p>' );
 		} );
 	} );
 } );

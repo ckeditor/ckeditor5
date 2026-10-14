@@ -32,6 +32,7 @@ import {
 	type ShadowSelection,
 	isText,
 	isComment,
+	isProcessingInstruction,
 	isValidAttributeName,
 	first,
 	getParentElement,
@@ -447,7 +448,12 @@ export class ViewDomConverter {
 					this.bindDocumentFragments( domElement, viewElementOrFragment );
 				}
 			} else if ( viewElementOrFragment.is( 'uiElement' ) ) {
-				if ( viewElementOrFragment.name === '$comment' ) {
+				if ( viewElementOrFragment.name === '$processingInstruction' ) {
+					domElement = this._domDocument.createProcessingInstruction(
+						viewElementOrFragment.getCustomProperty( '$processingTarget' ) as string,
+						viewElementOrFragment.getCustomProperty( '$processingData' ) as string
+					);
+				} else if ( viewElementOrFragment.name === '$comment' ) {
 					domElement = this._domDocument.createComment( viewElementOrFragment.getCustomProperty( '$rawContent' ) as string );
 				} else {
 					// UIElement has its own render() method (see https://github.com/ckeditor/ckeditor5/issues/799).
@@ -745,6 +751,7 @@ export class ViewDomConverter {
 	 * @param options.keepOriginalCase If `false`, node's tag name will be converted to lower case. False by default.
 	 * @param options.skipComments If `false`, comment nodes will be converted to `$comment`
 	 * {@link module:engine/view/uielement~ViewUIElement view UI elements}. False by default.
+	 * @param options.skipProcessingInstructions If `false`, processing instruction nodes will be converted to `$processingInstruction`
 	 * @returns Converted node or document fragment or `null` if DOM node is a {@link module:engine/view/filler filler}
 	 * or the given node is an empty text node.
 	 */
@@ -755,6 +762,7 @@ export class ViewDomConverter {
 			withChildren?: boolean;
 			keepOriginalCase?: boolean;
 			skipComments?: boolean;
+			skipProcessingInstructions?: boolean;
 		} = {}
 	): ViewNode | ViewDocumentFragment | null {
 		const inlineNodes: Array<ViewNode> = [];
@@ -1427,6 +1435,7 @@ export class ViewDomConverter {
 			withChildren?: boolean;
 			keepOriginalCase?: boolean;
 			skipComments?: boolean;
+			skipProcessingInstructions?: boolean;
 		},
 		inlineNodes: Array<ViewNode>
 	): IterableIterator<ViewNode | ViewDocumentFragment | null> {
@@ -1444,6 +1453,10 @@ export class ViewDomConverter {
 		}
 
 		if ( isComment( domNode ) && options.skipComments ) {
+			return null;
+		}
+
+		if ( isProcessingInstruction( domNode ) && options.skipProcessingInstructions ) {
 			return null;
 		}
 
@@ -1512,6 +1525,13 @@ export class ViewDomConverter {
 				// Comment node is also treated as an element with raw data.
 				if ( isComment( domNode ) ) {
 					viewElement._setCustomProperty( '$rawContent', domNode.data );
+
+					return viewElement;
+				}
+
+				if ( isProcessingInstruction( domNode ) ) {
+					viewElement._setCustomProperty( '$processingTarget', domNode.target );
+					viewElement._setCustomProperty( '$processingData', domNode.data );
 
 					return viewElement;
 				}
@@ -1855,6 +1875,10 @@ export class ViewDomConverter {
 	private _createViewElement( node: DomNode, options: { keepOriginalCase?: boolean } ): ViewElement {
 		if ( isComment( node ) ) {
 			return new ViewUIElement( this.document, '$comment' );
+		}
+
+		if ( isProcessingInstruction( node ) ) {
+			return new ViewUIElement( this.document, '$processingInstruction' );
 		}
 
 		const viewName = options.keepOriginalCase ? ( node as DomElement ).tagName : ( node as DomElement ).tagName.toLowerCase();

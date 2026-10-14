@@ -101,6 +101,7 @@ export { toUnit, type ToUnitHelper } from './dom/tounit.js';
 export { indexOf } from './dom/indexof.js';
 export { insertAt } from './dom/insertat.js';
 export { isComment } from './dom/iscomment.js';
+export { isProcessingInstruction } from './dom/isprocessinginstruction.js';
 export { isDomSelectionBackward } from './dom/isdomselectionbackward.js';
 export { isOffline } from './dom/isoffline.js';
 export { isNode } from './dom/isnode.js';

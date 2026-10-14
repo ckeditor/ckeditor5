@@ -393,6 +393,43 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes[ 0 ] ).to.be.an.instanceof( HTMLImageElement );
 		} );
 
+		it( 'should remove the processing instruction and add a child element', () => {
+			// A processing instruction in the DOM is compared against an element expected in its place.
+			// Without a dedicated check it would be treated as an element and have its `tagName` read.
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			viewRoot._appendChild( viewImg );
+
+			const domInstruction = document.createProcessingInstruction( 'instruction', 'from the user-land' );
+			domRoot.appendChild( domInstruction );
+
+			renderer.markToSync( 'children', viewRoot );
+
+			expect( () => renderer.render() ).not.toThrow();
+
+			expect( domRoot.childNodes.length ).toBe( 1 );
+			expect( domRoot.childNodes[ 0 ] ).toBeInstanceOf( HTMLImageElement );
+		} );
+
+		it( 'should render a processing instruction coming from the view in place of an element', () => {
+			// The mirrored case - the processing instruction is the expected node, not the actual one.
+			const viewInstruction = new ViewUIElement( viewDocument, '$processingInstruction' );
+
+			viewInstruction._setCustomProperty( '$processingTarget', 'instruction' );
+			viewInstruction._setCustomProperty( '$processingData', 'from the view' );
+
+			viewRoot._appendChild( viewInstruction );
+
+			domRoot.appendChild( document.createElement( 'p' ) );
+
+			renderer.markToSync( 'children', viewRoot );
+
+			expect( () => renderer.render() ).not.toThrow();
+
+			expect( domRoot.childNodes.length ).toBe( 1 );
+			expect( domRoot.childNodes[ 0 ].nodeType ).toBe( Node.PROCESSING_INSTRUCTION_NODE );
+			expect( domRoot.childNodes[ 0 ].target ).toBe( 'instruction' );
+		} );
+
 		it( 'should change element if it is different', () => {
 			const viewImg = new ViewElement( viewDocument, 'img' );
 			viewRoot._appendChild( viewImg );

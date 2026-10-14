@@ -211,6 +211,27 @@ describe( 'PasteFromOffice - filters', () => {
 				expect( body.getChild( 0 ).name ).toBe( 'p' );
 			} );
 
+			it( 'should remove all processing instructions', () => {
+				const html = '<body><?instruction 1?><p>Foo Bar</p><?instruction 2?></body>';
+				const { body } = parsePasteOfficeHtml( html );
+
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+
+				expect( body.childCount ).toBe( 1 );
+
+				expect( body.getChild( 0 ).name ).toBe( 'p' );
+			} );
+
+			it( 'should remove processing instructions nested in elements', () => {
+				const html = '<body><p>Foo<?instruction 1?>Bar</p></body>';
+				const { body } = parsePasteOfficeHtml( html );
+
+				const paragraph = body.getChild( 0 );
+
+				expect( paragraph.name ).toBe( 'p' );
+				expect( Array.from( paragraph.getChildren() ).every( child => child.is( '$text' ) ) ).toBe( true );
+			} );
+
 			// See https://github.com/ckeditor/ckeditor5/issues/15333.
 			describe( 'should remove MS Windows specific tags to prevent incorrect parsing of HTML', () => {
 				it( 'should remove <o:SmartTagType> empty tag (with or without `/` at the end)', () => {
