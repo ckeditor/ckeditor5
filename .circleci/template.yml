@@ -31,9 +31,6 @@ commands:
     steps:
       - install_ssh_keys_command
       - run:
-          name: Disable Corepack
-          command: sudo corepack disable
-      - run:
           name: Install pnpm
           command: sudo npm i -g pnpm@12.8.2
       - run:
@@ -57,7 +54,7 @@ commands:
 jobs:
   cke5_manual:
     docker:
-      - image: cimg/node:24.11.0-browsers
+      - image: cimg/node:26.10.0-browsers
     resource_class: large
     steps:
       - checkout_command
@@ -75,7 +72,7 @@ jobs:
 
   cke5_validators:
     docker:
-      - image: cimg/node:24.11.0
+      - image: cimg/node:26.10.0
     resource_class: medium
     steps:
       - checkout_command
@@ -123,7 +120,7 @@ jobs:
 
   release_prepare:
     docker:
-      - image: cimg/node:24.11.0
+      - image: cimg/node:26.10.0
     resource_class: large
     steps:
       - checkout_command
@@ -140,7 +137,7 @@ jobs:
 
   cke5_coverage:
     docker:
-      - image: cimg/node:24.11.0
+      - image: cimg/node:26.10.0
     resource_class: small
     steps:
       - checkout_command

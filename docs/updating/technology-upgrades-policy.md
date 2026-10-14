@@ -4,7 +4,7 @@ meta-title: Policy for technology upgrades | CKEditor 5 Documentation
 meta-description: How and when CKEditor 5 is upgrading the core technologies that it is built upon.
 category: updating
 order: 50
-modified_at: 2025-12-11
+modified_at: 2026-10-13
 ---
 
 # Technology upgrades policy
@@ -79,9 +79,9 @@ The table below summarizes how technology-baseline updates affect three key grou
 
 ### Node.js
 
-**Approach:** We will update the development environment to the [latest Active Long-Term Support (LTS) version of Node.js](https://nodejs.org/en/about/previous-releases) approximately every 6 months. We may update more often if Node releases critical security fixes that impact development or CI environments.
+**Approach:** We will use the [latest Long-Term Support (LTS) version of Node.js](https://nodejs.org/en/about/previous-releases) in the development environment. Node.js publishes one major release per year, so we will upgrade once a year, after the new version enters the LTS phase. We may update more often if Node.js releases critical security fixes that impact development or CI environments.
 
-**Reasoning:** The Node.js community recommends using either Active LTS or Maintenance LTS for production environments. We chose Active LTS because it provides high stability and security of an LTS release while giving us access to more modern features than versions in the older Maintenance LTS phase.
+**Reasoning:** The Node.js community recommends LTS versions for production environments. Under the [Node.js release schedule](https://nodejs.org/en/blog/announcements/evolving-the-nodejs-release-schedule), every major release becomes LTS and stays supported for 30 months, so each version we adopt remains supported well beyond our next upgrade. We intentionally do not target versions in the Current phase, which Node.js reserves for stabilization and which gives library authors time to add support.
 
 ### Framework integrations (Vue, Angular, React)
 
