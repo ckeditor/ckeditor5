@@ -240,7 +240,7 @@ function getTemplateConfigFixture() {
 		jobs: {
 			cke5_manual: {
 				docker: [
-					{ image: 'cimg/node:24.11.0-browsers' }
+					{ image: 'cimg/node:26.10.0-browsers' }
 				],
 				environment: {
 					EXISTING_ENV: 'keep-me'
@@ -258,7 +258,7 @@ function getTemplateConfigFixture() {
 			},
 			cke5_coverage: {
 				docker: [
-					{ image: 'cimg/node:24.11.0' }
+					{ image: 'cimg/node:26.10.0' }
 				],
 				steps: [
 					'checkout_command',
