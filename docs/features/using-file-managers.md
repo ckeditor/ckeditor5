@@ -38,7 +38,6 @@ Uploadcare is a modern file management platform with multiple integrations with 
 With Uploadcare you can:
 * Upload images directly from:
 	* Dropbox,
-	* Facebook,
 	* Google Drive,
 	* Google Photos,
 	* OneDrive,
