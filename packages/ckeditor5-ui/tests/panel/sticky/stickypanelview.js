@@ -611,6 +611,88 @@ describe( 'StickyPanelView', () => {
 				expect( view.isSticky ).toBe( false );
 				expect( view._isStickyToTheBottomOfLimiter ).toBe( false );
 			} );
+
+			// Listeners reading the layout at this point (such as the contextual balloon repositioning in the classic editor)
+			// would otherwise see the panel out of the flow with its placeholder already hidden, which makes the browser
+			// scroll anchoring scroll the page back.
+			it( 'is false and the bottom offset is reset when view.isSticky changes to false', () => {
+				vi.spyOn( limiterElement, 'getBoundingClientRect' ).mockReturnValue( {
+					top: -80,
+					bottom: 60,
+					height: 140,
+					width: 100,
+					left: 0,
+					right: 100
+				} );
+
+				vi.spyOn( contentPanelElement, 'getBoundingClientRect' ).mockReturnValue( {
+					height: 20
+				} );
+
+				view.isActive = true;
+
+				expect( view._isStickyToTheBottomOfLimiter ).toBe( true );
+				expect( contentPanelElement.style.bottom ).not.toBe( '' );
+
+				const domStateOnUnstick = vi.fn();
+
+				view.on( 'change:isSticky', () => {
+					domStateOnUnstick( {
+						hasBottomLimitClass: contentPanelElement.classList.contains( 'ck-sticky-panel__content_sticky_bottom-limit' ),
+						bottom: contentPanelElement.style.bottom,
+						marginLeft: contentPanelElement.style.marginLeft,
+						placeholderDisplay: placeholderElement.style.display
+					} );
+				} );
+
+				view.isActive = false;
+
+				expect( domStateOnUnstick ).toHaveBeenCalledExactlyOnceWith( {
+					hasBottomLimitClass: false,
+					bottom: '',
+					marginLeft: '',
+					placeholderDisplay: 'none'
+				} );
+			} );
+
+			it( 'is false and the top offset is reset when view.isSticky changes to false', () => {
+				vi.spyOn( limiterElement, 'getBoundingClientRect' ).mockReturnValue( {
+					top: -10,
+					bottom: 90,
+					height: 100,
+					width: 100,
+					left: 0,
+					right: 100
+				} );
+
+				vi.spyOn( contentPanelElement, 'getBoundingClientRect' ).mockReturnValue( {
+					height: 20
+				} );
+
+				view.isActive = true;
+
+				expect( view.isSticky ).toBe( true );
+				expect( view._isStickyToTheBottomOfLimiter ).toBe( false );
+				expect( contentPanelElement.style.top ).not.toBe( '' );
+
+				const domStateOnUnstick = vi.fn();
+
+				view.on( 'change:isSticky', () => {
+					domStateOnUnstick( {
+						hasBottomLimitClass: contentPanelElement.classList.contains( 'ck-sticky-panel__content_sticky_bottom-limit' ),
+						top: contentPanelElement.style.top,
+						placeholderDisplay: placeholderElement.style.display
+					} );
+				} );
+
+				view.isActive = false;
+
+				expect( domStateOnUnstick ).toHaveBeenCalledExactlyOnceWith( {
+					hasBottomLimitClass: false,
+					top: '',
+					placeholderDisplay: 'none'
+				} );
+			} );
 		} );
 
 		describe( 'after scrolling', () => {

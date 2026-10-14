@@ -420,11 +420,14 @@ export class StickyPanelView extends View {
 	 * @private
 	 */
 	private _unstick() {
-		this.isSticky = false;
+		// Reset the offsets first so that `change:isSticky` listeners reading the layout see the panel back in the flow.
+		// Otherwise, the panel would still be absolutely positioned at the bottom of the limiter while the placeholder
+		// is already hidden, and the browser scroll anchoring would scroll the page back by the panel height.
 		this._isStickyToTheBottomOfLimiter = false;
 		this._stickyTopOffset = null;
 		this._stickyBottomOffset = null;
 		this._marginLeft = null;
+		this.isSticky = false;
 	}
 
 	/**
