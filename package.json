@@ -12,7 +12,7 @@
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
   "engines": {
-    "node": ">=24.11.0",
+    "node": ">=26.10.0",
     "pnpm": "^12.8.2",
     "yarn": "\n\n┌─────────────────────────┐\n│  Hey, we use pnpm now!  │\n└─────────────────────────┘\n\n"
   },

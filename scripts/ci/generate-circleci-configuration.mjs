@@ -64,7 +64,7 @@ batchJobNames.forEach( ( jobName, batchIndex ) => {
 	const coverageFile = batchCoverageFiles[ batchIndex ];
 
 	config.jobs[ jobName ] = {
-		docker: [ { image: 'cimg/node:24.11.0-browsers' } ],
+		docker: [ { image: 'cimg/node:26.10.0-browsers' } ],
 		resource_class: 'large.gen2',
 		steps: [
 			'checkout_command',
