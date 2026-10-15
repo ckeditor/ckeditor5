@@ -86,7 +86,7 @@
     "svgo": "^3.3.5",
     "syncpack": "^15.3.2",
     "typescript": "5.8.3",
-    "umberto": "^10.7.5",
+    "umberto": "^10.9.1",
     "upath": "^2.0.0",
     "vite": "^8.2.2",
     "vitest": "catalog:"
