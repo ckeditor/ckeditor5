@@ -31,22 +31,30 @@ overrides:
   'undici@^6': '^6.28.0'
   'uuid@^8': '^14.0.0'
   'yauzl@^2': '^3.2.1'
-  # Remove after `v49` is released.
-  '@ckeditor/ckeditor5-react>ckeditor5': '>=48.0.0 || ^0.0.0-nightly || ^0.0.0-internal'
 
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
+  # Company-owned scopes.
   - '@ckeditor/*'
   - '@cksource/*'
-  - '*ckeditor5*'
+  # Company-owned unscoped names, listed one by one.
+  - 'ckeditor5'
+  - 'ckeditor5-premium-features'
+  - 'ckeditor5-collaboration'
+  - 'eslint-config-ckeditor5'
+  - 'eslint-plugin-ckeditor5-rules'
   - 'umberto'
 
 shellEmulator: true
 shamefullyHoist: true
 preferFrozenLockfile: true
+autoDedupe: true
 linkWorkspacePackages: true
 ignoreWorkspaceCycles: true
 verifyDepsBeforeRun: false
+# Only registry tarballs may enter the tree as subdependencies. Direct git/tarball
+# dependencies stay allowed - see ckeditor/ckeditor5#20216.
+blockExoticSubdeps: true
 
 catalog:
   '@vitest/browser-playwright': '^5.0.0'

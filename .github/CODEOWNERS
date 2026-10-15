@@ -1,6 +1,9 @@
-scripts/release/utils/config.js     @ckeditor/ckeditor-5-admins
-packages/*/LICENSE.md               @ckeditor/ckeditor-5-admins
-
-packages/*/package.json             @ckeditor/ckeditor-5-platform
+.github/                            @ckeditor/ckeditor-5-platform
+.circleci/                          @ckeditor/ckeditor-5-platform
+scripts/                            @ckeditor/ckeditor-5-platform
 package.json                        @ckeditor/ckeditor-5-platform
 pnpm-lock.yaml                      @ckeditor/ckeditor-5-platform
+pnpm-workspace.yaml                 @ckeditor/ckeditor-5-platform
+
+# Last match wins: keep the admins overrides below.
+LICENSE.md                          @ckeditor/ckeditor-5-admins

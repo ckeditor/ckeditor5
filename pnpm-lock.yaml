@@ -217,7 +217,6 @@ overrides:
   undici@^6: ^6.28.0
   uuid@^8: ^14.0.0
   yauzl@^2: ^3.2.1
-  '@ckeditor/ckeditor5-react>ckeditor5': '>=48.0.0 || ^0.0.0-nightly || ^0.0.0-internal'
 
 importers:
 
@@ -263,11 +262,11 @@ importers:
         specifier: ^5.0.1
         version: 5.0.2
       '@ckeditor/ckeditor5-mermaid':
-        specifier: ckeditor/ckeditor5-mermaid#v0.0.7
+        specifier: github:ckeditor/ckeditor5-mermaid#68116cca61fcc93c0026bd5499c9fd5e39391e03
         version: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/68116cca61fcc93c0026bd5499c9fd5e39391e03(@ckeditor/ckeditor5-core@packages+ckeditor5-core)(ckeditor5@packages+ckeditor5)
       '@ckeditor/ckeditor5-react':
-        specifier: ^12.0.0-alpha.1
-        version: 12.0.0-alpha.1(ckeditor5@packages+ckeditor5)(react@18.3.1)
+        specifier: ^12.0.0
+        version: 12.0.0(ckeditor5@packages+ckeditor5)(react@18.3.1)
       '@eslint/css-tree':
         specifier: ^4.0.4
         version: 4.0.4
@@ -4617,10 +4616,10 @@ packages:
       '@ckeditor/ckeditor5-core': '>=48.0.0 || ^0.0.0-nightly'
       ckeditor5: '>=48.0.0 || ^0.0.0-nightly'
 
-  '@ckeditor/ckeditor5-react@12.0.0-alpha.1':
-    resolution: {integrity: sha512-Xcz8MS/lgBhqbtUg7q8qKS/NvY8LUQmxUJcSuiummTe4HiFTIFfYSJBQBwpTz7kq58Y/NJurBAknDO4Gpdcydw==}
+  '@ckeditor/ckeditor5-react@12.0.0':
+    resolution: {integrity: sha512-+wB8tcIhq1ZmcmzmrPYPWOpsOmjEHM9QpLKH1Ofzks0hNA1HH2iAwBSNhGHEYj3UIRT6naeS89wB2q/gdJyKXA==}
     peerDependencies:
-      ckeditor5: '>=48.0.0 || ^0.0.0-nightly || ^0.0.0-internal'
+      ckeditor5: '>=49.0.0 || ^0.0.0-nightly || ^0.0.0-internal'
       react: ^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   '@ckeditor/typedoc-plugins@62.3.0':
@@ -10419,7 +10418,7 @@ snapshots:
       es-toolkit: 1.52.0
       mermaid: 11.17.2
 
-  '@ckeditor/ckeditor5-react@12.0.0-alpha.1(ckeditor5@packages+ckeditor5)(react@18.3.1)':
+  '@ckeditor/ckeditor5-react@12.0.0(ckeditor5@packages+ckeditor5)(react@18.3.1)':
     dependencies:
       '@ckeditor/ckeditor5-integrations-common': 3.2.0(ckeditor5@packages+ckeditor5)
       ckeditor5: link:packages/ckeditor5
