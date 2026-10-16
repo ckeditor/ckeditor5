@@ -13,6 +13,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { global } from '@ckeditor/ckeditor5-utils';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { TooltipManager } from '../../src/tooltipmanager.js';
 import { Editor } from '@ckeditor/ckeditor5-core';
@@ -48,6 +49,39 @@ describe( 'TooltipManager', () => {
 		await editor.destroy();
 
 		element.remove();
+	} );
+
+	it( 'should return focus to the editor with one Escape press when a toolbar tooltip is visible', async () => {
+		await editor.destroy();
+		editor = await ClassicEditor.create( element, {
+			plugins: [ Paragraph, Bold, Italic ],
+			toolbar: [ 'bold', 'italic' ]
+		} );
+
+		vi.useFakeTimers();
+
+		try {
+			editor.editing.view.focus();
+			const editable = editor.ui.getEditableElement();
+			editable.dispatchEvent( new KeyboardEvent( 'keydown', {
+				key: 'F10', keyCode: 121, altKey: true, bubbles: true, cancelable: true
+			} ) );
+
+			const button = editor.ui.view.toolbar.items.first.element;
+			expect( document.activeElement ).toBe( button );
+			utils.waitForTheTooltipToShow();
+			expect( editor.ui.tooltipManager.balloonPanelView.isVisible ).toBe( true );
+
+			button.dispatchEvent( new KeyboardEvent( 'keydown', {
+				key: 'Escape', keyCode: 27, bubbles: true, cancelable: true
+			} ) );
+
+			expect( document.activeElement ).toBe( editable );
+			utils.waitForTheTooltipToHide();
+			expect( editor.ui.tooltipManager.balloonPanelView.isVisible ).toBe( false );
+		} finally {
+			vi.useRealTimers();
+		}
 	} );
 
 	describe( 'constructor()', () => {
@@ -1034,7 +1068,7 @@ describe( 'TooltipManager', () => {
 		} );
 
 		describe( 'on keydown', () => {
-			it( 'should work if `Escape` keyboard keydown event occurs and tooltip opened', () => {
+			it( 'should hide the tooltip without consuming the Escape keydown event', () => {
 				utils.dispatchMouseEnter( elements.a );
 				utils.waitForTheTooltipToShow();
 
@@ -1042,13 +1076,15 @@ describe( 'TooltipManager', () => {
 
 				unpinSpy = vi.spyOn( tooltipManager.balloonPanelView, 'unpin' );
 
-				const event = new KeyboardEvent( 'keydown', { key: 'Escape' } );
-				const stopPropagationSpy = vi.spyOn( event, 'stopPropagation' );
+				const event = new KeyboardEvent( 'keydown', { key: 'Escape', bubbles: true, cancelable: true } );
+				const targetListener = vi.fn();
+				element.addEventListener( 'keydown', targetListener, { once: true } );
 
 				element.dispatchEvent( event );
 				utils.waitForTheTooltipToHide();
 
-				expect( stopPropagationSpy ).toHaveBeenCalledOnce();
+				expect( targetListener ).toHaveBeenCalledWith( event );
+				expect( event.defaultPrevented ).toBe( false );
 				expect( unpinSpy ).toHaveBeenCalledOnce();
 			} );
 
