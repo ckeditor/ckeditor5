@@ -162,6 +162,17 @@ Save the aliases block below as your own file and load it between the editor CSS
 	--ck-color-tooltip-background: var(--ck-tooltip-background-color);
 	--ck-color-tooltip-text: var(--ck-tooltip-text-color);
 
+	/* -- Widget / Resizer ---------------------------------------------------------------------- */
+
+	--ck-color-widget-blurred-border: var(--ck-widget-blurred-border-color);
+	--ck-color-widget-hover-border: var(--ck-widget-hover-border-color);
+	--ck-color-widget-editable-focus-background: var(--ck-widget-editable-focus-background-color);
+	--ck-color-widget-drag-handler-icon-color: var(--ck-widget-drag-handler-icon-color);
+
+	--ck-color-resizer: var(--ck-resizer-color);
+	--ck-color-resizer-tooltip-background: var(--ck-resizer-tooltip-background-color);
+	--ck-color-resizer-tooltip-text: var(--ck-resizer-tooltip-text-color);
+
 	/* -- Foundation: spacing ------------------------------------------------------------------- */
 
 	--ck-spacing-extra-tiny: var(--ck-spacing-2xs);
@@ -1631,10 +1642,10 @@ Color tokens moved from `--ck-color-{component}-{…}` to component-first `--ck-
 --ck-color-dialog-background			→	--ck-dialog-background-color
 ```
 
-41 such mappings follow that mechanical pattern.
+53 such mappings follow that mechanical pattern.
 
 <details>
-<summary>Full list &ndash; all 41 component color renames</summary>
+<summary>Full list &ndash; all 53 component color renames</summary>
 
 | Old                                             | New                                             |
 |-------------------------------------------------|-------------------------------------------------|
@@ -1679,6 +1690,18 @@ Color tokens moved from `--ck-color-{component}-{…}` to component-first `--ck-
 | `--ck-color-toolbar-border`                     | `--ck-toolbar-border-color`                     |
 | `--ck-color-tooltip-background`                 | `--ck-tooltip-background-color`                 |
 | `--ck-color-tooltip-text`                       | `--ck-tooltip-text-color`                       |
+| `--ck-color-resizer`                            | `--ck-resizer-color`                            |
+| `--ck-color-resizer-tooltip-background`         | `--ck-resizer-tooltip-background-color`         |
+| `--ck-color-resizer-tooltip-text`               | `--ck-resizer-tooltip-text-color`               |
+| `--ck-color-widget-blurred-border`              | `--ck-widget-blurred-border-color`              |
+| `--ck-color-widget-hover-border`                | `--ck-widget-hover-border-color`                |
+| `--ck-color-widget-editable-focus-background`   | `--ck-widget-editable-focus-background-color`   |
+| `--ck-color-widget-drag-handler-icon-color`     | `--ck-widget-drag-handler-icon-color`           |
+| `--ck-color-widget-type-around-button`          | `--ck-widget-type-around-button-background-color` |
+| `--ck-color-widget-type-around-button-hover`    | `--ck-widget-type-around-button-hover-background-color` |
+| `--ck-color-widget-type-around-button-active`   | `--ck-widget-type-around-button-active-background-color` |
+| `--ck-color-widget-type-around-button-blurred-editable` | `--ck-widget-type-around-button-blurred-background-color` |
+| `--ck-color-widget-type-around-button-icon`     | `--ck-widget-type-around-button-icon-color`     |
 
 </details>
 

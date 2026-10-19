@@ -11,13 +11,13 @@
 	--ck-widget-handler-animation-duration: var(--ck-duration-base);
 	--ck-widget-handler-animation-curve: var(--ck-ease-standard);
 
-	--ck-color-widget-blurred-border: var(--ck-color-base-border-light);
-	--ck-color-widget-hover-border: var(--ck-color-base-attention);
-	--ck-color-widget-editable-focus-background: var(--ck-color-base-background);
-	--ck-color-widget-drag-handler-icon-color: var(--ck-color-base-background);
-	--ck-color-resizer: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
-	--ck-color-resizer-tooltip-background: var(--ck-color-surface-inverse);
-	--ck-color-resizer-tooltip-text: var(--ck-color-text-inverse);
+	--ck-widget-blurred-border-color: var(--ck-color-base-border-light);
+	--ck-widget-hover-border-color: var(--ck-color-base-attention);
+	--ck-widget-editable-focus-background-color: var(--ck-color-surface-canvas);
+	--ck-widget-drag-handler-icon-color: var(--ck-color-text-inverse);
+	--ck-resizer-color: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
+	--ck-resizer-tooltip-background-color: var(--ck-color-surface-inverse);
+	--ck-resizer-tooltip-text-color: var(--ck-color-text-inverse);
 
 	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
 	--ck-resizer-border-radius: var(--ck-border-radius, var(--ck-radius-base));
@@ -47,7 +47,7 @@
 	}
 
 	&:hover {
-		outline-color: var(--ck-color-widget-hover-border);
+		outline-color: var(--ck-color-widget-hover-border, var(--ck-widget-hover-border-color));
 	}
 	/* This is neccessary for type around UI to be positioned properly. */
 	position: relative
@@ -64,7 +64,7 @@
 		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
 
 		@media (forced-colors: none) {
-			background-color: var(--ck-color-widget-editable-focus-background);
+			background-color: var(--ck-color-widget-editable-focus-background, var(--ck-widget-editable-focus-background-color));
 		}
 
 		/**
@@ -112,7 +112,7 @@
 			/* Make sure the dimensions of the icon are independent of the fon-size of the content. */
 			width: var(--ck-widget-handler-icon-size);
 			height: var(--ck-widget-handler-icon-size);
-			color: var(--ck-color-widget-drag-handler-icon-color);
+			color: var(--ck-color-widget-drag-handler-icon-color, var(--ck-widget-drag-handler-icon-color));
 
 			/* The "selected" part of the icon is invisible by default */
 			& .ck-icon__selected-indicator {
@@ -140,7 +140,7 @@
 	/* Show the selection handler on mouse hover over the widget, but not for nested widgets. */
 	&:hover > .ck-widget__selection-handle {
 		opacity: 1;
-		background-color: var(--ck-color-widget-hover-border);
+		background-color: var(--ck-color-widget-hover-border, var(--ck-widget-hover-border-color));
 		visibility: visible;
 	}
 
@@ -187,7 +187,7 @@
 	&.ck-widget_with-selection-handle {
 		& .ck-widget__selection-handle,
 		& .ck-widget__selection-handle:hover {
-			background: var(--ck-color-widget-blurred-border);
+			background: var(--ck-color-widget-blurred-border, var(--ck-widget-blurred-border-color));
 		}
 	}
 }
@@ -213,12 +213,12 @@
 .ck.ck-editor__editable.ck-blurred .ck-widget {
 	&.ck-widget_selected,
 	&.ck-widget_selected:hover {
-		outline-color: var(--ck-color-widget-blurred-border);
+		outline-color: var(--ck-color-widget-blurred-border, var(--ck-widget-blurred-border-color));
 
 		&.ck-widget_with-selection-handle {
 			& > .ck-widget__selection-handle,
 			& > .ck-widget__selection-handle:hover {
-				background: var(--ck-color-widget-blurred-border);
+				background: var(--ck-color-widget-blurred-border, var(--ck-widget-blurred-border-color));
 			}
 		}
 	}
@@ -235,9 +235,9 @@
 }
 
 .ck .ck-size-view {
-	background: var(--ck-color-resizer-tooltip-background);
-	color: var(--ck-color-resizer-tooltip-text);
-	border: 1px solid var(--ck-color-resizer-tooltip-text);
+	background: var(--ck-color-resizer-tooltip-background, var(--ck-resizer-tooltip-background-color));
+	color: var(--ck-color-resizer-tooltip-text, var(--ck-resizer-tooltip-text-color));
+	border: 1px solid var(--ck-color-resizer-tooltip-text, var(--ck-resizer-tooltip-text-color));
 	border-radius: var(--ck-resizer-border-radius);
 	font-size: var(--ck-font-size-tiny, var(--ck-font-size-xs));
 	display: block;

@@ -1438,7 +1438,7 @@ The rule is autofixable. The fix adds `:host` as a new selector after `:root`, i
 
 ```css
 :root {
-	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
+	--ck-bookmark-icon-hover-fill-color: var(--ck-widget-hover-border-color);
 }
 ```
 
@@ -1447,6 +1447,6 @@ The rule is autofixable. The fix adds `:host` as a new selector after `:root`, i
 ```css
 :root,
 :host {
-	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
+	--ck-bookmark-icon-hover-fill-color: var(--ck-widget-hover-border-color);
 }
 ```

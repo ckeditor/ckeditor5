@@ -157,9 +157,9 @@ Assuming you finished our {@link getting-started/integrations-cdn/quick-start qu
 
 	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
 	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
-	--ck-color-widget-blurred-border: hsl(0, 0%, 87%);
-	--ck-color-widget-hover-border: hsl(43, 100%, 68%);
-	--ck-color-widget-editable-focus-background: hsl(0, 0%, 100%);
+	--ck-widget-blurred-border-color: hsl(0, 0%, 87%);
+	--ck-widget-hover-border-color: hsl(43, 100%, 68%);
+	--ck-widget-editable-focus-background-color: hsl(0, 0%, 100%);
 	--ck-color-link-default: hsl(190, 100%, 75%);
 }
 

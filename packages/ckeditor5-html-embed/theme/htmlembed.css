@@ -33,7 +33,7 @@
 	min-width: 15em;
 
 	&:not(.ck-widget_selected):not(:hover) {
-		outline: var(--ck-html-embed-unfocused-outline-width) dashed var(--ck-color-widget-blurred-border);
+		outline: var(--ck-html-embed-unfocused-outline-width) dashed var(--ck-color-widget-blurred-border, var(--ck-widget-blurred-border-color));
 	}
 
 	/* HTML embed widget itself should respect UI language direction */
