@@ -223,7 +223,16 @@ export default defineConfig( [
 			'ckeditor5-rules': ckeditor5Rules
 		},
 
+		languageOptions: {
+			parserOptions: {
+				// Type information for the `require-trusted-types-for-sinks` rule, which reports a sink only on a DOM object.
+				projectService: true,
+				tsconfigRootDir: import.meta.dirname
+			}
+		},
+
 		rules: {
+			'ckeditor5-rules/require-trusted-types-for-sinks': 'error',
 			'ckeditor5-rules/no-shadow-unsafe-dom-apis': 'error',
 			'ckeditor5-rules/validate-module-tag': 'error',
 			'ckeditor5-rules/no-default-export': 'error',
@@ -258,6 +267,18 @@ export default defineConfig( [
 					]
 				}
 			]
+		}
+	},
+	{
+		files: [
+			// A development helper, which is never a part of a production build.
+			'packages/ckeditor5-engine/src/dev-utils/view.ts',
+			// The home of the Trusted Types helpers, which writes to a sink on purpose to check whether the browser rejects it.
+			'packages/ckeditor5-utils/src/dom/trustedtypes.ts'
+		],
+
+		rules: {
+			'ckeditor5-rules/require-trusted-types-for-sinks': 'off'
 		}
 	},
 	{

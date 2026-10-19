@@ -97,6 +97,9 @@ export function createElement(
 	const element = namespace ? doc.createElementNS( namespace, name ) : doc.createElement( name );
 
 	for ( const key in attributes ) {
+		// The attribute names come from the calling code, not from the content. One that requires a Trusted Type, such as
+		// an event handler, is left to the Trusted Types enforcement of the application.
+		// eslint-disable-next-line ckeditor5-rules/require-trusted-types-for-sinks
 		element.setAttribute( key, attributes[ key ] );
 	}
 

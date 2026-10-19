@@ -1926,6 +1926,9 @@ export class ViewDomConverter {
 			}
 
 			for ( const attributeName of originalDomElement.getAttributeNames() ) {
+				// Elements are replaced only in the editing pipeline, where `setContentOf()` has already renamed the event
+				// handlers and `srcdoc` of the original element. No other attribute of a `<span>` requires a Trusted Type.
+				// eslint-disable-next-line ckeditor5-rules/require-trusted-types-for-sinks
 				newDomElement.setAttribute( attributeName, originalDomElement.getAttribute( attributeName )! );
 			}
 		}
