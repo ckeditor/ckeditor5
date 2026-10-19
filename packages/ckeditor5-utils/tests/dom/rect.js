@@ -1473,10 +1473,10 @@ describe( 'Rect', () => {
 			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 200 );
 			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
 			vi.spyOn( positionedAncestor, 'getBoundingClientRect' ).mockReturnValue( {
-				top: 60,
-				right: 100,
-				bottom: 90,
-				left: 50,
+				top: 4,
+				right: 56,
+				bottom: 34,
+				left: 6,
 				width: 50,
 				height: 30
 			} );
@@ -1510,10 +1510,10 @@ describe( 'Rect', () => {
 			Object.defineProperty( element, 'offsetParent', { value: positionedAncestor } );
 
 			assertRect( new Rect( element ).toAbsoluteRect(), {
-				top: 154,
-				right: 93,
-				bottom: 174,
-				left: 73,
+				top: 10,
+				right: 37,
+				bottom: 30,
+				left: 17,
 				width: 20,
 				height: 20
 			} );
@@ -1555,24 +1555,110 @@ describe( 'Rect', () => {
 			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 200 );
 			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
 			vi.spyOn( positionedAncestor, 'getBoundingClientRect' ).mockReturnValue( {
-				top: 60,
-				right: 100,
-				bottom: 90,
-				left: 50,
+				top: 4,
+				right: 56,
+				bottom: 34,
+				left: 6,
 				width: 50,
 				height: 30
 			} );
 
 			assertRect( new Rect( element ).toAbsoluteRect(), {
-				top: 150,
-				right: 90,
-				bottom: 170,
-				left: 70,
+				top: 6,
+				right: 34,
+				bottom: 26,
+				left: 14,
 				width: 20,
 				height: 20
 			} );
 
 			host.remove();
+		} );
+
+		// The scenarios below use real layout and real window scroll. Each checks that the returned `top` and
+		// `left`, set on the absolutely positioned element, keep it exactly where it was in the viewport.
+		describe( 'on a scrolled page', () => {
+			let spacer, element;
+
+			beforeEach( () => {
+				spacer = document.createElement( 'div' );
+				spacer.style.height = '5000px';
+				document.body.appendChild( spacer );
+
+				element = document.createElement( 'div' );
+				Object.assign( element.style, { position: 'absolute', top: '700px', left: '30px', width: '20px', height: '10px' } );
+			} );
+
+			afterEach( () => {
+				window.scrollTo( 0, 0 );
+				document.body.style.position = '';
+				element.remove();
+				spacer.remove();
+			} );
+
+			it( 'should not count the window scroll twice when <body> is positioned', () => {
+				document.body.style.position = 'relative';
+				document.body.appendChild( element );
+
+				expectAbsoluteRectToKeepElementInPlace( element );
+			} );
+
+			it( 'should not count the window scroll twice when the positioned ancestor scrolls with the page', () => {
+				const container = document.createElement( 'div' );
+
+				Object.assign( container.style, { position: 'absolute', top: '100px', left: '10px' } );
+				container.appendChild( element );
+				document.body.appendChild( container );
+
+				expectAbsoluteRectToKeepElementInPlace( element );
+
+				container.remove();
+			} );
+
+			it( 'should compensate for the border and the scroll of a `position: fixed` ancestor', () => {
+				const container = document.createElement( 'div' );
+
+				Object.assign( container.style, {
+					position: 'fixed',
+					top: '20px',
+					left: '15px',
+					width: '200px',
+					height: '200px',
+					border: 'solid',
+					borderWidth: '7px 0 0 5px',
+					overflow: 'scroll'
+				} );
+				container.appendChild( element );
+				document.body.appendChild( container );
+				container.scrollTop = 300;
+
+				expectAbsoluteRectToKeepElementInPlace( element );
+
+				container.remove();
+			} );
+
+			it( 'should add the window scroll when the element is laid out against the document', () => {
+				document.body.appendChild( element );
+
+				expectAbsoluteRectToKeepElementInPlace( element );
+			} );
+
+			function expectAbsoluteRectToKeepElementInPlace( element ) {
+				window.scrollTo( 0, 500 );
+
+				expect( window.scrollY ).toBe( 500 );
+
+				const viewportRect = element.getBoundingClientRect();
+				const { top, left } = new Rect( element ).toAbsoluteRect();
+
+				element.style.top = top + 'px';
+				element.style.left = left + 'px';
+
+				const rectAfter = element.getBoundingClientRect();
+
+				expect( rectAfter.top ).toBeCloseTo( viewportRect.top );
+				expect( rectAfter.left ).toBeCloseTo( viewportRect.left );
+			}
 		} );
 	} );
 
