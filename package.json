@@ -16,6 +16,7 @@
     "pnpm": "^12.8.2",
     "yarn": "\n\n┌─────────────────────────┐\n│  Hey, we use pnpm now!  │\n└─────────────────────────┘\n\n"
   },
+  "packageManager": "pnpm@12.8.2",
   "keywords": [
     "ckeditor",
     "ckeditor5",
