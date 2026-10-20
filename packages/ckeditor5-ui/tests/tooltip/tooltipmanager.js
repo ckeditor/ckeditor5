@@ -1068,7 +1068,12 @@ describe( 'TooltipManager', () => {
 		} );
 
 		describe( 'on keydown', () => {
-			it( 'should hide the tooltip without consuming the Escape keydown event', () => {
+			it( 'should consume Escape when a hovered tooltip does not belong to the focused element', () => {
+				const target = elements.unrelated;
+
+				target.tabIndex = 0;
+				target.focus();
+
 				utils.dispatchMouseEnter( elements.a );
 				utils.waitForTheTooltipToShow();
 
@@ -1078,15 +1083,41 @@ describe( 'TooltipManager', () => {
 
 				const event = new KeyboardEvent( 'keydown', { key: 'Escape', bubbles: true, cancelable: true } );
 				const targetListener = vi.fn();
-				element.addEventListener( 'keydown', targetListener, { once: true } );
+				target.addEventListener( 'keydown', targetListener, { once: true } );
 
-				element.dispatchEvent( event );
+				target.dispatchEvent( event );
 				utils.waitForTheTooltipToHide();
 
-				expect( targetListener ).toHaveBeenCalledWith( event );
+				expect( targetListener ).not.toHaveBeenCalled();
 				expect( event.defaultPrevented ).toBe( false );
 				expect( unpinSpy ).toHaveBeenCalledOnce();
+				expect( document.activeElement ).toBe( target );
 			} );
+
+			for ( const targetName of [ 'a', 'childOfA' ] ) {
+				it( `should pass Escape when the tooltip contains the focused element (${ targetName })`, () => {
+					delete elements.childOfA.dataset.ckeTooltipText;
+
+					const target = elements[ targetName ];
+
+					target.tabIndex = 0;
+					target.focus();
+					utils.waitForTheTooltipToShow();
+
+					expect( tooltipManager.balloonPanelView.isVisible ).toBe( true );
+
+					const event = new KeyboardEvent( 'keydown', { key: 'Escape', bubbles: true, cancelable: true } );
+					const targetListener = vi.fn();
+
+					target.addEventListener( 'keydown', targetListener, { once: true } );
+					target.dispatchEvent( event );
+					utils.waitForTheTooltipToHide();
+
+					expect( targetListener ).toHaveBeenCalledWith( event );
+					expect( event.defaultPrevented ).toBe( false );
+					expect( tooltipManager.balloonPanelView.isVisible ).toBe( false );
+				} );
+			}
 
 			it( 'should not work if `A` keyboard keydown event occurs and tooltip opened', () => {
 				utils.dispatchMouseEnter( elements.a );
@@ -1668,6 +1699,35 @@ describe( 'TooltipManager', () => {
 				positions: expect.any( Array )
 			} );
 		} );
+
+		for ( const focused of [ true, false ] ) {
+			it( `handles Escape for a shadow-root tooltip with focus ${ focused ? 'on' : 'outside' } its element`, () => {
+				const button = createTooltippedElement( shadowRoot );
+				const target = focused ? button : document.createElement( 'input' );
+
+				if ( !focused ) {
+					shadowRoot.appendChild( target );
+				}
+
+				target.tabIndex = 0;
+				target.focus();
+				utils.dispatchMouseEnter( button );
+				utils.waitForTheTooltipToShow();
+
+				expect( shadowRoot.activeElement ).toBe( target );
+				expect( tooltipManager.balloonPanelView.isVisible ).toBe( true );
+
+				const event = new KeyboardEvent( 'keydown', { key: 'Escape', bubbles: true, composed: true } );
+				const targetListener = vi.fn();
+
+				target.addEventListener( 'keydown', targetListener, { once: true } );
+				target.dispatchEvent( event );
+				utils.waitForTheTooltipToHide();
+
+				expect( targetListener ).toHaveBeenCalledTimes( focused ? 1 : 0 );
+				expect( tooltipManager.balloonPanelView.isVisible ).toBe( false );
+			} );
+		}
 
 		it( 'unpins the tooltip on blur of an element hosted in a shadow root', () => {
 			const button = createTooltippedElement( shadowRoot );

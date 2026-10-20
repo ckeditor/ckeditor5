@@ -457,6 +457,12 @@ export class TooltipManager extends TooltipManagerBase {
 	 */
 	private _onKeyDown( evt: EventInfo, domEvent: KeyboardEvent ) {
 		if ( domEvent.key === 'Escape' && this._currentElementWithTooltip ) {
+			const { activeElement } = this._currentElementWithTooltip.getRootNode() as Document | ShadowRoot;
+
+			if ( !this._currentElementWithTooltip.contains( activeElement ) ) {
+				domEvent.stopPropagation();
+			}
+
 			this._unpinTooltip();
 		}
 	}
