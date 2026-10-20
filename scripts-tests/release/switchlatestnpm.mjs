@@ -306,6 +306,74 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		} ) );
 	} );
 
+	// Given: @latest → 48.0.0 (`ckeditor5` was moved, but other packages failed)
+	// When: re-run for 48.0.0
+	// Then: @latest → 48.0.0 for all packages
+	it( 'should reassign the @latest tag when re-running the script for the version already tagged as @latest', async () => {
+		const packageJsonMapInternal = {
+			...packageJsonMap,
+			'/workspace/ckeditor/ckeditor5-commercial/external/ckeditor5/package.json': {
+				version: '48.0.0',
+				'ck-lts-versions': [
+					47
+				]
+			}
+		};
+
+		vi.mocked( fs.readJsonSync ).mockImplementation( path => {
+			return packageJsonMapInternal[ path ];
+		} );
+
+		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '48.0.0' );
+
+		// Act: import executes the script (top-level await).
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
+
+		expect( releaseTools.reassignNpmTags ).toHaveBeenCalledTimes( 1 );
+		expect( releaseTools.reassignNpmTags ).toHaveBeenNthCalledWith( 1, expect.objectContaining( {
+			version: '48.0.0',
+			packages: packageNames,
+			npmTag: 'latest'
+		} ) );
+	} );
+
+	// Given: @latest → 47.1.0 (`ckeditor5` was moved, but other packages failed), @lts-v47 → 47.0.0
+	// When: re-run for 47.1.0
+	// Then: @latest → 47.1.0 for all packages, @lts-v47 → 47.1.0
+	it( 'should reassign the @latest and @lts-v47 tags when re-running the script for the version already tagged as @latest', async () => {
+		const packageJsonMapInternal = {
+			...packageJsonMap,
+			'/workspace/ckeditor/ckeditor5-commercial/external/ckeditor5/package.json': {
+				version: '47.1.0',
+				'ck-lts-versions': [
+					47
+				]
+			}
+		};
+
+		vi.mocked( fs.readJsonSync ).mockImplementation( path => {
+			return packageJsonMapInternal[ path ];
+		} );
+
+		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '47.1.0' );
+
+		// Act: import executes the script (top-level await).
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
+
+		expect( releaseTools.reassignNpmTags ).toHaveBeenCalledTimes( 2 );
+		expect( releaseTools.reassignNpmTags ).toHaveBeenNthCalledWith( 1, expect.objectContaining( {
+			version: '47.1.0',
+			packages: packageNames,
+			npmTag: 'latest'
+		} ) );
+
+		expect( releaseTools.reassignNpmTags ).toHaveBeenNthCalledWith( 2, expect.objectContaining( {
+			version: '47.1.0',
+			packages: packageNames,
+			npmTag: 'lts-v47'
+		} ) );
+	} );
+
 	// npm Trusted Publishing (OIDC): `npm whoami` does not reflect OIDC authentication, so the npm account is not verified.
 	it( 'should reassign all npm tags using npm Trusted Publishing (OIDC)', async () => {
 		const packageJsonMapInternal = {
