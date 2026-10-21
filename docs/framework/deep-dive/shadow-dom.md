@@ -54,6 +54,7 @@ These are exported from `ckeditor5-utils` and re-exported from the `ckeditor5` p
 | {@link module:utils/dom/getlayoutparentelement~getLayoutParentElement `getLayoutParentElement()`} | `Node#parentElement`          | The element-only form of the same walk.                                                   |
 | {@link module:utils/dom/containsnode~containsNode `containsNode()`}                               | `Node#contains()`             | Asking whether a node sits inside a container, a document, or a root.                     |
 | {@link module:utils/dom/getshadowroots~getShadowRoots `getShadowRoots()`}                         | &mdash;                       | Collecting every shadow root a node renders in, innermost first.                          |
+| {@link module:utils/dom/geteventroots~getEventRoots `getEventRoots()`}                            | &mdash;                       | Collecting the shadow roots and the document that receive the events of a node.           |
 | {@link module:utils/dom/isshadowroot~isShadowRoot `isShadowRoot()`}                               | `obj instanceof ShadowRoot`   | Type-guarding a value that may be a root, including one from an iframe.                   |
 | {@link module:utils/dom/isshadowhostof~isShadowHostOf `isShadowHostOf()`}                         | &mdash;                       | Checking whether an event target is a shadow host rather than the real element inside it. |
 | {@link module:utils/dom/getelementfrompoint~getElementFromPoint `getElementFromPoint()`}          | `document.elementFromPoint()` | Hit-testing a viewport point that may land inside a root.                                 |
@@ -105,7 +106,7 @@ getLayoutParentElement( editingRoot ); // <slot>, with .frame one step above it.
 
 A helper answers for the tree of the node you hand it. Some code has no such node, because it must act on *every* boundary a feature spans at once &ndash; which is what it takes to listen for the few events that do not cross a shadow boundary.
 
-That is what {@link module:utils/dom/shadowrootregistry~ShadowRootRegistry `ShadowRootRegistry`} is for. An editor exposes its own as {@link module:ui/editorui/editorui~EditorUI#shadowRootRegistry `editor.ui.shadowRootRegistry`}, and {@link module:utils/dom/shadowrootregistry~listenToShadowRoots `listenToShadowRoots()`} keeps a listener attached to every root in it as roots come and go. The editor registers its editing roots, its toolbars, its menu bar and every view in its body collection, so the set covers the whole editor UI wherever it is mounted, and changes as those elements are attached, detached or moved.
+That is what {@link module:utils/dom/shadowrootregistry~ShadowRootRegistry `ShadowRootRegistry`} is for. An editor exposes its own as {@link module:ui/editorui/editorui~EditorUI#shadowRootRegistry `editor.ui.shadowRootRegistry`}, and {@link module:utils/dom/shadowrootregistry~listenToEventRoots `listenToEventRoots()`} keeps a listener attached to `document` and to every root in it as roots come and go. {@link module:utils/dom/shadowrootregistry~listenToShadowRoots `listenToShadowRoots()`} does the same for the shadow roots only. The editor registers its editing roots, its toolbars, its menu bar and every view in its body collection, so the set covers the whole editor UI wherever it is mounted, and changes as those elements are attached, detached or moved.
 
 <info-box important>
 Treat the registry as a last resort: if you have a node, a helper will do.
@@ -199,23 +200,23 @@ Something that has to react to scrolling stops reacting once the editor is insid
 	}, { useCapture: true, usePassive: true } );
 	```
 
-* Anything on the page may scroll, and UI positioned against the viewport must react. There is no single container to watch, so keep the `document` listener and add one per shadow root:
+* Anything on the page may scroll, and UI positioned against the viewport must react. There is no single container to watch, so listen on `document` and on every shadow root at once:
 
 	```js
-	view.listenTo( global.document, 'scroll', onScroll, { useCapture: true } );
-
-	// One listener per root, kept in step as roots come and go.
-	const stopListening = listenToShadowRoots( editor.ui.shadowRootRegistry, {
+	// One listener on `document` and one per root, kept in step as roots come and go.
+	const stopListening = listenToEventRoots( editor.ui.shadowRootRegistry, {
 		emitter: view,
 		event: 'scroll',
-		callback: onScroll,
-		listenerOptions: { useCapture: true }
+		listenerOptions: { useCapture: true },
+		callback: onScroll
 	} );
 	```
 
 Both shapes filter the same way, with {@link module:utils/dom/containsnode~containsNode `containsNode()`}: the element that scrolled is the container, the node you care about is the second argument. A raw `Node#contains()` here answers `false` across a boundary and discards the very events you attached these listeners for.
 
-Call the function that {@link module:utils/dom/shadowrootregistry~listenToShadowRoots `listenToShadowRoots()`} returns to detach early, when the UI it serves is hidden for instance. A listener that lives as long as its emitter needs nothing: destroying the emitter takes it down.
+Call the function that {@link module:utils/dom/shadowrootregistry~listenToEventRoots `listenToEventRoots()`} returns to detach early, when the UI it serves is hidden for instance. A listener that lives as long as its emitter needs nothing: destroying the emitter takes it down.
+
+When the listener follows particular elements rather than the whole editor UI, and these elements may move to another tree, use {@link module:utils/dom/domtargetslistener~DomTargetsListener `DomTargetsListener`} with {@link module:utils/dom/geteventroots~getEventRoots `getEventRoots()`} instead. Call its `refresh()` method after a move.
 
 ### Floating UI renders unstyled, or is clipped by its own container
 

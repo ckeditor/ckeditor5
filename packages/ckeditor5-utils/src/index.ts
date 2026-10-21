@@ -86,6 +86,8 @@ export { getElementFromPoint } from './dom/getelementfrompoint.js';
 export { getPositionedAncestor } from './dom/getpositionedancestor.js';
 export { getActiveElement } from './dom/getactiveelement.js';
 export { getShadowRoots } from './dom/getshadowroots.js';
+export { getEventRoots } from './dom/geteventroots.js';
+export { DomTargetsListener, type DomTargetsListenerOptions } from './dom/domtargetslistener.js';
 export { getOverlayMountRoot } from './dom/getoverlaymountroot.js';
 export { adoptGlobalStyleSheet } from './dom/adoptglobalstylesheet.js';
 export { getParentElement } from './dom/getparentelement.js';
@@ -112,8 +114,10 @@ export { whenElementConnected } from './dom/whenelementconnected.js';
 export {
 	ShadowRootRegistry,
 	listenToShadowRoots,
+	listenToEventRoots,
 	type ShadowRootRegistryAddEvent,
-	type ShadowRootRegistryRemoveEvent
+	type ShadowRootRegistryRemoveEvent,
+	type ShadowRootRegistryChangeEventRootsEvent
 } from './dom/shadowrootregistry.js';
 export { isValidAttributeName } from './dom/isvalidattributename.js';
 export { isVisible } from './dom/isvisible.js';

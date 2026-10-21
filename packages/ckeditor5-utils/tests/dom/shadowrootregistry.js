@@ -8,7 +8,8 @@ import { DomEmitterMixin } from '../../src/dom/emittermixin.js';
 
 import {
 	ShadowRootRegistry,
-	listenToShadowRoots
+	listenToShadowRoots,
+	listenToEventRoots
 } from '../../src/dom/shadowrootregistry.js';
 
 describe( 'ShadowRootRegistry', () => {
@@ -54,6 +55,221 @@ describe( 'ShadowRootRegistry', () => {
 			snapshot.clear();
 
 			expect( registry.getShadowRoots() ).toEqual( new Set( [ shadowRoot ] ) );
+		} );
+	} );
+
+	describe( 'getEventRoots()', () => {
+		// Creates an iframe connected to `document.body` (removed automatically in `afterEach`) and returns its document.
+		function createIframeDocument() {
+			const iframe = document.createElement( 'iframe' );
+
+			document.body.appendChild( iframe );
+			elementsToRemove.push( iframe );
+
+			return iframe.contentDocument;
+		}
+
+		it( 'returns an empty set when nothing is registered', () => {
+			expect( registry.getEventRoots().size ).toBe( 0 );
+		} );
+
+		it( 'returns the global document for a registered node in the light DOM', () => {
+			const element = document.createElement( 'div' );
+
+			document.body.appendChild( element );
+			elementsToRemove.push( element );
+
+			registry.registerNode( element );
+
+			expect( registry.getEventRoots() ).toEqual( new Set( [ document ] ) );
+		} );
+
+		it( 'returns the shadow root and the global document for a registered node in a shadow root', () => {
+			const { shadowRoot, node } = createConnectedShadowNode();
+
+			registry.registerNode( node );
+
+			expect( registry.getEventRoots() ).toEqual( new Set( [ shadowRoot, document ] ) );
+		} );
+
+		it( 'returns the iframe document, but not the global one, for a registered node in an iframe', () => {
+			const iframeDocument = createIframeDocument();
+			const element = document.createElement( 'div' );
+
+			iframeDocument.body.appendChild( element );
+			registry.registerNode( element );
+
+			expect( registry.getEventRoots() ).toEqual( new Set( [ iframeDocument ] ) );
+		} );
+
+		it( 'returns the union of the event roots of nodes living in different documents', () => {
+			const iframeDocument = createIframeDocument();
+			const iframeElement = document.createElement( 'div' );
+			const { shadowRoot, node } = createConnectedShadowNode();
+
+			iframeDocument.body.appendChild( iframeElement );
+			registry.registerNode( iframeElement );
+			registry.registerNode( node );
+
+			expect( registry.getEventRoots() ).toEqual( new Set( [ iframeDocument, shadowRoot, document ] ) );
+		} );
+
+		it( 'returns nothing for a registered node that is detached', () => {
+			const host = document.createElement( 'div' );
+			const shadowRoot = host.attachShadow( { mode: 'open' } );
+			const node = document.createElement( 'div' );
+
+			shadowRoot.appendChild( node );
+			registry.registerNode( node );
+
+			expect( registry.getEventRoots().size ).toBe( 0 );
+		} );
+
+		it( 'does not include documents in #getShadowRoots()', () => {
+			const iframeDocument = createIframeDocument();
+			const element = document.createElement( 'div' );
+			const { shadowRoot, node } = createConnectedShadowNode();
+
+			iframeDocument.body.appendChild( element );
+			registry.registerNode( element );
+			registry.registerNode( node );
+
+			expect( registry.getShadowRoots() ).toEqual( new Set( [ shadowRoot ] ) );
+		} );
+
+		it( 'returns a fresh snapshot, so mutating it does not affect the registry', () => {
+			const { shadowRoot, node } = createConnectedShadowNode();
+
+			registry.registerNode( node );
+			registry.getEventRoots().clear();
+
+			expect( registry.getEventRoots() ).toEqual( new Set( [ shadowRoot, document ] ) );
+		} );
+	} );
+
+	describe( 'changeEventRoots event', () => {
+		let changeSpy;
+
+		beforeEach( () => {
+			changeSpy = vi.fn();
+			registry.on( 'changeEventRoots', changeSpy );
+		} );
+
+		function createIframeDocument() {
+			const iframe = document.createElement( 'iframe' );
+
+			document.body.appendChild( iframe );
+			elementsToRemove.push( iframe );
+
+			return iframe.contentDocument;
+		}
+
+		it( 'is fired once when a node in an iframe is registered, without firing "add" for the iframe document', () => {
+			const iframeDocument = createIframeDocument();
+			const element = document.createElement( 'div' );
+			const addSpy = vi.fn();
+
+			iframeDocument.body.appendChild( element );
+			registry.on( 'add', addSpy );
+			registry.registerNode( element );
+
+			expect( changeSpy ).toHaveBeenCalledOnce();
+			expect( addSpy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'is fired once, after "add", when a node in a shadow root is registered', () => {
+			const { node } = createConnectedShadowNode();
+			const events = [];
+
+			registry.on( 'add', () => events.push( 'add' ) );
+			registry.on( 'changeEventRoots', () => events.push( 'changeEventRoots' ) );
+			registry.registerNode( node );
+
+			expect( events ).toEqual( [ 'add', 'changeEventRoots' ] );
+		} );
+
+		it( 'is not fired when a registered node adds no new event root', () => {
+			const { shadowRoot, node } = createConnectedShadowNode();
+			const otherNode = document.createElement( 'div' );
+
+			shadowRoot.appendChild( otherNode );
+			registry.registerNode( node );
+			changeSpy.mockClear();
+
+			registry.registerNode( otherNode );
+
+			expect( changeSpy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'is not fired when a detached node is registered', () => {
+			registry.registerNode( document.createElement( 'div' ) );
+
+			expect( changeSpy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'is fired once, without firing "remove" for the iframe document, when the only node in an iframe is unregistered', () => {
+			const iframeDocument = createIframeDocument();
+			const element = document.createElement( 'div' );
+			const removeSpy = vi.fn();
+
+			iframeDocument.body.appendChild( element );
+			registry.registerNode( element );
+			changeSpy.mockClear();
+
+			registry.on( 'remove', removeSpy );
+			registry.unregisterNode( element );
+
+			expect( changeSpy ).toHaveBeenCalledOnce();
+			expect( removeSpy ).not.toHaveBeenCalled();
+			expect( registry.getEventRoots().size ).toBe( 0 );
+		} );
+
+		it( 'is fired once by #refresh() when a registered node moved from the global document into an iframe', () => {
+			const iframeDocument = createIframeDocument();
+			const element = document.createElement( 'div' );
+
+			document.body.appendChild( element );
+			elementsToRemove.push( element );
+			registry.registerNode( element );
+			changeSpy.mockClear();
+
+			iframeDocument.body.appendChild( element );
+			registry.refresh();
+
+			expect( changeSpy ).toHaveBeenCalledOnce();
+			expect( registry.getEventRoots() ).toEqual( new Set( [ iframeDocument ] ) );
+		} );
+
+		it( 'is not fired by #refresh() when no registered node moved', () => {
+			const { node } = createConnectedShadowNode();
+
+			registry.registerNode( node );
+			changeSpy.mockClear();
+
+			registry.refresh();
+
+			expect( changeSpy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'is fired once by #destroy() when event roots were tracked', () => {
+			const iframeDocument = createIframeDocument();
+			const element = document.createElement( 'div' );
+			const { node } = createConnectedShadowNode();
+
+			iframeDocument.body.appendChild( element );
+			registry.registerNode( element );
+			registry.registerNode( node );
+			changeSpy.mockClear();
+
+			registry.destroy();
+
+			expect( changeSpy ).toHaveBeenCalledOnce();
+		} );
+
+		it( 'is not fired by #destroy() when nothing was tracked', () => {
+			registry.destroy();
+
+			expect( changeSpy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -660,5 +876,213 @@ describe( 'listenToShadowRoots()', () => {
 		secondShadowRoot.dispatchEvent( new Event( 'test-event' ) );
 
 		expect( callback ).toHaveBeenCalledTimes( 1 );
+	} );
+} );
+
+describe( 'listenToEventRoots()', () => {
+	let registry, emitter, elementsToRemove;
+
+	beforeEach( () => {
+		registry = new ShadowRootRegistry();
+		emitter = new ( DomEmitterMixin() )();
+		elementsToRemove = [];
+	} );
+
+	afterEach( () => {
+		emitter.stopListening();
+
+		for ( const element of elementsToRemove ) {
+			element.remove();
+		}
+	} );
+
+	function createConnectedShadowNode() {
+		const host = document.createElement( 'div' );
+		const shadowRoot = host.attachShadow( { mode: 'open' } );
+		const node = document.createElement( 'div' );
+
+		shadowRoot.appendChild( node );
+		document.body.appendChild( host );
+
+		elementsToRemove.push( host );
+
+		return { host, shadowRoot, node };
+	}
+
+	function createIframeNode() {
+		const iframe = document.createElement( 'iframe' );
+
+		document.body.appendChild( iframe );
+		elementsToRemove.push( iframe );
+
+		const iframeDocument = iframe.contentDocument;
+		const node = document.createElement( 'div' );
+
+		iframeDocument.body.appendChild( node );
+
+		return { iframeDocument, node };
+	}
+
+	it( 'attaches to the global document even when nothing is registered', () => {
+		const callback = vi.fn();
+
+		listenToEventRoots( registry, { emitter, event: 'test-event', callback } );
+
+		document.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( callback ).toHaveBeenCalledOnce();
+	} );
+
+	it( 'attaches to the global document only once when a registered node lives in it too', () => {
+		const element = document.createElement( 'div' );
+
+		document.body.appendChild( element );
+		elementsToRemove.push( element );
+		registry.registerNode( element );
+
+		const callback = vi.fn();
+
+		listenToEventRoots( registry, { emitter, event: 'test-event', callback } );
+
+		document.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( callback ).toHaveBeenCalledOnce();
+	} );
+
+	it( 'attaches to an iframe document that is already tracked by the registry when called', () => {
+		const { iframeDocument, node } = createIframeNode();
+
+		registry.registerNode( node );
+
+		const callback = vi.fn();
+
+		listenToEventRoots( registry, { emitter, event: 'test-event', callback } );
+
+		iframeDocument.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( callback ).toHaveBeenCalledOnce();
+	} );
+
+	it( 'attaches to an iframe document added to the registry afterwards', () => {
+		const callback = vi.fn();
+
+		listenToEventRoots( registry, { emitter, event: 'test-event', callback } );
+
+		const { iframeDocument, node } = createIframeNode();
+
+		registry.registerNode( node );
+
+		iframeDocument.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( callback ).toHaveBeenCalledOnce();
+	} );
+
+	it( 'attaches to a shadow root tracked by the registry', () => {
+		const { shadowRoot, node } = createConnectedShadowNode();
+
+		registry.registerNode( node );
+
+		const callback = vi.fn();
+
+		listenToEventRoots( registry, { emitter, event: 'test-event', callback } );
+
+		shadowRoot.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( callback ).toHaveBeenCalledOnce();
+	} );
+
+	it( 'detaches from an iframe document once the registry drops it, but keeps listening to the global document', () => {
+		const { iframeDocument, node } = createIframeNode();
+
+		registry.registerNode( node );
+
+		const callback = vi.fn();
+
+		listenToEventRoots( registry, { emitter, event: 'test-event', callback } );
+
+		registry.unregisterNode( node );
+
+		iframeDocument.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( callback ).not.toHaveBeenCalled();
+
+		document.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( callback ).toHaveBeenCalledOnce();
+	} );
+
+	it( 'keeps listening to the global document when the only registered node living in it is unregistered', () => {
+		const element = document.createElement( 'div' );
+
+		document.body.appendChild( element );
+		elementsToRemove.push( element );
+		registry.registerNode( element );
+
+		const callback = vi.fn();
+
+		listenToEventRoots( registry, { emitter, event: 'test-event', callback } );
+
+		registry.unregisterNode( element );
+
+		document.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( callback ).toHaveBeenCalledOnce();
+	} );
+
+	it( 'follows a registered node moved from the global document into an iframe once the registry is refreshed', () => {
+		const { iframeDocument } = createIframeNode();
+		const element = document.createElement( 'div' );
+
+		document.body.appendChild( element );
+		elementsToRemove.push( element );
+		registry.registerNode( element );
+
+		const callback = vi.fn();
+
+		listenToEventRoots( registry, { emitter, event: 'test-event', callback } );
+
+		iframeDocument.body.appendChild( element );
+		registry.refresh();
+
+		iframeDocument.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( callback ).toHaveBeenCalledOnce();
+	} );
+
+	it( 'stops reacting to registry changes and detaches from every root, the global document too, once torn down', () => {
+		const { iframeDocument: firstIframeDocument, node: firstNode } = createIframeNode();
+
+		registry.registerNode( firstNode );
+
+		const callback = vi.fn();
+		const stopListening = listenToEventRoots( registry, { emitter, event: 'test-event', callback } );
+
+		stopListening();
+
+		document.dispatchEvent( new Event( 'test-event' ) );
+		firstIframeDocument.dispatchEvent( new Event( 'test-event' ) );
+
+		// A root that only appears after teardown: must never be attached to begin with.
+		const { iframeDocument: secondIframeDocument, node: secondNode } = createIframeNode();
+
+		registry.registerNode( secondNode );
+
+		secondIframeDocument.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( callback ).not.toHaveBeenCalled();
+	} );
+
+	it( 'keeps a listener on the global document attached by the same emitter for another callback', () => {
+		const otherCallback = vi.fn();
+
+		emitter.listenTo( document, 'test-event', otherCallback );
+
+		const stopListening = listenToEventRoots( registry, { emitter, event: 'test-event', callback: vi.fn() } );
+
+		stopListening();
+
+		document.dispatchEvent( new Event( 'test-event' ) );
+
+		expect( otherCallback ).toHaveBeenCalledOnce();
 	} );
 } );
