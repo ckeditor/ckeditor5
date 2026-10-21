@@ -15,6 +15,7 @@
 				--ck-color-button-on-background: lime !important;
 				--ck-color-list-button-on-background: orange !important;
 				--ck-color-tooltip-background: purple !important;
+				--ck-color-focus-border: magenta !important;
 			}
 		</style>
 	</head>
@@ -22,7 +23,7 @@
 		<ck-manual-header>
 			<h1>Legacy UI color token override (backward compatibility)</h1>
 			<p>
-				The page overrides four <em>legacy</em> color token names on <code>:root</code>
+				The page overrides five <em>legacy</em> color token names on <code>:root</code>
 				(see the <code>&lt;style&gt;</code> in <code>&lt;head&gt;</code>). Components read the
 				new token names, but the override bridges make them honor the legacy names first.
 			</p>
@@ -41,6 +42,12 @@
 				<li>
 					Hover any toolbar button — its tooltip background is
 					<span style="color:purple;font-weight:bold">PURPLE</span>.
+				</li>
+				<li>
+					Click the editing area — its focus border is
+					<span style="color:magenta;font-weight:bold">MAGENTA</span>. Press <kbd>Alt</kbd>+<kbd>F10</kbd>
+					to focus the toolbar — the focused button border is
+					<span style="color:magenta;font-weight:bold">MAGENTA</span>, too.
 				</li>
 			</ol>
 			<p>

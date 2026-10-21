@@ -97,7 +97,7 @@
 		/* Make sure the divider between the buttons looks fine when the button is focused */
 		& > .ck-splitbutton__arrow:focus::after {
 			/* Fallback to `--ck-color-split-button-hover-border` for backward compatibility. */
-			--ck-color-split-button-hover-border: var(--ck-color-interactive-focus-border);
+			--ck-color-split-button-hover-border: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 			background-color: var(--ck-color-split-button-hover-border, var(--ck-color-interactive-focus-border));
 		}
 

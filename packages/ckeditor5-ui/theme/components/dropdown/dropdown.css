@@ -186,7 +186,8 @@
 
 .ck.ck-dropdown__panel {
 	border-radius: var(--ck-dropdown-panel-border-radius);
-	box-shadow: var(--ck-shadow-surface-floating), 0 0;
+	/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+	box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 	padding: var(--ck-dropdown-panel-padding);
 
 	background: var(--ck-color-dropdown-panel-background, var(--ck-dropdown-panel-background-color));

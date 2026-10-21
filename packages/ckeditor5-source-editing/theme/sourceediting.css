@@ -48,7 +48,7 @@
 
 	&:not([readonly]):focus {
 		outline: none;
-		border: var(--ck-focus-ring, var(--ck-interactive-focus-ring));
+		border: var(--ck-interactive-focus-ring);
 		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
 	}
 }

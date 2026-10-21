@@ -5,7 +5,7 @@
 
 :root,
 :host {
-	--ck-color-interactive-focus-border-coordinates: 218, 81.8%, 56.9%;
+	--ck-color-interactive-focus-border-coordinates: 227.7, 62.7%, 55.9%;
 	--ck-color-interactive-focus-border: var(--ck-focus-border-color);
 	--ck-color-interactive-focus-shadow: var(--ck-color-base-focus-shadow);
 	--ck-color-interactive-focus-disabled-shadow: var(--ck-color-base-focus-shadow-faded);

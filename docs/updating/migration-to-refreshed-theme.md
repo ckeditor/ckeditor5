@@ -4,7 +4,7 @@ meta-title: Migration to refreshed theme | CKEditor 5 Documentation
 meta-description: Learn what changed in the refreshed CKEditor 5 theme and design tokens, how your token overrides keep working, and how to restore the previous look.
 menu-title: Migration to refreshed theme
 order: 52
-modified_at: 2026-10-02
+modified_at: 2026-10-19
 ---
 
 # Migrating to the refreshed theme
@@ -38,7 +38,10 @@ Old token names keep working through two independent mechanisms. Which one appli
 
 ### Overriding old token names
 
-If you set a legacy token name to re-skin the editor, it still works. No changes needed.
+If you set a legacy token name to re-skin the editor, it usually still works, and you need no changes. Check the exceptions:
+
+* Some names work only on `:root` &ndash; see [Overriding on a narrower selector](#overriding-on-a-narrower-selector).
+* Some names no longer work or reach only part of the UI &ndash; see [Legacy names to replace](#legacy-names-to-replace) and [Focus styles](#focus-styles).
 
 ```css
 /* The way you re-skinned the editor on the old theme - still works as-is. */
@@ -109,7 +112,7 @@ Save the aliases block below as your own file and load it between the editor CSS
  *
  * It intentionally covers only tokens that are safe to alias globally. A few
  * internal tokens that components re-theme (for example button-state and balloon
- * panel colors, or font-size-normal, border-radius, inner-shadow) are override-only
+ * panel colors, or font-size-normal, border-radius, drop-shadow, inner-shadow) are override-only
  * and are not listed here; read their new names directly instead. The z-index
  * aliases stay in the default theme because of the fullscreen layering.
  */
@@ -200,7 +203,6 @@ Save the aliases block below as your own file and load it between the editor CSS
 	/* -- Foundation: font, shadow, focus, opacity ---------------------------------------------- */
 
 	--ck-font-face: var(--ck-font-family);
-	--ck-drop-shadow: var(--ck-shadow-md);
 	--ck-drop-shadow-active: var(--ck-shadow-lg);
 	--ck-focus-outer-shadow-geometry: var(--ck-focus-shadow-geometry);
 	--ck-focus-outer-shadow: var(--ck-focus-shadow);
@@ -231,7 +233,7 @@ Override-only tokens (set works, read does not &ndash; read the new name):
 | Buttons &ndash; default/on/action states | `--ck-color-button-default-background` · `-hover-` · `-active-`; `--ck-color-button-on-background` · `-hover-` · `-active-` · `-disabled-` · `--ck-color-button-on-color`; `--ck-color-button-action-background` · `-hover-` · `-active-` · `-disabled-` |
 | Switch / list                            | `--ck-color-switch-button-off-background`, `--ck-color-list-button-hover-background`                                                                                                                                                                     |
 | Balloon panel                            | `--ck-color-panel-background`, `--ck-color-panel-border`                                                                                                                                                                                                 |
-| Foundation                               | `--ck-font-size-normal`, `--ck-border-radius`, `--ck-inner-shadow`, `--ck-ui-component-min-height`                                                                                                                                                       |
+| Foundation                               | `--ck-font-size-normal`, `--ck-border-radius`, `--ck-drop-shadow`, `--ck-inner-shadow`, `--ck-ui-component-min-height`                                                                                                                                   |
 
 ### Z-index layers
 
@@ -253,13 +255,60 @@ Because each usage reads the old name first, a legacy override works on any sele
 .my-sidebar { --ck-color-comment-separator: #64ca6d; }   /* applies within .my-sidebar */
 ```
 
-A few tokens only honor a `:root` override, because a component re-defines the new token in its own scope, so a scoped override of the old name cannot reach it: the button state colors (the [override-only table](#override-only-tokens) above), the thread header colors, the `--ck-ui-component-min-height` control size (re-defined by anchor buttons, the form header, and the fullscreen sidebar), and the suggestion deletion / insertion / widget-deletion markers (re-skinned by AI review and revision preview). Override these on `:root`, or use the new name at the scope.
+A few legacy names work only when you override them on `:root`. A scoped override does not reach:
 
-A few legacy names have no bridge at all, because their style was redesigned &ndash; use the new mechanism instead:
+* The button state colors from the [override-only table](#override-only-tokens) above.
+* The thread header colors.
+* `--ck-color-focus-border` in buttons, inputs, the editing area, and menu bar items.
+* `--ck-ui-component-min-height` in anchor buttons, the form header, and the fullscreen sidebar.
+* The suggestion deletion, insertion, and widget-deletion markers in AI review and revision preview.
 
-| Legacy name                 | What to do now                                                                     |
-|-----------------------------|------------------------------------------------------------------------------------|
-| `--ck-tooltip-text-padding` | The tooltip padding was restructured &ndash; use `--ck-tooltip-multiline-padding`. |
+Override these on `:root`, or use the new name at the scope.
+
+* `--ck-border-radius` also works only on `:root`, because the radius tokens that read it are derived there. On a narrower selector, it reaches only a few elements, such as the editor's outer shell (see [Rounding the editor's outer shell](#rounding-the-editors-outer-shell)). Buttons, inputs, panels, and dialogs ignore it there.
+* `--ck-border-radius` also has a new role: it is now the anchor of the radius scale. Panels, dropdowns, and dialogs use the full value, but buttons and inputs use half of it. For example, `--ck-border-radius: 6px` gave buttons a `6px` radius in the previous theme, and it gives them `3px` now. To set the radius of buttons and inputs directly, override `--ck-border-radius-control`:
+
+```css
+:root { --ck-border-radius: 6px; }			/* panels and dialogs: 6px, buttons and inputs: 3px */
+:root { --ck-border-radius-control: 6px; }	/* ✅ buttons and inputs: 6px */
+```
+
+### Legacy names to replace
+
+A few legacy names no longer work, or work only in part of the UI, because their style was redesigned. Use the replacements below instead:
+
+| Legacy name                           | What to do now                                                                                                                                                                         |
+|---------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--ck-tooltip-text-padding`           | The tooltip padding was restructured &ndash; use `--ck-tooltip-multiline-padding`.                                                                                                     |
+| `--ck-focus-ring`                     | Buttons, inputs, the editing area, and menu bar items no longer read it &ndash; use their focus border color tokens. See [Focus styles](#focus-styles).                                |
+| `--ck-color-focus-border-coordinates` | In the default theme, it no longer sets the focus color &ndash; use `--ck-focus-border-color`. See [Focus styles](#focus-styles).                                                      |
+| `--ck-drop-shadow-active`             | Comment and suggestion cards no longer have a hover or active shadow, and `--ck-shadow-lg` does not bring it back. To add a shadow to all cards, use `--ck-annotation-wrapper-shadow`. |
+
+### Focus styles
+
+The legacy `--ck-color-focus-border` is now called `--ck-focus-border-color`. Overriding either name on `:root` changes the focus color in the whole editor UI.
+
+Buttons, inputs, the editing area, and menu bar items now change only their border color on focus, so a custom border width stays the same. That is why they no longer read `--ck-focus-ring`, which sets the whole border: width, style, and color.
+
+Other elements, such as focused image captions, still read `--ck-focus-ring`. Switch buttons, comment threads, and the source editing area, follow only a `:root` override of `--ck-focus-ring`.
+
+To change the focus border color of the particular elements, use the following tokens:
+
+| Element        | Token                                     |
+|----------------|-------------------------------------------|
+| Buttons        | `--ck-button-focus-border-color`          |
+| Inputs         | `--ck-input-focus-border-color`           |
+| Editing area   | `--ck-editor-editable-focus-border-color` |
+| Menu bar items | `--ck-menu-bar-item-focus-border-color`   |
+
+For example, an override that hid the focus border of the editing area in the previous theme needs the new token now:
+
+```css
+.ck.ck-editor__editable { --ck-focus-ring: none; }									/* ❌ no effect now */
+.ck.ck-editor__editable { --ck-editor-editable-focus-border-color: transparent; }	/* ✅ hides the focus border */
+```
+
+In the default theme, `--ck-color-focus-border-coordinates` no longer sets the focus color. It now colors only the pulse around the buttons that insert a paragraph next to a widget. To change the focus color, override `--ck-focus-border-color` or the legacy `--ck-color-focus-border`.
 
 ### Rounding the editor's outer shell
 
@@ -1327,6 +1376,14 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	}
 }
 
+.ck.ck-annotation-wrapper:not(.ck-annotation-wrapper--active):hover {
+	box-shadow: var(--ck-drop-shadow, var(--ck-shadow-md));
+}
+
+.ck.ck-annotation-wrapper--active {
+	box-shadow: var(--ck-drop-shadow-active, var(--ck-shadow-lg));
+}
+
 .ck .ck-comment__input-container {
 	background: var(--ck-comment-input-background-color);
 }
@@ -1623,7 +1680,9 @@ Reading an old name works with the [opt-in aliases snippet](#reading-old-token-n
 | `--ck-font-size-tiny` / `-small` / `-normal` / `-big` / `-large`     | `--ck-font-size-xs` / `-sm` / `-base` / `-xl` / `-2xl`       |
 | `--ck-font-face`                                                     | `--ck-font-family`                                           |
 | `--ck-border-radius`                                                 | `--ck-radius-base`                                           |
-| `--ck-drop-shadow` / `-active`                                       | `--ck-shadow-md` / `-lg`                                     |
+| `--ck-drop-shadow`                                                   | `--ck-shadow-surface-floating`                               |
+| `--ck-drop-shadow-active`                                            | `--ck-shadow-lg`                                             |
+| `--ck-color-focus-border`                                            | `--ck-focus-border-color`                                    |
 | `--ck-inner-shadow`                                                  | `--ck-inset-shadow-sm`                                       |
 | `--ck-focus-outer-shadow` (+ `-geometry` / `-disabled-` / `-error-`) | `--ck-focus-shadow` (+ `-geometry` / `-disabled` / `-error`) |
 | `--ck-disabled-opacity`                                              | `--ck-opacity-disabled`                                      |
@@ -1631,6 +1690,10 @@ Reading an old name works with the [opt-in aliases snippet](#reading-old-token-n
 | `--ck-z-default` / `-panel` / `-dialog`                              | `--ck-z-base` / `-overlay` / `-modal`                        |
 
 To scale all editor spacing at once, override `--ck-spacing-unit`. It is still the anchor of the spacing scale, both in the refreshed theme and in the legacy theme preset.
+
+<info-box>
+	Comment and suggestion cards no longer have the active shadow, so overriding `--ck-shadow-lg` does not bring it back. See [Legacy names to replace](#legacy-names-to-replace).
+</info-box>
 
 ### Component colors
 
