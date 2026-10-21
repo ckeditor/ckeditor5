@@ -587,8 +587,11 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 
 	/* Semantic / Width */
 	--ck-width-balloon-form: min(var(--ck-width-md), 90vw);
+	--ck-width-dialog-xs: min(var(--ck-width-xs), 90vw);
+	--ck-width-dialog-sm: min(var(--ck-width-sm), 90vw);
 	--ck-width-dialog: min(var(--ck-width-md), 90vw);
 	--ck-width-dialog-lg: min(var(--ck-width-xl), 90vw);
+	--ck-width-dialog-xl: min(var(--ck-width-2xl), 90vw);
 
 	/* Semantic / Shadow */
 	--ck-shadow-surface-floating: var(--ck-drop-shadow, var(--ck-shadow-md));

@@ -10,13 +10,19 @@
 	--ck-width-balloon-form: min(var(--ck-width-md), 90vw);
 
 	/* Dialog widths. Capped with vw so a large base font cannot overrun the screen. */
+	/* TODO: The dialog sizes are offset from the width scale (`-lg` uses `xl`, `-xl` uses `2xl`, and nothing uses `lg`)
+	   because `--ck-width-dialog-lg` was released with the `xl` value. Align them 1:1 with the scale in v50
+	   (breaking change). */
+	--ck-width-dialog-xs: min(var(--ck-width-xs), 90vw);
+	--ck-width-dialog-sm: min(var(--ck-width-sm), 90vw);
 	--ck-width-dialog: min(var(--ck-width-md), 90vw);
 	--ck-width-dialog-lg: min(var(--ck-width-xl), 90vw);
+	--ck-width-dialog-xl: min(var(--ck-width-2xl), 90vw);
 }
 
 /*
  * FALLBACK — media-query responsiveness instead of the fluid min()/vw approach above.
- * If min()/vw misbehaves, do two things: (1) change the three definitions above to plain
+ * If min()/vw misbehaves, do two things: (1) change the definitions above to plain
  * widths (e.g. `--ck-width-balloon-form: var(--ck-width-md);`), and (2) remove this comment's
  * opening and closing markers to activate the breakpoint below. Tune the 600px breakpoint
  * and the mobile steps to taste.
@@ -24,8 +30,11 @@
 @media screen and (max-width: 600px) {
 	:root {
 		--ck-width-balloon-form: var(--ck-width-sm);
+		--ck-width-dialog-xs: var(--ck-width-xs);
+		--ck-width-dialog-sm: var(--ck-width-xs);
 		--ck-width-dialog: var(--ck-width-sm);
 		--ck-width-dialog-lg: var(--ck-width-lg);
+		--ck-width-dialog-xl: var(--ck-width-xl);
 	}
 }
 */

@@ -6,9 +6,14 @@
 :root,
 :host {
 	/**
+	 * The spread radius of the focus shadow.
+	 */
+	--ck-focus-shadow-spread: 3px;
+
+	/**
 	 * The geometry of the focus shadow.
 	 */
-	--ck-focus-shadow-geometry: 0 0 0 3px;
+	--ck-focus-shadow-geometry: 0 0 0 var(--ck-focus-shadow-spread);
 
 	/**
 	 * A visual style of focused element's shadow.
