@@ -1223,6 +1223,24 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	line-height: 1.25;
 }
 
+.ck .ck-ai-chat-history .ck-ai-chat-history__item--edit {
+	& .ck-input {
+		min-height: 0;
+		padding: 0;
+		border: none;
+		box-shadow: none;
+		background: transparent;
+	}
+
+	& .ck-ai-chat-history__item-content {
+		gap: 0;
+	}
+
+	& .ck-ai-chat-history__item-actions {
+		align-items: center;
+	}
+}
+
 /* ============================== ckeditor5-collaboration-core ============================== */
 :root,
 :host {
@@ -1389,6 +1407,53 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 
 .ck .ck-comment__input-container {
 	background: var(--ck-comment-input-background-color);
+}
+
+.ck .ck-comment__input-container--active {
+	gap: 0;
+
+	& .ck-user {
+		margin-block: calc(var(--ck-spacing-padding) * .8) 2px;
+	}
+}
+
+.ck .ck-comment__input {
+	min-height: 0;
+	padding: var(--ck-comment-input-padding);
+	border: 0;
+	background-color: transparent;
+
+	&:focus-within {
+		box-shadow: none;
+	}
+}
+
+.ck .ck-comment__main .ck-comment__input {
+	padding: 0;
+}
+
+.ck .ck-thread__input {
+	min-height: 38px;
+}
+
+.ck .ck-comment__input .ck-editor__editable_inline {
+	line-height: 1.5;
+}
+
+.ck .ck-comment__input-actions {
+	margin-top: 0;
+
+	& .ck.ck-button {
+		min-height: var(--ck-ui-component-min-height, var(--ck-size-min-height));
+		min-width: 60px;
+		font-size: var(--ck-annotation-button-size);
+		margin-left: var(--ck-spacing-large, var(--ck-spacing-lg));
+		padding: 0 var(--ck-spacing-control-padding-inline);
+	}
+}
+
+.ck .ck-comment--edit .ck-comment__input-actions {
+	margin-top: var(--ck-spacing-standard, var(--ck-spacing-base));
 }
 
 /* ============================== ckeditor5-pagination ============================== */

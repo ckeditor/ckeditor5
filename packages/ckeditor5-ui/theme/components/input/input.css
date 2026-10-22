@@ -34,6 +34,10 @@
 
 	/* Compatibility */
 	--ck-input-text-width: var(--ck-input-width);
+
+	/* Small variant (opt in with .ck-input_small). */
+	--ck-input-min-height-small: calc(1.75 * var(--ck-font-size-normal, var(--ck-font-size-base)));
+	--ck-input-padding-small: var(--ck-spacing-padding-tight) var(--ck-spacing-padding-snug);
 }
 
 .ck.ck-input {
@@ -88,6 +92,12 @@
 		&:focus {
 			box-shadow: var(--ck-focus-error-outer-shadow, var(--ck-interactive-focus-error-shadow)), 0 0;
 		}
+	}
+
+	&.ck-input_small {
+		--ck-input-padding: var(--ck-input-padding-small);
+
+		min-height: var(--ck-input-min-height-small);
 	}
 }
 
