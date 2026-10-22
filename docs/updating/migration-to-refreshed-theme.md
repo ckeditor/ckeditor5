@@ -4,19 +4,50 @@ meta-title: Migration to refreshed theme | CKEditor 5 Documentation
 meta-description: Learn what changed in the refreshed CKEditor 5 theme and design tokens, how your token overrides keep working, and how to restore the previous look.
 menu-title: Migration to refreshed theme
 order: 52
-modified_at: 2026-10-02
+modified_at: 2026-10-15
 ---
 
 # Migrating to the refreshed theme
 
 Two things changed at once, and it helps to keep them separate:
 
-1. **A new token architecture** &ndash; the `--ck-*` CSS custom properties were reorganized into three tiers (foundation → semantic → component). This reorganization is value-neutral: on its own it changes no pixels.
+1. **A new token architecture** &ndash; the `--ck-*` CSS custom properties were reorganized into three layers (foundation → semantic → component). This reorganization is value-neutral: on its own it changes no pixels.
 2. **A refreshed default theme** &ndash; new color, spacing, radius, elevation, and font values layered on that architecture, for a more modern default look.
 
 Most "will my customization break?" questions are about #1 (names/overrides). Most "why does it look different?" questions are about #2 (values). We call those out separately throughout.
 
 There is also one structural change that affects where you override tokens: every token is now declared on `:root, :host` (not just `:root`), so the theme resolves inside a shadow root too. See [Shadow DOM](#shadow-dom).
+
+## Benefits of the new token architecture
+
+The editor UI uses one set of design tokens in three layers. The **foundation** layer holds the raw values, the **semantic** layer gives them shared design roles, and the **component** layer exposes them as override points for individual components. Each value is defined once and flows up through the layers:
+
+```css
+:root,
+:host {
+	/* Foundation - the raw value and a scale step derived from it. */
+	--ck-radius-base: 8px;
+	--ck-radius-md: calc(var(--ck-radius-base) / 2);
+
+	/* Semantic - the shared design role. */
+	--ck-border-radius-control: var(--ck-radius-md);
+
+	/* Component - the per-component override point. */
+	--ck-input-border-radius: var(--ck-border-radius-control);
+}
+```
+
+Change a value at the layer that matches its reach:
+
+* **Foundation** &ndash; override `--ck-radius-base` to resize the whole radius scale. If you still set the legacy `--ck-border-radius`, the scale derives from it instead, so `--ck-radius-base` has no effect.
+* **Semantic** &ndash; override `--ck-border-radius-control` to round controls such as buttons and inputs.
+* **Component** &ndash; override `--ck-input-border-radius` to round only inputs.
+
+Set foundation and semantic overrides on `:root` (or on the shadow host when the editor runs in a shadow root). A foundation or semantic override on a narrower selector usually does not reach the component tokens. The theme derives each layer from the one below it on `:root`, so the component tokens inherit values already computed there. To restyle a single element, override its component token instead. The {@link framework/theme-token-naming#layer-model Theme token naming} guide describes the layers in detail, and the {@link framework/theme-customization#global-vs-scoped-overrides Theme customization} guide explains global and scoped overrides.
+
+Colors follow the same model. Surface, text, and interactive colors are semantic roles, so a theme variant, for example a dark or high-contrast palette, is a set of token overrides rather than per-component CSS. See the {@link framework/theme-customization#example-a-dark-theme dark theme example} for a complete variant. Token names follow a documented convention, which makes them straightforward to map to variables in design tools such as Figma.
+
+Token names do not encode their values, so future theme updates can change the default values without renaming the tokens. Custom plugins that build on the same semantic tokens follow your overrides and stay visually consistent with the editor. Overrides of the old token names still work, with a few exceptions. See [The two compatibility mechanisms](#the-two-compatibility-mechanisms).
 
 ## Do I need to do anything?
 
@@ -1857,5 +1888,5 @@ See {@link features/track-changes#markers-styling Markers styling} in the track 
 
 ## Reference links
 
-* {@link framework/theme-token-naming Theme token naming guide} &ndash; the three-tier model and where to override.
+* {@link framework/theme-token-naming Theme token naming guide} &ndash; the three-layer model and the token naming conventions.
 * {@link framework/theme-customization Theme customization guide} &ndash; how to override tokens and apply custom CSS.
