@@ -25,6 +25,9 @@
 	/* Color */
 	--ck-tab-button-background: transparent;
 	--ck-tab-button-active-background: var(--ck-color-interactive-primary-surface-muted);
+	/* Hover background of an inactive tab. Declared `initial` and read with the active background as fallback (no
+	   visual change), so hovering an inactive tab can be themed independently of the active tab. */
+	--ck-tab-button-hover-background: initial;
 	--ck-tab-button-icon-color: var(--ck-color-base-text-light);
 	/* Accent used for the active icon, the active indicator and the hover/focus border. */
 	--ck-tab-button-active-icon-color: var(--ck-color-base-action);
@@ -98,8 +101,10 @@
 		border-color: var(--ck-tab-button-active-icon-color);
 	}
 
-	&:not(.ck-disabled):hover {
-		background: var(--ck-tab-button-active-background);
+	/* Inactive tabs only, so a hover override never replaces the active background. The exclusion sits in `:where()`
+	   to keep the specificity of the focus rules below. */
+	&:not(.ck-disabled):where(:not(.ck-on)):hover {
+		background: var(--ck-tab-button-hover-background, var(--ck-tab-button-active-background));
 	}
 
 	&:not(.ck-disabled):focus {

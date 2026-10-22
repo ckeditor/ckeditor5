@@ -11,8 +11,10 @@
 }
 
 .ck.ck-block-toolbar-button {
-	/* Fallback to `--ck-color-block-toolbar-button` for backward compatibility. */
-	color: var(--ck-color-block-toolbar-button, var(--ck-color-text));
+	/* Fallback to `--ck-color-block-toolbar-button` for backward compatibility. Set as the button's fallback color
+	   (read by `.ck.ck-button` after `--ck-button-default-text-color`), so a `:root` override of the button text
+	   tokens still wins and the hover and active states fall back to it as well. */
+	--ck-button-fallback-text-color: var(--ck-color-block-toolbar-button, var(--ck-color-text));
 	/* Fallback to `--ck-block-toolbar-size` for backward compatibility. */
 	font-size: var(--ck-block-toolbar-size, var(--ck-block-toolbar-button-size));
 	position: absolute;

@@ -20,8 +20,12 @@
 	/* Radius */
 	--ck-button-border-radius: var(--ck-border-radius-control);
 
-	/* Border */
-	--ck-button-border: var(--ck-border-width-control) solid transparent;
+	/* Border. The shorthand is composed from the parts here, so it stays readable with `var()`. Override a part or the
+	   whole shorthand on `:root`; in a narrower scope, override the shorthand (a scoped part is not recomposed). */
+	--ck-button-border-width: var(--ck-border-width-control);
+	--ck-button-border-style: solid;
+	--ck-button-border-color: transparent;
+	--ck-button-border: var(--ck-button-border-width) var(--ck-button-border-style) var(--ck-button-border-color);
 
 	/* Color */
 	--ck-button-default-background-color: transparent;
@@ -64,6 +68,26 @@
 	--ck-button-small-icon-padding: 3px;
 	/* Corner radius for the small variant (uses the standard control radius). */
 	--ck-button-small-border-radius: var(--ck-border-radius-control);
+
+	/* Resting label + icon color of the default variant, and its hover/active states. Declared `initial` and read
+	   at the point of use with the button's previous color as fallback (see `.ck.ck-button`), so the default is
+	   unchanged. On a button the color recolors both the label and icons that use `currentColor`. */
+	--ck-button-default-text-color: initial;
+	--ck-button-default-hover-text-color: initial;
+	--ck-button-default-active-text-color: initial;
+
+	/* Surface (.ck-button_surface) and outline (.ck-button_outline) variants. Declared here rather than on the variant
+	   element, so `:root` and ancestor overrides reach them. */
+	--ck-button-surface-background: var(--ck-color-surface-canvas);
+	--ck-button-surface-border-color: var(--ck-color-interactive-primary-surface);
+	--ck-button-outline-color: var(--ck-color-interactive-primary-surface);
+	--ck-button-outline-background: var(--ck-color-surface-canvas);
+	--ck-button-outline-hover-background: var(--ck-color-interactive-hover-surface);
+	--ck-button-outline-active-background: var(--ck-color-interactive-selected-surface);
+	--ck-button-outline-active-hover-background: var(--ck-color-interactive-selected-surface-hover);
+	/* Outline border color. Declared `initial` and read with `--ck-button-outline-color` as fallback at the point of use,
+	   so an override of the accent, also a scoped one, recolors the border too. */
+	--ck-button-outline-border-color: initial;
 }
 
 /* Use :where(a) (not plain a) to keep the anchor variant at zero specificity. */
@@ -75,6 +99,18 @@
 	--ck-button-disabled-background: var(--ck-color-button-default-disabled-background, var(--ck-button-default-disabled-background-color));
 
 	background: var(--ck-button-background);
+	/* Resting label/icon color; the on/action/save/cancel/outline variants override it. Until overridden it keeps the
+	   color the button had before this token existed: the UI text color inside the `.ck-reset_all` scope (see
+	   `--ck-button-fallback-text-color` below) and the inherited color elsewhere. */
+	color: var(--ck-button-default-text-color, var(--ck-button-fallback-text-color, inherit));
+
+	/* Mirrors the `.ck-reset_all` selector from `globals/_reset.css`, which colored every element in its scope with the
+	   UI text color, so buttons there keep that default. Wrapped in `:where()` to stay at `.ck.ck-button` specificity.
+	   An internal helper, not an override point; theme the button with `--ck-button-default-text-color` instead.
+	   A component may set it to give its buttons a different default without shadowing the public tokens. */
+	&:where(.ck-reset_all, .ck-reset_all *:not(.ck-reset_all-excluded, .ck-reset_all-excluded *)) {
+		--ck-button-fallback-text-color: var(--ck-color-text);
+	}
 
 	&:not(.ck-disabled) {
 		&:hover {
@@ -83,6 +119,20 @@
 
 		&:active {
 			background: var(--ck-button-active-background);
+		}
+	}
+
+	/* Hover/active label/icon color of the default variant only. Scoped away from the variants that set their own
+	   color; the exclusions sit in `:where()` so the rule stays at `.ck.ck-button:hover` specificity and component
+	   rules that color a button keep winning. Active falls back to hover and hover to the resting token, so a single
+	   override carries over to the engaged states. */
+	&:where(:not(.ck-on, .ck-button-action, .ck-button-save, .ck-button-cancel, .ck-button_outline, .ck-disabled)) {
+		&:hover {
+			color: var(--ck-button-default-hover-text-color, var(--ck-button-default-text-color, var(--ck-button-fallback-text-color, inherit)));
+		}
+
+		&:active {
+			color: var(--ck-button-default-active-text-color, var(--ck-button-default-hover-text-color, var(--ck-button-default-text-color, var(--ck-button-fallback-text-color, inherit))));
 		}
 	}
 
@@ -314,9 +364,6 @@
 	* used by the outline variant (retarget with --ck-button-surface-border-color).
 	*/
 	&.ck-button_surface {
-		--ck-button-surface-background: var(--ck-color-surface-canvas);
-		--ck-button-surface-border-color: var(--ck-color-interactive-primary-surface);
-
 		--ck-button-hover-background: var(--ck-button-surface-background);
 		--ck-button-active-background: var(--ck-button-surface-background);
 
@@ -333,9 +380,10 @@
 			--ck-button-active-background: var(--ck-button-surface-background);
 
 			/* Delineate the raised surface with the accent border from the outline variant. Suppressed
-			on focus so the focus outline shows instead. */
+			on focus so the focus outline shows instead. Only the color is set, so the width and style follow
+			`--ck-button-border` (or its parts). */
 			&:not(:focus) {
-				border: var(--ck-border-width-control) solid var(--ck-button-surface-border-color);
+				border-color: var(--ck-button-surface-border-color);
 			}
 		}
 	}
@@ -349,18 +397,15 @@
 	* roles.
 	*/
 	&.ck-button_outline {
-		--ck-button-outline-color: var(--ck-color-interactive-primary-surface);
-		--ck-button-outline-background: var(--ck-color-surface-canvas);
-		--ck-button-outline-hover-background: var(--ck-color-interactive-hover-surface);
-		--ck-button-outline-active-background: var(--ck-color-interactive-selected-surface);
-		--ck-button-outline-active-hover-background: var(--ck-color-interactive-selected-surface-hover);
-
 		color: var(--ck-button-outline-color);
 		background: var(--ck-button-outline-background);
 
-		/* Focus swaps the border for the focus outline, so only draw the accent border when not focused. */
+		/* Focus swaps the border for the focus outline, so only draw the accent border when not focused. The border
+		color defaults to the outline accent, but can be retargeted on its own via `--ck-button-outline-border-color`.
+		Only the color is set, so the width and style follow `--ck-button-border` (or its parts); a theme that removes
+		the button border removes it here as well. */
 		&:not(:focus) {
-			border: var(--ck-border-width-control) solid var(--ck-button-outline-color);
+			border-color: var(--ck-button-outline-border-color, var(--ck-button-outline-color));
 		}
 
 		/* Active (pressed) and toggled-on share the selected surface, deepening one step on hover. */

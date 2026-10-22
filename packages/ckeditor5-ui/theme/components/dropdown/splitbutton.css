@@ -3,6 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Split button hover/focus colors and the arrow's top/bottom border width, overridable from `:root`. The color
+	   tokens are declared `initial` and read at the point of use with the existing value as fallback (no visual change). */
+	--ck-split-button-hover-background: initial;
+	--ck-split-button-hover-border-color: initial;
+	--ck-split-button-focus-border-color: initial;
+	--ck-split-button-arrow-border-block-width: 0px;
+}
+
 .ck.ck-splitbutton {
 	/*
 	 * Note: ck-rounded and ck-dir mixins don't go together (because they both use @nest).
@@ -51,8 +61,8 @@
 	/* Make sure the divider stretches 100% height of the button
 	https://github.com/ckeditor/ckeditor5/issues/10936 */
 	& > .ck-splitbutton__arrow:not(:focus) {
-		border-top-width: 0px;
-		border-bottom-width: 0px;
+		border-top-width: var(--ck-split-button-arrow-border-block-width);
+		border-bottom-width: var(--ck-split-button-arrow-border-block-width);
 	}
 
 	/* When "open", the buttons keep fully rounded corners by default, matching an open regular dropdown.
@@ -80,7 +90,7 @@
 		/* When the split button hovered as a whole, not as individual buttons. */
 		& > .ck-button:not(.ck-on):not(.ck-disabled):not(:hover) {
 			/* Fallback to `--ck-color-split-button-hover-background` for backward compatibility. */
-			background: var(--ck-color-split-button-hover-background, var(--ck-color-interactive-hover-surface));
+			background: var(--ck-split-button-hover-background, var(--ck-color-split-button-hover-background, var(--ck-color-interactive-hover-surface)));
 		}
 
 		/* Splitbutton separator needs to be set with the ::after pseudoselector
@@ -91,14 +101,14 @@
 			width: 1px;
 			height: 100%;
 			/* Fallback to `--ck-color-split-button-hover-border` for backward compatibility. */
-			background-color: var(--ck-color-split-button-hover-border, var(--ck-color-border-control));
+			background-color: var(--ck-split-button-hover-border-color, var(--ck-color-split-button-hover-border, var(--ck-color-border-control)));
 		}
 
 		/* Make sure the divider between the buttons looks fine when the button is focused */
 		& > .ck-splitbutton__arrow:focus::after {
 			/* Fallback to `--ck-color-split-button-hover-border` for backward compatibility. */
 			--ck-color-split-button-hover-border: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
-			background-color: var(--ck-color-split-button-hover-border, var(--ck-color-interactive-focus-border));
+			background-color: var(--ck-split-button-focus-border-color, var(--ck-color-split-button-hover-border, var(--ck-color-interactive-focus-border)));
 		}
 
 		[dir="ltr"] & {
