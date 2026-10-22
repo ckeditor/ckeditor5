@@ -19,7 +19,7 @@ setup: true
 parameters:
   chromeVersion:
     type: string
-    default: "155.0.8059.39"
+    default: "156.0.8078.47"
   isLtsPipeline:
     type: boolean
     default: true
