@@ -120,15 +120,19 @@ Naming is only half the story. For how to pick a layer and override tokens in pr
 A single value flows through all three layers: the raw number lives in the foundation, the shared design role in the semantic layer, and the per-component override point in the component layer.
 
 ```css
-/* Foundation - the raw value. */
---ck-radius-md: 4px;
+:root,
+:host {
+	/* Foundation - the raw value and a scale step derived from it. */
+	--ck-radius-base: 8px;
+	--ck-radius-md: calc(var(--ck-radius-base) / 2);
 
-/* Semantic - the shared design role. */
---ck-border-radius-control: var(--ck-radius-md);
+	/* Semantic - the shared design role. */
+	--ck-border-radius-control: var(--ck-radius-md);
 
-/* Component - the per-component override points. */
---ck-input-border-radius: var(--ck-border-radius-control);
---ck-button-border-radius: var(--ck-border-radius-control);
+	/* Component - the per-component override points. */
+	--ck-input-border-radius: var(--ck-border-radius-control);
+	--ck-button-border-radius: var(--ck-border-radius-control);
+}
 ```
 
-To round the corners of every control, override the semantic token once (`--ck-border-radius-control`); to change only inputs, override the component token (`--ck-input-border-radius`).
+To resize the whole radius scale, override the foundation token (`--ck-radius-base`). To round controls such as buttons and inputs, override the semantic token once (`--ck-border-radius-control`). To change only inputs, override the component token (`--ck-input-border-radius`).
