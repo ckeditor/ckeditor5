@@ -321,7 +321,7 @@ export class DragDropTarget extends Plugin {
 
 		const domScrollableRect = this._getScrollableRect( viewElementParent );
 
-		const { scrollX, scrollY } = global.window;
+		const { scrollX, scrollY } = domElementParent.ownerDocument.defaultView!;
 		const rectBefore = domElementBefore ? new Rect( domElementBefore ) : null;
 		const rectAfter = domElementAfter ? new Rect( domElementAfter ) : null;
 		const rectParent = new Rect( domElementParent ).excludeScrollbarsAndBorders();

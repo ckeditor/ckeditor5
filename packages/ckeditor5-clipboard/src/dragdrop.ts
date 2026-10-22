@@ -683,16 +683,16 @@ export class DragDrop extends Plugin {
 		const computedStyle = global.window.getComputedStyle( domEditable );
 
 		if ( !this._previewContainer ) {
-			this._previewContainer = createElement( global.document, 'div', {
+			this._previewContainer = createElement( domEditable.ownerDocument, 'div', {
 				style: 'position: fixed; left: -999999px;'
 			} );
 
-			global.document.body.appendChild( this._previewContainer );
+			domEditable.ownerDocument.body.appendChild( this._previewContainer );
 		} else if ( this._previewContainer.firstElementChild ) {
 			this._previewContainer.removeChild( this._previewContainer.firstElementChild );
 		}
 
-		const preview = createElement( global.document, 'div' );
+		const preview = createElement( domEditable.ownerDocument, 'div' );
 
 		preview.className = 'ck ck-content ck-clipboard-preview';
 
