@@ -45,6 +45,11 @@
 	color: var(--ck-color-input-text, var(--ck-input-text-color));
 	font-size: var(--ck-input-font-size);
 
+	/* `<input>` and `<textarea>` do not inherit the font family, so set it explicitly. Inside the `.ck-reset_all`
+	   scope this matches the reset; elsewhere the field would use the browser default.
+	   Backward compatibility: falls back to legacy --ck-font-face if overridden. */
+	font-family: var(--ck-font-face, var(--ck-font-family));
+
 	/* This is important to stay of the same height as surrounding buttons */
 	min-height: var(--ck-size-control-min-height);
 

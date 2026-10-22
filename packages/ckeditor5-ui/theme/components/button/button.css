@@ -105,6 +105,11 @@
 	and the icon scales with it. */
 	font-size: var(--ck-button-font-size);
 
+	/* `<button>` does not inherit the font family, so set it explicitly. Inside the `.ck-reset_all` scope this matches
+	   the reset; elsewhere (for example in `.ck-reset_all-excluded` regions) the button would use the browser default.
+	   Backward compatibility: falls back to legacy --ck-font-face if overridden. */
+	font-family: var(--ck-font-face, var(--ck-font-family));
+
 	/* Avoid flickering when the foucs border shows up. */
 	border: var(--ck-button-border);
 
