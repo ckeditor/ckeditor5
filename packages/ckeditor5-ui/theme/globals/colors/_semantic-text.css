@@ -10,6 +10,8 @@
 	--ck-color-text-disabled: var(--ck-color-text-secondary);
 	--ck-color-text-inverse: var(--ck-color-base-background);
 	--ck-color-text-error: var(--ck-color-feedback-error);
+	/* Intentionally hardcoded: no foundation equivalent yet. */
+	--ck-color-text-placeholder: hsl(0 0% 44%);
 
 	--ck-color-text: var(--ck-color-text-primary);
 }

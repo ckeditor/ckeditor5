@@ -5,9 +5,9 @@
 
 :root,
 :host {
-	/* Based on default CKBox theme colors — content-layer: pending color palette */
-	--ck-image-processing-highlight-color: hsl(220, 10%, 98%);
-	--ck-image-processing-background-color: hsl(220, 10%, 90%);
+	/* The loading shimmer of an image being processed. */
+	--ck-image-processing-highlight-color: var(--ck-color-surface-skeleton-highlight);
+	--ck-image-processing-background-color: var(--ck-color-surface-skeleton);
 }
 
 .ck.ck-editor__editable {

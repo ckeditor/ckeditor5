@@ -32,6 +32,9 @@
 	--ck-color-surface-control: var(--app-surface-1);
 	--ck-color-surface-container: var(--app-surface-1);
 	--ck-color-surface-inverse: hsl(252, 7%, 14%);
+	--ck-color-surface-subtle: var(--app-surface-2);
+	--ck-color-surface-skeleton: var(--app-surface-2);
+	--ck-color-surface-skeleton-highlight: var(--app-surface-3);
 
 	--ck-color-border-control: var(--app-surface-3);
 	--ck-color-border-container: var(--app-surface-3);
@@ -41,6 +44,7 @@
 	--ck-color-text-secondary: hsl(0, 0%, 86%);
 	--ck-color-text-disabled: var(--app-text-2);
 	--ck-color-text-inverse: var(--app-brand-contrast);
+	--ck-color-text-placeholder: var(--app-text-2);
 
 	--ck-color-interactive-focus-border-coordinates: var(--app-focus-hsl);
 	--ck-color-interactive-focus-shadow: hsla(208, 90%, 62%, .4);

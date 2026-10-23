@@ -46,7 +46,8 @@
 	--ck-button-on-background-color: var(--ck-color-interactive-selected-surface);
 	--ck-button-on-hover-background-color: var(--ck-color-interactive-selected-surface-hover);
 	--ck-button-on-active-background-color: var(--ck-color-interactive-selected-surface-hover);
-	/* Intentionally hardcoded: no matching semantic disabled surface exists yet. */
+	/* Intentionally hardcoded: a blue-grey tint of the "on" state. The neutral `--ck-color-interactive-disabled-surface`
+	of disabled form controls does not match it. */
 	--ck-button-on-disabled-background-color: hsl(211 15% 95%);
 	--ck-button-on-text-color: var(--ck-color-interactive-selected-text);
 	--ck-button-action-background-color: var(--ck-color-interactive-primary-surface);

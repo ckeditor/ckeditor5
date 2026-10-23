@@ -69,7 +69,7 @@
 		}
 
 		&.ck-disabled {
-			--ck-color-button-default-disabled-background: var(--ck-color-base-foreground);
+			--ck-color-button-default-disabled-background: var(--ck-color-surface-subtle);
 
 			/* Let default .ck-button :focus styles apply */
 			&:not(:focus) {
@@ -79,7 +79,7 @@
 			& .ck-style-grid__button__preview {
 				opacity: .4;
 
-				border-color: var(--ck-color-base-foreground);
+				border-color: var(--ck-color-surface-subtle);
 				filter: saturate(.3);
 			}
 		}

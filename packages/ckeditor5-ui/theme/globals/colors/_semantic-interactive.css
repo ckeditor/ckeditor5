@@ -24,6 +24,9 @@
 	--ck-color-interactive-primary-surface-disabled: var(--ck-color-base-action-disabled);
 	--ck-color-interactive-primary-text: var(--ck-color-text-inverse);
 
+	/* Intentionally hardcoded: no foundation equivalent yet. The background of a disabled form control. */
+	--ck-color-interactive-disabled-surface: hsl(0 0% 95%);
+
 	/* Backward compatibility aliases. */
 	--ck-color-focus-border-coordinates: var(--ck-color-interactive-focus-border-coordinates);
 	--ck-color-focus-border: var(--ck-color-interactive-focus-border);

@@ -11,7 +11,7 @@
 	--ck-widget-handler-animation-duration: var(--ck-duration-base);
 	--ck-widget-handler-animation-curve: var(--ck-ease-standard);
 
-	--ck-widget-blurred-border-color: var(--ck-color-base-border-light);
+	--ck-widget-blurred-border-color: var(--ck-color-border-subtle);
 	--ck-widget-hover-border-color: var(--ck-color-base-attention);
 	--ck-widget-editable-focus-background-color: var(--ck-color-surface-canvas);
 	--ck-widget-drag-handler-icon-color: var(--ck-color-text-inverse);

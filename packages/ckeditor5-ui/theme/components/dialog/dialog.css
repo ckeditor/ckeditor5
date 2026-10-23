@@ -20,7 +20,7 @@
 
 	/* Color */
 	--ck-dialog-background-color: var(--ck-color-surface-container);
-	--ck-dialog-overlay-background-color: hsl(0 0% 0% / .5);
+	--ck-dialog-overlay-background-color: var(--ck-color-surface-overlay);
 	/* Dialog header background. Declared `initial` and read with `--ck-form-header-background` as fallback, so it
 	   follows the form header unless set on its own. */
 	--ck-dialog-header-background: initial;

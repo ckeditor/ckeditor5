@@ -10,8 +10,16 @@
 	--ck-color-surface-control: var(--ck-color-surface-canvas);
 	--ck-color-surface-container: var(--ck-color-surface-canvas);
 	--ck-color-surface-inverse: var(--ck-color-base-text);
+	/* A muted panel or placeholder surface, slightly darker than the canvas. */
+	--ck-color-surface-subtle: var(--ck-color-base-foreground);
+	/* Intentionally hardcoded: no foundation equivalent yet. The scrim behind modal dialogs. */
+	--ck-color-surface-overlay: hsl(0 0% 0% / .5);
+	/* Intentionally hardcoded: no foundation equivalent yet. The loading (shimmer) placeholder and its highlight. */
+	--ck-color-surface-skeleton: hsl(220 10% 90%);
+	--ck-color-surface-skeleton-highlight: hsl(220 10% 98%);
 
 	--ck-color-border-control: var(--ck-color-base-border);
 	--ck-color-border-container: var(--ck-color-base-border);
+	--ck-color-border-subtle: var(--ck-color-base-border-light);
 	--ck-color-divider: var(--ck-color-base-border);
 }
