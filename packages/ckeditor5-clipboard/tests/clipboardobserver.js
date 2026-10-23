@@ -283,6 +283,33 @@ describe( 'ClipboardObserver', () => {
 
 			expect( normalPrioritySpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( eventSpy.mock.invocationCallOrder[ 0 ] );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/13366
+		it( 'should not fall back to the URI list nor access native DataTransfer files on dragover', () => {
+			const filesSpy = vi.fn();
+			const dataTransfer = {
+				get files() {
+					filesSpy();
+					return [];
+				},
+				getData( type ) {
+					return type == 'text/uri-list' ? 'file:///home/user/document.pdf' : '';
+				}
+			};
+
+			doc.on( 'dragging', eventSpy );
+
+			observer.onDomEvent( {
+				type: 'dragover',
+				target: mockDomTargetElement( {} ),
+				dataTransfer,
+				preventDefault: preventDefaultSpy
+			} );
+
+			expect( eventSpy ).toHaveBeenCalledOnce();
+			expect( eventSpy.mock.calls[ 0 ][ 1 ].content ).toBe( '' );
+			expect( filesSpy ).not.toHaveBeenCalled();
+		} );
 	} );
 
 	describe( 'dragover event', () => {

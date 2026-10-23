@@ -189,6 +189,112 @@ describe( 'ClipboardPipeline feature', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/2074
+		describe( 'takes URI list data from the dataTransfer if there is no HTML nor plain text', () => {
+			it( 'and inserts a single URI as plain text', () => {
+				const dataTransferMock = createDataTransfer( { 'text/uri-list': 'https://ckeditor.com/' } );
+
+				_setModelData( editor.model, '<paragraph>[]</paragraph>' );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				} );
+
+				expect( _getModelData( editor.model ) ).toBe( '<paragraph>https://ckeditor.com/[]</paragraph>' );
+			} );
+
+			it( 'and skips comment and empty lines', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/uri-list': '# comment\r\nhttps://ckeditor.com/\r\n\r\n# another comment\r\nhttps://example.com/#hash\r\n'
+				} );
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					expect( _stringifyView( data.content ) ).toBe( '<p>https://ckeditor.com/<br></br>https://example.com/#hash</p>' );
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				} );
+
+				expect.assertions( 1 );
+			} );
+
+			it( 'and prefers plain text over the URI list', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/plain': 'foo',
+					'text/uri-list': 'https://ckeditor.com/'
+				} );
+
+				_setModelData( editor.model, '<paragraph>[]</paragraph>' );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				} );
+
+				expect( _getModelData( editor.model ) ).toBe( '<paragraph>foo[]</paragraph>' );
+			} );
+
+			it( 'and inserts nothing if the URI list contains only comments', () => {
+				const dataTransferMock = createDataTransfer( { 'text/uri-list': '# comment' } );
+				const contentInsertionSpy = vi.fn();
+
+				clipboardPlugin.on( 'contentInsertion', contentInsertionSpy );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				} );
+
+				expect( contentInsertionSpy ).not.toHaveBeenCalled();
+			} );
+
+			it( 'and inserts a single URI as plain text on drop', () => {
+				const dataTransferMock = createDataTransfer( { 'text/uri-list': 'https://ckeditor.com/' } );
+
+				_setModelData( editor.model, '<paragraph>[]</paragraph>' );
+
+				viewDocument.fire( 'drop', {
+					dataTransfer: dataTransferMock,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				} );
+
+				expect( _getModelData( editor.model ) ).toBe( '<paragraph>https://ckeditor.com/[]</paragraph>' );
+			} );
+
+			for ( const method of [ 'paste', 'drop' ] ) {
+				it( `and inserts nothing on ${ method } if the data transfer contains files (their local paths)`, () => {
+					const fileMock = {
+						type: 'application/pdf',
+						size: 1024
+					};
+					const dataTransferMock = new ViewDataTransfer( {
+						files: [ fileMock ],
+						types: [ 'text/uri-list', 'Files' ],
+						getData: type => type == 'text/uri-list' ? 'file:///home/user/document.pdf' : ''
+					} );
+					const contentInsertionSpy = vi.fn();
+
+					clipboardPlugin.on( 'contentInsertion', contentInsertionSpy );
+
+					viewDocument.fire( method, {
+						dataTransfer: dataTransferMock,
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
+					} );
+
+					expect( contentInsertionSpy ).not.toHaveBeenCalled();
+				} );
+			}
+		} );
+
 		describe( 'should be possible to override clipboardInput data', () => {
 			it( 'fires the inputTransformation event on the clipboardPlugin', () => {
 				return new Promise( resolve => {
@@ -591,6 +697,7 @@ describe( 'ClipboardPipeline feature', () => {
 			const state = Object.create( data || {} );
 
 			return {
+				files: [],
 				getData( type ) {
 					return state[ type ];
 				},
