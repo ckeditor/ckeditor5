@@ -26,6 +26,7 @@
 	--ck-list-button-on-background-color: var(--ck-color-button-on-color, var(--ck-color-interactive-selected-text));
 	--ck-list-button-on-text-color: var(--ck-color-text-inverse);
 	--ck-list-divider-color: var(--ck-color-divider);
+	--ck-list-separator-height: var(--ck-border-width-divider);
 
 	/* Typography */
 	--ck-list-group-label-font-size: var(--ck-font-size-small, var(--ck-font-size-sm));
@@ -154,7 +155,7 @@
 }
 
 .ck.ck-list__separator {
-	height: 1px;
+	height: var(--ck-list-separator-height);
 	/* Full-bleed: the negative inline margin pulls the divider across the list's inline padding to both edges. */
 	width: calc(100% - 2 * var(--ck-list-separator-inline-margin));
 	background: var(--ck-list-divider-color);

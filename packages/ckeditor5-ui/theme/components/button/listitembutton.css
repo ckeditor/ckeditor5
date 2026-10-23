@@ -19,6 +19,11 @@
 	--ck-list-item-button-text-color: initial;
 	--ck-list-item-button-hover-text-color: initial;
 	--ck-list-item-button-on-background: initial;
+
+	/* Text color and hover background of a toggleable item in the "on" state (for example a checked option). Declared
+	   `initial` and read with the resting text color and the regular hover background as fallbacks. */
+	--ck-list-item-button-on-text-color: initial;
+	--ck-list-item-button-on-hover-background: initial;
 }
 
 .ck.ck-button.ck-list-item-button {
@@ -60,6 +65,15 @@
 	   hover background above, so an open menu can be themed as a selected state instead of always looking hovered. */
 	&.ck-on:not(.ck-list-item-button_toggleable):not(:hover) {
 		background: var(--ck-list-item-button-on-background, var(--ck-color-list-button-hover-background, var(--ck-list-button-hover-background-color)));
+	}
+
+	/* A toggleable "on" item keeps the resting text color and the regular hover background unless set on its own. */
+	&.ck-list-item-button_toggleable.ck-on {
+		color: var(--ck-list-item-button-on-text-color, var(--ck-list-item-button-text-color, var(--ck-color-text)));
+
+		&:hover:not(.ck-disabled) {
+			background: var(--ck-list-item-button-on-hover-background, var(--ck-color-list-button-hover-background, var(--ck-list-button-hover-background-color)));
+		}
 	}
 }
 

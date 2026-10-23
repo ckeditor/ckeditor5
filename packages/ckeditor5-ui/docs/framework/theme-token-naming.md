@@ -111,6 +111,10 @@ Start a token name with what it belongs to (the component, or the role for seman
 * `--ck-color-labeled-field-label-background`
 * mixed ordering like `--ck-focus-shadow-disabled-interactive`
 
+### Internal helpers
+
+Names that start with `--_ck-` (with an underscore) are internal helpers, not tokens. The theme uses them to pass values between components without shadowing the public tokens, for example `--_ck-button-context-border`, which the toolbar sets on its own buttons. Do not set or read them in your theme. They are not part of the public API and may change or be removed in any release.
+
 ## Overriding tokens
 
 Naming is only half the story. For how to pick a layer and override tokens in practice - global versus scoped overrides and the per-element caveats - see the {@link framework/theme-customization Theme customization} guide.

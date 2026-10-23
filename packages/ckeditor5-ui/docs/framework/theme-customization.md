@@ -67,6 +67,38 @@ To restyle a single element or region, scope the override to a selector - but **
 
 All tokens are defined and resolved on `:root`, so a scoped override of a lower-layer token does not re-flow up through the chain. The closer a token sits to the property it controls, the better it works when scoped - which makes component tokens the safe choice for per-element tweaks. Legacy token names are an exception: the theme reads them at each point of use, so a legacy override also works when scoped - the {@link updating/migration-to-refreshed-theme migration guide} covers the few re-themed tokens that stay `:root`-only.
 
+### Toolbar buttons
+
+To restyle the buttons of every toolbar without touching other buttons, use the toolbar button tokens. They apply to the buttons of the editor toolbar, balloon and widget toolbars, compact toolbars in forms (for example the alignment toolbar in table properties), and toolbars in dropdowns:
+
+```css
+:root {
+	--ck-toolbar-button-border: 1px solid hsl(0, 0%, 0%);
+	--ck-toolbar-button-border-radius: 0;
+}
+```
+
+Scope them to one toolbar to restyle only its buttons:
+
+```css
+.ck-editor__top .ck-toolbar {
+	--ck-toolbar-button-border: 1px solid hsl(0, 0%, 0%);
+}
+```
+
+A scoped override also reaches the toolbars in dropdown panels opened from that toolbar, for example the alignment toolbar or the "Show more items" toolbar, because they are toolbars too. Lists in dropdown panels keep their regular button styles. To give the toolbars in dropdown panels the regular button styles, unset the tokens there. This also drops any value you set for the toolbar tokens on `:root`:
+
+```css
+.ck-editor__top .ck-dropdown__panel .ck-toolbar {
+	--ck-toolbar-button-border: initial;
+	--ck-toolbar-button-border-radius: initial;
+}
+```
+
+Until you set them, toolbar buttons use `--ck-button-border` and `--ck-button-border-radius`. The outer corners of compact toolbars, for example in table properties, use `--ck-border-radius-control`.
+
+An open dropdown or split button in a toolbar also uses `--ck-toolbar-button-border-radius`, ahead of `--ck-dropdown-panel-uniform-button-border-radius`. If you set both, for example `--ck-dropdown-panel-uniform-button-border-radius: initial` to keep the attached-corner look, the toolbar button radius wins for open dropdowns in toolbars. The vertical toolbar keeps its own `--ck-toolbar-vertical-button-border-radius`.
+
 ### Best practices
 
 * Override the **closest** token to what you want to change; drop to a lower layer only when the change should reach further.

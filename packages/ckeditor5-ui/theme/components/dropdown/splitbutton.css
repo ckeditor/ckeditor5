@@ -11,6 +11,7 @@
 	--ck-split-button-hover-border-color: initial;
 	--ck-split-button-focus-border-color: initial;
 	--ck-split-button-arrow-border-block-width: 0px;
+	--ck-split-button-separator-width: var(--ck-border-width-divider);
 }
 
 .ck.ck-splitbutton {
@@ -74,11 +75,12 @@
 		& > .ck-splitbutton__action {
 			/* Logical property so it targets the action's outer bottom corner in both LTR and RTL,
 			not the inner join that the dir-specific `unset` rules above flatten. */
-			border-end-start-radius: var(--ck-dropdown-panel-uniform-button-border-radius, 0);
+			border-end-start-radius: var(--_ck-button-context-border-radius, var(--ck-dropdown-panel-uniform-button-border-radius, 0));
 		}
 
+		/* In a toolbar, `--_ck-button-context-border-radius` carries `--ck-toolbar-button-border-radius` (unset by default). */
 		& > .ck-splitbutton__arrow {
-			border-end-end-radius: var(--ck-dropdown-panel-uniform-button-border-radius, 0);
+			border-end-end-radius: var(--_ck-button-context-border-radius, var(--ck-dropdown-panel-uniform-button-border-radius, 0));
 		}
 	}
 
@@ -98,7 +100,7 @@
 		& > .ck-splitbutton__arrow:not(.ck-disabled)::after {
 			content: '';
 			position: absolute;
-			width: 1px;
+			width: var(--ck-split-button-separator-width);
 			height: 100%;
 			/* Fallback to `--ck-color-split-button-hover-border` for backward compatibility. */
 			background-color: var(--ck-split-button-hover-border-color, var(--ck-color-split-button-hover-border, var(--ck-color-border-control)));

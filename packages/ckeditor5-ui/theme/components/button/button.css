@@ -3,6 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/*
+ * Custom properties prefixed with `--_ck-` (note the underscore) are internal helpers, not theming tokens. They let
+ * a component change what a button reads without redeclaring the public `--ck-button-*` tokens, which would shadow
+ * `:root` overrides. Do not set them in themes; they may change or be removed without notice. Two kinds exist:
+ *
+ * - `--_ck-button-fallback-*` sits after the public token, so it only changes the default and a theme still wins.
+ * - `--_ck-button-context-*` sits before the public token, so a container (for example the toolbar) can apply its own
+ *   token to the buttons it owns. The container sets it on those buttons only, to keep it out of nested panels
+ *   (a toolbar in a dropdown panel sets its own through the same rule).
+ */
+
 :root,
 :host {
 	/* Spacing */
@@ -101,15 +112,15 @@
 	background: var(--ck-button-background);
 	/* Resting label/icon color; the on/action/save/cancel/outline variants override it. Until overridden it keeps the
 	   color the button had before this token existed: the UI text color inside the `.ck-reset_all` scope (see
-	   `--ck-button-fallback-text-color` below) and the inherited color elsewhere. */
-	color: var(--ck-button-default-text-color, var(--ck-button-fallback-text-color, inherit));
+	   `--_ck-button-fallback-text-color` below) and the inherited color elsewhere. */
+	color: var(--ck-button-default-text-color, var(--_ck-button-fallback-text-color, inherit));
 
 	/* Mirrors the `.ck-reset_all` selector from `globals/_reset.css`, which colored every element in its scope with the
 	   UI text color, so buttons there keep that default. Wrapped in `:where()` to stay at `.ck.ck-button` specificity.
 	   An internal helper, not an override point; theme the button with `--ck-button-default-text-color` instead.
 	   A component may set it to give its buttons a different default without shadowing the public tokens. */
 	&:where(.ck-reset_all, .ck-reset_all *:not(.ck-reset_all-excluded, .ck-reset_all-excluded *)) {
-		--ck-button-fallback-text-color: var(--ck-color-text);
+		--_ck-button-fallback-text-color: var(--ck-color-text);
 	}
 
 	&:not(.ck-disabled) {
@@ -125,18 +136,23 @@
 	/* Hover/active label/icon color of the default variant only. Scoped away from the variants that set their own
 	   color; the exclusions sit in `:where()` so the rule stays at `.ck.ck-button:hover` specificity and component
 	   rules that color a button keep winning. Active falls back to hover and hover to the resting token, so a single
-	   override carries over to the engaged states. */
+	   override carries over to the engaged states. A component may set `--_ck-button-fallback-hover-text-color`
+	   (an internal helper, like `--_ck-button-fallback-text-color`) to give its buttons their own hover color without
+	   shadowing the public tokens. */
 	&:where(:not(.ck-on, .ck-button-action, .ck-button-save, .ck-button-cancel, .ck-button_outline, .ck-disabled)) {
 		&:hover {
-			color: var(--ck-button-default-hover-text-color, var(--ck-button-default-text-color, var(--ck-button-fallback-text-color, inherit)));
+			color: var(--ck-button-default-hover-text-color, var(--_ck-button-fallback-hover-text-color, var(--ck-button-default-text-color, var(--_ck-button-fallback-text-color, inherit))));
 		}
 
 		&:active {
-			color: var(--ck-button-default-active-text-color, var(--ck-button-default-hover-text-color, var(--ck-button-default-text-color, var(--ck-button-fallback-text-color, inherit))));
+			color: var(--ck-button-default-active-text-color, var(--ck-button-default-hover-text-color, var(--_ck-button-fallback-hover-text-color, var(--ck-button-default-text-color, var(--_ck-button-fallback-text-color, inherit)))));
 		}
 	}
 
-	border-radius: var(--ck-button-border-radius);
+	/* `--_ck-button-context-border-radius` and `--_ck-button-context-border` (below) are internal helpers a container sets
+	   on the buttons it owns (for example the toolbar for its items) to apply its own token. They are unset by default,
+	   so the button reads its public tokens. */
+	border-radius: var(--_ck-button-context-border-radius, var(--ck-button-border-radius));
 	white-space: nowrap;
 	cursor: default;
 	vertical-align: middle;
@@ -161,7 +177,7 @@
 	font-family: var(--ck-font-face, var(--ck-font-family));
 
 	/* Avoid flickering when the foucs border shows up. */
-	border: var(--ck-button-border);
+	border: var(--_ck-button-context-border, var(--ck-button-border));
 
 	/* Apply some smooth transition to the box-shadow and border. */
 	transition: var(--ck-transition-control);

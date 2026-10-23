@@ -31,6 +31,10 @@
 	--ck-tab-button-icon-color: var(--ck-color-base-text-light);
 	/* Accent used for the active icon, the active indicator and the hover/focus border. */
 	--ck-tab-button-active-icon-color: var(--ck-color-base-action);
+	/* The focus border color and the label color of the active tab. Declared `initial` and read with the active icon
+	   color as fallback (no visual change), so they can be themed apart from the accent. */
+	--ck-tab-button-focus-border-color: initial;
+	--ck-tab-button-active-text-color: initial;
 	/* Backgrounds shown while focused, and while focused and hovered at once. */
 	--ck-tab-button-focus-background: var(--ck-color-base-background);
 	--ck-tab-button-focus-hover-background: var(--ck-color-interactive-hover-surface-strong);
@@ -98,7 +102,7 @@
 
 	/* The accent border shows on focus only (including active + focus, which matches :focus). */
 	&:not(.ck-disabled):focus {
-		border-color: var(--ck-tab-button-active-icon-color);
+		border-color: var(--ck-tab-button-focus-border-color, var(--ck-tab-button-active-icon-color));
 	}
 
 	/* Inactive tabs only, so a hover override never replaces the active background. The exclusion sits in `:where()`
@@ -125,7 +129,7 @@
 
 	&.ck-on {
 		background: var(--ck-tab-button-active-background);
-		color: var(--ck-tab-button-active-icon-color);
+		color: var(--ck-tab-button-active-text-color, var(--ck-tab-button-active-icon-color));
 
 		--ck-tab-button-indicator-length: var(--ck-tab-button-indicator-active-height);
 		--ck-tab-button-indicator-color: var(--ck-tab-button-indicator-active-color);

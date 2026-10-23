@@ -9,12 +9,16 @@
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
 
 	/* Spacing */
+	/* Space between the dropdown label and its arrow, the same in both text directions. */
+	--ck-dropdown-arrow-gap: var(--ck-spacing-control-padding-inline);
 	--ck-dropdown-panel-padding: 0;
 
 	/* Radius */
 	/* Uniform (fully rounded) corners by default; set this to initial to restore the attached-corner (squared connecting edge) look, as the legacy theme does. */
 	--ck-dropdown-panel-uniform-border-radius: var(--ck-border-radius-uniform);
-	--ck-dropdown-panel-uniform-button-border-radius: var(--ck-border-radius-control);
+	/* The radius of an open dropdown button. Defaults to the button radius (the same value as the control radius), so
+	   overriding `--ck-button-border-radius` on `:root` also reaches open dropdowns. */
+	--ck-dropdown-panel-uniform-button-border-radius: var(--ck-button-border-radius);
 	--ck-dropdown-panel-border-radius: var(--ck-border-radius-surface-attached);
 
 	/* Color */
@@ -43,7 +47,7 @@
 			right: var(--ck-spacing-control-padding-inline);
 
 			/* A space to accommodate the triangle. */
-			margin-left: var(--ck-spacing-control-padding-inline);
+			margin-left: var(--ck-dropdown-arrow-gap);
 		}
 	}
 
@@ -52,7 +56,7 @@
 			left: var(--ck-spacing-control-padding-inline);
 
 			/* A space to accommodate the triangle. */
-			margin-right: var(--ck-spacing-control-padding-inline-compact);
+			margin-right: var(--ck-dropdown-arrow-gap);
 		}
 	}
 
@@ -90,8 +94,9 @@
 		}
 
 		/* https://github.com/ckeditor/ckeditor5/issues/816 */
+		/* In a toolbar, `--_ck-button-context-border-radius` carries `--ck-toolbar-button-border-radius` (unset by default). */
 		&.ck-on {
-			border-radius: var(--ck-dropdown-panel-uniform-button-border-radius, var(--ck-border-radius-surface-attached-bottom));
+			border-radius: var(--_ck-button-context-border-radius, var(--ck-dropdown-panel-uniform-button-border-radius, var(--ck-border-radius-surface-attached-bottom)));
 		}
 
 		&.ck-dropdown__button_label-width_auto .ck-button__label {
