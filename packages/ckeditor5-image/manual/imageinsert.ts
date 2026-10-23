@@ -41,7 +41,7 @@ async function createEditor( elementId: string, imageType: any ) {
 		},
 		ckfinder: {
 			// eslint-disable-next-line @stylistic/max-len
-			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.7.1/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 		},
 		updateSourceElementOnDestroy: true
 	} );
