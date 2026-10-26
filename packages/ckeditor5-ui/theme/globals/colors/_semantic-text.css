@@ -10,6 +10,10 @@
 	--ck-color-text-disabled: var(--ck-color-text-secondary);
 	--ck-color-text-inverse: var(--ck-color-base-background);
 	--ck-color-text-error: var(--ck-color-feedback-error);
+	/* Accent-colored text and icons on the canvas, such as the outline button label or the active tab icon. Not a fill:
+	   filled action buttons use `--ck-color-interactive-primary-surface`. It must read well on the canvas, so a dark
+	   theme usually makes it lighter than the primary surface. */
+	--ck-color-text-accent: var(--ck-color-base-active);
 	/* Intentionally hardcoded: no foundation equivalent yet. */
 	--ck-color-text-placeholder: hsl(0 0% 44%);
 

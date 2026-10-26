@@ -16,7 +16,9 @@
 	--ck-color-interactive-active-surface: var(--ck-color-base-hover);
 	--ck-color-interactive-selected-surface: var(--ck-color-base-selected);
 	--ck-color-interactive-selected-surface-hover: var(--ck-color-base-selected-hover);
-	--ck-color-interactive-selected-text: var(--ck-color-base-active);
+	/* The label of a selected or toggled-on control, drawn on `--ck-color-interactive-selected-surface`. Follows the accent
+	   text by default. */
+	--ck-color-interactive-selected-text: var(--ck-color-text-accent);
 
 	--ck-color-interactive-primary-surface: var(--ck-color-base-action);
 	--ck-color-interactive-primary-surface-hover: var(--ck-color-base-action-hover);

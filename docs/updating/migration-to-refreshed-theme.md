@@ -525,6 +525,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-color-surface-inverse: var(--ck-color-base-text);
 	--ck-color-border-control: var(--ck-color-base-border);
 	--ck-color-border-container: var(--ck-color-base-border);
+	--ck-color-border-accent: var(--ck-color-text-accent);
 	--ck-color-divider: var(--ck-color-base-border);
 
 	/* Semantic / Colors / Text */
@@ -534,6 +535,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-color-text-disabled: var(--ck-color-text-secondary);
 	--ck-color-text-inverse: var(--ck-color-base-background);
 	--ck-color-text-error: var(--ck-color-feedback-error);
+	--ck-color-text-accent: var(--ck-color-base-active);
 
 	/* Semantic / Colors / Feedback */
 	--ck-color-feedback-error: var(--ck-color-base-error);
@@ -546,7 +548,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-color-interactive-active-surface: var(--ck-color-base-hover);
 	--ck-color-interactive-selected-surface: var(--ck-color-base-selected);
 	--ck-color-interactive-selected-surface-hover: var(--ck-color-base-selected-hover);
-	--ck-color-interactive-selected-text: var(--ck-color-base-active);
+	--ck-color-interactive-selected-text: var(--ck-color-text-accent);
 	--ck-color-interactive-primary-surface: var(--ck-color-base-action);
 	--ck-color-interactive-primary-surface-hover: var(--ck-color-base-action-hover);
 	--ck-color-interactive-primary-surface-disabled: var(--ck-color-base-action-disabled);
@@ -943,7 +945,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 }
 
 :is(.ck.ck-button, :where(a).ck.ck-button).ck-button_surface {
-	--ck-button-surface-border-color: var(--ck-color-interactive-selected-text);
+	--ck-button-surface-border-color: var(--ck-color-border-accent);
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {

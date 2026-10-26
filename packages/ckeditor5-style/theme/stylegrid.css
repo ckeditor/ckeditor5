@@ -11,8 +11,8 @@
 	--ck-style-panel-button-hover-label-background: hsl(0, 0%, 92.1%);
 	--ck-style-panel-button-hover-border-color: hsl(0, 0%, 70%);
 	/* The border of the selected style, and of the selected style under the pointer. The first one uses the semantic
-	   selected role (the same value as `--ck-color-base-active`); the hover one has no semantic match yet. */
-	--ck-style-panel-button-on-border-color: var(--ck-color-interactive-selected-text);
+	   accent border role (the same value as `--ck-color-base-active`); the hover one has no semantic match yet. */
+	--ck-style-panel-button-on-border-color: var(--ck-color-border-accent);
 	--ck-style-panel-button-on-hover-border-color: var(--ck-color-base-active-focus);
 	--ck-style-panel-columns: 3;
 }

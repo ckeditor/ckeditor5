@@ -30,7 +30,7 @@
 	--ck-tab-button-hover-background: initial;
 	--ck-tab-button-icon-color: var(--ck-color-base-text-light);
 	/* Accent used for the active icon, the active indicator and the hover/focus border. */
-	--ck-tab-button-active-icon-color: var(--ck-color-base-action);
+	--ck-tab-button-active-icon-color: var(--ck-color-text-accent);
 	/* The focus border color and the label color of the active tab. Declared `initial` and read with the active icon
 	   color as fallback (no visual change), so they can be themed apart from the accent. */
 	--ck-tab-button-focus-border-color: initial;

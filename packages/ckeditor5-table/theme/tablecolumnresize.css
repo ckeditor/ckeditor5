@@ -5,8 +5,8 @@
 
 :root,
 :host {
-	/* The semantic selected role resolves to the same value as `--ck-color-base-active`. */
-	--ck-color-table-column-resizer-hover: var(--ck-color-interactive-selected-text);
+	/* The semantic accent border role resolves to the same value as `--ck-color-base-active`. */
+	--ck-color-table-column-resizer-hover: var(--ck-color-border-accent);
 	--ck-table-column-resizer-width: 7px;
 
 	/* The offset used for absolute positioning of the resizer element, so that it is placed exactly above the cell border.

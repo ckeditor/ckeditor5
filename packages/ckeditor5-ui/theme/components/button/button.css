@@ -91,8 +91,10 @@
 	/* Surface (.ck-button_surface) and outline (.ck-button_outline) variants. Declared here rather than on the variant
 	   element, so `:root` and ancestor overrides reach them. */
 	--ck-button-surface-background: var(--ck-color-surface-canvas);
-	--ck-button-surface-border-color: var(--ck-color-interactive-primary-surface);
-	--ck-button-outline-color: var(--ck-color-interactive-primary-surface);
+	--ck-button-surface-border-color: var(--ck-color-border-accent);
+	/* The outline label is accent-colored text on the canvas, not a fill, so it reads the accent text role rather than
+	   the primary surface. */
+	--ck-button-outline-color: var(--ck-color-text-accent);
 	--ck-button-outline-background: var(--ck-color-surface-canvas);
 	--ck-button-outline-hover-background: var(--ck-color-interactive-hover-surface);
 	--ck-button-outline-active-background: var(--ck-color-interactive-selected-surface);
@@ -377,8 +379,8 @@
 	* Useful for buttons on a tinted or filled background that should lift to the surface color on
 	* interaction. Override --ck-button-surface-background to retarget all four states at once;
 	* it defaults to --ck-color-surface-canvas, so it follows the theme (e.g. dark mode) and integrator
-	* overrides rather than a hardcoded white. In the toggled-on state it also gains the accent border
-	* used by the outline variant (retarget with --ck-button-surface-border-color).
+	* overrides rather than a hardcoded white. In the toggled-on state it also gains an accent border in the same color
+	* as the outline variant (retarget with --ck-button-surface-border-color).
 	*/
 	&.ck-button_surface {
 		--ck-button-hover-background: var(--ck-button-surface-background);

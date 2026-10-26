@@ -21,5 +21,8 @@
 	--ck-color-border-control: var(--ck-color-base-border);
 	--ck-color-border-container: var(--ck-color-base-border);
 	--ck-color-border-subtle: var(--ck-color-base-border-light);
+	/* Accent-colored borders and thin lines on the canvas, such as a selected tile or a resize handle. Follows the accent
+	   text, so a theme can set `--ck-color-text-accent` alone and override this one only to tell them apart. */
+	--ck-color-border-accent: var(--ck-color-text-accent);
 	--ck-color-divider: var(--ck-color-base-border);
 }

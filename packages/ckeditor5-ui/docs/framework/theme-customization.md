@@ -165,9 +165,10 @@ Assuming you finished our {@link getting-started/integrations-cdn/quick-start qu
 	--ck-color-interactive-active-surface: hsl(255, 4%, 14%);
 	--ck-color-interactive-selected-surface: hsl(208, 40%, 20%);
 	--ck-color-interactive-selected-surface-hover: hsl(208, 42%, 24%);
-	--ck-color-interactive-selected-text: hsl(205, 100%, 74%);
+	--ck-color-text-accent: hsl(205, 100%, 74%);
 	--ck-color-interactive-primary-surface: var(--app-brand);
 	--ck-color-interactive-primary-surface-hover: var(--app-brand-hover);
+	--ck-color-interactive-primary-surface-muted: var(--ck-color-interactive-selected-surface);
 	--ck-color-interactive-primary-text: var(--app-brand-contrast);
 
 	--ck-border-radius-control: 6px;
