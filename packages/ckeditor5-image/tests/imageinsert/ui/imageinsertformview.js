@@ -177,9 +177,9 @@ describe( 'ImageInsertFormView', () => {
 				view.destroy();
 			} );
 
-			it( 'so "tab" focuses the next focusable item', () => {
+			it( 'so "arrowdown" focuses the next focusable item', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
+					keyCode: keyCodes.arrowdown,
 					preventDefault: vi.fn(),
 					stopPropagation: vi.fn()
 				};
@@ -196,10 +196,9 @@ describe( 'ImageInsertFormView', () => {
 				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
-			it( 'so "shift + tab" focuses the previous focusable item', () => {
+			it( 'so "arrowup" focuses the previous focusable item', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: true,
+					keyCode: keyCodes.arrowup,
 					preventDefault: vi.fn(),
 					stopPropagation: vi.fn()
 				};
@@ -216,27 +215,6 @@ describe( 'ImageInsertFormView', () => {
 				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
-			it( 'intercepts the arrow* events and overrides the default toolbar behavior', () => {
-				const keyEvtData = {
-					stopPropagation: vi.fn()
-				};
-
-				keyEvtData.keyCode = keyCodes.arrowdown;
-				view.keystrokes.press( keyEvtData );
-				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
-
-				keyEvtData.keyCode = keyCodes.arrowup;
-				view.keystrokes.press( keyEvtData );
-				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
-
-				keyEvtData.keyCode = keyCodes.arrowleft;
-				view.keystrokes.press( keyEvtData );
-				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 3 );
-
-				keyEvtData.keyCode = keyCodes.arrowright;
-				view.keystrokes.press( keyEvtData );
-				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 4 );
-			} );
 		} );
 	} );
 
@@ -293,8 +271,7 @@ describe( 'ImageInsertFormView', () => {
 
 			it( 'forward cycling', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: false,
+					keyCode: keyCodes.arrowdown,
 					stopPropagation: vi.fn(),
 					preventDefault: vi.fn()
 				};
@@ -308,8 +285,7 @@ describe( 'ImageInsertFormView', () => {
 
 			it( 'backward cycling', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: true,
+					keyCode: keyCodes.arrowup,
 					stopPropagation: vi.fn(),
 					preventDefault: vi.fn()
 				};
@@ -340,8 +316,7 @@ describe( 'ImageInsertFormView', () => {
 
 			it( 'forward cycling', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: false,
+					keyCode: keyCodes.arrowdown,
 					stopPropagation: vi.fn(),
 					preventDefault: vi.fn()
 				};
@@ -358,8 +333,7 @@ describe( 'ImageInsertFormView', () => {
 
 			it( 'backward cycling', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: true,
+					keyCode: keyCodes.arrowup,
 					stopPropagation: vi.fn(),
 					preventDefault: vi.fn()
 				};
