@@ -26,6 +26,6 @@
 	}
 
 	100% {
-		background-color: var(--ck-content-color-image-caption-background);
+		background-color: var(--ck-content-image-caption-background-color, var(--ck-content-color-image-caption-background));
 	}
 }

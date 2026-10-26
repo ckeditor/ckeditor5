@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 49.x | CKEditor 5 Documentation
 menu-title: Update to v49.x
 order: 50
-modified_at: 2026-10-12
+modified_at: 2026-10-20
 ---
 
 # Update to CKEditor&nbsp;5 v49.x
@@ -17,6 +17,23 @@ modified_at: 2026-10-12
 
 	Then ask your agent, for example: _"Update CKEditor&nbsp;5 to the latest version"_ or name the version you want. Review the changes before you commit them. See the {@link getting-started/ai-coding-agents Using CKEditor&nbsp;5 with AI coding agents} guide for setup options and supported agents.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v49.1.0
+
+### Content styles exposed as design tokens
+
+The hardcoded colors of the content rendered inside `.ck-content` are now design tokens, so you can recolor the block quote, code block, inline code, horizontal line, page break, table, and to-do list from `:root` and `:host` without overriding element rules. Each token defaults to its previous value, so the content looks unchanged. The {@link getting-started/setup/content-styles#feature-specific-styling Content styles} guide lists them per feature.
+
+The existing table caption, image caption, and mention color tokens were renamed to the same convention. The old names still work as fallbacks but are deprecated, so update any overrides to the new names:
+
+| Old name (deprecated) | New name |
+|---|---|
+| `--ck-content-color-table-caption-background` | `--ck-content-table-caption-background-color` |
+| `--ck-content-color-table-caption-text` | `--ck-content-table-caption-text-color` |
+| `--ck-content-color-image-caption-background` | `--ck-content-image-caption-background-color` |
+| `--ck-content-color-image-caption-text` | `--ck-content-image-caption-text-color` |
+| `--ck-content-color-mention-background` | `--ck-content-mention-background` |
+| `--ck-content-color-mention-text` | `--ck-content-mention-text-color` |
 
 ## Update to CKEditor&nbsp;5 v49.0.0
 

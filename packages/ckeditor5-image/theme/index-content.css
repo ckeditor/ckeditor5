@@ -26,8 +26,8 @@
 	 */
 	/* eslint-disable-next-line css/use-baseline */
 	break-before: avoid;
-	color: var(--ck-content-color-image-caption-text);
-	background-color: var(--ck-content-color-image-caption-background);
+	color: var(--ck-content-image-caption-text-color, var(--ck-content-color-image-caption-text));
+	background-color: var(--ck-content-image-caption-background-color, var(--ck-content-color-image-caption-background));
 	padding: .6em;
 	font-size: .75em;
 	outline-offset: -1px;
