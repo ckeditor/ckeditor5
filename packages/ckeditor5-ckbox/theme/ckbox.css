@@ -11,5 +11,5 @@
 .ck-fullscreen .ckbox-wrapper:not(#n),
 :host(.ck-fullscreen) .ckbox-wrapper:not(#n) {
 	position: absolute;
-	z-index: calc(var(--ck-z-dialog, 100000) + 1);
+	z-index: calc(var(--ck-layer-dialog) + 1);
 }

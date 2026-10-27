@@ -20,10 +20,10 @@
 	/* Color */
 	--ck-list-background-color: var(--ck-color-surface-control);
 	--ck-list-button-hover-background-color: var(--ck-color-button-default-hover-background, var(--ck-button-default-hover-background-color));
-	/* Resolve the selected-item background from the semantic selected-text value directly rather than from the button's
-	   on-text token, so overriding the "on" text color no longer shifts this background. The resolved value is unchanged
-	   (`--ck-button-on-text-color` also resolves to it). */
-	--ck-list-button-on-background-color: var(--ck-color-button-on-color, var(--ck-color-interactive-selected-text));
+	/* The selected item is a solid fill under inverse text, so it reads the primary surface (fill) role, not a text role.
+	   It has the same value as the selected text color in the default theme, and follows the primary color
+	   (`--ck-color-base-action`). */
+	--ck-list-button-on-background-color: var(--ck-color-button-on-color, var(--ck-color-interactive-primary-surface));
 	--ck-list-button-on-text-color: var(--ck-color-text-inverse);
 	--ck-list-divider-color: var(--ck-color-divider);
 	--ck-list-separator-height: var(--ck-border-width-divider);

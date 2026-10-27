@@ -40,8 +40,8 @@
 .ck.ck-dialog-overlay {
 	animation: ck-dialog-fade-in var(--ck-animation-duration-surface-entrance);
 	background: var(--ck-dialog-overlay-background-color);
-	/* Backward compatibility: falls back to legacy --ck-z-dialog if overridden. */
-	z-index: var(--ck-z-dialog, var(--ck-z-modal));
+	/* The legacy --ck-z-dialog keeps working through --ck-layer-dialog. */
+	z-index: var(--ck-layer-dialog);
 	-webkit-user-select: none;
 	/*
 	 * Note: aisuggestionstreamablecontent.css and accessibilityhelp.css override this to `text` for
