@@ -192,32 +192,32 @@ importers:
         specifier: 2.13.0
         version: 2.13.0(@types/node@26.1.1)
       '@ckeditor/ckeditor5-dev-build-tools':
-        specifier: ^54.8.0
-        version: 54.8.0(tslib@2.8.1)(typescript@5.3.3)
+        specifier: ^54.9.1
+        version: 54.9.1(tslib@2.8.1)(typescript@5.3.3)
       '@ckeditor/ckeditor5-dev-bump-year':
-        specifier: ^54.8.0
-        version: 54.8.0
+        specifier: ^54.9.1
+        version: 54.9.1
       '@ckeditor/ckeditor5-dev-changelog':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-dev-dependency-checker':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-dev-docs':
-        specifier: ^54.8.0
-        version: 54.8.0(typescript@5.3.3)
+        specifier: ^54.9.1
+        version: 54.9.1(typescript@5.3.3)
       '@ckeditor/ckeditor5-dev-license-checker':
-        specifier: ^54.8.0
-        version: 54.8.0
+        specifier: ^54.9.1
+        version: 54.9.1
       '@ckeditor/ckeditor5-dev-release-tools':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-dev-tests':
-        specifier: ^54.8.0
-        version: 54.8.0(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(cssnano@7.1.9(postcss@8.5.16))(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.16)(supports-color@8.1.1)(webpack-cli@6.0.1)
+        specifier: ^54.9.1
+        version: 54.9.1(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(cssnano@7.1.9(postcss@8.5.16))(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.16)(supports-color@8.1.1)(webpack-cli@6.0.1)
       '@ckeditor/ckeditor5-dev-web-crawler':
-        specifier: ^54.8.0
-        version: 54.8.0(supports-color@8.1.1)(typescript@5.3.3)(yauzl@3.4.0)
+        specifier: ^54.9.1
+        version: 54.9.1(supports-color@8.1.1)(typescript@5.3.3)(yauzl@3.4.0)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.0
         version: 5.0.2
@@ -234,8 +234,8 @@ importers:
         specifier: ^2.0.16
         version: 2.0.22(@inquirer/prompts@7.10.1(@types/node@26.1.1))
       '@vitest/coverage-v8':
-        specifier: ^4.0.18
-        version: 4.1.10(vitest@4.1.10)
+        specifier: ^5.0.0
+        version: 5.0.5(vitest@5.0.5)
       '@webspellchecker/wproofreader-ckeditor5':
         specifier: ^3.0.0
         version: 3.1.3(ckeditor5@packages+ckeditor5)
@@ -345,8 +345,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.1
       vitest:
-        specifier: ^4.0.18
-        version: 4.1.10(@types/node@26.1.1)(@vitest/coverage-v8@4.1.10)(vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        specifier: ^5.0.0
+        version: 5.0.5(@types/node@26.1.1)(@vitest/coverage-v8@5.0.5)(vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
       wait-on:
         specifier: ^8.0.3
         version: 8.0.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
@@ -544,11 +544,11 @@ importers:
         version: link:../ckeditor5-word-count
     devDependencies:
       '@ckeditor/ckeditor5-dev-translations':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@wiris/mathtype-ckeditor5':
         specifier: ^8.13.1
         version: 8.15.2(ckeditor5@packages+ckeditor5)
@@ -587,8 +587,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -648,8 +648,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -718,8 +718,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -767,8 +767,8 @@ importers:
         version: 1.52.0
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -816,8 +816,8 @@ importers:
         version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -868,8 +868,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -941,8 +941,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -1038,8 +1038,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1096,8 +1096,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1269,8 +1269,8 @@ importers:
         version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1327,8 +1327,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1455,8 +1455,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1504,8 +1504,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1565,8 +1565,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1629,8 +1629,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1690,8 +1690,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1763,8 +1763,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1839,8 +1839,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-balloon':
         specifier: workspace:*
         version: link:../ckeditor5-editor-balloon
@@ -2025,8 +2025,8 @@ importers:
         version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2071,8 +2071,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2150,8 +2150,8 @@ importers:
         version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2223,8 +2223,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2356,8 +2356,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2417,8 +2417,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2478,8 +2478,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2536,8 +2536,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2630,8 +2630,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2769,8 +2769,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2875,8 +2875,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2954,8 +2954,8 @@ importers:
         version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3024,8 +3024,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3115,8 +3115,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3260,8 +3260,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3354,8 +3354,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-balloon':
         specifier: workspace:*
         version: link:../ckeditor5-editor-balloon
@@ -3424,8 +3424,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3494,8 +3494,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3558,8 +3558,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3668,8 +3668,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3750,8 +3750,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3826,8 +3826,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3954,8 +3954,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -4078,8 +4078,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -4136,8 +4136,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -4209,8 +4209,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -4333,8 +4333,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -4864,8 +4864,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.8.0
-        version: 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+        specifier: ^54.9.1
+        version: 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -5034,52 +5034,52 @@ packages:
   '@ckbox/uploader@2.13.0':
     resolution: {integrity: sha512-VmQ/yZtw0P7PeFJ+TWS19FOC8XhwnUkIBPGtCuBJu1WUKDED7Yc95SxxlJFn+XXr0y0PWKM/N6jIpL7Ujtg7zA==}
 
-  '@ckeditor/ckeditor5-dev-build-tools@54.8.0':
-    resolution: {integrity: sha512-NyMzsGeiOj7vtG8eaLlu7nUevvcWsvhoT0h1ryBCq4ngflTk/j3Si8nXci9zmiVsVbkMtuN90vQFi86Fep8CkA==}
+  '@ckeditor/ckeditor5-dev-build-tools@54.9.1':
+    resolution: {integrity: sha512-1QjZshnyW7C2LCQ5zv28L1LtJFsnk+EWO30tha6zOlwu/7YkUP4BN9gqqH3mCAwk9B4kOeZQA97tt7KfCrdFFg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-bump-year@54.8.0':
-    resolution: {integrity: sha512-766ioM6WVjtxvEViXSDZmF1Q2J/IuIY82x0lNEYitW/qGyG6I6PTmegAoBmAcoKfJwnwbv9AjVT3RfHYh/i+3A==}
+  '@ckeditor/ckeditor5-dev-bump-year@54.9.1':
+    resolution: {integrity: sha512-7YF9mKVnJX9pBHL+Sp/OesLA2hHCTv8cAft0OZeeQIMdC0LvJhYvoWHiDilz6EX/U/j7JuemVBmFvR8N1O0QpQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-changelog@54.8.0':
-    resolution: {integrity: sha512-4aZ1/wnU29Jhwom9lrCCyWp32ptaTpDRcBcDlFCD93ADQgTILaGeAf4C2EWzNWyIWpZJ8vbLJ1asUyUChNNyNw==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-    hasBin: true
-
-  '@ckeditor/ckeditor5-dev-dependency-checker@54.8.0':
-    resolution: {integrity: sha512-aSuPRhQxnG8NSwmZcK9fApU0sNvUFVsBi+tYawLOdLZN4NvjeEsfeniauOcUcFG1PY0py/TUnGpZm2mGdJJdrQ==}
+  '@ckeditor/ckeditor5-dev-changelog@54.9.1':
+    resolution: {integrity: sha512-enCr8ZhZ2Mplm3sSzuoBDJmm/5+6mHYYVXZkL6IU4MllMb0XPl3B+X3uMrxU5DEN9HIr5b3EOxtWn+MIBhCCFg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-docs@54.8.0':
-    resolution: {integrity: sha512-jRfO9zGrdfqzv8dhZh903mcWIn9ode0BRCmwirKzJc/bFJdjw0ZNJRaxPPLeE5Uq7BfWg52a6v+q2YYeIQlyRA==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-license-checker@54.8.0':
-    resolution: {integrity: sha512-iGSNxKrypNJ0zJqs8KYOxguFP7p1AzUyUO3TjohzdIyoS2AvAlxFGU3L9V40uVaBymJzZJhVLtIpMTlDRVyVlQ==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-release-tools@54.8.0':
-    resolution: {integrity: sha512-wzP2yfekje2GFWaC0VAw0JqBBRTcHw/O/L21YP9T8EZqTkYtWphdMzUbRhHk/GQlWUUjVq2JEuRpAEwRyUvmKA==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-tests@54.8.0':
-    resolution: {integrity: sha512-xbCA6GdAxuha0GwzorHwq6NbwmFpmyPYTK+8kHefzQJNn1ePa7BRtg9wn6VsejY1m6hYL3CXrPnCbwhvOSlUmQ==}
+  '@ckeditor/ckeditor5-dev-dependency-checker@54.9.1':
+    resolution: {integrity: sha512-8OA6cbcjIcY/v6m9qlxWzb4WW/AeTIV/HHJMxqfymmsnFkvk1UEHHXKlSpvDRjzDIOzzSuPU20fK1hmRY8tcsg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-translations@54.8.0':
-    resolution: {integrity: sha512-Pm1hwfBGNaebNZwjrRBg7fSQsTKYDSSG2T62s4b8JxNXkLZG73Pktkjt9LCKNh5OWiNkeHlKlLxIPO8ihdpOkA==}
+  '@ckeditor/ckeditor5-dev-docs@54.9.1':
+    resolution: {integrity: sha512-wLJxHVtQfHyS6JoBPMc9uDsgQVEJddcKfDObK4EDBX4tW5DVuk6XxGWYsuawcRNM5jn5D1oAceA0BiDJUZUNgw==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-utils@54.8.0':
-    resolution: {integrity: sha512-GD5FSpHuMUVXv/FmxocFCEZEvEwKIg47MzlSIveC/84GkzW8YtV0LVN8V3VhgizEZzoQsAYecD/bq6ohb9UKQg==}
+  '@ckeditor/ckeditor5-dev-license-checker@54.9.1':
+    resolution: {integrity: sha512-95z9ePxg9HM7UVaNuibekaJB1I5PUbpJ1v2QfLEd17gWYjZkL7T+Knxifosr4vmj9cJ6R5VEch+hLyaUgNQBcA==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-web-crawler@54.8.0':
-    resolution: {integrity: sha512-Mrslor5R9EwKzBK/GDoEG9BXj4kBypGz3A2aq+5qg3QlYKB2Q7J2JeCNR4C/8Oga4P01HFeCTxpdu7TnXj3BrQ==}
+  '@ckeditor/ckeditor5-dev-release-tools@54.9.1':
+    resolution: {integrity: sha512-IRS8sy69nROGyOaORlMVStybRVeVYh1Eircsprz6mAP1vwR++IhxDG4yUa+Mk+hOJ0lA3o672VBnBRn+6oG3+Q==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-tests@54.9.1':
+    resolution: {integrity: sha512-bXeT4p9EXF+xdUwL+tZfa7GOdZ5GVuN2R+fw+CRtPe90Xcfuv/4B2SoI8gklGCGkNwXERRbh8kCWNCybudXmoA==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+    hasBin: true
+
+  '@ckeditor/ckeditor5-dev-translations@54.9.1':
+    resolution: {integrity: sha512-Zd2uajOxakPl6SnS9oDQ2LHvmsL9FLO60Ys5iyBDqGiF/ASEecydcsmFzl0j4+lfW6vDiMYwBtn7Rh4HuIGRXg==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-utils@54.9.1':
+    resolution: {integrity: sha512-xjOaJMa6STzjgQscnsepAa8dFXkzoAT2UZ9KJTYpCE2yEMEj1Vx19kv5p4ioznvjckQO4Ij/YwI0mvPPj0b23g==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-web-crawler@54.9.1':
+    resolution: {integrity: sha512-OWeRml8is0cZUeIXZgq/t6oD25cnTJ9kN6Sh2bmQ4cKYGhaRh1NftLf07CGZDA1J+CRGwShyT9upwlJu/Hd+Hg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-inspector@5.0.2':
@@ -5114,8 +5114,8 @@ packages:
       ckeditor5: '>=42.0.0 || ^0.0.0-nightly'
       react: ^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@ckeditor/typedoc-plugins@54.8.0':
-    resolution: {integrity: sha512-pTBoZb7OLiLOSRjOjK3Eo4Fg2HzMl61lxtW/R+75tI0bC+hDtL5OnAhtDwGCUSuZjJEJ+7WwA9J1rLe9z/8aig==}
+  '@ckeditor/typedoc-plugins@54.9.1':
+    resolution: {integrity: sha512-YjLZ5+EInzShYzYCJ1gJuXKy2HNeiMWVaWsNPUO6EAN45toRIJq1PuFTCXLqZDNGOfsM32E4st4x5MFDG7I6dg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     peerDependencies:
       typedoc: ^0.28.14
@@ -5943,8 +5943,8 @@ packages:
   '@jridgewell/source-map@0.3.11':
     resolution: {integrity: sha512-ZMp1V8ZFcPG5dIWnQLr3NSI1MiCU7UETdS/A0G8V/XWHvJv3ZsFqutJn1Y5RPmAPX6F3BiE397OqveU/9NCuIA==}
 
-  '@jridgewell/sourcemap-codec@1.5.5':
-    resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
+  '@jridgewell/sourcemap-codec@1.6.0':
+    resolution: {integrity: sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==}
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
@@ -7184,22 +7184,27 @@ packages:
   '@upsetjs/venn.js@2.0.0':
     resolution: {integrity: sha512-WbBhLrooyePuQ1VZxrJjtLvTc4NVfpOyKx0sKqioq9bX1C1m7Jgykkn8gLrtwumBioXIqam8DLxp88Adbue6Hw==}
 
-  '@vitest/coverage-v8@4.1.10':
-    resolution: {integrity: sha512-IM49HmthevbgAO4anp1hwtoT9wYe59w0LR00gr+eagHE+ZJ5lK4sLPeO0ubgoJcwLk6dehU3R24N+FbEEKDc8g==}
+  '@vitest/coverage-v8@5.0.5':
+    resolution: {integrity: sha512-4KpkGdIrSqBihx/JyP/e+S+IKB98etg1XDQiLAxksLfcShnwi1VReGeOT9NI43hLHbknosKp/1CCLn9Zgcs8mg==}
     peerDependencies:
-      '@vitest/browser': 4.1.10
-      vitest: 4.1.10
+      '@vitest/browser': 5.0.5
+      vitest: 5.0.5
     peerDependenciesMeta:
       '@vitest/browser':
         optional: true
 
-  '@vitest/expect@4.1.10':
-    resolution: {integrity: sha512-YsCn+qAk1GWjQOWFEsEcL2gNQ0zmVmQu3T03qP6UyjhtmdtwtbuI+DASn/7iQB3HGTXkdBwGddzxPlmiql5vlA==}
+  '@vitest/istanbul-lib-coverage@1.0.2':
+    resolution: {integrity: sha512-9J/JMwOf9AoJhAywhrn7ScKTL38hsWQP/qPG60OtaAFcQ5OXPwKsxZFlbnuCKmZ61m8/lGgHYnFpdyQZUvG/iA==}
+    engines: {node: '>=22'}
 
-  '@vitest/mocker@4.1.10':
-    resolution: {integrity: sha512-v0xaezt+DKEmKfaxg133ldzADrwLGd7Ze1MfQQTYfvs8OqZIwbxyxaYURivwV7sWy5fqn3rH5uOrSp07bp44Ow==}
+  '@vitest/istanbul-lib-report@1.0.2':
+    resolution: {integrity: sha512-gUsfXZJbzPamoIY5TvHFiMMoXESBrUMo+xqaj+rYrWI69+EnvRlYBlP96ZnHPY4vX8kyUpgAnFUCg5wZG/HkDQ==}
+    engines: {node: '>=22'}
+
+  '@vitest/mocker@5.0.5':
+    resolution: {integrity: sha512-xLL3lkDegJZw+MGoGaCCsFayDZthGgpAtr3Vziyfc4p7xH89K7KRPcRBBh/kEYm0Aqkt5DtTmkYpBtRV/FrHZg==}
     peerDependencies:
-      msw: ^2.4.9
+      msw: ^2.4.9 || ^3.0.0
       vite: ^6.0.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
       msw:
@@ -7207,20 +7212,8 @@ packages:
       vite:
         optional: true
 
-  '@vitest/pretty-format@4.1.10':
-    resolution: {integrity: sha512-W1HsjSH4MXQ9YfmmhLAoIYf1HRfekQCGngeIgcei6MP5QQGWUe0gkopdZQaVCFO+JDJMrAJGwa5pRpNpvy4P8Q==}
-
-  '@vitest/runner@4.1.10':
-    resolution: {integrity: sha512-IKI6kpIH+LmpROplyLwBBaCfMgOZOMsygVa6BARD6ahA04VRuJSa6OaVG7kRvSEMD870Vd91rSSw0eegtWyLGg==}
-
-  '@vitest/snapshot@4.1.10':
-    resolution: {integrity: sha512-xRkfOT1qpTAi/Ti4Y1LtfRc3kEuqxGw59eN2jN9pRWMtS/XDevekhcFSqvQqjUNGksfjMJu3Y+oJ+4Ypn2OaJw==}
-
-  '@vitest/spy@4.1.10':
-    resolution: {integrity: sha512-PLf/Ugvoq5wO/b4rwYCR1h2PSIdXz7wnkQFMiUpLdtM7l6pqVFcQIBEHyT1+l+cj7mNwAfZHzqXqDyjvOuwbDw==}
-
-  '@vitest/utils@4.1.10':
-    resolution: {integrity: sha512-fy9am/HWxbaGt/Sawrp90vt6Y6jQwf1RX77cz3uwoJwJVMli/e1IEwRPnMNJ7vKfPTwo0diXifkpPvwH9v7nGA==}
+  '@vitest/spy@5.0.5':
+    resolution: {integrity: sha512-lwJRExuH417257Q5wv9QYugN9IMJkoxcrKrYxGPQkBzl7wlNpTUxD/5yNX4ESKVUIShKPgkGchYPFMWOOk0wzw==}
 
   '@vscode/markdown-it-katex@1.1.2':
     resolution: {integrity: sha512-+4IIv5PgrmhKvW/3LpkpkGg257OViEhXkOOgCyj5KMsjsOfnRXkni8XAuuF9Ui5p3B8WnUovlDXAQNb8RJ/RaQ==}
@@ -7501,8 +7494,8 @@ packages:
     resolution: {integrity: sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA==}
     engines: {node: '>=12'}
 
-  ast-v8-to-istanbul@1.0.4:
-    resolution: {integrity: sha512-0bC0/4bTSrnwdhU3IsZDwEdojvuPrSg59OYZfKsLRtJZ0u8VBx9DebfqqG8bRdCC0I7vjgxmPi41P0lpkhJHtA==}
+  ast-v8-to-istanbul@1.0.7:
+    resolution: {integrity: sha512-kFL68AG6ajd8fg248zwM9GQrUWEp79gsmjum34OEXjs4yHuUMZfYKwOLW9GMmB4oNvVrj+EAGxsP7ye2UR9UlA==}
 
   astral-regex@2.0.0:
     resolution: {integrity: sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==}
@@ -7705,8 +7698,8 @@ packages:
     resolution: {integrity: sha512-RITGBfijLkBddZvnn8jdqoTypxvqbOLYQkGGxXzeFjVHvudaPw0HNFD9x928/eUwYWd2dPCugVqspGALTZZQKw==}
     engines: {node: '>=4'}
 
-  chai@6.2.2:
-    resolution: {integrity: sha512-NUPRluOfOiTKBKvWPtSD4PhFvWCqOi0BGStNWs57X9js7XGTprSmFoz5F0tWhR4WPjNeR9jXqdC7/UpSJTnlRg==}
+  chai@6.3.0:
+    resolution: {integrity: sha512-XWAtwJ6OHO+tj0EKCs0Y2UamnyOxseZWltU4x2U2wh8g4AigdjwvtUjvLP2tqkA/avxHEtzxNaqGq/YGNwckKg==}
     engines: {node: '>=18'}
 
   chalk-template@0.4.0:
@@ -8614,8 +8607,8 @@ packages:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
 
-  es-module-lexer@2.3.0:
-    resolution: {integrity: sha512-KLdwQm2NvGLDkQDCGvmiQrhkd0JbMzXthwQAUgWjQuQdBLFa3eiBP5arXZyA+f8x+x7OXgud6bq2rxjGtHV2tw==}
+  es-module-lexer@2.3.2:
+    resolution: {integrity: sha512-poHGpORABojJJucnV9KbOavETW8lBVnphkW77ER5/BQ5Fz7oXSoCNek7IH3vR5nRjdsEz926ibFYX8KtLQmdyw==}
 
   es-object-atoms@1.1.2:
     resolution: {integrity: sha512-HWcBoN6NileqtSydK2FqHbS/LoDd2pqrnQHLyJzBj4kOp/ky2MWMN694xOfkK8/SnUsW2DH7EfyVlydKCsm1Zw==}
@@ -10135,8 +10128,11 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  magicast@0.5.3:
-    resolution: {integrity: sha512-pVKE4UdSQ7DvHzivsCIFx2BJn1mHG6KsyrFcaxFx6tONdneEuThrDx0Cj3AMg58KyN4pzYT+LHOotxDQDjNvkw==}
+  magic-string@1.4.3:
+    resolution: {integrity: sha512-z12OxmaPGE0F4xlpGdjuAUckipLpQlTAuAmyGhNoD7ODpYUzvDfvtxUbjM/jwznyP178oju/KDdyi220wNJ0RQ==}
+
+  magicast@0.5.5:
+    resolution: {integrity: sha512-UicdXN8zQ3JHlxVq+28afMXPr1z7WNY6+7EJnzTdQWkTAlMLF5fNCCKxJHBQwGaNGR11581EiQmQzx73+MvszA==}
 
   make-dir@3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
@@ -10703,8 +10699,8 @@ packages:
     resolution: {integrity: sha512-nK28WOo+QIjBkDduTINE4JkF/UJJKyf2EJxvJKfblDpyg0Q+pkOHNTL0Qwy6NP6FhE/EnzV73BxxqcJaXY9anw==}
     engines: {node: '>= 0.4'}
 
-  obug@2.1.3:
-    resolution: {integrity: sha512-9miFgM2OFba7hB+pRgvtV84pYTBaoTHohvmIgiRt6dRIzbwEOIaNaP+dIlGs2fNFoB0SeISs0Jz5WFVRid6Xyg==}
+  obug@3.0.0:
+    resolution: {integrity: sha512-5vvB5+W7ePv+p3uqxi+RcW1XAzLW0/hxt3/4X4Lc4qHudzOhmBiBwOY6DRob4WnanAEGvNcLjF+KNOufrUoEQw==}
     engines: {node: '>=12.20.0'}
 
   on-finished@2.3.0:
@@ -10896,8 +10892,8 @@ packages:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
 
-  picomatch@4.0.5:
-    resolution: {integrity: sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==}
+  picomatch@4.0.7:
+    resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
   pify@2.3.0:
@@ -11907,9 +11903,6 @@ packages:
     resolution: {integrity: sha512-6x6dK6zJdpTzF4sQeNYxwtvBzf6Eg4GtlesS94HOvTudUeyK2WXAaIfmDgsyslYrRBeFIlsi54AYsFGUuhmvrQ==}
     engines: {node: '>= 0.4'}
 
-  siginfo@2.0.0:
-    resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
-
   signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
 
@@ -12039,9 +12032,6 @@ packages:
     resolution: {integrity: sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==}
     deprecated: 'Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility'
 
-  stackback@0.0.2:
-    resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
-
   statuses@1.5.0:
     resolution: {integrity: sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==}
     engines: {node: '>= 0.6'}
@@ -12050,8 +12040,8 @@ packages:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
 
-  std-env@4.2.0:
-    resolution: {integrity: sha512-oCUKSupKTHX53EyjDtuZQ64pjLJ6yYCtpmEw0goYxtjG9KpbRe8KAsl2tBUGU9DyMcJ0RwJ8GqJAFzMXcXW1Rw==}
+  std-env@4.3.0:
+    resolution: {integrity: sha512-OtU/EgQ1kIm5KwqQpBC6ZEMXrZRui11w8zgfTWp8cdO9B8OaPsbA8bTHO2P+HNo1VlUTGMVBwPhydu6poeXiag==}
 
   stream-log-stats@3.0.2:
     resolution: {integrity: sha512-393j7aeF9iRdHvyANqEQU82UQmpw2CTxgsT83caefh+lOxavVLbVrw8Mr4zjXeZLh2+xeHZMKfVx4T0rJ/EchA==}
@@ -12305,11 +12295,12 @@ packages:
     resolution: {integrity: sha512-Cc+OraorugtXNfs50hU9KS369rFXCfgGLpfCfvlc+Ud5u6VWmUQsOAa9HbTvheQdYnrdJqqv1e5oIqXppMYnSw==}
     engines: {node: '>=8'}
 
-  tinybench@2.9.0:
-    resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
+  tinybench@6.2.2:
+    resolution: {integrity: sha512-nIZ2N2dFpjBsg2hgitKu7mA+FvsIJuGJOwysRngmVRRmWgR/UyPjwJj8c/fT/dhm8EkHnF5EOogRf+0Z2qrimA==}
+    engines: {node: '>=20.0.0'}
 
-  tinyexec@1.2.4:
-    resolution: {integrity: sha512-SHf/r48b7vOrjve9PxJo3MN5v5yuyjHvdUcrQffT3WXMUfnGmHDVbC4k3sHJaJTgZCwpUplIaAo5ANtMyp3YHg==}
+  tinyexec@1.3.1:
+    resolution: {integrity: sha512-GCvB3aoys96IuDFBMcTB46JOR6mdMtAToqwiW8JlWhsoh1mhHi/xn9ss/Dg7N555GiJyEt2qzoG/NHCwM6h1EA==}
     engines: {node: '>=18'}
 
   tinyglobby@0.2.17:
@@ -12320,8 +12311,8 @@ packages:
     resolution: {integrity: sha512-Pugqs6M0m7Lv1I7FtxN4aoyToKg1C4tu+/381vH35y8oENM/Ai7f7C4StcoK4/+BSw9ebcS8jRiVrORFKCALLw==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
-  tinyrainbow@3.1.0:
-    resolution: {integrity: sha512-Bf+ILmBgretUrdJxzXM0SgXLZ3XfiaUuOj/IKQHuTXip+05Xn+uyEYdVg0kYDipTBcLrCVyUzAPz7QmArb0mmw==}
+  tinyrainbow@3.2.0:
+    resolution: {integrity: sha512-LgO3D9yZJjApUiuUfl9iFAwrtaX4+lok3wJIqttGoKCHlWUqHqbQpnxCf82L8FjgKsh4iGo78hqJwgL8F6To2A==}
     engines: {node: '>=14.0.0'}
 
   tippy.js@6.3.7:
@@ -12616,23 +12607,23 @@ packages:
       yaml:
         optional: true
 
-  vitest@4.1.10:
-    resolution: {integrity: sha512-R9jUTe5S4Qb0HCd4TNqpC7oGcrMssMRGXLW80ubjWsW9VH5GF8y1Y0SFLY9AbqSk6nt0PnOx4H4WNJYZ13GUPw==}
-    engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
+  vitest@5.0.5:
+    resolution: {integrity: sha512-cPODOMF8YnkiiYtDdHo6n4wWmBrOBBbOIYH2d33M4l3CdNn72h+qMmO6uXffUN6A5AZFXNND/d+krS9mgkXRfg==}
+    engines: {node: ^22.12.0 || ^24.0.0 || >=26.0.0}
     hasBin: true
     peerDependencies:
       '@edge-runtime/vm': '*'
       '@opentelemetry/api': ^1.9.0
-      '@types/node': ^20.0.0 || ^22.0.0 || >=24.0.0
-      '@vitest/browser-playwright': 4.1.10
-      '@vitest/browser-preview': 4.1.10
-      '@vitest/browser-webdriverio': 4.1.10
-      '@vitest/coverage-istanbul': 4.1.10
-      '@vitest/coverage-v8': 4.1.10
-      '@vitest/ui': 4.1.10
+      '@types/node': ^22.0.0 || >=24.0.0
+      '@vitest/browser-playwright': 5.0.5
+      '@vitest/browser-preview': 5.0.5
+      '@vitest/browser-webdriverio': ^5.0.0-beta.5 || >=5.0.0
+      '@vitest/coverage-istanbul': 5.0.5
+      '@vitest/coverage-v8': 5.0.5
+      '@vitest/ui': 5.0.5
       happy-dom: '*'
       jsdom: '*'
-      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
+      vite: ^6.4.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -12757,9 +12748,9 @@ packages:
     engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
 
-  why-is-node-running@2.3.0:
-    resolution: {integrity: sha512-hUrmaWBdVDcxvYqnyh09zunKzROWjbZTiNy8dBEjkS7ehEDQibXJ7XvlmtbwuTclUiIyN+CyXQD4Vmko8fNm8w==}
-    engines: {node: '>=8'}
+  why-is-node-running@3.2.1:
+    resolution: {integrity: sha512-Tb2FUhB4vUsGQlfSquQLYkApkuPAFQXGFzxWKHHumVz2dK+X1RUm/HnID4+TfIGYJ1kTcwOaCk/buYCEJr6YjQ==}
+    engines: {node: '>=20.11'}
     hasBin: true
 
   wildcard@2.0.1:
@@ -12924,7 +12915,7 @@ snapshots:
   '@antfu/install-pkg@1.1.0':
     dependencies:
       package-manager-detector: 1.7.0
-      tinyexec: 1.2.4
+      tinyexec: 1.3.1
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -13105,7 +13096,7 @@ snapshots:
       - '@types/hoist-non-react-statics'
       - '@types/node'
 
-  '@ckeditor/ckeditor5-dev-build-tools@54.8.0(tslib@2.8.1)(typescript@5.3.3)':
+  '@ckeditor/ckeditor5-dev-build-tools@54.9.1(tslib@2.8.1)(typescript@5.3.3)':
     dependencies:
       '@rollup/plugin-commonjs': 28.0.9(rollup@4.62.2)
       '@rollup/plugin-json': 6.1.0(rollup@4.62.2)
@@ -13136,14 +13127,14 @@ snapshots:
       - tslib
       - typescript
 
-  '@ckeditor/ckeditor5-dev-bump-year@54.8.0':
+  '@ckeditor/ckeditor5-dev-bump-year@54.9.1':
     dependencies:
       glob: 13.0.6
 
-  '@ckeditor/ckeditor5-dev-changelog@54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)':
+  '@ckeditor/ckeditor5-dev-changelog@54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)':
     dependencies:
       '@11ty/gray-matter': 2.1.0
-      '@ckeditor/ckeditor5-dev-utils': 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       date-fns: 4.4.0
       glob: 13.0.6
       inquirer: 12.11.1(@types/node@26.1.1)
@@ -13167,9 +13158,9 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-dependency-checker@54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)':
+  '@ckeditor/ckeditor5-dev-dependency-checker@54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       depcheck: 1.4.7(supports-color@8.1.1)
       glob: 13.0.6
       minimist: 1.2.8
@@ -13193,9 +13184,9 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-docs@54.8.0(typescript@5.3.3)':
+  '@ckeditor/ckeditor5-dev-docs@54.9.1(typescript@5.3.3)':
     dependencies:
-      '@ckeditor/typedoc-plugins': 54.8.0(typedoc@0.28.20(typescript@5.3.3))
+      '@ckeditor/typedoc-plugins': 54.9.1(typedoc@0.28.20(typescript@5.3.3))
       glob: 13.0.6
       typedoc: 0.28.20(typescript@5.3.3)
       typedoc-plugin-rename-defaults: 0.7.3(typedoc@0.28.20(typescript@5.3.3))
@@ -13203,14 +13194,14 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@ckeditor/ckeditor5-dev-license-checker@54.8.0':
+  '@ckeditor/ckeditor5-dev-license-checker@54.9.1':
     dependencies:
       diff: 8.0.4
       upath: 2.0.1
 
-  '@ckeditor/ckeditor5-dev-release-tools@54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)':
+  '@ckeditor/ckeditor5-dev-release-tools@54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@octokit/rest': 22.0.1
       cli-columns: 4.0.0
       glob: 13.0.6
@@ -13237,11 +13228,11 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-tests@54.8.0(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(cssnano@7.1.9(postcss@8.5.16))(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.16)(supports-color@8.1.1)(webpack-cli@6.0.1)':
+  '@ckeditor/ckeditor5-dev-tests@54.9.1(@minify-html/node@0.17.1)(@swc/core@1.15.43)(@types/node@26.1.1)(cssnano@7.1.9(postcss@8.5.16))(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(esbuild@0.25.12)(lightningcss@1.32.0)(postcss@8.5.16)(supports-color@8.1.1)(webpack-cli@6.0.1)':
     dependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
-      '@ckeditor/ckeditor5-dev-translations': 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
-      '@ckeditor/ckeditor5-dev-utils': 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+      '@ckeditor/ckeditor5-dev-translations': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@ckeditor/ckeditor5-inspector': 5.0.2
       '@types/chai': 4.3.20
       '@types/karma-sinon-chai': 2.0.6(supports-color@8.1.1)
@@ -13305,11 +13296,11 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@ckeditor/ckeditor5-dev-translations@54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)':
+  '@ckeditor/ckeditor5-dev-translations@54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)':
     dependencies:
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7(supports-color@8.1.1)
-      '@ckeditor/ckeditor5-dev-utils': 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+      '@ckeditor/ckeditor5-dev-utils': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       glob: 13.0.6
       plural-forms: 0.5.5
       pofile: 1.1.4
@@ -13333,9 +13324,9 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-utils@54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)':
+  '@ckeditor/ckeditor5-dev-utils@54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-translations': 54.8.0(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
+      '@ckeditor/ckeditor5-dev-translations': 54.9.1(@babel/core@7.29.7(supports-color@8.1.1))(@minify-html/node@0.17.1)(@swc/core@1.15.43)(csso@5.0.5)(esbuild@0.25.12)(lightningcss@1.32.0)(supports-color@8.1.1)(typescript@5.3.3)(webpack@5.108.4)
       '@types/postcss-import': 14.0.3
       '@types/through2': 2.0.41
       babel-loader: 10.1.1(@babel/core@7.29.7(supports-color@8.1.1))(webpack@5.108.4)
@@ -13378,7 +13369,7 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-web-crawler@54.8.0(supports-color@8.1.1)(typescript@5.3.3)(yauzl@3.4.0)':
+  '@ckeditor/ckeditor5-dev-web-crawler@54.9.1(supports-color@8.1.1)(typescript@5.3.3)(yauzl@3.4.0)':
     dependencies:
       puppeteer: 24.43.1(supports-color@8.1.1)(typescript@5.3.3)(yauzl@3.4.0)
       puppeteer-cluster: 0.24.0(puppeteer@24.43.1(supports-color@8.1.1)(typescript@5.3.3)(yauzl@3.4.0))(supports-color@8.1.1)
@@ -13408,7 +13399,7 @@ snapshots:
       ckeditor5: link:packages/ckeditor5
       react: 18.3.1
 
-  '@ckeditor/typedoc-plugins@54.8.0(typedoc@0.28.20(typescript@5.3.3))':
+  '@ckeditor/typedoc-plugins@54.9.1(typedoc@0.28.20(typescript@5.3.3))':
     dependencies:
       typedoc: 0.28.20(typescript@5.3.3)
       upath: 2.0.1
@@ -14016,7 +14007,7 @@ snapshots:
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
       '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/remapping@2.3.5':
@@ -14031,12 +14022,12 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  '@jridgewell/sourcemap-codec@1.5.5': {}
+  '@jridgewell/sourcemap-codec@1.6.0': {}
 
   '@jridgewell/trace-mapping@0.3.31':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
 
   '@keyv/bigmap@1.3.1(keyv@5.6.0)':
     dependencies:
@@ -14377,7 +14368,7 @@ snapshots:
       detect-libc: 2.1.2
       is-glob: 4.0.3
       node-addon-api: 7.1.1
-      picomatch: 4.0.5
+      picomatch: 4.0.7
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.5.6
       '@parcel/watcher-darwin-arm64': 2.5.6
@@ -14401,7 +14392,7 @@ snapshots:
 
   '@publint/pack@0.1.5':
     dependencies:
-      tinyexec: 1.2.4
+      tinyexec: 1.3.1
 
   '@puppeteer/browsers@3.2.4(yauzl@3.4.0)':
     dependencies:
@@ -14472,10 +14463,10 @@ snapshots:
       '@rollup/pluginutils': 5.4.0(rollup@4.62.2)
       commondir: 1.0.1
       estree-walker: 2.0.2
-      fdir: 6.5.0(picomatch@4.0.5)
+      fdir: 6.5.0(picomatch@4.0.7)
       is-reference: 1.2.1
       magic-string: 0.30.21
-      picomatch: 4.0.5
+      picomatch: 4.0.7
     optionalDependencies:
       rollup: 4.62.2
 
@@ -14529,7 +14520,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.9
       estree-walker: 2.0.2
-      picomatch: 4.0.5
+      picomatch: 4.0.7
     optionalDependencies:
       rollup: 4.62.2
 
@@ -14708,7 +14699,7 @@ snapshots:
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
       estraverse: 5.3.0
-      picomatch: 4.0.5
+      picomatch: 4.0.7
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -15138,60 +15129,34 @@ snapshots:
       d3-selection: 3.0.0
       d3-transition: 3.0.1(d3-selection@3.0.0)
 
-  '@vitest/coverage-v8@4.1.10(vitest@4.1.10)':
+  '@vitest/coverage-v8@5.0.5(vitest@5.0.5)':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
-      '@vitest/utils': 4.1.10
-      ast-v8-to-istanbul: 1.0.4
-      istanbul-lib-coverage: 3.2.2
-      istanbul-lib-report: 3.0.1
-      istanbul-reports: 3.2.0
-      magicast: 0.5.3
-      obug: 2.1.3
-      std-env: 4.2.0
-      tinyrainbow: 3.1.0
-      vitest: 4.1.10(@types/node@26.1.1)(@vitest/coverage-v8@4.1.10)(vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      '@vitest/istanbul-lib-coverage': 1.0.2
+      '@vitest/istanbul-lib-report': 1.0.2
+      ast-v8-to-istanbul: 1.0.7
+      magicast: 0.5.5
+      obug: 3.0.0
+      std-env: 4.3.0
+      tinyrainbow: 3.2.0
+      vitest: 5.0.5(@types/node@26.1.1)(@vitest/coverage-v8@5.0.5)(vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
-  '@vitest/expect@4.1.10':
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      '@types/chai': 5.2.3
-      '@vitest/spy': 4.1.10
-      '@vitest/utils': 4.1.10
-      chai: 6.2.2
-      tinyrainbow: 3.1.0
+  '@vitest/istanbul-lib-coverage@1.0.2': {}
 
-  '@vitest/mocker@4.1.10(vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))':
+  '@vitest/istanbul-lib-report@1.0.2':
     dependencies:
-      '@vitest/spy': 4.1.10
+      '@vitest/istanbul-lib-coverage': 1.0.2
+
+  '@vitest/mocker@5.0.5(vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))':
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      '@vitest/spy': 5.0.5
       estree-walker: 3.0.3
-      magic-string: 0.30.21
+      magic-string: 1.4.3
     optionalDependencies:
       vite: 8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
 
-  '@vitest/pretty-format@4.1.10':
-    dependencies:
-      tinyrainbow: 3.1.0
-
-  '@vitest/runner@4.1.10':
-    dependencies:
-      '@vitest/utils': 4.1.10
-      pathe: 2.0.3
-
-  '@vitest/snapshot@4.1.10':
-    dependencies:
-      '@vitest/pretty-format': 4.1.10
-      '@vitest/utils': 4.1.10
-      magic-string: 0.30.21
-      pathe: 2.0.3
-
-  '@vitest/spy@4.1.10': {}
-
-  '@vitest/utils@4.1.10':
-    dependencies:
-      '@vitest/pretty-format': 4.1.10
-      convert-source-map: 2.0.0
-      tinyrainbow: 3.1.0
+  '@vitest/spy@5.0.5': {}
 
   '@vscode/markdown-it-katex@1.1.2':
     dependencies:
@@ -15481,7 +15446,7 @@ snapshots:
 
   assertion-error@2.0.1: {}
 
-  ast-v8-to-istanbul@1.0.4:
+  ast-v8-to-istanbul@1.0.7:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       estree-walker: 3.0.3
@@ -15703,7 +15668,7 @@ snapshots:
       pathval: 1.1.1
       type-detect: 4.1.0
 
-  chai@6.2.2: {}
+  chai@6.3.0: {}
 
   chalk-template@0.4.0:
     dependencies:
@@ -16705,7 +16670,7 @@ snapshots:
 
   es-errors@1.3.0: {}
 
-  es-module-lexer@2.3.0: {}
+  es-module-lexer@2.3.2: {}
 
   es-object-atoms@1.1.2:
     dependencies:
@@ -16986,9 +16951,9 @@ snapshots:
     dependencies:
       format: 0.2.2
 
-  fdir@6.5.0(picomatch@4.0.5):
+  fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
-      picomatch: 4.0.5
+      picomatch: 4.0.7
 
   file-entry-cache@11.1.5:
     dependencies:
@@ -18497,9 +18462,13 @@ snapshots:
 
   magic-string@0.30.21:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
 
-  magicast@0.5.3:
+  magic-string@1.4.3:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.6.0
+
+  magicast@0.5.5:
     dependencies:
       '@babel/parser': 7.29.7
       '@babel/types': 7.29.7
@@ -19300,7 +19269,7 @@ snapshots:
       has-symbols: 1.1.0
       object-keys: 1.1.1
 
-  obug@2.1.3: {}
+  obug@3.0.0: {}
 
   on-finished@2.3.0:
     dependencies:
@@ -19511,7 +19480,7 @@ snapshots:
 
   picomatch@2.3.2: {}
 
-  picomatch@4.0.5: {}
+  picomatch@4.0.7: {}
 
   pify@2.3.0: {}
 
@@ -20677,8 +20646,6 @@ snapshots:
       side-channel-map: 1.0.1
       side-channel-weakmap: 1.0.2
 
-  siginfo@2.0.0: {}
-
   signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
@@ -20837,13 +20804,11 @@ snapshots:
 
   stable@0.1.8: {}
 
-  stackback@0.0.2: {}
-
   statuses@1.5.0: {}
 
   statuses@2.0.2: {}
 
-  std-env@4.2.0: {}
+  std-env@4.3.0: {}
 
   stream-log-stats@3.0.2:
     dependencies:
@@ -21136,18 +21101,18 @@ snapshots:
 
   tildify@2.0.0: {}
 
-  tinybench@2.9.0: {}
+  tinybench@6.2.2: {}
 
-  tinyexec@1.2.4: {}
+  tinyexec@1.3.1: {}
 
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.5)
-      picomatch: 4.0.5
+      fdir: 6.5.0(picomatch@4.0.7)
+      picomatch: 4.0.7
 
   tinypool@2.1.0: {}
 
-  tinyrainbow@3.1.0: {}
+  tinyrainbow@3.2.0: {}
 
   tippy.js@6.3.7:
     dependencies:
@@ -21359,7 +21324,7 @@ snapshots:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       acorn: 8.17.0
-      picomatch: 4.0.5
+      picomatch: 4.0.7
       webpack-virtual-modules: 0.6.2
 
   upath@2.0.1: {}
@@ -21424,7 +21389,7 @@ snapshots:
   vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.32.0
-      picomatch: 4.0.5
+      picomatch: 4.0.7
       postcss: 8.5.16
       rolldown: 1.1.5
       tinyglobby: 0.2.17
@@ -21437,31 +21402,25 @@ snapshots:
       terser: 5.49.0
       yaml: 2.9.0
 
-  vitest@4.1.10(@types/node@26.1.1)(@vitest/coverage-v8@4.1.10)(vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)):
+  vitest@5.0.5(@types/node@26.1.1)(@vitest/coverage-v8@5.0.5)(vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)):
     dependencies:
-      '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
-      '@vitest/pretty-format': 4.1.10
-      '@vitest/runner': 4.1.10
-      '@vitest/snapshot': 4.1.10
-      '@vitest/spy': 4.1.10
-      '@vitest/utils': 4.1.10
-      es-module-lexer: 2.3.0
+      '@types/chai': 5.2.3
+      '@vitest/mocker': 5.0.5(vite@8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      chai: 6.3.0
+      es-module-lexer: 2.3.2
       expect-type: 1.4.0
-      magic-string: 0.30.21
-      obug: 2.1.3
-      pathe: 2.0.3
-      picomatch: 4.0.5
-      std-env: 4.2.0
-      tinybench: 2.9.0
-      tinyexec: 1.2.4
+      magic-string: 1.4.3
+      obug: 3.0.0
+      picomatch: 4.0.7
+      std-env: 4.3.0
+      tinybench: 6.2.2
+      tinyexec: 1.3.1
       tinyglobby: 0.2.17
-      tinyrainbow: 3.1.0
       vite: 8.1.4(@types/node@26.1.1)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
-      why-is-node-running: 2.3.0
+      why-is-node-running: 3.2.1
     optionalDependencies:
       '@types/node': 26.1.1
-      '@vitest/coverage-v8': 4.1.10(vitest@4.1.10)
+      '@vitest/coverage-v8': 5.0.5(vitest@5.0.5)
     transitivePeerDependencies:
       - msw
 
@@ -21544,7 +21503,7 @@ snapshots:
       browserslist: 4.28.5
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.24.2
-      es-module-lexer: 2.3.0
+      es-module-lexer: 2.3.2
       eslint-scope: 5.1.1
       events: 3.3.0
       graceful-fs: 4.2.11
@@ -21600,10 +21559,7 @@ snapshots:
     dependencies:
       isexe: 4.0.0
 
-  why-is-node-running@2.3.0:
-    dependencies:
-      siginfo: 2.0.0
-      stackback: 0.0.2
+  why-is-node-running@3.2.1: {}
 
   wildcard@2.0.1: {}
 
