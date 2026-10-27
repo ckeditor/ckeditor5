@@ -1637,6 +1637,12 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-suggestion-widget-format-active-background-color: var(--ck-color-suggestion-widget-format-background-active, hsl(191 90% 40% / .16));
 }
 
+/* ============================== ckeditor5-uploadcare ============================== */
+:root,
+:host {
+	--ck-uploadcare-font-family: system-ui;
+}
+
 .ck.ck-ai-tabs,
 .ck-ai_review-navigation-panel .ck-ai_review-navigation-panel__header,
 .ck-ai_review-navigation-panel .ck-ai_review-navigation-panel__body {
