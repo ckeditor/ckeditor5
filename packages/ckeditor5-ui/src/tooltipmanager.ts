@@ -15,6 +15,7 @@ import {
 	DomEmitterMixin,
 	containsNode,
 	first,
+	getActiveElement,
 	global,
 	isShadowHostOf,
 	isShadowRoot,
@@ -480,8 +481,11 @@ export class TooltipManager extends TooltipManagerBase {
 	 */
 	private _onKeyDown( evt: EventInfo, domEvent: KeyboardEvent ) {
 		if ( domEvent.key === 'Escape' && this._currentElementWithTooltip ) {
+			if ( !containsNode( this._currentElementWithTooltip, getActiveElement( this._currentElementWithTooltip ) ) ) {
+				domEvent.stopPropagation();
+			}
+
 			this._unpinTooltip();
-			domEvent.stopPropagation();
 		}
 	}
 
