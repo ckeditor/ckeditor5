@@ -14,7 +14,8 @@
 	--ck-autocomplete-results-border-radius: var(--ck-border-radius-surface-attached);
 
 	/* Border */
-	--ck-autocomplete-results-border: var(--ck-border-width-surface) solid var(--ck-color-dropdown-panel-border, var(--ck-dropdown-panel-border-color));
+	/* Override-only: the border is composed at the point of use, so a legacy color or a part set on a narrower selector applies. */
+	--ck-autocomplete-results-border: initial;
 
 	/* Color */
 	--ck-autocomplete-results-background-color: var(--ck-color-surface-container);
@@ -28,7 +29,7 @@
 		max-height: var(--ck-autocomplete-results-max-height);
 		overflow-y: auto;
 		background: var(--ck-autocomplete-results-background-color);
-		border: var(--ck-autocomplete-results-border);
+		border: var(--ck-autocomplete-results-border, var(--ck-border-width-surface) solid var(--ck-color-dropdown-panel-border, var(--ck-dropdown-panel-border-color)));
 		min-width: auto;
 		position: absolute;
 

@@ -27,7 +27,8 @@
 	--ck-input-disabled-text-color: var(--ck-color-text-disabled);
 
 	/* Border */
-	--ck-input-border: var(--ck-border-width-control) solid var(--ck-color-input-border, var(--ck-input-border-color));
+	/* Override-only: the border is composed at the point of use, so a legacy color or a part set on a narrower selector applies. */
+	--ck-input-border: initial;
 
 	/* State / meta */
 	--ck-input-focus-border-color: var(--ck-interactive-focus-border-color);
@@ -43,7 +44,7 @@
 .ck.ck-input {
 	border-radius: var(--ck-input-border-radius);
 	background: var(--ck-color-input-background, var(--ck-input-background-color));
-	border: var(--ck-input-border);
+	border: var(--ck-input-border, var(--ck-border-width-control) solid var(--ck-color-input-border, var(--ck-input-border-color)));
 	padding: var(--ck-input-padding);
 	min-width: var(--ck-input-width);
 	color: var(--ck-color-input-text, var(--ck-input-text-color));

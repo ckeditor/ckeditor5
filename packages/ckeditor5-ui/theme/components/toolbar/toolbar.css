@@ -18,7 +18,8 @@
 	--ck-toolbar-border-color: var(--ck-color-border-container);
 
 	/* Border */
-	--ck-toolbar-border: var(--ck-border-width-surface) solid var(--ck-color-toolbar-border, var(--ck-toolbar-border-color));
+	/* Override-only: the border is composed at the point of use, so a legacy color or a part set on a narrower selector applies. */
+	--ck-toolbar-border: initial;
 	--ck-toolbar-separator-width: var(--ck-border-width-divider);
 
 	/* Border and radius of the toolbar's own item buttons, in every toolbar (editor, balloon, widget and form toolbars,
@@ -46,7 +47,7 @@
 	border-radius: var(--ck-toolbar-border-radius);
 	background: var(--ck-color-toolbar-background, var(--ck-toolbar-background-color));
 	padding: var(--ck-toolbar-padding);
-	border: var(--ck-toolbar-border);
+	border: var(--ck-toolbar-border, var(--ck-border-width-surface) solid var(--ck-color-toolbar-border, var(--ck-toolbar-border-color)));
 	-webkit-user-select: none;
 	user-select: none;
 
