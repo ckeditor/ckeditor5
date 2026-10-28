@@ -13,7 +13,7 @@
 }
 
 .ck .ck-widget__resizer {
-	outline: 1px solid var(--ck-color-resizer);
+	outline: 1px solid var(--ck-color-resizer, var(--ck-resizer-color));
 	display: none;
 	position: absolute;
 

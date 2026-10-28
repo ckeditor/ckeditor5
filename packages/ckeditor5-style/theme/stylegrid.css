@@ -10,6 +10,10 @@
 	--ck-style-panel-button-label-background: var(--ck-color-base-hover);
 	--ck-style-panel-button-hover-label-background: hsl(0, 0%, 92.1%);
 	--ck-style-panel-button-hover-border-color: hsl(0, 0%, 70%);
+	/* The border of the selected style, and of the selected style under the pointer. The first one uses the semantic
+	   accent border role (the same value as `--ck-color-base-active`); the hover one has no semantic match yet. */
+	--ck-style-panel-button-on-border-color: var(--ck-color-border-accent);
+	--ck-style-panel-button-on-hover-border-color: var(--ck-color-base-active-focus);
 	--ck-style-panel-columns: 3;
 }
 
@@ -65,7 +69,7 @@
 		}
 
 		&.ck-disabled {
-			--ck-color-button-default-disabled-background: var(--ck-color-base-foreground);
+			--ck-color-button-default-disabled-background: var(--ck-color-surface-subtle);
 
 			/* Let default .ck-button :focus styles apply */
 			&:not(:focus) {
@@ -75,21 +79,21 @@
 			& .ck-style-grid__button__preview {
 				opacity: .4;
 
-				border-color: var(--ck-color-base-foreground);
+				border-color: var(--ck-color-surface-subtle);
 				filter: saturate(.3);
 			}
 		}
 
 		&.ck-on {
-			border-color: var(--ck-color-base-active);
+			border-color: var(--ck-style-panel-button-on-border-color);
 
 			& .ck-button__label {
-				box-shadow: 0 -1px 0 var(--ck-color-base-active);
+				box-shadow: 0 -1px 0 var(--ck-style-panel-button-on-border-color);
 				z-index: 1; /* Stay on top of the preview with the shadow. */
 			}
 
 			&:hover {
-				border-color: var(--ck-color-base-active-focus);
+				border-color: var(--ck-style-panel-button-on-hover-border-color);
 			}
 		}
 

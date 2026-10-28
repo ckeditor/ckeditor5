@@ -6,6 +6,11 @@
 :root,
 :host {
 	--ck-color-code-block-label-background: var(--ck-color-base-text-light);
+
+	/* The language label background and text. Declared `initial` and read with the current values as fallbacks, so the
+	   legacy `--ck-color-code-block-label-background` keeps working. */
+	--ck-code-block-label-background: initial;
+	--ck-code-block-label-text-color: initial;
 }
 
 .ck.ck-editor__editable pre[data-language]::after {
@@ -13,14 +18,14 @@
 	position: absolute;
 	top: -1px;
 	right: 10px;
-	background: var(--ck-color-code-block-label-background);
+	background: var(--ck-code-block-label-background, var(--ck-color-code-block-label-background));
 	border-radius: var(--ck-widget-label-border-radius);
 
 	font-size: 10px;
 	font-family: var(--ck-font-face, var(--ck-font-family));
 	line-height: 16px;
 	padding: var(--ck-spacing-tiny, var(--ck-spacing-xs)) var(--ck-spacing-medium, var(--ck-spacing-base));
-	color: hsl(0, 0%, 100%);
+	color: var(--ck-code-block-label-text-color, var(--ck-color-text-inverse));
 	white-space: nowrap;
 }
 

@@ -1,7 +1,7 @@
 ---
 category: features-html
 order: 20
-modified_at: 2021-10-25
+modified_at: 2026-10-08
 meta-title: General HTML Support | CKEditor 5 Documentation
 meta-description: Enable General HTML Support in CKEditor 5 to freely use custom HTML elements and attributes for advanced content editing and flexibility.
 ---
@@ -473,6 +473,192 @@ The HTML elements listed below can be turned on directly via the `allow` setting
 	<li>var</li>
 	<li>video</li>
 </ul>
+
+## Detecting content loss
+
+Sometimes, after loading content into the editor, you may find that certain elements, attributes, classes, or styles are missing. The editor removes content that no feature supports. General HTML Support keeps extra content only when it matches an `allow` rule and does not match a `disallow` rule. Debugging this can be difficult. However, you can list such content as it is loaded into the editor (with `setData()`, pasting, or source editing) using a plugin that scans for unprocessed elements and attributes.
+
+Each warning contains one of the following reasons:
+
+* `disallowedAttribute` &ndash; The attribute, class, or style matched a `disallow` rule and was removed.
+* `disallowedElement` &ndash; The element matched a `disallow` rule that does not specify any attributes.
+* `notAllowed` &ndash; There is no `allow` rule for it and no other feature handled it.
+
+The demo below uses the following General HTML Support rules. Switch to source editing, change the HTML, and check the warnings logged below the editor. Use the **Clear logs** button to start with an empty console.
+
+| Elements          | Allowed                                                                                                 | Disallowed                                                         |
+| ----------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `<pre>`, `<code>` | The `data-foo` attribute, the `foo` class, and the `color` and `background` styles, all with any value. | The `data-foo="bar"` attribute and the `background: yellow` style. |
+| `<kbd>`           | &ndash;                                                                                                 | The whole element.                                                 |
+
+Any other element or attribute is logged as `notAllowed`, unless one of the editor features (paragraphs, bold, italic, or code blocks) handles it. For example, try adding `<span class="x">`, `<pre data-bar="baz">`, or `<code title="Not allowed">`.
+
+{@snippet features/general-html-support-debugger}
+
+<div class="ghs-debugger-demo__header">
+	<strong>JS console</strong>
+	<ck:button id="general-html-support-debugger-clear" variant="secondary">Clear logs</ck:button>
+</div>
+
+<ck:fake-devtools id='general-html-support-debugger-devtools' />
+
+The code for this plugin is available below. Add it to the `plugins` list next to `GeneralHtmlSupport`. To send the warnings somewhere other than the browser console, override the `log()` method.
+
+<info-box warning>
+	This plugin relies on the private API of the {@link module:html-support/datafilter~DataFilter} plugin, which may change without notice. Use it in development builds only. In TypeScript, accessing the private `_disallowedAttributes` and `_disallowedElements` properties causes type errors, so you need to cast `dataFilter` to `any`.
+</info-box>
+
+```js
+import { Plugin, DataFilter, priorities } from 'ckeditor5';
+
+// Logs the elements, attributes, classes, and styles dropped while loading data (`setData()`, pasting, etc.).
+class HtmlSupportDebugger extends Plugin {
+	static get pluginName() {
+		return 'HtmlSupportDebugger';
+	}
+
+	static get requires() {
+		return [ DataFilter ];
+	}
+
+	init() {
+		const editor = this.editor;
+		const dataFilter = editor.plugins.get( DataFilter );
+
+		// Logs the items of the element that no converter has consumed (yet).
+		const logUnconsumed = ( reason, element, consumable, items ) => {
+			const unconsumedItems = items.filter( ( { descriptor } ) => consumable.test( element, descriptor ) );
+			const coveredStyles = unconsumedItems
+				.filter( ( { kind } ) => kind == 'style' )
+				.flatMap( ( { name } ) => getLonghandStyles( element, name ) );
+
+			for ( const { kind, name, value } of unconsumedItems ) {
+				// Log only `margin` instead of `margin`, `margin-top`, `margin-left`, and so on.
+				if ( kind != 'style' || !coveredStyles.includes( name ) ) {
+					this.log( { reason, kind, name, value, path: getPath( element ) } );
+				}
+			}
+		};
+
+		// GHS removes disallowed attributes by consuming them, so catch them right before that happens.
+		dataFilter.decorate( 'processViewAttributes' );
+
+		this.listenTo( dataFilter, 'processViewAttributes', ( evt, [ element, { consumable } ] ) => {
+			const disallowedIds = getDisallowedIds( dataFilter, element );
+			const disallowedItems = getItems( element ).filter( ( { kind, name } ) => disallowedIds.has( `${ kind }:${ name }` ) );
+
+			logUnconsumed( 'disallowedAttribute', element, consumable, disallowedItems );
+		}, { priority: 'high' } );
+
+		// Whatever is still not consumed after all converters ran gets dropped. Run right before
+		// the default converter (`lowest` priority) that unwraps unknown elements.
+		this.listenTo( editor.data.upcastDispatcher, 'element', ( evt, { viewItem: element }, { consumable } ) => {
+			// Skip internal elements, like `$comment`.
+			if ( element.name.startsWith( '$' ) ) {
+				return;
+			}
+
+			const reason = dataFilter._disallowedElements.has( element.name ) ? 'disallowedElement' : 'notAllowed';
+			const elementItem = { kind: 'element', name: element.name, descriptor: { name: true } };
+
+			// Some features do not consume wrapper elements, like `<ul>`, but rebuild them in the output.
+			const items = isRebuiltByFeature( editor, element ) ? getItems( element ) : [ elementItem, ...getItems( element ) ];
+
+			logUnconsumed( reason, element, consumable, items );
+		}, { priority: priorities.lowest + 1 } );
+	}
+
+	log( rejection ) {
+		console.warn( 'HtmlSupportDebugger:', rejection );
+	}
+}
+
+// Returns the attributes, classes, and styles of the element with their descriptors for `consumable.test()`.
+function getItems( element ) {
+	const attributes = [ ...element.getAttributeKeys() ]
+		.filter( name => name != 'class' && name != 'style' )
+		.map( name => ( {
+			kind: 'attribute',
+			name,
+			value: element.getAttribute( name ),
+			descriptor: { attributes: [ name ] }
+		} ) );
+
+	const classes = [ ...element.getClassNames() ].map( name => ( {
+		kind: 'class',
+		name,
+		descriptor: { classes: [ name ] }
+	} ) );
+
+	// Include longhand styles, like `margin-left` for `margin`, because the rules may use either form.
+	// Skip the shorthands that have no value of their own, like `margin` when only `margin-left` is set.
+	const styles = element.getStyleNames( true )
+		.filter( name => element.getStyle( name ) !== undefined )
+		.map( name => ( {
+			kind: 'style',
+			name,
+			value: element.getStyle( name ),
+			descriptor: { styles: [ name ] }
+		} ) );
+
+	return [ ...attributes, ...classes, ...styles ];
+}
+
+// Returns the `kind:name` IDs of the element items that match a `disallow` rule. The matcher returns
+// them as `[ 'class', 'foo' ]`, `[ 'style', 'color' ]`, or `[ 'data-foo' ]` pairs.
+function getDisallowedIds( dataFilter, element ) {
+	const matches = dataFilter._disallowedAttributes.matchAll( element ) || [];
+
+	const ids = matches
+		.flatMap( ( { match } ) => match.attributes || [] )
+		.flatMap( ( [ key, token ] ) => {
+			if ( key == 'style' ) {
+				// GHS also removes the longhands of a disallowed shorthand, like `margin-left` for `margin`.
+				return [ token, ...getLonghandStyles( element, token ) ].map( name => `style:${ name }` );
+			}
+
+			return key == 'class' ? `class:${ token }` : `attribute:${ key }`;
+		} );
+
+	return new Set( ids );
+}
+
+// Checks if a feature rebuilds the element from its children. For example, the list feature converts
+// each `<li>` element and then rebuilds the `<ul>` or `<ol>` element around them in the output.
+function isRebuiltByFeature( editor, element ) {
+	const { plugins, config } = editor;
+	const hasChild = name => [ ...element.getChildren() ].some( child => child.is( 'element', name ) );
+
+	switch ( element.name ) {
+		case 'ul':
+		case 'ol':
+			return plugins.has( 'ListEditing' ) && hasChild( 'li' );
+		case 'thead':
+		case 'tbody':
+			return plugins.has( 'TableEditing' ) && hasChild( 'tr' );
+		case 'tfoot':
+			return plugins.has( 'TableEditing' ) && hasChild( 'tr' ) && !!config.get( 'table.enableFooters' );
+		case 'pre':
+			return plugins.has( 'CodeBlockEditing' ) && hasChild( 'code' );
+		default:
+			return false;
+	}
+}
+
+// Returns the longhands of the style, for example, `margin-left` for `margin`.
+function getLonghandStyles( element, styleName ) {
+	return element.document.stylesProcessor.getRelatedStyles( styleName )
+		.filter( name => name.split( '-' ).length > styleName.split( '-' ).length );
+}
+
+// Returns the path to the element, for example, `pre > code`.
+function getPath( element ) {
+	return [ ...element.getAncestors(), element ]
+		.filter( node => node.is( 'element' ) )
+		.map( node => node.name )
+		.join( ' > ' );
+}
+```
 
 ## Known issues
 

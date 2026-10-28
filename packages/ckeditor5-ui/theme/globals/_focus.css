@@ -6,9 +6,14 @@
 :root,
 :host {
 	/**
+	 * The spread radius of the focus shadow.
+	 */
+	--ck-focus-shadow-spread: 3px;
+
+	/**
 	 * The geometry of the focus shadow.
 	 */
-	--ck-focus-shadow-geometry: 0 0 0 3px;
+	--ck-focus-shadow-geometry: 0 0 0 var(--ck-focus-shadow-spread);
 
 	/**
 	 * A visual style of focused element's shadow.
@@ -38,7 +43,7 @@
 	 * Use this instead of --ck-focus-ring when the component has a customizable border-width,
 	 * to avoid overriding the width on focus.
 	 */
-	--ck-focus-border-color: hsl(227.7 62.7% 55.9%);
+	--ck-focus-border-color: var(--ck-color-base-focus);
 
 	/**
 	 * Contrast outline for fake collapsed selections and carets.

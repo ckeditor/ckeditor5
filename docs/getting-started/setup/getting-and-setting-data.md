@@ -269,7 +269,9 @@ function handleSaveButton( editor ) {
 // Listen to new changes (to enable the "Save" button) and to
 // pending actions (to show the spinner animation when the editor is busy).
 function handleStatusChanges( editor ) {
-	editor.plugins.get( 'PendingActions' ).on( 'change:hasAny', () => updateStatus( editor ) );
+	editor.plugins.get( 'PendingActions' ).on(
+		'change:hasAny', () => updateStatus( editor )
+	);
 
 	editor.model.document.on( 'change:data', () => {
 		isDirty = true;

@@ -33,6 +33,8 @@
 	--ck-color-base-error-shadow: hsl(0 64.3% 94.5%);
 
 	--ck-color-shadow-drop: hsl(0 0% 0% / 0.125);
+	/* Not read by the theme itself. The legacy theme preset in the migration guide builds its large shadow from it, so
+	   keep it for themes that restore the old look. */
 	--ck-color-shadow-drop-active: hsl(0 0% 0% / 0.2);
 	--ck-color-shadow-inner: hsl(0 0% 0% / 0.1);
 

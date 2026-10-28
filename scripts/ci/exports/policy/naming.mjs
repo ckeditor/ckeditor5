@@ -145,7 +145,7 @@ export function validateNaming( { pkg, module, item } ) {
 
 		function getPackageNameVariants() {
 			const specificPackages = {
-				'ai': [ 'Ai', 'DocumentCompare' ],
+				'ai': [ 'Ai', 'DocumentCompare', 'DocumentChange', 'ProposedChange' ],
 				'ckbox': [ 'CKBox' ],
 				'ckfinder': [ 'CKFinder' ],
 				'export-inline-styles': [ 'ExportInlineStyles', 'Style' ],

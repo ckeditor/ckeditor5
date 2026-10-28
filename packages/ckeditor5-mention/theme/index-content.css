@@ -11,6 +11,6 @@
 }
 
 .ck-content .mention {
-	background: var(--ck-content-color-mention-background);
-	color: var(--ck-content-color-mention-text);
+	background: var(--ck-content-mention-background, var(--ck-content-color-mention-background));
+	color: var(--ck-content-mention-text-color, var(--ck-content-color-mention-text));
 }

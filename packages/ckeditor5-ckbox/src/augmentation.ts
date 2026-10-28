@@ -39,9 +39,22 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 }
 
+/**
+ * Rendering options passed to CKBox mount methods.
+ *
+ * @internal
+ */
+export interface CKBoxRenderOptions {
+
+	/**
+	 * The root CKBox should inject its styles into.
+	 */
+	stylesTarget?: Document | ShadowRoot;
+}
+
 declare global {
 	var CKBox: {
-		mount( wrapper: Element, options: Record<string, unknown> ): void;
-		mountImageEditor( wrapper: Element, options: Record<string, unknown> ): void;
+		mount( wrapper: Element, options: Record<string, unknown>, renderOptions?: CKBoxRenderOptions ): void;
+		mountImageEditor( wrapper: Element, options: Record<string, unknown>, renderOptions?: CKBoxRenderOptions ): void;
 	};
 }

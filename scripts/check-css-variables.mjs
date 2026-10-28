@@ -43,7 +43,6 @@ const KNOWN_UNDECLARED_VARIABLES = new Set( [
 
 	// Pre-existing gaps: consumed by the theme without a matching declaration anywhere.
 	'--ck-block-toolbar-size',
-	'--ck-color-widget-type-around-button',
 
 	// Pre-existing gap in the revision history styles.
 	// See https://github.com/ckeditor/ckeditor5-commercial/issues/11082.

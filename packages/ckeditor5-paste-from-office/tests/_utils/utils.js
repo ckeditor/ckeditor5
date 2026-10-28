@@ -308,7 +308,10 @@ function expectNormalized( actualView, expectedHtml ) {
 	// We are ok with both spaces and non-breaking spaces in the actual content.
 	// Replace `&nbsp;` with regular spaces to align with expected content.
 	const actualNormalized = _stringifyView( actualView ).replace( /\u00A0/g, ' ' );
-	const expectedNormalized = normalizeHtml( inlineData( expectedHtml ), { skipComments: true } );
+	const expectedNormalized = normalizeHtml( inlineData( expectedHtml ), {
+		skipComments: true,
+		skipProcessingInstructions: true
+	} );
 
 	compareContentWithBase64Images( actualNormalized, expectedNormalized );
 }

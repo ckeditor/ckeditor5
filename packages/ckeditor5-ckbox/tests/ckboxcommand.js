@@ -17,7 +17,7 @@ import {
 	ImageCaptionEditing
 } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/mockcloudservicescoretoken.js';
@@ -25,7 +25,7 @@ import { mockCreateToken } from '@ckeditor/ckeditor5-cloud-services/tests/_utils
 import { CKBoxEditing } from '../src/ckboxediting.js';
 import { CKBoxCommand } from '../src/ckboxcommand.js';
 import { CKBoxUtils } from '../src/ckboxutils.js';
-import { blurHashToDataUrl } from '../src/utils.js';
+import { blurHashToDataUrl, CKBoxWrapperView } from '../src/utils.js';
 
 describe( 'CKBoxCommand', () => {
 	let editor, model, command, originalCKBox;
@@ -52,8 +52,6 @@ describe( 'CKBoxCommand', () => {
 			mount: vi.fn()
 		};
 
-		vi.spyOn( document.body, 'appendChild' ).mockImplementation( () => {} );
-
 		editor = await createTestEditor( {
 			ckbox: {
 				tokenUrl: 'foo'
@@ -67,7 +65,11 @@ describe( 'CKBoxCommand', () => {
 
 	afterEach( async () => {
 		window.CKBox = originalCKBox;
-		await editor.destroy();
+
+		// Some tests destroy the editor on their own.
+		if ( editor.state !== 'destroyed' ) {
+			await editor.destroy();
+		}
 	} );
 
 	describe( 'isEnabled', () => {
@@ -160,42 +162,42 @@ describe( 'CKBoxCommand', () => {
 				vi.useRealTimers();
 			} );
 
-			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {
+			it( 'should create a wrapper if it is not yet created and mount it in the editor body collection', () => {
 				command.execute();
 
-				const wrapper = command._wrapper;
+				const wrapper = getWrapper( editor );
 
-				expect( wrapper.nodeName ).toEqual( 'DIV' );
-				expect( wrapper.className ).toEqual( 'ck ckbox-wrapper' );
-				expect( document.body.appendChild ).toHaveBeenCalledTimes( 1 );
-				expect( document.body.appendChild.mock.calls[ 0 ][ 0 ] ).toEqual( wrapper );
+				expect( wrapper ).toBeInstanceOf( CKBoxWrapperView );
+				expect( wrapper.element.nodeName ).toEqual( 'DIV' );
+				expect( wrapper.element.className ).toEqual( 'ck ckbox-wrapper ck-reset_all-excluded' );
+				expect( editor.ui.view.body.has( wrapper ) ).toBe( true );
+				expect( wrapper.element.isConnected ).toBe( true );
 			} );
 
 			it( 'should create and mount a wrapper only once', () => {
 				command.execute();
 
-				const wrapper1 = command._wrapper;
+				const wrapper1 = getWrapper( editor );
 
 				command.execute();
 
-				const wrapper2 = command._wrapper;
+				const wrapper2 = getWrapper( editor );
 
 				command.execute();
 
-				const wrapper3 = command._wrapper;
+				const wrapper3 = getWrapper( editor );
 
-				expect( wrapper1 ).toEqual( wrapper2 );
-				expect( wrapper2 ).toEqual( wrapper3 );
-				expect( document.body.appendChild ).toHaveBeenCalledTimes( 1 );
-				expect( document.body.appendChild.mock.calls[ 0 ][ 0 ] ).toEqual( wrapper1 );
+				expect( wrapper1 ).toBe( wrapper2 );
+				expect( wrapper2 ).toBe( wrapper3 );
+				expect( getWrappersInBody( editor ) ).toEqual( [ wrapper1 ] );
 			} );
 
 			it( 'should not create a wrapper if the command is disabled', () => {
 				command.isEnabled = false;
 				command.execute();
 
-				expect( command._wrapper ).toEqual( null );
-				expect( document.body.appendChild ).not.toHaveBeenCalled();
+				expect( getWrapper( editor ) ).toBeNull();
+				expect( getWrappersInBody( editor ) ).toEqual( [] );
 			} );
 
 			it( 'should open the CKBox dialog instance only once', () => {
@@ -204,6 +206,19 @@ describe( 'CKBoxCommand', () => {
 				command.execute();
 
 				expect( window.CKBox.mount ).toHaveBeenCalledTimes( 1 );
+			} );
+
+			it( 'should mount the CKBox dialog in the wrapper element', () => {
+				command.execute();
+
+				expect( window.CKBox.mount ).toHaveBeenCalledTimes( 1 );
+				expect( window.CKBox.mount.mock.calls[ 0 ][ 0 ] ).toBe( getWrapper( editor ).element );
+			} );
+
+			it( 'should pass the document as `stylesTarget` when the editor is in the light DOM', () => {
+				command.execute();
+
+				expect( window.CKBox.mount.mock.calls[ 0 ][ 2 ] ).toEqual( { stylesTarget: document } );
 			} );
 
 			it( 'should prepare options for the CKBox dialog instance', async () => {
@@ -292,17 +307,23 @@ describe( 'CKBoxCommand', () => {
 				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
-			it( 'should remove the wrapper after closing the CKBox dialog', () => {
+			it( 'should remove the wrapper from the body collection after closing the CKBox dialog', () => {
 				command.execute();
 
-				expect( command._wrapper ).not.toEqual( null );
+				const wrapper = getWrapper( editor );
 
-				const spy = vi.spyOn( command._wrapper, 'remove' );
+				expect( wrapper ).not.toEqual( null );
+
+				const spy = vi.spyOn( editor.ui.view.body, 'remove' );
 
 				onClose();
 
 				expect( spy ).toHaveBeenCalledTimes( 1 );
-				expect( command._wrapper ).toEqual( null );
+				expect( spy ).toHaveBeenCalledWith( wrapper );
+				expect( editor.ui.view.body.has( wrapper ) ).toBe( false );
+				expect( wrapper.element.isConnected ).toBe( false );
+				expect( getWrapper( editor ) ).toBeNull();
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should focus view after closing the CKBox dialog', () => {
@@ -322,6 +343,130 @@ describe( 'CKBoxCommand', () => {
 
 				expect( focusSpy ).toHaveBeenCalledTimes( 1 );
 			} );
+		} );
+
+		describe( 'moving the wrapper to another root', () => {
+			let hosts;
+
+			beforeEach( () => {
+				hosts = [];
+			} );
+
+			afterEach( () => {
+				for ( const host of hosts ) {
+					host.remove();
+				}
+			} );
+
+			it( 'should mount the dialog again in a new wrapper when the wrapper ends up in another root', () => {
+				command.execute();
+
+				const oldWrapper = getWrapper( editor );
+				const shadowRoot = moveToShadowRoot( oldWrapper.element );
+
+				editor.ui.update();
+
+				const newWrapper = getWrapper( editor );
+
+				expect( newWrapper ).toBeInstanceOf( CKBoxWrapperView );
+				expect( newWrapper ).not.toBe( oldWrapper );
+				expect( getWrappersInBody( editor ) ).toEqual( [ newWrapper ] );
+				expect( oldWrapper.element.isConnected ).toBe( false );
+				expect( shadowRoot.querySelector( '.ckbox-wrapper' ) ).toBeNull();
+
+				expect( window.CKBox.mount ).toHaveBeenCalledTimes( 2 );
+				expect( window.CKBox.mount.mock.calls[ 1 ][ 0 ] ).toBe( newWrapper.element );
+				expect( window.CKBox.mount.mock.calls[ 1 ][ 2 ] ).toEqual( { stylesTarget: newWrapper.element.getRootNode() } );
+			} );
+
+			it( 'should mount the dialog again with freshly prepared options', () => {
+				command.execute();
+
+				const spy = vi.spyOn( command, '_prepareOptions' );
+
+				moveToShadowRoot( getWrapper( editor ).element );
+				editor.ui.update();
+
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( window.CKBox.mount.mock.calls[ 1 ][ 1 ] ).toBe( spy.mock.results[ 0 ].value );
+			} );
+
+			it( 'should keep the dialog open after mounting it again', () => {
+				const closeSpy = vi.fn();
+
+				command.on( 'ckbox:close', closeSpy );
+				command.execute();
+
+				moveToShadowRoot( getWrapper( editor ).element );
+				editor.ui.update();
+
+				expect( closeSpy ).not.toHaveBeenCalled();
+				expect( command.value ).toBe( true );
+			} );
+
+			it( 'should close the dialog mounted again', () => {
+				command.execute();
+
+				moveToShadowRoot( getWrapper( editor ).element );
+				editor.ui.update();
+
+				const newWrapper = getWrapper( editor );
+
+				window.CKBox.mount.mock.calls[ 1 ][ 1 ].dialog.onClose();
+
+				expect( getWrappersInBody( editor ) ).toEqual( [] );
+				expect( newWrapper.element.isConnected ).toBe( false );
+				expect( command.value ).toBe( false );
+			} );
+
+			it( 'should not mount the dialog again if the wrapper stays in the same root', () => {
+				command.execute();
+
+				const wrapper = getWrapper( editor );
+
+				editor.ui.update();
+
+				expect( getWrapper( editor ) ).toBe( wrapper );
+				expect( window.CKBox.mount ).toHaveBeenCalledTimes( 1 );
+			} );
+
+			it( 'should not mount the dialog again if the wrapper is detached', () => {
+				command.execute();
+
+				const wrapper = getWrapper( editor );
+
+				wrapper.element.remove();
+				editor.ui.update();
+
+				expect( getWrapper( editor ) ).toBe( wrapper );
+				expect( window.CKBox.mount ).toHaveBeenCalledTimes( 1 );
+			} );
+
+			it( 'should stop following the wrapper after the dialog is closed', () => {
+				command.execute();
+
+				const wrapper = getWrapper( editor );
+
+				command._prepareOptions().dialog.onClose();
+
+				// Even if the removed wrapper ended up in another root, nothing is mounted for a closed dialog.
+				moveToShadowRoot( wrapper.element );
+				editor.ui.update();
+
+				expect( getWrappersInBody( editor ) ).toEqual( [] );
+				expect( window.CKBox.mount ).toHaveBeenCalledTimes( 1 );
+			} );
+
+			function moveToShadowRoot( element ) {
+				const host = document.createElement( 'div' );
+				const shadowRoot = host.attachShadow( { mode: 'open' } );
+
+				document.body.appendChild( host );
+				hosts.push( host );
+				shadowRoot.appendChild( element );
+
+				return shadowRoot;
+			}
 		} );
 
 		describe( 'choosing assets ("ckbox:choose")', () => {
@@ -1237,7 +1382,7 @@ describe( 'CKBoxCommand', () => {
 				await editor.destroy();
 
 				expect( command._chosenAssets.size ).toEqual( 0 );
-				expect( command._wrapper ).toEqual( null );
+				expect( command._unmountDialog ).toBeNull();
 			} );
 
 			it( 'should focus view after assets were chosen', () => {
@@ -1386,10 +1531,178 @@ describe( 'CKBoxCommand', () => {
 			} );
 		} );
 	} );
+
+	describe( 'Shadow DOM', () => {
+		let hosts, shadowEditor, warnSpy;
+
+		beforeEach( () => {
+			hosts = [];
+			shadowEditor = null;
+
+			// An editor rendered in a shadow root without `config.ui.overlayContainer` warns about it on purpose.
+			// That is exactly the setup tested here, so swallow only that warning and let any other one through.
+			const originalWarn = console.warn;
+
+			warnSpy = vi.spyOn( console, 'warn' ).mockImplementation( ( message, ...args ) => {
+				if ( typeof message == 'string' && message.startsWith( 'ui-overlay-container-not-configured' ) ) {
+					return;
+				}
+
+				originalWarn( message, ...args );
+			} );
+		} );
+
+		afterEach( async () => {
+			if ( shadowEditor ) {
+				await shadowEditor.destroy();
+			}
+
+			warnSpy.mockRestore();
+
+			for ( const host of hosts ) {
+				host.remove();
+			}
+		} );
+
+		for ( const mode of [ 'open', 'closed' ] ) {
+			describe( `${ mode } shadow root`, () => {
+				it( 'should mount the wrapper in the shadow root the editor lives in', async () => {
+					const { shadowRoot, element } = createShadowEditorElement( mode );
+
+					shadowEditor = await createTestEditor( { ckbox: { tokenUrl: 'foo' } }, element );
+
+					const shadowCommand = shadowEditor.commands.get( 'ckbox' );
+
+					_setModelData( shadowEditor.model, '<paragraph>foo[]</paragraph>' );
+					shadowCommand.execute();
+
+					expect( getWrapper( shadowEditor ) ).not.toBeNull();
+					expect( getWrapper( shadowEditor ).element.getRootNode() ).toBe( shadowRoot );
+				} );
+
+				it( 'should pass the shadow root as `stylesTarget`', async () => {
+					const { shadowRoot, element } = createShadowEditorElement( mode );
+
+					shadowEditor = await createTestEditor( { ckbox: { tokenUrl: 'foo' } }, element );
+
+					const shadowCommand = shadowEditor.commands.get( 'ckbox' );
+
+					_setModelData( shadowEditor.model, '<paragraph>foo[]</paragraph>' );
+					shadowCommand.execute();
+
+					expect( window.CKBox.mount ).toHaveBeenCalledTimes( 1 );
+					expect( window.CKBox.mount ).toHaveBeenCalledWith(
+						getWrapper( shadowEditor ).element,
+						expect.any( Object ),
+						{ stylesTarget: shadowRoot }
+					);
+				} );
+
+				it( 'should not leak the wrapper to the main document', async () => {
+					const { element } = createShadowEditorElement( mode );
+
+					shadowEditor = await createTestEditor( { ckbox: { tokenUrl: 'foo' } }, element );
+
+					const shadowCommand = shadowEditor.commands.get( 'ckbox' );
+
+					_setModelData( shadowEditor.model, '<paragraph>foo[]</paragraph>' );
+					shadowCommand.execute();
+
+					expect( document.querySelector( '.ckbox-wrapper' ) ).toBeNull();
+				} );
+
+				it( 'should remove the wrapper from the shadow root after closing the dialog', async () => {
+					const { shadowRoot, element } = createShadowEditorElement( mode );
+
+					shadowEditor = await createTestEditor( { ckbox: { tokenUrl: 'foo' } }, element );
+
+					const shadowCommand = shadowEditor.commands.get( 'ckbox' );
+
+					_setModelData( shadowEditor.model, '<paragraph>foo[]</paragraph>' );
+					shadowCommand.execute();
+					shadowCommand._prepareOptions().dialog.onClose();
+
+					expect( getWrapper( shadowEditor ) ).toBeNull();
+					expect( shadowRoot.querySelector( '.ckbox-wrapper' ) ).toBeNull();
+				} );
+			} );
+		}
+
+		describe( '`config.ui.overlayContainer`', () => {
+			it( 'should pass the overlay container shadow root as `stylesTarget` (editor in the light DOM)', async () => {
+				const { shadowRoot: overlayRoot } = createShadowEditorElement( 'open' );
+
+				shadowEditor = await createTestEditor( {
+					ckbox: { tokenUrl: 'foo' },
+					ui: { overlayContainer: overlayRoot }
+				} );
+
+				const overlayCommand = shadowEditor.commands.get( 'ckbox' );
+
+				_setModelData( shadowEditor.model, '<paragraph>foo[]</paragraph>' );
+				overlayCommand.execute();
+
+				expect( getWrapper( shadowEditor ).element.getRootNode() ).toBe( overlayRoot );
+				expect( window.CKBox.mount.mock.calls[ 0 ][ 2 ] ).toEqual( { stylesTarget: overlayRoot } );
+			} );
+
+			it( 'should pass the document as `stylesTarget` (editor in a shadow root, overlay in the light DOM)', async () => {
+				const { element } = createShadowEditorElement( 'open' );
+				const overlayContainer = document.createElement( 'div' );
+
+				document.body.appendChild( overlayContainer );
+				hosts.push( overlayContainer );
+
+				shadowEditor = await createTestEditor( {
+					ckbox: { tokenUrl: 'foo' },
+					ui: { overlayContainer }
+				}, element );
+
+				const overlayCommand = shadowEditor.commands.get( 'ckbox' );
+
+				_setModelData( shadowEditor.model, '<paragraph>foo[]</paragraph>' );
+				overlayCommand.execute();
+
+				expect( overlayContainer.contains( getWrapper( shadowEditor ).element ) ).toBe( true );
+				expect( window.CKBox.mount.mock.calls[ 0 ][ 2 ] ).toEqual( { stylesTarget: document } );
+			} );
+		} );
+
+		function createShadowEditorElement( mode ) {
+			const host = document.createElement( 'div' );
+			const shadowRoot = host.attachShadow( { mode } );
+			const element = document.createElement( 'div' );
+
+			shadowRoot.appendChild( element );
+			document.body.appendChild( host );
+			hosts.push( host );
+
+			return { shadowRoot, element };
+		}
+	} );
 } );
 
-function createTestEditor( config = {} ) {
-	return VirtualTestEditor.create( {
+function getWrappersInBody( editor ) {
+	return Array.from( editor.ui.view.body ).filter( view => view instanceof CKBoxWrapperView );
+}
+
+function getWrapper( editor ) {
+	return getWrappersInBody( editor )[ 0 ] || null;
+}
+
+/**
+ * Creates a `ClassicTestEditor` in the given element. Without one, the editor gets its own element
+ * in the document body, which is removed together with the editor.
+ */
+async function createTestEditor( config = {}, element ) {
+	const ownsElement = !element;
+
+	if ( ownsElement ) {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+	}
+
+	const editor = await ClassicTestEditor.create( element, {
 		plugins: [
 			BoldEditing,
 			HeadingEditing,
@@ -1408,4 +1721,10 @@ function createTestEditor( config = {} ) {
 		image: { insert: { type: 'auto' } },
 		...config
 	} );
+
+	if ( ownsElement ) {
+		editor.once( 'destroy', () => element.remove() );
+	}
+
+	return editor;
 }

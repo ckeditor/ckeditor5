@@ -32,7 +32,7 @@
 
 	&:focus {
 		outline: none;
-		border-color: var(--ck-focus-border-color);
+		border-color: var(--ck-interactive-focus-border-color);
 		/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow if overridden. */
 		box-shadow: var(--ck-focus-outer-shadow, var(--ck-focus-shadow)), 0 0;
 	}

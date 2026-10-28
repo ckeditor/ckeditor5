@@ -16,7 +16,7 @@
 
 	& .ck-media__placeholder {
 		padding: calc(3 * var(--ck-spacing-standard, var(--ck-spacing-base)));
-		background: var(--ck-color-base-foreground);
+		background: var(--ck-color-surface-subtle);
 		display: flex;
 		flex-direction: column;
 		align-items: center;

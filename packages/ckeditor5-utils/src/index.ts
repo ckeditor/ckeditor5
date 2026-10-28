@@ -86,6 +86,8 @@ export { getElementFromPoint } from './dom/getelementfrompoint.js';
 export { getPositionedAncestor } from './dom/getpositionedancestor.js';
 export { getActiveElement } from './dom/getactiveelement.js';
 export { getShadowRoots } from './dom/getshadowroots.js';
+export { getEventRoots } from './dom/geteventroots.js';
+export { DomTargetsListener, type DomTargetsListenerOptions } from './dom/domtargetslistener.js';
 export { getOverlayMountRoot } from './dom/getoverlaymountroot.js';
 export { adoptGlobalStyleSheet } from './dom/adoptglobalstylesheet.js';
 export { getParentElement } from './dom/getparentelement.js';
@@ -101,6 +103,7 @@ export { toUnit, type ToUnitHelper } from './dom/tounit.js';
 export { indexOf } from './dom/indexof.js';
 export { insertAt } from './dom/insertat.js';
 export { isComment } from './dom/iscomment.js';
+export { isProcessingInstruction } from './dom/isprocessinginstruction.js';
 export { isDomSelectionBackward } from './dom/isdomselectionbackward.js';
 export { isOffline } from './dom/isoffline.js';
 export { isNode } from './dom/isnode.js';
@@ -111,8 +114,10 @@ export { whenElementConnected } from './dom/whenelementconnected.js';
 export {
 	ShadowRootRegistry,
 	listenToShadowRoots,
+	listenToEventRoots,
 	type ShadowRootRegistryAddEvent,
-	type ShadowRootRegistryRemoveEvent
+	type ShadowRootRegistryRemoveEvent,
+	type ShadowRootRegistryChangeEventRootsEvent
 } from './dom/shadowrootregistry.js';
 export { isValidAttributeName } from './dom/isvalidattributename.js';
 export { isVisible } from './dom/isvisible.js';

@@ -12,6 +12,15 @@
 	--ck-insert-table-dropdown-box-border-radius: var(--ck-radius-xs);
 	--ck-insert-table-dropdown-label-font-size: var(--ck-font-size-small, var(--ck-font-size-sm));
 	--ck-insert-table-dropdown-label-padding: var(--ck-spacing-padding-compact) 0;
+
+	/* Color */
+	--ck-insert-table-dropdown-box-border-color: var(--ck-color-border-control);
+	/* Selected cells, and the selected cell under the pointer. Declared `initial` and read with the current values as
+	   fallbacks (the focus colors for selected cells, the button "on" hover background for the hovered one). */
+	--ck-insert-table-dropdown-box-on-background: initial;
+	--ck-insert-table-dropdown-box-on-border-color: initial;
+	--ck-insert-table-dropdown-box-hover-background: initial;
+	--ck-insert-table-dropdown-box-hover-border-color: initial;
 }
 
 .ck .ck-insert-table-dropdown__grid {
@@ -34,7 +43,7 @@
 	min-width: var(--ck-insert-table-dropdown-box-width);
 	min-height: var(--ck-insert-table-dropdown-box-height);
 	margin: var(--ck-insert-table-dropdown-box-margin);
-	border: var(--ck-border-width-thin) solid var(--ck-color-base-border);
+	border: var(--ck-border-width-thin) solid var(--ck-insert-table-dropdown-box-border-color);
 	border-radius: var(--ck-insert-table-dropdown-box-border-radius);
 	outline: none;
 	transition: none;
@@ -48,7 +57,14 @@
 	}
 
 	&.ck-on {
-		border-color: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
-		background: var(--ck-color-focus-outer-shadow, var(--ck-focus-shadow));
+		border-color: var(--ck-insert-table-dropdown-box-on-border-color, var(--ck-color-focus-border, var(--ck-color-interactive-focus-border)));
+		background: var(--ck-insert-table-dropdown-box-on-background, var(--ck-color-focus-outer-shadow, var(--ck-focus-shadow)));
+
+		/* The cell under the pointer. Without this rule it takes the generic button hover background, which differs from
+		   the other selected cells; the fallbacks keep that default, so a theme can align the two. */
+		&:hover:not(.ck-disabled) {
+			border-color: var(--ck-insert-table-dropdown-box-hover-border-color, var(--ck-insert-table-dropdown-box-on-border-color, var(--ck-color-focus-border, var(--ck-color-interactive-focus-border))));
+			background: var(--ck-insert-table-dropdown-box-hover-background, var(--ck-button-hover-background));
+		}
 	}
 }

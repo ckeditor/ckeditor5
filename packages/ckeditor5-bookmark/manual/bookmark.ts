@@ -17,6 +17,7 @@ import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table } from '@ckeditor/ckeditor5-table';
+import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
 
 import { Bookmark } from '../src/bookmark.js';
 
@@ -41,8 +42,10 @@ declare global {
 const config = {
 	plugins: [
 		Essentials, Link, List, LinkImage, Paragraph, Table, Image, ImageUpload, ImageStyle, ImageToolbar,
-		CodeBlock, BlockQuote, EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark
+		CodeBlock, BlockQuote, EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark,
+		BalloonToolbar
 	],
+	balloonToolbar: [ 'bookmark', 'link' ],
 	toolbar: [
 		'bookmark', '|',
 		'undo', 'redo', '|',

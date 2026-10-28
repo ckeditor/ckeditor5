@@ -7,7 +7,8 @@
 /* Let's use `.ck-balloon-panel` appearance. See: balloonpanel.css. */
 
 .ck .ck-fake-panel div {
-	box-shadow: var(--ck-shadow-surface-floating), 0 0;
+	/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+	box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 
 	min-height: 15px;
 

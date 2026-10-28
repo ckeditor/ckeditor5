@@ -7,13 +7,18 @@
 :host {
 	--ck-widget-type-around-button-size: 20px;
 	--ck-widget-type-around-button-border-radius: 100px;
+	/* Transparent by default; the button only shows a background on hover, when active or when the editor is blurred. */
+	--ck-widget-type-around-button-background-color: transparent;
 	/* Backward compatibility: falls back to legacy --ck-color-focus-border if overridden. */
-	--ck-color-widget-type-around-button-active: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
-	--ck-color-widget-type-around-button-hover: var(--ck-color-widget-hover-border);
-	--ck-color-widget-type-around-button-blurred-editable: var(--ck-color-widget-blurred-border);
-	--ck-color-widget-type-around-button-radar-start-alpha: 0;
-	--ck-color-widget-type-around-button-radar-end-alpha: .3;
-	--ck-color-widget-type-around-button-icon: var(--ck-color-base-background);
+	--ck-widget-type-around-button-active-background-color: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
+	--ck-widget-type-around-button-hover-background-color: var(--ck-color-widget-hover-border, var(--ck-widget-hover-border-color));
+	--ck-widget-type-around-button-blurred-background-color: var(--ck-color-widget-blurred-border, var(--ck-widget-blurred-border-color));
+	--ck-widget-type-around-button-radar-start-alpha: 0;
+	--ck-widget-type-around-button-radar-end-alpha: .3;
+	--ck-widget-type-around-button-icon-color: var(--ck-color-text-inverse);
+
+	/* Dedicated icon color for the blurred-editor state, so it can be themed independently of the widget outline. */
+	--ck-widget-type-around-button-blurred-icon-color: var(--ck-color-widget-blurred-border, color-mix(in srgb, var(--ck-color-text-secondary) 60%, transparent));
 }
 
 .ck .ck-widget {
@@ -23,7 +28,7 @@
 	& .ck-widget__type-around__button {
 		width: var(--ck-widget-type-around-button-size);
 		height: var(--ck-widget-type-around-button-size);
-		background: var(--ck-color-widget-type-around-button);
+		background: var(--ck-color-widget-type-around-button, var(--ck-widget-type-around-button-background-color));
 		border-radius: var(--ck-widget-type-around-button-border-radius);
 		transition: opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve), background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
 
@@ -57,7 +62,7 @@
 				stroke-dashoffset: 0;
 
 				fill: none;
-				stroke: var(--ck-color-widget-type-around-button-icon);
+				stroke: var(--ck-color-widget-type-around-button-icon, var(--ck-widget-type-around-button-icon-color));
 				stroke-width: 1.5px;
 				stroke-linecap: round;
 				stroke-linejoin: round;
@@ -135,7 +140,7 @@
 	 * and still can be hovered).
 	 */
 	&:not(.ck-widget_selected) > .ck-widget__type-around > .ck-widget__type-around__button {
-		background: var(--ck-color-widget-type-around-button-hover);
+		background: var(--ck-color-widget-type-around-button-hover, var(--ck-widget-type-around-button-hover-background-color));
 	}
 
 	/*
@@ -145,7 +150,7 @@
 	 */
 	&.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button,
 	& > .ck-widget__type-around > .ck-widget__type-around__button:hover {
-		background: var(--ck-color-widget-type-around-button-active);
+		background: var(--ck-color-widget-type-around-button-active, var(--ck-widget-type-around-button-active-background-color));
 	}
 
 	&.ck-widget_selected {
@@ -199,7 +204,7 @@
 		 * unselected widget.
 		 */
 		&.ck-widget_selected:hover {
-			outline-color: var(--ck-color-widget-hover-border);
+			outline-color: var(--ck-color-widget-hover-border, var(--ck-widget-hover-border-color));
 		}
 
 		/*
@@ -326,10 +331,10 @@
  */
 
 .ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button:not(:hover) {
-	background: var(--ck-color-widget-type-around-button-blurred-editable);
+	background: var(--ck-color-widget-type-around-button-blurred-editable, var(--ck-widget-type-around-button-blurred-background-color));
 
 	& svg * {
-		stroke: var(--ck-color-widget-blurred-border);
+		stroke: var(--ck-widget-type-around-button-blurred-icon-color);
 	}
 }
 
@@ -353,13 +358,13 @@
 
 @keyframes ck-widget-type-around-button-sonar {
 	0% {
-		box-shadow: 0 0 0 0 hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));
+		box-shadow: 0 0 0 0 hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha, var(--ck-widget-type-around-button-radar-start-alpha)));
 	}
 	50% {
-		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-end-alpha));
+		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-end-alpha, var(--ck-widget-type-around-button-radar-end-alpha)));
 	}
 	100% {
-		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));
+		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha, var(--ck-widget-type-around-button-radar-start-alpha)));
 	}
 }
 

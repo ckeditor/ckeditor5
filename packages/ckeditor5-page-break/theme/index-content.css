@@ -3,7 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* content-layer: pending color palette */
+:root,
+:host {
+	/* Page break line and label (content), themable from :root. */
+	--ck-content-page-break-line-color: hsl(0, 0%, 77%);
+	--ck-content-page-break-line-width: 2px;
+	--ck-content-page-break-line-style: dashed;
+	--ck-content-page-break-label-border-color: hsl(0, 0%, 77%);
+	--ck-content-page-break-label-border-width: 1px;
+	--ck-content-page-break-label-border-style: solid;
+	--ck-content-page-break-label-text-color: hsl(0, 0%, 20%);
+	--ck-content-page-break-label-background: hsl(0, 0%, 100%);
+	--ck-content-page-break-label-shadow-color: hsla(0, 0%, 0%, 0.15);
+}
+
 .ck-content .page-break {
 	position: relative;
 	clear: both;
@@ -15,7 +28,7 @@
 	&::after {
 		content: '';
 		position: absolute;
-		border-bottom: 2px dashed hsl(0, 0%, 77%);
+		border-bottom: var(--ck-content-page-break-line-width) var(--ck-content-page-break-line-style) var(--ck-content-page-break-line-color);
 		width: 100%;
 	}
 }
@@ -26,13 +39,13 @@
 	padding: .3em .6em;
 	display: block;
 	text-transform: uppercase;
-	border: 1px solid hsl(0, 0%, 77%);
+	border: var(--ck-content-page-break-label-border-width) var(--ck-content-page-break-label-border-style) var(--ck-content-page-break-label-border-color);
 	border-radius: 2px;
 	font-size: 0.75em;
 	font-weight: bold;
-	color: hsl(0, 0%, 20%);
-	background: hsl(0, 0%, 100%);
-	box-shadow: 2px 2px 1px hsla(0, 0%, 0%, 0.15);
+	color: var(--ck-content-page-break-label-text-color);
+	background: var(--ck-content-page-break-label-background);
+	box-shadow: 2px 2px 1px var(--ck-content-page-break-label-shadow-color);
 
 	/* Disable the possibility to select the label text by the user. */
 	-webkit-user-select: none;

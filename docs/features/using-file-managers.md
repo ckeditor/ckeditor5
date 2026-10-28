@@ -33,12 +33,11 @@ With CKBox you can:
 
 ## Uploadcare file manager
 
-Uploadcare is a modern file management platform with multiple integrations with services like Dropbox, Facebook, Google Drive, Google Photos and OneDrive.
+Uploadcare is a modern file management platform with multiple integrations with services like Dropbox, Google Drive, Google Photos and OneDrive.
 
 With Uploadcare you can:
 * Upload images directly from:
 	* Dropbox,
-	* Facebook,
 	* Google Drive,
 	* Google Photos,
 	* OneDrive,

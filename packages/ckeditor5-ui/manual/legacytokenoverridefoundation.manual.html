@@ -15,6 +15,7 @@
 				--ck-spacing-standard: 30px !important;
 				--ck-spacing-large: 40px !important;
 				--ck-font-size-tiny: 24px !important;
+				--ck-drop-shadow: 0 0 0 3px orange !important;
 			}
 		</style>
 	</head>
@@ -22,7 +23,7 @@
 		<ck-manual-header>
 			<h1>Legacy foundation token override (backward compatibility)</h1>
 			<p>
-				The page overrides four <em>legacy</em> foundation token names on <code>:root</code>
+				The page overrides five <em>legacy</em> foundation token names on <code>:root</code>
 				(see the <code>&lt;style&gt;</code> in <code>&lt;head&gt;</code>). Components read the
 				new token names, but the override bridges make them honor the legacy names first.
 			</p>
@@ -40,6 +41,11 @@
 					Small UI text is <strong>BIG</strong> — hover a toolbar button; the tooltip text
 					uses <code>--ck-tooltip-text-font-size</code>, which bridges to
 					<code>--ck-font-size-tiny</code>.
+				</li>
+				<li>
+					Open the <strong>Heading</strong> dropdown — its panel has a thick
+					<span style="color:orange;font-weight:bold">ORANGE</span> shadow
+					— <code>--ck-drop-shadow</code> (override-only).
 				</li>
 			</ol>
 			<p>

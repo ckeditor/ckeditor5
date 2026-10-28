@@ -18,6 +18,10 @@ declare global {
 initEditor( '#editor' );
 initEditor( '#editor-scrollable-parent' );
 
+document.querySelector( '#body-position-relative' )!.addEventListener( 'change', evt => {
+	document.body.style.position = ( evt.target as HTMLInputElement ).checked ? 'relative' : '';
+} );
+
 function initEditor( elementId: string ) {
 	ClassicEditor
 		.create( {

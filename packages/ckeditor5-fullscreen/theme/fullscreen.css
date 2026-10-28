@@ -86,7 +86,7 @@ Fullscreen layout:
 	width: 100%;
 	height: 100%;
 	z-index: var(--ck-z-fullscreen);
-	background: var(--ck-color-base-foreground);
+	background: var(--ck-color-surface-subtle);
 	display: flex;
 	flex-direction: column;
 

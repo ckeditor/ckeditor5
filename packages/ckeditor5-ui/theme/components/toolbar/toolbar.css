@@ -19,6 +19,27 @@
 
 	/* Border */
 	--ck-toolbar-border: var(--ck-border-width-surface) solid var(--ck-color-toolbar-border, var(--ck-toolbar-border-color));
+	--ck-toolbar-separator-width: var(--ck-border-width-divider);
+
+	/* Border and radius of the toolbar's own item buttons, in every toolbar (editor, balloon, widget and form toolbars,
+	   and toolbars in dropdown panels, which also inherit a value set on an outer toolbar). Declared `initial`, so the
+	   buttons keep `--ck-button-border` and `--ck-button-border-radius` until set. Lists in dropdown panels are not
+	   affected. An open dropdown or split button in a toolbar uses the radius too, ahead of
+	   `--ck-dropdown-panel-uniform-button-border-radius`. Compact toolbars fall back to `--ck-border-radius-control`
+	   for their outer corners, as before. */
+	--ck-toolbar-button-border: initial;
+	--ck-toolbar-button-border-radius: initial;
+}
+
+/* Set on the item buttons only, not on the containers: dropdown panels are siblings of the dropdown button, so the
+   values do not cascade into the lists opened from the toolbar. A toolbar in a dropdown panel sets them on its own
+   item buttons through the same rule. */
+.ck.ck-toolbar > .ck-toolbar__grouped-dropdown > .ck-button,
+.ck.ck-toolbar > .ck-toolbar__items > .ck-button,
+.ck.ck-toolbar > .ck-toolbar__items > .ck-dropdown > .ck-button,
+.ck.ck-toolbar > .ck-toolbar__items > .ck-dropdown > .ck-splitbutton > .ck-button {
+	--_ck-button-context-border: var(--ck-toolbar-button-border);
+	--_ck-button-context-border-radius: var(--ck-toolbar-button-border-radius);
 }
 
 .ck.ck-toolbar {
@@ -48,8 +69,8 @@
 
 	& .ck.ck-toolbar__separator {
 		height: var(--ck-icon-size);
-		width: 1px;
-		min-width: 1px;
+		width: var(--ck-toolbar-separator-width);
+		min-width: var(--ck-toolbar-separator-width);
 		background: var(--ck-color-divider);
 
 		/*
@@ -120,7 +141,7 @@
 	&.ck-toolbar_compact {
 		/* No spacing around items. */
 		padding: 0;
-		border-radius: var(--ck-border-radius-control);
+		border-radius: var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control));
 
 		& > .ck-toolbar__items > * {
 			/* Compact toolbar items have no spacing between them. */
@@ -214,17 +235,17 @@
 	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
 		/* Round the first child's outer (right) corners to fit the toolbar; inner edge stays square. */
 		&:first-child {
-			border-radius: 0 var(--ck-border-radius-control) var(--ck-border-radius-control) 0;
+			border-radius: 0 var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control)) var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control)) 0;
 		}
 
 		/* Round the last child's outer (left) corners to fit the toolbar; inner edge stays square. */
 		&:last-child {
-			border-radius: var(--ck-border-radius-control) 0 0 var(--ck-border-radius-control);
+			border-radius: var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control)) 0 0 var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control));
 		}
 
 		/* A lone item is both first and last, so it takes both children's outer corners (fully rounded). */
 		&:first-child:last-child {
-			border-radius: var(--ck-border-radius-control);
+			border-radius: var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control));
 		}
 	}
 
@@ -255,17 +276,17 @@
 	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
 		/* Round the first child's outer (left) corners to fit the toolbar; inner edge stays square. */
 		&:first-child {
-			border-radius: var(--ck-border-radius-control) 0 0 var(--ck-border-radius-control);
+			border-radius: var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control)) 0 0 var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control));
 		}
 
 		/* Round the last child's outer (right) corners to fit the toolbar; inner edge stays square. */
 		&:last-child {
-			border-radius: 0 var(--ck-border-radius-control) var(--ck-border-radius-control) 0;
+			border-radius: 0 var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control)) var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control)) 0;
 		}
 
 		/* A lone item is both first and last, so it takes both children's outer corners (fully rounded). */
 		&:first-child:last-child {
-			border-radius: var(--ck-border-radius-control);
+			border-radius: var(--ck-toolbar-button-border-radius, var(--ck-border-radius-control));
 		}
 	}
 

@@ -1,22 +1,65 @@
 ---
 menu-title: Technology upgrades policy
-meta-title: Policy for technology upgrades | CKEditor 5 Documentation
-meta-description: How and when CKEditor 5 is upgrading the core technologies that it is built upon.
+meta-title: Browser compatibility and technology upgrades policy | CKEditor 5 Documentation
+meta-description: Browsers, mobile platforms, and webviews officially supported by CKEditor 5, and how and when CKEditor 5 is upgrading the core technologies that it is built upon.
 category: updating
 order: 50
-modified_at: 2025-12-11
+modified_at: 2026-10-13
 ---
 
-# Technology upgrades policy
+# Technology upgrades policy and browser compatibility
 
-This document describes how CKEditor&nbsp;5 handles upgrades of its core technologies. The goal is to provide a stable, predictable upgrade path for everyone who builds with CKEditor&nbsp;5 or contributes to it.
+This document describes which browsers and environments CKEditor&nbsp;5 officially supports, and how CKEditor&nbsp;5 handles upgrades of its core technologies. The goal is to provide a stable, predictable upgrade path for everyone who builds with CKEditor&nbsp;5 or contributes to it.
 
-It covers the following technical areas:
+It covers the following areas:
 
+* Supported browsers, mobile platforms, and webviews,
 * JavaScript and CSS (browser support),
 * TypeScript,
 * Node.js,
 * Framework integrations (Vue, Angular, React).
+
+## Supported browsers and environments
+
+CKEditor 5 aligns with the "Widely available" category of the [Baseline](https://web.dev/baseline) web platform standard, so it works across a broad range of browsers, mobile platforms, and webviews, including many that are not named here.
+
+The browsers and environments listed below are the ones that CKEditor&nbsp;5 is tested against and officially supported in.
+
+### Desktop browsers
+
+* Chrome (latest stable release)
+* Firefox (latest stable release)
+* Safari (latest stable release)
+* Edge (latest stable release)
+* Opera (latest stable release)
+* Electron (latest stable release)
+
+### Mobile browsers
+
+* Android (all vendor-supported versions)
+* iOS (all vendor-supported versions)
+
+### Webviews
+
+* Android WebView
+* iOS WebView (WKWebView)
+
+### What "supported" means
+
+Official support is narrower than technical compatibility, and the difference matters when you pick a target environment.
+
+The [build target](#javascript-and-css-browser-support) defines the JavaScript and CSS features that CKEditor&nbsp;5 relies on, so the editor may well load in browsers beyond the list above. Loading is not the same as being supported, though: a browser can implement every feature that CKEditor&nbsp;5 uses and still break the editing experience through its own quirks or bugs, for example in selection handling or clipboard behavior.
+
+For the browsers and environments listed above, we test the editor and fix bugs reported against them. Outside that list the editor may work, but reported issues are not guaranteed to be addressed.
+
+### Quality assurance
+
+Support for the environments listed above is backed by an extensive test suite:
+
+* Over 44,000 automated unit and integration tests, executed in a headless browser on every change, with code coverage thresholds enforced in the continuous integration pipeline.
+* Over 800 end-to-end tests, executed against a real browser after every nightly build and again after every release.
+* Manual test scenarios verified automatically in headless browsers, plus memory leak detection on every change, so that regressions in long-running editing sessions are caught early.
+* A manual quality assurance phase before every release, during which the editor is tested by hand in the supported browsers and environments.
 
 ## Our primary goal
 
@@ -71,6 +114,8 @@ The table below summarizes how technology-baseline updates affect three key grou
 	Our primary goal is to provide a robust and modern editing experience. If a conflict arises between modern browser behavior and a bug in an older browser (for example, related to complex features like selection handling), we will prioritize ensuring correct functionality in modern browsers.
 </info-box>
 
+For the list of browsers, mobile platforms, and webviews that CKEditor&nbsp;5 is tested against and supported in, see [Supported browsers and environments](#supported-browsers-and-environments).
+
 ### TypeScript
 
 **Approach:** We will follow the [DefinitelyTyped support window](https://github.com/DefinitelyTyped/DefinitelyTyped?tab=readme-ov-file#support-window). This means the minimum supported TypeScript version will be the oldest version that is less than 2 years old, updated approximately every 6 months.
@@ -79,9 +124,9 @@ The table below summarizes how technology-baseline updates affect three key grou
 
 ### Node.js
 
-**Approach:** We will update the development environment to the [latest Active Long-Term Support (LTS) version of Node.js](https://nodejs.org/en/about/previous-releases) approximately every 6 months. We may update more often if Node releases critical security fixes that impact development or CI environments.
+**Approach:** We will use the [latest Long-Term Support (LTS) version of Node.js](https://nodejs.org/en/about/previous-releases) in the development environment. Node.js publishes one major release per year, so we will upgrade once a year, after the new version enters the LTS phase. We may update more often if Node.js releases critical security fixes that impact development or CI environments.
 
-**Reasoning:** The Node.js community recommends using either Active LTS or Maintenance LTS for production environments. We chose Active LTS because it provides high stability and security of an LTS release while giving us access to more modern features than versions in the older Maintenance LTS phase.
+**Reasoning:** The Node.js community recommends LTS versions for production environments. Under the [Node.js release schedule](https://nodejs.org/en/blog/announcements/evolving-the-nodejs-release-schedule), every major release becomes LTS and stays supported for 30 months, so each version we adopt remains supported well beyond our next upgrade. We intentionally do not target versions in the Current phase, which Node.js reserves for stabilization and which gives library authors time to add support.
 
 ### Framework integrations (Vue, Angular, React)
 

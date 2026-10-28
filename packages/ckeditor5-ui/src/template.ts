@@ -629,6 +629,10 @@ export class Template extends TemplateBase {
 					.reduce( arrayValueReducer, '' );
 
 				if ( !isFalsy( value ) ) {
+					// The attribute names come from the template definition, not from the content. One that requires a
+					// Trusted Type, such as an event handler, is left to the Trusted Types enforcement of the application.
+					// DOM events are handled with the `on` property of the definition instead.
+					// eslint-disable-next-line ckeditor5-rules/require-trusted-types-for-sinks
 					node.setAttributeNS( attrNs, attrName, value );
 				}
 			}
@@ -862,6 +866,8 @@ export class Template extends TemplateBase {
 			if ( attrValue === null ) {
 				element.removeAttribute( attrName );
 			} else {
+				// The attribute names come from the template definition, as in `_renderAttributes()`.
+				// eslint-disable-next-line ckeditor5-rules/require-trusted-types-for-sinks
 				element.setAttribute( attrName, attrValue );
 			}
 		}
@@ -1182,6 +1188,8 @@ function getTextUpdater( node: Node ): Updater {
 function getAttributeUpdater( el: Element, attrName: string, ns: string | null ): Updater {
 	return {
 		set( value ) {
+			// The attribute name comes from the template definition, as in `_renderAttributes()`.
+			// eslint-disable-next-line ckeditor5-rules/require-trusted-types-for-sinks
 			el.setAttributeNS( ns, attrName, value );
 		},
 

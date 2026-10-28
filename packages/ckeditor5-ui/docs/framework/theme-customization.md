@@ -67,6 +67,38 @@ To restyle a single element or region, scope the override to a selector - but **
 
 All tokens are defined and resolved on `:root`, so a scoped override of a lower-layer token does not re-flow up through the chain. The closer a token sits to the property it controls, the better it works when scoped - which makes component tokens the safe choice for per-element tweaks. Legacy token names are an exception: the theme reads them at each point of use, so a legacy override also works when scoped - the {@link updating/migration-to-refreshed-theme migration guide} covers the few re-themed tokens that stay `:root`-only.
 
+### Toolbar buttons
+
+To restyle the buttons of every toolbar without touching other buttons, use the toolbar button tokens. They apply to the buttons of the editor toolbar, balloon and widget toolbars, compact toolbars in forms (for example the alignment toolbar in table properties), and toolbars in dropdowns:
+
+```css
+:root {
+	--ck-toolbar-button-border: 1px solid hsl(0, 0%, 0%);
+	--ck-toolbar-button-border-radius: 0;
+}
+```
+
+Scope them to one toolbar to restyle only its buttons:
+
+```css
+.ck-editor__top .ck-toolbar {
+	--ck-toolbar-button-border: 1px solid hsl(0, 0%, 0%);
+}
+```
+
+A scoped override also reaches the toolbars in dropdown panels opened from that toolbar, for example the alignment toolbar or the "Show more items" toolbar, because they are toolbars too. Lists in dropdown panels keep their regular button styles. To give the toolbars in dropdown panels the regular button styles, unset the tokens there. This also drops any value you set for the toolbar tokens on `:root`:
+
+```css
+.ck-editor__top .ck-dropdown__panel .ck-toolbar {
+	--ck-toolbar-button-border: initial;
+	--ck-toolbar-button-border-radius: initial;
+}
+```
+
+Until you set them, toolbar buttons use `--ck-button-border` and `--ck-button-border-radius`. The outer corners of compact toolbars, for example in table properties, use `--ck-border-radius-control`.
+
+An open dropdown or split button in a toolbar also uses `--ck-toolbar-button-border-radius`, ahead of `--ck-dropdown-panel-uniform-button-border-radius`. If you set both, for example `--ck-dropdown-panel-uniform-button-border-radius: initial` to keep the attached-corner look, the toolbar button radius wins for open dropdowns in toolbars. The vertical toolbar keeps its own `--ck-toolbar-vertical-button-border-radius`.
+
 ### Best practices
 
 * Override the **closest** token to what you want to change; drop to a lower layer only when the change should reach further.
@@ -113,6 +145,9 @@ Assuming you finished our {@link getting-started/integrations-cdn/quick-start qu
 	--ck-color-surface-control: var(--app-surface-1);
 	--ck-color-surface-container: var(--app-surface-1);
 	--ck-color-surface-inverse: hsl(252, 7%, 14%);
+	--ck-color-surface-subtle: var(--app-surface-2);
+	--ck-color-surface-skeleton: var(--app-surface-2);
+	--ck-color-surface-skeleton-highlight: var(--app-surface-3);
 
 	--ck-color-border-control: var(--app-surface-3);
 	--ck-color-border-container: var(--app-surface-3);
@@ -122,6 +157,7 @@ Assuming you finished our {@link getting-started/integrations-cdn/quick-start qu
 	--ck-color-text-secondary: hsl(0, 0%, 86%);
 	--ck-color-text-disabled: var(--app-text-2);
 	--ck-color-text-inverse: var(--app-brand-contrast);
+	--ck-color-text-placeholder: var(--app-text-2);
 
 	--ck-color-interactive-focus-border-coordinates: var(--app-focus-hsl);
 	--ck-color-interactive-focus-shadow: hsla(208, 90%, 62%, .4);
@@ -129,9 +165,10 @@ Assuming you finished our {@link getting-started/integrations-cdn/quick-start qu
 	--ck-color-interactive-active-surface: hsl(255, 4%, 14%);
 	--ck-color-interactive-selected-surface: hsl(208, 40%, 20%);
 	--ck-color-interactive-selected-surface-hover: hsl(208, 42%, 24%);
-	--ck-color-interactive-selected-text: hsl(205, 100%, 74%);
+	--ck-color-text-accent: hsl(205, 100%, 74%);
 	--ck-color-interactive-primary-surface: var(--app-brand);
 	--ck-color-interactive-primary-surface-hover: var(--app-brand-hover);
+	--ck-color-interactive-primary-surface-muted: var(--ck-color-interactive-selected-surface);
 	--ck-color-interactive-primary-text: var(--app-brand-contrast);
 
 	--ck-border-radius-control: 6px;
@@ -157,9 +194,9 @@ Assuming you finished our {@link getting-started/integrations-cdn/quick-start qu
 
 	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
 	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
-	--ck-color-widget-blurred-border: hsl(0, 0%, 87%);
-	--ck-color-widget-hover-border: hsl(43, 100%, 68%);
-	--ck-color-widget-editable-focus-background: hsl(0, 0%, 100%);
+	--ck-widget-blurred-border-color: hsl(0, 0%, 87%);
+	--ck-widget-hover-border-color: hsl(43, 100%, 68%);
+	--ck-widget-editable-focus-background-color: hsl(0, 0%, 100%);
 	--ck-color-link-default: hsl(190, 100%, 75%);
 }
 

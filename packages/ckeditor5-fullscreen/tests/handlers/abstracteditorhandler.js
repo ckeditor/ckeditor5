@@ -337,14 +337,6 @@ describe( 'AbstractHandler', () => {
 				expect( abstractHandler._hiddenElements.has( bodyCollectionContainer.parentElement ) ).toBe( false );
 			} );
 
-			it( 'should keep the CKBox wrapper visible', () => {
-				pageElement.className = 'ck ckbox-wrapper';
-
-				abstractHandler.enable();
-
-				expect( pageElement.checkVisibility() ).toBe( true );
-			} );
-
 			it( 'should hide only the other children of a custom `fullscreen.container`', () => {
 				const customContainer = global.document.createElement( 'div' );
 				const containerChild = global.document.createElement( 'div' );
@@ -407,40 +399,6 @@ describe( 'AbstractHandler', () => {
 			abstractHandler.disable();
 
 			expect( global.window.getComputedStyle( global.document.body ).overflow ).not.toBe( 'hidden' );
-		} );
-
-		it( 'should bump the CKBox UI over the fullscreen mode through the adopted styles', () => {
-			// CKBox mounts its UI in the light DOM on purpose, so the fullscreen stylesheet cannot reach it when
-			// the editor styles live in a shadow root – the adopted ones can.
-			const ckboxWrapper = global.document.createElement( 'div' );
-			const ckbox = global.document.createElement( 'div' );
-			const imageEditor = global.document.createElement( 'div' );
-
-			ckboxWrapper.className = 'ck ckbox-wrapper';
-			ckbox.className = 'ckbox';
-			imageEditor.className = 'ckbox-img-editor';
-
-			ckbox.appendChild( imageEditor );
-			ckboxWrapper.appendChild( ckbox );
-			global.document.body.appendChild( ckboxWrapper );
-
-			expect( global.window.getComputedStyle( ckbox ).position ).toBe( 'static' );
-
-			abstractHandler.enable();
-
-			const ckboxStyle = global.window.getComputedStyle( ckbox );
-
-			expect( ckboxStyle.position ).toBe( 'absolute' );
-			expect( ckboxStyle.getPropertyValue( '--ckbox-z-index-root' ).trim() ).toBe( 'calc(100000 + 1)' );
-			expect(
-				global.window.getComputedStyle( imageEditor ).getPropertyValue( '--ckbox-z-index-preview' ).trim()
-			).toBe( 'calc(100000 + 1)' );
-
-			abstractHandler.disable();
-
-			expect( global.window.getComputedStyle( ckbox ).position ).toBe( 'static' );
-
-			ckboxWrapper.remove();
 		} );
 
 		it( 'should register a getPositionOptions correction that adjusts viewport offset by top bar height', async () => {

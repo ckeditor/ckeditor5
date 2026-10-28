@@ -19,7 +19,7 @@ setup: true
 parameters:
   chromeVersion:
     type: string
-    default: "154.0.8037.57"
+    default: "156.0.8078.47"
   isLtsPipeline:
     type: boolean
     default: false
@@ -50,17 +50,14 @@ commands:
 jobs:
   generate_configuration:
     docker:
-      - image: cimg/node:24.11.0
+      - image: cimg/node:26.10.0
     resource_class: medium
     steps:
       - checkout_command
       - install_ssh_keys_command
       - run:
-          name: Disable Corepack
-          command: sudo corepack disable
-      - run:
           name: Install pnpm
-          command: sudo npm i -g pnpm@^11
+          command: sudo npm i -g pnpm@12.8.2
       - restore_cache:
           name: Restore pnpm store cache
           keys:

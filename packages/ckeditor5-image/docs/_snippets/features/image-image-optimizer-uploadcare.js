@@ -45,7 +45,6 @@ ImageOptimizerEditor
 					'url',
 					'dropbox',
 					'gdrive',
-					'facebook',
 					'gphotos',
 					'onedrive'
 				]

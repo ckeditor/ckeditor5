@@ -16,7 +16,7 @@ classes: focus-tracking
 
 Every time you click a text field or an editor, it automatically prepares to accept your text. It is no longer just a static container for letters but something you can interact with using your keyboard. And you know it because you can see the familiar blinking caret somewhere inside of it. This subtle action called a **focus change** takes place hundreds of times every day as you navigate web pages, type your search queries, chat with your friends and fill in checkout forms when online shopping.
 
-{@img assets/img/framework-deep-dive-focus-form-example.gif 578 The animation shows the focus moving from one field to another when filling in the form.}
+{@img assets/img/framework-deep-dive-focus-form-example.gif The animation shows the focus moving from one field to another when filling in the form.}
 
 Focusing text fields feels so natural we usually do not give it much thought. But without this simple action, there would be no way to type text. Where would it go if there was no focused field? Focus informs the software about your intentions and it is synonymous with the **context**.
 
@@ -24,7 +24,7 @@ Focusing text fields feels so natural we usually do not give it much thought. Bu
 
 CKEditor is more than a simple text field. Yes, it has the main space where you type your text but other places also allow you to type, for instance, a link URL field or a form with plenty of inputs allowing you to configure the look of a table.
 
-{@img assets/img/framework-deep-dive-focus-link-blinking-caret.gif 606 The animation showing the focused link URL input in CKEditor&nbsp;5 with a blinking caret.}
+{@img assets/img/framework-deep-dive-focus-link-blinking-caret.gif The animation showing the focused link URL input in CKEditor&nbsp;5 with a blinking caret.}
 
 And when many places accept focus, there must be some systems out there to discover and manage it. These systems work, for instance, so you will not find yourself in a situation where CKEditor&nbsp;5 loses focus (or gets **blurred**) and you cannot type your text. Or they make sure you can see and use the editor toolbar as long as you keep editing. These are just a few examples of why focus management systems are necessary. Now it should also be clear that they are essential for the editing experience.
 
@@ -107,11 +107,11 @@ These users not only write text using the keyboard but also use it to navigate a
 
 Focus management lives next to the {@link framework/architecture/ui-library#view-collections-and-the-ui-tree user interface element tree} and its architecture is also based on components that respond to user actions within its boundaries and their children. Take a look at a common keyboard navigation scenario in a {@link examples/builds/classic-editor classic editor} instance:
 
-{@img assets/img/framework-deep-dive-focus-toolbar-nav.gif 950 The animation showing the focus moving as the user navigates to the heading drop–down in the toolbar.}
+{@img assets/img/framework-deep-dive-focus-toolbar-nav.gif The animation showing the focus moving as the user navigates to the heading drop–down in the toolbar.}
 
 Here are the focus layers that play a role in the navigation and a brief overview of what happens at each layer:
 
-{@img assets/img/framework-deep-dive-focus-toolbar-nav-layers.png 1019 The image showing the focus layers used during navigation.}
+{@img assets/img/framework-deep-dive-focus-toolbar-nav-layers.gif The animation showing the focus layers used during navigation.}
 
 1. The root of the focus tree is the {@link module:editor-classic/classiceditorui~ClassicEditorUI} class. It creates a [global focus tracker](#a-note-about-the-global-focus-tracker) for the entire editor (you can access it via {@link module:ui/editorui/editorui~EditorUI#focusTracker `editor.ui.focusTracker`}).
 2. When editing text, you can hit the <kbd>Alt</kbd>+<kbd>F10</kbd> keystroke to focus the main editor toolbar, which is the second focus layer.
@@ -647,7 +647,7 @@ ClassicEditor
 
 Now you can use the keyboard arrows to cycle the focused list items:
 
-{@img assets/img/framework-deep-dive-focus-focus-cycling.gif 950 The animation showing the focus cycling across the list items.}
+{@img assets/img/framework-deep-dive-focus-focus-cycling.gif The animation showing the focus cycling across the list items.}
 
 ## Focus state analysis
 
@@ -657,7 +657,7 @@ This section contains an analysis of a common focus navigation scenario in an {@
 
 Take a look at the following scenario where both mouse and keyboard are used to navigate the interface of the editor:
 
-{@img assets/img/framework-deep-dive-focus-inline-scenario.gif 758 The animation showing the focus navigation across the inline editor UI.}
+{@img assets/img/framework-deep-dive-focus-inline-scenario.gif The animation showing the focus navigation across the inline editor UI.}
 
 And here are the steps of the scenario:
 

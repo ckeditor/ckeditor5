@@ -35,7 +35,7 @@ ClassicEditor
 	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableScroll, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
+		toolbar: [ 'insertTable', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

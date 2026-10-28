@@ -32,6 +32,9 @@
 	--ck-color-surface-control: var(--app-surface-1);
 	--ck-color-surface-container: var(--app-surface-1);
 	--ck-color-surface-inverse: hsl(252, 7%, 14%);
+	--ck-color-surface-subtle: var(--app-surface-2);
+	--ck-color-surface-skeleton: var(--app-surface-2);
+	--ck-color-surface-skeleton-highlight: var(--app-surface-3);
 
 	--ck-color-border-control: var(--app-surface-3);
 	--ck-color-border-container: var(--app-surface-3);
@@ -41,6 +44,7 @@
 	--ck-color-text-secondary: hsl(0, 0%, 86%);
 	--ck-color-text-disabled: var(--app-text-2);
 	--ck-color-text-inverse: var(--app-brand-contrast);
+	--ck-color-text-placeholder: var(--app-text-2);
 
 	--ck-color-interactive-focus-border-coordinates: var(--app-focus-hsl);
 	--ck-color-interactive-focus-shadow: hsla(208, 90%, 62%, .4);
@@ -48,9 +52,10 @@
 	--ck-color-interactive-active-surface: hsl(255, 4%, 14%);
 	--ck-color-interactive-selected-surface: hsl(208, 40%, 20%);
 	--ck-color-interactive-selected-surface-hover: hsl(208, 42%, 24%);
-	--ck-color-interactive-selected-text: hsl(205, 100%, 74%);
+	--ck-color-text-accent: hsl(205, 100%, 74%);
 	--ck-color-interactive-primary-surface: var(--app-brand);
 	--ck-color-interactive-primary-surface-hover: var(--app-brand-hover);
+	--ck-color-interactive-primary-surface-muted: var(--ck-color-interactive-selected-surface);
 	--ck-color-interactive-primary-text: var(--app-brand-contrast);
 
 	/* -----------------------------------------------------------------
@@ -72,9 +77,9 @@
 
 	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
 	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
-	--ck-color-widget-blurred-border: hsl(0, 0%, 87%);
-	--ck-color-widget-hover-border: hsl(43, 100%, 68%);
-	--ck-color-widget-editable-focus-background: hsl(0, 0%, 100%);
+	--ck-widget-blurred-border-color: hsl(0, 0%, 87%);
+	--ck-widget-hover-border-color: hsl(43, 100%, 68%);
+	--ck-widget-editable-focus-background-color: hsl(0, 0%, 100%);
 	--ck-color-link-default: hsl(190, 100%, 75%);
 }
 

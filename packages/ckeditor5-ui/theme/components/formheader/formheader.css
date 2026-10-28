@@ -24,12 +24,20 @@
 
 	/* Typography */
 	--ck-form-header-label-font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
+
+	/* Color */
+	/* Read through the `background` shorthand, so a gradient or pattern works too. */
+	--ck-form-header-background: transparent;
+	/* Declared `initial` and read with `--ck-color-text` as the fallback, the color the label had before, so overrides
+	   of `--ck-color-text` keep reaching the label. */
+	--ck-form-header-text-color: initial;
 }
 
 .ck.ck-form__header {
 	padding: var(--ck-form-header-padding);
 	height: var(--ck-form-header-height);
 	border-bottom: var(--ck-border-divider);
+	background: var(--ck-form-header-background);
 	/* To prevent shrinking when placed in flexbox. */
 	flex-shrink: 0;
 	display: flex;
@@ -46,6 +54,7 @@
 	& .ck-form__header__label {
 		--ck-font-size-base: var(--ck-form-header-label-font-size);
 		font-weight: var(--ck-font-weight-ui-heading);
+		color: var(--ck-form-header-text-color, var(--ck-color-text));
 	}
 
 	/* Padding when back button is visible */

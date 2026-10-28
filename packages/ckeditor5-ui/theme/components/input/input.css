@@ -22,7 +22,7 @@
 	--ck-input-border-color: var(--ck-color-border-control);
 	--ck-input-error-border-color: var(--ck-color-feedback-error);
 	--ck-input-text-color: var(--ck-color-text-primary);
-	--ck-input-disabled-background-color: hsl(0 0% 95%);
+	--ck-input-disabled-background-color: var(--ck-color-interactive-disabled-surface);
 	--ck-input-disabled-border-color: var(--ck-color-border-control);
 	--ck-input-disabled-text-color: var(--ck-color-text-disabled);
 
@@ -34,6 +34,10 @@
 
 	/* Compatibility */
 	--ck-input-text-width: var(--ck-input-width);
+
+	/* Small variant (opt in with .ck-input_small). */
+	--ck-input-min-height-small: calc(1.75 * var(--ck-font-size-normal, var(--ck-font-size-base)));
+	--ck-input-padding-small: var(--ck-spacing-padding-tight) var(--ck-spacing-padding-snug);
 }
 
 .ck.ck-input {
@@ -44,6 +48,11 @@
 	min-width: var(--ck-input-width);
 	color: var(--ck-color-input-text, var(--ck-input-text-color));
 	font-size: var(--ck-input-font-size);
+
+	/* `<input>` and `<textarea>` do not inherit the font family, so set it explicitly. Inside the `.ck-reset_all`
+	   scope this matches the reset; elsewhere the field would use the browser default.
+	   Backward compatibility: falls back to legacy --ck-font-face if overridden. */
+	font-family: var(--ck-font-face, var(--ck-font-family));
 
 	/* This is important to stay of the same height as surrounding buttons */
 	min-height: var(--ck-size-control-min-height);
@@ -83,6 +92,12 @@
 		&:focus {
 			box-shadow: var(--ck-focus-error-outer-shadow, var(--ck-interactive-focus-error-shadow)), 0 0;
 		}
+	}
+
+	&.ck-input_small {
+		--ck-input-padding: var(--ck-input-padding-small);
+
+		min-height: var(--ck-input-min-height-small);
 	}
 }
 

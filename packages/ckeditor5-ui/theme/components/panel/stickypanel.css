@@ -12,7 +12,8 @@
 
 .ck.ck-sticky-panel {
 	& .ck-sticky-panel__content_sticky {
-		box-shadow: var(--ck-shadow-surface-floating), 0 0;
+		/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+		box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 
 		border-width: 0 var(--ck-border-width-surface) var(--ck-border-width-surface);
 		border-radius: var(--ck-sticky-panel-uniform-border-radius, var(--ck-border-radius-surface-attached-top));

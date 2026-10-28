@@ -3,6 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* The width of the label in the heading dropdown button, and the minimum width of the items in its list. */
+	--ck-heading-dropdown-label-width: 8em;
+	--ck-heading-dropdown-list-item-min-width: 18em;
+}
+
 .ck.ck-heading_heading1 .ck-button__label {
 	font-size: 20px;
 }
@@ -21,10 +28,10 @@
 
 .ck.ck-dropdown.ck-heading-dropdown {
 	& .ck-dropdown__button .ck-button__label {
-		width: 8em;
+		width: var(--ck-heading-dropdown-label-width);
 	}
 
 	& .ck-dropdown__panel .ck-list__item {
-		min-width: 18em;
+		min-width: var(--ck-heading-dropdown-list-item-min-width);
 	}
 }

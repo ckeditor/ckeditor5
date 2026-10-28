@@ -26,7 +26,8 @@
 
 .ck.ck-balloon-panel {
 	border-radius: var(--ck-balloon-panel-border-radius);
-	box-shadow: var(--ck-shadow-surface-floating), 0 0;
+	/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+	box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 
 	min-height: 15px;
 

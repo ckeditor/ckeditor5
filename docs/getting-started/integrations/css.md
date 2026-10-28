@@ -124,7 +124,7 @@ Use the following CSS to address the issues with the `z-index` and selector spec
 }
 
 .ck input.ck-input.ck-input-text:focus {
-	border: var(--ck-focus-ring);
+	border-color: var(--ck-input-focus-border-color);
 	box-shadow: var(--ck-interactive-focus-shadow),var(--ck-inset-shadow-sm);
 }
 ```
@@ -137,12 +137,12 @@ Use the following CSS to address the issues with the `z-index` and selector spec
  */
 .ck.ck-content ul,
 .ck.ck-content ul li {
-  list-style-type: inherit;
+	list-style-type: inherit;
 }
 
 .ck.ck-content ul {
-  /* Default user agent style sheet. You can change it to your needs. */
-  padding-left: 40px;
+	/* Default user agent style sheet. You can change it to your needs. */
+	padding-left: 40px;
 }
 ```
 
