@@ -17,8 +17,11 @@
 	--ck-widget-type-around-button-radar-end-alpha: .3;
 	--ck-widget-type-around-button-icon-color: var(--ck-color-text-inverse);
 
-	/* Dedicated icon color for the blurred-editor state, so it can be themed independently of the widget outline. */
-	--ck-widget-type-around-button-blurred-icon-color: var(--ck-color-widget-blurred-border, color-mix(in srgb, var(--ck-color-text-secondary) 60%, transparent));
+	/*
+	 * Dedicated icon color for the blurred-editor state. It intentionally does not follow the widget outline color
+	 * (which also paints the button background), so the arrow stays visible on the button.
+	 */
+	--ck-widget-type-around-button-blurred-icon-color: color-mix(in srgb, var(--ck-color-text-secondary) 60%, transparent);
 }
 
 .ck .ck-widget {
