@@ -21,7 +21,7 @@
 	background: var(--ck-menu-bar-background, var(--ck-color-surface-canvas));
 	padding: var(--ck-menu-bar-padding);
 	gap: var(--ck-menu-bar-gap);
-	border: var(--ck-toolbar-border);
+	border: var(--ck-toolbar-border, var(--ck-border-width-surface) solid var(--ck-color-toolbar-border, var(--ck-toolbar-border-color)));
 	width: 100%;
 
 	/* Decoupled from inherited font-size so changes don't scale icons or spacing. */

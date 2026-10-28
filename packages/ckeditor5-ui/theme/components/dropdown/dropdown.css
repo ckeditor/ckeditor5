@@ -27,7 +27,8 @@
 	--ck-dropdown-list-background-color: transparent;
 
 	/* Border */
-	--ck-dropdown-panel-border: var(--ck-border-width-surface) solid var(--ck-color-dropdown-panel-border, var(--ck-dropdown-panel-border-color));
+	/* Override-only: the border is composed at the point of use, so a legacy color or a part set on a narrower selector applies. */
+	--ck-dropdown-panel-border: initial;
 }
 
 .ck.ck-dropdown {
@@ -196,7 +197,7 @@
 	padding: var(--ck-dropdown-panel-padding);
 
 	background: var(--ck-color-dropdown-panel-background, var(--ck-dropdown-panel-background-color));
-	border: var(--ck-dropdown-panel-border);
+	border: var(--ck-dropdown-panel-border, var(--ck-border-width-surface) solid var(--ck-color-dropdown-panel-border, var(--ck-dropdown-panel-border-color)));
 	bottom: 0;
 
 	/* Make sure the panel is at least as wide as the drop-down's button. */

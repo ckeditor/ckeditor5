@@ -14,82 +14,92 @@
 	--app-brand: hsl(168, 76%, 42%);
 	--app-brand-hover: hsl(168, 76%, 38%);
 	--app-brand-contrast: hsl(0, 0%, 100%);
+	--app-selected: hsl(208, 40%, 20%);
+	--app-selected-hover: hsl(208, 42%, 24%);
 
 	/* -----------------------------------------------------------------
 	 * 1) FOUNDATION TOKENS
+	 * The palette. Most semantic roles derive from it, so setting it
+	 * restyles surfaces, borders, text, and interactive states at once.
 	 * ----------------------------------------------------------------- */
 	--ck-color-base-background: var(--app-surface-1);
+	--ck-color-base-foreground: var(--app-surface-2);
 	--ck-color-base-border: var(--app-surface-3);
+	--ck-color-base-border-light: var(--app-surface-3);
 	--ck-color-base-text: var(--app-text-1);
+	--ck-color-base-hover: var(--app-surface-2);
+	--ck-color-base-hover-strong: var(--app-surface-3);
+	--ck-color-base-selected: var(--app-selected);
+	--ck-color-base-selected-hover: var(--app-selected-hover);
 	--ck-color-base-action: var(--app-brand);
+	--ck-color-base-action-hover: var(--app-brand-hover);
+	--ck-color-base-action-muted: var(--app-selected);
+	--ck-color-base-action-disabled: hsl(168, 30%, 30%);
 	--ck-color-base-error: hsl(10, 90%, 62%);
-	--ck-focus-border-color: hsl(var(--app-focus-hsl));
+	--ck-color-base-error-shadow: hsla(10, 90%, 62%, .3);
+	--ck-color-base-focus: hsl(var(--app-focus-hsl));
+	--ck-color-base-focus-shadow: hsla(var(--app-focus-hsl), .4);
 
 	/* -----------------------------------------------------------------
 	 * 2) SEMANTIC TOKENS
+	 * Override a role directly when it should differ from the palette,
+	 * or when its default is not derived from the palette.
 	 * ----------------------------------------------------------------- */
-	--ck-color-surface-canvas: var(--app-surface-1);
-	--ck-color-surface-control: var(--app-surface-1);
-	--ck-color-surface-container: var(--app-surface-1);
+
+	/* Tooltips and text on filled buttons. The defaults derive from
+	   the text and background colors, which are inverted here. */
 	--ck-color-surface-inverse: hsl(252, 7%, 14%);
-	--ck-color-surface-subtle: var(--app-surface-2);
-	--ck-color-surface-skeleton: var(--app-surface-2);
-	--ck-color-surface-skeleton-highlight: var(--app-surface-3);
+	--ck-color-text-inverse: var(--app-brand-contrast);
 
-	--ck-color-border-control: var(--app-surface-3);
-	--ck-color-border-container: var(--app-surface-3);
-	--ck-color-divider: var(--app-surface-3);
-
-	--ck-color-text-primary: var(--app-text-1);
+	/* Secondary text, set on the role: some labels with white text
+	   use the foundation `--ck-color-base-text-light` as their background. */
 	--ck-color-text-secondary: hsl(0, 0%, 86%);
 	--ck-color-text-disabled: var(--app-text-2);
-	--ck-color-text-inverse: var(--app-brand-contrast);
-	--ck-color-text-placeholder: var(--app-text-2);
 
-	--ck-color-interactive-focus-border-coordinates: var(--app-focus-hsl);
-	--ck-color-interactive-focus-shadow: hsla(208, 90%, 62%, .4);
-	--ck-color-interactive-hover-surface: var(--app-surface-2);
-	--ck-color-interactive-active-surface: hsl(255, 4%, 14%);
-	--ck-color-interactive-selected-surface: hsl(208, 40%, 20%);
-	--ck-color-interactive-selected-surface-hover: hsl(208, 42%, 24%);
+	/* Accent text on the dark canvas: lighter than the brand fill. */
 	--ck-color-text-accent: hsl(205, 100%, 74%);
-	--ck-color-interactive-primary-surface: var(--app-brand);
-	--ck-color-interactive-primary-surface-hover: var(--app-brand-hover);
-	--ck-color-interactive-primary-surface-muted: var(--ck-color-interactive-selected-surface);
-	--ck-color-interactive-primary-text: var(--app-brand-contrast);
+
+	/* Pressed state: darker than the palette hover. */
+	--ck-color-interactive-active-surface: hsl(255, 4%, 14%);
+
+	/* Roles with fixed defaults that do not derive from the palette. */
+	--ck-color-text-placeholder: var(--app-text-2);
+	--ck-color-surface-skeleton: var(--app-surface-2);
+	--ck-color-surface-skeleton-highlight: var(--app-surface-3);
+	--ck-color-interactive-disabled-surface: hsl(255, 4%, 21%);
+	--ck-color-interactive-focus-border-coordinates: var(--app-focus-hsl);
 
 	/* -----------------------------------------------------------------
 	 * 3) COMPONENT TOKENS
+	 * Restyle a single component.
 	 * ----------------------------------------------------------------- */
-	--ck-button-border-radius: var(--ck-border-radius-control);
-	--ck-input-border-radius: var(--ck-border-radius-control);
-	--ck-input-disabled-background-color: hsl(255, 4%, 21%);
-	--ck-toolbar-border-radius: var(--ck-border-radius-surface);
-	--ck-dialog-border-radius: var(--ck-border-radius-surface);
-	--ck-dialog-background-color: var(--app-surface-1);
-	--ck-dialog-drop-shadow: 0 10px 24px 2px hsla(0, 0%, 0%, .35);
+	--ck-dialog-shadow: 0 10px 24px 2px hsla(0, 0%, 0%, .35);
+	--ck-widget-hover-border-color: hsl(43, 100%, 68%);
+
+	/* The link preview in the link balloon. A legacy name, and its only override point. */
+	--ck-color-link-default: hsl(190, 100%, 75%);
 }
 
 /* Optional: feature-specific content tokens (outside @ckeditor/ckeditor5-ui theme layers). */
 :root {
-	/* Editable (and published) content text — light on the dark background. */
+	/* Editable (and published) content text - light on the dark background. */
 	--ck-content-font-color: var(--app-text-1);
 
-	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
-	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
-	--ck-widget-blurred-border-color: hsl(0, 0%, 87%);
-	--ck-widget-hover-border-color: hsl(43, 100%, 68%);
-	--ck-widget-editable-focus-background-color: hsl(0, 0%, 100%);
-	--ck-color-link-default: hsl(190, 100%, 75%);
+	--ck-content-image-caption-background-color: var(--app-surface-2);
+	--ck-content-image-caption-text-color: var(--app-text-2);
+
+	--ck-content-block-quote-border-color: var(--app-surface-3);
+
+	--ck-content-code-block-background: var(--app-surface-2);
+	--ck-content-code-block-text-color: hsl(0, 0%, 91%);
+	--ck-content-code-block-border-color: var(--app-surface-3);
+
+	--ck-content-table-border-color: var(--app-surface-3);
+	--ck-content-table-cell-border-color: var(--app-surface-3);
+	--ck-content-table-header-background: var(--app-surface-2);
 }
 
 /* Improve displaying links. */
 .ck.ck-editor__editable a {
 	color: hsl(210, 100%, 63%);
-}
-
-/* Improve displaying code blocks. */
-.ck-content pre {
-	color: hsl(0, 0%, 91%);
-	border-color: hsl(0, 0%, 77%);
 }

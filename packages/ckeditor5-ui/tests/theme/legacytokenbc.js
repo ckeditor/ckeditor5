@@ -192,5 +192,68 @@ describe( 'legacy token backward-compatibility bridges', () => {
 
 			expect( background( panel ) ).to.equal( 'rgb(1, 2, 3)' );
 		} );
+
+		// The border shorthands are override-only and composed at the point of use, so a legacy border color
+		// set on a wrapper reaches the component inside it, as it did in v48. A shorthand composed on `:root`
+		// would resolve the legacy color there and ignore the scoped override.
+		const SCOPED_BORDERS = [
+			{ legacy: '--ck-color-input-border', part: '--ck-input-border-color', className: 'ck ck-input' },
+			{ legacy: '--ck-color-dropdown-panel-border', part: '--ck-dropdown-panel-border-color', className: 'ck ck-dropdown__panel' },
+			{ legacy: '--ck-color-panel-border', part: '--ck-balloon-panel-border-color', className: 'ck ck-balloon-panel' },
+			{ legacy: '--ck-color-toolbar-border', part: '--ck-toolbar-border-color', className: 'ck ck-toolbar' }
+		];
+
+		function probeInScope( className, tokens ) {
+			const scope = document.createElement( 'div' );
+
+			for ( const [ token, value ] of Object.entries( tokens ) ) {
+				scope.style.setProperty( token, value );
+			}
+
+			const element = probe( className );
+
+			scope.appendChild( element );
+			document.body.appendChild( scope );
+			appended.push( scope );
+
+			return element;
+		}
+
+		const borderColor = element => window.getComputedStyle( element ).borderTopColor;
+
+		for ( const { legacy, part, className } of SCOPED_BORDERS ) {
+			it( `applies a scoped legacy override of ${ legacy } to the border`, () => {
+				const element = probeInScope( className, { [ legacy ]: 'rgb(4, 5, 6)' } );
+
+				expect( borderColor( element ) ).to.equal( 'rgb(4, 5, 6)' );
+			} );
+
+			it( `applies a scoped override of ${ part } to the border`, () => {
+				const element = probeInScope( className, { [ part ]: 'rgb(7, 8, 9)' } );
+
+				expect( borderColor( element ) ).to.equal( 'rgb(7, 8, 9)' );
+			} );
+		}
+
+		it( 'applies a scoped legacy override of --ck-color-dropdown-panel-border to the autocomplete results border', () => {
+			const autocomplete = probeInScope( 'ck ck-autocomplete', { '--ck-color-dropdown-panel-border': 'rgb(4, 5, 6)' } );
+			const results = document.createElement( 'div' );
+
+			results.className = 'ck-search__results';
+			autocomplete.appendChild( results );
+
+			expect( borderColor( results ) ).to.equal( 'rgb(4, 5, 6)' );
+		} );
+
+		it( 'lets a scoped border shorthand win over a scoped legacy border color', () => {
+			// Components that re-define the shorthand in their own scope, such as the tooltip, keep their border.
+			const input = probeInScope( 'ck ck-input', {
+				'--ck-color-input-border': 'rgb(4, 5, 6)',
+				'--ck-input-border': '3px solid rgb(10, 11, 12)'
+			} );
+
+			expect( borderColor( input ) ).to.equal( 'rgb(10, 11, 12)' );
+			expect( window.getComputedStyle( input ).borderTopWidth ).to.equal( '3px' );
+		} );
 	} );
 } );

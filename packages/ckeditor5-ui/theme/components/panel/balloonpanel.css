@@ -9,7 +9,8 @@
 	--ck-balloon-panel-border-radius: var(--ck-border-radius-surface);
 
 	/* Border */
-	--ck-balloon-panel-border: var(--ck-balloon-border-width, var(--ck-border-width-surface)) solid var(--ck-color-panel-border, var(--ck-balloon-panel-border-color));
+	/* Override-only: the border is composed at the point of use, so a legacy color or a part set on a narrower selector applies. */
+	--ck-balloon-panel-border: initial;
 
 	/* Color */
 	--ck-balloon-panel-background-color: var(--ck-color-surface-container);
@@ -32,7 +33,7 @@
 	min-height: 15px;
 
 	background: var(--ck-color-panel-background, var(--ck-balloon-panel-background-color));
-	border: var(--ck-balloon-panel-border);
+	border: var(--ck-balloon-panel-border, var(--ck-balloon-border-width, var(--ck-border-width-surface)) solid var(--ck-color-panel-border, var(--ck-balloon-panel-border-color)));
 	display: none;
 	position: absolute;
 

@@ -31,15 +31,16 @@
 		--app-foreground: hsl(255, 3%, 18%);
 		--app-border: hsl(300, 1%, 22%);
 		--app-white: hsl(0, 0%, 100%);
+		--app-focus: hsl(208, 90%, 62%);
 
-		/* Border shorthands, such as `--ck-input-border`, are composed on `:root`, so border colors
-		   set here do not reach them. The shorthands are recomposed below to use these colors. */
+		/* The focus border colors of buttons, inputs, and the editing area are derived on `:root` too,
+		   so `--ck-color-focus-border` set here does not reach them. They are set on each component below. */
 
 		/* -- Overrides generic colors. ------------------------------------------------------------- */
 
-		--ck-color-base-foreground: var(--app-background);
+		--ck-color-surface-subtle: var(--app-background);
 		--ck-color-base-background: hsl(0, 0%, 91%);
-		--ck-color-focus-border: hsl(208, 90%, 62%);
+		--ck-color-focus-border: var(--app-focus);
 		--ck-color-text: hsl(0, 0%, 98%);
 		--ck-color-shadow-drop: hsla(0, 0%, 0%, 0.2);
 
@@ -61,6 +62,8 @@
 		--ck-button-action-disabled-background-color: hsl(168, 76%, 42%);
 		--ck-button-action-text-color: var(--app-white);
 
+		--ck-button-focus-border-color: var(--app-focus);
+
 		--ck-button-save-color: hsl(120, 100%, 46%);
 		--ck-button-cancel-color: hsl(15, 100%, 56%);
 
@@ -68,7 +71,6 @@
 
 		--ck-dropdown-panel-background-color: var(--app-background);
 		--ck-dropdown-panel-border-color: var(--app-foreground);
-		--ck-dropdown-panel-border: var(--ck-border-width-surface) solid var(--ck-dropdown-panel-border-color);
 
 		/* -- Overrides the default .ck-dialog class colors. ----------------------------------- */
 
@@ -77,14 +79,14 @@
 
 		/* -- Overrides the default .ck-splitbutton class colors. ----------------------------------- */
 
-		--ck-color-split-button-hover-background: var(--ck-button-default-hover-background-color);
-		--ck-color-split-button-hover-border: var(--app-foreground);
+		--ck-split-button-hover-background: var(--ck-button-default-hover-background-color);
+		--ck-split-button-hover-border-color: var(--app-foreground);
 
 		/* -- Overrides the default .ck-input class colors. ----------------------------------------- */
 
 		--ck-input-background-color: var(--app-background);
 		--ck-input-border-color: hsl(257, 3%, 43%);
-		--ck-input-border: var(--ck-border-width-control) solid var(--ck-input-border-color);
+		--ck-input-focus-border-color: var(--app-focus);
 		--ck-input-text-color: hsl(0, 0%, 98%);
 		--ck-input-disabled-background-color: hsl(255, 4%, 21%);
 		--ck-input-disabled-border-color: hsl(250, 3%, 38%);
@@ -105,16 +107,16 @@
 
 		--ck-balloon-panel-background-color: var(--app-background);
 		--ck-balloon-panel-border-color: var(--app-border);
-		--ck-balloon-panel-border: var(--ck-border-width-surface) solid var(--ck-balloon-panel-border-color);
 
 		/* -- Overrides the default .ck-toolbar class colors. --------------------------------------- */
 
 		--ck-toolbar-background-color: var(--app-background);
 
-		/* -- Overrides the default editor frame border. -------------------------------------------- */
+		/* -- Overrides the default editor frame and editing area borders. -------------------------- */
 
 		--ck-editor-frame-border-color: var(--app-border);
 		--ck-editor-frame-border: var(--ck-border-width-surface) solid var(--ck-editor-frame-border-color);
+		--ck-editor-editable-focus-border-color: var(--app-focus);
 
 		/* -- Overrides the default .ck-tooltip class colors. --------------------------------------- */
 
@@ -123,8 +125,8 @@
 
 		/* -- Overrides the default colors used by the ckeditor5-image package. --------------------- */
 
-		--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
-		--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
+		--ck-content-image-caption-background-color: hsl(0, 0%, 97%);
+		--ck-content-image-caption-text-color: hsl(0, 0%, 20%);
 
 		/* -- Overrides the default colors used by the ckeditor5-widget package. -------------------- */
 
