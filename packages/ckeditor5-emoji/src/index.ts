@@ -17,6 +17,7 @@ export {
 	EmojiRepository,
 	type EmojiCategory,
 	type EmojiCdnResource,
+	type EmojiDefinition,
 	type EmojiEntry,
 	type EmojiMap,
 	type EmojiSkinTone

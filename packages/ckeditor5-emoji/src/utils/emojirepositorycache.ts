@@ -7,7 +7,7 @@
  * @module emoji/utils/emojirepositorycache
  */
 
-import type { EmojiCdnResource, EmojiEntry } from '../emojirepository.js';
+import type { EmojiDefinition, EmojiEntry } from '../emojirepository.js';
 
 /**
  * Cache for emoji repository data.
@@ -39,8 +39,8 @@ export class EmojiRepositoryCache {
 		}
 
 		const promise = fetch( url, { cache: 'force-cache' } )
-			.then( ( response ): Promise<Array<EmojiCdnResource>> => response.ok ? response.json() : Promise.resolve( [] ) )
-			.then( ( raw: Array<EmojiCdnResource> ) => transform( raw ) )
+			.then( ( response ): Promise<Array<EmojiDefinition>> => response.ok ? response.json() : Promise.resolve( [] ) )
+			.then( ( raw: Array<EmojiDefinition> ) => transform( raw ) )
 			.catch( () => {
 				this._cache.delete( key );
 				return [] as Array<EmojiEntry>;
@@ -79,7 +79,7 @@ type CacheKeyParams = {
 };
 
 type FetchParams = CacheKeyParams & {
-	transform: ( raw: Array<EmojiCdnResource> ) => Array<EmojiEntry>;
+	transform: ( raw: Array<EmojiDefinition> ) => Array<EmojiEntry>;
 };
 
 /**

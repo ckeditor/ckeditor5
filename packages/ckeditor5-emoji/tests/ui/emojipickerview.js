@@ -151,6 +151,32 @@ describe( 'EmojiPickerView', () => {
 				expect( emojiPickerView.infoView.isVisible ).toBe( false );
 			} );
 
+			it( 'should display a note when the selected category does not contain any emoji', () => {
+				emojiPickerView.searchView.fire( 'search', { query: '', resultsCount: 0 } );
+
+				expect( emojiPickerView.infoView.primaryText ).toBe( 'There are no emojis in this category.' );
+				expect( emojiPickerView.infoView.secondaryText ).toBe( '' );
+				expect( emojiPickerView.infoView.isVisible ).toBe( true );
+			} );
+
+			it( 'should hide the note when the selected category contains emoji', () => {
+				emojiPickerView.searchView.fire( 'search', { query: '', resultsCount: 0 } );
+				emojiPickerView.searchView.fire( 'search', { query: '', resultsCount: 1 } );
+
+				expect( emojiPickerView.infoView.isVisible ).toBe( false );
+			} );
+
+			it( 'should display a note after switching to a category that does not contain any emoji', () => {
+				emojiPickerView.categoriesView.categoryName = 'food';
+
+				expect( emojiPickerView.infoView.primaryText ).toBe( 'There are no emojis in this category.' );
+				expect( emojiPickerView.infoView.isVisible ).toBe( true );
+
+				emojiPickerView.categoriesView.categoryName = 'faces';
+
+				expect( emojiPickerView.infoView.isVisible ).toBe( false );
+			} );
+
 			it( 'should scroll to the top of the grid when an active category is changed', () => {
 				const stub = vi.spyOn( emojiPickerView.gridView.element, 'scrollTo' ).mockImplementation( () => {} );
 

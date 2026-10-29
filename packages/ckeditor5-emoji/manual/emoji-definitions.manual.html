@@ -1,0 +1,46 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8" />
+	<title>Emoji definitions passed in the configuration</title>
+	<!-- Blocks downloading the emoji database from any other origin, including the CKEditor 5 CDN. -->
+	<meta http-equiv="Content-Security-Policy" content="connect-src 'self'" />
+	<script type="module" src="./emoji-definitions.ts"></script>
+</head>
+
+<ck-manual-header>
+	<h2>Emoji definitions passed in the configuration</h2>
+	<p>
+		The page uses the <code>connect-src 'self'</code> Content Security Policy, so the editors
+		cannot download the emoji database from the CKEditor 5 CDN. Both editors get the database
+		in the <code>emoji.definitions</code> option instead.
+	</p>
+	<ul>
+		<li>
+			The first editor gets the whole test database. It contains only the "Smileys &amp;
+			Expressions" and "Gestures &amp; People" groups, so other categories in the emoji picker
+			are empty. Type <code>:wav</code> and check that the "waving hand" emoji is suggested.
+		</li>
+		<li>
+			The second editor gets only the "Smileys &amp; Expressions" group. Only this category should
+			have emoji. Typing <code>:wav</code> should not suggest the "waving hand" emoji.
+		</li>
+		<li>
+			Clicking an empty category in the emoji picker should show the "There are no emojis in
+			this category." message without errors.
+		</li>
+		<li>
+			The console should not show any request to the CDN, any CSP violation, or any
+			<code>emoji-repository-*</code> warning.
+		</li>
+	</ul>
+</ck-manual-header>
+
+<h3>The whole database</h3>
+<div id="editor-all">
+	<p>This is <a href="https://ckeditor.com">CKEditor 5</a> from <a href="https://cksource.com">CKSource</a>.</p>
+</div>
+
+<h3>Only "Smileys &amp; Expressions"</h3>
+<div id="editor-smileys">
+	<p>This is <a href="https://ckeditor.com">CKEditor 5</a> from <a href="https://cksource.com">CKSource</a>.</p>
+</div>

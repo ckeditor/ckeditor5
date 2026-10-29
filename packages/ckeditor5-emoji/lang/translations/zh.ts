@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': '繼續輸入以查看表情符號。',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': '查詢條件至少須包含兩個字元。',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': '此類別中沒有表情符號。',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': '笑臉與表情',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.
