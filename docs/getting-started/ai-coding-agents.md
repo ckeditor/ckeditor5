@@ -3,16 +3,17 @@ category: getting-started
 order: 20
 menu-title: Build with AI ✨
 meta-title: CKEditor 5 skills for AI coding agents | CKEditor 5 Documentation
-meta-description: Install the official CKEditor 5 skills in Claude Code, Cursor, Codex, OpenCode, or Copilot to set up, configure, and update CKEditor 5.
-modified_at: 2026-09-30
+meta-description: Install the official CKEditor 5 skills in Claude Code, Cursor, Codex, OpenCode, or Copilot to set up and update CKEditor 5 and build its Cloud Services bundle.
+modified_at: 2026-10-26
 ---
 
 # Using CKEditor&nbsp;5 with AI coding agents
 
-The official **CKEditor skills** teach your AI coding agent how to work with CKEditor&nbsp;5. There are two skills:
+The official **CKEditor skills** teach your AI coding agent how to work with CKEditor&nbsp;5. There are three skills:
 
 * `ckeditor` adds CKEditor&nbsp;5 to a project: it selects an installation method, wires up the editor, maps features to your use case, loads the styles, and sets the license key.
 * `ckeditor-update` updates an existing CKEditor&nbsp;5 integration to the latest version or to a version that you name.
+* `ckeditor-bundle` adds the scripts that build and upload the editor bundle for CKEditor Cloud Services. Features such as document storage and the Server-side Editor API need this bundle.
 
 Install them with one command:
 
@@ -21,7 +22,7 @@ npx skills add ckeditor/skills
 ```
 
 <info-box>
-	This guide covers **AI agent skills** that help you integrate CKEditor&nbsp;5 into your application or update it to the version you want. It is not the in-editor {@link features/ckeditor-ai-overview CKEditor AI} feature that helps you with content workflow.
+	This guide covers **AI agent skills** that help you integrate CKEditor&nbsp;5 into your application or update it to the version you want. One skill also sets up the editor bundle for CKEditor Cloud Services. It is not the in-editor {@link features/ckeditor-ai-overview CKEditor AI} feature that helps you with content workflow.
 </info-box>
 
 ## What the skills do
@@ -50,6 +51,18 @@ The `ckeditor-update` skill loads when you ask your agent to update, upgrade, or
 
 Review the changes before you commit them. The skill does not cover downgrades or migration from CKEditor&nbsp;4. For CKEditor&nbsp;4, see the {@link updating/migration-from-ckeditor-4 Migration from CKEditor&nbsp;4} guide.
 
+### Build the editor bundle for CKEditor Cloud Services
+
+The `ckeditor-bundle` skill loads when your project needs an [editor bundle](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html) for CKEditor Cloud Services. Document storage, import and export, and the Server-side Editor API need this bundle. The skill also loads when the editor changes and the bundle must follow, or when the upload of a bundle fails. It will:
+
+* Move the editor into one module that both the application and the bundle use.
+* Decide which custom plugins Cloud Services runs, and split a plugin that mixes content with browser code.
+* Add a bundle build for the bundler of your project, and make the test data from samples of your content.
+* Check the bundle and the test data in the same way as Cloud Services, before the upload.
+* Add an upload script and the `build:bundle`, `upload:bundle`, and `release:bundle` scripts for your CI.
+
+The skill uploads the bundle only with your approval, and the upload script reads the credentials from environment variables. Review the changes before you commit them.
+
 ## Supported agents
 
 The skills use the open [Agent Skills](https://agentskills.io/home) format, so they work in any agent that supports it &ndash; including **Claude Code**, **Cursor**, **Codex**, **OpenCode**, **GitHub Copilot**, **Windsurf**, **Gemini**, **Cline**, **AMP**, **Zed**, and more.
@@ -67,7 +80,7 @@ Besides [skills.sh](https://skills.sh), which installs the skills into every sup
 
 ### Manual installation
 
-Copy the `skills/ckeditor/` and `skills/ckeditor-update/` directories from the [`ckeditor/skills`](https://github.com/ckeditor/skills) repository into your agent's skills directory, for example `.claude/skills/ckeditor/` and `.claude/skills/ckeditor-update/`.
+Copy the `skills/ckeditor/`, `skills/ckeditor-update/`, and `skills/ckeditor-bundle/` directories from the [`ckeditor/skills`](https://github.com/ckeditor/skills) repository into your agent's skills directory. For example, use `.claude/skills/ckeditor/`, `.claude/skills/ckeditor-update/`, and `.claude/skills/ckeditor-bundle/`.
 
 ## Connect the documentation MCP server
 
