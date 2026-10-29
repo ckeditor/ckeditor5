@@ -523,7 +523,7 @@ export class ViewRenderer extends ViewRendererBase {
 		if ( isInlineFiller( domFillerNode ) ) {
 			domFillerNode.remove();
 		} else {
-			domFillerNode.data = domFillerNode.data.substr( INLINE_FILLER_LENGTH );
+			domFillerNode.data = domFillerNode.data.slice( INLINE_FILLER_LENGTH );
 		}
 
 		this._inlineFiller = null;

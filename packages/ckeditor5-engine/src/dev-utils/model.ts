@@ -361,7 +361,7 @@ export function _stringifyModel(
 	let data = _stringifyView( viewRoot, viewDocument.selection, { sameSelectionCharacters: true } );
 
 	// Removing unnecessary <div> and </div> added because `viewRoot` was also stringified alongside input data.
-	data = data.substr( 5, data.length - 11 );
+	data = data.slice( 5, -6 );
 
 	view.destroy();
 

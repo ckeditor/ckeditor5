@@ -143,7 +143,7 @@ export function blockAutoformatEditing(
 			return;
 		}
 
-		const match = pattern.exec( firstNode.data.substr( 0, range.end.offset ) );
+		const match = pattern.exec( firstNode.data.slice( 0, range.end.offset ) );
 
 		// ...and this text node's data match the pattern.
 		if ( !match ) {

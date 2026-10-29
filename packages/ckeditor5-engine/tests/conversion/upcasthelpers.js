@@ -254,7 +254,7 @@ describe( 'UpcastHelpers', () => {
 					key: 'fontSize',
 					value: ( viewElement, conversionApi, data ) => {
 						const fontSize = viewElement.getStyle( 'font-size' );
-						const value = fontSize.substr( 0, fontSize.length - 2 );
+						const value = fontSize.slice( 0, -2 );
 
 						// To ensure conversion API is provided.
 						expect( conversionApi.writer ).to.instanceof( ModelWriter );
@@ -443,7 +443,7 @@ describe( 'UpcastHelpers', () => {
 						key: 'fontSize',
 						value: viewElement => {
 							const fontSize = viewElement.getStyle( 'font-size' );
-							const value = fontSize.substr( 0, fontSize.length - 2 );
+							const value = fontSize.slice( 0, -2 );
 
 							return Number( value );
 						}
